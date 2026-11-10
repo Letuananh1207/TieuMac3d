@@ -27,6 +27,8 @@ dev Flutter chưa làm game: mỗi khi chọn thư viện / cách làm, giải t
 - Cảnh 3D thiết kế bằng đặc tả `design/scene/scene.json` + **Canvas 3D** (`/ui-design canh …`, trang
   `web/design.html` chạy đúng code app). Quyết định: `decisions/0002-thiet-ke-3d.md`.
 - Khi thiết kế được cập nhật (mục mới trong `design/CHANGELOG.md`): `/ui-apply`.
+- Phong cách cổ trang / tiên hiệp: `/khao-cuu <chủ đề>` nghiên cứu → hồ sơ `docs/tham_khao/` (tham khảo, chưa chốt)
+  → phiên thiết kế đọc khi dựng. `/khao-cuu soat` soát cảnh. Skill này chỉ ghi `docs/tham_khao/`.
 
 ## File sinh tự động — không sửa tay, sẽ bị ghi đè
 

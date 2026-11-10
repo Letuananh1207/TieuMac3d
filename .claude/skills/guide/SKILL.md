@@ -25,6 +25,8 @@ Chỉ đọc, không sửa gì, không tự chạy lệnh nào.
      VS Code) → vẽ, góp ý trên canvas → "chốt" → về VS Code `git pull` rồi `/ui-apply`
    - cảnh 3D (bố cục sân, nhà, cây, màu, ánh sáng, camera): `/ui-design canh <yêu cầu>` (ngoài VS Code) → xoay,
      góp ý trên Canvas 3D → "chốt" → về VS Code `git pull` rồi `/ui-apply` (kiểm luật rồi build cho app)
+   - nghiên cứu phong cách cổ trang / tiên hiệp: `/khao-cuu <chủ đề>` (cửa sổ nào cũng được) → chọn hướng →
+     `/khao-cuu phieu <hồ sơ>` → chép khối sang `/ui-design canh` (ngoài VS Code); soát cảnh: `/khao-cuu soat`
    - xác nhận quy tắc nghiệp vụ: chọn Đúng/Sai trên tài liệu online (link ở `docs/testing/quy_tac.md`) → nói
      "xử lý xác nhận quy tắc"
 3. Một dòng: chốt chặn tự chạy khi Claude báo xong (hook Stop) và khi commit (nếu đã bật
