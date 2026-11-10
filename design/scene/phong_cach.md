@@ -11,6 +11,22 @@ giữ một phong cách đồng nhất, nhẹ cho điện thoại, chạy offlin
 Tinh thần: 粉牆黛瓦 · 朱柱青檐 — tường vôi, ngói xám đen, cột son, xà vẽ xanh lục – lam (thanh lục thái hoạ), nền
 đá trắng có lan can, đầu đao cong.
 
+## Trạng thái
+
+- 2026-11-11.1: bản mẫu + bảng màu; "Cần code" bên dưới.
+- **2026-11-11.2: phiên code đã dựng xong mọi mục "Cần code"; đã bật trong `scene.json`** — tường vôi + cổng trăng,
+  cổng 文淵宗, tùng / liễu / mai, đá Thái Hồ, đèn đá, đỉnh đồng, Văn Tháp, nhân vật đệ tử, tên khu (HUD). Ảnh:
+  `screens/Canh-tren.png`, `Canh-ca-san.png`, `Canh-giang-duong.png`.
+- Chỉnh khi bật: ngói lưu ly lục `#3E6B5A` → **`#2B5446`** (dưới nắng chiều trông nhạt như bạc hà); lá liễu đậm hơn.
+
+### Còn khác bản mẫu (Cần code, không gấp)
+
+1. **Liễu** trông như "con sứa": dải rủ thẳng, dày, đều quanh tán vòm. Muốn: dải mảnh hơn, cong nhẹ, dài ngắn so le,
+   tán bớt tròn đều.
+2. **Đảo nổi** là hình nón ngược trơn. Muốn: mặt trên phẳng có cỏ, vài cây tùng nhỏ, đá lởm chởm phía dưới, có
+   thể một đình nhỏ trên đảo lớn nhất.
+3. **Khe giữa các đoạn tường khu** (`wallSegments`) vẫn là khe thường, chưa thành cổng trăng như khe tường bao.
+
 ## Bảng màu cảnh (đã áp vào `scene.json`)
 
 | Vai trò | Màu | Trường |

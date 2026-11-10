@@ -1,3 +1,12 @@
 {
-  "@@locale": "vi"
+  "@@locale": "vi",
+  "siteName": "Văn Uyên Tông",
+  "@siteName": { "description": "Tên nơi trên chip HUD (scene.json site.name), chữ Hán 文淵宗 trên biển cổng sơn môn" },
+  "areaNgoaiMon": "Ngoại Môn",
+  "areaSonMon": "Sơn Môn",
+  "areaDienVoTruong": "Diễn Võ Trường",
+  "areaDeTuCuXa": "Đệ Tử Cư Xá",
+  "areaLinhDuocVien": "Linh Dược Viên",
+  "areaLuyenDanPhong": "Luyện Đan Phòng",
+  "@areaNgoaiMon": { "description": "Tên khu trên chip HUD: \"<tên nơi> · <tên khu>\" (R-HUD-1); nguồn thật là scene.json site.areas" }
 }

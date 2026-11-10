@@ -24,6 +24,11 @@ hiện chưa tả được, phiên code làm trước (mục "Cần code" bên d
 | 6 Luyện Đan Phòng | lối x −45 từ z −15 tới −31 | điện `luyen-dan` (−45; −36) 12×8 mái cong, 2 lò đan (−49; −26), (−41; −26), hàng cây z −45 |
 | 10 Phù Không Đảo | 3 đảo nổi ở rìa bắc, 10 mây độ cao 34 | không va chạm |
 
+Thêm ở 2026-11-11.2: **Văn Tháp** (tháp 5 tầng) tâm (−14,5; −14,5) góc tây bắc Ngoại Môn; đỉnh đồng (0; −0,5); đèn
+đá cạnh bậc giảng đường (±3,5; −4,8), sau cổng (±4,5; 40), trước Luyện Đan (−47,5 / −42,5; −22); đá Thái Hồ ×4; mai
+(±8,5; −4), (−36 / −54; −26); liễu quanh ao. Tên khu (`site.areas`, chip HUD) đúng ranh giới bảng trên; Sơn Môn
+x −6…6, z 21…56.
+
 Rìa cảnh: cụm cây trang trí (không va chạm) bắc / tây / đông / nam; vòng cây ngoài tường tắt (`ring.count` 0).
 
 ## Các khu (quy hoạch ban đầu)
