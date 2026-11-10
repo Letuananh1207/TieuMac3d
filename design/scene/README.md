@@ -1,6 +1,10 @@
 # design/scene/ — đặc tả cảnh 3D
 
 Canvas 3D: https://claude.ai/artifact/TyJxrgsBcj5ryHakv7c1so
+Chơi thử (đi lại bằng nhân vật, đúng code game): https://claude.ai/artifact/GXXVj7PRJUsuZRxa8MHp7n — phiên thiết kế
+build `web/index.html` ra thư mục tạm (`npx vite build --outDir <tạm>`, không đụng `app/`) rồi đăng lại cùng link.
+
+Tài liệu: `tong_mon.md` (quy hoạch khu), `phong_cach.md` (phong cách Trung Hoa + việc cần code).
 
 `scene.json` mô tả cảnh 3D của học xá: trời, sương, đèn, mặt sân, tường, nhà (vị trí, kích thước, màu, vùng sự
 kiện), cây, giếng, điểm xuất phát và camera. File do **phiên thiết kế** (`/ui-design canh …`) ghi; phiên code

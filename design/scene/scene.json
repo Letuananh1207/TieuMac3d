@@ -1,46 +1,259 @@
 {
   "sky": {
-    "top": "#0f1730",
-    "middle": "#33476e",
-    "horizon": "#8a7a86"
+    "top": "#5d86b5",
+    "middle": "#a8c0d6",
+    "horizon": "#f0d9b0"
   },
   "fog": {
-    "color": "#2c3a58",
-    "near": 28,
-    "far": 70
+    "color": "#c3cbd4",
+    "near": 45,
+    "far": 140
   },
   "light": {
-    "skyColor": "#bcc8ff",
-    "groundColor": "#4a3326",
-    "hemiIntensity": 0.75,
-    "sunColor": "#ffd8a8",
-    "sunIntensity": 0.85,
+    "skyColor": "#dfe8ff",
+    "groundColor": "#6b5a48",
+    "hemiIntensity": 0.8,
+    "sunColor": "#ffe2b8",
+    "sunIntensity": 0.95,
     "sunPosition": [
-      -12,
-      20,
-      8
+      -24,
+      26,
+      10
     ]
   },
   "ground": {
-    "size": 90,
-    "color": "#5b3f37",
-    "brickHue": 10
+    "size": 200,
+    "color": "#6f6a62",
+    "brickHue": 30
   },
   "walls": {
     "half": 21,
     "height": 2.6,
-    "color": "#4a2b24",
-    "brickHue": 8,
-    "capColor": "#6e2f26"
+    "color": "#7a6e62",
+    "brickHue": 28,
+    "capColor": "#4f5a63",
+    "gates": [
+      {
+        "side": "nam",
+        "at": 0,
+        "width": 4
+      },
+      {
+        "side": "dong",
+        "at": 0,
+        "width": 4
+      },
+      {
+        "side": "tay",
+        "at": -4,
+        "width": 4
+      }
+    ]
   },
+  "wallSegments": [
+    {
+      "from": [
+        27,
+        -15
+      ],
+      "to": [
+        60,
+        -15
+      ]
+    },
+    {
+      "from": [
+        60,
+        -15
+      ],
+      "to": [
+        60,
+        15
+      ]
+    },
+    {
+      "from": [
+        27,
+        15
+      ],
+      "to": [
+        41.5,
+        15
+      ]
+    },
+    {
+      "from": [
+        46.5,
+        15
+      ],
+      "to": [
+        60,
+        15
+      ]
+    },
+    {
+      "from": [
+        27,
+        -15
+      ],
+      "to": [
+        27,
+        -2.5
+      ]
+    },
+    {
+      "from": [
+        27,
+        2.5
+      ],
+      "to": [
+        27,
+        15
+      ]
+    },
+    {
+      "from": [
+        -62,
+        -15
+      ],
+      "to": [
+        -47,
+        -15
+      ]
+    },
+    {
+      "from": [
+        -43,
+        -15
+      ],
+      "to": [
+        -27,
+        -15
+      ]
+    },
+    {
+      "from": [
+        -62,
+        -15
+      ],
+      "to": [
+        -62,
+        20
+      ]
+    },
+    {
+      "from": [
+        -62,
+        20
+      ],
+      "to": [
+        -27,
+        20
+      ]
+    },
+    {
+      "from": [
+        -27,
+        -15
+      ],
+      "to": [
+        -27,
+        -6.5
+      ]
+    },
+    {
+      "from": [
+        -27,
+        -1.5
+      ],
+      "to": [
+        -27,
+        20
+      ]
+    }
+  ],
+  "paths": [
+    {
+      "from": [
+        0,
+        21
+      ],
+      "to": [
+        0,
+        56
+      ],
+      "width": 5
+    },
+    {
+      "from": [
+        21,
+        0
+      ],
+      "to": [
+        38,
+        0
+      ],
+      "width": 4
+    },
+    {
+      "from": [
+        44,
+        6
+      ],
+      "to": [
+        44,
+        40
+      ],
+      "width": 3
+    },
+    {
+      "from": [
+        -21,
+        -4
+      ],
+      "to": [
+        -45,
+        -4
+      ],
+      "width": 4
+    },
+    {
+      "from": [
+        -45,
+        -4
+      ],
+      "to": [
+        -45,
+        -31
+      ],
+      "width": 3
+    },
+    {
+      "from": [
+        -45,
+        -4
+      ],
+      "to": [
+        -45,
+        5
+      ],
+      "width": 3
+    }
+  ],
   "buildingStyle": {
-    "base": "#77706a",
+    "base": "#d9d4c7",
     "floor": "#8a5a3c",
-    "wall": "#e9dcc0",
-    "pillar": "#3a2418",
-    "ridge": "#4a2a20",
-    "eave": "#3a2418",
-    "lantern": "#ff6a3d"
+    "wall": "#e8e1d2",
+    "pillar": "#a8322a",
+    "ridge": "#2f3236",
+    "eave": "#2f6f73",
+    "lantern": "#e2553a",
+    "stone": "#9a968c",
+    "water": "#3d6e86",
+    "path": "#a39d92",
+    "bronze": "#8a6a3a",
+    "herb": "#5f9a48",
+    "smoke": "#d8d4cc"
   },
   "buildings": [
     {
@@ -54,7 +267,7 @@
         "Buổi tối",
         "chữ 快"
       ],
-      "roofColor": "#8a3b2c",
+      "roofColor": "#3e6b5a",
       "zone": {
         "id": "lop-hsk3",
         "front": 4.6,
@@ -69,20 +282,184 @@
       "d": 6,
       "rotY": 90,
       "title": "Thư viện",
-      "roofColor": "#5f3a2a",
+      "roofColor": "#4f5a63",
       "zone": {
         "id": "thu-vien",
         "front": 3.9,
         "r": 2.4
       }
+    },
+    {
+      "id": "cu-xa-1",
+      "x": 33,
+      "z": 36,
+      "w": 5,
+      "d": 4,
+      "rotY": 180,
+      "kind": "nha-nho",
+      "title": "Cư xá",
+      "roofColor": "#4f5a63"
+    },
+    {
+      "id": "cu-xa-2",
+      "x": 39.5,
+      "z": 36,
+      "w": 5,
+      "d": 4,
+      "rotY": 180,
+      "kind": "nha-nho",
+      "title": "Cư xá",
+      "roofColor": "#4f5a63"
+    },
+    {
+      "id": "cu-xa-3",
+      "x": 48.5,
+      "z": 36,
+      "w": 5,
+      "d": 4,
+      "rotY": 180,
+      "kind": "nha-nho",
+      "title": "Cư xá",
+      "roofColor": "#4f5a63"
+    },
+    {
+      "id": "cu-xa-4",
+      "x": 55,
+      "z": 36,
+      "w": 5,
+      "d": 4,
+      "rotY": 180,
+      "kind": "nha-nho",
+      "title": "Cư xá",
+      "roofColor": "#4f5a63"
+    },
+    {
+      "id": "duoc-cac",
+      "x": -36,
+      "z": 14,
+      "w": 5,
+      "d": 4,
+      "rotY": 270,
+      "kind": "nha-nho",
+      "roof": "cong",
+      "title": "Dược các",
+      "roofColor": "#3e6b5a"
+    },
+    {
+      "id": "luyen-dan",
+      "x": -45,
+      "z": -36,
+      "w": 12,
+      "d": 8,
+      "kind": "dien",
+      "roof": "cong",
+      "title": "Luyện Đan",
+      "roofColor": "#4f5a63"
+    }
+  ],
+  "gates": [
+    {
+      "id": "son-mon",
+      "x": 0,
+      "z": 44,
+      "width": 6,
+      "title": "Văn Uyên Tông"
+    }
+  ],
+  "water": [
+    {
+      "x": -45,
+      "z": 11,
+      "r": 4
+    }
+  ],
+  "props": [
+    {
+      "kind": "dai-ti-thi",
+      "x": 44,
+      "z": 0
+    },
+    {
+      "kind": "gia-binh-khi",
+      "x": 33,
+      "z": -12
+    },
+    {
+      "kind": "gia-binh-khi",
+      "x": 38,
+      "z": -12
+    },
+    {
+      "kind": "gia-binh-khi",
+      "x": 50,
+      "z": -12
+    },
+    {
+      "kind": "gia-binh-khi",
+      "x": 55,
+      "z": -12
+    },
+    {
+      "kind": "luong-thuoc",
+      "x": -53,
+      "z": -10
+    },
+    {
+      "kind": "luong-thuoc",
+      "x": -53,
+      "z": -7.5
+    },
+    {
+      "kind": "luong-thuoc",
+      "x": -37,
+      "z": -10
+    },
+    {
+      "kind": "luong-thuoc",
+      "x": -37,
+      "z": -7.5
+    },
+    {
+      "kind": "luong-thuoc",
+      "x": -53,
+      "z": 0
+    },
+    {
+      "kind": "luong-thuoc",
+      "x": -53,
+      "z": 2.5
+    },
+    {
+      "kind": "luong-thuoc",
+      "x": -37,
+      "z": 0
+    },
+    {
+      "kind": "luong-thuoc",
+      "x": -37,
+      "z": 2.5
+    },
+    {
+      "kind": "lo-dan",
+      "x": -49,
+      "z": -26
+    },
+    {
+      "kind": "lo-dan",
+      "x": -41,
+      "z": -26
     }
   ],
   "trees": {
-    "trunk": "#4a3222",
+    "trunk": "#5a4030",
     "leaves": [
-      "#2f4a2c",
-      "#37552f",
-      "#26402a"
+      "#2f5a3a",
+      "#3f6e45",
+      "#4a7a4a"
+    ],
+    "bamboo": [
+      "#7d9a4a",
+      "#4f7a35"
     ],
     "yard": [
       {
@@ -109,10 +486,115 @@
         "x": -6,
         "z": 12,
         "scale": 1
+      },
+      {
+        "x": 56.5,
+        "z": 11.5,
+        "scale": 1
+      },
+      {
+        "x": 30.5,
+        "z": 11.5,
+        "scale": 0.9
+      }
+    ],
+    "groves": [
+      {
+        "kind": "tan",
+        "x": -9,
+        "z": 37,
+        "w": 4,
+        "d": 22,
+        "count": 8
+      },
+      {
+        "kind": "tan",
+        "x": 9,
+        "z": 37,
+        "w": 4,
+        "d": 22,
+        "count": 8
+      },
+      {
+        "kind": "tan",
+        "x": 44,
+        "z": 43.5,
+        "w": 30,
+        "d": 2,
+        "count": 8
+      },
+      {
+        "kind": "truc",
+        "x": -58.5,
+        "z": 6,
+        "w": 3,
+        "d": 22,
+        "count": 10
+      },
+      {
+        "kind": "tan",
+        "x": -45,
+        "z": -45,
+        "w": 26,
+        "d": 3,
+        "count": 7
+      },
+      {
+        "kind": "truc",
+        "x": 63,
+        "z": 30,
+        "w": 3,
+        "d": 18,
+        "count": 8
+      },
+      {
+        "kind": "tan",
+        "x": 0,
+        "z": -62,
+        "w": 150,
+        "d": 26,
+        "count": 40,
+        "collide": false
+      },
+      {
+        "kind": "tan",
+        "x": -82,
+        "z": 10,
+        "w": 18,
+        "d": 120,
+        "count": 28,
+        "collide": false
+      },
+      {
+        "kind": "tan",
+        "x": 80,
+        "z": 10,
+        "w": 18,
+        "d": 120,
+        "count": 28,
+        "collide": false
+      },
+      {
+        "kind": "tan",
+        "x": -40,
+        "z": 66,
+        "w": 50,
+        "d": 14,
+        "count": 14,
+        "collide": false
+      },
+      {
+        "kind": "tan",
+        "x": 40,
+        "z": 66,
+        "w": 50,
+        "d": 14,
+        "count": 14,
+        "collide": false
       }
     ],
     "ring": {
-      "count": 26,
+      "count": 0,
       "radius": 25,
       "spread": 6,
       "scaleMin": 1.6,
@@ -123,13 +605,42 @@
   "well": {
     "x": 6,
     "z": 2,
-    "stone": "#6c6660",
-    "water": "#2b4a6a"
+    "stone": "#9a968c",
+    "water": "#3d6e86"
+  },
+  "floating": {
+    "islands": [
+      {
+        "x": -90,
+        "y": 35,
+        "z": -95,
+        "scale": 2
+      },
+      {
+        "x": -68,
+        "y": 28,
+        "z": -112,
+        "scale": 1.2
+      },
+      {
+        "x": 85,
+        "y": 40,
+        "z": -90,
+        "scale": 1.6
+      }
+    ],
+    "clouds": {
+      "count": 10,
+      "height": 34,
+      "radius": 90,
+      "speed": 0.6,
+      "color": "#f4f1ea"
+    }
   },
   "player": {
     "start": [
       0,
-      6
+      50
     ]
   },
   "camera": {

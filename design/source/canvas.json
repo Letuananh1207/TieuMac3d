@@ -23,11 +23,27 @@
       "w": 1440,
       "h": 1080,
       "title": "Đề xuất: quy hoạch tông môn (cảnh 3D, nhìn từ trên)"
+    },
+    "PhongCach-KienTruc.dc.html": {
+      "x": 0,
+      "y": 4280,
+      "w": 1600,
+      "h": 1100,
+      "title": "Phong cách 3D: kiến trúc"
+    },
+    "PhongCach-CayNhanVat.dc.html": {
+      "x": 1680,
+      "y": 4280,
+      "w": 1600,
+      "h": 1100,
+      "title": "Phong cách 3D: cây, nhân vật, đồ trang trí, bảng màu"
     }
   },
   "order": [
     "Main.dc.html",
-    "TongMon-ban-do.dc.html"
+    "TongMon-ban-do.dc.html",
+    "PhongCach-KienTruc.dc.html",
+    "PhongCach-CayNhanVat.dc.html"
   ],
   "notes": {
     "cach-dung": {
@@ -52,6 +68,21 @@
       "size": "m",
       "fill": "orange",
       "text": "Đề xuất, chưa chốt.\n\nSân hiện có giữ làm Ngoại Môn (khu 1). Các khu khác bao quanh, nối bằng lối đi.\n\nKhu viền đỏ cần code trước: địa hình núi, bậc đá, cổng, ao, thác, tháp, đảo nổi. Khu viền trắng làm được ngay bằng đặc tả.\n\nMỗi khu sau này có thể gắn một vùng bài học riêng."
+    },
+    "tieu-de-phong-cach": {
+      "x": 0,
+      "y": 4040,
+      "text": "Cảnh 3D: phong cách Trung Hoa (bản mẫu cho phiên code dựng lại)",
+      "kind": "title1",
+      "maxW": 3280
+    },
+    "ghi-chu-phong-cach": {
+      "x": 3360,
+      "y": 4280,
+      "w": 420,
+      "size": "m",
+      "fill": "teal",
+      "text": "Đề xuất, chưa chốt.\n\nMiễn phí: không mua / tải gói ngoài. Phiên code dựng lại nhà, cây, nhân vật bằng hình khối theo các bản mẫu này (low-poly, màu phẳng, không texture ảnh), vẫn ≤ 150 draw call.\n\nBảng màu cảnh áp ngay vào scene.json để xem trên Canvas 3D."
     }
   },
   "designSystems": []

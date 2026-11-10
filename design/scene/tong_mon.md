@@ -6,7 +6,27 @@ Mở rộng cảnh từ một sân học thành một **tông môn tu tiên** (b
 đang có giữ nguyên làm **Ngoại Môn**. `scene.json` **chưa đổi**: phần lớn các khu cần loại vật / địa hình mà đặc tả
 hiện chưa tả được, phiên code làm trước (mục "Cần code" bên dưới), rồi phiên thiết kế mới sắp từng khu bằng đặc tả.
 
-## Các khu
+## Trạng thái
+
+- **Đợt 1 — đã đặt** (mục 2026-11-11.1): khu 1–6 trên mặt phẳng + Phù Không Đảo (đảo nổi, mây). Toạ độ thật xem
+  `scene.json` và bảng "Đã đặt" dưới đây; ảnh `screens/Canh-tren.png`, `screens/Canh-ca-san.png`.
+- **Đợt 2 — chưa làm** (cần địa hình cao thấp, bậc đá, thác): khu 7 Thiên Bậc, 8 Nội Môn · Chủ Phong, 9 Hậu Sơn.
+
+### Đã đặt (đợt 1)
+
+| Khu | Vị trí thật | Gồm |
+|---|---|---|
+| 1 Ngoại Môn | tường bao ±21; khe nam tâm x 0 rộng 4, khe đông tâm z 0 rộng 4, khe tây tâm z −4 rộng 4 | giảng đường, thư viện, giếng, 5 cây — giữ nguyên |
+| 2 Sơn Môn | lối (0; 21) → (0; 56) rộng 5; cổng `son-mon` tâm (0; 44) rộng 6, biển "Văn Uyên Tông" | 2 cụm cây hai bên lối; **xuất phát (0; 50)** |
+| 3 Diễn Võ Trường | tường riêng x 27…60, z −15…15; khe tây tâm z 0 rộng 5, khe nam tâm x 44 rộng 5 | đài tỉ thí (44; 0), 4 giá binh khí sát tường bắc, 2 cây góc |
+| 4 Đệ Tử Cư Xá | lối x 44 từ z 6 tới 40 | 4 nhà nhỏ z 36 (x 33 · 39,5 · 48,5 · 55) quay bắc, hàng cây z 43,5, rừng trúc x 63 |
+| 5 Linh Dược Viên | tường riêng x −62…−27, z −15…20; khe đông tâm z −4 rộng 5, khe bắc tâm x −45 rộng 4 | 8 luống thuốc, ao tròn (−45; 11) r 4, Dược các (−36; 14), rừng trúc sát tường tây |
+| 6 Luyện Đan Phòng | lối x −45 từ z −15 tới −31 | điện `luyen-dan` (−45; −36) 12×8 mái cong, 2 lò đan (−49; −26), (−41; −26), hàng cây z −45 |
+| 10 Phù Không Đảo | 3 đảo nổi ở rìa bắc, 10 mây độ cao 34 | không va chạm |
+
+Rìa cảnh: cụm cây trang trí (không va chạm) bắc / tây / đông / nam; vòng cây ngoài tường tắt (`ring.count` 0).
+
+## Các khu (quy hoạch ban đầu)
 
 Toạ độ mét, cùng hệ với `scene.json` (bắc = −z). Là khung gợi ý, sẽ chỉnh khi đặt thật trên Canvas 3D.
 
