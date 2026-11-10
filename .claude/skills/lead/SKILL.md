@@ -98,7 +98,8 @@ flutter test -r failures-only test/<phần> · dart tool/rule_trace.dart
 | chạm để đi | `tapToMove`, `pointers` | `web/src/input/` |
 | bàn phím (thử trên máy tính) | `keyboard` | `web/src/input/keyboard.ts` |
 | va chạm, đi xuyên, kẹt | `collision` | `web/src/collision/` |
-| vùng sự kiện, lớp học, bài học (dữ liệu chữ Hán) | `zones` | `web/src/zones/` |
+| vùng sự kiện, lớp học, bài học (dữ liệu chữ Hán) | `zones` | `web/src/zones/` (vị trí vùng: nhà trong đặc tả cảnh) |
+| đặc tả cảnh, bố cục sân, dời nhà, màu cảnh, Canvas 3D | `scene/spec`, `loadSpec`, `designPreview` | `design/scene/scene.json` (chỉ đọc), `web/src/scene/spec.ts`, `web/design.html`, `web/scripts/check-scene.mjs` |
 | thẻ mời, "Vào nghe giảng", "Để sau" | `eventCard` | `web/src/ui/eventCard.ts` |
 | bảng bài học (HTML, sẽ thay bằng Flutter ở mốc 3) | `lessonBoard` | `web/src/ui/lessonBoard.ts` |
 | HUD, fps, nhãn tên, dòng hướng dẫn, nút góc nhìn | `hud` | `web/src/ui/hud.ts`, `web/index.html`, `web/src/style.css` |
@@ -108,5 +109,6 @@ flutter test -r failures-only test/<phần> · dart tool/rule_trace.dart
 | cầu nối Flutter ↔ 3D, sự kiện, safe area | `bridge`, `scene_view`, `safe_area` | `docs/bridge.md`, `app/lib/scene/`, `web/src/bridge/` (mốc 3) |
 | màn bài học native (mốc 3) | — | phiếu `docs/phieu_thiet_ke/2026-11-10-man-bai-hoc.md` (chờ thiết kế) |
 | thiết kế, token, canvas | — | `design/` (chỉ đọc) → `/ui-apply` |
+| model .glb (mốc 3D-b, chưa làm) | `player/`, `scene/` | `docs/tasks/2026-11-10-thiet-ke-3d.md` |
 
 Thêm tính năng / thư mục mới → thêm một dòng vào bảng này cùng lúc.

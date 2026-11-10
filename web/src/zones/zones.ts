@@ -7,12 +7,17 @@ export interface Lesson {
   info: [string, string][];
 }
 
-/** Vùng tròn trên sân: người chơi bước vào thì hiện thẻ mời. */
-export interface Zone {
+/** Vị trí vùng: tâm (x, z) và bán kính r. Lấy từ nhà trong đặc tả cảnh (`scene/spec.ts` → `zoneAnchors`). */
+export interface ZoneAnchor {
   id: string;
   x: number;
   z: number;
   r: number;
+}
+
+/** Nội dung vùng (chữ trên thẻ, bài học) — không có vị trí; vị trí do nhà trong đặc tả cảnh quyết. */
+export interface ZoneContent {
+  id: string;
   eyebrow: string;
   /** tiêu đề thẻ = before + chữ Hán (tô màu) + after */
   title: { before: string; han: string; after: string };
@@ -21,12 +26,9 @@ export interface Zone {
   lesson: Lesson;
 }
 
-export const ZONES: Zone[] = [
+export const ZONE_CONTENT: ZoneContent[] = [
   {
     id: 'lop-hsk3',
-    x: 0,
-    z: -6.4,
-    r: 2.6,
     eyebrow: 'Tùng tùng tùng! Giờ giảng',
     title: { before: 'Thầy giảng chữ ', han: '快', after: ' ở giảng đường' },
     go: 'Vào nghe giảng',
@@ -44,9 +46,6 @@ export const ZONES: Zone[] = [
   },
   {
     id: 'thu-vien',
-    x: -8.6,
-    z: 4,
-    r: 2.4,
     eyebrow: 'Thư viện đang mở',
     title: { before: 'Ôn lại chữ ', han: '書', after: ' trong thư viện' },
     go: 'Vào đọc sách',
@@ -63,3 +62,24 @@ export const ZONES: Zone[] = [
     },
   },
 ];
+
+/** Vùng tròn trên sân: người chơi bước vào thì hiện thẻ mời. */
+export type Zone = ZoneContent & ZoneAnchor;
+
+/**
+ * Ghép nội dung với vị trí theo `id`. Nội dung không có nhà nào neo, hoặc vị trí không có nội dung,
+ * thì bỏ và ghi vào `problems` (Canvas 3D hiện ra để phiên thiết kế sửa).
+ */
+export function placeZones(content: ZoneContent[], anchors: ZoneAnchor[]): { zones: Zone[]; problems: string[] } {
+  const problems: string[] = [];
+  const byId = new Map(anchors.map((a) => [a.id, a]));
+  const zones: Zone[] = [];
+  for (const c of content) {
+    const a = byId.get(c.id);
+    if (a) zones.push({ ...c, x: a.x, z: a.z, r: a.r });
+    else problems.push(`vùng "${c.id}": không nhà nào có zone.id này — thẻ mời sẽ không hiện`);
+  }
+  const known = new Set(content.map((c) => c.id));
+  for (const a of anchors) if (!known.has(a.id)) problems.push(`zone.id "${a.id}": chưa có nội dung bài học trong code`);
+  return { zones, problems };
+}

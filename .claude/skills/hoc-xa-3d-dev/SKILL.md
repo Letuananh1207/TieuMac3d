@@ -38,10 +38,11 @@ tạm, soạn phiếu (`/ui-apply phieu`).
 | điểm vào scene, vòng lặp | `web/src/main.ts` |
 | renderer, camera, pixelRatio | `web/src/scene/renderer.ts` |
 | một vật trong sân (nhà, tường, cây, giếng) | `web/src/scene/<vật>.ts`, ghép ở `scene/world.ts` |
+| số / màu của cảnh, đặc tả, Canvas 3D | `web/src/scene/spec.ts` (kiểu + mặc định), `loadSpec.ts`, `web/src/designPreview.ts` |
 | hình nhân vật / di chuyển | `web/src/player/blockCharacter.ts` / `player/controller.ts` |
 | joystick, xoay/zoom camera, chạm để đi, phím | `web/src/input/{joystick,orbitCamera,tapToMove,keyboard,pointers}.ts` |
 | va chạm | `web/src/collision/colliders.ts` |
-| dữ liệu vùng + bài học | `web/src/zones/zones.ts` |
+| nội dung vùng + bài học (vị trí: đặc tả cảnh) | `web/src/zones/zones.ts` |
 | thẻ mời, bảng bài học, fps, nhãn tên | `web/src/ui/{eventCard,lessonBoard,hud}.ts`, DOM ở `web/index.html`, CSS `web/src/style.css` |
 | màn Flutter | `app/lib/` (hiện chỉ `main.dart`) |
 | test của `app/lib/a/b.dart` | `app/test/a/b_test.dart`; test theo quy tắc: `app/test/rules/` |

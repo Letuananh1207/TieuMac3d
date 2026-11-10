@@ -6,8 +6,10 @@
   "scripts": {
     "dev": "vite --host",
     "typecheck": "tsc --noEmit",
-    "build": "tsc --noEmit && vite build && node scripts/copy-to-app.mjs",
-    "preview": "vite preview --host"
+    "build": "tsc --noEmit && node scripts/check-scene.mjs && vite build && node scripts/copy-to-app.mjs",
+    "preview": "vite preview --host",
+    "build:design": "tsc --noEmit && vite build --mode design",
+    "scene:check": "node scripts/check-scene.mjs"
   },
   "dependencies": {
     "@fontsource/be-vietnam-pro": "5.2.5",
@@ -16,6 +18,7 @@
   },
   "devDependencies": {
     "@types/three": "0.170.0",
+    "esbuild": "0.25.12",
     "typescript": "5.9.3",
     "vite": "6.4.5"
   }

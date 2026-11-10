@@ -1,22 +1,21 @@
 import * as THREE from 'three';
 import type { Colliders } from '../collision/colliders';
 import { lambert } from './materials';
+import type { SceneSpec } from './spec';
 import { makeCanvasTex } from './textures';
 
-/** Nửa cạnh sân (tường nằm ở ±WALL). */
-export const WALL = 21;
-const WALL_HEIGHT = 2.6;
-
-export function addWalls(scene: THREE.Scene, colliders: Colliders): void {
+/** Tường bao sân vuông, nằm ở ±`half` (mặc định 21). */
+export function addWalls(scene: THREE.Scene, colliders: Colliders, spec: SceneSpec['walls']): void {
+  const { half: WALL, height: WALL_HEIGHT } = spec;
   const wallTex = makeCanvasTex(
     256,
     128,
     (g) => {
-      g.fillStyle = '#4a2b24';
+      g.fillStyle = spec.color;
       g.fillRect(0, 0, 256, 128);
       for (let y = 0; y < 8; y++) {
         for (let x = -1; x < 8; x++) {
-          g.fillStyle = `hsl(8,${35 + Math.random() * 10}%,${30 + Math.random() * 8}%)`;
+          g.fillStyle = `hsl(${spec.brickHue},${35 + Math.random() * 10}%,${30 + Math.random() * 8}%)`;
           g.fillRect(x * 34 + (y % 2) * 17 + 1, y * 16 + 1, 32, 14);
         }
       }
@@ -24,7 +23,7 @@ export function addWalls(scene: THREE.Scene, colliders: Colliders): void {
     [10, 1],
   );
   const wallMat = lambert(0xffffff, { map: wallTex });
-  const capMat = lambert(0x6e2f26);
+  const capMat = lambert(spec.capColor);
   const sides: [number, number, number, number][] = [
     [0, -WALL, 2 * WALL + 1, 1],
     [0, WALL, 2 * WALL + 1, 1],

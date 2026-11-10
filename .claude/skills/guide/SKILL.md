@@ -23,6 +23,8 @@ Chỉ đọc, không sửa gì, không tự chạy lệnh nào.
    - lỗi: `/loi <mô tả>` → `/loi sua L-…` → thử máy → `/loi xong L-…` (hoặc `/loi mo L-…`)
    - giao diện mới: `/ui-apply phieu <yêu cầu>` (VS Code) → chép khối "Dán vào canvas" sang `/ui-design` (ngoài
      VS Code) → vẽ, góp ý trên canvas → "chốt" → về VS Code `git pull` rồi `/ui-apply`
+   - cảnh 3D (bố cục sân, nhà, cây, màu, ánh sáng, camera): `/ui-design canh <yêu cầu>` (ngoài VS Code) → xoay,
+     góp ý trên Canvas 3D → "chốt" → về VS Code `git pull` rồi `/ui-apply` (kiểm luật rồi build cho app)
    - xác nhận quy tắc nghiệp vụ: chọn Đúng/Sai trên tài liệu online (link ở `docs/testing/quy_tac.md`) → nói
      "xử lý xác nhận quy tắc"
 3. Một dòng: chốt chặn tự chạy khi Claude báo xong (hook Stop) và khi commit (nếu đã bật

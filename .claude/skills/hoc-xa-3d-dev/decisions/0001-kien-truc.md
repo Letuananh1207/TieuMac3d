@@ -37,3 +37,9 @@ Cùng thư mục import nhau tự do. Gói npm khác `three` chưa kiểm. CSS c
 Ví dụ mốc 3 thêm `web/src/bridge/`: thêm một dòng bảng trên + mục trong `LAYERS` ở `tool/check.dart`
 (trước đó `check` cảnh báo `W-LOPMOI`). Hướng đề xuất: `bridge/` chỉ import `zones` (kiểu sự kiện), `main.ts`
 nối bridge với ui/player.
+
+## Dữ liệu cảnh từ design/ (2026-11-10, xem 0002)
+
+`scene/spec.ts` đọc `design/scene/scene.json` lúc build (ngoài `web/src`, không phải lớp). Vùng sự kiện lấy toạ
+độ từ nhà trong spec: `scene/` trả `ZoneAnchor[]`, `main.ts` gọi `zones/placeZones` để ghép với nội dung bài học.
+Trang `designPreview.ts` (gốc `web/src`, như `main.ts`) được import mọi thứ.

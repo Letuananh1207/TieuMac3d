@@ -9,26 +9,34 @@
 | vật liệu | `MeshLambertMaterial` qua `lambert()`; `MeshBasicMaterial` cho thứ không cần sáng (biển, đèn lồng, nước) | `scene/materials.ts` |
 | bóng | không shadow realtime; bóng giả = đĩa đen mờ dưới chân | `player/blockCharacter.ts` |
 | texture | vẽ bằng canvas 2D (`makeCanvasTex`, `signTex`), không file ảnh | `scene/textures.ts` |
-| sân | tường ở ±21 (`WALL`), sương mù 28–70, far 200 | `scene/walls.ts`, `scene/environment.ts` |
+| số / màu của cảnh | đặc tả `SceneSpec` (`DEFAULT_SCENE` = cảnh gốc: tường ±21, sương 28–70); far 200 | `scene/spec.ts`, đọc `design/scene/scene.json` ở `scene/loadSpec.ts` |
+| cây | 4 `InstancedMesh` cho cả rừng, ngẫu nhiên có hạt giống (`trees.seed`) | `scene/trees.ts` |
 | tốc độ / bán kính | 4,2 m/s · 0,5 | `player/controller.ts` |
 
 ## Mẫu: thêm một vật vào sân
 
 ```ts
-// web/src/scene/well.ts
-export function addWell(scene: THREE.Scene, colliders: Colliders): void {
-  const well = new THREE.Mesh(new THREE.CylinderGeometry(1.1, 1.2, 0.8, 12), lambert(0x6c6660));
-  well.position.set(6, 0.4, 2);
+// web/src/scene/well.ts — vị trí, màu lấy từ đặc tả; hình dạng (kích thước chi tiết) ở code
+export function addWell(scene: THREE.Scene, colliders: Colliders, spec: SceneSpec['well']): void {
+  const { x, z } = spec;
+  const well = new THREE.Mesh(new THREE.CylinderGeometry(1.1, 1.2, 0.8, 12), lambert(spec.stone));
+  well.position.set(x, 0.4, z);
   scene.add(well);
   // …
-  colliders.add(6, 2, 2.2, 2.2); // hộp va chạm thẳng trục: tâm x, z, rộng, sâu
+  colliders.add(x, z, 2.2, 2.2); // hộp va chạm thẳng trục: tâm x, z, rộng, sâu
 }
 ```
 
-Rồi gọi trong `scene/world.ts`. Màu viết thẳng hex ở chỗ dựng là cách dự án đang làm (không có bảng màu riêng
-cho cảnh). Geometry/material dùng chung thì tạo một lần ở cấp module (xem `scene/trees.ts`).
+Vật mới: thêm trường vào `SceneSpec` + `DEFAULT_SCENE` (`scene/spec.ts`, giá trị = cảnh hiện tại), dựng ở
+`scene/<vật>.ts`, gọi trong `scene/world.ts`. Thứ thiết kế quyết (vị trí, kích thước, màu) vào đặc tả; chi tiết
+hình dạng ở code. Danh sách trong đặc tả → kiểm từng phần tử bằng `parseList` / `parseItem`. Kiểm:
+`npm run scene:check`. Geometry/material dùng chung tạo một lần ở cấp module; vật lặp nhiều → `InstancedMesh`.
 
-Va chạm chỉ là hộp thẳng trục → vật xoay chỉ được 0 hoặc π/2 (đổi rộng ↔ sâu, như `addBuilding`).
+Va chạm chỉ là hộp thẳng trục → vật xoay chỉ được bội 90° (`rotY` tính bằng độ; 90 / 270 thì đổi rộng ↔ sâu, như
+`addBuilding`). Vùng sự kiện neo theo nhà (`zone.front`), `zoneAnchors` → `zones/placeZones`.
+
+Canvas 3D: `web/design.html` + `src/designPreview.ts` (file gốc như `main.ts`, được import mọi lớp và CSS),
+`npm run build:design` → `web/dist-design/` (không vào app).
 
 ## Mẫu: nhân vật
 
@@ -53,7 +61,7 @@ Hằng số có tên ở đầu file; đổi hằng là đổi quy tắc `R-DIEU
 
 ## Vùng và HUD
 
-- Dữ liệu vùng/bài học: `ZONES` (`zones/zones.ts`). Tiêu đề thẻ tách `before / han / after`, không HTML thô.
+- Nội dung vùng/bài học: `ZONE_CONTENT` (`zones/zones.ts`); vị trí do đặc tả cảnh quyết. Tiêu đề thẻ tách `before / han / after`, không HTML thô.
 - `ZoneTracker` chỉ báo khi đổi vùng; logic "Để sau" nằm ở `EventCard` (quy tắc `R-VUNG-2`).
 - DOM HUD viết sẵn trong `web/index.html`, lấy bằng `el<T>(id)` (`ui/dom.ts`, thiếu id thì ném lỗi ngay).
 - Dựng nội dung bằng `textContent` / `createElement` / `replaceChildren`, không `innerHTML`.

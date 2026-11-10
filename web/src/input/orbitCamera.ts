@@ -1,18 +1,37 @@
 import * as THREE from 'three';
 
-const MIN_DIST = 5;
-const MAX_DIST = 22;
 const MIN_PITCH = 0.12;
 const MAX_PITCH = 1.2;
+
+/** Thông số camera do thiết kế quyết (đặc tả cảnh `camera`). Trùng hình với `SceneSpec['camera']`. */
+export interface OrbitSettings {
+  minDist: number;
+  maxDist: number;
+  /** góc gần (mặc định) và góc cả sân: khoảng cách + góc ngẩng (radian) */
+  near: { dist: number; pitch: number };
+  far: { dist: number; pitch: number };
+}
+
+export const DEFAULT_ORBIT: OrbitSettings = {
+  minDist: 5,
+  maxDist: 22,
+  near: { dist: 9, pitch: 0.42 },
+  far: { dist: 17, pitch: 0.75 },
+};
 
 /** Camera bám theo nhân vật, quay quanh nó (yaw = quay ngang, pitch = ngẩng/cúi, dist = khoảng cách). */
 export class OrbitCamera {
   yaw = 0;
-  pitch = 0.42;
-  dist = 9;
+  pitch: number;
+  dist: number;
   near = true;
   private readonly want = new THREE.Vector3();
   private readonly target = new THREE.Vector3();
+
+  constructor(private readonly settings: OrbitSettings = DEFAULT_ORBIT) {
+    this.pitch = settings.near.pitch;
+    this.dist = settings.near.dist;
+  }
 
   /** Kéo ngón tay dx, dy pixel. */
   rotate(dx: number, dy: number): void {
@@ -22,19 +41,20 @@ export class OrbitCamera {
 
   /** Chụm 2 ngón: ratio = khoảng cách cũ / khoảng cách mới. */
   pinch(ratio: number): void {
-    this.dist = clampDist(this.dist * ratio);
+    this.dist = this.clampDist(this.dist * ratio);
   }
 
   /** Lăn chuột (khi thử trên máy tính). */
   wheel(deltaY: number): void {
-    this.dist = clampDist(this.dist + deltaY * 0.01);
+    this.dist = this.clampDist(this.dist + deltaY * 0.01);
   }
 
   /** Đổi giữa góc gần và góc cả sân. Trả về true nếu đang ở góc gần. */
   toggleView(): boolean {
     this.near = !this.near;
-    this.dist = this.near ? 9 : 17;
-    this.pitch = this.near ? 0.42 : 0.75;
+    const v = this.near ? this.settings.near : this.settings.far;
+    this.dist = v.dist;
+    this.pitch = v.pitch;
     return this.near;
   }
 
@@ -52,8 +72,8 @@ export class OrbitCamera {
     this.target.set(focus.x, focus.y + 1.2, focus.z);
     camera.lookAt(this.target);
   }
-}
 
-function clampDist(d: number): number {
-  return Math.min(MAX_DIST, Math.max(MIN_DIST, d));
+  private clampDist(d: number): number {
+    return Math.min(this.settings.maxDist, Math.max(this.settings.minDist, d));
+  }
 }

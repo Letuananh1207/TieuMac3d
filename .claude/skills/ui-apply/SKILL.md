@@ -32,6 +32,7 @@ Hai phiên, hai vai: phiên **thiết kế** (`/ui-design`, ngoài VS Code) vẽ
 | token | `design/tokens/design_tokens.json` (mỗi token có `code` = chỗ trong code) |
 | ảnh màn | `design/screens/<Màn>-doc.png`, `-ngang.png` |
 | bản canvas (HTML, số đo chính xác) | `design/source/<Tên>.dc.html` |
+| đặc tả cảnh 3D (code đọc thẳng lúc build) | `design/scene/scene.json` → `web/src/scene/spec.ts`, `loadSpec.ts` |
 | chuỗi mới | `design/l10n/vi.arb` |
 | phiếu | `docs/phieu_thiet_ke/<ngày>-<tên>.md` |
 | code giao diện | web: `web/index.html`, `web/src/style.css`, `web/src/ui/`; Flutter: `app/lib/` (màn), `app/lib/theme/app_colors.dart` (màu) |
@@ -40,10 +41,17 @@ Hai phiên, hai vai: phiên **thiết kế** (`/ui-design`, ngoài VS Code) vẽ
 
 1. **Lấy bản mới.** `git status` sạch phần code → `git pull`. Mục cần làm = mục trong `design/CHANGELOG.md` mới hơn
    `appliedVersion`. Xem file đổi thật: `git log --oneline -- design/` và `git show --stat <commit>`.
-2. **Chia loại** từng mục: token / chuỗi · giao diện · luồng/luật · dữ liệu. Khoanh file bằng
+2. **Chia loại** từng mục: token / chuỗi · giao diện · luồng/luật · dữ liệu · cảnh 3D. Khoanh file bằng
    `dart .claude/skills/lead/scripts/impact.dart <tên màn / thành phần>`.
    - token: tìm theo `code` trong `design_tokens.json`, đổi đúng chỗ đó (CSS biến ở `:root` / `AppColors`).
    - chuỗi: chữ viết thẳng trong `web/index.html`, `web/src/ui/`, `web/src/zones/zones.ts`, widget Flutter (chưa có l10n).
+   - cảnh 3D: **không chép, không sửa số trong code** — code đọc thẳng `design/scene/scene.json`. Việc của phiên
+     này là cửa kiểm: `cd web && npm run scene:check` (lỗi → gửi lại thiết kế, không build) rồi so với mục
+     CHANGELOG. **Ngoại hình** (màu, ánh sáng, sương, trời, camera, cây ngoài tường) → `npm run build` luôn.
+     **Bố cục** (nhà, tường, cây trong sân, giếng, vùng, điểm xuất phát) → coi như luồng/luật: đối chiếu ví dụ của
+     `R-VA-1`, `R-VUNG-1` với toạ độ `scene:check` in ra; ví dụ sai số → sửa sổ theo bước 3. Mục "Cần code" (kiểu
+     vật / trường đặc tả mới) → kế hoạch `/lead`: thêm trường vào `SceneSpec` + `DEFAULT_SCENE` (giữ cảnh cũ),
+     dựng trong `web/src/scene/`, rồi mới build. Vùng mới cần nội dung bài học → thêm vào `ZONE_CONTENT`.
 3. **Đối chiếu sổ quy tắc** `docs/testing/quy_tac.md` với mục luồng/luật: khớp → làm; thiết kế đổi luật chưa có
    trong sổ → hỏi người dùng, chốt thì sửa sổ trước → chép lên tài liệu xác nhận online (nội dung đổi thì đưa ô
    Xác nhận về Chờ) → `dart tool/rule_trace.dart --mark-synced <mã>` → test đỏ → code. Thiết kế **trái** luật đã

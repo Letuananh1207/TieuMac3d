@@ -10,7 +10,7 @@ export interface Stage {
   resize(): void;
 }
 
-export function createStage(canvas: HTMLCanvasElement): Stage {
+export function createStage(canvas: HTMLCanvasElement, fov = 55): Stage {
   // Prototype viết cho three r128. Từ r152 three tự quản lý màu (ColorManagement) và đổi đơn vị ánh sáng.
   // Tắt quản lý màu + nhân cường độ đèn với π (xem environment.ts) để giữ đúng màu của prototype.
   THREE.ColorManagement.enabled = false;
@@ -20,7 +20,7 @@ export function createStage(canvas: HTMLCanvasElement): Stage {
   renderer.outputColorSpace = THREE.SRGBColorSpace;
 
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 200);
+  const camera = new THREE.PerspectiveCamera(fov, 1, 0.1, 200);
 
   function resize(): void {
     const w = window.innerWidth;

@@ -1,7 +1,7 @@
 ---
 name: ui-design
-description: Phiên THIẾT KẾ Học Xá 3D — vẽ màn / thành phần mới trên canvas theo phiếu, chốt thì xuất vào design/ và đẩy lên nhánh chính. Dùng ở Claude ngoài VS Code (claude.ai/code hoặc tab Code của app máy tính) khi người dùng gõ /ui-design, dán một phiếu "Dán vào canvas", hoặc nói "vẽ màn …", "sửa thiết kế …", "chốt".
-argument-hint: "[<phiếu dán vào> | <yêu cầu vẽ> | chot]"
+description: Phiên THIẾT KẾ Học Xá 3D — vẽ màn / thành phần mới trên canvas theo phiếu, thiết kế cảnh 3D (bố cục sân, nhà, cây, màu, ánh sáng, camera) bằng đặc tả + Canvas 3D, chốt thì xuất vào design/ và đẩy lên nhánh chính. Dùng ở Claude ngoài VS Code (claude.ai/code hoặc tab Code của app máy tính) khi người dùng gõ /ui-design, dán một phiếu "Dán vào canvas", hoặc nói "vẽ màn …", "sửa thiết kế …", "dời nhà / đổi màu trời / sửa cảnh …", "chốt".
+argument-hint: "[<phiếu dán vào> | <yêu cầu vẽ> | canh <yêu cầu> | chot]"
 ---
 
 # /ui-design — vẽ trên canvas (phiên thiết kế)
@@ -19,6 +19,7 @@ luật thì ghi rõ trong mục CHANGELOG, phiên code (`/ui-apply`) hỏi ngư�
 | Lệnh | Làm gì |
 |---|---|
 | `/ui-design <phiếu>` hoặc `<yêu cầu>` | Đọc bối cảnh, vẽ / sửa artboard trên canvas. Chưa ghi repo. |
+| `/ui-design canh <yêu cầu>` | Sửa cảnh 3D: đặc tả `design/scene/scene.json` → Canvas 3D (mục "Cảnh 3D"). Chưa commit. |
 | `/ui-design chot` (hoặc người dùng nói "chốt") | Xuất mọi thứ đã vẽ vào `design/`, commit, đẩy lên nhánh chính. |
 
 ## Trước khi vẽ — đọc
@@ -35,9 +36,37 @@ luật thì ghi rõ trong mục CHANGELOG, phiên code (`/ui-apply`) hỏi ngư�
   thêm artboard; làm theo hướng dẫn của loại Design khi đọc canvas.
 - Mỗi màn hai artboard: `<Man>-doc.dc.html` 390×844 và `<Man>-ngang.dc.html` 844×390 (app xoay tự do), thêm
   artboard cho từng trạng thái phiếu yêu cầu. Chừa vùng an toàn: tai thỏ / thanh trạng thái trên (dọc), hai bên (ngang).
-- Giao diện tiếng Việt; chữ Hán dùng font Noto Serif SC. Cảnh 3D không vẽ — dùng khối màu `scene-bg` hoặc ảnh
-  chụp app làm nền giữ chỗ.
-- Chưa "chốt" thì **không ghi gì vào repo**. Người dùng xem và góp ý trực tiếp trên canvas.
+- Giao diện tiếng Việt; chữ Hán dùng font Noto Serif SC. Cảnh 3D không vẽ trên canvas 2D — dùng khối màu
+  `scene-bg` hoặc ảnh chụp app / Canvas 3D làm nền giữ chỗ; thiết kế cảnh theo mục "Cảnh 3D" bên dưới.
+- Chưa "chốt" thì **không commit gì** (riêng cảnh 3D: sửa `scene.json` trong máy để build Canvas 3D, chưa commit). Người dùng xem và góp ý trực tiếp trên canvas.
+
+## Cảnh 3D (bối cảnh, bố cục, màu, ánh sáng, camera)
+
+Cảnh 3D không vẽ trên canvas 2D mà thiết kế bằng **đặc tả** `design/scene/scene.json` + **Canvas 3D** (artifact
+chạy chính code `web/` — cái thấy trên đó là cái app sẽ hiện). Quyết định: `.claude/skills/hoc-xa-3d-dev/decisions/0002-thiet-ke-3d.md`.
+
+| Thứ | Ở đâu |
+|---|---|
+| link Canvas 3D | `design/scene/README.md` (dòng `Canvas 3D: <link>`); chưa có → tạo mới lần đầu và ghi vào đó |
+| khuôn + giá trị mặc định (mọi trường hợp lệ) | `web/dist-design/scene.default.json` sau `build:design`; kiểu + chú thích: `web/src/scene/spec.ts` |
+| nội dung vùng (chữ thẻ, bài học) — chỉ đọc | `web/src/zones/zones.ts` (`ZONE_CONTENT`, mã: `lop-hsk3`, `thu-vien`) |
+
+1. `cd web && npm ci` (lần đầu). Chưa có `design/scene/scene.json` → `npm run build:design`, chép
+   `web/dist-design/scene.default.json` thành `design/scene/scene.json`.
+2. Sửa `scene.json` theo yêu cầu. Chỉ dùng trường có trong khuôn. Màu `"#rrggbb"`; `rotY` của nhà: 0 · 90 · 180 ·
+   270 (độ); `pitch` camera: radian; mặt trước nhà (cửa, biển) nhìn về +z trước khi quay. Vùng sự kiện neo theo
+   nhà: `zone: { id, front, r }` — `id` phải là mã đã có nội dung trong `ZONE_CONTENT`.
+3. `npm run scene:check` → phải "Không có lỗi" (in cả toạ độ vùng, nhà, tường để đối chiếu luật).
+4. `npm run build:design` → đăng `web/dist-design/design.html` lên link Canvas 3D, `files` = mọi file trong
+   `web/dist-design/assets/` (đường dẫn `assets/<tên>`). Báo link; người dùng xoay / bay quanh cảnh, bật khung va
+   chạm, chạm mặt sân để lấy toạ độ, góp ý.
+5. Cần thứ đặc tả không tả được (kiểu vật mới: cầu, ao, bàn ghế; hình mái khác; vùng có bài học mới) → **không
+   sửa code**: ghi vào mục CHANGELOG phần "Cần code" (cái gì, ở đâu, trông thế nào) để phiên code làm trước.
+6. Dời nhà / tường / cây trong sân / giếng / vùng / điểm xuất phát là đổi **bố cục** — chạm luật `R-VA-1`,
+   `R-VUNG-1` (đọc ví dụ của hai luật trong `docs/testing/quy_tac.md`); ghi rõ trong CHANGELOG. Chỉ đổi màu, ánh
+   sáng, sương, trời, camera, cây ngoài tường là **ngoại hình**.
+
+Model `.glb` (vật trang trí, nhân vật) chưa dùng — mốc 3D-b. Nhân vật giữ gấu khối.
 
 ## Chốt
 
@@ -49,8 +78,10 @@ luật thì ghi rõ trong mục CHANGELOG, phiên code (`/ui-apply`) hỏi ngư�
    số đo theo token, chuỗi, luật `R-…`).
 5. Thành phần mới → `design/docs/components.md`. Token mới / đổi → `design/tokens/design_tokens.json`.
 6. Chuỗi mới → `design/l10n/vi.arb` (`"<khoá>": "<chữ>"`).
-7. `design/CHANGELOG.md`: mục mới ở trên cùng — loại (token · chuỗi · giao diện · luồng/luật · dữ liệu), màn, phiếu
-   đáp ứng, file đổi, luật bị chạm (nếu thiết kế cần đổi luật: ghi rõ đề xuất).
+7. `design/CHANGELOG.md`: mục mới ở trên cùng — loại (token · chuỗi · giao diện · luồng/luật · dữ liệu · cảnh 3D),
+   màn, phiếu đáp ứng, file đổi, luật bị chạm (nếu thiết kế cần đổi luật: ghi rõ đề xuất). Mục cảnh 3D ghi thêm:
+   **bố cục** hay **ngoại hình**, trường đã đổi (cũ → mới), kết quả `npm run scene:check`, "Cần code" (nếu có).
+   Ảnh cảnh (nếu chụp được): `design/screens/Canh-<goc>.png`.
 8. Phiếu đáp ứng: giữ `chờ thiết kế` (phiên code đóng phiếu khi áp xong), thêm dòng `- Đã vẽ: <mã>`.
 9. `git add design/ docs/phieu_thiet_ke/` → commit `design <mã>: <tóm tắt>` → đẩy lên nhánh chính (`main`).
 10. Báo: mã, màn đã chốt, nhắc người dùng mở VS Code chạy `/ui-apply`.

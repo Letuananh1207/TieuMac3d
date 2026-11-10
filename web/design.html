@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Canvas 3D Học Xá</title>
+  <style>
+    /* Chỉ cho trang xem thiết kế (không vào app). Màu theo token design/tokens/design_tokens.json. */
+    #panel{position:fixed;top:max(12px,env(safe-area-inset-top));left:max(16px,env(safe-area-inset-left));
+      width:min(320px,calc(100vw - 32px));max-height:calc(100dvh - 24px);overflow:auto;box-sizing:border-box;
+      padding:12px 14px;border-radius:14px;background:rgba(31,22,16,.88);border:1px solid rgba(224,174,76,.35);
+      color:#f3e6c8;font:500 13px/1.45 var(--ui);user-select:text;-webkit-user-select:text}
+    #panel[data-collapsed] .body{display:none}
+    #panel h1{font:700 16px var(--display);margin:0;flex:1}
+    #panel .head{display:flex;align-items:center;gap:8px}
+    #panel h2{font:700 11px var(--ui);letter-spacing:.12em;text-transform:uppercase;color:#e0ae4c;margin:12px 0 4px}
+    #panel ul{margin:0;padding-left:18px}
+    #panel .bad{color:#ffb0a0}
+    #panel .ok{color:#7bc86c}
+    #panel .muted{color:#c4b08a}
+    #panel label{display:flex;gap:8px;align-items:center;min-height:28px}
+    #panel .row{display:flex;flex-wrap:wrap;gap:6px}
+    #panel button{font:500 13px var(--ui);color:#f3e6c8;background:#2c2018;border:1px solid rgba(243,230,200,.25);
+      border-radius:999px;padding:6px 12px;min-height:32px;cursor:pointer}
+    #panel code{font-size:12px}
+  </style>
+</head>
+<body>
+  <canvas id="stage"></canvas>
+  <aside id="panel">
+    <div class="head"><h1>Canvas 3D · Học Xá</h1><button id="collapse" type="button">Thu gọn</button></div>
+    <div class="body">
+      <div id="source" class="muted"></div>
+      <h2>Đặc tả</h2>
+      <div id="problems"></div>
+      <h2>Hiện</h2>
+      <label><input type="checkbox" id="showColliders" checked> Khung va chạm (đỏ)</label>
+      <label><input type="checkbox" id="showZones" checked> Vùng sự kiện (vàng)</label>
+      <label><input type="checkbox" id="showGrid"> Lưới 1 m + trục (x đỏ, z xanh)</label>
+      <h2>Góc nhìn</h2>
+      <div class="row">
+        <button id="viewPlayer" type="button">Góc chơi</button>
+        <button id="viewYard" type="button">Cả sân</button>
+        <button id="viewTop" type="button">Trên xuống</button>
+      </div>
+      <h2>Chạm mặt sân</h2>
+      <div id="pick" class="muted">Chạm (không kéo) vào mặt sân để xem toạ độ x, z.</div>
+      <h2>Vùng</h2>
+      <ul id="zones"></ul>
+      <h2>Hiệu năng</h2>
+      <div id="stats" class="muted"></div>
+    </div>
+  </aside>
+  <script type="module" src="/src/designPreview.ts"></script>
+</body>
+</html>

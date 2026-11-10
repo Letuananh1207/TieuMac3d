@@ -8,6 +8,7 @@ import { attachPointerInput } from './input/pointers';
 import { GroundPicker } from './input/tapToMove';
 import { createBlockCharacter } from './player/blockCharacter';
 import { PlayerController, type MoveInput } from './player/controller';
+import { SCENE, SCENE_FILE } from './scene/loadSpec';
 import { createStage } from './scene/renderer';
 import { buildWorld } from './scene/world';
 import { el } from './ui/dom';
@@ -15,24 +16,28 @@ import { EventCard } from './ui/eventCard';
 import { bindCameraButton, createHint, FpsCounter, NameTag } from './ui/hud';
 import { LessonBoard } from './ui/lessonBoard';
 import { ZoneTracker } from './zones/zoneTracker';
-import { ZONES } from './zones/zones';
+import { placeZones, ZONE_CONTENT } from './zones/zones';
 
 async function boot(): Promise<void> {
   // Biển hiệu vẽ chữ Lora lên canvas, nên phải nạp font trước khi dựng cảnh.
   await Promise.allSettled([document.fonts.load('700 72px Lora'), document.fonts.load('700 13px "Be Vietnam Pro"')]);
 
+  const { spec } = SCENE;
   const canvas = el<HTMLCanvasElement>('stage');
-  const { renderer, scene, camera } = createStage(canvas);
+  const { renderer, scene, camera } = createStage(canvas, spec.camera.fov);
   const colliders = new Colliders();
-  const world = buildWorld(scene, colliders);
+  const world = buildWorld(scene, colliders, spec);
+  const placed = placeZones(ZONE_CONTENT, world.zoneAnchors);
+  const problems = [...SCENE.problems, ...placed.problems];
+  if (problems.length) console.warn(`Đặc tả cảnh (${SCENE_FILE}):\n- ${problems.join('\n- ')}`);
 
   const character = createBlockCharacter();
-  character.root.position.set(0, 0, 6);
+  character.root.position.set(spec.player.start[0], 0, spec.player.start[1]);
   scene.add(character.root);
   const player = new PlayerController(character, colliders);
 
   /* ---------- điều khiển ---------- */
-  const orbit = new OrbitCamera();
+  const orbit = new OrbitCamera(spec.camera);
   const joystick = new Joystick(el('joy'), el('knob'), el('joyGhost'));
   const picker = new GroundPicker(camera, world.ground);
   const hideHint = createHint();
@@ -56,7 +61,7 @@ async function boot(): Promise<void> {
     paused = true;
     lesson.open(zone.lesson);
   });
-  const zones = new ZoneTracker(ZONES, (z) => card.setZone(z));
+  const zones = new ZoneTracker(placed.zones, (z) => card.setZone(z));
 
   /* ---------- vòng lặp ---------- */
   const fps = new FpsCounter();

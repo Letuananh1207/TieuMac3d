@@ -15,14 +15,17 @@ dev Flutter chưa làm game: mỗi khi chọn thư viện / cách làm, giải t
 | `reference/hoc-xa-3d.html` | prototype gốc: hành vi điều khiển, cảnh, giao diện. Chỉ đọc, không sửa. |
 | `docs/bridge.md` | tên + dạng mọi thứ trao đổi Flutter ↔ JS; hai phía dùng đúng tên ở đây |
 | `design/` | thiết kế đã chốt từ canvas (đặc tả, token, ảnh, nhật ký) — phiên VS Code chỉ đọc |
+| `design/scene/scene.json` | đặc tả cảnh 3D (bố cục, kích thước, màu, đèn, camera) — code đọc thẳng lúc build; chưa có → mặc định `web/src/scene/spec.ts` |
 
 ## Thiết kế trước, code sau (chỉ phần mới)
 
 - Hai phiên, hai vai: **phiên thiết kế** (`/ui-design`, Claude ngoài VS Code) vẽ
   [canvas](https://claude.ai/artifact/RXpWru4i7zZtbRBdQPGhD1) và ghi `design/`; **phiên code** (VS Code) sửa code, không
   sửa `design/`.
-- Cảnh 3D và HUD đang có theo code + prototype. Giao diện **mới** chưa có trên canvas → không dựng tạm: soạn phiếu
+- HUD đang có theo code + prototype. Giao diện **mới** chưa có trên canvas → không dựng tạm: soạn phiếu
   bằng `/ui-apply phieu <yêu cầu>`, việc đó chờ thiết kế.
+- Cảnh 3D thiết kế bằng đặc tả `design/scene/scene.json` + **Canvas 3D** (`/ui-design canh …`, trang
+  `web/design.html` chạy đúng code app). Quyết định: `decisions/0002-thiet-ke-3d.md`.
 - Khi thiết kế được cập nhật (mục mới trong `design/CHANGELOG.md`): `/ui-apply`.
 
 ## File sinh tự động — không sửa tay, sẽ bị ghi đè
@@ -31,12 +34,15 @@ dev Flutter chưa làm game: mỗi khi chọn thư viện / cách làm, giải t
 |---|---|
 | `app/assets/scene/**` | `cd web && npm run build` |
 | `web/dist/**` | `cd web && npm run build` |
+| `web/dist-design/**` (Canvas 3D, không vào app) | `cd web && npm run build:design` |
 
 ## Lệnh thường dùng
 
 ```sh
 cd web && npm run dev          # thử scene trên trình duyệt / điện thoại cùng Wi-Fi
-cd web && npm run build        # kiểm kiểu + build + chép sang app/assets/scene/
+cd web && npm run build        # kiểm kiểu + kiểm đặc tả cảnh + build + chép sang app/assets/scene/
+cd web && npm run scene:check  # kiểm design/scene/scene.json, in toạ độ nhà / vùng / tường
+cd web && npm run build:design # Canvas 3D → web/dist-design/ (đăng artifact ở phiên thiết kế)
 cd web && npx tsc --noEmit     # chỉ kiểm kiểu TS
 cd app && flutter run          # chạy app (build web trước)
 cd app && flutter analyze && flutter test
@@ -58,6 +64,8 @@ dart tool/rule_trace.dart --mark-synced <mã>  # sau khi chép quy tắc lên t�
 5. Nhân vật qua hợp đồng `Character`; di chuyển ở `PlayerController` — đổi nhân vật không sửa controller.
 6. DOM dựng bằng `textContent` / `createElement`, không `innerHTML`; bám mép dùng `env(safe-area-inset-*)`.
 7. Sửa web xong thì `npm run build` để app nhận bản mới.
+8. Vị trí, kích thước, màu, đèn, camera của cảnh lấy từ `SceneSpec` (`web/src/scene/spec.ts`), không viết số mới
+   thẳng trong code dựng cảnh; thêm trường thì thêm cả giá trị mặc định giữ nguyên cảnh cũ.
 
 ## Quy tắc nghiệp vụ
 
