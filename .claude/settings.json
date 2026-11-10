@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"$CLAUDE_PROJECT_DIR\" && dart tool/guard.dart stop",
+            "timeout": 120,
+            "statusMessage": "Kiểm lỗi biên dịch file vừa đổi…"
+          }
+        ]
+      }
+    ]
+  }
+}

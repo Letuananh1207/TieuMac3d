@@ -1,0 +1,105 @@
+---
+name: lead
+description: Trưởng nhóm — nhận yêu cầu tính năng bằng lời (thêm / sửa hành vi / xoá / giao diện / dữ liệu), khoanh phạm vi trước khi đọc code, chia nhiệm vụ, ghi kế hoạch vào docs/tasks/, duyệt rồi làm. Dùng khi người dùng gõ /lead hoặc nhờ làm một tính năng / mốc mới. "/lead tiếp" làm tiếp kế hoạch dở.
+argument-hint: "<yêu cầu bằng lời>"
+---
+
+# /lead — từ yêu cầu bằng lời đến nhiệm vụ
+
+Yêu cầu: $ARGUMENTS
+
+Không có tham số hoặc `tiếp` → mở kế hoạch mới nhất trong `docs/tasks/` chưa `xong`, làm tiếp từ nhiệm vụ `- [ ]` đầu tiên.
+
+Việc chính: **khoanh đúng phạm vi trước khi đọc code.** Viết code theo skill `hoc-xa-3d-dev`.
+
+## 1. Hiểu yêu cầu (chưa đọc code)
+
+- Phân loại: thêm · sửa hành vi · xoá · chỉ giao diện · sửa lỗi · dữ liệu.
+- Dịch tên người dùng nói → tên trong code bằng **Bản đồ tính năng** cuối file.
+- Hai cách hiểu cho ra hai kế hoạch khác nhau → hỏi tối đa 2 câu. Chỗ cần người dùng quyết định (dọc/ngang,
+  chọn thư viện…) → hỏi, không đoán; mỗi thư viện đề xuất kèm một câu "vì sao".
+- Không sửa tay: `app/assets/scene/` (chạy `npm run build`), `reference/hoc-xa-3d.html`.
+- Báo một lỗi cụ thể → chuyển sang `/loi`. `/lead` chỉ nhận lỗi khi `/loi` chuyển sang vì việc sửa lớn.
+- Giai đoạn này không làm multiplayer, đăng nhập, backend — yêu cầu chạm tới thì báo lại trước.
+
+## 2. Khoanh phạm vi (rẻ → đắt, đủ thì dừng)
+
+1. `dart .claude/skills/lead/scripts/impact.dart <từ khoá>... [--depth N]` (từ khoá lấy ở Bản đồ tính năng).
+2. Grep có mục tiêu.
+3. Read chỉ file sẽ sửa, chỉ đoạn cần.
+
+Không dùng subagent để dò, trừ khi yêu cầu chạm ≥ 3 tính năng. Kết quả 3 nhóm:
+**Sẽ sửa** (mỗi file một dòng lý do) · **Cần kiểm tra** (file dùng phần sẽ sửa) · **Không đụng** (chỉ khi người
+dùng có thể nghĩ là có đụng).
+
+## 3. Chia nhiệm vụ
+
+Theo lớp, từ dưới lên: dữ liệu (`zones/`) → logic (`collision/`, `player/`, `input/`) → cảnh (`scene/`) →
+HUD (`ui/`, `index.html`, `style.css`) → ghép (`main.ts`) → cầu nối (`docs/bridge.md`, `web/src/bridge/`) →
+Flutter (`app/lib/`) → test → build (`npm run build`).
+
+Mỗi nhiệm vụ: mục tiêu một câu · file · lớp (để đọc đúng reference) · chuỗi giao diện mới · test · "xong khi".
+
+Cờ cảnh báo:
+- đổi hành vi nghiệp vụ → sửa `docs/testing/quy_tac.md` trước, chép lên tài liệu xác nhận online (nội dung đổi thì
+  đưa ô Xác nhận về Chờ), `dart tool/rule_trace.dart --mark-synced <mã>`, rồi test, rồi code;
+- đổi tên / dạng sự kiện cầu nối → sửa `docs/bridge.md` trước, hai phía cùng lúc;
+- thêm thư mục trong `web/src` → bảng phụ thuộc (`decisions/0001`) + `LAYERS` trong `tool/check.dart`;
+- ảnh hưởng hiệu năng (thêm mesh, đèn, texture lớn) → ghi số draw call ước tính;
+- xoá tính năng → liệt kê chuỗi, DOM, CSS, dữ liệu `ZONES`, test sẽ thành rác.
+
+## 4. Ghi kế hoạch
+
+`docs/tasks/<YYYY-MM-DD>-<ten-khong-dau>.md`:
+
+```markdown
+# <tên>
+- Yêu cầu: "<nguyên văn>"
+- Loại: … · Cỡ: nhỏ | vừa | lớn · Trạng thái: chờ duyệt | đang làm | xong
+
+## Phạm vi
+**Sẽ sửa** … **Cần kiểm tra** … **Không đụng** …
+
+## Giả định / cần quyết định
+- …
+
+## Nhiệm vụ
+- [ ] 1. … (file · lớp · test · xong khi …)
+
+## Kiểm tra cuối
+dart tool/check.dart --changed · cd web && npx tsc --noEmit && npm run build · cd app && flutter analyze ·
+flutter test -r failures-only test/<phần> · dart tool/rule_trace.dart
+```
+
+## 5. Duyệt rồi làm
+
+- **Nhỏ** (≤ 2 file, không đổi cầu nối, không xoá, không điểm cần quyết định): báo một dòng rồi làm luôn.
+- **Vừa / lớn**: trình tóm tắt (phạm vi + nhiệm vụ + điểm cần quyết định) rồi **dừng chờ duyệt**.
+- Khi làm: đánh `[x]` ngay khi xong từng nhiệm vụ. Gặp việc ngoài phạm vi → dừng, báo, không tự mở rộng.
+- Cuối: chạy Kiểm tra cuối, trạng thái `xong`, báo đã sửa gì / còn chờ gì / cần thử trên máy gì.
+- Các mốc của dự án: xong mốc nào báo người dùng rồi mới sang mốc sau. Không commit khi chưa được yêu cầu.
+
+## Bản đồ tính năng
+
+| Người dùng nói | Từ khoá cho impact.dart | Thư mục / file |
+|---|---|---|
+| cảnh, sân, trời, ánh sáng, sương mù, renderer, độ phân giải | `scene/environment`, `scene/renderer` | `web/src/scene/` |
+| tường, nhà, giảng đường, thư viện (toà nhà), biển hiệu, đèn lồng | `walls`, `buildings`, `textures` | `web/src/scene/` |
+| cây, giếng | `trees`, `well` | `web/src/scene/` |
+| nhân vật, con gấu, dáng đi, model .glb | `player/` | `web/src/player/` |
+| di chuyển, tốc độ | `controller` | `web/src/player/controller.ts` |
+| joystick, cần điều khiển | `joystick`, `pointers` | `web/src/input/` |
+| camera, góc nhìn, xoay, zoom, chụm hai ngón | `orbitCamera`, `pointers` | `web/src/input/` |
+| chạm để đi | `tapToMove`, `pointers` | `web/src/input/` |
+| bàn phím (thử trên máy tính) | `keyboard` | `web/src/input/keyboard.ts` |
+| va chạm, đi xuyên, kẹt | `collision` | `web/src/collision/` |
+| vùng sự kiện, lớp học, bài học (dữ liệu chữ Hán) | `zones` | `web/src/zones/` |
+| thẻ mời, "Vào nghe giảng", "Để sau" | `eventCard` | `web/src/ui/eventCard.ts` |
+| bảng bài học (HTML, sẽ thay bằng Flutter ở mốc 3) | `lessonBoard` | `web/src/ui/lessonBoard.ts` |
+| HUD, fps, nhãn tên, dòng hướng dẫn, nút góc nhìn | `hud` | `web/src/ui/hud.ts`, `web/index.html`, `web/src/style.css` |
+| font, chữ tiếng Việt, safe area, màu giao diện HTML | `style` | `web/src/style.css`, `web/index.html` |
+| build web, chép sang app | — | `web/vite.config.ts`, `web/scripts/copy-to-app.mjs` |
+| app Flutter, WebView, màn bài học native, vòng đời | `main.dart` | `app/lib/` |
+| cầu nối Flutter ↔ 3D, sự kiện | `bridge` | `docs/bridge.md`, `web/src/bridge/` (mốc 3) |
+
+Thêm tính năng / thư mục mới → thêm một dòng vào bảng này cùng lúc.

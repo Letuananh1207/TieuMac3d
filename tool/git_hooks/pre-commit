@@ -1,0 +1,5 @@
+#!/bin/sh
+# Chặn commit khi file đổi có lỗi biên dịch (Dart / TypeScript) hoặc vi phạm quy tắc E của bộ chuẩn.
+# Bật một lần: git config core.hooksPath tool/git_hooks
+# Bỏ qua tạm: git commit --no-verify
+exec dart tool/guard.dart pre-commit

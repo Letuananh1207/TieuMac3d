@@ -1,0 +1,2 @@
+# Script shell của git hook phải giữ LF, kể cả trên Windows (CRLF làm hỏng tham số)
+tool/git_hooks/* text eol=lf
