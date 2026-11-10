@@ -14,10 +14,12 @@ phần mới vẽ trên canvas trước, theo phiếu trong `docs/phieu_thiet_ke
 | `docs/components.md` | thành phần dùng lại | phiên thiết kế |
 | `screens/` | ảnh chụp artboard đã chốt (`<Màn>-doc.png`, `<Màn>-ngang.png`) | phiên thiết kế |
 | `l10n/vi.arb` | chuỗi giao diện mới mà thiết kế đặt ra | phiên thiết kế |
+| `scene/` | đặc tả cảnh 3D (`scene.json`, code đọc lúc build) + link Canvas 3D trong `scene/README.md` | phiên thiết kế (`/ui-design canh`) |
 | `CHANGELOG.md` | nhật ký, mỗi lần chốt một mục `<ngày>.<số>` | phiên thiết kế |
 
 Phiên code (VS Code) **không sửa** thư mục này; nó đọc rồi áp vào code bằng `/ui-apply`, ghi tiến độ ở
 `docs/thiet_ke_da_ap.md`.
 
 Khổ vẽ: 390×844 (dọc) và 844×390 (ngang) — app xoay tự do; mọi phần tử bám mép tính cả vùng tai thỏ / thanh
-hệ thống. Cảnh 3D không vẽ trên canvas: dùng ảnh chụp app làm nền giữ chỗ.
+hệ thống. Cảnh 3D không vẽ trên canvas 2D: thiết kế bằng scene/scene.json + Canvas 3D; trên canvas 2D dùng ảnh chụp
+app làm nền giữ chỗ.

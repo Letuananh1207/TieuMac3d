@@ -2,6 +2,7 @@
 
 - Trạng thái: chờ thiết kế
 - Đợi bởi: kế hoạch `docs/tasks/2026-11-10-thiet-ke-3d.md` (việc 7)
+- Đã vẽ: 2026-11-10.2
 
 ## Dán vào canvas
 
