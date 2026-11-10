@@ -5,8 +5,9 @@ description: Bộ chuẩn code Học Xá 3D. Đọc TRƯỚC khi viết, sửa, 
 
 # Bộ chuẩn code — Học Xá 3D
 
-Ưu tiên khi mâu thuẫn: `reference/hoc-xa-3d.html` (hành vi gốc) và `docs/bridge.md` (khi có, mốc 3) >
-`CLAUDE.md` > bộ chuẩn này > thói quen chung.
+Ưu tiên khi mâu thuẫn: `design/` (thiết kế đã chốt, cho màn đã vẽ), `reference/hoc-xa-3d.html` (hành vi gốc),
+`docs/bridge.md` > `CLAUDE.md` > bộ chuẩn này > thói quen chung. Giao diện mới chưa có trong `design/` → không dựng
+tạm, soạn phiếu (`/ui-apply phieu`).
 
 ## Quy trình mỗi lần sửa
 

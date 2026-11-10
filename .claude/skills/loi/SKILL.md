@@ -51,6 +51,9 @@ Người dùng báo lỗi mà không gõ `/loi` → hỏi một câu "ghi rồi 
 
    Tên test: `'R-VUNG-2 (L-3): …'`, chưa có quy tắc thì `'(L-3): …'`. Test phải đỏ đúng như hiện tượng.
    Không dựng được (cảm ứng thật, GPU, WebView) → ghi lý do, báo rõ **"chưa khoá được bằng test"**.
+   Nguyên nhân là thiết kế mới chưa áp (có mục trong `design/CHANGELOG.md` mới hơn `docs/thiet_ke_da_ap.md`) →
+   chuyển `/ui-apply`. Cách sửa phải đổi giao diện mà canvas chưa vẽ → soạn phiếu (`/ui-apply phieu`), trạng thái
+   lỗi `chờ thiết kế (<phiếu>)`, không dựng tạm.
 4. **Sửa code** theo skill `hoc-xa-3d-dev`, nhỏ nhất đủ làm test xanh. Việc lớn (≥ 3 file ngoài phần lỗi, đổi giao
    diện, đổi cầu nối `docs/bridge.md`) → chuyển `/lead`, ghi tên kế hoạch vào mục lỗi.
 5. **Kiểm**: `dart tool/check.dart --changed` · web: `cd web && npx tsc --noEmit && npm run build` · app:

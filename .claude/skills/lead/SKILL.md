@@ -20,6 +20,7 @@ Việc chính: **khoanh đúng phạm vi trước khi đọc code.** Viết code
   chọn thư viện…) → hỏi, không đoán; mỗi thư viện đề xuất kèm một câu "vì sao".
 - Không sửa tay: `app/assets/scene/` (chạy `npm run build`), `reference/hoc-xa-3d.html`.
 - Báo một lỗi cụ thể → chuyển sang `/loi`. `/lead` chỉ nhận lỗi khi `/loi` chuyển sang vì việc sửa lớn.
+- Yêu cầu đồng bộ thiết kế ("thiết kế vừa cập nhật", "áp thiết kế") → chuyển sang `/ui-apply`.
 - Giai đoạn này không làm multiplayer, đăng nhập, backend — yêu cầu chạm tới thì báo lại trước.
 
 ## 2. Khoanh phạm vi (rẻ → đắt, đủ thì dừng)
@@ -46,6 +47,10 @@ Cờ cảnh báo:
 - đổi tên / dạng sự kiện cầu nối → sửa `docs/bridge.md` trước, hai phía cùng lúc;
 - thêm thư mục trong `web/src` → bảng phụ thuộc (`decisions/0001`) + `LAYERS` trong `tool/check.dart`;
 - ảnh hưởng hiệu năng (thêm mesh, đèn, texture lớn) → ghi số draw call ước tính;
+- **giao diện chưa có thiết kế** (màn / thành phần HUD mới không có trong `design/docs/screen_specs.md`) → **không
+  dựng tạm**: soạn phiếu theo `/ui-apply phieu` (`docs/phieu_thiet_ke/`), nhiệm vụ đó ghi `chờ thiết kế (<phiếu>)`,
+  kế hoạch trạng thái `chờ thiết kế` nếu không còn việc nào làm được; phần không dính giao diện hỏi người dùng làm
+  trước hay đợi. Có sẵn phiếu cho việc đó thì dùng, không soạn trùng;
 - xoá tính năng → liệt kê chuỗi, DOM, CSS, dữ liệu `ZONES`, test sẽ thành rác.
 
 ## 4. Ghi kế hoạch
@@ -55,7 +60,7 @@ Cờ cảnh báo:
 ```markdown
 # <tên>
 - Yêu cầu: "<nguyên văn>"
-- Loại: … · Cỡ: nhỏ | vừa | lớn · Trạng thái: chờ duyệt | đang làm | xong
+- Loại: … · Cỡ: nhỏ | vừa | lớn · Trạng thái: chờ duyệt | đang làm | chờ thiết kế | xong
 
 ## Phạm vi
 **Sẽ sửa** … **Cần kiểm tra** … **Không đụng** …
@@ -100,6 +105,8 @@ flutter test -r failures-only test/<phần> · dart tool/rule_trace.dart
 | font, chữ tiếng Việt, safe area, màu giao diện HTML | `style` | `web/src/style.css`, `web/index.html` |
 | build web, chép sang app | — | `web/vite.config.ts`, `web/scripts/copy-to-app.mjs` |
 | app Flutter, WebView, màn bài học native, vòng đời | `main.dart` | `app/lib/` |
-| cầu nối Flutter ↔ 3D, sự kiện | `bridge` | `docs/bridge.md`, `web/src/bridge/` (mốc 3) |
+| cầu nối Flutter ↔ 3D, sự kiện, safe area | `bridge`, `scene_view`, `safe_area` | `docs/bridge.md`, `app/lib/scene/`, `web/src/bridge/` (mốc 3) |
+| màn bài học native (mốc 3) | — | phiếu `docs/phieu_thiet_ke/2026-11-10-man-bai-hoc.md` (chờ thiết kế) |
+| thiết kế, token, canvas | — | `design/` (chỉ đọc) → `/ui-apply` |
 
 Thêm tính năng / thư mục mới → thêm một dòng vào bảng này cùng lúc.

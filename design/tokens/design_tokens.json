@@ -1,0 +1,60 @@
+{
+  "$description": "Token giao diện Học Xá 3D, rút từ code ngày 2026-11-10. Mỗi token ghi chỗ định nghĩa trong code ở `code`. Đổi token: sửa ở đây (phiên thiết kế) → /ui-apply áp vào code.",
+  "color": {
+    "ink": { "value": "#1F1610", "note": "nền panel gỗ sẫm (thẻ mời)", "code": "web/src/style.css --ink" },
+    "ink-2": { "value": "#2C2018", "note": "nền nút phụ", "code": "web/src/style.css --ink-2" },
+    "paper": { "value": "#F3E6C8", "note": "chữ chính trên nền tối (giấy dó)", "code": "web/src/style.css --paper · app/lib/theme/app_colors.dart AppColors.paper" },
+    "gold": { "value": "#E0AE4C", "note": "viền, nhấn, nhãn tên, chữ Hán trên thẻ, pinyin", "code": "web/src/style.css --gold" },
+    "lacquer": { "value": "#B5352B", "note": "đỏ sơn mài — nút chính", "code": "web/src/style.css --lacquer · AppColors.lacquer" },
+    "muted": { "value": "#C4B08A", "note": "chữ phụ (fps)", "code": "web/src/style.css --muted" },
+    "scene-bg": { "value": "#141B2C", "note": "nền trang / nền khi cảnh chưa tải", "code": "web/src/style.css body · AppColors.sceneBackground" },
+    "board": { "value": "#2F3A2C", "note": "mặt bảng đen (bảng bài học)", "code": "web/src/style.css .board" },
+    "board-frame": { "value": "#5A3B22", "note": "khung gỗ bảng", "code": "web/src/style.css .board border" },
+    "board-chalk": { "value": "#F5F1E3", "note": "chữ Hán lớn trên bảng", "code": "web/src/style.css .board .big" },
+    "board-text": { "value": "#DFE6D6", "note": "chữ thường trên bảng", "code": "web/src/style.css .board p, dl" },
+    "label-text": { "value": "#2A1C0E", "note": "chữ trên nhãn vàng", "code": "web/src/style.css .label" },
+    "online": { "value": "#7BC86C", "note": "chấm trạng thái trên chip", "code": "web/src/style.css .dot" },
+    "hud-glass": { "value": "rgba(31,22,16,.82)", "note": "nền chip / nút nổi trên cảnh (có blur 6px)", "code": "web/src/style.css .chip, .btns button" },
+    "scrim": { "value": "rgba(14,10,7,.88)", "note": "lớp phủ sau bảng bài học", "code": "web/src/style.css #lesson" },
+    "gold-line": { "value": "rgba(224,174,76,.35)", "note": "viền chip; .4 cho thẻ mời", "code": "web/src/style.css .chip, #card" },
+    "paper-line": { "value": "rgba(243,230,200,.25)", "note": "viền nút phụ", "code": "web/src/style.css button" }
+  },
+  "font": {
+    "ui": { "value": "Be Vietnam Pro", "weights": [500, 700], "note": "chữ giao diện", "code": "web/src/style.css --ui (@fontsource/be-vietnam-pro)" },
+    "display": { "value": "Lora", "weights": [700], "note": "tiêu đề, pinyin, biển hiệu 3D", "code": "web/src/style.css --display (@fontsource/lora)" },
+    "han": { "value": "Noto Serif SC", "weights": [700], "note": "chữ Hán; trong app dùng font hệ thống (Noto Serif CJK / Songti)", "code": "web/src/style.css --han" }
+  },
+  "fontSize": {
+    "eyebrow": { "value": 11, "note": "chữ hoa, giãn .12em, đậm, màu gold", "code": "#card .eyebrow" },
+    "label": { "value": 12, "code": ".label" },
+    "hud": { "value": 13, "note": "chip, dòng hướng dẫn, nút nổi", "code": ".chip, #hint, .btns button" },
+    "detail": { "value": 14, "code": ".board dl" },
+    "body": { "value": 15, "note": "nút, đoạn văn", "code": "button, .board p" },
+    "card-title": { "value": 17, "code": "#card h2" },
+    "accent": { "value": 22, "note": "pinyin, chữ Hán trong tiêu đề thẻ", "code": ".board .py, #card h2 .han" },
+    "han-hero": { "value": 140, "note": "chữ Hán lớn trên bảng (tối đa; co theo 34vw / 24vh)", "code": ".board .big" }
+  },
+  "space": {
+    "xs": { "value": 4, "code": ".board dl gap" },
+    "sm": { "value": 8, "code": ".chip gap, .btns gap" },
+    "md": { "value": 12, "note": "lề HUD tối thiểu với mép", "code": ".top left/right" },
+    "lg": { "value": 16, "note": "lề an toàn bên cạnh, padding thẻ", "code": "#card padding, #lesson padding" },
+    "xl": { "value": 22, "code": ".board padding" }
+  },
+  "radius": {
+    "pill": { "value": 999, "note": "chip, nút, nhãn tên", "code": ".chip, button, .label" },
+    "card": { "value": 14, "code": "#card" },
+    "hint": { "value": 12, "code": "#hint" },
+    "board": { "value": 6, "code": ".board" }
+  },
+  "shadow": {
+    "card": { "value": "0 10px 30px rgba(0,0,0,.45)", "code": "#card" },
+    "board": { "value": "0 20px 50px rgba(0,0,0,.6)", "code": ".board" }
+  },
+  "layout": {
+    "safe-area": { "value": "max(env(safe-area-inset-*), --inset-*)", "note": "mọi phần tử bám mép phải cộng vùng bị che; xoay tự do dọc + ngang", "code": "web/src/style.css --sa-*, docs/bridge.md" },
+    "touch-target": { "value": 44, "note": "tối thiểu cho nút chạm" },
+    "frame-portrait": { "value": "390x844", "note": "khổ vẽ màn dọc" },
+    "frame-landscape": { "value": "844x390", "note": "khổ vẽ màn ngang" }
+  }
+}

@@ -16,10 +16,13 @@ Chỉ đọc, không sửa gì, không tự chạy lệnh nào.
 ## Không tham số
 
 1. Bảng `Lệnh · Làm gì · Cửa sổ`: mỗi skill một dòng. Cửa sổ = **VS Code** (phiên Claude trong dự án này);
+   `ui-design` = **ngoài VS Code** (claude.ai/code hoặc tab Code của app máy tính, mở repo GitHub);
    skill không có lệnh gõ (vd. `hoc-xa-3d-dev`) ghi **tự gọi** — Claude tự đọc khi viết code.
 2. Các luồng thường dùng — chỉ liệt kê luồng mà mọi skill trong luồng đều có thật:
    - tính năng / mốc mới: `/lead <yêu cầu>` → duyệt kế hoạch → `/lead tiếp`
    - lỗi: `/loi <mô tả>` → `/loi sua L-…` → thử máy → `/loi xong L-…` (hoặc `/loi mo L-…`)
+   - giao diện mới: `/ui-apply phieu <yêu cầu>` (VS Code) → chép khối "Dán vào canvas" sang `/ui-design` (ngoài
+     VS Code) → vẽ, góp ý trên canvas → "chốt" → về VS Code `git pull` rồi `/ui-apply`
    - xác nhận quy tắc nghiệp vụ: chọn Đúng/Sai trên tài liệu online (link ở `docs/testing/quy_tac.md`) → nói
      "xử lý xác nhận quy tắc"
 3. Một dòng: chốt chặn tự chạy khi Claude báo xong (hook Stop) và khi commit (nếu đã bật

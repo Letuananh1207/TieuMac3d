@@ -13,9 +13,17 @@ dev Flutter chưa làm game: mỗi khi chọn thư viện / cách làm, giải t
 | File | Dùng cho |
 |---|---|
 | `reference/hoc-xa-3d.html` | prototype gốc: hành vi điều khiển, cảnh, giao diện. Chỉ đọc, không sửa. |
-| `docs/bridge.md` (mốc 3) | tên + dạng mọi sự kiện Flutter ↔ JS; hai phía dùng đúng tên ở đây |
+| `docs/bridge.md` | tên + dạng mọi thứ trao đổi Flutter ↔ JS; hai phía dùng đúng tên ở đây |
+| `design/` | thiết kế đã chốt từ canvas (đặc tả, token, ảnh, nhật ký) — phiên VS Code chỉ đọc |
 
-Giao diện: code hiện có + prototype là chuẩn (chưa có thiết kế riêng).
+## Thiết kế trước, code sau (chỉ phần mới)
+
+- Hai phiên, hai vai: **phiên thiết kế** (`/ui-design`, Claude ngoài VS Code) vẽ
+  [canvas](https://claude.ai/artifact/RXpWru4i7zZtbRBdQPGhD1) và ghi `design/`; **phiên code** (VS Code) sửa code, không
+  sửa `design/`.
+- Cảnh 3D và HUD đang có theo code + prototype. Giao diện **mới** chưa có trên canvas → không dựng tạm: soạn phiếu
+  bằng `/ui-apply phieu <yêu cầu>`, việc đó chờ thiết kế.
+- Khi thiết kế được cập nhật (mục mới trong `design/CHANGELOG.md`): `/ui-apply`.
 
 ## File sinh tự động — không sửa tay, sẽ bị ghi đè
 

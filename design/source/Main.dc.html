@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Bảng token Học Xá 3D</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;700&amp;family=Lora:wght@700&amp;family=Noto+Serif+SC:wght@700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#E0AE4C}a:hover{color:#F3E6C8}
+</style>
+</helmet>
+<div style="width: 1200px; height: 1040px; box-sizing: border-box; padding: 56px; background: #141B2C; color: #F3E6C8; font-family: 'Be Vietnam Pro', system-ui, sans-serif; display: flex; flex-direction: column; gap: 40px">
+  <div style="display: flex; flex-direction: column; gap: 6px">
+    <div style="font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: #E0AE4C; font-weight: 700">Học Xá 3D · token rút từ code</div>
+    <h1 style="margin: 0; font-family: 'Lora', Georgia, serif; font-size: 40px; font-weight: 700">Bảng token giao diện</h1>
+    <p style="margin: 0; font-size: 15px; color: #C4B08A">Nguồn: web/src/style.css · app/lib/theme/app_colors.dart · design/tokens/design_tokens.json</p>
+  </div>
+
+  <section style="display: flex; flex-direction: column; gap: 16px">
+    <h2 style="margin: 0; font-size: 17px; font-weight: 700">Màu</h2>
+    <div style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 16px">
+      <sc-for list="{{colors}}" as="c" hint-placeholder-count="12">
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <div style="height: 64px; border-radius: 12px; border: 1px solid rgba(243,230,200,.25); background: {{c.hex}}"></div>
+          <div style="font-size: 13px; font-weight: 700">{{c.name}}</div>
+          <div style="font-size: 12px; color: #C4B08A">{{c.hex}} · {{c.use}}</div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 48px">
+    <div style="display: flex; flex-direction: column; gap: 14px">
+      <h2 style="margin: 0; font-size: 17px; font-weight: 700">Chữ</h2>
+      <div style="display: flex; align-items: baseline; gap: 16px">
+        <span style="font-family: 'Noto Serif SC', serif; font-size: 96px; line-height: 1; color: #F5F1E3">快</span>
+        <span style="font-family: 'Lora', Georgia, serif; font-size: 22px; color: #E0AE4C">kuài</span>
+        <span style="font-size: 12px; color: #C4B08A">Hán 140 tối đa · pinyin Lora 22</span>
+      </div>
+      <div style="font-size: 17px; font-weight: 700">Tiêu đề thẻ 17 · Be Vietnam Pro 700</div>
+      <div style="font-size: 15px; font-weight: 500">Thân / nút 15 · Be Vietnam Pro 500</div>
+      <div style="font-size: 13px; font-weight: 700">HUD 13 · chip, hướng dẫn, nút nổi</div>
+      <div style="font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: #E0AE4C; font-weight: 700">Eyebrow 11 · chữ hoa giãn .12em</div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 14px">
+      <h2 style="margin: 0; font-size: 17px; font-weight: 700">Bo góc · khoảng cách · bóng</h2>
+      <div style="display: flex; gap: 16px; align-items: flex-end">
+        <div style="display: flex; flex-direction: column; gap: 6px; align-items: center"><div style="width: 72px; height: 40px; border-radius: 999px; border: 1px solid #E0AE4C"></div><span style="font-size: 12px; color: #C4B08A">pill 999</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px; align-items: center"><div style="width: 72px; height: 56px; border-radius: 14px; border: 1px solid #E0AE4C"></div><span style="font-size: 12px; color: #C4B08A">thẻ 14</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px; align-items: center"><div style="width: 72px; height: 56px; border-radius: 12px; border: 1px solid #E0AE4C"></div><span style="font-size: 12px; color: #C4B08A">gợi ý 12</span></div>
+        <div style="display: flex; flex-direction: column; gap: 6px; align-items: center"><div style="width: 72px; height: 56px; border-radius: 6px; border: 1px solid #E0AE4C"></div><span style="font-size: 12px; color: #C4B08A">bảng 6</span></div>
+      </div>
+      <div style="font-size: 13px; color: #DFE6D6">Khoảng cách: 4 · 8 · 12 · 16 · 22 px. Lề mép tối thiểu 12 px + vùng tai thỏ / thanh hệ thống (safe area, cả dọc lẫn ngang).</div>
+      <div style="font-size: 13px; color: #DFE6D6">Bóng: thẻ 0 10 30 / .45 · bảng 0 20 50 / .6. Nút chạm tối thiểu 44 px.</div>
+    </div>
+  </section>
+
+  <section style="display: flex; flex-direction: column; gap: 16px">
+    <h2 style="margin: 0; font-size: 17px; font-weight: 700">Thành phần đang có trong app (để dùng lại)</h2>
+    <div style="display: flex; gap: 40px; align-items: flex-start; flex-wrap: wrap">
+      <div style="display: flex; flex-direction: column; gap: 12px">
+        <span style="display: inline-flex; align-items: center; gap: 8px; background: rgba(31,22,16,.82); border: 1px solid rgba(224,174,76,.35); border-radius: 999px; padding: 6px 12px; font-size: 13px; font-weight: 700"><span style="width: 8px; height: 8px; border-radius: 50%; background: #7BC86C"></span>Học xá · Sân chính</span>
+        <span style="align-self: flex-start; font-size: 12px; font-weight: 700; color: #2A1C0E; background: #E0AE4C; padding: 2px 9px; border-radius: 999px">Tuấn Anh</span>
+        <button type="button" style="align-self: flex-start; font: inherit; font-weight: 700; font-size: 13px; border-radius: 999px; padding: 8px 14px; border: 1px solid rgba(243,230,200,.25); background: rgba(31,22,16,.82); color: #F3E6C8">Góc nhìn: gần</button>
+        <span style="font-size: 12px; color: #C4B08A">chip · nhãn tên · nút nổi</span>
+      </div>
+      <div style="width: 360px; box-sizing: border-box; background: #1F1610; border: 1px solid rgba(224,174,76,.4); border-radius: 14px; padding: 14px 16px; box-shadow: 0 10px 30px rgba(0,0,0,.45); display: flex; flex-direction: column; gap: 4px">
+        <div style="font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: #E0AE4C; font-weight: 700">Tùng tùng tùng! Giờ giảng</div>
+        <h3 style="margin: 0 0 8px; font-size: 17px; font-weight: 700">Thầy giảng chữ <span style="font-family: 'Noto Serif SC', serif; color: #E0AE4C; font-size: 22px">快</span> ở giảng đường</h3>
+        <div style="display: flex; gap: 10px">
+          <button type="button" style="font: inherit; font-weight: 700; font-size: 15px; border-radius: 999px; padding: 10px 18px; border: 1px solid #B5352B; background: #B5352B; color: #FFFFFF">Vào nghe giảng</button>
+          <button type="button" style="font: inherit; font-weight: 700; font-size: 15px; border-radius: 999px; padding: 10px 18px; border: 1px solid rgba(243,230,200,.25); background: #2C2018; color: #F3E6C8">Để sau</button>
+        </div>
+        <span style="font-size: 12px; color: #C4B08A; margin-top: 8px">thẻ mời · nút chính / nút phụ</span>
+      </div>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1200,"height":1040}}'>
+class Component extends DCLogic {
+renderVals() {
+return {
+colors: [
+{ name: 'scene-bg', hex: '#141B2C', use: 'nền trang' },
+{ name: 'ink', hex: '#1F1610', use: 'nền thẻ' },
+{ name: 'ink-2', hex: '#2C2018', use: 'nút phụ' },
+{ name: 'paper', hex: '#F3E6C8', use: 'chữ chính' },
+{ name: 'muted', hex: '#C4B08A', use: 'chữ phụ' },
+{ name: 'gold', hex: '#E0AE4C', use: 'nhấn, viền' },
+{ name: 'lacquer', hex: '#B5352B', use: 'nút chính' },
+{ name: 'board', hex: '#2F3A2C', use: 'bảng đen' },
+{ name: 'board-frame', hex: '#5A3B22', use: 'khung bảng' },
+{ name: 'board-chalk', hex: '#F5F1E3', use: 'chữ Hán lớn' },
+{ name: 'board-text', hex: '#DFE6D6', use: 'chữ trên bảng' },
+{ name: 'online', hex: '#7BC86C', use: 'chấm trạng thái' }
+]
+};
+}
+}
+</script>
+</body>
+</html>
