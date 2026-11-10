@@ -39,7 +39,7 @@ tạm, soạn phiếu (`/ui-apply phieu`).
 | renderer, camera, pixelRatio | `web/src/scene/renderer.ts` |
 | một vật trong sân (nhà, tường, cây, giếng) | `web/src/scene/<vật>.ts`, ghép ở `scene/world.ts` |
 | số / màu của cảnh, đặc tả, Canvas 3D | `web/src/scene/spec.ts` (kiểu + mặc định), `loadSpec.ts`, `web/src/designPreview.ts` |
-| hình nhân vật / di chuyển | `web/src/player/blockCharacter.ts` / `player/controller.ts` |
+| hình nhân vật / di chuyển | `web/src/player/discipleCharacter.ts` (đang dùng; gấu `blockCharacter.ts` dự phòng) / `player/controller.ts` |
 | joystick, xoay/zoom camera, chạm để đi, phím | `web/src/input/{joystick,orbitCamera,tapToMove,keyboard,pointers}.ts` |
 | va chạm | `web/src/collision/colliders.ts` |
 | nội dung vùng + bài học (vị trí: đặc tả cảnh) | `web/src/zones/zones.ts` |

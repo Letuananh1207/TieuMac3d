@@ -41,6 +41,15 @@ export class NameTag {
   }
 }
 
+/** Chip góc trên trái: tên nơi · tên khu đang đứng (R-HUD-1, chữ do `zones/AreaTracker` tính). */
+export class PlaceChip {
+  private readonly out = el('place');
+
+  set(label: string): void {
+    this.out.textContent = label;
+  }
+}
+
 /** Nút đổi góc nhìn gần / cả sân. */
 export function bindCameraButton(toggle: () => boolean): void {
   const btn = el<HTMLButtonElement>('btnCam');

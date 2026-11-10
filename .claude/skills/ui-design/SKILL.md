@@ -29,6 +29,8 @@ luật thì ghi rõ trong mục CHANGELOG, phiên code (`/ui-apply`) hỏi ngư�
 3. `design/docs/components.md` — dùng lại thành phần đang có trước.
 4. `design/docs/screen_specs.md` — mục của màn liên quan (nếu đã có).
 5. `docs/testing/quy_tac.md` — luật `R-…` mà phiếu nêu; thiết kế không được trái luật đã chốt (`đúng`).
+6. Cảnh 3D / phong cách: hồ sơ khảo cứu liên quan trong `docs/tham_khao/` (do `/khao-cuu` ghi) — đặc điểm nhận
+   diện, tỉ lệ, màu, sai thường gặp. Chủ đề chưa có hồ sơ mà cần "đúng chất" → gợi ý người dùng chạy `/khao-cuu` trước.
 
 ## Vẽ
 
@@ -81,12 +83,20 @@ Vật có va chạm chỉ quay 0 · 90 · 180 · 270; lối đá, mây, đảo: 
 | `props` | `{ "kind": "lo-dan", "x": -41, "z": -27 }` | dai-ti-thi (r 6) · gia-binh-khi (3,2 × 0,8) · luong-thuoc (4 × 1,6) · lo-dan (có khói); `scale` tuỳ chọn |
 | `trees.groves` | `{ "kind": "truc", "x": 63, "z": 30, "w": 4, "d": 20, "count": 10 }` | cụm cây rải trong chữ nhật; `"collide": false` = chỉ trang trí; `trees.yard[].kind` cũng nhận `truc` |
 | `floating` | `"islands": [{ "x": -90, "y": 35, "z": -90, "scale": 2 }]`, `"clouds": { "count": 10, … }` | đảo nổi, mây trôi |
-| `buildingStyle` | `stone` · `water` · `path` · `bronze` · `herb` · `smoke` | màu chung của vật mới |
+| `buildingStyle` | `stone` · `water` · `path` · `bronze` · `herb` · `smoke` · `beamBlue` · `gold` · `timber` | màu chung (xà lam, vàng kim, gỗ sẫm) |
+| `walls.style` | `"voi"` (+ `"windows": 6`) | tường vôi + chân đá + mái ngói; khe tường bao thành **cổng trăng** (lối đi = 0,8 × bề rộng khe); `walls.color` = màu vôi. Mặc định `"gach"` |
+| `gates[]` | `"hanTitle": "文淵宗"`, `"roofColor": "#3e6b5a"` | cổng 3 gian 4 trụ (gian giữa = `width`, gian bên 3,5 m, xà ≥ 6 m) |
+| `trees…kind` | `"tung"` · `"lieu"` · `"mai"` | tùng (cây chính), liễu (quanh ao, dải rủ đung đưa), mai; màu `trees.leaves` (tùng), `trees.willow`, `trees.plum` |
+| `props` | `"da-thai-ho"` · `"den-da"` · `"dinh-dong"` | đá Thái Hồ, đèn đá, đỉnh đồng có khói hương |
+| `site` | `{ "name": "Văn Uyên Tông", "areas": [{ "name": "Diễn Võ Trường", "from": [27, -15], "to": [60, 15] }] }` | chip HUD hiện tên khu đang đứng (luật `R-HUD-1`); chưa có = "Học xá · Sân chính" |
 
-Cảnh rộng: tăng `ground.size` (phủ hết các khu) và `fog.far`. Canvas 3D: `?view=tren` / `?view=ca-san` để chụp ảnh;
+Kiểu nhà (`dien`, `giang-duong`, `nha-nho`, `thap`), cổng, cây, đồ trang trí, nhân vật đệ tử đã dựng theo bản mẫu
+`source/PhongCach-*.dc.html` — ví dụ dùng hết kiểu mới: `docs/phieu_thiet_ke/2026-11-11-phong-cach-mau.json`.
+Cảnh rộng: tăng `ground.size` (phủ hết các khu) và `fog.far`. Canvas 3D: `?view=tren` / `?view=ca-san` để chụp ảnh,
+`?cam=x,y,z&tam=x,z` chụp gần một chỗ, `?nhan-vat=gau` xem lại gấu khối;
 bảng "Hiệu năng" in draw call (không tính lớp phủ) — giữ ≤ 150. Chưa có độ cao / bậc đá / thác (đợt 2).
 
-Model `.glb` (vật trang trí, nhân vật) chưa dùng — mốc 3D-b. Nhân vật giữ gấu khối.
+Model `.glb` chưa dùng — mốc 3D-b. Nhân vật: đệ tử chibi dựng bằng khối (`web/src/player/discipleCharacter.ts`).
 
 ## Chốt
 

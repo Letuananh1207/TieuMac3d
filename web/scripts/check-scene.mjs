@@ -47,7 +47,8 @@ const placed = placeZones(ZONE_CONTENT, zoneAnchors(spec.buildings));
 const all = [...problems, ...placed.problems];
 
 const n = (v) => String(v).replace('.', ',');
-console.log(`Tường: ±${n(spec.walls.half)} · người chơi bắt đầu (${n(spec.player.start[0])}; ${n(spec.player.start[1])})`);
+console.log(`Tường: ±${n(spec.walls.half)} kiểu ${spec.walls.style} · người chơi bắt đầu (${n(spec.player.start[0])}; ${n(spec.player.start[1])})`);
+console.log(`Nơi: ${spec.site.name}${spec.site.areas.length ? ` · khu: ${spec.site.areas.map((a) => a.name).join(', ')}` : ''}`);
 for (const b of spec.buildings) {
   console.log(`Nhà ${b.id} (${b.kind ?? 'giang-duong'}): tâm (${n(b.x)}; ${n(b.z)}) ${n(b.w)}×${n(b.d)} quay ${b.rotY ?? 0}°`);
 }

@@ -6,17 +6,21 @@ import { Keyboard } from './input/keyboard';
 import { OrbitCamera } from './input/orbitCamera';
 import { attachPointerInput } from './input/pointers';
 import { GroundPicker } from './input/tapToMove';
-import { createBlockCharacter } from './player/blockCharacter';
+import { createDiscipleCharacter } from './player/discipleCharacter';
 import { PlayerController, type MoveInput } from './player/controller';
 import { SCENE, SCENE_FILE } from './scene/loadSpec';
 import { createStage } from './scene/renderer';
 import { buildWorld } from './scene/world';
 import { el } from './ui/dom';
 import { EventCard } from './ui/eventCard';
-import { bindCameraButton, createHint, FpsCounter, NameTag } from './ui/hud';
+import { bindCameraButton, createHint, FpsCounter, NameTag, PlaceChip } from './ui/hud';
 import { LessonBoard } from './ui/lessonBoard';
+import { AreaTracker } from './zones/areaTracker';
 import { ZoneTracker } from './zones/zoneTracker';
 import { placeZones, ZONE_CONTENT } from './zones/zones';
+
+/** Nhãn tên cao hơn đỉnh búi tóc đệ tử (~2,2 m) một chút. */
+const NAME_TAG_HEIGHT = 2.5;
 
 async function boot(): Promise<void> {
   // Biển hiệu vẽ chữ Lora lên canvas, nên phải nạp font trước khi dựng cảnh.
@@ -31,7 +35,8 @@ async function boot(): Promise<void> {
   const problems = [...SCENE.problems, ...placed.problems];
   if (problems.length) console.warn(`Đặc tả cảnh (${SCENE_FILE}):\n- ${problems.join('\n- ')}`);
 
-  const character = createBlockCharacter();
+  // gấu khối (player/blockCharacter.ts) vẫn giữ làm bản dự phòng, cùng hợp đồng Character
+  const character = createDiscipleCharacter();
   character.root.position.set(spec.player.start[0], 0, spec.player.start[1]);
   scene.add(character.root);
   const player = new PlayerController(character, colliders);
@@ -62,6 +67,8 @@ async function boot(): Promise<void> {
     lesson.open(zone.lesson);
   });
   const zones = new ZoneTracker(placed.zones, (z) => card.setZone(z));
+  const chip = new PlaceChip();
+  const areas = new AreaTracker(spec.site, (label) => chip.set(label));
 
   /* ---------- vòng lặp ---------- */
   const fps = new FpsCounter();
@@ -79,10 +86,11 @@ async function boot(): Promise<void> {
 
     player.update(dt, input, orbit.yaw, paused);
     zones.update(player.position);
+    areas.update(player.position);
     world.update(dt);
     orbit.update(camera, player.position, dt);
     renderer.render(scene, camera);
-    nameTag.update(player.position, camera);
+    nameTag.update(player.position, camera, NAME_TAG_HEIGHT);
     fps.tick(dt);
     requestAnimationFrame(tick);
   }

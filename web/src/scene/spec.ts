@@ -10,8 +10,17 @@ export type XZ = [number, number];
 export const BUILDING_KINDS = ['giang-duong', 'dien', 'thap', 'nha-nho'] as const;
 export const ROOF_KINDS = ['chop', 'cong'] as const;
 export const SIDES = ['bac', 'nam', 'dong', 'tay'] as const;
-export const PROP_KINDS = ['dai-ti-thi', 'gia-binh-khi', 'luong-thuoc', 'lo-dan'] as const;
-export const TREE_KINDS = ['tan', 'truc'] as const;
+export const PROP_KINDS = [
+  'dai-ti-thi',
+  'gia-binh-khi',
+  'luong-thuoc',
+  'lo-dan',
+  'da-thai-ho',
+  'den-da',
+  'dinh-dong',
+] as const;
+export const TREE_KINDS = ['tan', 'truc', 'tung', 'lieu', 'mai'] as const;
+export const WALL_STYLES = ['gach', 'voi'] as const;
 
 export interface BuildingSpec {
   /** mã nhà, duy nhất */
@@ -75,6 +84,17 @@ export interface GateSpec {
   /** khoảng trống giữa hai cột */
   width: number;
   title: string;
+  /** biển chữ Hán giữa cổng (vd. "文淵宗"); thiếu thì biển ghi `title` */
+  hanTitle?: string;
+  /** màu ba mái nhỏ (ngói lưu ly lục); thiếu thì `buildingStyle.eave` */
+  roofColor?: string;
+}
+
+/** Một khu có tên (hình chữ nhật từ góc `from` tới góc `to`) — chip HUD hiện tên khu đang đứng (R-HUD-1). */
+export interface AreaSpec {
+  name: string;
+  from: XZ;
+  to: XZ;
 }
 
 /** Ao / hồ: tròn (`r`) hoặc chữ nhật (`w` × `d`); không đi xuống được. */
@@ -115,6 +135,8 @@ export interface TreePlace {
 }
 
 export interface SceneSpec {
+  /** tên nơi + các khu cho chip HUD; khu khai báo trước thắng khi chồng nhau */
+  site: { name: string; areas: AreaSpec[] };
   /** trời: dải màu từ đỉnh xuống chân trời (điểm giữa ở 55%) */
   sky: { top: string; middle: string; horizon: string };
   fog: { color: string; near: number; far: number };
@@ -128,7 +150,18 @@ export interface SceneSpec {
   };
   ground: { size: number; color: string; brickHue: number };
   /** tường bao: nằm ở ±half; `gates` = khe chừa lối đi */
-  walls: { half: number; height: number; color: string; brickHue: number; capColor: string; gates: WallGate[] };
+  walls: {
+    half: number;
+    height: number;
+    color: string;
+    brickHue: number;
+    capColor: string;
+    gates: WallGate[];
+    /** `gach` = vân gạch (cũ) · `voi` = tường vôi trơn, chân đá, mái ngói, khe cổng thành cổng trăng */
+    style: (typeof WALL_STYLES)[number];
+    /** tường vôi: cửa sổ hoa cách nhau bao nhiêu mét (0 = không có) */
+    windows: number;
+  };
   wallSegments: WallSegment[];
   paths: PathSpec[];
   /** màu chung (từng nhà chỉ đổi màu mái); `water` mặt ao, `stone` bờ đá / chân cổng / đài, `path` lối lát,
@@ -147,6 +180,10 @@ export interface SceneSpec {
     bronze: string;
     herb: string;
     smoke: string;
+    /** xà lam, vàng kim (biển, chấm xà), gỗ sẫm (khung, chân cửa) */
+    beamBlue: string;
+    gold: string;
+    timber: string;
   };
   buildings: BuildingSpec[];
   gates: GateSpec[];
@@ -157,6 +194,10 @@ export interface SceneSpec {
     leaves: [string, string, string];
     /** thân và lá trúc */
     bamboo: [string, string];
+    /** liễu: tán, dải rủ */
+    willow: [string, string];
+    /** mai: cành, hoa đậm, hoa nhạt */
+    plum: [string, string, string];
     /** cây lẻ, có va chạm */
     yard: TreePlace[];
     groves: GroveSpec[];
@@ -176,6 +217,8 @@ export interface SceneSpec {
 }
 
 export const DEFAULT_SCENE: SceneSpec = {
+  // chưa đặt khu nào: chip luôn "Học xá · Sân chính" như bản gốc (R-HUD-1)
+  site: { name: 'Học xá · Sân chính', areas: [] },
   sky: { top: '#0f1730', middle: '#33476e', horizon: '#8a7a86' },
   fog: { color: '#2c3a58', near: 28, far: 70 },
   light: {
@@ -187,7 +230,7 @@ export const DEFAULT_SCENE: SceneSpec = {
     sunPosition: [-12, 20, 8],
   },
   ground: { size: 90, color: '#5b3f37', brickHue: 10 },
-  walls: { half: 21, height: 2.6, color: '#4a2b24', brickHue: 8, capColor: '#6e2f26', gates: [] },
+  walls: { half: 21, height: 2.6, color: '#4a2b24', brickHue: 8, capColor: '#6e2f26', gates: [], style: 'gach', windows: 0 },
   wallSegments: [],
   paths: [],
   buildingStyle: {
@@ -204,6 +247,9 @@ export const DEFAULT_SCENE: SceneSpec = {
     bronze: '#8a6a3a',
     herb: '#5f9a48',
     smoke: '#d8d4cc',
+    beamBlue: '#3f5fa0',
+    gold: '#d4a64a',
+    timber: '#3a2418',
   },
   buildings: [
     {
@@ -236,6 +282,8 @@ export const DEFAULT_SCENE: SceneSpec = {
     trunk: '#4a3222',
     leaves: ['#2f4a2c', '#37552f', '#26402a'],
     bamboo: ['#7d9a4a', '#4f7a35'],
+    willow: ['#8fb35e', '#a6c470'],
+    plum: ['#3a2418', '#e88aa4', '#f2b8c6'],
     yard: [
       { x: 14, z: -14, scale: 1.2 },
       { x: 15, z: 12, scale: 1.1 },

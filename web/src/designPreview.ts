@@ -9,6 +9,7 @@ import './style.css';
 import { Colliders } from './collision/colliders';
 import { OrbitCamera } from './input/orbitCamera';
 import { createBlockCharacter } from './player/blockCharacter';
+import { createDiscipleCharacter } from './player/discipleCharacter';
 import { SCENE, SCENE_FILE } from './scene/loadSpec';
 import { createStage } from './scene/renderer';
 import { buildWorld } from './scene/world';
@@ -33,7 +34,9 @@ async function boot(): Promise<void> {
   const world = buildWorld(scene, colliders, spec);
   const placed = placeZones(ZONE_CONTENT, world.zoneAnchors);
 
-  const character = createBlockCharacter();
+  // ?nhan-vat=gau → gấu khối cũ (so sánh); mặc định đệ tử như app
+  const character =
+    new URLSearchParams(location.search).get('nhan-vat') === 'gau' ? createBlockCharacter() : createDiscipleCharacter();
   const [sx, sz] = spec.player.start;
   character.root.position.set(sx, 0, sz);
   scene.add(character.root);
@@ -123,9 +126,18 @@ async function boot(): Promise<void> {
   };
   el('viewTop').addEventListener('click', topView);
   // ?view=tren | ca-san (mặc định góc chơi) — để chụp ảnh cảnh tự động
-  const view = new URLSearchParams(location.search).get('view');
+  const params = new URLSearchParams(location.search);
+  const view = params.get('view');
   if (view === 'tren') topView();
   else playerView(view === 'ca-san');
+  // ?cam=x,y,z&tam=x,z — đặt camera nhìn vào một điểm (chụp chi tiết một nhà / vật)
+  const nums = (key: string): number[] => (params.get(key) ?? '').split(',').map(Number);
+  const [cx, cy, cz] = nums('cam');
+  const [tx, tz] = nums('tam');
+  if ([cx, cy, cz, tx, tz].every(Number.isFinite)) {
+    camera.position.set(cx, cy, cz);
+    controls.target.set(tx, 1.5, tz);
+  }
 
   /* ---------- chạm mặt sân → toạ độ ---------- */
   const marker = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 2, 8), new THREE.MeshBasicMaterial({ color: 0x7bc86c }));

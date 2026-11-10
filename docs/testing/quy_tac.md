@@ -45,6 +45,14 @@ Code: [web/src/collision/colliders.ts](../../web/src/collision/colliders.ts)
 |---|---|---|---|---|
 | R-VA-1 | Nhân vật (bán kính 0,5) không đi xuyên tường, nhà, cột cổng, giếng, ao / hồ, vật trang trí có va chạm (đài tỉ thí, giá binh khí, lò đan…) và cây có va chạm (cây trong sân, cụm cây); đi qua được khe cổng trên tường. Cây vòng ngoài tường, lối lát đá, đảo nổi, mây không có va chạm. | Mặt trong tường bắc ở z = −20,5 → đi thẳng lên bắc thì dừng ở z = −20,0. Tường nam có khe cổng tâm x = 0 rộng 4: đi thẳng xuống nam ở x = 0 thì qua được; ở x = 3 thì dừng ở z = 20,0. | chờ | ok |
 
+## HUD — chữ trên màn
+
+Code: [web/src/zones/areaTracker.ts](../../web/src/zones/areaTracker.ts), [web/src/ui/hud.ts](../../web/src/ui/hud.ts)
+
+| Mã | Quy tắc | Ví dụ | Xác nhận | App |
+|---|---|---|---|---|
+| R-HUD-1 | Chip góc trên trái hiện "<tên nơi> · <tên khu>" khi nhân vật đứng trong một khu (hình chữ nhật đặt trong đặc tả cảnh); đứng ngoài mọi khu thì chỉ hiện "<tên nơi>". Hai khu chồng nhau thì lấy khu khai báo trước. Đổi chữ ngay khi bước qua ranh giới. | Tên nơi "Văn Uyên Tông", khu "Diễn Võ Trường" x 27…60, z −15…15: đứng ở (43; 0) → "Văn Uyên Tông · Diễn Võ Trường"; đứng ở (24; 0) (giữa hai tường, ngoài mọi khu) → "Văn Uyên Tông". Chưa đặt khu nào: "Học xá · Sân chính" như cũ. | chờ | ok |
+
 ## MAN — màn hình
 
 Code: [app/lib/main.dart](../../app/lib/main.dart), [app/lib/scene/](../../app/lib/scene/), [web/src/style.css](../../web/src/style.css)

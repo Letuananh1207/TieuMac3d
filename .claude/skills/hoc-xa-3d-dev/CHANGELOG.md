@@ -5,3 +5,4 @@
 - 2026-11-10 — Thiết kế (lựa chọn C): design/ ưu tiên cao nhất cho màn đã vẽ; giao diện mới chưa vẽ → phiếu, không dựng tạm.
 - 2026-11-10 — Thiết kế 3D (decisions/0002): số / màu cảnh lấy từ `SceneSpec` (đọc `design/scene/scene.json`), vùng neo theo nhà, cây gộp `InstancedMesh`, Canvas 3D (`design.html`), `npm run scene:check`.
 - 2026-11-11 — Tông môn đợt 1: vật mới trong `SceneSpec`, `specCheck.ts` (danh sách `LISTS`), gộp khối `merge.ts`, va chạm tròn, `World.update`.
+- 2026-11-11 — Phong cách Trung Hoa: `scene/kien_truc/`, cây `cay_moi.ts`, nhân vật đệ tử, chip khu (`zones/areaTracker.ts`, R-HUD-1).

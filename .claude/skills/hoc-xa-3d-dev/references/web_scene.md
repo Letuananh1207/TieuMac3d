@@ -14,7 +14,10 @@
 | gộp khối | dựng xong cảnh, `mergeStatic` gộp mọi khối đứng yên cùng vật liệu → 1 draw call; vật chuyển động `markDynamic` | `scene/merge.ts`, gọi ở `scene/world.ts` |
 | chuyển động | `World.update(dt)` (khói lò đan, mây, đảo nổi) — `main.ts` / `designPreview.ts` gọi mỗi khung | `scene/props.ts`, `scene/sky.ts` |
 | va chạm tròn | `Colliders.addCircle` (ao tròn, đài, lò đan) | `collision/colliders.ts` |
-| ngân sách | ≤ 150 draw call, ≤ 150k tam giác (cảnh mẫu 6 khu: 41–65 draw call, ~20k tam giác) | Canvas 3D bảng "Hiệu năng" |
+| ngân sách | ≤ 150 draw call, ≤ 150k tam giác (cảnh mẫu đủ kiểu mới: 67–90 draw call, ~66k tam giác) | Canvas 3D bảng "Hiệu năng" |
+| kiến trúc | `scene/kien_truc/`: `hinh.ts` (chóp cụt, lăng trụ), `mai.ts` (mái chái, yết sơn, hai mái, đầu đao), `chi_tiet.ts` (biển, đèn, lan can, xà, cửa), `dien.ts`, `nha_thap.ts`, `tuong.ts` (tường vôi + cổng trăng) | `buildings.ts` chọn kiểu |
+| cây | `tan` · `truc` (`trees.ts`), `tung` · `lieu` · `mai` (`cay_moi.ts`); mỗi kiểu dãy ngẫu nhiên riêng (`random.ts`) | |
+| chip khu | `zones/areaTracker.ts` (`placeLabel`, R-HUD-1) → `ui/hud.ts` `PlaceChip` | đặc tả `site` |
 | tốc độ / bán kính | 4,2 m/s · 0,5 | `player/controller.ts` |
 
 ## Mẫu: thêm một vật vào sân

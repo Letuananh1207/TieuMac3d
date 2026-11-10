@@ -45,3 +45,11 @@ dùng muốn thiết kế cả bối cảnh (bố cục, kích thước, màu, �
 → `scene.json` cũ vẫn đúng, cảnh không đổi. Để giữ ≤ 150 draw call: gộp khối đứng yên cùng vật liệu sau khi dựng
 (`scene/merge.ts`). Mái giảng đường giữ dáng prototype (xiên hình thoi khi nhìn từ trên, `legacy`); kiểu nhà mới mái
 thẳng với tường. Đợt 2 (sau mốc 3): địa hình bục phẳng theo khu + bậc đá, thác.
+
+## Phong cách Trung Hoa (2026-11-11, thiết kế 2026-11-11.1)
+
+Hướng thiết kế chọn: không gói model ngoài, **dựng lại bằng khối trong code** theo bản mẫu. Kiến trúc tách ra
+`scene/kien_truc/`; mái prototype (xiên hình thoi) bỏ — giảng đường dùng mái yết sơn như các điện. Tường `voi` + cổng
+trăng; cây tùng / liễu / mai; đồ trang trí mới. Nhân vật: **đệ tử chibi** (người dùng chọn đổi, gấu khối giữ làm dự
+phòng) qua `Character`, màu để trong file nhân vật. Chip HUD theo khu (đặc tả `site`, luật R-HUD-1). Cảnh mẫu đủ
+kiểu mới 67–90 draw call. Mục 3D-b (.glb) chỉ còn ý nghĩa nếu sau này muốn model ngoài.

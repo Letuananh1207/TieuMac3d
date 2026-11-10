@@ -1,11 +1,12 @@
 import * as THREE from 'three';
 import type { Colliders } from '../collision/colliders';
 import { lambert } from './materials';
+import { addPlasterWalls } from './kien_truc/tuong';
 import type { SceneSpec, WallGate, WallSegment } from './spec';
 import { makeCanvasTex } from './textures';
 
 /** Một đoạn thẳng trục: chạy dọc trục `axis` từ `a` tới `b`, nằm ở `fixed` trên trục còn lại. */
-interface Run {
+export interface Run {
   axis: 'x' | 'z';
   fixed: number;
   a: number;
@@ -25,8 +26,8 @@ export function cutRun(run: Run, gaps: [number, number][]): Run[] {
   return out;
 }
 
-/** Bốn cạnh tường bao (dày 1, góc chồng lên nhau) đã trừ khe cổng. */
-export function ringRuns(spec: SceneSpec['walls']): Run[] {
+/** Bốn cạnh tường bao (dày 1, góc chồng lên nhau) đã trừ khe cổng; `pad` = nới mỗi khe thêm bao nhiêu mét mỗi bên. */
+export function ringRuns(spec: SceneSpec['walls'], pad = 0): Run[] {
   const { half, height } = spec;
   const end = half + 0.5;
   const sides: [WallGate['side'], Run][] = [
@@ -38,12 +39,12 @@ export function ringRuns(spec: SceneSpec['walls']): Run[] {
   return sides.flatMap(([side, run]) =>
     cutRun(
       run,
-      spec.gates.filter((g) => g.side === side).map((g) => [g.at - g.width / 2, g.at + g.width / 2]),
+      spec.gates.filter((g) => g.side === side).map((g) => [g.at - g.width / 2 - pad, g.at + g.width / 2 + pad]),
     ),
   );
 }
 
-function segmentRun(s: WallSegment, defaultHeight: number): Run {
+export function segmentRun(s: WallSegment, defaultHeight: number): Run {
   const [x1, z1] = s.from;
   const [x2, z2] = s.to;
   const height = s.height ?? defaultHeight;
@@ -52,8 +53,21 @@ function segmentRun(s: WallSegment, defaultHeight: number): Run {
   return { axis: 'z', fixed: x1, a: Math.min(z1, z2) - 0.5, b: Math.max(z1, z2) + 0.5, height };
 }
 
-/** Tường bao ±`half` có khe cổng (`gates`) + các đoạn tường thêm (`wallSegments`). Mỗi đoạn có va chạm. */
-export function addWalls(scene: THREE.Scene, colliders: Colliders, spec: SceneSpec['walls'], extra: WallSegment[]): void {
+/**
+ * Tường bao ±`half` có khe cổng (`gates`) + các đoạn tường thêm (`wallSegments`). Mỗi đoạn có va chạm.
+ * `style: voi` → tường vôi + cổng trăng (`kien_truc/tuong.ts`); mặc định `gach` = vân gạch như bản gốc.
+ */
+export function addWalls(
+  scene: THREE.Scene,
+  colliders: Colliders,
+  spec: SceneSpec['walls'],
+  extra: WallSegment[],
+  style: SceneSpec['buildingStyle'],
+): void {
+  if (spec.style === 'voi') {
+    addPlasterWalls(scene, colliders, spec, extra, style);
+    return;
+  }
   const brickTex = makeCanvasTex(
     256,
     128,

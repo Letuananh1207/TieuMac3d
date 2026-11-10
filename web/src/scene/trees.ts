@@ -1,7 +1,12 @@
 import * as THREE from 'three';
 import type { Colliders } from '../collision/colliders';
 import { lambert } from './materials';
+import { addPine, addPlum, addWillow } from './cay_moi';
+import type { Updater } from './props';
+import { seededRandom } from './random';
 import type { GroveSpec, SceneSpec, TreePlace } from './spec';
+
+export { seededRandom };
 
 const trunkGeo = new THREE.CylinderGeometry(0.25, 0.35, 2.2, 6);
 const leafGeo = new THREE.IcosahedronGeometry(1.8, 0);
@@ -10,23 +15,11 @@ const stalkGeo = new THREE.CylinderGeometry(0.07, 0.09, 1, 5); // cao 1, kéo th
 const tuftGeo = new THREE.ConeGeometry(0.45, 1.3, 5);
 const STALKS = 5; // số thân trong một khóm trúc
 
-interface Placed {
+export interface Placed {
   x: number;
   z: number;
   scale: number;
   collide: boolean;
-}
-
-/** Số giả ngẫu nhiên có hạt giống (mulberry32): cùng `seed` → cùng dãy, nên cây ở Canvas 3D và app giống nhau. */
-export function seededRandom(seed: number): () => number {
-  let a = seed >>> 0;
-  return () => {
-    a = (a + 0x6d2b79f5) >>> 0;
-    let t = a;
-    t = Math.imul(t ^ (t >>> 15), t | 1);
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
 }
 
 /** Cụm cây rải trong hình chữ nhật. Mỗi cụm một dãy ngẫu nhiên riêng: thêm cụm không xê dịch cây có sẵn. */
@@ -92,7 +85,7 @@ function bamboo(scene: THREE.Scene, spec: SceneSpec['trees'], all: Placed[], see
   finish(scene, [stalks, tufts]);
 }
 
-function finish(scene: THREE.Scene, meshes: THREE.InstancedMesh[]): void {
+export function finish(scene: THREE.Scene, meshes: THREE.InstancedMesh[]): void {
   for (const m of meshes) {
     m.instanceMatrix.needsUpdate = true;
     m.computeBoundingSphere(); // để three cắt cả cụm khi ra khỏi khung nhìn
@@ -102,9 +95,10 @@ function finish(scene: THREE.Scene, meshes: THREE.InstancedMesh[]): void {
 
 /**
  * Cây lẻ (`yard`, có va chạm), cụm cây (`groves`), vòng cây ngoài tường (`ring`, chỉ trang trí).
- * Kiểu `tan` (mặc định) hoặc `truc`. Cảnh không có trúc / cụm thì cây giống hệt bản trước (cùng dãy ngẫu nhiên).
+ * Kiểu `tan` (mặc định) · `truc` · `tung` · `lieu` · `mai`; mỗi kiểu dãy ngẫu nhiên riêng nên thêm kiểu không xê dịch
+ * cây `tan` có sẵn. Trả về hàm cập nhật (liễu đung đưa).
  */
-export function addTrees(scene: THREE.Scene, colliders: Colliders, spec: SceneSpec['trees']): void {
+export function addTrees(scene: THREE.Scene, colliders: Colliders, spec: SceneSpec['trees']): Updater {
   const rand = seededRandom(spec.seed);
   const { ring } = spec;
   const ringTrees: Placed[] = [];
@@ -114,15 +108,21 @@ export function addTrees(scene: THREE.Scene, colliders: Colliders, spec: SceneSp
     const scale = ring.scaleMin + rand() * (ring.scaleMax - ring.scaleMin);
     ringTrees.push({ x: Math.cos(a) * r, z: Math.sin(a) * r, scale, collide: false });
   }
-  const tan: Placed[] = [];
-  const truc: Placed[] = [];
-  const put = (kind: TreePlace['kind'], p: Placed): void => void (kind === 'truc' ? truc : tan).push(p);
+  const byKind: Record<NonNullable<TreePlace['kind']>, Placed[]> = { tan: [], truc: [], tung: [], lieu: [], mai: [] };
+  const put = (kind: TreePlace['kind'], p: Placed): void => void byKind[kind ?? 'tan'].push(p);
   for (const t of spec.yard) put(t.kind, { ...t, collide: true });
-  tan.push(...ringTrees);
+  byKind.tan.push(...ringTrees);
   spec.groves.forEach((g, i) => groveTrees(g, spec.seed, i).forEach((p) => put(g.kind, p)));
 
-  broadleaf(scene, spec, tan, rand);
-  bamboo(scene, spec, truc, spec.seed);
-  for (const t of tan) if (t.collide) colliders.add(t.x, t.z, 0.8 * t.scale, 0.8 * t.scale);
-  for (const t of truc) if (t.collide) colliders.add(t.x, t.z, 1.2 * t.scale, 1.2 * t.scale);
+  broadleaf(scene, spec, byKind.tan, rand);
+  bamboo(scene, spec, byKind.truc, spec.seed);
+  addPine(scene, spec, byKind.tung, spec.seed);
+  addPlum(scene, spec, byKind.mai, spec.seed);
+  const sway = addWillow(scene, spec, byKind.lieu, spec.seed);
+  // va chạm: thân cây, to nhỏ theo kiểu
+  const trunkSize = { tan: 0.8, truc: 1.2, tung: 0.9, lieu: 0.8, mai: 0.5 } as const;
+  for (const [kind, list] of Object.entries(byKind) as [keyof typeof trunkSize, Placed[]][]) {
+    for (const t of list) if (t.collide) colliders.add(t.x, t.z, trunkSize[kind] * t.scale, trunkSize[kind] * t.scale);
+  }
+  return sway;
 }

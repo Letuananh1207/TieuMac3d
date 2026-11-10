@@ -1,6 +1,6 @@
 # Phiếu: Bật phong cách Trung Hoa trong scene.json + đặt tên khu
 
-- Trạng thái: chờ thiết kế
+- Trạng thái: đã áp (2026-11-11.2)
 - Đợi bởi: kế hoạch `docs/tasks/2026-11-11-phong-cach-trung-hoa.md` (việc 12); đáp phần "Cần code" của 2026-11-11.1
 - Đã vẽ: 2026-11-11.2
 

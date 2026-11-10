@@ -27,12 +27,12 @@ export function buildWorld(scene: THREE.Scene, colliders: Colliders, spec: Scene
   const style = spec.buildingStyle;
   const ground = addEnvironment(scene, spec);
   addPaths(scene, spec.paths, style.path);
-  addWalls(scene, colliders, spec.walls, spec.wallSegments);
+  addWalls(scene, colliders, spec.walls, spec.wallSegments, style);
   for (const b of spec.buildings) addBuilding(scene, colliders, b, style);
   for (const g of spec.gates) addGate(scene, colliders, g, style);
   addWater(scene, colliders, spec.water, style);
   const props = addProps(scene, colliders, spec.props, style);
-  addTrees(scene, colliders, spec.trees);
+  const trees = addTrees(scene, colliders, spec.trees);
   addWell(scene, colliders, spec.well);
   const floating = addFloating(scene, spec.floating, style, spec.trees.leaves[1], spec.trees.seed);
   // dựng xong mới gộp: khối đứng yên cùng vật liệu → một draw call (scene/merge.ts)
@@ -42,6 +42,7 @@ export function buildWorld(scene: THREE.Scene, colliders: Colliders, spec: Scene
     zoneAnchors: zoneAnchors(spec.buildings),
     update(dt) {
       props(dt);
+      trees(dt);
       floating(dt);
     },
   };
