@@ -16,7 +16,12 @@ Cần Node.js ≥ 20 và Flutter (đang dùng 3.41).
 ```sh
 cd web && npm install
 cd ../app && flutter pub get
+cd .. && git config core.hooksPath tool/git_hooks   # bật chốt chặn commit (mỗi máy một lần)
 ```
+
+Lệnh cuối bật hook git chặn commit khi file vừa đổi có lỗi biên dịch Dart / TypeScript. Cấu hình này nằm trong
+`.git/config` của từng máy, không theo repo, nên máy mới clone về phải chạy lại. Bỏ qua tạm một lần:
+`git commit --no-verify`.
 
 ## Build scene 3D
 
