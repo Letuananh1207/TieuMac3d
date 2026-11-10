@@ -44,8 +44,32 @@ cùng mạng Wi-Fi. Trên máy tính dùng WASD / phím mũi tên và chuột.
 
 ## Chạy trên máy Android thật
 
-_Mốc 2 sẽ bổ sung mục này (WebView + localhost server)._
+1. Trên điện thoại: Cài đặt → Thông tin điện thoại → chạm 7 lần vào "Số hiệu bản tạo" để bật Tuỳ chọn nhà phát
+   triển → bật **Gỡ lỗi USB**. Cắm cáp, chọn "Cho phép" khi máy hỏi.
+2. Kiểm tra máy đã nhận: `flutter devices`.
+3. Chạy:
+
+   ```sh
+   cd web && npm run build      # luôn build lại sau khi sửa web/
+   cd ../app && flutter run     # chọn máy Android nếu có nhiều thiết bị
+   ```
+
+App xoay tự do (dọc, ngang). Cảnh vẽ tràn viền; HUD tự tránh tai thỏ và thanh hệ thống.
+
+Cách app hiển thị cảnh: Flutter mở một máy chủ http nhỏ ngay trong app (`InAppLocalhostServer`, chỉ nghe
+127.0.0.1:8080) phục vụ `assets/scene/`, rồi WebView mở `http://localhost:8080/`. Không mở thẳng file vì trình
+duyệt chặn ES module tải từ `file://`.
 
 ## Debug WebView
 
-_Mốc 2 sẽ bổ sung mục này (chrome://inspect)._
+Ở bản debug (`flutter run`), WebView cho phép soi bằng Chrome trên máy tính:
+
+1. Cắm điện thoại, app đang chạy.
+2. Mở Chrome trên máy tính, vào `chrome://inspect/#devices`.
+3. Dưới tên máy sẽ có mục `http://localhost:8080/index.html` → bấm **inspect**: xem console, phần tử HTML,
+   hiệu năng (tab Performance) như trang web bình thường.
+
+Log `console.log` của scene cũng hiện trong terminal `flutter run` với tiền tố `[scene]`.
+iOS (từ 16.4): Safari trên Mac → menu Develop → tên máy → trang scene.
+
+Màn trắng / "Không tải được cảnh 3D": thường do chưa `npm run build` (thư mục `app/assets/scene/` trống).

@@ -44,3 +44,11 @@ Code: [web/src/collision/colliders.ts](../../web/src/collision/colliders.ts)
 | Mã | Quy tắc | Ví dụ | Xác nhận | App |
 |---|---|---|---|---|
 | R-VA-1 | Nhân vật (bán kính 0,5) không đi xuyên tường, nhà, giếng và cây trong sân; cây vòng ngoài tường không có va chạm. | Mặt trong tường bắc ở z = −20,5 → đi thẳng lên bắc thì dừng ở z = −20,0. | chờ | ok |
+
+## MAN — màn hình
+
+Code: [app/lib/main.dart](../../app/lib/main.dart), [app/lib/scene/](../../app/lib/scene/), [web/src/style.css](../../web/src/style.css)
+
+| Mã | Quy tắc | Ví dụ | Xác nhận | App |
+|---|---|---|---|---|
+| R-MAN-1 | App xoay tự do theo máy (dọc và ngang). Cảnh 3D phủ kín màn hình, kể cả dưới tai thỏ và thanh hệ thống; chữ và nút của HUD luôn nằm ngoài vùng bị che. | Máy có tai thỏ xoay ngang, tai thỏ bên trái rộng 40 px → chip "Học xá · Sân chính" cách mép trái ít nhất 40 px; cảnh vẫn vẽ tới sát mép. | đúng | ok · miễn test (chỉ kiểm được trên máy thật) |
