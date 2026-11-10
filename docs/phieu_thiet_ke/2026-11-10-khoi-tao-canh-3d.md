@@ -1,6 +1,6 @@
 # Phiếu: Khởi tạo cảnh 3D (đặc tả + Canvas 3D)
 
-- Trạng thái: chờ thiết kế
+- Trạng thái: đã áp (2026-11-10.2)
 - Đợi bởi: kế hoạch `docs/tasks/2026-11-10-thiet-ke-3d.md` (việc 7)
 - Đã vẽ: 2026-11-10.2
 

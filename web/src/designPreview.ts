@@ -72,6 +72,12 @@ async function boot(): Promise<void> {
     m.position.set((b.minX + b.maxX) / 2, 0.6, (b.minZ + b.maxZ) / 2);
     colliderLayer.add(m);
   }
+  for (const c of colliders.circles) {
+    const geo = new THREE.EdgesGeometry(new THREE.CylinderGeometry(c.r, c.r, 1.2, 32));
+    const m = new THREE.LineSegments(geo, lineMat);
+    m.position.set(c.x, 0.6, c.z);
+    colliderLayer.add(m);
+  }
   const zoneLayer = new THREE.Group();
   const zoneMat = new THREE.MeshBasicMaterial({ color: 0xe0ae4c, side: THREE.DoubleSide });
   for (const z of placed.zones) {
@@ -100,6 +106,7 @@ async function boot(): Promise<void> {
   controls.enableDamping = true;
   controls.maxPolarAngle = Math.PI / 2 - 0.02; // không chui xuống dưới mặt sân
   const playerView = (far: boolean): void => {
+    scene.fog = fog;
     const orbit = new OrbitCamera(spec.camera);
     if (far) orbit.toggleView();
     const focus = character.root.position;
@@ -108,11 +115,17 @@ async function boot(): Promise<void> {
   };
   el('viewPlayer').addEventListener('click', () => playerView(false));
   el('viewYard').addEventListener('click', () => playerView(true));
-  el('viewTop').addEventListener('click', () => {
-    camera.position.set(0, spec.walls.half * 3, 0.01);
+  const fog = scene.fog;
+  const topView = (): void => {
+    scene.fog = null; // nhìn từ trên cao: sương che hết cảnh
+    camera.position.set(0, Math.max(spec.walls.half * 3, spec.ground.size * 0.9), 0.01);
     controls.target.set(0, 0, 0);
-  });
-  playerView(false);
+  };
+  el('viewTop').addEventListener('click', topView);
+  // ?view=tren | ca-san (mặc định góc chơi) — để chụp ảnh cảnh tự động
+  const view = new URLSearchParams(location.search).get('view');
+  if (view === 'tren') topView();
+  else playerView(view === 'ca-san');
 
   /* ---------- chạm mặt sân → toạ độ ---------- */
   const marker = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 2, 8), new THREE.MeshBasicMaterial({ color: 0x7bc86c }));
@@ -135,18 +148,36 @@ async function boot(): Promise<void> {
 
   /* ---------- vòng lặp ---------- */
   const stats = el('stats');
+  const layers = [colliderLayer, zoneLayer, gridLayer, marker];
+  /** Đo đúng số app sẽ vẽ: vẽ thử một lần với lớp phủ tắt, đọc số, rồi bật lại. */
+  function measure(fps: string): void {
+    const shown = layers.map((l) => l.visible);
+    for (const l of layers) l.visible = false;
+    renderer.render(scene, camera);
+    const { calls, triangles } = renderer.info.render;
+    layers.forEach((l, i) => (l.visible = shown[i]));
+    renderer.render(scene, camera);
+    stats.textContent =
+      `${calls} draw call · ${triangles.toLocaleString('vi-VN')} tam giác (không tính lớp phủ) · ` +
+      `${colliders.boxes.length + colliders.circles.length} vật cản · ${fps} fps`;
+  }
   let acc = 0;
+  let frames = 0;
+  let first = true;
   const clock = new THREE.Clock();
   function tick(): void {
     const dt = Math.min(clock.getDelta(), 0.05);
     controls.update();
+    world.update(dt);
     character.animate(dt, 0);
     renderer.render(scene, camera);
     acc += dt;
-    if (acc > 0.5) {
+    frames++;
+    if (first || acc > 0.5) {
+      measure(first ? '—' : String(Math.round(frames / acc)));
+      first = false;
       acc = 0;
-      const { calls, triangles } = renderer.info.render;
-      stats.textContent = `${calls} draw call · ${triangles.toLocaleString('vi-VN')} tam giác (cả lớp phủ đang bật)`;
+      frames = 0;
     }
     requestAnimationFrame(tick);
   }

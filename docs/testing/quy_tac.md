@@ -43,7 +43,7 @@ Code: [web/src/collision/colliders.ts](../../web/src/collision/colliders.ts)
 
 | Mã | Quy tắc | Ví dụ | Xác nhận | App |
 |---|---|---|---|---|
-| R-VA-1 | Nhân vật (bán kính 0,5) không đi xuyên tường, nhà, giếng và cây trong sân; cây vòng ngoài tường không có va chạm. | Mặt trong tường bắc ở z = −20,5 → đi thẳng lên bắc thì dừng ở z = −20,0. | chờ | ok |
+| R-VA-1 | Nhân vật (bán kính 0,5) không đi xuyên tường, nhà, cột cổng, giếng, ao / hồ, vật trang trí có va chạm (đài tỉ thí, giá binh khí, lò đan…) và cây có va chạm (cây trong sân, cụm cây); đi qua được khe cổng trên tường. Cây vòng ngoài tường, lối lát đá, đảo nổi, mây không có va chạm. | Mặt trong tường bắc ở z = −20,5 → đi thẳng lên bắc thì dừng ở z = −20,0. Tường nam có khe cổng tâm x = 0 rộng 4: đi thẳng xuống nam ở x = 0 thì qua được; ở x = 3 thì dừng ở z = 20,0. | chờ | ok |
 
 ## MAN — màn hình
 

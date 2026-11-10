@@ -34,10 +34,11 @@ export function signTex(text: string, sub?: string, opts: { paper?: boolean } = 
     g.textAlign = 'center';
     g.textBaseline = 'middle';
     g.font = `700 ${sub ? 64 : 72}px Lora, Georgia, serif`;
-    g.fillText(text, w / 2, sub ? h * 0.38 : h / 2 + 4);
+    // maxWidth: chữ dài thì co hẹp lại cho vừa biển, không bị cắt
+    g.fillText(text, w / 2, sub ? h * 0.38 : h / 2 + 4, w - 64);
     if (sub) {
       g.font = '700 46px Lora, Georgia, serif';
-      g.fillText(sub, w / 2, h * 0.7);
+      g.fillText(sub, w / 2, h * 0.7, w - 64);
     }
   });
 }

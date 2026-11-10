@@ -1,0 +1,49 @@
+{
+  "fog": { "color": "#2c3a58", "near": 45, "far": 130 },
+  "ground": { "size": 190, "color": "#5b3f37", "brickHue": 10 },
+  "walls": { "half": 21, "height": 2.6, "color": "#4a2b24", "brickHue": 8, "capColor": "#6e2f26",
+    "gates": [ { "side": "nam", "at": 0, "width": 5 }, { "side": "dong", "at": 0, "width": 5 }, { "side": "tay", "at": 0, "width": 5 } ] },
+  "wallSegments": [
+    { "from": [27, -15], "to": [60, -15] }, { "from": [60, -15], "to": [60, 15] }, { "from": [27, 15], "to": [60, 15] },
+    { "from": [-62, -15], "to": [-27, -15] }, { "from": [-62, -15], "to": [-62, 20] }, { "from": [-62, 20], "to": [-27, 20] }
+  ],
+  "paths": [
+    { "from": [0, 21], "to": [0, 55], "width": 5 }, { "from": [21, 0], "to": [43, 0], "width": 4 },
+    { "from": [-21, 0], "to": [-45, 0], "width": 4 }, { "from": [-45, -15], "to": [-45, -28], "width": 3 },
+    { "from": [43, 15], "to": [43, 28], "width": 3 }
+  ],
+  "buildings": [
+    { "id": "giang-duong", "x": 0, "z": -11, "w": 13, "d": 7, "title": "Lớp HSK 3", "notice": ["Buổi tối", "chữ 快"], "roofColor": "#8a3b2c", "zone": { "id": "lop-hsk3", "front": 4.6, "r": 2.6 } },
+    { "id": "thu-vien", "x": -12.5, "z": 4, "w": 7, "d": 6, "rotY": 90, "title": "Thư viện", "roofColor": "#5f3a2a", "zone": { "id": "thu-vien", "front": 3.9, "r": 2.4 } },
+    { "id": "cu-xa-1", "x": 32, "z": 36, "w": 5, "d": 4, "rotY": 180, "kind": "nha-nho", "title": "Cư xá", "roofColor": "#5f3a2a" },
+    { "id": "cu-xa-2", "x": 40, "z": 36, "w": 5, "d": 4, "rotY": 180, "kind": "nha-nho", "title": "Cư xá", "roofColor": "#5f3a2a" },
+    { "id": "cu-xa-3", "x": 48, "z": 36, "w": 5, "d": 4, "rotY": 180, "kind": "nha-nho", "roof": "cong", "title": "Cư xá", "roofColor": "#5f3a2a" },
+    { "id": "cu-xa-4", "x": 56, "z": 36, "w": 5, "d": 4, "rotY": 180, "kind": "nha-nho", "title": "Cư xá", "roofColor": "#5f3a2a" },
+    { "id": "luyen-dan", "x": -45, "z": -36, "w": 12, "d": 8, "kind": "dien", "roof": "cong", "title": "Luyện Đan Phòng", "roofColor": "#3a4a5a" },
+    { "id": "thap-thu", "x": -33, "z": 10, "w": 5, "d": 5, "kind": "thap", "floors": 5, "title": "Tàng Kinh", "roofColor": "#2f4a5a" }
+  ],
+  "gates": [ { "id": "son-mon", "x": 0, "z": 45, "width": 6, "title": "Thanh Vân Tông" } ],
+  "water": [ { "x": -45, "z": 10, "r": 4 }, { "x": 52, "z": -8, "w": 6, "d": 4 } ],
+  "props": [
+    { "kind": "dai-ti-thi", "x": 43, "z": 0 },
+    { "kind": "gia-binh-khi", "x": 32, "z": -12 }, { "kind": "gia-binh-khi", "x": 37, "z": -12 },
+    { "kind": "luong-thuoc", "x": -54, "z": -8 }, { "kind": "luong-thuoc", "x": -54, "z": -4 }, { "kind": "luong-thuoc", "x": -54, "z": 0 },
+    { "kind": "luong-thuoc", "x": -36, "z": -8 }, { "kind": "luong-thuoc", "x": -36, "z": -4 }, { "kind": "luong-thuoc", "x": -36, "z": 0 },
+    { "kind": "lo-dan", "x": -41, "z": -27 }, { "kind": "lo-dan", "x": -49, "z": -27 }
+  ],
+  "trees": {
+    "ring": { "count": 0, "radius": 25, "spread": 6, "scaleMin": 1.6, "scaleMax": 2.4 },
+    "groves": [
+      { "kind": "tan", "x": 44, "z": 43, "w": 30, "d": 3, "count": 8 },
+      { "kind": "truc", "x": 63, "z": 30, "w": 4, "d": 20, "count": 10 },
+      { "kind": "tan", "x": -12, "z": 38, "w": 6, "d": 30, "count": 10 },
+      { "kind": "tan", "x": 12, "z": 38, "w": 6, "d": 30, "count": 10 },
+      { "kind": "tan", "x": 0, "z": -70, "w": 140, "d": 30, "count": 40, "collide": false },
+      { "kind": "tan", "x": -85, "z": 0, "w": 20, "d": 120, "count": 30, "collide": false },
+      { "kind": "tan", "x": 85, "z": 0, "w": 20, "d": 120, "count": 30, "collide": false }
+    ]
+  },
+  "floating": { "islands": [ { "x": -90, "y": 35, "z": -90, "scale": 2 }, { "x": -70, "y": 28, "z": -110, "scale": 1.2 } ],
+    "clouds": { "count": 10, "height": 34, "radius": 90, "speed": 0.6, "color": "#d9dce8" } },
+  "player": { "start": [0, 50] }
+}

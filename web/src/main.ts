@@ -79,6 +79,7 @@ async function boot(): Promise<void> {
 
     player.update(dt, input, orbit.yaw, paused);
     zones.update(player.position);
+    world.update(dt);
     orbit.update(camera, player.position, dt);
     renderer.render(scene, camera);
     nameTag.update(player.position, camera);

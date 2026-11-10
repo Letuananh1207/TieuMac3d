@@ -1,6 +1,6 @@
 # Phiếu: Đặt 6 khu phẳng của tông môn (cảnh 3D)
 
-- Trạng thái: chờ thiết kế
+- Trạng thái: đã áp (2026-11-11.1)
 - Đợi bởi: kế hoạch `docs/tasks/2026-11-10-tong-mon-dot-1.md` (việc 13); đáp phần đợt 1 của mục thiết kế 2026-11-10.3
 - Đã vẽ: 2026-11-11.1
 

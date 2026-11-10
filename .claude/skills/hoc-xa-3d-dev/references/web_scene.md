@@ -11,6 +11,10 @@
 | texture | vẽ bằng canvas 2D (`makeCanvasTex`, `signTex`), không file ảnh | `scene/textures.ts` |
 | số / màu của cảnh | đặc tả `SceneSpec` (`DEFAULT_SCENE` = cảnh gốc: tường ±21, sương 28–70); far 200 | `scene/spec.ts`, đọc `design/scene/scene.json` ở `scene/loadSpec.ts` |
 | cây | 4 `InstancedMesh` cho cả rừng, ngẫu nhiên có hạt giống (`trees.seed`) | `scene/trees.ts` |
+| gộp khối | dựng xong cảnh, `mergeStatic` gộp mọi khối đứng yên cùng vật liệu → 1 draw call; vật chuyển động `markDynamic` | `scene/merge.ts`, gọi ở `scene/world.ts` |
+| chuyển động | `World.update(dt)` (khói lò đan, mây, đảo nổi) — `main.ts` / `designPreview.ts` gọi mỗi khung | `scene/props.ts`, `scene/sky.ts` |
+| va chạm tròn | `Colliders.addCircle` (ao tròn, đài, lò đan) | `collision/colliders.ts` |
+| ngân sách | ≤ 150 draw call, ≤ 150k tam giác (cảnh mẫu 6 khu: 41–65 draw call, ~20k tam giác) | Canvas 3D bảng "Hiệu năng" |
 | tốc độ / bán kính | 4,2 m/s · 0,5 | `player/controller.ts` |
 
 ## Mẫu: thêm một vật vào sân
@@ -27,7 +31,8 @@ export function addWell(scene: THREE.Scene, colliders: Colliders, spec: SceneSpe
 }
 ```
 
-Vật mới: thêm trường vào `SceneSpec` + `DEFAULT_SCENE` (`scene/spec.ts`, giá trị = cảnh hiện tại), dựng ở
+Vật mới: thêm trường vào `SceneSpec` + `DEFAULT_SCENE` (`scene/spec.ts`, giá trị = cảnh hiện tại; danh sách mới thì
+thêm cách đọc phần tử vào `LISTS` ở `scene/specCheck.ts`), dựng ở
 `scene/<vật>.ts`, gọi trong `scene/world.ts`. Thứ thiết kế quyết (vị trí, kích thước, màu) vào đặc tả; chi tiết
 hình dạng ở code. Danh sách trong đặc tả → kiểm từng phần tử bằng `parseList` / `parseItem`. Kiểm:
 `npm run scene:check`. Geometry/material dùng chung tạo một lần ở cấp module; vật lặp nhiều → `InstancedMesh`.

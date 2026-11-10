@@ -12,7 +12,8 @@ const file = resolve(web, '..', 'design', 'scene', 'scene.json');
 const out = await build({
   stdin: {
     contents:
-      "export { resolveSceneSpec, zoneAnchors } from './src/scene/spec.ts';\n" +
+      "export { zoneAnchors } from './src/scene/spec.ts';\n" +
+      "export { resolveSceneSpec } from './src/scene/specCheck.ts';\n" +
       "export { placeZones, ZONE_CONTENT } from './src/zones/zones.ts';\n",
     resolveDir: web,
     loader: 'ts',
@@ -48,10 +49,18 @@ const all = [...problems, ...placed.problems];
 const n = (v) => String(v).replace('.', ',');
 console.log(`Tường: ±${n(spec.walls.half)} · người chơi bắt đầu (${n(spec.player.start[0])}; ${n(spec.player.start[1])})`);
 for (const b of spec.buildings) {
-  console.log(`Nhà ${b.id}: tâm (${n(b.x)}; ${n(b.z)}) ${n(b.w)}×${n(b.d)} quay ${b.rotY ?? 0}°`);
+  console.log(`Nhà ${b.id} (${b.kind ?? 'giang-duong'}): tâm (${n(b.x)}; ${n(b.z)}) ${n(b.w)}×${n(b.d)} quay ${b.rotY ?? 0}°`);
 }
 for (const z of placed.zones) console.log(`Vùng ${z.id}: tâm (${n(z.x)}; ${n(z.z)}) bán kính ${n(z.r)}`);
-console.log(`Cây trong sân: ${spec.trees.yard.length} · giếng (${n(spec.well.x)}; ${n(spec.well.z)})`);
+console.log(`Cây lẻ: ${spec.trees.yard.length} · cụm cây: ${spec.trees.groves.length} · giếng (${n(spec.well.x)}; ${n(spec.well.z)})`);
+for (const g of spec.walls.gates) console.log(`Khe cổng tường ${g.side}: tâm ${n(g.at)}, rộng ${n(g.width)}`);
+for (const s of spec.wallSegments) console.log(`Đoạn tường (${n(s.from[0])}; ${n(s.from[1])}) → (${n(s.to[0])}; ${n(s.to[1])})`);
+for (const g of spec.gates) console.log(`Cổng ${g.id}: tâm (${n(g.x)}; ${n(g.z)}) rộng ${n(g.width)} quay ${g.rotY ?? 0}°`);
+for (const w of spec.water) console.log(`Ao (${n(w.x)}; ${n(w.z)}) ${w.r !== undefined ? `tròn r ${n(w.r)}` : `${n(w.w)}×${n(w.d)}`}`);
+const kinds = {};
+for (const p of spec.props) kinds[p.kind] = (kinds[p.kind] ?? 0) + 1;
+if (spec.props.length) console.log(`Vật trang trí: ${Object.entries(kinds).map(([k, c]) => `${k} ×${c}`).join(' · ')}`);
+if (spec.paths.length) console.log(`Lối lát đá: ${spec.paths.length}`);
 
 if (all.length) {
   console.error(`\n${all.length} lỗi:\n- ${all.join('\n- ')}`);

@@ -100,6 +100,7 @@ flutter test -r failures-only test/<phần> · dart tool/rule_trace.dart
 | va chạm, đi xuyên, kẹt | `collision` | `web/src/collision/` |
 | vùng sự kiện, lớp học, bài học (dữ liệu chữ Hán) | `zones` | `web/src/zones/` (vị trí vùng: nhà trong đặc tả cảnh) |
 | đặc tả cảnh, bố cục sân, dời nhà, màu cảnh, Canvas 3D | `scene/spec`, `loadSpec`, `designPreview` | `design/scene/scene.json` (chỉ đọc), `web/src/scene/spec.ts`, `web/design.html`, `web/scripts/check-scene.mjs` |
+| tông môn: cổng, ao, lối đá, đài, lò đan, trúc, đảo nổi, mây, kiểu nhà | `gate`, `water`, `paths`, `props`, `sky`, `trees`, `buildings`, `merge` | `web/src/scene/`, kế hoạch `docs/tasks/2026-11-10-tong-mon-dot-1.md` |
 | thẻ mời, "Vào nghe giảng", "Để sau" | `eventCard` | `web/src/ui/eventCard.ts` |
 | bảng bài học (HTML, sẽ thay bằng Flutter ở mốc 3) | `lessonBoard` | `web/src/ui/lessonBoard.ts` |
 | HUD, fps, nhãn tên, dòng hướng dẫn, nút góc nhìn | `hud` | `web/src/ui/hud.ts`, `web/index.html`, `web/src/style.css` |

@@ -37,3 +37,11 @@ dùng muốn thiết kế cả bối cảnh (bố cục, kích thước, màu, �
 - `web/vite.config.ts` cho phép đọc `../design/` (`server.fs.allow`) và có thêm đầu vào `design.html`.
 - Thông số camera (`OrbitSettings`) do `main.ts` truyền từ spec vào `input/OrbitCamera` (input không import scene).
 - Hằng điều khiển trong `input/` (`JOYSTICK_ZONE`, chạm ngắn) **không** đưa vào spec — đó là luật R-DIEU.
+
+## Tông môn — đợt 1 (2026-11-11, thiết kế 2026-11-10.3)
+
+Đặc tả thêm vật cho cảnh nhiều khu trên mặt phẳng: khe cổng / đoạn tường, lối lát đá, kiểu nhà (`dien`, `thap`,
+`nha-nho`, mái `cong`), cổng sơn môn, ao, vật trang trí, cụm cây + trúc, đảo nổi + mây. Mọi trường mới mặc định rỗng
+→ `scene.json` cũ vẫn đúng, cảnh không đổi. Để giữ ≤ 150 draw call: gộp khối đứng yên cùng vật liệu sau khi dựng
+(`scene/merge.ts`). Mái giảng đường giữ dáng prototype (xiên hình thoi khi nhìn từ trên, `legacy`); kiểu nhà mới mái
+thẳng với tường. Đợt 2 (sau mốc 3): địa hình bục phẳng theo khu + bậc đá, thác.

@@ -1,16 +1,20 @@
 import * as THREE from 'three';
 import type { Colliders } from '../collision/colliders';
 import { lambert } from './materials';
-import type { SceneSpec } from './spec';
+import type { GroveSpec, SceneSpec, TreePlace } from './spec';
 
 const trunkGeo = new THREE.CylinderGeometry(0.25, 0.35, 2.2, 6);
 const leafGeo = new THREE.IcosahedronGeometry(1.8, 0);
 const LEAF_TIERS = 3;
+const stalkGeo = new THREE.CylinderGeometry(0.07, 0.09, 1, 5); // cao 1, kéo theo chiều cao từng cây trúc
+const tuftGeo = new THREE.ConeGeometry(0.45, 1.3, 5);
+const STALKS = 5; // số thân trong một khóm trúc
 
-interface TreePlace {
+interface Placed {
   x: number;
   z: number;
   scale: number;
+  collide: boolean;
 }
 
 /** Số giả ngẫu nhiên có hạt giống (mulberry32): cùng `seed` → cùng dãy, nên cây ở Canvas 3D và app giống nhau. */
@@ -25,26 +29,22 @@ export function seededRandom(seed: number): () => number {
   };
 }
 
-/**
- * Mọi cây vẽ bằng 4 InstancedMesh (thân + 3 tầng lá): 4 draw call cho cả rừng, thay vì 4 mỗi cây.
- * Cây trong sân có va chạm; vòng cây ngoài tường chỉ để trang trí.
- */
-export function addTrees(scene: THREE.Scene, colliders: Colliders, spec: SceneSpec['trees']): void {
-  const rand = seededRandom(spec.seed);
-  const { ring } = spec;
-  const ringTrees: TreePlace[] = [];
-  for (let i = 0; i < ring.count; i++) {
-    const a = (i / ring.count) * Math.PI * 2;
-    const r = ring.radius + rand() * ring.spread;
-    const scale = ring.scaleMin + rand() * (ring.scaleMax - ring.scaleMin);
-    ringTrees.push({ x: Math.cos(a) * r, z: Math.sin(a) * r, scale });
-  }
-  const all = [...spec.yard, ...ringTrees];
-  if (all.length === 0) return;
+/** Cụm cây rải trong hình chữ nhật. Mỗi cụm một dãy ngẫu nhiên riêng: thêm cụm không xê dịch cây có sẵn. */
+function groveTrees(g: GroveSpec, seed: number, index: number): Placed[] {
+  const rand = seededRandom(seed * 7919 + index + 1);
+  return Array.from({ length: g.count }, () => ({
+    x: g.x + (rand() - 0.5) * g.w,
+    z: g.z + (rand() - 0.5) * g.d,
+    scale: 0.8 + rand() * 0.5,
+    collide: g.collide ?? true,
+  }));
+}
 
+/** Cây tán: 4 InstancedMesh (thân + 3 tầng lá) cho mọi cây — 4 draw call cả rừng. */
+function broadleaf(scene: THREE.Scene, spec: SceneSpec['trees'], all: Placed[], rand: () => number): void {
+  if (all.length === 0) return;
   const trunks = new THREE.InstancedMesh(trunkGeo, lambert(spec.trunk), all.length);
   const leaves = spec.leaves.map((c) => new THREE.InstancedMesh(leafGeo, lambert(c), all.length));
-
   const tree = new THREE.Matrix4();
   const local = new THREE.Matrix4();
   const part = new THREE.Matrix4();
@@ -62,11 +62,67 @@ export function addTrees(scene: THREE.Scene, colliders: Colliders, spec: SceneSp
       leaves[k].setMatrixAt(i, local.copy(tree).multiply(part.compose(pos, quat, size)));
     }
   });
-  for (const m of [trunks, ...leaves]) {
+  finish(scene, [trunks, ...leaves]);
+}
+
+/** Trúc: mỗi khóm 5 thân cao gầy, ngọn có túm lá — 2 InstancedMesh cho mọi khóm. */
+function bamboo(scene: THREE.Scene, spec: SceneSpec['trees'], all: Placed[], seed: number): void {
+  if (all.length === 0) return;
+  const rand = seededRandom(seed * 104729 + 3);
+  const n = all.length * STALKS;
+  const stalks = new THREE.InstancedMesh(stalkGeo, lambert(spec.bamboo[0]), n);
+  const tufts = new THREE.InstancedMesh(tuftGeo, lambert(spec.bamboo[1]), n);
+  const m = new THREE.Matrix4();
+  const pos = new THREE.Vector3();
+  const quat = new THREE.Quaternion();
+  const euler = new THREE.Euler();
+  const size = new THREE.Vector3();
+  let i = 0;
+  for (const t of all) {
+    for (let k = 0; k < STALKS; k++, i++) {
+      const h = (4 + rand() * 3) * t.scale;
+      const lean = (rand() - 0.5) * 0.18;
+      const x = t.x + (rand() - 0.5) * 0.9 * t.scale;
+      const z = t.z + (rand() - 0.5) * 0.9 * t.scale;
+      quat.setFromEuler(euler.set(lean, 0, lean));
+      stalks.setMatrixAt(i, m.compose(pos.set(x, h / 2, z), quat, size.set(t.scale, h, t.scale)));
+      tufts.setMatrixAt(i, m.compose(pos.set(x, h - 0.2, z), quat, size.setScalar(t.scale)));
+    }
+  }
+  finish(scene, [stalks, tufts]);
+}
+
+function finish(scene: THREE.Scene, meshes: THREE.InstancedMesh[]): void {
+  for (const m of meshes) {
     m.instanceMatrix.needsUpdate = true;
     m.computeBoundingSphere(); // để three cắt cả cụm khi ra khỏi khung nhìn
     scene.add(m);
   }
+}
 
-  for (const t of spec.yard) colliders.add(t.x, t.z, 0.8 * t.scale, 0.8 * t.scale);
+/**
+ * Cây lẻ (`yard`, có va chạm), cụm cây (`groves`), vòng cây ngoài tường (`ring`, chỉ trang trí).
+ * Kiểu `tan` (mặc định) hoặc `truc`. Cảnh không có trúc / cụm thì cây giống hệt bản trước (cùng dãy ngẫu nhiên).
+ */
+export function addTrees(scene: THREE.Scene, colliders: Colliders, spec: SceneSpec['trees']): void {
+  const rand = seededRandom(spec.seed);
+  const { ring } = spec;
+  const ringTrees: Placed[] = [];
+  for (let i = 0; i < ring.count; i++) {
+    const a = (i / ring.count) * Math.PI * 2;
+    const r = ring.radius + rand() * ring.spread;
+    const scale = ring.scaleMin + rand() * (ring.scaleMax - ring.scaleMin);
+    ringTrees.push({ x: Math.cos(a) * r, z: Math.sin(a) * r, scale, collide: false });
+  }
+  const tan: Placed[] = [];
+  const truc: Placed[] = [];
+  const put = (kind: TreePlace['kind'], p: Placed): void => void (kind === 'truc' ? truc : tan).push(p);
+  for (const t of spec.yard) put(t.kind, { ...t, collide: true });
+  tan.push(...ringTrees);
+  spec.groves.forEach((g, i) => groveTrees(g, spec.seed, i).forEach((p) => put(g.kind, p)));
+
+  broadleaf(scene, spec, tan, rand);
+  bamboo(scene, spec, truc, spec.seed);
+  for (const t of tan) if (t.collide) colliders.add(t.x, t.z, 0.8 * t.scale, 0.8 * t.scale);
+  for (const t of truc) if (t.collide) colliders.add(t.x, t.z, 1.2 * t.scale, 1.2 * t.scale);
 }

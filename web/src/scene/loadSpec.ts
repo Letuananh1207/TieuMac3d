@@ -1,4 +1,4 @@
-import { resolveSceneSpec, type ResolvedScene } from './spec';
+import { resolveSceneSpec, type ResolvedScene } from './specCheck';
 
 /** Đường dẫn file đặc tả, tính từ gốc repo (để in thông báo). */
 export const SCENE_FILE = 'design/scene/scene.json';

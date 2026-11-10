@@ -66,6 +66,26 @@ chạy chính code `web/` — cái thấy trên đó là cái app sẽ hiện). 
    `R-VUNG-1` (đọc ví dụ của hai luật trong `docs/testing/quy_tac.md`); ghi rõ trong CHANGELOG. Chỉ đổi màu, ánh
    sáng, sương, trời, camera, cây ngoài tường là **ngoại hình**.
 
+**Các loại vật đặc tả tả được** (đầy đủ kiểu + chú thích: `web/src/scene/spec.ts`; ví dụ đủ 6 khu phẳng:
+`docs/phieu_thiet_ke/2026-11-11-tong-mon-dot-1-mau.json` — bản thử cú pháp của phiên code, không phải thiết kế).
+Vật có va chạm chỉ quay 0 · 90 · 180 · 270; lối đá, mây, đảo: không va chạm.
+
+| Trường | Ví dụ | Ghi chú |
+|---|---|---|
+| `walls.gates` | `{ "side": "nam", "at": 0, "width": 5 }` | khe trên tường bao; `side`: bac · nam · dong · tay; `at` = tâm khe dọc cạnh |
+| `wallSegments` | `{ "from": [27, -15], "to": [60, -15] }` | đoạn tường thêm, thẳng trục; `height` tuỳ chọn |
+| `paths` | `{ "from": [0, 21], "to": [0, 55], "width": 5 }` | lối lát đá, góc tự do; `color` tuỳ chọn (mặc định `buildingStyle.path`) |
+| `buildings[].kind` | `"dien"` · `"thap"` (+ `"floors": 5`) · `"nha-nho"` | thiếu = `giang-duong`; `"roof": "cong"` = mái cong đầu đao (tháp mặc định cong) |
+| `gates` | `{ "id": "son-mon", "x": 0, "z": 45, "width": 6, "title": "Thanh Vân Tông" }` | cổng sơn môn; va chạm chỉ hai cột |
+| `water` | `{ "x": -45, "z": 10, "r": 4 }` · `{ "x": 52, "z": -8, "w": 6, "d": 4 }` | ao tròn hoặc chữ nhật, không đi xuống được |
+| `props` | `{ "kind": "lo-dan", "x": -41, "z": -27 }` | dai-ti-thi (r 6) · gia-binh-khi (3,2 × 0,8) · luong-thuoc (4 × 1,6) · lo-dan (có khói); `scale` tuỳ chọn |
+| `trees.groves` | `{ "kind": "truc", "x": 63, "z": 30, "w": 4, "d": 20, "count": 10 }` | cụm cây rải trong chữ nhật; `"collide": false` = chỉ trang trí; `trees.yard[].kind` cũng nhận `truc` |
+| `floating` | `"islands": [{ "x": -90, "y": 35, "z": -90, "scale": 2 }]`, `"clouds": { "count": 10, … }` | đảo nổi, mây trôi |
+| `buildingStyle` | `stone` · `water` · `path` · `bronze` · `herb` · `smoke` | màu chung của vật mới |
+
+Cảnh rộng: tăng `ground.size` (phủ hết các khu) và `fog.far`. Canvas 3D: `?view=tren` / `?view=ca-san` để chụp ảnh;
+bảng "Hiệu năng" in draw call (không tính lớp phủ) — giữ ≤ 150. Chưa có độ cao / bậc đá / thác (đợt 2).
+
 Model `.glb` (vật trang trí, nhân vật) chưa dùng — mốc 3D-b. Nhân vật giữ gấu khối.
 
 ## Chốt
