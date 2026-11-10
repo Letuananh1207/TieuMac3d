@@ -1,1 +1,58 @@
-{"v":3,"createdOnFiles":{"v":1,"at":"2026-11-10T10:40:00Z"},"title":"Học Xá 3D – giao diện app","launch":{"view":"canvas"},"pages":[],"boards":{"Main.dc.html":{"x":0,"y":0,"w":1200,"h":1040,"title":"Bảng token (rút từ code 2026-11-10)"}},"order":["Main.dc.html"],"notes":{"cach-dung":{"x":1280,"y":0,"w":360,"size":"m","fill":"orange","text":"Thiết kế trước cho phần mới.\n\nCảnh 3D và HUD hiện có vẫn theo code. Màn mới vẽ ở đây theo phiếu trong repo (docs/phieu_thiet_ke/), khổ 390×844 dọc và 844×390 ngang (app xoay tự do).\n\nMàu, chữ, bo góc: dùng đúng bảng token bên trái."}},"designSystems":[]}
+{
+  "v": 3,
+  "createdOnFiles": {
+    "v": 1,
+    "at": "2026-11-10T10:40:00Z"
+  },
+  "title": "Học Xá 3D – giao diện app",
+  "launch": {
+    "view": "canvas"
+  },
+  "pages": [],
+  "boards": {
+    "Main.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1200,
+      "h": 1040,
+      "title": "Bảng token (rút từ code 2026-11-10)"
+    },
+    "TongMon-ban-do.dc.html": {
+      "x": 0,
+      "y": 2840,
+      "w": 1440,
+      "h": 1080,
+      "title": "Đề xuất: quy hoạch tông môn (cảnh 3D, nhìn từ trên)"
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "TongMon-ban-do.dc.html"
+  ],
+  "notes": {
+    "cach-dung": {
+      "x": 1280,
+      "y": 0,
+      "w": 360,
+      "size": "m",
+      "fill": "orange",
+      "text": "Thiết kế trước cho phần mới.\n\nCảnh 3D và HUD hiện có vẫn theo code. Màn mới vẽ ở đây theo phiếu trong repo (docs/phieu_thiet_ke/), khổ 390×844 dọc và 844×390 ngang (app xoay tự do).\n\nMàu, chữ, bo góc: dùng đúng bảng token bên trái."
+    },
+    "tieu-de-tong-mon": {
+      "x": 0,
+      "y": 2600,
+      "text": "Cảnh 3D: mở rộng thành tông môn tu tiên (đề xuất)",
+      "kind": "title1",
+      "maxW": 1880
+    },
+    "ghi-chu-tong-mon": {
+      "x": 1520,
+      "y": 2840,
+      "w": 400,
+      "size": "m",
+      "fill": "orange",
+      "text": "Đề xuất, chưa chốt.\n\nSân hiện có giữ làm Ngoại Môn (khu 1). Các khu khác bao quanh, nối bằng lối đi.\n\nKhu viền đỏ cần code trước: địa hình núi, bậc đá, cổng, ao, thác, tháp, đảo nổi. Khu viền trắng làm được ngay bằng đặc tả.\n\nMỗi khu sau này có thể gắn một vùng bài học riêng."
+    }
+  },
+  "designSystems": []
+}
