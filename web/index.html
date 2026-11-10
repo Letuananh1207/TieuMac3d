@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Học Xá 3D</title>
+</head>
+<body>
+  <canvas id="stage"></canvas>
+
+  <div class="hud top">
+    <span class="chip"><span class="dot"></span>Học xá · Sân chính</span>
+    <span class="chip" id="fps">— fps</span>
+  </div>
+
+  <div id="joyGhost">kéo để<br>đi</div>
+  <div id="joy" hidden><div id="knob"></div></div>
+  <div class="label" id="nameTag">Tuấn Anh</div>
+
+  <div class="hud" id="hint">Kéo nửa trái để đi · kéo nửa phải để xoay · chạm mặt đất để đi tới đó · chụm 2 ngón để zoom</div>
+
+  <div class="hud" id="card" hidden>
+    <div class="eyebrow" id="cardEyebrow"></div>
+    <h2 id="cardTitle"></h2>
+    <div class="row">
+      <button class="primary" id="cardGo" type="button"></button>
+      <button id="cardLater" type="button">Để sau</button>
+    </div>
+  </div>
+
+  <!-- Mốc 1 còn giữ bảng bài học HTML; mốc 3 thay bằng màn Flutter -->
+  <div id="lesson" hidden>
+    <div class="board">
+      <div class="big" id="lsHan"></div>
+      <div class="py" id="lsPy"></div>
+      <p id="lsMean"></p>
+      <dl id="lsInfo"></dl>
+      <button class="primary" id="lsClose" type="button">Ra sân</button>
+    </div>
+  </div>
+
+  <div class="hud btns">
+    <button id="btnCam" type="button">Góc nhìn: gần</button>
+  </div>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

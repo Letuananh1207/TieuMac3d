@@ -1,0 +1,22 @@
+{
+  "name": "hoc-xa-scene",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host",
+    "typecheck": "tsc --noEmit",
+    "build": "tsc --noEmit && vite build && node scripts/copy-to-app.mjs",
+    "preview": "vite preview --host"
+  },
+  "dependencies": {
+    "@fontsource/be-vietnam-pro": "5.2.5",
+    "@fontsource/lora": "5.2.5",
+    "three": "0.170.0"
+  },
+  "devDependencies": {
+    "@types/three": "0.170.0",
+    "typescript": "5.9.3",
+    "vite": "6.4.5"
+  }
+}
