@@ -247,6 +247,8 @@ function checkConsistency(s: SceneSpec): string[] {
     'mã cổng',
   );
   if (s.fog.near >= s.fog.far) out.push('fog: near phải nhỏ hơn far');
+  const k = s.buildingStyle.heightScale;
+  if (k < 0.5 || k > 3) out.push(`buildingStyle.heightScale: 0,5–3 (đang ${k}; code kẹp về khoảng này)`);
   if (s.camera.minDist > s.camera.maxDist) out.push('camera: minDist phải ≤ maxDist');
   if (s.trees.ring.scaleMin > s.trees.ring.scaleMax) out.push('trees.ring: scaleMin phải ≤ scaleMax');
   for (const g of s.walls.gates) {

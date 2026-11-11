@@ -6,8 +6,8 @@
 import * as THREE from 'three';
 import type { Colliders } from '../collision/colliders';
 import type { Pad } from '../collision/ground';
-import type { Style } from './kien_truc/chi_tiet';
-import { columnXs, giangDuong, HALL_FLOOR, type RoomParts } from './kien_truc/dien';
+import { STEP_DEPTH, stepCount, type Style } from './kien_truc/chi_tiet';
+import { columnXs, giangDuong, hallFloor, type RoomParts } from './kien_truc/dien';
 import { addInterior, type LocalBox } from './kien_truc/noi_that';
 import { markDynamic, mergeStatic } from './merge';
 import { rotateXZ, type BuildingSpec, type InteriorKind } from './spec';
@@ -46,8 +46,7 @@ export interface Room {
 /** Mờ còn bao nhiêu khi ở trong, trong bao lâu (R-HUD-2). */
 const FADED = 0.15;
 const FADE_SECONDS = 0.3;
-/** Bậc lên nền: 3 bậc sâu 0,45 m (kien_truc/chi_tiet `addSteps`), rộng 4 m; lan can chừa khe 4,4 m. */
-const STEP_RUN = 1.35;
+/** Bậc lên nền: `stepCount` bậc sâu 0,45 m (kien_truc/chi_tiet `addSteps`, hệ số 1 → 3 bậc), rộng 4 m; lan can chừa khe 4,4 m. */
 const STEP_WIDTH = 4;
 const RAIL_GAP = 4.4;
 /** Cửa: chừa trong tường trước (khớp gian giữa để trống). */
@@ -108,7 +107,8 @@ export function addRoomBuilding(scene: THREE.Scene, colliders: Colliders, b: Bui
     n.rotation.y = 0.15;
     parts.front.add(n);
   }
-  const furnished = addInterior(g, b, style, use.kind, HALL_FLOOR, use.han);
+  const floorY = hallFloor(style);
+  const furnished = addInterior(g, b, style, use.kind, floorY, use.han);
   scene.add(g);
   const mats = [...fadeable(parts.roof), ...fadeable(parts.front)];
 
@@ -142,14 +142,16 @@ export function addRoomBuilding(scene: THREE.Scene, colliders: Colliders, b: Bui
   }
 
   /* ---------- mặt đất: nền đá + dốc bậc ---------- */
+  // dốc bậc: nền cao thì thêm bậc, dốc giữ ~24° (≤ 35°, R-VA-2)
+  const run = stepCount(style) * STEP_DEPTH;
   const platform = worldRect(b, { x: 0, z: 0, w: pw, d: pd });
-  const stepsRect = worldRect(b, { x: 0, z: pd / 2 + STEP_RUN / 2, w: STEP_WIDTH, d: STEP_RUN });
+  const stepsRect = worldRect(b, { x: 0, z: pd / 2 + run / 2, w: STEP_WIDTH, d: run });
   const [x0, z0] = toWorld(b, 0, pd / 2);
-  const [x1, z1] = toWorld(b, 0, pd / 2 + STEP_RUN);
+  const [x1, z1] = toWorld(b, 0, pd / 2 + run);
   const axis = Math.abs(x1 - x0) > Math.abs(z1 - z0) ? 'x' : 'z';
   const pads: Pad[] = [
-    { ...platform, y: y0 + HALL_FLOOR },
-    { ...stepsRect, y: y0 + HALL_FLOOR, ramp: { axis, at0: axis === 'x' ? x0 : z0, at1: axis === 'x' ? x1 : z1, y1: y0 } },
+    { ...platform, y: y0 + floorY },
+    { ...stepsRect, y: y0 + floorY, ramp: { axis, at0: axis === 'x' ? x0 : z0, at1: axis === 'x' ? x1 : z1, y1: y0 } },
   ];
 
   /* ---------- vật học, thầy, nút ---------- */

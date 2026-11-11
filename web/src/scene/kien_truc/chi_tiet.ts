@@ -6,6 +6,15 @@ import { box } from './hinh';
 
 export type Style = SceneSpec['buildingStyle'];
 
+/** Hệ số chiều cao kiến trúc (`buildingStyle.heightScale`), kẹp 0,5–3. Nhân vào nền, cột, tường thân, mái, tầng tháp. */
+export const hk = (style: Style): number => Math.min(3, Math.max(0.5, style.heightScale));
+
+/** Độ sâu một bậc thềm (m). */
+export const STEP_DEPTH = 0.45;
+
+/** Số bậc trước nền nhà: mỗi bậc giữ cỡ người, nền cao lên thì thêm bậc (hệ số 1 → 3 bậc như cũ). */
+export const stepCount = (style: Style): number => Math.max(3, Math.round(3 * hk(style)));
+
 export function addSign(g: THREE.Group, title: string, y: number, z: number, scale = 1): void {
   const sign = new THREE.Mesh(
     new THREE.PlaneGeometry(2.8 * scale, 0.9 * scale),
@@ -59,7 +68,7 @@ export function addRailing(g: THREE.Group, w: number, d: number, y: number, gap:
 
 /** Bậc thềm trước nền: rộng `w`, từ mép nền `z0` đi ra +z, cao dần tới `h`. */
 export function addSteps(g: THREE.Group, w: number, z0: number, h: number, style: Style, steps = 3): void {
-  const depth = 0.45;
+  const depth = STEP_DEPTH;
   for (let i = 0; i < steps; i++) {
     const sh = (h * (steps - i)) / (steps + 1);
     g.add(box(w, sh, depth, style.base, 0, sh / 2, z0 + depth / 2 + i * depth));

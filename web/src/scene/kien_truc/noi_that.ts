@@ -2,13 +2,15 @@
  * Nội thất nhà vào được, theo mặt bằng canvas `NoiThat-mat-bang` (đề xuất 2026-11-11, người dùng cho code theo).
  * Toạ độ nhà: tâm (0, 0), mặt trước (cửa) nhìn +z, sàn ở độ cao `floor`. Đồ đạc tĩnh gộp chung với cảnh;
  * hộp bắt chạm vô hình (`hits`) không gộp, để chạm vào vật mở bài (R-VUNG-2).
+ * Bảng đen, bục to theo hệ số chiều cao (`hk`); án thư, kệ, án đọc giữ cỡ người — phòng to thì xếp thêm hàng / thêm kệ
+ * (đặt theo kích thước phòng: nhà cỡ gốc hệ số 1 ra đúng mặt bằng cũ).
  */
 import * as THREE from 'three';
 import type { BuildingSpec, InteriorKind } from '../spec';
 import { markDynamic } from '../merge';
 import { makeCanvasTex } from '../textures';
 import { box, column } from './hinh';
-import type { Style } from './chi_tiet';
+import { hk, type Style } from './chi_tiet';
 
 /** Hộp va chạm trong hệ toạ độ nhà: tâm (x, z), rộng w (theo x), sâu d (theo z). */
 export interface LocalBox {
@@ -60,36 +62,52 @@ function chalkTex(han: string): THREE.CanvasTexture {
   });
 }
 
-/** Lớp học: bảng đen + chữ phấn, bục giảng, chỗ thầy, 4 án thư + bồ đoàn, lối giữa thẳng từ cửa tới bảng. */
-function lopHoc(g: THREE.Group, b: BuildingSpec, floor: number, han: string): Furnished {
+/** Án thư: lối giữa rộng 3,6 m, hai án cạnh nhau cách 2,2 m, hàng cách 1,6 m; chừa 0,6 m sát tường, 1,25 m trước cửa. */
+const DESK_X0 = 2.6;
+const DESK_PITCH_X = 2.2;
+const DESK_PITCH_Z = 1.6;
+
+/** Lớp học: bảng đen + chữ phấn, bục giảng, chỗ thầy, án thư + bồ đoàn xếp đầy phòng, lối giữa thẳng từ cửa tới bảng. */
+function lopHoc(g: THREE.Group, b: BuildingSpec, floor: number, han: string, k: number): Furnished {
   const zi = -(b.d - 0.8) / 2 + 0.25; // mặt trong tường sau
+  const xi = (b.w - 0.8) / 2 - 0.25; // mặt trong tường bên
+  const zFront = (b.d - 0.8) / 2 - 0.25; // mặt trong tường trước
   const boxes: LocalBox[] = [];
-  // bảng đen 4 m, khung gỗ, chữ phấn
-  g.add(box(4.3, 1.9, 0.08, WOOD, 0, floor + 1.85, zi + 0.04));
-  g.add(box(4, 1.6, 0.06, BOARD, 0, floor + 1.85, zi + 0.09));
-  const chalk = new THREE.Mesh(new THREE.PlaneGeometry(1.3, 1.3), new THREE.MeshBasicMaterial({ map: chalkTex(han), transparent: true }));
-  chalk.position.set(0, floor + 1.85, zi + 0.125);
+  // bảng đen 4 m × 1,6 (× hệ số), khung gỗ, chữ phấn
+  const bw = 4 * k;
+  const bh = 1.6 * k;
+  const by = floor + 1.85 * k;
+  g.add(box(bw + 0.3, bh + 0.3, 0.08, WOOD, 0, by, zi + 0.04));
+  g.add(box(bw, bh, 0.06, BOARD, 0, by, zi + 0.09));
+  const chalk = new THREE.Mesh(new THREE.PlaneGeometry(1.3 * k, 1.3 * k), new THREE.MeshBasicMaterial({ map: chalkTex(han), transparent: true }));
+  chalk.position.set(0, by, zi + 0.125);
   g.add(chalk);
-  // bục giảng 6 × 1 m, cao 0,2
+  // bục giảng rộng 6 m (× hệ số), sâu 1, cao 0,2
   const podiumZ = zi + 0.7;
-  g.add(box(6, 0.2, 1, PODIUM, 0, floor + 0.1, podiumZ));
-  boxes.push({ x: 0, z: podiumZ, w: 6, d: 1 });
-  // 4 án thư 1,6 × 0,6 (2 hàng × 2), lối giữa 3,6 m; bồ đoàn phía cửa
-  for (const z of [zi + 2.85, zi + 4.45]) {
-    for (const x of [-2.6, 2.6]) {
+  const pw = 6 * k;
+  g.add(box(pw, 0.2, 1, PODIUM, 0, floor + 0.1, podiumZ));
+  boxes.push({ x: 0, z: podiumZ, w: pw, d: 1 });
+  // án thư 1,6 × 0,6 xếp đầy phòng (nhà gốc 13 × 7: 2 hàng × 2), lối giữa; bồ đoàn phía cửa
+  const rows: number[] = [];
+  for (let z = zi + 2.85; z <= zFront - 1.25 + 1e-6; z += DESK_PITCH_Z) rows.push(z);
+  const cols: number[] = [];
+  for (let x = DESK_X0; x + 0.8 <= xi - 0.6 + 1e-6 || x === DESK_X0; x += DESK_PITCH_X) cols.push(-x, x);
+  for (const z of rows) {
+    for (const x of cols) {
       g.add(box(1.6, 0.06, 0.6, WOOD, x, floor + 0.38, z));
       for (const s of [-1, 1]) g.add(box(0.06, 0.35, 0.5, WOOD, x + s * 0.7, floor + 0.175, z));
       g.add(column(0.28, 0.12, CUSHION, x, floor, z + 0.6, 10));
       boxes.push({ x, z, w: 1.6, d: 0.6 });
     }
   }
-  const teacher = { x: -2.6, y: floor + 0.2, z: podiumZ };
+  // thầy đứng trên bục, cạnh mép trái bảng
+  const teacher = { x: -(bw / 2 + 0.6), y: floor + 0.2, z: podiumZ };
   boxes.push({ x: teacher.x, z: teacher.z, w: 0.9, d: 0.9 });
   const hits = [
-    hitBox(g, 4.4, 2.2, 0.8, 0, floor + 1.85, zi + 0.3), // bảng đen
+    hitBox(g, bw + 0.4, bh + 0.6, 0.8, 0, by, zi + 0.3), // bảng đen
     hitBox(g, 1, 2.1, 1, teacher.x, floor + 1.25, teacher.z), // thầy
   ];
-  return { boxes, hits, teacher, anchor: new THREE.Vector3(0, floor + 3.05, zi + 0.3) };
+  return { boxes, hits, teacher, anchor: new THREE.Vector3(0, by + bh / 2 + 0.4, zi + 0.3) };
 }
 
 /** Một kệ sách dài `len` (theo trục x của kệ), 4 tầng gáy sách nhiều màu; mặt sách nhìn về +z của kệ. */
@@ -117,18 +135,36 @@ function shelf(g: THREE.Group, len: number, x: number, z: number, rotY: number, 
   g.add(k);
 }
 
-/** Thư viện: kệ sách tường sau + hai tường bên, án đọc giữa phòng có sách mở. */
+/** Kệ đứng giữa phòng (thư viện rộng): dài 2 m, cách kệ sau 1,3 m; chỉ đặt khi lối hai bên còn ≥ 1,1 m. */
+const FREE_SHELF = 2;
+
+/** Thư viện: kệ sách tường sau + hai tường bên (dài theo phòng), phòng rộng thì thêm hai kệ đứng; án đọc giữa phòng. */
 function thuVien(g: THREE.Group, b: BuildingSpec, floor: number): Furnished {
   const zi = -(b.d - 0.8) / 2 + 0.25;
   const xi = (b.w - 0.8) / 2 - 0.25;
+  const id = b.d - 0.8;
   const boxes: LocalBox[] = [];
   const backLen = 2 * xi - 0.1;
   shelf(g, backLen, 0, zi + 0.225, 0, floor, 1);
   boxes.push({ x: 0, z: zi + 0.225, w: backLen, d: 0.45 });
-  const sideZ = zi + 0.45 + 1.5;
-  shelf(g, 3, -xi + 0.225, sideZ, Math.PI / 2, floor, 7);
-  shelf(g, 3, xi - 0.225, sideZ, -Math.PI / 2, floor, 13);
-  for (const s of [-1, 1]) boxes.push({ x: s * (xi - 0.225), z: sideZ, w: 0.45, d: 3 });
+  // kệ hai bên: từ kệ sau ra tới cách tường trước ~1,75 m (nhà gốc: 3 m)
+  const sideLen = Math.max(3, id - 2.2);
+  const sideZ = zi + 0.45 + sideLen / 2;
+  shelf(g, sideLen, -xi + 0.225, sideZ, Math.PI / 2, floor, 7);
+  shelf(g, sideLen, xi - 0.225, sideZ, -Math.PI / 2, floor, 13);
+  for (const s of [-1, 1]) boxes.push({ x: s * (xi - 0.225), z: sideZ, w: 0.45, d: sideLen });
+  // kệ đứng: lối giữa ≥ 2,8 m, lối tới kệ bên ≥ 1,1 m, cách án đọc ≥ 1,5 m
+  const freeX = 1.4 + FREE_SHELF / 2;
+  const freeZ = zi + 0.45 + 1.3 + 0.225;
+  const extra: [number, number][] = [];
+  const EPS = 1e-6;
+  if (xi - 0.45 - (freeX + FREE_SHELF / 2) >= 1.1 - EPS && -0.35 - (freeZ + 0.225) >= 1.5 - EPS) {
+    for (const s of [-1, 1]) {
+      shelf(g, FREE_SHELF, s * freeX, freeZ, 0, floor, 19 + s * 4);
+      boxes.push({ x: s * freeX, z: freeZ, w: FREE_SHELF, d: 0.45 });
+      extra.push([s * freeX, freeZ]);
+    }
+  }
   // án đọc 1,4 × 0,7, sách mở hai trang nghiêng
   g.add(box(1.4, 0.06, 0.7, WOOD, 0, floor + 0.75, 0));
   for (const s of [-1, 1]) g.add(box(0.06, 0.72, 0.6, WOOD, s * 0.62, floor + 0.36, 0));
@@ -141,13 +177,14 @@ function thuVien(g: THREE.Group, b: BuildingSpec, floor: number): Furnished {
   const hits = [
     hitBox(g, 1.6, 1.3, 0.9, 0, floor + 0.65, 0), // án đọc
     hitBox(g, backLen, 2.4, 0.6, 0, floor + 1.2, zi + 0.225), // kệ sau
-    hitBox(g, 0.6, 2.4, 3, -xi + 0.225, floor + 1.2, sideZ),
-    hitBox(g, 0.6, 2.4, 3, xi - 0.225, floor + 1.2, sideZ),
+    hitBox(g, 0.6, 2.4, sideLen, -xi + 0.225, floor + 1.2, sideZ),
+    hitBox(g, 0.6, 2.4, sideLen, xi - 0.225, floor + 1.2, sideZ),
+    ...extra.map(([x, z]) => hitBox(g, FREE_SHELF + 0.1, 2.4, 0.6, x, floor + 1.2, z)),
   ];
   return { boxes, hits, anchor: new THREE.Vector3(0, floor + 1.9, 0) };
 }
 
 /** Dựng nội thất theo kiểu; `han` = chữ trên bảng (lớp học). */
-export function addInterior(g: THREE.Group, b: BuildingSpec, _style: Style, kind: InteriorKind, floor: number, han: string): Furnished {
-  return kind === 'lop-hoc' ? lopHoc(g, b, floor, han) : thuVien(g, b, floor);
+export function addInterior(g: THREE.Group, b: BuildingSpec, style: Style, kind: InteriorKind, floor: number, han: string): Furnished {
+  return kind === 'lop-hoc' ? lopHoc(g, b, floor, han, hk(style)) : thuVien(g, b, floor);
 }

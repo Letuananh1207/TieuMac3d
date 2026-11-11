@@ -2,10 +2,11 @@
  * Điện (`dien`) và giảng đường (`giang-duong`) theo bản mẫu `design/source/PhongCach-KienTruc.dc.html`:
  * nền đá trắng có bậc + lan can, cột son, cửa bức bàn, dải xà lục – lam – chấm vàng.
  * Điện: mái hiên kép (hiên dưới vươn 3,5 m, thân trên, mái yết sơn); giảng đường: một tầng mái yết sơn.
+ * Chiều cao nền, cột, thân, mái nhân `buildingStyle.heightScale` (`hk`); bậc, lan can, biển, đèn lồng giữ cỡ người.
  */
 import * as THREE from 'three';
 import type { BuildingSpec } from '../spec';
-import { addBeamBand, addDoors, addLanterns, addRailing, addSign, addSteps, type Style } from './chi_tiet';
+import { addBeamBand, addDoors, addLanterns, addRailing, addSign, addSteps, hk, stepCount, type Style } from './chi_tiet';
 import { box, column } from './hinh';
 import { cornerTips, gableHipRoof, skirt } from './mai';
 
@@ -21,8 +22,8 @@ export interface RoomParts {
   front: THREE.Group;
 }
 
-/** Độ cao nền đá giảng đường (sàn trong nhà). */
-export const HALL_FLOOR = 0.6;
+/** Độ cao nền đá giảng đường (sàn trong nhà) theo hệ số chiều cao: 0,6 m × hệ số. */
+export const hallFloor = (style: Style): number => 0.6 * hk(style);
 
 /** Nền + thân một tầng (cột, cửa, tường, xà). `room` = nhà rỗng có cửa giữa. Trả về độ cao đỉnh dải xà. */
 function hallBody(g: THREE.Group, b: BuildingSpec, style: Style, plat: number, margin: number, colH: number, room?: RoomParts): number {
@@ -30,7 +31,7 @@ function hallBody(g: THREE.Group, b: BuildingSpec, style: Style, plat: number, m
   const pw = w + 2 * margin;
   const pd = d + 2 * margin;
   g.add(box(pw, plat, pd, style.base, 0, plat / 2, 0));
-  addSteps(g, 4, pd / 2, plat, style);
+  addSteps(g, 4, pd / 2, plat, style, stepCount(style));
   addRailing(g, pw, pd, plat, 4.4, style);
   const iw = w - 0.8;
   const id = d - 0.8;
@@ -54,10 +55,10 @@ function hallBody(g: THREE.Group, b: BuildingSpec, style: Style, plat: number, m
 }
 
 export function giangDuong(g: THREE.Group, b: BuildingSpec, style: Style, room?: RoomParts): void {
-  const colH = 3.2;
-  const y = hallBody(g, b, style, HALL_FLOOR, 1, colH, room);
+  const k = hk(style);
+  const y = hallBody(g, b, style, hallFloor(style), 1, 3.2 * k, room);
   const top = room ? room.roof : g;
-  gableHipRoof(top, { y, w: b.w, d: b.d, over: 1.8, h: 2.6, color: b.roofColor, ridgeColor: style.ridge });
+  gableHipRoof(top, { y, w: b.w, d: b.d, over: 1.8, h: 2.6 * k, color: b.roofColor, ridgeColor: style.ridge });
   addSign(top, b.title, y - 1.05, b.d / 2 - 0.05);
   const hw = b.w / 2 + 1.5;
   const hd = b.d / 2 + 1.5;
@@ -66,19 +67,21 @@ export function giangDuong(g: THREE.Group, b: BuildingSpec, style: Style, room?:
 
 export function dien(g: THREE.Group, b: BuildingSpec, style: Style): void {
   const { w, d } = b;
-  const y = hallBody(g, b, style, 1, 1.5, 3.6);
+  const k = hk(style);
+  const y = hallBody(g, b, style, 1 * k, 1.5, 3.6 * k);
   // hiên dưới: rộng hơn thân 3,5 m mỗi bên, dốc lên tới chân thân trên
   const uw = w * 0.75;
   const ud = d * 0.65;
-  const lowH = 1.3;
+  const lowH = 1.3 * k;
   skirt(g, y, w + 7, d + 7, uw + 0.4, ud + 0.4, lowH, b.roofColor);
   cornerTips(g, y, w / 2 + 3.4, d / 2 + 3.4, style.ridge, 1.3);
   // thân trên + xà + mái yết sơn
   const y2 = y + lowH - 0.4;
-  g.add(box(uw, 1.6, ud, style.wall, 0, y2 + 0.8, 0));
-  addBeamBand(g, uw, ud, y2 + 1.6, style);
-  gableHipRoof(g, { y: y2 + 2.1, w: uw, d: ud, over: 1.5, h: 2.4, color: b.roofColor, ridgeColor: style.ridge });
-  addSign(g, b.title, y2 + 0.85, ud / 2 + 0.06, 1.1);
+  const upH = 1.6 * k;
+  g.add(box(uw, upH, ud, style.wall, 0, y2 + upH / 2, 0));
+  addBeamBand(g, uw, ud, y2 + upH, style);
+  gableHipRoof(g, { y: y2 + upH + 0.5, w: uw, d: ud, over: 1.5, h: 2.4 * k, color: b.roofColor, ridgeColor: style.ridge });
+  addSign(g, b.title, y2 + upH / 2 + 0.05, ud / 2 + 0.06, 1.1);
   const hw = w / 2 + 3.2;
   const hd = d / 2 + 3.2;
   addLanterns(g, [[-hw, y - 0.35, hd], [hw, y - 0.35, hd]], style);

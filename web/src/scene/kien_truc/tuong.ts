@@ -1,7 +1,8 @@
 /**
  * Tường vôi mái ngói (粉牆黛瓦) + cổng trăng (月洞門) + cửa sổ hoa — kiểu `walls.style: "voi"`.
- * Cổng trăng: vòm tròn đường kính = bề rộng khe, tâm vòm ở 0,6 bán kính trên mặt đất, nên lối đi qua được ở mặt
- * đất = dây cung = 0,8 × bề rộng khe (khe 4 m → 3,2 m). Va chạm khớp đúng phần tường hai bên vòm.
+ * Cổng trăng: vòm tròn đường kính = bề rộng khe, nhưng không cao quá tường (đỉnh vòm cách đỉnh tường ≥ 0,6 m — tường
+ * thấp thì vòm thu nhỏ, tấm cổng vẫn che kín khe). Tâm vòm ở 0,6 bán kính trên mặt đất, nên lối đi qua được ở mặt đất
+ * = dây cung = 1,6 × bán kính (khe 4 m, tường đủ cao → 3,2 m). Va chạm khớp đúng phần tường hai bên vòm.
  */
 import * as THREE from 'three';
 import type { Colliders } from '../../collision/colliders';
@@ -17,9 +18,17 @@ type Style = SceneSpec['buildingStyle'];
 /** Mỗi bên khe, tấm cổng trăng lấn vào tường thêm bao nhiêu mét. */
 const PAD = 1;
 const ARC_LIFT = 0.6; // tâm vòm cao 0,6 r → dây cung mặt đất 0,8 × 2r
+/** Khoảng tối thiểu từ đỉnh vòm tới đỉnh tường. */
+const TOP_GAP = 0.6;
 
-/** Nửa bề rộng lối đi được ở mặt đất của cổng trăng rộng `width`. */
-export const moonOpening = (width: number): number => Math.sqrt(1 - ARC_LIFT * ARC_LIFT) * (width / 2);
+/** Bán kính vòm của khe rộng `width` trên tường cao `wallH`: nửa khe, thu lại cho đỉnh vòm vừa dưới tường. */
+export const moonRadius = (width: number, wallH: number): number => Math.min(width / 2, (wallH - TOP_GAP) / (1 + ARC_LIFT));
+
+/** Nửa bề rộng lối đi được ở mặt đất của vòm bán kính `r`. */
+export const moonOpening = (r: number): number => Math.sqrt(1 - ARC_LIFT * ARC_LIFT) * r;
+
+/** Nửa bề rộng tấm cổng = nửa khe + `PAD` (tường vòng bị cắt rộng đúng chừng ấy — `ringRuns(w, PAD)`). */
+const moonHalf = (gate: WallGate): number => gate.width / 2 + PAD;
 
 /** Một đoạn tường vôi: thân vôi, chân đá, mái ngói hai mái trên đỉnh, cửa sổ hoa cách nhau `windows` m. */
 function plasterRun(g: THREE.Group, r: Run, w: Walls, style: Style): void {
@@ -50,10 +59,10 @@ function plasterRun(g: THREE.Group, r: Run, w: Walls, style: Style): void {
 
 /** Tấm tường có vòm trăng cho khe `gate`, đứng ở tâm khe. Trả về hai hộp va chạm hai bên vòm (theo hệ của run). */
 function moonGate(g: THREE.Group, gate: WallGate, w: Walls, style: Style): void {
-  const r = gate.width / 2;
+  const r = moonRadius(gate.width, w.height);
   const cy = ARC_LIFT * r;
-  const c = moonOpening(gate.width);
-  const hw = r + PAD;
+  const c = moonOpening(r);
+  const hw = moonHalf(gate);
   const h = Math.max(w.height, cy + r + 0.6);
   const start = Math.PI + Math.asin(ARC_LIFT); // điểm vòm chạm đất bên trái
   const end = -Math.asin(ARC_LIFT); // bên phải
@@ -96,11 +105,12 @@ function moonGate(g: THREE.Group, gate: WallGate, w: Walls, style: Style): void 
   g.add(grp);
 }
 
-/** Va chạm hai bên vòm của một cổng trăng (đoạn [at − r − PAD, at − c] và [at + c, at + r + PAD]). */
-function moonColliders(colliders: Colliders, gate: WallGate, half: number): void {
-  const r = gate.width / 2;
-  const c = moonOpening(gate.width);
-  const len = r + PAD - c;
+/** Va chạm hai bên vòm của một cổng trăng (đoạn [at − hw, at − c] và [at + c, at + hw], hw = nửa tấm cổng). */
+function moonColliders(colliders: Colliders, gate: WallGate, w: Walls): void {
+  const half = w.half;
+  const r = moonRadius(gate.width, w.height);
+  const c = moonOpening(r);
+  const len = moonHalf(gate) - c;
   for (const s of [-1, 1]) {
     const along = gate.at + s * (c + len / 2);
     if (gate.side === 'bac' || gate.side === 'nam') colliders.add(along, gate.side === 'bac' ? -half : half, len, 1);
@@ -125,7 +135,7 @@ export function addPlasterWalls(
   }
   for (const gate of w.gates) {
     moonGate(g, gate, w, style);
-    moonColliders(colliders, gate, w.half);
+    moonColliders(colliders, gate, w);
   }
   scene.add(g);
 }

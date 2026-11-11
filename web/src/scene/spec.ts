@@ -281,6 +281,9 @@ export interface SceneSpec {
     beamBlue: string;
     gold: string;
     timber: string;
+    /** hệ số chiều cao kiến trúc (nền, cột, tường thân, cửa, mái, tầng tháp, cổng sơn môn), 0,5–3; 1 = cỡ gốc.
+     *  Thứ cỡ người (bậc, lan can, biển, đèn lồng, đồ đạc) giữ nguyên. */
+    heightScale: number;
   };
   buildings: BuildingSpec[];
   gates: GateSpec[];
@@ -369,6 +372,7 @@ export const DEFAULT_SCENE: SceneSpec = {
     beamBlue: '#3f5fa0',
     gold: '#d4a64a',
     timber: '#3a2418',
+    heightScale: 1,
   },
   buildings: [
     {
