@@ -11,7 +11,8 @@
     "build:design": "tsc --noEmit && node scripts/subset-han.mjs && vite build --mode design",
     "scene:check": "node scripts/check-scene.mjs",
     "fonts:han": "node scripts/subset-han.mjs",
-    "fonts:app": "node scripts/fonts-app.mjs"
+    "fonts:app": "node scripts/fonts-app.mjs",
+    "model:clean": "node scripts/model-clean.mjs"
   },
   "dependencies": {
     "@fontsource/be-vietnam-pro": "5.2.5",
@@ -20,8 +21,12 @@
   },
   "devDependencies": {
     "@fontsource/noto-serif-sc": "5.3.1",
+    "@gltf-transform/core": "4.5.1",
+    "@gltf-transform/extensions": "4.5.1",
+    "@gltf-transform/functions": "4.5.1",
     "@types/three": "0.170.0",
     "esbuild": "0.25.12",
+    "meshoptimizer": "1.3.0",
     "subset-font": "2.9.0",
     "typescript": "5.9.3",
     "vite": "6.4.5"

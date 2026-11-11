@@ -45,13 +45,23 @@ cho thương mại. Trước khi phát hành app: đọc file `LICENSE` đúng b
    - công trình: một điện / đình, ảnh có đủ mái, cột, nền.
    Có thể vẽ ảnh bằng mô hình tạo ảnh AI, hoặc chụp từ Canvas 3D (`?cam=…`) rồi nhờ mô hình ảnh "vẽ lại đẹp hơn".
 2. **Tạo model** trong Hunyuan3D → xuất `.glb`. Thử 2–3 lần (đổi seed), giữ bản đẹp nhất.
-3. **Làm sạch trong Blender** (miễn phí):
-   - giảm tam giác (modifier *Decimate*): nhân vật **≤ 10 000**, công trình **≤ 20 000** tam giác;
-   - một vật liệu, texture ≤ 1024 × 1024 (*Bake* nếu model có nhiều texture);
-   - đặt gốc toạ độ dưới chân, mặt trước nhìn **+Z**, đơn vị mét (đệ tử cao ≈ 1,6–1,8 m);
+3. **Làm sạch bằng script (không cần Blender)** — từ thư mục dự án:
+   ```
+   cd web
+   npm run model:clean -- C:\đường\dẫn\model.glb                    # nhân vật → design/models/nhan-vat.glb
+   npm run model:clean -- C:\…\dien.glb --loai cong-trinh --ten dien  # công trình → design/models/dien.glb
+   ```
+   Script (`web/scripts/model-clean.mjs`, glTF-Transform + meshoptimizer) giảm tam giác về ngân sách, gộp đỉnh trùng,
+   nén meshopt (thay bước 4), in số tam giác / dung lượng / texture và báo **VƯỢT NGÂN SÁCH** nếu còn vượt (texture
+   lớn, nhiều vật liệu — phần đó vẫn cần Blender). Thử với mẫu `1.glb` của Hunyuan3D: 40 000 → 9 936 tam giác,
+   704 KB → 36 KB, nhìn gần như không đổi.
+   **Chỉ cần Blender khi** (miễn phí):
+   - script báo texture > 1024 × 1024 hoặc nhiều vật liệu → gộp còn một vật liệu, *Bake* texture ≤ 1024;
+   - model nằm sai hướng: mặt trước phải nhìn **+Z** (cỡ và vị trí không cần chỉnh — app tự co về cao 2,1 m, chân
+     chạm đất);
    - nhân vật: gắn xương + động tác **idle** và **walk** (Mixamo của Adobe — miễn phí, cần tài khoản; hoặc Rigify trong
      Blender). Tên clip: `idle`, `walk`.
-4. **Nén** bằng `gltfpack` (meshoptimizer) — three.js giải nén được bằng `MeshoptDecoder` có sẵn trong gói, chạy offline.
+4. **Nén** (script bước 3 đã làm; tự làm thì `gltfpack` — meshoptimizer) — three.js giải nén được bằng `MeshoptDecoder` có sẵn trong gói, chạy offline.
    Đích: nhân vật ≤ 1,5 MB, công trình ≤ 3 MB.
 5. **Đưa vào repo**: `design/models/<tên>.glb` + một dòng `design/models/LICENSES.md` (công cụ + phiên bản, ảnh đầu vào
    tự làm hay nguồn nào, ngày tạo, giấy phép).
