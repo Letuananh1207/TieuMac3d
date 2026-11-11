@@ -79,8 +79,10 @@ makerstack.co meshy-review · sloyd.ai ai-3d-model-generator-pricing.
 - [x] B4. Nhân vật (`canStep`, R-VA-2), chạm để đi (tia dò vào lưới), camera không chui đất, cây + đồ trang trí theo
       độ cao. Kiểm bằng script tạm với code app (chưa có trình chạy test TS — 4 ví dụ đúng).
 - [x] B5. Núi xa 3 lớp (không sương) + biển mây; far plane theo `viewDistance`. Mẫu: 62–95 draw call, ~110k tam giác.
-- [ ] B6. Cỏ búi + đá rải (instanced), suối / thác, bậc đá, bục ở độ cao khác 0 (lối lát dốc theo).
-- [ ] B7. Phiếu `2026-11-11-dia-hinh.md` (đã soạn, chờ thiết kế) → `/ui-design canh` dựng địa hình thật → `/ui-apply`.
+- [x] B6a. Cỏ búi + đá rải (instanced), bậc đá (`67c5b43`); đặt Thiên Bậc + bục Nội Môn (thiết kế 2026-11-11.6).
+- [ ] B6b. Suối / thác Hậu Sơn; nhà trên bục cao khác 0 (lối lát dốc theo).
+- [x] B7. Địa hình thật (thiết kế 2026-11-11.5, phiên VS Code làm thay theo nhờ của người dùng) — chờ `/ui-apply`
+      (không cần code mới: `scene:check` + build).
 
 Đợt C — giao diện (chờ thiết kế)
 - [x] C1. Phiếu `2026-11-11-hud-lam-lai.md` (chip khu, joystick, nút, thẻ mời, nhãn tên, hướng dẫn, màn tải, fps chỉ
