@@ -3,6 +3,32 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-11.11 — Phóng tông môn ×1,6 + kiến trúc cao ×1,6 (heightScale)
+
+- Loại: cảnh 3D — **bố cục** (toàn cảnh ×1,6) + **ngoại hình** (kiến trúc cao). Người dùng nhờ phiên VS Code (`/canh`)
+  đặt hệ số và chốt bố cục ×1,6 đã sửa sẵn trong máy (chưa từng commit).
+- Trường đổi (`scene.json`):
+  - **Mới** `buildingStyle.heightScale`: (không có = 1) → **1,6** — nền, cột, tường thân, cửa, mái, tầng tháp, cổng sơn
+    môn cao ×1,6; bậc (thêm bậc), lan can, biển, đèn lồng giữ cỡ người. Code: `8037d76`.
+  - Bố cục ×1,6: toạ độ + kích thước nhà, cổng, ao, lối đá, đồ trang trí, giếng, khu (`site.areas`), tường (`half` 21 →
+    33,6, đoạn tường, khe cổng 4 → 6,4), địa hình (bục, đỉnh, bậc đá, mép vực), núi xa, biển mây, đảo nổi, điểm xuất
+    phát (0; 50) → (0; 80), sương ×1,6.
+  - Khác ×1,6: tường cao 2,6 → **4,5**; camera ×1,36–1,41; cây ×1,4; thêm `scale` cho 5 đồ trang trí; thứ tự Văn Tháp /
+    Chưởng Môn Điện trong `buildings` đổi chỗ (không đổi nhà).
+- Nội thất (code tự theo phòng): giảng đường 20,8 × 11,2 — bảng 6,4 × 2,56 m, bục 9,6 m, 24 án thư (6 × 4), 5 bậc, nền
+  0,96 m; thư viện 11,2 × 9,6 — kệ bên 6,6 m + 2 kệ đứng. Cổng trăng thu cho vừa tường 4,5 m: đỉnh vòm 3,9 m, lối đi 3,9 m.
+- Luật: ví dụ toạ độ `R-VUNG-1/2`, `R-VA-1/3`, `R-HUD-1/3` đã được phiên code cập nhật theo bố cục này (`8037d76`, đồng
+  bộ online, chờ xác nhận) — không lệch.
+- `scene:check`: **Không có lỗi** (hệ số 1,6 · tường ±33,6 cao 4,5 · vùng lop-hsk3 (0; −20,9) r 1,8, thu-vien (−20; 6,4) r 1,6).
+- Hiệu năng (Canvas 3D): trên xuống **140 draw call** · góc chơi Sơn Môn 127 — ≤ 150. Tam giác **~181k > 150k** (đã vượt
+  trước khi tăng chiều cao — địa hình 480 m ô 3 m + bố cục ×1,6; việc này chỉ thêm ~3–4k). Đề xuất: `/lead` giảm tam
+  giác (ô địa hình lớn hơn ở rìa, cỏ / đá thưa hơn).
+- Cần code: không.
+- Canvas 3D: phiên bản 16 (https://claude.ai/artifact/TyJxrgsBcj5ryHakv7c1so).
+- Ảnh (`?chup`): `screens/Canh-giang-duong.png` (chụp lại, cao ×1,6), `Canh-giang-duong-trong.png`, `Canh-thu-vien-trong.png`,
+  `Canh-cong-bac.png` (chụp lại, cổng trăng vừa tường), `Canh-son-mon.png`.
+- File: `scene/scene.json`, `screens/Canh-*.png`.
+
 ## 2026-11-11.10 — Màn bài học (Flutter native) theo chất liệu C
 
 - Loại: giao diện (màn mới) · chuỗi. Người dùng nhờ phiên VS Code làm thay phiên thiết kế; người dùng duyệt trên canvas
