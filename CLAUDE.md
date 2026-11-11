@@ -39,6 +39,7 @@ dev Flutter chưa làm game: mỗi khi chọn thư viện / cách làm, giải t
 | `web/dist/**` | `cd web && npm run build` |
 | `web/dist-design/**` (Canvas 3D, không vào app) | `cd web && npm run build:design` |
 | `web/src/fonts/**` (chữ Hán cắt từ Noto Serif SC) | `cd web && npm run fonts:han` (dev / build tự chạy) |
+| `app/assets/fonts/**`, `app/lib/theme/app_fonts.g.dart`, khối `fonts:` trong `app/pubspec.yaml` | `cd web && npm run fonts:app` (build tự chạy) |
 
 ## Lệnh thường dùng
 

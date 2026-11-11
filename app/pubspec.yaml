@@ -52,6 +52,79 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
+  # >>> fonts (sinh bởi web/scripts/fonts-app.mjs — không sửa tay)
+  fonts:
+    - family: BeVietnamPro
+      fonts:
+        - asset: assets/fonts/be-vietnam-pro-latin-500.ttf
+          weight: 500
+        - asset: assets/fonts/be-vietnam-pro-latin-700.ttf
+          weight: 700
+    - family: BeVietnamProExt
+      fonts:
+        - asset: assets/fonts/be-vietnam-pro-latin-ext-500.ttf
+          weight: 500
+        - asset: assets/fonts/be-vietnam-pro-latin-ext-700.ttf
+          weight: 700
+    - family: BeVietnamProVi
+      fonts:
+        - asset: assets/fonts/be-vietnam-pro-vietnamese-500.ttf
+          weight: 500
+        - asset: assets/fonts/be-vietnam-pro-vietnamese-700.ttf
+          weight: 700
+    - family: Lora
+      fonts:
+        - asset: assets/fonts/lora-latin-700.ttf
+          weight: 700
+    - family: LoraExt
+      fonts:
+        - asset: assets/fonts/lora-latin-ext-700.ttf
+          weight: 700
+    - family: LoraVi
+      fonts:
+        - asset: assets/fonts/lora-vietnamese-700.ttf
+          weight: 700
+    - family: HanSerif100
+      fonts:
+        - asset: assets/fonts/han-100.ttf
+          weight: 700
+    - family: HanSerif114
+      fonts:
+        - asset: assets/fonts/han-114.ttf
+          weight: 700
+    - family: HanSerif116
+      fonts:
+        - asset: assets/fonts/han-116.ttf
+          weight: 700
+    - family: HanSerif117
+      fonts:
+        - asset: assets/fonts/han-117.ttf
+          weight: 700
+    - family: HanSerif118
+      fonts:
+        - asset: assets/fonts/han-118.ttf
+          weight: 700
+    - family: HanSerif70
+      fonts:
+        - asset: assets/fonts/han-70.ttf
+          weight: 700
+    - family: Pinyin119
+      fonts:
+        - asset: assets/fonts/pinyin-119.ttf
+          weight: 700
+    - family: Pinyin98
+      fonts:
+        - asset: assets/fonts/pinyin-98.ttf
+          weight: 700
+    - family: Pinyin99
+      fonts:
+        - asset: assets/fonts/pinyin-99.ttf
+          weight: 700
+    - family: Pinyinlatinext
+      fonts:
+        - asset: assets/fonts/pinyin-latinext.ttf
+          weight: 700
+  # <<< fonts
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

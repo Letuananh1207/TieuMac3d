@@ -9,6 +9,8 @@ Chưa có: quản lý trạng thái, router, DI, l10n, lưu trữ, mạng ngoài
 |---|---|
 | `lib/main.dart` | khởi động: giao diện tràn viền, bật gỡ lỗi WebView (debug), mở server, `HocXaApp` |
 | `lib/scene/` | mọi thứ về scene web: `scene_server.dart`, `scene_view.dart`, `safe_area_script.dart` |
+| `lib/lesson/lesson_screen.dart` | màn bài học native (mở từ cầu nối `openLesson`, đóng → `resume`) |
+| `lib/theme/app_fonts.g.dart` | họ font + họ dự phòng (sinh bởi `web/scripts/fonts-app.mjs`, không sửa tay); chữ dùng `AppFonts.ui` + `uiFallback`, chữ Hán `fontFamilyFallback: AppFonts.han` |
 | `lib/theme/app_colors.dart` | màu (`AppColors`) — lấy từ bảng màu web; `Color(0x…)` chỉ viết ở đây (`W-MAU`) |
 | `test/<thư mục>/<file>_test.dart` | test cùng đường dẫn với `lib/` |
 

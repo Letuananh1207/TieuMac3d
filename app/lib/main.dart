@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
+import 'lesson/lesson_screen.dart';
 import 'scene/scene_server.dart';
 import 'scene/scene_view.dart';
 import 'theme/app_colors.dart';
@@ -56,7 +57,11 @@ class HocXaApp extends StatelessWidget {
         scaffoldBackgroundColor: AppColors.sceneBackground,
       ),
       home: startError == null
-          ? SceneView(url: server.url)
+          ? SceneView(
+              url: server.url,
+              // trang gửi openLesson → mở màn bài học native; đóng màn → SceneView gửi resume (docs/bridge.md)
+              onOpenLesson: (context, request) => Navigator.of(context).push(LessonScreen.route(request.lesson)),
+            )
           : Scaffold(body: SceneErrorView(detail: startError!)),
     );
   }

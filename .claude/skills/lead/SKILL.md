@@ -112,7 +112,7 @@ flutter test -r failures-only test/<phần> · dart tool/rule_trace.dart
 | build web, chép sang app | — | `web/vite.config.ts`, `web/scripts/copy-to-app.mjs` |
 | app Flutter, WebView, màn bài học native, vòng đời | `main.dart` | `app/lib/` |
 | cầu nối Flutter ↔ 3D, sự kiện, safe area | `bridge`, `scene_view`, `safe_area` | `docs/bridge.md`, `app/lib/scene/`, `web/src/bridge/` (mốc 3) |
-| màn bài học native (mốc 3) | — | phiếu `docs/phieu_thiet_ke/2026-11-10-man-bai-hoc.md` (chờ thiết kế) |
+| màn bài học native (mốc 3) | `lesson_screen`, `scene_event` | `app/lib/lesson/`, `app/lib/scene/scene_event.dart`; font: `web/scripts/fonts-app.mjs` |
 | thiết kế, token, canvas | — | `design/` (chỉ đọc) → `/ui-apply` |
 | model .glb (mốc 3D-b, chưa làm) | `player/`, `scene/` | `docs/tasks/2026-11-10-thiet-ke-3d.md` |
 

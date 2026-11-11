@@ -6,11 +6,12 @@
   "scripts": {
     "dev": "node scripts/subset-han.mjs && vite --host",
     "typecheck": "tsc --noEmit",
-    "build": "tsc --noEmit && node scripts/check-scene.mjs && node scripts/subset-han.mjs && vite build && node scripts/copy-to-app.mjs",
+    "build": "tsc --noEmit && node scripts/check-scene.mjs && node scripts/subset-han.mjs && vite build && node scripts/copy-to-app.mjs && node scripts/fonts-app.mjs",
     "preview": "vite preview --host",
     "build:design": "tsc --noEmit && node scripts/subset-han.mjs && vite build --mode design",
     "scene:check": "node scripts/check-scene.mjs",
-    "fonts:han": "node scripts/subset-han.mjs"
+    "fonts:han": "node scripts/subset-han.mjs",
+    "fonts:app": "node scripts/fonts-app.mjs"
   },
   "dependencies": {
     "@fontsource/be-vietnam-pro": "5.2.5",
