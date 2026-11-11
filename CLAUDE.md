@@ -5,7 +5,8 @@ học thì hiện thẻ mời vào học chữ Hán. Giao diện **tiếng Việ
 dev Flutter chưa làm game: mỗi khi chọn thư viện / cách làm, giải thích ngắn vì sao; chỗ cần quyết định thì hỏi.
 
 - `web/` — scene 3D: three.js + TypeScript + Vite, build ra file tĩnh, **chạy offline (không CDN)**.
-- `app/` — Flutter, hiển thị scene bằng WebView (`flutter_inappwebview` + `InAppLocalhostServer`, từ mốc 2).
+- `app/` — Flutter (Android, iOS, **web**), hiển thị scene bằng WebView (`flutter_inappwebview`; Android / iOS qua
+  `InAppLocalhostServer`, web nạp thẳng asset — `app/lib/scene/scene_server.dart`). Không làm bản desktop.
 - Làm theo mốc; xong mốc nào báo người dùng rồi mới sang mốc sau. Không multiplayer / đăng nhập / backend.
 
 ## Nguồn sự thật ngoài code
@@ -46,7 +47,7 @@ cd web && npm run build        # kiểm kiểu + kiểm đặc tả cảnh + bui
 cd web && npm run scene:check  # kiểm design/scene/scene.json, in toạ độ nhà / vùng / tường
 cd web && npm run build:design # Canvas 3D → web/dist-design/ (đăng artifact ở phiên thiết kế)
 cd web && npx tsc --noEmit     # chỉ kiểm kiểu TS
-cd app && flutter run          # chạy app (build web trước)
+cd app && flutter run          # chạy app (build web trước); trình duyệt: flutter run -d chrome
 cd app && flutter analyze && flutter test
 dart tool/check.dart --changed # quy tắc bộ chuẩn trên file vừa đổi (--summary: đếm)
 dart tool/guard.dart           # chốt chặn: lỗi biên dịch Dart/TS + lỗi E

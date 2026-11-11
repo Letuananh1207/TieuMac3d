@@ -45,6 +45,9 @@ void didChangeDependencies() {
 - Quyền nền tảng: Android `INTERNET` + `res/xml/network_security_config.xml` (http chỉ tới localhost);
   iOS `NSAllowsLocalNetworking` trong `Info.plist`.
 - Xoay tự do: không gọi `setPreferredOrientations`.
+- **Web** (từ L-1): WebView là `iframe`; không có `InAppLocalhostServer` (dùng `dart:io`) → `sceneUrl(web: kIsWeb, …)` mở
+  thẳng `assets/assets/scene/index.html` cùng nguồn. `app/web/index.html` phải nạp `web_support.js` của gói. Code chỉ
+  dành cho Android phải loại `kIsWeb` (Chrome Android báo `defaultTargetPlatform == android`). Không làm bản desktop.
 
 ## Cầu nối
 

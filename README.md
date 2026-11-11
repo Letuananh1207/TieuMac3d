@@ -65,6 +65,16 @@ Cách app hiển thị cảnh: Flutter mở một máy chủ http nhỏ ngay tro
 127.0.0.1:8080) phục vụ `assets/scene/`, rồi WebView mở `http://localhost:8080/`. Không mở thẳng file vì trình
 duyệt chặn ES module tải từ `file://`.
 
+## Chạy trên trình duyệt (web)
+
+```sh
+cd web && npm run build
+cd ../app && flutter run -d chrome     # hoặc -d edge; bản phát hành: flutter build web → app/build/web/
+```
+
+Trên web WebView là một `iframe`; cảnh 3D nạp thẳng từ asset cùng nguồn (`assets/assets/scene/index.html`), không cần
+máy chủ nội bộ. App chỉ hỗ trợ Android, iOS và web — không có bản Windows / macOS desktop.
+
 ## Debug WebView
 
 Ở bản debug (`flutter run`), WebView cho phép soi bằng Chrome trên máy tính:

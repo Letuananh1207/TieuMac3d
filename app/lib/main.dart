@@ -21,7 +21,8 @@ Future<void> main() async {
   ));
 
   // Bản debug trên Android: cho chrome://inspect soi WebView.
-  if (kDebugMode && defaultTargetPlatform == TargetPlatform.android) {
+  // (trên web chạy bằng Chrome Android, defaultTargetPlatform vẫn là android → phải loại web ra)
+  if (kDebugMode && !kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
     await InAppWebViewController.setWebContentsDebuggingEnabled(true);
   }
 
