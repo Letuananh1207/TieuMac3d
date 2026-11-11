@@ -16,8 +16,10 @@ Future<void> main() async {
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
     systemNavigationBarColor: Colors.transparent,
-    statusBarIconBrightness: Brightness.light, // nền cảnh tối
-    statusBarBrightness: Brightness.dark, // iOS
+    // nền sáng (trời ban ngày, màn tải / nền HUD C #E9EEEC) → icon thanh trạng thái màu sẫm
+    statusBarIconBrightness: Brightness.dark, // Android: màu icon
+    statusBarBrightness: Brightness.light, // iOS: màu nền thanh → icon sẫm
+    systemNavigationBarIconBrightness: Brightness.dark,
   ));
 
   // Bản debug trên Android: cho chrome://inspect soi WebView.
