@@ -9,6 +9,7 @@ import { GroundPicker } from './input/tapToMove';
 import { createDiscipleCharacter } from './player/discipleCharacter';
 import { PlayerController, type MoveInput } from './player/controller';
 import { SCENE, SCENE_FILE } from './scene/loadSpec';
+import { viewDistance } from './scene/farMountains';
 import { createStage } from './scene/renderer';
 import { buildWorld } from './scene/world';
 import { el } from './ui/dom';
@@ -28,7 +29,7 @@ async function boot(): Promise<void> {
 
   const { spec } = SCENE;
   const canvas = el<HTMLCanvasElement>('stage');
-  const { renderer, scene, camera } = createStage(canvas, spec.camera.fov);
+  const { renderer, scene, camera } = createStage(canvas, spec.camera.fov, viewDistance(spec));
   const colliders = new Colliders();
   const world = buildWorld(scene, colliders, spec);
   const placed = placeZones(ZONE_CONTENT, world.zoneAnchors);
@@ -39,7 +40,10 @@ async function boot(): Promise<void> {
   const character = createDiscipleCharacter();
   character.root.position.set(spec.player.start[0], 0, spec.player.start[1]);
   scene.add(character.root);
-  const player = new PlayerController(character, colliders);
+  const player = new PlayerController(character, colliders, world.heightfield);
+  player.snapToGround();
+  const hf = world.heightfield;
+  const groundAt = hf ? (x: number, z: number): number => hf.heightAt(x, z) : undefined;
 
   /* ---------- điều khiển ---------- */
   const orbit = new OrbitCamera(spec.camera);
@@ -75,7 +79,7 @@ async function boot(): Promise<void> {
   const nameTag = new NameTag();
   const clock = new THREE.Clock();
   const input: MoveInput = { x: 0, y: 0 };
-  orbit.update(camera, player.position, 0, true);
+  orbit.update(camera, player.position, 0, true, groundAt);
 
   function tick(): void {
     // kẹp dt: tab bị treo vài giây rồi chạy lại thì nhân vật không "dịch chuyển tức thời"
@@ -88,7 +92,7 @@ async function boot(): Promise<void> {
     zones.update(player.position);
     areas.update(player.position);
     world.update(dt);
-    orbit.update(camera, player.position, dt);
+    orbit.update(camera, player.position, dt, false, groundAt);
     renderer.render(scene, camera);
     nameTag.update(player.position, camera, NAME_TAG_HEIGHT);
     fps.tick(dt);

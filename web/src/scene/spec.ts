@@ -134,6 +134,34 @@ export interface TreePlace {
   kind?: (typeof TREE_KINDS)[number];
 }
 
+/** Bục phẳng (khu): đất trong hình chữ nhật `from`–`to` ép phẳng ở độ cao `y`; `pave` = lát gạch như sân. */
+export interface PlateauSpec {
+  from: XZ;
+  to: XZ;
+  y: number;
+  pave?: boolean;
+  /** khoảng chuyển (m) từ mép bục ra đất tự nhiên; thiếu thì `terrain.blend`. Nhỏ (≤ 1) = kè đá dựng đứng */
+  blend?: number;
+}
+
+/** Đỉnh núi / đồi cộng vào địa hình: cao `h` ở tâm, thoải dần tới bán kính `r`. */
+export interface PeakSpec {
+  x: number;
+  z: number;
+  r: number;
+  h: number;
+}
+
+/** Một lớp núi xa (chỉ ngắm, không sương): vòng răng cưa bán kính `radius` quanh tâm địa hình. */
+export interface MountainLayer {
+  radius: number;
+  /** đỉnh cao nhất của lớp (so với y = 0) */
+  height: number;
+  color: string;
+  /** số đỉnh nhô quanh vòng */
+  peaks: number;
+}
+
 export interface SceneSpec {
   /** tên nơi + các khu cho chip HUD; khu khai báo trước thắng khi chồng nhau */
   site: { name: string; areas: AreaSpec[] };
@@ -149,6 +177,32 @@ export interface SceneSpec {
     sunPosition: [number, number, number];
   };
   ground: { size: number; color: string; brickHue: number };
+  /**
+   * Địa hình cao thấp (`enabled: false` = mặt sân phẳng `ground` như cũ). Đất tự nhiên = nhiễu nhẹ + các đỉnh;
+   * bục khu và lối lát đá được ép phẳng; ngoài bán kính `edge.radius` (tính từ `center`) đất đổ xuống vực.
+   * Màu theo độ dốc từng tam giác: < `slopeDirt`° cỏ · < `slopeRock`° đất · còn lại đá (đá sáng khi cao hơn `highFrom`).
+   */
+  terrain: {
+    enabled: boolean;
+    center: XZ;
+    /** cạnh vùng lưới (m) và cạnh một ô (m) */
+    size: number;
+    cell: number;
+    plateaus: PlateauSpec[];
+    peaks: PeakSpec[];
+    noise: { seed: number; amp: number; scale: number };
+    /** mép cao nguyên: `wobble` = độ lượn của mép (m) cho đỡ tròn đều */
+    edge: { radius: number; width: number; y: number; wobble: number };
+    /** khoảng chuyển mặc định từ mép bục / lối lát ra đất tự nhiên (m) */
+    blend: number;
+    colors: { grass: [string, string, string]; dirt: string; rock: string; highRock: string; highFrom: number };
+    slopeDirt: number;
+    slopeRock: number;
+  };
+  /** núi xa nhiều lớp quanh tâm địa hình, chân ở `base`; rỗng = không có */
+  farMountains: { layers: MountainLayer[]; base: number };
+  /** biển mây phẳng dưới mép cao nguyên; `radius` 0 = tắt */
+  cloudSea: { radius: number; y: number; color: string };
   /** tường bao: nằm ở ±half; `gates` = khe chừa lối đi */
   walls: {
     half: number;
@@ -230,6 +284,23 @@ export const DEFAULT_SCENE: SceneSpec = {
     sunPosition: [-12, 20, 8],
   },
   ground: { size: 90, color: '#5b3f37', brickHue: 10 },
+  // tắt: cảnh gốc phẳng. Giá trị dưới là gợi ý cho hướng "cao nguyên giữa biển mây" (docs/tham_khao/dia-hinh-tong-mon.md)
+  terrain: {
+    enabled: false,
+    center: [0, 0],
+    size: 300,
+    cell: 2.5,
+    plateaus: [],
+    peaks: [],
+    noise: { seed: 3, amp: 1.2, scale: 30 },
+    edge: { radius: 110, width: 18, y: -30, wobble: 8 },
+    blend: 6,
+    colors: { grass: ['#7d9a5a', '#8aa864', '#6f8c50'], dirt: '#9c8466', rock: '#8d8a84', highRock: '#b9b6ae', highFrom: 20 },
+    slopeDirt: 20,
+    slopeRock: 35,
+  },
+  farMountains: { layers: [], base: -40 },
+  cloudSea: { radius: 0, y: -10, color: '#f4f1ea' },
   walls: { half: 21, height: 2.6, color: '#4a2b24', brickHue: 8, capColor: '#6e2f26', gates: [], style: 'gach', windows: 0 },
   wallSegments: [],
   paths: [],

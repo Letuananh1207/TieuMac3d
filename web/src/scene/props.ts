@@ -4,6 +4,7 @@ import type { Style } from './buildings';
 import { lambert } from './materials';
 import { markDynamic } from './merge';
 import type { PropSpec } from './spec';
+import type { GroundY } from './terrainHeight';
 
 /** Thứ chuyển động trong cảnh (khói, mây…): gọi mỗi khung hình. */
 export type Updater = (dt: number) => void;
@@ -188,14 +189,14 @@ function dinhDong(g: THREE.Group, style: Style, updaters: Updater[]): number {
 }
 
 /** Vật trang trí trong các khu. Trả về hàm cập nhật cho thứ chuyển động (khói lò đan, khói hương). */
-export function addProps(scene: THREE.Scene, colliders: Colliders, list: PropSpec[], style: Style): Updater {
+export function addProps(scene: THREE.Scene, colliders: Colliders, list: PropSpec[], style: Style, groundY: GroundY = () => 0): Updater {
   const updaters: Updater[] = [];
   const plants: THREE.Vector3[] = [];
   for (const p of list) {
     const rot = p.rotY ?? 0;
     const s = p.scale ?? 1;
     const g = new THREE.Group();
-    g.position.set(p.x, 0, p.z);
+    g.position.set(p.x, groundY(p.x, p.z), p.z);
     g.rotation.y = (rot * Math.PI) / 180;
     g.scale.setScalar(s);
     const box = (w: number, d: number): void => {

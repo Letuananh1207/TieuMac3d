@@ -3,9 +3,9 @@ import { lambert } from './materials';
 import type { SceneSpec } from './spec';
 import { makeCanvasTex } from './textures';
 
-/** Trời chạng vạng, sương mù, đèn và mặt sân gạch. Trả về mặt sân để dò điểm chạm (tap-to-move). */
-export function addEnvironment(scene: THREE.Scene, spec: SceneSpec): THREE.Mesh {
-  const { sky, fog, light, ground: gs } = spec;
+/** Trời, sương mù, đèn. Mặt đất dựng riêng: phẳng (`addFlatGround`) hoặc địa hình (`terrain.ts`). */
+export function addEnvironment(scene: THREE.Scene, spec: SceneSpec): void {
+  const { sky, fog, light } = spec;
   scene.background = makeCanvasTex(16, 256, (g, w, h) => {
     const gr = g.createLinearGradient(0, 0, 0, h);
     gr.addColorStop(0, sky.top);
@@ -14,7 +14,7 @@ export function addEnvironment(scene: THREE.Scene, spec: SceneSpec): THREE.Mesh 
     g.fillStyle = gr;
     g.fillRect(0, 0, w, h);
   });
-  // Sương mù che chỗ cảnh kết thúc, nên không phải dựng gì ở xa.
+  // Sương mù che chỗ cảnh kết thúc, nên không phải dựng gì ở xa (núi xa tự pha màu, không chịu sương).
   scene.fog = new THREE.Fog(fog.color, fog.near, fog.far);
 
   // ×π: đổi đơn vị ánh sáng từ r128 sang three hiện tại (xem renderer.ts).
@@ -22,8 +22,11 @@ export function addEnvironment(scene: THREE.Scene, spec: SceneSpec): THREE.Mesh 
   const sun = new THREE.DirectionalLight(light.sunColor, light.sunIntensity * Math.PI);
   sun.position.set(...light.sunPosition);
   scene.add(sun);
+}
 
-  const groundTex = makeCanvasTex(
+/** Texture gạch lát sân (một ô ảnh = 8 × 4 viên). `repeat` thiếu = lặp theo UV của lưới. */
+export function brickTexture(gs: SceneSpec['ground'], repeat?: [number, number]): THREE.CanvasTexture {
+  return makeCanvasTex(
     256,
     256,
     (g) => {
@@ -39,9 +42,13 @@ export function addEnvironment(scene: THREE.Scene, spec: SceneSpec): THREE.Mesh 
         }
       }
     },
-    [24, 24],
+    repeat ?? [1, 1],
   );
-  const ground = new THREE.Mesh(new THREE.PlaneGeometry(gs.size, gs.size), lambert(0xffffff, { map: groundTex }));
+}
+
+/** Mặt sân gạch phẳng cạnh `ground.size` (cảnh không bật địa hình). Trả về mặt sân để dò điểm chạm. */
+export function addFlatGround(scene: THREE.Scene, gs: SceneSpec['ground']): THREE.Mesh {
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(gs.size, gs.size), lambert(0xffffff, { map: brickTexture(gs, [24, 24]) }));
   ground.rotation.x = -Math.PI / 2;
   scene.add(ground);
   return ground;

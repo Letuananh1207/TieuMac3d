@@ -11,6 +11,7 @@ import { OrbitCamera } from './input/orbitCamera';
 import { createBlockCharacter } from './player/blockCharacter';
 import { createDiscipleCharacter } from './player/discipleCharacter';
 import { SCENE, SCENE_FILE } from './scene/loadSpec';
+import { viewDistance } from './scene/farMountains';
 import { createStage } from './scene/renderer';
 import { buildWorld } from './scene/world';
 import { el } from './ui/dom';
@@ -29,7 +30,9 @@ async function boot(): Promise<void> {
   await Promise.allSettled([document.fonts.load('700 72px Lora'), document.fonts.load('700 13px "Be Vietnam Pro"')]);
   const { spec } = SCENE;
   const canvas = el<HTMLCanvasElement>('stage');
-  const { renderer, scene, camera } = createStage(canvas, spec.camera.fov);
+  // nhìn từ trên: đủ cao để thấy cả sân / cả vùng địa hình
+  const topHeight = Math.max(spec.walls.half * 3, spec.ground.size * 0.9, spec.terrain.enabled ? spec.terrain.size * 0.9 : 0);
+  const { renderer, scene, camera } = createStage(canvas, spec.camera.fov, Math.max(viewDistance(spec), topHeight + 60));
   const colliders = new Colliders();
   const world = buildWorld(scene, colliders, spec);
   const placed = placeZones(ZONE_CONTENT, world.zoneAnchors);
@@ -38,7 +41,8 @@ async function boot(): Promise<void> {
   const character =
     new URLSearchParams(location.search).get('nhan-vat') === 'gau' ? createBlockCharacter() : createDiscipleCharacter();
   const [sx, sz] = spec.player.start;
-  character.root.position.set(sx, 0, sz);
+  const startY = world.heightfield?.heightAt(sx, sz);
+  character.root.position.set(sx, Number.isFinite(startY) ? (startY as number) : 0, sz);
   scene.add(character.root);
 
   /* ---------- bảng: nguồn + lỗi đặc tả ---------- */
@@ -121,7 +125,7 @@ async function boot(): Promise<void> {
   const fog = scene.fog;
   const topView = (): void => {
     scene.fog = null; // nhìn từ trên cao: sương che hết cảnh
-    camera.position.set(0, Math.max(spec.walls.half * 3, spec.ground.size * 0.9), 0.01);
+    camera.position.set(0, topHeight, 0.01);
     controls.target.set(0, 0, 0);
   };
   el('viewTop').addEventListener('click', topView);

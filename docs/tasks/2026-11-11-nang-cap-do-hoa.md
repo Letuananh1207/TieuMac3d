@@ -71,16 +71,16 @@ makerstack.co meshy-review · sloyd.ai ai-3d-model-generator-pricing.
 - [x] A2. `/khao-cuu` HUD cổ trang / tiên hiệp trên điện thoại → `docs/tham_khao/hud-co-trang.md` (3 hướng).
 
 Đợt B — địa hình (code trước, thiết kế sau)
-- [ ] B1. Sổ quy tắc: ví dụ R-VA-1 theo độ cao + luật mới "không leo dốc > ngưỡng" (chờ người dùng chốt ngưỡng);
-      chép online, `--mark-synced`.
-- [ ] B2. `terrain` trong `SceneSpec`: kích thước, ô lưới, đồi / núi điều khiển `{x, z, r, h}`, nhiễu (`seed`),
-      bục phẳng theo khu, màu cỏ / đất / đá theo độ cao + độ dốc. Mặc định phẳng. `scene:check` kiểm.
-- [ ] B3. `scene/terrain.ts`: một lưới (gộp ≤ 4 draw call), `heightAt(x, z)` dùng chung; thay mặt gạch; sân lát đá
-      chỉ trong khu.
-- [ ] B4. Nhân vật, chạm để đi, camera, nhà, cây, đồ trang trí đặt theo độ cao; chặn dốc. Test logic thuần.
-- [ ] B5. Núi xa nhiều lớp vòng ngoài + trời → hết thấy mép bản đồ.
-- [ ] B6. Cỏ (instanced, ≤ 2 draw call), nước suối / thác (đợt 2 tông môn), bậc đá.
-- [ ] B7. Phiếu `2026-11-11-dia-hinh.md` → `/ui-design canh` dựng địa hình thật → `/ui-apply`.
+- [x] B1. Luật mới R-VA-2 (dốc 35°, vực) — sổ + tài liệu online + `--mark-synced`; R-VA-1 giữ nguyên ví dụ.
+- [x] B2. `terrain` · `farMountains` · `cloudSea` trong `SceneSpec` (mặc định tắt); `scene:check` in địa hình + báo
+      vật nằm trên đất dốc.
+- [x] B3. `scene/terrainHeight.ts` + `collision/heightfield.ts` + `scene/terrain.ts` (1 draw call, màu theo dốc);
+      sân lát gạch chỉ trên bục `pave`.
+- [x] B4. Nhân vật (`canStep`, R-VA-2), chạm để đi (tia dò vào lưới), camera không chui đất, cây + đồ trang trí theo
+      độ cao. Kiểm bằng script tạm với code app (chưa có trình chạy test TS — 4 ví dụ đúng).
+- [x] B5. Núi xa 3 lớp (không sương) + biển mây; far plane theo `viewDistance`. Mẫu: 62–95 draw call, ~110k tam giác.
+- [ ] B6. Cỏ búi + đá rải (instanced), suối / thác, bậc đá, bục ở độ cao khác 0 (lối lát dốc theo).
+- [ ] B7. Phiếu `2026-11-11-dia-hinh.md` (đã soạn, chờ thiết kế) → `/ui-design canh` dựng địa hình thật → `/ui-apply`.
 
 Đợt C — giao diện (chờ thiết kế)
 - [x] C1. Phiếu `2026-11-11-hud-lam-lai.md` (chip khu, joystick, nút, thẻ mời, nhãn tên, hướng dẫn, màn tải, fps chỉ

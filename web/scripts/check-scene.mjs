@@ -62,6 +62,15 @@ const kinds = {};
 for (const p of spec.props) kinds[p.kind] = (kinds[p.kind] ?? 0) + 1;
 if (spec.props.length) console.log(`Vật trang trí: ${Object.entries(kinds).map(([k, c]) => `${k} ×${c}`).join(' · ')}`);
 if (spec.paths.length) console.log(`Lối lát đá: ${spec.paths.length}`);
+const t = spec.terrain;
+if (t.enabled) {
+  console.log(
+    `Địa hình: ${n(t.size)} m, ô ${n(t.cell)} m (${Math.round(t.size / t.cell) ** 2 * 2} tam giác) · ${t.plateaus.length} bục · ` +
+      `${t.peaks.length} đỉnh (cao nhất ${n(Math.max(0, ...t.peaks.map((p) => p.h)))} m) · mép vực bán kính ${n(t.edge.radius)}`,
+  );
+}
+if (spec.farMountains.layers.length) console.log(`Núi xa: ${spec.farMountains.layers.length} lớp`);
+if (spec.cloudSea.radius > 0) console.log(`Biển mây: y ${n(spec.cloudSea.y)}, bán kính ${n(spec.cloudSea.radius)}`);
 
 if (all.length) {
   console.error(`\n${all.length} lỗi:\n- ${all.join('\n- ')}`);

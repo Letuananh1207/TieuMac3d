@@ -53,3 +53,12 @@ Hướng thiết kế chọn: không gói model ngoài, **dựng lại bằng kh
 trăng; cây tùng / liễu / mai; đồ trang trí mới. Nhân vật: **đệ tử chibi** (người dùng chọn đổi, gấu khối giữ làm dự
 phòng) qua `Character`, màu để trong file nhân vật. Chip HUD theo khu (đặc tả `site`, luật R-HUD-1). Cảnh mẫu đủ
 kiểu mới 67–90 draw call. Mục 3D-b (.glb) chỉ còn ý nghĩa nếu sau này muốn model ngoài.
+
+## Địa hình (2026-11-11, kế hoạch `docs/tasks/2026-11-11-nang-cap-do-hoa.md`)
+
+Hướng chọn (người dùng): **cao nguyên giữa biển mây** (`docs/tham_khao/dia-hinh-tong-mon.md`). Lưới độ cao dựng bằng
+code từ đặc tả (`terrain`: bục khu, đỉnh, nhiễu, mép vực), không dùng ảnh độ cao hay AI — nhẹ, offline, phiên thiết kế
+chỉnh bằng số. Các khu là bục phẳng nên nhà / tường / cổng giữ nguyên code (y = 0 trên bục); chỉ nhân vật, camera,
+cây, đồ trang trí đi theo độ cao. Dốc > 35° chặn như tường (R-VA-2). Núi xa + biển mây không chịu sương (sương chỉ
+che vài trăm mét), far plane nâng theo `viewDistance`. Mặc định `enabled: false` → cảnh cũ không đổi.
+Chưa làm: bậc đá, suối / thác, cỏ búi, nhà trên bục cao khác 0 (lối lát vẽ ở y ≈ 0).

@@ -89,12 +89,20 @@ Vật có va chạm chỉ quay 0 · 90 · 180 · 270; lối đá, mây, đảo: 
 | `trees…kind` | `"tung"` · `"lieu"` · `"mai"` | tùng (cây chính), liễu (quanh ao, dải rủ đung đưa), mai; màu `trees.leaves` (tùng), `trees.willow`, `trees.plum` |
 | `props` | `"da-thai-ho"` · `"den-da"` · `"dinh-dong"` | đá Thái Hồ, đèn đá, đỉnh đồng có khói hương |
 | `site` | `{ "name": "Văn Uyên Tông", "areas": [{ "name": "Diễn Võ Trường", "from": [27, -15], "to": [60, 15] }] }` | chip HUD hiện tên khu đang đứng (luật `R-HUD-1`); chưa có = "Học xá · Sân chính" |
+| `terrain` | `"enabled": true`, `"center": [0, -5]`, `"size": 300`, `"cell": 2.5` | **địa hình** thay mặt sân phẳng (`ground` khi đó chỉ còn là màu gạch lát); `size / cell` ≤ 400 |
+| `terrain.plateaus` | `{ "from": [-22, -22], "to": [22, 22], "y": 0, "pave": true, "blend": 5 }` | bục khu ép phẳng; `pave` = lát gạch; `blend` nhỏ (≤ 1) = kè đá dựng đứng. Nhà, tường, cổng, ao, giếng **phải nằm trên bục** |
+| `terrain.peaks` | `{ "x": 0, "z": -82, "r": 48, "h": 42 }` | đỉnh núi / đồi (chủ phong). Cây, đồ trang trí tự đặt lên mặt đất |
+| `terrain.edge` · `noise` · `colors` | `{ "radius": 105, "width": 15, "y": -30, "wobble": 8 }` | mép cao nguyên đổ xuống vực; nhiễu nhấp nhô; màu cỏ (3) · đất · đá · đá cao theo dốc `slopeDirt` / `slopeRock` |
+| `farMountains` | `{ "base": -40, "layers": [{ "radius": 170, "height": 45, "color": "#5f7a80", "peaks": 9 }] }` | núi xa nhiều lớp, không chịu sương — lớp xa nhạt dần |
+| `cloudSea` | `{ "radius": 420, "y": -8, "color": "#f4f1ea" }` | biển mây dưới mép cao nguyên; `radius` 0 = tắt |
 
 Kiểu nhà (`dien`, `giang-duong`, `nha-nho`, `thap`), cổng, cây, đồ trang trí, nhân vật đệ tử đã dựng theo bản mẫu
 `source/PhongCach-*.dc.html` — ví dụ dùng hết kiểu mới: `docs/phieu_thiet_ke/2026-11-11-phong-cach-mau.json`.
 Cảnh rộng: tăng `ground.size` (phủ hết các khu) và `fog.far`. Canvas 3D: `?view=tren` / `?view=ca-san` để chụp ảnh,
 `?cam=x,y,z&tam=x,z` chụp gần một chỗ, `?nhan-vat=gau` xem lại gấu khối;
-bảng "Hiệu năng" in draw call (không tính lớp phủ) — giữ ≤ 150. Chưa có độ cao / bậc đá / thác (đợt 2).
+bảng "Hiệu năng" in draw call (không tính lớp phủ) — giữ ≤ 150. Có địa hình (đồi, chủ phong, vực, núi xa, biển
+mây — ví dụ `docs/phieu_thiet_ke/2026-11-11-dia-hinh-mau.json`, hồ sơ `docs/tham_khao/dia-hinh-tong-mon.md`); nhân
+vật không leo dốc > 35° (`R-VA-2`). Chưa có bậc đá, suối / thác, cỏ búi (cần code).
 
 Model `.glb` chưa dùng — mốc 3D-b. Nhân vật: đệ tử chibi dựng bằng khối (`web/src/player/discipleCharacter.ts`).
 

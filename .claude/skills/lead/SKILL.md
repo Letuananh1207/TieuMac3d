@@ -102,6 +102,7 @@ flutter test -r failures-only test/<phần> · dart tool/rule_trace.dart
 | đặc tả cảnh, bố cục sân, dời nhà, màu cảnh, Canvas 3D | `scene/spec`, `loadSpec`, `designPreview` | `design/scene/scene.json` (chỉ đọc), `web/src/scene/spec.ts`, `web/design.html`, `web/scripts/check-scene.mjs` |
 | tông môn: cổng, ao, lối đá, đài, lò đan, trúc, đảo nổi, mây, kiểu nhà | `gate`, `water`, `paths`, `props`, `sky`, `trees`, `buildings`, `merge` | `web/src/scene/`, kế hoạch `docs/tasks/2026-11-10-tong-mon-dot-1.md` |
 | phong cách Trung Hoa: điện, mái, tháp, tường vôi, cổng trăng, tùng, liễu, mai | `kien_truc`, `cay_moi` | `web/src/scene/kien_truc/`, `web/src/scene/cay_moi.ts` |
+| địa hình, đồi, núi, chủ phong, vực, biển mây, núi xa, dốc, nhân vật leo / kẹt dốc | `terrain`, `heightfield`, `farMountains` | `web/src/scene/terrain*.ts`, `web/src/collision/heightfield.ts`, `web/src/scene/farMountains.ts`, `player/controller.ts` (`canStep`, R-VA-2) |
 | chip "Học xá · Sân chính", tên khu | `areaTracker`, `hud` | `web/src/zones/areaTracker.ts`, `web/src/ui/hud.ts` |
 | thẻ mời, "Vào nghe giảng", "Để sau" | `eventCard` | `web/src/ui/eventCard.ts` |
 | bảng bài học (HTML, sẽ thay bằng Flutter ở mốc 3) | `lessonBoard` | `web/src/ui/lessonBoard.ts` |

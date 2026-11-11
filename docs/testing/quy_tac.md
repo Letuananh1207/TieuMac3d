@@ -44,6 +44,7 @@ Code: [web/src/collision/colliders.ts](../../web/src/collision/colliders.ts)
 | Mã | Quy tắc | Ví dụ | Xác nhận | App |
 |---|---|---|---|---|
 | R-VA-1 | Nhân vật (bán kính 0,5) không đi xuyên tường, nhà, cột cổng, giếng, ao / hồ, vật trang trí có va chạm (đài tỉ thí, giá binh khí, lò đan…) và cây có va chạm (cây trong sân, cụm cây); đi qua được khe cổng trên tường. Cây vòng ngoài tường, lối lát đá, đảo nổi, mây không có va chạm. | Mặt trong tường bắc ở z = −20,5 → đi thẳng lên bắc thì dừng ở z = −20,0. Tường nam có khe cổng tâm x = 0 rộng 4: đi thẳng xuống nam ở x = 0 thì qua được; ở x = 3 thì dừng ở z = 20,0. | chờ | ok |
+| R-VA-2 | Khi cảnh có địa hình: nhân vật đi trên mặt đất, lên xuống theo độ cao. Không bước được vào mặt đất dốc hơn 35° (cả lên lẫn xuống), như gặp tường; vì vậy không đi ra khỏi mép cao nguyên (vực xuống biển mây). Đang đứng trên mặt dốc hơn 35° thì chỉ đi xuống được. | Kè đá cao 1,5 m trong bề ngang 1 m (dốc ≈ 56°) → dừng ở chân kè. Sườn đồi dốc 30° → đi lên được, nhân vật cao dần theo mặt đất. Đi tới mép vực → dừng ở mép. | đúng | ok |
 
 ## HUD — chữ trên màn
 

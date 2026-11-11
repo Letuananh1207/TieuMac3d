@@ -19,6 +19,10 @@
 | cây | `tan` · `truc` (`trees.ts`), `tung` · `lieu` · `mai` (`cay_moi.ts`); mỗi kiểu dãy ngẫu nhiên riêng (`random.ts`) | |
 | chip khu | `zones/areaTracker.ts` (`placeLabel`, R-HUD-1) → `ui/hud.ts` `PlaceChip` | đặc tả `site` |
 | tốc độ / bán kính | 4,2 m/s · 0,5 | `player/controller.ts` |
+| địa hình | `terrain.enabled` (mặc định tắt = sân phẳng). Độ cao: `scene/terrainHeight.ts` (thuần toán: nhiễu + đỉnh → ép phẳng bục / lối lát → đổ vực) → `collision/heightfield.ts` (`heightAt`, `slopeAt`); lưới vẽ `scene/terrain.ts` (màu từng tam giác theo dốc, 1 draw call). Chia tam giác hai file **phải khớp** | `World.heightfield` |
+| đặt vật lên đất | cây, đồ trang trí nhận `groundY`; nhà, tường, cổng, ao, giếng **không** — phải nằm trên bục (`scene:check` báo "nằm trên đất dốc") | `world.ts` |
+| dốc | `MAX_SLOPE` 35° + `canStep` (R-VA-2) trong `player/controller.ts`; camera không chui xuống đất (`orbit.update(…, groundAt)`) | |
+| núi xa, biển mây | `scene/farMountains.ts`: không chịu sương, tự pha màu; far plane = `viewDistance(spec)` | `renderer.ts` nhận `far` |
 
 ## Mẫu: thêm một vật vào sân
 

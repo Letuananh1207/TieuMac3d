@@ -2,6 +2,8 @@ import * as THREE from 'three';
 
 const MIN_PITCH = 0.12;
 const MAX_PITCH = 1.2;
+/** camera cách mặt đất tối thiểu (m) khi có địa hình */
+const CAMERA_CLEARANCE = 0.8;
 
 /** Thông số camera do thiết kế quyết (đặc tả cảnh `camera`). Trùng hình với `SceneSpec['camera']`. */
 export interface OrbitSettings {
@@ -58,14 +60,21 @@ export class OrbitCamera {
     return this.near;
   }
 
-  /** Đặt camera nhìn vào `focus`. `snap` = nhảy ngay, không trượt mượt. */
-  update(camera: THREE.Camera, focus: THREE.Vector3, dt: number, snap = false): void {
+  /**
+   * Đặt camera nhìn vào `focus`. `snap` = nhảy ngay, không trượt mượt.
+   * `groundAt` (có địa hình) = độ cao mặt đất: camera luôn cao hơn đất ít nhất `CAMERA_CLEARANCE`.
+   */
+  update(camera: THREE.Camera, focus: THREE.Vector3, dt: number, snap = false, groundAt?: (x: number, z: number) => number): void {
     const horiz = this.dist * Math.cos(this.pitch);
     this.want.set(
       focus.x + Math.sin(this.yaw) * horiz,
       focus.y + 1.2 + this.dist * Math.sin(this.pitch),
       focus.z + Math.cos(this.yaw) * horiz,
     );
+    if (groundAt) {
+      const g = groundAt(this.want.x, this.want.z);
+      if (Number.isFinite(g)) this.want.y = Math.max(this.want.y, g + CAMERA_CLEARANCE);
+    }
     // lerp theo hàm mũ: mượt như nhau dù fps cao hay thấp
     if (snap) camera.position.copy(this.want);
     else camera.position.lerp(this.want, 1 - Math.exp(-dt * 8));

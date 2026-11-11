@@ -12,7 +12,9 @@ import {
   WALL_STYLES,
   type BuildingSpec,
   type SceneSpec,
+  type XZ,
 } from './spec';
+import { terrainHeightFn } from './terrainHeight';
 
 export interface ResolvedScene {
   spec: SceneSpec;
@@ -175,6 +177,9 @@ const LISTS: Record<string, ItemParser> = {
     all(oneOf('kind', TREE_KINDS), positive('w', 'd', 'count')),
   ),
   'floating.islands': item({ x: 0, y: 0, z: 0, scale: 0 }, {}, positive('scale')),
+  'terrain.plateaus': item({ from: XZ0, to: XZ0, y: 0 }, { pave: true, blend: 0 }, positive('blend')),
+  'terrain.peaks': item({ x: 0, z: 0, r: 0, h: 0 }, {}, positive('r')),
+  'farMountains.layers': item({ radius: 0, height: 0, color: '#000000', peaks: 0 }, {}, positive('radius', 'height', 'peaks')),
 };
 
 /** Kiểm + ghép nội dung file đặc tả lên `DEFAULT_SCENE`. `raw === undefined` = chưa có file. */
@@ -221,5 +226,45 @@ function checkConsistency(s: SceneSpec): string[] {
   if (s.floating.clouds.count < 0) out.push('floating.clouds.count: phải ≥ 0');
   if (!WALL_STYLES.includes(s.walls.style)) out.push(`walls.style: chỉ ${WALL_STYLES.join(' · ')}`);
   if (s.walls.windows < 0) out.push('walls.windows: phải ≥ 0');
+  const t = s.terrain;
+  if (t.cell <= 0 || t.size <= 0) out.push('terrain: size và cell phải > 0');
+  else if (t.size / t.cell > 400) out.push(`terrain: size / cell = ${Math.round(t.size / t.cell)} ô mỗi cạnh — tối đa 400 (nặng cho điện thoại)`);
+  if (t.slopeDirt > t.slopeRock) out.push('terrain: slopeDirt phải ≤ slopeRock');
+  if (t.noise.scale <= 0) out.push('terrain.noise.scale: phải > 0');
+  if (t.edge.width <= 0) out.push('terrain.edge.width: phải > 0');
+  if (t.enabled && t.edge.radius + t.edge.width > t.size / 2) {
+    out.push(`terrain.edge: mép vực (radius + width = ${t.edge.radius + t.edge.width}) vượt nửa vùng lưới (${t.size / 2}) — tăng size`);
+  }
+  if (s.cloudSea.radius < 0) out.push('cloudSea.radius: phải ≥ 0');
+  if (t.enabled && t.size > 0 && t.cell > 0) out.push(...checkOnFlatGround(s));
+  return out;
+}
+
+/** Ngưỡng chênh độ cao (m) trong chân một vật để coi là "đất phẳng". */
+const FLAT_TOLERANCE = 0.3;
+
+/** Có địa hình: nhà, cổng, ao, giếng, tường, điểm xuất phát phải đứng trên đất phẳng (bục khu / lối lát). */
+function checkOnFlatGround(s: SceneSpec): string[] {
+  const h = terrainHeightFn(s.terrain, s.paths);
+  const out: string[] = [];
+  const flat = (what: string, pts: XZ[]): void => {
+    const ys = pts.map(([x, z]) => h(x, z));
+    const diff = Math.max(...ys) - Math.min(...ys);
+    if (diff > FLAT_TOLERANCE) {
+      out.push(`${what}: nằm trên đất dốc (chênh ${diff.toFixed(1)} m) — thêm / nới bục khu (terrain.plateaus) bao quanh`);
+    }
+  };
+  const box = (x: number, z: number, w: number, d: number, rotDeg = 0): XZ[] => {
+    const [ww, dd] = rotDeg % 180 !== 0 ? [d, w] : [w, d];
+    return [[x, z], [x - ww / 2, z - dd / 2], [x + ww / 2, z - dd / 2], [x - ww / 2, z + dd / 2], [x + ww / 2, z + dd / 2]];
+  };
+  for (const b of s.buildings) flat(`nhà "${b.id}"`, box(b.x, b.z, b.w + 1, b.d + 1, b.rotY));
+  for (const g of s.gates) flat(`cổng "${g.id}"`, box(g.x, g.z, g.width + 8, 2, g.rotY));
+  for (const w of s.water) flat(`ao (${w.x}; ${w.z})`, box(w.x, w.z, w.r !== undefined ? w.r * 2 : (w.w ?? 0), w.r !== undefined ? w.r * 2 : (w.d ?? 0), w.rotY));
+  flat('giếng', box(s.well.x, s.well.z, 2.4, 2.4));
+  const hw = s.walls.half;
+  flat('tường bao', [[-hw, -hw], [hw, -hw], [-hw, hw], [hw, hw], [0, -hw], [0, hw], [-hw, 0], [hw, 0]]);
+  s.wallSegments.forEach((w, i) => flat(`wallSegments[${i}]`, [w.from, w.to, [(w.from[0] + w.to[0]) / 2, (w.from[1] + w.to[1]) / 2]]));
+  flat('điểm xuất phát (player.start)', box(s.player.start[0], s.player.start[1], 2, 2));
   return out;
 }

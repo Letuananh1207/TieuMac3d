@@ -5,6 +5,7 @@ import { addPine, addPlum, addWillow } from './cay_moi';
 import type { Updater } from './props';
 import { seededRandom } from './random';
 import type { GroveSpec, SceneSpec, TreePlace } from './spec';
+import type { GroundY } from './terrainHeight';
 
 export { seededRandom };
 
@@ -20,6 +21,8 @@ export interface Placed {
   z: number;
   scale: number;
   collide: boolean;
+  /** độ cao gốc cây (địa hình); thiếu = 0 */
+  y?: number;
 }
 
 /** Cụm cây rải trong hình chữ nhật. Mỗi cụm một dãy ngẫu nhiên riêng: thêm cụm không xê dịch cây có sẵn. */
@@ -46,7 +49,7 @@ function broadleaf(scene: THREE.Scene, spec: SceneSpec['trees'], all: Placed[], 
   const euler = new THREE.Euler();
   const size = new THREE.Vector3();
   all.forEach((t, i) => {
-    tree.makeTranslation(t.x, 0, t.z).multiply(local.makeScale(t.scale, t.scale, t.scale));
+    tree.makeTranslation(t.x, t.y ?? 0, t.z).multiply(local.makeScale(t.scale, t.scale, t.scale));
     trunks.setMatrixAt(i, local.copy(tree).multiply(part.makeTranslation(0, 1.1, 0)));
     for (let k = 0; k < LEAF_TIERS; k++) {
       pos.set((rand() - 0.5) * 1.4, 2.8 + k * 0.7, (rand() - 0.5) * 1.4);
@@ -78,8 +81,8 @@ function bamboo(scene: THREE.Scene, spec: SceneSpec['trees'], all: Placed[], see
       const x = t.x + (rand() - 0.5) * 0.9 * t.scale;
       const z = t.z + (rand() - 0.5) * 0.9 * t.scale;
       quat.setFromEuler(euler.set(lean, 0, lean));
-      stalks.setMatrixAt(i, m.compose(pos.set(x, h / 2, z), quat, size.set(t.scale, h, t.scale)));
-      tufts.setMatrixAt(i, m.compose(pos.set(x, h - 0.2, z), quat, size.setScalar(t.scale)));
+      stalks.setMatrixAt(i, m.compose(pos.set(x, (t.y ?? 0) + h / 2, z), quat, size.set(t.scale, h, t.scale)));
+      tufts.setMatrixAt(i, m.compose(pos.set(x, (t.y ?? 0) + h - 0.2, z), quat, size.setScalar(t.scale)));
     }
   }
   finish(scene, [stalks, tufts]);
@@ -98,7 +101,7 @@ export function finish(scene: THREE.Scene, meshes: THREE.InstancedMesh[]): void 
  * Kiểu `tan` (mặc định) · `truc` · `tung` · `lieu` · `mai`; mỗi kiểu dãy ngẫu nhiên riêng nên thêm kiểu không xê dịch
  * cây `tan` có sẵn. Trả về hàm cập nhật (liễu đung đưa).
  */
-export function addTrees(scene: THREE.Scene, colliders: Colliders, spec: SceneSpec['trees']): Updater {
+export function addTrees(scene: THREE.Scene, colliders: Colliders, spec: SceneSpec['trees'], groundY?: GroundY): Updater {
   const rand = seededRandom(spec.seed);
   const { ring } = spec;
   const ringTrees: Placed[] = [];
@@ -113,6 +116,8 @@ export function addTrees(scene: THREE.Scene, colliders: Colliders, spec: SceneSp
   for (const t of spec.yard) put(t.kind, { ...t, collide: true });
   byKind.tan.push(...ringTrees);
   spec.groves.forEach((g, i) => groveTrees(g, spec.seed, i).forEach((p) => put(g.kind, p)));
+  // địa hình: đặt gốc mọi cây lên mặt đất
+  if (groundY) for (const list of Object.values(byKind)) for (const p of list) p.y = groundY(p.x, p.z);
 
   broadleaf(scene, spec, byKind.tan, rand);
   bamboo(scene, spec, byKind.truc, spec.seed);

@@ -33,7 +33,7 @@ export function addPine(scene: THREE.Scene, spec: Trees, list: Placed[], seed: n
   const q = new THREE.Quaternion();
   list.forEach((t, i) => {
     const s = t.scale;
-    const base = new THREE.Vector3(t.x, 0, t.z);
+    const base = new THREE.Vector3(t.x, t.y ?? 0, t.z);
     const lean = rand() * Math.PI * 2;
     const d1 = new THREE.Vector3(Math.cos(lean) * 0.35, 1, Math.sin(lean) * 0.35).normalize();
     const d2 = new THREE.Vector3(-Math.cos(lean) * 0.45, 1, -Math.sin(lean) * 0.45).normalize();
@@ -45,7 +45,7 @@ export function addPine(scene: THREE.Scene, spec: Trees, list: Placed[], seed: n
       const side = k % 2 === 0 ? 1 : -1;
       const a = lean + side * 1.2 + (rand() - 0.5) * 0.6;
       const off = (0.9 - k * 0.15) * s;
-      const y = (2.1 + k * 0.75) * s;
+      const y = (t.y ?? 0) + (2.1 + k * 0.75) * s;
       const r = (1.6 - k * 0.25 + rand() * 0.3) * s;
       const cx = (k === CLOUDS - 1 ? top.x : t.x + Math.cos(a) * off);
       const cz = (k === CLOUDS - 1 ? top.z : t.z + Math.sin(a) * off);
@@ -73,9 +73,9 @@ export function addPlum(scene: THREE.Scene, spec: Trees, list: Placed[], seed: n
   let fp = 0;
   for (const t of list) {
     const s = t.scale;
-    const base = new THREE.Vector3(t.x, 0, t.z);
+    const base = new THREE.Vector3(t.x, t.y ?? 0, t.z);
     wood.setMatrixAt(w++, segment(m, base, UP, 1.4 * s, 0.14 * s));
-    const fork = new THREE.Vector3(t.x, 1.4 * s, t.z);
+    const fork = new THREE.Vector3(t.x, (t.y ?? 0) + 1.4 * s, t.z);
     const tips: THREE.Vector3[] = [];
     for (let b = 0; b < BR; b++) {
       const a = (b / BR) * Math.PI * 2 + rand();
@@ -115,13 +115,13 @@ export function addWillow(scene: THREE.Scene, spec: Trees, list: Placed[], seed:
   const hangs: { pos: THREE.Vector3; yaw: number; len: number; phase: number; s: number }[] = [];
   list.forEach((t, i) => {
     const s = t.scale;
-    trunk.setMatrixAt(i, segment(m, new THREE.Vector3(t.x, 0, t.z), UP, 2.6 * s, 0.26 * s));
-    crown.setMatrixAt(i, m.compose(new THREE.Vector3(t.x, 2.5 * s, t.z), new THREE.Quaternion(), new THREE.Vector3(2 * s, 1.3 * s, 2 * s)));
+    trunk.setMatrixAt(i, segment(m, new THREE.Vector3(t.x, t.y ?? 0, t.z), UP, 2.6 * s, 0.26 * s));
+    crown.setMatrixAt(i, m.compose(new THREE.Vector3(t.x, (t.y ?? 0) + 2.5 * s, t.z), new THREE.Quaternion(), new THREE.Vector3(2 * s, 1.3 * s, 2 * s)));
     for (let k = 0; k < STRANDS; k++) {
       const a = (k / STRANDS) * Math.PI * 2 + rand() * 0.3;
       const r = (1.75 + rand() * 0.2) * s;
       hangs.push({
-        pos: new THREE.Vector3(t.x + Math.cos(a) * r, 2.6 * s, t.z + Math.sin(a) * r),
+        pos: new THREE.Vector3(t.x + Math.cos(a) * r, (t.y ?? 0) + 2.6 * s, t.z + Math.sin(a) * r),
         yaw: -a,
         len: (1.8 + rand() * 0.8) * s,
         phase: rand() * Math.PI * 2,
