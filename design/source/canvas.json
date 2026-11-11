@@ -85,7 +85,7 @@
       "y": 7070,
       "w": 390,
       "h": 844,
-      "title": "HUD C · dọc · Ngoại Môn, thẻ mời, lần đầu (hướng dẫn)"
+      "title": "HUD C · dọc · Ngoại Môn, lần đầu (hướng dẫn)"
     },
     "HUD-doc-vao-khu.dc.html": {
       "x": 470,
@@ -99,7 +99,7 @@
       "y": 7070,
       "w": 390,
       "h": 844,
-      "title": "HUD C · dọc · tiêu đề thẻ 2 dòng + tên khu dài nhất"
+      "title": "HUD C · dọc · tên khu dài nhất + góc nhìn cả sân"
     },
     "ManTai-doc.dc.html": {
       "x": 1410,
@@ -120,7 +120,7 @@
       "y": 8034,
       "w": 844,
       "h": 390,
-      "title": "HUD C · ngang · tai thỏ trái · Ngoại Môn, thẻ mời"
+      "title": "HUD C · ngang · tai thỏ trái · Ngoại Môn, lần đầu"
     },
     "HUD-ngang-vao-khu.dc.html": {
       "x": 924,
@@ -135,6 +135,27 @@
       "w": 844,
       "h": 390,
       "title": "Màn tải · ngang"
+    },
+    "NoiThat-mat-bang.dc.html": {
+      "x": 0,
+      "y": 8814,
+      "w": 1200,
+      "h": 680,
+      "title": "Nội thất · mặt bằng giảng đường + thư viện"
+    },
+    "TrongNha-doc.dc.html": {
+      "x": 1280,
+      "y": 8814,
+      "w": 390,
+      "h": 844,
+      "title": "HUD C · dọc · trong giảng đường, đứng gần bảng (ảnh Canvas 3D)"
+    },
+    "TrongNha-ngang.dc.html": {
+      "x": 1750,
+      "y": 8814,
+      "w": 844,
+      "h": 390,
+      "title": "HUD C · ngang · trong thư viện, đứng gần án đọc (ảnh Canvas 3D)"
     }
   },
   "order": [
@@ -155,7 +176,10 @@
     "HUD-thanh-phan.dc.html",
     "HUD-ngang.dc.html",
     "HUD-ngang-vao-khu.dc.html",
-    "ManTai-ngang.dc.html"
+    "ManTai-ngang.dc.html",
+    "NoiThat-mat-bang.dc.html",
+    "TrongNha-doc.dc.html",
+    "TrongNha-ngang.dc.html"
   ],
   "notes": {
     "cach-dung": {
@@ -239,7 +263,22 @@
       "w": 420,
       "size": "m",
       "fill": "teal",
-      "text": "Đã chọn hướng C.\n\nMột chất liệu: kính mờ trắng sương rgba(244,247,246,.82) + blur, viền trong 1 px trắng, viền ngoài 1 px lam xám 16 %. Chữ lam xám #24323A, nhấn ngọc lục #2B5446, chấm vàng #D4A64A là hoạ tiết duy nhất.\n\nChữ Hán dùng Noto Serif SC (không thêm font thư pháp).\n\nThẻ tên khu: hiện giữa màn ~2 s khi bước qua ranh giới khu (R-HUD-1), mờ dần 0,4 s; không chặn chạm.\n\nNgang: lề trái = lề phải (tai thỏ có thể ở hai bên); thẻ mời ở nửa phải, không che nhân vật.\n\nSọc chéo = vùng an toàn, chỉ để đọc bản vẽ."
+      "text": "Đã chọn hướng C.\n\nMột chất liệu: kính mờ trắng sương rgba(244,247,246,.82) + blur, viền trong 1 px trắng, viền ngoài 1 px lam xám 16 %. Chữ lam xám #24323A, nhấn ngọc lục #2B5446, chấm vàng #D4A64A là hoạ tiết duy nhất.\n\nChữ Hán dùng Noto Serif SC (không thêm font thư pháp).\n\nThẻ tên khu: hiện giữa màn ~2 s khi bước qua ranh giới khu, mờ dần 0,4 s; không chặn chạm (đề xuất R-HUD-3).\n\nNgang: lề trái = lề phải (tai thỏ có thể ở hai bên).\n\nThẻ mời đã BỎ (2026-11-11) — học bằng nút nổi trên vật trong nhà, xem hàng dưới.\n\nSọc chéo = vùng an toàn, chỉ để đọc bản vẽ."
+    },
+    "tieu-de-noi-that": {
+      "x": 0,
+      "y": 8574,
+      "text": "Vào bên trong kiến trúc — thay thẻ mời",
+      "kind": "title1",
+      "maxW": 2594
+    },
+    "ghi-chu-noi-that": {
+      "x": 2674,
+      "y": 8814,
+      "w": 440,
+      "size": "m",
+      "fill": "teal",
+      "text": "Đã code (b3c4cf3) — ảnh trên artboard chụp từ Canvas 3D.\n\n• Đi thẳng qua cửa vào trong, không chuyển cảnh. Bước lên nền nhà → mái + tường trước + cột trước mờ còn 15 % (0,3 s); ra thì hiện lại (R-HUD-2).\n• Camera trong nhà ≤ 6 m, không ra sau tường.\n• Đứng gần bảng / án đọc → nút nổi ngọc lục \"Học chữ 快\" / \"Ôn chữ 書\" trên vật; hoặc chạm thẳng vào bảng, thầy, án đọc, kệ sách (R-VUNG-1/2/3).\n• Chip: \"Văn Uyên Tông · Giảng đường\" khi đứng trong nhà (R-HUD-1).\n• Va chạm: tường, cột, bảng, bục, án, kệ, thầy (R-VA-3).\n\nCanvas 3D: ?nv=0,-10.5 đặt nhân vật trong giảng đường."
     }
   },
   "designSystems": []

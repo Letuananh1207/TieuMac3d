@@ -21,7 +21,8 @@ Một chất liệu: kính mờ `frost*` + viền `frost-line` / `frost-outline`
 | Chip tên khu (chấm vàng + "<nơi> · <khu>") | `HUD-thanh-phan`, `HUD-doc` | frost, frost-line, frost-outline, slate, jade, gold, hud 13, pill, shadow.hud, blur.hud |
 | Nút nổi (góc nhìn) | `HUD-thanh-phan` | như chip; cao 44 |
 | Nhãn tên | `HUD-thanh-phan` | frost .88, gold 4 px, label 12, pill |
-| Thẻ mời (eyebrow vạch + chấm, tiêu đề có chữ Hán, nút chính + phụ) | `HUD-doc`, `HUD-doc-the-dai`, `HUD-ngang` | frost-strong, jade, on-jade, secondary-bg, card-title 18, accent 24, card 16, button 12, shadow.card, shadow.primary, blur.card |
+| ~~Thẻ mời~~ — **bỏ** ở 2026-11-11.4 | — | — |
+| Nút học nổi trên vật (chấm vàng + "Học chữ 快", mũi nhọn chỉ xuống) | `TrongNha-doc`, `TrongNha-ngang` | jade, on-jade, frost-line, gold, body 15, han 20, pill, shadow.primary |
 | Thẻ tên khu (mới) | `HUD-doc-vao-khu`, `HUD-ngang-vao-khu` | frost-strong .80, area-han 52, area-name 20, jade, slate, gold |
 | Dòng hướng dẫn | `HUD-doc`, `HUD-ngang` | frost .84, hud 13, radius 12 |
 | Joystick (gợi ý / đang giữ) | `HUD-thanh-phan`, `HUD-doc-vao-khu` | frost-weak, frost-line, frost-outline, jade |

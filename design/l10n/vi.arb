@@ -43,5 +43,18 @@
   "joyHint": "kéo để đi",
   "@joyHint": {
     "description": "Chữ trong vòng joystick gợi ý khi chưa chạm"
+  },
+  "lessonActionLearn": "Học chữ",
+  "@lessonActionLearn": {
+    "description": "Nút học nổi trên bảng đen giảng đường: \"Học chữ <chữ Hán>\" (ZONE_CONTENT lop-hsk3 .action)"
+  },
+  "lessonActionReview": "Ôn chữ",
+  "@lessonActionReview": {
+    "description": "Nút học nổi trên án đọc thư viện: \"Ôn chữ <chữ Hán>\" (ZONE_CONTENT thu-vien .action)"
+  },
+  "roomGiangDuong": "Giảng đường",
+  "roomThuVien": "Thư viện",
+  "@roomGiangDuong": {
+    "description": "Tên nhà trên chip khi đứng trong nhà: \"<tên nơi> · <tên nhà>\" (R-HUD-1)"
   }
 }

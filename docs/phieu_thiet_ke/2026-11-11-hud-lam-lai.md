@@ -5,6 +5,7 @@
   `TrongNha-doc` / `TrongNha-ngang`, kế hoạch `docs/tasks/2026-11-11-vao-trong-kien-truc.md`). Khi chốt HUD C, bỏ thẻ
   mời, giữ nút học.
 - Đã vẽ: 2026-11-11.3 (chọn hướng C — ngọc bích · lụa)
+- Đã vẽ: 2026-11-11.4 (bỏ thẻ mời; nút học nổi trên vật trong nhà)
 - Đợi bởi: kế hoạch `docs/tasks/2026-11-11-nang-cap-do-hoa.md` (C1, C2)
 - Liên quan: phiếu `2026-11-10-man-bai-hoc.md` (màn bài học vẽ cùng chất liệu với hướng được chọn)
 
