@@ -17,11 +17,12 @@ const FOOTPRINT_EXTRA = { 'giang-duong': 2, dien: 3, 'nha-nho': 0.8 } as const;
  * Dựng một nhà theo `kind` (mặc định giảng đường), phong cách Trung Hoa (`kien_truc/`).
  * Va chạm = nền nhà; tháp = vật cản tròn bao chân tháp.
  */
-export function addBuilding(scene: THREE.Scene, colliders: Colliders, b: BuildingSpec, style: Style): THREE.Group {
+/** `y0` = độ cao nền (bục khu khi có địa hình; cảnh phẳng = 0). */
+export function addBuilding(scene: THREE.Scene, colliders: Colliders, b: BuildingSpec, style: Style, y0 = 0): THREE.Group {
   const kind = b.kind ?? 'giang-duong';
   const rot = b.rotY ?? 0;
   const g = new THREE.Group();
-  g.position.set(b.x, 0, b.z);
+  g.position.set(b.x, y0, b.z);
   g.rotation.y = (rot * Math.PI) / 180;
   KINDS[kind](g, b, style);
   if (b.notice) {

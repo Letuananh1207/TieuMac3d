@@ -16,6 +16,7 @@ import { roomKinds, zoneAnchors, type SceneSpec, type ZoneAnchor } from './spec'
 import { addTerrain } from './terrain';
 import { buildHeightfield, type GroundY } from './terrainHeight';
 import { addTrees } from './trees';
+import { addWaterways } from './waterways';
 import { addWalls } from './walls';
 import { addWater } from './water';
 import { addWell } from './well';
@@ -49,26 +50,30 @@ export function buildWorld(scene: THREE.Scene, colliders: Colliders, spec: Scene
       }
     : undefined;
   const ground = hf ? addTerrain(scene, spec, hf) : addFlatGround(scene, spec.ground);
-  if (hf) {
+  let waterways: (dt: number) => void = () => {};
+  if (hf && groundY) {
     addStairs(scene, spec.terrain, style);
     addGrassAndRocks(scene, spec.terrain, hf, spec.paths);
+    waterways = addWaterways(scene, spec.terrain, style, groundY);
   }
   addFarMountains(scene, spec);
   addCloudSea(scene, spec);
-  addPaths(scene, spec.paths, style.path);
+  // độ cao nền của nhà / cổng / ao / giếng: tâm của nó trên mặt đất (nằm trên bục → độ cao bục)
+  const base = (x: number, z: number): number => (groundY ? groundY(x, z) : 0);
+  addPaths(scene, spec.paths, style.path, groundY);
   addWalls(scene, colliders, spec.walls, spec.wallSegments, style);
   const kinds = roomKinds(spec.buildings, interiors);
   const rooms: Room[] = [];
   for (const b of spec.buildings) {
     const use = b.zone && kinds[b.zone.id] ? interiors[b.zone.id] : undefined;
-    if (use) rooms.push(addRoomBuilding(scene, colliders, b, style, use));
-    else addBuilding(scene, colliders, b, style);
+    if (use) rooms.push(addRoomBuilding(scene, colliders, b, style, use, base(b.x, b.z)));
+    else addBuilding(scene, colliders, b, style, base(b.x, b.z));
   }
-  for (const g of spec.gates) addGate(scene, colliders, g, style);
-  addWater(scene, colliders, spec.water, style);
+  for (const g of spec.gates) addGate(scene, colliders, g, style, base(g.x, g.z));
+  addWater(scene, colliders, spec.water, style, groundY);
   const props = addProps(scene, colliders, spec.props, style, groundY);
   const trees = addTrees(scene, colliders, spec.trees, groundY);
-  addWell(scene, colliders, spec.well);
+  addWell(scene, colliders, spec.well, base(spec.well.x, spec.well.z));
   const floating = addFloating(scene, spec.floating, style, spec.trees.leaves[1], spec.trees.seed);
   // dựng xong mới gộp: khối đứng yên cùng vật liệu → một draw call (scene/merge.ts)
   mergeStatic(scene, new Set([ground]));
@@ -81,6 +86,7 @@ export function buildWorld(scene: THREE.Scene, colliders: Colliders, spec: Scene
       props(dt);
       trees(dt);
       floating(dt);
+      waterways(dt);
       for (const r of rooms) r.update(dt, !!player && inRect(r.floor, player.x, player.z));
     },
   };

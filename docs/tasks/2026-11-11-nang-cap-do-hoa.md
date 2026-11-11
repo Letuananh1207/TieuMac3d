@@ -80,7 +80,8 @@ makerstack.co meshy-review · sloyd.ai ai-3d-model-generator-pricing.
       độ cao. Kiểm bằng script tạm với code app (chưa có trình chạy test TS — 4 ví dụ đúng).
 - [x] B5. Núi xa 3 lớp (không sương) + biển mây; far plane theo `viewDistance`. Mẫu: 62–95 draw call, ~110k tam giác.
 - [x] B6a. Cỏ búi + đá rải (instanced), bậc đá (`67c5b43`); đặt Thiên Bậc + bục Nội Môn (thiết kế 2026-11-11.6).
-- [ ] B6b. Suối / thác Hậu Sơn; nhà trên bục cao khác 0 (lối lát dốc theo).
+- [x] B6b. Suối / thác (`terrain.waterfalls`, `terrain.streams`); nhà, cổng, ao, giếng, lối lát theo độ cao mặt
+      đất; đặt Hậu Sơn + Chưởng Môn Điện (thiết kế 2026-11-11.7). Góc trên xuống 141 draw call.
 - [x] B7. Địa hình thật (thiết kế 2026-11-11.5, phiên VS Code làm thay theo nhờ của người dùng) — chờ `/ui-apply`
       (không cần code mới: `scene:check` + build).
 

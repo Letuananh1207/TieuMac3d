@@ -156,6 +156,28 @@ const floorsRange = (o: Obj, path: string): string[] =>
 
 const rot = oneOf('rotY', ROTATIONS);
 
+/** Suối: `points` là danh sách [x, z] dài ngắn tuỳ ý (≥ 2), không đọc được bằng `item` (mảng cố định số phần tử). */
+const streamItem: ItemParser = (raw, path, out) => {
+  if (!isObj(raw)) {
+    out.push(`${path}: cần một object — bỏ`);
+    return null;
+  }
+  const local: string[] = [];
+  const pts = raw.points;
+  const okPts =
+    Array.isArray(pts) &&
+    pts.length >= 2 &&
+    pts.every((p) => Array.isArray(p) && p.length === 2 && p.every((v) => typeof v === 'number' && Number.isFinite(v)));
+  if (!okPts) local.push(`${path}.points: cần ít nhất 2 điểm [x, z]`);
+  if (typeof raw.width !== 'number' || !(raw.width > 0)) local.push(`${path}.width: cần một số > 0`);
+  for (const k of Object.keys(raw)) if (k !== 'points' && k !== 'width') out.push(`${path}.${k}: trường lạ, bỏ qua`);
+  if (local.length) {
+    out.push(...local, `${path}: bỏ phần tử này`);
+    return null;
+  }
+  return { points: pts, width: raw.width };
+};
+
 /** Danh sách dài ngắn tuỳ ý trong đặc tả: đường dẫn → cách đọc một phần tử. Mảng khác = bộ cố định. */
 const LISTS: Record<string, ItemParser> = {
   buildings: item(
@@ -180,6 +202,8 @@ const LISTS: Record<string, ItemParser> = {
   'terrain.plateaus': item({ from: XZ0, to: XZ0, y: 0 }, { pave: true, blend: 0 }, positive('blend')),
   'terrain.peaks': item({ x: 0, z: 0, r: 0, h: 0 }, {}, positive('r')),
   'terrain.stairs': item({ from: XZ0, to: XZ0, width: 0 }, {}, positive('width')),
+  'terrain.waterfalls': item({ x: 0, z: 0, top: 0, bottom: 0, width: 0 }, { rotY: 0 }, positive('width')),
+  'terrain.streams': streamItem,
   'farMountains.layers': item({ radius: 0, height: 0, color: '#000000', peaks: 0 }, {}, positive('radius', 'height', 'peaks')),
 };
 

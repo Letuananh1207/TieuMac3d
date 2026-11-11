@@ -14,11 +14,11 @@ const LOW_BEAM = 6.2; // đáy xà thấp nhất của gian giữa: cao hơn cam
  * Cổng sơn môn (牌坊) 3 gian 4 trụ: gian giữa rộng `width`, cao hơn; hai gian bên 3,5 m; ba mái nhỏ đầu đao; biển chữ
  * (`hanTitle` hoặc `title`) giữa hai xà gian giữa; chân trụ đá. Va chạm chỉ ở bốn trụ.
  */
-export function addGate(scene: THREE.Scene, colliders: Colliders, gate: GateSpec, style: Style): void {
+export function addGate(scene: THREE.Scene, colliders: Colliders, gate: GateSpec, style: Style, y0 = 0): void {
   const rot = gate.rotY ?? 0;
   const roofColor = gate.roofColor ?? style.eave;
   const g = new THREE.Group();
-  g.position.set(gate.x, 0, gate.z);
+  g.position.set(gate.x, y0, gate.z);
   g.rotation.y = (rot * Math.PI) / 180;
 
   const inner = gate.width / 2 + P / 2;

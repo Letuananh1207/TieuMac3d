@@ -164,6 +164,22 @@ export interface StairSpec {
   width: number;
 }
 
+/** Thác: dải nước dựng đứng rộng `width` tại (x, z), đỉnh ở độ cao `top`, chân ở `bottom`; mặt nước quay `rotY` độ (0 = nhìn +z). */
+export interface WaterfallSpec {
+  x: number;
+  z: number;
+  top: number;
+  bottom: number;
+  width: number;
+  rotY?: number;
+}
+
+/** Suối: dải nước uốn theo mặt đất qua các điểm `points`, rộng `width`; không va chạm (cạn, lội qua được). */
+export interface StreamSpec {
+  points: XZ[];
+  width: number;
+}
+
 /** Một lớp núi xa (chỉ ngắm, không sương): vòng răng cưa bán kính `radius` quanh tâm địa hình. */
 export interface MountainLayer {
   radius: number;
@@ -217,6 +233,10 @@ export interface SceneSpec {
     grass: { density: number; colors: [string, string] };
     /** đá rải: `density` tảng trên 1000 m², 0 = tắt; nhiều hơn trên sườn dốc */
     rocks: { density: number; color: string };
+    /** thác nước (Hậu Sơn…) */
+    waterfalls: WaterfallSpec[];
+    /** suối chảy theo mặt đất */
+    streams: StreamSpec[];
   };
   /** núi xa nhiều lớp quanh tâm địa hình, chân ở `base`; rỗng = không có */
   farMountains: { layers: MountainLayer[]; base: number };
@@ -320,6 +340,8 @@ export const DEFAULT_SCENE: SceneSpec = {
     stairs: [],
     grass: { density: 0, colors: ['#6f8c50', '#93ad66'] },
     rocks: { density: 0, color: '#8d8a84' },
+    waterfalls: [],
+    streams: [],
   },
   farMountains: { layers: [], base: -40 },
   cloudSea: { radius: 0, y: -10, color: '#f4f1ea' },

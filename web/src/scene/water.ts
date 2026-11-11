@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import type { GroundY } from './terrainHeight';
 import type { Colliders } from '../collision/colliders';
 import type { Style } from './buildings';
 import { lambert } from './materials';
@@ -8,13 +9,13 @@ import type { WaterSpec } from './spec';
  * Ao / hồ: mặt nước phẳng sát mặt sân + bờ đá. Không đi xuống được: ao tròn = vật cản tròn bán kính r,
  * ao chữ nhật = hộp (quay bội 90 thì đổi rộng ↔ sâu).
  */
-export function addWater(scene: THREE.Scene, colliders: Colliders, list: WaterSpec[], style: Style): void {
+export function addWater(scene: THREE.Scene, colliders: Colliders, list: WaterSpec[], style: Style, groundY: GroundY = () => 0): void {
   if (list.length === 0) return;
   const waterMat = new THREE.MeshBasicMaterial({ color: style.water });
   const rimMat = lambert(style.stone);
   for (const p of list) {
     const g = new THREE.Group();
-    g.position.set(p.x, 0, p.z);
+    g.position.set(p.x, groundY(p.x, p.z), p.z);
     if (p.r !== undefined) {
       const surface = new THREE.Mesh(new THREE.CircleGeometry(p.r, 32), waterMat);
       surface.rotation.x = -Math.PI / 2;

@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import type { GroundY } from './terrainHeight';
 import { lambert } from './materials';
 import type { PathSpec } from './spec';
 import { makeCanvasTex } from './textures';
@@ -32,8 +33,11 @@ function stoneTex(color: string): THREE.CanvasTexture {
   );
 }
 
-/** Lối lát đá: dải phẳng hơi nổi trên mặt sân (không đè hình nhau), không va chạm. */
-export function addPaths(scene: THREE.Scene, paths: PathSpec[], defaultColor: string): void {
+/**
+ * Lối lát đá: dải hơi nổi trên mặt sân (không đè hình nhau), không va chạm. Có địa hình: hai đầu đặt theo độ cao mặt đất
+ * (`groundY`), dải nghiêng đều giữa hai bục cao thấp khác nhau.
+ */
+export function addPaths(scene: THREE.Scene, paths: PathSpec[], defaultColor: string, groundY: GroundY = () => 0): void {
   const base = new Map<string, THREE.CanvasTexture>();
   paths.forEach((p, i) => {
     const color = p.color ?? defaultColor;
@@ -46,13 +50,22 @@ export function addPaths(scene: THREE.Scene, paths: PathSpec[], defaultColor: st
     const [x2, z2] = p.to;
     const len = Math.hypot(x2 - x1, z2 - z1);
     if (len < 0.01) return;
-    const t = tex.clone();
-    t.repeat.set(p.width / 1.2, len / 1.2);
-    const mat = lambert(0xffffff, { map: t, polygonOffset: true, polygonOffsetFactor: -1 - i * 0.01 });
-    const m = new THREE.Mesh(new THREE.PlaneGeometry(p.width, len), mat);
-    m.rotation.x = -Math.PI / 2;
-    m.rotation.z = Math.atan2(x2 - x1, z2 - z1); // trục dài của mặt phẳng (y cục bộ) quay về hướng from → to
-    m.position.set((x1 + x2) / 2, 0.02 + i * 0.001, (z1 + z2) / 2);
-    scene.add(m);
+    const mat = lambert(0xffffff, { map: tex, polygonOffset: true, polygonOffsetFactor: -1 - i * 0.01 });
+    // tứ giác: hai mép dọc theo from → to, cao theo mặt đất hai đầu; UV theo mét (1 ô ảnh = 1,2 m)
+    const lift = 0.02 + i * 0.001;
+    const ya = groundY(x1, z1) + lift;
+    const yb = groundY(x2, z2) + lift;
+    const px = ((z2 - z1) / len) * (p.width / 2); // vuông góc với hướng lối
+    const pz = (-(x2 - x1) / len) * (p.width / 2);
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.Float32BufferAttribute([x1 - px, ya, z1 - pz, x1 + px, ya, z1 + pz, x2 + px, yb, z2 + pz, x2 - px, yb, z2 - pz], 3));
+    const u = p.width / 1.2;
+    const v = len / 1.2;
+    geo.setAttribute('uv', new THREE.Float32BufferAttribute([0, 0, u, 0, u, v, 0, v], 2));
+    geo.setIndex([0, 2, 1, 0, 3, 2]);
+    geo.computeVertexNormals();
+    if (geo.getAttribute('normal').getY(0) < 0) geo.setIndex([0, 1, 2, 0, 2, 3]); // mặt luôn hướng lên
+    geo.computeVertexNormals();
+    scene.add(new THREE.Mesh(geo, mat));
   });
 }

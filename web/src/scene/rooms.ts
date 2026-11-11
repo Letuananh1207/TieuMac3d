@@ -89,11 +89,12 @@ function setOpacity(mats: THREE.Material[], v: number): void {
   }
 }
 
-export function addRoomBuilding(scene: THREE.Scene, colliders: Colliders, b: BuildingSpec, style: Style, use: InteriorUse): Room {
+/** `y0` = độ cao nền (bục khu khi có địa hình; cảnh phẳng = 0). */
+export function addRoomBuilding(scene: THREE.Scene, colliders: Colliders, b: BuildingSpec, style: Style, use: InteriorUse, y0 = 0): Room {
   const zoneId = b.zone?.id ?? b.id;
   const rot = b.rotY ?? 0;
   const g = new THREE.Group();
-  g.position.set(b.x, 0, b.z);
+  g.position.set(b.x, y0, b.z);
   g.rotation.y = (rot * Math.PI) / 180;
   const parts: RoomParts = { roof: new THREE.Group(), front: new THREE.Group() };
   g.add(parts.roof, parts.front);
@@ -147,8 +148,8 @@ export function addRoomBuilding(scene: THREE.Scene, colliders: Colliders, b: Bui
   const [x1, z1] = toWorld(b, 0, pd / 2 + STEP_RUN);
   const axis = Math.abs(x1 - x0) > Math.abs(z1 - z0) ? 'x' : 'z';
   const pads: Pad[] = [
-    { ...platform, y: HALL_FLOOR },
-    { ...stepsRect, y: HALL_FLOOR, ramp: { axis, at0: axis === 'x' ? x0 : z0, at1: axis === 'x' ? x1 : z1, y1: 0 } },
+    { ...platform, y: y0 + HALL_FLOOR },
+    { ...stepsRect, y: y0 + HALL_FLOOR, ramp: { axis, at0: axis === 'x' ? x0 : z0, at1: axis === 'x' ? x1 : z1, y1: y0 } },
   ];
 
   /* ---------- vật học, thầy, nút ---------- */
@@ -157,7 +158,7 @@ export function addRoomBuilding(scene: THREE.Scene, colliders: Colliders, b: Bui
   let teacher: Room['teacher'];
   if (furnished.teacher) {
     const [tx, tz] = toWorld(b, furnished.teacher.x, furnished.teacher.z);
-    teacher = { x: tx, y: furnished.teacher.y, z: tz, rotY: (rot * Math.PI) / 180 }; // nhìn ra cửa (như nhà)
+    teacher = { x: tx, y: y0 + furnished.teacher.y, z: tz, rotY: (rot * Math.PI) / 180 }; // nhìn ra cửa (như nhà)
   }
 
   let opacity = 1;
@@ -166,7 +167,7 @@ export function addRoomBuilding(scene: THREE.Scene, colliders: Colliders, b: Bui
     floor: worldRect(b, { x: 0, z: 0, w: iw - 0.3, d: id - 0.3 }),
     pads,
     hits: furnished.hits,
-    anchor: new THREE.Vector3(ax, furnished.anchor.y, az),
+    anchor: new THREE.Vector3(ax, y0 + furnished.anchor.y, az),
     teacher,
     update(dt, inside) {
       const target = inside ? FADED : 1;

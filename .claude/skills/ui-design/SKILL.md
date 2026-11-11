@@ -97,6 +97,8 @@ Vật có va chạm chỉ quay 0 · 90 · 180 · 270; lối đá, mây, đảo: 
 | `cloudSea` | `{ "radius": 420, "y": -8, "color": "#f4f1ea" }` | biển mây dưới mép cao nguyên; `radius` 0 = tắt |
 | `terrain.stairs` | `{ "from": [0, -24], "to": [0, -57], "width": 4 }` | bậc đá thẳng; độ cao hai đầu = bục (nếu đầu nằm trên bục) hoặc đất tự nhiên; dốc trung bình ≤ 35° (`scene:check` báo) |
 | `terrain.grass` · `terrain.rocks` | `{ "density": 6, "colors": ["#6f8c50", "#93ad66"] }` · `{ "density": 4, "color": "#8d8a84" }` | cỏ búi (búi / 100 m², dốc < 25°, không trên bục lát / lối / bậc) · đá rải (tảng / 1000 m², nhiều hơn trên dốc); 0 = tắt |
+| `terrain.waterfalls` | `{ "x": 42, "z": -76, "top": 15, "bottom": 4, "width": 3, "rotY": 0 }` | thác dựng đứng (mặt nhìn +z trước khi quay), vân chảy, bọt ở chân; đặt ở mép kè giữa hai bục; không va chạm |
+| `terrain.streams` | `{ "points": [[42, -66], [46, -58], [44, -48]], "width": 1.6 }` | suối bám mặt đất qua các điểm, vân chảy theo dòng; không va chạm (muốn chặn thì đặt `water` ở chỗ đó) |
 
 Kiểu nhà (`dien`, `giang-duong`, `nha-nho`, `thap`), cổng, cây, đồ trang trí, nhân vật đệ tử đã dựng theo bản mẫu
 `source/PhongCach-*.dc.html` — ví dụ dùng hết kiểu mới: `docs/phieu_thiet_ke/2026-11-11-phong-cach-mau.json`.
@@ -104,7 +106,8 @@ Cảnh rộng: tăng `ground.size` (phủ hết các khu) và `fog.far`. Canvas 
 `?cam=x,y,z&tam=x,z` chụp gần một chỗ, `?nhan-vat=gau` xem lại gấu khối;
 bảng "Hiệu năng" in draw call (không tính lớp phủ) — giữ ≤ 150. Có địa hình (đồi, chủ phong, vực, núi xa, biển
 mây — ví dụ `docs/phieu_thiet_ke/2026-11-11-dia-hinh-mau.json`, hồ sơ `docs/tham_khao/dia-hinh-tong-mon.md`); nhân
-vật không leo dốc > 35° (`R-VA-2`). Có bậc đá, cỏ búi, đá rải; chưa có suối / thác, nhà trên bục cao khác 0 (cần code).
+vật không leo dốc > 35° (`R-VA-2`). Có bậc đá, cỏ búi, đá rải, suối, thác. Nhà, cổng, ao, giếng, lối lát tự đặt theo độ cao mặt đất
+tại tâm (đặt trên bục cao bao nhiêu cũng được; lối lát nối hai bục khác độ cao thành dốc).
 Nhà vào được (2026-11-11): nhà kiểu giảng đường có `zone` mà nội dung bài trong code cho nội thất (`lop-hsk3` → lớp
 học, `thu-vien` → thư viện) tự thành nhà rỗng có cửa giữa + nội thất; vùng học nằm trong nhà (trường `zone.front` / `r`
 không còn tác dụng với nhà đó). Không còn thẻ mời. Canvas 3D: `?nv=x,z` đặt nhân vật (vd. `?nv=0,-10.5` trong giảng
