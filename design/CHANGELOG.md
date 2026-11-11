@@ -3,6 +3,29 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-11.6 — Thiên Bậc + bục Nội Môn, cỏ búi, đá rải, chữ Hán tên khu
+
+- Loại: cảnh 3D — **bố cục** (bục Nội Môn mới, bậc đá, 2 khu mới) + **ngoại hình** (cỏ, đá) · chuỗi (chữ Hán tên nơi / khu).
+- Người dùng nhờ phiên VS Code làm thay phiên thiết kế (quy trình `/ui-design canh`). Code bậc / cỏ / đá: commit `67c5b43`.
+- Trường đã đổi (cũ → mới):
+  - `terrain.plateaus` +1: **bục Nội Môn** x −14…14, z −71…−56, **y 11**, lát gạch, blend 3 (tạc vào sườn chủ phong).
+  - `terrain.stairs` (mới): **Thiên Bậc** (0; −24) → (0; −57), rộng 4 — từ ngay ngoài tường bắc Ngoại Môn lên bục Nội
+    Môn, cao ≈ 11 m trên 33 m (dốc ≈ 18°, ~61 bậc 0,18 m).
+  - `terrain.grass` (mới): 6 búi / 100 m², `#6f8c50` / `#93ad66`. `terrain.rocks` (mới): 4 tảng / 1000 m², `#8d8a84`.
+  - `site.han` "文淵宗"; `site.areas[].han`: Sơn Môn 山門 · Ngoại Môn 外門 · Diễn Võ Trường 演武場 · Đệ Tử Cư Xá 弟子居 · Linh
+    Dược Viên 靈藥園 · Luyện Đan Phòng 煉丹房; khu mới **Thiên Bậc 天階** x −6…6 z −56…−23, **Nội Môn 內門** x −14…14
+    z −71…−56 (cho chip `R-HUD-1` + thẻ tên khu `R-HUD-3` + màn tải `R-MAN-2` của HUD C).
+- Lối tới Thiên Bậc: tường bắc Ngoại Môn **vẫn liền** (giữ ví dụ `R-VA-1`) → đi vòng qua cổng tây, men ngoài tường lên
+  chân bậc. Đề xuất (cần người dùng quyết + sửa ví dụ `R-VA-1`): mở cổng trăng giữa tường bắc (`walls.gates` bắc, at 0,
+  rộng 4) để trục nam – bắc liền Sơn Môn → Ngoại Môn → Thiên Bậc → Nội Môn.
+- `npm run scene:check`: **Không có lỗi** (bậc dốc ≤ 35°, không vật nào trên đất dốc). Vùng học không đổi.
+- Draw call (Canvas 3D): trên xuống **135** (sau khi HUD C gộp khối thầy) · Thiên Bậc 34; ~124k tam giác.
+- **Cần code**: nhà trên bục cao khác 0 (Chưởng Môn Điện / Tàng Kinh Các trên Nội Môn — nhà hiện luôn đặt ở y 0); suối /
+  thác Hậu Sơn (B6b); núi xa đỉnh rộng chân hơn (từ mục .5).
+- Canvas 3D (phiên bản 10): https://claude.ai/artifact/TyJxrgsBcj5ryHakv7c1so
+- Ảnh: `screens/Canh-tren.png` (chụp lại), `Canh-thien-bac.png` (mới).
+- File: `scene/scene.json`, `screens/Canh-tren.png`, `screens/Canh-thien-bac.png`.
+
 ## 2026-11-11.5 — Bật địa hình: cao nguyên giữa biển mây, chủ phong, núi xa
 
 - Loại: cảnh 3D — **ngoại hình** (địa hình, núi xa, biển mây, sương) + **bố cục** nhỏ (dời 5 cụm cây rìa cảnh vào
