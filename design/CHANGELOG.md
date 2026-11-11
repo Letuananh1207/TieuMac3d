@@ -3,6 +3,18 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-11.9 — Cổng trăng tường bắc Ngoại Môn
+
+- Loại: cảnh 3D — **bố cục** (tường). Người dùng chốt mở cổng (đề xuất ở mục .6), nhờ phiên VS Code làm thay.
+- Trường đã đổi: `walls.gates` +1 `{ side: "bac", at: 0, width: 4 }` → trục nam – bắc liền Sơn Môn → Ngoại Môn →
+  Thiên Bậc → Nội Môn.
+- Luật chạm: **`R-VA-1`** — đã sửa ví dụ trong sổ (đi lên bắc ở x = 6 thì dừng ở z = −20,0; ở x = 0 thì qua cổng bắc),
+  chép lên tài liệu online (ô Xác nhận vẫn Chờ), `--mark-synced R-VA-1`. Kiểm bằng script với code app: x = 6 dừng ở
+  −20,00; x = 0 qua cổng, leo hết Thiên Bậc lên bục Nội Môn (cao 11).
+- `npm run scene:check`: **Không có lỗi**.
+- Ảnh: `screens/Canh-cong-bac.png`.
+- File: `scene/scene.json`, `screens/Canh-cong-bac.png`.
+
 ## 2026-11-11.8 — Núi xa rộng chân, có đỉnh phụ
 
 - Loại: cảnh 3D — **ngoại hình** (núi xa). Không chạm luật.
