@@ -204,7 +204,13 @@ const LISTS: Record<string, ItemParser> = {
   'terrain.stairs': item({ from: XZ0, to: XZ0, width: 0 }, {}, positive('width')),
   'terrain.waterfalls': item({ x: 0, z: 0, top: 0, bottom: 0, width: 0 }, { rotY: 0 }, positive('width')),
   'terrain.streams': streamItem,
-  'farMountains.layers': item({ radius: 0, height: 0, color: '#000000', peaks: 0 }, {}, positive('radius', 'height', 'peaks')),
+  'farMountains.layers': item(
+    { radius: 0, height: 0, color: '#000000', peaks: 0 },
+    { width: 1, spurs: 0 },
+    all(positive('radius', 'height', 'peaks', 'width'), (o, p) =>
+      typeof o.spurs === 'number' && (o.spurs < 0 || o.spurs > 3) ? [`${p}.spurs: 0…3`] : [],
+    ),
+  ),
 };
 
 /** Kiểm + ghép nội dung file đặc tả lên `DEFAULT_SCENE`. `raw === undefined` = chưa có file. */

@@ -21,6 +21,9 @@ export function addFarMountains(scene: THREE.Scene, spec: SceneSpec): void {
   scene.add(new THREE.Mesh(geo, mat));
 }
 
+/** Góc về khoảng [0, 2π). */
+const wrap = (a: number): number => ((a % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+
 function ring(
   layer: MountainLayer,
   base: number,
@@ -31,11 +34,31 @@ function ring(
   col: number[],
 ): void {
   const rand = seededRandom(seed);
+  const widen = layer.width ?? 1;
   const peaks = Array.from({ length: layer.peaks }, () => ({
     a: rand() * Math.PI * 2,
-    w: 0.06 + rand() * 0.2, // nửa bề ngang đỉnh, radian
+    w: (0.06 + rand() * 0.2) * widen, // nửa bề ngang đỉnh, radian
     h: 0.45 + rand() * 0.55,
   }));
+  // đỉnh phụ: thấp hơn, hẹp hơn, nằm trên sườn hai bên đỉnh chính (bộ số ngẫu nhiên riêng → lớp không có đỉnh phụ
+  // giữ đúng hình cũ)
+  const spurs = Math.round(layer.spurs ?? 0);
+  if (spurs > 0) {
+    const srand = seededRandom(seed * 7 + 13);
+    for (const p of [...peaks]) {
+      for (let i = 1; i <= spurs; i++) {
+        for (const side of [-1, 1]) {
+          peaks.push({
+            a: wrap(p.a + side * p.w * (0.3 + 0.28 * i + srand() * 0.12)),
+            w: p.w * (0.32 + srand() * 0.12),
+            h: p.h * (0.82 - 0.14 * i) * (0.85 + srand() * 0.15),
+          });
+        }
+      }
+    }
+  }
+  // đỉnh rộng thì sườn bớt lõm (đỉnh tròn hơn, đỡ nhọn như băng); width 1 = số mũ cũ 1,6
+  const sharp = Math.max(0.9, 1.6 / Math.sqrt(widen));
   const segs = Math.max(240, layer.peaks * 24);
   const top = new THREE.Color(layer.color);
   const foot = top.clone().lerp(mist, 0.45); // chân núi nhạt dần vào mây / sương
@@ -51,7 +74,7 @@ function ring(
       if (d >= p.w) continue;
       const k = 1 - d / p.w;
       // sườn lõm, đỉnh nhọn + nấc đá theo gợn (đỉnh phụ hai bên)
-      h = Math.max(h, p.h * Math.pow(k, 1.6) * (0.88 + 0.12 * jag(a * 1.7)));
+      h = Math.max(h, p.h * Math.pow(k, sharp) * (0.88 + 0.12 * jag(a * 1.7)));
     }
     return base + (layer.height - base) * h;
   };

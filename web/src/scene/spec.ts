@@ -188,6 +188,10 @@ export interface MountainLayer {
   color: string;
   /** số đỉnh nhô quanh vòng */
   peaks: number;
+  /** hệ số bề ngang đỉnh (1 = như cũ; 2 = đỉnh rộng chân gấp đôi, sườn thoải hơn) */
+  width?: number;
+  /** số đỉnh phụ mỗi bên đỉnh chính (thấp hơn, nằm trên sườn); 0 = không */
+  spurs?: number;
 }
 
 export interface SceneSpec {

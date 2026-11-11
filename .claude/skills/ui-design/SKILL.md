@@ -93,7 +93,7 @@ Vật có va chạm chỉ quay 0 · 90 · 180 · 270; lối đá, mây, đảo: 
 | `terrain.plateaus` | `{ "from": [-22, -22], "to": [22, 22], "y": 0, "pave": true, "blend": 5 }` | bục khu ép phẳng; `pave` = lát gạch; `blend` nhỏ (≤ 1) = kè đá dựng đứng. Nhà, tường, cổng, ao, giếng **phải nằm trên bục** |
 | `terrain.peaks` | `{ "x": 0, "z": -82, "r": 48, "h": 42 }` | đỉnh núi / đồi (chủ phong). Cây, đồ trang trí tự đặt lên mặt đất |
 | `terrain.edge` · `noise` · `colors` | `{ "radius": 105, "width": 15, "y": -30, "wobble": 8 }` | mép cao nguyên đổ xuống vực; nhiễu nhấp nhô; màu cỏ (3) · đất · đá · đá cao theo dốc `slopeDirt` / `slopeRock` |
-| `farMountains` | `{ "base": -40, "layers": [{ "radius": 170, "height": 45, "color": "#5f7a80", "peaks": 9 }] }` | núi xa nhiều lớp, không chịu sương — lớp xa nhạt dần |
+| `farMountains` | `{ "base": -40, "layers": [{ "radius": 170, "height": 45, "color": "#5f7a80", "peaks": 9, "width": 2, "spurs": 2 }] }` | núi xa nhiều lớp, không chịu sương — lớp xa nhạt dần; `width` = hệ số bề ngang đỉnh (1 = nhọn như cũ, 2 = rộng chân, đỉnh tròn hơn), `spurs` = số đỉnh phụ mỗi bên (0…3) |
 | `cloudSea` | `{ "radius": 420, "y": -8, "color": "#f4f1ea" }` | biển mây dưới mép cao nguyên; `radius` 0 = tắt |
 | `terrain.stairs` | `{ "from": [0, -24], "to": [0, -57], "width": 4 }` | bậc đá thẳng; độ cao hai đầu = bục (nếu đầu nằm trên bục) hoặc đất tự nhiên; dốc trung bình ≤ 35° (`scene:check` báo) |
 | `terrain.grass` · `terrain.rocks` | `{ "density": 6, "colors": ["#6f8c50", "#93ad66"] }` · `{ "density": 4, "color": "#8d8a84" }` | cỏ búi (búi / 100 m², dốc < 25°, không trên bục lát / lối / bậc) · đá rải (tảng / 1000 m², nhiều hơn trên dốc); 0 = tắt |
