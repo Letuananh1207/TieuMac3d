@@ -9,3 +9,4 @@
 - 2026-11-11 — HUD C (thiết kế 2026-11-11.3/.4): token kính sương, thẻ tên khu (R-HUD-3), màn tải (R-MAN-2); chữ Hán đóng gói cắt chữ (`scripts/subset-han.mjs` → `src/fonts/`).
 - 2026-11-11 — Địa hình: terrain / farMountains / cloudSea trong đặc tả, Heightfield ở collision/, luật R-VA-2 (dốc 35°); nhà phải nằm trên bục.
 - 2026-11-11 — Vào trong nhà: bỏ thẻ mời (eventCard), nút học nổi + chạm vật, rooms.ts / noi_that.ts, Ground nhiều lớp; luật R-VUNG-1/2/3, R-VA-3, R-HUD-1/2.
+- 2026-11-11 — B6a: bậc đá (terrain.stairs), cỏ búi + đá rải (terrain.grass / rocks).

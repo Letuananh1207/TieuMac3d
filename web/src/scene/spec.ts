@@ -154,6 +154,16 @@ export interface PeakSpec {
   h: number;
 }
 
+/**
+ * Bậc đá thẳng từ `from` lên `to`, rộng `width`: đất dọc bậc ép thành dốc đều giữa độ cao tự nhiên hai đầu (bục ở
+ * đầu nào thì lấy độ cao bục), mỗi bậc cao ≈ 0,18 m. Dốc trung bình phải ≤ 35° (R-VA-2) — `scene:check` báo nếu quá.
+ */
+export interface StairSpec {
+  from: XZ;
+  to: XZ;
+  width: number;
+}
+
 /** Một lớp núi xa (chỉ ngắm, không sương): vòng răng cưa bán kính `radius` quanh tâm địa hình. */
 export interface MountainLayer {
   radius: number;
@@ -201,6 +211,12 @@ export interface SceneSpec {
     colors: { grass: [string, string, string]; dirt: string; rock: string; highRock: string; highFrom: number };
     slopeDirt: number;
     slopeRock: number;
+    /** bậc đá lên núi (Thiên Bậc…) */
+    stairs: StairSpec[];
+    /** cỏ búi trên đất cỏ (dốc < 25°, ngoài bục lát / lối / bậc): `density` búi trên 100 m², 0 = tắt; 2 màu xen kẽ */
+    grass: { density: number; colors: [string, string] };
+    /** đá rải: `density` tảng trên 1000 m², 0 = tắt; nhiều hơn trên sườn dốc */
+    rocks: { density: number; color: string };
   };
   /** núi xa nhiều lớp quanh tâm địa hình, chân ở `base`; rỗng = không có */
   farMountains: { layers: MountainLayer[]; base: number };
@@ -301,6 +317,9 @@ export const DEFAULT_SCENE: SceneSpec = {
     colors: { grass: ['#7d9a5a', '#8aa864', '#6f8c50'], dirt: '#9c8466', rock: '#8d8a84', highRock: '#b9b6ae', highFrom: 20 },
     slopeDirt: 20,
     slopeRock: 35,
+    stairs: [],
+    grass: { density: 0, colors: ['#6f8c50', '#93ad66'] },
+    rocks: { density: 0, color: '#8d8a84' },
   },
   farMountains: { layers: [], base: -40 },
   cloudSea: { radius: 0, y: -10, color: '#f4f1ea' },

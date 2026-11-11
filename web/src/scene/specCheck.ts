@@ -14,7 +14,7 @@ import {
   type SceneSpec,
   type XZ,
 } from './spec';
-import { terrainHeightFn } from './terrainHeight';
+import { stairEnds, terrainHeightFn } from './terrainHeight';
 
 export interface ResolvedScene {
   spec: SceneSpec;
@@ -179,6 +179,7 @@ const LISTS: Record<string, ItemParser> = {
   'floating.islands': item({ x: 0, y: 0, z: 0, scale: 0 }, {}, positive('scale')),
   'terrain.plateaus': item({ from: XZ0, to: XZ0, y: 0 }, { pave: true, blend: 0 }, positive('blend')),
   'terrain.peaks': item({ x: 0, z: 0, r: 0, h: 0 }, {}, positive('r')),
+  'terrain.stairs': item({ from: XZ0, to: XZ0, width: 0 }, {}, positive('width')),
   'farMountains.layers': item({ radius: 0, height: 0, color: '#000000', peaks: 0 }, {}, positive('radius', 'height', 'peaks')),
 };
 
@@ -237,6 +238,14 @@ function checkConsistency(s: SceneSpec): string[] {
   }
   if (s.cloudSea.radius < 0) out.push('cloudSea.radius: phải ≥ 0');
   if (t.enabled && t.size > 0 && t.cell > 0) out.push(...checkOnFlatGround(s));
+  if (t.enabled) {
+    t.stairs.forEach((st, i) => {
+      const [ya, yb] = stairEnds(t, st);
+      const len = Math.hypot(st.to[0] - st.from[0], st.to[1] - st.from[1]);
+      const deg = (Math.atan2(Math.abs(yb - ya), len) * 180) / Math.PI;
+      if (deg > 35) out.push(`terrain.stairs[${i}]: dốc ${deg.toFixed(0)}° > 35° — nhân vật không leo được (R-VA-2); kéo dài bậc hoặc hạ đầu trên`);
+    });
+  }
   return out;
 }
 

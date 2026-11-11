@@ -4,7 +4,7 @@
  * Xem docs/tham_khao/dia-hinh-tong-mon.md.
  */
 import { Heightfield } from '../collision/heightfield';
-import type { PathSpec, PlateauSpec, SceneSpec, XZ } from './spec';
+import type { PathSpec, PlateauSpec, SceneSpec, StairSpec, XZ } from './spec';
 
 type Terrain = SceneSpec['terrain'];
 
@@ -101,13 +101,10 @@ function pathZone(path: PathSpec, plateaus: PlateauSpec[], blend: number): FlatZ
   };
 }
 
-/** Độ cao tại (x, z) theo đặc tả — dùng để lấy mẫu lưới. */
-export function terrainHeightFn(t: Terrain, paths: PathSpec[]): (x: number, z: number) => number {
-  const zones = [...t.plateaus.map((p) => plateauZone(p, t.blend)), ...paths.map((p) => pathZone(p, t.plateaus, t.blend))];
+/** Đất tự nhiên (nhiễu + các đỉnh), chưa ép phẳng, chưa đổ vực. */
+function naturalFn(t: Terrain): (x: number, z: number) => number {
   const { seed, amp, scale } = t.noise;
-  const [cx, cz] = t.center;
   return (x, z) => {
-    // 1. đất tự nhiên
     let h = amp * fbm(x / scale, z / scale, seed);
     for (const p of t.peaks) {
       const k = 1 - Math.hypot(x - p.x, z - p.z) / p.r;
@@ -115,6 +112,43 @@ export function terrainHeightFn(t: Terrain, paths: PathSpec[]): (x: number, z: n
       // sườn lõm, đỉnh nhọn (núi Trung Hoa cao hơn rộng) + gợn đá theo nhiễu
       h += p.h * Math.pow(k, 1.6) + p.h * 0.12 * k * fbm(x / 9, z / 9, seed + 7);
     }
+    return h;
+  };
+}
+
+/** Độ cao hai đầu một bậc đá: đầu nằm trên bục → độ cao bục, không thì đất tự nhiên tại đó. */
+export function stairEnds(t: Terrain, s: StairSpec): [number, number] {
+  const nat = naturalFn(t);
+  return [plateauAt(t.plateaus, s.from) ?? nat(...s.from), plateauAt(t.plateaus, s.to) ?? nat(...s.to)];
+}
+
+/** Bậc đá: dải ép dốc đều giữa độ cao hai đầu; mép chuyển hẹp (2 m) để vách hai bên bậc rõ. */
+function stairZone(t: Terrain, s: StairSpec): FlatZone {
+  const [ya, yb] = stairEnds(t, s);
+  const z = pathZone({ from: s.from, to: s.to, width: s.width }, [], 2);
+  return { ...z, y: (x, zz) => {
+    const [ax, az] = s.from;
+    const [bx, bz] = s.to;
+    const dx = bx - ax;
+    const dz = bz - az;
+    const k = clamp01(((x - ax) * dx + (zz - az) * dz) / (dx * dx + dz * dz || 1));
+    return ya + (yb - ya) * k;
+  } };
+}
+
+/** Độ cao tại (x, z) theo đặc tả — dùng để lấy mẫu lưới. */
+export function terrainHeightFn(t: Terrain, paths: PathSpec[]): (x: number, z: number) => number {
+  const zones = [
+    ...t.plateaus.map((p) => plateauZone(p, t.blend)),
+    ...paths.map((p) => pathZone(p, t.plateaus, t.blend)),
+    ...t.stairs.map((s) => stairZone(t, s)),
+  ];
+  const natural = naturalFn(t);
+  const { seed } = t.noise;
+  const [cx, cz] = t.center;
+  return (x, z) => {
+    // 1. đất tự nhiên
+    let h = natural(x, z);
     // 2. ép phẳng: vùng gần nhất thắng
     let best: FlatZone | null = null;
     let bestD = Infinity;

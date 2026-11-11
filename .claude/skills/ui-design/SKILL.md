@@ -95,6 +95,8 @@ Vật có va chạm chỉ quay 0 · 90 · 180 · 270; lối đá, mây, đảo: 
 | `terrain.edge` · `noise` · `colors` | `{ "radius": 105, "width": 15, "y": -30, "wobble": 8 }` | mép cao nguyên đổ xuống vực; nhiễu nhấp nhô; màu cỏ (3) · đất · đá · đá cao theo dốc `slopeDirt` / `slopeRock` |
 | `farMountains` | `{ "base": -40, "layers": [{ "radius": 170, "height": 45, "color": "#5f7a80", "peaks": 9 }] }` | núi xa nhiều lớp, không chịu sương — lớp xa nhạt dần |
 | `cloudSea` | `{ "radius": 420, "y": -8, "color": "#f4f1ea" }` | biển mây dưới mép cao nguyên; `radius` 0 = tắt |
+| `terrain.stairs` | `{ "from": [0, -24], "to": [0, -57], "width": 4 }` | bậc đá thẳng; độ cao hai đầu = bục (nếu đầu nằm trên bục) hoặc đất tự nhiên; dốc trung bình ≤ 35° (`scene:check` báo) |
+| `terrain.grass` · `terrain.rocks` | `{ "density": 6, "colors": ["#6f8c50", "#93ad66"] }` · `{ "density": 4, "color": "#8d8a84" }` | cỏ búi (búi / 100 m², dốc < 25°, không trên bục lát / lối / bậc) · đá rải (tảng / 1000 m², nhiều hơn trên dốc); 0 = tắt |
 
 Kiểu nhà (`dien`, `giang-duong`, `nha-nho`, `thap`), cổng, cây, đồ trang trí, nhân vật đệ tử đã dựng theo bản mẫu
 `source/PhongCach-*.dc.html` — ví dụ dùng hết kiểu mới: `docs/phieu_thiet_ke/2026-11-11-phong-cach-mau.json`.
@@ -102,7 +104,7 @@ Cảnh rộng: tăng `ground.size` (phủ hết các khu) và `fog.far`. Canvas 
 `?cam=x,y,z&tam=x,z` chụp gần một chỗ, `?nhan-vat=gau` xem lại gấu khối;
 bảng "Hiệu năng" in draw call (không tính lớp phủ) — giữ ≤ 150. Có địa hình (đồi, chủ phong, vực, núi xa, biển
 mây — ví dụ `docs/phieu_thiet_ke/2026-11-11-dia-hinh-mau.json`, hồ sơ `docs/tham_khao/dia-hinh-tong-mon.md`); nhân
-vật không leo dốc > 35° (`R-VA-2`). Chưa có bậc đá, suối / thác, cỏ búi (cần code).
+vật không leo dốc > 35° (`R-VA-2`). Có bậc đá, cỏ búi, đá rải; chưa có suối / thác, nhà trên bục cao khác 0 (cần code).
 Nhà vào được (2026-11-11): nhà kiểu giảng đường có `zone` mà nội dung bài trong code cho nội thất (`lop-hsk3` → lớp
 học, `thu-vien` → thư viện) tự thành nhà rỗng có cửa giữa + nội thất; vùng học nằm trong nhà (trường `zone.front` / `r`
 không còn tác dụng với nhà đó). Không còn thẻ mời. Canvas 3D: `?nv=x,z` đặt nhân vật (vd. `?nv=0,-10.5` trong giảng

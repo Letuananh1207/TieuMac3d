@@ -23,6 +23,7 @@
 | đặt vật lên đất | cây, đồ trang trí nhận `groundY`; nhà, tường, cổng, ao, giếng **không** — phải nằm trên bục (`scene:check` báo "nằm trên đất dốc") | `world.ts` |
 | dốc | `MAX_SLOPE` 35° + `canStep` (R-VA-2) trong `player/controller.ts`; camera không chui xuống đất (`orbit.update(…, groundAt)`) | |
 | nhà vào được | nhà kiểu giảng đường có `zone` mà `ZONE_CONTENT` cho `interior` (`lop-hoc` · `thu-vien`) → `scene/rooms.ts`: thân rỗng, gian giữa mặt trước để trống làm cửa, nội thất `kien_truc/noi_that.ts`; va chạm theo lan can + tường + đồ đạc (R-VA-3); nền + dốc bậc là `Pad` trong `collision/ground.ts` (`LayeredGround`, `World.surface`); mái + tường trước + hàng cột trước gộp riêng rồi mờ 15 % / 0,3 s khi đứng trên sàn (R-HUD-2); hộp bắt chạm vô hình `markDynamic` (R-VUNG-2). Vùng học = điểm học trong nhà (`interiorSpot`, R-VUNG-1) | `world.ts` `buildWorld(…, interiors)` |
+| bậc đá, cỏ, đá rải | `terrain.stairs` ép dải dốc trong `terrainHeight.ts` (`stairEnds`), khối bậc ở `scene/stairs.ts`; cỏ búi + đá rải `scene/grass.ts` (mỗi loại 1 `InstancedMesh`, `setColorAt`, tối đa 3000 / 400) | `world.ts` khi có địa hình |
 | núi xa, biển mây | `scene/farMountains.ts`: không chịu sương, tự pha màu; far plane = `viewDistance(spec)` | `renderer.ts` nhận `far` |
 
 ## Mẫu: thêm một vật vào sân

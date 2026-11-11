@@ -71,6 +71,8 @@ if (t.enabled) {
       `${t.peaks.length} đỉnh (cao nhất ${n(Math.max(0, ...t.peaks.map((p) => p.h)))} m) · mép vực bán kính ${n(t.edge.radius)}`,
   );
 }
+if (t.enabled && t.stairs.length) console.log(`Bậc đá: ${t.stairs.map((s) => `(${n(s.from[0])}; ${n(s.from[1])}) → (${n(s.to[0])}; ${n(s.to[1])}) rộng ${n(s.width)}`).join(' · ')}`);
+if (t.enabled && (t.grass.density || t.rocks.density)) console.log(`Cỏ búi: ${n(t.grass.density)} / 100 m² · đá rải: ${n(t.rocks.density)} / 1000 m²`);
 if (spec.farMountains.layers.length) console.log(`Núi xa: ${spec.farMountains.layers.length} lớp`);
 if (spec.cloudSea.radius > 0) console.log(`Biển mây: y ${n(spec.cloudSea.y)}, bán kính ${n(spec.cloudSea.radius)}`);
 

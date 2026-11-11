@@ -5,11 +5,13 @@ import { addBuilding } from './buildings';
 import { addEnvironment, addFlatGround } from './environment';
 import { addCloudSea, addFarMountains } from './farMountains';
 import { addGate } from './gate';
+import { addGrassAndRocks } from './grass';
 import { mergeStatic } from './merge';
 import { addPaths } from './paths';
 import { addProps } from './props';
 import { addFloating } from './sky';
 import { addRoomBuilding, inRect, type InteriorUse, type Room } from './rooms';
+import { addStairs } from './stairs';
 import { roomKinds, zoneAnchors, type SceneSpec, type ZoneAnchor } from './spec';
 import { addTerrain } from './terrain';
 import { buildHeightfield, type GroundY } from './terrainHeight';
@@ -47,6 +49,10 @@ export function buildWorld(scene: THREE.Scene, colliders: Colliders, spec: Scene
       }
     : undefined;
   const ground = hf ? addTerrain(scene, spec, hf) : addFlatGround(scene, spec.ground);
+  if (hf) {
+    addStairs(scene, spec.terrain, style);
+    addGrassAndRocks(scene, spec.terrain, hf, spec.paths);
+  }
   addFarMountains(scene, spec);
   addCloudSea(scene, spec);
   addPaths(scene, spec.paths, style.path);
