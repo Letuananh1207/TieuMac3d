@@ -6,8 +6,8 @@
   },
   "fog": {
     "color": "#c3cbd4",
-    "near": 45,
-    "far": 140
+    "near": 60,
+    "far": 260
   },
   "light": {
     "skyColor": "#dfe8ff",
@@ -673,26 +673,26 @@
         "kind": "tung",
         "x": 0,
         "z": -62,
-        "w": 150,
+        "w": 130,
         "d": 26,
         "count": 40,
         "collide": false
       },
       {
         "kind": "tung",
-        "x": -82,
-        "z": 10,
+        "x": -78,
+        "z": 8,
         "w": 18,
-        "d": 120,
+        "d": 80,
         "count": 28,
         "collide": false
       },
       {
         "kind": "tung",
-        "x": 80,
-        "z": 10,
+        "x": 78,
+        "z": 8,
         "w": 18,
-        "d": 120,
+        "d": 80,
         "count": 28,
         "collide": false
       },
@@ -716,19 +716,19 @@
       },
       {
         "kind": "mai",
-        "x": 80,
-        "z": 10,
+        "x": 78,
+        "z": 8,
         "w": 18,
-        "d": 120,
+        "d": 80,
         "count": 8,
         "collide": false
       },
       {
         "kind": "mai",
-        "x": -82,
-        "z": 10,
+        "x": -78,
+        "z": 8,
         "w": 18,
-        "d": 120,
+        "d": 80,
         "count": 6,
         "collide": false
       },
@@ -884,5 +884,185 @@
         ]
       }
     ]
+  },
+  "terrain": {
+    "enabled": true,
+    "center": [
+      0,
+      -5
+    ],
+    "size": 300,
+    "cell": 2.5,
+    "plateaus": [
+      {
+        "from": [
+          -22,
+          -22
+        ],
+        "to": [
+          22,
+          22
+        ],
+        "y": 0,
+        "pave": true,
+        "blend": 5
+      },
+      {
+        "from": [
+          -7,
+          21
+        ],
+        "to": [
+          7,
+          57
+        ],
+        "y": 0,
+        "pave": true,
+        "blend": 5
+      },
+      {
+        "from": [
+          26,
+          -16
+        ],
+        "to": [
+          61,
+          16
+        ],
+        "y": 0,
+        "pave": true,
+        "blend": 5
+      },
+      {
+        "from": [
+          26,
+          20
+        ],
+        "to": [
+          61,
+          46
+        ],
+        "y": 0,
+        "pave": true,
+        "blend": 5
+      },
+      {
+        "from": [
+          -63,
+          -16
+        ],
+        "to": [
+          -26,
+          21
+        ],
+        "y": 0,
+        "pave": true,
+        "blend": 5
+      },
+      {
+        "from": [
+          -63,
+          -43
+        ],
+        "to": [
+          -26,
+          -20
+        ],
+        "y": 0,
+        "pave": true,
+        "blend": 5
+      }
+    ],
+    "peaks": [
+      {
+        "x": 0,
+        "z": -82,
+        "r": 48,
+        "h": 42
+      },
+      {
+        "x": -38,
+        "z": -92,
+        "r": 30,
+        "h": 24
+      },
+      {
+        "x": 42,
+        "z": -88,
+        "r": 32,
+        "h": 28
+      },
+      {
+        "x": 88,
+        "z": -30,
+        "r": 28,
+        "h": 12
+      },
+      {
+        "x": -92,
+        "z": 28,
+        "r": 26,
+        "h": 10
+      },
+      {
+        "x": 70,
+        "z": 72,
+        "r": 22,
+        "h": 7
+      }
+    ],
+    "noise": {
+      "seed": 3,
+      "amp": 1.2,
+      "scale": 30
+    },
+    "edge": {
+      "radius": 105,
+      "width": 15,
+      "y": -30,
+      "wobble": 8
+    },
+    "blend": 6,
+    "colors": {
+      "grass": [
+        "#7d9a5a",
+        "#8aa864",
+        "#6f8c50"
+      ],
+      "dirt": "#9c8466",
+      "rock": "#8d8a84",
+      "highRock": "#a29d93",
+      "highFrom": 24
+    },
+    "slopeDirt": 20,
+    "slopeRock": 35
+  },
+  "farMountains": {
+    "base": -40,
+    "layers": [
+      {
+        "radius": 170,
+        "height": 38,
+        "color": "#4f6b66",
+        "peaks": 7
+      },
+      {
+        "radius": 240,
+        "height": 62,
+        "color": "#6d8790",
+        "peaks": 9
+      },
+      {
+        "radius": 330,
+        "height": 88,
+        "color": "#93a7b2",
+        "peaks": 11
+      }
+    ]
+  },
+  "cloudSea": {
+    "radius": 420,
+    "y": -8,
+    "color": "#f4f1ea"
   }
 }

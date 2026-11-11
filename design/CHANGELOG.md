@@ -3,6 +3,42 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-11.5 — Bật địa hình: cao nguyên giữa biển mây, chủ phong, núi xa
+
+- Loại: cảnh 3D — **ngoại hình** (địa hình, núi xa, biển mây, sương) + **bố cục** nhỏ (dời 5 cụm cây rìa cảnh vào
+  trong mép vực). Nhà, tường, cổng, ao, giếng, vùng, điểm xuất phát **không đổi** (mọi khu nằm trên bục phẳng y = 0).
+- Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-11-dia-hinh.md`; hồ sơ `docs/tham_khao/dia-hinh-tong-mon.md` (hướng A).
+- Người dùng nhờ phiên VS Code làm thay phiên thiết kế (theo đúng quy trình `/ui-design canh`).
+- Trường đã đổi (cũ → mới):
+  - `fog` near 45 → **60**, far 140 → **260** (thấy chủ phong + mép vực).
+  - `terrain` (mới, bật): tâm (0; −5), 300 m, ô 2,5 m; **6 bục lát gạch y 0** phủ đủ 6 khu (Ngoại Môn ±22, Sơn Môn
+    x −7…7 z 21…57, Diễn Võ x 26…61 z −16…16, Cư Xá x 26…61 z 20…46, Linh Dược x −63…−26 z −16…21, Luyện Đan x −63…−26
+    z −43…−20), blend 5; **6 đỉnh**: chủ phong (0; −82) r 48 cao 42, hai núi phụ (−38; −92) r 30 cao 24 · (42; −88)
+    r 32 cao 28, đồi (88; −30) cao 12 · (−92; 28) cao 10 · (70; 72) cao 7; nhiễu cao 1,2 m; mép vực bán kính 105,
+    rộng 15, xuống y −30, lượn 8; màu cỏ `#7d9a5a` `#8aa864` `#6f8c50`, đất `#9c8466`, đá `#8d8a84`, đá cao `#a29d93`
+    từ y 24; dốc đất 20°, dốc đá 35°.
+  - `farMountains` (mới): chân y −40; 3 lớp — r 170 cao 38 `#4f6b66` 7 đỉnh · r 240 cao 62 `#6d8790` 9 đỉnh · r 330
+    cao 88 `#93a7b2` 11 đỉnh.
+  - `cloudSea` (mới): r 420, y −8, `#f4f1ea`.
+  - `trees.groves`: 4 cụm rìa đông / tây (tùng, mai) x ±80/±82 → **±78**, z 10 → **8**, sâu 120 → **80**; cụm tùng phía
+    bắc (0; −62) rộng 150 → **130** (cây bám sườn chủ phong, không đặt trên vách vực).
+- `npm run scene:check`: **Không có lỗi** (không vật nào nằm trên đất dốc). Vùng `lop-hsk3` (0; −12,2) r 1,8 ·
+  `thu-vien` (−12,5; 4) r 1,6 — trong nhà, không đổi.
+- Draw call (Canvas 3D, không tính lớp phủ): trên xuống **149** · góc chơi 139 · nhìn về bắc 117 · từ mép vực 11;
+  ~114k tam giác. **Sát ngân sách 150** — xem "Cần code".
+- Luật: `R-VA-1` ví dụ đúng (bục Ngoại Môn phủ ±22, tường bao không đổi). `R-VA-2` (dốc 35°, mép vực) có hiệu lực
+  từ mục này. `R-VUNG-1` không đổi.
+- **Cần code**:
+  1. Giảm draw call: gộp khối **thầy** (đệ tử dựng ~25 khối, chưa gộp) và gộp chung mái mờ hai nhà nếu được — đợt
+     "vào trong nhà" thêm ~45 draw call.
+  2. Núi xa: đỉnh rộng chân hơn, có đỉnh phụ (độ rộng đỉnh đang cố định 0,06–0,26 rad trong `farMountains.ts`) — nhìn
+     từ mép vực vẫn hơi nhọn như băng.
+  3. Kế hoạch B6: bậc đá lên chủ phong (khu 7 Thiên Bậc), suối / thác Hậu Sơn, cỏ búi + đá rải; bục ở độ cao khác 0
+     (lối lát dốc theo).
+- Canvas 3D (phiên bản 9): https://claude.ai/artifact/TyJxrgsBcj5ryHakv7c1so
+- Ảnh: `screens/Canh-tren.png`, `Canh-ca-san.png` (chụp lại), `Canh-chu-phong.png`, `Canh-mep-vuc.png` (mới).
+- File: `scene/scene.json`, `screens/Canh-*.png`.
+
 ## 2026-11-11.4 — Vào bên trong kiến trúc: nội thất + nút học nổi, bỏ thẻ mời
 
 - Loại: giao diện · cảnh 3D (**bố cục** — nhà vào được) · luồng/luật (đã đổi ở phiên code) · chuỗi.
