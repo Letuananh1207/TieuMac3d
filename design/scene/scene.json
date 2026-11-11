@@ -1208,19 +1208,25 @@
         "radius": 170,
         "height": 38,
         "color": "#4f6b66",
-        "peaks": 7
+        "peaks": 7,
+        "width": 1.8,
+        "spurs": 1
       },
       {
         "radius": 240,
         "height": 62,
         "color": "#6d8790",
-        "peaks": 9
+        "peaks": 9,
+        "width": 2,
+        "spurs": 2
       },
       {
         "radius": 330,
         "height": 88,
         "color": "#93a7b2",
-        "peaks": 11
+        "peaks": 11,
+        "width": 2.2,
+        "spurs": 2
       }
     ]
   },

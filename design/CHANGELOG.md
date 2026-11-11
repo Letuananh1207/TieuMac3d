@@ -3,6 +3,17 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-11.8 — Núi xa rộng chân, có đỉnh phụ
+
+- Loại: cảnh 3D — **ngoại hình** (núi xa). Không chạm luật.
+- Người dùng nhờ phiên VS Code làm thay phiên thiết kế. Code: trường mới `farMountains.layers[].width` / `spurs`
+  (mặc định 1 / 0 = hình cũ) — đáp "Cần code" của mục .5.
+- Trường đã đổi (cũ → mới): lớp 1 (r 170) width — → **1,8**, spurs — → **1** · lớp 2 (r 240) width **2**, spurs **2** ·
+  lớp 3 (r 330) width **2,2**, spurs **2**.
+- `npm run scene:check`: **Không có lỗi**. Draw call không đổi (núi xa vẫn 1 lưới).
+- Ảnh: `screens/Canh-nui-xa.png` (nhìn từ mép vực nam ra ngoài).
+- File: `scene/scene.json`, `screens/Canh-nui-xa.png`.
+
 ## 2026-11-11.7 — Hậu Sơn (thác, suối, ao) + Chưởng Môn Điện trên Nội Môn
 
 - Loại: cảnh 3D — **bố cục** (2 bục Hậu Sơn, 2 ao, nhà mới trên bục Nội Môn, khu mới) + **ngoại hình** (thác, suối) ·
