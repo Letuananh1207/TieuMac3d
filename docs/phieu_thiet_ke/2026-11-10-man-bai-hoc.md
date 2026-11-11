@@ -1,6 +1,7 @@
 # Phiếu: Màn bài học (Flutter, mốc 3)
 
-- Trạng thái: chờ thiết kế
+- Trạng thái: đã áp (2026-11-11.10)
+- Đã vẽ: 2026-11-11.10
 - Đợi bởi: mốc 3 (cầu nối Flutter ↔ 3D) — chưa có kế hoạch `docs/tasks/`
 
 ## Dán vào canvas

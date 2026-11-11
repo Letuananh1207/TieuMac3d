@@ -77,6 +77,36 @@ Mẫu một mục:
 - Chuỗi: `siteHan`, `siteName`, `loadingStatus`.
 - Ảnh: chưa có ảnh.
 
+## Màn bài học (Flutter native) · artboard `BaiHoc-doc.dc.html`, `BaiHoc-ngang.dc.html`, `BaiHoc-doc-chu-dai.dc.html` · từ mục 2026-11-11.10
+
+- Mục đích: học một chữ Hán; màn Flutter che toàn bộ cảnh 3D (cảnh ngừng vẽ).
+- Mở khi: trang gửi `openLesson` (bấm nút học nổi / chạm vật học — `R-VUNG-2`, `R-VUNG-3`; cầu nối `docs/bridge.md`).
+  Đóng khi: "Ra sân" hoặc nút quay lại của máy → trang nhận `resume`, nhân vật đi lại được, nút học vẫn hiện nếu còn
+  trong vùng (`R-VUNG-3`). Mở / đóng: mờ dần ~0,2 s.
+- Chất liệu C: nền `mist` + hai lớp núi phẳng ở đáy (`mist-far`, `mist-near`; dọc viewBox 390 × 300 theo bề ngang,
+  ngang cao 160) — như màn tải.
+- Bố cục dọc 390×844: lề trên 12 + vùng an toàn, hai bên 16, dưới 16 + vùng an toàn; cột: dòng nhỏ "BÀI HỌC CHỮ HÁN"
+  (11/700 giãn .12em `slate`, giữa) · 16 · **thẻ lụa** giãn hết chỗ còn lại · 16 · nút "Ra sân" cao 52 rộng hết.
+- Bố cục ngang 844×390: lề hai bên 12 + vùng an toàn, trên 12, dưới 12 + vùng an toàn; hàng: thẻ lụa giãn · 16 · cột
+  150 (dòng nhỏ ở trên, cách đỉnh 10; nút "Ra sân" ở đáy).
+- Thẻ lụa: nền `frost-strong`, viền 1 `frost-outline`, bo `radius.card` 16, bóng `shadow.card`; đệm 24 × 22 (ngang
+  16 × 24); nội dung căn giữa theo chiều cao, cuộn trong thẻ nếu màn thấp.
+  - Dọc: chữ Hán 140/700 Noto Serif SC `jade` (cao dòng 1) · 8 · pinyin Lora 700 22 `lacquer` · 8 · nghĩa 18/700
+    `slate` (giữa) · 22 · vạch (hai đường rgba(36,50,58,.2) + chấm vàng 5 px) · 22 · bảng dòng phụ.
+  - Ngang: cột 170 (chữ Hán 140 + pinyin, cách 6) · 24 · vạch dọc có chấm vàng · 24 · cột phải: nghĩa 18/700 (trái)
+    · 14 · bảng dòng phụ (cỡ 14, cách dòng 8).
+  - Bảng dòng phụ: hai cột (nhãn tự co, cách 16): nhãn 15/700 `jade` · giá trị 15/500 `slate`, cao dòng 1,45, cách
+    dòng 12. Chữ Hán trong giá trị dùng Noto Serif SC. Dài thì xuống dòng trong cột giá trị.
+- Nút "Ra sân": nền `jade`, chữ `on-jade` 15/700, mũi tên trái 18, bo `radius.button` 12, cao 52, bóng `shadow.primary`.
+- Vàng (`gold`) chỉ dùng cho chấm trang trí — chữ vàng trên nền sáng không đủ tương phản.
+- Font (Flutter): đóng gói trong app (`app/assets/fonts/`, sinh bằng `web/scripts/fonts-app.mjs`); nguyên âm pinyin
+  dấu mũ ngược (ǎ ǐ ǒ ǔ ǚ) Be Vietnam Pro / Lora không có → lấy từ Noto Serif SC.
+- Trạng thái đã vẽ: chữ 快 dọc + ngang; chữ 書 dọc (dòng "Giản thể", từ dài).
+- Chuỗi: `lessonEyebrow`, `lessonBack`; nhãn dòng phụ ("Bộ", "Nét", "Từ", "HSK", "Giản thể") đến từ nội dung bài
+  (`web/src/zones/zones.ts`).
+- Ảnh: `screens/BaiHoc-doc.png`, `screens/BaiHoc-ngang.png`, `screens/BaiHoc-doc-chu-dai.png` (chụp màn Flutter đã áp,
+  font thật; bóng thẻ trong ảnh không mờ do trình vẽ của test).
+
 ## Trong nhà (nội thất + nút học) · artboard `TrongNha-doc.dc.html`, `TrongNha-ngang.dc.html`, `NoiThat-mat-bang.dc.html` · từ mục 2026-11-11.4
 
 - Mục đích: thay thẻ mời ngoài sân — người chơi đi vào giảng đường / thư viện, học bằng vật trong nhà. **Đã có trong

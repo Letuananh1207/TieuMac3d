@@ -3,6 +3,23 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-11.10 — Màn bài học (Flutter native) theo chất liệu C
+
+- Loại: giao diện (màn mới) · chuỗi. Người dùng nhờ phiên VS Code làm thay phiên thiết kế; người dùng duyệt trên canvas
+  rồi "chốt".
+- Màn: **Màn bài học** — mục mới trong `docs/screen_specs.md`. Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-10-man-bai-hoc.md`.
+- Artboard (`source/`): vẽ lại `BaiHoc-doc`, `BaiHoc-ngang`, `BaiHoc-doc-chu-dai` (bản bảng đen cũ từ trước HUD C bỏ)
+  theo chất liệu C: nền sương + núi như màn tải, thẻ lụa, chữ Hán `jade`, pinyin `lacquer`, nút chính `jade`.
+  `canvas.json` không đổi (đã có ba mục này).
+- Token: không thêm — dùng `jade`, `slate`, `lacquer`, `gold` (chỉ chấm), `frost-strong`, `frost-outline`, `mist*`,
+  `radius.card`, `radius.button`, `shadow.card`, `shadow.primary`. Token `board*`, `ink` (bảng bài học HTML) giữ cho bản
+  web chạy trong trình duyệt thường (không có Flutter → vẫn bảng HTML).
+- Chuỗi mới (`l10n/vi.arb`): `lessonEyebrow` "Bài học chữ Hán", `lessonBack` "Ra sân".
+- Luật: `R-VUNG-3` (đứng yên khi học, "Ra sân" → đi lại được, nút học vẫn hiện), `R-MAN-1` (xoay tự do, vùng an toàn)
+  — thiết kế theo đúng, không đổi luật.
+- Ảnh: `screens/BaiHoc-doc.png`, `BaiHoc-ngang.png`, `BaiHoc-doc-chu-dai.png` (chụp màn Flutter đã áp).
+- File: `source/BaiHoc-*.dc.html`, `docs/screen_specs.md`, `l10n/vi.arb`, `screens/BaiHoc-*.png`.
+
 ## 2026-11-11.9 — Cổng trăng tường bắc Ngoại Môn
 
 - Loại: cảnh 3D — **bố cục** (tường). Người dùng chốt mở cổng (đề xuất ở mục .6), nhờ phiên VS Code làm thay.

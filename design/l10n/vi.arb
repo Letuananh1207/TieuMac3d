@@ -52,6 +52,14 @@
   "@lessonActionReview": {
     "description": "Nút học nổi trên án đọc thư viện: \"Ôn chữ <chữ Hán>\" (ZONE_CONTENT thu-vien .action)"
   },
+  "lessonEyebrow": "Bài học chữ Hán",
+  "@lessonEyebrow": {
+    "description": "Dòng nhỏ trên cùng màn bài học (in hoa, giãn chữ .12em)"
+  },
+  "lessonBack": "Ra sân",
+  "@lessonBack": {
+    "description": "Nút chính màn bài học: đóng màn, về cảnh 3D (R-VUNG-3)"
+  },
   "roomGiangDuong": "Giảng đường",
   "roomThuVien": "Thư viện",
   "@roomGiangDuong": {
