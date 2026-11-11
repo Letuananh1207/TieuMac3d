@@ -5,12 +5,17 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 import '../theme/app_colors.dart';
 import 'safe_area_script.dart';
+import 'scene_event.dart';
 
 /// Màn chính: WebView phủ toàn màn hình, hiển thị scene 3D.
 class SceneView extends StatefulWidget {
-  const SceneView({super.key, required this.url});
+  const SceneView({super.key, required this.url, this.onOpenLesson});
 
   final WebUri url;
+
+  /// Mở màn bài học native; Future xong khi người chơi đóng màn → gửi `resume` cho trang.
+  /// `null` (chưa có màn — phiếu 2026-11-10-man-bai-hoc chờ thiết kế) → trả `false`, trang tự mở bảng HTML.
+  final Future<void> Function(BuildContext context, OpenLessonRequest request)? onOpenLesson;
 
   @override
   State<SceneView> createState() => _SceneViewState();
@@ -58,6 +63,16 @@ class _SceneViewState extends State<SceneView> {
     c.evaluateJavascript(source: safeAreaScript(insets));
   }
 
+  /// Sự kiện từ trang (docs/bridge.md). Giá trị trả về là kết quả `callHandler` phía JS.
+  bool _onSceneEvent(List<dynamic> args) {
+    final open = widget.onOpenLesson;
+    final request = OpenLessonRequest.parse(args);
+    if (open == null || request == null) return false;
+    // mở màn native; trang ngừng vẽ tới khi nhận resume
+    open(context, request).whenComplete(() => _controller?.evaluateJavascript(source: resumeScript));
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,7 +85,10 @@ class _SceneViewState extends State<SceneView> {
             initialSettings: _settings,
             // Mọi chạm đi thẳng vào WebView, Flutter không giữ lại để đoán cử chỉ.
             gestureRecognizers: {Factory<OneSequenceGestureRecognizer>(EagerGestureRecognizer.new)},
-            onWebViewCreated: (c) => _controller = c,
+            onWebViewCreated: (c) {
+              _controller = c;
+              c.addJavaScriptHandler(handlerName: sceneEventHandler, callback: _onSceneEvent);
+            },
             onLoadStop: (c, url) {
               _loaded = true;
               _sentInsets = null;

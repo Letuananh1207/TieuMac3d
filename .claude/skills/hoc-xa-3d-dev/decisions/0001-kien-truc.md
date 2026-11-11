@@ -28,6 +28,7 @@ mọi thứ không phải cảnh 3D ở Flutter.
 | `player/` | `collision`, `scene`, `three` | `Character` (hình) tách khỏi `PlayerController` (di chuyển) |
 | `input/` | `player`, `three` | chỉ dùng kiểu `MoveInput` của player |
 | `ui/` | `zones`, `three` | HUD HTML; không biết tới scene/player |
+| `bridge/` | `zones` | cầu nối Flutter ↔ JS theo `docs/bridge.md` (kiểu `Lesson`); không DOM, không three |
 | `main.ts` (gốc) | mọi thứ | nơi duy nhất ghép các lớp, giữ vòng lặp |
 
 Cùng thư mục import nhau tự do. Gói npm khác `three` chưa kiểm. CSS chỉ import ở `main.ts`.

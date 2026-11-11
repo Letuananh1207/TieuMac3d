@@ -29,6 +29,7 @@ const layers = <String, Set<String>>{
   'player': {'collision', 'scene', 'three'},
   'input': {'player', 'three'},
   'ui': {'zones', 'three'},
+  'bridge': {'zones'},
 };
 
 const descriptions = <String, String>{

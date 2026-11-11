@@ -54,6 +54,11 @@ void didChangeDependencies() {
 Hợp đồng ở `docs/bridge.md` (biến CSS `--inset-*` từ mốc 2; sự kiện `sceneEvent` / `window.scene.handle` từ mốc 3).
 Thêm / đổi sự kiện → sửa `docs/bridge.md` trước, hai phía cùng lúc.
 
+- Flutter: `lib/scene/scene_event.dart` (đọc sự kiện thuần, chuỗi JS gửi đi — test được không cần WebView);
+  `SceneView` đăng ký handler `sceneEvent` ở `onWebViewCreated`, trả `bool` (kết quả `callHandler` phía JS).
+- Web: `web/src/bridge/flutterBridge.ts` (chỉ import `zones`); `main.ts` nối với HUD / nhân vật.
+- Màn native chưa có → handler trả `false`, trang tự dùng giao diện HTML (không vỡ khi chạy trình duyệt thường).
+
 ## Gói mới
 
 `flutter pub add <gói>:<phiên bản>` (ghim cố định như `flutter_inappwebview`); ghi lý do một dòng cho người dùng.

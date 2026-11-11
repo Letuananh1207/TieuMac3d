@@ -22,14 +22,20 @@ Flutter gọi `evaluateJavascript` đặt lên `document.documentElement.style` 
 Web dùng qua `--sa-*` = `max(env(safe-area-inset-*), var(--inset-*))` (`web/src/style.css`). Đơn vị px của CSS
 bằng đơn vị logic của Flutter (viewport `width=device-width`).
 
-## Sự kiện (mốc 3 — chưa làm)
+## Sự kiện (mốc 3)
 
 Dạng chung `{type: string, payload: object}`.
 
-- JS → Flutter: `window.flutter_inappwebview.callHandler('sceneEvent', {type, payload})`
-- Flutter → JS: `evaluateJavascript` gọi `window.scene.handle({type, payload})`
+- JS → Flutter: `window.flutter_inappwebview.callHandler('sceneEvent', {type, payload})` — Flutter đăng ký handler
+  tên `sceneEvent`; giá trị handler trả về là kết quả `Promise` phía JS.
+- Flutter → JS: `evaluateJavascript` gọi `window.scene.handle({type, payload})` (chuỗi JS: `app/lib/scene/scene_event.dart`).
 
-| type | Chiều | payload | Khi nào |
-|---|---|---|---|
-| `openLesson` | JS → Flutter | `{char: '快'}` … (chốt ở mốc 3) | người chơi bấm nút chính trên thẻ mời |
-| `resume` | Flutter → JS | `{}` | đóng màn bài học, scene chạy tiếp |
+| type | Chiều | payload | Trả về | Khi nào |
+|---|---|---|---|---|
+| `openLesson` | JS → Flutter | `{zoneId: 'lop-hsk3', lesson: {han: '快', pinyin: 'kuài', meaning: 'nhanh; vui', info: [['Bộ', '忄 tâm đứng'], …]}}` (`lesson` = kiểu `Lesson` của `web/src/zones/zones.ts`) | `true` = Flutter đã mở màn bài học native · khác (`false`, lỗi, không có Flutter) = JS tự mở bảng HTML | người chơi bấm nút học hoặc chạm vật học (R-VUNG-2/3) |
+| `resume` | Flutter → JS | `{}` | — | đóng màn bài học native → nhân vật đi lại được, cảnh vẽ tiếp đúng chỗ cũ |
+
+- Trong lúc màn bài học native mở (đã trả `true`), JS **ngừng vẽ** (không gọi `renderer.render`) tới khi nhận `resume`.
+- Màn bài học native chưa có thiết kế (phiếu `2026-11-10-man-bai-hoc`) → Flutter hiện trả `false`, app vẫn dùng bảng
+  HTML. Có màn thì chỉ đổi phía Flutter, không đổi hợp đồng này.
+- Không có `window.flutter_inappwebview` (trình duyệt thường, `npm run dev`, Canvas 3D) → bảng HTML.

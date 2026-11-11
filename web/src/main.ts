@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import './style.css';
+import { FlutterBridge } from './bridge/flutterBridge';
 import { Colliders } from './collision/colliders';
 import { Joystick } from './input/joystick';
 import { Keyboard } from './input/keyboard';
@@ -77,15 +78,24 @@ async function boot(): Promise<void> {
   let paused = false; // đang mở bài học: nhân vật đứng yên
   const zoneById = new Map(placed.zones.map((z) => [z.id, z]));
   const anchorOf = new Map(world.rooms.map((r) => [r.zoneId, r.anchor]));
-  const lesson = new LessonBoard(() => {
+  let covered = false; // màn bài học Flutter đang che cảnh → ngừng vẽ (docs/bridge.md)
+  const closeLesson = (): void => {
     paused = false;
+    covered = false;
     learn.suspend(false);
-  });
+  };
+  const lesson = new LessonBoard(closeLesson);
+  const bridge = new FlutterBridge(closeLesson);
   const openLesson = (zone: Zone): void => {
+    if (paused) return; // đang mở rồi (chạm hai lần khi chờ Flutter trả lời)
     paused = true;
     learn.suspend(true);
     player.moveTarget = null;
-    lesson.open(zone.lesson);
+    // trong app: Flutter mở màn native; không có Flutter / Flutter chưa có màn → bảng HTML
+    void bridge.openLesson(zone.id, zone.lesson).then((native) => {
+      if (native) covered = true;
+      else lesson.open(zone.lesson);
+    });
   };
   const learn = new LearnButton(openLesson);
   const zones = new ZoneTracker(placed.zones, (z) => learn.setZone(z));
@@ -153,7 +163,7 @@ async function boot(): Promise<void> {
     world.update(dt, pos);
     const room = roomAt(pos.x, pos.z);
     orbit.update(camera, pos, dt, false, groundAt, room?.floor);
-    renderer.render(scene, camera);
+    if (!covered) renderer.render(scene, camera);
     nameTag.update(pos, camera, NAME_TAG_HEIGHT);
     learn.follow(zones.current ? anchorOf.get(zones.current.id) : undefined, camera);
     fps.tick(dt);
