@@ -3,6 +3,29 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-11.7 — Hậu Sơn (thác, suối, ao) + Chưởng Môn Điện trên Nội Môn
+
+- Loại: cảnh 3D — **bố cục** (2 bục Hậu Sơn, 2 ao, nhà mới trên bục Nội Môn, khu mới) + **ngoại hình** (thác, suối) ·
+  chuỗi (tên nhà, tên khu).
+- Người dùng nhờ phiên VS Code làm thay phiên thiết kế. Code: commit `e3a1deb` (B6b — nhà theo độ cao mặt đất, thác / suối).
+- Trường đã đổi (cũ → mới):
+  - `terrain.plateaus` +2 (không lát, kè dựng đứng blend 1): **đầu thác** x 36…48 z −84…−77 y 15 · **đầm chân thác**
+    x 34…50 z −75…−66 y 4.
+  - `terrain.waterfalls` (mới): (42; −76) từ y 15 xuống y 4, rộng 3.
+  - `terrain.streams` (mới): suối rộng 1,6 qua (42; −66) → (46; −58) → (44; −48) → (50; −38) → (47; −26), chảy về phía
+    Diễn Võ Trường.
+  - `water` +2: đầm chân thác (42; −71) 8 × 5 · vũng đầu thác (42; −80,5) 4 × 3.
+  - `buildings` +1: **Chưởng Môn Điện** `chuong-mon-dien`, kiểu `dien`, (0; −64) 12 × 8, mái vàng `#c9a13b` — trên bục
+    Nội Môn y 11, cuối Thiên Bậc. Không có vùng học (chưa có nội dung).
+  - `site.areas` +1: **Hậu Sơn 後山** x 32…56 z −88…−60.
+- `R-VA-1` / `R-VUNG-1`: Ngoại Môn, tường, vùng học, điểm xuất phát **không đổi** → ví dụ hai luật vẫn đúng. Nhà mới có
+  va chạm (như mọi nhà); ao mới chặn đi như ao cũ (`R-VA-1`).
+- `npm run scene:check`: **Không có lỗi** (ao, điện, bục đều trên đất phẳng).
+- Draw call (Canvas 3D): trên xuống **141** (≤ 150) · Hậu Sơn 26 · Nội Môn 31; ~126k tam giác.
+- **Cần code**: núi xa đỉnh rộng chân hơn (từ mục .5). Đề xuất mở cổng tường bắc (mục .6) vẫn chờ người dùng.
+- Ảnh: `screens/Canh-tren.png` (chụp lại), `Canh-hau-son.png`, `Canh-chuong-mon-dien.png` (mới).
+- File: `scene/scene.json`, ba ảnh trên.
+
 ## 2026-11-11.6 — Thiên Bậc + bục Nội Môn, cỏ búi, đá rải, chữ Hán tên khu
 
 - Loại: cảnh 3D — **bố cục** (bục Nội Môn mới, bậc đá, 2 khu mới) + **ngoại hình** (cỏ, đá) · chuỗi (chữ Hán tên nơi / khu).
