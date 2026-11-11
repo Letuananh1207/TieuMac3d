@@ -103,6 +103,10 @@ Cảnh rộng: tăng `ground.size` (phủ hết các khu) và `fog.far`. Canvas 
 bảng "Hiệu năng" in draw call (không tính lớp phủ) — giữ ≤ 150. Có địa hình (đồi, chủ phong, vực, núi xa, biển
 mây — ví dụ `docs/phieu_thiet_ke/2026-11-11-dia-hinh-mau.json`, hồ sơ `docs/tham_khao/dia-hinh-tong-mon.md`); nhân
 vật không leo dốc > 35° (`R-VA-2`). Chưa có bậc đá, suối / thác, cỏ búi (cần code).
+Nhà vào được (2026-11-11): nhà kiểu giảng đường có `zone` mà nội dung bài trong code cho nội thất (`lop-hsk3` → lớp
+học, `thu-vien` → thư viện) tự thành nhà rỗng có cửa giữa + nội thất; vùng học nằm trong nhà (trường `zone.front` / `r`
+không còn tác dụng với nhà đó). Không còn thẻ mời. Canvas 3D: `?nv=x,z` đặt nhân vật (vd. `?nv=0,-10.5` trong giảng
+đường, mái mờ sẵn).
 
 Model `.glb` chưa dùng — mốc 3D-b. Nhân vật: đệ tử chibi dựng bằng khối (`web/src/player/discipleCharacter.ts`).
 

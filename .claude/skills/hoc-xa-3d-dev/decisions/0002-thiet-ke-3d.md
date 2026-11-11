@@ -62,3 +62,12 @@ chỉnh bằng số. Các khu là bục phẳng nên nhà / tường / cổng gi
 cây, đồ trang trí đi theo độ cao. Dốc > 35° chặn như tường (R-VA-2). Núi xa + biển mây không chịu sương (sương chỉ
 che vài trăm mét), far plane nâng theo `viewDistance`. Mặc định `enabled: false` → cảnh cũ không đổi.
 Chưa làm: bậc đá, suối / thác, cỏ búi, nhà trên bục cao khác 0 (lối lát vẽ ở y ≈ 0).
+
+## Vào bên trong kiến trúc (2026-11-11, kế hoạch `docs/tasks/2026-11-11-vao-trong-kien-truc.md`)
+
+Theo đề xuất canvas "Vào bên trong kiến trúc" (người dùng cho code theo khi chưa chốt). Bỏ thẻ mời; nhà neo bài học
+thành nhà vào được, không chuyển cảnh. **Nhà nào vào được do nội dung bài quyết** (`ZONE_CONTENT[].interior`, ở code),
+không thêm trường vào `scene.json`: phiên thiết kế vẫn quyết vị trí / kích thước / hướng nhà, vùng học tự đi theo vật
+trong nhà. Nội thất dựng theo mặt bằng `NoiThat-mat-bang` (lớp học: bảng đen, bục, thầy, 4 án thư; thư viện: kệ ba
+mặt, án đọc). Mặt đất tổng quát thành `Ground` (địa hình + tấm nền nhà) để nhân vật lên bậc / sàn cao 0,6 m.
+Luật đổi: R-VUNG-1/2/3, R-HUD-1; mới: R-VA-3, R-HUD-2. Chưa làm: nhà kiểu `dien` / `nha-nho` vào được, thầy cử động.

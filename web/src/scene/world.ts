@@ -1,6 +1,6 @@
 import type * as THREE from 'three';
 import type { Colliders } from '../collision/colliders';
-import type { Heightfield } from '../collision/heightfield';
+import { LayeredGround, type Ground } from '../collision/ground';
 import { addBuilding } from './buildings';
 import { addEnvironment, addFlatGround } from './environment';
 import { addCloudSea, addFarMountains } from './farMountains';
@@ -9,7 +9,8 @@ import { mergeStatic } from './merge';
 import { addPaths } from './paths';
 import { addProps } from './props';
 import { addFloating } from './sky';
-import { zoneAnchors, type SceneSpec, type ZoneAnchor } from './spec';
+import { addRoomBuilding, inRect, type InteriorUse, type Room } from './rooms';
+import { roomKinds, zoneAnchors, type SceneSpec, type ZoneAnchor } from './spec';
 import { addTerrain } from './terrain';
 import { buildHeightfield, type GroundY } from './terrainHeight';
 import { addTrees } from './trees';
@@ -20,16 +21,21 @@ import { addWell } from './well';
 export interface World {
   /** mặt đất: đích của tia dò khi chạm để đi (sân phẳng hoặc lưới địa hình) */
   ground: THREE.Mesh;
-  /** độ cao mặt đất cho nhân vật / camera; null = cảnh phẳng (y = 0) */
-  heightfield: Heightfield | null;
+  /** mặt đất cho nhân vật / camera: địa hình (hoặc phẳng y = 0) + nền nhà vào được */
+  surface: Ground;
+  /** nhà vào được (giảng đường, thư viện) */
+  rooms: Room[];
   /** vị trí các vùng sự kiện, neo theo nhà trong đặc tả */
   zoneAnchors: ZoneAnchor[];
-  /** gọi mỗi khung hình: khói lò đan, mây, đảo nổi */
-  update(dt: number): void;
+  /** gọi mỗi khung hình: khói lò đan, mây, đảo nổi, mờ mái nhà khi `player` đứng trong */
+  update(dt: number, player?: { x: number; z: number }): void;
 }
 
-/** Dựng toàn bộ cảnh theo đặc tả. Mọi vật cản đăng ký vào `colliders`. */
-export function buildWorld(scene: THREE.Scene, colliders: Colliders, spec: SceneSpec): World {
+/**
+ * Dựng toàn bộ cảnh theo đặc tả. Mọi vật cản đăng ký vào `colliders`.
+ * `interiors` (mã vùng → kiểu nội thất, do nội dung bài quyết) biến nhà neo vùng đó thành nhà vào được.
+ */
+export function buildWorld(scene: THREE.Scene, colliders: Colliders, spec: SceneSpec, interiors: Record<string, InteriorUse> = {}): World {
   const style = spec.buildingStyle;
   addEnvironment(scene, spec);
   const hf = spec.terrain.enabled ? buildHeightfield(spec.terrain, spec.paths) : null;
@@ -45,7 +51,13 @@ export function buildWorld(scene: THREE.Scene, colliders: Colliders, spec: Scene
   addCloudSea(scene, spec);
   addPaths(scene, spec.paths, style.path);
   addWalls(scene, colliders, spec.walls, spec.wallSegments, style);
-  for (const b of spec.buildings) addBuilding(scene, colliders, b, style);
+  const kinds = roomKinds(spec.buildings, interiors);
+  const rooms: Room[] = [];
+  for (const b of spec.buildings) {
+    const use = b.zone && kinds[b.zone.id] ? interiors[b.zone.id] : undefined;
+    if (use) rooms.push(addRoomBuilding(scene, colliders, b, style, use));
+    else addBuilding(scene, colliders, b, style);
+  }
   for (const g of spec.gates) addGate(scene, colliders, g, style);
   addWater(scene, colliders, spec.water, style);
   const props = addProps(scene, colliders, spec.props, style, groundY);
@@ -56,12 +68,14 @@ export function buildWorld(scene: THREE.Scene, colliders: Colliders, spec: Scene
   mergeStatic(scene, new Set([ground]));
   return {
     ground,
-    heightfield: hf,
-    zoneAnchors: zoneAnchors(spec.buildings),
-    update(dt) {
+    surface: new LayeredGround(hf, rooms.flatMap((r) => r.pads)),
+    rooms,
+    zoneAnchors: zoneAnchors(spec.buildings, kinds),
+    update(dt, player) {
       props(dt);
       trees(dt);
       floating(dt);
+      for (const r of rooms) r.update(dt, !!player && inRect(r.floor, player.x, player.z));
     },
   };
 }

@@ -6,7 +6,7 @@ import type { Character } from './character';
  * Màu đệ tử ngoại môn theo bản mẫu `design/source/PhongCach-CayNhanVat.dc.html`. Nhân vật không thuộc cảnh nên màu
  * để ở đây (như gấu khối), không ở `scene.json`. Áo theo bậc (nội môn…) để đợt 2.
  */
-const COLOR = {
+const DEFAULT_COLOR = {
   robe: '#dce8ee',
   trim: '#3f5fa0',
   skin: '#f3dcc4',
@@ -27,7 +27,11 @@ function mesh(geo: THREE.BufferGeometry, color: string, x = 0, y = 0, z = 0): TH
  * Đệ tử chibi (đầu ≈ 1/2,3 chiều cao ~1,8 m): tóc búi cài trâm vàng, dải buộc tóc lam bay sau, đạo bào cổ giao lĩnh
  * (vạt phải đè trái), đai lam, ngọc bội lục, tay áo rộng rủ. Không xương: thân nhún khi đi, tay áo + dải tóc đung đưa.
  */
-export function createDiscipleCharacter(): Character {
+/** Bảng màu nhân vật; đổi một phần để làm người khác (vd. thầy áo xà lam) cùng dáng. */
+export type DiscipleColors = Partial<typeof DEFAULT_COLOR>;
+
+export function createDiscipleCharacter(colors: DiscipleColors = {}): Character {
+  const COLOR = { ...DEFAULT_COLOR, ...colors };
   const root = new THREE.Group();
   const body = new THREE.Group(); // xoay theo hướng đi
   const bob = new THREE.Group(); // nhún lên xuống

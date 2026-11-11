@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import type { Colliders } from '../collision/colliders';
-import type { Heightfield } from '../collision/heightfield';
+import type { Ground } from '../collision/ground';
 import type { Character } from './character';
 
 /** mét / giây */
@@ -14,7 +14,7 @@ export const MAX_SLOPE = 35;
  * Luật R-VA-2: có bước từ (fromX, fromZ) tới (toX, toZ) trên địa hình được không.
  * Không vào mặt dốc hơn `MAX_SLOPE` (lên hay xuống), không ra ngoài lưới; đang trên mặt dốc thì chỉ đi xuống.
  */
-export function canStep(ground: Heightfield, fromX: number, fromZ: number, toX: number, toZ: number): boolean {
+export function canStep(ground: Ground, fromX: number, fromZ: number, toX: number, toZ: number): boolean {
   const to = ground.heightAt(toX, toZ);
   if (!Number.isFinite(to)) return false;
   if (ground.slopeAt(toX, toZ) <= MAX_SLOPE) return true;
@@ -37,8 +37,8 @@ export class PlayerController {
   constructor(
     readonly character: Character,
     private readonly colliders: Colliders,
-    /** địa hình; null = sân phẳng y = 0 */
-    private readonly ground: Heightfield | null = null,
+    /** mặt đất (địa hình + nền nhà); null = sân phẳng y = 0 */
+    private readonly ground: Ground | null = null,
   ) {}
 
   /** Đặt nhân vật lên mặt đất tại vị trí hiện tại (gọi khi xuất phát). */

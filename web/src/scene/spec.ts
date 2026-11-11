@@ -395,11 +395,41 @@ export function rotateXZ(dx: number, dz: number, rotDeg: number): XZ {
   return [round6(dx * c + dz * s), round6(-dx * s + dz * c)];
 }
 
-/** Tâm vùng = tâm nhà + `front` theo hướng mặt trước (+z của nhà, quay `rotY`). */
-export function zoneAnchors(buildings: BuildingSpec[]): ZoneAnchor[] {
+/* ---------------- nhà vào được (nội thất) ---------------- */
+
+/** Kiểu nội thất: lớp học (bảng đen, bục, thầy, án thư) · thư viện (kệ sách, án đọc). Nội dung bài quyết kiểu. */
+export const INTERIOR_KINDS = ['lop-hoc', 'thu-vien'] as const;
+export type InteriorKind = (typeof INTERIOR_KINDS)[number];
+
+/** Điểm học trong nhà (hệ toạ độ nhà, mặt trước +z) + bán kính — theo mặt bằng canvas `NoiThat-mat-bang`. */
+export function interiorSpot(b: Pick<BuildingSpec, 'd'>, kind: InteriorKind): { dx: number; dz: number; r: number } {
+  // lớp học: cách bảng đen (sát tường sau, mặt trong ở −(d − 0,8)/2) 2 m về phía cửa; thư viện: án đọc giữa phòng
+  return kind === 'lop-hoc' ? { dx: 0, dz: round6(-(b.d - 0.8) / 2 + 1.9), r: 1.8 } : { dx: 0, dz: 0, r: 1.6 };
+}
+
+/**
+ * Nhà nào thành nhà vào được: kiểu giảng đường (thân rỗng được) có `zone` mà nội dung bài cho một kiểu nội thất.
+ * Trả về mã vùng → kiểu nội thất. Dùng chung cho dựng cảnh và `scene:check`.
+ */
+export function roomKinds(buildings: BuildingSpec[], interiors: Record<string, { kind: InteriorKind }>): Record<string, InteriorKind> {
+  const out: Record<string, InteriorKind> = {};
+  for (const b of buildings) {
+    const use = b.zone ? interiors[b.zone.id] : undefined;
+    if (use && (b.kind ?? 'giang-duong') === 'giang-duong' && b.zone) out[b.zone.id] = use.kind;
+  }
+  return out;
+}
+
+/**
+ * Tâm vùng = tâm nhà + `front` theo hướng mặt trước (+z của nhà, quay `rotY`). Nhà có nội thất (`interiors[zone.id]`)
+ * → vùng là điểm học trong nhà (R-VUNG-1), bỏ qua `front` / `r` của đặc tả.
+ */
+export function zoneAnchors(buildings: BuildingSpec[], interiors: Record<string, InteriorKind> = {}): ZoneAnchor[] {
   return buildings.flatMap((b) => {
     if (!b.zone) return [];
-    const [dx, dz] = rotateXZ(0, b.zone.front, b.rotY ?? 0);
-    return [{ id: b.zone.id, x: round6(b.x + dx), z: round6(b.z + dz), r: b.zone.r }];
+    const kind = interiors[b.zone.id];
+    const spot = kind ? interiorSpot(b, kind) : { dx: 0, dz: b.zone.front, r: b.zone.r };
+    const [dx, dz] = rotateXZ(spot.dx, spot.dz, b.rotY ?? 0);
+    return [{ id: b.zone.id, x: round6(b.x + dx), z: round6(b.z + dz), r: spot.r }];
   });
 }

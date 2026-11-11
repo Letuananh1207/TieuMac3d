@@ -19,14 +19,10 @@
 
   <div class="hud" id="hint">Kéo nửa trái để đi · kéo nửa phải để xoay · chạm mặt đất để đi tới đó · chụm 2 ngón để zoom</div>
 
-  <div class="hud" id="card" hidden>
-    <div class="eyebrow" id="cardEyebrow"></div>
-    <h2 id="cardTitle"></h2>
-    <div class="row">
-      <button class="primary" id="cardGo" type="button"></button>
-      <button id="cardLater" type="button">Để sau</button>
-    </div>
-  </div>
+  <!-- nút học nổi trên vật học trong nhà (R-VUNG-1), kiểu HUD C trên canvas TrongNha-doc / TrongNha-ngang -->
+  <button class="learn" id="learn" type="button" hidden>
+    <span class="learn-dot" aria-hidden="true"></span><span id="learnText"></span><span class="han" id="learnHan" lang="zh"></span>
+  </button>
 
   <!-- Mốc 1 còn giữ bảng bài học HTML; mốc 3 thay bằng màn Flutter -->
   <div id="lesson" hidden>

@@ -43,7 +43,8 @@ tạm, soạn phiếu (`/ui-apply phieu`).
 | joystick, xoay/zoom camera, chạm để đi, phím | `web/src/input/{joystick,orbitCamera,tapToMove,keyboard,pointers}.ts` |
 | va chạm | `web/src/collision/colliders.ts` |
 | nội dung vùng + bài học (vị trí: đặc tả cảnh) | `web/src/zones/zones.ts` |
-| thẻ mời, bảng bài học, fps, nhãn tên | `web/src/ui/{eventCard,lessonBoard,hud}.ts`, DOM ở `web/index.html`, CSS `web/src/style.css` |
+| nút học nổi, bảng bài học, fps, nhãn tên | `web/src/ui/{learnButton,lessonBoard,hud}.ts`, DOM ở `web/index.html`, CSS `web/src/style.css` |
+| nhà vào được (nội thất, cửa, mái mờ) | `web/src/scene/rooms.ts`, `web/src/scene/kien_truc/noi_that.ts` |
 | màn Flutter | `app/lib/` (hiện chỉ `main.dart`) |
 | test của `app/lib/a/b.dart` | `app/test/a/b_test.dart`; test theo quy tắc: `app/test/rules/` |
 | test của `web/src/a/b.ts` (khi có trình chạy test) | `web/src/a/b.test.ts` |

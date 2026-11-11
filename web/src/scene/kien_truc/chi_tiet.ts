@@ -81,10 +81,11 @@ export function addBeamBand(g: THREE.Group, w: number, d: number, y: number, sty
  * Cửa bức bàn giữa các cột mặt trước: tấm vôi + song gỗ dọc + chân cửa gỗ nâu.
  * `xs` = vị trí các cột; `doors` = số gian giữa làm cửa (còn lại để tường).
  */
-export function addDoors(g: THREE.Group, xs: number[], y0: number, h: number, z: number, style: Style, doors = 3): void {
+export function addDoors(g: THREE.Group, xs: number[], y0: number, h: number, z: number, style: Style, doors = 3, open = -1): void {
   const bays = xs.length - 1;
   const first = Math.floor((bays - doors) / 2);
   for (let i = 0; i < bays; i++) {
+    if (i === open) continue; // gian để trống: lối vào nhà (nhà vào được)
     const a = xs[i] + 0.22;
     const b = xs[i + 1] - 0.22;
     const w = b - a;

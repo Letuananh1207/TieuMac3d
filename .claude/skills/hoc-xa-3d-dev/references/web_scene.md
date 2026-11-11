@@ -22,6 +22,7 @@
 | địa hình | `terrain.enabled` (mặc định tắt = sân phẳng). Độ cao: `scene/terrainHeight.ts` (thuần toán: nhiễu + đỉnh → ép phẳng bục / lối lát → đổ vực) → `collision/heightfield.ts` (`heightAt`, `slopeAt`); lưới vẽ `scene/terrain.ts` (màu từng tam giác theo dốc, 1 draw call). Chia tam giác hai file **phải khớp** | `World.heightfield` |
 | đặt vật lên đất | cây, đồ trang trí nhận `groundY`; nhà, tường, cổng, ao, giếng **không** — phải nằm trên bục (`scene:check` báo "nằm trên đất dốc") | `world.ts` |
 | dốc | `MAX_SLOPE` 35° + `canStep` (R-VA-2) trong `player/controller.ts`; camera không chui xuống đất (`orbit.update(…, groundAt)`) | |
+| nhà vào được | nhà kiểu giảng đường có `zone` mà `ZONE_CONTENT` cho `interior` (`lop-hoc` · `thu-vien`) → `scene/rooms.ts`: thân rỗng, gian giữa mặt trước để trống làm cửa, nội thất `kien_truc/noi_that.ts`; va chạm theo lan can + tường + đồ đạc (R-VA-3); nền + dốc bậc là `Pad` trong `collision/ground.ts` (`LayeredGround`, `World.surface`); mái + tường trước + hàng cột trước gộp riêng rồi mờ 15 % / 0,3 s khi đứng trên sàn (R-HUD-2); hộp bắt chạm vô hình `markDynamic` (R-VUNG-2). Vùng học = điểm học trong nhà (`interiorSpot`, R-VUNG-1) | `world.ts` `buildWorld(…, interiors)` |
 | núi xa, biển mây | `scene/farMountains.ts`: không chịu sương, tự pha màu; far plane = `viewDistance(spec)` | `renderer.ts` nhận `far` |
 
 ## Mẫu: thêm một vật vào sân

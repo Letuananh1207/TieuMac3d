@@ -7,3 +7,4 @@
 - 2026-11-11 — Tông môn đợt 1: vật mới trong `SceneSpec`, `specCheck.ts` (danh sách `LISTS`), gộp khối `merge.ts`, va chạm tròn, `World.update`.
 - 2026-11-11 — Phong cách Trung Hoa: `scene/kien_truc/`, cây `cay_moi.ts`, nhân vật đệ tử, chip khu (`zones/areaTracker.ts`, R-HUD-1).
 - 2026-11-11 — Địa hình: terrain / farMountains / cloudSea trong đặc tả, Heightfield ở collision/, luật R-VA-2 (dốc 35°); nhà phải nằm trên bục.
+- 2026-11-11 — Vào trong nhà: bỏ thẻ mời (eventCard), nút học nổi + chạm vật, rooms.ts / noi_that.ts, Ground nhiều lớp; luật R-VUNG-1/2/3, R-VA-3, R-HUD-1/2.

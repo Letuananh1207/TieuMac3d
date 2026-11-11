@@ -104,7 +104,8 @@ flutter test -r failures-only test/<phần> · dart tool/rule_trace.dart
 | phong cách Trung Hoa: điện, mái, tháp, tường vôi, cổng trăng, tùng, liễu, mai | `kien_truc`, `cay_moi` | `web/src/scene/kien_truc/`, `web/src/scene/cay_moi.ts` |
 | địa hình, đồi, núi, chủ phong, vực, biển mây, núi xa, dốc, nhân vật leo / kẹt dốc | `terrain`, `heightfield`, `farMountains` | `web/src/scene/terrain*.ts`, `web/src/collision/heightfield.ts`, `web/src/scene/farMountains.ts`, `player/controller.ts` (`canStep`, R-VA-2) |
 | chip "Học xá · Sân chính", tên khu | `areaTracker`, `hud` | `web/src/zones/areaTracker.ts`, `web/src/ui/hud.ts` |
-| thẻ mời, "Vào nghe giảng", "Để sau" | `eventCard` | `web/src/ui/eventCard.ts` |
+| vào trong nhà, nội thất, bảng đen, thầy, kệ sách, án đọc, mái mờ, cửa | `rooms`, `noi_that`, `dien` | `web/src/scene/rooms.ts`, `web/src/scene/kien_truc/noi_that.ts`, `kien_truc/dien.ts` (`RoomParts`); kế hoạch `docs/tasks/2026-11-11-vao-trong-kien-truc.md` |
+| nút học "Học chữ 快", chạm vật để học (thay thẻ mời — đã bỏ) | `learnButton`, `tapToMove` | `web/src/ui/learnButton.ts`, `web/src/input/tapToMove.ts` (`pickObject`), `main.ts` |
 | bảng bài học (HTML, sẽ thay bằng Flutter ở mốc 3) | `lessonBoard` | `web/src/ui/lessonBoard.ts` |
 | HUD, fps, nhãn tên, dòng hướng dẫn, nút góc nhìn | `hud` | `web/src/ui/hud.ts`, `web/index.html`, `web/src/style.css` |
 | font, chữ tiếng Việt, safe area, màu giao diện HTML | `style` | `web/src/style.css`, `web/index.html` |

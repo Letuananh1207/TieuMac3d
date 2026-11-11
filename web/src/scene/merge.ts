@@ -32,6 +32,8 @@ function materialKey(m: THREE.Material): string | null {
  */
 export function mergeStatic(root: THREE.Object3D, keep: Set<THREE.Object3D>): number {
   root.updateMatrixWorld(true);
+  // khối gộp gắn vào `root` → toạ độ tính tương đối với `root` (root = scene thì là toạ độ cảnh như cũ)
+  const toRoot = root.matrixWorld.clone().invert();
   const groups = new Map<string, THREE.Mesh[]>();
   root.traverse((o) => {
     if (!(o instanceof THREE.Mesh) || o instanceof THREE.InstancedMesh || keep.has(o) || isDynamic(o)) return;
@@ -51,7 +53,7 @@ export function mergeStatic(root: THREE.Object3D, keep: Set<THREE.Object3D>): nu
       for (const name of Object.keys(g.attributes)) {
         if (name !== 'position' && name !== 'normal' && name !== 'uv') g.deleteAttribute(name);
       }
-      g.applyMatrix4(m.matrixWorld);
+      g.applyMatrix4(toRoot.clone().multiply(m.matrixWorld));
       return g;
     });
     const merged = mergeGeometries(geos);

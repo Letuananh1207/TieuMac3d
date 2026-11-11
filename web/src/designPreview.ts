@@ -34,16 +34,28 @@ async function boot(): Promise<void> {
   const topHeight = Math.max(spec.walls.half * 3, spec.ground.size * 0.9, spec.terrain.enabled ? spec.terrain.size * 0.9 : 0);
   const { renderer, scene, camera } = createStage(canvas, spec.camera.fov, Math.max(viewDistance(spec), topHeight + 60));
   const colliders = new Colliders();
-  const world = buildWorld(scene, colliders, spec);
+  // nội thất như app: theo nội dung bài (main.ts)
+  const interiors = Object.fromEntries(ZONE_CONTENT.map((c) => [c.id, { kind: c.interior, han: c.lesson.han }]));
+  const world = buildWorld(scene, colliders, spec, interiors);
+  for (const room of world.rooms) {
+    if (!room.teacher) continue;
+    const t = createDiscipleCharacter({ robe: '#3f5fa0', trim: '#2b5446' });
+    t.root.position.set(room.teacher.x, room.teacher.y, room.teacher.z);
+    t.facing.rotation.y = room.teacher.rotY;
+    scene.add(t.root);
+  }
   const placed = placeZones(ZONE_CONTENT, world.zoneAnchors);
 
   // ?nhan-vat=gau → gấu khối cũ (so sánh); mặc định đệ tử như app
   const character =
     new URLSearchParams(location.search).get('nhan-vat') === 'gau' ? createBlockCharacter() : createDiscipleCharacter();
-  const [sx, sz] = spec.player.start;
-  const startY = world.heightfield?.heightAt(sx, sz);
-  character.root.position.set(sx, Number.isFinite(startY) ? (startY as number) : 0, sz);
+  // ?nv=x,z — đặt nhân vật chỗ khác (vd. trong giảng đường để xem nội thất, mái mờ)
+  const nv = (new URLSearchParams(location.search).get('nv') ?? '').split(',').map(Number);
+  const [sx, sz] = nv.length === 2 && nv.every(Number.isFinite) ? nv : spec.player.start;
+  const startY = world.surface.heightAt(sx, sz);
+  character.root.position.set(sx, Number.isFinite(startY) ? startY : 0, sz);
   scene.add(character.root);
+  world.update(1, character.root.position); // mờ mái ngay nếu đặt trong nhà (ảnh chụp không đợi 0,3 s)
 
   /* ---------- bảng: nguồn + lỗi đặc tả ---------- */
   el('source').textContent = SCENE.fromFile
@@ -184,7 +196,7 @@ async function boot(): Promise<void> {
   function tick(): void {
     const dt = Math.min(clock.getDelta(), 0.05);
     controls.update();
-    world.update(dt);
+    world.update(dt, character.root.position);
     character.animate(dt, 0);
     renderer.render(scene, camera);
     acc += dt;

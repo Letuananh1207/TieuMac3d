@@ -1,4 +1,4 @@
-/** Nội dung một bài học chữ Hán, gắn với một vùng trong sân. */
+/** Nội dung một bài học chữ Hán, gắn với một vật học trong nhà (R-VUNG-1). */
 export interface Lesson {
   han: string;
   pinyin: string;
@@ -15,23 +15,27 @@ export interface ZoneAnchor {
   r: number;
 }
 
-/** Nội dung vùng (chữ trên thẻ, bài học) — không có vị trí; vị trí do nhà trong đặc tả cảnh quyết. */
+/**
+ * Nội dung vùng (bài học, nhà chứa nó) — không có vị trí; vị trí do nhà trong đặc tả cảnh quyết.
+ * `interior` trùng `scene/spec` `InteriorKind`: lớp học (bảng đen, thầy) · thư viện (kệ sách, án đọc).
+ */
 export interface ZoneContent {
   id: string;
-  eyebrow: string;
-  /** tiêu đề thẻ = before + chữ Hán (tô màu) + after */
-  title: { before: string; han: string; after: string };
-  /** chữ trên nút chính */
-  go: string;
+  /** kiểu nội thất của nhà neo vùng này */
+  interior: 'lop-hoc' | 'thu-vien';
+  /** tên nhà trên chip khi đứng trong (R-HUD-1) */
+  place: string;
+  /** chữ trên nút học nổi: "<action> <chữ Hán>" (vd. "Học chữ 快") */
+  action: string;
   lesson: Lesson;
 }
 
 export const ZONE_CONTENT: ZoneContent[] = [
   {
     id: 'lop-hsk3',
-    eyebrow: 'Tùng tùng tùng! Giờ giảng',
-    title: { before: 'Thầy giảng chữ ', han: '快', after: ' ở giảng đường' },
-    go: 'Vào nghe giảng',
+    interior: 'lop-hoc',
+    place: 'Giảng đường',
+    action: 'Học chữ',
     lesson: {
       han: '快',
       pinyin: 'kuài',
@@ -46,9 +50,9 @@ export const ZONE_CONTENT: ZoneContent[] = [
   },
   {
     id: 'thu-vien',
-    eyebrow: 'Thư viện đang mở',
-    title: { before: 'Ôn lại chữ ', han: '書', after: ' trong thư viện' },
-    go: 'Vào đọc sách',
+    interior: 'thu-vien',
+    place: 'Thư viện',
+    action: 'Ôn chữ',
     lesson: {
       han: '書',
       pinyin: 'shū',
@@ -63,7 +67,7 @@ export const ZONE_CONTENT: ZoneContent[] = [
   },
 ];
 
-/** Vùng tròn trên sân: người chơi bước vào thì hiện thẻ mời. */
+/** Vùng tròn quanh điểm học trong nhà: người chơi bước vào thì hiện nút học trên vật (R-VUNG-1). */
 export type Zone = ZoneContent & ZoneAnchor;
 
 /**
@@ -77,7 +81,7 @@ export function placeZones(content: ZoneContent[], anchors: ZoneAnchor[]): { zon
   for (const c of content) {
     const a = byId.get(c.id);
     if (a) zones.push({ ...c, x: a.x, z: a.z, r: a.r });
-    else problems.push(`vùng "${c.id}": không nhà nào có zone.id này — thẻ mời sẽ không hiện`);
+    else problems.push(`vùng "${c.id}": không nhà nào có zone.id này — nút học sẽ không hiện`);
   }
   const known = new Set(content.map((c) => c.id));
   for (const a of anchors) if (!known.has(a.id)) problems.push(`zone.id "${a.id}": chưa có nội dung bài học trong code`);

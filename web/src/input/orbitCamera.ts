@@ -4,6 +4,16 @@ const MIN_PITCH = 0.12;
 const MAX_PITCH = 1.2;
 /** camera cách mặt đất tối thiểu (m) khi có địa hình */
 const CAMERA_CLEARANCE = 0.8;
+/** trong nhà: camera cách nhân vật tối đa (m) — luật R-HUD-2 */
+export const ROOM_MAX_DIST = 6;
+
+/** Sàn nhà đang đứng (toạ độ cảnh): camera không ra khỏi đây. */
+export interface RoomBounds {
+  minX: number;
+  maxX: number;
+  minZ: number;
+  maxZ: number;
+}
 
 /** Thông số camera do thiết kế quyết (đặc tả cảnh `camera`). Trùng hình với `SceneSpec['camera']`. */
 export interface OrbitSettings {
@@ -64,13 +74,26 @@ export class OrbitCamera {
    * Đặt camera nhìn vào `focus`. `snap` = nhảy ngay, không trượt mượt.
    * `groundAt` (có địa hình) = độ cao mặt đất: camera luôn cao hơn đất ít nhất `CAMERA_CLEARANCE`.
    */
-  update(camera: THREE.Camera, focus: THREE.Vector3, dt: number, snap = false, groundAt?: (x: number, z: number) => number): void {
-    const horiz = this.dist * Math.cos(this.pitch);
+  update(
+    camera: THREE.Camera,
+    focus: THREE.Vector3,
+    dt: number,
+    snap = false,
+    groundAt?: (x: number, z: number) => number,
+    room?: RoomBounds,
+  ): void {
+    // trong nhà (R-HUD-2): kéo gần tối đa ROOM_MAX_DIST, không ra sau tường (giữ camera trong sàn nhà)
+    const dist = room ? Math.min(this.dist, ROOM_MAX_DIST) : this.dist;
+    const horiz = dist * Math.cos(this.pitch);
     this.want.set(
       focus.x + Math.sin(this.yaw) * horiz,
-      focus.y + 1.2 + this.dist * Math.sin(this.pitch),
+      focus.y + 1.2 + dist * Math.sin(this.pitch),
       focus.z + Math.cos(this.yaw) * horiz,
     );
+    if (room) {
+      this.want.x = Math.min(room.maxX, Math.max(room.minX, this.want.x));
+      this.want.z = Math.min(room.maxZ, Math.max(room.minZ, this.want.z));
+    }
     if (groundAt) {
       const g = groundAt(this.want.x, this.want.z);
       if (Number.isFinite(g)) this.want.y = Math.max(this.want.y, g + CAMERA_CLEARANCE);

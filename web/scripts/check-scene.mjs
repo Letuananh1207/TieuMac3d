@@ -12,7 +12,7 @@ const file = resolve(web, '..', 'design', 'scene', 'scene.json');
 const out = await build({
   stdin: {
     contents:
-      "export { zoneAnchors } from './src/scene/spec.ts';\n" +
+      "export { roomKinds, zoneAnchors } from './src/scene/spec.ts';\n" +
       "export { resolveSceneSpec } from './src/scene/specCheck.ts';\n" +
       "export { placeZones, ZONE_CONTENT } from './src/zones/zones.ts';\n",
     resolveDir: web,
@@ -24,7 +24,7 @@ const out = await build({
   write: false,
   logLevel: 'error',
 });
-const { resolveSceneSpec, zoneAnchors, placeZones, ZONE_CONTENT } = await import(
+const { resolveSceneSpec, roomKinds, zoneAnchors, placeZones, ZONE_CONTENT } = await import(
   `data:text/javascript;base64,${Buffer.from(out.outputFiles[0].text).toString('base64')}`
 );
 
@@ -43,7 +43,9 @@ if (existsSync(file)) {
 }
 
 const { spec, problems } = resolveSceneSpec(raw);
-const placed = placeZones(ZONE_CONTENT, zoneAnchors(spec.buildings));
+// nhà vào được (nội thất theo nội dung bài): vùng học nằm trong nhà, như app
+const rooms = roomKinds(spec.buildings, Object.fromEntries(ZONE_CONTENT.map((c) => [c.id, { kind: c.interior }])));
+const placed = placeZones(ZONE_CONTENT, zoneAnchors(spec.buildings, rooms));
 const all = [...problems, ...placed.problems];
 
 const n = (v) => String(v).replace('.', ',');
@@ -52,7 +54,7 @@ console.log(`Nơi: ${spec.site.name}${spec.site.areas.length ? ` · khu: ${spec.
 for (const b of spec.buildings) {
   console.log(`Nhà ${b.id} (${b.kind ?? 'giang-duong'}): tâm (${n(b.x)}; ${n(b.z)}) ${n(b.w)}×${n(b.d)} quay ${b.rotY ?? 0}°`);
 }
-for (const z of placed.zones) console.log(`Vùng ${z.id}: tâm (${n(z.x)}; ${n(z.z)}) bán kính ${n(z.r)}`);
+for (const z of placed.zones) console.log(`Vùng ${z.id}: tâm (${n(z.x)}; ${n(z.z)}) bán kính ${n(z.r)}${rooms[z.id] ? ` · trong nhà (${rooms[z.id]})` : ""}`);
 console.log(`Cây lẻ: ${spec.trees.yard.length} · cụm cây: ${spec.trees.groves.length} · giếng (${n(spec.well.x)}; ${n(spec.well.z)})`);
 for (const g of spec.walls.gates) console.log(`Khe cổng tường ${g.side}: tâm ${n(g.at)}, rộng ${n(g.width)}`);
 for (const s of spec.wallSegments) console.log(`Đoạn tường (${n(s.from[0])}; ${n(s.from[1])}) → (${n(s.to[0])}; ${n(s.to[1])})`);
