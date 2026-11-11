@@ -94,7 +94,10 @@ makerstack.co meshy-review · sloyd.ai ai-3d-model-generator-pricing.
 - [x] D0. Hướng dẫn cài Hunyuan3D / TRELLIS.2 trên máy người dùng (ngoài repo) + quy trình làm sạch trong Blender
       (giảm tam giác, gộp texture) → `docs/ai3d.md`; quyết định `0003`. Khuyên Hunyuan3D-2 WinPortable (RTX 50, 12 GB:
       tạo hình được, tô màu cần chế độ VRAM thấp); TRELLIS.2 để sau (~24 GB).
-- [ ] D1. Nạp `.glb` (GLTFLoader + meshopt, đã có trong three) + `glbCharacter` (idle / walk), giữ đệ tử khối làm dự phòng.
+- [x] D1. Nạp `.glb` (GLTFLoader + meshopt) + `player/glbCharacter.ts` (clip idle / walk, không clip → nhún), chọn ở
+      `player/playerCharacter.ts`: `design/models/nhan-vat.glb` nếu có, `?nhan-vat=khoi|gau`, lỗi → đệ tử khối. Thử bằng
+      mẫu `1.glb` của Hunyuan3D (không commit): nạp được, tự tính pháp tuyến; mẫu 38k tam giác (ngân sách 10k) → phải
+      giảm trong Blender; nhân vật 1 khối → bớt ~23 draw call so với đệ tử khối.
 - [ ] D2. Thử 1 nhân vật + 1 công trình bằng 2 công cụ AI → so hình, số tam giác, dung lượng, fps → chọn.
 - [ ] D3. `design/models/` + `LICENSES.md` (công cụ, gói trả phí, ngày tạo).
 

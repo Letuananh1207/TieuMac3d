@@ -8,6 +8,7 @@ import { OrbitCamera } from './input/orbitCamera';
 import { attachPointerInput } from './input/pointers';
 import { GroundPicker } from './input/tapToMove';
 import { createDiscipleCharacter } from './player/discipleCharacter';
+import { createPlayerCharacter } from './player/playerCharacter';
 import { PlayerController, type MoveInput } from './player/controller';
 import { SCENE, SCENE_FILE } from './scene/loadSpec';
 import { viewDistance } from './scene/farMountains';
@@ -56,7 +57,7 @@ async function boot(): Promise<void> {
   loading.progress(80);
 
   // gấu khối (player/blockCharacter.ts) vẫn giữ làm bản dự phòng, cùng hợp đồng Character
-  const character = createDiscipleCharacter();
+  const character = await createPlayerCharacter(new URLSearchParams(location.search).get('nhan-vat'));
   character.root.position.set(spec.player.start[0], 0, spec.player.start[1]);
   scene.add(character.root);
   const player = new PlayerController(character, colliders, world.surface);

@@ -8,7 +8,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import './style.css';
 import { Colliders } from './collision/colliders';
 import { OrbitCamera } from './input/orbitCamera';
-import { createBlockCharacter } from './player/blockCharacter';
+import { createPlayerCharacter } from './player/playerCharacter';
 import { createDiscipleCharacter } from './player/discipleCharacter';
 import { SCENE, SCENE_FILE } from './scene/loadSpec';
 import { viewDistance } from './scene/farMountains';
@@ -48,9 +48,8 @@ async function boot(): Promise<void> {
   }
   const placed = placeZones(ZONE_CONTENT, world.zoneAnchors);
 
-  // ?nhan-vat=gau → gấu khối cũ (so sánh); mặc định đệ tử như app
-  const character =
-    new URLSearchParams(location.search).get('nhan-vat') === 'gau' ? createBlockCharacter() : createDiscipleCharacter();
+  // ?nhan-vat=gau → gấu khối cũ, =khoi → đệ tử khối; mặc định như app (model .glb nếu có, không thì đệ tử khối)
+  const character = await createPlayerCharacter(new URLSearchParams(location.search).get('nhan-vat'));
   // ?nv=x,z — đặt nhân vật chỗ khác (vd. trong giảng đường để xem nội thất, mái mờ)
   const nv = (new URLSearchParams(location.search).get('nv') ?? '').split(',').map(Number);
   const [sx, sz] = nv.length === 2 && nv.every(Number.isFinite) ? nv : spec.player.start;

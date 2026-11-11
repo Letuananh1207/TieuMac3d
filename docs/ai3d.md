@@ -54,7 +54,12 @@ cho thương mại. Trước khi phát hành app: đọc file `LICENSE` đúng b
 4. **Nén** bằng `gltfpack` (meshoptimizer) — three.js giải nén được bằng `MeshoptDecoder` có sẵn trong gói, chạy offline.
    Đích: nhân vật ≤ 1,5 MB, công trình ≤ 3 MB.
 5. **Đưa vào repo**: `design/models/<tên>.glb` + một dòng `design/models/LICENSES.md` (công cụ + phiên bản, ảnh đầu vào
-   tự làm hay nguồn nào, ngày tạo, giấy phép). Rồi báo phiên code chạy D1 (nạp `.glb`, `glbCharacter`).
+   tự làm hay nguồn nào, ngày tạo, giấy phép).
+   - **Nhân vật chính**: đặt tên đúng `design/models/nhan-vat.glb` → app tự dùng (đã có code D1). Mặt trước nhìn về +z
+     (trong Blender: −Y lúc xuất glTF +Y up), đứng thẳng, chân ở đáy; cỡ bao nhiêu cũng được (app co về cao 2,1 m).
+   - Có xương + clip tên chứa `idle` / `walk` → app chạy clip; không có → app tự nhún nhẹ khi đi.
+   - Không có màu / texture → app tô trắng; thiếu pháp tuyến → app tự tính.
+   - So với đệ tử khối: Canvas 3D `?nhan-vat=khoi`. Lỗi nạp → app dùng đệ tử khối (xem console).
 
 ## So sánh (D2)
 

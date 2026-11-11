@@ -113,7 +113,8 @@ học, `thu-vien` → thư viện) tự thành nhà rỗng có cửa giữa + n�
 không còn tác dụng với nhà đó). Không còn thẻ mời. Canvas 3D: `?nv=x,z` đặt nhân vật (vd. `?nv=0,-10.5` trong giảng
 đường, mái mờ sẵn).
 
-Model `.glb` chưa dùng — mốc 3D-b. Nhân vật: đệ tử chibi dựng bằng khối (`web/src/player/discipleCharacter.ts`).
+Nhân vật: `design/models/nhan-vat.glb` nếu có (model AI đã làm sạch — `docs/ai3d.md`), không thì đệ tử chibi dựng bằng
+khối (`web/src/player/discipleCharacter.ts`); Canvas 3D `?nhan-vat=khoi` xem đệ tử khối để so.
 
 ## Chốt
 
