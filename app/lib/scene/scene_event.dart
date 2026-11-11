@@ -54,3 +54,10 @@ String sceneEventScript(String type, [Map<String, Object?> payload = const {}]) 
 
 /// Đóng màn bài học → cảnh chạy tiếp.
 final resumeScript = sceneEventScript('resume');
+
+/// App xuống nền / hiện lại → trang dừng / chạy vòng lặp vẽ (mốc 4).
+String lifecycleScript({required bool visible}) =>
+    sceneEventScript('lifecycle', {'state': visible ? 'visible' : 'hidden'});
+
+/// Bật / tắt bảng gỡ lỗi (fps · draw call · tam giác).
+String debugScript({required bool on}) => sceneEventScript('debug', {'on': on});

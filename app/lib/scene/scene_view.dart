@@ -27,6 +27,29 @@ class _SceneViewState extends State<SceneView> {
   EdgeInsets? _sentInsets;
   String? _error;
 
+  /// Theo dõi app xuống nền / hiện lại → báo trang dừng vòng lặp vẽ (docs/bridge.md `lifecycle`).
+  late final AppLifecycleListener _lifecycle = AppLifecycleListener(
+    onHide: () => _send(lifecycleScript(visible: false)),
+    onShow: () => _send(lifecycleScript(visible: true)),
+  );
+
+  void _send(String js) {
+    final c = _controller;
+    if (_loaded && c != null) c.evaluateJavascript(source: js);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _lifecycle; // tạo listener ngay
+  }
+
+  @override
+  void dispose() {
+    _lifecycle.dispose();
+    super.dispose();
+  }
+
   static final _settings = InAppWebViewSettings(
     // Trang tự lo cảm ứng (joystick, xoay, chụm): tắt mọi zoom / cuộn / menu của WebView.
     supportZoom: false,
@@ -93,6 +116,8 @@ class _SceneViewState extends State<SceneView> {
               _loaded = true;
               _sentInsets = null;
               _sendInsets();
+              // bản debug: bảng gỡ lỗi (fps · draw call · tam giác) — bản phát hành không bật
+              if (kDebugMode) c.evaluateJavascript(source: debugScript(on: true));
             },
             onReceivedError: (c, request, error) {
               if (request.isForMainFrame ?? true) {

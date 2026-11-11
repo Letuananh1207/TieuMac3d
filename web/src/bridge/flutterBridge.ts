@@ -19,6 +19,16 @@ declare global {
   }
 }
 
+/** Việc trang làm khi Flutter gửi sự kiện sang. */
+export interface BridgeHandlers {
+  /** `resume`: Flutter đóng màn bài học → cảnh chạy tiếp */
+  onResume(): void;
+  /** `lifecycle`: app xuống nền (`false`) / hiện lại (`true`) */
+  onVisible(visible: boolean): void;
+  /** `debug`: bật / tắt bảng gỡ lỗi */
+  onDebug(on: boolean): void;
+}
+
 /** Tên handler Flutter đăng ký (`addJavaScriptHandler`). */
 const HANDLER = 'sceneEvent';
 
@@ -27,8 +37,7 @@ const HANDLER = 'sceneEvent';
  * lo (bảng bài học HTML).
  */
 export class FlutterBridge {
-  /** @param onResume Flutter đóng màn bài học → cảnh chạy tiếp */
-  constructor(private readonly onResume: () => void) {
+  constructor(private readonly on: BridgeHandlers) {
     window.scene = { handle: (e) => this.handle(e) };
   }
 
@@ -49,6 +58,10 @@ export class FlutterBridge {
 
   private handle(e: unknown): void {
     if (typeof e !== 'object' || e === null) return;
-    if ((e as Partial<SceneEvent>).type === 'resume') this.onResume();
+    const { type, payload } = e as Partial<SceneEvent>;
+    const p = typeof payload === 'object' && payload !== null ? payload : {};
+    if (type === 'resume') this.on.onResume();
+    else if (type === 'lifecycle' && (p.state === 'hidden' || p.state === 'visible')) this.on.onVisible(p.state === 'visible');
+    else if (type === 'debug') this.on.onDebug(p.on === true);
   }
 }

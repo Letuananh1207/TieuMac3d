@@ -18,16 +18,26 @@ export class FpsCounter {
   private frames = 0;
   private t = 0;
 
-  constructor(private readonly enabled: boolean) {
+  constructor(private enabled: boolean) {
     this.out.hidden = !enabled;
   }
 
-  tick(dt: number): void {
+  /** Bật / tắt bảng gỡ lỗi (`?debug` hoặc Flutter gửi `debug` — docs/bridge.md). */
+  setEnabled(on: boolean): void {
+    this.enabled = on;
+    this.out.hidden = !on;
+    this.frames = 0;
+    this.t = 0;
+  }
+
+  /** @param calls, triangles số draw call / tam giác của khung vừa vẽ (renderer.info) */
+  tick(dt: number, calls = 0, triangles = 0): void {
     if (!this.enabled) return;
     this.frames++;
     this.t += dt;
     if (this.t > 0.5) {
-      this.out.textContent = `${Math.round(this.frames / this.t)} fps`;
+      const tri = triangles >= 1000 ? `${Math.round(triangles / 1000)}k` : `${triangles}`;
+      this.out.textContent = `${Math.round(this.frames / this.t)} fps · ${calls} dc · ${tri} ▲`;
       this.frames = 0;
       this.t = 0;
     }

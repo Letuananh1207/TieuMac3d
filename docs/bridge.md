@@ -34,6 +34,12 @@ Dạng chung `{type: string, payload: object}`.
 |---|---|---|---|---|
 | `openLesson` | JS → Flutter | `{zoneId: 'lop-hsk3', lesson: {han: '快', pinyin: 'kuài', meaning: 'nhanh; vui', info: [['Bộ', '忄 tâm đứng'], …]}}` (`lesson` = kiểu `Lesson` của `web/src/zones/zones.ts`) | `true` = Flutter đã mở màn bài học native · khác (`false`, lỗi, không có Flutter) = JS tự mở bảng HTML | người chơi bấm nút học hoặc chạm vật học (R-VUNG-2/3) |
 | `resume` | Flutter → JS | `{}` | — | đóng màn bài học native → nhân vật đi lại được, cảnh vẽ tiếp đúng chỗ cũ |
+| `lifecycle` | Flutter → JS | `{state: 'hidden' \| 'visible'}` | — | app xuống nền / bị che (`hidden`) → trang dừng hẳn vòng lặp vẽ; app hiện lại (`visible`) → chạy tiếp (mốc 4) |
+| `debug` | Flutter → JS | `{on: true \| false}` | — | bản debug của app gửi `{on: true}` sau khi trang tải xong → bảng gỡ lỗi (fps · draw call · tam giác) (mốc 4) |
+
+- Trang cũng tự dừng khi `document.hidden` (trình duyệt thường đổi tab). Dừng vì bất kỳ lý do nào → không vẽ, không
+  cập nhật; chạy lại thì bước thời gian đầu tiên bỏ qua (nhân vật không "nhảy").
+- `?debug` trên URL vẫn bật bảng gỡ lỗi khi chạy trình duyệt thường.
 
 - Trong lúc màn bài học native mở (đã trả `true`), JS **ngừng vẽ** (không gọi `renderer.render`) tới khi nhận `resume`.
 - Màn bài học native chưa có thiết kế (phiếu `2026-11-10-man-bai-hoc`) → Flutter hiện trả `false`, app vẫn dùng bảng

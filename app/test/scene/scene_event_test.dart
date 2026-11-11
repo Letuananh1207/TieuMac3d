@@ -45,4 +45,10 @@ void main() {
   test('resume: gọi window.scene.handle, trang chưa sẵn sàng thì bỏ qua', () {
     expect(resumeScript, 'window.scene&&window.scene.handle({"type":"resume","payload":{}});');
   });
+
+  test('lifecycle / debug: đúng tên và dạng trong docs/bridge.md', () {
+    expect(lifecycleScript(visible: false), contains('{"type":"lifecycle","payload":{"state":"hidden"}}'));
+    expect(lifecycleScript(visible: true), contains('{"type":"lifecycle","payload":{"state":"visible"}}'));
+    expect(debugScript(on: true), contains('{"type":"debug","payload":{"on":true}}'));
+  });
 }

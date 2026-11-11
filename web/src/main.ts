@@ -45,6 +45,7 @@ async function boot(): Promise<void> {
 
   const canvas = el<HTMLCanvasElement>('stage');
   const { renderer, scene, camera } = createStage(canvas, spec.camera.fov, viewDistance(spec));
+  const clock = new THREE.Clock();
   const colliders = new Colliders();
   // nhà nào có nội thất: theo nội dung bài (lớp học / thư viện), chữ phấn trên bảng = chữ của bài
   const interiors = Object.fromEntries(ZONE_CONTENT.map((c) => [c.id, { kind: c.interior, han: c.lesson.han }]));
@@ -85,7 +86,29 @@ async function boot(): Promise<void> {
     learn.suspend(false);
   };
   const lesson = new LessonBoard(closeLesson);
-  const bridge = new FlutterBridge(closeLesson);
+  // bảng gỡ lỗi: ?debug (trình duyệt) hoặc Flutter gửi `debug` (bản debug của app)
+  const fps = new FpsCounter(new URLSearchParams(location.search).has('debug'));
+  // dừng hẳn vòng lặp khi app xuống nền (Flutter gửi `lifecycle`) hoặc tab bị ẩn — đỡ tốn pin (mốc 4)
+  let appHidden = false;
+  let running = true;
+  const setRunning = (): void => {
+    const want = !appHidden && !document.hidden;
+    if (want === running) return;
+    running = want;
+    if (want) {
+      clock.getDelta(); // bỏ khoảng thời gian đã dừng
+      requestAnimationFrame(tick);
+    }
+  };
+  document.addEventListener('visibilitychange', setRunning);
+  const bridge = new FlutterBridge({
+    onResume: closeLesson,
+    onVisible: (visible) => {
+      appHidden = !visible;
+      setRunning();
+    },
+    onDebug: (on) => fps.setEnabled(on),
+  });
   const openLesson = (zone: Zone): void => {
     if (paused) return; // đang mở rồi (chạm hai lần khi chờ Flutter trả lời)
     paused = true;
@@ -141,13 +164,12 @@ async function boot(): Promise<void> {
   const entries = new AreaEntryTracker(spec.site.areas, (a) => banner.show(a));
 
   /* ---------- vòng lặp ---------- */
-  const fps = new FpsCounter(new URLSearchParams(location.search).has('debug'));
   const nameTag = new NameTag();
-  const clock = new THREE.Clock();
   const input: MoveInput = { x: 0, y: 0 };
   orbit.update(camera, player.position, 0, true, groundAt);
 
   function tick(): void {
+    if (!running) return; // vòng lặp tự tắt; setRunning gọi lại khi hiện
     // kẹp dt: tab bị treo vài giây rồi chạy lại thì nhân vật không "dịch chuyển tức thời"
     const dt = Math.min(clock.getDelta(), 0.05);
     input.x = joystick.x;
@@ -166,7 +188,7 @@ async function boot(): Promise<void> {
     if (!covered) renderer.render(scene, camera);
     nameTag.update(pos, camera, NAME_TAG_HEIGHT);
     learn.follow(zones.current ? anchorOf.get(zones.current.id) : undefined, camera);
-    fps.tick(dt);
+    fps.tick(dt, renderer.info.render.calls, renderer.info.render.triangles);
     if (!firstFrame) {
       firstFrame = true;
       loading.done();
