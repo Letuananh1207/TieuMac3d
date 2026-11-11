@@ -22,6 +22,7 @@
 | địa hình | `terrain.enabled` (mặc định tắt = sân phẳng). Độ cao: `scene/terrainHeight.ts` (thuần toán: nhiễu + đỉnh → ép phẳng bục / lối lát → đổ vực) → `collision/heightfield.ts` (`heightAt`, `slopeAt`); lưới vẽ `scene/terrain.ts` (màu từng tam giác theo dốc, 1 draw call). Chia tam giác hai file **phải khớp** | `World.heightfield` |
 | đặt vật lên đất | cây, đồ trang trí nhận `groundY`; nhà, tường, cổng, ao, giếng **không** — phải nằm trên bục (`scene:check` báo "nằm trên đất dốc") | `world.ts` |
 | dốc | `MAX_SLOPE` 35° + `canStep` (R-VA-2) trong `player/controller.ts`; camera không chui xuống đất (`orbit.update(…, groundAt)`) | |
+| chiều cao kiến trúc | `buildingStyle.heightScale` qua `hk(style)` (`kien_truc/chi_tiet.ts`): nhân nền, cột, tường thân, cửa, mái, tầng tháp, cổng sơn môn; **giữ cỡ người**: bậc (thêm bậc — `stepCount`), lan can, biển, đèn lồng, cửa sổ tròn, đồ đạc. Sàn nhà vào được `hallFloor(style)`. Nội thất đặt theo kích thước phòng (phòng to → thêm án / kệ); cổng trăng thu bán kính cho vừa tường (`moonRadius`) | `kien_truc/` |
 | nhà vào được | nhà kiểu giảng đường có `zone` mà `ZONE_CONTENT` cho `interior` (`lop-hoc` · `thu-vien`) → `scene/rooms.ts`: thân rỗng, gian giữa mặt trước để trống làm cửa, nội thất `kien_truc/noi_that.ts`; va chạm theo lan can + tường + đồ đạc (R-VA-3); nền + dốc bậc là `Pad` trong `collision/ground.ts` (`LayeredGround`, `World.surface`); mái + tường trước + hàng cột trước gộp riêng rồi mờ 15 % / 0,3 s khi đứng trên sàn (R-HUD-2); hộp bắt chạm vô hình `markDynamic` (R-VUNG-2). Vùng học = điểm học trong nhà (`interiorSpot`, R-VUNG-1) | `world.ts` `buildWorld(…, interiors)` |
 | bậc đá, cỏ, đá rải | `terrain.stairs` ép dải dốc trong `terrainHeight.ts` (`stairEnds`), khối bậc ở `scene/stairs.ts`; cỏ búi + đá rải `scene/grass.ts` (mỗi loại 1 `InstancedMesh`, `setColorAt`, tối đa 3000 / 400) | `world.ts` khi có địa hình |
 | núi xa, biển mây | `scene/farMountains.ts`: không chịu sương, tự pha màu; far plane = `viewDistance(spec)` | `renderer.ts` nhận `far` |
@@ -64,8 +65,9 @@ export interface Character {
 }
 ```
 
-`PlayerController` chỉ biết `Character`. Nhân vật mới (model .glb, mốc 5) = một hàm khác trả về `Character`;
-không sửa controller.
+`PlayerController` chỉ biết `Character`. Có sẵn: `discipleCharacter.ts` (đệ tử khối), `blockCharacter.ts` (gấu),
+`glbCharacter.ts` (model .glb — `references/tai_nguyen.md`); chọn ở `playerCharacter.ts`. Nhân vật mới = một hàm trả
+về `Character`; không sửa controller.
 
 ## Điều khiển (input/)
 
@@ -76,7 +78,8 @@ Hằng số có tên ở đầu file; đổi hằng là đổi quy tắc `R-DIEU
 ## Vùng và HUD
 
 - Nội dung vùng/bài học: `ZONE_CONTENT` (`zones/zones.ts`); vị trí do đặc tả cảnh quyết. Tiêu đề thẻ tách `before / han / after`, không HTML thô.
-- `ZoneTracker` chỉ báo khi đổi vùng; logic "Để sau" nằm ở `EventCard` (quy tắc `R-VUNG-2`).
+- `ZoneTracker` chỉ báo khi đổi vùng → nút học nổi `ui/learnButton.ts` (bám vật học, R-VUNG-1/2); mở bài: `main.ts`
+  hỏi Flutter qua cầu nối (`bridge/`), không có Flutter → bảng HTML `ui/lessonBoard.ts` (R-VUNG-3). Không còn thẻ mời.
 - DOM HUD viết sẵn trong `web/index.html`, lấy bằng `el<T>(id)` (`ui/dom.ts`, thiếu id thì ném lỗi ngay).
 - Dựng nội dung bằng `textContent` / `createElement` / `replaceChildren`, không `innerHTML`.
 - Ẩn/hiện bằng thuộc tính `hidden`; CSS có `[hidden]{display:none !important}` (prototype từng bị
@@ -88,7 +91,8 @@ Hằng số có tên ở đầu file; đổi hằng là đổi quy tắc `R-DIEU
 - HUD hướng C: token ở `:root` của `style.css` (theo `design/tokens/design_tokens.json`); kính sương = lớp `.frost`
   (nền đủ đặc, blur chỉ là thêm — WebView không có `backdrop-filter` vẫn đọc được). Thẻ tên khu `ui/areaBanner.ts`
   + `zones/AreaEntryTracker` (R-HUD-3, chỉ theo khu của đặc tả, không theo nhà); màn tải `ui/loadingScreen.ts`
-  (R-MAN-2, `main.ts` báo tiến độ theo bước dựng, `done()` sau khung đầu); fps chỉ khi `?debug`.
+  (R-MAN-2, `main.ts` báo tiến độ theo bước dựng, `done()` sau khung đầu); bảng gỡ lỗi (fps · draw call · tam giác)
+  khi `?debug` hoặc Flutter gửi `debug` (bản debug của app). Vòng lặp dừng khi app xuống nền (`lifecycle`) / tab ẩn.
 - Mọi phần tử bám mép dùng `env(safe-area-inset-*)` (viewport có `viewport-fit=cover`).
 
 ## Thêm gói npm

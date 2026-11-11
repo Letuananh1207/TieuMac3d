@@ -91,7 +91,7 @@ flutter test -r failures-only test/<phần> · dart tool/rule_trace.dart
 | cảnh, sân, trời, ánh sáng, sương mù, renderer, độ phân giải | `scene/environment`, `scene/renderer` | `web/src/scene/` |
 | tường, nhà, giảng đường, thư viện (toà nhà), biển hiệu, đèn lồng | `walls`, `buildings`, `textures` | `web/src/scene/` |
 | cây, giếng | `trees`, `well` | `web/src/scene/` |
-| nhân vật, đệ tử, con gấu, dáng đi, model .glb | `player/` | `web/src/player/` (`discipleCharacter.ts`) |
+| nhân vật, đệ tử, con gấu, dáng đi | `player/` | `web/src/player/` (`playerCharacter.ts` chọn: `glbCharacter.ts` · `discipleCharacter.ts`) |
 | di chuyển, tốc độ | `controller` | `web/src/player/controller.ts` |
 | joystick, cần điều khiển | `joystick`, `pointers` | `web/src/input/` |
 | camera, góc nhìn, xoay, zoom, chụm hai ngón | `orbitCamera`, `pointers` | `web/src/input/` |
@@ -106,14 +106,16 @@ flutter test -r failures-only test/<phần> · dart tool/rule_trace.dart
 | chip "Học xá · Sân chính", tên khu | `areaTracker`, `hud` | `web/src/zones/areaTracker.ts`, `web/src/ui/hud.ts` |
 | vào trong nhà, nội thất, bảng đen, thầy, kệ sách, án đọc, mái mờ, cửa | `rooms`, `noi_that`, `dien` | `web/src/scene/rooms.ts`, `web/src/scene/kien_truc/noi_that.ts`, `kien_truc/dien.ts` (`RoomParts`); kế hoạch `docs/tasks/2026-11-11-vao-trong-kien-truc.md` |
 | nút học "Học chữ 快", chạm vật để học (thay thẻ mời — đã bỏ) | `learnButton`, `tapToMove` | `web/src/ui/learnButton.ts`, `web/src/input/tapToMove.ts` (`pickObject`), `main.ts` |
-| bảng bài học (HTML, sẽ thay bằng Flutter ở mốc 3) | `lessonBoard` | `web/src/ui/lessonBoard.ts` |
+| bảng bài học HTML (dự phòng khi không có Flutter) | `lessonBoard` | `web/src/ui/lessonBoard.ts` |
 | HUD, fps, nhãn tên, dòng hướng dẫn, nút góc nhìn | `hud` | `web/src/ui/hud.ts`, `web/index.html`, `web/src/style.css` |
 | font, chữ tiếng Việt, safe area, màu giao diện HTML | `style` | `web/src/style.css`, `web/index.html` |
-| build web, chép sang app | — | `web/vite.config.ts`, `web/scripts/copy-to-app.mjs` |
+| build web, chép sang app, font Flutter, làm sạch model | — | `web/vite.config.ts`, `web/scripts/{copy-to-app,subset-han,fonts-app,model-clean,check-scene}.mjs` |
 | app Flutter, WebView, màn bài học native, vòng đời | `main.dart` | `app/lib/` |
-| cầu nối Flutter ↔ 3D, sự kiện, safe area | `bridge`, `scene_view`, `safe_area` | `docs/bridge.md`, `app/lib/scene/`, `web/src/bridge/` (mốc 3) |
+| cầu nối Flutter ↔ 3D, sự kiện, safe area, app xuống nền, bảng gỡ lỗi | `bridge`, `scene_view`, `safe_area`, `scene_event` | `docs/bridge.md`, `app/lib/scene/`, `web/src/bridge/` |
 | màn bài học native (mốc 3) | `lesson_screen`, `scene_event` | `app/lib/lesson/`, `app/lib/scene/scene_event.dart`; font: `web/scripts/fonts-app.mjs` |
 | thiết kế, token, canvas | — | `design/` (chỉ đọc) → `/ui-apply` |
-| model .glb (mốc 3D-b, chưa làm) | `player/`, `scene/` | `docs/tasks/2026-11-10-thiet-ke-3d.md` |
+| thiết kế cảnh (không cần code mới) | — | `/canh` (sửa `design/scene/scene.json`) |
+| model .glb: tạo / thay nhân vật / công trình bằng AI | `glbCharacter`, `playerCharacter` | `/tai-nguyen` (Hunyuan3D); code nạp: `web/src/player/glbCharacter.ts`; công trình .glb chưa có code đặt vào cảnh |
+| hiệu năng, draw call, tam giác (mốc 4) | `merge`, `renderer` | `docs/tasks/2026-11-11-moc-4-hieu-nang.md`, `web/src/scene/merge.ts` |
 
 Thêm tính năng / thư mục mới → thêm một dòng vào bảng này cùng lúc.

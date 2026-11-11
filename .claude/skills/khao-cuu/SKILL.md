@@ -1,6 +1,6 @@
 ---
 name: khao-cuu
-description: Khảo cứu (考究) Học Xá 3D — nghiên cứu kiến trúc, trang phục, cảnh quan, đồ vật cổ Trung Hoa và quy ước thị giác phim / truyện cổ trang – tiên hiệp, rồi dịch thành hồ sơ tham khảo có số đo, màu, cấp bậc và cách dựng low-poly, để phiên thiết kế (/ui-design canh) dựng cảnh 3D đẹp và "ra chất". Dùng khi người dùng gõ /khao-cuu, hoặc nói "nghiên cứu …", "tìm hiểu kiểu …", "cái này trông chưa giống phim cổ trang", "điện / tháp / áo … ngoài đời trông thế nào", "soát xem cảnh có đúng phong cách không".
+description: Khảo cứu (考究) Học Xá 3D — nghiên cứu kiến trúc, trang phục, cảnh quan, đồ vật cổ Trung Hoa và quy ước thị giác phim / truyện cổ trang – tiên hiệp, rồi dịch thành hồ sơ tham khảo có số đo, màu, cấp bậc và cách dựng low-poly, để thiết kế cảnh (/canh) và tạo model (/tai-nguyen) đẹp, "ra chất". Dùng khi người dùng gõ /khao-cuu, hoặc nói "nghiên cứu …", "tìm hiểu kiểu …", "cái này trông chưa giống phim cổ trang", "điện / tháp / áo … ngoài đời trông thế nào", "soát xem cảnh có đúng phong cách không".
 argument-hint: "[<chủ đề> | soat [<khu | kiểu vật>] | phieu <hồ sơ> | ds]"
 ---
 
@@ -12,7 +12,7 @@ Tham số: $ARGUMENTS
 |---|---|
 | `/khao-cuu <chủ đề>` | Nghiên cứu một chủ đề (vd. `Chưởng Môn Điện`, `đạo bào đệ tử`, `thác và động bế quan`) → hồ sơ `docs/tham_khao/<ten>.md`. |
 | `/khao-cuu soat [<khu \| kiểu vật>]` | Soát cảnh / bản mẫu / code dựng hình hiện tại theo nền tảng + hồ sơ → bảng chỗ lệch, mức nặng nhẹ, cách sửa. Chỉ báo, không sửa. |
-| `/khao-cuu phieu <hồ sơ>` | Biến hồ sơ thành khối "Dán vào /ui-design canh" cho phiên thiết kế (và mục "Cần code" nếu đặc tả chưa tả được). |
+| `/khao-cuu phieu <hồ sơ>` | Biến hồ sơ thành khối "Dán vào /canh" cho thiết kế cảnh (và mục "Cần code" nếu đặc tả chưa tả được). |
 | `/khao-cuu ds` | Liệt kê hồ sơ đã có (`docs/tham_khao/README.md`), chủ đề nên làm tiếp theo quy hoạch `design/scene/tong_mon.md`. |
 
 ## Vai
@@ -33,7 +33,7 @@ Người **khảo cứu** đứng giữa người dùng và phiên thiết kế:
 3. `design/scene/tong_mon.md` — khu nào, đợt nào, cần gì.
 4. `docs/tham_khao/README.md` + hồ sơ liên quan (đừng nghiên cứu lại thứ đã có; cập nhật hồ sơ cũ).
 5. Khi soát / đề xuất trường: `web/src/scene/spec.ts` (đặc tả tả được gì), bảng "Các loại vật" trong
-   `.claude/skills/ui-design/SKILL.md`, file dựng hình liên quan trong `web/src/scene/` (chỉ đọc).
+   `.claude/skills/canh/references/truong-dac-ta.md`, file dựng hình liên quan trong `web/src/scene/` (chỉ đọc).
 
 ## Nghiên cứu một chủ đề
 
@@ -103,14 +103,14 @@ thường gặp" (nền tảng + hồ sơ). Báo bảng:
 
 | Chỗ | Thấy gì | Đúng ra | Nặng (phá chất · đáng sửa · tinh chỉnh) | Sửa bằng (`scene.json` / Cần code / bản mẫu) |
 
-Xếp "phá chất" lên đầu. Chỉ báo; muốn sửa → `/khao-cuu phieu` hoặc người dùng mang sang `/ui-design canh`.
+Xếp "phá chất" lên đầu. Chỉ báo; muốn sửa → `/khao-cuu phieu` hoặc người dùng mang sang `/canh`; model AI cho vật nổi bật → `/tai-nguyen`.
 
 ## Chuyển phiếu (`phieu`)
 
 Từ hồ sơ đã chọn hướng, soạn khối để người dùng chép sang phiên thiết kế:
 
 ```markdown
-## Dán vào /ui-design canh
+## Dán vào /canh
 Hồ sơ: docs/tham_khao/<ten>.md (đọc mục "Đặc điểm nhận diện", "Tỉ lệ", "Màu", "Dựng low-poly")
 Việc: <đặt / sửa gì, ở khu nào>
 Trường scene.json gợi ý: <…>

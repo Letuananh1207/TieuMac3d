@@ -18,8 +18,9 @@ Tham số: $ARGUMENTS
 
 ## Vai
 
-Hai phiên, hai vai: phiên **thiết kế** (`/ui-design`, ngoài VS Code) vẽ canvas và ghi `design/`; phiên này (VS Code)
-**chỉ đọc** `design/` và sửa code. Không bao giờ sửa `design/` hay canvas ở đây.
+Hai vai: **thiết kế** (`/ui-design` giao diện 2D trên canvas, `/canh` cảnh 3D trong `scene.json`, `/tai-nguyen` model
+`.glb`) ghi `design/`; `/ui-apply` (VS Code) **chỉ đọc** `design/` và sửa code. Không sửa `design/` hay canvas trong
+lúc `/ui-apply` — cần đổi thiết kế thì chuyển sang skill thiết kế tương ứng.
 
 ## Đường dẫn
 
@@ -52,6 +53,8 @@ Hai phiên, hai vai: phiên **thiết kế** (`/ui-design`, ngoài VS Code) vẽ
      `R-VA-1`, `R-VUNG-1` với toạ độ `scene:check` in ra; ví dụ sai số → sửa sổ theo bước 3. Mục "Cần code" (kiểu
      vật / trường đặc tả mới) → kế hoạch `/lead`: thêm trường vào `SceneSpec` + `DEFAULT_SCENE` (giữ cảnh cũ),
      dựng trong `web/src/scene/`, rồi mới build. Vùng mới cần nội dung bài học → thêm vào `ZONE_CONTENT`.
+   - model `.glb` mới trong `design/models/` (từ `/tai-nguyen`): nhân vật `nhan-vat.glb` → `npm run build` là đủ;
+     công trình → kế hoạch `/lead` (chưa có code đặt vào cảnh).
 3. **Đối chiếu sổ quy tắc** `docs/testing/quy_tac.md` với mục luồng/luật: khớp → làm; thiết kế đổi luật chưa có
    trong sổ → hỏi người dùng, chốt thì sửa sổ trước → chép lên tài liệu xác nhận online (nội dung đổi thì đưa ô
    Xác nhận về Chờ) → `dart tool/rule_trace.dart --mark-synced <mã>` → test đỏ → code. Thiết kế **trái** luật đã

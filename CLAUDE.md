@@ -20,16 +20,19 @@ dev Flutter chưa làm game: mỗi khi chọn thư viện / cách làm, giải t
 
 ## Thiết kế trước, code sau (chỉ phần mới)
 
-- Hai phiên, hai vai: **phiên thiết kế** (`/ui-design`, Claude ngoài VS Code) vẽ
-  [canvas](https://claude.ai/artifact/RXpWru4i7zZtbRBdQPGhD1) và ghi `design/`; **phiên code** (VS Code) sửa code, không
-  sửa `design/`.
+- Hai vai: **thiết kế** ghi `design/` — `/ui-design` giao diện 2D trên
+  [canvas](https://claude.ai/artifact/RXpWru4i7zZtbRBdQPGhD1) (thường ngoài VS Code), `/canh` cảnh 3D, `/tai-nguyen` model
+  `.glb` bằng Hunyuan3D; **code** (VS Code, `/lead` `/loi` `/ui-apply`) sửa code, không sửa `design/` trong lúc làm code.
+  Người dùng có thể nhờ phiên VS Code làm thay việc thiết kế — vẫn theo đúng skill thiết kế, cho duyệt rồi mới áp.
 - HUD đang có theo code + prototype. Giao diện **mới** chưa có trên canvas → không dựng tạm: soạn phiếu
   bằng `/ui-apply phieu <yêu cầu>`, việc đó chờ thiết kế.
-- Cảnh 3D thiết kế bằng đặc tả `design/scene/scene.json` + **Canvas 3D** (`/ui-design canh …`, trang
-  `web/design.html` chạy đúng code app). Quyết định: `decisions/0002-thiet-ke-3d.md`.
+- Cảnh 3D thiết kế bằng đặc tả `design/scene/scene.json` + **Canvas 3D** (`/canh …`, trang `web/design.html` chạy đúng
+  code app). Quyết định: `decisions/0002-thiet-ke-3d.md`.
+- Model 3D bằng AI (nhân vật, 1–2 công trình nổi bật): `/tai-nguyen` — Hunyuan3D chạy trên máy người dùng (chế độ API,
+  Claude gọi `127.0.0.1:8081`), làm sạch `npm run model:clean`, đặt `design/models/`. Quyết định: `decisions/0003-tai-san-ai.md`.
 - Khi thiết kế được cập nhật (mục mới trong `design/CHANGELOG.md`): `/ui-apply`.
 - Phong cách cổ trang / tiên hiệp: `/khao-cuu <chủ đề>` nghiên cứu → hồ sơ `docs/tham_khao/` (tham khảo, chưa chốt)
-  → phiên thiết kế đọc khi dựng. `/khao-cuu soat` soát cảnh. Skill này chỉ ghi `docs/tham_khao/`.
+  → `/canh`, `/tai-nguyen` đọc khi dựng. `/khao-cuu soat` soát cảnh. Skill này chỉ ghi `docs/tham_khao/`.
 
 ## File sinh tự động — không sửa tay, sẽ bị ghi đè
 
@@ -47,7 +50,8 @@ dev Flutter chưa làm game: mỗi khi chọn thư viện / cách làm, giải t
 cd web && npm run dev          # thử scene trên trình duyệt / điện thoại cùng Wi-Fi
 cd web && npm run build        # kiểm kiểu + kiểm đặc tả cảnh + build + chép sang app/assets/scene/
 cd web && npm run scene:check  # kiểm design/scene/scene.json, in toạ độ nhà / vùng / tường
-cd web && npm run build:design # Canvas 3D → web/dist-design/ (đăng artifact ở phiên thiết kế)
+cd web && npm run build:design # Canvas 3D → web/dist-design/ (đăng artifact — /canh)
+cd web && npm run model:clean -- <file.glb> [--loai nhan-vat|cong-trinh] [--ten <tên>]  # model AI → design/models/
 cd web && npx tsc --noEmit     # chỉ kiểm kiểu TS
 cd app && flutter run          # chạy app (build web trước); trình duyệt: flutter run -d chrome
 cd app && flutter analyze && flutter test
@@ -82,4 +86,5 @@ chép lên tài liệu online → `--mark-synced` → test → code.
 - Yêu cầu tính năng / mốc mới: `/lead <yêu cầu>`.
 - Báo lỗi: `/loi <mô tả>` ghi vào `docs/loi.md`; `/loi sua [L-…]` để sửa. Người dùng báo lỗi trong chat mà không
   gõ `/loi` thì vẫn ghi vào sổ.
+- Thiết kế: `/ui-design` (giao diện 2D) · `/canh` (cảnh 3D) · `/tai-nguyen` (model AI) · `/khao-cuu` (phong cách).
 - Trợ giúp: `/guide` — có những lệnh gì, dùng lệnh nào để làm gì.

@@ -8,7 +8,9 @@ Ngày: 2026-11-11 · Trạng thái: đã chốt hướng (người dùng), đang
 - **Lai**: địa hình, bố cục, nhà thường, cây, đồ trang trí tiếp tục dựng bằng khối trong code (0002). Thử model `.glb`
   sinh bằng AI cho **nhân vật** và **1–2 công trình nổi bật**; chỉ thay bản code khi đẹp hơn rõ và giữ ngân sách.
 - **Công cụ**: mã nguồn mở chạy trên máy người dùng (Hunyuan3D qua gói WinPortable; TRELLIS.2 để sau vì cần ~24 GB VRAM).
-  Phiên code không tự chạy công cụ AI; người dùng tạo model, làm sạch, đặt vào `design/models/`.
+  Claude không chạy phần mềm AI; người dùng mở Hunyuan3D chế độ **API** (cổng 8081), skill `/tai-nguyen` gửi ảnh qua
+  API cục bộ, nhận `.glb`, làm sạch bằng `npm run model:clean` (glTF-Transform + meshoptimizer, thay Blender cho bước
+  giảm tam giác + nén), cho người dùng chọn rồi đặt vào `design/models/` (cập nhật 2026-11-11).
 - **Nạp**: `GLTFLoader` + `MeshoptDecoder` của `three/examples/jsm` (cùng gói three, offline, không thêm thư viện).
   Nhân vật `.glb` qua hợp đồng `Character` (`player/glbCharacter.ts`, `AnimationMixer` clip `idle` / `walk`); đệ tử dựng
   bằng khối giữ làm dự phòng khi thiếu file hoặc lỗi nạp.

@@ -147,6 +147,14 @@ async function boot(): Promise<void> {
   const view = params.get('view');
   if (view === 'tren') topView();
   else playerView(view === 'ca-san');
+  // ?chup — ảnh sạch: ẩn bảng + lớp phủ (ảnh cảnh, ảnh đầu vào cho Hunyuan — skill /tai-nguyen)
+  if (params.has('chup')) {
+    panel.hidden = true;
+    for (const id of ['showColliders', 'showZones', 'showGrid']) {
+      const box = el<HTMLInputElement>(id);
+      if (box.checked) box.click();
+    }
+  }
   // ?cam=x,y,z&tam=x,z — đặt camera nhìn vào một điểm (chụp chi tiết một nhà / vật)
   const nums = (key: string): number[] => (params.get(key) ?? '').split(',').map(Number);
   const [cx, cy, cz] = nums('cam');

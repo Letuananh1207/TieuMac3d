@@ -10,3 +10,4 @@
 - 2026-11-11 — Địa hình: terrain / farMountains / cloudSea trong đặc tả, Heightfield ở collision/, luật R-VA-2 (dốc 35°); nhà phải nằm trên bục.
 - 2026-11-11 — Vào trong nhà: bỏ thẻ mời (eventCard), nút học nổi + chạm vật, rooms.ts / noi_that.ts, Ground nhiều lớp; luật R-VUNG-1/2/3, R-VA-3, R-HUD-1/2.
 - 2026-11-11 — B6a: bậc đá (terrain.stairs), cỏ búi + đá rải (terrain.grass / rocks).
+- 2026-11-11: thêm `references/tai_nguyen.md` (model .glb, font web + Flutter, file sinh, thứ tự `npm run build`); sửa chỗ lỗi thời (nhân vật .glb, cầu nối, màn Flutter, thẻ mời đã bỏ, bảng gỡ lỗi). Cảnh 3D tách sang skill `/canh`, model AI sang `/tai-nguyen`.

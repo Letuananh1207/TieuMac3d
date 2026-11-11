@@ -5,7 +5,7 @@ description: Bộ chuẩn code Học Xá 3D. Đọc TRƯỚC khi viết, sửa, 
 
 # Bộ chuẩn code — Học Xá 3D
 
-Ưu tiên khi mâu thuẫn: `design/` (thiết kế đã chốt, cho màn đã vẽ), `reference/hoc-xa-3d.html` (hành vi gốc),
+Ưu tiên khi mâu thuẫn: `design/` (thiết kế đã chốt, cho màn đã vẽ; cảnh: `design/scene/scene.json`), `reference/hoc-xa-3d.html` (hành vi gốc),
 `docs/bridge.md` > `CLAUDE.md` > bộ chuẩn này > thói quen chung. Giao diện mới chưa có trong `design/` → không dựng
 tạm, soạn phiếu (`/ui-apply phieu`).
 
@@ -28,6 +28,7 @@ tạm, soạn phiếu (`/ui-apply phieu`).
 | thêm thư mục / module, đổi ai import ai, cầu nối Flutter ↔ JS | `references/architecture.md` |
 | cảnh 3D, nhà, cây, vật liệu, texture, nhân vật, điều khiển, va chạm, vùng, HUD HTML | `references/web_scene.md` |
 | code Dart / Flutter trong app/ | `references/app_flutter.md` |
+| model .glb, font (web + Flutter), file sinh, `npm run build` làm gì | `references/tai_nguyen.md` |
 | viết test, sửa lỗi | `references/testing.md` |
 | đặt tên, comment, kiểu, lỗi (cả TS lẫn Dart) | `references/style.md` |
 
@@ -39,13 +40,15 @@ tạm, soạn phiếu (`/ui-apply phieu`).
 | renderer, camera, pixelRatio | `web/src/scene/renderer.ts` |
 | một vật trong sân (nhà, tường, cây, giếng) | `web/src/scene/<vật>.ts`, ghép ở `scene/world.ts` |
 | số / màu của cảnh, đặc tả, Canvas 3D | `web/src/scene/spec.ts` (kiểu + mặc định), `loadSpec.ts`, `web/src/designPreview.ts` |
-| hình nhân vật / di chuyển | `web/src/player/discipleCharacter.ts` (đang dùng; gấu `blockCharacter.ts` dự phòng) / `player/controller.ts` |
+| hình nhân vật / di chuyển | `web/src/player/playerCharacter.ts` (chọn: `.glb` `glbCharacter.ts` → đệ tử khối `discipleCharacter.ts`; gấu `blockCharacter.ts`) / `player/controller.ts` |
 | joystick, xoay/zoom camera, chạm để đi, phím | `web/src/input/{joystick,orbitCamera,tapToMove,keyboard,pointers}.ts` |
 | va chạm | `web/src/collision/colliders.ts` |
 | nội dung vùng + bài học (vị trí: đặc tả cảnh) | `web/src/zones/zones.ts` |
 | nút học nổi, bảng bài học, fps, nhãn tên | `web/src/ui/{learnButton,lessonBoard,hud}.ts`, DOM ở `web/index.html`, CSS `web/src/style.css` |
 | nhà vào được (nội thất, cửa, mái mờ) | `web/src/scene/rooms.ts`, `web/src/scene/kien_truc/noi_that.ts` |
-| màn Flutter | `app/lib/` (hiện chỉ `main.dart`) |
+| màn Flutter | `app/lib/main.dart`, `app/lib/lesson/lesson_screen.dart`; WebView `app/lib/scene/` |
+| cầu nối Flutter ↔ JS | hợp đồng `docs/bridge.md`; web `web/src/bridge/flutterBridge.ts`; Flutter `app/lib/scene/scene_event.dart`, `scene_view.dart` |
+| script build (font, model, kiểm cảnh) | `web/scripts/*.mjs` |
 | test của `app/lib/a/b.dart` | `app/test/a/b_test.dart`; test theo quy tắc: `app/test/rules/` |
 | test của `web/src/a/b.ts` (khi có trình chạy test) | `web/src/a/b.test.ts` |
 
@@ -59,7 +62,8 @@ tạm, soạn phiếu (`/ui-apply phieu`).
 | sửa tay `app/assets/scene/` (bản build, bị ghi đè) hoặc `reference/hoc-xa-3d.html` | — |
 | đổi phiên bản gói npm sang dải `^`/`~` — luôn ghim cố định (`npm install --save-exact`) | — |
 | `any`, gán `innerHTML` | `W-ANY`, `W-HTML` (cảnh báo) |
-| file > 400 dòng; `Color(0x…)`, `fontSize: <số>` trong Dart | `W-DAI`, `W-MAU`, `W-COCHU` (cảnh báo) |
+| file > 400 dòng; `Color(0x…)`, `fontSize: <số>` trong Dart (dùng `AppColors`, `AppTextSize`) | `W-DAI`, `W-MAU`, `W-COCHU` (cảnh báo) |
+| sửa tay file sinh: `web/src/fonts/`, `app/assets/fonts/`, `app/lib/theme/app_fonts.g.dart`, khối `fonts:` của `pubspec.yaml` | — |
 
 ## Cập nhật bộ chuẩn
 
