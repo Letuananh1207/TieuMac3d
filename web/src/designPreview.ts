@@ -12,6 +12,7 @@ import { createBlockCharacter } from './player/blockCharacter';
 import { createDiscipleCharacter } from './player/discipleCharacter';
 import { SCENE, SCENE_FILE } from './scene/loadSpec';
 import { viewDistance } from './scene/farMountains';
+import { mergeStatic } from './scene/merge';
 import { createStage } from './scene/renderer';
 import { buildWorld } from './scene/world';
 import { el } from './ui/dom';
@@ -43,6 +44,7 @@ async function boot(): Promise<void> {
     t.root.position.set(room.teacher.x, room.teacher.y, room.teacher.z);
     t.facing.rotation.y = room.teacher.rotY;
     scene.add(t.root);
+    mergeStatic(t.root, new Set()); // như main.ts: thầy đứng yên, gộp khối theo màu
   }
   const placed = placeZones(ZONE_CONTENT, world.zoneAnchors);
 

@@ -85,7 +85,7 @@ makerstack.co meshy-review · sloyd.ai ai-3d-model-generator-pricing.
 Đợt C — giao diện (chờ thiết kế)
 - [x] C1. Phiếu `2026-11-11-hud-lam-lai.md` (chip khu, joystick, nút, thẻ mời, nhãn tên, hướng dẫn, màn tải, fps chỉ
       ở chế độ gỡ lỗi) → `chờ thiết kế`.
-- [ ] C2. Áp HUD + màn bài học khi thiết kế chốt (`/ui-apply`).
+- [ ] C2. Áp HUD + màn bài học khi thiết kế chốt (`/ui-apply`). HUD đã áp (2026-11-11.3/.4, `docs/tasks/2026-11-11-hud-c.md`); màn bài học còn chờ phiếu `2026-11-10-man-bai-hoc.md`.
 
 Đợt D — model AI (đã chọn lai, mã nguồn mở trên máy)
 - [x] D0. Hướng dẫn cài Hunyuan3D / TRELLIS.2 trên máy người dùng (ngoài repo) + quy trình làm sạch trong Blender

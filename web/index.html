@@ -8,20 +8,27 @@
 <body>
   <canvas id="stage"></canvas>
 
-  <div class="hud top">
-    <span class="chip"><span class="dot"></span><span id="place">Học xá · Sân chính</span></span>
-    <span class="chip" id="fps">— fps</span>
+  <!-- HUD hướng C (design/source/HUD-*.dc.html) -->
+  <div class="chip frost"><span class="dot" aria-hidden="true"></span><span><span id="place">Học xá · Sân chính</span><span class="area" id="placeArea"></span></span></div>
+  <button class="frost" id="btnCam" type="button">Góc nhìn: gần</button>
+  <div id="fps" hidden>— fps</div>
+
+  <div id="joyGhost" aria-hidden="true"><div class="knob"></div><span>kéo để đi</span></div>
+  <div id="joy" hidden><div id="knob"></div></div>
+  <div class="label" id="nameTag"><span class="dot" aria-hidden="true"></span>Tuấn Anh</div>
+
+  <div class="hud frost" id="hint">Kéo nửa trái để đi · kéo nửa phải để xoay · chạm mặt đất để đi tới đó · chụm 2 ngón để zoom</div>
+
+  <!-- thẻ tên khu khi bước vào khu mới (R-HUD-3), canvas HUD-doc-vao-khu / HUD-ngang-vao-khu -->
+  <div class="frost" id="areaCard" role="status" hidden>
+    <div class="han" id="areaHan" lang="zh"></div>
+    <div class="rule" aria-hidden="true"><span class="dot"></span></div>
+    <div class="name" id="areaName"></div>
   </div>
 
-  <div id="joyGhost">kéo để<br>đi</div>
-  <div id="joy" hidden><div id="knob"></div></div>
-  <div class="label" id="nameTag">Tuấn Anh</div>
-
-  <div class="hud" id="hint">Kéo nửa trái để đi · kéo nửa phải để xoay · chạm mặt đất để đi tới đó · chụm 2 ngón để zoom</div>
-
-  <!-- nút học nổi trên vật học trong nhà (R-VUNG-1), kiểu HUD C trên canvas TrongNha-doc / TrongNha-ngang -->
+  <!-- nút học nổi trên vật học trong nhà (R-VUNG-1), canvas TrongNha-doc / TrongNha-ngang -->
   <button class="learn" id="learn" type="button" hidden>
-    <span class="learn-dot" aria-hidden="true"></span><span id="learnText"></span><span class="han" id="learnHan" lang="zh"></span>
+    <span class="dot" aria-hidden="true"></span><span id="learnText"></span><span class="han" id="learnHan" lang="zh"></span>
   </button>
 
   <!-- Mốc 1 còn giữ bảng bài học HTML; mốc 3 thay bằng màn Flutter -->
@@ -31,12 +38,31 @@
       <div class="py" id="lsPy"></div>
       <p id="lsMean"></p>
       <dl id="lsInfo"></dl>
-      <button class="primary" id="lsClose" type="button">Ra sân</button>
+      <button id="lsClose" type="button">Ra sân</button>
     </div>
   </div>
 
-  <div class="hud btns">
-    <button id="btnCam" type="button">Góc nhìn: gần</button>
+  <!-- màn tải (R-MAN-2), canvas ManTai-doc / ManTai-ngang; chữ do JS điền từ đặc tả cảnh -->
+  <div id="loading">
+    <svg class="mt-doc" aria-hidden="true" viewBox="0 0 390 300" preserveAspectRatio="none">
+      <path d="M0 150 L40 110 L78 132 L130 70 L170 112 L205 92 L250 128 L300 64 L350 118 L390 96 L390 300 L0 300 Z" fill="#D3DDDA"/>
+      <path d="M0 210 L50 172 L96 196 L150 150 L200 190 L240 168 L292 206 L340 176 L390 200 L390 300 L0 300 Z" fill="#BFCFCB"/>
+      <path d="M0 262 C 60 244, 120 270, 190 252 S 320 240, 390 258 L390 300 L0 300 Z" fill="#F4F7F6"/>
+    </svg>
+    <svg class="mt-ngang" aria-hidden="true" viewBox="0 0 844 170" preserveAspectRatio="none">
+      <path d="M0 80 L70 50 L140 70 L230 20 L300 58 L370 40 L450 72 L540 16 L620 60 L700 36 L780 62 L844 44 L844 170 L0 170 Z" fill="#D3DDDA"/>
+      <path d="M0 120 L90 92 L170 112 L260 80 L350 110 L430 94 L520 120 L610 96 L700 116 L780 100 L844 112 L844 170 L0 170 Z" fill="#BFCFCB"/>
+      <path d="M0 150 C 120 136, 240 158, 380 144 S 640 132, 844 148 L844 170 L0 170 Z" fill="#F4F7F6"/>
+    </svg>
+    <main>
+      <div class="han" id="loadHan" lang="zh"></div>
+      <div class="rule" aria-hidden="true"><span class="dot"></span></div>
+      <h1 id="loadName"></h1>
+      <div class="progress" id="loadBar" role="progressbar" aria-label="Đang tải cảnh" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div class="bar"><div class="fill" id="loadFill"></div></div>
+        <div class="status" id="loadStatus"></div>
+      </div>
+    </main>
   </div>
 
   <script type="module" src="/src/main.ts"></script>

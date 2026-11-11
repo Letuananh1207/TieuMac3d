@@ -1,59 +1,124 @@
 /* Một màn hình: canvas 3D phủ toàn bộ, HUD nổi trên các mép có safe-area.
-   Chép từ reference/hoc-xa-3d.html; font Google Fonts thay bằng @fontsource (đóng gói, chạy offline). */
+   HUD hướng C "ngọc bích · lụa" (design/docs/screen_specs.md mục HUD, Thẻ tên khu, Màn tải, Trong nhà — 2026-11-11.3/.4).
+   Font đóng gói (@fontsource; chữ Hán cắt sẵn ở fonts/han.css), chạy offline. */
 @import '@fontsource/be-vietnam-pro/vietnamese-500.css';
 @import '@fontsource/be-vietnam-pro/latin-500.css';
 @import '@fontsource/be-vietnam-pro/vietnamese-700.css';
 @import '@fontsource/be-vietnam-pro/latin-700.css';
 @import '@fontsource/lora/vietnamese-700.css';
 @import '@fontsource/lora/latin-700.css';
+@import './fonts/han.css';
 
 :root{
-  --ink:#1f1610;        /* nền panel gỗ sẫm */
-  --ink-2:#2c2018;
-  --paper:#f3e6c8;      /* chữ giấy dó */
-  --gold:#e0ae4c;       /* viền / nhấn vàng */
-  --lacquer:#b5352b;    /* đỏ sơn mài cho nút chính */
-  --muted:#c4b08a;
+  /* HUD C (design/tokens/design_tokens.json) */
+  --slate:#24323a;      /* chữ chính */
+  --jade:#2b5446;       /* ngọc lục: nút chính, núm joystick, tên khu */
+  --on-jade:#fff;
+  --gold:#d4a64a;       /* chấm vàng — hoạ tiết duy nhất */
+  --frost:rgba(244,247,246,.82);
+  --frost-strong:rgba(244,247,246,.8);   /* thẻ tên khu */
+  --frost-weak:rgba(244,247,246,.45);    /* vòng joystick gợi ý */
+  --frost-line:rgba(255,255,255,.95);    /* viền trong 1px */
+  --frost-outline:rgba(36,50,58,.16);    /* viền ngoài 1px */
+  --mist:#e9eeec;       /* nền màn tải = scene-bg */
+  --mist-far:#d3ddda;
+  --mist-near:#bfcfcb;
+  --shadow-hud:0 4px 14px rgba(36,50,58,.18);
+  --shadow-card:0 12px 32px rgba(36,50,58,.2);
+  --shadow-primary:inset 0 -2px 0 rgba(0,0,0,.18),0 4px 12px rgba(43,84,70,.3);
+  --blur-hud:blur(10px);
+  --blur-card:blur(14px);
+  --blur-joy:blur(6px);
+  /* bảng bài học (giữ tới mốc 3) */
+  --ink:#1f1610;
+  --paper:#f3e6c8;
+  --lacquer:#a8322a;
   --display:"Lora",Georgia,serif;
   --ui:"Be Vietnam Pro",system-ui,-apple-system,sans-serif;
-  /* Chữ Hán: dùng font hệ thống (Android có Noto CJK, iOS có Songti/PingFang) — font CJK đóng gói nặng vài MB */
-  --han:"Noto Serif CJK SC","Noto Serif SC","Songti SC","SimSun",serif;
+  /* Chữ Hán: Noto Serif SC 700 cắt đúng các chữ app dùng ("Han Serif", scripts/subset-han.mjs); chữ khác rơi về font hệ thống */
+  --han:"Han Serif","Noto Serif CJK SC","Noto Serif SC","Songti SC","SimSun",serif;
   /* Vùng bị che (tai thỏ, thanh hệ thống). WebView Android thường trả env() = 0, nên Flutter đặt thêm
      --inset-* (docs/bridge.md); lấy giá trị lớn hơn. Trên trình duyệt không có Flutter thì --inset-* = 0. */
   --sa-top:max(env(safe-area-inset-top,0px),var(--inset-top,0px));
   --sa-right:max(env(safe-area-inset-right,0px),var(--inset-right,0px));
   --sa-bottom:max(env(safe-area-inset-bottom,0px),var(--inset-bottom,0px));
   --sa-left:max(env(safe-area-inset-left,0px),var(--inset-left,0px));
-  color-scheme:dark;
+  /* lề HUD: dọc 16 từ mép; ngang safe + 12 (tai thỏ bên nào cũng được → hai bên bằng nhau) */
+  --edge-left:max(16px,calc(var(--sa-left) + 12px));
+  --edge-right:max(16px,calc(var(--sa-right) + 12px));
+  color-scheme:light;
 }
-html,body{margin:0;height:100%;overflow:hidden;background:#141b2c;color:var(--paper);font-family:var(--ui)}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--mist);color:var(--slate);font-family:var(--ui)}
 body{overscroll-behavior:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
 [hidden]{display:none !important}
 #stage{position:fixed;inset:0;width:100%;height:100%;touch-action:none;display:block}
 .hud{position:fixed;z-index:5;pointer-events:none}
-.chip{pointer-events:auto;display:inline-flex;align-items:center;gap:8px;background:rgba(31,22,16,.82);border:1px solid rgba(224,174,76,.35);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:700;backdrop-filter:blur(6px)}
-.top{top:calc(10px + var(--sa-top));left:max(12px,var(--sa-left));right:max(12px,var(--sa-right));display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
-.dot{width:8px;height:8px;border-radius:50%;background:#7bc86c}
-#fps{font-variant-numeric:tabular-nums;color:var(--muted);font-weight:500}
-#hint{left:50%;transform:translateX(-50%);bottom:calc(150px + var(--sa-bottom));text-align:center;font-size:13px;color:var(--paper);background:rgba(31,22,16,.7);padding:8px 14px;border-radius:12px;max-width:min(340px,calc(100% - 32px));transition:opacity .6s}
+
+/* chất liệu kính sương: nền frost + viền trong trắng + viền ngoài xám; blur chỉ là thêm — không có vẫn đọc được */
+.frost{background:var(--frost);border:1px solid var(--frost-line);outline:1px solid var(--frost-outline);-webkit-backdrop-filter:var(--blur-hud);backdrop-filter:var(--blur-hud)}
+.dot{flex:none;width:6px;height:6px;border-radius:50%;background:var(--gold)}
+
+/* chip tên nơi · khu (R-HUD-1) */
+.chip{position:fixed;z-index:5;pointer-events:none;left:var(--edge-left);top:calc(var(--sa-top) + 12px);height:36px;box-sizing:border-box;padding:0 14px 0 12px;display:flex;align-items:center;gap:8px;border-radius:999px;box-shadow:var(--shadow-hud);font-size:13px;font-weight:700;white-space:nowrap;max-width:calc(100% - var(--edge-left) - var(--edge-right) - 150px);overflow:hidden}
+.chip .dot{box-shadow:0 0 0 2px rgba(212,166,74,.25)}
+.chip .area{color:var(--jade)}
+/* nút góc nhìn */
+button{font:inherit;font-weight:700;cursor:pointer;color:var(--slate)}
+button:focus-visible{outline:2px solid var(--jade);outline-offset:2px}
+#btnCam{position:fixed;z-index:5;right:var(--edge-right);top:calc(var(--sa-top) + 8px);height:44px;box-sizing:border-box;padding:0 16px;font-size:13px;border-radius:999px;box-shadow:var(--shadow-hud);white-space:nowrap}
+/* fps: chỉ chế độ gỡ lỗi (?debug) */
+#fps{position:fixed;z-index:5;pointer-events:none;right:var(--edge-right);bottom:calc(var(--sa-bottom) + 12px);font-family:ui-monospace,monospace;font-size:11px;font-variant-numeric:tabular-nums;background:rgba(244,247,246,.8);padding:2px 6px;border-radius:6px}
+
+/* dòng hướng dẫn lần đầu */
+#hint{left:24px;right:24px;bottom:calc(var(--sa-bottom) + 152px);box-sizing:border-box;padding:10px 14px;background:rgba(244,247,246,.84);outline-color:rgba(36,50,58,.14);border-radius:12px;font-size:13px;line-height:1.5;text-align:center;transition:opacity .6s}
 #hint.gone{opacity:0}
-.label{position:fixed;z-index:4;pointer-events:none;transform:translate(-50%,-100%);font-size:12px;font-weight:700;color:#2a1c0e;background:var(--gold);padding:2px 9px;border-radius:999px;white-space:nowrap}
-/* joystick */
-#joy{position:fixed;z-index:6;width:120px;height:120px;margin:-60px 0 0 -60px;border-radius:50%;border:2px solid rgba(243,230,200,.45);background:rgba(31,22,16,.35);pointer-events:none}
-#knob{position:absolute;left:50%;top:50%;width:52px;height:52px;margin:-26px 0 0 -26px;border-radius:50%;background:rgba(243,230,200,.85);box-shadow:0 2px 10px rgba(0,0,0,.4)}
-#joyGhost{position:fixed;z-index:3;left:calc(max(16px,var(--sa-left)) + 30px);bottom:calc(30px + var(--sa-bottom));width:96px;height:96px;border-radius:50%;border:2px dashed rgba(243,230,200,.3);pointer-events:none;display:grid;place-items:center;font-size:11px;color:rgba(243,230,200,.6);text-align:center;line-height:1.3}
-/* thẻ sự kiện */
-button{font:inherit;font-weight:700;font-size:15px;border-radius:999px;padding:10px 18px;border:1px solid rgba(243,230,200,.25);background:var(--ink-2);color:var(--paper);cursor:pointer}
-button.primary{background:var(--lacquer);border-color:var(--lacquer);color:#fff}
-button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
-/* nút học nổi trên vật trong nhà — HUD hướng C (canvas TrongNha-doc / TrongNha-ngang): ngọc lục, viền trắng, chấm vàng,
-   mũi nhọn chỉ xuống vật; JS đặt left/top = điểm treo chiếu lên màn */
-.learn{position:fixed;z-index:6;transform:translate(-50%,calc(-100% - 10px));height:48px;box-sizing:border-box;padding:0 20px 0 16px;display:flex;align-items:center;gap:8px;white-space:nowrap;font-size:15px;color:#fff;background:#2b5446;border:1px solid rgba(255,255,255,.95);border-radius:999px;box-shadow:inset 0 -2px 0 rgba(0,0,0,.18),0 6px 16px rgba(36,50,58,.3)}
-.learn::after{content:"";position:absolute;left:50%;bottom:-9px;margin-left:-8px;border-left:8px solid transparent;border-right:8px solid transparent;border-top:9px solid #2b5446}
-.learn-dot{width:6px;height:6px;border-radius:50%;background:#d4a64a}
+
+/* nhãn tên trên đầu nhân vật */
+.label{position:fixed;z-index:4;pointer-events:none;transform:translate(-50%,-100%);height:24px;box-sizing:border-box;padding:0 10px;display:flex;align-items:center;gap:6px;background:rgba(244,247,246,.88);border:1px solid var(--frost-line);outline:1px solid var(--frost-outline);border-radius:999px;font-size:12px;font-weight:700;white-space:nowrap}
+.label .dot{width:4px;height:4px}
+
+/* joystick: gợi ý (chưa chạm) và vòng đang giữ (hiện ở chỗ ngón chạm, R-DIEU-1) */
+#joyGhost{position:fixed;z-index:3;pointer-events:none;left:calc(var(--sa-left) + 36px);bottom:calc(var(--sa-bottom) + 28px);width:110px;height:110px;box-sizing:border-box;border-radius:50%;border:1px solid var(--frost-line);outline:1px solid rgba(36,50,58,.2);background:var(--frost-weak);-webkit-backdrop-filter:var(--blur-joy);backdrop-filter:var(--blur-joy);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;font-weight:700}
+#joyGhost .knob{width:40px;height:40px;border-radius:50%;background:rgba(43,84,70,.85);border:1px solid rgba(255,255,255,.9)}
+#joy{position:fixed;z-index:6;pointer-events:none;width:120px;height:120px;margin:-60px 0 0 -60px;box-sizing:border-box;border-radius:50%;border:1px solid var(--frost-line);outline:1px solid rgba(36,50,58,.22);background:rgba(244,247,246,.38);-webkit-backdrop-filter:var(--blur-joy);backdrop-filter:var(--blur-joy)}
+#joy::before{content:"";position:absolute;left:50%;top:50%;width:6px;height:6px;margin:-3px 0 0 -3px;border-radius:50%;background:rgba(36,50,58,.35)}
+#knob{position:absolute;left:50%;top:50%;width:48px;height:48px;margin:-24px 0 0 -24px;box-sizing:border-box;border-radius:50%;background:var(--jade);border:1px solid var(--frost-line);box-shadow:0 4px 12px rgba(43,84,70,.4)}
+
+/* nút học nổi trên vật trong nhà (mục "Trong nhà"): ngọc lục, chấm vàng, mũi nhọn chỉ xuống vật;
+   JS đặt left/top = điểm treo chiếu lên màn */
+.learn{position:fixed;z-index:6;transform:translate(-50%,calc(-100% - 10px));height:48px;box-sizing:border-box;padding:0 20px 0 16px;display:flex;align-items:center;gap:8px;white-space:nowrap;font-size:15px;color:var(--on-jade);background:var(--jade);border:1px solid var(--frost-line);border-radius:999px;box-shadow:var(--shadow-primary),0 6px 16px rgba(36,50,58,.3)}
+.learn::after{content:"";position:absolute;left:50%;bottom:-9px;margin-left:-8px;border-left:8px solid transparent;border-right:8px solid transparent;border-top:9px solid var(--jade)}
 .learn .han{font-family:var(--han);font-size:20px;font-weight:700}
-/* lớp học */
-#lesson{position:fixed;inset:0;z-index:10;background:rgba(14,10,7,.88);display:grid;place-items:center;padding-left:max(16px,var(--sa-left));padding-right:max(16px,var(--sa-right))}
+
+/* hai chấm vàng giữa hai vạch — dùng ở thẻ tên khu và màn tải */
+.rule{display:flex;align-items:center;gap:8px}
+.rule::before,.rule::after{content:"";flex:1 1 auto;height:1px;background:rgba(36,50,58,.3)}
+.rule .dot{width:5px;height:5px}
+
+/* thẻ tên khu (R-HUD-3): vào 0,25 s, giữ ~2 s (JS), ra 0,4 s; không chặn chạm */
+#areaCard{position:fixed;z-index:5;pointer-events:none;left:50%;top:calc(var(--sa-top) + 121px);transform:translateX(-50%);width:240px;box-sizing:border-box;padding:16px 20px 14px;background:var(--frost-strong);outline-color:rgba(36,50,58,.14);-webkit-backdrop-filter:var(--blur-card);backdrop-filter:var(--blur-card);border-radius:16px;box-shadow:var(--shadow-card);display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;opacity:0;transition:opacity .4s ease-in}
+#areaCard.on{opacity:1;transition:opacity .25s ease-out}
+#areaCard .han{font-family:var(--han);font-weight:700;font-size:52px;line-height:1.05;letter-spacing:.14em;padding-left:.14em;color:var(--jade)}
+#areaCard .rule{width:160px}
+#areaCard .name{font-family:var(--display);font-weight:700;font-size:20px}
+
+/* màn tải (R-MAN-2): che và chặn chạm tới khung hình đầu, rồi mờ 0,4 s */
+#loading{position:fixed;inset:0;z-index:20;background:var(--mist);overflow:hidden;transition:opacity .4s}
+#loading.done{opacity:0}
+#loading svg{position:absolute;left:0;bottom:0;width:100%;height:300px}
+#loading .mt-ngang{display:none}
+#loading main{position:absolute;left:0;right:0;top:calc(var(--sa-top) + 223px);display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}
+#loading .han{font-family:var(--han);font-weight:700;font-size:56px;line-height:1.05;letter-spacing:.16em;padding-left:.16em;color:var(--jade)}
+#loading .rule{width:180px}
+#loading h1{margin:0;font-family:var(--display);font-weight:700;font-size:24px}
+#loading .progress{margin-top:48px;display:flex;flex-direction:column;align-items:center;gap:10px}
+#loading .bar{position:relative;width:200px;height:2px;background:rgba(36,50,58,.15);border-radius:2px}
+#loading .fill{position:absolute;left:0;top:0;height:2px;width:0;background:var(--jade);border-radius:2px;transition:width .3s}
+#loading .fill::after{content:"";position:absolute;right:-4px;top:-3px;width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 3px rgba(212,166,74,.25)}
+#loading .status{font-size:13px;font-weight:500}
+
+/* bảng bài học (mốc 3 thay bằng màn Flutter — chưa có thiết kế, giữ kiểu cũ) */
+#lesson{position:fixed;inset:0;z-index:10;background:rgba(14,10,7,.88);display:grid;place-items:center;padding-left:max(16px,var(--sa-left));padding-right:max(16px,var(--sa-right));padding-top:var(--sa-top);padding-bottom:var(--sa-bottom);overflow-y:auto;color:var(--paper)}
 .board{width:min(380px,100%);box-sizing:border-box;background:#2f3a2c;border:10px solid #5a3b22;border-radius:6px;padding:22px 20px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.6)}
 .board .big{font-family:var(--han);font-size:min(34vw,140px);line-height:1;color:#f5f1e3}
 .board .py{font-family:var(--display);font-size:22px;color:var(--gold);margin-top:6px}
@@ -61,13 +126,30 @@ button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .board dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;text-align:left;font-size:14px;margin:0 0 18px;color:#dfe6d6}
 .board dt{color:var(--gold);font-weight:700}
 .board dd{margin:0}
-.btns{right:max(12px,var(--sa-right));bottom:calc(16px + var(--sa-bottom));display:flex;flex-direction:column;gap:8px;align-items:flex-end}
-.btns button{pointer-events:auto;font-size:13px;padding:8px 14px;background:rgba(31,22,16,.82)}
-@media (prefers-reduced-motion:reduce){#hint{transition:none}}
-/* Màn ngang trên điện thoại (thấp): hạ dòng hướng dẫn, thu gọn bảng bài học cho vừa chiều cao */
-#lesson{padding-top:var(--sa-top);padding-bottom:var(--sa-bottom);overflow-y:auto}
+.board button{font-size:15px;border-radius:999px;padding:10px 18px;background:var(--lacquer);border:1px solid var(--lacquer);color:#fff}
+
+@media (prefers-reduced-motion:reduce){#hint,#areaCard,#areaCard.on,#loading,#loading .fill{transition:none}}
+
+/* Màn ngang trên điện thoại (thấp) */
 @media (max-height:520px){
-  #hint{bottom:calc(20px + var(--sa-bottom))}
+  .chip{top:12px}
+  #btnCam{top:8px}
+  #hint{left:50%;right:auto;width:420px;max-width:calc(100% - var(--edge-left) - var(--edge-right) - 260px);transform:translateX(-50%);bottom:calc(var(--sa-bottom) + 12px);padding:8px 14px}
+  #joyGhost{left:calc(var(--sa-left) + 28px);bottom:calc(var(--sa-bottom) + 12px);width:100px;height:100px}
+  #joyGhost .knob{width:36px;height:36px}
+  .learn{height:44px;padding:0 18px 0 14px}
+  #areaCard{top:calc(var(--sa-top) + 22px);width:210px}
+  #areaCard .han{font-size:40px}
+  #areaCard .rule{width:140px}
+  #areaCard .name{font-size:18px}
+  #loading svg{height:170px}
+  #loading .mt-doc{display:none}
+  #loading .mt-ngang{display:block}
+  #loading main{top:calc(var(--sa-top) + 70px);gap:10px}
+  #loading .han{font-size:48px}
+  #loading .rule{width:170px}
+  #loading h1{font-size:22px}
+  #loading .progress{margin-top:22px}
   .board{padding:12px 16px;border-width:8px}
   .board .big{font-size:min(34vw,140px,24vh)}
   .board .py{margin-top:2px;font-size:20px}

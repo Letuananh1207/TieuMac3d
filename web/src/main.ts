@@ -11,13 +11,16 @@ import { PlayerController, type MoveInput } from './player/controller';
 import { SCENE, SCENE_FILE } from './scene/loadSpec';
 import { viewDistance } from './scene/farMountains';
 import { createStage } from './scene/renderer';
+import { mergeStatic } from './scene/merge';
 import { inRect, type Room } from './scene/rooms';
 import { buildWorld } from './scene/world';
 import { el } from './ui/dom';
 import { LearnButton } from './ui/learnButton';
+import { AreaBanner } from './ui/areaBanner';
 import { bindCameraButton, createHint, FpsCounter, NameTag, PlaceChip } from './ui/hud';
 import { LessonBoard } from './ui/lessonBoard';
-import { AreaTracker } from './zones/areaTracker';
+import { LoadingScreen, nextPaint } from './ui/loadingScreen';
+import { AreaEntryTracker, AreaTracker } from './zones/areaTracker';
 import { ZoneTracker } from './zones/zoneTracker';
 import { placeZones, ZONE_CONTENT, type Zone } from './zones/zones';
 
@@ -25,10 +28,20 @@ import { placeZones, ZONE_CONTENT, type Zone } from './zones/zones';
 const NAME_TAG_HEIGHT = 2.5;
 
 async function boot(): Promise<void> {
-  // Biển hiệu vẽ chữ Lora lên canvas, nên phải nạp font trước khi dựng cảnh.
-  await Promise.allSettled([document.fonts.load('700 72px Lora'), document.fonts.load('700 13px "Be Vietnam Pro"')]);
-
   const { spec } = SCENE;
+  // màn tải che tới khung hình đầu (R-MAN-2); tiến độ theo các bước dựng thật
+  const loading = new LoadingScreen(spec.site);
+  loading.progress(10);
+  // Biển hiệu, bảng phấn vẽ chữ lên canvas, nên phải nạp font trước khi dựng cảnh.
+  const hanText = [spec.site.han, ...spec.site.areas.map((a) => a.han ?? ''), ...ZONE_CONTENT.map((c) => c.lesson.han)].join('');
+  await Promise.allSettled([
+    document.fonts.load('700 72px Lora'),
+    document.fonts.load('700 13px "Be Vietnam Pro"'),
+    document.fonts.load('700 52px "Han Serif"', hanText || '字'),
+  ]);
+  loading.progress(30);
+  await nextPaint();
+
   const canvas = el<HTMLCanvasElement>('stage');
   const { renderer, scene, camera } = createStage(canvas, spec.camera.fov, viewDistance(spec));
   const colliders = new Colliders();
@@ -38,6 +51,7 @@ async function boot(): Promise<void> {
   const placed = placeZones(ZONE_CONTENT, world.zoneAnchors);
   const problems = [...SCENE.problems, ...placed.problems];
   if (problems.length) console.warn(`Đặc tả cảnh (${SCENE_FILE}):\n- ${problems.join('\n- ')}`);
+  loading.progress(80);
 
   // gấu khối (player/blockCharacter.ts) vẫn giữ làm bản dự phòng, cùng hợp đồng Character
   const character = createDiscipleCharacter();
@@ -54,6 +68,8 @@ async function boot(): Promise<void> {
     t.root.position.set(room.teacher.x, room.teacher.y, room.teacher.z);
     t.facing.rotation.y = room.teacher.rotY;
     scene.add(t.root);
+    // thầy không cử động → gộp ~25 khối thành vài khối theo màu (ngân sách ≤ 150 draw call)
+    mergeStatic(t.root, new Set());
   }
   const roomAt = (x: number, z: number): Room | undefined => world.rooms.find((r) => inRect(r.floor, x, z));
 
@@ -102,7 +118,7 @@ async function boot(): Promise<void> {
   bindCameraButton(() => orbit.toggleView());
 
   /* ---------- chip: tên nhà (khi đứng trong) ưu tiên hơn tên khu (R-HUD-1) ---------- */
-  const chip = new PlaceChip();
+  const chip = new PlaceChip(spec.site.name);
   const placeOf = new Map(ZONE_CONTENT.map((c) => [c.id, c.place]));
   const roomAreas = world.rooms.map((r) => ({
     name: placeOf.get(r.zoneId) ?? r.zoneId,
@@ -110,9 +126,12 @@ async function boot(): Promise<void> {
     to: [r.floor.maxX, r.floor.maxZ] as [number, number],
   }));
   const areas = new AreaTracker({ name: spec.site.name, areas: [...roomAreas, ...spec.site.areas] }, (label) => chip.set(label));
+  // thẻ tên khu chỉ theo khu của đặc tả (không theo nhà) → vào / ra nhà không hiện thẻ (R-HUD-3)
+  const banner = new AreaBanner();
+  const entries = new AreaEntryTracker(spec.site.areas, (a) => banner.show(a));
 
   /* ---------- vòng lặp ---------- */
-  const fps = new FpsCounter();
+  const fps = new FpsCounter(new URLSearchParams(location.search).has('debug'));
   const nameTag = new NameTag();
   const clock = new THREE.Clock();
   const input: MoveInput = { x: 0, y: 0 };
@@ -125,10 +144,12 @@ async function boot(): Promise<void> {
     input.y = joystick.y;
     keyboard.apply(input);
 
-    player.update(dt, input, orbit.yaw, paused);
+    // màn tải còn hiện (kể cả lúc mờ ra) → không điều khiển (R-MAN-2); chạm đã bị lớp màn tải chặn
+    player.update(dt, input, orbit.yaw, paused || loading.active);
     const pos = player.position;
     zones.update(pos);
     areas.update(pos);
+    entries.update(pos);
     world.update(dt, pos);
     const room = roomAt(pos.x, pos.z);
     orbit.update(camera, pos, dt, false, groundAt, room?.floor);
@@ -136,8 +157,13 @@ async function boot(): Promise<void> {
     nameTag.update(pos, camera, NAME_TAG_HEIGHT);
     learn.follow(zones.current ? anchorOf.get(zones.current.id) : undefined, camera);
     fps.tick(dt);
+    if (!firstFrame) {
+      firstFrame = true;
+      loading.done();
+    }
     requestAnimationFrame(tick);
   }
+  let firstFrame = false;
   requestAnimationFrame(tick);
 }
 

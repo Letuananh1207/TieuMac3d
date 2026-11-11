@@ -55,7 +55,7 @@ function chalkTex(han: string): THREE.CanvasTexture {
     g.fillStyle = CHALK;
     g.textAlign = 'center';
     g.textBaseline = 'middle';
-    g.font = '700 200px "Noto Serif CJK SC", "Noto Serif SC", "Songti SC", "SimSun", serif';
+    g.font = '700 200px "Han Serif", "Noto Serif CJK SC", "Noto Serif SC", "Songti SC", "SimSun", serif';
     g.fillText(han, w / 2, h / 2 + 8);
   });
 }

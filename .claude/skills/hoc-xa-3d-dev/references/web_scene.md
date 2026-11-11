@@ -81,7 +81,13 @@ Hằng số có tên ở đầu file; đổi hằng là đổi quy tắc `R-DIEU
 - Ẩn/hiện bằng thuộc tính `hidden`; CSS có `[hidden]{display:none !important}` (prototype từng bị
   `display:grid` đè lên `hidden`).
 - Chữ giao diện tiếng Việt viết thẳng trong HTML/TS (chưa có i18n). Font: Be Vietnam Pro (UI), Lora (tiêu đề,
-  biển), chữ Hán dùng font hệ thống — đều đóng gói qua `@fontsource`, không Google Fonts.
+  biển) qua `@fontsource`; chữ Hán = "Han Serif" (`--han`): Noto Serif SC 700 **cắt đúng các chữ app dùng** bằng
+  `scripts/subset-han.mjs` (quét chữ Hán trong `src/**/*.ts`, `*.html`, `design/scene/scene.json`) → `src/fonts/`
+  (file sinh, dev / build tự chạy). Chữ Hán mới viết trong code / đặc tả tự có; chữ gõ lúc chạy thì không.
+- HUD hướng C: token ở `:root` của `style.css` (theo `design/tokens/design_tokens.json`); kính sương = lớp `.frost`
+  (nền đủ đặc, blur chỉ là thêm — WebView không có `backdrop-filter` vẫn đọc được). Thẻ tên khu `ui/areaBanner.ts`
+  + `zones/AreaEntryTracker` (R-HUD-3, chỉ theo khu của đặc tả, không theo nhà); màn tải `ui/loadingScreen.ts`
+  (R-MAN-2, `main.ts` báo tiến độ theo bước dựng, `done()` sau khung đầu); fps chỉ khi `?debug`.
 - Mọi phần tử bám mép dùng `env(safe-area-inset-*)` (viewport có `viewport-fit=cover`).
 
 ## Thêm gói npm

@@ -1,0 +1,16 @@
+/* Sinh bởi web/scripts/subset-han.mjs — không sửa tay. Noto Serif SC 700 (SIL OFL 1.1), chỉ các chữ app dùng. */
+@font-face{font-family:'Han Serif';font-style:normal;font-weight:700;font-display:swap;src:url(./han-100.woff2) format('woff2');unicode-range:U+66f8}
+@font-face{font-family:'Han Serif';font-style:normal;font-weight:700;font-display:swap;src:url(./han-102.woff2) format('woff2');unicode-range:U+9580}
+@font-face{font-family:'Han Serif';font-style:normal;font-weight:700;font-display:swap;src:url(./han-104.woff2) format('woff2');unicode-range:U+9edb}
+@font-face{font-family:'Han Serif';font-style:normal;font-weight:700;font-display:swap;src:url(./han-109.woff2) format('woff2');unicode-range:U+574a,U+74e6}
+@font-face{font-family:'Han Serif';font-style:normal;font-weight:700;font-display:swap;src:url(./han-111.woff2) format('woff2');unicode-range:U+6d1e}
+@font-face{font-family:'Han Serif';font-style:normal;font-weight:700;font-display:swap;src:url(./han-112.woff2) format('woff2');unicode-range:U+5b97}
+@font-face{font-family:'Han Serif';font-style:normal;font-weight:700;font-display:swap;src:url(./han-114.woff2) format('woff2');unicode-range:U+7c89,U+9986}
+@font-face{font-family:'Han Serif';font-style:normal;font-weight:700;font-display:swap;src:url(./han-116.woff2) format('woff2');unicode-range:U+4e66,U+6df1,U+724c}
+@font-face{font-family:'Han Serif';font-style:normal;font-weight:700;font-display:swap;src:url(./han-117.woff2) format('woff2');unicode-range:U+4e50,U+5b57,U+5feb}
+@font-face{font-family:'Han Serif';font-style:normal;font-weight:700;font-display:swap;src:url(./han-118.woff2) format('woff2');unicode-range:U+56fe,U+5916,U+6587}
+@font-face{font-family:'Han Serif';font-style:normal;font-weight:700;font-display:swap;src:url(./han-119.woff2) format('woff2');unicode-range:U+6708}
+@font-face{font-family:'Han Serif';font-style:normal;font-weight:700;font-display:swap;src:url(./han-32.woff2) format('woff2');unicode-range:U+9060}
+@font-face{font-family:'Han Serif';font-style:normal;font-weight:700;font-display:swap;src:url(./han-56.woff2) format('woff2');unicode-range:U+7246}
+@font-face{font-family:'Han Serif';font-style:normal;font-weight:700;font-display:swap;src:url(./han-59.woff2) format('woff2');unicode-range:U+6df5}
+@font-face{font-family:'Han Serif';font-style:normal;font-weight:700;font-display:swap;src:url(./han-70.woff2) format('woff2');unicode-range:U+5fc4}

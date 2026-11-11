@@ -1,6 +1,6 @@
 # Phiếu: HUD làm lại toàn bộ (3 hướng để chọn)
 
-- Trạng thái: chờ thiết kế
+- Trạng thái: đã áp (2026-11-11.4)
 - Ghi chú 2026-11-11: **thẻ mời (thành phần 6) đã bỏ** — thay bằng nút học nổi trên vật trong nhà (canvas
   `TrongNha-doc` / `TrongNha-ngang`, kế hoạch `docs/tasks/2026-11-11-vao-trong-kien-truc.md`). Khi chốt HUD C, bỏ thẻ
   mời, giữ nút học.

@@ -167,7 +167,7 @@ const LISTS: Record<string, ItemParser> = {
   wallSegments: item({ from: XZ0, to: XZ0 }, { height: 0 }, all(axisAligned, positive('height'))),
   paths: item({ from: XZ0, to: XZ0, width: 0 }, { color: '#000000' }, positive('width')),
   gates: item({ id: '', x: 0, z: 0, width: 0, title: '' }, { rotY: 0, hanTitle: '', roofColor: '#000000' }, all(rot, positive('width'))),
-  'site.areas': item({ name: '', from: XZ0, to: XZ0 }),
+  'site.areas': item({ name: '', from: XZ0, to: XZ0 }, { han: '' }),
   water: item({ x: 0, z: 0 }, { r: 0, w: 0, d: 0, rotY: 0 }, all(waterShape, rot, positive('r', 'w', 'd'))),
   props: item({ kind: '', x: 0, z: 0 }, { rotY: 0, scale: 0 }, all(oneOf('kind', PROP_KINDS), rot, positive('scale'))),
   'trees.yard': item({ x: 0, z: 0, scale: 0 }, { kind: '' }, all(oneOf('kind', TREE_KINDS), positive('scale'))),

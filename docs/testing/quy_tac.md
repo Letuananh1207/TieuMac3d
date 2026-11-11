@@ -49,17 +49,19 @@ Code: [web/src/collision/colliders.ts](../../web/src/collision/colliders.ts)
 
 ## HUD — chữ trên màn
 
-Code: [web/src/zones/areaTracker.ts](../../web/src/zones/areaTracker.ts), [web/src/ui/hud.ts](../../web/src/ui/hud.ts)
+Code: [web/src/zones/areaTracker.ts](../../web/src/zones/areaTracker.ts), [web/src/ui/hud.ts](../../web/src/ui/hud.ts), [web/src/ui/areaBanner.ts](../../web/src/ui/areaBanner.ts)
 
 | Mã | Quy tắc | Ví dụ | Xác nhận | App |
 |---|---|---|---|---|
 | R-HUD-1 | Chip góc trên trái hiện "<tên nơi> · <tên khu>" khi nhân vật đứng trong một khu (hình chữ nhật đặt trong đặc tả cảnh); đứng ngoài mọi khu thì chỉ hiện "<tên nơi>". Hai khu chồng nhau thì lấy khu khai báo trước. Đứng trên nền một nhà vào được thì hiện "<tên nơi> · <tên nhà>" (ưu tiên hơn tên khu). Đổi chữ ngay khi bước qua ranh giới. | Tên nơi "Văn Uyên Tông", khu "Diễn Võ Trường" x 27…60, z −15…15: đứng ở (43; 0) → "Văn Uyên Tông · Diễn Võ Trường"; đứng ở (24; 0) (giữa hai tường, ngoài mọi khu) → "Văn Uyên Tông". Đứng trong giảng đường (0; −11) → "Văn Uyên Tông · Giảng đường". Chưa đặt khu nào: "Học xá · Sân chính" như cũ. | chờ | ok |
 | R-HUD-2 | Bước lên nền một nhà vào được thì mái và tường trước của nhà đó mờ còn 15 % trong 0,3 giây; bước ra thì hiện lại. Trong nhà, camera cách nhân vật tối đa 6 m và không nằm sau tường. | Đi qua cửa giảng đường vào trong → mái mờ, thấy bảng đen; zoom ra hết cỡ → camera dừng ở 6 m. Ra khỏi cửa → mái hiện lại. | chờ | ok |
+| R-HUD-3 | Khi nhân vật bước từ ngoài vào một khu, hoặc từ khu này sang khu khác, giữa màn hiện thẻ tên khu (chữ Hán + tên Việt; khu chưa có chữ Hán thì chỉ tên Việt): hiện dần 0,25 giây, giữ khoảng 2 giây rồi mờ dần 0,4 giây. Ra khỏi mọi khu thì không hiện. Bước vào / ra một nhà vào được thì không hiện (chỉ chip đổi chữ). Đang hiện mà vào khu khác thì thay chữ và đếm lại 2 giây. Lúc mở app, khu nơi nhân vật xuất phát không hiện thẻ. Thẻ không chặn chạm. | Đi từ (0; 30) Sơn Môn vào (0; 0) Ngoại Môn → hiện 外門 · Ngoại Môn; đi từ (0; 0) ra (24; 0) ngoài mọi khu → không hiện; từ sân Ngoại Môn đi vào giảng đường (0; −11) rồi ra lại → không hiện. | chờ | ok |
 
 ## MAN — màn hình
 
-Code: [app/lib/main.dart](../../app/lib/main.dart), [app/lib/scene/](../../app/lib/scene/), [web/src/style.css](../../web/src/style.css)
+Code: [app/lib/main.dart](../../app/lib/main.dart), [app/lib/scene/](../../app/lib/scene/), [web/src/style.css](../../web/src/style.css), [web/src/ui/loadingScreen.ts](../../web/src/ui/loadingScreen.ts)
 
 | Mã | Quy tắc | Ví dụ | Xác nhận | App |
 |---|---|---|---|---|
 | R-MAN-1 | App xoay tự do theo máy (dọc và ngang). Cảnh 3D phủ kín màn hình, kể cả dưới tai thỏ và thanh hệ thống; chữ và nút của HUD luôn nằm ngoài vùng bị che. | Máy có tai thỏ xoay ngang, tai thỏ bên trái rộng 40 px → chip "Học xá · Sân chính" cách mép trái ít nhất 40 px; cảnh vẫn vẽ tới sát mép. | đúng | ok · miễn test (chỉ kiểm được trên máy thật) |
+| R-MAN-2 | Mở app thì màn tải (tên tông môn + thanh tiến trình) che kín màn hình tới khi cảnh 3D vẽ xong khung hình đầu tiên, rồi mờ dần 0,4 giây. Người chơi không điều khiển được trong lúc màn tải còn hiện. Không có tiến độ thật thì thanh chạy tới 90 % rồi chờ khung hình đầu. | Mở app → thấy "Văn Uyên Tông", "Đang mở sơn môn… 62%"; kéo joystick lúc đó → nhân vật không đi; cảnh hiện → màn tải mờ đi, kéo được. | chờ | ok |

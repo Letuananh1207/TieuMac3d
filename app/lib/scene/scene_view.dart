@@ -99,7 +99,7 @@ class SceneErrorView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ColoredBox(
-      color: AppColors.sceneBackground,
+      color: AppColors.errorBackground,
       child: SafeArea(
         child: Center(
           child: Padding(

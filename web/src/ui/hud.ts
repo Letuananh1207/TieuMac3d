@@ -12,13 +12,18 @@ export function createHint(): () => void {
   };
 }
 
-/** Đếm fps, cập nhật mỗi 0.5 giây. */
+/** Đếm fps, cập nhật mỗi 0.5 giây; chỉ hiện ở chế độ gỡ lỗi (`?debug` trên địa chỉ trang). */
 export class FpsCounter {
   private readonly out = el('fps');
   private frames = 0;
   private t = 0;
 
+  constructor(private readonly enabled: boolean) {
+    this.out.hidden = !enabled;
+  }
+
   tick(dt: number): void {
+    if (!this.enabled) return;
     this.frames++;
     this.t += dt;
     if (this.t > 0.5) {
@@ -41,12 +46,21 @@ export class NameTag {
   }
 }
 
-/** Chip góc trên trái: tên nơi · tên khu đang đứng (R-HUD-1, chữ do `zones/AreaTracker` tính). */
+/**
+ * Chip góc trên trái: tên nơi · tên khu đang đứng (R-HUD-1, chữ do `zones/AreaTracker` tính).
+ * Phần " · <khu>" tô ngọc lục (HUD C) — tách theo tên nơi đứng đầu chữ.
+ */
 export class PlaceChip {
-  private readonly out = el('place');
+  private readonly place = el('place');
+  private readonly area = el('placeArea');
+
+  constructor(private readonly siteName: string) {}
 
   set(label: string): void {
-    this.out.textContent = label;
+    const head = `${this.siteName} · `;
+    const split = label.startsWith(head) && label.length > head.length;
+    this.place.textContent = split ? this.siteName : label;
+    this.area.textContent = split ? ` · ${label.slice(head.length)}` : '';
   }
 }
 
