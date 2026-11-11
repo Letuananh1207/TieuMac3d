@@ -1,60 +1,344 @@
 {
-  "$description": "Token giao diện Học Xá 3D, rút từ code ngày 2026-11-10. Mỗi token ghi chỗ định nghĩa trong code ở `code`. Đổi token: sửa ở đây (phiên thiết kế) → /ui-apply áp vào code.",
+  "$description": "Token giao diện Học Xá 3D. Rút từ code 2026-11-10; HUD làm lại theo hướng C (ngọc bích · lụa) ở 2026-11-11.3. Mỗi token ghi chỗ định nghĩa trong code ở `code` (token mới chưa có trong code: `code` = \"chưa có\"). Đổi token: sửa ở đây (phiên thiết kế) → /ui-apply áp vào code.",
   "color": {
-    "ink": { "value": "#1F1610", "note": "nền panel gỗ sẫm (thẻ mời)", "code": "web/src/style.css --ink" },
-    "ink-2": { "value": "#2C2018", "note": "nền nút phụ", "code": "web/src/style.css --ink-2" },
-    "paper": { "value": "#F3E6C8", "note": "chữ chính trên nền tối (giấy dó)", "code": "web/src/style.css --paper · app/lib/theme/app_colors.dart AppColors.paper" },
-    "gold": { "value": "#E0AE4C", "note": "viền, nhấn, nhãn tên, chữ Hán trên thẻ, pinyin", "code": "web/src/style.css --gold" },
-    "lacquer": { "value": "#B5352B", "note": "đỏ sơn mài — nút chính", "code": "web/src/style.css --lacquer · AppColors.lacquer" },
-    "muted": { "value": "#C4B08A", "note": "chữ phụ (fps)", "code": "web/src/style.css --muted" },
-    "scene-bg": { "value": "#141B2C", "note": "nền trang / nền khi cảnh chưa tải", "code": "web/src/style.css body · AppColors.sceneBackground" },
-    "board": { "value": "#2F3A2C", "note": "mặt bảng đen (bảng bài học)", "code": "web/src/style.css .board" },
-    "board-frame": { "value": "#5A3B22", "note": "khung gỗ bảng", "code": "web/src/style.css .board border" },
-    "board-chalk": { "value": "#F5F1E3", "note": "chữ Hán lớn trên bảng", "code": "web/src/style.css .board .big" },
-    "board-text": { "value": "#DFE6D6", "note": "chữ thường trên bảng", "code": "web/src/style.css .board p, dl" },
-    "label-text": { "value": "#2A1C0E", "note": "chữ trên nhãn vàng", "code": "web/src/style.css .label" },
-    "online": { "value": "#7BC86C", "note": "chấm trạng thái trên chip", "code": "web/src/style.css .dot" },
-    "hud-glass": { "value": "rgba(31,22,16,.82)", "note": "nền chip / nút nổi trên cảnh (có blur 6px)", "code": "web/src/style.css .chip, .btns button" },
-    "scrim": { "value": "rgba(14,10,7,.88)", "note": "lớp phủ sau bảng bài học", "code": "web/src/style.css #lesson" },
-    "gold-line": { "value": "rgba(224,174,76,.35)", "note": "viền chip; .4 cho thẻ mời", "code": "web/src/style.css .chip, #card" },
-    "paper-line": { "value": "rgba(243,230,200,.25)", "note": "viền nút phụ", "code": "web/src/style.css button" }
+    "ink": {
+      "value": "#1F1610",
+      "note": "nền panel gỗ sẫm (thẻ mời) — HUD cũ; còn dùng cho bảng bài học tới mốc 3",
+      "code": "web/src/style.css --ink"
+    },
+    "ink-2": {
+      "value": "#2C2018",
+      "note": "nền nút phụ — HUD cũ, bỏ khi áp 2026-11-11.3",
+      "code": "web/src/style.css --ink-2"
+    },
+    "paper": {
+      "value": "#F3E6C8",
+      "note": "chữ chính trên nền tối (giấy dó)",
+      "code": "web/src/style.css --paper · app/lib/theme/app_colors.dart AppColors.paper"
+    },
+    "gold": {
+      "value": "#D4A64A",
+      "note": "vàng kim — thống nhất với cảnh (buildingStyle.gold). HUD C: chấm vàng (hoạ tiết duy nhất), đầu thanh tiến trình. Đổi từ #E0AE4C ở 2026-11-11.3",
+      "code": "web/src/style.css --gold"
+    },
+    "lacquer": {
+      "value": "#A8322A",
+      "note": "son — thống nhất với cột son của cảnh. HUD C không dùng son cho nút (nút chính = jade); giữ cho bảng bài học / điểm nhấn. Đổi từ #B5352B ở 2026-11-11.3",
+      "code": "web/src/style.css --lacquer · AppColors.lacquer"
+    },
+    "muted": {
+      "value": "#C4B08A",
+      "note": "chữ phụ (fps) — HUD cũ, bỏ khi áp 2026-11-11.3",
+      "code": "web/src/style.css --muted"
+    },
+    "scene-bg": {
+      "value": "#E9EEEC",
+      "note": "nền trang / màn tải khi cảnh chưa hiện (sương sáng, hợp cảnh ban ngày). Đổi từ #141B2C ở 2026-11-11.3",
+      "code": "web/src/style.css body · AppColors.sceneBackground"
+    },
+    "board": {
+      "value": "#2F3A2C",
+      "note": "mặt bảng đen (bảng bài học)",
+      "code": "web/src/style.css .board"
+    },
+    "board-frame": {
+      "value": "#5A3B22",
+      "note": "khung gỗ bảng",
+      "code": "web/src/style.css .board border"
+    },
+    "board-chalk": {
+      "value": "#F5F1E3",
+      "note": "chữ Hán lớn trên bảng",
+      "code": "web/src/style.css .board .big"
+    },
+    "board-text": {
+      "value": "#DFE6D6",
+      "note": "chữ thường trên bảng",
+      "code": "web/src/style.css .board p, dl"
+    },
+    "label-text": {
+      "value": "#2A1C0E",
+      "note": "chữ trên nhãn vàng — HUD cũ, bỏ khi áp 2026-11-11.3",
+      "code": "web/src/style.css .label"
+    },
+    "online": {
+      "value": "#7BC86C",
+      "note": "chấm trạng thái trên chip — HUD cũ, bỏ khi áp 2026-11-11.3",
+      "code": "web/src/style.css .dot"
+    },
+    "hud-glass": {
+      "value": "rgba(31,22,16,.82)",
+      "note": "nền chip / nút nổi trên cảnh (có blur 6px) — HUD cũ, bỏ khi áp 2026-11-11.3",
+      "code": "web/src/style.css .chip, .btns button"
+    },
+    "scrim": {
+      "value": "rgba(14,10,7,.88)",
+      "note": "lớp phủ sau bảng bài học",
+      "code": "web/src/style.css #lesson"
+    },
+    "gold-line": {
+      "value": "rgba(224,174,76,.35)",
+      "note": "viền chip; .4 cho thẻ mời — HUD cũ, bỏ khi áp 2026-11-11.3",
+      "code": "web/src/style.css .chip, #card"
+    },
+    "paper-line": {
+      "value": "rgba(243,230,200,.25)",
+      "note": "viền nút phụ — HUD cũ, bỏ khi áp 2026-11-11.3",
+      "code": "web/src/style.css button"
+    },
+    "slate": {
+      "value": "#24323A",
+      "note": "chữ chính của HUD C (lam xám sẫm) — trên kính mờ ≥ 9 : 1",
+      "code": "chưa có"
+    },
+    "jade": {
+      "value": "#2B5446",
+      "note": "ngọc lục (= mái lưu ly cảnh): nút chính, núm joystick, tên khu trên chip, chữ Hán trên thẻ, eyebrow",
+      "code": "chưa có"
+    },
+    "on-jade": {
+      "value": "#FFFFFF",
+      "note": "chữ trên nút ngọc lục (8,4 : 1)",
+      "code": "chưa có"
+    },
+    "frost": {
+      "value": "rgba(244,247,246,.82)",
+      "note": "nền kính mờ của chip, nút nổi, dòng hướng dẫn (.84), nhãn tên (.88); kèm backdrop blur 10px",
+      "code": "chưa có"
+    },
+    "frost-strong": {
+      "value": "rgba(244,247,246,.86)",
+      "note": "nền thẻ mời, thẻ tên khu (.80); blur 14px",
+      "code": "chưa có"
+    },
+    "frost-weak": {
+      "value": "rgba(244,247,246,.45)",
+      "note": "vòng joystick gợi ý (.38 khi đang giữ); blur 6px",
+      "code": "chưa có"
+    },
+    "frost-line": {
+      "value": "rgba(255,255,255,.95)",
+      "note": "viền trong 1px mọi thành phần kính",
+      "code": "chưa có"
+    },
+    "frost-outline": {
+      "value": "rgba(36,50,58,.16)",
+      "note": "viền ngoài 1px (outline) để kính tách khỏi nền trắng (.14 thẻ, .2–.22 joystick)",
+      "code": "chưa có"
+    },
+    "secondary-bg": {
+      "value": "rgba(255,255,255,.55)",
+      "note": "nền nút phụ (\"Để sau\"); viền rgba(36,50,58,.22)",
+      "code": "chưa có"
+    },
+    "mist": {
+      "value": "#E9EEEC",
+      "note": "nền màn tải",
+      "code": "chưa có"
+    },
+    "mist-far": {
+      "value": "#D3DDDA",
+      "note": "núi xa lớp sau trên màn tải",
+      "code": "chưa có"
+    },
+    "mist-near": {
+      "value": "#BFCFCB",
+      "note": "núi lớp trước trên màn tải; mây #F4F7F6",
+      "code": "chưa có"
+    }
   },
   "font": {
-    "ui": { "value": "Be Vietnam Pro", "weights": [500, 700], "note": "chữ giao diện", "code": "web/src/style.css --ui (@fontsource/be-vietnam-pro)" },
-    "display": { "value": "Lora", "weights": [700], "note": "tiêu đề, pinyin, biển hiệu 3D", "code": "web/src/style.css --display (@fontsource/lora)" },
-    "han": { "value": "Noto Serif SC", "weights": [700], "note": "chữ Hán; trong app dùng font hệ thống (Noto Serif CJK / Songti)", "code": "web/src/style.css --han" }
+    "ui": {
+      "value": "Be Vietnam Pro",
+      "weights": [
+        500,
+        700
+      ],
+      "note": "chữ giao diện",
+      "code": "web/src/style.css --ui (@fontsource/be-vietnam-pro)"
+    },
+    "display": {
+      "value": "Lora",
+      "weights": [
+        700
+      ],
+      "note": "tiêu đề, pinyin, biển hiệu 3D",
+      "code": "web/src/style.css --display (@fontsource/lora)"
+    },
+    "han": {
+      "value": "Noto Serif SC",
+      "weights": [
+        700
+      ],
+      "note": "chữ Hán; trong app dùng font hệ thống (Noto Serif CJK / Songti)",
+      "code": "web/src/style.css --han"
+    }
   },
   "fontSize": {
-    "eyebrow": { "value": 11, "note": "chữ hoa, giãn .12em, đậm, màu gold", "code": "#card .eyebrow" },
-    "label": { "value": 12, "code": ".label" },
-    "hud": { "value": 13, "note": "chip, dòng hướng dẫn, nút nổi", "code": ".chip, #hint, .btns button" },
-    "detail": { "value": 14, "code": ".board dl" },
-    "body": { "value": 15, "note": "nút, đoạn văn", "code": "button, .board p" },
-    "card-title": { "value": 17, "code": "#card h2" },
-    "accent": { "value": 22, "note": "pinyin, chữ Hán trong tiêu đề thẻ", "code": ".board .py, #card h2 .han" },
-    "han-hero": { "value": 140, "note": "chữ Hán lớn trên bảng (tối đa; co theo 34vw / 24vh)", "code": ".board .big" }
+    "eyebrow": {
+      "value": 11,
+      "note": "chữ hoa, giãn .12em, đậm, màu gold",
+      "code": "#card .eyebrow"
+    },
+    "label": {
+      "value": 12,
+      "code": ".label"
+    },
+    "hud": {
+      "value": 13,
+      "note": "chip, dòng hướng dẫn, nút nổi",
+      "code": ".chip, #hint, .btns button"
+    },
+    "detail": {
+      "value": 14,
+      "code": ".board dl"
+    },
+    "body": {
+      "value": 15,
+      "note": "nút, đoạn văn",
+      "code": "button, .board p"
+    },
+    "card-title": {
+      "value": 18,
+      "code": "#card h2",
+      "note": "dọc 18 · ngang 17 (2026-11-11.3, cũ 17)"
+    },
+    "accent": {
+      "value": 22,
+      "note": "pinyin; chữ Hán trong tiêu đề thẻ: dọc 24 · ngang 22 (2026-11-11.3)",
+      "code": ".board .py, #card h2 .han"
+    },
+    "han-hero": {
+      "value": 140,
+      "note": "chữ Hán lớn trên bảng (tối đa; co theo 34vw / 24vh)",
+      "code": ".board .big"
+    },
+    "area-han": {
+      "value": 52,
+      "note": "chữ Hán thẻ tên khu: dọc 52 · ngang 40; giãn .14em; jade",
+      "code": "chưa có"
+    },
+    "area-name": {
+      "value": 20,
+      "note": "tên Việt thẻ tên khu (Lora 700): dọc 20 · ngang 18",
+      "code": "chưa có"
+    },
+    "loading-han": {
+      "value": 56,
+      "note": "文淵宗 màn tải: dọc 56 · ngang 48; giãn .16em",
+      "code": "chưa có"
+    },
+    "loading-title": {
+      "value": 24,
+      "note": "\"Văn Uyên Tông\" màn tải (Lora 700): dọc 24 · ngang 22",
+      "code": "chưa có"
+    }
   },
   "space": {
-    "xs": { "value": 4, "code": ".board dl gap" },
-    "sm": { "value": 8, "code": ".chip gap, .btns gap" },
-    "md": { "value": 12, "note": "lề HUD tối thiểu với mép", "code": ".top left/right" },
-    "lg": { "value": 16, "note": "lề an toàn bên cạnh, padding thẻ", "code": "#card padding, #lesson padding" },
-    "xl": { "value": 22, "code": ".board padding" }
+    "xs": {
+      "value": 4,
+      "code": ".board dl gap"
+    },
+    "sm": {
+      "value": 8,
+      "code": ".chip gap, .btns gap"
+    },
+    "md": {
+      "value": 12,
+      "note": "lề HUD tối thiểu với mép",
+      "code": ".top left/right"
+    },
+    "lg": {
+      "value": 16,
+      "note": "lề an toàn bên cạnh, padding thẻ",
+      "code": "#card padding, #lesson padding"
+    },
+    "xl": {
+      "value": 22,
+      "code": ".board padding"
+    }
   },
   "radius": {
-    "pill": { "value": 999, "note": "chip, nút, nhãn tên", "code": ".chip, button, .label" },
-    "card": { "value": 14, "code": "#card" },
-    "hint": { "value": 12, "code": "#hint" },
-    "board": { "value": 6, "code": ".board" }
+    "pill": {
+      "value": 999,
+      "note": "chip, nút, nhãn tên",
+      "code": ".chip, button, .label"
+    },
+    "card": {
+      "value": 16,
+      "code": "#card",
+      "note": "thẻ mời, thẻ tên khu (cũ 14)"
+    },
+    "hint": {
+      "value": 12,
+      "code": "#hint"
+    },
+    "board": {
+      "value": 6,
+      "code": ".board"
+    },
+    "button": {
+      "value": 12,
+      "note": "nút chính + nút phụ trên thẻ (HUD C); chip, nút nổi, nhãn tên vẫn pill",
+      "code": "chưa có"
+    }
   },
   "shadow": {
-    "card": { "value": "0 10px 30px rgba(0,0,0,.45)", "code": "#card" },
-    "board": { "value": "0 20px 50px rgba(0,0,0,.6)", "code": ".board" }
+    "card": {
+      "value": "0 12px 32px rgba(36,50,58,.22)",
+      "code": "#card",
+      "note": "thẻ mời (thẻ tên khu .2) — cũ 0 10px 30px rgba(0,0,0,.45)"
+    },
+    "board": {
+      "value": "0 20px 50px rgba(0,0,0,.6)",
+      "code": ".board"
+    },
+    "hud": {
+      "value": "0 4px 14px rgba(36,50,58,.18)",
+      "note": "chip, nút nổi",
+      "code": "chưa có"
+    },
+    "primary": {
+      "value": "inset 0 -2px 0 rgba(0,0,0,.18), 0 4px 12px rgba(43,84,70,.3)",
+      "note": "nút chính ngọc lục",
+      "code": "chưa có"
+    }
   },
   "layout": {
-    "safe-area": { "value": "max(env(safe-area-inset-*), --inset-*)", "note": "mọi phần tử bám mép phải cộng vùng bị che; xoay tự do dọc + ngang", "code": "web/src/style.css --sa-*, docs/bridge.md" },
-    "touch-target": { "value": 44, "note": "tối thiểu cho nút chạm" },
-    "frame-portrait": { "value": "390x844", "note": "khổ vẽ màn dọc" },
-    "frame-landscape": { "value": "844x390", "note": "khổ vẽ màn ngang" }
+    "safe-area": {
+      "value": "max(env(safe-area-inset-*), --inset-*)",
+      "note": "mọi phần tử bám mép phải cộng vùng bị che; xoay tự do dọc + ngang",
+      "code": "web/src/style.css --sa-*, docs/bridge.md"
+    },
+    "touch-target": {
+      "value": 44,
+      "note": "tối thiểu cho nút chạm"
+    },
+    "frame-portrait": {
+      "value": "390x844",
+      "note": "khổ vẽ màn dọc"
+    },
+    "frame-landscape": {
+      "value": "844x390",
+      "note": "khổ vẽ màn ngang"
+    },
+    "hud-inset": {
+      "value": "dọc: trên 12 + safe-area, trái/phải 16 · ngang: trái/phải 12 + safe-area (lề hai bên bằng nhau), trên 12",
+      "note": "HUD C"
+    }
+  },
+  "blur": {
+    "hud": {
+      "value": 10,
+      "note": "chip, nút nổi, dòng hướng dẫn"
+    },
+    "card": {
+      "value": 14,
+      "note": "thẻ mời, thẻ tên khu"
+    },
+    "joystick": {
+      "value": 6
+    },
+    "$note": "backdrop-filter; máy yếu / WebView không hỗ trợ thì bỏ blur, giữ nguyên nền frost (đủ tương phản không cần blur)"
   }
 }

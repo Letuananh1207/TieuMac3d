@@ -17,6 +17,27 @@
       "h": 1040,
       "title": "Bảng token (rút từ code 2026-11-10)"
     },
+    "BaiHoc-doc.dc.html": {
+      "x": 0,
+      "y": 1400,
+      "w": 390,
+      "h": 844,
+      "title": "Bài học · dọc 390×844 · chữ 快"
+    },
+    "BaiHoc-doc-chu-dai.dc.html": {
+      "x": 470,
+      "y": 1400,
+      "w": 390,
+      "h": 844,
+      "title": "Bài học · dọc · chữ 書 (từ dài xuống dòng)"
+    },
+    "BaiHoc-ngang.dc.html": {
+      "x": 940,
+      "y": 1400,
+      "w": 844,
+      "h": 390,
+      "title": "Bài học · ngang 844×390 · chữ 快"
+    },
     "TongMon-ban-do.dc.html": {
       "x": 0,
       "y": 2840,
@@ -37,13 +58,104 @@
       "w": 1600,
       "h": 1100,
       "title": "Phong cách 3D: cây, nhân vật, đồ trang trí, bảng màu"
+    },
+    "HUD-A-giay-do.dc.html": {
+      "x": 0,
+      "y": 5860,
+      "w": 390,
+      "h": 844,
+      "title": "HUD hướng A · Giấy dó · mực tàu (水墨)"
+    },
+    "HUD-B-go-son.dc.html": {
+      "x": 470,
+      "y": 5860,
+      "w": 390,
+      "h": 844,
+      "title": "HUD hướng B · Gỗ son · vàng kim (朱漆描金)"
+    },
+    "HUD-C-ngoc-bich.dc.html": {
+      "x": 940,
+      "y": 5860,
+      "w": 390,
+      "h": 844,
+      "title": "HUD hướng C · Ngọc bích · lụa (青玉)"
+    },
+    "HUD-doc.dc.html": {
+      "x": 0,
+      "y": 7070,
+      "w": 390,
+      "h": 844,
+      "title": "HUD C · dọc · Ngoại Môn, thẻ mời, lần đầu (hướng dẫn)"
+    },
+    "HUD-doc-vao-khu.dc.html": {
+      "x": 470,
+      "y": 7070,
+      "w": 390,
+      "h": 844,
+      "title": "HUD C · dọc · vừa vào khu: thẻ tên khu + joystick đang giữ"
+    },
+    "HUD-doc-the-dai.dc.html": {
+      "x": 940,
+      "y": 7070,
+      "w": 390,
+      "h": 844,
+      "title": "HUD C · dọc · tiêu đề thẻ 2 dòng + tên khu dài nhất"
+    },
+    "ManTai-doc.dc.html": {
+      "x": 1410,
+      "y": 7070,
+      "w": 390,
+      "h": 844,
+      "title": "Màn tải · dọc"
+    },
+    "HUD-thanh-phan.dc.html": {
+      "x": 1880,
+      "y": 7070,
+      "w": 844,
+      "h": 520,
+      "title": "HUD C · thành phần + trạng thái (trên trời sáng / tường vôi)"
+    },
+    "HUD-ngang.dc.html": {
+      "x": 0,
+      "y": 8034,
+      "w": 844,
+      "h": 390,
+      "title": "HUD C · ngang · tai thỏ trái · Ngoại Môn, thẻ mời"
+    },
+    "HUD-ngang-vao-khu.dc.html": {
+      "x": 924,
+      "y": 8034,
+      "w": 844,
+      "h": 390,
+      "title": "HUD C · ngang · tai thỏ phải · vừa vào khu"
+    },
+    "ManTai-ngang.dc.html": {
+      "x": 1848,
+      "y": 8034,
+      "w": 844,
+      "h": 390,
+      "title": "Màn tải · ngang"
     }
   },
   "order": [
     "Main.dc.html",
+    "BaiHoc-doc.dc.html",
+    "BaiHoc-doc-chu-dai.dc.html",
+    "BaiHoc-ngang.dc.html",
     "TongMon-ban-do.dc.html",
     "PhongCach-KienTruc.dc.html",
-    "PhongCach-CayNhanVat.dc.html"
+    "PhongCach-CayNhanVat.dc.html",
+    "HUD-A-giay-do.dc.html",
+    "HUD-B-go-son.dc.html",
+    "HUD-C-ngoc-bich.dc.html",
+    "HUD-doc.dc.html",
+    "HUD-doc-vao-khu.dc.html",
+    "HUD-doc-the-dai.dc.html",
+    "ManTai-doc.dc.html",
+    "HUD-thanh-phan.dc.html",
+    "HUD-ngang.dc.html",
+    "HUD-ngang-vao-khu.dc.html",
+    "ManTai-ngang.dc.html"
   ],
   "notes": {
     "cach-dung": {
@@ -53,6 +165,21 @@
       "size": "m",
       "fill": "orange",
       "text": "Thiết kế trước cho phần mới.\n\nCảnh 3D và HUD hiện có vẫn theo code. Màn mới vẽ ở đây theo phiếu trong repo (docs/phieu_thiet_ke/), khổ 390×844 dọc và 844×390 ngang (app xoay tự do).\n\nMàu, chữ, bo góc: dùng đúng bảng token bên trái."
+    },
+    "tieu-de-bai-hoc": {
+      "x": 0,
+      "y": 1160,
+      "text": "Màn bài học (phiếu 2026-11-10, mốc 3)",
+      "kind": "title1",
+      "maxW": 1784
+    },
+    "ghi-chu-bai-hoc": {
+      "x": 940,
+      "y": 1870,
+      "w": 420,
+      "size": "m",
+      "fill": "teal",
+      "text": "Màn bài học — Flutter, che toàn bộ cảnh 3D.\n\n• Nền gỗ sẫm (ink) + bảng đen khung gỗ, giữ cảm giác bản HTML.\n• Dọc: nút \"Ra sân\" rộng hết bề ngang, cao 52, sát đáy để ngón cái với tới.\n• Ngang: chữ lớn bên trái, thông tin bên phải; nút ở góc dưới bên phải. Lề hai bên bằng nhau vì tai thỏ có thể ở trái hoặc phải.\n• Vạch kẻ sọc vàng = vùng an toàn (chỉ để đọc bản vẽ, không làm trong app).\n• Nhân vật đứng yên khi màn mở; đóng thì về đúng chỗ cũ (R-VUNG-3)."
     },
     "tieu-de-tong-mon": {
       "x": 0,
@@ -83,6 +210,36 @@
       "size": "m",
       "fill": "teal",
       "text": "Đề xuất, chưa chốt.\n\nMiễn phí: không mua / tải gói ngoài. Phiên code dựng lại nhà, cây, nhân vật bằng hình khối theo các bản mẫu này (low-poly, màu phẳng, không texture ảnh), vẫn ≤ 150 draw call.\n\nBảng màu cảnh áp ngay vào scene.json để xem trên Canvas 3D."
+    },
+    "tieu-de-hud": {
+      "x": 0,
+      "y": 5620,
+      "text": "HUD làm lại — 3 hướng (phiếu 2026-11-11, chọn một)",
+      "kind": "title1",
+      "maxW": 1840
+    },
+    "ghi-chu-hud": {
+      "x": 1410,
+      "y": 5860,
+      "w": 420,
+      "size": "m",
+      "fill": "teal",
+      "text": "ĐÃ CHỌN C (xem hàng dưới).\n\nCùng một màn mẫu: Ngoại Môn, đứng trước giảng đường, thẻ mời đang hiện (dọc 390×844).\n\nMỗi hướng là MỘT chất liệu cho cả bộ: chip tên khu, nút góc nhìn, thẻ mời, nhãn tên, dòng hướng dẫn, joystick, fps.\n\nA — giấy ngà, viền nét bút, nút chính là dấu ấn son.\nB — gỗ sẫm viền vàng mảnh, mây lành ở góc thẻ.\nC — kính mờ lạnh, đường mảnh, một chấm vàng.\n\nChọn một hướng → vẽ đủ dọc + ngang, thẻ tên khu, màn tải.\n\nSọc chéo = vùng an toàn (chỉ để đọc bản vẽ). Nền = ảnh Canvas 3D giữ chỗ."
+    },
+    "tieu-de-hud-c": {
+      "x": 0,
+      "y": 6830,
+      "text": "HUD hướng C (ngọc bích · lụa) — đủ thành phần, dọc + ngang",
+      "kind": "title1",
+      "maxW": 2692
+    },
+    "ghi-chu-hud-c": {
+      "x": 2804,
+      "y": 7070,
+      "w": 420,
+      "size": "m",
+      "fill": "teal",
+      "text": "Đã chọn hướng C.\n\nMột chất liệu: kính mờ trắng sương rgba(244,247,246,.82) + blur, viền trong 1 px trắng, viền ngoài 1 px lam xám 16 %. Chữ lam xám #24323A, nhấn ngọc lục #2B5446, chấm vàng #D4A64A là hoạ tiết duy nhất.\n\nChữ Hán dùng Noto Serif SC (không thêm font thư pháp).\n\nThẻ tên khu: hiện giữa màn ~2 s khi bước qua ranh giới khu (R-HUD-1), mờ dần 0,4 s; không chặn chạm.\n\nNgang: lề trái = lề phải (tai thỏ có thể ở hai bên); thẻ mời ở nửa phải, không che nhân vật.\n\nSọc chéo = vùng an toàn, chỉ để đọc bản vẽ."
     }
   },
   "designSystems": []

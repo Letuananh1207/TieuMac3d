@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Màn tải ngang</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;700&amp;family=Lora:wght@700&amp;family=Noto+Serif+SC:wght@700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2B5446}a:hover{color:#24323A}
+</style>
+</helmet>
+<div style="position: relative; width: 844px; height: 390px; overflow: hidden; background: #E9EEEC; font-family: 'Be Vietnam Pro', system-ui, sans-serif; color: #24323A">
+
+  <svg aria-hidden="true" width="844" height="170" viewBox="0 0 844 170" preserveAspectRatio="none" style="position: absolute; left: 0; bottom: 0">
+    <path d="M0 80 L70 50 L140 70 L230 20 L300 58 L370 40 L450 72 L540 16 L620 60 L700 36 L780 62 L844 44 L844 170 L0 170 Z" fill="#D3DDDA"></path>
+    <path d="M0 120 L90 92 L170 112 L260 80 L350 110 L430 94 L520 120 L610 96 L700 116 L780 100 L844 112 L844 170 L0 170 Z" fill="#BFCFCB"></path>
+    <path d="M0 150 C 120 136, 240 158, 380 144 S 640 132, 844 148 L844 170 L0 170 Z" fill="#F4F7F6"></path>
+  </svg>
+
+  <div aria-hidden="true" style="position: absolute; left: 0; top: 0; width: 47px; height: 390px; border-right: 1px dashed rgba(31,22,16,.3); background: repeating-linear-gradient(135deg, rgba(31,22,16,.06) 0 6px, transparent 6px 12px)"></div>
+  <div aria-hidden="true" style="position: absolute; right: 0; top: 0; width: 47px; height: 390px; border-left: 1px dashed rgba(31,22,16,.3); background: repeating-linear-gradient(135deg, rgba(31,22,16,.06) 0 6px, transparent 6px 12px)"></div>
+
+  <main style="position: absolute; left: 0; right: 0; top: 70px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center">
+    <div lang="zh" style="font-family: 'Noto Serif SC', serif; font-weight: 700; font-size: 48px; line-height: 1.05; letter-spacing: .16em; padding-left: .16em; color: #2B5446">文淵宗</div>
+    <div aria-hidden="true" style="display: flex; align-items: center; gap: 8px; width: 170px">
+      <span style="flex: 1 1 auto; height: 1px; background: rgba(36,50,58,.3)"></span>
+      <span style="width: 5px; height: 5px; border-radius: 50%; background: #D4A64A"></span>
+      <span style="flex: 1 1 auto; height: 1px; background: rgba(36,50,58,.3)"></span>
+    </div>
+    <h1 style="margin: 0; font-family: 'Lora', Georgia, serif; font-weight: 700; font-size: 22px; color: #24323A">Văn Uyên Tông</h1>
+
+    <div role="progressbar" aria-label="Đang tải cảnh" aria-valuemin="0" aria-valuemax="100" aria-valuenow="62" style="margin-top: 22px; display: flex; flex-direction: column; align-items: center; gap: 10px">
+      <div style="position: relative; width: 200px; height: 2px; background: rgba(36,50,58,.15); border-radius: 2px">
+        <div style="position: absolute; left: 0; top: 0; width: 124px; height: 2px; background: #2B5446; border-radius: 2px"></div>
+        <div style="position: absolute; left: 120px; top: -3px; width: 8px; height: 8px; border-radius: 50%; background: #D4A64A; box-shadow: 0 0 0 3px rgba(212,166,74,.25)"></div>
+      </div>
+      <div style="font-size: 13px; font-weight: 500; color: #24323A">Đang mở sơn môn… 62%</div>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":844,"height":390}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

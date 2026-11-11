@@ -1,12 +1,47 @@
 {
   "@@locale": "vi",
   "siteName": "Văn Uyên Tông",
-  "@siteName": { "description": "Tên nơi trên chip HUD (scene.json site.name), chữ Hán 文淵宗 trên biển cổng sơn môn" },
+  "@siteName": {
+    "description": "Tên nơi trên chip HUD (scene.json site.name), chữ Hán 文淵宗 trên biển cổng sơn môn"
+  },
   "areaNgoaiMon": "Ngoại Môn",
   "areaSonMon": "Sơn Môn",
   "areaDienVoTruong": "Diễn Võ Trường",
   "areaDeTuCuXa": "Đệ Tử Cư Xá",
   "areaLinhDuocVien": "Linh Dược Viên",
   "areaLuyenDanPhong": "Luyện Đan Phòng",
-  "@areaNgoaiMon": { "description": "Tên khu trên chip HUD: \"<tên nơi> · <tên khu>\" (R-HUD-1); nguồn thật là scene.json site.areas" }
+  "@areaNgoaiMon": {
+    "description": "Tên khu trên chip HUD: \"<tên nơi> · <tên khu>\" (R-HUD-1); nguồn thật là scene.json site.areas"
+  },
+  "siteHan": "文淵宗",
+  "@siteHan": {
+    "description": "Chữ Hán tên nơi trên màn tải"
+  },
+  "areaHanNgoaiMon": "外門",
+  "areaHanSonMon": "山門",
+  "areaHanDienVoTruong": "演武場",
+  "areaHanDeTuCuXa": "弟子居",
+  "areaHanLinhDuocVien": "靈藥園",
+  "areaHanLuyenDanPhong": "煉丹房",
+  "@areaHanNgoaiMon": {
+    "description": "Chữ Hán trên thẻ tên khu (hiện ~2 s khi bước vào khu). Nguồn: design/scene/tong_mon.md"
+  },
+  "loadingStatus": "Đang mở sơn môn… {percent}%",
+  "@loadingStatus": {
+    "description": "Dòng dưới thanh tiến trình màn tải",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "camNear": "Góc nhìn: gần",
+  "camYard": "Góc nhìn: cả sân",
+  "@camNear": {
+    "description": "Nút góc nhìn (đã có trong web/index.html, ghi lại cho đủ)"
+  },
+  "joyHint": "kéo để đi",
+  "@joyHint": {
+    "description": "Chữ trong vòng joystick gợi ý khi chưa chạm"
+  }
 }

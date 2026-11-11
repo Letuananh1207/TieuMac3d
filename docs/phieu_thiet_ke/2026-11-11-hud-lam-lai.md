@@ -1,6 +1,7 @@
 # Phiếu: HUD làm lại toàn bộ (3 hướng để chọn)
 
 - Trạng thái: chờ thiết kế
+- Đã vẽ: 2026-11-11.3 (chọn hướng C — ngọc bích · lụa)
 - Đợi bởi: kế hoạch `docs/tasks/2026-11-11-nang-cap-do-hoa.md` (C1, C2)
 - Liên quan: phiếu `2026-11-10-man-bai-hoc.md` (màn bài học vẽ cùng chất liệu với hướng được chọn)
 
