@@ -163,6 +163,13 @@
       "w": 1440,
       "h": 780,
       "title": "Nhân vật chính · bộ ảnh 4 góc + cận mặt (phiếu 2026-11-12)"
+    },
+    "TieuMac-bo-anh.dc.html": {
+      "x": 0,
+      "y": 11280,
+      "w": 1440,
+      "h": 780,
+      "title": "Tiểu Mặc 小墨 · bộ ảnh 4 góc + cận mặt (phiếu 2026-11-12, đợt 2)"
     }
   },
   "order": [
@@ -187,7 +194,8 @@
     "NoiThat-mat-bang.dc.html",
     "TrongNha-doc.dc.html",
     "TrongNha-ngang.dc.html",
-    "NhanVat-bo-anh.dc.html"
+    "NhanVat-bo-anh.dc.html",
+    "TieuMac-bo-anh.dc.html"
   ],
   "notes": {
     "cach-dung": {
@@ -302,6 +310,21 @@
       "size": "s",
       "fill": "teal",
       "text": "Câu lệnh Gemini — đính kèm ảnh gốc nhan-vat.webp, làm cả 5 ảnh trong CÙNG một cuộc trò chuyện.\n\nCHUNG (dán trước mỗi góc):\nUse the attached character as the exact design reference (same proportions, colors, outfit). Render it as a 3D vinyl toy figure, soft even studio lighting, subtle shading, NO outlines, NO cel shading, NO line art. Orthographic camera at chest height, no perspective. A-pose: arms angled down about 35 degrees, sleeves not touching the body, feet slightly apart, both boots visible. Plain flat light grey background #DDDDDD, no gradient, no floor shadow, no text, no logo, no watermark, no star icon. Square 1024x1024, character centered, top of hair bun at 10% from the top, soles at 90%. Chibi, head about 1/3 of height. Pale blue robe #C9D6E3 with blue trim #4D6DB2 on collar, cuffs, front edge and hem; white inner collar; cross collar with the character's LEFT flap over the RIGHT; dark navy sash #33456D; round jade disc #8CCB9E on a blue cord at the character's left hip; black hair in a top bun, blue hair tie, gold hairpin #E2B24C through the bun; dark navy boots with white soles; neutral face, eyes open.\n\n1 TRƯỚC: Front view, facing the camera.\n2 TRÁI: Exact 90-degree side profile showing the character's LEFT side; the character faces the LEFT edge of the image; jade disc visible.\n3 SAU: Back view: hair bun, nape, back of sash, plain robe back; no crossing collar, no jade disc in front.\n4 PHẢI: Exact 90-degree side profile showing the character's RIGHT side; the character faces the RIGHT edge of the image; jade disc hidden.\n5 MẶT: Close-up of head and neck, front view, same render style and background.\n\nMẹo: sau ảnh 1 ưng ý, đính kèm luôn ảnh 1 khi xin các góc sau (\"same figure as this image\"). Lưu PNG, thả vào design/models/anh/ (tên tuỳ) rồi báo — Claude chuẩn hoá nền, căn giữa, cùng đường đất."
+    },
+    "tieu-de-tieu-mac": {
+      "x": 0,
+      "y": 11040,
+      "text": "NPC Tiểu Mặc — ảnh nhiều góc cho Hunyuan3D",
+      "kind": "title1",
+      "maxW": 2060
+    },
+    "tieu-mac-ghi-chu": {
+      "x": 1520,
+      "y": 11280,
+      "w": 440,
+      "size": "m",
+      "fill": "teal",
+      "text": "Theo tờ thiết kế 小墨 (design/models/anh/tieu-mac-thiet-ke.webp), kiểu tóc A \"đuôi ngựa cao, dây đỏ\" — kiểu mặc định của tờ.\n\nĐầu vào dựng model: tư thế chữ A, KHÔNG chắp tay chào (tay chắp làm AI dính tay vào ngực). Mặt mở mắt, cười nhẹ; biểu cảm khác (chào, dính mực…) làm sau bằng texture mặt.\n\nMũ theo cấp tu đạo (song kế, đạo kế…) không làm ở đây — model gốc chỉ đuôi ngựa; đồ đội đầu là vật gắn riêng.\n\nCâu lệnh Gemini: xem chat / CHANGELOG khi chốt."
     }
   },
   "designSystems": []

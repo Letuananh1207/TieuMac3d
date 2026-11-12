@@ -3,6 +3,36 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-12.13 — Bộ ảnh nhiều góc NPC Tiểu Mặc 小墨 (đầu vào Hunyuan3D đa góc)
+
+- Loại: tài nguyên 3D — ảnh đầu vào. Phiếu: `docs/phieu_thiet_ke/2026-11-12-anh-nhan-vat-3d.md` (đợt 2).
+- Nguồn thiết kế: tờ "小墨 Tiểu Mặc" của người dùng → `models/anh/tieu-mac-thiet-ke.webp`; chân dung cắt riêng
+  `models/anh/tieu-mac-chan-dung.png` (đính kèm cho Gemini). Màu rút từ bảng màu của tờ: áo trắng #F7F3EB, lục bích
+  #2F6D5B (viền), mực #241E1B (tóc, đai, ủng), chu hồng #B8332B (dây tóc, tua), yên chi #DF695A (má), bạc #CACDD3 (bao
+  kiếm), kim #D2A62E (chuôi).
+- Chọn (người dùng không đổi): tóc kiểu A "đuôi ngựa cao, dây đỏ" (kiểu nhận diện của tờ); tư thế chữ A, **không chắp tay
+  chào** như tờ (tay chắp làm AI dính tay vào thân); mắt mở cười nhẹ (biểu cảm khác làm sau bằng mặt); mũ theo cấp tu
+  đạo là vật gắn riêng, không vào model gốc.
+- Câu lệnh Gemini (chung): render 3D đồ chơi vinyl, không nét viền; chiếu thẳng ngang ngực; chữ A, tay không chắp; nền
+  #DDDDDD trơn, không chữ / watermark; 1024²; chibi đầu ≈ 2/5; tóc mái + tóc mai, đuôi ngựa cao dây đỏ; áo giao lĩnh
+  trắng viền lục bích, vạt trái đè phải, tay áo rộng; đai đen + ngọc bội dây đỏ phía trước; ủng đen; kiếm thẳng đeo
+  chéo lưng, bao bạc, chuôi vàng ló trên vai TRÁI, tua đỏ; má hồng, mắt mở, cười nhẹ. Riêng góc: trước · profile thấy
+  bên trái (mặt sang trái ảnh) · sau (kiếm chéo lưng, chuôi trên vai trái) · profile thấy bên phải (mũi bao kiếm sau
+  hông) · cận đầu + cổ.
+- Soát: kiếm nhất quán 4 góc (trước: chuôi vai trái + mũi bao hông phải; sau: chéo, chuôi bên trái người xem; nghiêng:
+  bao dọc sau lưng) ✓; vạt trái đè phải ✓; đuôi ngựa + dây đỏ ở 2 ảnh nghiêng ✓; 4 góc gốc cao 922–923 px ✓.
+  **Chấp nhận lỗi nhỏ**: ảnh sau thiếu dây đỏ ở chân đuôi ngựa, đuôi ngựa vẽ dồn xuống gáy (người dùng chốt không sửa)
+  → khi nướng màu, mặt sau búi có thể không có dây đỏ.
+- Chuẩn hoá: nền trơn #DDDDDD (tô loang từ mép, ngưỡng 22, đóng khe mặt nạ 5 px), xoá sao Gemini (tô bằng màu nền góc
+  ảnh), **một hệ số thu chung** cho 4 góc (theo góc cao nhất) thay vì căn đỉnh — đuôi ngựa cao khác nhau theo góc; đế
+  ủng → 90 %, trục thân (tâm ủng) → giữa. Ảnh cận mặt: chỉ đổi nền + xoá sao, không tô loang từ mép dưới (thân chạm mép).
+- File: `models/anh/tieu-mac-truoc.png`, `-trai.png`, `-sau.png`, `-phai.png`, `-mat.png`, `tieu-mac-thiet-ke.webp`,
+  `tieu-mac-chan-dung.png` · `screens/TieuMac-bo-anh.png` · `source/TieuMac-bo-anh.dc.html`, `source/canvas.json` ·
+  `models/LICENSES.md`.
+- Luật: không chạm. Việc tiếp (VS Code, `/tai-nguyen`):
+  `bash .claude/skills/tai-nguyen/scripts/nhan-vat.sh tieu-mac <thư mục ra>` → `design/models/tieu-mac.glb`. Kiếm sau
+  lưng dễ dính vào lưng / mất ở góc nghiêng — nếu xấu: bỏ kiếm khỏi ảnh, làm kiếm thành vật gắn riêng.
+
 ## 2026-11-12.12 — Nhân vật: tạo lại hình bằng Hunyuan3D-2mv bản đầy đủ
 
 - Loại: tài nguyên 3D — **ngoại hình**. Người dùng chọn hướng A ("vì sao model chưa thực sự giống … ảnh chưa đủ hay cần

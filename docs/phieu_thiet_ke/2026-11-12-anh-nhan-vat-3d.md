@@ -2,6 +2,7 @@
 
 - Trạng thái: đã áp (2026-11-12.4) — đợt 1 nhân vật chính; đợt 2 Tiểu Mặc còn chờ
 - Đã vẽ: 2026-11-12.3 (đợt 1 — nhân vật chính; Tiểu Mặc chưa)
+- Đã vẽ: 2026-11-12.13 (đợt 2 — Tiểu Mặc; ảnh sau thiếu dây đỏ, đã chấp nhận)
 - Đợi bởi: skill `/tai-nguyen` — nâng model `design/models/nhan-vat.glb` (hiện màu loang ở hông / lưng vì chỉ có ảnh mặt
   trước, xem `design/CHANGELOG.md` mục 2026-11-12.2)
 

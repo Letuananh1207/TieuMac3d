@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Bộ ảnh nhiều góc – Tiểu Mặc</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;700&amp;family=Lora:wght@700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2B5446}a:hover{color:#24323A}
+</style>
+</helmet>
+<div style="width: 1440px; height: 780px; box-sizing: border-box; padding: 40px; background: #F4F7F6; font-family: 'Be Vietnam Pro', system-ui, sans-serif; color: #24323A; display: flex; flex-direction: column; gap: 24px">
+  <div style="display: flex; flex-direction: column; gap: 6px">
+    <h1 style="margin: 0; font-family: 'Lora', Georgia, serif; font-size: 26px">Bộ ảnh nhiều góc — NPC Tiểu Mặc 小墨 (đầu vào Hunyuan3D-2 đa góc)</h1>
+    <div style="font-size: 14px">Mỗi ô = một file PNG 1024 × 1024. Vạch đỏ = đường đất chung (đế ủng ở 90 %). Vạch xanh = đỉnh đuôi ngựa (10 %). Ảnh Gemini đã chuẩn hoá: nền trơn #DDDDDD, bỏ sao mờ, 4 góc cùng một hệ số thu, đế ủng ở 90 %, trục thân giữa ảnh.</div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 24px">
+    <sc-for list="{{slots}}" as="s" hint-placeholder-count="5">
+      <figure style="margin: 0; display: flex; flex-direction: column; gap: 10px">
+        <div style="position: relative; width: 254px; height: 254px; background: #DDDDDD; border: 1px solid rgba(36,50,58,.25); overflow: hidden">
+          <sc-if value="{{s.has}}" hint-placeholder-val="{{ false }}">
+            <img src="{{s.src}}" alt="{{s.alt}}" style="position: absolute; inset: 0; width: 254px; height: 254px; object-fit: contain">
+          </sc-if>
+          <sc-if value="{{s.empty}}" hint-placeholder-val="{{ true }}">
+            <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; text-align: center; padding: 0 24px; font-size: 13px; line-height: 1.5; color: #24323A">{{s.hint}}</div>
+          </sc-if>
+          <div aria-hidden="true" style="position: absolute; left: 0; right: 0; top: 25px; height: 0; border-top: 1px dashed #2B5446"></div>
+          <div aria-hidden="true" style="position: absolute; left: 0; right: 0; top: 229px; height: 0; border-top: 2px solid #A8322A"></div>
+        </div>
+        <figcaption style="display: flex; flex-direction: column; gap: 2px">
+          <code style="font-size: 13px; font-weight: 700">{{s.file}}</code>
+          <span style="font-size: 13px">{{s.desc}}</span>
+        </figcaption>
+      </figure>
+    </sc-for>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; font-size: 13px; line-height: 1.6">
+    <div>
+      <div style="font-weight: 700; margin-bottom: 4px">Kiểm từng ảnh trước khi đưa vào</div>
+      <div>☐ Không nét viền, không tô phẳng — trông như đồ chơi vinyl / đất sét, có bóng khối nhẹ</div>
+      <div>☐ Nền xám trơn #DDDDDD, không bóng đổ dưới chân, không chữ / logo / sao mờ</div>
+      <div>☐ Chiếu thẳng, không xa gần; cùng tư thế chữ A (tay chéo xuống ≈ 35°, tay áo không chạm thân, hai ủng tách)</div>
+      <div>☐ Cùng cỡ: đỉnh búi ở vạch xanh, đế ủng ở vạch đỏ</div>
+      <div>☐ Cổ giao lĩnh: vạt TRÁI nhân vật đè vạt PHẢI, viền lục bích</div>
+      <div>☐ Đuôi ngựa cao + dây đỏ: thấy rõ ở 2 ảnh nghiêng + ảnh sau</div>
+      <div>☐ Kiếm sau lưng chéo, chuôi ló trên vai TRÁI nhân vật (phải người xem ảnh trước), tua đỏ; không xuyên tay</div>
+      <div>☐ Má hồng yên chi, mắt mở, cười nhẹ (không nhắm mắt như tờ thiết kế)</div>
+    </div>
+    <div>
+      <div style="font-weight: 700; margin-bottom: 8px">Màu giữ đúng (theo ảnh gốc)</div>
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px">
+        <sc-for list="{{colors}}" as="c" hint-placeholder-count="8">
+          <div style="display: flex; align-items: center; gap: 8px">
+            <span aria-hidden="true" style="width: 22px; height: 22px; border-radius: 4px; border: 1px solid rgba(36,50,58,.25); background: {{c.hex}}"></span>
+            <span><b>{{c.hex}}</b><br>{{c.name}}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":780}}'>
+class Component extends DCLogic {
+renderVals() {
+return {
+  slots: [
+    { file: 'tieu-mac-truoc.png', desc: 'Thẳng từ trước. Chuôi kiếm trên vai trái ✓, vạt trái đè phải ✓, mũi bao kiếm ló hông phải ✓.', has: true, empty: false, src: '/_blob/ae3219b07734d711ab1a5368510310a1', alt: 'Tiểu Mặc nhìn thẳng từ trước', hint: '' },
+    { file: 'tieu-mac-trai.png', desc: 'Nghiêng 90°, thấy bên trái. Đuôi ngựa + dây đỏ ✓, chuôi kiếm sau vai ✓.', has: true, empty: false, src: '/_blob/0205a44b219bd41983759a20c17c92dd', alt: 'Tiểu Mặc nghiêng, thấy bên trái', hint: '' },
+    { file: 'tieu-mac-sau.png', desc: 'Thẳng từ sau. Kiếm chéo đúng bên ✓, nút đai ✓. Thiếu dây đỏ ở chân đuôi ngựa ✗ (nhỏ).', has: true, empty: false, src: '/_blob/0f7bf95e4a1739137a584fdcd838cdf6', alt: 'Tiểu Mặc nhìn từ sau', hint: '' },
+    { file: 'tieu-mac-phai.png', desc: 'Nghiêng 90°, thấy bên phải. Đuôi ngựa + dây đỏ ✓, bao kiếm sau lưng ✓.', has: true, empty: false, src: '/_blob/30c2b6e9c84d3043231683519d89921e', alt: 'Tiểu Mặc nghiêng, thấy bên phải', hint: '' },
+    { file: 'tieu-mac-mat.png', desc: 'Cận đầu + vai (không căn theo vạch). Má hồng, mắt mở, cười nhẹ ✓.', has: true, empty: false, src: '/_blob/e22333a4ae1b70667fbf21be52a4685f', alt: 'Cận mặt Tiểu Mặc', hint: '' }
+  ],
+  colors: [
+    { hex: '#F7F3EB', name: 'áo trắng' },
+    { hex: '#2F6D5B', name: 'lục bích — viền áo' },
+    { hex: '#241E1B', name: 'mực — tóc, đai, ủng' },
+    { hex: '#B8332B', name: 'chu hồng — dây tóc, tua' },
+    { hex: '#DF695A', name: 'yên chi — má' },
+    { hex: '#CACDD3', name: 'bạc — lưỡi / bao kiếm' },
+    { hex: '#D2A62E', name: 'kim — chuôi kiếm' },
+    { hex: '#DDDDDD', name: 'nền trơn' }
+  ]
+};
+}
+}
+</script>
+</body>
+</html>
