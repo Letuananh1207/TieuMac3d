@@ -6,6 +6,7 @@
 #       → model:clean --khong-sang  (mỗi seed một bản <ra>/<tên>-s<seed>-final.glb)
 #       → chụp trên Canvas 3D: 4 góc thẳng cạnh ảnh thiết kế + 6 góc cận → <ra>/<tên>-s<seed>-so.png, -6goc.png
 # --nhanh: bản turbo (~30 s / seed) để thử ảnh trước khi chạy thật.
+# --nuong "<cờ>": thêm cờ cho bake.py, vd. --nuong "--giu-toc-mai" (nhân vật CÓ tóc mai trong thiết kế).
 # --dat  : chỉ một seed → chép bản đó vào design/models/<tên>.glb (không có thì design/models/ giữ nguyên).
 # Chụp mượn chỗ nhan-vat.glb (Canvas 3D chỉ nạp file đó) rồi trả lại bản cũ.
 set -e
@@ -13,12 +14,13 @@ ROOT="$(cd "$(dirname "$0")/../../../.." && pwd)"
 PY=/c/ai3d/Hunyuan3D2_WinPortable/python_standalone/python.exe
 SC="$ROOT/.claude/skills/tai-nguyen/scripts"
 TEN=$1; OUT=$2; shift 2 || { echo "Cach dung: nhan-vat.sh <ten> <thu muc ra> [--seed 1234,7] [--nhanh] [--dat]"; exit 1; }
-SEEDS=1234,7; FULL=--day-du; DAT=0
+SEEDS=1234,7; FULL=--day-du; DAT=0; BK=
 while [ $# -gt 0 ]; do
   case $1 in
     --seed) SEEDS=$2; shift ;;
     --nhanh) FULL= ;;
     --dat) DAT=1 ;;
+    --nuong) BK=$2; shift ;;
   esac; shift
 done
 mkdir -p "$OUT"
@@ -40,7 +42,7 @@ for sd in ${SEEDS//,/ }; do
   [ -n "$raw" ] || { echo "seed $sd: khong co hinh (loi FlashVDM? thu seed khac)"; continue; }
   echo "== seed $sd: 2. lam min · 3. nuong mau · 4. nen"
   $PY -s "$SC/smooth.py" "$raw" "$T-min.glb" --min 2 | tail -1
-  $PY -s "$SC/bake.py" "$T-min.glb" design/models/anh "$TEN" "$T-mau.glb" --jpg 2>&1 | grep -E "Error|->"
+  $PY -s "$SC/bake.py" "$T-min.glb" design/models/anh "$TEN" "$T-mau.glb" --jpg $BK 2>&1 | grep -E "Error|->"
   (cd web && npm run -s model:clean -- "$T-mau.glb" --ra "$T-final.glb" --khong-sang 2>&1 | grep -E "Ra:|VUOT|VƯỢT")
   echo "== seed $sd: 5. chup so sanh"
   cp "$T-final.glb" "$GLB"

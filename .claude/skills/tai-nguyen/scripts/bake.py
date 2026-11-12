@@ -39,7 +39,14 @@ def fill_edges(im):
     w, h = im.size
     a = np.asarray(im).astype(np.int32)
     corners = np.array([a[2, 2], a[2, w - 3], a[h - 3, 2], a[h - 3, w - 3]]).mean(0)
-    m = (np.abs(a - corners).sum(-1) >= 26).astype(np.uint8) * 255
+    # nền = vùng gần màu góc NỐI RA MÉP ảnh (loang từ mép), không phải mọi điểm gần màu nền: áo trắng chỗ hơi tối
+    # (#E1DED7) gần trùng nền #DDDDDD → trước đây bị coi là nền, viền xanh loang vào lấp (Tiểu Mặc, 2026-11-12)
+    from scipy import ndimage as nd
+    near = np.abs(a - corners).sum(-1) < int(opt('nen', '16'))
+    lab, _ = nd.label(near, structure=np.ones((3, 3)))
+    edge = np.unique(np.concatenate([lab[0], lab[-1], lab[:, 0], lab[:, -1]]))
+    bg = np.isin(lab, edge[edge > 0])
+    m = nd.binary_fill_holes(~bg).astype(np.uint8) * 255
     ys, xs = np.nonzero(m)
     bbox = (xs.min() / w, (xs.max() + 1) / w, ys.min() / h, (ys.max() + 1) / h)  # khung nhân vật trong ảnh (0..1)
     mask = Image.fromarray(m).filter(ImageFilter.MinFilter(7))
@@ -71,7 +78,7 @@ for k in VIEWS:
 IH, IW = imgs['truoc'].shape[:2]
 
 
-def img_head(m):
+def img_head(m, neck_v=None):
     # cổ = hàng hẹp nhất trong dải 22–45 % chiều cao nhân vật (từ đỉnh); khung đầu = phần trên cổ
     rows = np.flatnonzero(m.any(1))
     r0, r1 = rows[0], rows[-1]
@@ -80,13 +87,15 @@ def img_head(m):
         xs = np.flatnonzero(m[r])
         if len(xs) and xs[-1] - xs[0] < best:
             best, neck = xs[-1] - xs[0], r
+    if neck_v is not None:  # góc bên: cổ lấy theo góc trước (đuôi ngựa / kiếm làm sai chỗ hẹp nhất)
+        neck = int(round(neck_v * m.shape[0]))
     xs = np.flatnonzero(m[r0:neck + 1].any(0))
     nx = np.flatnonzero(m[neck])
     mid = (nx[0] + nx[-1] + 1) / 2 / m.shape[1]  # trục giữa đầu = giữa cổ
     return xs[0] / m.shape[1], (xs[-1] + 1) / m.shape[1], r0 / m.shape[0], neck / m.shape[0], mid
 
 
-def model_head(u0, v0):
+def model_head(u0, v0, neck_v=None):
     vmin, vmax = v0.min(), v0.max()
     lo, hi = vmin + 0.22 * (vmax - vmin), vmin + 0.45 * (vmax - vmin)
     best, neck = 1e9, lo
@@ -94,6 +103,8 @@ def model_head(u0, v0):
         sel = np.abs(v0 - c) < (hi - lo) / 50
         if sel.sum() > 3 and np.ptp(u0[sel]) < best:
             best, neck = np.ptp(u0[sel]), c
+    if neck_v is not None:
+        neck = neck_v
     hd = v0 < neck
     nb = np.abs(v0 - neck) < (hi - lo) / 50
     mid = (u0[nb].min() + u0[nb].max()) / 2
@@ -111,9 +122,12 @@ for k, (fu0, fv0) in _raw.items():
 # khớp riêng vùng đầu: khung cả người ở ảnh trước do hai tay dang quyết định bề ngang → đầu lệch ngang vài %, đúng chỗ
 # thái dương / chân tóc thành mảng da lấn tóc. Đầu (trên cổ) khớp khung đầu ↔ khung đầu, thân khớp cả người, chuyển mượt quanh cổ.
 HEAD = {}
-for k, (fu0, fv0) in _raw.items():
-    mh = model_head(fu0(V), fv0(V))
-    ih = img_head(masks[k])
+_nm = _ni = None
+for k, (fu0, fv0) in _raw.items():  # 'truoc' đầu tiên: đo cổ ở góc trước, các góc khác dùng chung (4 ảnh cùng chuẩn dọc)
+    mh = model_head(fu0(V), fv0(V), _nm)
+    ih = img_head(masks[k], _ni)
+    if k == 'truoc':
+        _nm, _ni = mh[3], ih[3]
     HEAD[k] = (mh, ih)
     print(f'dau {k}: model u {mh[0]:.3f}|{mh[4]:.3f}|{mh[1]:.3f} v {mh[2]:.3f}-{mh[3]:.3f} | anh u {ih[0]:.3f}|{ih[4]:.3f}|{ih[1]:.3f} v {ih[2]:.3f}-{ih[3]:.3f}')
 
@@ -149,6 +163,7 @@ def fit_v(k):
         return head * (1 - t) + body * t
     return f
 VIEWS = {k: (d, fit_u(k), fd, fit_v(k)) for k, (d, fu, fd) in VIEWS.items()}
+XIEN = None if opt('xien', '0.3') == 'khong' else float(opt('xien', '0.3'))  # ngưỡng hướng mặt bỏ ảnh trước ở đầu
 neck_y = maxY - (HEAD['truoc'][0][3] - 0.1) / 0.8 * H  # độ cao cổ (model) từ góc trước
 
 # chân tóc trán (ảnh trước, dải giữa mặt): hàng đầu tiên từ đỉnh đầu xuống có màu da. Trên đầu, điểm cao hơn hàng này
@@ -265,8 +280,9 @@ for f in idx:
     cols, wts = [], []
     for k, (dirv, fu, fd, fv) in VIEWS.items():
         w = np.clip(Nn @ dirv, 0, 1) ** MU
-        if k == 'truoc':  # đầu: ảnh trước nhìn quá xiên (mép tóc sát mặt) chiếu trượt sang bên đầu thành vệt cong đen
-            w = w * np.where(P[:, 1] > neck_y, np.clip((Nn[:, 2] - 0.3) / 0.2, 0, 1), 1)
+        if k == 'truoc' and XIEN is not None:  # đầu: ảnh trước nhìn quá xiên (mép tóc sát mặt) chiếu trượt sang bên đầu
+            # thành vệt cong đen (nhân vật chính). Tóc mai rủ hai bên má (Tiểu Mặc) cần ảnh trước → `--xien khong`
+            w = w * np.where(P[:, 1] > neck_y, np.clip((Nn[:, 2] - XIEN) / 0.2, 0, 1), 1)
         u = fu(P)
         v = fv(P)
         di = np.clip((v * DB).astype(int), 0, DB - 1)

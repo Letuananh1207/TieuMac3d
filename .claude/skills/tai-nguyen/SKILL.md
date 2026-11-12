@@ -80,7 +80,10 @@ khớp ảnh nên màu chiếu từ chính bộ ảnh lên không lem; vật li�
    Seed lỗi FlashVDM / không ra hình → thêm seed khác (42, 99).
 4. **Xem + chọn**: Read các `-so.png` / `-6goc.png`, soát: dáng khớp ảnh, chân tóc / thái dương / tóc mai, mặt, viền áo,
    tay. Trình người dùng (đính đường dẫn ảnh), **hỏi chọn seed** — không tự quyết thẩm mỹ. Lỗi màu còn lại → sửa
-   `bake.py` (có cờ: `--bat-dong`, `--khong-chan-toc`, `--giu-toc-mai`, `--xem-toc-mai`, `--mu`), không vẽ tay.
+   `bake.py` (có cờ: `--bat-dong`, `--khong-chan-toc`, `--giu-toc-mai`, `--xem-toc-mai`, `--xien <ngưỡng|khong>`, `--nen`,
+   `--mu`; truyền qua `nhan-vat.sh --nuong "<cờ>"`), không vẽ tay. Nhân vật **có tóc mai** trong thiết kế (Tiểu Mặc) →
+   `--nuong "--giu-toc-mai"`. Xem model ở tư thế gốc, không xương (NPC, hoặc tách lỗi màu khỏi lỗi xương):
+   `python.exe -s scripts/xem.py <màu.glb — bản TRƯỚC model:clean> design/models/anh <tên> <ra.png>`.
 5. **Đưa vào**: chép bản chọn vào `design/models/<tên>.glb` (hoặc chạy lại với `--seed <n> --dat`); nhân vật chính:
    kiểm đi / đứng (`?di&pha=0.25` trên Canvas 3D — xương tự gắn `autoRig` đo theo dáng chibi chữ A; dáng khác hẳn → báo
    `/lead` chỉnh số đo `P`); chép ảnh so sánh sang `design/screens/Model-<tên>.png`, `-so-thiet-ke.png`; một dòng
