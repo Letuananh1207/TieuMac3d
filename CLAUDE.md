@@ -52,6 +52,7 @@ cd web && npm run build        # kiểm kiểu + kiểm đặc tả cảnh + bui
 cd web && npm run scene:check  # kiểm design/scene/scene.json, in toạ độ nhà / vùng / tường
 cd web && npm run build:design # Canvas 3D → web/dist-design/ (đăng artifact — /canh)
 cd web && npm run model:clean -- <file.glb> [--loai nhan-vat|cong-trinh] [--ten <tên>]  # model AI → design/models/
+cd web && npm run model:paint -- <model.glb> <atlas.png> [--ra <file.glb>]  # tô màu model trắng bằng chiếu ảnh
 cd web && npx tsc --noEmit     # chỉ kiểm kiểu TS
 cd app && flutter run          # chạy app (build web trước); trình duyệt: flutter run -d chrome
 cd app && flutter analyze && flutter test

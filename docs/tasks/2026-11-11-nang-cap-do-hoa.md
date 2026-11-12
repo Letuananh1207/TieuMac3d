@@ -98,8 +98,10 @@ makerstack.co meshy-review · sloyd.ai ai-3d-model-generator-pricing.
       `player/playerCharacter.ts`: `design/models/nhan-vat.glb` nếu có, `?nhan-vat=khoi|gau`, lỗi → đệ tử khối. Thử bằng
       mẫu `1.glb` của Hunyuan3D (không commit): nạp được, tự tính pháp tuyến; mẫu 38k tam giác (ngân sách 10k) → phải
       giảm trong Blender; nhân vật 1 khối → bớt ~23 draw call so với đệ tử khối.
-- [ ] D2. (công cụ làm sạch sẵn: `npm run model:clean` — docs/ai3d.md bước 3) Thử 1 nhân vật + 1 công trình bằng 2 công cụ AI → so hình, số tam giác, dung lượng, fps → chọn.
-- [ ] D3. `design/models/` + `LICENSES.md` (công cụ, gói trả phí, ngày tạo).
+- [x] D2. Nhân vật chính bằng Hunyuan3D-2mini (API, `/tai-nguyen`): ảnh người dùng tạo bằng Gemini → 4 seed → `model:clean`
+      (9 500 tam giác) → `model:paint` (chiếu ảnh, 439 KB) → `design/models/nhan-vat.glb` (2026-11-12). Bài học ảnh đầu
+      vào ở `.claude/skills/tai-nguyen/references/hunyuan.md`. Công trình: chưa thử (cần code đặt .glb vào cảnh).
+- [x] D3. `design/models/` + `LICENSES.md` (2026-11-12).
 
 ## Kiểm tra cuối
 dart tool/check.dart --changed · cd web && npm run scene:check && npx tsc --noEmit && npm run build ·

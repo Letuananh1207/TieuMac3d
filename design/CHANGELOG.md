@@ -3,6 +3,18 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-12.1 — Nhân vật chính bằng model AI (Hunyuan3D)
+
+- Loại: tài nguyên 3D (model) — **ngoại hình** nhân vật người chơi. Không chạm luật (cỡ, va chạm, tốc độ giữ nguyên:
+  `glbCharacter` co về cao 2,1 m như đệ tử khối, va chạm vẫn bán kính 0,5).
+- Người dùng đưa ảnh đệ tử (tạo bằng Google Gemini từ câu lệnh của skill), phiên VS Code chạy `/tai-nguyen`: Hunyuan3D-2
+  mini-turbo seed 1234 → `model:clean` 9 500 tam giác → `model:paint` (chiếu ảnh trước / sau) → `models/nhan-vat.glb`
+  (439 KB, 1 draw call — đệ tử khối ~25). Tiểu Mặc (tờ thiết kế của người dùng) giữ làm **NPC** — chưa dựng.
+- Hạn chế: lưng áo mang hoạ tiết mặt trước (vạt chéo, ngọc bội); cạnh đầu có vệt xám nhỏ; chưa có động tác thật (app
+  nhún khi đi). Muốn đẹp hơn: bật tô màu của Hunyuan (cần MSVC) hoặc ảnh nhìn sau.
+- Ảnh: `screens/Model-nhan-vat.png` (đệ tử khối · trước · chếch · sau). Canvas 3D: `?nhan-vat=khoi` xem lại bản khối.
+- File: `models/nhan-vat.glb`, `models/anh/nhan-vat.webp`, `models/anh/nhan-vat-atlas.png`, `models/LICENSES.md`.
+
 ## 2026-11-11.11 — Phóng tông môn ×1,6 + kiến trúc cao ×1,6 (heightScale)
 
 - Loại: cảnh 3D — **bố cục** (toàn cảnh ×1,6) + **ngoại hình** (kiến trúc cao). Người dùng nhờ phiên VS Code (`/canh`)

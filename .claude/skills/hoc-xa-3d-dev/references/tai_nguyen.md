@@ -12,6 +12,7 @@ skill `/tai-nguyen` (Hunyuan3D trên máy người dùng). Mọi thứ đóng g�
 | nạp + chuẩn hoá | `player/glbCharacter.ts`: `GLTFLoader` + `MeshoptDecoder` (`three/examples/jsm`), co về cao `GLB_HEIGHT` 2,1 m, chân y 0, tâm về gốc, mặt trước +z; vật liệu → Lambert (giữ màu / map / màu đỉnh); thiếu pháp tuyến → `computeVertexNormals` |
 | động tác | clip tên chứa `idle` / `walk` → `AnimationMixer`, trộn theo tốc độ; không có clip → nhún + nghiêng |
 | chọn / dự phòng | `createPlayerCharacter(?nhan-vat)`: `gau` · `khoi` · mặc định .glb; lỗi nạp → đệ tử khối (`console.warn`) |
+| tô màu bằng chiếu ảnh | `npm run model:paint -- <model.glb> <atlas.png> [--ra]` (`scripts/model-paint.mjs`): tách đỉnh, UV chiếu từ trước theo khung bao (tam giác quay trước → nửa trái atlas, quay sau → nửa phải), vật liệu nhám; atlas làm bằng `.claude/skills/tai-nguyen/scripts/atlas.py` |
 | làm sạch | `cd web && npm run model:clean -- <in.glb> [--loai nhan-vat\|cong-trinh] [--ten] [--ra]` (`scripts/model-clean.mjs`, glTF-Transform + meshoptimizer — gói dev ghim): dedup, weld, simplify về ngân sách, prune, nén meshopt; báo vượt |
 
 Ngân sách: nhân vật ≤ 10k tam giác ≤ 1,5 MB, công trình ≤ 20k ≤ 3 MB, ≤ 1024² texture; cả cảnh ≤ 150 draw call ≤ 150k

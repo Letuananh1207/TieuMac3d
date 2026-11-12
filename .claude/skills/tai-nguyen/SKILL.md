@@ -49,10 +49,14 @@ Quyết định: `.claude/skills/hoc-xa-3d-dev/decisions/0003-tai-san-ai.md` (la
    Tạo **2–3 seed** (1234, 42, 7) để có lựa chọn. Thêm `--texture` chỉ khi người dùng đã bật tô màu (cần MSVC).
 4. **Làm sạch** từng bản: `cd web && npm run model:clean -- <file> --loai <loai> --ten <tên> --ra <scratchpad>/<tên>-s<seed>-sach.glb`
    (giảm tam giác về ngân sách, nén meshopt; báo VƯỢT NGÂN SÁCH → xem `references/hunyuan.md`).
+   **Tô màu** (model ra trắng khi chưa bật texture): `python .claude/skills/tai-nguyen/scripts/atlas.py <ảnh> <atlas.png>`
+   (nửa trước = ảnh, nửa sau = da đầu → tóc) rồi `cd web && npm run model:paint -- <bản sạch> <atlas.png> --ra <bản màu>`
+   (chiếu ảnh từ trước lên model; ~0,4 MB với texture 1024 × 512). Lưng áo mang hoạ tiết mặt trước — chấp nhận được;
+   muốn đúng hẳn: bật texture của Hunyuan (MSVC).
 5. **So sánh** (mục "So sánh trên Canvas 3D"): chép từng bản vào `design/models/<tên>.glb`, `build:design`, chụp, rồi
    chụp bản khối (`?nhan-vat=khoi`). Ghép thành bảng cho người dùng: ảnh · tam giác · KB · draw call. **Hỏi chọn** —
    không tự quyết thẩm mỹ.
-6. **Đưa vào**: bản được chọn ở `design/models/<tên>.glb`; ảnh đầu vào tự làm → `design/models/anh/`; một dòng
+6. **Đưa vào**: bản được chọn ở `design/models/<tên>.glb`; ảnh đầu vào (+ atlas nếu tô màu) → `design/models/anh/`; một dòng
    `design/models/LICENSES.md` (mẫu dưới); ảnh so sánh `design/screens/Model-<tên>.png`. Nhân vật: `cd web && npm run
    build` (app nhận). Cập nhật đợt D trong `docs/tasks/2026-11-11-nang-cap-do-hoa.md` (D2 / D3).
 7. Commit khi người dùng đồng ý: `git add design/models design/screens/Model-*.png docs/tasks/…` →
