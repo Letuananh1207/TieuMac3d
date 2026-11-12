@@ -28,8 +28,9 @@ dev Flutter chưa làm game: mỗi khi chọn thư viện / cách làm, giải t
   bằng `/ui-apply phieu <yêu cầu>`, việc đó chờ thiết kế.
 - Cảnh 3D thiết kế bằng đặc tả `design/scene/scene.json` + **Canvas 3D** (`/canh …`, trang `web/design.html` chạy đúng
   code app). Quyết định: `decisions/0002-thiet-ke-3d.md`.
-- Model 3D bằng AI (nhân vật, 1–2 công trình nổi bật): `/tai-nguyen` — Hunyuan3D chạy trên máy người dùng (chế độ API,
-  Claude gọi `127.0.0.1:8081`), làm sạch `npm run model:clean`, đặt `design/models/`. Quyết định: `decisions/0003-tai-san-ai.md`.
+- Model 3D bằng AI (nhân vật, 1–2 công trình nổi bật): `/tai-nguyen` — luồng chuẩn: bộ ảnh 4 góc từ `/ui-design` →
+  `bash .claude/skills/tai-nguyen/scripts/nhan-vat.sh <tên> <thư mục ra>` (Hunyuan3D-2mv đầy đủ chạy trên máy người dùng
+  → làm mịn → nướng màu từ ảnh → nén, không-sáng → ảnh so thiết kế), đặt `design/models/`. Quyết định: `decisions/0003-tai-san-ai.md`.
 - Khi thiết kế được cập nhật (mục mới trong `design/CHANGELOG.md`): `/ui-apply`.
 - Phong cách cổ trang / tiên hiệp: `/khao-cuu <chủ đề>` nghiên cứu → hồ sơ `docs/tham_khao/` (tham khảo, chưa chốt)
   → `/canh`, `/tai-nguyen` đọc khi dựng. `/khao-cuu soat` soát cảnh. Skill này chỉ ghi `docs/tham_khao/`.
@@ -51,6 +52,7 @@ cd web && npm run dev          # thử scene trên trình duyệt / điện tho�
 cd web && npm run build        # kiểm kiểu + kiểm đặc tả cảnh + build + chép sang app/assets/scene/
 cd web && npm run scene:check  # kiểm design/scene/scene.json, in toạ độ nhà / vùng / tường
 cd web && npm run build:design # Canvas 3D → web/dist-design/ (đăng artifact — /canh)
+bash .claude/skills/tai-nguyen/scripts/nhan-vat.sh <tên> <ra> [--seed 1234,7] [--nhanh] [--dat]  # ảnh 4 góc → model
 cd web && npm run model:clean -- <file.glb> [--loai nhan-vat|cong-trinh] [--ten <tên>]  # model AI → design/models/
 cd web && npm run model:paint -- <model.glb> <atlas.png> [--ra <file.glb>]  # tô màu model trắng bằng chiếu ảnh
 cd web && npx tsc --noEmit     # chỉ kiểm kiểu TS

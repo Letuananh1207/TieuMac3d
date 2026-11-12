@@ -12,6 +12,8 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
   / seed, ~1 triệu mặt) → `smooth.py --min 2` → `bake.py --jpg` → `model:clean --khong-sang`. Seed 1234 (seed 7: tóc lổn
   nhổn hơn). 16 000 tam giác, 215 KB. Xương tự gắn (`autoRig`) giữ nguyên số đo — đi / đứng vẫn đúng.
 - Kết quả: hết vệt tóc mai, tóc ôm kín thái dương cả hai bên, 4 góc thẳng khớp ảnh thiết kế.
+- Chốt làm **luồng chuẩn tạo nhân vật** (người dùng: "hướng này ổn … áp dụng cách tạo nhân vật theo luồng như này"):
+  một lệnh `tai-nguyen/scripts/nhan-vat.sh <tên> <ra> [--seed] [--nhanh] [--dat]`, mô tả ở skill `/tai-nguyen`.
 - Ảnh: `screens/Model-nhan-vat-so-thiet-ke.png` (trên ảnh thiết kế · dưới model), `screens/Model-nhan-vat.png` (6 góc),
   `screens/Model-nhan-vat-thai-duong.png` (cận 3/4: trên bản .11 · dưới bản này).
 

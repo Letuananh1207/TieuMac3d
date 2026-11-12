@@ -23,65 +23,58 @@ Quyết định: `.claude/skills/hoc-xa-3d-dev/decisions/0003-tai-san-ai.md` (la
 
 ## Vai và giới hạn
 
-- Claude **không chạy phần mềm Hunyuan** (`C:\ai3d\…`, python của gói — chế độ quyền chặn, đúng như vậy). Người dùng
-  mở launcher; Claude chỉ gọi máy chủ API cục bộ qua `scripts/hunyuan.mjs` (fetch tới 127.0.0.1).
-- Claude **không tự vẽ ảnh** đầu vào. Thiếu ảnh / ảnh không đạt yêu cầu kỹ thuật → **soạn phiếu cho `/ui-design`**
-  (phiên thiết kế trong app Claude vẽ / tạo ảnh được): mẫu `docs/phieu_thiet_ke/2026-11-12-anh-nhan-vat-3d.md` (bộ 4 góc +
-  cận mặt, chữ A, không viền, render đồ chơi, nền trơn, không watermark). In khối "Dán vào canvas" cho người dùng chép
-  sang. Nguồn ảnh, theo thứ tự ưu tiên:
-  0. bộ ảnh nhiều góc từ `/ui-design` theo phiếu (`design/models/anh/<tên>-{truoc,trai,sau,phai,mat}.png`) — tốt nhất;
-  1. ảnh người dùng đưa (vẽ / chụp / tạo bằng AI ảnh như ChatGPT, Gemini);
-  2. Claude soạn **câu lệnh tạo ảnh** (mẫu ở `references/hunyuan.md`) để người dùng dán vào AI ảnh, lưu file, gửi đường dẫn;
-  3. dự phòng: chụp bản dựng bằng khối trên Canvas 3D (`?chup`, mục "Ảnh từ Canvas 3D") — ra hình mượt hơn bản khối
-     nhưng cùng dáng, nền rối nên kém hơn 1–2.
-- Ghi: `design/models/*.glb`, `design/models/LICENSES.md`, ảnh đầu vào tự làm `design/models/anh/<tên>.png`, ảnh so
-  sánh `design/screens/Model-<tên>.png`. **Không** sửa code `web/` `app/`; cần code → kế hoạch `/lead`.
+- Claude **chạy Hunyuan trực tiếp** bằng Python của gói (`/c/ai3d/Hunyuan3D2_WinPortable/python_standalone/python.exe`
+  — người dùng đã cho phép trong `.claude/settings.local.json`, 2026-11-12). Máy chủ API (`scripts/hunyuan.mjs`) chỉ còn
+  cho luồng một ảnh (dự phòng).
+- Claude **không tự vẽ ảnh** đầu vào. Thiếu ảnh / ảnh không đạt → **soạn phiếu cho `/ui-design`** (phiên thiết kế trong
+  app Claude tạo ảnh được), mẫu `docs/phieu_thiet_ke/2026-11-12-anh-nhan-vat-3d.md`: bộ 4 góc trước / trái / sau / phải
+  (+ cận mặt), tư thế chữ A, render kiểu đồ chơi 3D (không vẽ phẳng), không viền, nền trơn sáng, không watermark, chuẩn
+  hoá: vuông 1024, đỉnh búi 10 %, đế 90 %, trục thân giữa ảnh, 4 góc cùng tỉ lệ. In khối "Dán vào canvas" cho người dùng chép sang.
+- Ghi: `design/models/*.glb`, `design/models/LICENSES.md`, `design/CHANGELOG.md`, ảnh `design/screens/Model-<tên>*.png`.
+  **Không** sửa code `web/` `app/`; cần code (vd. NPC chưa có chỗ đặt) → kế hoạch `/lead`.
 - Ảnh có bản quyền (phim, game, truyện) không làm đầu vào cho tài nguyên đưa vào app — nhắc người dùng.
 
-## Quy trình `nhan-vat` / `cong-trinh`
+## Luồng chuẩn: nhân vật từ bộ ảnh 4 góc (chốt 2026-11-12.12)
 
-1. **API**: `node .claude/skills/tai-nguyen/scripts/hunyuan.mjs kiem`. Không chạy → hướng dẫn người dùng (ngắn, từng
-   bước): PowerShell trong `C:\ai3d\Hunyuan3D2_WinPortable` → `.\RUN.bat` → tab *Program Parameters* → **"API 2.0 |
-   For Blender Addon"** → *HTTP Service Listen Address* `127.0.0.1` → *Save and Start* → chờ dòng `Uvicorn running on
-   …:8081` → báo lại. Dừng chờ.
-2. **Ảnh đầu vào** (theo thứ tự ở trên). Yêu cầu ảnh: một vật, đứng giữa, nhìn chính diện (hơi chếch được), nền trơn
-   sáng, không cắt mất phần nào; nhân vật tư thế chữ A. Đúng phong cách đã chốt: `design/scene/phong_cach.md`, bản mẫu
-   `design/source/PhongCach-*.dc.html` (đệ tử: đạo bào `#DCE8EE` viền `#3F5FA0`, búi tóc trâm vàng, **vạt trái đè vạt
-   phải**); chủ đề chưa có hồ sơ → gợi ý `/khao-cuu` trước.
-3. **Tạo** (mỗi lần ~1–3 phút trên RTX 5070 Ti; chạy nền với `run_in_background` nếu cần):
-   `node .claude/skills/tai-nguyen/scripts/hunyuan.mjs tao <ảnh> --ra <scratchpad>/<tên>-s<seed>.glb --seed <n>`
-   Tạo **2–3 seed** (1234, 42, 7) để có lựa chọn. Thêm `--texture` chỉ khi người dùng đã bật tô màu (cần MSVC).
-3b. **Có bộ ảnh 4 góc** (`design/models/anh/<tên>-{truoc,trai,sau,phai}.png`, chuẩn hoá theo phiếu) — CÁCH TỐT NHẤT:
-   tắt máy chủ API (VRAM), chạy `/c/ai3d/Hunyuan3D2_WinPortable/python_standalone/python.exe -s
-   .claude/skills/tai-nguyen/scripts/mv_gen.py design/models/anh <tên> <scratchpad> --day-du --seed 1234,7`
-   (Hunyuan3D-2mv bản đầy đủ: 50 bước, octree 512, ~7 phút / seed — tóc, tai, đầu khớp ảnh hơn hẳn bản turbo nên hết lem
-   chân tóc / tóc mai, 2026-11-12.12; bỏ `--day-du` = turbo ~30 s để thử nhanh) → `smooth.py --min 2` (ít làm mịn, giữ chi tiết) → `python .claude/skills/tai-nguyen/scripts/atlas4.py design/models/anh <tên> <atlas.png>`
-   → **nướng** `.../python.exe -s .claude/skills/tai-nguyen/scripts/bake.py <mịn.glb> design/models/anh <tên> <màu.glb> --jpg`
-   (UV xatlas, trộn 4 góc theo hướng mặt + che khuất — hết lem mặt / đường nối; tốt hơn `model:paint --4goc`) →
-   `npm run model:clean -- <màu.glb> --ra <xong.glb> --khong-sang` (nén meshopt + vật liệu không-sáng: màu ĐÚNG như ảnh
-   thiết kế vì ảnh render đã có ánh sáng — 2026-11-12.9, ~0,2 MB). `bake.py` tự khớp khung từng góc và riêng vùng đầu
-   (cổ = chỗ hẹp nhất). Không ép bảng màu khi mục tiêu là "giống ảnh"; `--bang-mau … --giu-mat` chỉ khi muốn màu phẳng
-   (mục .8 — ranh giới vùng mặt dễ lộ). `--tu-bang N` (tự gom k-means), `--do-sang` (trọng số độ sáng khi so màu), `--xa` (ngưỡng giữ màu lạ).
-4. **Mịn** (nhân vật — khuyên dùng thay simplify của `model:clean`): tạo với `--octree 384`, rồi
-   `/c/ai3d/Hunyuan3D2_WinPortable/python_standalone/python.exe -s .claude/skills/tai-nguyen/scripts/smooth.py <thô.glb> <mịn.glb> --tam-giac 16000`
-   (PyMeshLab: bỏ mảnh vụn, Taubin, quadric giữ dáng) → tô màu (`atlas.py --phang 32` + `model:paint`).
-   **Làm sạch** (cách cũ, đồ vật không cần mịn) từng bản: `cd web && npm run model:clean -- <file> --loai <loai> --ten <tên> --ra <scratchpad>/<tên>-s<seed>-sach.glb`
-   (giảm tam giác về ngân sách, nén meshopt; báo VƯỢT NGÂN SÁCH → xem `references/hunyuan.md`).
-   **Tô màu** (model ra trắng khi chưa bật texture): `python .claude/skills/tai-nguyen/scripts/atlas.py <ảnh> <atlas.png>`
-   (nửa trước = ảnh, nửa sau = da đầu → tóc) rồi `cd web && npm run model:paint -- <bản sạch> <atlas.png> --ra <bản màu>`
-   (chiếu ảnh từ trước lên model; ~0,4 MB với texture 1024 × 512). Lưng áo mang hoạ tiết mặt trước — chấp nhận được;
-   muốn đúng hẳn: bật texture của Hunyuan (MSVC).
-5. **So sánh** (mục "So sánh trên Canvas 3D"): chép từng bản vào `design/models/<tên>.glb`, `build:design`, chụp, rồi
-   chụp bản khối (`?nhan-vat=khoi`). Ghép thành bảng cho người dùng: ảnh · tam giác · KB · draw call. **Hỏi chọn** —
-   không tự quyết thẩm mỹ.
-6. **Đưa vào**: bản được chọn ở `design/models/<tên>.glb`; ảnh đầu vào (+ atlas nếu tô màu) → `design/models/anh/`; một dòng
-   `design/models/LICENSES.md` (mẫu dưới); ảnh so sánh `design/screens/Model-<tên>.png`. Nhân vật: `cd web && npm run
-   build` (app nhận). Cập nhật đợt D trong `docs/tasks/2026-11-11-nang-cap-do-hoa.md` (D2 / D3).
-7. Commit khi người dùng đồng ý: `git add design/models design/screens/Model-*.png docs/tasks/…` →
-   `asset: <tên> (Hunyuan3D-2 mini-turbo, seed <n>)`.
+Vì sao luồng này: 4 ảnh cho Hunyuan đủ dáng mọi phía; bản **đầy đủ** Hunyuan3D-2mv (không turbo) cho tóc / tai / đầu
+khớp ảnh nên màu chiếu từ chính bộ ảnh lên không lem; vật liệu không-sáng giữ đúng màu ảnh thiết kế ở mọi góc.
+
+1. **Ảnh**: `design/models/anh/<tên>-{truoc,trai,sau,phai}.png` (góc "trái" = nhìn từ bên trái nhân vật, mặt quay sang
+   trái ảnh). Thiếu / lệch chuẩn → phiếu `/ui-design`, dừng chờ. Đúng phong cách `design/scene/phong_cach.md`
+   (đệ tử: **vạt trái đè vạt phải**); chủ đề chưa có hồ sơ → gợi ý `/khao-cuu`.
+2. **Thử nhanh** (tuỳ, ~2 phút): `bash .claude/skills/tai-nguyen/scripts/nhan-vat.sh <tên> <scratchpad>/<tên>-nhanh --nhanh --seed 1234`
+   — bản turbo, để xem bộ ảnh có dựng ra dáng đúng không trước khi chạy thật.
+3. **Chạy thật** (nền, `run_in_background`; ~10 phút / seed):
+   `bash .claude/skills/tai-nguyen/scripts/nhan-vat.sh <tên> <scratchpad>/<tên> --seed 1234,7`
+   Lệnh làm hết: `mv_gen.py --day-du` (50 bước, octree 512) → `smooth.py --min 2` (16 000 tam giác) → `bake.py --jpg`
+   (UV xatlas, trộn 4 góc theo hướng mặt + che khuất, khớp khung từng góc + riêng đầu, chân tóc / tóc mai) →
+   `model:clean --khong-sang` (nén meshopt, `KHR_materials_unlit`, ~0,2 MB) → chụp Canvas 3D. Mỗi seed ra
+   `<tên>-s<seed>-final.glb`, `-so.png` (trên ảnh thiết kế · dưới model, 4 góc thẳng), `-6goc.png` (cận 6 góc).
+   Seed lỗi FlashVDM / không ra hình → thêm seed khác (42, 99).
+4. **Xem + chọn**: Read các `-so.png` / `-6goc.png`, soát: dáng khớp ảnh, chân tóc / thái dương / tóc mai, mặt, viền áo,
+   tay. Trình người dùng (đính đường dẫn ảnh), **hỏi chọn seed** — không tự quyết thẩm mỹ. Lỗi màu còn lại → sửa
+   `bake.py` (có cờ: `--bat-dong`, `--khong-chan-toc`, `--giu-toc-mai`, `--xem-toc-mai`, `--mu`), không vẽ tay.
+5. **Đưa vào**: chép bản chọn vào `design/models/<tên>.glb` (hoặc chạy lại với `--seed <n> --dat`); nhân vật chính:
+   kiểm đi / đứng (`?di&pha=0.25` trên Canvas 3D — xương tự gắn `autoRig` đo theo dáng chibi chữ A; dáng khác hẳn → báo
+   `/lead` chỉnh số đo `P`); chép ảnh so sánh sang `design/screens/Model-<tên>.png`, `-so-thiet-ke.png`; một dòng
+   `design/models/LICENSES.md`; mục `design/CHANGELOG.md`; `cd web && npm run build`.
+6. Commit chỉ các đường dẫn của mình: `asset: <tên> (Hunyuan3D-2mv đầy đủ, seed <n>)`.
+
+NPC (vd. Tiểu Mặc): cùng luồng, `<tên>` riêng (`tieu-mac`); app chưa nạp NPC `.glb` → kế hoạch `/lead` để đặt vào cảnh.
+
+## Dự phòng: chỉ có một ảnh
+
+1. **API**: `node .claude/skills/tai-nguyen/scripts/hunyuan.mjs kiem`. Không chạy → hướng dẫn người dùng: PowerShell trong
+   `C:i3d\Hunyuan3D2_WinPortable` → `.\RUN.bat` → *Program Parameters* → **"API 2.0 | For Blender Addon"** → *HTTP Service
+   Listen Address* `127.0.0.1` → *Save and Start* → chờ `Uvicorn running on …:8081`.
+2. **Tạo**: `node .claude/skills/tai-nguyen/scripts/hunyuan.mjs tao <ảnh> --ra <scratchpad>/<tên>-s<seed>.glb --seed <n>` (2–3 seed).
+3. **Mịn**: `smooth.py <thô.glb> <mịn.glb> --tam-giac 16000`; **tô màu** chiếu một phía: `atlas.py <ảnh> <atlas.png>` (`--phang 32`)
+   rồi `cd web && npm run model:paint -- <mịn> <atlas.png> --ra <màu>` (lưng mang hoạ tiết mặt trước). Đồ vật không cần mịn:
+   `npm run model:clean -- <file> --loai <loai> --ten <tên> --ra <ra.glb>`.
+4. Kết quả kém xa luồng chuẩn → khuyên người dùng xin bộ ảnh 4 góc qua `/ui-design`.
 
 `LICENSES.md` — bảng `| File | Công cụ + phiên bản | Ảnh đầu vào | Ngày | Giấy phép |`, vd.
-`| nhan-vat.glb | Hunyuan3D-2mini-turbo (WinPortable cu129) + model:clean | design/models/anh/nhan-vat.png (tự vẽ) | 2026-11-12 | Tencent Hunyuan Community License (không dùng ở EU / UK / Hàn) |`
+`| nhan-vat.glb | Hunyuan3D-2mv đầy đủ (WinPortable cu129, seed 1234, nhan-vat.sh) → smooth → bake → model:clean --khong-sang | anh/nhan-vat-{truoc,trai,sau,phai}.png | 2026-11-12 | Tencent Hunyuan Community License (không dùng ở EU / UK / Hàn) |`
 
 ## Ảnh từ Canvas 3D (dự phòng)
 
