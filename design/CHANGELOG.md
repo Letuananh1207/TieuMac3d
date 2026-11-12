@@ -3,6 +3,19 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-12.10 — Nhân vật: hết mảng da nhạt ở thái dương khi nhìn chếch
+
+- Loại: tài nguyên 3D — **ngoại hình**. Người dùng: "có vẫn làm tôi khó chịu" (mảng nhạt thái dương, mục .9 còn lại).
+- Nguyên nhân: ảnh trước và ảnh bên chiếu sáng khác nhau (mép mặt ảnh trước tối, má ảnh bên sáng); tóc model mỏng hơn
+  ảnh nên ở chân tóc / thái dương ảnh này là tóc, ảnh kia là da → trộn ra màu lai nhạt.
+- Sửa (`tai-nguyen/scripts/bake.py`): (1) đầu khớp **từng nửa** quanh trục giữa cổ; (2) trên đầu, các góc bất đồng về
+  **loại** (tóc ↔ da) → lấy tóc, da ↔ da (chỉ lệch sáng tối) → trộn mượt (thử "góc nhìn thẳng nhất thắng" khi lệch màu:
+  ra đường ranh cứng chéo qua má — bỏ); thân vẫn lấy góc nhìn thẳng nhất khi lệch màu > `--bat-dong` 90;
+  (3) điểm trên đầu cao hơn chân tóc trán (đo trên ảnh trước) mà mang màu da → màu tóc (`--khong-chan-toc` để tắt).
+  206 KB, 16 000 tam giác.
+- Còn: vệt tóc mai mảnh trước tai khi nhìn 3/4 (có trong ảnh thiết kế góc bên).
+- Ảnh: `screens/Model-nhan-vat.png` (6 góc), `screens/Model-nhan-vat-thai-duong.png` (cận 3/4: trên bản .9 · dưới bản này).
+
 ## 2026-11-12.9 — Nhân vật: màu đúng như bộ ảnh thiết kế (vật liệu không-sáng + khớp khung từng góc, riêng đầu)
 
 - Loại: tài nguyên 3D + code — **ngoại hình**. Người dùng (kèm 3 ảnh): "vẫn có sự lem màu khác màu ở đầu mặt trước và

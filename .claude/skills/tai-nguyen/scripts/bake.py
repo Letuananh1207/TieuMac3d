@@ -81,7 +81,9 @@ def img_head(m):
         if len(xs) and xs[-1] - xs[0] < best:
             best, neck = xs[-1] - xs[0], r
     xs = np.flatnonzero(m[r0:neck + 1].any(0))
-    return xs[0] / m.shape[1], (xs[-1] + 1) / m.shape[1], r0 / m.shape[0], neck / m.shape[0]
+    nx = np.flatnonzero(m[neck])
+    mid = (nx[0] + nx[-1] + 1) / 2 / m.shape[1]  # trục giữa đầu = giữa cổ
+    return xs[0] / m.shape[1], (xs[-1] + 1) / m.shape[1], r0 / m.shape[0], neck / m.shape[0], mid
 
 
 def model_head(u0, v0):
@@ -93,7 +95,9 @@ def model_head(u0, v0):
         if sel.sum() > 3 and np.ptp(u0[sel]) < best:
             best, neck = np.ptp(u0[sel]), c
     hd = v0 < neck
-    return u0[hd].min(), u0[hd].max(), vmin, neck
+    nb = np.abs(v0 - neck) < (hi - lo) / 50
+    mid = (u0[nb].min() + u0[nb].max()) / 2
+    return u0[hd].min(), u0[hd].max(), vmin, neck, mid
 
 # khớp khung từng góc: khung bao model chiếu theo góc đó ↦ khung nhân vật thật trong ảnh (model Hunyuan có tỉ lệ hơi
 # khác giả định đỉnh 10 % / đế 90 % / trục giữa → lệch vài % làm chân tóc, tai, mép viền đặt sai chỗ = vệt lem)
@@ -111,7 +115,7 @@ for k, (fu0, fv0) in _raw.items():
     mh = model_head(fu0(V), fv0(V))
     ih = img_head(masks[k])
     HEAD[k] = (mh, ih)
-    print(f'dau {k}: model u {mh[0]:.3f}-{mh[1]:.3f} v {mh[2]:.3f}-{mh[3]:.3f} | anh u {ih[0]:.3f}-{ih[1]:.3f} v {ih[2]:.3f}-{ih[3]:.3f}')
+    print(f'dau {k}: model u {mh[0]:.3f}|{mh[4]:.3f}|{mh[1]:.3f} v {mh[2]:.3f}-{mh[3]:.3f} | anh u {ih[0]:.3f}|{ih[4]:.3f}|{ih[1]:.3f} v {ih[2]:.3f}-{ih[3]:.3f}')
 
 
 def _blend(k, P):
@@ -124,11 +128,12 @@ def _blend(k, P):
 def fit_u(k):
     fu0 = _raw[k][0]
     um, uM, _, _, a0, a1, _, _ = FIT[k]
-    (hu0, hu1, _, _), (ha0, ha1, _, _) = HEAD[k]
+    (hu0, hu1, _, _, hc), (ha0, ha1, _, _, ac) = HEAD[k]
     def f(P):
         u0 = fu0(P)
         body = a0 + (u0 - um) / (uM - um) * (a1 - a0)
-        head = ha0 + (u0 - hu0) / (hu1 - hu0) * (ha1 - ha0)
+        # đầu: hai nửa khớp riêng quanh trục giữa (model không đối xứng tuyệt đối)
+        head = np.where(u0 < hc, ha0 + (u0 - hu0) / (hc - hu0) * (ac - ha0), ac + (u0 - hc) / (hu1 - hc) * (ha1 - ac))
         _, t = _blend(k, P)
         return head * (1 - t) + body * t
     return f
@@ -136,7 +141,7 @@ def fit_u(k):
 
 def fit_v(k):
     _, _, vm_, vM, _, _, b0, b1 = FIT[k]
-    (_, _, hv0, hv1), (_, _, hb0, hb1) = HEAD[k]
+    (_, _, hv0, hv1, _), (_, _, hb0, hb1, _) = HEAD[k]
     def f(P):
         v0, t = _blend(k, P)
         body = b0 + (v0 - vm_) / (vM - vm_) * (b1 - b0)
@@ -144,6 +149,25 @@ def fit_v(k):
         return head * (1 - t) + body * t
     return f
 VIEWS = {k: (d, fit_u(k), fd, fit_v(k)) for k, (d, fu, fd) in VIEWS.items()}
+neck_y = maxY - (HEAD['truoc'][0][3] - 0.1) / 0.8 * H  # độ cao cổ (model) từ góc trước
+
+# chân tóc trán (ảnh trước, dải giữa mặt): hàng đầu tiên từ đỉnh đầu xuống có màu da. Trên đầu, điểm cao hơn hàng này
+# mà mang màu da (do ảnh trước / bên chiếu trượt ở mép đầu — tóc model mỏng hơn ảnh) → đổi thành màu tóc (2026-11-12.10)
+def is_skin(c):
+    r, g, b = c[..., 0], c[..., 1], c[..., 2]
+    return (0.299 * r + 0.587 * g + 0.114 * b > 110) & (r - b > 20) & (b > 0.55 * r)
+_ih = HEAD['truoc'][1]
+_fi = imgs['truoc']
+_cols = slice(int((_ih[4] - 0.02) * IW), int((_ih[4] + 0.02) * IW))
+hair_v = _ih[3]
+for r in range(int(_ih[2] * IH), int(_ih[3] * IH)):
+    if is_skin(_fi[r, _cols]).mean() > 0.6:
+        hair_v = r / IH + float(opt('chan-toc', '0'))
+        break
+_hp = _fi[int(_ih[2] * IH):int(hair_v * IH), int(_ih[0] * IW):int(_ih[1] * IW)].reshape(-1, 3)
+_hl = _hp @ np.array([0.299, 0.587, 0.114])
+HAIR = np.median(_hp[_hl < 70], 0) if (_hl < 70).any() else np.array([40, 40, 45.0])
+print(f'chan toc anh truoc v {hair_v:.3f}, mau toc', HAIR.astype(int))
 
 # ---------- bộ đệm độ sâu từng góc (che khuất) ----------
 DB = 512
@@ -200,6 +224,7 @@ for f in idx:
     Nn /= np.linalg.norm(Nn, axis=1, keepdims=True) + 1e-9
     acc = np.zeros((len(P), 3), np.float32)
     wsum = np.zeros(len(P), np.float32)
+    cols, wts = [], []
     for k, (dirv, fu, fd, fv) in VIEWS.items():
         w = np.clip(Nn @ dirv, 0, 1) ** MU
         u = fu(P)
@@ -210,12 +235,41 @@ for f in idx:
         w = w * vis
         ii = np.clip((v * IH).astype(int), 0, IH - 1)
         jj = np.clip((u * IW).astype(int), 0, IW - 1)
-        acc += w[:, None] * imgs[k][ii, jj]
+        c = imgs[k][ii, jj]
+        acc += w[:, None] * c
         wsum += w
+        cols.append(c)
+        wts.append(w)
     # điểm không ảnh nào thấy rõ (dưới nách, hõm, chỉ thấy rất xiên) → để trống, lát nữa loang màu từ vùng áo bên cạnh
     # trong cùng mảnh UV (trước đây lấy đại ảnh gần nhất không kiểm che khuất → dính màu tay áo / nền)
     seen = wsum >= 0.02
     col = acc / np.maximum(wsum, 1e-6)[:, None]
+    # các ảnh bất đồng mạnh (một ảnh là da, ảnh kia là tóc — chân tóc / thái dương lệch vị trí) → không trộn (trộn ra màu
+    # lai nhạt), lấy ảnh nhìn thẳng vào điểm nhất
+    Cs = np.stack(cols, 1)
+    Ws = np.stack(wts, 1)
+    best = Ws.argmax(1)
+    cbest = Cs[np.arange(len(P)), best]
+    strong = Ws > 0.25 * Ws.max(1, keepdims=True)
+    diff = (np.abs(Cs - cbest[:, None, :]).sum(-1) * strong).max(1)
+    split = diff > float(opt('bat-dong', '90'))
+    # vùng đầu (trên cổ): bất đồng ở chân tóc / thái dương → lấy màu TỐI nhất trong các ảnh mạnh (tóc). Lệch vị trí vài mm
+    # là đổi hẳn da ↔ tóc; tóc nhích vào trong trông như tóc mai, còn da lấn vào tóc trông như hói.
+    lum = Cs @ np.array([0.299, 0.587, 0.114])
+    darkest = Cs[np.arange(len(P)), np.where(strong, lum, 1e9).argmin(1)]
+    head_pt = P[:, 1] > neck_y
+    # trên đầu chỉ cắt cứng khi bất đồng về LOẠI (ảnh này tóc, ảnh kia da). Da – da chỉ lệch sáng tối (ánh sáng mỗi ảnh
+    # khác nhau) → trộn mượt; cắt cứng ở đó thành đường ranh chéo qua má khi nhìn 3/4
+    dark_any = (np.where(strong, lum, 1e9) < 90).any(1)
+    light_any = (np.where(strong, lum, -1) >= 90).any(1)
+    head_split = head_pt & dark_any & light_any
+    body_split = split & ~head_pt
+    col[head_split] = darkest[head_split]
+    col[body_split] = cbest[body_split]
+    if '--khong-chan-toc' not in args:
+        above = head_pt & (VIEWS['truoc'][3](P) < hair_v) & is_skin(col)
+        dk = (darkest @ np.array([0.299, 0.587, 0.114])) < 90
+        col[above] = np.where(dk[above, None], darkest[above], HAIR)
     sub = tex[y0:y0 + inside.shape[0], x0:x0 + inside.shape[1]]
     hit = np.zeros_like(inside)
     hit[inside] = seen
