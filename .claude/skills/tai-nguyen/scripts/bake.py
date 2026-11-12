@@ -169,6 +169,44 @@ _hl = _hp @ np.array([0.299, 0.587, 0.114])
 HAIR = np.median(_hp[_hl < 70], 0) if (_hl < 70).any() else np.array([40, 40, 45.0])
 print(f'chan toc anh truoc v {hair_v:.3f}, mau toc', HAIR.astype(int))
 
+
+def bo_toc_mai(k):
+    """Ảnh bên: tẩy vệt tóc mai (phần tóc MẢNH nối khối tóc, thấp hơn chân tóc trán) → màu da xung quanh. Mắt / lông mày là
+    mảng tối riêng không nối tóc → giữ. Người dùng 2026-11-12: "phần màu đen ở mai đáng ra không có"."""
+    from scipy import ndimage as nd
+    im = imgs[k]
+    _, _, top, neck, _ = HEAD[k][1]
+    r0, r1 = int(top * IH), int(neck * IH)
+    reg = im[r0:r1]
+    lum = reg @ np.array([0.299, 0.587, 0.114])
+    hair = (lum < 90) & masks[k][r0:r1]
+    rad = max(3, int(0.012 * IW))  # vệt tóc mai rộng < 2·rad điểm ảnh
+    yy, xx = np.mgrid[-rad:rad + 1, -rad:rad + 1]
+    body = nd.binary_opening(hair, structure=(xx ** 2 + yy ** 2) <= rad * rad)
+    thin = hair & ~body
+    lab, n = nd.label(thin)
+    near_body = nd.binary_dilation(body, iterations=2)
+    rows = np.arange(r0, r1)[:, None] / IH
+    low = np.broadcast_to(rows > hair_v + 0.02, thin.shape)  # dưới chân tóc hẳn: không lẹm tóc thái dương
+    kill = np.zeros_like(thin)
+    for j in range(1, n + 1):
+        c = lab == j
+        if (c & near_body).any() and (c & low).sum() > 0.5 * c.sum() and c.sum() > rad * rad:
+            kill |= c
+    kill = nd.binary_dilation(kill, iterations=2) & masks[k][r0:r1] & ~body
+    skin = is_skin(reg) & ~kill
+    # tô: lấy màu da gần nhất (biến đổi khoảng cách)
+    _, (iy, ix) = nd.distance_transform_edt(~skin, return_indices=True)
+    reg[kill] = reg[iy[kill], ix[kill]]
+    print(f'bo toc mai {k}: {int(kill.sum())} diem anh')
+    return kill
+
+if '--giu-toc-mai' not in args:
+    _kill = {k: bo_toc_mai(k) for k in ('trai', 'phai')}
+    if '--xem-toc-mai' in args:
+        for k in ('trai', 'phai'):
+            Image.fromarray(imgs[k].clip(0, 255).astype(np.uint8)).save(os.path.splitext(out)[0] + f'-{k}.png')
+
 # ---------- bộ đệm độ sâu từng góc (che khuất) ----------
 DB = 512
 def raster(tri2d, values, size, buf, mode):
@@ -227,6 +265,8 @@ for f in idx:
     cols, wts = [], []
     for k, (dirv, fu, fd, fv) in VIEWS.items():
         w = np.clip(Nn @ dirv, 0, 1) ** MU
+        if k == 'truoc':  # đầu: ảnh trước nhìn quá xiên (mép tóc sát mặt) chiếu trượt sang bên đầu thành vệt cong đen
+            w = w * np.where(P[:, 1] > neck_y, np.clip((Nn[:, 2] - 0.3) / 0.2, 0, 1), 1)
         u = fu(P)
         v = fv(P)
         di = np.clip((v * DB).astype(int), 0, DB - 1)
@@ -267,7 +307,14 @@ for f in idx:
     col[head_split] = darkest[head_split]
     col[body_split] = cbest[body_split]
     if '--khong-chan-toc' not in args:
-        above = head_pt & (VIEWS['truoc'][3](P) < hair_v) & is_skin(col)
+        vf = VIEWS['truoc'][3](P)
+        # bỏ tóc mai: dưới chân tóc, ảnh trước thấy da (và thấy được điểm này) → chỉ trộn các ảnh có màu da; vệt tóc mai
+        # trước tai trong ảnh bên không vẽ lên má (người dùng 2026-11-12: "phần màu đen ở mai đáng ra không có")
+        sk = is_skin(Cs)
+        cheek = head_pt & (vf >= hair_v) & (Ws[:, 0] > 0) & sk[:, 0] & ~is_skin(col)
+        ws = Ws * sk
+        col[cheek] = (ws[cheek, :, None] * Cs[cheek]).sum(1) / np.maximum(ws[cheek].sum(1), 1e-6)[:, None]
+        above = head_pt & (vf < hair_v) & is_skin(col)
         dk = (darkest @ np.array([0.299, 0.587, 0.114])) < 90
         col[above] = np.where(dk[above, None], darkest[above], HAIR)
     sub = tex[y0:y0 + inside.shape[0], x0:x0 + inside.shape[1]]

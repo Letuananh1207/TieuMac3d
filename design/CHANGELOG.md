@@ -3,6 +3,17 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-12.11 — Nhân vật: bỏ vệt tóc mai đen trước tai
+
+- Loại: tài nguyên 3D — **ngoại hình**. Người dùng: "phần màu đen ở mai đáng ra không có".
+- Sửa (`tai-nguyen/scripts/bake.py`): ảnh bên tẩy phần tóc mảnh nối khối tóc, thấp hơn chân tóc trán → màu da quanh đó
+  (mắt / lông mày là mảng tối riêng → giữ; `--giu-toc-mai` để tắt, `--xem-toc-mai` ghi ảnh đã tẩy); trên đầu, ảnh trước
+  không dùng ở chỗ nhìn quá xiên (mép tóc sát mặt chiếu trượt sang bên đầu); dưới chân tóc, ảnh trước thấy da → chỉ trộn
+  các ảnh có màu da.
+- Còn: bên phải đầu vẫn một vệt mảnh ở mép tóc khi nhìn 3/4 — giới hạn của cách chiếu ảnh lên hình không khớp ảnh
+  (tóc model mỏng hơn ảnh); hướng xử lý tận gốc: tạo lại hình tốt hơn (xem báo cáo cùng ngày).
+- Ảnh: `screens/Model-nhan-vat.png`, `screens/Model-nhan-vat-thai-duong.png` (cận 3/4 hai bên).
+
 ## 2026-11-12.10 — Nhân vật: hết mảng da nhạt ở thái dương khi nhìn chếch
 
 - Loại: tài nguyên 3D — **ngoại hình**. Người dùng: "có vẫn làm tôi khó chịu" (mảng nhạt thái dương, mục .9 còn lại).
