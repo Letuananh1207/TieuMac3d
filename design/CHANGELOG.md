@@ -3,6 +3,18 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-12.14 — Model NPC Tiểu Mặc 小墨 (luồng chuẩn 4 góc)
+
+- Loại: tài nguyên 3D. Phiếu: `docs/phieu_thiet_ke/2026-11-12-anh-nhan-vat-3d.md` (đợt 2, ảnh mục .13).
+- Làm: `nhan-vat.sh tieu-mac` (Hunyuan3D-2mv đầy đủ, seed 1234 · 7) → người dùng chọn **seed 1234** →
+  `design/models/tieu-mac.glb` (16 000 tam giác, 243 KB, vật liệu không-sáng). Nướng `--giu-toc-mai` (thiết kế có tóc mai).
+- Sửa công cụ khi làm (`bake.py`): nền = vùng gần màu nền **nối ra mép ảnh** (áo trắng chỗ hơi tối gần trùng nền #DDDDDD bị
+  coi là nền → viền xanh loang khắp áo); cổ đo ở góc trước dùng chung mọi góc (đuôi ngựa / kiếm làm sai cổ ở góc bên);
+  cờ `--xien`. Nhân vật chính nướng lại bằng bản mới: không đổi. Thêm `xem.py` (xem tư thế gốc, không xương).
+- Còn: vệt nhạt nhỏ ở thái dương, tóc mai rủ dính liền má (Hunyuan dựng lọn tóc sát mặt) — chấp nhận.
+- Chưa đặt vào cảnh: app chưa nạp NPC `.glb` (xương tự gắn hiện đo theo nhân vật chính) → cần `/lead`.
+- Ảnh: `screens/Model-tieu-mac-so-thiet-ke.png` (trên ảnh thiết kế · dưới model, tư thế gốc), `screens/Model-tieu-mac-dau.png`.
+
 ## 2026-11-12.13 — Bộ ảnh nhiều góc NPC Tiểu Mặc 小墨 (đầu vào Hunyuan3D đa góc)
 
 - Loại: tài nguyên 3D — ảnh đầu vào. Phiếu: `docs/phieu_thiet_ke/2026-11-12-anh-nhan-vat-3d.md` (đợt 2).

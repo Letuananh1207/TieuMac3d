@@ -1,6 +1,6 @@
 # Phiếu: Bộ ảnh nhiều góc của nhân vật chính (đầu vào dựng model 3D bằng Hunyuan3D)
 
-- Trạng thái: đã áp (2026-11-12.4) — đợt 1 nhân vật chính; đợt 2 Tiểu Mặc còn chờ
+- Trạng thái: đã áp (2026-11-12.4 đợt 1 nhân vật chính · 2026-11-12.14 đợt 2 Tiểu Mặc — model xong, chưa đặt vào cảnh)
 - Đã vẽ: 2026-11-12.3 (đợt 1 — nhân vật chính; Tiểu Mặc chưa)
 - Đã vẽ: 2026-11-12.13 (đợt 2 — Tiểu Mặc; ảnh sau thiếu dây đỏ, đã chấp nhận)
 - Đợi bởi: skill `/tai-nguyen` — nâng model `design/models/nhan-vat.glb` (hiện màu loang ở hông / lưng vì chỉ có ảnh mặt
