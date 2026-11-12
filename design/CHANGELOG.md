@@ -10,6 +10,9 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
   `ARM_REST` = 0,5 rad (thử 0,35 · 0,5 · 0,65 — 0,35 còn dang, 0,65 tay áo cắm vào thân) → tay buông sát thân, đi vẫn vung
   nhẹ + khép thêm 0,04 rad.
 - Ảnh kiểm: Canvas 3D cận vai trước · nghiêng · sau · đang bước (chụp trong phiên).
+- Sửa cùng ngày (người dùng: "quá cứng nhắc quá gần thân"): `ARM_REST` 0,5 → **0,4** (tay tách thân một khe), tay đưa ra
+  trước `ARM_FORWARD` 0,12 rad; đứng: hai tay đung đưa khẽ theo nhịp thở lệch nhịp (trước / sau 0,04, ra / vào 0,03);
+  đi: vung 0,34 rad + mở ra ngoài 0,07 ở cuối mỗi nhịp.
 
 ## 2026-11-12.6 — Nhân vật: màu dưới nách liền áo; tay đi theo khi bước
 

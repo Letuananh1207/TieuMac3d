@@ -8,7 +8,9 @@ import type { Character } from './character';
 export const GLB_HEIGHT = 2.1;
 
 /** Góc hạ tay từ tư thế chữ A xuống buông xuôi (radian, quanh khớp vai). */
-const ARM_REST = 0.5;
+const ARM_REST = 0.4;
+/** Tay hơi đưa ra trước khi đứng thả lỏng (radian). */
+const ARM_FORWARD = 0.12;
 
 /**
  * Nhân vật từ file `.glb` (model AI đã làm sạch — docs/ai3d.md, quyết định 0003), cùng hợp đồng `Character` với đệ tử
@@ -117,12 +119,16 @@ export async function loadGlbCharacter(url: string): Promise<Character> {
       rig.legL.rotation.x = step * 0.55 * move;
       rig.legR.rotation.x = -step * 0.55 * move;
       // tay áo rộng: vung nhẹ (0,28 rad) + khép vào thân một chút khi đi cho gọn, không vung như cánh quạt
-      rig.armL.rotation.x = -step * 0.28 * move + Math.sin(time * 1.6) * 0.03 * still;
-      rig.armR.rotation.x = step * 0.28 * move + Math.sin(time * 1.6 + 1) * 0.03 * still;
+      // tay: hơi đưa ra trước; đi thì vung trước / sau ngược chân; đứng thì khẽ đung đưa theo nhịp thở, hai tay lệch nhịp
+      rig.armL.rotation.x = -ARM_FORWARD - step * 0.34 * move + Math.sin(time * 1.3) * 0.04 * still;
+      rig.armR.rotation.x = -ARM_FORWARD + step * 0.34 * move + Math.sin(time * 1.3 + 1.7) * 0.04 * still;
       // model AI dựng ở tư thế chữ A (dễ dựng / gắn xương); khi chơi hạ tay buông xuôi bên thân (ARM_REST) — tay trái ở
       // +x: âm = khép vào; đi thì khép thêm chút cho gọn
-      rig.armL.rotation.z = -(ARM_REST + 0.04 * move);
-      rig.armR.rotation.z = ARM_REST + 0.04 * move;
+      // mở ra ngoài nhẹ ở cuối mỗi nhịp vung (tay áo rộng), đứng thì ra vào rất khẽ theo nhịp thở
+      const swayL = Math.abs(step) * 0.07 * move + (Math.sin(time * 2) * 0.5 + 0.5) * 0.03 * still;
+      const swayR = Math.abs(step) * 0.07 * move + (Math.sin(time * 2 + 1.1) * 0.5 + 0.5) * 0.03 * still;
+      rig.armL.rotation.z = -(ARM_REST - swayL);
+      rig.armR.rotation.z = ARM_REST - swayR;
       rig.hips.rotation.y = step * 0.1 * move;
       rig.head.rotation.y = -step * 0.06 * move;
       // đứng: thở (nhấp nhô rất nhẹ), đầu nghiêng qua lại chậm
