@@ -49,7 +49,8 @@ async function boot(): Promise<void> {
   const placed = placeZones(ZONE_CONTENT, world.zoneAnchors);
 
   // ?nhan-vat=gau → gấu khối cũ, =khoi → đệ tử khối; mặc định như app (model .glb nếu có, không thì đệ tử khối)
-  const character = await createPlayerCharacter(new URLSearchParams(location.search).get('nhan-vat'));
+  // Canvas 3D mặc định nhân vật chibi (bản mẫu chờ duyệt — docs/tasks/2026-11-12-nhan-vat-chibi.md); nút ở bảng đổi
+  const character = await createPlayerCharacter(new URLSearchParams(location.search).get('nhan-vat') ?? 'chibi');
   // ?nv=x,z — đặt nhân vật chỗ khác (vd. trong giảng đường để xem nội thất, mái mờ)
   const nv = (new URLSearchParams(location.search).get('nv') ?? '').split(',').map(Number);
   const [sx, sz] = nv.length === 2 && nv.every(Number.isFinite) ? nv : spec.player.start;
@@ -203,11 +204,28 @@ async function boot(): Promise<void> {
   let first = true;
   const clock = new THREE.Clock();
   // ?di=0..1 — nhân vật đi tại chỗ với tốc độ đó (xem dáng đi / động tác); không có = đứng yên
-  const walkSpeed = Math.min(1, Math.max(0, Number(params.get('di') ?? 0) || 0));
+  let walkSpeed = Math.min(1, Math.max(0, Number(params.get('di') ?? 0) || 0));
   // ?pha=<radian> — đặt sẵn pha bước (1,57 = bước dài nhất) để chụp đúng một tư thế; dùng cùng ?di=1
   // ?bieu-cam=binh|chao|doc|nghi|vui|dinh-muc|ngu — nhân vật chibi đổi biểu cảm
+  const setFace = (e: string): void => {
+    if ('setExpression' in character) (character as { setExpression(e: string): void }).setExpression(e);
+  };
   const expr = params.get('bieu-cam');
-  if (expr && 'setExpression' in character) (character as { setExpression(e: string): void }).setExpression(expr);
+  if (expr) setFace(expr);
+  // nút ở bảng: đổi nhân vật (nạp lại trang với ?nhan-vat=), biểu cảm (tức thì), đi tại chỗ
+  for (const b of el('pickChar').querySelectorAll<HTMLButtonElement>('button')) {
+    b.addEventListener('click', () => {
+      const p = new URLSearchParams(location.search);
+      p.set('nhan-vat', b.dataset.nv ?? 'chibi');
+      location.search = p.toString();
+    });
+  }
+  for (const b of el('pickFace').querySelectorAll<HTMLButtonElement>('button')) {
+    b.addEventListener('click', () => setFace(b.dataset.bc ?? 'binh'));
+  }
+  const walkBox = el<HTMLInputElement>('walkToggle');
+  walkBox.checked = walkSpeed > 0;
+  walkBox.addEventListener('change', () => (walkSpeed = walkBox.checked ? 1 : 0));
   const phase = Number(params.get('pha'));
   if (Number.isFinite(phase) && phase > 0) character.animate(phase / 10, 1);
   function tick(): void {
