@@ -8,7 +8,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { NodeIO } from '@gltf-transform/core';
 import { ALL_EXTENSIONS } from '@gltf-transform/extensions';
-import { meshopt, unweld } from '@gltf-transform/functions';
+import { meshopt, normals, unweld, weld } from '@gltf-transform/functions';
 import { MeshoptDecoder, MeshoptEncoder } from 'meshoptimizer';
 
 const args = process.argv.slice(2);
@@ -19,14 +19,15 @@ if (!input || !atlasPath) {
   process.exit(1);
 }
 const out = resolve(opt('ra', input));
-const MARGIN = 0.012; // lấy mẫu lùi vào trong một chút: mép model không ăn nền / nét viền
+const MARGIN = 0.03; // lấy mẫu lùi vào trong một chút: mép model không ăn nền / nét viền
 
 await Promise.all([MeshoptDecoder.ready, MeshoptEncoder.ready]);
 const io = new NodeIO()
   .registerExtensions(ALL_EXTENSIONS)
   .registerDependencies({ 'meshopt.decoder': MeshoptDecoder, 'meshopt.encoder': MeshoptEncoder });
 const doc = await io.read(resolve(input));
-await doc.transform(unweld());
+// pháp tuyến mịn tính trên lưới còn hàn đỉnh (L-2): tách đỉnh rồi mới tính → mỗi tam giác sáng một kiểu, mặt loang lổ
+await doc.transform(weld(), normals({ overwrite: true }), unweld());
 
 const root = doc.getRoot();
 const tex = doc.createTexture('chieu-truoc').setImage(readFileSync(resolve(atlasPath))).setMimeType('image/png');

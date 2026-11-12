@@ -18,6 +18,31 @@ Mức độ:
 
 ## Đang mở
 
+### L-2 · Nhân vật .glb: mặt loang lổ, sống mũi gồ, vệt trắng ở tai / cạnh đầu
+
+- Trạng thái: chờ thử máy · Mức độ: khó chịu (nhân vật chính nhìn lỗi ở mọi khung hình) · Phần: nhân vật, model .glb
+  (`player/glbCharacter.ts`, `web/scripts/model-paint.mjs`, `tai-nguyen/scripts/atlas.py`) · Quy tắc: chưa có
+- Báo: 2026-11-12 — "nhân vật đang bị lỗi và đang khá cứng đờ tôi cần có động tác" (kèm ảnh)
+- Các bước: 1. `cd web && npm run dev`, mở Chrome. 2. Nhìn nhân vật ở góc chơi.
+- Mong đợi / thực tế: mặt mịn, màu như ảnh gốc / mặt chia mảng sáng tối rõ từng tam giác, mũi gồ, tai và cạnh đầu có
+  vệt trắng xám.
+- Bằng chứng: ảnh người dùng chụp trên Chrome (`npm run dev`).
+- "Cứng đờ, cần động tác" là tính năng mới → kế hoạch `docs/tasks/2026-11-12-dong-tac-nhan-vat.md`.
+
+**Sửa**
+- Nguyên nhân: (1) model Hunyuan không có pháp tuyến; `model:paint` tách đỉnh (unweld) rồi app tự tính pháp tuyến →
+  mỗi tam giác một pháp tuyến riêng → mặt chia mảng sáng tối. (2) mép model (tai, cạnh đầu, hông) lấy mẫu trúng nền xám
+  + nét viền của ảnh chiếu. Mũi gồ là hình khối Hunyuan dựng + giảm còn 9 500 tam giác — giảm nhẹ được, không hết.
+- Test: chưa khoá được bằng test (hình ảnh — kiểm bằng chụp Canvas 3D `?chup&nv=0,80&cam=…`, trước / nghiêng / sau).
+- Code: `web/scripts/model-paint.mjs` (weld → `normals()` → unweld; lấy mẫu lùi vào 3 %), `.claude/skills/tai-nguyen/
+  scripts/atlas.py` (bỏ 3 px mép + lan màu bên trong ra phủ nền), model chạy lại → `design/models/nhan-vat.glb`.
+- Còn lại: vạt áo dưới có vài vệt lam (mép áo), mặt hơi gợn — muốn sạch hẳn cần tô màu thật của Hunyuan (MSVC).
+- Thử máy: `cd web && npm run dev` → Chrome, nhìn mặt / tai / vạt áo ở góc chơi và khi xoay quanh.
+- Commit: …
+
+**Lịch sử**
+- 2026-11-12: ghi; sửa pháp tuyến + lan màu mép (chờ thử máy).
+
 ### L-1 · Chạy app trên máy tính (Windows) / web báo lỗi build
 
 - Trạng thái: chờ thử máy · Mức độ: chặn dùng (không mở được app trên máy tính) · Phần: app Flutter, WebView · Quy tắc: chưa có

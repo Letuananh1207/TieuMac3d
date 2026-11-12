@@ -52,7 +52,8 @@ Giao diện 2D (HUD, màn, thẻ) → `/ui-design`. Model AI (.glb) → `/tai-ng
 ## Canvas 3D
 
 - Tham số URL: `?view=tren | ca-san` · `?cam=x,y,z&tam=x,z` (camera nhìn điểm) · `?nv=x,z` (đặt nhân vật; trong nhà
-  thì mái mờ sẵn) · `?nhan-vat=khoi | gau` (đệ tử khối / gấu thay model .glb) · `?chup` (ẩn bảng + lớp phủ — ảnh sạch).
+  thì mái mờ sẵn) · `?nhan-vat=khoi | gau` (đệ tử khối / gấu thay model .glb) · `?chup` (ẩn bảng + lớp phủ — ảnh sạch) · `?di=0..1`
+  (nhân vật đi tại chỗ) · `?pha=1.57` (đặt pha bước để chụp một tư thế, dùng với `?di=0`).
 - Bảng "Hiệu năng": draw call · tam giác (không tính lớp phủ) · vật cản.
 - **Đăng**: `Artifact` `action: list, scope: files` trên link → chỉ gửi file đổi (`design.html` + `assets/<file mới>`),
   `null` cho file cũ đã thay (tên có hash). Lần đầu chưa có link → tạo mới, ghi vào `design/scene/README.md`.

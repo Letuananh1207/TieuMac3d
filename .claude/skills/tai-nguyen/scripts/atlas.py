@@ -39,7 +39,9 @@ ImageDraw.floodfill(solid, (cx, cy), 128, thresh=0)
 box = solid.point(lambda v: 255 if v == 128 else 0).getbbox()
 front = im.crop(box)
 
-# lan màu bên trong ra phủ nền + viền ngoài (cạnh hông model lấy màu áo, không lấy nền / nét viền)
+# lan màu bên trong ra phủ nền + nét viền ngoài (L-2): cạnh tai / hông model lấy màu da / áo, không lấy nền xám hay nét
+# viền. Bỏ 3 px mép (nét viền + răng cưa), rồi mỗi lượt điểm nền nhận màu của điểm có màu kề bên (8 hướng).
+from PIL import ImageChops
 fw, fh = front.size
 fp = front.load()
 mask = Image.new('L', (fw, fh), 0)
@@ -47,12 +49,17 @@ mp = mask.load()
 for y in range(fh):
     for x in range(fw):
         mp[x, y] = 0 if is_bg(fp[x, y]) else 255
-mask = mask.filter(ImageFilter.MinFilter(5))  # bỏ nét viền ngoài
-filled = front.copy()
-for _ in range(12):
-    grown = filled.filter(ImageFilter.MaxFilter(3)) if False else filled.filter(ImageFilter.BoxBlur(2))
-    filled = Image.composite(front, grown, mask)
-    mask = mask.filter(ImageFilter.MaxFilter(3))
+mask = mask.filter(ImageFilter.MinFilter(7))
+filled = Image.composite(front, Image.new('RGB', (fw, fh)), mask)
+dirs = [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (-1, -1), (1, -1), (-1, 1)]
+for step in range(40):
+    for dx, dy in dirs:
+        s = 1 + step // 8  # bước xa dần để phủ nhanh
+        shifted = ImageChops.offset(filled, dx * s, dy * s)
+        smask = ImageChops.offset(mask, dx * s, dy * s)
+        take = ImageChops.subtract(smask, mask)  # chỗ chưa có màu mà hàng xóm có
+        filled = Image.composite(shifted, filled, take)
+        mask = ImageChops.lighter(mask, take)
 front = filled.resize((size, size), Image.LANCZOS)
 
 # mặt sau: da (cam nhạt) ở nửa trên → tóc; bỏ chi tiết mặt (mắt, miệng) cũng nằm trong vùng da

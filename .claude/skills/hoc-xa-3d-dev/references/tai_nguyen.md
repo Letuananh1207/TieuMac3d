@@ -10,7 +10,7 @@ skill `/tai-nguyen` (Hunyuan3D trên máy người dùng). Mọi thứ đóng g�
 | file model (người dùng / `/tai-nguyen` đặt) | `design/models/<tên>.glb` + `design/models/LICENSES.md` |
 | nhân vật chính | `design/models/nhan-vat.glb` → `player/playerCharacter.ts` (`import.meta.glob` `?url`, Vite gói vào `dist/assets`) |
 | nạp + chuẩn hoá | `player/glbCharacter.ts`: `GLTFLoader` + `MeshoptDecoder` (`three/examples/jsm`), co về cao `GLB_HEIGHT` 2,1 m, chân y 0, tâm về gốc, mặt trước +z; vật liệu → Lambert (giữ màu / map / màu đỉnh); thiếu pháp tuyến → `computeVertexNormals` |
-| động tác | clip tên chứa `idle` / `walk` → `AnimationMixer`, trộn theo tốc độ; không có clip → nhún + nghiêng |
+| động tác | clip tên chứa `idle` / `walk` → `AnimationMixer`, trộn theo tốc độ; không có clip → `player/autoRig.ts` tự gắn 7 xương (hông, đầu, tay, chân) theo tỉ lệ chibi chữ A (`P`), trọng số mềm, rồi đi / đứng lập trình (chân so le, tay vung ngược, thở, nghiêng đầu). Thuộc tính meshopt lượng tử hoá phải đổi sang Float32 trước khi biến đổi (`toFloat`) |
 | chọn / dự phòng | `createPlayerCharacter(?nhan-vat)`: `gau` · `khoi` · mặc định .glb; lỗi nạp → đệ tử khối (`console.warn`) |
 | tô màu bằng chiếu ảnh | `npm run model:paint -- <model.glb> <atlas.png> [--ra]` (`scripts/model-paint.mjs`): tách đỉnh, UV chiếu từ trước theo khung bao (tam giác quay trước → nửa trái atlas, quay sau → nửa phải), vật liệu nhám; atlas làm bằng `.claude/skills/tai-nguyen/scripts/atlas.py` |
 | làm sạch | `cd web && npm run model:clean -- <in.glb> [--loai nhan-vat\|cong-trinh] [--ten] [--ra]` (`scripts/model-clean.mjs`, glTF-Transform + meshoptimizer — gói dev ghim): dedup, weld, simplify về ngân sách, prune, nén meshopt; báo vượt |

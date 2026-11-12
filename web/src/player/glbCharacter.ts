@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
+import { autoRig, type Rig } from './autoRig';
 import type { Character } from './character';
 
 /** Chiều cao nhân vật sau khi nạp (m) — bằng đệ tử khối (búi tóc ~2,1 m), thước chuẩn của cảnh. */
@@ -55,7 +56,6 @@ export async function loadGlbCharacter(url: string): Promise<Character> {
   const bob = new THREE.Group(); // nhún khi không có clip
   root.add(body);
   body.add(bob);
-  bob.add(model);
 
   // bóng giả như đệ tử khối (không shadow realtime — quy tắc 4)
   const shadow = new THREE.Mesh(
@@ -71,6 +71,15 @@ export async function loadGlbCharacter(url: string): Promise<Character> {
   const idleClip = clip('idle');
   const walkClip = clip('walk');
   const mixer = idleClip || walkClip ? new THREE.AnimationMixer(model) : null;
+  // không có clip (model AI chưa gắn xương) → tự gắn xương để có động tác đi / đứng lập trình sẵn
+  let rig: Rig | null = null;
+  if (mixer) bob.add(model);
+  else {
+    const rigged = autoRig(model, GLB_HEIGHT);
+    rig = rigged.rig;
+    bob.add(rigged.group);
+  }
+  const hipY = rig ? rig.hips.position.y : 0;
   const idle = mixer && idleClip ? mixer.clipAction(idleClip) : null;
   const walk = mixer && walkClip ? mixer.clipAction(walkClip) : null;
   idle?.play();
@@ -78,6 +87,7 @@ export async function loadGlbCharacter(url: string): Promise<Character> {
 
   let move = 0; // 0..1, mượt theo tốc độ
   let walkT = 0;
+  let time = 0;
   return {
     root,
     facing: body,
@@ -89,12 +99,28 @@ export async function loadGlbCharacter(url: string): Promise<Character> {
         mixer.update(dt);
         return;
       }
-      // không có clip: nhún theo bước + nghiêng nhẹ về trước khi đi
+      time += dt;
       if (speed > 0.05) walkT += dt * 10 * speed;
       else walkT *= 0.85;
-      bob.position.y = Math.abs(Math.sin(walkT)) * 0.06;
-      bob.rotation.x = 0.06 * move;
-      bob.rotation.z = Math.sin(walkT) * 0.03 * move;
+      const step = Math.sin(walkT);
+      bob.position.y = Math.abs(step) * 0.05 * move;
+      bob.rotation.x = 0.05 * move; // hơi đổ người về trước khi đi
+      if (!rig) {
+        bob.rotation.z = step * 0.03 * move;
+        return;
+      }
+      const still = 1 - move;
+      // đi: chân bước so le, tay vung ngược chân, hông xoay nhẹ, đầu bù lại cho thẳng
+      rig.legL.rotation.x = step * 0.55 * move;
+      rig.legR.rotation.x = -step * 0.55 * move;
+      rig.armL.rotation.x = -step * 0.5 * move + Math.sin(time * 1.6) * 0.04 * still;
+      rig.armR.rotation.x = step * 0.5 * move + Math.sin(time * 1.6 + 1) * 0.04 * still;
+      rig.hips.rotation.y = step * 0.1 * move;
+      rig.head.rotation.y = -step * 0.06 * move;
+      // đứng: thở (nhấp nhô rất nhẹ), đầu nghiêng qua lại chậm
+      rig.hips.position.y = hipY + Math.sin(time * 2) * 0.012 * still;
+      rig.head.rotation.z = Math.sin(time * 1.1) * 0.05 * still;
+      rig.head.rotation.x = Math.sin(time * 0.7) * 0.03 * still;
     },
   };
 }
