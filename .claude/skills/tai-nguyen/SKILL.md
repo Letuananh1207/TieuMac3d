@@ -1,7 +1,7 @@
 ---
 name: tai-nguyen
 description: Tài nguyên 3D (資源) Học Xá 3D — phối hợp với Hunyuan3D chạy trên máy người dùng để tạo model .glb (nhân vật, công trình nổi bật) từ ảnh, làm sạch về ngân sách điện thoại, đặt vào design/models/, ghi giấy phép, chụp so với bản dựng bằng khối để người dùng chọn. Dùng khi người dùng gõ /tai-nguyen, hoặc nói "tạo model", "dùng Hunyuan", "AI vẽ 3D", "thay nhân vật bằng model", "model .glb", "Hunyuan lỗi / không chạy".
-argument-hint: "[kiem | nhan-vat [<ảnh | mô tả>] | cong-trinh <tên> [<ảnh | mô tả>] | lam-sach <file.glb> [loai] [ten] | ds | sua-loi <lỗi dán vào>]"
+argument-hint: "[<mong muốn bằng lời> | kiem | nhan-vat [<ảnh | mô tả>] | cong-trinh <tên> [<ảnh | mô tả>] | lam-sach <file.glb> [loai] [ten] | ds | sua-loi <lỗi dán vào>]"
 ---
 
 # /tai-nguyen — tạo tài nguyên 3D bằng Hunyuan3D
@@ -14,6 +14,7 @@ Quyết định: `.claude/skills/hoc-xa-3d-dev/decisions/0003-tai-san-ai.md` (la
 
 | Lệnh | Làm gì |
 |---|---|
+| `/tai-nguyen <mong muốn bằng lời>` | **Một bước**: tự khảo cứu → tự chọn hướng → soạn phiếu ảnh 4 góc → đẩy lên `main` cho `/ui-design` (mục dưới) |
 | `/tai-nguyen kiem` | API Hunyuan có chạy không; model nào đang có trong `design/models/` |
 | `/tai-nguyen nhan-vat [<ảnh> \| <mô tả>]` | tạo nhân vật chính → `design/models/nhan-vat.glb` (app tự dùng) |
 | `/tai-nguyen cong-trinh <tên> [<ảnh> \| <mô tả>]` | tạo công trình → `design/models/<tên>.glb` (chưa đặt vào cảnh — cần code, xem cuối) |
@@ -33,6 +34,32 @@ Quyết định: `.claude/skills/hoc-xa-3d-dev/decisions/0003-tai-san-ai.md` (la
 - Ghi: `design/models/*.glb`, `design/models/LICENSES.md`, `design/CHANGELOG.md`, ảnh `design/screens/Model-<tên>*.png`.
   **Không** sửa code `web/` `app/`; cần code (vd. NPC chưa có chỗ đặt) → kế hoạch `/lead`.
 - Ảnh có bản quyền (phim, game, truyện) không làm đầu vào cho tài nguyên đưa vào app — nhắc người dùng.
+
+## Một bước: mong muốn → khảo cứu → phiếu `/ui-design` (mặc định, chốt 2026-11-12)
+
+Người dùng chỉ nêu mong muốn (vd. `/tai-nguyen lão sư phụ giữ Tàng Kinh Các`, `/tai-nguyen lò luyện đan ở Đan Phòng`).
+Tham số không khớp lệnh nào trong bảng → luồng này. **Không hỏi giữa chừng**; chỉ hỏi khi mong muốn mơ hồ đến mức
+không đoán được nó là gì.
+
+1. **Khoanh**: nhân vật (chính / NPC) hay công trình / đồ vật; đặt `<tên>` không dấu (vd. `su-phu`, `lo-dan`); thuộc
+   khu nào trong `design/scene/tong_mon.md`; có đáng làm bằng AI không (quyết định 0003: nhân vật + 1–2 công trình nổi
+   bật — vật nhỏ / lặp nhiều nên dựng bằng code → nói ngắn và đề xuất `/canh` thay vì làm).
+2. **Khảo cứu tự động**: đọc skill `khao-cuu` (mục "Đọc trước", "Nghiên cứu một chủ đề", "Bản quyền") và làm theo —
+   hồ sơ đã có trong `docs/tham_khao/` thì dùng lại, thiếu thì WebSearch rồi ghi hồ sơ `docs/tham_khao/<tên>.md` + dòng
+   `README.md`. Có nhiều hướng đúng → **tự chọn** hướng hợp nhất với `design/scene/phong_cach.md`, bảng màu đã chốt, vai
+   trong tông môn và nhân vật / model đã có; ghi hướng đã chọn + các hướng bỏ (một dòng lý do) vào mục "Hướng" của hồ sơ,
+   trạng thái `đã chọn hướng (Claude, một bước)`.
+3. **Phiếu**: `docs/phieu_thiet_ke/<YYYY-MM-DD>-anh-<tên>.md`, trạng thái `chờ thiết kế`, theo mẫu
+   `docs/phieu_thiet_ke/2026-11-12-anh-nhan-vat-3d.md` (giữ nguyên toàn bộ "Yêu cầu kỹ thuật"; công trình / đồ vật bỏ
+   ảnh `mat` và tư thế chữ A, thay bằng: đặt trên mặt đất, nhìn ngang tầm mắt, 4 góc trước / trái / sau / phải cùng tâm
+   xoay). Phần ngoại hình viết từ hồ sơ: hình dáng, màu hex, chất liệu, chi tiết nhận diện, sai thường gặp cần tránh,
+   tỉ lệ (chibi cho nhân vật). Giao nộp: `design/models/anh/<tên>-{truoc,trai,sau,phai}.png` (+ `-mat`).
+4. **Đẩy sang `/ui-design`**: `git add` chỉ hồ sơ + phiếu của mình → commit `phieu: anh <tên> (tai-nguyen một bước)` →
+   `git push origin main` (người dùng đã cho phép đẩy phiếu theo luồng này). Phiên `/ui-design` tự thấy phiếu
+   `chờ thiết kế` trên `main`.
+5. **Báo** (ngắn): nó là gì + hướng đã chọn trong 3–5 dòng, đường dẫn hồ sơ + phiếu, rồi in khối "Dán vào canvas" trong
+   khối code (dự phòng khi phiên thiết kế không đọc repo). Bước của người dùng: mở `/ui-design` → làm theo phiếu → "chốt".
+   Ảnh về `main` → người dùng gõ `/tai-nguyen nhan-vat <tên>` (hoặc `cong-trinh <tên>`) để dựng model (luồng chuẩn dưới).
 
 ## Luồng chuẩn: nhân vật từ bộ ảnh 4 góc (chốt 2026-11-12.12)
 

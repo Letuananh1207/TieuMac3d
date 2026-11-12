@@ -28,6 +28,8 @@ Chỉ đọc, không sửa gì, không tự chạy lệnh nào.
      góp ý trên canvas → "chốt" → `git pull` rồi `/ui-apply`
    - cảnh 3D (bố cục, nhà, địa hình, nước, cây, màu, ánh sáng, camera): `/canh <yêu cầu>` → xoay, góp ý trên Canvas
      3D → `/canh chot` → `/ui-apply` (kiểm luật rồi build cho app). Cần kiểu vật mới → "Cần code" → `/lead`
+   - nhân vật / tài nguyên mới chỉ từ mong muốn: `/tai-nguyen <mong muốn>` → Claude tự khảo cứu + đẩy phiếu ảnh →
+     `/ui-design` làm ảnh → `/tai-nguyen nhan-vat <tên>` dựng model
    - model 3D bằng AI (nhân vật, công trình nổi bật): mở Hunyuan3D chế độ API (`/tai-nguyen kiem` chỉ cách) →
      `/tai-nguyen nhan-vat <ảnh | mô tả>` → chọn bản đẹp nhất → commit; Hunyuan lỗi: `/tai-nguyen sua-loi <lỗi>`
    - nghiên cứu phong cách cổ trang / tiên hiệp: `/khao-cuu <chủ đề>` → chọn hướng → `/khao-cuu phieu <hồ sơ>` →

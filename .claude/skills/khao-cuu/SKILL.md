@@ -24,6 +24,7 @@ Người **khảo cứu** đứng giữa người dùng và phiên thiết kế:
   canvas, `scene.json`, code `web/` `app/`, sổ quy tắc — muốn đổi thì đưa thành đề xuất / phiếu.
 - Không tự quyết thẩm mỹ thay người dùng: có nhiều hướng đúng (vd. Đường hoành tráng vs. Tống thanh nhã) thì trình
   2–3 hướng kèm ví dụ, hỏi chọn.
+  Ngoại lệ: được gọi từ `/tai-nguyen <mong muốn>` (luồng một bước) → tự chọn hướng hợp nhất, ghi lý do + hướng bỏ trong hồ sơ.
 - Người dùng là dev Flutter chưa làm game: thuật ngữ kiến trúc / trang phục ghi kèm chữ Hán + giải thích một dòng.
 
 ## Đọc trước
