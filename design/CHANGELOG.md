@@ -3,6 +3,18 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-12.6 — Nhân vật: màu dưới nách liền áo; tay đi theo khi bước
+
+- Loại: tài nguyên 3D + code động tác — **ngoại hình**. Người dùng báo (kèm ảnh): "hiệu ứng tay khi nhân vật di chuyển
+  đang rất xấu và ở dưới vùng cánh tay mực vẫn bị khác so với các vùng khác".
+- Màu dưới nách: vùng bị tay che ở cả 4 ảnh trước đây lấy đại ảnh gần nhất (không kiểm che khuất) → dính màu tay áo / nền.
+  `bake.py`: điểm không ảnh nào thấy rõ để trống rồi loang màu từ vùng áo bên cạnh. 252 KB.
+- Tay khi đi (`web/src/player/autoRig.ts`, `glbCharacter.ts`): đo mặt cắt model → vai 53 % H / 17 % W, bàn tay xuống tới
+  26 % H, mép thân xoè 17 → 25 % W. Trước: vùng "tay" bỏ sót bàn tay (bàn tay đứng yên, tay áo kéo giãn) + khớp vai đặt
+  theo tỉ lệ đoán. Nay: tay = phần ngoài ranh giới chéo vai → mép thân, gồm bàn tay; vung 0,28 rad (trước 0,5), khép vào
+  thân 0,05 rad khi đi.
+- Ảnh kiểm: Canvas 3D `?nhan-vat=glb&di=0&pha=1.57` / `4.71` (chụp trong phiên, không lưu).
+
 ## 2026-11-12.5 — Nhân vật: nướng texture trộn 4 góc (hết lem mặt, màu áo đều)
 
 - Loại: tài nguyên 3D — **ngoại hình** nhân vật. Người dùng báo (kèm ảnh): "vẫn còn các màu mực lem không đồng nhất

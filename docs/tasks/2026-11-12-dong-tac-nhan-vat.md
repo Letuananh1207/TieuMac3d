@@ -21,3 +21,6 @@ trình), `designPreview.ts` (`?di=0..1` đi tại chỗ, `?pha=` đặt pha bư�
 
 ## Kiểm tra cuối
 cd web && npx tsc --noEmit && npm run build · dart tool/check.dart --changed · chụp Canvas 3D
+
+## Lịch sử
+- 2026-11-12: người dùng chê tay khi đi → đo mặt cắt model, sửa vùng tay (gồm bàn tay, ranh giới chéo vai → mép thân), khớp vai đúng chỗ, vung 0,28 rad + khép 0,05 rad (design 2026-11-12.6).

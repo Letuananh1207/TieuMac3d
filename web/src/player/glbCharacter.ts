@@ -113,8 +113,11 @@ export async function loadGlbCharacter(url: string): Promise<Character> {
       // đi: chân bước so le, tay vung ngược chân, hông xoay nhẹ, đầu bù lại cho thẳng
       rig.legL.rotation.x = step * 0.55 * move;
       rig.legR.rotation.x = -step * 0.55 * move;
-      rig.armL.rotation.x = -step * 0.5 * move + Math.sin(time * 1.6) * 0.04 * still;
-      rig.armR.rotation.x = step * 0.5 * move + Math.sin(time * 1.6 + 1) * 0.04 * still;
+      // tay áo rộng: vung nhẹ (0,28 rad) + khép vào thân một chút khi đi cho gọn, không vung như cánh quạt
+      rig.armL.rotation.x = -step * 0.28 * move + Math.sin(time * 1.6) * 0.03 * still;
+      rig.armR.rotation.x = step * 0.28 * move + Math.sin(time * 1.6 + 1) * 0.03 * still;
+      rig.armL.rotation.z = -0.05 * move; // tay trái ở +x: âm = khép vào
+      rig.armR.rotation.z = 0.05 * move;
       rig.hips.rotation.y = step * 0.1 * move;
       rig.head.rotation.y = -step * 0.06 * move;
       // đứng: thở (nhấp nhô rất nhẹ), đầu nghiêng qua lại chậm

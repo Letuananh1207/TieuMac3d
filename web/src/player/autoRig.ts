@@ -7,13 +7,17 @@ import * as THREE from 'three';
  */
 
 /** Tỉ lệ dáng chibi (phần của chiều cao / bề rộng) — chỉnh nếu model khác dáng. */
+/** Đo trên model nhân vật chính (2026-11-12, mặt cắt ngang theo độ cao): vai ở 53 % H, cách trục 17 % W; bàn tay
+ *  thấp tới 26–32 % H; mép thân (áo xoè) rộng dần từ 17 % W ở vai tới 25 % W ngang bàn tay. W = bề ngang cả hai tay. */
 const P = {
   hip: 0.32, // gốc thân (xoay nhẹ khi đi)
   neck: 0.6, // trên đây là đầu
-  shoulderY: 0.55,
-  shoulderX: 0.2, // |x| / W vượt mức này là tay
+  shoulderY: 0.53,
+  shoulderX: 0.17,
+  /** mép thân ở độ cao bàn tay (|x| / W) — ranh giới thân / tay chạy chéo từ vai xuống đây */
+  torsoLowX: 0.25,
+  handY: 0.26, // đáy bàn tay
   legTop: 0.15, // dưới đây là chân (lộ ra dưới vạt áo)
-  legX: 0.0,
 };
 
 export interface Rig {
@@ -97,7 +101,11 @@ export function autoRig(model: THREE.Object3D, height: number): { group: THREE.G
       const ax = Math.abs(v.x) / W;
       const side = v.x >= 0 ? 'L' : 'R';
       const wHead = smooth(P.neck - 0.03, P.neck + 0.03, y);
-      const wArm = (1 - wHead) * smooth(P.shoulderX - 0.02, P.shoulderX + 0.06, ax) * smooth(0.3, 0.38, y);
+      // tay = phần ngoài ranh giới chéo vai → mép thân dưới, gồm cả bàn tay (trước đây bàn tay đứng yên → tay áo bị kéo giãn)
+      const t = Math.min(1, Math.max(0, (P.shoulderY - y) / (P.shoulderY - P.handY)));
+      const edge = P.shoulderX + (P.torsoLowX - P.shoulderX) * t;
+      const wArm =
+        (1 - wHead) * smooth(edge - 0.01, edge + 0.04, ax) * smooth(P.handY - 0.03, P.handY, y) * (1 - smooth(P.shoulderY + 0.01, P.shoulderY + 0.05, y));
       const wLeg = (1 - smooth(P.legTop - 0.05, P.legTop + 0.02, y)) * smooth(0.0, 0.04, ax + 0.04);
       const wBody = Math.max(0, 1 - wHead - wArm - wLeg);
       const pairs: [THREE.Bone, number][] = [

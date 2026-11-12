@@ -132,23 +132,15 @@ for f in idx:
         jj = np.clip((u * IW).astype(int), 0, IW - 1)
         acc += w[:, None] * imgs[k][ii, jj]
         wsum += w
-    # điểm không ảnh nào thấy (hõm, dưới nách) → lấy ảnh có hướng gần nhất, bỏ che khuất
-    miss = wsum < 1e-4
-    if miss.any():
-        best = None
-        for k, (dirv, fu, fd) in VIEWS.items():
-            sc = Nn[miss] @ dirv
-            best = (sc, k) if best is None else best
-        for k, (dirv, fu, fd) in VIEWS.items():
-            w = np.clip(Nn[miss] @ dirv, 0, 1) + 1e-3
-            ii = np.clip((vmap(P[miss]) * IH).astype(int), 0, IH - 1)
-            jj = np.clip((fu(P[miss]) * IW).astype(int), 0, IW - 1)
-            acc[miss] += w[:, None] * imgs[k][ii, jj]
-            wsum[miss] += w
-    col = acc / wsum[:, None]
+    # điểm không ảnh nào thấy rõ (dưới nách, hõm, chỉ thấy rất xiên) → để trống, lát nữa loang màu từ vùng áo bên cạnh
+    # trong cùng mảnh UV (trước đây lấy đại ảnh gần nhất không kiểm che khuất → dính màu tay áo / nền)
+    seen = wsum >= 0.02
+    col = acc / np.maximum(wsum, 1e-6)[:, None]
     sub = tex[y0:y0 + inside.shape[0], x0:x0 + inside.shape[1]]
-    sub[inside] = col
-    cov[y0:y0 + inside.shape[0], x0:x0 + inside.shape[1]] |= inside
+    hit = np.zeros_like(inside)
+    hit[inside] = seen
+    sub[hit] = col[seen]
+    cov[y0:y0 + inside.shape[0], x0:x0 + inside.shape[1]] |= hit
 print('nuong xong, phu', round(cov.mean() * 100), '% texture')
 
 # ---------- ép bảng màu (bỏ bóng / vệt sáng sẵn trong ảnh) ----------
@@ -168,8 +160,8 @@ if palette_arg:
 # ---------- lan màu ra rãnh UV ----------
 img = Image.fromarray(tex.clip(0, 255).astype(np.uint8))
 mask = Image.fromarray((cov * 255).astype(np.uint8))
-dirs = [(1, 0), (-1, 0), (0, 1), (0, -1)]
-for step in range(8):
+dirs = [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (-1, -1), (1, -1), (-1, 1)]
+for step in range(40):  # đủ lấp vùng dưới nách (vài chục điểm ảnh) + rãnh giữa các mảnh UV
     for dx, dy in dirs:
         shifted = ImageChops.offset(img, dx, dy)
         smask = ImageChops.offset(mask, dx, dy)
