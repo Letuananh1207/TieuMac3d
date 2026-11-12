@@ -5,7 +5,7 @@ Community License — **không dùng ở EU / UK / Hàn Quốc**; đọc `LICENS
 
 | File | Công cụ + phiên bản | Ảnh đầu vào | Ngày | Giấy phép |
 |---|---|---|---|---|
-| `nhan-vat.glb` | Hunyuan3D-2mini-turbo (Hunyuan3D2_WinPortable cu129, API, seed 1234, **octree 384**) → `tai-nguyen/scripts/smooth.py` (PyMeshLab: bỏ mảnh vụn, Taubin, quadric → 16 000 tam giác) → `npm run model:paint` (chiếu ảnh trước / sau, atlas `--phang 32`, `anh/nhan-vat-atlas.png`) | `anh/nhan-vat.webp` — người dùng tạo bằng Google Gemini từ câu lệnh trong `.claude/skills/tai-nguyen/references/hunyuan.md` | 2026-11-12 | Tencent Hunyuan Community License (model); ảnh: theo điều khoản Google Gemini của người dùng |
+| `nhan-vat.glb` | **Hunyuan3D-2mv-turbo** (đa góc trước / trái / sau / phải, Hunyuan3D2_WinPortable cu129, seed 1234, octree 384, `tai-nguyen/scripts/mv_gen.py`) → `smooth.py` (PyMeshLab Taubin + quadric, 16 000 tam giác) → `npm run model:paint -- --4goc` (chiếu 4 phía, `anh/nhan-vat-atlas.png` từ `atlas4.py`) | `anh/nhan-vat-{truoc,trai,sau,phai}.png` (bộ ảnh 2026-11-12.3, Google Gemini) | 2026-11-12 | Tencent Hunyuan Community License (model); ảnh: theo điều khoản Google Gemini của người dùng |
 
 ## Ảnh đầu vào (`design/models/anh/`)
 

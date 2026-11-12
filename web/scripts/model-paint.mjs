@@ -44,6 +44,54 @@ for (const mesh of root.listMeshes())
     }
   }
 const W = maxX - minX, H = maxY - minY;
+
+// --4goc: atlas 2 × 2 (trước | trái / sau | phải — .claude/skills/tai-nguyen/scripts/atlas4.py) từ bộ ảnh đã chuẩn hoá:
+// đỉnh 10 %, đế 90 %, trục thân (tâm ủng) giữa ảnh, chiếu thẳng cùng tỉ lệ. Mỗi tam giác lấy ảnh của phía nó quay về.
+// Model: mặt trước +z, bên trái nhân vật +x (ảnh "trái" chụp từ +x: mặt quay sang trái ảnh).
+if (args.includes('--4goc')) {
+  let minZ = Infinity, maxZ = -Infinity, fx = 0, fz = 0, fn = 0;
+  const all = [];
+  for (const mesh of root.listMeshes())
+    for (const p of mesh.listPrimitives()) {
+      const pos = p.getAttribute('POSITION');
+      for (let i = 0; i < pos.getCount(); i++) all.push(pos.getElement(i, []));
+    }
+  for (const [, y, z] of all) { minZ = Math.min(minZ, z); maxZ = Math.max(maxZ, z); }
+  for (const [x, y, z] of all) if (y < minY + 0.08 * H) { fx += x; fz += z; fn++; } // tâm ủng = trục thân
+  fx /= fn || 1; fz /= fn || 1;
+  const s = 0.8 / H; // ảnh: thân cao 80 % khung
+  const count = { truoc: 0, trai: 0, sau: 0, phai: 0 };
+  const clamp = (v) => Math.min(0.998, Math.max(0.002, v));
+  for (const mesh of root.listMeshes())
+    for (const p of mesh.listPrimitives()) {
+      const pos = p.getAttribute('POSITION');
+      const n = pos.getCount();
+      const uv = new Float32Array(n * 2);
+      const a = [], b = [], c = [];
+      for (let t = 0; t + 2 < n; t += 3) {
+        pos.getElement(t, a); pos.getElement(t + 1, b); pos.getElement(t + 2, c);
+        const e1 = [b[0] - a[0], b[1] - a[1], b[2] - a[2]], e2 = [c[0] - a[0], c[1] - a[1], c[2] - a[2]];
+        const nx = e1[1] * e2[2] - e1[2] * e2[1];
+        const nz = e1[0] * e2[1] - e1[1] * e2[0];
+        const pick = [['truoc', nz], ['sau', -nz], ['trai', nx], ['phai', -nx]].sort((m, k) => k[1] - m[1])[0][0];
+        count[pick]++;
+        const [qx, qy] = { truoc: [0, 0], trai: [0.5, 0], sau: [0, 0.5], phai: [0.5, 0.5] }[pick];
+        for (const [k, v] of [[t, a], [t + 1, b], [t + 2, c]]) {
+          const ui = { truoc: 0.5 + (v[0] - fx) * s, sau: 0.5 - (v[0] - fx) * s, trai: 0.5 - (v[2] - fz) * s, phai: 0.5 + (v[2] - fz) * s }[pick];
+          const vi = 0.1 + (0.8 * (maxY - v[1])) / H;
+          uv[k * 2] = qx + clamp(ui) * 0.5;
+          uv[k * 2 + 1] = qy + clamp(vi) * 0.5;
+        }
+      }
+      p.setAttribute('TEXCOORD_0', doc.createAccessor().setType('VEC2').setArray(uv).setBuffer(root.listBuffers()[0]));
+      p.setMaterial(mat);
+    }
+  await doc.transform(meshopt({ encoder: MeshoptEncoder, level: 'medium' }));
+  await io.write(out, doc);
+  console.log(`model:paint --4goc: ${JSON.stringify(count)} → ${out}`);
+  process.exit(0);
+}
+
 let front = 0, back = 0;
 for (const mesh of root.listMeshes())
   for (const p of mesh.listPrimitives()) {

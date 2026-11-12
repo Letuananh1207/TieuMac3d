@@ -51,6 +51,11 @@ Quyết định: `.claude/skills/hoc-xa-3d-dev/decisions/0003-tai-san-ai.md` (la
 3. **Tạo** (mỗi lần ~1–3 phút trên RTX 5070 Ti; chạy nền với `run_in_background` nếu cần):
    `node .claude/skills/tai-nguyen/scripts/hunyuan.mjs tao <ảnh> --ra <scratchpad>/<tên>-s<seed>.glb --seed <n>`
    Tạo **2–3 seed** (1234, 42, 7) để có lựa chọn. Thêm `--texture` chỉ khi người dùng đã bật tô màu (cần MSVC).
+3b. **Có bộ ảnh 4 góc** (`design/models/anh/<tên>-{truoc,trai,sau,phai}.png`, chuẩn hoá theo phiếu) — CÁCH TỐT NHẤT:
+   tắt máy chủ API (VRAM), chạy `/c/ai3d/Hunyuan3D2_WinPortable/python_standalone/python.exe -s
+   .claude/skills/tai-nguyen/scripts/mv_gen.py design/models/anh <tên> <scratchpad> --seed 1234,7,42 --octree 384`
+   (Hunyuan3D-2mv) → `smooth.py` → `python .claude/skills/tai-nguyen/scripts/atlas4.py design/models/anh <tên> <atlas.png>`
+   → `npm run model:paint -- <mịn.glb> <atlas.png> --4goc --ra <màu.glb>`. Màu sạch cả 4 phía (2026-11-12.4).
 4. **Mịn** (nhân vật — khuyên dùng thay simplify của `model:clean`): tạo với `--octree 384`, rồi
    `/c/ai3d/Hunyuan3D2_WinPortable/python_standalone/python.exe -s .claude/skills/tai-nguyen/scripts/smooth.py <thô.glb> <mịn.glb> --tam-giac 16000`
    (PyMeshLab: bỏ mảnh vụn, Taubin, quadric giữ dáng) → tô màu (`atlas.py --phang 32` + `model:paint`).

@@ -3,6 +3,17 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-12.4 — Nhân vật dựng từ bộ ảnh 4 góc (Hunyuan3D-2mv) + tô màu chiếu 4 phía
+
+- Loại: tài nguyên 3D — **ngoại hình** nhân vật. Đáp phiếu `2026-11-12-anh-nhan-vat-3d` (đợt 1) bằng bộ ảnh mục .3.
+- Phiên VS Code (`/tai-nguyen`): `mv_gen.py` Hunyuan3D-2mv-turbo (tải lần đầu ~7 phút), 3 seed (1234 · 7 · 42), octree 384
+  (~880 nghìn mặt, 15 s / bản) → `smooth.py` 16 000 tam giác → `model:paint --4goc` (atlas 2 × 2 1024², mỗi tam giác
+  lấy ảnh phía nó quay về) → chọn seed 1234. 1,24 MB, 1 draw call; gắn xương + đi / đứng như cũ.
+- Kết quả: màu sạch cả 4 phía (lưng, hông, gáy có dây buộc búi), ngọc bội xanh đúng chỗ, hình đúng tỉ lệ ảnh. Còn: mặt
+  cận cảnh hơi lốm đốm (ảnh trước 512 px trong atlas + bóng đổ sẵn của bản render); gấu áo tách nhẹ khi bước dài.
+- Ảnh: `screens/Model-nhan-vat.png` (trước · trái · sau · phải · cận mặt).
+- File: `models/nhan-vat.glb`, `models/anh/nhan-vat-atlas.png`, `models/LICENSES.md`.
+
 ## 2026-11-12.3 — Bộ ảnh nhiều góc của nhân vật chính (đầu vào Hunyuan3D đa góc)
 
 - Loại: tài nguyên 3D — ảnh đầu vào (không phải giao diện).
