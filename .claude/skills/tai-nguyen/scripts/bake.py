@@ -108,6 +108,7 @@ vm, idx, uvs = xatlas.parametrize(V.astype(np.float32), F.astype(np.uint32))
 V2, N2 = V[vm], N[vm]
 tex = np.zeros((TS, TS, 3), np.float32)
 cov = np.zeros((TS, TS), bool)
+face = np.zeros((TS, TS), bool)  # vùng mặt (đầu, quay về trước) — giữ ảnh gốc khi ép màu
 eps = 0.012 * H
 for f in idx:
     t = [(uvs[i][0] * TS, (1 - uvs[i][1]) * TS) for i in f]
@@ -141,21 +142,60 @@ for f in idx:
     hit[inside] = seen
     sub[hit] = col[seen]
     cov[y0:y0 + inside.shape[0], x0:x0 + inside.shape[1]] |= hit
+    fmask = np.zeros_like(inside)
+    fmask[inside] = (P[:, 1] > minY + 0.62 * H) & (Nn[:, 2] > 0.15)
+    face[y0:y0 + inside.shape[0], x0:x0 + inside.shape[1]] |= fmask
 print('nuong xong, phu', round(cov.mean() * 100), '% texture')
 
-# ---------- ép bảng màu (bỏ bóng / vệt sáng sẵn trong ảnh) ----------
+# ---------- ép bảng màu (bỏ bóng / vệt sáng sẵn trong ảnh → màu phẳng sạch kiểu đồ chơi) ----------
+def ycc(a, lw=0.45):
+    y = 0.299 * a[..., 0] + 0.587 * a[..., 1] + 0.114 * a[..., 2]
+    return np.stack([y * lw, a[..., 2] - y, a[..., 0] - y], -1)  # độ sáng nhẹ ký → bóng đổ không đổi màu
+
+auto_k = int(opt('tu-bang', '0'))
+pal = None
 if palette_arg:
     pal = np.array([[int(c[i:i + 2], 16) for i in (1, 3, 5)] for c in palette_arg.split(',')], np.float32)
-    def ycc(a):
-        y = 0.299 * a[..., 0] + 0.587 * a[..., 1] + 0.114 * a[..., 2]
-        return np.stack([y * 0.45, a[..., 2] - y, a[..., 0] - y], -1)  # độ sáng nhẹ ký → bóng đổ không đổi màu
-    t = ycc(tex[cov])
-    p = ycc(pal)
-    nearest = np.argmin(((t[:, None, :] - p[None, :, :]) ** 2).sum(-1), axis=1)
-    tex[cov] = pal[nearest]
-    img = Image.fromarray(tex.clip(0, 255).astype(np.uint8)).filter(ImageFilter.ModeFilter(5))
-    tex = np.asarray(img).astype(np.float32)
-    print('ep', len(pal), 'mau')
+elif auto_k:
+    # --tu-bang N: gom N màu chủ đạo từ chính bộ ảnh (điểm nhân vật, bỏ nền) bằng k-means — sáng / tối cùng màu về một cụm
+    pix = []
+    for k in VIEWS:
+        a = imgs[k].reshape(-1, 3)
+        pix.append(a[np.abs(a - a[0]).sum(1) > 40][::7])
+    pix = np.concatenate(pix)
+    feat = ycc(pix, 0.35)
+    rng = np.random.default_rng(1)
+    cent = feat[rng.choice(len(feat), auto_k, replace=False)]
+    for _ in range(25):
+        lab = np.argmin(((feat[:, None, :] - cent[None]) ** 2).sum(-1), 1)
+        cent = np.array([feat[lab == j].mean(0) if (lab == j).any() else cent[j] for j in range(auto_k)])
+    # màu đại diện = phần SÁNG của cụm (phân vị 60–80 % độ sáng): trung vị dính bóng đổ → áo xám, tóc xám, trông bẩn
+    def lit(c):
+        lum = c @ np.array([0.299, 0.587, 0.114])
+        lo, hi = np.percentile(lum, 60), np.percentile(lum, 80)
+        sel = c[(lum >= lo) & (lum <= hi)]
+        return sel.mean(0) if len(sel) else c.mean(0)
+    pal = np.array([lit(pix[lab == j]) if (lab == j).any() else [0, 0, 0] for j in range(auto_k)], np.float32)
+    print('bang mau tu dong:', ' '.join('#%02x%02x%02x' % tuple(int(c) for c in p) for p in pal))
+if pal is not None:
+    snap = cov & ~face if '--giu-mat' in args or auto_k else cov  # mặt giữ ảnh gốc (mắt, lông mày, má)
+    lw = float(opt('do-sang', '0.35'))  # trọng số độ sáng khi so màu: cao hơn để tách màu cùng tông khác độ đậm (đai / viền)
+    t = ycc(tex[snap], lw)
+    d2 = ((t[:, None, :] - ycc(pal, lw)[None]) ** 2).sum(-1)
+    near = np.argmin(d2, axis=1)
+    # màu lệch xa mọi màu trong bảng (ngọc xanh, trâm vàng, miệng) → giữ nguyên, không ép
+    far = d2[np.arange(len(near)), near] > float(opt('xa', '900'))
+    idx_snap = np.flatnonzero(snap)
+    keep_far = np.zeros(cov.shape, bool)
+    keep_far.flat[idx_snap[far]] = True
+    snap = snap & ~keep_far
+    near = near[~far]
+    flat = tex.copy()
+    flat[snap] = pal[near]
+    img = Image.fromarray(flat.clip(0, 255).astype(np.uint8)).filter(ImageFilter.ModeFilter(3))
+    flat = np.asarray(img).astype(np.float32)
+    tex[snap] = flat[snap]
+    print('ep', len(pal), 'mau,', int(snap.sum()), 'diem; giu mat', int((cov & face).sum()), 'diem')
 
 # ---------- lan màu ra rãnh UV ----------
 img = Image.fromarray(tex.clip(0, 255).astype(np.uint8))

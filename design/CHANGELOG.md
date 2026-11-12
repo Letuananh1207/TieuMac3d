@@ -3,6 +3,18 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-12.8 — Nhân vật: màu phẳng sạch theo bảng màu thiết kế (hết cảm giác nhem bẩn)
+
+- Loại: tài nguyên 3D — **ngoại hình** nhân vật. Người dùng (kèm ảnh): "vẫn đem lại cảm giác nhem bẩn mặc dù tốt hơn nhiều".
+- Nguyên nhân: texture nướng mang sẵn bóng đổ / vệt sáng của ảnh render → app chiếu sáng thêm lần nữa → vạt áo xám, gáy
+  có vệt xám; trộn 4 ảnh làm mép viền nhoè.
+- Sửa (`tai-nguyen/scripts/bake.py --bang-mau … --giu-mat`): mọi vùng trừ mặt ép về **bảng màu thiết kế của phiếu**
+  (áo #D4DDE8, viền #4D6DB2, áo lót #F3F5F7, đai / ủng #33456D, ngọc #8CCB9E, tóc #26262B, da #F6D3BD, trâm #E2B24C);
+  vùng mặt (đầu, quay về trước) giữ ảnh gốc; màu lệch xa mọi màu trong bảng giữ nguyên; lọc mode 3. Đã thử bảng màu tự
+  gom k-means (`--tu-bang` 8 · 9 · 11 · 12): đai / ủng nhạt hoặc áo tách hai tông → dùng bảng thiết kế.
+- Còn: đai ra lam sáng như viền (đai trong ảnh render được chiếu sáng, gần viền hơn xanh đậm).
+- Ảnh: `screens/Model-nhan-vat.png` (trước · sau · nghiêng · cận mặt).
+
 ## 2026-11-12.7 — Nhân vật: tay buông xuôi (bỏ dáng chữ A khi chơi)
 
 - Loại: code động tác — **ngoại hình**. Người dùng: "không muốn hình dáng tay dạng ngang như hiện tại vì không tự nhiên".
