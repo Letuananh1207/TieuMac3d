@@ -40,6 +40,8 @@ def fill_edges(im):
     a = np.asarray(im).astype(np.int32)
     corners = np.array([a[2, 2], a[2, w - 3], a[h - 3, 2], a[h - 3, w - 3]]).mean(0)
     m = (np.abs(a - corners).sum(-1) >= 26).astype(np.uint8) * 255
+    ys, xs = np.nonzero(m)
+    bbox = (xs.min() / w, (xs.max() + 1) / w, ys.min() / h, (ys.max() + 1) / h)  # khung nhân vật trong ảnh (0..1)
     mask = Image.fromarray(m).filter(ImageFilter.MinFilter(7))
     filled = Image.composite(im, Image.new('RGB', (w, h)), mask)
     dirs = [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (-1, -1), (1, -1), (-1, 1)]
@@ -51,7 +53,7 @@ def fill_edges(im):
             take = ImageChops.subtract(smask, mask)
             filled = Image.composite(shifted, filled, take)
             mask = ImageChops.lighter(mask, take)
-    return np.asarray(filled).astype(np.float32)
+    return np.asarray(filled).astype(np.float32), bbox, m > 0
 
 VIEWS = {  # tên: (hướng về máy, hàm u, độ sâu: lớn = gần máy)
     'truoc': (np.array([0, 0, 1.0]), lambda P: 0.5 + (P[:, 0] - fx) * s, lambda P: P[:, 2]),
@@ -61,10 +63,87 @@ VIEWS = {  # tên: (hướng về máy, hàm u, độ sâu: lớn = gần máy)
 }
 vmap = lambda P: 0.1 + 0.8 * (maxY - P[:, 1]) / H
 imgs = {}
+boxes = {}
+masks = {}
 for k in VIEWS:
     p = os.path.join(folder, f'{name}-{k}.png')
-    imgs[k] = fill_edges(Image.open(p).convert('RGB'))
+    imgs[k], boxes[k], masks[k] = fill_edges(Image.open(p).convert('RGB'))
 IH, IW = imgs['truoc'].shape[:2]
+
+
+def img_head(m):
+    # cổ = hàng hẹp nhất trong dải 22–45 % chiều cao nhân vật (từ đỉnh); khung đầu = phần trên cổ
+    rows = np.flatnonzero(m.any(1))
+    r0, r1 = rows[0], rows[-1]
+    best, neck = 1e9, r0
+    for r in range(int(r0 + 0.22 * (r1 - r0)), int(r0 + 0.45 * (r1 - r0))):
+        xs = np.flatnonzero(m[r])
+        if len(xs) and xs[-1] - xs[0] < best:
+            best, neck = xs[-1] - xs[0], r
+    xs = np.flatnonzero(m[r0:neck + 1].any(0))
+    return xs[0] / m.shape[1], (xs[-1] + 1) / m.shape[1], r0 / m.shape[0], neck / m.shape[0]
+
+
+def model_head(u0, v0):
+    vmin, vmax = v0.min(), v0.max()
+    lo, hi = vmin + 0.22 * (vmax - vmin), vmin + 0.45 * (vmax - vmin)
+    best, neck = 1e9, lo
+    for c in np.linspace(lo, hi, 50):
+        sel = np.abs(v0 - c) < (hi - lo) / 50
+        if sel.sum() > 3 and np.ptp(u0[sel]) < best:
+            best, neck = np.ptp(u0[sel]), c
+    hd = v0 < neck
+    return u0[hd].min(), u0[hd].max(), vmin, neck
+
+# khớp khung từng góc: khung bao model chiếu theo góc đó ↦ khung nhân vật thật trong ảnh (model Hunyuan có tỉ lệ hơi
+# khác giả định đỉnh 10 % / đế 90 % / trục giữa → lệch vài % làm chân tóc, tai, mép viền đặt sai chỗ = vệt lem)
+_raw = {k: (VIEWS[k][1], vmap) for k in VIEWS}
+FIT = {}
+for k, (fu0, fv0) in _raw.items():
+    u0, v0 = fu0(V), fv0(V)
+    a0, a1, b0, b1 = boxes[k]
+    FIT[k] = (u0.min(), u0.max(), v0.min(), v0.max(), a0, a1, b0, b1)
+    print(f'khop {k}: model u {u0.min():.3f}-{u0.max():.3f} v {v0.min():.3f}-{v0.max():.3f} | anh u {a0:.3f}-{a1:.3f} v {b0:.3f}-{b1:.3f}')
+# khớp riêng vùng đầu: khung cả người ở ảnh trước do hai tay dang quyết định bề ngang → đầu lệch ngang vài %, đúng chỗ
+# thái dương / chân tóc thành mảng da lấn tóc. Đầu (trên cổ) khớp khung đầu ↔ khung đầu, thân khớp cả người, chuyển mượt quanh cổ.
+HEAD = {}
+for k, (fu0, fv0) in _raw.items():
+    mh = model_head(fu0(V), fv0(V))
+    ih = img_head(masks[k])
+    HEAD[k] = (mh, ih)
+    print(f'dau {k}: model u {mh[0]:.3f}-{mh[1]:.3f} v {mh[2]:.3f}-{mh[3]:.3f} | anh u {ih[0]:.3f}-{ih[1]:.3f} v {ih[2]:.3f}-{ih[3]:.3f}')
+
+
+def _blend(k, P):
+    v0 = vmap(P)
+    neck = HEAD[k][0][3]
+    t = np.clip((v0 - (neck - 0.015)) / 0.03, 0, 1)  # 0 = đầu, 1 = thân
+    return v0, t * t * (3 - 2 * t)
+
+
+def fit_u(k):
+    fu0 = _raw[k][0]
+    um, uM, _, _, a0, a1, _, _ = FIT[k]
+    (hu0, hu1, _, _), (ha0, ha1, _, _) = HEAD[k]
+    def f(P):
+        u0 = fu0(P)
+        body = a0 + (u0 - um) / (uM - um) * (a1 - a0)
+        head = ha0 + (u0 - hu0) / (hu1 - hu0) * (ha1 - ha0)
+        _, t = _blend(k, P)
+        return head * (1 - t) + body * t
+    return f
+
+
+def fit_v(k):
+    _, _, vm_, vM, _, _, b0, b1 = FIT[k]
+    (_, _, hv0, hv1), (_, _, hb0, hb1) = HEAD[k]
+    def f(P):
+        v0, t = _blend(k, P)
+        body = b0 + (v0 - vm_) / (vM - vm_) * (b1 - b0)
+        head = hb0 + (v0 - hv0) / (hv1 - hv0) * (hb1 - hb0)
+        return head * (1 - t) + body * t
+    return f
+VIEWS = {k: (d, fit_u(k), fd, fit_v(k)) for k, (d, fu, fd) in VIEWS.items()}
 
 # ---------- bộ đệm độ sâu từng góc (che khuất) ----------
 DB = 512
@@ -93,10 +172,10 @@ def raster(tri2d, values, size, buf, mode):
     return ymin, xmin, inside, l0, l1, l2
 
 depth = {}
-for k, (_, fu, fd) in VIEWS.items():
+for k, (_, fu, fd, fv) in VIEWS.items():
     buf = np.full((DB, DB), -np.inf)
     U = fu(V) * DB
-    W_ = vmap(V) * DB
+    W_ = fv(V) * DB
     D = fd(V)
     for f in F:
         raster([(U[f[0]], W_[f[0]]), (U[f[1]], W_[f[1]]), (U[f[2]], W_[f[2]])], D[f], DB, buf, 'max')
@@ -121,10 +200,10 @@ for f in idx:
     Nn /= np.linalg.norm(Nn, axis=1, keepdims=True) + 1e-9
     acc = np.zeros((len(P), 3), np.float32)
     wsum = np.zeros(len(P), np.float32)
-    for k, (dirv, fu, fd) in VIEWS.items():
+    for k, (dirv, fu, fd, fv) in VIEWS.items():
         w = np.clip(Nn @ dirv, 0, 1) ** MU
         u = fu(P)
-        v = vmap(P)
+        v = fv(P)
         di = np.clip((v * DB).astype(int), 0, DB - 1)
         dj = np.clip((u * DB).astype(int), 0, DB - 1)
         vis = fd(P) >= depth[k][di, dj] - eps

@@ -32,6 +32,8 @@ export async function loadGlbCharacter(url: string): Promise<Character> {
     // model "chỉ tạo hình" (Hunyuan3D bước shape) không có pháp tuyến → Lambert ra đen; tự tính
     if (!o.geometry.getAttribute('normal')) o.geometry.computeVertexNormals();
     const toLambert = (m: THREE.Material): THREE.Material => {
+      // model đánh dấu không-sáng (KHR_materials_unlit → MeshBasicMaterial): texture đã nướng sẵn ánh sáng, giữ nguyên
+      if (m instanceof THREE.MeshBasicMaterial) return m;
       const src = m as THREE.MeshStandardMaterial;
       const lambert = new THREE.MeshLambertMaterial({
         color: src.color ?? 0xffffff,

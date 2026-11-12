@@ -23,7 +23,9 @@ Ngày: 2026-11-11 · Trạng thái: đã chốt hướng (người dùng), đang
 | công trình | ≤ 20 000 | ≤ 3 MB | 1–2 vật liệu, ≤ 1024² |
 
 Cả cảnh vẫn ≤ 150 draw call, ≤ 150k tam giác. Model có texture ảnh là ngoại lệ có chủ đích với quy tắc "màu phẳng" của
-0002 — chỉ cho các model AI đã duyệt.
+0002 — chỉ cho các model AI đã duyệt. Model nướng texture từ ảnh render (đã có ánh sáng) dùng vật liệu **không-sáng**
+(`KHR_materials_unlit` → `MeshBasicMaterial`) — ngoại lệ có chủ đích với quy tắc 4 (Lambert) để màu đúng như ảnh thiết
+kế (2026-11-12.9).
 
 ## Giấy phép
 

@@ -8,7 +8,7 @@ import { mkdirSync, statSync } from 'node:fs';
 import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ImageUtils, NodeIO } from '@gltf-transform/core';
-import { ALL_EXTENSIONS } from '@gltf-transform/extensions';
+import { ALL_EXTENSIONS, KHRMaterialsUnlit } from '@gltf-transform/extensions';
 import { dedup, meshopt, prune, simplify, weld } from '@gltf-transform/functions';
 import { MeshoptDecoder, MeshoptEncoder, MeshoptSimplifier } from 'meshoptimizer';
 
@@ -77,6 +77,12 @@ for (const error of [0.001, 0.005, 0.01, 0.02, 0.05]) {
   const tris = triangles(doc);
   if (tris <= budget.tris) break;
   await doc.transform(simplify({ simplifier: MeshoptSimplifier, ratio: (budget.tris * 0.95) / tris, error }));
+}
+// --khong-sang: vật liệu không nhận ánh sáng (KHR_materials_unlit) — texture nướng từ ảnh render đã có sẵn ánh sáng đẹp;
+// chiếu sáng thêm lần nữa làm màu lệch khỏi ảnh thiết kế (2026-11-12.9). App (glbCharacter) giữ MeshBasicMaterial.
+if (args.includes('--khong-sang')) {
+  const unlit = doc.createExtension(KHRMaterialsUnlit);
+  for (const m of doc.getRoot().listMaterials()) m.setExtension('KHR_materials_unlit', unlit.createUnlit());
 }
 await doc.transform(prune(), meshopt({ encoder: MeshoptEncoder, level: 'medium' }));
 

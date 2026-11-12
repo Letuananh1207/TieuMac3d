@@ -3,6 +3,22 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-12.9 — Nhân vật: màu đúng như bộ ảnh thiết kế (vật liệu không-sáng + khớp khung từng góc, riêng đầu)
+
+- Loại: tài nguyên 3D + code — **ngoại hình**. Người dùng (kèm 3 ảnh): "vẫn có sự lem màu khác màu ở đầu mặt trước và
+  phần xung quanh. Mục tiêu … màu sắc phải như các ảnh ở các góc độ tôi gửi trong design của nhân vật".
+- Nguyên nhân: (1) texture nướng từ ảnh render đã có ánh sáng, app chiếu sáng thêm lần nữa → màu lệch ảnh; ép bảng màu
+  mục .8 làm ranh giới vùng mặt giữ / vùng ép lộ ra. (2) ảnh và model lệch vị trí: khung cả người ở ảnh trước do hai tay
+  dang quyết định → đầu lệch ngang; đầu model to hơn ảnh 5–6 %, cổ thấp hơn ~1 % → chân tóc / thái dương lấn da.
+- Sửa: bỏ ép bảng màu; `bake.py` khớp khung từng góc (khung model chiếu ↔ khung nhân vật trong ảnh) và **riêng vùng đầu**
+  (tìm cổ = chỗ hẹp nhất trong ảnh và model, khớp đầu ↔ đầu, thân ↔ thân, chuyển mượt quanh cổ); `model:clean
+  --khong-sang` gắn `KHR_materials_unlit` → `glbCharacter` giữ `MeshBasicMaterial` (không chiếu sáng lại). 198 KB.
+  Thử `--mu` 8 / 16 (ưu tiên ảnh nhìn thẳng mạnh hơn): 16 lộ đường nối gãy — giữ 4.
+- Quy tắc 4 (vật liệu Lambert): ngoại lệ có chủ đích cho model AI đã nướng texture — ghi ở quyết định 0003.
+- Còn: mảng nhạt nhỏ ở thái dương phải khi nhìn chếch 45°.
+- Ảnh: `screens/Model-nhan-vat-so-thiet-ke.png` (hàng trên ảnh thiết kế · hàng dưới model, 4 góc),
+  `screens/Model-nhan-vat.png` (cận đầu 6 góc).
+
 ## 2026-11-12.8 — Nhân vật: màu phẳng sạch theo bảng màu thiết kế (hết cảm giác nhem bẩn)
 
 - Loại: tài nguyên 3D — **ngoại hình** nhân vật. Người dùng (kèm ảnh): "vẫn đem lại cảm giác nhem bẩn mặc dù tốt hơn nhiều".
