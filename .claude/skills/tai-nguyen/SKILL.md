@@ -65,7 +65,7 @@ NPC (vd. Tiểu Mặc): cùng luồng, `<tên>` riêng (`tieu-mac`); app chưa n
 ## Dự phòng: chỉ có một ảnh
 
 1. **API**: `node .claude/skills/tai-nguyen/scripts/hunyuan.mjs kiem`. Không chạy → hướng dẫn người dùng: PowerShell trong
-   `C:i3d\Hunyuan3D2_WinPortable` → `.\RUN.bat` → *Program Parameters* → **"API 2.0 | For Blender Addon"** → *HTTP Service
+   `C:\ai3d\Hunyuan3D2_WinPortable` → `.\RUN.bat` → *Program Parameters* → **"API 2.0 | For Blender Addon"** → *HTTP Service
    Listen Address* `127.0.0.1` → *Save and Start* → chờ `Uvicorn running on …:8081`.
 2. **Tạo**: `node .claude/skills/tai-nguyen/scripts/hunyuan.mjs tao <ảnh> --ra <scratchpad>/<tên>-s<seed>.glb --seed <n>` (2–3 seed).
 3. **Mịn**: `smooth.py <thô.glb> <mịn.glb> --tam-giac 16000`; **tô màu** chiếu một phía: `atlas.py <ảnh> <atlas.png>` (`--phang 32`)
