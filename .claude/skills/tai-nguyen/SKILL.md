@@ -25,8 +25,12 @@ Quyết định: `.claude/skills/hoc-xa-3d-dev/decisions/0003-tai-san-ai.md` (la
 
 - Claude **không chạy phần mềm Hunyuan** (`C:\ai3d\…`, python của gói — chế độ quyền chặn, đúng như vậy). Người dùng
   mở launcher; Claude chỉ gọi máy chủ API cục bộ qua `scripts/hunyuan.mjs` (fetch tới 127.0.0.1).
-- Claude **không tự vẽ ảnh** đầu vào. Nguồn ảnh, theo thứ tự ưu tiên:
-  1. ảnh người dùng đưa (vẽ / chụp / tạo bằng AI ảnh như ChatGPT, Gemini) — tốt nhất;
+- Claude **không tự vẽ ảnh** đầu vào. Thiếu ảnh / ảnh không đạt yêu cầu kỹ thuật → **soạn phiếu cho `/ui-design`**
+  (phiên thiết kế trong app Claude vẽ / tạo ảnh được): mẫu `docs/phieu_thiet_ke/2026-11-12-anh-nhan-vat-3d.md` (bộ 4 góc +
+  cận mặt, chữ A, không viền, render đồ chơi, nền trơn, không watermark). In khối "Dán vào canvas" cho người dùng chép
+  sang. Nguồn ảnh, theo thứ tự ưu tiên:
+  0. bộ ảnh nhiều góc từ `/ui-design` theo phiếu (`design/models/anh/<tên>-{truoc,trai,sau,phai,mat}.png`) — tốt nhất;
+  1. ảnh người dùng đưa (vẽ / chụp / tạo bằng AI ảnh như ChatGPT, Gemini);
   2. Claude soạn **câu lệnh tạo ảnh** (mẫu ở `references/hunyuan.md`) để người dùng dán vào AI ảnh, lưu file, gửi đường dẫn;
   3. dự phòng: chụp bản dựng bằng khối trên Canvas 3D (`?chup`, mục "Ảnh từ Canvas 3D") — ra hình mượt hơn bản khối
      nhưng cùng dáng, nền rối nên kém hơn 1–2.
