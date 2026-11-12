@@ -47,7 +47,10 @@ Quyết định: `.claude/skills/hoc-xa-3d-dev/decisions/0003-tai-san-ai.md` (la
 3. **Tạo** (mỗi lần ~1–3 phút trên RTX 5070 Ti; chạy nền với `run_in_background` nếu cần):
    `node .claude/skills/tai-nguyen/scripts/hunyuan.mjs tao <ảnh> --ra <scratchpad>/<tên>-s<seed>.glb --seed <n>`
    Tạo **2–3 seed** (1234, 42, 7) để có lựa chọn. Thêm `--texture` chỉ khi người dùng đã bật tô màu (cần MSVC).
-4. **Làm sạch** từng bản: `cd web && npm run model:clean -- <file> --loai <loai> --ten <tên> --ra <scratchpad>/<tên>-s<seed>-sach.glb`
+4. **Mịn** (nhân vật — khuyên dùng thay simplify của `model:clean`): tạo với `--octree 384`, rồi
+   `/c/ai3d/Hunyuan3D2_WinPortable/python_standalone/python.exe -s .claude/skills/tai-nguyen/scripts/smooth.py <thô.glb> <mịn.glb> --tam-giac 16000`
+   (PyMeshLab: bỏ mảnh vụn, Taubin, quadric giữ dáng) → tô màu (`atlas.py --phang 32` + `model:paint`).
+   **Làm sạch** (cách cũ, đồ vật không cần mịn) từng bản: `cd web && npm run model:clean -- <file> --loai <loai> --ten <tên> --ra <scratchpad>/<tên>-s<seed>-sach.glb`
    (giảm tam giác về ngân sách, nén meshopt; báo VƯỢT NGÂN SÁCH → xem `references/hunyuan.md`).
    **Tô màu** (model ra trắng khi chưa bật texture): `python .claude/skills/tai-nguyen/scripts/atlas.py <ảnh> <atlas.png>`
    (nửa trước = ảnh, nửa sau = da đầu → tóc) rồi `cd web && npm run model:paint -- <bản sạch> <atlas.png> --ra <bản màu>`

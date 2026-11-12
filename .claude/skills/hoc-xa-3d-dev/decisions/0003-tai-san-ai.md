@@ -19,7 +19,7 @@ Ngày: 2026-11-11 · Trạng thái: đã chốt hướng (người dùng), đang
 
 | | Tam giác | Dung lượng | Vật liệu / texture |
 |---|---|---|---|
-| nhân vật | ≤ 10 000 | ≤ 1,5 MB | 1 vật liệu, ≤ 1024² |
+| nhân vật | ≤ 16 000 (nâng 2026-11-12 để mặt mịn — người dùng ưu tiên "mịn"; vẫn 1 draw call) | ≤ 1,5 MB | 1 vật liệu, ≤ 1024² |
 | công trình | ≤ 20 000 | ≤ 3 MB | 1–2 vật liệu, ≤ 1024² |
 
 Cả cảnh vẫn ≤ 150 draw call, ≤ 150k tam giác. Model có texture ảnh là ngoại lệ có chủ đích với quy tắc "màu phẳng" của

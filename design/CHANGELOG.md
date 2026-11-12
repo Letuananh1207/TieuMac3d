@@ -3,6 +3,17 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-12.2 — Nhân vật AI mịn hơn (octree 384 + làm mịn Taubin + 16 000 tam giác)
+
+- Loại: tài nguyên 3D — **ngoại hình** nhân vật. Người dùng không chọn bản chibi dựng code ("vẫn muốn dùng theo như ban
+  đầu của hunyuan nhưng nâng cấp lên cho mịn"). Bản mẫu chibi giữ trong code (`?nhan-vat=chibi`, Canvas 3D mặc định)
+  để so.
+- Đổi: tạo lại seed 1234 với octree 384 (505 nghìn mặt thô) → `smooth.py` (PyMeshLab Taubin + quadric) 16 000 tam giác →
+  `model:paint` với atlas gom 32 màu. 593 KB, 1 draw call. Ngân sách nhân vật trong quyết định 0003: 10 000 → 16 000.
+- Còn: màu áo vài mảng loang, ngọc bội nhạt — giới hạn của chiếu ảnh 1 mặt. Đúng hẳn: tô màu thật của Hunyuan
+  (Hunyuan3D-Paint) — cần NVIDIA CUDA Toolkit (MSVC đã có).
+- Ảnh: `screens/Model-nhan-vat.png` (trước · nghiêng · sau · đang bước).
+
 ## 2026-11-12.1 — Nhân vật chính bằng model AI (Hunyuan3D)
 
 - Loại: tài nguyên 3D (model) — **ngoại hình** nhân vật người chơi. Không chạm luật (cỡ, va chạm, tốc độ giữ nguyên:

@@ -61,6 +61,10 @@ for step in range(40):
         filled = Image.composite(shifted, filled, take)
         mask = ImageChops.lighter(mask, take)
 front = filled.resize((size, size), Image.LANCZOS)
+# --phang N: lọc nhiễu + gom về N màu → mảng màu sạch kiểu tranh phẳng (hợp low-poly; bớt "nhem" khi chiếu lên model)
+flat = int(opt('phang', '0'))
+if flat:
+    front = front.filter(ImageFilter.MedianFilter(5)).quantize(colors=flat, method=Image.Quantize.MEDIANCUT).convert('RGB')
 
 # mặt sau: da (cam nhạt) ở nửa trên → tóc; bỏ chi tiết mặt (mắt, miệng) cũng nằm trong vùng da
 back = front.copy()
