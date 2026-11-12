@@ -3,6 +3,18 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-12.12 — Nhân vật: tạo lại hình bằng Hunyuan3D-2mv bản đầy đủ
+
+- Loại: tài nguyên 3D — **ngoại hình**. Người dùng chọn hướng A ("vì sao model chưa thực sự giống … ảnh chưa đủ hay cần
+  gói lớn hơn"): đánh giá — 4 ảnh góc là đủ; nguyên nhân chính là **hình**: bản turbo (10 bước, octree 384) + làm mịn mạnh
+  làm tóc mỏng, tai dẹt, đầu lệch ảnh 5–6 % → chiếu màu lệch ở chân tóc / tóc mai (mục .10, .11 chỉ vá triệu chứng).
+- Làm: `mv_gen.py --day-du` (model `hunyuan3d-dit-v2-mv`, tải ~5 GB một lần; 50 bước, octree 512, không FlashVDM; ~7 phút
+  / seed, ~1 triệu mặt) → `smooth.py --min 2` → `bake.py --jpg` → `model:clean --khong-sang`. Seed 1234 (seed 7: tóc lổn
+  nhổn hơn). 16 000 tam giác, 215 KB. Xương tự gắn (`autoRig`) giữ nguyên số đo — đi / đứng vẫn đúng.
+- Kết quả: hết vệt tóc mai, tóc ôm kín thái dương cả hai bên, 4 góc thẳng khớp ảnh thiết kế.
+- Ảnh: `screens/Model-nhan-vat-so-thiet-ke.png` (trên ảnh thiết kế · dưới model), `screens/Model-nhan-vat.png` (6 góc),
+  `screens/Model-nhan-vat-thai-duong.png` (cận 3/4: trên bản .11 · dưới bản này).
+
 ## 2026-11-12.11 — Nhân vật: bỏ vệt tóc mai đen trước tai
 
 - Loại: tài nguyên 3D — **ngoại hình**. Người dùng: "phần màu đen ở mai đáng ra không có".

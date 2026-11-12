@@ -53,8 +53,9 @@ Quyết định: `.claude/skills/hoc-xa-3d-dev/decisions/0003-tai-san-ai.md` (la
    Tạo **2–3 seed** (1234, 42, 7) để có lựa chọn. Thêm `--texture` chỉ khi người dùng đã bật tô màu (cần MSVC).
 3b. **Có bộ ảnh 4 góc** (`design/models/anh/<tên>-{truoc,trai,sau,phai}.png`, chuẩn hoá theo phiếu) — CÁCH TỐT NHẤT:
    tắt máy chủ API (VRAM), chạy `/c/ai3d/Hunyuan3D2_WinPortable/python_standalone/python.exe -s
-   .claude/skills/tai-nguyen/scripts/mv_gen.py design/models/anh <tên> <scratchpad> --seed 1234,7,42 --octree 384`
-   (Hunyuan3D-2mv) → `smooth.py` → `python .claude/skills/tai-nguyen/scripts/atlas4.py design/models/anh <tên> <atlas.png>`
+   .claude/skills/tai-nguyen/scripts/mv_gen.py design/models/anh <tên> <scratchpad> --day-du --seed 1234,7`
+   (Hunyuan3D-2mv bản đầy đủ: 50 bước, octree 512, ~7 phút / seed — tóc, tai, đầu khớp ảnh hơn hẳn bản turbo nên hết lem
+   chân tóc / tóc mai, 2026-11-12.12; bỏ `--day-du` = turbo ~30 s để thử nhanh) → `smooth.py --min 2` (ít làm mịn, giữ chi tiết) → `python .claude/skills/tai-nguyen/scripts/atlas4.py design/models/anh <tên> <atlas.png>`
    → **nướng** `.../python.exe -s .claude/skills/tai-nguyen/scripts/bake.py <mịn.glb> design/models/anh <tên> <màu.glb> --jpg`
    (UV xatlas, trộn 4 góc theo hướng mặt + che khuất — hết lem mặt / đường nối; tốt hơn `model:paint --4goc`) →
    `npm run model:clean -- <màu.glb> --ra <xong.glb> --khong-sang` (nén meshopt + vật liệu không-sáng: màu ĐÚNG như ảnh

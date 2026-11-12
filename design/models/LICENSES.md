@@ -5,7 +5,7 @@ Community License — **không dùng ở EU / UK / Hàn Quốc**; đọc `LICENS
 
 | File | Công cụ + phiên bản | Ảnh đầu vào | Ngày | Giấy phép |
 |---|---|---|---|---|
-| `nhan-vat.glb` | **Hunyuan3D-2mv-turbo** (đa góc trước / trái / sau / phải, Hunyuan3D2_WinPortable cu129, seed 1234, octree 384, `tai-nguyen/scripts/mv_gen.py`) → `smooth.py` (PyMeshLab Taubin + quadric, 16 000 tam giác) → `tai-nguyen/scripts/bake.py --jpg` (UV xatlas, nướng texture trộn 4 góc theo hướng mặt + che khuất, `anh/nhan-vat-atlas.png`) → `npm run model:clean` (nén meshopt, 273 KB) | `anh/nhan-vat-{truoc,trai,sau,phai}.png` (bộ ảnh 2026-11-12.3, Google Gemini) | 2026-11-12 | Tencent Hunyuan Community License (model); ảnh: theo điều khoản Google Gemini của người dùng |
+| `nhan-vat.glb` | **Hunyuan3D-2mv bản đầy đủ** `hunyuan3d-dit-v2-mv` (đa góc trước / trái / sau / phải, Hunyuan3D2_WinPortable cu129, seed 1234, 50 bước, octree 512, `tai-nguyen/scripts/mv_gen.py --day-du`; 2026-11-12.12) → `smooth.py --min 2` (PyMeshLab Taubin + quadric, 16 000 tam giác) → `tai-nguyen/scripts/bake.py --jpg` (UV xatlas, nướng texture trộn 4 góc theo hướng mặt + che khuất, `anh/nhan-vat-atlas.png`) → `npm run model:clean` (nén meshopt, `--khong-sang`, 215 KB) | `anh/nhan-vat-{truoc,trai,sau,phai}.png` (bộ ảnh 2026-11-12.3, Google Gemini) | 2026-11-12 | Tencent Hunyuan Community License (model); ảnh: theo điều khoản Google Gemini của người dùng |
 
 ## Ảnh đầu vào (`design/models/anh/`)
 
