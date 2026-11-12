@@ -205,6 +205,9 @@ async function boot(): Promise<void> {
   // ?di=0..1 — nhân vật đi tại chỗ với tốc độ đó (xem dáng đi / động tác); không có = đứng yên
   const walkSpeed = Math.min(1, Math.max(0, Number(params.get('di') ?? 0) || 0));
   // ?pha=<radian> — đặt sẵn pha bước (1,57 = bước dài nhất) để chụp đúng một tư thế; dùng cùng ?di=1
+  // ?bieu-cam=binh|chao|doc|nghi|vui|dinh-muc|ngu — nhân vật chibi đổi biểu cảm
+  const expr = params.get('bieu-cam');
+  if (expr && 'setExpression' in character) (character as { setExpression(e: string): void }).setExpression(expr);
   const phase = Number(params.get('pha'));
   if (Number.isFinite(phase) && phase > 0) character.animate(phase / 10, 1);
   function tick(): void {
