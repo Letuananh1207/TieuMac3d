@@ -3,6 +3,14 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-12.7 — Nhân vật: tay buông xuôi (bỏ dáng chữ A khi chơi)
+
+- Loại: code động tác — **ngoại hình**. Người dùng: "không muốn hình dáng tay dạng ngang như hiện tại vì không tự nhiên".
+- Model vẫn dựng ở tư thế chữ A (dễ cho AI dựng + gắn xương); khi chơi `glbCharacter` hạ tay quanh khớp vai
+  `ARM_REST` = 0,5 rad (thử 0,35 · 0,5 · 0,65 — 0,35 còn dang, 0,65 tay áo cắm vào thân) → tay buông sát thân, đi vẫn vung
+  nhẹ + khép thêm 0,04 rad.
+- Ảnh kiểm: Canvas 3D cận vai trước · nghiêng · sau · đang bước (chụp trong phiên).
+
 ## 2026-11-12.6 — Nhân vật: màu dưới nách liền áo; tay đi theo khi bước
 
 - Loại: tài nguyên 3D + code động tác — **ngoại hình**. Người dùng báo (kèm ảnh): "hiệu ứng tay khi nhân vật di chuyển
