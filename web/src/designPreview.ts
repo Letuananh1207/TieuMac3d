@@ -10,6 +10,7 @@ import { Colliders } from './collision/colliders';
 import { OrbitCamera } from './input/orbitCamera';
 import { createPlayerCharacter } from './player/playerCharacter';
 import { createDiscipleCharacter } from './player/discipleCharacter';
+import { placeNpcs } from './player/npc';
 import { SCENE, SCENE_FILE } from './scene/loadSpec';
 import { viewDistance } from './scene/farMountains';
 import { mergeStatic } from './scene/merge';
@@ -57,13 +58,16 @@ async function boot(): Promise<void> {
   const startY = world.surface.heightAt(sx, sz);
   character.root.position.set(sx, Number.isFinite(startY) ? startY : 0, sz);
   scene.add(character.root);
+  // NPC như app (R-NPC-1); lỗi nạp hiện cùng lỗi đặc tả ở bảng
+  const npcSet = await placeNpcs(scene, colliders, spec.npcs, (x, z) => world.surface.heightAt(x, z));
+  for (const npc of npcSet.npcs) npc.update(1, character.root.position); // ảnh chụp: quay xong ngay, không đợi
   world.update(1, character.root.position); // mờ mái ngay nếu đặt trong nhà (ảnh chụp không đợi 0,3 s)
 
   /* ---------- bảng: nguồn + lỗi đặc tả ---------- */
   el('source').textContent = SCENE.fromFile
     ? `Đọc từ ${SCENE_FILE}`
     : `Chưa có ${SCENE_FILE} — đang xem cảnh mặc định trong code (web/src/scene/spec.ts)`;
-  const problems = [...SCENE.problems, ...placed.problems];
+  const problems = [...SCENE.problems, ...placed.problems, ...npcSet.problems];
   const box = el('problems');
   if (problems.length === 0) {
     const ok = document.createElement('div');
@@ -233,6 +237,7 @@ async function boot(): Promise<void> {
     controls.update();
     world.update(dt, character.root.position);
     character.animate(dt, walkSpeed);
+    for (const npc of npcSet.npcs) npc.update(dt, character.root.position);
     renderer.render(scene, camera);
     acc += dt;
     frames++;

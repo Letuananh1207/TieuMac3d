@@ -47,6 +47,14 @@ Code: [web/src/collision/colliders.ts](../../web/src/collision/colliders.ts)
 | R-VA-2 | Khi cảnh có địa hình: nhân vật đi trên mặt đất, lên xuống theo độ cao. Không bước được vào mặt đất dốc hơn 35° (cả lên lẫn xuống), như gặp tường; vì vậy không đi ra khỏi mép cao nguyên (vực xuống biển mây). Đang đứng trên mặt dốc hơn 35° thì chỉ đi xuống được. | Kè đá cao 1,5 m trong bề ngang 1 m (dốc ≈ 56°) → dừng ở chân kè. Sườn đồi dốc 30° → đi lên được, nhân vật cao dần theo mặt đất. Đi tới mép vực → dừng ở mép. | đúng | ok |
 | R-VA-3 | Nhà vào được (giảng đường, thư viện): tường và cột chặn nhân vật, đi qua cửa được; bảng đen, bục giảng, án thư, kệ sách, án đọc và thầy có va chạm. | Giảng đường (0; −17,6), nền cao 0,96 m (hệ số chiều cao 1,6): 5 bậc rộng 4 m và cửa giữa (tường trước ở z ≈ −12,4). Đi thẳng lên bắc ở x = 0 → lên bậc, qua cửa vào trong theo lối giữa hai dãy án thư, dừng trước bục giảng ở z ≈ −20,9; ở x = 3 → lan can nền chặn, dừng ở z = −10,5. | chờ | ok |
 
+## NPC — nhân vật không điều khiển
+
+Code: [web/src/player/npc.ts](../../web/src/player/npc.ts), [web/src/main.ts](../../web/src/main.ts); vị trí: `npcs` trong đặc tả cảnh
+
+| Mã | Quy tắc | Ví dụ | Xác nhận | App |
+|---|---|---|---|---|
+| R-NPC-1 | NPC đứng tại chỗ theo đặc tả cảnh (vị trí + hướng), thở nhẹ; có va chạm tròn bán kính 0,45 (nhân vật không đi xuyên). Người chơi cách NPC **dưới** 4 m thì NPC từ từ quay mặt về phía người chơi (tối đa 3 rad/s); cách từ 4 m trở lên thì từ từ quay về hướng gốc. Thiếu file model của NPC → bỏ qua NPC đó, cảnh vẫn chạy. | Tiểu Mặc ở (3,5; 74) nhìn về nam (+z): người chơi ở (0; 80) (cách 7,0) → giữ hướng gốc; đi tới (1; 74) (cách 2,5) → Tiểu Mặc quay sang nhìn người chơi; đi thẳng vào Tiểu Mặc theo z = 74 → dừng ở x ≈ 2,55 (cách tâm 0,95). | chờ | ok · miễn test (chưa có trình chạy test TS — kiểm bằng chụp headless) |
+
 ## HUD — chữ trên màn
 
 Code: [web/src/zones/areaTracker.ts](../../web/src/zones/areaTracker.ts), [web/src/ui/hud.ts](../../web/src/ui/hud.ts), [web/src/ui/areaBanner.ts](../../web/src/ui/areaBanner.ts)

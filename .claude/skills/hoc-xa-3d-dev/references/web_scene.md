@@ -66,7 +66,8 @@ export interface Character {
 ```
 
 `PlayerController` chỉ biết `Character`. Có sẵn: `discipleCharacter.ts` (đệ tử khối), `blockCharacter.ts` (gấu),
-`glbCharacter.ts` (model .glb — `references/tai_nguyen.md`); chọn ở `playerCharacter.ts`. Nhân vật mới = một hàm trả
+`glbCharacter.ts` (model .glb — `references/tai_nguyen.md`); chọn ở `playerCharacter.ts`. NPC (`npc.ts`, R-NPC-1)
+dùng chung `loadGlbModel`, không gắn xương (xương tự gắn đo theo nhân vật chính), đặt theo `spec.npcs` qua `placeNpcs`. Nhân vật mới = một hàm trả
 về `Character`; không sửa controller.
 
 ## Điều khiển (input/)

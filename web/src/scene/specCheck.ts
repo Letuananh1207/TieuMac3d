@@ -5,6 +5,7 @@
 import {
   BUILDING_KINDS,
   DEFAULT_SCENE,
+  NPC_IDS,
   PROP_KINDS,
   ROOF_KINDS,
   SIDES,
@@ -192,6 +193,7 @@ const LISTS: Record<string, ItemParser> = {
   'site.areas': item({ name: '', from: XZ0, to: XZ0 }, { han: '' }),
   water: item({ x: 0, z: 0 }, { r: 0, w: 0, d: 0, rotY: 0 }, all(waterShape, rot, positive('r', 'w', 'd'))),
   props: item({ kind: '', x: 0, z: 0 }, { rotY: 0, scale: 0 }, all(oneOf('kind', PROP_KINDS), rot, positive('scale'))),
+  npcs: item({ id: '', x: 0, z: 0 }, { rotY: 0 }, oneOf('id', NPC_IDS)),
   'trees.yard': item({ x: 0, z: 0, scale: 0 }, { kind: '' }, all(oneOf('kind', TREE_KINDS), positive('scale'))),
   'trees.groves': item(
     { kind: '', x: 0, z: 0, w: 0, d: 0, count: 0 },

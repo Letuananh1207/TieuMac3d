@@ -115,6 +115,7 @@ flutter test -r failures-only test/<phần> · dart tool/rule_trace.dart
 | màn bài học native (mốc 3) | `lesson_screen`, `scene_event` | `app/lib/lesson/`, `app/lib/scene/scene_event.dart`; font: `web/scripts/fonts-app.mjs` |
 | thiết kế, token, canvas | — | `design/` (chỉ đọc) → `/ui-apply` |
 | thiết kế cảnh (không cần code mới) | — | `/canh` (sửa `design/scene/scene.json`) |
+| NPC, Tiểu Mặc, nhân vật đứng trong cảnh | `npc`, `placeNpcs` | `web/src/player/npc.ts`, `npcs` trong đặc tả cảnh (R-NPC-1); model `design/models/<mã>.glb`, mã thêm ở `NPC_IDS` (`scene/spec.ts`) |
 | model .glb: tạo / thay nhân vật / công trình bằng AI | `glbCharacter`, `playerCharacter` | `/tai-nguyen` (Hunyuan3D); code nạp: `web/src/player/glbCharacter.ts`; công trình .glb chưa có code đặt vào cảnh |
 | hiệu năng, draw call, tam giác (mốc 4) | `merge`, `renderer` | `docs/tasks/2026-11-11-moc-4-hieu-nang.md`, `web/src/scene/merge.ts` |
 

@@ -10,6 +10,8 @@ export type XZ = [number, number];
 export const BUILDING_KINDS = ['giang-duong', 'dien', 'thap', 'nha-nho'] as const;
 export const ROOF_KINDS = ['chop', 'cong'] as const;
 export const SIDES = ['bac', 'nam', 'dong', 'tay'] as const;
+/** NPC có model: `design/models/<mã>.glb` (tạo bằng /tai-nguyen). Thêm NPC mới = thêm mã ở đây + đặt file model. */
+export const NPC_IDS = ['tieu-mac'] as const;
 export const PROP_KINDS = [
   'dai-ti-thi',
   'gia-binh-khi',
@@ -115,6 +117,15 @@ export interface PropSpec {
   z: number;
   rotY?: number;
   scale?: number;
+}
+
+/** NPC đứng tại chỗ (R-NPC-1): mặt trước nhìn về +z khi `rotY` = 0; `rotY` độ, tuỳ ý (không cần bội 90 — không có
+ *  hộp va chạm vuông, chỉ vòng tròn). */
+export interface NpcSpec {
+  id: (typeof NPC_IDS)[number];
+  x: number;
+  z: number;
+  rotY?: number;
 }
 
 /** Cụm cây rải ngẫu nhiên (theo `trees.seed`) trong hình chữ nhật tâm (x, z). */
@@ -313,6 +324,8 @@ export interface SceneSpec {
     clouds: { count: number; height: number; radius: number; speed: number; color: string };
   };
   player: { start: XZ };
+  /** nhân vật không điều khiển (R-NPC-1) */
+  npcs: NpcSpec[];
   camera: { fov: number; minDist: number; maxDist: number; near: CameraView; far: CameraView };
 }
 
@@ -424,6 +437,7 @@ export const DEFAULT_SCENE: SceneSpec = {
     clouds: { count: 0, height: 26, radius: 60, speed: 0.6, color: '#d9dce8' },
   },
   player: { start: [0, 6] },
+  npcs: [], // cảnh mặc định chưa có NPC
   camera: { fov: 55, minDist: 5, maxDist: 22, near: { dist: 9, pitch: 0.42 }, far: { dist: 17, pitch: 0.75 } },
 };
 

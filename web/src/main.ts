@@ -10,6 +10,7 @@ import { GroundPicker } from './input/tapToMove';
 import { createDiscipleCharacter } from './player/discipleCharacter';
 import { createPlayerCharacter } from './player/playerCharacter';
 import { PlayerController, type MoveInput } from './player/controller';
+import { placeNpcs } from './player/npc';
 import { SCENE, SCENE_FILE } from './scene/loadSpec';
 import { viewDistance } from './scene/farMountains';
 import { createStage } from './scene/renderer';
@@ -74,6 +75,9 @@ async function boot(): Promise<void> {
     // thầy không cử động → gộp ~25 khối thành vài khối theo màu (ngân sách ≤ 150 draw call)
     mergeStatic(t.root, new Set());
   }
+  // NPC đứng tại chỗ, quay về người chơi khi lại gần (R-NPC-1)
+  const npcSet = await placeNpcs(scene, colliders, spec.npcs, groundAt);
+  if (npcSet.problems.length) console.warn(npcSet.problems.join('\n'));
   const roomAt = (x: number, z: number): Room | undefined => world.rooms.find((r) => inRect(r.floor, x, z));
 
   /* ---------- bài học: nút nổi trên vật + chạm vật (R-VUNG-1/2/3) ---------- */
@@ -180,6 +184,7 @@ async function boot(): Promise<void> {
     // màn tải còn hiện (kể cả lúc mờ ra) → không điều khiển (R-MAN-2); chạm đã bị lớp màn tải chặn
     player.update(dt, input, orbit.yaw, paused || loading.active);
     const pos = player.position;
+    for (const npc of npcSet.npcs) npc.update(dt, pos);
     zones.update(pos);
     areas.update(pos);
     entries.update(pos);

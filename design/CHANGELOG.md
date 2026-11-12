@@ -3,6 +3,17 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-12.15 — Cảnh: NPC Tiểu Mặc đứng cạnh cổng Sơn Môn
+
+- Loại: cảnh 3D — **bố cục** (vật cản mới). Người dùng chọn vị trí + động tác (phiên VS Code làm thay `/canh`); kế hoạch
+  `docs/tasks/2026-11-12-npc-tieu-mac.md`; luật mới **R-NPC-1** (đứng tại chỗ, va chạm tròn 0,45, quay về người chơi < 4 m).
+- Trường mới (phiên code thêm, mặc định `[]` giữ cảnh cũ): `npcs: [{ id, x, z, rotY? }]`, `id` ∈ mã có model
+  (`tieu-mac`). Đặt: `{ "id": "tieu-mac", "x": 3.5, "z": 74, "rotY": 0 }` — mép lối đá (rộng 8), trước cột cổng 3,6 m,
+  nhìn về điểm xuất phát (0; 80); giữa lối còn > 3 m để đi.
+- `npm run scene:check`: Không có lỗi · `NPC tieu-mac: (3,5; 74) nhìn 0°`. Draw call +2 (model + bóng).
+- Ảnh: `screens/Canh-npc-tieu-mac.png` (trên: từ điểm xuất phát · cạnh nhân vật chính · nhân vật chính không đổi;
+  dưới: người chơi sau lưng / bên trái → Tiểu Mặc quay theo; xa 8 m → giữ hướng gốc).
+
 ## 2026-11-12.14 — Model NPC Tiểu Mặc 小墨 (luồng chuẩn 4 góc)
 
 - Loại: tài nguyên 3D. Phiếu: `docs/phieu_thiet_ke/2026-11-12-anh-nhan-vat-3d.md` (đợt 2, ảnh mục .13).

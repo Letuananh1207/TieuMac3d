@@ -69,6 +69,12 @@ for (const w of spec.water) console.log(`Ao (${n(w.x)}; ${n(w.z)}) ${w.r !== und
 const kinds = {};
 for (const p of spec.props) kinds[p.kind] = (kinds[p.kind] ?? 0) + 1;
 if (spec.props.length) console.log(`Vật trang trí: ${Object.entries(kinds).map(([k, c]) => `${k} ×${c}`).join(' · ')}`);
+// NPC (R-NPC-1): mã phải có model design/models/<mã>.glb
+for (const p of spec.npcs) {
+  const has = existsSync(resolve(web, '..', 'design', 'models', `${p.id}.glb`));
+  if (!has) all.push(`npcs: thiếu design/models/${p.id}.glb — app bỏ NPC "${p.id}"`);
+  console.log(`NPC ${p.id}: (${n(p.x)}; ${n(p.z)}) nhìn ${n(p.rotY ?? 0)}°${has ? '' : ' — THIẾU MODEL'}`);
+}
 if (spec.paths.length) console.log(`Lối lát đá: ${spec.paths.length}`);
 const t = spec.terrain;
 if (t.enabled) {

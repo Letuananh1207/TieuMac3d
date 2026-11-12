@@ -12,16 +12,21 @@ const ARM_REST = 0.4;
 /** Tay hơi đưa ra trước khi đứng thả lỏng (radian). */
 const ARM_FORWARD = 0.12;
 
-/**
- * Nhân vật từ file `.glb` (model AI đã làm sạch — docs/ai3d.md, quyết định 0003), cùng hợp đồng `Character` với đệ tử
- * khối nên `PlayerController` không đổi.
- * - Cỡ: co giãn đều cho cao `GLB_HEIGHT`, chân chạm y = 0, tâm x/z về gốc. Mặt trước model nhìn về +z (như đệ tử khối).
- * - Vật liệu: đổi sang Lambert (quy tắc 4 — rẻ, không cần đèn môi trường), giữ màu / texture / màu đỉnh.
- * - Động tác: model có clip tên chứa `idle` / `walk` → `AnimationMixer`, trộn theo tốc độ; không có clip (model AI
- *   thường chưa có xương) → nhún nhẹ + nghiêng khi đi.
- * Lỗi nạp → Promise bị từ chối; nơi gọi dùng đệ tử khối dự phòng.
- */
-export async function loadGlbCharacter(url: string): Promise<Character> {
+/** Model `.glb` đã chuẩn hoá (dùng chung cho nhân vật chính và NPC — `npc.ts`). */
+export interface GlbModel {
+  gltf: Awaited<ReturnType<GLTFLoader['loadAsync']>>;
+  /** cảnh của file, đã co giãn cao `GLB_HEIGHT`, chân y = 0, tâm x/z về gốc */
+  model: THREE.Object3D;
+  /** gốc đặt vị trí, có bóng giả */
+  root: THREE.Group;
+  /** con của `root`, xoay theo hướng nhìn */
+  body: THREE.Group;
+  /** con của `body`, nhún / thở; chưa chứa `model` (nơi gọi tự gắn, có thể qua xương) */
+  bob: THREE.Group;
+}
+
+/** Nạp file, đổi vật liệu (giữ không-sáng), chuẩn cỡ, dựng khung root → body → bob + bóng giả. */
+export async function loadGlbModel(url: string): Promise<GlbModel> {
   const loader = new GLTFLoader();
   loader.setMeshoptDecoder(MeshoptDecoder); // file nén bằng gltfpack (docs/ai3d.md bước 4)
   const gltf = await loader.loadAsync(url);
@@ -72,6 +77,20 @@ export async function loadGlbCharacter(url: string): Promise<Character> {
   shadow.rotation.x = -Math.PI / 2;
   shadow.position.y = 0.02;
   root.add(shadow);
+  return { gltf, model, root, body, bob };
+}
+
+/**
+ * Nhân vật từ file `.glb` (model AI đã làm sạch — docs/ai3d.md, quyết định 0003), cùng hợp đồng `Character` với đệ tử
+ * khối nên `PlayerController` không đổi.
+ * - Cỡ: co giãn đều cho cao `GLB_HEIGHT`, chân chạm y = 0, tâm x/z về gốc. Mặt trước model nhìn về +z (như đệ tử khối).
+ * - Vật liệu: đổi sang Lambert (quy tắc 4 — rẻ, không cần đèn môi trường), giữ màu / texture / màu đỉnh.
+ * - Động tác: model có clip tên chứa `idle` / `walk` → `AnimationMixer`, trộn theo tốc độ; không có clip (model AI
+ *   thường chưa có xương) → nhún nhẹ + nghiêng khi đi.
+ * Lỗi nạp → Promise bị từ chối; nơi gọi dùng đệ tử khối dự phòng.
+ */
+export async function loadGlbCharacter(url: string): Promise<Character> {
+  const { gltf, model, root, body, bob } = await loadGlbModel(url);
 
   const clip = (name: string): THREE.AnimationClip | undefined =>
     gltf.animations.find((a) => a.name.toLowerCase().includes(name));
