@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Bộ ảnh nhiều góc – nhân vật chính</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;700&amp;family=Lora:wght@700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2B5446}a:hover{color:#24323A}
+</style>
+</helmet>
+<div style="width: 1440px; height: 780px; box-sizing: border-box; padding: 40px; background: #F4F7F6; font-family: 'Be Vietnam Pro', system-ui, sans-serif; color: #24323A; display: flex; flex-direction: column; gap: 24px">
+  <div style="display: flex; flex-direction: column; gap: 6px">
+    <h1 style="margin: 0; font-family: 'Lora', Georgia, serif; font-size: 26px">Bộ ảnh nhiều góc — nhân vật chính (đầu vào Hunyuan3D-2 đa góc)</h1>
+    <div style="font-size: 14px">Ảnh Gemini đã chuẩn hoá: nền trơn #DDDDDD, bỏ sao mờ, cùng cỡ — đỉnh búi ở vạch xanh (10 %), đế ủng ở vạch đỏ (90 %), trục thân ở giữa. PNG 1024 × 1024.</div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 24px">
+    <sc-for list="{{slots}}" as="s" hint-placeholder-count="5">
+      <figure style="margin: 0; display: flex; flex-direction: column; gap: 10px">
+        <div style="position: relative; width: 254px; height: 254px; background: #DDDDDD; border: 1px solid rgba(36,50,58,.25); overflow: hidden">
+          <img src="{{s.src}}" alt="{{s.alt}}" style="position: absolute; inset: 0; width: 254px; height: 254px">
+          <div aria-hidden="true" style="position: absolute; left: 0; right: 0; top: 25px; height: 0; border-top: 1px dashed #2B5446"></div>
+          <div aria-hidden="true" style="position: absolute; left: 0; right: 0; top: 229px; height: 0; border-top: 2px solid #A8322A"></div>
+        </div>
+        <figcaption style="display: flex; flex-direction: column; gap: 2px">
+          <code style="font-size: 13px; font-weight: 700">{{s.file}}</code>
+          <span style="font-size: 13px">{{s.desc}}</span>
+        </figcaption>
+      </figure>
+    </sc-for>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; font-size: 13px; line-height: 1.6">
+    <div>
+      <div style="font-weight: 700; margin-bottom: 4px">Kiểm từng ảnh trước khi đưa vào</div>
+      <div>☐ Không nét viền, không tô phẳng — trông như đồ chơi vinyl / đất sét, có bóng khối nhẹ</div>
+      <div>☐ Nền xám trơn #DDDDDD, không bóng đổ dưới chân, không chữ / logo / sao mờ</div>
+      <div>☐ Chiếu thẳng, không xa gần; cùng tư thế chữ A (tay chéo xuống ≈ 35°, tay áo không chạm thân, hai ủng tách)</div>
+      <div>☐ Cùng cỡ: đỉnh búi ở vạch xanh, đế ủng ở vạch đỏ</div>
+      <div>☐ Cổ giao lĩnh: vạt TRÁI nhân vật đè vạt PHẢI (nhìn trước: đường viền chéo từ vai phải người xem xuống hông trái người xem)</div>
+      <div>☐ Ngọc bội ở hông TRÁI nhân vật (phía phải người xem ở ảnh trước) — thấy ở ảnh trái, khuất ở ảnh phải</div>
+    </div>
+    <div>
+      <div style="font-weight: 700; margin-bottom: 8px">Màu giữ đúng (theo ảnh gốc)</div>
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px">
+        <sc-for list="{{colors}}" as="c" hint-placeholder-count="8">
+          <div style="display: flex; align-items: center; gap: 8px">
+            <span aria-hidden="true" style="width: 22px; height: 22px; border-radius: 4px; border: 1px solid rgba(36,50,58,.25); background: {{c.hex}}"></span>
+            <span><b>{{c.hex}}</b><br>{{c.name}}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":780}}'>
+class Component extends DCLogic {
+renderVals() {
+return {
+  slots: [
+    { file: 'nhan-vat-truoc.png', desc: 'Thẳng từ trước. Vạt trái đè phải ✓, ngọc bội hông trái ✓.', src: '/_blob/58f0cb543bee3b911cb4a38174b1b3e4', alt: 'Nhân vật nhìn thẳng từ trước' },
+    { file: 'nhan-vat-trai.png', desc: 'Nghiêng 90°, thấy bên trái, mặt quay sang trái ảnh. Ngọc bội thấy ✓.', src: '/_blob/d7c22b8bb70e798e812ae1ee7b1ebd7c', alt: 'Nhân vật nghiêng, thấy bên trái' },
+    { file: 'nhan-vat-sau.png', desc: 'Thẳng từ sau: búi, dây buộc, trâm, nút đai, lưng trơn ✓.', src: '/_blob/f4826a28243ac5a049df409254032676', alt: 'Nhân vật nhìn từ sau' },
+    { file: 'nhan-vat-phai.png', desc: 'Nghiêng 90°, thấy bên phải, mặt quay sang phải ảnh. Mép vạt dọc ✓ (ngọc bội ló nhẹ ở trước).', src: '/_blob/7558a25dabc552b44908b499790b5b08', alt: 'Nhân vật nghiêng, thấy bên phải' },
+    { file: 'nhan-vat-mat.png', desc: 'Cận đầu + cổ nhìn thẳng (không căn theo vạch).', src: '/_blob/041f00471a505edde0c571e311a123a5', alt: 'Cận mặt nhân vật' }
+  ],
+  colors: [
+    { hex: '#C9D6E3', name: 'đạo bào lam nhạt' },
+    { hex: '#4D6DB2', name: 'viền cổ, tay, vạt, gấu' },
+    { hex: '#FFFFFF', name: 'cổ áo lót' },
+    { hex: '#33456D', name: 'đai lưng, ủng' },
+    { hex: '#8CCB9E', name: 'ngọc bội' },
+    { hex: '#E2B24C', name: 'trâm vàng' },
+    { hex: '#F6D3BD', name: 'da' },
+    { hex: '#DDDDDD', name: 'nền trơn' }
+  ]
+};
+}
+}
+</script>
+</body>
+</html>

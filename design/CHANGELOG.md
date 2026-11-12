@@ -3,6 +3,30 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-12.3 — Bộ ảnh nhiều góc của nhân vật chính (đầu vào Hunyuan3D đa góc)
+
+- Loại: tài nguyên 3D — ảnh đầu vào (không phải giao diện).
+- Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-12-anh-nhan-vat-3d.md` (đợt 1 — nhân vật chính; đợt 2 Tiểu Mặc chưa làm).
+- Cách làm: phiên thiết kế không tạo được ảnh render → dựng tờ khung `NhanVat-bo-anh` (5 ô, vạch đỉnh / đất, bảng kiểm,
+  8 màu) + câu lệnh Gemini từng góc; người dùng tạo 5 ảnh bằng Gemini (đính kèm `anh/nhan-vat.webp`, cùng một cuộc trò
+  chuyện); phiên thiết kế soát + chuẩn hoá.
+- Câu lệnh chung (dán trước mỗi góc): render 3D đồ chơi vinyl, ánh sáng studio mềm, không nét viền / cel; chiếu thẳng ngang
+  ngực; tư thế chữ A (tay chéo xuống ≈ 35°, tay áo không chạm thân, hai chân hơi tách); nền #DDDDDD trơn, không bóng đổ,
+  không chữ / logo / watermark; 1024², đỉnh búi 10 %, đế 90 %; màu + trang phục theo phiếu (vạt trái đè phải, ngọc bội
+  hông trái). Riêng góc: trước · profile 90° thấy bên TRÁI (mặt quay sang trái ảnh) · sau · profile 90° thấy bên PHẢI ·
+  cận đầu + cổ.
+- Soát: đúng kiểu render, không nét viền; vạt trái đè phải (trước, cận mặt); ngọc bội thấy ở ảnh trái, không có ở ảnh
+  sau, ló nhẹ ở mép trước ảnh phải (chấp nhận — ngọc treo mép trước hông); trâm ngang búi → ở hai ảnh nghiêng chỉ thấy
+  một chấm vàng (đúng). Chiều cao 4 góc gốc 863–865 px (Gemini giữ cỡ đều).
+- Chuẩn hoá: nền trơn #DDDDDD (tô loang từ mép, ngưỡng 22), xoá dấu sao Gemini góc phải dưới, đỉnh búi → 10 %, đế ủng →
+  90 %, trục thân (tâm ngang phần ủng) → giữa ảnh; ảnh cận mặt chỉ đổi nền + xoá sao.
+- File: `models/anh/nhan-vat-truoc.png`, `-trai.png`, `-sau.png`, `-phai.png`, `-mat.png` · `screens/NhanVat-bo-anh.png`
+  (5 góc cạnh nhau, có vạch) · `source/NhanVat-bo-anh.dc.html`, `source/canvas.json` · `models/LICENSES.md` (bảng ảnh
+  đầu vào). Ảnh gốc Gemini tên tiếng Việt trong `models/anh/` **không** đưa vào repo.
+- Luật: không chạm (ngoại hình nhân vật; cỡ 2,1 m, va chạm, tốc độ không đổi).
+- Việc tiếp (phiên VS Code, `/tai-nguyen`): dựng lại `nhan-vat.glb` bằng Hunyuan3D-2 bản đa góc (trước / trái / sau /
+  phải) + `model:paint` chiếu 4 phía — hết loang màu hông / lưng. Ảnh `mat` để vẽ mặt sắc nét.
+
 ## 2026-11-12.2 — Nhân vật AI mịn hơn (octree 384 + làm mịn Taubin + 16 000 tam giác)
 
 - Loại: tài nguyên 3D — **ngoại hình** nhân vật. Người dùng không chọn bản chibi dựng code ("vẫn muốn dùng theo như ban

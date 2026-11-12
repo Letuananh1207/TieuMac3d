@@ -156,6 +156,13 @@
       "w": 844,
       "h": 390,
       "title": "HUD C · ngang · trong thư viện, đứng gần án đọc (ảnh Canvas 3D)"
+    },
+    "NhanVat-bo-anh.dc.html": {
+      "x": 0,
+      "y": 10020,
+      "w": 1440,
+      "h": 780,
+      "title": "Nhân vật chính · bộ ảnh 4 góc + cận mặt (phiếu 2026-11-12)"
     }
   },
   "order": [
@@ -179,7 +186,8 @@
     "ManTai-ngang.dc.html",
     "NoiThat-mat-bang.dc.html",
     "TrongNha-doc.dc.html",
-    "TrongNha-ngang.dc.html"
+    "TrongNha-ngang.dc.html",
+    "NhanVat-bo-anh.dc.html"
   ],
   "notes": {
     "cach-dung": {
@@ -279,6 +287,21 @@
       "size": "m",
       "fill": "teal",
       "text": "Đã code (b3c4cf3) — ảnh trên artboard chụp từ Canvas 3D.\n\n• Đi thẳng qua cửa vào trong, không chuyển cảnh. Bước lên nền nhà → mái + tường trước + cột trước mờ còn 15 % (0,3 s); ra thì hiện lại (R-HUD-2).\n• Camera trong nhà ≤ 6 m, không ra sau tường.\n• Đứng gần bảng / án đọc → nút nổi ngọc lục \"Học chữ 快\" / \"Ôn chữ 書\" trên vật; hoặc chạm thẳng vào bảng, thầy, án đọc, kệ sách (R-VUNG-1/2/3).\n• Chip: \"Văn Uyên Tông · Giảng đường\" khi đứng trong nhà (R-HUD-1).\n• Va chạm: tường, cột, bảng, bục, án, kệ, thầy (R-VA-3).\n\nCanvas 3D: ?nv=0,-10.5 đặt nhân vật trong giảng đường."
+    },
+    "tieu-de-nhan-vat": {
+      "x": 0,
+      "y": 9780,
+      "text": "Nhân vật chính — ảnh nhiều góc cho Hunyuan3D",
+      "kind": "title1",
+      "maxW": 2060
+    },
+    "cau-lenh-gemini": {
+      "x": 1520,
+      "y": 10020,
+      "w": 540,
+      "size": "s",
+      "fill": "teal",
+      "text": "Câu lệnh Gemini — đính kèm ảnh gốc nhan-vat.webp, làm cả 5 ảnh trong CÙNG một cuộc trò chuyện.\n\nCHUNG (dán trước mỗi góc):\nUse the attached character as the exact design reference (same proportions, colors, outfit). Render it as a 3D vinyl toy figure, soft even studio lighting, subtle shading, NO outlines, NO cel shading, NO line art. Orthographic camera at chest height, no perspective. A-pose: arms angled down about 35 degrees, sleeves not touching the body, feet slightly apart, both boots visible. Plain flat light grey background #DDDDDD, no gradient, no floor shadow, no text, no logo, no watermark, no star icon. Square 1024x1024, character centered, top of hair bun at 10% from the top, soles at 90%. Chibi, head about 1/3 of height. Pale blue robe #C9D6E3 with blue trim #4D6DB2 on collar, cuffs, front edge and hem; white inner collar; cross collar with the character's LEFT flap over the RIGHT; dark navy sash #33456D; round jade disc #8CCB9E on a blue cord at the character's left hip; black hair in a top bun, blue hair tie, gold hairpin #E2B24C through the bun; dark navy boots with white soles; neutral face, eyes open.\n\n1 TRƯỚC: Front view, facing the camera.\n2 TRÁI: Exact 90-degree side profile showing the character's LEFT side; the character faces the LEFT edge of the image; jade disc visible.\n3 SAU: Back view: hair bun, nape, back of sash, plain robe back; no crossing collar, no jade disc in front.\n4 PHẢI: Exact 90-degree side profile showing the character's RIGHT side; the character faces the RIGHT edge of the image; jade disc hidden.\n5 MẶT: Close-up of head and neck, front view, same render style and background.\n\nMẹo: sau ảnh 1 ưng ý, đính kèm luôn ảnh 1 khi xin các góc sau (\"same figure as this image\"). Lưu PNG, thả vào design/models/anh/ (tên tuỳ) rồi báo — Claude chuẩn hoá nền, căn giữa, cùng đường đất."
     }
   },
   "designSystems": []
