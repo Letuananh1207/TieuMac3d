@@ -54,6 +54,16 @@ Số đo thực tế (RTX 5070 Ti, mini-turbo, octree 256, không texture): 6–
 màu) — 3 seed gần như giống nhau, không đẹp hơn bản khối. Muốn hơn hẳn: ảnh vẽ chi tiết (AI ảnh, câu lệnh dưới) **và**
 bật tô màu (texture — cần MSVC + tải thêm model tô màu). Ảnh chụp Canvas 3D chỉ để thử đường ống.
 
+Thêm (thử với nhân vật Tiểu Mặc, 2026-11-12):
+- Ảnh có **khung / nền màu** (thẻ, vòng tròn, mây) → rembg giữ cả khung → ra **tấm phẳng hình chữ nhật**. Phải tự tách
+  nền trước: nhân vật hoạt hình viền đen → loang từ mép + từ vài điểm nền qua vùng sáng (độ sáng > 85), giữ mảng nối
+  với thân, dán lên nền **trắng trơn**, không đệm thêm khung màu khác.
+- Ảnh **2D vẽ phẳng** (cel / flat, không bóng đổ) → ra **hình nhân vật cắt bìa** (đúng dáng nhìn thẳng, mỏng như tấm
+  giấy, mặt bên trống). Hunyuan đoán độ sâu từ sáng tối → cần ảnh **render 3D có khối, có bóng** (kiểu đồ chơi vinyl /
+  đất sét / Pop Mart), tốt nhất kèm ảnh nhìn nghiêng / sau (chế độ đa góc `--mv` của bản web).
+- Seed lỗi `IndexError: min(): Expected reduction dim 0 to have non-zero size` (FlashVDM không thấy bề mặt): API không
+  trả lỗi, `/status` mãi `processing` → đổi seed; dùng `--cho 90` (bình thường 3–20 s).
+
 ## Ngân sách (quyết định 0003) và khi `model:clean` báo vượt
 
 | | Tam giác | Dung lượng | Vật liệu / texture |
