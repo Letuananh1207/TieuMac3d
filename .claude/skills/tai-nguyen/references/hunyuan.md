@@ -35,6 +35,25 @@ Lỗi mới: người dùng dán ~20 dòng cuối → đọc Traceback từ dư�
 code gói ở `C:\ai3d\Hunyuan3D2_WinPortable\WinScripts-GUI\py\launcher.en.py`, `Hunyuan3D-2\api_server.py`,
 `gradio_app.py` để hiểu. Sửa được bằng một lệnh → đưa lệnh cho người dùng gõ; thêm dòng vào bảng trên.
 
+## Claude tự bật API (người dùng đã cho phép, 2026-11-12)
+
+`.claude/settings.local.json` (chỉ máy này, không commit) cho phép `Bash(/c/ai3d/Hunyuan3D2_WinPortable/python_standalone/python.exe *)`.
+Chạy nền (`run_in_background`), không qua launcher:
+
+```
+/c/ai3d/Hunyuan3D2_WinPortable/python_standalone/python.exe -s -c "import os,sys,runpy; R=r'C:\ai3d\Hunyuan3D2_WinPortable'; os.environ['HF_HUB_CACHE']=R+r'\HuggingFaceHub'; os.environ['HY3DGEN_MODELS']=R+r'\HuggingFaceHub'; os.environ['PYTHONPYCACHEPREFIX']=R+r'\pycache'; os.chdir(R+r'\Hunyuan3D-2'); sys.path.insert(0,'.'); sys.argv=['api_server.py','--host','127.0.0.1','--port','8081']; runpy.run_path('api_server.py', run_name='__main__')"
+```
+
+Chờ sẵn sàng bằng vòng `curl http://127.0.0.1:8081/status/x` (khoảng 1–2 phút). Log có `No module named 'triton'` (xformers)
+là **cảnh báo vô hại** — đừng coi là lỗi. Xong việc: dừng tiến trình đó (giải phóng VRAM).
+
+Số đo thực tế (RTX 5070 Ti, mini-turbo, octree 256, không texture): 6–18 s / model, ~500 000 tam giác, ~7 MB →
+`model:clean` còn 9 500 tam giác, 34 KB.
+
+**Bài học ảnh đầu vào**: ảnh chụp bản khối từ Canvas 3D cho ra **bản sao trắng** của bản khối (cùng dáng, mượt hơn, mất
+màu) — 3 seed gần như giống nhau, không đẹp hơn bản khối. Muốn hơn hẳn: ảnh vẽ chi tiết (AI ảnh, câu lệnh dưới) **và**
+bật tô màu (texture — cần MSVC + tải thêm model tô màu). Ảnh chụp Canvas 3D chỉ để thử đường ống.
+
 ## Ngân sách (quyết định 0003) và khi `model:clean` báo vượt
 
 | | Tam giác | Dung lượng | Vật liệu / texture |
