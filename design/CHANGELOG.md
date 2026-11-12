@@ -3,6 +3,19 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-12.5 — Nhân vật: nướng texture trộn 4 góc (hết lem mặt, màu áo đều)
+
+- Loại: tài nguyên 3D — **ngoại hình** nhân vật. Người dùng báo (kèm ảnh): "vẫn còn các màu mực lem không đồng nhất
+  ngoài ra mặt cũng lem".
+- Nguyên nhân: `model:paint --4goc` cho mỗi tam giác lấy MỘT ảnh → má / thái dương lấy nhầm tóc, tai của ảnh nghiêng;
+  chỗ chuyển góc lộ đường nối; ảnh render có sẵn bóng đổ khác nhau từng góc.
+- Sửa (`tai-nguyen/scripts/bake.py`): trải UV riêng (xatlas), mỗi điểm texture trộn 4 ảnh theo max(0, n·hướng)⁴, bỏ ảnh
+  mà điểm bị che (bộ đệm độ sâu từng góc), lan màu ra rãnh UV, texture JPEG; nén `model:clean` → **273 KB** (trước
+  1,24 MB), 16 000 tam giác, 1 draw call. Thử thêm bản ép bảng màu (`--bang-mau`): mặt lem hơn (da tối bị ép sang màu
+  tóc) → không dùng.
+- Ảnh: `screens/Model-nhan-vat.png` (cận trước · nghiêng trái · sau · nghiêng phải · đang bước).
+- File: `models/nhan-vat.glb`, `models/anh/nhan-vat-atlas.png` (texture đã nướng), `models/LICENSES.md`.
+
 ## 2026-11-12.4 — Nhân vật dựng từ bộ ảnh 4 góc (Hunyuan3D-2mv) + tô màu chiếu 4 phía
 
 - Loại: tài nguyên 3D — **ngoại hình** nhân vật. Đáp phiếu `2026-11-12-anh-nhan-vat-3d` (đợt 1) bằng bộ ảnh mục .3.

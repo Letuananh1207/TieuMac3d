@@ -14,7 +14,7 @@ import { MeshoptDecoder, MeshoptEncoder, MeshoptSimplifier } from 'meshoptimizer
 
 const WEB = join(dirname(fileURLToPath(import.meta.url)), '..');
 const BUDGET = {
-  'nhan-vat': { tris: 10_000, mb: 1.5, mats: 1 },
+  'nhan-vat': { tris: 16_000, mb: 1.5, mats: 1 }, // nâng 2026-11-12 (quyết định 0003) để mặt mịn
   'cong-trinh': { tris: 20_000, mb: 3, mats: 2 },
 };
 const MAX_TEX = 1024;

@@ -55,7 +55,10 @@ Quyết định: `.claude/skills/hoc-xa-3d-dev/decisions/0003-tai-san-ai.md` (la
    tắt máy chủ API (VRAM), chạy `/c/ai3d/Hunyuan3D2_WinPortable/python_standalone/python.exe -s
    .claude/skills/tai-nguyen/scripts/mv_gen.py design/models/anh <tên> <scratchpad> --seed 1234,7,42 --octree 384`
    (Hunyuan3D-2mv) → `smooth.py` → `python .claude/skills/tai-nguyen/scripts/atlas4.py design/models/anh <tên> <atlas.png>`
-   → `npm run model:paint -- <mịn.glb> <atlas.png> --4goc --ra <màu.glb>`. Màu sạch cả 4 phía (2026-11-12.4).
+   → **nướng** `.../python.exe -s .claude/skills/tai-nguyen/scripts/bake.py <mịn.glb> design/models/anh <tên> <màu.glb> --jpg`
+   (UV xatlas, trộn 4 góc theo hướng mặt + che khuất — hết lem mặt / đường nối; tốt hơn `model:paint --4goc`) →
+   `npm run model:clean -- <màu.glb> --ra <xong.glb>` (nén meshopt, ~0,3 MB). Không dùng `--bang-mau` cho mặt người
+   (da tối bị ép sang màu tóc) — 2026-11-12.5.
 4. **Mịn** (nhân vật — khuyên dùng thay simplify của `model:clean`): tạo với `--octree 384`, rồi
    `/c/ai3d/Hunyuan3D2_WinPortable/python_standalone/python.exe -s .claude/skills/tai-nguyen/scripts/smooth.py <thô.glb> <mịn.glb> --tam-giac 16000`
    (PyMeshLab: bỏ mảnh vụn, Taubin, quadric giữ dáng) → tô màu (`atlas.py --phang 32` + `model:paint`).
