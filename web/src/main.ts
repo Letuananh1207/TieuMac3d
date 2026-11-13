@@ -23,13 +23,13 @@ import { buildWorld } from './scene/world';
 import { el } from './ui/dom';
 import { LearnButton } from './ui/learnButton';
 import { AreaBanner } from './ui/areaBanner';
-import { bindCameraButton, createHint, FpsCounter, NameTag, PlaceChip } from './ui/hud';
+import { createHint, FpsCounter, NameTag } from './ui/hud';
 import { LessonBoard } from './ui/lessonBoard';
 import { MapHud } from './ui/mapHud';
 import { ActionButtons } from './ui/actionButtons';
 import { DialogBox, TalkButton } from './ui/dialogBox';
 import { LoadingScreen, nextPaint } from './ui/loadingScreen';
-import { AreaEntryTracker, AreaTracker } from './zones/areaTracker';
+import { AreaEntryTracker } from './zones/areaTracker';
 import { ZoneTracker } from './zones/zoneTracker';
 import { JOURNEY_MAP, placeAt, placeScene, placeStates, type PlaceState } from './zones/journeyMap';
 import { RingCharge } from './zones/ringCharge';
@@ -200,17 +200,8 @@ async function boot(): Promise<void> {
       // chạm mặt sân không làm nhân vật đi nữa — chỉ joystick / phím (R-DIEU-2, 2026-11-13)
     },
   });
-  bindCameraButton(() => orbit.toggleView());
 
-  /* ---------- chip: tên nhà (khi đứng trong) ưu tiên hơn tên khu (R-HUD-1) ---------- */
-  const chip = new PlaceChip(spec.site.name);
-  const placeOf = new Map(ZONE_CONTENT.map((c) => [c.id, c.place]));
-  const roomAreas = world.rooms.map((r) => ({
-    name: placeOf.get(r.zoneId) ?? r.zoneId,
-    from: [r.floor.minX, r.floor.minZ] as [number, number],
-    to: [r.floor.maxX, r.floor.maxZ] as [number, number],
-  }));
-  const areas = new AreaTracker({ name: spec.site.name, areas: [...roomAreas, ...spec.site.areas] }, (label) => chip.set(label));
+  /* ---------- thẻ tên khu (R-HUD-3); chip tên nơi + nút góc nhìn đã bỏ (R-HUD-1, 2026-11-13) ---------- */
   // thẻ tên khu chỉ theo khu của đặc tả (không theo nhà) → vào / ra nhà không hiện thẻ (R-HUD-3)
   const banner = new AreaBanner();
   const entries = new AreaEntryTracker(spec.site.areas, (a) => banner.show(a));
@@ -326,7 +317,6 @@ async function boot(): Promise<void> {
     }
     scroll.update(dt);
     zones.update(pos);
-    areas.update(pos);
     entries.update(pos);
     world.update(dt, pos);
     const room = roomAt(pos.x, pos.z);

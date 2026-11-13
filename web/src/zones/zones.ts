@@ -23,8 +23,6 @@ export interface ZoneContent {
   id: string;
   /** kiểu nội thất của nhà neo vùng này */
   interior: 'lop-hoc' | 'thu-vien';
-  /** tên nhà trên chip khi đứng trong (R-HUD-1) */
-  place: string;
   /** chữ trên nút học nổi: "<action> <chữ Hán>" (vd. "Học chữ 快") */
   action: string;
   lesson: Lesson;
@@ -34,7 +32,6 @@ export const ZONE_CONTENT: ZoneContent[] = [
   {
     id: 'lop-hsk3',
     interior: 'lop-hoc',
-    place: 'Giảng đường',
     action: 'Học chữ',
     lesson: {
       han: '快',
@@ -51,7 +48,6 @@ export const ZONE_CONTENT: ZoneContent[] = [
   {
     id: 'thu-vien',
     interior: 'thu-vien',
-    place: 'Thư viện',
     action: 'Ôn chữ',
     lesson: {
       han: '書',

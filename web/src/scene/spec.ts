@@ -92,7 +92,7 @@ export interface GateSpec {
   roofColor?: string;
 }
 
-/** Một khu có tên (hình chữ nhật từ góc `from` tới góc `to`) — chip HUD hiện tên khu đang đứng (R-HUD-1). */
+/** Một khu có tên (hình chữ nhật từ góc `from` tới góc `to`) — bước vào thì hiện thẻ tên khu (R-HUD-3). */
 export interface AreaSpec {
   name: string;
   /** chữ Hán của khu trên thẻ tên khu (R-HUD-3), vd. "外門"; thiếu thì thẻ chỉ hiện tên Việt */
@@ -219,7 +219,7 @@ export interface TeleportSpec {
 }
 
 export interface SceneSpec {
-  /** tên nơi + các khu cho chip HUD; khu khai báo trước thắng khi chồng nhau */
+  /** tên nơi + các khu (thẻ tên khu R-HUD-3, màn tải); khu khai báo trước thắng khi chồng nhau */
   /** `han`: chữ Hán tên nơi trên màn tải (R-MAN-2), rỗng = chỉ tên Việt */
   site: { name: string; han: string; areas: AreaSpec[] };
   /** trời: dải màu từ đỉnh xuống chân trời (điểm giữa ở 55%) */
@@ -348,7 +348,7 @@ export interface SceneSpec {
 }
 
 export const DEFAULT_SCENE: SceneSpec = {
-  // chưa đặt khu nào: chip luôn "Học xá · Sân chính" như bản gốc (R-HUD-1)
+  // chưa đặt khu nào
   site: { name: 'Học xá · Sân chính', han: '', areas: [] },
   sky: { top: '#0f1730', middle: '#33476e', horizon: '#8a7a86' },
   fog: { color: '#2c3a58', near: 28, far: 70 },

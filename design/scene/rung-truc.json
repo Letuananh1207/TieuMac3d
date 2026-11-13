@@ -456,11 +456,11 @@
   "npcs": [],
   "camera": {
     "fov": 55,
-    "minDist": 5,
+    "minDist": 3,
     "maxDist": 22,
     "near": {
-      "dist": 9,
-      "pitch": 0.42
+      "dist": 4.2,
+      "pitch": 0.32
     },
     "far": {
       "dist": 18,

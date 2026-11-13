@@ -59,14 +59,8 @@ body{overscroll-behavior:none;-webkit-user-select:none;user-select:none;-webkit-
 .frost{background:var(--frost);border:1px solid var(--frost-line);outline:1px solid var(--frost-outline);-webkit-backdrop-filter:var(--blur-hud);backdrop-filter:var(--blur-hud)}
 .dot{flex:none;width:6px;height:6px;border-radius:50%;background:var(--gold)}
 
-/* chip tên nơi · khu (R-HUD-1) */
-.chip{position:fixed;z-index:5;pointer-events:none;left:var(--edge-left);top:calc(var(--sa-top) + 12px);height:36px;box-sizing:border-box;padding:0 14px 0 12px;display:flex;align-items:center;gap:8px;border-radius:999px;box-shadow:var(--shadow-hud);font-size:13px;font-weight:700;white-space:nowrap;max-width:calc(100% - var(--edge-left) - var(--edge-right) - 150px);overflow:hidden}
-.chip .dot{box-shadow:0 0 0 2px rgba(212,166,74,.25)}
-.chip .area{color:var(--jade)}
-/* nút góc nhìn */
 button{font:inherit;font-weight:700;cursor:pointer;color:var(--slate)}
 button:focus-visible{outline:2px solid var(--jade);outline-offset:2px}
-#btnCam{position:fixed;z-index:5;right:var(--edge-right);top:calc(var(--sa-top) + 8px);height:44px;box-sizing:border-box;padding:0 16px;font-size:13px;border-radius:999px;box-shadow:var(--shadow-hud);white-space:nowrap}
 /* fps: chỉ chế độ gỡ lỗi (?debug) */
 #fps{position:fixed;z-index:5;pointer-events:none;right:var(--edge-right);bottom:calc(var(--sa-bottom) + 12px);font-family:ui-monospace,monospace;font-size:11px;font-variant-numeric:tabular-nums;background:rgba(244,247,246,.8);padding:2px 6px;border-radius:6px}
 
@@ -171,7 +165,7 @@ body.talking #dialogDim{display:block}
 #dialog .choices .dot{width:6px;height:6px;border-radius:50%;background:var(--gold);flex:none}
 #dialog .choices button.bye{background:transparent;border-color:rgba(36,50,58,.3);box-shadow:none}
 #dialog .choices .x{font-size:18px;line-height:1;width:16px;text-align:center;flex:none}
-body.talking #joy,body.talking #joyGhost,body.talking #hint,body.talking #btnCam,body.talking .learn,body.talking #actions,body.talking #talk{display:none}
+body.talking #joy,body.talking #joyGhost,body.talking #hint,body.talking .learn,body.talking #actions,body.talking #talk{display:none}
 body.map-open #actions,body.map-open #talk{display:none}
 @media (orientation:landscape){
   #actions{right:calc(var(--sa-right) + 12px);bottom:calc(var(--sa-bottom) + 9px)}
@@ -204,8 +198,6 @@ body.map-open #joy,body.map-open #joyGhost,body.map-open #hint,body.map-open .le
 
 /* Màn ngang trên điện thoại (thấp) */
 @media (max-height:520px){
-  .chip{top:12px}
-  #btnCam{top:8px}
   #hint{left:50%;right:auto;width:420px;max-width:calc(100% - var(--edge-left) - var(--edge-right) - 260px);transform:translateX(-50%);bottom:calc(var(--sa-bottom) + 12px);padding:8px 14px}
   #joyGhost{left:calc(var(--sa-left) + 28px);bottom:calc(var(--sa-bottom) + 12px);width:100px;height:100px}
   #joyGhost .knob{width:36px;height:36px}

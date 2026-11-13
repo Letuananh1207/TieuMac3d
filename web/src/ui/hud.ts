@@ -55,30 +55,3 @@ export class NameTag {
     this.tag.style.top = `${((1 - this.v.y) / 2) * window.innerHeight}px`;
   }
 }
-
-/**
- * Chip góc trên trái: tên nơi · tên khu đang đứng (R-HUD-1, chữ do `zones/AreaTracker` tính).
- * Phần " · <khu>" tô ngọc lục (HUD C) — tách theo tên nơi đứng đầu chữ.
- */
-export class PlaceChip {
-  private readonly place = el('place');
-  private readonly area = el('placeArea');
-
-  constructor(private readonly siteName: string) {}
-
-  set(label: string): void {
-    const head = `${this.siteName} · `;
-    const split = label.startsWith(head) && label.length > head.length;
-    this.place.textContent = split ? this.siteName : label;
-    this.area.textContent = split ? ` · ${label.slice(head.length)}` : '';
-  }
-}
-
-/** Nút đổi góc nhìn gần / cả sân. */
-export function bindCameraButton(toggle: () => boolean): void {
-  const btn = el<HTMLButtonElement>('btnCam');
-  btn.addEventListener('click', () => {
-    const near = toggle();
-    btn.textContent = `Góc nhìn: ${near ? 'gần' : 'cả sân'}`;
-  });
-}
