@@ -296,6 +296,20 @@
       "w": 844,
       "h": 390,
       "title": "Hội thoại · ngang · câu chào"
+    },
+    "TienIch-kien-truc.dc.html": {
+      "x": 0,
+      "y": 23160,
+      "w": 1600,
+      "h": 1300,
+      "title": "Tiện ích giao lưu · mặt đứng: hí đài, trà lâu, tàng thư các, cửa hàng + đồ phố chợ"
+    },
+    "TienIch-mat-bang.dc.html": {
+      "x": 1680,
+      "y": 23160,
+      "w": 1440,
+      "h": 1080,
+      "title": "Tiện ích giao lưu · mặt bằng hướng A (quảng trường làm tim, phố chợ trên lối Sơn Môn)"
     }
   },
   "order": [
@@ -339,7 +353,9 @@
     "NutHanhDong-trang-thai.dc.html",
     "HoiThoai-doc.dc.html",
     "HoiThoai-doc-dai.dc.html",
-    "HoiThoai-ngang.dc.html"
+    "HoiThoai-ngang.dc.html",
+    "TienIch-kien-truc.dc.html",
+    "TienIch-mat-bang.dc.html"
   ],
   "notes": {
     "cach-dung": {
@@ -528,6 +544,21 @@
       "size": "m",
       "fill": "teal",
       "text": "Đề xuất, chưa chốt.\n\nCụm nút góc dưới phải (nửa phải màn — R-DIEU-1): Nhảy 68 ngọc lục (bấm nhiều nhất, sát mép phải); Chào 52 bên trái, Thiền 52 phía trên — kính sương. Nhãn nhỏ 11 dưới mỗi nút. Thiền đang bật: nền ngọc lục + viền vàng + nhãn \"Đang thiền\". Vô hiệu: mờ 45 %.\n\nNút \"Nói chuyện\": kiểu nút học nổi, bám trên đầu NPC, kèm tên Tiểu Mặc 小墨.\n\nKhung thoại: tấm kính sương đáy màn, chân dung tròn + bảng tên ngọc lục chồng mép trên; lời 16/500 chạy dần (chạm để hiện hết); lựa chọn xếp dọc cao ≥ 46, chấm vàng; \"Tạm biệt\" viền mảnh + ×. Đang thoại: ẩn joystick + cụm nút + nút góc nhìn, cảnh tối 18 %. Ngang: lời bên trái, lựa chọn cột phải 270 — được phủ vùng joystick vì joystick tắt khi thoại."
+    },
+    "tieu-de-tien-ich": {
+      "x": 0,
+      "y": 22920,
+      "text": "Văn Uyên Tông: tiện ích giao lưu thay lớp học (khảo cứu 2026-11-13, hướng A)",
+      "kind": "title1",
+      "maxW": 3120
+    },
+    "tien-ich-ghi-chu": {
+      "x": 3200,
+      "y": 23160,
+      "w": 440,
+      "size": "m",
+      "fill": "teal",
+      "text": "Đề xuất, chưa chốt. Duyệt hình dáng trước khi code.\n\nHồ sơ: docs/tham_khao/tien-ich-giao-luu.md.\n\nVì sao nhà cũ xấu, hẹp: cả 4 kiểu nhà đang là khối kín một cửa. Hí đài, sạp mượn nhà nhỏ đệ tử nên không thấy công năng.\n\nMới: mặt tiền MỞ (thấy bàn trà, hàng hoá, sân khấu), 2 tầng có lan can, hí đài nền cao 1,5 m, tàng thư dài thấp ngói đen viền lục + ao trước.\n\nNgười 1,6 m đứng cạnh để so độ rộng.\n\nSau khi duyệt: phiên code thêm kiểu nhà (hi-dai, tra-lau, lau-sach, cua-hang) + đồ (sạp ô, bàn trà, cờ) + gộp biển tên vào một ảnh chung (giữ ≤ 150 draw call)."
     }
   },
   "designSystems": []

@@ -2,6 +2,11 @@
 
 > **2026-11-13.6**: tông môn là **nhà / trạm gốc** của hành trình nhiều vùng — xem `hanh_trinh.md`. Khu 3 Diễn Võ
 > Trường đổi thành **Truyền Tống Đài** (6 cột trận sang các vùng).
+>
+> **2026-11-13.13**: Văn Uyên Tông **không có lớp học** — là nơi giao lưu (bây giờ với NPC). Hướng A: Ngoại Môn thành
+> quảng trường, hí đài thay giảng đường, Tàng Thư Các + ao thay thư viện, trà lâu góc đông nam, phố chợ trên lối Sơn Môn;
+> Truyền Tống Đài thu 18 × 18 m. Bản mẫu: `source/TienIch-kien-truc.dc.html`, `source/TienIch-mat-bang.dc.html`; khảo cứu
+> `docs/tham_khao/tien-ich-giao-luu.md`. Bảng "Đã đặt" dưới đây là bố cục cũ.
 
 Bản vẽ: `source/TongMon-ban-do.dc.html` (canvas, artboard "Đề xuất: quy hoạch tông môn"). Chưa có ảnh.
 

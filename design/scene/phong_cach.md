@@ -33,6 +33,7 @@ Tinh thần: 粉牆黛瓦 · 朱柱青檐 — tường vôi, ngói xám đen, c�
 |---|---|---|
 | Ngói xám đen (đa số nhà, đỉnh tường) | `#4F5A63` | `buildings[].roofColor`, `walls.capColor` |
 | Ngói lưu ly lục (giảng đường, cổng, Dược các) | `#3E6B5A` | `roofColor` |
+| Ô giấy dầu (sạp phố chợ, ô trà lâu) — mục 2026-11-13.13 | `#C9803A` | cần code (`sap-o`) |
 | Ngói vàng — để dành Chưởng Môn Điện (đợt 2) | `#C9A13B` | — |
 | Cột son | `#A8322A` | `buildingStyle.pillar` |
 | Tường vôi | `#E8E1D2` | `buildingStyle.wall` (tường bao: cần code, xem dưới) |

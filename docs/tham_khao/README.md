@@ -9,6 +9,7 @@ Phiên thiết kế đọc hồ sơ ở đây trước khi dựng khu / kiểu v
 | [hud-co-trang.md](hud-co-trang.md) | Giao diện HUD cổ trang / tiên hiệp trên điện thoại: bố cục, chất liệu, chữ, 3 hướng | toàn app (HUD) | nháp — chờ phiên thiết kế vẽ 3 hướng |
 | [su-phu.md](su-phu.md) | NPC lão sư phụ dạy chữ: lão phu tử văn nhân Tống, mũ Đông Pha, hạc sưởng, râu bạc | 1 Ngoại Môn · Học đường | đã chọn hướng A (Claude, một bước) · đã chuyển phiếu |
 | [cong-trinh-noi-bat.md](cong-trinh-noi-bat.md) | 3 công trình làm model AI: Chưởng Môn Điện (yết sơn hiên kép), Cổng Sơn Môn (3 gian 4 trụ 3 mái), lò đan đồng; cách làm ảnh 4 góc cho Hunyuan | Nội Môn, Sơn Môn, Luyện Đan Phòng | đã chọn hướng (vàng · lò đan · 3 mái) |
+| [tien-ich-giao-luu.md](tien-ich-giao-luu.md) | Tiện ích giao lưu: trà lâu 2 tầng mở, hí đài nền cao + sân khán giả, tàng thư các dài thấp ngói đen + ao, phố chợ cửa hàng 2 tầng | 1 Ngoại Môn, 2 Sơn Môn, Thị Tập | đã chọn hướng A · đã chuyển bản mẫu (design 2026-11-13.13) |
 | [rung-truc.md](rung-truc.md) | Rừng trúc — vùng 1 hành trình (bộ thủ): trúc mao dày, lối đá, suối, đình trúc, bia bộ thủ, bộ thủ "sống" trong cảnh | vùng 1 (cảnh riêng) | đã chọn hướng (A + thác; bia + vật sống) |
 
 Gợi ý thứ tự (theo `design/scene/tong_mon.md`): Chưởng Môn Điện · Tàng Kinh Các (tháp / lầu) · Thiên Bậc (bậc đá

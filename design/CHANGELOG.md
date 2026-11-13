@@ -3,6 +3,39 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-13.13 — Văn Uyên Tông: tiện ích giao lưu thay lớp học (bản mẫu hướng A) + Truyền Tống Đài thu nhỏ
+
+- Loại: cảnh 3D — **bố cục** (đã vào `scene.json`) · bản mẫu kiến trúc (canvas) · luồng/luật (đề xuất). Phiên VS Code làm
+  thay `/canh` + `/khao-cuu` + `/ui-design` (người dùng nhờ, duyệt trong phiên).
+- Người dùng: "vùng truyền tống quá lớn"; "Văn Uyên Tông là nơi có nhiều tiện ích để người chơi giao lưu, không có lớp
+  học"; "kiến trúc các nhà hiện tại quá xấu và hẹp, không phù hợp chức năng — khảo cứu rồi sửa lại". Chọn: đổi công năng
+  nhà học, giao lưu bây giờ với NPC (chưa multiplayer), tiện ích = quảng trường + bảng vinh danh, trà lâu / đình, hí đài,
+  phố chợ; bố cục **hướng A**; **vẽ bản mẫu trước khi code**.
+- **Đã vào `scene.json`** (được commit kèm `dc18b7f`, ghi bù ở đây): Truyền Tống Đài 33 × 30 → **18 × 18 m** (tường
+  x 21…39, z −9…9, góc đông nam mở; `teleport.center` (38; 0) → **(30; 0)**, `radius` 13 → 7,5; về tông môn đứng (24,5; 0)).
+  Đất trống phía đông thành khu **Thị Tập 市集** x 39…54 (hí đài + 4 sạp bằng `nha-nho`, 2 đèn đá, lối đá) — **tạm**, hướng
+  A bỏ khu này. Giảng đường đổi tên "Trà lâu", thư viện "Tàng Thư Các" — **tạm**: vẫn giữ 2 vùng học (`scene:check` đòi đủ
+  mã trong `ZONE_CONTENT`). Ảnh: `screens/Canh-dai-thu-nho.png`.
+- Khảo cứu: `docs/tham_khao/tien-ich-giao-luu.md` (hí đài nền 1,4–1,6 m mở 3 mặt + sân khán giả; trà lâu 2 tầng mặt tiền
+  mở; tàng thư dài thấp 6 gian ngói đen viền lục + ao như Văn Uyên Các 文淵閣; phố chợ mặt tiền 4–6 m, phố 8 m).
+- **Bản mẫu** (canvas, hàng "Văn Uyên Tông: tiện ích giao lưu"): `source/TienIch-kien-truc.dc.html` — mặt đứng hí đài
+  (`hi-dai`), trà lâu (`tra-lau`), Tàng Thư Các (`lau-sach`), dãy cửa hàng (`cua-hang`) + sạp ô giấy (`sap-o`), bàn trà
+  (`ban-tra`), cờ dọc (`co`), bảng vinh danh (`bang`); `source/TienIch-mat-bang.dc.html` — mặt bằng hướng A: hí đài
+  (0; −12,5) thay giảng đường, sân giữa 20 × 16 m cho khán giả; Tàng Thư Các (−15,5; 9) 18 × 9 quay đông + ao (−8; 9) cầu
+  giữa; trà lâu (13; 13) 12 × 9 quay bắc + bàn ngoài trời; giếng (−15; −15), đỉnh đồng (0; 12), bảng vinh danh (−9; 19,5);
+  **phố chợ trên lối Sơn Môn** z 22…40: 8 cửa hàng hai bên phố 8 m, 3 sạp ô, bục lát x −12…12, tùng dời x ±14,5; bỏ Thị Tập.
+- Màu mới: ô giấy dầu `#C9803A` (cam đất — điểm ấm, không lạm đỏ). Ngói đen tàng thư dùng `#2F3236`, viền lục `#2B5446`,
+  cột lục `#2F6F73` (đều đã có).
+- **Cần code** (`/lead`): kiểu nhà `hi-dai` (nền 1,5 m, 2 cột trước, tường hậu đài + 2 cửa rèm, mái yết sơn đầu hồi ra
+  trước, bậc hai bên hậu đài), `tra-lau` (2 tầng, tầng 1 mở đi vào được + bàn trà, tầng 2 lùi + lan can, cờ 茶 cột 11 m),
+  `lau-sach` (2 tầng 6 gian, mái hiên kép, ngói đen viền lục, cột lục), `cua-hang` (2 tầng, tầng 1 mở + ván cửa + hàng bày,
+  trường chữ biển + loại hàng); đồ `sap-o`, `ban-tra`, `co`, `bang`; **gộp mọi biển tên / cờ vào một ảnh chung** (hiện mỗi
+  biển 1 draw call; cảnh đang 155 / 150 ở `?view=tren`, thêm 8 cửa hàng sẽ vượt xa).
+- **Luật bị chạm** (phiên code hỏi người dùng rồi sửa sổ): `R-VUNG-1/2/3` — bỏ vùng học `lop-hsk3`, `thu-vien` khỏi tông
+  môn (bài học chuyển sang các vùng); `R-HANH-2` — ví dụ vòng (38; 0) → (30; 0), đi từ (30; 0) → nên từ (22,5; 0) sang
+  (27; 0), về đứng (32,5; 0) → (24,5; 0); `R-VA-1` nếu ví dụ dùng tường Thị Tập / Ngoại Môn đổi; `R-NPC-1` giữ Tiểu Mặc (4,5; 15).
+- Chưa có ảnh bản mẫu (artboard dùng `source/*.dc.html`).
+
 ## 2026-11-13.12 — Model NPC Sư phụ Mặc Ông (`su-phu.glb`)
 
 - Loại: tài nguyên 3D (`/tai-nguyen nhan-vat`). Từ bộ ảnh 4 góc `models/anh/su-phu-{truoc,trai,sau,phai}.png` (mục .1).
