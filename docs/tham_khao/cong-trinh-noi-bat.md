@@ -1,5 +1,5 @@
 # Ba công trình nổi bật làm model AI (掌門殿 · 山門 · 煉丹房)
-- Ngày: 2026-11-13 · Khu: Nội Môn (8), Sơn Môn (2), Luyện Đan Phòng (6) · Trạng thái: đã chọn hướng (người dùng, 2026-11-13): điện ngói vàng · chỉ lò đan · cổng 3 gian 4 trụ 3 mái · ảnh lò đan đã chốt (design 2026-11-13.2)
+- Ngày: 2026-11-13 · Khu: Nội Môn (8), Sơn Môn (2), Luyện Đan Phòng (6) · Trạng thái: đã chọn hướng (người dùng, 2026-11-13): điện ngói vàng · chỉ lò đan · cổng 3 gian 4 trụ 3 mái · ảnh lò đan đã chốt (design 2026-11-13.2) · ảnh cổng đã chốt (2026-11-13.3, mặt sau không biển)
 
 ## Một câu
 

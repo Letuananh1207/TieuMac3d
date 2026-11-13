@@ -3,6 +3,29 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-13.3 — Bộ ảnh nhiều góc Cổng Sơn Môn 山門 (công trình 2/3, đầu vào Hunyuan3D đa góc)
+
+- Loại: tài nguyên 3D — ảnh đầu vào (công trình). Hồ sơ `docs/tham_khao/cong-trinh-noi-bat.md` (hướng: 3 gian 4 trụ, 3 mái).
+- Thiết kế: cổng 牌樓 3 gian 4 trụ son `#A8322A`, 3 mái ngói lục `#2B5446` (mái giữa cao), nóc thẳng `#24323A`, đầu nóc +
+  góc vểnh; xà lục `#2F6F73` / lam `#3F5FA0` chấm vàng `#D4A64A`; **biển trơn** (nền `#24323A`, khung vàng) — chữ 文淵宗 code
+  vẽ sau (Gemini viết sai chữ Hán); đế đá trắng `#D9D4C7`, **trống đá chỉ nổi ở mặt trước đế**.
+- **Mặt sau KHÔNG có biển** (người dùng chọn; cổng thật thường treo biển hai mặt) — chỉ xà; đế mặt sau trơn.
+- Bỏ ảnh chéo ¾ (không vào luồng dựng; `/tai-nguyen` tự chụp 6 góc model thật để duyệt).
+- **Ảnh nghiêng — bài học**: "xoay 90°" + đính kèm ảnh trước → Gemini vẽ lại mặt trước, chồng thêm trụ (2 lần hỏng).
+  Đạt khi: cuộc trò chuyện MỚI, **không đính kèm ảnh cổng** (chỉ ảnh mẫu kiểu render), **không dùng chữ "gate"**, tả thẳng
+  hình nhìn thấy: "một vật hẹp đứng — MỘT trụ son giữa, khối đá vuông dưới chân có khối nổi chỉ ở bên TRÁI, hai đầu mái
+  ngói chồng (dưới ≈ 40 %, trên ≈ 15–30 %), mỗi đầu mái là hình thang, hai góc vểnh, đầu nóc cong ở giữa; rộng ≈ 30 % ảnh".
+  `-phai` = lật gương `-trai` (cổng đối xứng). Dùng lại cách này cho Chưởng Môn Điện.
+- Quy ước góc (theo `mv_gen.py`): ảnh `trai` = nhìn từ bên trái vật, mặt trước quay sang TRÁI ảnh (khối nổi đế ở trái) ✓.
+- Chuẩn hoá: tách nền chặt, nền #DDDDDD; sao Gemini ở ảnh trước / sau nằm trên trống đá trụ ngoài cùng phải → thay bằng
+  cùng vùng của trụ kế bên (dịch −204 px, sai khác ≈ 2 / 255); một hệ số thu chung (cổng rộng ≈ 90 % ảnh), đáy đế ≈ 90 %,
+  căn giữa; ảnh nghiêng căn theo tâm trụ.
+- File: `models/anh/cong-son-mon-truoc.png`, `-trai.png`, `-sau.png`, `-phai.png` · `screens/CongSonMon-bo-anh.png` ·
+  `source/CongSonMon-bo-anh.dc.html`, `source/canvas.json` · `models/LICENSES.md`.
+- Luật: không chạm. Việc tiếp (VS Code): `/tai-nguyen cong-trinh cong-son-mon` → `design/models/cong-son-mon.glb`
+  (≤ 20 000 tam giác); code: thay cổng khối `gates[son-mon]`, giữ va chạm 4 trụ, **vẽ chữ 文淵宗 lên biển mặt trước**,
+  xà thấp nhất ≥ ≈ 9,6 m.
+
 ## 2026-11-13.2 — Bộ ảnh nhiều góc lò đan đồng 丹爐 (công trình 1/3, đầu vào Hunyuan3D đa góc)
 
 - Loại: tài nguyên 3D — ảnh đầu vào (vật / công trình). Không có phiếu: theo hồ sơ `docs/tham_khao/cong-trinh-noi-bat.md`

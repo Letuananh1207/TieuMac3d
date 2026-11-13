@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Bộ ảnh nhiều góc – Cổng Sơn Môn</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;700&amp;family=Lora:wght@700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2B5446}a:hover{color:#24323A}
+</style>
+</helmet>
+<div style="width: 1440px; height: 780px; box-sizing: border-box; padding: 40px; background: #F4F7F6; font-family: 'Be Vietnam Pro', system-ui, sans-serif; color: #24323A; display: flex; flex-direction: column; gap: 24px">
+  <div style="display: flex; flex-direction: column; gap: 6px">
+    <h1 style="margin: 0; font-family: 'Lora', Georgia, serif; font-size: 26px">Bộ ảnh nhiều góc — Cổng Sơn Môn 山門 · 3 gian 4 trụ 3 mái (đầu vào Hunyuan3D-2 đa góc)</h1>
+    <div style="font-size: 14px">Công trình 2/3. Cổng rộng hơn cao (≈ 21 × 12 m) → căn theo BỀ RỘNG: cổng chiếm ≈ 90 % bề ngang ảnh, đế trụ đá ở vạch đỏ (≈ 75 %). Biển để TRƠN (khung vàng, nền xanh đậm) — chữ 文淵宗 code vẽ sau, tránh Gemini viết chữ Hán sai.</div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 24px">
+    <sc-for list="{{slots}}" as="s" hint-placeholder-count="5">
+      <figure style="margin: 0; display: flex; flex-direction: column; gap: 10px">
+        <div style="position: relative; width: 254px; height: 254px; background: #DDDDDD; border: 1px solid rgba(36,50,58,.25); overflow: hidden">
+          <sc-if value="{{s.has}}" hint-placeholder-val="{{ false }}">
+            <img src="{{s.src}}" alt="{{s.alt}}" style="position: absolute; inset: 0; width: 254px; height: 254px; object-fit: contain">
+          </sc-if>
+          <sc-if value="{{s.empty}}" hint-placeholder-val="{{ true }}">
+            <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; text-align: center; padding: 0 24px; font-size: 13px; line-height: 1.5; color: #24323A">{{s.hint}}</div>
+          </sc-if>
+          <div aria-hidden="true" style="position: absolute; top: 0; bottom: 0; left: 13px; width: 0; border-left: 1px dashed #2B5446"></div><div aria-hidden="true" style="position: absolute; top: 0; bottom: 0; right: 13px; width: 0; border-left: 1px dashed #2B5446"></div>
+          <div aria-hidden="true" style="position: absolute; left: 0; right: 0; top: 190px; height: 0; border-top: 2px solid #A8322A"></div>
+        </div>
+        <figcaption style="display: flex; flex-direction: column; gap: 2px">
+          <code style="font-size: 13px; font-weight: 700">{{s.file}}</code>
+          <span style="font-size: 13px">{{s.desc}}</span>
+        </figcaption>
+      </figure>
+    </sc-for>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; font-size: 13px; line-height: 1.6">
+    <div>
+      <div style="font-weight: 700; margin-bottom: 4px">Kiểm từng ảnh trước khi đưa vào</div>
+      <div>☐ Kiểu đồ chơi vinyl / đất sét: khối dày, góc bo, không nét viền, ánh sáng đều (không bóng tối sâu dưới mái)</div>
+      <div>☐ CỔNG TRUNG HOA 牌樓 — KHÔNG phải torii Nhật: 4 trụ son, 3 mái ngói lục có đầu đao, mái giữa cao hơn</div>
+      <div>☐ Nóc mái thẳng, chỉ hai đầu + góc vểnh (không cong lên giữa nóc — ra Hàn)</div>
+      <div>☐ Biển trơn giữa (khung vàng, nền #24323A), không chữ; xà lục – lam + chấm vàng dưới mái</div>
+      <div>☐ Chân mỗi trụ: khối đá vuông + 2 trống đá 抱鼓石 ôm hai bên → nhìn nghiêng có độ dày</div>
+      <div>☐ Sau: giống trước nhưng KHÔNG biển (chỉ xà lục – lam); nền xám trơn, không đất / bậc / cây; không chữ / sao mờ</div>
+    </div>
+    <div>
+      <div style="font-weight: 700; margin-bottom: 8px">Màu giữ đúng (theo ảnh gốc)</div>
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px">
+        <sc-for list="{{colors}}" as="c" hint-placeholder-count="8">
+          <div style="display: flex; align-items: center; gap: 8px">
+            <span aria-hidden="true" style="width: 22px; height: 22px; border-radius: 4px; border: 1px solid rgba(36,50,58,.25); background: {{c.hex}}"></span>
+            <span><b>{{c.hex}}</b><br>{{c.name}}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":780}}'>
+class Component extends DCLogic {
+renderVals() {
+return {
+  slots: [
+    { file: 'cong-son-mon-truoc.png', desc: 'Thẳng từ trước: 3 gian 4 trụ 3 mái, biển trơn, trống đá nổi ở mặt trước đế ✓.', has: true, empty: false, src: '/_blob/f4ff6ca0a42dbf66804ab4d0a053d001', alt: 'Cổng Sơn Môn nhìn từ trước', hint: '' },
+    { file: 'cong-son-mon-trai.png', desc: 'Đầu trái: một trụ, 2 đầu mái chồng, khối nổi bên trái đế (mặt trước quay sang trái) ✓. Lần thử 3 (câu tả vật hẹp, không đính kèm ảnh cổng).', has: true, empty: false, src: '/_blob/967be23f2d64f286d4fda21f92226a6b', alt: 'Cổng Sơn Môn nhìn từ đầu trái', hint: '' },
+    { file: 'cong-son-mon-sau.png', desc: 'Từ sau: không biển, đế trơn ✓ (người dùng chọn).', has: true, empty: false, src: '/_blob/d9437a7c753cbbe4b0a638e88e06d0fa', alt: 'Cổng Sơn Môn nhìn từ sau', hint: '' },
+    { file: 'cong-son-mon-phai.png', desc: 'Lật gương ảnh trái (cổng đối xứng) — không tạo bằng Gemini.', has: true, empty: false, src: '/_blob/2e8a5b3fc334a888ad10fdb0fab78270', alt: 'Cổng Sơn Môn nhìn từ đầu phải', hint: '' },
+    { file: 'cong-son-mon-cheo.png', desc: 'Bỏ (không bắt buộc).', has: false, empty: true, src: '', alt: '', hint: 'Không làm' }
+  ],
+  colors: [
+    { hex: '#A8322A', name: 'trụ son' },
+    { hex: '#2B5446', name: 'ngói lưu ly lục' },
+    { hex: '#2F6F73', name: 'xà lục' },
+    { hex: '#3F5FA0', name: 'xà lam' },
+    { hex: '#D4A64A', name: 'vàng: khung biển, chấm xà' },
+    { hex: '#24323A', name: 'nền biển, bờ nóc' },
+    { hex: '#D9D4C7', name: 'đá trắng chân trụ' },
+    { hex: '#DDDDDD', name: 'nền trơn' }
+  ]
+};
+}
+}
+</script>
+</body>
+</html>
