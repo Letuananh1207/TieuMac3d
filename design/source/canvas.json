@@ -508,6 +508,84 @@
       "y": 30300,
       "w": 844,
       "h": 390
+    },
+    "DanhMuc-doc.dc.html": {
+      "x": 0,
+      "y": 31524,
+      "w": 390,
+      "h": 844
+    },
+    "DanhMuc-doc-xac-nhan.dc.html": {
+      "x": 470,
+      "y": 31524,
+      "w": 390,
+      "h": 844
+    },
+    "DanhMuc-doc-dang-giu.dc.html": {
+      "x": 940,
+      "y": 31524,
+      "w": 390,
+      "h": 844
+    },
+    "DanhMuc-ngang.dc.html": {
+      "x": 1410,
+      "y": 31524,
+      "w": 844,
+      "h": 390
+    },
+    "SoTu-ngang.dc.html": {
+      "x": 1410,
+      "y": 31978,
+      "w": 844,
+      "h": 390
+    },
+    "SoTu-doc.dc.html": {
+      "x": 2334,
+      "y": 31524,
+      "w": 390,
+      "h": 844
+    },
+    "SoTu-doc-dai.dc.html": {
+      "x": 2804,
+      "y": 31524,
+      "w": 390,
+      "h": 844
+    },
+    "SoTu-doc-hai-phan.dc.html": {
+      "x": 3274,
+      "y": 31524,
+      "w": 390,
+      "h": 844
+    },
+    "SoTu-doc-cuoi.dc.html": {
+      "x": 3744,
+      "y": 31524,
+      "w": 390,
+      "h": 844
+    },
+    "DocSach-doc.dc.html": {
+      "x": 0,
+      "y": 32488,
+      "w": 390,
+      "h": 844
+    },
+    "DocSach-ngang.dc.html": {
+      "x": 470,
+      "y": 32488,
+      "w": 844,
+      "h": 390
+    },
+    "NutNgoi-doc.dc.html": {
+      "x": 1394,
+      "y": 32488,
+      "w": 390,
+      "h": 844
+    },
+    "NutNgoi-trang-thai.dc.html": {
+      "x": 1864,
+      "y": 32488,
+      "w": 1240,
+      "h": 420
     }
   },
   "order": [
@@ -586,7 +664,20 @@
     "Dau-doc-mo-chon.dc.html",
     "Dau-doc-ket-thuc.dc.html",
     "Dau-doc-chua-hoc.dc.html",
-    "Dau-ngang.dc.html"
+    "Dau-ngang.dc.html",
+    "DanhMuc-doc.dc.html",
+    "DanhMuc-doc-xac-nhan.dc.html",
+    "DanhMuc-doc-dang-giu.dc.html",
+    "DanhMuc-ngang.dc.html",
+    "SoTu-ngang.dc.html",
+    "SoTu-doc.dc.html",
+    "SoTu-doc-dai.dc.html",
+    "SoTu-doc-hai-phan.dc.html",
+    "SoTu-doc-cuoi.dc.html",
+    "DocSach-doc.dc.html",
+    "DocSach-ngang.dc.html",
+    "NutNgoi-doc.dc.html",
+    "NutNgoi-trang-thai.dc.html"
   ],
   "notes": {
     "cach-dung": {
@@ -835,6 +926,21 @@
       "fill": "teal",
       "size": "s",
       "text": "Phiếu 2026-11-13-tro-choi-giao-luu.\n• Ngồi chơi: ẩn joystick + cụm Nhảy / Chào / Thiền — cả màn là bàn; rời bằng nút \"Rời bàn\" (góc trên trái). Đề xuất đổi R-GIAO-1 (hiện: kéo joystick / bấm Thiền để đứng dậy).\n• Ngũ Tử Kỳ: dải trên mỏng (Rời bàn · tỉ số phiên); viên lượt ở đáy; quân vừa đi có chấm son; 5 quân thắng viền vàng sáng.\n• Kết quả ván: thẻ đáy có chân dung + lời NPC + \"Ván mới\" / \"Rời bàn\" (thay khung thoại \"Vâng\").\n• Đấu chữ: 2 thẻ điểm (Mặc Ông trái, mình phải — viền ngọc lục là lượt ai); câu \"Bộ 木 nghĩa là gì?\" + 4 ô giấy 2 × 2 ở đáy; chạm là chọn (không có \"Kiểm tra\" — nhịp đấu nhanh); nghĩa đúng hiện ~1 s.\n• Ảnh nền giữ chỗ: NPC trong ảnh còn đứng ở bàn (luật mới: không đứng ở bàn)."
+    },
+    "tieu-de-sach": {
+      "x": 0,
+      "y": 31264,
+      "text": "Tàng Thư Các — mượn sách, sổ từ HSK · nút \"Đọc sách\" · nút nổi \"Ngồi\"",
+      "kind": "title1",
+      "maxW": 4134
+    },
+    "sach-ghi-chu": {
+      "x": 1864,
+      "y": 32988,
+      "w": 460,
+      "fill": "teal",
+      "size": "s",
+      "text": "Phiếu 2026-11-13-muon-sach + 2026-11-13-nut-ngoi.\n• Danh mục: kệ gỗ 2 tầng × 3 cuốn; bìa cuốn soạn xong màu đặc (一, 二 + \"简体\"), cuốn chưa soạn nét đứt + \"Đang biên soạn\" (chạm → thẻ báo); đang mượn → viên vàng \"Đang mượn\", cuốn khác mờ + lời nhắc trả trước.\n• Chọn → thẻ xác nhận đáy \"Mượn «…»?\" → Mượn → đóng, thủ thư nói câu giao sách (khung thoại có sẵn).\n• Sổ từ: trang giấy ngà + dải son đánh dấu; chữ lớn (1 chữ 104 · 3–4 chữ 64 · hai phần 52), pinyin, nghĩa, ví dụ; thanh kéo tới trang; \"Trang trước\" / \"Trang sau\" (tắt ở hai đầu); vuốt ngang cũng lật.\n• \"Đọc sách\": thẻ kính sương 52 có bìa mini + \"HSK 1\", ngay trên cụm nút hành động.\n• Nút \"Ngồi\" / \"Vào bàn\" / \"Ngồi xem\": họ \"Nói chuyện\", biểu tượng người ngồi trên bồ đoàn; không đè nút \"Nói chuyện\"."
     }
   },
   "designSystems": []

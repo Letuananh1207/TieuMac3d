@@ -343,3 +343,55 @@ Mẫu một mục:
 - Ngang: bàn giữa; cột trái 200 ("Rời bàn", 2 thẻ điểm xếp dọc, tiến độ ở đáy); cột phải 236 (ô câu hỏi + 4 nghĩa xếp dọc cao ≥ 48).
 - Chuỗi: `game*`, `duel*`. Luật: `R-GIAO-1`, `R-DAU-1/2`, `R-VUNG-1`, `R-MAN-1`.
 - Ảnh: nền giữ chỗ `screens/Ky-van-uyen-dau-chu.png` (cắt bỏ khung thoại); màn ghép chưa có ảnh.
+
+## Danh mục sách Tàng Thư Các (Flutter native) · artboard `DanhMuc-doc.dc.html`, `DanhMuc-doc-xac-nhan.dc.html`, `DanhMuc-doc-dang-giu.dc.html`, `DanhMuc-ngang.dc.html` · từ mục 2026-11-13.28
+
+- Mở khi: thoại thủ thư → "Mượn sách" (`openLibrary`, `R-SACH-1`). Đóng: "Đóng" / nút quay lại của máy. Nhân vật đứng yên.
+- Khung màn bài học; eyebrow "Tàng Thư Các · quầy mượn sách". Thẻ: 藏書閣 30 Noto Serif SC `jade` giãn .1em · "Sổ từ HSK"
+  15/700 · dòng phụ 13 · **kệ gỗ** 2 tầng × 3 cuốn (tầng: thanh `shelf-wood` cao 10, bóng #6B4429 4 px + bóng mờ).
+- Bìa cuốn 96 × 128 (bo 4 / 8 / 8 / 4, gáy tối 6 px bên trái, khung chỉ vàng mảnh trong bìa): số cấp chữ Hán 一 … 六 (≈ 35 % rộng)
+  + "HSK n" 13/700 + "简体" 9/700 góc dưới phải; dưới bìa: tên cấp 13/700 + số từ 12. Màu bìa cuốn đã soạn: HSK 1 `jade`,
+  HSK 2 `slate` (cuốn soạn sau: lấy tiếp từ token, mỗi cuốn một màu).
+- Trạng thái cuốn: **mượn được** · **đang chọn** (viền `gold` 3 cách 3) · **Đang biên soạn** (bìa nền trắng .5 viền đứt `slate` 35 %,
+  chữ mờ; dòng dưới "Đang biên soạn" `lacquer`; chạm → thẻ báo "HSK 3 đang biên soạn — chưa mượn được") · **đang mượn** (viên
+  `gold` "Đang mượn" chồng mép trên bìa) · **chỉ xem** (mờ 55 % khi đang giữ cuốn khác).
+- Chọn cuốn → **thẻ xác nhận** đáy (thay nút "Đóng"): bìa mini 44 × 58 + "Mượn «HSK 2 · Sơ cấp»?" 16/700 + "152 từ · chữ giản
+  thể 简体 · không hạn trả" 13 · nút phụ "Chọn cuốn khác" + nút chính "Mượn" (biểu tượng sách). Mượn → đóng màn, thủ thư nói
+  câu giao sách (khung thoại có sẵn).
+- Đang giữ cuốn khác: lời nhắc trên kệ (nền vàng 14 %, viền `gold`, biểu tượng i) "Đang giữ «HSK 1». Trả cuốn đang giữ trước
+  đã — nói với thủ thư "Trả sách"." (`R-SACH-4`).
+- Ngang: thẻ trái (tiêu đề một dòng + một tầng kệ 6 cuốn 72 × 96); cột phải 190: "Đóng" trên, thẻ xác nhận dưới.
+- Chuỗi: `lib*`, `hskLevel1…6`. Luật: `R-SACH-1/4`, `R-MAN-1`. Ảnh: chưa có ảnh.
+
+## Sổ từ — màn đọc (Flutter native) · artboard `SoTu-doc.dc.html`, `SoTu-doc-dai.dc.html`, `SoTu-doc-hai-phan.dc.html`, `SoTu-doc-cuoi.dc.html`, `SoTu-ngang.dc.html` · từ mục 2026-11-13.28
+
+- Mở khi: nút "Đọc sách" (`openBook`, `R-SACH-3`), đúng trang đã đóng lần trước. Đóng: × / nút quay lại. Nhân vật đứng yên.
+- Thanh trên: nút tròn × 44 kính sương ("Đóng sổ") · tên cuốn 14/700 + "Sổ từ · 简体" 12 · viên "Trang n / N" 13/700.
+- **Trang giấy**: nền `map-paper`, bo 6 / 14 / 14 / 6 (gáy bên trái có bóng trong), dải son đánh dấu 14 × 34 ở mép trên phải.
+  Từ: Noto Serif SC `jade` — 1–2 chữ 104, 3–4 chữ 64, từ hai phần (虽然…但是) 52, xuống dòng không cắt chữ; pinyin Lora 26
+  `lacquer`; nghĩa 20/700; vạch chấm vàng; "VÍ DỤ" 12/700 `jade`; câu Hán 24 (giản thể, `lang="zh-Hans"`), pinyin Lora 16,
+  nghĩa 15.
+- Dưới trang: **thanh kéo** tới trang (rãnh 4, phần đã đọc `jade`, núm 24 trắng viền `jade`) · hàng nút: "Trang trước" (phụ) +
+  "Trang sau" (chính), cao 52. Trang 1: "Trang trước" tắt (mờ 40 %); trang cuối: "Trang sau" tắt (nền `jade` 35 %). Vuốt
+  ngang trên trang cũng lật.
+- Ngang: trang hai cột (từ + pinyin + nghĩa trái 230 · vạch · ví dụ phải); cột phải 180: × + tên + trang, thanh kéo, "Trang
+  sau", "Trang trước".
+- Chuỗi: `book*`. Luật: `R-SACH-3`, `R-MAN-1`. Ảnh: chưa có ảnh.
+
+## Nút "Đọc sách" (HUD) · artboard `DocSach-doc.dc.html`, `DocSach-ngang.dc.html` · từ mục 2026-11-13.28
+
+- Hiện khi đang mượn sách và không mở bài học / bản đồ / khung thoại, không ngồi thiền (`R-SACH-2`); có ở mọi khu, mọi vùng.
+- Thẻ kính sương cao 52 bo 14, ngay **trên cụm nút hành động** (dọc: phải 16, dưới 232; ngang: phải safe + 12, dưới 210):
+  bìa mini 28 × 36 màu cuốn (chữ 一) + "Đọc sách" 14/700 + "HSK 1" 11/700 `jade`. Trợ năng "Đọc sách — đang mượn HSK 1".
+- Chuỗi: `readBook`, `readBookLabel`.
+
+## Nút nổi "Ngồi" (HUD) · artboard `NutNgoi-doc.dc.html`, `NutNgoi-trang-thai.dc.html`, `DocSach-doc.dc.html` · từ mục 2026-11-13.28
+
+- Họ nút "Nói chuyện": viên thuốc `jade` 46, biểu tượng người ngồi trên bồ đoàn 20 (đầu tròn, thân, tay đặt gối, đệm elip;
+  nét 2) + chữ 15/700, mũi nhọn chỉ xuống chỗ ngồi; bám trên chỗ ngồi gần nhất trong tầm (`R-NGOI-1`).
+- Nhãn: bàn chơi **"Vào bàn"**, bồ đoàn rạp **"Ngồi xem"**, án thư / bàn trà **"Ngồi"**.
+- Vòng sáng dưới chỗ ngồi (vật 3D): elip phẳng ≈ ∅1,2 m, lõi `aura-light` mờ ra ngoài, viền `gold` .75, thở nhẹ.
+- Cùng lúc với "Nói chuyện": mỗi nút bám vật của nó; hai khung chồng nhau → nút Ngồi dịch xuống / sang tới khi cách ≥ 8 px
+  (không đè); "Nói chuyện" giữ chỗ trên đầu NPC.
+- Chuỗi: `seatSit`, `seatWatch`, `seatTable`. Luật: `R-NGOI-1`, `R-DIEU-7`, `R-GIAO-1`, `R-RAP-1`, `R-VA-4`, `R-MAN-1`.
+- Ảnh nền giữ chỗ: `screens/Canh-thu-vien-trong.png`, `screens/Ky-van-uyen-toan-canh.png` (bản cũ). Màn ghép chưa có ảnh.

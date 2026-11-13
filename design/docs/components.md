@@ -77,3 +77,15 @@ Một chất liệu: kính mờ `frost*` + viền `frost-line` / `frost-outline`
 | Thẻ điểm người chơi / NPC (đang lượt, vừa ghi điểm) | `Dau-*` | jade, gold |
 | Viên tiến độ 10 câu | `Dau-*` | jade, lacquer |
 | Ô nghĩa giấy (thường / đúng / sai / mờ / huy hiệu NPC chọn) | `Dau-*` | map-paper, jade, lacquer |
+
+## Thêm ở 2026-11-13.28
+
+| Thành phần | Artboard | Token |
+|---|---|---|
+| Kệ gỗ + bìa sách (mượn được / chọn / đang biên soạn / đang mượn / chỉ xem) | `DanhMuc-*` | shelf-wood, jade, slate, gold, lacquer |
+| Thẻ xác nhận mượn (bìa mini + 2 nút) | `DanhMuc-doc-xac-nhan`, `DanhMuc-ngang` | frost .97, jade |
+| Lời nhắc vàng (biểu tượng i) | `DanhMuc-doc-dang-giu` | gold |
+| Trang sổ từ (giấy, dải son, từ / pinyin / nghĩa / ví dụ) | `SoTu-*` | map-paper, jade, lacquer |
+| Thanh kéo tới trang + cặp nút lật trang | `SoTu-*` | jade |
+| Thẻ "Đọc sách" (bìa mini + cấp) | `DocSach-*` | frost, jade |
+| Nút nổi "Ngồi" / "Vào bàn" / "Ngồi xem" + vòng sáng chỗ ngồi | `NutNgoi-*`, `DocSach-*` | jade, aura-light, gold |

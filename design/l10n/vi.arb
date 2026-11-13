@@ -373,5 +373,97 @@
       }
     }
   },
-  "duelNoneLeave": "Vâng, con đi đây (rời bàn)"
+  "duelNoneLeave": "Vâng, con đi đây (rời bàn)",
+  "libEyebrow": "Tàng Thư Các · quầy mượn sách",
+  "libTitle": "Sổ từ HSK",
+  "libSub": "Mỗi lần mượn một cuốn · mang theo đi khắp nơi",
+  "libBorrow": "Mượn sách",
+  "libBorrowBtn": "Mượn",
+  "libPickOther": "Chọn cuốn khác",
+  "libClose": "Đóng",
+  "libConfirm": "Mượn «{book}»?",
+  "@libConfirm": {
+    "placeholders": {
+      "book": {
+        "type": "String"
+      }
+    }
+  },
+  "libConfirmSub": "{n} từ · chữ giản thể 简体 · không hạn trả",
+  "@libConfirmSub": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "libDrafting": "Đang biên soạn",
+  "libDraftingToast": "{book} đang biên soạn — chưa mượn được",
+  "@libDraftingToast": {
+    "placeholders": {
+      "book": {
+        "type": "String"
+      }
+    }
+  },
+  "libBorrowed": "Đang mượn",
+  "libReturnFirst": "Đang giữ «{book}». Trả cuốn đang giữ trước đã — nói với thủ thư \"Trả sách\".",
+  "@libReturnFirst": {
+    "placeholders": {
+      "book": {
+        "type": "String"
+      }
+    }
+  },
+  "libReturn": "Trả sách «{book}»",
+  "@libReturn": {
+    "placeholders": {
+      "book": {
+        "type": "String"
+      }
+    }
+  },
+  "libWords": "{n} từ",
+  "@libWords": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "hskLevel1": "Nhập môn",
+  "hskLevel2": "Sơ cấp",
+  "hskLevel3": "Sơ trung cấp",
+  "hskLevel4": "Trung cấp",
+  "hskLevel5": "Trung cao cấp",
+  "hskLevel6": "Cao cấp",
+  "readBook": "Đọc sách",
+  "readBookLabel": "Đọc sách — đang mượn {book}",
+  "@readBookLabel": {
+    "placeholders": {
+      "book": {
+        "type": "String"
+      }
+    }
+  },
+  "bookPage": "Trang {n} / {total}",
+  "@bookPage": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "bookPrev": "Trang trước",
+  "bookNext": "Trang sau",
+  "bookClose": "Đóng sổ",
+  "bookExample": "Ví dụ",
+  "bookSlider": "Kéo để tới trang",
+  "bookKind": "Sổ từ · 简体",
+  "seatSit": "Ngồi",
+  "seatWatch": "Ngồi xem",
+  "seatTable": "Vào bàn"
 }

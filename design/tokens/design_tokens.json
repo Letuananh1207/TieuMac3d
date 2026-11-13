@@ -180,6 +180,11 @@
       "value": "rgba(212,166,74,.16)",
       "note": "nền mức \"Nhớ một phần\" (viền gold, chữ slate) — 2026-11-13.25",
       "code": "chưa có"
+    },
+    "shelf-wood": {
+      "value": "#8A5A3A",
+      "note": "tầng kệ gỗ danh mục sách (bóng dưới #6B4429); thẻ bài gỗ thủ thư — 2026-11-13.28",
+      "code": "chưa có"
     }
   },
   "font": {

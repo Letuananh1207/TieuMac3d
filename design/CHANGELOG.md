@@ -3,6 +3,22 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-13.28 — Tàng Thư Các: danh mục sách + sổ từ HSK + nút "Đọc sách" · nút nổi "Ngồi"
+
+- Loại: giao diện · token · chuỗi.
+- Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-13-muon-sach.md`, `docs/phieu_thiet_ke/2026-11-13-nut-ngoi.md`.
+- Màn / thành phần: **Danh mục sách** (Flutter; chưa mượn · chọn + xác nhận · đang giữ cuốn khác · ngang) · **Sổ từ** (Flutter;
+  trang đầu · từ 4 chữ · từ hai phần · trang cuối · ngang) · **nút "Đọc sách"** (HUD dọc + ngang) · **nút nổi "Ngồi"** (Vào bàn
+  cùng lúc Nói chuyện; bảng 3 nhãn + quy tắc không đè). Đặc tả: `docs/screen_specs.md` 4 mục mới.
+- Quyết định thiết kế: danh mục là kệ gỗ 2 × 3 bìa sách (số cấp chữ Hán + "简体"); mượn qua thẻ xác nhận; sổ từ là trang giấy
+  ngà, cỡ chữ theo độ dài từ, thanh kéo tới trang + nút lật; "Đọc sách" là thẻ có bìa mini đặt trên cụm nút hành động; nút
+  "Ngồi" cùng họ "Nói chuyện" (code đã làm trước — canvas vẽ lại cho khớp, đổi biểu tượng thành người ngồi trên bồ đoàn).
+- Token mới: `shelf-wood` #8A5A3A. Chuỗi mới (`l10n/vi.arb`): `lib*`, `hskLevel1…6`, `readBook*`, `book*`, `seat*`.
+- Luật: theo đúng `R-SACH-1…4`, `R-NGOI-1`, `R-MAN-1` — không đề xuất đổi.
+- File: `source/DanhMuc-*.dc.html` (4), `source/SoTu-*.dc.html` (5), `source/DocSach-*.dc.html` (2), `source/NutNgoi-*.dc.html` (2),
+  `source/canvas.json` · `tokens/design_tokens.json` · `l10n/vi.arb` · `docs/screen_specs.md`, `docs/components.md`.
+- Ảnh: chưa có ảnh (dùng `source/*.dc.html`).
+
 ## 2026-11-13.27 — HUD trò chơi Kỳ Văn Uyển: Ngũ Tử Kỳ + Đấu chữ
 
 - Loại: giao diện · chuỗi · luồng/luật (đề xuất).
