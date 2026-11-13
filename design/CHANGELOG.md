@@ -3,6 +3,31 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-13.4 — Bộ ảnh nhiều góc Chưởng Môn Điện 掌門殿 (công trình 3/3, đầu vào Hunyuan3D đa góc)
+
+- Loại: tài nguyên 3D — ảnh đầu vào (công trình). Hồ sơ `docs/tham_khao/cong-trinh-noi-bat.md` (hướng: ngói vàng).
+- Thiết kế (theo ảnh trước **người dùng chọn**): mái yết sơn **hiên kép** ngói vàng `#C9A13B`, nóc thẳng, si vẫn hai đầu
+  nóc, 8 góc vểnh; biển **trơn** (`#24323A`, khung vàng) giữa hai tầng mái — chữ code vẽ; **3 gian 4 cột** son `#A8322A`,
+  **cửa gian giữa mở** (lòng ấm nông), hai gian bên cửa ô lưới; xà lục `#2F6F73` / lam `#3F5FA0` chấm vàng; nền đá trắng 2
+  bậc `#D9D4C7`, lan can đá, một lối bậc giữa.
+- Quá trình: bản 5 gian bị người dùng chê hẹp → câu lệnh 7 gian + cửa giữa mở; người dùng chọn một ảnh 3 gian cửa giữa
+  mở (dáng gần vuông) → các góc còn lại viết theo ảnh đó.
+- Sau: không bậc, không biển, 3 gian cửa ô lưới đóng, lan can liền. Trái (cuộc trò chuyện mới, không đính kèm ảnh điện):
+  tam giác hồi mái trên, bậc nhô bên trái (mặt trước quay sang trái ảnh), 3 gian (câu lệnh xin 2 — chấp nhận; điện gần
+  vuông). `-phai` = lật gương `-trai`.
+- **Chấp nhận** (người dùng chốt): ở ảnh nghiêng đỉnh tam giác hồi cao hơn nóc ảnh trước ≈ 5 % chiều cao ảnh → model có
+  thể nhô ở hai đầu nóc; sửa sau bằng ảnh trái mới ("gable top level with the main ridge").
+- Lan can trụ + song thưa (ảnh trước) có thể thành lưới vỡ khi dựng → nếu xấu: xin lan can gờ đặc hoặc code dựng lan can.
+- Chuẩn hoá: sao Gemini nằm trên nền đá ở cả 3 ảnh → thay bằng đoạn nền ngay bên trái (nền đá là dải ngang đều); hệ số
+  thu chung căn theo **tâm thân nhà**, chừa chỗ cho bậc nhô ở ảnh nghiêng (điện nhỏ hơn trong khung).
+- Cỡ trong cảnh: đặc tả hiện 19,2 × 12,8 m; ảnh cho mặt bằng gần vuông (sâu ≈ rộng) → khi đặt model (code / `/canh`) chỉnh
+  `buildings[chuong-mon-dien]` cho khớp tỉ lệ model.
+- File: `models/anh/chuong-mon-dien-truoc.png`, `-trai.png`, `-sau.png`, `-phai.png` · `screens/ChuongMonDien-bo-anh.png` ·
+  `source/ChuongMonDien-bo-anh.dc.html`, `source/canvas.json` · `models/LICENSES.md`.
+- Luật: không chạm. Việc tiếp (VS Code): `/tai-nguyen cong-trinh chuong-mon-dien` → `design/models/chuong-mon-dien.glb`
+  (xa → nén ≈ 12 000 tam giác); `/lead`: thay điện khối, vẽ chữ lên biển, giữ va chạm nền + bậc.
+- Đủ 3 công trình nổi bật (lò đan · cổng · điện).
+
 ## 2026-11-13.3 — Bộ ảnh nhiều góc Cổng Sơn Môn 山門 (công trình 2/3, đầu vào Hunyuan3D đa góc)
 
 - Loại: tài nguyên 3D — ảnh đầu vào (công trình). Hồ sơ `docs/tham_khao/cong-trinh-noi-bat.md` (hướng: 3 gian 4 trụ, 3 mái).
