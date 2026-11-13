@@ -303,3 +303,43 @@ Mẫu một mục:
   kính sương "Nhiệm vụ hằng ngày 日課榜". Hiện khi đứng dưới 2,5 m (`R-NV-3`). Còn việc hôm nay → chấm son `count-badge`
   số việc còn (1 / 2); xong cả 2 → không chấm. Trợ năng `boardOpenLabel`.
 - Ảnh nền giữ chỗ `screens/Canh-tieu-mac-bang.png` (bảng trong ảnh còn ghi 文淵榜).
+
+## Trò chơi Kỳ Văn Uyển — Ngũ Tử Kỳ 五子棋 (HUD) · artboard `Co-doc-luot.dc.html`, `Co-doc-nghi.dc.html`, `Co-doc-thang.dc.html`, `Co-ngang.dc.html`, `Co-ket-qua.dc.html` · từ mục 2026-11-13.27
+
+- Mở khi: ngồi vào ghế bàn cờ ("Vào bàn", `R-NGOI-1`, `R-GIAO-1`); camera nhìn xuống bàn 13 × 13. Ẩn khi rời bàn.
+- **Khi ngồi chơi ẩn joystick + cụm Nhảy / Chào / Thiền** — cả màn là bàn, chạm là chạm bàn. Rời: nút **"Rời bàn"**
+  (đề xuất đổi luật, xem CHANGELOG 2026-11-13.27).
+- Dọc: dải trên (trên 8 + safe): trái nút "Rời bàn" viên thuốc kính sương cao 44 (biểu tượng cửa ra 18 + chữ 14/700); phải
+  viên tỉ số phiên cao 44 ("● Đạo hữu **2** : **1** Tiểu Mặc ○" — số Lora 20 `jade`, quân đen / trắng 14). Đáy (dưới 12 +
+  safe, giữa): **viên lượt** cao 48 — lượt mình: chấm `jade` 10 + quầng + "Lượt đạo hữu" 14/700 + "· ● chạm giao điểm để
+  đặt" 14/500; NPC nghĩ: chân dung 32 + "Tiểu Mặc đang nghĩ" + 3 chấm nhấp nháy (1,2 s).
+- Trên bàn 3D (code cảnh): quân vừa đi có chấm son `lacquer` ≈ 1/3 đường kính; hết ván → 5 quân thắng viền `gold` sáng.
+- **Thẻ kết quả ván** (thay khung thoại "Vâng"): tấm kính sương .95 đáy màn (trái / phải 16), bo 16, đệm 34 × 18 × 16; chân dung
+  56 chồng mép trên trái (−30), bảng tên `jade` 28; dòng "Thắng" (`jade`) / "Thua" (`lacquer`) / "Hoà" (`slate`) 24/700 +
+  "Tỉ số a : b" 14/700; lời NPC 16/500 trong ngoặc kép (R-CO-3); hàng nút: **"Ván mới"** chính 48 (giãn) + **"Rời bàn"** phụ.
+  "Ván mới" = đóng (R-CO-3: bàn dọn, ván mới, người đi trước).
+- Ngang: bàn giữa; "Rời bàn" góc trên trái, tỉ số góc trên phải, viên lượt góc dưới phải (bỏ vế "chạm giao điểm…").
+- Chuỗi: `game*`, `gomokuHint`. Luật: `R-GIAO-1`, `R-CO-1/2/3`, `R-MAN-1`.
+- Ảnh: nền giữ chỗ `screens/Ky-van-uyen-ngu-tu-ky.png` (cắt bỏ HUD cũ; NPC trong ảnh còn đứng ở bàn); màn ghép chưa có ảnh.
+
+## Trò chơi Kỳ Văn Uyển — Đấu chữ 鬥字 (HUD) · artboard `Dau-doc-luot.dc.html`, `Dau-doc-dung.dc.html`, `Dau-doc-sai.dc.html`, `Dau-doc-mo-nghi.dc.html`, `Dau-doc-mo-chon.dc.html`, `Dau-doc-ket-thuc.dc.html`, `Dau-doc-chua-hoc.dc.html`, `Dau-ngang.dc.html` · từ mục 2026-11-13.27
+
+- Mở khi: ngồi vào ghế bàn Đấu chữ. Ẩn joystick + cụm nút hành động như Ngũ Tử Kỳ; "Rời bàn" góc trên trái.
+- Dọc, trên xuống: hàng 1 (trên 8 + safe) "Rời bàn" + viên tiến độ cao 44 ("Câu n / 10" 13/700 + 10 chấm 10: đúng `jade`, sai
+  `lacquer`, câu hiện tại `jade` 45 % viền trắng, chưa `slate` 18 %); hàng 2 (trên 64 + safe) **hai thẻ điểm** 52: trái Mặc
+  Ông (chân dung 36 · tên 13/700 · số Lora 24 `jade`), phải Đạo hữu (đối xứng); đang tới lượt ai → viền `jade` 2; vừa được
+  điểm → quầng vàng 4. Giữa: thẻ bộ thủ trên bàn 3D lật ngửa (giấy `map-paper`, viền `jade`, chữ lớn — code cảnh).
+- Đáy (trái / phải 16, dưới 12 + safe): **ô câu hỏi** kính sương bo 14 ("Bộ 木 nghĩa là gì?" 18/700, chữ Hán 22 `jade`; dòng
+  phụ 12: "Lượt đạo hữu · chạm một nghĩa" / sau khi chấm: "mộc · mù — cây" / NPC nghĩ: chân dung + "Mặc Ông đang nghĩ…")
+  + **4 ô nghĩa** lưới 2 × 2 cách 10: cao ≥ 64, bo 14, nền `map-paper`, viền `slate` 20 %, chữ 16/700, bóng nhẹ.
+- **Chạm là chọn** (không có "Kiểm tra" — nhịp đấu nhanh, khác màn ôn). Sau khi chọn ~1 s (R-DAU-2): ô đúng viền `jade` 2
+  nền #E3EBE4 + dấu ✓; ô chọn sai viền `lacquer` 2 nền #F3E1DC + dấu ×; ô khác mờ 55 %; viên báo giữa màn (trên ô câu hỏi)
+  "Đúng rồi! +1 điểm" / "Chưa đúng — mộc · cây" (cao 44, viền + chữ theo đúng / sai).
+- Lượt Mặc Ông: 4 ô mờ, không chạm được; thẻ điểm Mặc Ông viền `jade`; khi chọn xong ô đó gắn huy hiệu "Mặc Ông" (chân dung
+  20 trên nền `slate`) rồi chấm như trên ("Mặc Ông đúng · +1" / "Mặc Ông sai — …").
+- Cuối ván: thẻ kết quả như Ngũ Tử Kỳ (chân dung Mặc Ông, "Thắng 4 : 3", lời kết từ dữ liệu hội thoại, "Ván mới" / "Rời bàn").
+- Chưa học bộ nào (`R-DAU-1`): không thẻ, không thẻ điểm; khung thoại NPC sẵn có (cảnh tối 18 %) với câu của luật + lựa chọn
+  "Vâng, con đi đây (rời bàn)".
+- Ngang: bàn giữa; cột trái 200 ("Rời bàn", 2 thẻ điểm xếp dọc, tiến độ ở đáy); cột phải 236 (ô câu hỏi + 4 nghĩa xếp dọc cao ≥ 48).
+- Chuỗi: `game*`, `duel*`. Luật: `R-GIAO-1`, `R-DAU-1/2`, `R-VUNG-1`, `R-MAN-1`.
+- Ảnh: nền giữ chỗ `screens/Ky-van-uyen-dau-chu.png` (cắt bỏ khung thoại); màn ghép chưa có ảnh.

@@ -430,6 +430,84 @@
       "y": 28566,
       "w": 1080,
       "h": 360
+    },
+    "Co-doc-luot.dc.html": {
+      "x": 0,
+      "y": 29336,
+      "w": 390,
+      "h": 844
+    },
+    "Co-doc-nghi.dc.html": {
+      "x": 470,
+      "y": 29336,
+      "w": 390,
+      "h": 844
+    },
+    "Co-doc-thang.dc.html": {
+      "x": 940,
+      "y": 29336,
+      "w": 390,
+      "h": 844
+    },
+    "Co-ngang.dc.html": {
+      "x": 1410,
+      "y": 29336,
+      "w": 844,
+      "h": 390
+    },
+    "Co-ket-qua.dc.html": {
+      "x": 1410,
+      "y": 29806,
+      "w": 1300,
+      "h": 400
+    },
+    "Dau-doc-luot.dc.html": {
+      "x": 0,
+      "y": 30300,
+      "w": 390,
+      "h": 844
+    },
+    "Dau-doc-dung.dc.html": {
+      "x": 470,
+      "y": 30300,
+      "w": 390,
+      "h": 844
+    },
+    "Dau-doc-sai.dc.html": {
+      "x": 940,
+      "y": 30300,
+      "w": 390,
+      "h": 844
+    },
+    "Dau-doc-mo-nghi.dc.html": {
+      "x": 1410,
+      "y": 30300,
+      "w": 390,
+      "h": 844
+    },
+    "Dau-doc-mo-chon.dc.html": {
+      "x": 1880,
+      "y": 30300,
+      "w": 390,
+      "h": 844
+    },
+    "Dau-doc-ket-thuc.dc.html": {
+      "x": 2350,
+      "y": 30300,
+      "w": 390,
+      "h": 844
+    },
+    "Dau-doc-chua-hoc.dc.html": {
+      "x": 2820,
+      "y": 30300,
+      "w": 390,
+      "h": 844
+    },
+    "Dau-ngang.dc.html": {
+      "x": 3290,
+      "y": 30300,
+      "w": 844,
+      "h": 390
     }
   },
   "order": [
@@ -495,7 +573,20 @@
     "OnTap-doc-ket-qua-bo.dc.html",
     "OnTap-doc-tong-ket.dc.html",
     "OnTap-ngang.dc.html",
-    "OnTap-muc-ket-qua.dc.html"
+    "OnTap-muc-ket-qua.dc.html",
+    "Co-doc-luot.dc.html",
+    "Co-doc-nghi.dc.html",
+    "Co-doc-thang.dc.html",
+    "Co-ngang.dc.html",
+    "Co-ket-qua.dc.html",
+    "Dau-doc-luot.dc.html",
+    "Dau-doc-dung.dc.html",
+    "Dau-doc-sai.dc.html",
+    "Dau-doc-mo-nghi.dc.html",
+    "Dau-doc-mo-chon.dc.html",
+    "Dau-doc-ket-thuc.dc.html",
+    "Dau-doc-chua-hoc.dc.html",
+    "Dau-ngang.dc.html"
   ],
   "notes": {
     "cach-dung": {
@@ -729,6 +820,21 @@
       "fill": "teal",
       "size": "s",
       "text": "Phiếu 2026-11-13-nhiem-vu-hang-ngay.\n• Bảng + màn ôn: màn Flutter, khung màn bài học (nền sương + núi, thẻ lụa, nút đáy).\n• Việc xong: vòng ngọc lục + dấu ✓; xong cả 2: triện son 畢.\n• Chuỗi: số lớn + dải 7 ngày (đã tính · hôm nay nét đứt · chưa tới). Kỷ lục mới: viên vàng.\n• Ôn: chọn (đổi được) → \"Kiểm tra\" → đúng / sai + đáp án → \"Câu tiếp\". 2 câu → kết quả bộ (3 mức) → tổng kết. Nút × thoát ngay, không hỏi lại (bộ chưa chấm vẫn đến hạn).\n• \"Xem bảng\": kiểu nút \"Nói chuyện\" + chấm son số việc còn lại."
+    },
+    "tieu-de-giao-luu": {
+      "x": 0,
+      "y": 29076,
+      "text": "Kỳ Văn Uyển 棋文苑 — HUD Ngũ Tử Kỳ + Đấu chữ",
+      "kind": "title1",
+      "maxW": 4130
+    },
+    "giao-luu-ghi-chu": {
+      "x": 2790,
+      "y": 29336,
+      "w": 460,
+      "fill": "teal",
+      "size": "s",
+      "text": "Phiếu 2026-11-13-tro-choi-giao-luu.\n• Ngồi chơi: ẩn joystick + cụm Nhảy / Chào / Thiền — cả màn là bàn; rời bằng nút \"Rời bàn\" (góc trên trái). Đề xuất đổi R-GIAO-1 (hiện: kéo joystick / bấm Thiền để đứng dậy).\n• Ngũ Tử Kỳ: dải trên mỏng (Rời bàn · tỉ số phiên); viên lượt ở đáy; quân vừa đi có chấm son; 5 quân thắng viền vàng sáng.\n• Kết quả ván: thẻ đáy có chân dung + lời NPC + \"Ván mới\" / \"Rời bàn\" (thay khung thoại \"Vâng\").\n• Đấu chữ: 2 thẻ điểm (Mặc Ông trái, mình phải — viền ngọc lục là lượt ai); câu \"Bộ 木 nghĩa là gì?\" + 4 ô giấy 2 × 2 ở đáy; chạm là chọn (không có \"Kiểm tra\" — nhịp đấu nhanh); nghĩa đúng hiện ~1 s.\n• Ảnh nền giữ chỗ: NPC trong ảnh còn đứng ở bàn (luật mới: không đứng ở bàn)."
     }
   },
   "designSystems": []

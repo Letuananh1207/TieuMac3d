@@ -3,6 +3,28 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-13.27 — HUD trò chơi Kỳ Văn Uyển: Ngũ Tử Kỳ + Đấu chữ
+
+- Loại: giao diện · chuỗi · luồng/luật (đề xuất).
+- Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-13-tro-choi-giao-luu.md`.
+- Màn / thành phần: **Ngũ Tử Kỳ** (lượt mình · Tiểu Mặc nghĩ · thắng 5 quân sáng · ngang · thẻ kết quả thắng / thua / hoà) ·
+  **Đấu chữ** (lượt mình · đúng · sai · Mặc Ông nghĩ · Mặc Ông chọn · cuối ván · chưa học bộ nào · ngang). Đặc tả:
+  `docs/screen_specs.md` 2 mục mới; thành phần: `docs/components.md`.
+- Quyết định thiết kế: ngồi chơi → ẩn joystick + Nhảy / Chào / Thiền, rời bằng nút "Rời bàn"; kết quả ván là thẻ đáy riêng
+  ("Ván mới" / "Rời bàn") thay khung thoại "Vâng"; Đấu chữ chạm là chọn (không "Kiểm tra"); điểm hai bên là hai thẻ góc trên.
+- Token: không thêm (dùng `map-paper`, `jade`, `lacquer`, `gold`, frost). Chuỗi mới (`l10n/vi.arb`): `game*`, `gomokuHint`,
+  `duel*`. Lời NPC (kết ván, chưa học) giữ trong dữ liệu hội thoại.
+- **Đề xuất luật** (phiên code hỏi người dùng rồi ghi sổ):
+  - `R-GIAO-1` (+ `R-DIEU-1`, `R-NGOI-1`): đang ngồi chơi **tắt joystick và ẩn cụm nút hành động**; đứng dậy bằng nút
+    **"Rời bàn"** (máy tính: phím Esc / đi bằng phím vẫn đứng dậy) — thay "kéo cần điều khiển hoặc bấm Thiền". Lý do: 45 %
+    bên trái màn là vùng joystick, trùng nửa trái bàn cờ. Ví dụ: ngồi bàn cờ, chạm giao điểm ở mép trái → đặt quân (không
+    thành joystick); bấm "Rời bàn" → đứng dậy, ván bỏ.
+  - `R-CO-3` / `R-DAU-2`: hết ván hiện thẻ kết quả (lời NPC trong thẻ) với "Ván mới" (= đóng, ván mới) và "Rời bàn".
+- Luật bị chạm: `R-GIAO-1`, `R-CO-1/2/3`, `R-DAU-1/2`, `R-DIEU-1`, `R-NGOI-1`, `R-MAN-1`.
+- File: `source/Co-*.dc.html` (5), `source/Dau-*.dc.html` (8), `source/canvas.json` · `l10n/vi.arb` · `docs/screen_specs.md`,
+  `docs/components.md`.
+- Ảnh: chưa có ảnh (dùng `source/*.dc.html`).
+
 ## 2026-11-13.25 — Bảng nhiệm vụ hằng ngày 日課榜 + màn ôn câu đố + nút "Xem bảng"
 
 - Loại: giao diện · token · chuỗi.

@@ -65,3 +65,15 @@ Một chất liệu: kính mờ `frost*` + viền `frost-line` / `frost-outline`
 | Khung phản hồi đúng / sai + "Câu tiếp" | `OnTap-doc-dung`, `OnTap-doc-sai` | answer-right-bg, answer-wrong-bg |
 | Viên mức nhớ (3 mức) | `OnTap-muc-ket-qua` | answer-*-bg, jade, gold, lacquer |
 | Nút nổi "Xem bảng" + chấm đếm | `XemBang-*` | jade, lacquer, count-badge |
+
+## Thêm ở 2026-11-13.27
+
+| Thành phần | Artboard | Token |
+|---|---|---|
+| Nút "Rời bàn" (viên thuốc kính + biểu tượng cửa ra) | `Co-*`, `Dau-*` | frost, slate |
+| Viên tỉ số phiên (quân đen / trắng + số Lora) | `Co-*` | frost, jade |
+| Viên lượt (lượt mình / NPC đang nghĩ + 3 chấm) | `Co-*`, `Dau-doc-mo-nghi` | frost, jade |
+| Thẻ kết quả ván (chân dung, Thắng / Thua / Hoà, lời NPC, Ván mới / Rời bàn) | `Co-ket-qua`, `Dau-doc-ket-thuc` | frost .95, jade, lacquer |
+| Thẻ điểm người chơi / NPC (đang lượt, vừa ghi điểm) | `Dau-*` | jade, gold |
+| Viên tiến độ 10 câu | `Dau-*` | jade, lacquer |
+| Ô nghĩa giấy (thường / đúng / sai / mờ / huy hiệu NPC chọn) | `Dau-*` | map-paper, jade, lacquer |

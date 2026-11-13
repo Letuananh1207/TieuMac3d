@@ -300,5 +300,78 @@
       }
     }
   },
-  "reviewSummaryDone": "Việc Ôn tập hôm nay đã xong."
+  "reviewSummaryDone": "Việc Ôn tập hôm nay đã xong.",
+  "gameLeave": "Rời bàn",
+  "gameNewRound": "Ván mới",
+  "gameYourTurn": "Lượt đạo hữu",
+  "gameThinking": "{name} đang nghĩ…",
+  "@gameThinking": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "gameWin": "Thắng",
+  "gameLose": "Thua",
+  "gameDraw": "Hoà",
+  "gameYou": "Đạo hữu",
+  "gameScore": "Tỉ số {a} : {b}",
+  "@gameScore": {
+    "placeholders": {
+      "a": {
+        "type": "int"
+      },
+      "b": {
+        "type": "int"
+      }
+    }
+  },
+  "gomokuHint": "chạm giao điểm để đặt",
+  "duelQuestion": "Bộ {radical} nghĩa là gì?",
+  "@duelQuestion": {
+    "placeholders": {
+      "radical": {
+        "type": "String"
+      }
+    }
+  },
+  "duelHint": "chạm một nghĩa",
+  "duelStep": "Câu {n} / 10",
+  "@duelStep": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "duelRight": "Đúng rồi! +1 điểm",
+  "duelWrong": "Chưa đúng — {answer}",
+  "@duelWrong": {
+    "placeholders": {
+      "answer": {
+        "type": "String"
+      }
+    }
+  },
+  "duelNpcRight": "{name} đúng · +1",
+  "@duelNpcRight": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "duelNpcWrong": "{name} sai — {answer}",
+  "@duelNpcWrong": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "answer": {
+        "type": "String"
+      }
+    }
+  },
+  "duelNoneLeave": "Vâng, con đi đây (rời bàn)"
 }
