@@ -173,6 +173,7 @@ async function boot(): Promise<void> {
   const input: MoveInput = { x: 0, y: 0 };
   // tường / nhà chắn tầm nhìn → camera kéo lại gần (R-DIEU-4)
   const sight = colliders.sightBlock.bind(colliders);
+  character.facing.rotation.y = orbit.yaw + Math.PI; // vào game: nhân vật quay lưng về camera, nhìn về phía trước
   orbit.update(camera, player.position, 0, true, groundAt, undefined, sight);
 
   function tick(): void {

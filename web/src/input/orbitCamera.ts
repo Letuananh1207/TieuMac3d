@@ -18,6 +18,12 @@ const OCC_OUT = 2.5;
 const OCC_MARGIN = 0.4;
 const OCC_MIN = 1.2;
 
+/** Bố cục: ngắm cao hơn tâm nhân vật một góc (rad) — nhân vật xuống ~1/3 dưới màn hình, chân trời lên gần giữa, thấy
+ *  cảnh phía trước (như game góc nhìn thứ ba). Điểm ngắm nâng thêm `dist · LOOK_UP` mét. */
+const LOOK_UP = 0.17;
+/** R-DIEU-3: đang đi thì góc ngẩng trở dần về góc chuẩn (1/s, theo hàm mũ, khi đi hết tốc độ) */
+const PITCH_RATE = 0.8;
+
 /** Góc về (−π, π]. */
 const wrap = (a: number): number => Math.atan2(Math.sin(a), Math.cos(a));
 
@@ -64,6 +70,11 @@ export class OrbitCamera {
   private readonly want = new THREE.Vector3();
   private readonly target = new THREE.Vector3();
 
+  /** Điểm camera đang ngắm (đã nâng LOOK_UP) — Canvas 3D dùng cho OrbitControls để ảnh chụp đúng bố cục app. */
+  get lookTarget(): THREE.Vector3 {
+    return this.target;
+  }
+
   constructor(private readonly settings: OrbitSettings = DEFAULT_ORBIT) {
     this.pitch = settings.near.pitch;
     this.dist = settings.near.dist;
@@ -101,6 +112,9 @@ export class OrbitCamera {
     const off = Math.abs(delta); // = góc lệch giữa hướng đi và hướng camera đang nhìn
     const w = Math.min(1, Math.max(0, (AUTO_MAX_OFF - off) / AUTO_FADE));
     this.yaw += delta * w * (1 - Math.exp(-dt * AUTO_RATE * speed));
+    // góc ngẩng về góc chuẩn của chế độ đang dùng (gần / cả sân)
+    const base = this.near ? this.settings.near.pitch : this.settings.far.pitch;
+    this.pitch += (base - this.pitch) * (1 - Math.exp(-dt * PITCH_RATE * speed));
   }
 
   /** Đổi giữa góc gần và góc cả sân. Trả về true nếu đang ở góc gần. */
@@ -153,7 +167,8 @@ export class OrbitCamera {
     // lerp theo hàm mũ: mượt như nhau dù fps cao hay thấp
     if (snap) camera.position.copy(this.want);
     else camera.position.lerp(this.want, 1 - Math.exp(-dt * 8));
-    this.target.set(focus.x, focus.y + 1.2, focus.z);
+    // ngắm cao hơn đầu nhân vật (LOOK_UP): nhân vật nằm 1/3 dưới màn hình, thấy xa phía trước
+    this.target.set(focus.x, focus.y + 1.2 + dist * LOOK_UP, focus.z);
     camera.lookAt(this.target);
   }
 

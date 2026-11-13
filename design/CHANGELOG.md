@@ -3,6 +3,15 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-13.8 — Camera: bố cục như game góc nhìn thứ ba
+
+- Loại: cảnh 3D — **ngoại hình** (camera) + code. Người dùng: "cảm giác vẫn chưa chuyên nghiệp như cách các game làm" →
+  chọn "bố cục / góc nhìn".
+- `camera.near.pitch` 0,38 → **0,30**; camera ngắm cao hơn đầu nhân vật `dist × 0,17` m (`input/orbitCamera.ts` `LOOK_UP`)
+  → góc nhìn thật chỉ chúc ~7,5° (trước ~22°): nhân vật ở 1/3 dưới màn hình, thấy trời, núi, Chưởng Môn Điện phía trước.
+- Vào game nhân vật quay lưng về camera (nhìn về cổng) thay vì nhìn vào camera; đang đi góc ngẩng tự về góc chuẩn (R-DIEU-3).
+- Ảnh: `screens/Canh-camera-bo-cuc.png` (trái cũ · giữa mới chỗ xuất phát · phải mới sân giảng đường · dưới màn ngang).
+
 ## 2026-11-13.7 — Cảnh: camera gần hơn (9 → 6 m)
 
 - Loại: cảnh 3D — **ngoại hình** (camera). Người dùng: "Khoảng cách giữa camera và nhân vật đang quá xa". Phiên VS Code làm thay `/canh`.

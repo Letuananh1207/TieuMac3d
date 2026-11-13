@@ -135,8 +135,9 @@ async function boot(): Promise<void> {
     const orbit = new OrbitCamera(spec.camera);
     if (far) orbit.toggleView();
     const focus = character.root.position;
+    character.facing.rotation.y = orbit.yaw + Math.PI; // như app: quay lưng về camera
     orbit.update(camera, focus, 0, true);
-    controls.target.set(focus.x, focus.y + 1.2, focus.z);
+    controls.target.copy(orbit.lookTarget); // đúng điểm ngắm của app (nhân vật ở 1/3 dưới màn)
   };
   el('viewPlayer').addEventListener('click', () => playerView(false));
   el('viewYard').addEventListener('click', () => playerView(true));
