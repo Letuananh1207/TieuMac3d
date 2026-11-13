@@ -3,6 +3,14 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-13.7 — Cảnh: camera gần hơn (9 → 6 m)
+
+- Loại: cảnh 3D — **ngoại hình** (camera). Người dùng: "Khoảng cách giữa camera và nhân vật đang quá xa". Phiên VS Code làm thay `/canh`.
+- `camera`: góc chơi `near` 9 m / 0,42 rad → **6 m / 0,38 rad** (≈ 3 lần chiều cao nhân vật 2,1 m, như game góc nhìn thứ ba);
+  góc cả sân `far` 24 m / 0,75 → 15 m / 0,7; chụm zoom `minDist` 5 → 3, `maxDist` 30 → 20.
+- Luật: ví dụ R-DIEU-4 "camera lùi về 9 m" → 6 m (sổ + tài liệu online).
+- Ảnh: `screens/Canh-camera-gan.png` (trái 9 m cũ · phải 6 m mới, chỗ xuất phát).
+
 ## 2026-11-13.6 — Hành trình nhiều vùng + Truyền Tống Đài (hướng C)
 
 - Loại: luồng/luật (đề xuất luật mới) · cảnh 3D (**bố cục** — khu 3 đổi vai) · dữ liệu (vùng, mốc mở khoá).

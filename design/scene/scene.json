@@ -834,15 +834,15 @@
   ],
   "camera": {
     "fov": 55,
-    "minDist": 5,
-    "maxDist": 30,
+    "minDist": 3,
+    "maxDist": 20,
     "near": {
-      "dist": 9,
-      "pitch": 0.42
+      "dist": 6,
+      "pitch": 0.38
     },
     "far": {
-      "dist": 24,
-      "pitch": 0.75
+      "dist": 15,
+      "pitch": 0.7
     }
   },
   "site": {
