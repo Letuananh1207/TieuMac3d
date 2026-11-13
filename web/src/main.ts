@@ -49,9 +49,13 @@ import { reviewItems } from './zones/review';
 import { fallbackStudy, studyMenu } from './zones/studyMenu';
 import { RADICALS, type Radical } from './zones/radicals';
 import { placeZones, ZONE_CONTENT, type Zone } from './zones/zones';
+import { musicVolume, TRACKS } from './zones/music';
+import { AmbientMusic } from './ui/ambientMusic';
 
 /** Nhãn tên cao hơn đỉnh búi tóc đệ tử (~2,2 m) một chút. */
 const NAME_TAG_HEIGHT = 2.5;
+/** file nhạc đóng gói (R-NHAC-1): đường dẫn `./nhac/<file>` → URL sau build */
+const MUSIC_URLS = import.meta.glob('./nhac/*.{ogg,mp3,wav,m4a}', { query: '?url', import: 'default', eager: true }) as Record<string, string>;
 
 async function boot(): Promise<void> {
   // mỗi vùng một cảnh: ?vung=<mã> (không có = tông môn); về nhà: ?tu=<mã vùng vừa rời> (R-HANH-2)
@@ -151,10 +155,12 @@ async function boot(): Promise<void> {
   // dừng hẳn vòng lặp khi app xuống nền (Flutter gửi `lifecycle`) hoặc tab bị ẩn — đỡ tốn pin (mốc 4)
   let appHidden = false;
   let running = true;
+  let music: AmbientMusic | null = null; // nhạc nền trà lâu — dựng bên dưới (R-NHAC-1)
   const setRunning = (): void => {
     const want = !appHidden && !document.hidden;
     if (want === running) return;
     running = want;
+    if (!want) music?.stopNow(); // app xuống nền / tab ẩn → nhạc dừng (R-NHAC-1)
     if (want) {
       clock.getDelta(); // bỏ khoảng thời gian đã dừng
       requestAnimationFrame(tick);
@@ -315,6 +321,10 @@ async function boot(): Promise<void> {
     player.toggleSit();
   };
   const seatButton = new SeatButton<SeatPick>((spot) => sitAt(spot));
+  // nhạc nền trà lâu (R-NHAC-1): đài phát theo giờ thật, âm lượng theo khoảng cách tới sàn trà lâu
+  const teaIds = new Set(spec.buildings.filter((b) => b.kind === 'tra-lau').map((b) => b.id));
+  const teaFloors = world.rooms.filter((r) => teaIds.has(r.zoneId)).map((r) => r.floor);
+  music = teaFloors.length > 0 ? new AmbientMusic(TRACKS, (f) => MUSIC_URLS[`./nhac/${f}`]) : null;
   const seatGlow = addSeatGlow(scene, spec.lanternStyle.trim);
 
   /* ---------- điều khiển ---------- */
@@ -563,6 +573,8 @@ async function boot(): Promise<void> {
     }
     seatGlow.set(spot);
     seatGlow.update(dt);
+    // mở bài học / ôn / bảng, màn tải → nhạc tắt dần; đóng → phát tiếp theo giờ (R-NHAC-1)
+    music?.update(dt, paused || covered || loading.active ? 0 : musicVolume(teaFloors, pos.x, pos.z));
     dialogBox.update(dt);
     actions.update({
       hidden: paused || covered || loading.active || mapOpen || talking,

@@ -123,7 +123,7 @@ describe('Trà lâu lên được tầng 2 (Phẩm Minh Các)', () => {
 
   it('R-VA-4: tầng 2 trà lâu có 18 chỗ — 2 sập trà (4 chỗ trên sập), 4 ghế đơn quay ra ngoài, bàn dài 6 chỗ, 2 bàn trà đôi', () => {
     const { room } = setup();
-    const seats = room.seats ?? [];
+    const seats = (room.seats ?? []).filter((s) => s.y > yf - 0.1);
     expect(seats).toHaveLength(18);
     const onBed = seats.filter((s) => s.y > yf + 0.1);
     expect(onBed).toHaveLength(4);
@@ -139,7 +139,7 @@ describe('Trà lâu lên được tầng 2 (Phẩm Minh Các)', () => {
 
   it('R-VA-4: chỗ nào cũng tới được từ cầu nối thang, đứng đó có nút Ngồi đúng chỗ; dải phía đông để trống', () => {
     const { room, colliders } = setup();
-    const seats = room.seats ?? [];
+    const seats = (room.seats ?? []).filter((s) => s.y > yf - 0.1);
     const step = 0.25;
     const key = (i: number, j: number): string => `${i},${j}`;
     const at = (i: number, j: number): [number, number] => [i * step, j * step];
@@ -174,7 +174,7 @@ describe('Trà lâu lên được tầng 2 (Phẩm Minh Các)', () => {
 
   it('R-VA-4: ngồi trên sập cao theo mặt sập; điều khiển đi → bước xuống sàn trước sập', () => {
     const { room, player, colliders } = setup();
-    const s = (room.seats ?? []).find((q) => q.y > yf + 0.1)!;
+    const s = (room.seats ?? []).find((q) => q.y > yf + 0.1 && q.y < yf + 1)!;
     player.position.set(s.x, s.y, s.z);
     player.toggleSit();
     for (let i = 0; i < 30; i++) player.update(1 / 60, { x: 0, y: 0 }, 0, false);
@@ -188,7 +188,48 @@ describe('Trà lâu lên được tầng 2 (Phẩm Minh Các)', () => {
 
   it('R-VA-4: chỗ ngồi tầng 2 khác tầng với người ở tầng 1', () => {
     const { room } = setup();
-    const seats = room.seats ?? [];
+    const seats = (room.seats ?? []).filter((s) => s.y > yf - 0.1);
     expect(nearestSeat(seats, seats[0].x + 0.8, seats[0].z, 1.2, plat)).toBeUndefined();
+  });
+
+  it('R-NHAC-2: tầng 1 có 3 bàn trà × 4 đôn ngồi được, mặt đôn cao 0,45, quay vào bàn', () => {
+    const { room } = setup();
+    const low = (room.seats ?? []).filter((s) => s.y < yf - 1);
+    expect(low).toHaveLength(12);
+    for (const s of low) expect(s.y).toBeCloseTo(plat + 0.45, 5);
+    // đứng trước bàn giữa (0; 0,6), cách đôn nam ~1 m → đôn nam, nhìn về bắc (vào bàn)
+    const s = nearestSeat(low, 0, 2.5, 1.2, plat)!;
+    expect(s).toBeDefined();
+    expect(s.x).toBeCloseTo(0, 5);
+    expect(s.z).toBeCloseTo(1.55, 5);
+    expect(Math.abs(Math.abs(s.rotY) - Math.PI)).toBeLessThan(1e-9);
+    // ở tầng 2 ngay trên → không tính
+    expect(nearestSeat(low, 0, 2.5, 1.2, yf)).toBeUndefined();
+  });
+
+  it('R-NHAC-2: ngồi trên đôn cao theo mặt đôn; điều khiển đi → xuống sàn, ra ngoài bàn', () => {
+    const { room, player, colliders } = setup();
+    const s = nearestSeat((room.seats ?? []).filter((q) => q.y < yf - 1), 0, 2.5, 1.2, plat)!;
+    player.position.set(s.x, s.y, s.z);
+    player.toggleSit();
+    for (let i = 0; i < 30; i++) player.update(1 / 60, { x: 0, y: 0 }, 0, false);
+    expect(player.position.y).toBeCloseTo(plat + 0.45, 5);
+    for (let i = 0; i < 30; i++) player.update(1 / 60, { x: 0, y: -1 }, 0, false);
+    expect(player.isSitting).toBe(false);
+    expect(player.position.y).toBeCloseTo(plat, 5);
+    const p = { x: player.position.x, z: player.position.z };
+    colliders.resolve(p, 0.5, plat);
+    expect(Math.hypot(p.x - player.position.x, p.z - player.position.z)).toBeLessThan(1e-6);
+  });
+
+  it('R-NHAC-2: cầm án ở góc sau – tây tầng 1 chặn người ở tầng 1', () => {
+    const { player } = setup();
+    start(player, 0, b.d / 2 + 2);
+    walkTo(player, 0, b.d / 2 - 1);
+    walkTo(player, -8.6, 3);
+    walkTo(player, -8.6, -1.5);
+    walkTo(player, -8.6, -5);
+    expect(player.position.z).toBeGreaterThan(-4.1);
+    expect(player.position.y).toBeCloseTo(plat, 5);
   });
 });

@@ -1,6 +1,7 @@
 /**
  * Trà lâu 茶樓 (`tra-lau`, bản mẫu design/source/TienIch-kien-truc.dc.html): hai tầng, 3 gian. Tầng 1 mở hết mặt
- * tiền (chỉ cột) — đi vào ngồi được: 3 bàn trà + đôn, quầy trà sát tường sau. Lên được tầng 2 (R-VA-3) bằng thang
+ * tiền (chỉ cột) — đi vào ngồi được: 3 bàn trà, mỗi bàn 4 đôn ngồi được (R-NHAC-2), quầy trà sát tường sau, cầm án góc sau
+ * – tây; nhạc nền (R-NHAC-1) phát ở `main.ts` theo sàn nhà này. Lên được tầng 2 (R-VA-3) bằng thang
  * thẳng ngoài trời dọc đầu hồi phải (`cau_thang.ts`, như Tàng Thư Các — L-6); tầng 2 **mở bốn phía** — chỉ cột +
  * lan can gỗ thấp — 18 chỗ ngồi được (R-VA-4): 2 sập trà sát tường sau, 4 ghế đơn sát lan can quay ra ngoài, 1 bàn dài
  * tụ hội 6 chỗ, 2 bàn trà đôi; dải phía đông (lối từ cầu nối thang) để trống. Hiên lửng (腰檐) giữa hai tầng; mái yết sơn;
@@ -11,7 +12,7 @@ import type { BuildingSpec } from '../spec';
 import { addBeamBand, addLanterns, addSign, hk, type Style } from './chi_tiet';
 import { addStairs, gapForBridge, stairLayout, type StairLayout } from './cau_thang';
 import { columnXs } from './dien';
-import { longTeaTable, soloSeat, teaBed, teaTable, type LocalSeat } from './do_pho';
+import { guqinTable, longTeaTable, soloSeat, STOOL_H, TEA_STOOLS, teaBed, teaTable, type LocalSeat } from './do_pho';
 import { box, column } from './hinh';
 import { upperRail } from './lau_sach';
 import { gableHipRoof, skirt } from './mai';
@@ -45,6 +46,9 @@ const SOLO_FRONT_X = [4.5, 10.3];
 const LONG_AT = { x: 2.6, z: -1.6 };
 const DOUBLE_X = [3.3, 7.3];
 const DOUBLE_Z = 1.2;
+/** bàn trà tầng 1 (z); cầm án cách góc sau – tây (x từ mép tây, z từ mép sau) */
+const TEA_Z = 0.6;
+const GUQIN_IN = { x: 1.8, z: 1.2 };
 const CUSHION = '#8a3b2c';
 const POT = '#5a3a2a';
 const CUP = '#f3e6c8';
@@ -97,14 +101,23 @@ export function traLau(g: THREE.Group, b: BuildingSpec, style: Style, fade: THRE
   const circles = xs.map((x) => ({ x, z: d / 2 - 0.3, r: 0.28 }));
   for (const c of circles) g.add(column(0.22, h1, pillar, c.x, PLAT, c.z));
 
-  // quầy trà sát tường sau + 3 bàn trà — chỉ chặn người ở tầng 1
+  // quầy trà sát tường sau + 3 bàn trà (đôn ngồi được — mặt đôn là tấm `upper`, R-NHAC-2) + cầm án — chỉ chặn người ở
+  // tầng 1
   const low = PLAT + 1.5;
   g.add(box(w * 0.45, 0.95, 0.7, style.timber, 0, PLAT + 0.475, -d / 2 + 1.1));
   g.add(box(w * 0.45, 0.06, 0.8, style.floor, 0, PLAT + 0.98, -d / 2 + 1.1));
   boxes.push({ x: 0, z: -d / 2 + 1.1, w: w * 0.45, d: 0.8, maxY: low });
+  const seats: LocalSeat[] = [];
+  const seatPads: LocalPad[] = [];
   for (let i = 0; i < xs.length - 1; i++) {
-    boxes.push({ ...teaTable(g, (xs[i] + xs[i + 1]) / 2, 0.6, PLAT), maxY: low });
+    const tx = (xs[i] + xs[i + 1]) / 2;
+    boxes.push({ ...teaTable(g, tx, TEA_Z, PLAT), maxY: low });
+    for (const [dx, dz] of TEA_STOOLS) {
+      seats.push({ x: tx + dx, z: TEA_Z + dz, y: PLAT + STOOL_H, rotY: Math.atan2(-dx, -dz) });
+      seatPads.push({ x: tx + dx, z: TEA_Z + dz, w: 0.5, d: 0.5, y: PLAT + STOOL_H, upper: true });
+    }
   }
+  boxes.push({ ...guqinTable(g, -w / 2 + GUQIN_IN.x, -d / 2 + GUQIN_IN.z, PLAT), maxY: low });
   addStairs(g, stairs, style);
 
   /* ---------- sàn lầu + tầng 2 mở (hiện khi đứng trên tầng 2, mờ khi ở tầng 1 — R-HUD-2) ---------- */
@@ -123,7 +136,6 @@ export function traLau(g: THREE.Group, b: BuildingSpec, style: Style, fade: THRE
   upperRail(fadeLow, cx, stairs.zTop, cx, cz, yf); // hồi phải: chừa lối ra cầu nối
 
   // tầng 2 bày 4 kiểu chỗ ngồi (R-VA-4) — vật cản chỉ chặn người ở tầng 2
-  const seats: LocalSeat[] = [];
   const bedTops: LocalPad[] = [];
   const up = yf - 0.4;
   const west = -iw / 2;
@@ -173,6 +185,7 @@ export function traLau(g: THREE.Group, b: BuildingSpec, style: Style, fade: THRE
       ...stairs.pads,
       { x: 0, z: 0, w: iw, d: id, y: yf, upper: true },
       ...bedTops,
+      ...seatPads,
     ],
     floor: { x: 0, z: 0, w: w - 0.6, d: d - 0.6 },
     upperY: yf - 1,

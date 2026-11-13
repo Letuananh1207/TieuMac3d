@@ -17,18 +17,21 @@ const STOOL = '#8a5a3c';
 const POT = '#5a3a2a';
 const CUP = '#f3e6c8';
 
+/** Cao mặt đôn trống (m) — ngồi đôn bàn trà (R-NHAC-2). */
+export const STOOL_H = 0.45;
+/** Vị trí 4 đôn quanh tâm bàn trà (đông, tây, nam, bắc). */
+export const TEA_STOOLS: readonly (readonly [number, number])[] = [
+  [0.95, 0],
+  [-0.95, 0],
+  [0, 0.95],
+  [0, -0.95],
+];
+
 /** Bàn trà 1,2 × 1,2 cao 0,75 + 4 đôn trống + ấm, 2 chén. Trả về hộp va chạm (bàn + đôn) theo toạ độ `g`. */
 export function teaTable(g: THREE.Group, x: number, z: number, y0 = 0): LocalBox {
   g.add(box(1.2, 0.08, 1.2, TABLE, x, y0 + 0.71, z));
   for (const sx of [-1, 1]) for (const sz of [-1, 1]) g.add(box(0.08, 0.67, 0.08, TABLE, x + sx * 0.5, y0 + 0.335, z + sz * 0.5));
-  for (const [dx, dz] of [
-    [0.95, 0],
-    [-0.95, 0],
-    [0, 0.95],
-    [0, -0.95],
-  ]) {
-    g.add(column(0.24, 0.45, STOOL, x + dx, y0, z + dz));
-  }
+  for (const [dx, dz] of TEA_STOOLS) g.add(column(0.24, STOOL_H, STOOL, x + dx, y0, z + dz));
   const pot = new THREE.Mesh(new THREE.SphereGeometry(0.13, 8, 6), lambert(POT));
   pot.position.set(x - 0.15, y0 + 0.86, z);
   pot.scale.y = 0.8;
@@ -187,4 +190,19 @@ export function longTeaTable(g: THREE.Group, x: number, z: number, y0: number): 
     }
   }
   return { box: { x, z, w, d }, seats };
+}
+
+/**
+ * Cầm án 琴案 tâm (x, z) trên sàn `y0`, người đàn ngồi phía sau (−z) nhìn +z: án thấp 1,4 × 0,5 cao 0,4, cây cổ cầm
+ * sơn đen nằm trên (thân dẹt, đầu rộng hơn đuôi, 7 dây + nhạn trục), bồ đoàn phía sau. Trả về vật cản (án + bồ đoàn).
+ */
+export function guqinTable(g: THREE.Group, x: number, z: number, y0: number): LocalBox {
+  const top = y0 + 0.4;
+  g.add(box(1.4, 0.05, 0.5, TABLE, x, top - 0.025, z));
+  for (const sx of [-1, 1]) g.add(box(0.08, 0.35, 0.4, TABLE, x + sx * 0.6, y0 + 0.175, z));
+  g.add(box(1.2, 0.05, 0.18, '#2a1f1a', x, top + 0.025, z)); // thân đàn
+  g.add(box(0.25, 0.06, 0.2, '#2a1f1a', x + 0.48, top + 0.03, z)); // đầu đàn (rộng hơn)
+  g.add(box(1.15, 0.008, 0.12, '#e8dcc0', x - 0.02, top + 0.054, z)); // dây
+  g.add(column(0.32, 0.12, CUSHION, x, y0, z - 0.65));
+  return { x, z: z - 0.2, w: 1.4, d: 1.0 };
 }

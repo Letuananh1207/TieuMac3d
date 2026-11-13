@@ -1,7 +1,7 @@
 # Trà lâu: nơi nghe nhạc chung
 - Yêu cầu: "tôi muốn biến trà lâu thành nơi nghe nhạc chung và trò chuyện"
 - Người dùng chọn: nhạc nền tự phát khi vào trà lâu · file nhạc CC0 đóng gói offline · trò chuyện = với người chơi thật.
-- Loại: thêm · Cỡ: vừa · Trạng thái: chờ duyệt
+- Loại: thêm · Cỡ: vừa · Trạng thái: đang làm (bước 1–6 xong 2026-11-13; còn file nhạc thật + bước 7 thử máy)
 
 ## Ngoài phạm vi (ghi lại để làm sau)
 - **Trò chuyện với người chơi thật**: cần multiplayer + máy chủ + đăng nhập — giai đoạn này không làm (CLAUDE.md).
@@ -36,14 +36,27 @@
 - Draw call: cầm án + đàn ~6 khối, gộp chung vào nhà → không đáng kể.
 
 ## Nhiệm vụ
-- [ ] 1. Tìm 3–5 bài nhạc cổ cầm / sáo trúc / tiếng nước CC0 hoặc phạm vi công cộng (nguồn, giấy phép, độ dài, cỡ)
+- [~] 1. Tìm 3–5 bài nhạc cổ cầm / sáo trúc / tiếng nước CC0 hoặc phạm vi công cộng (nguồn, giấy phép, độ dài, cỡ)
       → người dùng duyệt danh sách → tải vào `web/src/nhac/` + `LICENSES.md`.
-- [ ] 2. Quy tắc R-NHAC-1, R-NHAC-2 → tài liệu online → `--mark-synced`.
-- [ ] 3. `zones/music.ts` + test (đài phát theo giờ, âm lượng theo khoảng cách) · xong khi test xanh.
-- [ ] 4. `ui/ambientMusic.ts` (thẻ audio, mượt, khớp giờ, chặn tự phát) · xong khi tsc đạt.
-- [ ] 5. `tra_lau.ts`: cầm án + đàn, chỗ ngồi đôn · test ngồi (như `lauSach.test.ts`) · ảnh Canvas 3D.
-- [ ] 6. Ghép `main.ts`: âm lượng mỗi khung, dừng khi xuống nền / mở bài học · build.
+- [x] 2. Quy tắc R-NHAC-1, R-NHAC-2 → tài liệu online → `--mark-synced`.
+- [x] 3. `zones/music.ts` + test (đài phát theo giờ, âm lượng theo khoảng cách) · xong khi test xanh.
+- [x] 4. `ui/ambientMusic.ts` (thẻ audio, mượt, khớp giờ, chặn tự phát) · xong khi tsc đạt.
+- [x] 5. `tra_lau.ts`: cầm án + đàn, chỗ ngồi đôn · test ngồi (như `lauSach.test.ts`) · ảnh Canvas 3D.
+- [x] 6. Ghép `main.ts`: âm lượng mỗi khung, dừng khi xuống nền / mở bài học · build.
 - [ ] 7. Thử máy (Android WebView: tự phát sau lần chạm đầu, âm lượng khi đi vào / ra, xuống nền rồi lên lại).
 
 ## Kiểm tra cuối
 dart tool/check.dart --changed · cd web && npx tsc --noEmit && npm test && npm run build · dart tool/rule_trace.dart
+
+## Kết quả (phiên đám mây 2026-11-13)
+- **Chọn cách làm**: thiết kế canvas mục 2026-11-13.31 đề xuất cách khác (nút nổi "Nghe nhạc" khi ngồi bàn trà tầng 2 →
+  trình phát, đứng dậy tắt). Người dùng chọn **giữ kế hoạch này** (nhạc nền tự phát kiểu đài phát, không nút) — thiết kế
+  .31 chưa áp; muốn đổi sang trình phát thì mở kế hoạch mới.
+- **Bước 1 dở**: máy đám mây bị chặn mạng tới Wikimedia Commons → chưa tải được bản thu. Đang dùng `web/src/nhac/giu-cho.wav`
+  (4 s im lặng). Người dùng thêm file .ogg / .mp3 CC0 vào `web/src/nhac/`, ghi `LICENSES.md`, sửa `TRACKS` trong
+  `web/src/zones/music.ts` (thời lượng đúng giây), `npm test && npm run build`.
+- R-NHAC-1, R-NHAC-2 vào sổ + tài liệu online (`--mark-synced`).
+- `zones/music.ts` (đài phát theo giờ, âm lượng theo khoảng cách, mượt 1,5 s) + `music.test.ts`; `ui/ambientMusic.ts`;
+  `main.ts` ghép (dừng khi mở bài / màn tải / app xuống nền).
+- Trà lâu tầng 1: 12 đôn ngồi được (mặt đôn 0,45 — tấm `upper`), cầm án + cổ cầm góc sau – tây; test trong `traLau.test.ts`.
+- Thử headless: không lỗi JS, đứng trong trà lâu → trang tải file nhạc.
