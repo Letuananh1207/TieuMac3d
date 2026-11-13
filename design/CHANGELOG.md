@@ -3,6 +3,16 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-13.12 — Model NPC Sư phụ Mặc Ông (`su-phu.glb`)
+
+- Loại: tài nguyên 3D (`/tai-nguyen nhan-vat`). Từ bộ ảnh 4 góc `models/anh/su-phu-{truoc,trai,sau,phai}.png` (mục .1).
+- Hunyuan3D-2mv đầy đủ, 2 seed (1234, 7) → người dùng chọn **seed 1234** (râu đầy hơn, vạt áo sạch hơn). 16 000 tam
+  giác, 221 KB, không-sáng. Tóc / râu bạc nướng đúng màu với cờ mặc định (không cần `--giu-toc-mai`).
+- File: `models/su-phu.glb`, dòng `models/LICENSES.md`; ảnh `screens/Model-su-phu-so-thiet-ke.png` (trên thiết kế · dưới
+  model), `screens/Model-su-phu.png` (cận 6 góc).
+- Chưa đặt vào cảnh: cần thêm mã `su-phu` vào `NPC_IDS` (`web/src/scene/spec.ts`) + vị trí trong `scene.json` `npcs` +
+  lời thoại → kế hoạch `/lead`.
+
 ## 2026-11-13.11 — Cảnh: Truyền Tống Đài một vòng trận + vùng 1 Rừng trúc + Tiểu Mặc vào sân Ngoại Môn
 
 - Loại: cảnh 3D — **bố cục** + đặc tả cảnh mới. Phiên VS Code làm thay `/canh` (người dùng nhờ, duyệt ảnh trong phiên).
