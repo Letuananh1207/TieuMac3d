@@ -3,6 +3,27 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-13.35 — Bảng cách chơi Kỳ Văn Uyển (Ngũ Tử Kỳ · Đấu chữ)
+
+- Loại: giao diện · chuỗi. Màn: **Bảng cách chơi** (HUD web, lớp phủ) — đặc tả `docs/screen_specs.md` mục "Bảng cách chơi
+  Kỳ Văn Uyển".
+- Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-13-bang-cach-choi.md`.
+- Artboard: `CachChoi-doc-co` (Ngũ Tử Kỳ dọc), `CachChoi-doc-dau` (Đấu chữ dọc), `CachChoi-doc-dau-chua-hoc` (chưa học bộ
+  nào), `CachChoi-ngang` (Ngũ Tử Kỳ ngang). Ảnh nền giữ chỗ tải lên canvas: `Canh-bien-ngu-tu-ky.png`,
+  `Canh-bien-tro-choi.png`.
+- Chọn **HUD web** (không Flutter): nút "Cách chơi" ở web, nội dung là chữ tĩnh, chạy cả khi không có Flutter. Một khung
+  chung, nội dung theo trò: tên Hán + Việt, hình minh hoạ, 4 mục đánh số, mẹo NPC, nút "Đóng" đáy; dài → cuộn trong bảng.
+  Thay lời giảng nhiều trang tạm thời của NPC (`R-GIAO-2` phần "chưa có bảng").
+- Không thêm "Vào bàn" trong bảng (biển ~2,5 m tới ghế gần nhất, ngoài 1,5 m của `R-GIAO-1`).
+- Thành phần mới (`docs/components.md`): bảng cách chơi, mục đánh số, ô mẹo NPC. Token: không thêm (cảnh tối sau bảng
+  `rgba(36,50,58,.28)`, nền gỗ lưới cờ #E7D6B4 ghi trong đặc tả).
+- Chuỗi mới (`l10n/vi.arb`): `guideEyebrow`, `guideGoal`, `guideTurn`, `guideResult`, `guideSeat`, `guideTipBy`,
+  `guideClose`, `guideGomoku*`, `guideDuel*`, `guideSeatBody`.
+- Luật: không đổi. Nội dung theo `R-CO-1…3`, `R-DAU-1…2`, `R-GIAO-1` hiện tại. **Lưu ý**: mục "Vào bàn · rời bàn" ghi cách
+  rời hiện tại (kéo cần / Ngồi ôn); nếu áp nút "Rời bàn" (đề xuất 2026-11-13.27) thì đổi `guideSeatBody`. Áp xong bảng →
+  `R-GIAO-2` bỏ đoạn "Chưa có bảng → tạm: NPC giảng luật…" (phiên code hỏi người dùng rồi sửa sổ).
+- File: `source/CachChoi-*.dc.html` (mới), `source/canvas.json`, `docs/screen_specs.md`, `docs/components.md`, `l10n/vi.arb`.
+
 ## 2026-11-13.34 — Co lòng chảo cỏ quanh tông môn
 
 - Loại: cảnh 3D — **ngoại hình / địa hình** (đã vào `scene.json`). Phiên VS Code (`/canh`), người dùng: "diện tích vùng xanh

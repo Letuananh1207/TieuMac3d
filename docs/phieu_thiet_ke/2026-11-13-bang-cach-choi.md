@@ -1,5 +1,6 @@
 # Phiếu: Bảng cách chơi trò chơi Kỳ Văn Uyển (Ngũ Tử Kỳ · Đấu chữ)
 - Trạng thái: chờ thiết kế
+- Đã vẽ: 2026-11-13.35
 - Đợi bởi: kế hoạch `docs/tasks/2026-11-13-bien-tro-choi.md` (nhiệm vụ 7). Người dùng (2026-11-13): "tôi không thích
   phong cách hướng dẫn như hiện tại mà nên có 1 bảng giải thích cách chơi". Đã có: biển tên 3D + nút "Cách chơi"
   (`web/src/ui/guideButton.ts`); hiện bấm nút thì NPC giảng luật qua khung thoại — chỉ là tạm, thay bằng bảng này.
