@@ -19,6 +19,9 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
   — chỉ duyệt, không đưa vào Hunyuan.
 - Chuẩn hoá: như bộ Mặc Ông (tách nền chặt, nền #DDDDDD, xoá sao, hệ số thu chung, đáy bệ 90 %, trục giữa).
 - Cỡ trong cảnh (tham khảo, code đặt): cao ≈ 4–5 m, gấp ≈ 2 lần nhân vật (ô so cỡ trên ảnh duyệt).
+- **Sửa 2026-11-13 (sau chốt)**: đổi tên `lo-dan-trai.png` ↔ `lo-dan-phai.png`. Quy ước của luồng dựng (`mv_gen.py`):
+  ảnh `trai` = nhìn từ bên trái vật, **mặt trước quay sang TRÁI ảnh**; câu lệnh lò đan đã viết ngược (cửa lò ở mép phải
+  ảnh `trai`). Ảnh không đổi, chỉ đổi tên; `screens/LoDan-bo-anh.png` vẫn ghi nhãn cũ.
 - File: `models/anh/lo-dan-truoc.png`, `-trai.png`, `-sau.png`, `-phai.png`, `-cheo.png` · `screens/LoDan-bo-anh.png` ·
   `source/LoDan-bo-anh.dc.html`, `source/canvas.json` · `models/LICENSES.md`.
 - Luật: không chạm. Việc tiếp (VS Code): `/tai-nguyen cong-trinh lo-dan` → `design/models/lo-dan.glb` (≤ 20 000 tam giác,
