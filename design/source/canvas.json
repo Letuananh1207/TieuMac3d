@@ -586,6 +586,36 @@
       "y": 32488,
       "w": 1240,
       "h": 420
+    },
+    "Nhac-doc-ngoi.dc.html": {
+      "x": 0,
+      "y": 33712,
+      "w": 390,
+      "h": 844
+    },
+    "Nhac-doc-dang-phat.dc.html": {
+      "x": 470,
+      "y": 33712,
+      "w": 390,
+      "h": 844
+    },
+    "Nhac-doc-danh-sach.dc.html": {
+      "x": 940,
+      "y": 33712,
+      "w": 390,
+      "h": 844
+    },
+    "Nhac-ngang.dc.html": {
+      "x": 1410,
+      "y": 33712,
+      "w": 844,
+      "h": 390
+    },
+    "Nhac-trang-thai.dc.html": {
+      "x": 1410,
+      "y": 34182,
+      "w": 1300,
+      "h": 520
     }
   },
   "order": [
@@ -677,7 +707,12 @@
     "DocSach-doc.dc.html",
     "DocSach-ngang.dc.html",
     "NutNgoi-doc.dc.html",
-    "NutNgoi-trang-thai.dc.html"
+    "NutNgoi-trang-thai.dc.html",
+    "Nhac-doc-ngoi.dc.html",
+    "Nhac-doc-dang-phat.dc.html",
+    "Nhac-doc-danh-sach.dc.html",
+    "Nhac-ngang.dc.html",
+    "Nhac-trang-thai.dc.html"
   ],
   "notes": {
     "cach-dung": {
@@ -941,6 +976,21 @@
       "fill": "teal",
       "size": "s",
       "text": "Phiếu 2026-11-13-muon-sach + 2026-11-13-nut-ngoi.\n• Danh mục: kệ gỗ 2 tầng × 3 cuốn; bìa cuốn soạn xong màu đặc (一, 二 + \"简体\"), cuốn chưa soạn nét đứt + \"Đang biên soạn\" (chạm → thẻ báo); đang mượn → viên vàng \"Đang mượn\", cuốn khác mờ + lời nhắc trả trước.\n• Chọn → thẻ xác nhận đáy \"Mượn «…»?\" → Mượn → đóng, thủ thư nói câu giao sách (khung thoại có sẵn).\n• Sổ từ: trang giấy ngà + dải son đánh dấu; chữ lớn (1 chữ 104 · 3–4 chữ 64 · hai phần 52), pinyin, nghĩa, ví dụ; thanh kéo tới trang; \"Trang trước\" / \"Trang sau\" (tắt ở hai đầu); vuốt ngang cũng lật.\n• \"Đọc sách\": thẻ kính sương 52 có bìa mini + \"HSK 1\", ngay trên cụm nút hành động.\n• Nút \"Ngồi\" / \"Vào bàn\" / \"Ngồi xem\": họ \"Nói chuyện\", biểu tượng người ngồi trên bồ đoàn; không đè nút \"Nói chuyện\"."
+    },
+    "tieu-de-nhac": {
+      "x": 0,
+      "y": 33452,
+      "text": "Nghe nhạc ở bàn trà Phẩm Minh Các 品茗閣",
+      "kind": "title1",
+      "maxW": 2710
+    },
+    "nhac-ghi-chu": {
+      "x": 2334,
+      "y": 33712,
+      "w": 400,
+      "fill": "teal",
+      "size": "s",
+      "text": "Phiếu 2026-11-13-rap-nhac-on-tap — chỉ phần nghe nhạc (rạp phim đã xoá; ôn tập chờ phiếu \"Ngồi ôn\").\n• Ngồi bàn trà tầng 2 → nút nổi \"Nghe nhạc\" trên bàn.\n• Trình phát: thẻ kính sương đáy màn — đĩa nhạc (chữ đầu tên bài), tên Hán + Việt, thanh thời gian, Lặp · Trước · Phát/Dừng · Sau · Danh sách.\n• Đứng dậy (joystick / nút ngồi) → nhạc tắt, trình phát đóng (người dùng chọn).\n• 6 tên bài là cổ khúc giữ chỗ — file nhạc chưa có (đóng gói offline, cần nguồn có giấy phép)."
     }
   },
   "designSystems": []

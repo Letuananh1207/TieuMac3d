@@ -3,6 +3,22 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-13.31 — Nghe nhạc ở bàn trà Phẩm Minh Các
+
+- Loại: giao diện · chuỗi · luồng/luật (đề xuất).
+- Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-13-rap-nhac-on-tap.md` — **chỉ phần 2 (nghe nhạc)**. Phần 1 rạp phim **bỏ** (đã xoá,
+  mục .30); phần 3 phòng ôn tập **chuyển** sang phiếu "Ngồi ôn" (kế hoạch `docs/tasks/2026-11-13-ngoi-on.md`, chờ duyệt).
+- Màn / thành phần: nút nổi "Nghe nhạc" khi ngồi bàn trà · trình phát (đang phát, danh sách mở, ngang tạm dừng) · bảng trạng
+  thái (mới mở, nút lặp 3 chế độ, viên thu nhỏ). Đặc tả: `docs/screen_specs.md` mục mới.
+- Đặc tả "Nút nổi Ngồi" (.28): bỏ nhãn "Ngồi xem" + `R-RAP-1` (rạp đã xoá); `l10n/vi.arb` bỏ `seatWatch`.
+- Token: không thêm. Chuỗi mới: `music*`.
+- **Đề xuất luật** (phiên code hỏi người dùng rồi ghi sổ) — R mới "nghe nhạc ở trà lâu": đang ngồi bàn trà tầng 2 Phẩm Minh
+  Các → nút nổi "Nghe nhạc" → trình phát; nhạc đóng gói offline; mới mở tạm dừng ở bài nghe dở; lặp mặc định cả danh sách;
+  **đứng dậy → nhạc tắt, trình phát đóng**. Ví dụ: ngồi bàn trà, phát "Cao sơn lưu thuỷ", kéo joystick → đứng dậy, nhạc tắt.
+- Luật bị chạm: `R-VA-4`, `R-NGOI-1`, `R-DIEU-7`, `R-MAN-1`.
+- File: `source/Nhac-*.dc.html` (5), `source/canvas.json` · `l10n/vi.arb` · `docs/screen_specs.md`, `docs/components.md`.
+- Ảnh: chưa có ảnh (nền giữ chỗ vẽ tay).
+
 ## 2026-11-13.28 — Tàng Thư Các: danh mục sách + sổ từ HSK + nút "Đọc sách" · nút nổi "Ngồi"
 
 - Loại: giao diện · token · chuỗi.

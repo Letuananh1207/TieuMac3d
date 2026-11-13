@@ -89,3 +89,12 @@ Một chất liệu: kính mờ `frost*` + viền `frost-line` / `frost-outline`
 | Thanh kéo tới trang + cặp nút lật trang | `SoTu-*` | jade |
 | Thẻ "Đọc sách" (bìa mini + cấp) | `DocSach-*` | frost, jade |
 | Nút nổi "Ngồi" / "Vào bàn" / "Ngồi xem" + vòng sáng chỗ ngồi | `NutNgoi-*`, `DocSach-*` | jade, aura-light, gold |
+
+## Thêm ở 2026-11-13.31
+
+| Thành phần | Artboard | Token |
+|---|---|---|
+| Trình phát nhạc (đĩa, tên, thanh thời gian, 5 nút) | `Nhac-*` | frost, jade, map-paper, gold |
+| Danh sách bài (dòng đang phát) | `Nhac-doc-danh-sach` | frost, jade |
+| Viên "đang phát" thu nhỏ | `Nhac-trang-thai` | frost, jade |
+| Nút nổi "Nghe nhạc" | `Nhac-doc-ngoi` | jade |

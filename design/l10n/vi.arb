@@ -464,6 +464,47 @@
   "bookSlider": "Kéo để tới trang",
   "bookKind": "Sổ từ · 简体",
   "seatSit": "Ngồi",
-  "seatWatch": "Ngồi xem",
-  "seatTable": "Vào bàn"
+  "seatTable": "Vào bàn",
+  "musicOpen": "Nghe nhạc",
+  "musicSeatChip": "Bàn trà · Phẩm Minh Các",
+  "musicTitle": "Nhạc của trà lâu",
+  "musicCount": "{n} bài · không cần mạng",
+  "@musicCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "musicPlaying": "Đang phát",
+  "musicPaused": "Tạm dừng",
+  "musicTrackOf": "bài {i} / {n}",
+  "@musicTrackOf": {
+    "placeholders": {
+      "i": {
+        "type": "int"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "musicPlay": "Phát",
+  "musicPause": "Tạm dừng",
+  "musicPrev": "Bài trước",
+  "musicNext": "Bài sau",
+  "musicList": "Danh sách bài",
+  "musicLoopAll": "Lặp cả danh sách",
+  "musicLoopOne": "Lặp một bài",
+  "musicLoopOff": "Không lặp",
+  "musicMinimize": "Thu nhỏ trình phát",
+  "musicSeek": "Vị trí trong bài",
+  "musicMiniLabel": "Mở trình phát — đang phát {track}",
+  "@musicMiniLabel": {
+    "placeholders": {
+      "track": {
+        "type": "String"
+      }
+    }
+  }
 }

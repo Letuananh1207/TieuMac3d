@@ -389,9 +389,33 @@ Mẫu một mục:
 
 - Họ nút "Nói chuyện": viên thuốc `jade` 46, biểu tượng người ngồi trên bồ đoàn 20 (đầu tròn, thân, tay đặt gối, đệm elip;
   nét 2) + chữ 15/700, mũi nhọn chỉ xuống chỗ ngồi; bám trên chỗ ngồi gần nhất trong tầm (`R-NGOI-1`).
-- Nhãn: bàn chơi **"Vào bàn"**, bồ đoàn rạp **"Ngồi xem"**, án thư / bàn trà **"Ngồi"**.
+- Nhãn: bàn chơi **"Vào bàn"**, án thư / bàn trà **"Ngồi"**.
 - Vòng sáng dưới chỗ ngồi (vật 3D): elip phẳng ≈ ∅1,2 m, lõi `aura-light` mờ ra ngoài, viền `gold` .75, thở nhẹ.
 - Cùng lúc với "Nói chuyện": mỗi nút bám vật của nó; hai khung chồng nhau → nút Ngồi dịch xuống / sang tới khi cách ≥ 8 px
   (không đè); "Nói chuyện" giữ chỗ trên đầu NPC.
-- Chuỗi: `seatSit`, `seatWatch`, `seatTable`. Luật: `R-NGOI-1`, `R-DIEU-7`, `R-GIAO-1`, `R-RAP-1`, `R-VA-4`, `R-MAN-1`.
+- Chuỗi: `seatSit`, `seatTable`. Luật: `R-NGOI-1`, `R-DIEU-7`, `R-GIAO-1`, `R-VA-4`, `R-MAN-1`. (Nhãn "Ngồi xem" trong
+  `NutNgoi-trang-thai` đã bỏ cùng rạp phim — mục 2026-11-13.30.)
 - Ảnh nền giữ chỗ: `screens/Canh-thu-vien-trong.png`, `screens/Ky-van-uyen-toan-canh.png` (bản cũ). Màn ghép chưa có ảnh.
+
+## Nghe nhạc ở bàn trà Phẩm Minh Các (HUD) · artboard `Nhac-doc-ngoi.dc.html`, `Nhac-doc-dang-phat.dc.html`, `Nhac-doc-danh-sach.dc.html`, `Nhac-ngang.dc.html`, `Nhac-trang-thai.dc.html` · từ mục 2026-11-13.31
+
+- Mở khi: đang **ngồi bàn trà** tầng 2 trà lâu (`R-VA-4`) → nút nổi **"Nghe nhạc"** (họ "Nói chuyện": viên thuốc `jade` 46,
+  biểu tượng nốt nhạc 20, mũi nhọn xuống bàn, nhãn kính sương "Bàn trà · Phẩm Minh Các 品茗閣") → bấm → trình phát mở.
+- **Trình phát**: thẻ kính sương .9 bo 18 đáy màn (dọc: trái / phải 12, dưới 12 + safe; ngang: cột phải 330, phải safe + 12),
+  đệm 14:
+  - hàng đầu: đĩa nhạc 56 (lõi `map-paper`, vành `jade`, chỉ vàng, chữ Hán đầu tên bài) · tên Hán 18 Noto Serif SC `jade` +
+    "Đang phát" / "Tạm dừng" 12/700 `jade` · tên Việt 15/700 (một dòng, cắt …) · "loại nhạc · bài i / n" 12 · nút ⌄ 44 (thu nhỏ);
+  - thanh thời gian (rãnh 4, đã phát `jade`, núm 20) + "m:ss" hai đầu 11/700;
+  - hàng nút: Lặp 44 · Bài trước 44 · **Phát / Dừng** tròn 60 `jade` · Bài sau 44 · Danh sách 44. Nút bật (lặp, danh sách
+    đang mở): nền `jade` 12 % + viền `jade` 1,5.
+- Nút lặp bấm xoay vòng: lặp cả danh sách (mặc định) → lặp một bài (biểu tượng có số 1) → không lặp (hết bài cuối dừng).
+- **Danh sách**: thẻ kính sương mở phía trên trình phát, cảnh tối 18 %: tiêu đề "Nhạc của trà lâu" 15/700 + "n bài · không
+  cần mạng" 12; mỗi dòng ≥ 52: số thứ tự (bài đang phát: nốt nhạc `jade` + nền `jade` 10 % + viền) · tên Hán 15 + tên Việt
+  14/700 · loại 12 · thời lượng 12/700. Chạm dòng → phát bài đó.
+- Mới mở: bài nghe dở lần trước (hoặc bài 1), tạm dừng — WebView cần một lần chạm mới phát tiếng.
+- **Thu nhỏ** (⌄): viên kính sương 44 góc trên trái (dưới safe area): đĩa 36 + tên bài + nút dừng 32; chạm → mở lại.
+- **Đứng dậy** (joystick / nút ngồi) → nhạc tắt, trình phát đóng (người dùng chọn — đề xuất luật).
+- Dữ liệu: 6 cổ khúc giữ chỗ (高山流水, 梅花三弄, 平沙落雁, 雨打芭蕉, 春江花月夜, 竹林清風) — file nhạc chưa có; đóng gói
+  offline, cần bản thu có giấy phép.
+- Chuỗi: `music*`. Luật: `R-VA-4`, `R-NGOI-1`, `R-DIEU-7`, `R-MAN-1`; luật mới đề xuất (CHANGELOG 2026-11-13.31).
+- Ảnh: nền giữ chỗ vẽ tay (chưa có ảnh chụp tầng 2 trà lâu); màn ghép chưa có ảnh.

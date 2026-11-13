@@ -1,5 +1,6 @@
 # Phiếu: Rạp phim (chọn phim + điều khiển) · Phòng nghe nhạc · Phòng ôn tập
 - Trạng thái: chờ thiết kế
+- Đã vẽ: 2026-11-13.31 (chỉ phần 2 nghe nhạc; phần 1 rạp phim bỏ — đã xoá .30; phần 3 ôn tập chuyển sang phiếu "Ngồi ôn")
 - Đợi bởi: kế hoạch `docs/tasks/2026-11-13-rap-phim-nghe-nhac-on-tap.md` (đợt 2). Đợt 1 đã code: rạp phim 影戲臺 ở trục
   bắc quảng trường (0; −12), ngồi bồ đoàn bằng nút Ngồi thiền có sẵn → phim tự phát trên màn 3D (R-RAP-1..3).
 
