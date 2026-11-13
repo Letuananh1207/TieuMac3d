@@ -11,6 +11,7 @@ Phiên thiết kế đọc hồ sơ ở đây trước khi dựng khu / kiểu v
 | [cong-trinh-noi-bat.md](cong-trinh-noi-bat.md) | 3 công trình làm model AI: Chưởng Môn Điện (yết sơn hiên kép), Cổng Sơn Môn (3 gian 4 trụ 3 mái), lò đan đồng; cách làm ảnh 4 góc cho Hunyuan | Nội Môn, Sơn Môn, Luyện Đan Phòng | đã chọn hướng (vàng · lò đan · 3 mái) |
 | [tien-ich-giao-luu.md](tien-ich-giao-luu.md) | Tiện ích giao lưu: trà lâu 2 tầng mở, hí đài nền cao + sân khán giả, tàng thư các dài thấp ngói đen + ao, phố chợ cửa hàng 2 tầng | 1 Ngoại Môn, 2 Sơn Môn, Thị Tập | đã chọn hướng A · đã chuyển bản mẫu (design 2026-11-13.13) |
 | [rung-truc.md](rung-truc.md) | Rừng trúc — vùng 1 hành trình (bộ thủ): trúc mao dày, lối đá, suối, đình trúc, bia bộ thủ, bộ thủ "sống" trong cảnh | vùng 1 (cảnh riêng) | đã chọn hướng (A + thác; bia + vật sống) |
+| [thu-thu.md](thu-thu.md) | NPC thủ thư Điển Thư 典書: nữ văn sĩ trẻ, bối tử thanh lục viền lục đậm, búi cao trâm vàng, thẻ bài 典 | Tàng Thư Các (tầng 1) | đã chọn hướng A (Claude, một bước) · đã chuyển phiếu ảnh |
 
 Gợi ý thứ tự (theo `design/scene/tong_mon.md`): Chưởng Môn Điện · Tàng Kinh Các (tháp / lầu) · Thiên Bậc (bậc đá
 núi) · Hậu Sơn (thác, động bế quan) · trang phục theo bậc đệ tử · không khí tiên hiệp (sương, mây, ánh sáng).
