@@ -2,7 +2,8 @@
  * Trà lâu 茶樓 (`tra-lau`, bản mẫu design/source/TienIch-kien-truc.dc.html): hai tầng, 3 gian. Tầng 1 mở hết mặt
  * tiền (chỉ cột) — đi vào ngồi được: 3 bàn trà + đôn, quầy trà sát tường sau. Lên được tầng 2 (R-VA-3) bằng thang
  * thẳng ngoài trời dọc đầu hồi phải (`cau_thang.ts`, như Tàng Thư Các — L-6); tầng 2 **mở bốn phía** — chỉ cột +
- * lan can gỗ thấp — 6 bàn trà thấp, mỗi bàn 2 bồ đoàn ngồi được (R-VA-4). Hiên lửng (腰檐) giữa hai tầng; mái yết sơn;
+ * lan can gỗ thấp — 18 chỗ ngồi được (R-VA-4): 2 sập trà sát tường sau, 4 ghế đơn sát lan can quay ra ngoài, 1 bàn dài
+ * tụ hội 6 chỗ, 2 bàn trà đôi; dải phía đông (lối từ cầu nối thang) để trống. Hiên lửng (腰檐) giữa hai tầng; mái yết sơn;
  * biển treo dưới xà mặt tiền tầng 2; đèn lồng góc hiên. Cờ 茶 là `props` riêng.
  */
 import type * as THREE from 'three';
@@ -10,12 +11,12 @@ import type { BuildingSpec } from '../spec';
 import { addBeamBand, addLanterns, addSign, hk, type Style } from './chi_tiet';
 import { addStairs, gapForBridge, stairLayout, type StairLayout } from './cau_thang';
 import { columnXs } from './dien';
-import { teaTable } from './do_pho';
+import { longTeaTable, soloSeat, teaBed, teaTable, type LocalSeat } from './do_pho';
 import { box, column } from './hinh';
 import { upperRail } from './lau_sach';
 import { gableHipRoof, skirt } from './mai';
 import type { LocalBox } from './noi_that';
-import { frontRamp, type Shell } from './vao_trong';
+import { frontRamp, type LocalPad, type Shell } from './vao_trong';
 
 /** Nền thấp (m) — một bậc; dốc trước mặt tiền dài `RAMP` để bước lên. */
 const PLAT = 0.3;
@@ -28,13 +29,22 @@ const PLAT_OVER = 0.3;
 const SLAB_OVER = 0.2;
 const EAVE_OVER = 1.1;
 const EAVE_IN = 0.15;
-/** Bàn trà thấp tầng 2 (ngồi bồ đoàn): cạnh, cao; bồ đoàn cách tâm bàn; hai hàng (z); bước giữa các bàn (x) */
+/** Bàn trà đôi tầng 2 (ngồi bồ đoàn): cạnh, cao; bồ đoàn cách tâm bàn */
 const LOW_W = 1;
 const LOW_H = 0.4;
 const SEAT_GAP = 0.75;
-const LOW_ROWS = [-2.3, 2.1];
-const LOW_STEP = 3.6;
-const LOW_PER_ROW = 3;
+/**
+ * Bày tầng 2 (R-VA-4), toạ độ tính từ mép lòng sàn (`iw` × `id`): x từ mép tây, z từ mép sau (sập) / mép trước (ghế
+ * mặt trước); bàn dài, bàn trà đôi: x bàn dài từ tâm, bàn đôi từ mép tây. Mép đông để trống: cầu nối thang vào ở góc sau – đông.
+ */
+const BEDS_X = [3.2, 7.2];
+const BED_FROM_BACK = 0.9;
+const SOLO_IN = 1.25;
+const SOLO_WEST_Z = [-1.4, 1.6];
+const SOLO_FRONT_X = [4.5, 10.3];
+const LONG_AT = { x: 2.6, z: -1.6 };
+const DOUBLE_X = [3.3, 7.3];
+const DOUBLE_Z = 1.2;
 const CUSHION = '#8a3b2c';
 const POT = '#5a3a2a';
 const CUP = '#f3e6c8';
@@ -112,15 +122,35 @@ export function traLau(g: THREE.Group, b: BuildingSpec, style: Style, fade: THRE
   upperRail(fadeLow, -cx, -cz, -cx, cz, yf);
   upperRail(fadeLow, cx, stairs.zTop, cx, cz, yf); // hồi phải: chừa lối ra cầu nối
 
-  // 6 bàn trà thấp (2 hàng × 3, nửa tây sàn), mỗi bàn 2 bồ đoàn quay mặt vào bàn (R-VA-4)
-  const seats: NonNullable<Shell['seats']> = [];
-  for (const z of LOW_ROWS) {
-    for (let i = 0; i < LOW_PER_ROW; i++) {
-      const x = -w / 2 + 2.2 + i * LOW_STEP;
-      lowTeaTable(fadeLow, x, z, yf, style.timber);
-      boxes.push({ x, z, w: LOW_W, d: LOW_W, minY: yf - 0.4 });
-      seats.push({ x, z: z - SEAT_GAP, y: yf, rotY: 0 }, { x, z: z + SEAT_GAP, y: yf, rotY: Math.PI });
-    }
+  // tầng 2 bày 4 kiểu chỗ ngồi (R-VA-4) — vật cản chỉ chặn người ở tầng 2
+  const seats: LocalSeat[] = [];
+  const bedTops: LocalPad[] = [];
+  const up = yf - 0.4;
+  const west = -iw / 2;
+  for (const bx of BEDS_X) {
+    const bed = teaBed(fadeLow, west + bx, -id / 2 + BED_FROM_BACK, yf);
+    boxes.push({ ...bed.box, minY: up });
+    bedTops.push({ ...bed.top, upper: true });
+    seats.push(...bed.seats);
+  }
+  for (const z of SOLO_WEST_Z) {
+    const solo = soloSeat(fadeLow, west + SOLO_IN, z, yf, -Math.PI / 2);
+    boxes.push({ ...solo.box, minY: up });
+    seats.push(solo.seat);
+  }
+  for (const x of SOLO_FRONT_X) {
+    const solo = soloSeat(fadeLow, west + x, id / 2 - SOLO_IN, yf, 0);
+    boxes.push({ ...solo.box, minY: up });
+    seats.push(solo.seat);
+  }
+  const long = longTeaTable(fadeLow, LONG_AT.x, LONG_AT.z, yf);
+  boxes.push({ ...long.box, minY: up });
+  seats.push(...long.seats);
+  for (const dx of DOUBLE_X) {
+    const x = west + dx;
+    lowTeaTable(fadeLow, x, DOUBLE_Z, yf, style.timber);
+    boxes.push({ x, z: DOUBLE_Z, w: LOW_W, d: LOW_W, minY: up });
+    seats.push({ x, z: DOUBLE_Z - SEAT_GAP, y: yf, rotY: 0 }, { x, z: DOUBLE_Z + SEAT_GAP, y: yf, rotY: Math.PI });
   }
   // lan can mặt tiền tầng 2 (hồi + sau trùng tường tầng 1, đã chặn) — chỉ chặn người ở tầng 2
   boxes.push({ x: 0, z: cz, w, d: 0.3, minY: yf - 0.4 }, ...stairs.boxes);
@@ -142,6 +172,7 @@ export function traLau(g: THREE.Group, b: BuildingSpec, style: Style, fade: THRE
       frontRamp(w + 0.6, (d + 0.6) / 2, RAMP, PLAT),
       ...stairs.pads,
       { x: 0, z: 0, w: iw, d: id, y: yf, upper: true },
+      ...bedTops,
     ],
     floor: { x: 0, z: 0, w: w - 0.6, d: d - 0.6 },
     upperY: yf - 1,

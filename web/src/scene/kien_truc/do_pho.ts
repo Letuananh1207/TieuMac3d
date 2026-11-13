@@ -106,3 +106,85 @@ export function gameSign(g: THREE.Group, style: Style, han: string, name: string
   g.add(front, back);
   return { x: 0, z: 0, w: 1.8, d: 0.3 };
 }
+
+/* ---------- chỗ ngồi tầng 2 trà lâu (R-VA-4): ngồi bệt (xếp bằng) — sập trà, ghế đơn sát lan can, bàn dài ---------- */
+
+const CUSHION = '#8a3b2c';
+const MAT = '#c9b48a';
+
+/** Một chỗ ngồi: toạ độ nhóm, `y` mặt ngồi, `rotY` hướng nhìn (0 = +z). */
+export interface LocalSeat {
+  x: number;
+  z: number;
+  y: number;
+  rotY: number;
+}
+
+/** Cao mặt sập trà (m) — chỗ ngồi trên sập cao hơn sàn chừng này. */
+export const TEA_BED_H = 0.35;
+const BED_W = 2;
+const BED_D = 1;
+/** chỗ ngồi trên sập cách tâm sập (dọc x) */
+const BED_SEAT = 0.6;
+
+/**
+ * Sập trà 榻 tâm (x, z) trên sàn `y0`, mặt mở nhìn +z: sập gỗ thấp 2 × 1 m có đệm, tựa ba mặt (sau + hai đầu), kỷ trà
+ * thấp ở giữa (ấm + 2 chén), 2 nệm ngồi hai đầu quay mặt vào nhau. Trả về vật cản (cả sập — không bước lên), mặt sập
+ * (tấm đi được để người ngồi trên sập đứng đúng cao) và 2 chỗ ngồi.
+ */
+export function teaBed(
+  g: THREE.Group,
+  x: number,
+  z: number,
+  y0: number,
+): { box: LocalBox; top: { x: number; z: number; w: number; d: number; y: number }; seats: LocalSeat[] } {
+  const top = y0 + TEA_BED_H;
+  g.add(box(BED_W, TEA_BED_H - 0.04, BED_D, TABLE, x, y0 + (TEA_BED_H - 0.04) / 2, z));
+  g.add(box(BED_W - 0.1, 0.04, BED_D - 0.1, MAT, x, top - 0.02, z));
+  g.add(box(BED_W, 0.4, 0.08, TABLE, x, top + 0.2, z - BED_D / 2 + 0.04)); // tựa sau
+  for (const s of [-1, 1]) g.add(box(0.08, 0.28, BED_D, TABLE, x + s * (BED_W / 2 - 0.04), top + 0.14, z)); // tựa hai đầu
+  // kỷ trà
+  g.add(box(0.5, 0.04, 0.45, TABLE, x, top + 0.2, z));
+  for (const s of [-1, 1]) g.add(box(0.06, 0.18, 0.4, TABLE, x + s * 0.2, top + 0.09, z));
+  g.add(column(0.08, 0.12, POT, x - 0.08, top + 0.22, z, 8));
+  for (const dx of [0.1, 0.18]) g.add(column(0.035, 0.05, CUP, x + dx, top + 0.22, z + 0.08, 6));
+  const seats: LocalSeat[] = [];
+  for (const s of [-1, 1]) {
+    g.add(column(0.26, 0.06, CUSHION, x + s * BED_SEAT, top, z));
+    seats.push({ x: x + s * BED_SEAT, z, y: top, rotY: (-s * Math.PI) / 2 }); // quay vào kỷ
+  }
+  return { box: { x, z, w: BED_W, d: BED_D }, top: { x, z, w: BED_W, d: BED_D, y: top }, seats };
+}
+
+/**
+ * Ghế đơn sát lan can tâm bồ đoàn (x, z) trên sàn `y0`, người ngồi nhìn hướng `rotY` (bội 90°) — ra ngoài: bồ đoàn +
+ * bàn nhỏ 0,55 × 0,55 cao 0,35 phía trước (giữa người và lan can), một chén trà. Trả về vật cản (bàn) và chỗ ngồi.
+ */
+export function soloSeat(g: THREE.Group, x: number, z: number, y0: number, rotY: number): { box: LocalBox; seat: LocalSeat } {
+  const tx = x + Math.round(Math.sin(rotY)) * 0.6;
+  const tz = z + Math.round(Math.cos(rotY)) * 0.6;
+  g.add(box(0.55, 0.05, 0.55, TABLE, tx, y0 + 0.325, tz));
+  g.add(box(0.45, 0.3, 0.45, TABLE, tx, y0 + 0.15, tz));
+  g.add(column(0.04, 0.06, CUP, tx, y0 + 0.35, tz, 6));
+  g.add(column(0.32, 0.12, CUSHION, x, y0, z));
+  return { box: { x: tx, z: tz, w: 0.55, d: 0.55 }, seat: { x, z, y: y0, rotY } };
+}
+
+/** Bàn dài tụ hội tâm (x, z) trên sàn `y0`: 3 × 0,9 m cao 0,4 (dọc x), 2 ấm, 6 chén, 3 bồ đoàn mỗi bên quay vào bàn. */
+export function longTeaTable(g: THREE.Group, x: number, z: number, y0: number): { box: LocalBox; seats: LocalSeat[] } {
+  const w = 3;
+  const d = 0.9;
+  const h = 0.4;
+  g.add(box(w, 0.06, d, TABLE, x, y0 + h - 0.03, z));
+  for (const sx of [-1, 0, 1]) for (const sz of [-1, 1]) g.add(box(0.07, h - 0.06, 0.07, TABLE, x + sx * (w / 2 - 0.1), y0 + (h - 0.06) / 2, z + sz * (d / 2 - 0.1)));
+  for (const dx of [-0.5, 0.5]) g.add(column(0.1, 0.15, POT, x + dx, y0 + h, z, 8));
+  const seats: LocalSeat[] = [];
+  for (const dx of [-1, 0, 1]) {
+    for (const s of [-1, 1]) {
+      g.add(column(0.05, 0.06, CUP, x + dx, y0 + h, z + s * 0.28, 6));
+      g.add(column(0.32, 0.12, CUSHION, x + dx, y0, z + s * 0.8));
+      seats.push({ x: x + dx, z: z + s * 0.8, y: y0, rotY: s < 0 ? 0 : Math.PI });
+    }
+  }
+  return { box: { x, z, w, d }, seats };
+}

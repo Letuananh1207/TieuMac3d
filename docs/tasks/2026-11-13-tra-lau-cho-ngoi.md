@@ -1,7 +1,7 @@
 # Trà lâu: thêm kiểu chỗ ngồi
 - Yêu cầu: "Ở trà lâu thì chỉ có bàn ghế ngồi 2 người nhưng tôi muốn có các sự lựa chọn khác" → chọn: **sập trà (kỷ trà)**,
   **ghế đơn sát lan can**, **bàn dài tụ hội**
-- Loại: sửa cảnh + hành vi · Cỡ: vừa · Trạng thái: chờ duyệt (làm sau `2026-11-13-nut-ngoi-ghe` — dùng nút nổi)
+- Loại: sửa cảnh + hành vi · Cỡ: vừa · Trạng thái: xong (2026-11-13, phiên đám mây)
 
 ## Phạm vi
 **Sẽ sửa**
@@ -20,11 +20,20 @@
 **Không đụng** tầng 1, quầy trà (tiểu nhị — kế hoạch NPC).
 
 ## Nhiệm vụ
-- [ ] 1. Sổ R-VA-4 → online → mark-synced.
-- [ ] 2. Test đỏ bố cục chỗ ngồi tầng 2.
-- [ ] 3. Đồ gỗ mới `do_pho.ts`.
-- [ ] 4. Bày tầng 2 `tra_lau.ts` — test xanh.
-- [ ] 5. Build + Canvas 3D (chụp tầng 2) + ngân sách.
+- [x] 1. Sổ R-VA-4 → online → mark-synced.
+- [x] 2. Test đỏ bố cục chỗ ngồi tầng 2.
+- [x] 3. Đồ gỗ mới `do_pho.ts`.
+- [x] 4. Bày tầng 2 `tra_lau.ts` — test xanh.
+- [x] 5. Build + Canvas 3D (chụp tầng 2) + ngân sách.
 
 ## Kiểm tra cuối
 dart tool/check.dart --changed · cd web && npx tsc --noEmit && npm test && npm run build · dart tool/rule_trace.dart
+
+## Kết quả
+- Tầng 2 Phẩm Minh Các: 2 sập trà sát tường sau (chỗ ngồi trên sập cao 0,35 — mặt sập là tấm `upper`, cả sập là vật
+  cản; đứng dậy → bị đẩy ra phía trước sập), 2 ghế đơn hồi tây + 2 mặt trước quay ra ngoài, bàn dài 6 chỗ, 2 bàn trà
+  đôi = 18 chỗ. Dải phía đông (cầu nối thang → mặt trước) trống.
+- Test `src/traLau.test.ts`: 18 chỗ / 4 trên sập / 4 quay ra ngoài; loang từ cầu nối tới được mọi chỗ và nút Ngồi đúng
+  chỗ; ngồi trên sập rồi đi → xuống sàn.
+- Canvas 3D `?view=tren`: 111 draw call · 130.672 tam giác (≤ 150 / 150k). Góc tầng 2 trà lâu: 53 draw call · 114k.
+- Cần thử trên máy: ngồi trên sập (dáng xếp bằng có lơ lửng / chìm vào đệm không), camera khi ngồi ghế đơn nhìn ra núi.
