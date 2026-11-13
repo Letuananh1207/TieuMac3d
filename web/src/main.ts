@@ -133,7 +133,13 @@ async function boot(): Promise<void> {
   const joystick = new Joystick(el('joy'), el('knob'), el('joyGhost'));
   const picker = new GroundPicker(camera, world.ground);
   const hideHint = createHint();
-  const keyboard = new Keyboard(hideHint);
+  // Space nhảy, F chào, C ngồi thiền (R-DIEU-6, R-DIEU-7); đang học / màn tải thì bỏ qua
+  const keyboard = new Keyboard(hideHint, (a) => {
+    if (paused || loading.active) return;
+    if (a === 'jump') player.jump();
+    else if (a === 'bow') player.bow();
+    else player.toggleSit();
+  });
   attachPointerInput(canvas, {
     joystick,
     orbit,

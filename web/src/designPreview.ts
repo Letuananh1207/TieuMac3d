@@ -11,6 +11,8 @@ import { OrbitCamera } from './input/orbitCamera';
 import { createPlayerCharacter } from './player/playerCharacter';
 import { createDiscipleCharacter } from './player/discipleCharacter';
 import { placeNpcs } from './player/npc';
+import type { CharacterState } from './player/character';
+import { RUN_SPEED, WALK_SPEED } from './player/controller';
 import { SCENE, SCENE_FILE } from './scene/loadSpec';
 import { viewDistance } from './scene/farMountains';
 import { mergeStatic } from './scene/merge';
@@ -232,12 +234,24 @@ async function boot(): Promise<void> {
   walkBox.checked = walkSpeed > 0;
   walkBox.addEventListener('change', () => (walkSpeed = walkBox.checked ? 1 : 0));
   const phase = Number(params.get('pha'));
-  if (Number.isFinite(phase) && phase > 0) character.animate(phase / 10, 1);
+  // ?dang=chay|nhay|ngoi|chao|vuon|nhin — dựng sẵn một dáng để chụp (R-DIEU-5…8)
+  const pose = params.get('dang');
+  const poseState: CharacterState = { mps: 0, air: false, vy: 0, sit: 0, bow: 0, idle: 0 };
+  if (pose === 'chay') poseState.mps = RUN_SPEED;
+  else if (pose === 'nhay') poseState.air = true;
+  else if (pose === 'ngoi') poseState.sit = 1;
+  else if (pose === 'chao') poseState.bow = 1;
+  else if (pose === 'vuon') poseState.idle = 7.25;
+  else if (pose === 'nhin') poseState.idle = 14.6;
+  /** trạng thái mỗi khung: dáng chọn sẵn, hoặc đi bộ tại chỗ (?di / ô Đi tại chỗ — tốc độ 1 = đi bộ hết tốc) */
+  const stateNow = (): CharacterState => (pose ? poseState : { ...poseState, mps: walkSpeed * WALK_SPEED });
+  if (pose) character.animate(1, poseState.mps / RUN_SPEED, poseState);
+  if (Number.isFinite(phase) && phase > 0) character.animate(phase / 10, WALK_SPEED / RUN_SPEED, { ...poseState, mps: WALK_SPEED });
   function tick(): void {
     const dt = Math.min(clock.getDelta(), 0.05);
     controls.update();
     world.update(dt, character.root.position);
-    character.animate(dt, walkSpeed);
+    character.animate(dt, stateNow().mps / RUN_SPEED, stateNow());
     for (const npc of npcSet.npcs) npc.update(dt, character.root.position);
     renderer.render(scene, camera);
     acc += dt;

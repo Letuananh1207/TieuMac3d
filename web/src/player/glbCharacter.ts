@@ -3,6 +3,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 import { autoRig, type Rig } from './autoRig';
 import type { Character } from './character';
+import { RUN_SPEED, WALK_SPEED } from './controller';
 
 /** Chiều cao nhân vật sau khi nạp (m) — bằng đệ tử khối (búi tóc ~2,1 m), thước chuẩn của cảnh. */
 export const GLB_HEIGHT = 2.1;
@@ -111,51 +112,104 @@ export async function loadGlbCharacter(url: string): Promise<Character> {
   idle?.play();
   walk?.play();
 
-  let move = 0; // 0..1, mượt theo tốc độ
+  let move = 0; // 0..1: cường độ bước (đi bộ hết tốc = 1), mượt
+  let runB = 0; // 0..1: hoà dáng chạy (R-DIEU-5)
+  let airB = 0; // 0..1: dáng nhảy (R-DIEU-6)
   let walkT = 0;
   let time = 0;
+  const mix = (a: number, b: number, t: number): number => a + (b - a) * t;
+  const ease = (x: number): number => {
+    const t = Math.min(1, Math.max(0, x));
+    return t * t * (3 - 2 * t);
+  };
   return {
     root,
     facing: body,
-    animate(dt, speed) {
-      move += (speed - move) * Math.min(1, dt * 8);
+    animate(dt, speed, state) {
+      const mps = state?.mps ?? speed * RUN_SPEED;
+      const k = Math.min(1, mps / WALK_SPEED);
+      const run = Math.min(1, Math.max(0, (mps - WALK_SPEED) / (RUN_SPEED - WALK_SPEED)));
+      move += (k - move) * Math.min(1, dt * 8);
+      runB += (run - runB) * Math.min(1, dt * 6);
+      airB += ((state?.air ? 1 : 0) - airB) * Math.min(1, dt * 14);
+      const sitB = ease(state?.sit ?? 0);
+      const bowB = ease(state?.bow ?? 0);
       if (mixer) {
-        if (walk) walk.setEffectiveWeight(idle ? move : 1).setEffectiveTimeScale(0.6 + 0.6 * move);
+        if (walk) walk.setEffectiveWeight(idle ? move : 1).setEffectiveTimeScale(0.6 + 0.6 * move + 0.6 * runB);
         if (idle) idle.setEffectiveWeight(walk ? 1 - move : 1);
         mixer.update(dt);
         return;
       }
       time += dt;
-      if (speed > 0.05) walkT += dt * 10 * speed;
+      // nhịp bước theo tốc độ thật: đi bộ ~7,5 rad/s, chạy ~14 (R-DIEU-5)
+      if (mps > 0.05) walkT += dt * (2.4 * Math.max(mps, 2.2)) * (1 - airB);
       else walkT *= 0.85;
       const step = Math.sin(walkT);
-      bob.position.y = Math.abs(step) * 0.05 * move;
-      bob.rotation.x = 0.05 * move; // hơi đổ người về trước khi đi
+      bob.position.y = Math.abs(step) * (0.05 + 0.06 * runB) * move * (1 - airB) - 0.3 * sitB;
+      bob.rotation.x = (0.05 + 0.2 * runB) * move; // đi hơi đổ người, chạy đổ hẳn về trước
       if (!rig) {
         bob.rotation.z = step * 0.03 * move;
         return;
       }
-      const still = 1 - move;
-      // đi: chân bước so le, tay vung ngược chân, hông xoay nhẹ, đầu bù lại cho thẳng
-      rig.legL.rotation.x = step * 0.55 * move;
-      rig.legR.rotation.x = -step * 0.55 * move;
-      // tay áo rộng: vung nhẹ (0,28 rad) + khép vào thân một chút khi đi cho gọn, không vung như cánh quạt
-      // tay: hơi đưa ra trước; đi thì vung trước / sau ngược chân; đứng thì khẽ đung đưa theo nhịp thở, hai tay lệch nhịp
-      rig.armL.rotation.x = -ARM_FORWARD - step * 0.34 * move + Math.sin(time * 1.3) * 0.04 * still;
-      rig.armR.rotation.x = -ARM_FORWARD + step * 0.34 * move + Math.sin(time * 1.3 + 1.7) * 0.04 * still;
-      // model AI dựng ở tư thế chữ A (dễ dựng / gắn xương); khi chơi hạ tay buông xuôi bên thân (ARM_REST) — tay trái ở
-      // +x: âm = khép vào; đi thì khép thêm chút cho gọn
-      // mở ra ngoài nhẹ ở cuối mỗi nhịp vung (tay áo rộng), đứng thì ra vào rất khẽ theo nhịp thở
+      const still = (1 - move) * (1 - sitB) * (1 - airB);
+      // động tác khi đứng lâu (R-DIEU-8): sau 6 s, mỗi 8 s một lần — vươn vai, rồi nhìn quanh
+      const idleT = state?.idle ?? 0;
+      let stretch = 0;
+      let look = 0;
+      if (idleT > 6) {
+        const c = (idleT - 6) % 8;
+        const env = c < 2.5 ? Math.sin((Math.PI * c) / 2.5) : 0;
+        if (Math.floor((idleT - 6) / 8) % 2 === 0) stretch = env;
+        else look = Math.sin((2 * Math.PI * c) / 2.5) * (c < 2.5 ? 1 : 0);
+      }
+
+      /* ---- chân ---- */
+      const amp = (0.55 + 0.35 * runB) * move;
+      let lL = step * amp;
+      let lR = -step * amp;
+      lL = mix(lL, -0.8, airB); // nhảy: gối trước co lên, chân sau duỗi
+      lR = mix(lR, 0.35, airB);
+      rig.legL.rotation.x = mix(lL, -1.45, sitB); // ngồi thiền: hai chân xếp ra trước
+      rig.legR.rotation.x = mix(lR, -1.45, sitB);
+      rig.legL.rotation.z = 0.45 * sitB;
+      rig.legR.rotation.z = -0.45 * sitB;
+
+      /* ---- tay ---- tay trái ở +x: rotation.z âm = khép vào thân */
+      const swing = (0.34 + 0.45 * runB) * move;
+      let aLx = -ARM_FORWARD - step * swing + Math.sin(time * 1.3) * 0.04 * still;
+      let aRx = -ARM_FORWARD + step * swing + Math.sin(time * 1.3 + 1.7) * 0.04 * still;
       const swayL = Math.abs(step) * 0.07 * move + (Math.sin(time * 2) * 0.5 + 0.5) * 0.03 * still;
       const swayR = Math.abs(step) * 0.07 * move + (Math.sin(time * 2 + 1.1) * 0.5 + 0.5) * 0.03 * still;
-      rig.armL.rotation.z = -(ARM_REST - swayL);
-      rig.armR.rotation.z = ARM_REST - swayR;
-      rig.hips.rotation.y = step * 0.1 * move;
-      rig.head.rotation.y = -step * 0.06 * move;
-      // đứng: thở (nhấp nhô rất nhẹ), đầu nghiêng qua lại chậm
-      rig.hips.position.y = hipY + Math.sin(time * 2) * 0.012 * still;
+      let aLz = -(ARM_REST - swayL);
+      let aRz = ARM_REST - swayR;
+      // nhảy: tay giang ra giữ thăng bằng
+      aLz = mix(aLz, 0.15, airB);
+      aRz = mix(aRz, -0.15, airB);
+      // ngồi thiền: tay đặt lên gối
+      aLx = mix(aLx, -0.75, sitB);
+      aRx = mix(aRx, -0.75, sitB);
+      aLz = mix(aLz, -(ARM_REST + 0.1), sitB);
+      aRz = mix(aRz, ARM_REST + 0.1, sitB);
+      // chắp tay chào (拱手): hai tay đưa lên trước ngực, khép vào giữa
+      aLx = mix(aLx, -1.35, bowB);
+      aRx = mix(aRx, -1.35, bowB);
+      aLz = mix(aLz, -(ARM_REST + 0.55), bowB);
+      aRz = mix(aRz, ARM_REST + 0.55, bowB);
+      // vươn vai: hai tay giơ cao
+      aLz = mix(aLz, 1.5, stretch);
+      aRz = mix(aRz, -1.5, stretch);
+      rig.armL.rotation.x = aLx;
+      rig.armR.rotation.x = aRx;
+      rig.armL.rotation.z = aLz;
+      rig.armR.rotation.z = aRz;
+
+      /* ---- thân, đầu ---- */
+      rig.hips.rotation.y = step * (0.1 + 0.08 * runB) * move;
+      rig.hips.rotation.x = 0.28 * bowB; // cúi người khi chào
+      rig.head.rotation.y = -step * 0.06 * move + look * 0.6;
+      rig.hips.position.y = hipY + Math.sin(time * 2) * 0.012 * (1 - move) * (1 - airB);
       rig.head.rotation.z = Math.sin(time * 1.1) * 0.05 * still;
-      rig.head.rotation.x = Math.sin(time * 0.7) * 0.03 * still;
+      rig.head.rotation.x = Math.sin(time * 0.7) * 0.03 * still + 0.12 * bowB - 0.25 * stretch + 0.15 * sitB;
     },
   };
 }

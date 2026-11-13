@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { SPEED } from '../player/controller';
+import { WALK_SPEED } from '../player/controller';
 
 const MIN_PITCH = 0.12;
 const MAX_PITCH = 1.2;
@@ -106,7 +106,7 @@ export class OrbitCamera {
     this.idle += dt;
     const moved = Math.hypot(dx, dz);
     if (dt <= 0 || moved < 1e-4 || this.idle < AUTO_DELAY) return;
-    const speed = Math.min(1, moved / dt / SPEED);
+    const speed = Math.min(1, moved / dt / WALK_SPEED); // đi bộ hay chạy đều xoay đủ nhanh
     // camera đứng ở hướng `yaw` tính từ nhân vật; sau lưng hướng đi (dx, dz) là hướng ngược lại
     const delta = wrap(Math.atan2(-dx, -dz) - this.yaw);
     const off = Math.abs(delta); // = góc lệch giữa hướng đi và hướng camera đang nhìn
