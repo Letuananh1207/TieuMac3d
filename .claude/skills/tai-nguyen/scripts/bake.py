@@ -289,7 +289,7 @@ LUMA = np.array([0.299, 0.587, 0.114])
 if SEM:
     from scipy import ndimage as nd
     from scipy import sparse
-    HM = {}
+    HM, HMD = {}, {}
     for k in VIEWS:
         lum = imgs[k] @ LUMA
         neck_r = int((HEAD[k][1][3] + 0.03) * IH)
@@ -300,6 +300,13 @@ if SEM:
         hm = np.isin(lab, np.flatnonzero(sizes >= float(opt('toc-manh', '0.004')) * IH * IW) + 1)
         # vệt bóng sáng trên tóc (sáng hơn ngưỡng) → lấp lỗ, không thì lủng thành mảng xám
         HM[k] = nd.binary_fill_holes(nd.binary_closing(hm, iterations=3)) & masks[k]
+        # sát mép tóc (viền bóng của lọn tóc trên má, lệch vài điểm ảnh) → không lấy làm màu da
+        HMD[k] = nd.binary_dilation(HM[k], iterations=max(2, int(float(opt('vien-toc', '0.006')) * IW)))
+        # mắt / mày / miệng (mảng tối NHỎ) chỉ lấy từ ảnh trước: ảnh góc khác chiếu lệch → bóng mờ xám cạnh mắt
+        if k != 'truoc':  # chỉ vùng mặt (trên cổ hẳn) — viền cổ áo màu đậm không phải mắt
+            feat = dark & ~HM[k]
+            feat[int((HEAD[k][1][3] - 0.02) * IH):] = False
+            HMD[k] |= nd.binary_dilation(feat, iterations=max(2, int(0.006 * IW)))
         if '--xem-vung' in args:
             Image.fromarray((HM[k] * 255).astype(np.uint8)).save(os.path.splitext(out)[0] + f'-toc-{k}.png')
     hv = np.zeros(len(V))
@@ -345,7 +352,7 @@ for f in idx:
     Nn /= np.linalg.norm(Nn, axis=1, keepdims=True) + 1e-9
     acc = np.zeros((len(P), 3), np.float32)
     wsum = np.zeros(len(P), np.float32)
-    cols, wts, labs = [], [], []
+    cols, wts, labs, labd = [], [], [], []
     for k, (dirv, fu, fd, fv) in VIEWS.items():
         w = np.clip(Nn @ dirv, 0, 1) ** MU
         if k == 'truoc' and XIEN is not None and not SEM:  # đầu: ảnh trước nhìn quá xiên (mép tóc sát mặt) chiếu trượt sang bên đầu
@@ -366,6 +373,7 @@ for f in idx:
         wts.append(w)
         if SEM:
             labs.append(HM[k][ii, jj])
+            labd.append(HMD[k][ii, jj])
     # điểm không ảnh nào thấy rõ (dưới nách, hõm, chỉ thấy rất xiên) → để trống, lát nữa loang màu từ vùng áo bên cạnh
     # trong cùng mảnh UV (trước đây lấy đại ảnh gần nhất không kiểm che khuất → dính màu tay áo / nền)
     seen = wsum >= 0.02
@@ -387,7 +395,10 @@ for f in idx:
     if SEM:
         hp = (l0 * H2[f[0]] + l1 * H2[f[1]] + l2 * H2[f[2]])[inside]  # phiếu tóc nội suy trong tam giác
         L = np.stack(labs, 1)
-        wh, wk = Ws * L, Ws * ~L
+        wh = Ws * L
+        wk = Ws * ~np.stack(labd, 1)  # da "sạch": xa mép tóc, mắt chỉ từ ảnh trước — chỉ phần đầu quay về trước (gáy / cổ áo lấy như thường)
+        ok = (wk.sum(1, keepdims=True) > 1e-4) & (head_pt & (Nn[:, 2] > -0.1))[:, None]  # mặt / má, không gáy
+        wk = np.where(ok, wk, Ws * ~L)
         sh, sk_ = wh.sum(1), wk.sum(1)
         hair_col = np.where(sh[:, None] > 1e-4, (wh[..., None] * Cs).sum(1) / np.maximum(sh, 1e-6)[:, None], HAIR)
         skin_col = np.where(sk_[:, None] > 1e-4, (wk[..., None] * Cs).sum(1) / np.maximum(sk_, 1e-6)[:, None], cbest)

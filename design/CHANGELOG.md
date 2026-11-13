@@ -27,6 +27,18 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
 - Luật: không chạm. Việc tiếp (VS Code): `/tai-nguyen cong-trinh lo-dan` → `design/models/lo-dan.glb` (≤ 20 000 tam giác,
   vật nên ≈ 8 000); đặt thay `props[lo-dan]` khối, giữ khói + va chạm từ code (`/lead`).
 
+## 2026-11-13.2 — Tiểu Mặc: hết vệt đen ở mép má, bóng mờ cạnh mắt
+
+- Loại: tài nguyên 3D — **ngoại hình**. Người dùng (kèm ảnh, Tiểu Mặc chếch 3/4): "viền thái dương đã hết nhưng ở mép má
+  của tiểu mặc vẫn còn vệt đen".
+- Nguyên nhân: viền bóng của lọn tóc mai trên má trong ảnh lệch vài điểm ảnh so với lọn tóc trên model → bị coi là "da",
+  màu tối trộn vào má; mắt ở ảnh góc bên chiếu lệch thành bóng xám cạnh mắt.
+- Sửa (`bake.py`, nướng theo vùng): màu da phần đầu quay về trước chỉ lấy điểm ảnh **xa mép tóc** (nới mặt nạ tóc
+  `--vien-toc 0.006`); mắt / mày / miệng (mảng tối nhỏ trên cổ) chỉ lấy từ ảnh trước. Gáy / cổ áo lấy như thường (thử áp
+  cho cả gáy: viền xanh cổ áo sau bị lấn trắng — bỏ). Nướng lại cả nhân vật chính (không đổi thấy được).
+- Ảnh: `screens/Model-dau-theo-vung-34.png` (trên: Tiểu Mặc trước sửa + tư thế gốc sau sửa của hai nhân vật; dưới: trong
+  cảnh sau sửa — Tiểu Mặc hai bên má, nhân vật chính 3/4).
+
 ## 2026-11-13.1 — Bộ ảnh nhiều góc Sư phụ Mặc Ông 墨翁 (đầu vào Hunyuan3D đa góc)
 
 - Loại: tài nguyên 3D — ảnh đầu vào. Phiếu: `docs/phieu_thiet_ke/2026-11-12-anh-su-phu.md`.

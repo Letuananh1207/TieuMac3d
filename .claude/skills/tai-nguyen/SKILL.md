@@ -90,7 +90,7 @@ khớp ảnh nên màu chiếu từ chính bộ ảnh lên không lem; vật li�
    `bake.py` nướng đầu **theo vùng** (mặc định từ 2026-11-13): mặt nạ tóc từng ảnh (mảng tối lớn trên cổ) → mỗi đỉnh bỏ
    phiếu tóc / không-tóc qua các ảnh thấy nó → làm mượt trên lưới → tóc chỉ lấy màu ảnh thấy tóc, da chỉ ảnh thấy da.
    Xem mặt nạ: `--xem-vung`; chỉnh: `--toc-toi 85` (ngưỡng tối), `--toc-manh 0.004` (mảng nhỏ hơn = mắt, không phải tóc),
-   `--muot 6`; `--cu` = luật vá cũ. Cờ khác: `--bat-dong`, `--khong-chan-toc`, `--giu-toc-mai`, `--xem-toc-mai`, `--xien <ngưỡng|khong>`, `--nen`,
+   `--muot 6`, `--vien-toc 0.006` (da mặt bỏ điểm ảnh sát mép tóc; mắt / mày chỉ từ ảnh trước); `--cu` = luật vá cũ. Cờ khác: `--bat-dong`, `--khong-chan-toc`, `--giu-toc-mai`, `--xem-toc-mai`, `--xien <ngưỡng|khong>`, `--nen`,
    `--mu`; truyền qua `nhan-vat.sh --nuong "<cờ>"`), không vẽ tay. Nhân vật **có tóc mai** trong thiết kế (Tiểu Mặc) →
    `--nuong "--giu-toc-mai"`. Xem model ở tư thế gốc, không xương (NPC, hoặc tách lỗi màu khỏi lỗi xương):
    `python.exe -s scripts/xem.py <màu.glb — bản TRƯỚC model:clean> design/models/anh <tên> <ra.png>`.
