@@ -622,6 +622,34 @@
       "y": 35082,
       "w": 1440,
       "h": 800
+    },
+    "CachChoi-doc-co.dc.html": {
+      "x": 0,
+      "y": 36242,
+      "w": 390,
+      "h": 844,
+      "title": "Cách chơi · dọc · Ngũ Tử Kỳ 五子棋"
+    },
+    "CachChoi-doc-dau.dc.html": {
+      "x": 470,
+      "y": 36242,
+      "w": 390,
+      "h": 844,
+      "title": "Cách chơi · dọc · Đấu chữ 鬥字"
+    },
+    "CachChoi-doc-dau-chua-hoc.dc.html": {
+      "x": 940,
+      "y": 36242,
+      "w": 390,
+      "h": 844,
+      "title": "Cách chơi · dọc · Đấu chữ khi chưa học bộ nào"
+    },
+    "CachChoi-ngang.dc.html": {
+      "x": 1410,
+      "y": 36242,
+      "w": 844,
+      "h": 390,
+      "title": "Cách chơi · ngang · Ngũ Tử Kỳ"
     }
   },
   "order": [
@@ -719,7 +747,11 @@
     "Nhac-doc-danh-sach.dc.html",
     "Nhac-ngang.dc.html",
     "Nhac-trang-thai.dc.html",
-    "ThuThu-bo-anh.dc.html"
+    "ThuThu-bo-anh.dc.html",
+    "CachChoi-doc-co.dc.html",
+    "CachChoi-doc-dau.dc.html",
+    "CachChoi-doc-dau-chua-hoc.dc.html",
+    "CachChoi-ngang.dc.html"
   ],
   "notes": {
     "cach-dung": {
@@ -1005,6 +1037,21 @@
       "text": "Thủ thư Điển Thư 典書 — bộ ảnh nhiều góc",
       "kind": "title1",
       "maxW": 1440
+    },
+    "tieu-de-cach-choi": {
+      "x": 0,
+      "y": 36002,
+      "text": "Bảng cách chơi Kỳ Văn Uyển (Ngũ Tử Kỳ · Đấu chữ)",
+      "kind": "title1",
+      "maxW": 2254
+    },
+    "cach-choi-ghi-chu": {
+      "x": 2334,
+      "y": 36242,
+      "w": 420,
+      "size": "m",
+      "fill": "teal",
+      "text": "Phiếu 2026-11-13-bang-cach-choi. Đề xuất, chưa chốt.\n\n• Lớp phủ HUD web (như khung thoại): nút \"Cách chơi\" đã ở web, nội dung chỉ là chữ tĩnh, chạy được cả khi không có Flutter (chơi thử, Canvas 3D).\n• Một khung chung cho 2 trò: đầu bảng tên Hán + Việt, hình minh hoạ, 4 mục đánh số, mẹo của NPC, nút \"Đóng\" ở đáy (ngón cái). Nội dung dài → cuộn trong bảng, đầu + nút đứng yên.\n• Không có \"Vào bàn\" trong bảng: biển cách ghế gần nhất ~2,5 m, đứng ở biển không ở trong 1,5 m của ghế (R-GIAO-1).\n• Mục \"rời bàn\" ghi đúng R-GIAO-1 hiện tại (kéo cần / Ngồi ôn). Nếu áp nút \"Rời bàn\" (đề xuất .27) thì đổi chữ mục 4."
     }
   },
   "designSystems": []

@@ -419,3 +419,36 @@ Mẫu một mục:
   offline, cần bản thu có giấy phép.
 - Chuỗi: `music*`. Luật: `R-VA-4`, `R-NGOI-1`, `R-DIEU-7`, `R-MAN-1`; luật mới đề xuất (CHANGELOG 2026-11-13.31).
 - Ảnh: nền giữ chỗ vẽ tay (chưa có ảnh chụp tầng 2 trà lâu); màn ghép chưa có ảnh.
+
+## Bảng cách chơi Kỳ Văn Uyển (HUD) · artboard `CachChoi-doc-co.dc.html`, `CachChoi-doc-dau.dc.html`, `CachChoi-doc-dau-chua-hoc.dc.html`, `CachChoi-ngang.dc.html` · từ mục 2026-11-13.35
+
+- Mục đích: đọc lướt luật một trò trong một lần — thay lời giảng nhiều trang của NPC (`R-GIAO-2`). Mở khi: bấm nút nổi
+  "Cách chơi" trên biển (đứng dưới 2,5 m). Đóng: nút "Đóng" / nút quay lại của máy → về cảnh, đứng chỗ cũ. Nhân vật đứng
+  yên khi mở.
+- **Lớp phủ HUD web** (như khung thoại), không phải màn Flutter: nút đã ở web (`guideButton.ts`), nội dung là chữ tĩnh,
+  chạy cả khi không có Flutter (trang chơi thử, Canvas 3D). Cảnh phía sau tối `rgba(36,50,58,.28)`.
+- Một khung cho cả hai trò (dữ liệu theo trò). **Dọc**: tấm kính sương `frost` .92 (blur 14), trái / phải 16, trên 12 + safe,
+  dưới 16 + safe, bo 16, viền `frost-line` + outline `frost-outline`, bóng `card`. Từ trên:
+  - Đầu bảng (đệm 18 18 12, giữa): eyebrow 11/700 hoa "Kỳ Văn Uyển · Cách chơi" · tên Hán 36 Noto Serif SC `jade` giãn .08em +
+    tên Việt Lora 20 cùng hàng (baseline) · dòng giới thiệu 14. Vạch trang trí (1 px + chấm vàng 5).
+  - **Vùng cuộn** (đệm 14 18 40, cách 16): hình minh hoạ → 4 mục → ô mẹo. Đáy vùng cuộn mờ dần 40 px; thanh cuộn 3 px
+    `slate` 25 %. Đầu bảng + nút đứng yên.
+  - Nút **"Đóng"** đáy (đệm 10 18 16): phụ, cao 48, rộng hết, bo 12, nền trắng .55, viền `slate` 30 %, dấu × 18.
+- **Hình minh hoạ** (giấy `map-paper`, bo 12, đệm 12, viền `slate` 16 %):
+  - Ngũ Tử Kỳ: lưới 7 × 7 trên nền gỗ #E7D6B4 (128 dọc / 104 ngang), 5 quân đen liền chéo viền `gold` 3 + vạch vàng nối,
+    4 quân trắng xen; chú thích 13 bên phải.
+  - Đấu chữ: thẻ 木 76 × 76 (như thẻ trên bàn: viền `jade` 3, chỉ vàng trong) + 4 nghĩa lưới 2 × 2 (13/700, bo 8); nghĩa đúng
+    nền #E3EBE4 viền `jade` 2 chữ `jade` + dấu ✓ tròn 18; 3 nghĩa kia mờ 60 %. Chú thích 13 dưới.
+- **4 mục** (cách 16): vòng `jade` 26 số trắng 13/700 · tiêu đề 15/700 · đoạn 14 dòng 1,5; chữ đậm cho ý chính. Thứ tự:
+  Mục tiêu · Mỗi lượt · Thắng · thua · hoà · Vào bàn · rời bàn. Nội dung: `guide*` trong `l10n/vi.arb` (đúng `R-CO-1…3`,
+  `R-DAU-1…2`, `R-GIAO-1`).
+- **Ô mẹo**: chân dung 40 viền trắng 2 (cờ: Tiểu Mặc, Đấu chữ: Mặc Ông) + bong bóng bo 4 14 14 14, nền vàng 16 %, viền vàng
+  60 %, "Mẹo của <tên>" 12/700 + lời 14 trong ngoặc kép.
+- **Đấu chữ chưa học bộ nào** (`R-DAU-1`): thêm ô báo đầu vùng cuộn (nền vàng 16 %, viền `gold`, biểu tượng ngọn lửa 22,
+  tiêu đề 15/700 `guideDuelNoneTitle` + đoạn 14 `guideDuelNoneBody`); phần còn lại như thường (đọc luật trước được).
+- **Ngang**: kính sương trái / phải 12 + safe (47), trên 12, dưới 12 + safe (21). Đầu bảng một hàng (đệm 12 16 10): eyebrow +
+  tên Hán 28 + Việt Lora 18 + giới thiệu 13 cùng hàng; phải nút "Đóng" cao 44. Thân 2 cột (248 | còn lại, cách 16): trái
+  hình minh hoạ (lưới 104) + ô mẹo (chân dung 36, chữ 13); phải 4 mục cuộn (vòng 24, tiêu đề 14, đoạn 14 dòng 1,45).
+- Không có nút "Vào bàn" trong bảng: biển cách ghế gần nhất ~2,5 m, chỉ vào bàn được trong 1,5 m của ghế (`R-GIAO-1`).
+- Chuỗi: `guide*`. Luật: `R-GIAO-1/2`, `R-CO-1/2/3`, `R-DAU-1/2`, `R-MAN-1`.
+- Ảnh: nền giữ chỗ `screens/Canh-bien-ngu-tu-ky.png`, `Canh-bien-tro-choi.png`; màn ghép chưa có ảnh.

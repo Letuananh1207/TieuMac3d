@@ -98,3 +98,6 @@ Một chất liệu: kính mờ `frost*` + viền `frost-line` / `frost-outline`
 | Danh sách bài (dòng đang phát) | `Nhac-doc-danh-sach` | frost, jade |
 | Viên "đang phát" thu nhỏ | `Nhac-trang-thai` | frost, jade |
 | Nút nổi "Nghe nhạc" | `Nhac-doc-ngoi` | jade |
+| Bảng cách chơi (kính sương .92 phủ cảnh tối .28; đầu bảng tên Hán + Việt; hình minh hoạ giấy `map-paper`; mục đánh số vòng `jade` 26; ô mẹo NPC vàng 16 %; nút "Đóng" đáy) | `CachChoi-*` | frost, frost-line, frost-outline, slate, jade, gold, map-paper, answer-right-bg |
+| Mục đánh số (vòng `jade` 26 + số trắng 13/700, tiêu đề 15/700, đoạn 14/1,5) | `CachChoi-*` | jade, on-jade, slate |
+| Ô mẹo của NPC (chân dung 40 + bong bóng góc trái trên 4, nền vàng 16 %, viền vàng 60 %) | `CachChoi-*` | gold, slate |

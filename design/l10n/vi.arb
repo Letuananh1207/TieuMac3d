@@ -506,5 +506,43 @@
         "type": "String"
       }
     }
+  },
+  "guideEyebrow": "Kỳ Văn Uyển · Cách chơi",
+  "@guideEyebrow": {
+    "description": "Dòng nhỏ đầu bảng cách chơi (in hoa, giãn .12em) — 2026-11-13.35, R-GIAO-2"
+  },
+  "guideGoal": "Mục tiêu",
+  "guideTurn": "Mỗi lượt",
+  "guideResult": "Thắng · thua · hoà",
+  "guideSeat": "Vào bàn · rời bàn",
+  "@guideGoal": {
+    "description": "Tiêu đề 4 mục đánh số của bảng cách chơi"
+  },
+  "guideTipBy": "Mẹo của {name}",
+  "@guideTipBy": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "guideClose": "Đóng",
+  "guideGomokuIntro": "Cờ năm quân — đấu với Tiểu Mặc.",
+  "guideGomokuGoal": "Xếp 5 quân đen liền nhau — ngang, dọc hoặc chéo — trước Tiểu Mặc.",
+  "guideGomokuTurn": "Bàn 13 × 13 giao điểm. Đạo hữu cầm quân đen, đi trước; Tiểu Mặc cầm trắng. Tới lượt: chạm một giao điểm trống để đặt quân.",
+  "guideGomokuResult": "Ai có 5 quân trở lên liền nhau trước thì thắng. Đầy bàn mà chưa ai đủ 5 → hoà. Hết ván, 5 quân thắng sáng lên rồi ván mới bắt đầu — đạo hữu lại đi trước.",
+  "guideGomokuFigure": "5 quân đen liền chéo sáng lên — đen thắng. Ngang, dọc hay chéo đều được.",
+  "guideGomokuTip": "Hàng 4 của đạo hữu, đệ luôn chặn! Muốn thắng phải mở hai đường cùng lúc.",
+  "guideDuelIntro": "Ôn bộ thủ đã học — đấu 10 câu với Mặc Ông.",
+  "guideDuelGoal": "Đoán đúng nghĩa bộ thủ nhiều hơn Mặc Ông. Chỉ ôn bộ đã học ở Rừng trúc — không mở bài mới, không tính tiến độ.",
+  "guideDuelTurn": "Ván 10 câu, hai bên thay phiên: câu 1, 3, 5, 7, 9 đạo hữu chạm một nghĩa; câu 2, 4, 6, 8, 10 Mặc Ông nghĩ 1–2 giây rồi chọn. Sau mỗi câu, nghĩa đúng hiện ra một chút.",
+  "guideDuelResult": "Hết 10 câu: nhiều điểm hơn thì thắng, bằng điểm thì hoà.",
+  "guideDuelFigure": "Mỗi câu một bộ thủ + 4 nghĩa, đúng một. Chọn đúng → +1 điểm.",
+  "guideDuelTip": "Nhìn hình mà đoán: 木 là cái cây — trên có cành, dưới có rễ.",
+  "guideDuelNoneTitle": "Đạo hữu chưa học bộ thủ nào",
+  "guideDuelNoneBody": "Đấu chữ chỉ ôn bộ đã học, nên chưa chơi được. Hãy tới Rừng trúc tu luyện trước — đi Truyền Tống Đài, chọn Rừng trúc.",
+  "guideSeatBody": "Đứng gần một bồ đoàn → nút \"Vào bàn\". Muốn đứng dậy: kéo cần điều khiển hoặc bấm Ngồi ôn — ván đang chơi bỏ, không tính.",
+  "@guideSeatBody": {
+    "description": "Theo R-GIAO-1 hiện tại. Nếu áp nút \"Rời bàn\" (đề xuất 2026-11-13.27) → \"…Muốn đứng dậy: bấm Rời bàn — …\""
   }
 }
