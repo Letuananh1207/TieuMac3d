@@ -155,8 +155,7 @@ async function boot(): Promise<void> {
         openLesson(zone);
         return;
       }
-      const p = picker.pick(x, y);
-      if (p) player.moveTarget = p;
+      // chạm mặt sân không làm nhân vật đi nữa — chỉ joystick / phím (R-DIEU-2, 2026-11-13)
     },
   });
   bindCameraButton(() => orbit.toggleView());

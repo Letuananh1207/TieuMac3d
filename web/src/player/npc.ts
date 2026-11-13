@@ -7,6 +7,8 @@ import { loadGlbModel } from './glbCharacter';
 export const NPC_RADIUS = 0.45;
 /** Người chơi gần hơn khoảng này (m) thì NPC quay mặt về phía người chơi (R-NPC-1). */
 export const NPC_LOOK_DIST = 4;
+/** R-NPC-2: người chơi gần hơn khoảng này (m) thì hiện nút "Nói chuyện". */
+export const NPC_TALK_DIST = 2.5;
 /** Tốc độ quay tối đa (rad/s) — quay từ từ, không giật (R-NPC-1). */
 const TURN_SPEED = 3;
 
@@ -17,6 +19,8 @@ const MODELS = import.meta.glob('../../../design/models/*.glb', { query: '?url',
 >;
 
 export interface Npc {
+  /** mã NPC (đặc tả cảnh `npcs[].id`) — dùng tra hội thoại */
+  readonly id: string;
   readonly root: THREE.Object3D;
   /** Mỗi khung hình: thở + quay theo người chơi. */
   update(dt: number, player: THREE.Vector3): void;
@@ -42,6 +46,7 @@ export async function createNpc(spec: NpcSpec): Promise<Npc | null> {
   body.rotation.y = home;
   let time = spec.x * 0.37 + spec.z * 0.11; // lệch nhịp thở giữa các NPC
   return {
+    id: spec.id,
     root,
     update(dt, player) {
       time += dt;
@@ -89,4 +94,18 @@ export async function placeNpcs(
     npcs.push(npc);
   });
   return { npcs, problems };
+}
+
+/** R-NPC-2: NPC gần người chơi nhất trong tầm nói chuyện (dưới `NPC_TALK_DIST`), không có → `null`. */
+export function npcInTalkRange(npcs: readonly Npc[], player: THREE.Vector3): Npc | null {
+  let best: Npc | null = null;
+  let bestD = NPC_TALK_DIST;
+  for (const n of npcs) {
+    const d = Math.hypot(n.root.position.x - player.x, n.root.position.z - player.z);
+    if (d < bestD) {
+      bestD = d;
+      best = n;
+    }
+  }
+  return best;
 }

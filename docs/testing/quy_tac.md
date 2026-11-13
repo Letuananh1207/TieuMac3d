@@ -60,6 +60,7 @@ Code: [web/src/player/npc.ts](../../web/src/player/npc.ts), [web/src/main.ts](..
 | Mã | Quy tắc | Ví dụ | Xác nhận | App |
 |---|---|---|---|---|
 | R-NPC-1 | NPC đứng tại chỗ theo đặc tả cảnh (vị trí + hướng), thở nhẹ; có va chạm tròn bán kính 0,45 (nhân vật không đi xuyên). Người chơi cách NPC **dưới** 4 m thì NPC từ từ quay mặt về phía người chơi (tối đa 3 rad/s); cách từ 4 m trở lên thì từ từ quay về hướng gốc. Thiếu file model của NPC → bỏ qua NPC đó, cảnh vẫn chạy. | Tiểu Mặc ở (3,5; 46,25) nhìn về nam (+z): người chơi ở (0; 50) (cách 5,1) → giữ hướng gốc; đi tới (1; 46,25) (cách 2,5) → Tiểu Mặc quay sang nhìn người chơi; đi thẳng vào Tiểu Mặc theo z = 46,25 → dừng ở x ≈ 2,55 (cách tâm 0,95). | chờ | ok · miễn test (chưa có trình chạy test TS — kiểm bằng chụp headless) |
+| R-NPC-2 | Người chơi đứng cách NPC **dưới** 2,5 m (không mở bài học, không ngồi thiền) thì hiện nút "Nói chuyện" gần NPC; ra xa từ 2,5 m trở lên thì ẩn. Bấm nút → khung thoại: tên NPC, lời thoại, 1–3 lựa chọn; chọn một lựa chọn → lời tiếp theo; câu nào cũng có lựa chọn "Tạm biệt" (đóng khung thoại). Đang thoại: nhân vật đứng yên (joystick, phím không có tác dụng), NPC nhìn người chơi; đóng xong đi lại được. Lời thoại theo dữ liệu hội thoại của NPC. | Đứng ở (1,5; 46,25), cách Tiểu Mặc 2,0 → hiện "Nói chuyện"; bấm → "Đạo hữu mới đến Văn Uyên Tông à? …" với 3 lựa chọn; chọn "Tiểu Mặc canh cổng làm gì?" → lời tiếp; chọn "Tạm biệt" → đóng, đi lại được. Đứng ở (0; 46,25), cách 3,5 → không có nút. | chờ | sửa · chờ thiết kế (phiếu 2026-11-13-hoi-thoai-npc) |
 
 ## HUD — chữ trên màn
 
