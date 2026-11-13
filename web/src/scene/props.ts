@@ -5,6 +5,10 @@ import { lambert } from './materials';
 import { markDynamic } from './merge';
 import type { PropSpec } from './spec';
 import type { GroundY } from './terrainHeight';
+import { banner, honorBoard, teaTable, umbrellaStall } from './kien_truc/do_pho';
+
+/** Cột cờ đứng lẻ (cờ 茶 bên trà lâu): cao bằng hai tầng nhà. */
+const BANNER_POLE = 9;
 
 /** Thứ chuyển động trong cảnh (khói, mây…): gọi mỗi khung hình. */
 export type Updater = (dt: number) => void;
@@ -169,6 +173,25 @@ export function addProps(scene: THREE.Scene, colliders: Colliders, list: PropSpe
       case 'dinh-dong':
         colliders.addCircle(p.x, p.z, dinhDong(g, style, updaters) * s);
         break;
+      case 'ban-tra': {
+        const t = teaTable(g, 0, 0);
+        box(t.w, t.d);
+        break;
+      }
+      case 'sap-o': {
+        const t = umbrellaStall(g, style);
+        box(t.w, t.d);
+        break;
+      }
+      case 'co':
+        updaters.push(banner(g, style, p.text ?? '茶', BANNER_POLE, p.x + p.z));
+        colliders.addCircle(p.x, p.z, 0.25 * s);
+        break;
+      case 'bang': {
+        const t = honorBoard(g, style, p.text ?? 'Bảng vinh danh');
+        box(t.w, t.d);
+        break;
+      }
     }
     scene.add(g);
   }

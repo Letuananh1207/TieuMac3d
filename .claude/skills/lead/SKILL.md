@@ -107,7 +107,7 @@ flutter test -r failures-only test/<phần> · dart tool/rule_trace.dart
 | vào trong nhà, nội thất, bảng đen, thầy, kệ sách, án đọc, mái mờ, cửa | `rooms`, `noi_that`, `dien` | `web/src/scene/rooms.ts`, `web/src/scene/kien_truc/noi_that.ts`, `kien_truc/dien.ts` (`RoomParts`); kế hoạch `docs/tasks/2026-11-11-vao-trong-kien-truc.md` |
 | nút học "Học chữ 快", chạm vật để học (thay thẻ mời — đã bỏ) | `learnButton`, `tapToMove` | `web/src/ui/learnButton.ts`, `web/src/input/tapToMove.ts` (`pickObject`), `main.ts` |
 | bảng bài học HTML (dự phòng khi không có Flutter) | `lessonBoard` | `web/src/ui/lessonBoard.ts` |
-| HUD, fps, nhãn tên, dòng hướng dẫn, nút góc nhìn | `hud` | `web/src/ui/hud.ts`, `web/index.html`, `web/src/style.css` |
+| HUD, fps, nhãn tên, nút góc nhìn | `hud` | `web/src/ui/hud.ts`, `web/index.html`, `web/src/style.css` |
 | font, chữ tiếng Việt, safe area, màu giao diện HTML | `style` | `web/src/style.css`, `web/index.html` |
 | build web, chép sang app, font Flutter, làm sạch model | — | `web/vite.config.ts`, `web/scripts/{copy-to-app,subset-han,fonts-app,model-clean,check-scene}.mjs` |
 | app Flutter, WebView, màn bài học native, vòng đời | `main.dart` | `app/lib/` |
@@ -116,8 +116,11 @@ flutter test -r failures-only test/<phần> · dart tool/rule_trace.dart
 | thiết kế, token, canvas | — | `design/` (chỉ đọc) → `/ui-apply` |
 | thiết kế cảnh (không cần code mới) | — | `/canh` (sửa `design/scene/scene.json`) |
 | NPC, Tiểu Mặc, nhân vật đứng trong cảnh | `npc`, `placeNpcs` | `web/src/player/npc.ts`, `npcs` trong đặc tả cảnh (R-NPC-1); model `design/models/<mã>.glb`, mã thêm ở `NPC_IDS` (`scene/spec.ts`) |
-| model .glb: tạo / thay nhân vật / công trình bằng AI | `glbCharacter`, `playerCharacter` | `/tai-nguyen` (Hunyuan3D); code nạp: `web/src/player/glbCharacter.ts`; công trình .glb chưa có code đặt vào cảnh |
+| model .glb: tạo / thay nhân vật / công trình bằng AI | `glbCharacter`, `playerCharacter` | `/tai-nguyen` (Hunyuan3D); code nạp: `web/src/player/glbCharacter.ts`; công trình: `scene/staticModel.ts`, cổng `gates[].model` → `scene/gate.ts` `addGateModel` (nhà / lò đan chưa) |
 | hành trình, vùng, Truyền Tống Đài, vòng trận, bản đồ truyền tống, mở vùng theo số chữ, về nhà, Rừng trúc, tiến độ học | `truyenTong`, `teleportLayout`, `ringCharge`, `loadSpec`, `journey`, `progress_store` | `web/src/scene/{truyenTong,teleportLayout,loadSpec}.ts`, `web/src/zones/ringCharge.ts`, `main.ts`; mốc mở + tiến độ: `app/lib/journey/`; cảnh vùng `design/scene/<mã>.json`; kế hoạch `docs/tasks/2026-11-13-hanh-trinh-nhieu-vung.md` |
+| tiện ích tông môn: trà lâu, hí đài, sân khấu, Tàng Thư Các, cửa hàng, phố chợ, sạp, bàn trà, cờ, bảng vinh danh, biển chung | `vao_trong`, `rooms`, `do_pho`, `signAtlas` | `web/src/scene/kien_truc/{hi_dai,tra_lau,lau_sach,cua_hang,do_pho,vao_trong}.ts`, `scene/rooms.ts` (`addWalkIn`), `scene/signAtlas.ts`; kế hoạch `docs/tasks/2026-11-13-tien-ich-giao-luu.md` |
+| khu giao lưu, Kỳ Văn Uyển, bàn cờ, Ngũ Tử Kỳ, caro, Đấu chữ, trò chơi với NPC, ngồi vào bàn | `gamePlay`, `gameTable`, `gomoku`, `charDuel` | `web/src/games/` (luật thuần + NPC, test `npm test`), `web/src/gamePlay.ts` (ghép), `web/src/scene/gameTable.ts`, `gameTables` trong đặc tả cảnh; kế hoạch `docs/tasks/2026-11-13-khu-giao-luu-co-dau-chu.md`; HUD chờ phiếu `2026-11-13-tro-choi-giao-luu` |
+| rạp phim, xem phim, màn chiếu, video, bồ đoàn, danh sách phim | `rapPhim`, `videoScreen`, `videos` | `web/src/scene/{rapPhim,videoScreen}.ts`, `kien_truc/rap_phim.ts`, `web/src/zones/videos.ts`, `main.ts` (`sitOrWatch`); quyết định `decisions/0004-video-mang.md`; kế hoạch `docs/tasks/2026-11-13-rap-phim-nghe-nhac-on-tap.md` |
 | hiệu năng, draw call, tam giác (mốc 4) | `merge`, `renderer` | `docs/tasks/2026-11-11-moc-4-hieu-nang.md`, `web/src/scene/merge.ts` |
 
 Thêm tính năng / thư mục mới → thêm một dòng vào bảng này cùng lúc.

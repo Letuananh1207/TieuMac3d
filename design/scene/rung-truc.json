@@ -297,9 +297,26 @@
   "buildingStyle": {
     "path": "#9d9686",
     "stone": "#8f8b80",
-    "water": "#4f8a8a"
+    "water": "#4f8a8a",
+    "pillar": "#6b4a2e",
+    "ridge": "#3a3f3a",
+    "base": "#9a968c",
+    "heightScale": 1
   },
-  "buildings": [],
+  "buildings": [
+    {
+      "id": "dinh-truc",
+      "x": 4,
+      "z": 0.5,
+      "w": 5,
+      "d": 5,
+      "rotY": 270,
+      "title": "Đình trúc",
+      "roofColor": "#56635b",
+      "kind": "dinh",
+      "sides": 6
+    }
+  ],
   "gates": [],
   "water": [],
   "props": [],
@@ -311,118 +328,118 @@
     "yard": [],
     "groves": [
       {
-        "kind": "truc",
+        "kind": "truc-mao",
         "x": -16,
         "z": 30,
         "w": 8,
         "d": 18,
-        "count": 67
+        "count": 21
       },
       {
-        "kind": "truc",
+        "kind": "truc-mao",
         "x": 8,
         "z": 31,
         "w": 6,
         "d": 14,
-        "count": 41
+        "count": 13
       },
       {
-        "kind": "truc",
+        "kind": "truc-mao",
         "x": -17,
         "z": 8,
         "w": 10,
         "d": 22,
-        "count": 88
+        "count": 28
       },
       {
-        "kind": "truc",
+        "kind": "truc-mao",
         "x": 3,
-        "z": 9,
+        "z": 13,
         "w": 5,
-        "d": 14,
-        "count": 36
+        "d": 10,
+        "count": 12
       },
       {
-        "kind": "truc",
+        "kind": "truc-mao",
         "x": -18,
         "z": -16,
         "w": 9,
         "d": 18,
-        "count": 72
+        "count": 23
       },
       {
-        "kind": "truc",
+        "kind": "truc-mao",
         "x": 0,
         "z": -16,
         "w": 5,
         "d": 10,
-        "count": 26
+        "count": 8
       },
       {
-        "kind": "truc",
+        "kind": "truc-mao",
         "x": 19,
         "z": -4,
         "w": 6,
         "d": 40,
-        "count": 88
+        "count": 28
       },
       {
-        "kind": "truc",
+        "kind": "truc-mao",
         "x": -13,
         "z": -34,
         "w": 10,
         "d": 8,
-        "count": 41
+        "count": 13
       },
       {
-        "kind": "truc",
+        "kind": "truc-mao",
         "x": 16,
         "z": -34,
         "w": 6,
         "d": 8,
-        "count": 26
+        "count": 8
       },
       {
-        "kind": "truc",
+        "kind": "truc-mao",
         "x": -36,
         "z": 0,
         "w": 14,
         "d": 70,
-        "count": 156,
+        "count": 47,
         "collide": false
       },
       {
-        "kind": "truc",
+        "kind": "truc-mao",
         "x": 36,
         "z": 0,
         "w": 14,
         "d": 70,
-        "count": 156,
+        "count": 47,
         "collide": false
       },
       {
-        "kind": "truc",
+        "kind": "truc-mao",
         "x": -11,
         "z": -2,
         "w": 4,
         "d": 10,
-        "count": 22
+        "count": 7
       },
       {
-        "kind": "truc",
+        "kind": "truc-mao",
         "x": 4,
         "z": 22,
         "w": 4,
         "d": 8,
-        "count": 16
+        "count": 6
       },
       {
-        "kind": "truc",
+        "kind": "truc-mao",
         "x": 22,
         "z": 30,
         "w": 6,
         "d": 16,
-        "count": 30
+        "count": 10
       }
     ],
     "ring": {
@@ -432,7 +449,12 @@
       "scaleMin": 1.6,
       "scaleMax": 2.4
     },
-    "seed": 17
+    "seed": 17,
+    "mao": [
+      "#6f8f3c",
+      "#a99f5a",
+      "#4b7533"
+    ]
   },
   "well": {
     "enabled": false
@@ -475,5 +497,8 @@
     ],
     "radius": 0,
     "ringRadius": 4
+  },
+  "lessons": {
+    "radicals": true
   }
 }

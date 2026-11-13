@@ -50,7 +50,7 @@ tạm, soạn phiếu (`/ui-apply phieu`).
 | cầu nối Flutter ↔ JS | hợp đồng `docs/bridge.md`; web `web/src/bridge/flutterBridge.ts`; Flutter `app/lib/scene/scene_event.dart`, `scene_view.dart` |
 | script build (font, model, kiểm cảnh) | `web/scripts/*.mjs` |
 | test của `app/lib/a/b.dart` | `app/test/a/b_test.dart`; test theo quy tắc: `app/test/rules/` |
-| test của `web/src/a/b.ts` (khi có trình chạy test) | `web/src/a/b.test.ts` |
+| test của `web/src/a/b.ts` (vitest — `npm test`) | `web/src/a/b.test.ts` |
 
 ## Điều cấm
 

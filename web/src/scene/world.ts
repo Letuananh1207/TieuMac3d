@@ -4,13 +4,17 @@ import { LayeredGround, type Ground } from '../collision/ground';
 import { addBuilding } from './buildings';
 import { addEnvironment, addFlatGround } from './environment';
 import { addCloudSea, addFarMountains } from './farMountains';
-import { addGate } from './gate';
+import { addGate, addGateModel } from './gate';
+import { staticModelUrl } from './staticModel';
 import { addGrassAndRocks } from './grass';
 import { mergeStatic } from './merge';
+import { resetSignAtlas } from './signAtlas';
 import { addPaths } from './paths';
 import { addProps } from './props';
 import { addFloating } from './sky';
-import { addRoomBuilding, inRect, type InteriorUse, type Room } from './rooms';
+import { addCinema, type Cinema } from './rapPhim';
+import { addGameTable, type GameTable } from './gameTable';
+import { addRoomBuilding, addWalkIn, inRect, WALK_IN, type InteriorUse, type Room } from './rooms';
 import { addStairs } from './stairs';
 import { roomKinds, zoneAnchors, type SceneSpec, type ZoneAnchor } from './spec';
 import { addTerrain } from './terrain';
@@ -31,6 +35,10 @@ export interface World {
   rooms: Room[];
   /** vị trí các vùng sự kiện, neo theo nhà trong đặc tả */
   zoneAnchors: ZoneAnchor[];
+  /** rạp phim (nhà kiểu `rap-phim` đầu tiên) — R-RAP-1..3 */
+  cinema: Cinema | null;
+  /** bàn chơi khu giao lưu (R-GIAO-1) */
+  gameTables: GameTable[];
   /** vòng trận truyền tống (`teleport.enabled`) */
   teleport: TeleportRing | null;
   /** gọi mỗi khung hình: khói lò đan, mây, đảo nổi, mờ mái nhà khi `player` đứng trong */
@@ -41,8 +49,14 @@ export interface World {
  * Dựng toàn bộ cảnh theo đặc tả. Mọi vật cản đăng ký vào `colliders`.
  * `interiors` (mã vùng → kiểu nội thất, do nội dung bài quyết) biến nhà neo vùng đó thành nhà vào được.
  */
-export function buildWorld(scene: THREE.Scene, colliders: Colliders, spec: SceneSpec, interiors: Record<string, InteriorUse> = {}): World {
+export function buildWorld(
+  scene: THREE.Scene,
+  colliders: Colliders,
+  spec: SceneSpec,
+  interiors: Record<string, InteriorUse> = {},
+): World {
   const style = spec.buildingStyle;
+  resetSignAtlas(); // biển của cảnh này vẽ vào một ảnh chung → 1 draw call
   addEnvironment(scene, spec);
   const hf = spec.terrain.enabled ? buildHeightfield(spec.terrain, spec.paths) : null;
   // ngoài lưới (vực) → 0; nhà, tường, lối đi nằm trên bục phẳng nên không cần độ cao riêng
@@ -67,24 +81,44 @@ export function buildWorld(scene: THREE.Scene, colliders: Colliders, spec: Scene
   addWalls(scene, colliders, spec.walls, spec.wallSegments, style);
   const kinds = roomKinds(spec.buildings, interiors);
   const rooms: Room[] = [];
+  let cinema: Cinema | null = null;
   for (const b of spec.buildings) {
     const use = b.zone && kinds[b.zone.id] ? interiors[b.zone.id] : undefined;
+    if (b.kind === 'rap-phim') {
+      cinema ??= addCinema(scene, colliders, b, style, base(b.x, b.z));
+      continue;
+    }
+    const walkIn = b.kind ? WALK_IN[b.kind] : undefined;
     if (use) rooms.push(addRoomBuilding(scene, colliders, b, style, use, base(b.x, b.z)));
+    else if (walkIn) rooms.push(addWalkIn(scene, colliders, b, style, walkIn, base(b.x, b.z)));
     else addBuilding(scene, colliders, b, style, base(b.x, b.z));
   }
-  for (const g of spec.gates) addGate(scene, colliders, g, style, base(g.x, g.z));
+  const gameTables = spec.gameTables.map((t) => addGameTable(scene, colliders, t, style, base(t.x, t.z)));
+  for (const g of spec.gates) {
+    // cổng model AI: nạp sau (không qua mergeStatic); thiếu file / nạp lỗi → cổng khối (thêm sau gộp, vài draw call)
+    const url = g.model ? staticModelUrl(g.model) : null;
+    if (g.model && !url) console.warn(`gates: thiếu design/models/${g.model}.glb — cổng "${g.id}" dùng bản khối`);
+    if (!url) addGate(scene, colliders, g, style, base(g.x, g.z));
+    else
+      addGateModel(scene, colliders, g, url, base(g.x, g.z)).catch((e: unknown) => {
+        console.warn(`gates: nạp model cổng "${g.id}" lỗi — dùng bản khối`, e);
+        addGate(scene, colliders, g, style, base(g.x, g.z));
+      });
+  }
   addWater(scene, colliders, spec.water, style, groundY);
   const props = addProps(scene, colliders, spec.props, style, groundY);
   const trees = addTrees(scene, colliders, spec.trees, groundY);
   if (spec.well.enabled) addWell(scene, colliders, spec.well, base(spec.well.x, spec.well.z));
-  const teleport = spec.teleport.enabled ? addTeleport(scene, spec.teleport, groundY) : null;
+  const teleport = spec.teleport.enabled ? addTeleport(scene, colliders, spec.teleport, groundY) : null;
   const floating = addFloating(scene, spec.floating, style, spec.trees.leaves[1], spec.trees.seed);
   // dựng xong mới gộp: khối đứng yên cùng vật liệu → một draw call (scene/merge.ts)
   mergeStatic(scene, new Set([ground]));
   return {
     ground,
-    surface: new LayeredGround(hf, rooms.flatMap((r) => r.pads)),
+    surface: new LayeredGround(hf, [...(teleport?.pads ?? []), ...rooms.flatMap((r) => r.pads)]),
     rooms,
+    cinema,
+    gameTables,
     zoneAnchors: zoneAnchors(spec.buildings, kinds),
     teleport,
     update(dt, player) {

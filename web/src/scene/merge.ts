@@ -66,3 +66,41 @@ export function mergeStatic(root: THREE.Object3D, keep: Set<THREE.Object3D>): nu
   }
   return saved;
 }
+
+/**
+ * Gộp mọi khối Lambert không texture, đục, đứng yên trong `root` thành MỘT khối màu theo đỉnh (mỗi khối mang màu vật
+ * liệu của nó) — dù khác màu vẫn 1 draw call. Dùng cho nhóm cần vật liệu riêng (mái nhà vào được, làm mờ R-HUD-2):
+ * gộp theo vật liệu ở đó tốn mỗi màu một draw call cho từng nhà. Vẽ hai mặt (mái nhìn từ dưới hiên vẫn đặc).
+ * Trả về số draw call bớt được.
+ */
+export function mergeVertexColors(root: THREE.Object3D): number {
+  root.updateMatrixWorld(true);
+  const toRoot = root.matrixWorld.clone().invert();
+  const meshes: THREE.Mesh[] = [];
+  root.traverse((o) => {
+    if (!(o instanceof THREE.Mesh) || o instanceof THREE.InstancedMesh || isDynamic(o)) return;
+    const m = o.material;
+    if (!(m instanceof THREE.MeshLambertMaterial) || m.map || m.transparent || m.vertexColors) return;
+    meshes.push(o);
+  });
+  if (meshes.length < 2) return 0;
+  const geos = meshes.map((mesh) => {
+    const g = mesh.geometry.index ? mesh.geometry.toNonIndexed() : mesh.geometry.clone();
+    for (const name of Object.keys(g.attributes)) {
+      if (name !== 'position' && name !== 'normal') g.deleteAttribute(name);
+    }
+    const c = (mesh.material as THREE.MeshLambertMaterial).color;
+    const n = g.getAttribute('position').count;
+    const colors = new Float32Array(n * 3);
+    for (let i = 0; i < n; i++) colors.set([c.r, c.g, c.b], i * 3);
+    g.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    g.applyMatrix4(toRoot.clone().multiply(mesh.matrixWorld));
+    return g;
+  });
+  const merged = mergeGeometries(geos);
+  for (const g of geos) g.dispose();
+  if (!merged) return 0;
+  for (const m of meshes) m.removeFromParent();
+  root.add(new THREE.Mesh(merged, new THREE.MeshLambertMaterial({ vertexColors: true, side: THREE.DoubleSide })));
+  return meshes.length - 1;
+}

@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import './style.css';
 import { FlutterBridge, getProgress, type JourneyProgress } from './bridge/flutterBridge';
 import { Colliders } from './collision/colliders';
+import { GamePlay } from './gamePlay';
 import { Joystick } from './input/joystick';
 import { Keyboard } from './input/keyboard';
 import { OrbitCamera } from './input/orbitCamera';
@@ -19,11 +20,12 @@ import { viewDistance } from './scene/farMountains';
 import { createStage } from './scene/renderer';
 import { mergeStatic } from './scene/merge';
 import { inRect, type Room } from './scene/rooms';
+import { signText } from './scene/signAtlas';
 import { buildWorld } from './scene/world';
 import { el } from './ui/dom';
 import { LearnButton } from './ui/learnButton';
 import { AreaBanner } from './ui/areaBanner';
-import { createHint, FpsCounter, NameTag } from './ui/hud';
+import { FpsCounter, NameTag } from './ui/hud';
 import { LessonBoard } from './ui/lessonBoard';
 import { MapHud } from './ui/mapHud';
 import { ActionButtons } from './ui/actionButtons';
@@ -33,8 +35,10 @@ import { AreaEntryTracker } from './zones/areaTracker';
 import { ZoneTracker } from './zones/zoneTracker';
 import { JOURNEY_MAP, placeAt, placeScene, placeStates, type PlaceState } from './zones/journeyMap';
 import { RingCharge } from './zones/ringCharge';
-import { DIALOGS, DialogRunner } from './zones/dialogs';
+import { DIALOGS, DialogRunner, type Dialog } from './zones/dialogs';
+import { RADICALS, type Radical } from './zones/radicals';
 import { placeZones, ZONE_CONTENT, type Zone } from './zones/zones';
+import { FILMS, nearestSeat } from './zones/videos';
 
 /** Nhãn tên cao hơn đỉnh búi tóc đệ tử (~2,2 m) một chút. */
 const NAME_TAG_HEIGHT = 2.5;
@@ -54,7 +58,8 @@ async function boot(): Promise<void> {
   const loading = new LoadingScreen(spec.site);
   loading.progress(10);
   // Biển hiệu, bảng phấn vẽ chữ lên canvas, nên phải nạp font trước khi dựng cảnh.
-  const hanText = [spec.site.han, TELEPORT_TEXT, '此', ...JOURNEY_MAP.places.map((p) => p.han), ...spec.site.areas.map((a) => a.han ?? ''), ...ZONE_CONTENT.map((c) => c.lesson.han)].join('');
+  // bộ thủ tu luyện ở vùng có bài học bộ thủ (R-HANH-3) — thẻ HTML dự phòng vẽ chữ bằng font này
+  const hanText = [spec.site.han, TELEPORT_TEXT, '此', ...(spec.lessons.radicals ? RADICALS.map((r) => r.form) : []), ...JOURNEY_MAP.places.map((p) => p.han), ...spec.site.areas.map((a) => a.han ?? ''), ...ZONE_CONTENT.map((c) => c.lesson.han), signText(spec), ...FILMS.map((f) => f.title)].join('');
   await Promise.allSettled([
     document.fonts.load('700 72px Lora'),
     document.fonts.load('700 13px "Be Vietnam Pro"'),
@@ -82,7 +87,9 @@ async function boot(): Promise<void> {
   const character = await createPlayerCharacter(new URLSearchParams(location.search).get('nhan-vat'));
   // về nhà từ một vùng: đứng trước cột của vùng đó, ngoài vòng, nhìn vào cột (R-HANH-2)
   const back = isHome && params.has('tu') && spec.teleport.enabled ? arrivalSpot(spec.teleport) : undefined;
-  const [sx, sz] = back ? back.at : spec.player.start;
+  // ?dung=x,z — thử trên trình duyệt: đứng sẵn ở (x, z) (vd. cạnh bàn cờ ?dung=-22,36.5)
+  const dung = (params.get('dung') ?? '').split(',').map(Number);
+  const [sx, sz] = back ? back.at : dung.length === 2 && dung.every(Number.isFinite) ? dung : spec.player.start;
   character.root.position.set(sx, 0, sz);
   if (back) character.facing.rotation.y = back.rotY;
   scene.add(character.root);
@@ -124,6 +131,7 @@ async function boot(): Promise<void> {
       if (!p) return;
       progress = p;
       open = openList(p);
+      learnedRadicals = new Set(p.radicals);
     });
   };
   const lesson = new LessonBoard(closeLesson);
@@ -136,6 +144,7 @@ async function boot(): Promise<void> {
     const want = !appHidden && !document.hidden;
     if (want === running) return;
     running = want;
+    if (!want) world.cinema?.screen.pause(); // app xuống nền → dừng phim (R-RAP-2)
     if (want) {
       clock.getDelta(); // bỏ khoảng thời gian đã dừng
       requestAnimationFrame(tick);
@@ -163,24 +172,81 @@ async function boot(): Promise<void> {
     });
   };
   const learn = new LearnButton(openLesson);
+
+  /* ---------- tu luyện (R-HANH-3): ngồi thiền ≥ 1 giây ở vùng có bộ thủ → thẻ bộ chưa học đầu tiên ---------- */
+  // Bài học là lớp riêng của người học (theo tiến độ của họ) — cảnh không đổi theo tiến độ (R-VUNG-1).
+  let learnedRadicals = new Set(progress?.radicals ?? []);
+  const SIT_TO_LEARN = 1; // giây ngồi trước khi thẻ mở
+  let sitTime = 0;
+  let sitOpened = false; // lần ngồi này đã mở thẻ → đứng dậy rồi ngồi lại mới mở thẻ sau
+  const openRadical = (r: Radical): void => {
+    if (paused) return;
+    const id = r.id;
+    paused = true;
+    learn.suspend(true);
+    player.moveTarget = null;
+    void bridge.openRadical(r, learnedRadicals.has(id), spec.site.name).then((native) => {
+      if (native) {
+        covered = true;
+        return;
+      }
+      // không có Flutter (trình duyệt): bảng HTML dự phòng; mở là coi như đã học (chỉ trong phiên, không lưu)
+      lesson.open({
+        han: r.form,
+        pinyin: r.pinyin,
+        meaning: `${r.name} — ${r.meaning}`,
+        info: [
+          ...(r.full ? ([['Dạng đủ', r.full]] as [string, string][]) : []),
+          ['Nét', String(r.strokes)],
+          ['Chữ có bộ này', r.examples.map((e) => `${e.han} ${e.pinyin} · ${e.meaning}`).join(' — ')],
+        ],
+      });
+      learnedRadicals.add(id);
+    });
+  };
+  /** Mỗi khung: đếm thời gian ngồi thiền; đủ `SIT_TO_LEARN` thì mở thẻ bộ chưa học đầu tiên (R-HANH-3). */
+  const meditate = (dt: number, busy: boolean): void => {
+    if (!spec.lessons.radicals || !player.isSitting) {
+      sitTime = 0;
+      sitOpened = false;
+      return;
+    }
+    if (sitOpened || busy) return;
+    sitTime += dt;
+    if (sitTime < SIT_TO_LEARN) return;
+    sitOpened = true;
+    const next = RADICALS.find((r) => !learnedRadicals.has(r.id));
+    if (next) openRadical(next); // học đủ → ngồi thiền chỉ là ngồi
+  };
   const zones = new ZoneTracker(placed.zones, (z) => learn.setZone(z));
+
+  /* ---------- rạp phim (R-RAP-1): Ngồi gần bồ đoàn → lên bồ đoàn, nhìn về màn; xa → ngồi thiền tại chỗ ---------- */
+  world.cinema?.screen.setFilms(FILMS);
+  const sitOrWatch = (): void => {
+    if (gamePlay.trySit()) return; // gần ghế bàn chơi → ngồi vào bàn (R-GIAO-1)
+    const seat = !player.isSitting && world.cinema ? nearestSeat(world.cinema.seats, player.position.x, player.position.z) : undefined;
+    if (seat) {
+      player.position.set(seat.x, seat.y, seat.z);
+      character.facing.rotation.y = seat.rotY;
+      orbit.yaw = seat.rotY - Math.PI; // camera sau lưng, nhìn về màn
+    }
+    player.toggleSit();
+  };
 
   /* ---------- điều khiển ---------- */
   const orbit = new OrbitCamera(spec.camera);
   const joystick = new Joystick(el('joy'), el('knob'), el('joyGhost'));
   const picker = new GroundPicker(camera, world.ground);
-  const hideHint = createHint();
   // Space nhảy, F chào, C ngồi thiền (R-DIEU-6, R-DIEU-7); đang học / màn tải thì bỏ qua
-  const keyboard = new Keyboard(hideHint, (a) => {
+  const keyboard = new Keyboard((a) => {
     if (paused || loading.active || mapOpen || talking) return;
     if (a === 'jump') player.jump();
     else if (a === 'bow') player.bow();
-    else player.toggleSit();
+    else sitOrWatch();
   });
   attachPointerInput(canvas, {
     joystick,
     orbit,
-    onFirstInput: hideHint,
     onJoystickStart: () => (player.moveTarget = null),
     tapOnly: () => mapOpen || talking,
     onTap: (x, y) => {
@@ -189,6 +255,8 @@ async function boot(): Promise<void> {
         return;
       }
       if (paused || talking) return;
+      if (gamePlay.tap(x, y, camera)) return; // đang ngồi chơi: chạm vào bàn, không đi (R-GIAO-1)
+      if (world.cinema?.screen.playing) world.cinema.screen.unmute(); // chạm lần đầu khi xem → có tiếng (R-RAP-2)
       // đang trong nhà: chạm trúng vật học của nhà → mở bài (R-VUNG-2)
       const room = roomAt(player.position.x, player.position.z);
       const hit = room ? picker.pickObject(x, y, room.hits) : null;
@@ -210,7 +278,7 @@ async function boot(): Promise<void> {
   const actions = new ActionButtons({
     jump: () => player.jump(),
     bow: () => player.bow(),
-    sit: () => player.toggleSit(),
+    sit: () => sitOrWatch(),
   });
   let runner: DialogRunner | null = null;
   const dialogBox = new DialogBox(
@@ -219,6 +287,9 @@ async function boot(): Promise<void> {
       runner?.close();
       runner = null;
       talking = false;
+      const then = afterSay;
+      afterSay = null;
+      then?.();
     },
   );
   const talk = new TalkButton((d) => {
@@ -229,6 +300,33 @@ async function boot(): Promise<void> {
     dialogBox.open(d, runner.start());
   });
   const dialogOf = new Map(DIALOGS.map((d) => [d.npc, d]));
+
+  /* ---------- khu giao lưu (R-GIAO-1, R-CO-1..3, R-DAU-1): bàn cờ, bàn đấu chữ — gamePlay.ts ---------- */
+  let afterSay: (() => void) | null = null;
+  const gamePlay = new GamePlay(world.gameTables, {
+    scene,
+    colliders,
+    player,
+    face: (rotY) => {
+      character.facing.rotation.y = rotY;
+      orbit.yaw = rotY - Math.PI; // đứng dậy: camera sau lưng
+    },
+    groundAt,
+    // một câu NPC nói qua khung thoại có sẵn; đóng khung → onClose
+    say: (npcId, text, onClose) => {
+      const base = dialogOf.get(npcId);
+      const d: Dialog = { npc: npcId, name: base?.name ?? npcId, han: base?.han, start: 'loi', lines: [{ id: 'loi', text, choices: [{ text: 'Vâng', next: null }] }] };
+      runner = new DialogRunner(d);
+      talking = true;
+      joystick.end();
+      afterSay = onClose;
+      dialogBox.open(d, runner.start());
+    },
+    learned: () => learnedRadicals,
+  });
+  void gamePlay.placeNpcs().then((p) => {
+    if (p.length) console.warn(p.join('\n'));
+  });
   const talkAnchor = new THREE.Vector3();
 
   /* ---------- truyền tống (R-HANH-2): ở trong vòng 1,2 s → bản đồ mở → chạm nơi → màn tải → trang tải lại ---------- */
@@ -311,6 +409,7 @@ async function boot(): Promise<void> {
     const pos = player.position;
     orbit.follow(dt, pos.x - fromX, pos.z - fromZ); // camera tự xoay ra sau lưng khi đi (R-DIEU-3)
     for (const npc of npcSet.npcs) npc.update(dt, pos);
+    gamePlay.update(dt, pos);
     if (ring && !travelling && !loading.active && !mapOpen) {
       if (ring.update(pos, dt)) openMap();
       world.teleport?.setCharge(ring.charge);
@@ -319,10 +418,17 @@ async function boot(): Promise<void> {
     zones.update(pos);
     entries.update(pos);
     world.update(dt, pos);
+    // R-RAP-2: đang ngồi trên bồ đoàn → phim phát; đứng dậy → dừng
+    if (world.cinema) {
+      const watching = player.isSitting && !!nearestSeat(world.cinema.seats, pos.x, pos.z, 0.3);
+      if (watching) world.cinema.screen.play();
+      else world.cinema.screen.pause();
+    }
     const room = roomAt(pos.x, pos.z);
-    orbit.update(camera, pos, dt, false, groundAt, room?.floor, sight);
+    if (!gamePlay.placeCamera(camera)) orbit.update(camera, pos, dt, false, groundAt, room?.floor, sight);
     if (!covered) renderer.render(scene, camera);
     nameTag.update(pos, camera, NAME_TAG_HEIGHT);
+    meditate(dt, paused || covered || loading.active || mapOpen || talking);
     learn.follow(zones.current ? anchorOf.get(zones.current.id) : undefined, camera);
     // nút "Nói chuyện": NPC gần nhất trong 2,5 m, không đang học / ngồi / bản đồ / thoại / màn tải (R-NPC-2)
     const near = paused || mapOpen || talking || loading.active || player.isSitting ? null : npcInTalkRange(npcSet.npcs, pos);

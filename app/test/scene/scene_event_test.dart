@@ -60,6 +60,7 @@ void main() {
     expect(progressReply(const Progress(chars: {'快', '書'})), {
       'open': ['rung-truc'],
       'chars': 2,
+      'radicals': <String>[],
       'need': {
         'giang-nam': {'radicals': 50},
         'bong-lai': {'chars': 300},
@@ -74,5 +75,30 @@ void main() {
     expect(backScript, contains('"type":"back"'));
     expect(backScript, contains('===true'));
     expect(backScript, startsWith('window.scene?'));
+  });
+
+  test('openRadical: đọc bộ thủ, ví dụ, nét "từ hình đến chữ", đã học (docs/bridge.md)', () {
+    final r = OpenRadicalRequest.parse([
+      {
+        'type': 'openRadical',
+        'payload': {
+          'radical': {
+            'id': 'thuy', 'form': '氵', 'full': '水', 'name': 'thuỷ', 'meaning': 'nước', 'pinyin': 'shuǐ',
+            'strokes': 3, 'fullStrokes': 4,
+            'examples': [{'han': '河', 'pinyin': 'hé', 'meaning': 'sông'}],
+            'evolution': {'hinh': ['M50 10 L50 90'], 'trien': ['M30 10 L30 90']},
+          },
+          'learned': true,
+          'region': 'Rừng trúc',
+        },
+      }
+    ])!;
+    expect(r.radical.form, '氵');
+    expect(r.radical.full, '水');
+    expect(r.radical.fullStrokes, 4);
+    expect(r.radical.examples, [('河', 'hé', 'sông')]);
+    expect(r.radical.hinh, ['M50 10 L50 90']);
+    expect(r.learned, isTrue);
+    expect(OpenRadicalRequest.parse([{'type': 'openRadical', 'payload': {'radical': {'id': 'x'}}}]), isNull);
   });
 }

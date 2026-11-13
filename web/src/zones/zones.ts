@@ -28,40 +28,11 @@ export interface ZoneContent {
   lesson: Lesson;
 }
 
-export const ZONE_CONTENT: ZoneContent[] = [
-  {
-    id: 'lop-hsk3',
-    interior: 'lop-hoc',
-    action: 'Học chữ',
-    lesson: {
-      han: '快',
-      pinyin: 'kuài',
-      meaning: 'nhanh; vui vẻ',
-      info: [
-        ['Bộ', '忄 tâm đứng'],
-        ['Nét', '7'],
-        ['Từ', '快乐 kuàilè · vui vẻ'],
-        ['HSK', '2'],
-      ],
-    },
-  },
-  {
-    id: 'thu-vien',
-    interior: 'thu-vien',
-    action: 'Ôn chữ',
-    lesson: {
-      han: '書',
-      pinyin: 'shū',
-      meaning: 'sách; viết',
-      info: [
-        ['Giản thể', '书'],
-        ['Nét', '10'],
-        ['Từ', '图书馆 túshūguǎn · thư viện'],
-        ['HSK', '1'],
-      ],
-    },
-  },
-];
+/**
+ * Bài học neo vào nhà vào được. Tông môn không có lớp học (R-VUNG-1, 2026-11-13): bài 快 / 書 đã bỏ. Cơ chế giữ lại
+ * (nhà neo `zone`, nội thất `lop-hoc` / `thu-vien`, nút học, cầu nối mở bài) cho cảnh vùng sau này.
+ */
+export const ZONE_CONTENT: ZoneContent[] = [];
 
 /** Vùng tròn quanh điểm học trong nhà: người chơi bước vào thì hiện nút học trên vật (R-VUNG-1). */
 export type Zone = ZoneContent & ZoneAnchor;

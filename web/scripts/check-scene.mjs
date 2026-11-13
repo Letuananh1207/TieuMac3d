@@ -16,7 +16,8 @@ const out = await build({
       "export { resolveSceneSpec } from './src/scene/specCheck.ts';\n" +
       "export { placeZones, ZONE_CONTENT } from './src/zones/zones.ts';\n" +
       "export { moonRadius, moonOpening } from './src/scene/kien_truc/tuong.ts';\n" +
-      "export { ringTrigger, arrivalSpot } from './src/scene/teleportLayout.ts';\n",
+      "export { ringTrigger, arrivalSpot, daisLayout } from './src/scene/teleportLayout.ts';\n" +
+      "export { RADICALS, checkRadicals } from './src/zones/radicals.ts';\n",
     resolveDir: web,
     loader: 'ts',
   },
@@ -26,7 +27,7 @@ const out = await build({
   write: false,
   logLevel: 'error',
 });
-const { resolveSceneSpec, roomKinds, zoneAnchors, placeZones, ZONE_CONTENT, moonRadius, moonOpening, ringTrigger, arrivalSpot } = await import(
+const { resolveSceneSpec, roomKinds, zoneAnchors, placeZones, ZONE_CONTENT, moonRadius, moonOpening, ringTrigger, arrivalSpot, daisLayout, RADICALS, checkRadicals } = await import(
   `data:text/javascript;base64,${Buffer.from(out.outputFiles[0].text).toString('base64')}`
 );
 
@@ -91,6 +92,12 @@ function checkScene(rel, raw) {
     if (!has) all.push(`npcs: thiếu design/models/${p.id}.glb — app bỏ NPC "${p.id}"`);
     console.log(`NPC ${p.id}: (${n(p.x)}; ${n(p.z)}) nhìn ${n(p.rotY ?? 0)}°${has ? '' : ' — THIẾU MODEL'}`);
   }
+  // bàn chơi khu giao lưu (R-GIAO-1): NPC bàn cũng cần model
+  for (const t of spec.gameTables) {
+    const has = existsSync(resolve(web, '..', 'design', 'models', `${t.npc}.glb`));
+    if (!has) all.push(`gameTables: thiếu design/models/${t.npc}.glb — bàn "${t.id}" không có NPC`);
+    console.log(`Bàn chơi ${t.id} (${t.kind}): tâm (${n(t.x)}; ${n(t.z)}) quay ${t.rotY ?? 0}° · NPC ${t.npc}${has ? '' : ' — THIẾU MODEL'}`);
+  }
   if (spec.paths.length) console.log(`Lối lát đá: ${spec.paths.length}`);
   const t = spec.terrain;
   if (t.enabled) {
@@ -104,10 +111,18 @@ function checkScene(rel, raw) {
   if (spec.farMountains.layers.length) console.log(`Núi xa: ${spec.farMountains.layers.length} lớp`);
   if (spec.cloudSea.radius > 0) console.log(`Biển mây: y ${n(spec.cloudSea.y)}, bán kính ${n(spec.cloudSea.radius)}`);
 
+  if (spec.lessons.radicals) {
+    all.push(...checkRadicals(RADICALS));
+    console.log(`Tu luyện bộ thủ: ngồi thiền ≥ 1 giây → thẻ bộ chưa học đầu tiên (${RADICALS.length} bộ — R-HANH-3)`);
+  }
   const tp = spec.teleport;
   if (tp.enabled) {
     const where = tp.radius > 0 ? `sân ∅ ${n(tp.radius * 2)}, ` : '';
     console.log(`Vòng trận: tâm (${n(tp.center[0])}; ${n(tp.center[1])}) · ${where}vòng bán kính ${n(tp.ringRadius)} (bước vào khi cách tâm < ${n(+ringTrigger(tp).toFixed(2))} m)`);
+    if (tp.dais.tiers > 0) {
+      const L = daisLayout(tp);
+      console.log(`  đài ${tp.dais.tiers} tầng cao ${n(L.height)} m, chân ∅ ${n(+(L.footprint * 2).toFixed(1))} (kể bậc) · ${tp.dais.pillars} trụ phù văn`);
+    }
     if (home) {
       const a = arrivalSpot(tp).at;
       console.log(`  về tông môn đứng ở (${n(+a[0].toFixed(2))}; ${n(+a[1].toFixed(2))})`);

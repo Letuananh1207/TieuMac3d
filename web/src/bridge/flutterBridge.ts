@@ -1,3 +1,4 @@
+import type { Radical } from '../zones/radicals';
 import type { Lesson } from '../zones/zones';
 
 /** Sự kiện qua cầu nối — hợp đồng ở `docs/bridge.md`. */
@@ -43,6 +44,8 @@ export interface JourneyProgress {
   open: string[];
   /** số chữ đã học */
   chars: number;
+  /** mã bộ thủ đã học — tu luyện mở bộ chưa học đầu tiên (R-HANH-3) */
+  radicals: string[];
   /** mốc của vùng còn khoá: số chữ (`chars`) hoặc số bộ thủ (`radicals`) — bản đồ ghi "Cần … chữ" */
   need: Record<string, { chars?: number; radicals?: number }>;
 }
@@ -81,7 +84,7 @@ export async function getProgress(): Promise<JourneyProgress | null> {
 /** Đọc câu trả lời `getProgress`; sai dạng → `null`. */
 export function parseProgress(v: unknown): JourneyProgress | null {
   if (typeof v !== 'object' || v === null) return null;
-  const { open, chars, need } = v as Record<string, unknown>;
+  const { open, chars, need, radicals } = v as Record<string, unknown>;
   if (!Array.isArray(open) || !open.every((x) => typeof x === 'string')) return null;
   const needs: JourneyProgress['need'] = {};
   if (typeof need === 'object' && need !== null) {
@@ -91,7 +94,8 @@ export function parseProgress(v: unknown): JourneyProgress | null {
       needs[id] = { ...(typeof c === 'number' ? { chars: c } : {}), ...(typeof r === 'number' ? { radicals: r } : {}) };
     }
   }
-  return { open, chars: typeof chars === 'number' ? chars : 0, need: needs };
+  const learned = Array.isArray(radicals) ? radicals.filter((x): x is string => typeof x === 'string') : [];
+  return { open, chars: typeof chars === 'number' ? chars : 0, radicals: learned, need: needs };
 }
 
 /**
@@ -119,6 +123,18 @@ export class FlutterBridge {
   }
 
   /** Trả `true` khi trang đã xử lý sự kiện cần trả lời (`back`); các sự kiện khác trả `false`. */
+  /** Nhờ Flutter mở thẻ học bộ thủ native (R-HANH-3). `false` = không có Flutter → trang mở bảng HTML. */
+  async openRadical(radical: Radical, learned: boolean, region: string): Promise<boolean> {
+    const host = window.flutter_inappwebview;
+    if (!host || typeof host.callHandler !== 'function') return false;
+    const event: SceneEvent = { type: 'openRadical', payload: { radical, learned, region } };
+    try {
+      return (await host.callHandler(HANDLER, event)) === true;
+    } catch {
+      return false;
+    }
+  }
+
   private handle(e: unknown): boolean {
     if (typeof e !== 'object' || e === null) return false;
     const { type, payload } = e as Partial<SceneEvent>;

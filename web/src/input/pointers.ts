@@ -20,8 +20,6 @@ export interface PointerHandlers {
   orbit: OrbitCamera;
   /** chạm ngắn ở nửa phải (hoặc chuột) — chỉ để chạm vật học trong nhà, không còn đi tới đó (R-DIEU-2) */
   onTap(clientX: number, clientY: number): void;
-  /** chạm đầu tiên: ẩn dòng hướng dẫn */
-  onFirstInput(): void;
   /** joystick bắt đầu: bỏ điểm đến đang có */
   onJoystickStart(): void;
   /** `true` = chỉ nhận chạm ngắn (bản đồ truyền tống đang mở — R-HANH-2): không joystick, không xoay / zoom camera */
@@ -42,7 +40,6 @@ export function attachPointerInput(canvas: HTMLCanvasElement, h: PointerHandlers
 
   canvas.addEventListener('pointerdown', (e) => {
     canvas.setPointerCapture(e.pointerId);
-    h.onFirstInput();
     if (h.tapOnly?.()) {
       looks.set(e.pointerId, { x: e.clientX, y: e.clientY, sx: e.clientX, sy: e.clientY, t: performance.now() });
       return;

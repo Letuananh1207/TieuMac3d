@@ -24,6 +24,7 @@ mọi thứ không phải cảnh 3D ở Flutter.
 |---|---|---|
 | `collision/` | — | toán thuần, không three, không DOM |
 | `zones/` | `collision` | dữ liệu + theo dõi vùng, không three, không DOM |
+| `games/` | `zones` | luật trò chơi khu giao lưu (Ngũ Tử Kỳ, Đấu chữ) + NPC chơi; thuần, không three, không DOM — test bằng vitest |
 | `scene/` | `collision`, `three` | dựng cảnh; đăng ký vật cản vào `Colliders` |
 | `player/` | `collision`, `scene`, `three` | `Character` (hình) tách khỏi `PlayerController` (di chuyển) |
 | `input/` | `player`, `three` | chỉ dùng kiểu `MoveInput` của player |

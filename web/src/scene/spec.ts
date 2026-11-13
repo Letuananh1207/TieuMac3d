@@ -7,19 +7,27 @@
 
 export type XZ = [number, number];
 
-export const BUILDING_KINDS = ['giang-duong', 'dien', 'thap', 'nha-nho'] as const;
+export const BUILDING_KINDS = ['giang-duong', 'dien', 'thap', 'nha-nho', 'dinh', 'hi-dai', 'tra-lau', 'lau-sach', 'cua-hang', 'rap-phim'] as const;
+/** Hàng bày trong cửa hàng (`cua-hang`): bút mực · vải · bùa giấy · thuốc · thùng gỗ. */
+export const GOODS_KINDS = ['but', 'vai', 'bua', 'thuoc', 'thung'] as const;
 export const ROOF_KINDS = ['chop', 'cong'] as const;
 export const SIDES = ['bac', 'nam', 'dong', 'tay'] as const;
 /** NPC có model: `design/models/<mã>.glb` (tạo bằng /tai-nguyen). Thêm NPC mới = thêm mã ở đây + đặt file model. */
-export const NPC_IDS = ['tieu-mac'] as const;
+export const NPC_IDS = ['tieu-mac', 'su-phu'] as const;
+/** Bàn chơi ở khu giao lưu (R-GIAO-1): `co` = Ngũ Tử Kỳ (R-CO-1), `dau-chu` = Đấu chữ (R-DAU-1). */
+export const GAME_KINDS = ['co', 'dau-chu'] as const;
 export const PROP_KINDS = [
   'luong-thuoc',
   'lo-dan',
   'da-thai-ho',
   'den-da',
   'dinh-dong',
+  'sap-o',
+  'ban-tra',
+  'co',
+  'bang',
 ] as const;
-export const TREE_KINDS = ['tan', 'truc', 'tung', 'lieu', 'mai'] as const;
+export const TREE_KINDS = ['tan', 'truc', 'tung', 'lieu', 'mai', 'truc-mao'] as const;
 export const WALL_STYLES = ['gach', 'voi'] as const;
 /** Kiểu gạch lát sân: `gach` = gạch chữ nhật nâu như cũ, `vuong` = gạch vuông xanh xám 0,6 m (方磚, 2026-11-13). */
 export const PAVE_PATTERNS = ['gach', 'vuong'] as const;
@@ -47,6 +55,16 @@ export interface BuildingSpec {
   roof?: (typeof ROOF_KINDS)[number];
   /** số tầng của tháp (2–9, mặc định 5) */
   floors?: number;
+  /** đình: số cột / cạnh mái chóp (4 hoặc 6, mặc định 4) */
+  sides?: number;
+  /** màu bờ nóc + viền mép mái (thiếu = `buildingStyle.ridge`); Tàng Thư Các: lục */
+  trim?: string;
+  /** màu cột (thiếu = `buildingStyle.pillar` son); Tàng Thư Các: lục */
+  pillarColor?: string;
+  /** cửa hàng: một chữ Hán trên cờ dọc treo cần (vd. "筆") */
+  sign?: string;
+  /** cửa hàng: hàng bày trên quầy, kệ */
+  goods?: (typeof GOODS_KINDS)[number];
 }
 
 export interface CameraView {
@@ -90,6 +108,11 @@ export interface GateSpec {
   hanTitle?: string;
   /** màu ba mái nhỏ (ngói lưu ly lục); thiếu thì `buildingStyle.eave` */
   roofColor?: string;
+  /**
+   * model AI `design/models/<model>.glb` (vd. "cong-son-mon", `/tai-nguyen`) thay cổng khối: co cho bề ngang bằng cổng
+   * khối cùng `width`, biển chữ dán lên biển trống của model. Thiếu trường / thiếu file / nạp lỗi → cổng khối như cũ.
+   */
+  model?: string;
 }
 
 /** Một khu có tên (hình chữ nhật từ góc `from` tới góc `to`) — bước vào thì hiện thẻ tên khu (R-HUD-3). */
@@ -117,6 +140,8 @@ export interface PropSpec {
   z: number;
   rotY?: number;
   scale?: number;
+  /** cờ dọc (`co`): một chữ Hán; bảng vinh danh (`bang`): dòng tiêu đề */
+  text?: string;
 }
 
 /** NPC đứng tại chỗ (R-NPC-1): mặt trước nhìn về +z khi `rotY` = 0; `rotY` độ, tuỳ ý (không cần bội 90 — không có
@@ -126,6 +151,19 @@ export interface NpcSpec {
   x: number;
   z: number;
   rotY?: number;
+}
+
+/**
+ * Bàn chơi (R-GIAO-1): bàn đá thấp tâm (x, z); ghế người chơi phía +z (ngồi nhìn về −z khi `rotY` = 0), NPC `npc` đứng
+ * phía −z nhìn về người chơi. NPC bàn là bản riêng (không nói chuyện — R-NPC-2 chỉ cho `npcs`). `rotY` độ, bội 90.
+ */
+export interface GameTableSpec {
+  id: string;
+  kind: (typeof GAME_KINDS)[number];
+  x: number;
+  z: number;
+  rotY?: number;
+  npc: (typeof NPC_IDS)[number];
 }
 
 /** Cụm cây rải ngẫu nhiên (theo `trees.seed`) trong hình chữ nhật tâm (x, z). */
@@ -216,6 +254,23 @@ export interface TeleportSpec {
   ringRadius: number;
   /** sân đá, viền + phù hiệu, vòng khi tắt, vòng sáng (ngọc lục), chấm vàng / hạt sáng */
   colors: { floor: string; rim: string; dim: string; lit: string; spark: string };
+  /** đài tròn nhiều tầng dưới vòng (`tiers` 0 = sân / bệ phẳng như cũ) — xem `DaisSpec` */
+  dais: DaisSpec;
+}
+
+/**
+ * Đài tròn kiểu đàn tế: `tiers` tầng trụ tròn, mỗi tầng cao `tierHeight`, rộng ra `tierWidth` so với tầng trên (tầng
+ * trên cùng ôm vòng trận: bán kính `ringRadius + 0,9`); lan can đá quanh mép mỗi tầng, chừa 4 lối bậc rộng `stairWidth`
+ * theo 4 hướng chính; `pillars` trụ đá khắc phù văn trên tầng dưới cùng, xen giữa các lối bậc, phù văn sáng theo độ nạp.
+ */
+export interface DaisSpec {
+  tiers: number;
+  tierHeight: number;
+  tierWidth: number;
+  stairWidth: number;
+  pillars: number;
+  /** đá tầng + bậc, lan can (đá trắng), thân trụ */
+  colors: { stone: string; rail: string; pillar: string };
 }
 
 export interface SceneSpec {
@@ -307,6 +362,8 @@ export interface SceneSpec {
     beamBlue: string;
     gold: string;
     timber: string;
+    /** vải / giấy dầu: ô sạp chợ (2026-11-13.13) */
+    cloth: string;
     /** hệ số chiều cao kiến trúc (nền, cột, tường thân, cửa, mái, tầng tháp, cổng sơn môn), 0,5–3; 1 = cỡ gốc.
      *  Thứ cỡ người (bậc, lan can, biển, đèn lồng, đồ đạc) giữ nguyên. */
     heightScale: number;
@@ -320,6 +377,8 @@ export interface SceneSpec {
     leaves: [string, string, string];
     /** thân và lá trúc */
     bamboo: [string, string];
+    /** trúc mao (Rừng trúc): thân xanh, thân già vàng, lá */
+    mao: [string, string, string];
     /** liễu: tán, dải rủ */
     willow: [string, string];
     /** mai: cành, hoa đậm, hoa nhạt */
@@ -334,6 +393,11 @@ export interface SceneSpec {
   };
   /** `enabled: false` = không có giếng (cảnh vùng) */
   well: { enabled: boolean; x: number; z: number; stone: string; water: string };
+  /**
+   * Bài học của vùng (R-HANH-3): `radicals` = ngồi thiền ở đây là tu luyện bộ thủ (Rừng trúc). Bài học là lớp riêng của
+   * người học — cảnh không đặt vật học theo tiến độ (R-VUNG-1). Mặc định tắt (tông môn: ngồi thiền chỉ là ngồi).
+   */
+  lessons: { radicals: boolean };
   /** vòng trận truyền tống (R-HANH-2): tông môn = Truyền Tống Đài; vùng = vòng về / đi tiếp; `player.start` ngoài vòng */
   teleport: TeleportSpec;
   /** đảo đá lơ lửng (chỉ ngắm) + mây trôi quanh tâm cảnh ở độ cao `height` */
@@ -344,6 +408,8 @@ export interface SceneSpec {
   player: { start: XZ };
   /** nhân vật không điều khiển (R-NPC-1) */
   npcs: NpcSpec[];
+  /** bàn chơi khu giao lưu (R-GIAO-1) */
+  gameTables: GameTableSpec[];
   camera: { fov: number; minDist: number; maxDist: number; near: CameraView; far: CameraView };
 }
 
@@ -403,6 +469,7 @@ export const DEFAULT_SCENE: SceneSpec = {
     beamBlue: '#3f5fa0',
     gold: '#d4a64a',
     timber: '#3a2418',
+    cloth: '#c9803a',
     heightScale: 1,
   },
   buildings: [
@@ -436,6 +503,7 @@ export const DEFAULT_SCENE: SceneSpec = {
     trunk: '#4a3222',
     leaves: ['#2f4a2c', '#37552f', '#26402a'],
     bamboo: ['#7d9a4a', '#4f7a35'],
+    mao: ['#6f8f3c', '#a99f5a', '#4f7a35'],
     willow: ['#8fb35e', '#a6c470'],
     plum: ['#3a2418', '#e88aa4', '#f2b8c6'],
     yard: [
@@ -450,6 +518,7 @@ export const DEFAULT_SCENE: SceneSpec = {
     seed: 7,
   },
   well: { enabled: true, x: 6, z: 2, stone: '#6c6660', water: '#2b4a6a' },
+  lessons: { radicals: false },
   // tắt: đặc tả tông môn / vùng bật (mục 2026-11-13.6, đổi kiểu một vòng 2026-11-13); giá trị dưới = Truyền Tống Đài khu 3
   teleport: {
     enabled: false,
@@ -457,6 +526,15 @@ export const DEFAULT_SCENE: SceneSpec = {
     radius: 13,
     ringRadius: 4,
     colors: { floor: '#b9b4a8', rim: '#8d877f', dim: '#7f8a84', lit: '#4fd1a5', spark: '#f2c45a' },
+    // 0 tầng = sân / bệ phẳng (cảnh cũ không đổi)
+    dais: {
+      tiers: 0,
+      tierHeight: 0.5,
+      tierWidth: 1.4,
+      stairWidth: 2.4,
+      pillars: 4,
+      colors: { stone: '#c9c3b6', rail: '#ece8de', pillar: '#8d877f' },
+    },
   },
   floating: {
     islands: [],
@@ -464,6 +542,7 @@ export const DEFAULT_SCENE: SceneSpec = {
   },
   player: { start: [0, 6] },
   npcs: [], // cảnh mặc định chưa có NPC
+  gameTables: [],
   camera: { fov: 55, minDist: 5, maxDist: 22, near: { dist: 9, pitch: 0.42 }, far: { dist: 17, pitch: 0.75 } },
 };
 

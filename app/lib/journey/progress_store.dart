@@ -30,4 +30,13 @@ class ProgressStore {
     await _prefs.setStringList(_charsKey, chars.toList());
     return true;
   }
+
+  /// Ghi bộ thủ [id] là đã học (nút "Đã học · khắc vào bia" — R-HANH-3). Học rồi → không đổi, trả `false`.
+  Future<bool> learnRadical(String id) async {
+    if (id.isEmpty || _progress.radicals.contains(id)) return false;
+    final radicals = {..._progress.radicals, id};
+    _progress = Progress(chars: _progress.chars, radicals: radicals);
+    await _prefs.setStringList(_radicalsKey, radicals.toList());
+    return true;
+  }
 }

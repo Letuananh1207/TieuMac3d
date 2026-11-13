@@ -10,7 +10,10 @@ export interface Ground {
   slopeAt(x: number, z: number): number;
 }
 
-/** Tấm thẳng trục: phẳng ở `y`, hoặc dốc đều dọc trục `ramp.axis` từ `y` (tại `ramp.at0`) tới `ramp.y1` (tại `ramp.at1`). */
+/**
+ * Tấm thẳng trục: phẳng ở `y`, hoặc dốc đều dọc trục `ramp.axis` từ `y` (tại `ramp.at0`) tới `ramp.y1` (tại `ramp.at1`).
+ * `round` = tấm tròn nội tiếp hộp (tâm hộp, bán kính nửa cạnh x) — mặt tầng đài tròn.
+ */
 export interface Pad {
   minX: number;
   maxX: number;
@@ -18,10 +21,14 @@ export interface Pad {
   maxZ: number;
   y: number;
   ramp?: { axis: 'x' | 'z'; at0: number; at1: number; y1: number };
+  round?: boolean;
 }
 
 function inside(p: Pad, x: number, z: number): boolean {
-  return x >= p.minX && x <= p.maxX && z >= p.minZ && z <= p.maxZ;
+  if (!(x >= p.minX && x <= p.maxX && z >= p.minZ && z <= p.maxZ)) return false;
+  if (!p.round) return true;
+  const r = (p.maxX - p.minX) / 2;
+  return Math.hypot(x - (p.minX + r), z - (p.minZ + p.maxZ) / 2) <= r;
 }
 
 function padHeight(p: Pad, x: number, z: number): number {

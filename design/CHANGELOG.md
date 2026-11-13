@@ -3,6 +3,31 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-13.21 — Văn Uyên Tông: khu giao lưu Kỳ Văn Uyển 棋文苑 (bàn cờ + bàn đấu chữ)
+
+- Loại: cảnh 3D — **bố cục** (đã vào `scene.json`) + trường đặc tả mới `gameTables`. Phiên VS Code làm thay `/canh` trong
+  kế hoạch `/lead` `docs/tasks/2026-11-13-khu-giao-luu-co-dau-chu.md` (người dùng duyệt).
+- Người dùng: "khu giao lưu ở bãi phía tây Sơn Môn: cờ chung với NPC + trò chơi chữ Hán"; chọn Ngũ Tử Kỳ, Đấu chữ, chơi
+  trên bàn 3D, tên Kỳ Văn Uyển.
+- Đổi: `site.areas` + **Kỳ Văn Uyển** x −40…−12, z 28…52 · `terrain.plateaus` + nền lát cùng khung (blend 3) · `paths` +
+  (−4; 40) → (−14; 40) rộng 3,6 · `props` + 2 `den-da` (−14; 36,5), (−14; 43,5) · `trees.yard` + 2 mai (−32; 30), (−32; 50) ·
+  **`gameTables`** (mới): `ban-co` (co) (−22; 34), `ban-dau-chu` (dau-chu) (−22; 46), quay 0°, NPC tieu-mac / su-phu đứng
+  sau bàn (bản riêng, không nói chuyện).
+- Luật: R-VUNG-1 (ngoại lệ ôn bộ thủ), R-GIAO-1, R-CO-1..3, R-DAU-1..2 — sổ + online.
+- `scene:check`: không lỗi. Draw call: tông môn thường 58–66; ngồi chơi cờ 39. Ảnh: `screens/Ky-van-uyen-toan-canh.png`,
+  `screens/Ky-van-uyen-ngu-tu-ky.png`, `screens/Ky-van-uyen-dau-chu.png`.
+- Cần thiết kế: HUD trong ván — phiếu `docs/phieu_thiet_ke/2026-11-13-tro-choi-giao-luu.md`.
+
+## 2026-11-13.20 — Cổng Sơn Môn dùng model AI
+
+- Loại: cảnh 3D — **dữ liệu** (đã vào `scene.json`). Phiên VS Code làm thay `/canh` trong `/lead` (người dùng cho phép),
+  kế hoạch `docs/tasks/2026-11-13-cong-son-mon-model.md`.
+- Đổi: `gates[son-mon]` thêm `"model": "cong-son-mon"` (model design .16). Bề ngang giữ như cổng khối (≈ 19,9 m với
+  `width` 9,6 — người dùng chọn "khớp bề ngang"), cao ≈ 18,8 m, đáy xà giữa ≈ 10,1 m; biển 文淵宗 dán lên biển trống;
+  vật cản 4 chân trụ đo từ model.
+- Hiệu năng (Canvas 3D): 108 draw call, 148 618 tam giác — sát trần 150k.
+- Cần code: đã làm (`scene/staticModel.ts`, `gate.ts` `addGateModel`).
+
 ## 2026-11-13.19 — Tu luyện: nhập định, nút "Tu luyện", chữ thẻ bộ thủ · dòng gợi ý HUD
 
 - Loại: giao diện · token · chuỗi · luồng/luật (đề xuất).
@@ -30,6 +55,30 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
   `l10n/vi.arb` · `docs/screen_specs.md`, `docs/components.md`.
 - Ảnh: chưa có ảnh (dùng `source/*.dc.html`).
 
+## 2026-11-13.18 — Tiểu Mặc đứng ở bảng nhiệm vụ hằng ngày
+
+- Loại: cảnh 3D — **bố cục NPC** (đã vào `scene.json`) + lời thoại + luật. Phiên VS Code làm thay `/canh` (người dùng:
+  "Tiểu Mặc sẽ đứng ở bảng thông báo" → "bảng … là nhiệm vụ hàng ngày").
+- `npcs` `tieu-mac` (4,5; 15) nhìn nam → **(7,6; 17,6) nhìn bắc (180°)**: đầu đông của bảng `bang` (5,5; 19,2) rộng 3,4,
+  quay mặt vào sân; ngoài lối cổng nam (x ±3,2); cách Sư phụ 14 m.
+- Bảng `bang` (5,5; 19,2) từ nay là **bảng nhiệm vụ hằng ngày** (chữ trên bảng 文淵榜 → **日課榜**; phiếu bảng vinh danh bỏ). Nhiệm vụ hằng ngày
+  chưa có code → `/lead` khi làm.
+- Lời thoại Tiểu Mặc: trông bảng nhiệm vụ hằng ngày, đón người mới (`chao`, `don-khach`); `khen` bỏ "trễ giờ giảng".
+- Luật: R-NPC-1, R-NPC-2 đổi ví dụ theo vị trí mới — sổ + online, `--mark-synced`.
+- `scene:check`: không lỗi. Ảnh: `screens/Canh-tieu-mac-bang.png`.
+
+## 2026-11-13.17 — Sư phụ Mặc Ông đứng ở Truyền Tống Đài, hướng dẫn truyền tống
+
+- Loại: cảnh 3D — **bố cục NPC** (đã vào `scene.json`) + lời thoại. Phiên VS Code làm thay `/canh` (người dùng: "sư phụ
+  mặc ông sẽ là người đứng chỗ truyền tống và hướng dẫn").
+- `npcs` `su-phu` (6; −10) → **(−3,5; 9)**, nhìn nam (0°): bên trái chân bậc nam của đài (tâm (0; 0), chân ∅ 14,4), đón
+  người từ cổng nam đi lên; cách Tiểu Mặc (4,5; 15) 10 m (hai nút "Nói chuyện" không chồng).
+- Lời thoại (`web/src/zones/dialogs.ts`): Mặc Ông "giữ Truyền Tống Đài", thêm câu `di` (vào vòng trận → bản đồ → chạm nơi
+  đã mở; về thì vào vòng trận ở vùng đó, chọn Văn Uyên Tông) và `vung` (Rừng trúc mở sẵn, đủ bộ thủ → Giang Nam). Tiểu Mặc
+  câu `tu-chu` chỉ sang Sư phụ ở đài giữa sân (bỏ "phía đông").
+- Luật: không đổi (R-NPC-1/2 ví dụ dùng Tiểu Mặc; lời thoại theo R-HANH-1/2).
+- `scene:check`: không lỗi. Ảnh: `screens/Canh-su-phu-truyen-tong.png`.
+
 ## 2026-11-13.16 — Model AI Cổng Sơn Môn 山門 (công trình 2/3, seed 7)
 
 - Loại: tài nguyên 3D (`/tai-nguyen`). Bộ ảnh 4 góc 2026-11-13.3 → Hunyuan3D-2mv đầy đủ (seed 1234, 7) → luồng công trình
@@ -42,6 +91,27 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
   (`--tu-bang 12`) làm mất vân ngói → bỏ.
 - Cần code: **có** — app chưa nạp công trình `.glb` (trường `buildings[].model`, nạp + scale theo `son-mon` rộng 6, giữ va
   chạm 4 trụ, bản khối dự phòng) → kế hoạch `/lead` (đợt D, `docs/tasks/2026-11-11-nang-cap-do-hoa.md`).
+
+## 2026-11-13.15 — Văn Uyên Tông: rạp phim sang khu mới Tụ Hiền Viên 聚賢園, dọn quảng trường (L-4)
+
+- Loại: cảnh 3D — **bố cục** (đã vào `scene.json`). Phiên VS Code làm thay `/canh` khi sửa lỗi L-4 (người dùng chọn
+  từng mục trong phiên).
+- Người dùng: "ở quảng trường có 1 số món đồ đặt không hợp lý như lô hương cục gì trắng nổi lên và cây không đúng chỗ";
+  chọn: bỏ lư hương, bỏ bớt cây, "di chuyển rạp sang khu khác, khu chỉ dành cho giao lưu vui chơi", tên **Tụ Hiền Viên**.
+- Đổi: `site.areas` + **Tụ Hiền Viên 聚賢園** x 21…42, z −34…−4 (ra cổng đông sân) · `terrain.plateaus` + nền lát x 20…42,
+  z −34…−4 · `buildings` `rap-phim` (0; −12) → **(32; −19)** · `paths` + lối (32; −2,4) → (32; −15) rộng 3,6 ·
+  `props` bỏ `dinh-dong` (0; 12) · `trees.yard` bỏ 3 tùng (14; −14), (±15; 15); 2 mai (±8,5; −9) → (24,5; −24), (39,5; −24)
+  hai bên màn chiếu · `well.enabled` true → **false** (giếng (−15; −15) — "xóa khối này") · `buildings` bỏ `duoc-cac` (−49; 3) · `props` bỏ 4
+  `luong-thuoc` (x −31; z −10 … 2,5) — "phần dược các và các luống cây là không cần thiết".
+- Đợt 3 — "cỏ và cây ở chỗ ngoài … rất lộn xộn xấu; phường thị … không có chức năng gì": **xoá khu Thị Tập** (trà lâu
+  樂坊, 6 `cua-hang`, 3 `ban-tra`, cờ 茶, 2 `sap-o`, 2 đèn đá x −8, mai (−36; 55), liễu (−52; 54), lối phố (−4; 40) → (−50; 40),
+  khu `Thị Tập` trong `site.areas`); nền x −63…−8, z 22…58 giữ phẳng, `pave` → false (bãi cỏ, **để dành khu giao lưu /
+  trò chơi** — chờ `/lead`). Cây: bỏ 6 cụm ngẫu nhiên gần nhà (tùng (±14,5) dọc Sơn Môn, mai (38; 49), trúc (−52,5; 6),
+  (57; 30)); thêm 4 tùng đối xứng (±11; 28), (±11; 52) cỡ 1,2; giữ rừng xa. Cỏ búi 6 → **1,5** / 100 m².
+  Ảnh `screens/Canh-loi-L4-son-mon.png`.
+- Luật: R-RAP-1 viết lại (vị trí rạp + ví dụ) — sổ + online, `--mark-synced`.
+- `scene:check`: không lỗi. Ảnh: `screens/Canh-loi-L4-tu-hien-vien.png`, `screens/Canh-loi-L4-san.png`.
+- Cần code: không (build đọc thẳng `scene.json`).
 
 ## 2026-11-13.13 — Văn Uyên Tông: tiện ích giao lưu thay lớp học (bản mẫu hướng A) + Truyền Tống Đài thu nhỏ
 
@@ -75,6 +145,25 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
   môn (bài học chuyển sang các vùng); `R-HANH-2` — ví dụ vòng (38; 0) → (30; 0), đi từ (30; 0) → nên từ (22,5; 0) sang
   (27; 0), về đứng (32,5; 0) → (24,5; 0); `R-VA-1` nếu ví dụ dùng tường Thị Tập / Ngoại Môn đổi; `R-NPC-1` giữ Tiểu Mặc (4,5; 15).
 - Chưa có ảnh bản mẫu (artboard dùng `source/*.dc.html`).
+
+## 2026-11-13.14 — Cảnh: Rừng trúc bỏ 50 bia bộ thủ, học bằng tu luyện
+
+- Loại: cảnh 3D + luồng/luật (phiên VS Code làm thay `/canh`, kế hoạch `docs/tasks/2026-11-13-tu-luyen-thay-bia.md`).
+- Người dùng: bia "nhìn rất mệt", và sau này nhiều người chung một vùng → chốt "cảnh là của chung, việc học là của
+  riêng". `scene/rung-truc.json`: bỏ `stele`, `steles` (50 bia); trường mới `lessons: { radicals: true }` — ngồi thiền
+  ≥ 1 giây ở đây mở thẻ bộ thủ chưa học đầu tiên (R-HANH-3 viết lại; R-VUNG-1/2/3, R-DIEU-2 sửa — sổ + online).
+- Phần nhìn (nhập định, chữ bay quanh người, nhãn nút thẻ học, đốm linh tự, linh địa): phiếu
+  `docs/phieu_thiet_ke/2026-11-13-tu-luyen.md` — chờ thiết kế.
+- `scene:check`: Không có lỗi. Ảnh: `screens/Canh-rung-truc-tu-luyen.png` (thay `Canh-rung-truc-bia.png`, giữ làm lịch sử).
+
+## 2026-11-13.13 — Cảnh: Sư phụ Mặc Ông đứng trước giảng đường
+
+- Loại: cảnh 3D — **NPC** (phiên VS Code làm thay `/canh`, kế hoạch `docs/tasks/2026-11-13-npc-su-phu.md`, người dùng
+  duyệt vị trí + lời thoại).
+- `npcs` thêm `su-phu` ở (3; −3,5), nhìn về nam (+z, ra sân) — cạnh phải bậc thềm giảng đường (`tra-lau`, mặt trước
+  z = −5,4), không chắn lối vào; hồ sơ `docs/tham_khao/su-phu.md` ghi "gần (0; −5)", dời sang phải để khỏi chắn bậc.
+- Lời thoại "Mặc Ông 墨翁" (xưng "lão phu", gọi "con"): `web/src/zones/dialogs.ts`. Luật R-NPC-1/2 không đổi.
+- `scene:check`: Không có lỗi. Ảnh: `screens/Canh-su-phu.png`.
 
 ## 2026-11-13.12 — Model NPC Sư phụ Mặc Ông (`su-phu.glb`)
 

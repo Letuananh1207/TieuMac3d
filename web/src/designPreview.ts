@@ -16,9 +16,11 @@ import { RUN_SPEED, WALK_SPEED } from './player/controller';
 import { HOME_SCENE, loadScene } from './scene/loadSpec';
 import { createMapScroll } from './scene/banDo';
 import { JOURNEY_MAP, placeStates } from './zones/journeyMap';
+import { RADICALS } from './zones/radicals';
 import { viewDistance } from './scene/farMountains';
 import { mergeStatic } from './scene/merge';
 import { createStage } from './scene/renderer';
+import { signText } from './scene/signAtlas';
 import { buildWorld } from './scene/world';
 import { el } from './ui/dom';
 import { placeZones, ZONE_CONTENT } from './zones/zones';
@@ -33,11 +35,15 @@ function li(text: string, cls?: string): HTMLLIElement {
 }
 
 async function boot(): Promise<void> {
-  await Promise.allSettled([document.fonts.load('700 72px Lora'), document.fonts.load('700 13px "Be Vietnam Pro"')]);
   // ?vung=rung-truc → xem cảnh vùng; không có → tông môn
   const SCENE = loadScene(new URLSearchParams(location.search).get('vung'));
   const SCENE_FILE = SCENE.file;
   const { spec } = SCENE;
+  await Promise.allSettled([
+    document.fonts.load('700 72px Lora'),
+    document.fonts.load('700 13px "Be Vietnam Pro"'),
+    document.fonts.load('700 52px "Han Serif"', `文淵此${RADICALS.map((r) => r.form).join('')}${signText(spec)}`),
+  ]);
   const canvas = el<HTMLCanvasElement>('stage');
   // nhìn từ trên: đủ cao để thấy cả sân / cả vùng địa hình
   const topHeight = Math.max(spec.walls.half * 3, spec.ground.size * 0.9, spec.terrain.enabled ? spec.terrain.size * 0.9 : 0);

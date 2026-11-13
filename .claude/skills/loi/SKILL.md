@@ -45,7 +45,7 @@ Người dùng báo lỗi mà không gõ `/loi` → hỏi một câu "ghi rồi 
    | Tầng | Có | Khi nào |
    |---|---|---|
    | `flutter_test` trong `app/test/` (test quy tắc ở `app/test/rules/`) | có | lỗi phía Flutter |
-   | test TS `web/src/<lớp>/<tên>.test.ts` | **chưa có trình chạy** — hỏi người dùng thêm `vitest` | logic thuần: `collision/`, `zones/zoneTracker.ts`, `player/controller.ts`, `input/orbitCamera.ts` |
+   | test TS `web/src/<lớp>/<tên>.test.ts` (`cd web && npm test`, vitest) | có | logic thuần: `collision/`, `zones/zoneTracker.ts`, `player/controller.ts`, `input/orbitCamera.ts` |
    | chụp headless (`references/testing.md` của `hoc-xa-3d-dev`) | có | cảnh dựng sai / không hiện, HUD lệch |
    | thử tay `npm run dev` / máy thật | có | cảm ứng, WebView, hiệu năng |
 

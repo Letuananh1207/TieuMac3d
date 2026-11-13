@@ -6,11 +6,14 @@
  * Ngân sách: sân + viền / bệ (gộp) ≈ 2 · phù hiệu 1 · vòng 1 · chấm 1 · cột sáng 1 · hạt 1.
  */
 import * as THREE from 'three';
+import type { Colliders } from '../collision/colliders';
+import type { Pad } from '../collision/ground';
 import { lambert } from './materials';
 import { markDynamic } from './merge';
 import type { TeleportSpec } from './spec';
 import { makeCanvasTex } from './textures';
 import type { GroundY } from './terrainHeight';
+import { addDais } from './truyenTongDai';
 
 /** Chữ Hán vẽ lên canvas (phù hiệu) — `main.ts` nạp font cho các chữ này trước khi dựng cảnh. */
 export const TELEPORT_TEXT = '文淵';
@@ -45,8 +48,10 @@ function emblemTex(color: string): THREE.CanvasTexture {
 }
 
 export interface TeleportRing {
-  /** tâm vòng (x, y mặt đất, z) */
+  /** tâm vòng (x, y mặt vòng — mặt đất, hoặc mặt tầng trên cùng của đài —, z) */
   center: THREE.Vector3;
+  /** mặt đất đi được của đài (tầng + dốc bậc); không có đài → rỗng */
+  pads: Pad[];
   /** có nơi để đi không — không có thì vòng tắt, không có hạt */
   setActive(active: boolean): void;
   /** 0 = đứng ngoài · 1 = nạp đầy (sắp truyền tống) */
@@ -54,17 +59,25 @@ export interface TeleportRing {
   update(dt: number): void;
 }
 
-/** Dựng vòng trận theo đặc tả. Không có va chạm: sân và vòng đi qua được. */
-export function addTeleport(scene: THREE.Scene, tp: TeleportSpec, groundY: GroundY = () => 0): TeleportRing {
+/**
+ * Dựng vòng trận theo đặc tả. Không đài: sân / bệ đá phẳng đi qua được, không vật cản. Có đài (`dais.tiers` > 0): đài
+ * nhiều tầng (`truyenTongDai.ts`) — lan can + trụ vào `colliders`, mặt tầng + bậc trả về ở `pads`; vòng nằm trên mặt trên.
+ */
+export function addTeleport(scene: THREE.Scene, colliders: Colliders, tp: TeleportSpec, groundY: GroundY = () => 0): TeleportRing {
   const { colors, ringRadius: R } = tp;
   const [cx, cz] = tp.center;
-  const y0 = groundY(cx, cz);
+  const ground = groundY(cx, cz);
+  const dais = tp.dais.tiers > 0 ? addDais(scene, colliders, tp, ground) : null;
+  const y0 = dais ? dais.topY : ground;
   const center = new THREE.Vector3(cx, y0, cz);
 
-  // sân đá (tông môn) hoặc bệ đá nhỏ (vùng): đứng yên → mergeStatic gộp
-  const base = tp.radius > 0 ? tp.radius : R + 0.7;
-  const floor = new THREE.Mesh(new THREE.CylinderGeometry(base, base, 0.06, 56), lambert(colors.floor));
-  floor.position.set(cx, y0 + 0.03, cz);
+  // sân đá (tông môn) hoặc bệ đá nhỏ (vùng) — có đài thì mặt tầng trên cùng là sân, chỉ thêm viền: đứng yên → mergeStatic gộp
+  const base = dais ? dais.topRadius : tp.radius > 0 ? tp.radius : R + 0.7;
+  if (!dais) {
+    const floor = new THREE.Mesh(new THREE.CylinderGeometry(base, base, 0.06, 56), lambert(colors.floor));
+    floor.position.set(cx, y0 + 0.03, cz);
+    scene.add(floor);
+  }
   const rim = new THREE.Mesh(flat(new THREE.RingGeometry(base - 0.5, base, 56)), lambert(colors.rim));
   rim.position.set(cx, y0 + 0.065, cz);
   const emblem = new THREE.Mesh(
@@ -72,7 +85,7 @@ export function addTeleport(scene: THREE.Scene, tp: TeleportSpec, groundY: Groun
     lambert('#ffffff', { map: emblemTex(colors.rim), transparent: true, polygonOffset: true, polygonOffsetFactor: -1 }),
   );
   emblem.position.set(cx, y0 + 0.07, cz);
-  scene.add(floor, rim, emblem);
+  scene.add(rim, emblem);
 
   // vòng + chấm vàng: màu vòng đổi theo độ nạp
   const ringMat = new THREE.MeshBasicMaterial({ color: colors.dim, polygonOffset: true, polygonOffsetFactor: -2 });
@@ -135,6 +148,7 @@ export function addTeleport(scene: THREE.Scene, tp: TeleportSpec, groundY: Groun
   const paint = (): void => {
     const glow = active ? IDLE_GLOW + (1 - IDLE_GLOW) * charge : 0;
     ringMat.color.copy(dim).lerp(lit, glow);
+    dais?.setGlow(active ? charge : 0);
     dots.visible = active;
     sparks.visible = active;
     pillar.visible = active && charge > 0.01;
@@ -145,6 +159,7 @@ export function addTeleport(scene: THREE.Scene, tp: TeleportSpec, groundY: Groun
 
   return {
     center,
+    pads: dais?.pads ?? [],
     setActive(a) {
       active = a;
       paint();

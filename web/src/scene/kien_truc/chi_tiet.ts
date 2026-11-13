@@ -1,7 +1,8 @@
 /** Chi tiết dùng chung của kiến trúc: biển hiệu, đèn lồng, lan can đá, dải xà vẽ, cửa bức bàn, bậc thềm. */
 import * as THREE from 'three';
 import type { SceneSpec } from '../spec';
-import { signTex } from '../textures';
+import { signMesh } from '../signAtlas';
+import { drawSign } from '../textures';
 import { box } from './hinh';
 
 export type Style = SceneSpec['buildingStyle'];
@@ -16,10 +17,7 @@ export const STEP_DEPTH = 0.45;
 export const stepCount = (style: Style): number => Math.max(3, Math.round(3 * hk(style)));
 
 export function addSign(g: THREE.Group, title: string, y: number, z: number, scale = 1): void {
-  const sign = new THREE.Mesh(
-    new THREE.PlaneGeometry(2.8 * scale, 0.9 * scale),
-    new THREE.MeshBasicMaterial({ map: signTex(title) }),
-  );
+  const sign = signMesh(2.8 * scale, 0.9 * scale, 512, 160, (c, w, h) => drawSign(c, w, h, title));
   sign.position.set(0, y, z);
   g.add(sign);
 }

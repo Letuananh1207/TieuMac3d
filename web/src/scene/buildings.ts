@@ -2,13 +2,15 @@ import * as THREE from 'three';
 import type { Colliders } from '../collision/colliders';
 import { addSign, type Style } from './kien_truc/chi_tiet';
 import { dien, giangDuong } from './kien_truc/dien';
+import { dinh, dinhPillars } from './kien_truc/dinh';
 import { nhaNho, thap } from './kien_truc/nha_thap';
 import type { BuildingSpec } from './spec';
-import { signTex } from './textures';
+import { signMesh } from './signAtlas';
+import { drawSign } from './textures';
 
 export { addSign, type Style };
 
-const KINDS = { 'giang-duong': giangDuong, dien, thap, 'nha-nho': nhaNho } as const;
+const KINDS = { 'giang-duong': giangDuong, dien, thap, 'nha-nho': nhaNho, dinh } as const;
 
 /** Nền nhà mỗi kiểu rộng hơn thân bao nhiêu (tổng hai bên) — cũng là hộp va chạm. */
 const FOOTPRINT_EXTRA = { 'giang-duong': 2, dien: 3, 'nha-nho': 0.8 } as const;
@@ -19,22 +21,29 @@ const FOOTPRINT_EXTRA = { 'giang-duong': 2, dien: 3, 'nha-nho': 0.8 } as const;
  */
 /** `y0` = độ cao nền (bục khu khi có địa hình; cảnh phẳng = 0). */
 export function addBuilding(scene: THREE.Scene, colliders: Colliders, b: BuildingSpec, style: Style, y0 = 0): THREE.Group {
-  const kind = b.kind ?? 'giang-duong';
+  // kiểu nhà vào được (trà lâu, hí đài…) dựng ở `rooms.ts` `addWalkIn` — tới đây thì coi như giảng đường kín
+  const kind = b.kind && b.kind in KINDS ? (b.kind as keyof typeof KINDS) : 'giang-duong';
   const rot = b.rotY ?? 0;
   const g = new THREE.Group();
   g.position.set(b.x, y0, b.z);
   g.rotation.y = (rot * Math.PI) / 180;
   KINDS[kind](g, b, style);
   if (b.notice) {
-    const n = new THREE.Mesh(
-      new THREE.PlaneGeometry(1.5, 0.75),
-      new THREE.MeshBasicMaterial({ map: signTex(b.notice[0], b.notice[1], { paper: true }) }),
-    );
+    const notice = b.notice;
+    const n = signMesh(1.5, 0.75, 512, 256, (c, w, h) => drawSign(c, w, h, notice[0], notice[1], { paper: true }));
     n.position.set(-b.w / 2 + 1.4, 1.9, b.d / 2 - 0.1);
     n.rotation.y = 0.15;
     g.add(n);
   }
   scene.add(g);
+  if (kind === 'dinh') {
+    // đình không tường: chỉ chân cột chặn, đi vào được
+    const a = (rot * Math.PI) / 180;
+    for (const p of dinhPillars(b)) {
+      colliders.addCircle(b.x + p.x * Math.cos(a) + p.z * Math.sin(a), b.z - p.x * Math.sin(a) + p.z * Math.cos(a), p.r + 0.05);
+    }
+    return g;
+  }
   if (kind === 'thap') {
     colliders.addCircle(b.x, b.z, Math.min(b.w, b.d) / 2 + 1);
     return g;

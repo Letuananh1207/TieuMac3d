@@ -40,4 +40,7 @@ abstract final class AppColors {
 
   /// Vạch kẻ trên thẻ (rgba(36,50,58,.2)).
   static const divider = Color(0x3324323A);
+
+  /// giấy bản đồ / ô "Từ hình đến chữ" (token map-paper, 2026-11-13.9)
+  static const mapPaper = Color(0xFFF2EADA);
 }

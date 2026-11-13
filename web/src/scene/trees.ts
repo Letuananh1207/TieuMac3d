@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import type { Colliders } from '../collision/colliders';
 import { lambert } from './materials';
 import { addPine, addPlum, addWillow } from './cay_moi';
+import { addTallBamboo } from './trucMao';
 import type { Updater } from './props';
 import { seededRandom } from './random';
 import type { GroveSpec, SceneSpec, TreePlace } from './spec';
@@ -98,7 +99,7 @@ export function finish(scene: THREE.Scene, meshes: THREE.InstancedMesh[]): void 
 
 /**
  * Cây lẻ (`yard`, có va chạm), cụm cây (`groves`), vòng cây ngoài tường (`ring`, chỉ trang trí).
- * Kiểu `tan` (mặc định) · `truc` · `tung` · `lieu` · `mai`; mỗi kiểu dãy ngẫu nhiên riêng nên thêm kiểu không xê dịch
+ * Kiểu `tan` (mặc định) · `truc` · `tung` · `lieu` · `mai` · `truc-mao` (Rừng trúc, cao 12–18 m, đung đưa); mỗi kiểu dãy ngẫu nhiên riêng nên thêm kiểu không xê dịch
  * cây `tan` có sẵn. Trả về hàm cập nhật (liễu đung đưa).
  */
 export function addTrees(scene: THREE.Scene, colliders: Colliders, spec: SceneSpec['trees'], groundY?: GroundY): Updater {
@@ -111,7 +112,7 @@ export function addTrees(scene: THREE.Scene, colliders: Colliders, spec: SceneSp
     const scale = ring.scaleMin + rand() * (ring.scaleMax - ring.scaleMin);
     ringTrees.push({ x: Math.cos(a) * r, z: Math.sin(a) * r, scale, collide: false });
   }
-  const byKind: Record<NonNullable<TreePlace['kind']>, Placed[]> = { tan: [], truc: [], tung: [], lieu: [], mai: [] };
+  const byKind: Record<NonNullable<TreePlace['kind']>, Placed[]> = { tan: [], truc: [], tung: [], lieu: [], mai: [], 'truc-mao': [] };
   const put = (kind: TreePlace['kind'], p: Placed): void => void byKind[kind ?? 'tan'].push(p);
   for (const t of spec.yard) put(t.kind, { ...t, collide: true });
   byKind.tan.push(...ringTrees);
@@ -123,9 +124,14 @@ export function addTrees(scene: THREE.Scene, colliders: Colliders, spec: SceneSp
   bamboo(scene, spec, byKind.truc, spec.seed);
   addPine(scene, spec, byKind.tung, spec.seed);
   addPlum(scene, spec, byKind.mai, spec.seed);
-  const sway = addWillow(scene, spec, byKind.lieu, spec.seed);
+  const willow = addWillow(scene, spec, byKind.lieu, spec.seed);
+  const mao = addTallBamboo(scene, spec, byKind['truc-mao'], spec.seed);
+  const sway: Updater = (dt) => {
+    willow(dt);
+    mao(dt);
+  };
   // va chạm: thân cây, to nhỏ theo kiểu
-  const trunkSize = { tan: 0.8, truc: 1.2, tung: 0.9, lieu: 0.8, mai: 0.5 } as const;
+  const trunkSize = { tan: 0.8, truc: 1.2, tung: 0.9, lieu: 0.8, mai: 0.5, 'truc-mao': 1.1 } as const;
   for (const [kind, list] of Object.entries(byKind) as [keyof typeof trunkSize, Placed[]][]) {
     for (const t of list) if (t.collide) colliders.add(t.x, t.z, trunkSize[kind] * t.scale, trunkSize[kind] * t.scale);
   }

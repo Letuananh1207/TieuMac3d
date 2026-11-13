@@ -4,8 +4,10 @@
  */
 import {
   BUILDING_KINDS,
+  GOODS_KINDS,
   DEFAULT_SCENE,
   NPC_IDS,
+  GAME_KINDS,
   PAVE_PATTERNS,
   PROP_KINDS,
   ROOF_KINDS,
@@ -16,7 +18,7 @@ import {
   type SceneSpec,
   type XZ,
 } from './spec';
-import { ringTrigger } from './teleportLayout';
+import { daisLayout, ringTrigger } from './teleportLayout';
 import { stairEnds, terrainHeightFn } from './terrainHeight';
 
 export interface ResolvedScene {
@@ -185,17 +187,18 @@ const streamItem: ItemParser = (raw, path, out) => {
 const LISTS: Record<string, ItemParser> = {
   buildings: item(
     { id: '', x: 0, z: 0, w: 0, d: 0, title: '', roofColor: '#000000' },
-    { rotY: 0, notice: ['', ''], zone: { id: '', front: 0, r: 0 }, kind: '', roof: '', floors: 0 },
-    all(rot, oneOf('kind', BUILDING_KINDS), oneOf('roof', ROOF_KINDS), floorsRange, positive('w', 'd')),
+    { rotY: 0, notice: ['', ''], zone: { id: '', front: 0, r: 0 }, kind: '', roof: '', floors: 0, sides: 0, trim: '#000000', pillarColor: '#000000', sign: '', goods: '' },
+    all(rot, oneOf('kind', BUILDING_KINDS), oneOf('goods', GOODS_KINDS), oneOf('roof', ROOF_KINDS), oneOf('sides', [4, 6]), floorsRange, positive('w', 'd')),
   ),
   'walls.gates': item({ side: '', at: 0, width: 0 }, {}, all(oneOf('side', SIDES), positive('width'))),
   wallSegments: item({ from: XZ0, to: XZ0 }, { height: 0 }, all(axisAligned, positive('height'))),
   paths: item({ from: XZ0, to: XZ0, width: 0 }, { color: '#000000' }, positive('width')),
-  gates: item({ id: '', x: 0, z: 0, width: 0, title: '' }, { rotY: 0, hanTitle: '', roofColor: '#000000' }, all(rot, positive('width'))),
+  gates: item({ id: '', x: 0, z: 0, width: 0, title: '' }, { rotY: 0, hanTitle: '', roofColor: '#000000', model: '' }, all(rot, positive('width'))),
   'site.areas': item({ name: '', from: XZ0, to: XZ0 }, { han: '' }),
   water: item({ x: 0, z: 0 }, { r: 0, w: 0, d: 0, rotY: 0 }, all(waterShape, rot, positive('r', 'w', 'd'))),
-  props: item({ kind: '', x: 0, z: 0 }, { rotY: 0, scale: 0 }, all(oneOf('kind', PROP_KINDS), rot, positive('scale'))),
+  props: item({ kind: '', x: 0, z: 0 }, { rotY: 0, scale: 0, text: '' }, all(oneOf('kind', PROP_KINDS), rot, positive('scale'))),
   npcs: item({ id: '', x: 0, z: 0 }, { rotY: 0 }, oneOf('id', NPC_IDS)),
+  gameTables: item({ id: '', kind: '', x: 0, z: 0, npc: '' }, { rotY: 0 }, all(oneOf('kind', GAME_KINDS), oneOf('npc', NPC_IDS), rot)),
   'trees.yard': item({ x: 0, z: 0, scale: 0 }, { kind: '' }, all(oneOf('kind', TREE_KINDS), positive('scale'))),
   'trees.groves': item(
     { kind: '', x: 0, z: 0, w: 0, d: 0, count: 0 },
@@ -296,6 +299,17 @@ function checkTeleport(s: SceneSpec): string[] {
   if (tp.radius > 0 && tp.ringRadius + 0.6 > tp.radius) out.push('teleport: vòng trận chạm viền sân (ringRadius + 0,6 > radius)');
   const d = Math.hypot(s.player.start[0] - tp.center[0], s.player.start[1] - tp.center[1]);
   if (d < ringTrigger(tp) + 1) out.push(`teleport: chỗ xuất phát (player.start) cách tâm vòng ${d.toFixed(1)} m — dời ra ngoài vòng (≥ ${ringTrigger(tp) + 1} m)`);
+  const dz = tp.dais;
+  if (dz.tiers > 0) {
+    if (!Number.isInteger(dz.tiers) || dz.tiers > 3) out.push('teleport.dais.tiers: số nguyên 0…3');
+    if (dz.tierHeight < 0.2 || dz.tierHeight > 0.8) out.push('teleport.dais.tierHeight: 0,2…0,8 m (cỡ bậc người bước)');
+    if (dz.tierWidth < 1.2) out.push('teleport.dais.tierWidth: ≥ 1,2 m (đủ chỗ đi trên tầng)');
+    if (dz.stairWidth < 1.6 || dz.stairWidth > 4) out.push('teleport.dais.stairWidth: 1,6…4 m');
+    if (!Number.isInteger(dz.pillars) || dz.pillars < 0 || dz.pillars > 8) out.push('teleport.dais.pillars: số nguyên 0…8');
+    if (tp.radius > 0) out.push('teleport: có đài (dais.tiers > 0) thì radius phải 0 — đài thay sân đá');
+    const L = daisLayout(tp);
+    if (d < L.footprint + 1) out.push(`teleport: chỗ xuất phát (player.start) nằm trên đài — dời ra ngoài (≥ ${(L.footprint + 1).toFixed(1)} m từ tâm)`);
+  }
   return out;
 }
 
@@ -320,11 +334,12 @@ function checkOnFlatGround(s: SceneSpec): string[] {
   for (const b of s.buildings) flat(`nhà "${b.id}"`, box(b.x, b.z, b.w + 1, b.d + 1, b.rotY));
   for (const g of s.gates) flat(`cổng "${g.id}"`, box(g.x, g.z, g.width + 8, 2, g.rotY));
   for (const w of s.water) flat(`ao (${w.x}; ${w.z})`, box(w.x, w.z, w.r !== undefined ? w.r * 2 : (w.w ?? 0), w.r !== undefined ? w.r * 2 : (w.d ?? 0), w.rotY));
+  for (const t of s.gameTables) flat(`bàn chơi "${t.id}"`, box(t.x, t.z, 3, 4, t.rotY));
   if (s.well.enabled) flat('giếng', box(s.well.x, s.well.z, 2.4, 2.4));
   const hw = s.walls.half;
   if (s.walls.enabled) flat('tường bao', [[-hw, -hw], [hw, -hw], [-hw, hw], [hw, hw], [0, -hw], [0, hw], [-hw, 0], [hw, 0]]);
   const tp = s.teleport;
-  const pad = Math.max(tp.radius, tp.ringRadius + 0.7) * 2;
+  const pad = Math.max(tp.radius, tp.ringRadius + 0.7, tp.dais.tiers > 0 ? daisLayout(tp).footprint : 0) * 2;
   if (tp.enabled) flat('vòng trận (teleport)', box(tp.center[0], tp.center[1], pad, pad));
   s.wallSegments.forEach((w, i) => flat(`wallSegments[${i}]`, [w.from, w.to, [(w.from[0] + w.to[0]) / 2, (w.from[1] + w.to[1]) / 2]]));
   flat('điểm xuất phát (player.start)', box(s.player.start[0], s.player.start[1], 2, 2));

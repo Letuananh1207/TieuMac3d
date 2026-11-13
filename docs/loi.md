@@ -18,6 +18,39 @@ Mức độ:
 
 ## Đang mở
 
+### L-4 · Quảng trường Văn Uyên Tông: lư hương + "cục trắng" + cây đặt không hợp lý
+
+- Trạng thái: chờ thử máy · Mức độ: nhỏ (bố cục / thẩm mỹ, không cản chơi) · Phần: cảnh — bố cục `design/scene/scene.json`
+  (props, trees.yard, rạp phim), khói `scene/props.ts` · Quy tắc: chưa có
+- Báo: 2026-11-13 — "ở quảng trường có 1 số món đồ đặt không hợp lý như lô hương cục gì trắng nổi lên và cây không
+  đúng chỗ" (kèm ảnh: khu rạp phim 影戲臺, bồ đoàn, khối trắng góc phải)
+- Các bước: 1. Mở app / Canvas 3D. 2. Đi vào sân Văn Uyên Tông (quanh Truyền Tống Đài, rạp phim).
+- Mong đợi / thực tế: đồ vật, cây đặt có chủ ý, cân đối / lư hương đứng lẻ giữa lối, khói như khối trắng đặc, cây chen
+  sát hàng ghế rạp và choán góc sân.
+- Bằng chứng: ảnh người dùng chụp trên trình duyệt; ảnh Canvas 3D chụp lại.
+
+**Sửa**
+- Nguyên nhân: (1) đỉnh đồng `dinh-dong` (0; 12) đứng một mình giữa lối Sơn Môn → đài; khói là khối 20 mặt
+  `MeshBasicMaterial` không bóng, nên trông như cục trắng đặc trôi lên. (2) Hai cây mai (±8,5; −9) mọc sát mép hàng
+  bồ đoàn rạp phim; tùng (14; −14) to 1,68, hai tùng (±15; 15) to 1,5–1,6 choán góc sân, che tầm nhìn. (3) Rạp (bồ đoàn
+  tới z −8,5) chỉ cách bậc bắc Truyền Tống Đài (z −7,2) ≈ 1,3 m.
+- Hướng sửa (người dùng chọn): bỏ lư hương; bỏ 3 tùng, 2 mai sang hai bên màn chiếu; rạp sang khu giao lưu vui chơi
+  mới **Tụ Hiền Viên 聚賢園** phía đông sân (R-RAP-1 viết lại + online + `--mark-synced`).
+- Test: chưa khoá được bằng test (bố cục hình ảnh) — `scene:check` không lỗi; chụp Canvas 3D
+  `design/screens/Canh-loi-L4-san.png`, `design/screens/Canh-loi-L4-tu-hien-vien.png`.
+- Code: không đổi code — `design/scene/scene.json` (mục thiết kế `2026-11-13.15`), build lại `app/assets/scene/`.
+- Thử máy: 1. Vào sân Văn Uyên Tông: không còn lư hương, cây tùng; quanh đài thoáng. 2. Ra cổng đông, rẽ theo lối đá về
+  bắc tới Tụ Hiền Viên. 3. Đứng sát bồ đoàn, bấm Ngồi → ngồi lên, phim chạy. Còn lỗi → gửi ảnh chỗ đó.
+- Commit: …
+
+**Lịch sử**
+- 2026-11-13: ghi; người dùng chọn ghi + sửa luôn. Sửa bằng bố cục, chờ thử máy.
+- 2026-11-13: người dùng gửi ảnh khối trắng tròn → là giếng (−15; −15), "xóa khối này" → `well.enabled: false`.
+- 2026-11-13: "phần dược các và các luống cây là không cần thiết nên xóa" → bỏ nhà `duoc-cac` (−49; 3) + 4 `luong-thuoc`
+  (x −31).
+- 2026-11-13: "cỏ và cây ở chỗ ngoài … lộn xộn xấu; phường thị … vô dụng" → xoá khu Thị Tập, cây ngoài xếp đối xứng,
+  cỏ búi 6 → 1,5 / 100 m² (mục thiết kế 2026-11-13.15, đợt 3). Khu giao lưu thay chỗ Thị Tập = tính năng mới, chờ `/lead`.
+
 ### L-3 · Lối lát đá bị cắt ngang, chìm dưới nền gạch khi nhìn gần
 
 - Trạng thái: chờ thử máy · Mức độ: khó chịu (thấy ngay ở chỗ xuất phát) · Phần: cảnh — lối đá (`scene/paths.ts`) · Quy tắc: chưa có

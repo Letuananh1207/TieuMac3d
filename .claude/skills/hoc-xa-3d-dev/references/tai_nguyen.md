@@ -17,8 +17,9 @@ skill `/tai-nguyen` (Hunyuan3D trên máy người dùng). Mọi thứ đóng g�
 | làm sạch | `cd web && npm run model:clean -- <in.glb> [--loai nhan-vat\|cong-trinh] [--ten] [--ra]` (`scripts/model-clean.mjs`, glTF-Transform + meshoptimizer — gói dev ghim): dedup, weld, simplify về ngân sách, prune, nén meshopt; báo vượt |
 
 Ngân sách: nhân vật ≤ 10k tam giác ≤ 1,5 MB, công trình ≤ 20k ≤ 3 MB, ≤ 1024² texture; cả cảnh ≤ 150 draw call ≤ 150k
-tam giác. Model AI một khối = 1 draw call (đệ tử khối ~25). Công trình `.glb` **chưa** có code đặt vào cảnh (cần
-trường đặc tả + nạp + hộp va chạm theo kích thước nhà, giữ bản khối dự phòng).
+tam giác. Model AI một khối = 1 draw call (đệ tử khối ~25). Công trình `.glb`: `scene/staticModel.ts` (`staticModelUrl`, `loadStaticModel`, `footprints` = hộp va chạm chân đế đo từ
+lưới); cổng: `gates[].model` → `gate.ts` `addGateModel` (co theo `gateSpan`, biển chữ dán lên biển trống), nạp sau
+`mergeStatic`, lỗi → bản khối. Nhà (`buildings[].model`) chưa có.
 
 Mẫu nạp model mới (giữ hợp đồng `Character` / bản khối dự phòng):
 

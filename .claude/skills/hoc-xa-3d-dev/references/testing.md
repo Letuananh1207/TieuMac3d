@@ -13,17 +13,16 @@
 | Tầng | Có chưa | Dùng khi |
 |---|---|---|
 | Dart unit / widget (`flutter_test`) | có — `app/test/widget_test.dart` (mẫu của flutter create) | logic và màn Flutter; test theo quy tắc đặt ở `app/test/rules/` |
-| TS unit cho `web/src` | **chưa có trình chạy** (chưa cài vitest) | logic thuần: `collision/`, `zones/zoneTracker.ts`, `player/controller.ts`, `input/orbitCamera.ts` |
+| TS unit cho `web/src` | có — vitest 3.2.4, `cd web && npm test` (môi trường node: không DOM / WebGL — test logic thuần, dựng bàn giả như `gamePlay.test.ts`) | logic thuần: `collision/`, `zones/zoneTracker.ts`, `player/controller.ts`, `input/orbitCamera.ts` |
 | Kiểm kiểu TS | có — `cd web && npx tsc --noEmit` | mọi thay đổi web |
 | Xem cảnh trên trình duyệt | có — `cd web && npm run dev` (mở bằng điện thoại cùng Wi-Fi) | cảm ứng, hình ảnh |
 | Chụp màn headless | có — `npm run build && npx vite preview --port 4173`, rồi Chrome `--headless=new --use-angle=swiftshader --enable-unsafe-swiftshader --window-size=390,844 --screenshot=<file> http://localhost:4173/` | so hình với prototype, kiểm cảnh dựng không lỗi |
 | Trên máy Android thật | mốc 2 | WebView, hiệu năng, safe area |
 
-Phần lớn quy tắc hiện nằm ở web/ mà chưa có trình chạy test TS → muốn khoá bằng test thì **hỏi người dùng** có
-thêm `vitest` (devDependency, ghim phiên bản) không; được đồng ý thì test đặt cạnh file: `web/src/<lớp>/<tên>.test.ts`
-(`tool/rule_trace.dart` đã dò `*.test.ts`). Không dựng được test → ghi rõ "chưa khoá được bằng test".
+Test TS đặt cạnh file: `web/src/<lớp>/<tên>.test.ts`, chạy `cd web && npm test` (vitest, thêm 2026-11-13 cho
+`games/`); `tool/rule_trace.dart` dò `*.test.ts`. Không dựng được test → ghi rõ "chưa khoá được bằng test".
 
-## Mẫu viết test logic thuần (khi có vitest)
+## Mẫu viết test logic thuần (vitest)
 
 ```ts
 // web/src/collision/colliders.test.ts

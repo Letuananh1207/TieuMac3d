@@ -18,29 +18,71 @@ export function makeCanvasTex(w: number, h: number, draw: Draw, repeat?: [number
   return t;
 }
 
-/** Biển hiệu: nền gỗ viền vàng; `paper` = giấy dó chữ sẫm. Cần nạp xong font Lora trước khi gọi. */
-export function signTex(text: string, sub?: string, opts: { paper?: boolean } = {}): THREE.CanvasTexture {
-  return makeCanvasTex(512, sub ? 256 : 160, (g, w, h) => {
+/** Chữ trên biển: Lora cho chữ Việt, "Han Serif" (Noto Serif SC cắt sẵn) cho chữ Hán. */
+const SIGN_FONT = 'Lora, "Han Serif", Georgia, serif';
+
+/** Vẽ biển hiệu vào khung `w` × `h` của canvas `g` (gốc 0, 0). Dùng chung cho `signTex` và ảnh biển chung. */
+export function drawSign(g: CanvasRenderingContext2D, w: number, h: number, text: string, sub?: string, opts: { paper?: boolean } = {}): void {
+  g.fillStyle = '#2a1a10';
+  g.fillRect(0, 0, w, h);
+  g.strokeStyle = '#e0ae4c';
+  g.lineWidth = 10;
+  g.strokeRect(14, 14, w - 28, h - 28);
+  g.fillStyle = opts.paper ? '#f1e3c2' : '#e0ae4c';
+  if (opts.paper) {
+    g.fillRect(24, 24, w - 48, h - 48);
     g.fillStyle = '#2a1a10';
-    g.fillRect(0, 0, w, h);
-    g.strokeStyle = '#e0ae4c';
-    g.lineWidth = 10;
-    g.strokeRect(14, 14, w - 28, h - 28);
-    g.fillStyle = opts.paper ? '#f1e3c2' : '#e0ae4c';
-    if (opts.paper) {
-      g.fillRect(24, 24, w - 48, h - 48);
-      g.fillStyle = '#2a1a10';
-    }
-    g.textAlign = 'center';
-    g.textBaseline = 'middle';
-    g.font = `700 ${sub ? 64 : 72}px Lora, Georgia, serif`;
-    // maxWidth: chữ dài thì co hẹp lại cho vừa biển, không bị cắt
-    g.fillText(text, w / 2, sub ? h * 0.38 : h / 2 + 4, w - 64);
-    if (sub) {
-      g.font = '700 46px Lora, Georgia, serif';
-      g.fillText(sub, w / 2, h * 0.7, w - 64);
-    }
-  });
+  }
+  g.textAlign = 'center';
+  g.textBaseline = 'middle';
+  g.font = `700 ${sub ? 64 : 72}px ${SIGN_FONT}`;
+  // maxWidth: chữ dài thì co hẹp lại cho vừa biển, không bị cắt
+  g.fillText(text, w / 2, sub ? h * 0.38 : h / 2 + 4, w - 64);
+  if (sub) {
+    g.font = `700 46px ${SIGN_FONT}`;
+    g.fillText(sub, w / 2, h * 0.7, w - 64);
+  }
+}
+
+/** Cờ dọc (幌子): vải ngà viền son, một chữ Hán lớn giữa, tua dưới. Khung dọc (vd. 160 × 456). */
+export function drawBanner(g: CanvasRenderingContext2D, w: number, h: number, text: string): void {
+  g.fillStyle = '#efe6d2';
+  g.fillRect(0, 0, w, h);
+  g.strokeStyle = '#a8322a';
+  g.lineWidth = 12;
+  g.strokeRect(6, 6, w - 12, h - 12);
+  g.fillStyle = '#2f3236';
+  g.textAlign = 'center';
+  g.textBaseline = 'middle';
+  g.font = `700 ${Math.round(w * 0.62)}px ${SIGN_FONT}`;
+  g.fillText(text, w / 2, h * 0.42, w - 24);
+}
+
+/** Bảng vinh danh: giấy ngà, dòng tiêu đề + các dòng kẻ (tên người học điền sau — chờ thiết kế). */
+export function drawBoard(g: CanvasRenderingContext2D, w: number, h: number, title: string): void {
+  g.fillStyle = '#f3e6c8';
+  g.fillRect(0, 0, w, h);
+  g.strokeStyle = '#3a2418';
+  g.lineWidth = 10;
+  g.strokeRect(5, 5, w - 10, h - 10);
+  g.fillStyle = '#3a2418';
+  g.textAlign = 'center';
+  g.textBaseline = 'middle';
+  g.font = `700 44px ${SIGN_FONT}`;
+  g.fillText(title, w / 2, 48, w - 40);
+  g.strokeStyle = '#8d877f';
+  g.lineWidth = 3;
+  for (let y = 100; y < h - 24; y += 34) {
+    g.beginPath();
+    g.moveTo(32, y);
+    g.lineTo(w - 32, y);
+    g.stroke();
+  }
+}
+
+/** Biển hiệu thành texture riêng (vật cần vật liệu riêng — mái mờ). Cảnh thường dùng `signMesh` (ảnh chung). */
+export function signTex(text: string, sub?: string, opts: { paper?: boolean } = {}): THREE.CanvasTexture {
+  return makeCanvasTex(512, sub ? 256 : 160, (g, w, h) => drawSign(g, w, h, text, sub, opts));
 }
 
 /* ---------- vật liệu lát / tường (2026-11-13: gạch xanh xám 青磚, phiến đá, tường vôi, chân đá xếp) ---------- */

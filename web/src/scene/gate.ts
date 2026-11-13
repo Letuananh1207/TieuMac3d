@@ -5,10 +5,21 @@ import { addSign, hk } from './kien_truc/chi_tiet';
 import { box } from './kien_truc/hinh';
 import { hipRoof } from './kien_truc/mai';
 import { rotateXZ, type GateSpec } from './spec';
+import { footprints, loadStaticModel } from './staticModel';
 
 const P = 0.7; // cạnh trụ vuông
 const SIDE = 3.5; // bề rộng gian bên
 const LOW_BEAM = 6.2; // đáy xà thấp nhất của gian giữa (× hệ số chiều cao): cao hơn camera (~4,9 m) để camera không lọt sau biển
+/**
+ * Biển trống trên model cổng (phần của chiều cao / bề ngang model): tâm cao 0,67 H, lòng biển 0,247 W × 0,113 H — đo
+ * trên ảnh thiết kế `design/models/anh/cong-son-mon-truoc.png`. Model cổng khác cần biển cùng chỗ.
+ */
+const MODEL_SIGN = { y: 0.67, w: 0.247, h: 0.113 };
+
+/** Bề ngang tổng (m) của cổng khối có khoảng trống giữa `width`: hai gian bên + bốn trụ + chân đá. */
+export function gateSpan(width: number): number {
+  return width + 4 * P + 2 * SIDE + 0.5;
+}
 
 /**
  * Cổng sơn môn (牌坊) 3 gian 4 trụ: gian giữa rộng `width`, cao hơn; hai gian bên 3,5 m; ba mái nhỏ đầu đao; biển chữ
@@ -63,4 +74,46 @@ export function addGate(scene: THREE.Scene, colliders: Colliders, gate: GateSpec
     const [dx, dz] = rotateXZ(x, 0, rot);
     colliders.add(gate.x + dx, gate.z + dz, P + 0.5, P + 0.5);
   }
+}
+
+/**
+ * Cổng bằng model AI (`gate.model`, file `url`): co đều cho bề ngang = `gateSpan(width)` (giữ tỉ lệ ảnh thiết kế), đáy chạm
+ * đất ở `y0`, mặt trước +z trước khi quay. Vật cản = chân đế đo từ lưới (`footprints` — bốn trụ); biển chữ (`hanTitle`
+ * hoặc `title`) dán sát mặt trước biển trống của model. Nạp lỗi → ném, nơi gọi dựng cổng khối.
+ */
+export async function addGateModel(
+  scene: THREE.Scene,
+  colliders: Colliders,
+  gate: GateSpec,
+  url: string,
+  y0 = 0,
+): Promise<void> {
+  const model = await loadStaticModel(url);
+  const raw = new THREE.Box3().setFromObject(model).getSize(new THREE.Vector3());
+  const span = gateSpan(gate.width);
+  model.scale.setScalar(span / raw.x);
+  const g = new THREE.Group();
+  g.add(model);
+  g.updateMatrixWorld(true);
+  const box = new THREE.Box3().setFromObject(model);
+  const H = box.max.y - box.min.y;
+
+  // biển chữ: tia từ trước vào giữa biển trống → mặt biển; tấm chữ vừa lòng biển (90 %)
+  const y = MODEL_SIGN.y * H;
+  const ray = new THREE.Raycaster(new THREE.Vector3(0, y, box.max.z + 1), new THREE.Vector3(0, 0, -1));
+  const hit = ray.intersectObject(model, true)[0];
+  const scale = Math.min((0.9 * MODEL_SIGN.w * span) / 2.8, (0.9 * MODEL_SIGN.h * H) / 0.9);
+  addSign(g, gate.hanTitle ?? gate.title, y, (hit ? hit.point.z : 0) + 0.04, scale);
+
+  const rot = gate.rotY ?? 0;
+  const turned = Math.abs(rot % 180) === 90; // vật cản thẳng trục: quay 90 / 270 thì đổi rộng ↔ sâu
+  for (const [minX, maxX, minZ, maxZ] of footprints(g)) {
+    const [dx, dz] = rotateXZ((minX + maxX) / 2, (minZ + maxZ) / 2, rot);
+    const w = maxX - minX;
+    const d = maxZ - minZ;
+    colliders.add(gate.x + dx, gate.z + dz, turned ? d : w, turned ? w : d);
+  }
+  g.position.set(gate.x, y0, gate.z);
+  g.rotation.y = (rot * Math.PI) / 180;
+  scene.add(g);
 }

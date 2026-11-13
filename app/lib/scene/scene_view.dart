@@ -10,13 +10,16 @@ import 'scene_event.dart';
 
 /// Màn chính: WebView phủ toàn màn hình, hiển thị scene 3D.
 class SceneView extends StatefulWidget {
-  const SceneView({super.key, required this.url, this.onOpenLesson, this.onGetProgress});
+  const SceneView({super.key, required this.url, this.onOpenLesson, this.onOpenRadical, this.onGetProgress});
 
   final WebUri url;
 
   /// Mở màn bài học native; Future xong khi người chơi đóng màn → gửi `resume` cho trang.
   /// `null` (chưa có màn — phiếu 2026-11-10-man-bai-hoc chờ thiết kế) → trả `false`, trang tự mở bảng HTML.
   final Future<void> Function(BuildContext context, OpenLessonRequest request)? onOpenLesson;
+
+  /// Mở thẻ học bộ thủ native (R-HANH-3); Future xong khi đóng → gửi `resume`. `null` → trả `false`, trang dùng bảng HTML.
+  final Future<void> Function(BuildContext context, OpenRadicalRequest request)? onOpenRadical;
 
   /// Trả lời `getProgress` (vùng đã mở — R-HANH-1). `null` → trang dùng mặc định (chỉ Rừng trúc).
   final Map<String, Object?> Function()? onGetProgress;
@@ -92,7 +95,15 @@ class _SceneViewState extends State<SceneView> {
 
   /// Sự kiện từ trang (docs/bridge.md). Giá trị trả về là kết quả `callHandler` phía JS.
   Object? _onSceneEvent(List<dynamic> args) {
-    if (sceneEventType(args) == 'getProgress') return widget.onGetProgress?.call();
+    final type = sceneEventType(args);
+    if (type == 'getProgress') return widget.onGetProgress?.call();
+    if (type == 'openRadical') {
+      final openR = widget.onOpenRadical;
+      final req = OpenRadicalRequest.parse(args);
+      if (openR == null || req == null) return false;
+      openR(context, req).whenComplete(() => _controller?.evaluateJavascript(source: resumeScript));
+      return true;
+    }
     final open = widget.onOpenLesson;
     final request = OpenLessonRequest.parse(args);
     if (open == null || request == null) return false;

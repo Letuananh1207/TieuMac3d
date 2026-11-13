@@ -38,4 +38,18 @@ void main() {
     final again = await ProgressStore.open();
     expect(again.progress.chars, {'快'});
   });
+
+  test('R-HANH-3: bấm "Đã học" một bộ thủ → ghi một lần, còn sau khi mở lại app; đủ 50 bộ → Giang Nam mở', () async {
+    SharedPreferences.setMockInitialValues({});
+    final store = await ProgressStore.open();
+    expect(await store.learnRadical('thuy'), isTrue);
+    expect(await store.learnRadical('thuy'), isFalse);
+    expect((await ProgressStore.open()).progress.radicals, {'thuy'});
+    for (var k = 0; k < rungTrucRadicalCount - 2; k++) {
+      await store.learnRadical('bo-$k');
+    }
+    expect(store.progress.openRegions, isNot(contains('giang-nam'))); // 49 bộ
+    await store.learnRadical('bo-cuoi');
+    expect(store.progress.openRegions, contains('giang-nam')); // 50 bộ
+  });
 }

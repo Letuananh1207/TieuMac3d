@@ -6,6 +6,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'journey/journey.dart';
 import 'journey/progress_store.dart';
 import 'lesson/lesson_screen.dart';
+import 'lesson/radical_screen.dart';
 import 'scene/scene_event.dart';
 import 'scene/scene_server.dart';
 import 'scene/scene_view.dart';
@@ -77,6 +78,12 @@ class HocXaApp extends StatelessWidget {
                 progress?.learnChar(request.lesson.han);
                 return Navigator.of(context).push(LessonScreen.route(request.lesson));
               },
+              // thẻ học bộ thủ: "Đã học · khắc vào bia" → ghi bộ thủ đã học (R-HANH-3)
+              onOpenRadical: (context, request) => Navigator.of(context).push(
+                RadicalScreen.route(request, () async {
+                  await progress?.learnRadical(request.radical.id);
+                }),
+              ),
               onGetProgress: () => progressReply(progress?.progress ?? const Progress()),
             )
           : Scaffold(body: SceneErrorView(detail: startError!)),

@@ -25,6 +25,7 @@ import 'dart:io';
 const layers = <String, Set<String>>{
   'collision': {},
   'zones': {'collision'},
+  'games': {'zones'},
   'scene': {'collision', 'three'},
   'player': {'collision', 'scene', 'three'},
   'input': {'player', 'three'},

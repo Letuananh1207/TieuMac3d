@@ -140,6 +140,6 @@ bản được chọn (không để bản thử).
 
 ## Đưa công trình vào cảnh
 
-App mới nạp `.glb` cho **nhân vật** (`web/src/player/glbCharacter.ts`, `playerCharacter.ts`). Công trình `.glb` cần code:
-trường đặc tả (vd. `buildings[].model: "dien"`), nạp + đặt + hộp va chạm theo kích thước nhà, giữ bản khối dự phòng —
-chuyển thành kế hoạch `/lead` (ghi trong đợt D), không tự sửa.
+Cổng đã có code (2026-11-13): `gates[].model: "<tên>"` trong `scene.json` (`/canh`) → `web/src/scene/gate.ts` `addGateModel`
+(model cổng khác cần biển trống cùng chỗ — `MODEL_SIGN`). Nhà / đồ vật (`buildings[].model`, lò đan) **chưa** — cần
+kế hoạch `/lead` (dùng lại `scene/staticModel.ts`), không tự sửa.

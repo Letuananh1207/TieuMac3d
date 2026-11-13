@@ -2,7 +2,7 @@
 - Yêu cầu: "Hành trình nhiều vùng theo design 2026-11-13.6 (design/scene/hanh_trinh.md + docs/tham_khao/rung-truc.md):
   nhiều cảnh, Truyền Tống Đài thay Diễn Võ Trường, mở vùng theo số chữ, vùng 1 Rừng trúc."
 - Loại: thêm (nhiều cảnh, đài, vùng mới, tiến độ) + sửa hành vi (khu 3) + xoá (đài tỉ thí, giá binh khí) · Cỡ: lớn
-- Trạng thái: đang làm — đợt 1c xong code, chờ thử máy + duyệt; sau đó chốt mục cảnh + commit, rồi đợt 2
+- Trạng thái: đang làm — đợt 2 xong code, chờ duyệt ảnh cảnh + thử máy (vật sống: đợt sau)
 
 ## Phạm vi
 
@@ -61,7 +61,7 @@
       test xanh).
 - [x] 4. Đặc tả nhiều cảnh: `loadSpec` nạp `design/scene/*.json`, trường `teleport` / `homeRing` có mặc định,
       `check-scene` kiểm mọi file (lớp `scene` · xong khi `scene:check` in cả hai cảnh, cảnh cũ không đổi).
-- [ ] 5. (gộp vào 21) Thiết kế cảnh (theo quyết định 2): khu 3 → Truyền Tống Đài, bỏ đài tỉ thí + 4 giá binh khí, tên khu
+- [x] 5. (gộp vào 21) Thiết kế cảnh (theo quyết định 2): khu 3 → Truyền Tống Đài, bỏ đài tỉ thí + 4 giá binh khí, tên khu
       "Truyền Tống Đài 傳送台"; `rung-truc.json`: trúc dày, lối đá, suối, thác cuối lối, sương lục nhạt, vòng về nhà
       ở chỗ xuất hiện (`design/scene/` · xong khi người dùng duyệt ảnh).
 - [x] 6. Dựng Truyền Tống Đài `scene/truyenTong.ts` — sân ∅ 26, 6 cột 5 m + biểu tượng, vòng ∅ 4 sáng (ngọc lục +
@@ -98,7 +98,7 @@ chạm một vùng: đã mở + có cảnh → màn tải → sang vùng; khoá 
       (ít hơn 6 cột cũ). Bỏ code 6 cột.
 - [x] 20. (thay bằng bản đồ ở 27; đã xong bản tạm: `zones/ringCharge.ts` — ở trong vòng 1,2 s → đi tới nơi duy nhất (tông môn → vùng đầu đã mở có cảnh; vùng → tông môn); **bản đồ + nút đóng chờ thiết kế**) Ghép `main.ts`: máy trạng thái (đứng ngoài → nạp ~1,2 s → bản đồ mở → chọn / ra khỏi vòng), về nhà đứng
       cạnh vòng, ngoài vòng.
-- [ ] 21. Chụp ảnh → người dùng duyệt → `/canh chot` một mục CHANGELOG gộp (Truyền Tống Đài kiểu mới + Rừng trúc) →
+- [x] 21. Chụp ảnh → người dùng duyệt → `/canh chot` một mục CHANGELOG gộp (Truyền Tống Đài kiểu mới + Rừng trúc) →
       build, kiểm cuối.
 
 ### Đợt 1c — áp thiết kế 2026-11-13.9: bản đồ truyền tống (`/ui-apply`)
@@ -123,18 +123,36 @@ Nguồn: `design/docs/screen_specs.md` "Bản đồ truyền tống", `design/sc
 - [x] 28. (tuỳ quyết định) Nút quay lại của máy đóng bản đồ: sự kiện cầu nối `back` (Flutter → JS, trả "đã xử lý").
 - [x] 29. Build, chụp dọc + ngang, `appliedVersion`, phiếu `2026-11-13-hanh-trinh-hud.md` mục 1–2 → đã áp.
 
-### Đợt 2 — Rừng trúc cho ra chất (sau khi đợt 1 được duyệt)
-- [ ] 11. Trúc mao cao 12–18 m, đốt, chùm lá ngọn, instancing, đung đưa (`scene/` · ≤ 1 500 cây thấy được).
-- [ ] 12. Đình mái chóp 4 / 6 góc, không tường (`kien_truc/`).
-- [ ] 13. Bia bộ thủ + dữ liệu ≈ 50 bộ thủ; luật R-HANH-3 (bia đã học viền vàng, chưa học mờ).
-- [ ] 14. Vật mang bộ thủ + thẻ học bộ thủ — chờ thiết kế (phiếu nhiệm vụ 1).
+### Đợt 2 — Rừng trúc cho ra chất (người dùng "bắt đầu", 2026-11-13)
+Nguồn: `docs/tham_khao/rung-truc.md` ("Dựng low-poly", "Bộ thủ trong cảnh"), thiết kế 2026-11-13.9 "Thẻ học bộ thủ"
+(`design/source/TheBoThu-*.dc.html`, chuỗi `radical*`).
 
-## Ghi chú khi làm
-- Mốc mở vùng nằm ở Dart (`app/lib/journey/`) vì Flutter giữ tiến độ → R-HANH-1 có test Dart. Trang chỉ nhận
-  `open` qua `getProgress`. Thử mốc trên trình duyệt: `?mo=rung-truc,bong-lai` (thay cho `?chu=`).
-- Cung cột trận `[-90, 70]` (không phải −90…90): cột cuối ở 90° đứng chắn khe cổng nam (lối sang Cư Xá).
-- Biển đầu cột dùng chữ Hán (竹 江 蓬 城 紫 絲) thay biểu tượng hình — tạm tới khi có hình.
-- Đài ≈ 7 draw call (sân / viền / phù hiệu gộp + cột 1 + biển 1 + vòng 1 + chấm 1 + hạt 1); bỏ đài + 4 giá ≈ −2.
+- Đã chọn (người dùng 2026-11-13): 50 bộ thủ ngay · Claude vẽ dải "từ hình đến chữ" cho 19 bộ tượng hình · vật "sống" để đợt sau.
+
+**2a — cảnh**
+- [x] 11. Trúc mao: kiểu cây mới `truc-mao` (`scene/trucMao.ts`) — thân 6 cạnh 12–18 m có vòng đốt, chùm lá dẹt ở 1/3
+      trên, 2 màu thân (xanh / già vàng), nghiêng nhẹ, **đung đưa ở ngọn** (lệch đỉnh trong shader Lambert theo độ cao +
+      pha mỗi cây); instancing 3 draw call; ≤ 1 500 cây. Kiểu `truc` cũ giữ cho tông môn.
+- [x] 12. Đình mái chóp: kiểu nhà mới `dinh` (`kien_truc/dinh.ts`) — nền đá, 4 / 6 cột gỗ mộc, mái chóp toản tiêm ngói xám
+      xanh, không tường, đi vào được (va chạm cột); `buildings[].kind: "dinh"`, `sides: 4 | 6`.
+- [x] 13. Bia bộ thủ: danh sách đặc tả mới `steles: [{x, z, rotY, radical}]` (`scene/bia.ts`) — đá bia chóp bán nguyệt
+      ≈ 0,9 × 1,6 m trên đế, mặt khắc bộ thủ lớn + tên Việt nhỏ (atlas chữ, 1 draw call cho mọi bia), viền vàng khi đã học,
+      mờ khi chưa; va chạm hộp.
+- [ ] 14. (đã dựng, chờ duyệt ảnh → chốt mục CHANGELOG) `/canh` (làm thay): `rung-truc.json` đổi cụm `truc` → `truc-mao`, đặt đình ở chỗ nghỉ giữa lối, ≈ 50 bia rải dọc
+      lối theo thứ tự học; chụp → duyệt → chốt mục CHANGELOG.
+
+**2b — học bộ thủ**
+- [x] 15. Luật R-HANH-3 (bia: chạm bia / nút nổi cạnh bia → thẻ học; "Đã học · khắc vào bia" → bộ thủ đã học, bia viền
+      vàng; Giang Nam mở khi học đủ bộ thủ Rừng trúc) → sổ + online.
+- [x] 16. Dữ liệu `web/src/zones/radicals.ts`: bộ thủ (mã, dạng, dạng đủ, tên Việt, pinyin, số nét, 2–3 chữ ví dụ, hình
+      "từ hình đến chữ" SVG nét nếu có). `rungTrucRadicalCount` (Dart) = số bộ trong dữ liệu.
+- [x] 17. Cầu nối: `openRadical` (JS → Flutter, như `openLesson`) + Flutter ghi bộ thủ đã học; `getProgress` trả thêm
+      `radicals: [...]`. `docs/bridge.md` trước; test Dart.
+- [x] 18. Màn Flutter `app/lib/lesson/radical_screen.dart` theo `TheBoThu-*` (dọc + ngang, lần đầu / đã học, một / hai
+      dạng); dải "Từ hình đến chữ" vẽ SVG nét bằng `CustomPaint`. Không có Flutter → bảng HTML dự phòng (`lessonBoard`).
+- [x] 19. Ghép `main.ts`: nút học nổi cạnh bia gần nhất (kiểu nút học "Học bộ 氵"), chạm bia mở thẻ; bia đổi viền khi học.
+- [ ] 20. (đợt sau — người dùng chọn) Vật "sống": chạm suối → 氵, đá → 石, trúc → ⺮… mở thẻ bộ thủ đó.
+- [ ] 21. Build, kiểm cuối, thử máy.
 
 ## Kiểm tra cuối
 dart tool/check.dart --changed · cd web && npx tsc --noEmit && npm run scene:check && npm run build ·

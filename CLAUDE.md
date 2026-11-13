@@ -4,7 +4,8 @@ App mobile thử nghiệm: một "học xá" low-poly 3D, người dùng điều
 học thì hiện thẻ mời vào học chữ Hán. Giao diện **tiếng Việt**; trả lời người dùng bằng tiếng Việt. Người dùng là
 dev Flutter chưa làm game: mỗi khi chọn thư viện / cách làm, giải thích ngắn vì sao; chỗ cần quyết định thì hỏi.
 
-- `web/` — scene 3D: three.js + TypeScript + Vite, build ra file tĩnh, **chạy offline (không CDN)**.
+- `web/` — scene 3D: three.js + TypeScript + Vite, build ra file tĩnh, **chạy offline (không CDN)** — ngoại lệ duy nhất: video rạp phim tải
+  từ mạng lúc xem (`decisions/0004-video-mang.md`).
 - `app/` — Flutter (Android, iOS, **web**), hiển thị scene bằng WebView (`flutter_inappwebview`; Android / iOS qua
   `InAppLocalhostServer`, web nạp thẳng asset — `app/lib/scene/scene_server.dart`). Không làm bản desktop.
 - Làm theo mốc; xong mốc nào báo người dùng rồi mới sang mốc sau. Không multiplayer / đăng nhập / backend.
@@ -56,6 +57,7 @@ bash .claude/skills/tai-nguyen/scripts/nhan-vat.sh <tên> <ra> [--seed 1234,7] [
 cd web && npm run model:clean -- <file.glb> [--loai nhan-vat|cong-trinh] [--ten <tên>]  # model AI → design/models/
 cd web && npm run model:paint -- <model.glb> <atlas.png> [--ra <file.glb>]  # tô màu model trắng bằng chiếu ảnh
 cd web && npx tsc --noEmit     # chỉ kiểm kiểu TS
+cd web && npm test             # test TS (vitest) — luật trò chơi web/src/games/, gamePlay
 cd app && flutter run          # chạy app (build web trước); trình duyệt: flutter run -d chrome
 cd app && flutter analyze && flutter test
 dart tool/check.dart --changed # quy tắc bộ chuẩn trên file vừa đổi (--summary: đếm)

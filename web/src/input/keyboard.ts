@@ -9,11 +9,10 @@ const ACTION_KEYS: Record<string, KeyAction> = { ' ': 'jump', f: 'bow', c: 'sit'
 export class Keyboard {
   private readonly keys: Record<string, boolean> = {};
 
-  constructor(onFirstInput: () => void, onAction?: (a: KeyAction) => void) {
+  constructor(onAction?: (a: KeyAction) => void) {
     window.addEventListener('keydown', (e) => {
       const key = e.key.toLowerCase();
       this.keys[key] = true;
-      onFirstInput();
       const act = ACTION_KEYS[key];
       if (act && !e.repeat && onAction) {
         e.preventDefault(); // Space không cuộn trang

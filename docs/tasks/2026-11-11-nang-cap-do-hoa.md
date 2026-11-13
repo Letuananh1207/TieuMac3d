@@ -102,6 +102,8 @@ makerstack.co meshy-review · sloyd.ai ai-3d-model-generator-pricing.
       (9 500 tam giác) → `model:paint` (chiếu ảnh, 439 KB) → `design/models/nhan-vat.glb` (2026-11-12). Bài học ảnh đầu
       vào ở `.claude/skills/tai-nguyen/references/hunyuan.md`. Công trình: chưa thử (cần code đặt .glb vào cảnh).
 - [x] D3. `design/models/` + `LICENSES.md` (2026-11-12).
+- [x] D4. Công trình `.glb` đầu tiên: Cổng Sơn Môn (`gates[].model`, `scene/staticModel.ts`, `gate.ts` `addGateModel`) —
+      kế hoạch `docs/tasks/2026-11-13-cong-son-mon-model.md` (2026-11-13). Cảnh 108 draw call, 148 618 tam giác.
 
 ## Kiểm tra cuối
 dart tool/check.dart --changed · cd web && npm run scene:check && npx tsc --noEmit && npm run build ·

@@ -41,7 +41,7 @@ class LessonScreen extends StatelessWidget {
             left: 0,
             right: 0,
             bottom: 0,
-            child: _Mountains(landscape: landscape),
+            child: LessonMountains(landscape: landscape),
           ),
           Padding(
             padding: padding,
@@ -146,7 +146,7 @@ class _Card extends StatelessWidget {
             children: [
               SizedBox(width: 170, child: hero),
               const SizedBox(width: 24),
-              const _Rule(vertical: true),
+              const GoldRule(vertical: true),
               const SizedBox(width: 24),
               Expanded(
                 child: Column(
@@ -165,7 +165,7 @@ class _Card extends StatelessWidget {
               const SizedBox(height: 8),
               meaning,
               const SizedBox(height: 22),
-              const _Rule(vertical: false),
+              const GoldRule(vertical: false),
               const SizedBox(height: 22),
               info,
             ],
@@ -225,9 +225,9 @@ class _InfoTable extends StatelessWidget {
   }
 }
 
-/// Vạch kẻ mảnh có chấm vàng ở giữa (như màn tải).
-class _Rule extends StatelessWidget {
-  const _Rule({required this.vertical});
+/// Vạch kẻ mảnh có chấm vàng ở giữa (như màn tải) — dùng chung với thẻ bộ thủ.
+class GoldRule extends StatelessWidget {
+  const GoldRule({super.key, required this.vertical});
 
   final bool vertical;
 
@@ -285,9 +285,9 @@ class _BackButton extends StatelessWidget {
   }
 }
 
-/// Hai lớp núi mờ ở chân màn (như màn tải).
-class _Mountains extends StatelessWidget {
-  const _Mountains({required this.landscape});
+/// Hai lớp núi mờ ở chân màn (như màn tải) — dùng chung với thẻ bộ thủ.
+class LessonMountains extends StatelessWidget {
+  const LessonMountains({super.key, required this.landscape});
 
   final bool landscape;
 

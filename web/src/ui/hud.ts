@@ -1,17 +1,6 @@
 import * as THREE from 'three';
 import { el } from './dom';
 
-/** Dòng hướng dẫn: mờ dần ở lần chạm / bấm phím đầu tiên. */
-export function createHint(): () => void {
-  const hint = el('hint');
-  let gone = false;
-  return () => {
-    if (gone) return;
-    gone = true;
-    hint.classList.add('gone');
-  };
-}
-
 /** Đếm fps, cập nhật mỗi 0.5 giây; chỉ hiện ở chế độ gỡ lỗi (`?debug` trên địa chỉ trang). */
 export class FpsCounter {
   private readonly out = el('fps');

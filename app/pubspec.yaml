@@ -89,13 +89,57 @@ flutter:
       fonts:
         - asset: assets/fonts/han-100.ttf
           weight: 700
+    - family: HanSerif101
+      fonts:
+        - asset: assets/fonts/han-101.ttf
+          weight: 700
+    - family: HanSerif102
+      fonts:
+        - asset: assets/fonts/han-102.ttf
+          weight: 700
+    - family: HanSerif103
+      fonts:
+        - asset: assets/fonts/han-103.ttf
+          weight: 700
+    - family: HanSerif104
+      fonts:
+        - asset: assets/fonts/han-104.ttf
+          weight: 700
+    - family: HanSerif105
+      fonts:
+        - asset: assets/fonts/han-105.ttf
+          weight: 700
+    - family: HanSerif107
+      fonts:
+        - asset: assets/fonts/han-107.ttf
+          weight: 700
+    - family: HanSerif109
+      fonts:
+        - asset: assets/fonts/han-109.ttf
+          weight: 700
+    - family: HanSerif110
+      fonts:
+        - asset: assets/fonts/han-110.ttf
+          weight: 700
     - family: HanSerif111
       fonts:
         - asset: assets/fonts/han-111.ttf
           weight: 700
+    - family: HanSerif112
+      fonts:
+        - asset: assets/fonts/han-112.ttf
+          weight: 700
+    - family: HanSerif113
+      fonts:
+        - asset: assets/fonts/han-113.ttf
+          weight: 700
     - family: HanSerif114
       fonts:
         - asset: assets/fonts/han-114.ttf
+          weight: 700
+    - family: HanSerif115
+      fonts:
+        - asset: assets/fonts/han-115.ttf
           weight: 700
     - family: HanSerif116
       fonts:
@@ -109,9 +153,133 @@ flutter:
       fonts:
         - asset: assets/fonts/han-118.ttf
           weight: 700
+    - family: HanSerif119
+      fonts:
+        - asset: assets/fonts/han-119.ttf
+          weight: 700
+    - family: HanSerif23
+      fonts:
+        - asset: assets/fonts/han-23.ttf
+          weight: 700
+    - family: HanSerif24
+      fonts:
+        - asset: assets/fonts/han-24.ttf
+          weight: 700
+    - family: HanSerif25
+      fonts:
+        - asset: assets/fonts/han-25.ttf
+          weight: 700
+    - family: HanSerif26
+      fonts:
+        - asset: assets/fonts/han-26.ttf
+          weight: 700
+    - family: HanSerif27
+      fonts:
+        - asset: assets/fonts/han-27.ttf
+          weight: 700
+    - family: HanSerif29
+      fonts:
+        - asset: assets/fonts/han-29.ttf
+          weight: 700
+    - family: HanSerif30
+      fonts:
+        - asset: assets/fonts/han-30.ttf
+          weight: 700
+    - family: HanSerif31
+      fonts:
+        - asset: assets/fonts/han-31.ttf
+          weight: 700
+    - family: HanSerif33
+      fonts:
+        - asset: assets/fonts/han-33.ttf
+          weight: 700
+    - family: HanSerif34
+      fonts:
+        - asset: assets/fonts/han-34.ttf
+          weight: 700
+    - family: HanSerif35
+      fonts:
+        - asset: assets/fonts/han-35.ttf
+          weight: 700
+    - family: HanSerif37
+      fonts:
+        - asset: assets/fonts/han-37.ttf
+          weight: 700
+    - family: HanSerif38
+      fonts:
+        - asset: assets/fonts/han-38.ttf
+          weight: 700
+    - family: HanSerif42
+      fonts:
+        - asset: assets/fonts/han-42.ttf
+          weight: 700
+    - family: HanSerif46
+      fonts:
+        - asset: assets/fonts/han-46.ttf
+          weight: 700
+    - family: HanSerif48
+      fonts:
+        - asset: assets/fonts/han-48.ttf
+          weight: 700
+    - family: HanSerif49
+      fonts:
+        - asset: assets/fonts/han-49.ttf
+          weight: 700
+    - family: HanSerif50
+      fonts:
+        - asset: assets/fonts/han-50.ttf
+          weight: 700
+    - family: HanSerif53
+      fonts:
+        - asset: assets/fonts/han-53.ttf
+          weight: 700
+    - family: HanSerif55
+      fonts:
+        - asset: assets/fonts/han-55.ttf
+          weight: 700
+    - family: HanSerif56
+      fonts:
+        - asset: assets/fonts/han-56.ttf
+          weight: 700
+    - family: HanSerif59
+      fonts:
+        - asset: assets/fonts/han-59.ttf
+          weight: 700
+    - family: HanSerif61
+      fonts:
+        - asset: assets/fonts/han-61.ttf
+          weight: 700
+    - family: HanSerif62
+      fonts:
+        - asset: assets/fonts/han-62.ttf
+          weight: 700
+    - family: HanSerif68
+      fonts:
+        - asset: assets/fonts/han-68.ttf
+          weight: 700
     - family: HanSerif70
       fonts:
         - asset: assets/fonts/han-70.ttf
+          weight: 700
+    - family: HanSerif71
+      fonts:
+        - asset: assets/fonts/han-71.ttf
+          weight: 700
+    - family: HanSerif73
+      fonts:
+        - asset: assets/fonts/han-73.ttf
+          weight: 700
+    - family: HanSerif74
+      fonts:
+        - asset: assets/fonts/han-74.ttf
+          weight: 700
+    - family: HanSerif82
+      fonts:
+        - asset: assets/fonts/han-82.ttf
+          weight: 700
+    - family: HanSerif84
+      fonts:
+        - asset: assets/fonts/han-84.ttf
           weight: 700
     - family: Pinyin119
       fonts:

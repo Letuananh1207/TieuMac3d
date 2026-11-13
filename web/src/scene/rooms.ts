@@ -8,10 +8,16 @@ import type { Colliders } from '../collision/colliders';
 import type { Pad } from '../collision/ground';
 import { STEP_DEPTH, stepCount, type Style } from './kien_truc/chi_tiet';
 import { columnXs, giangDuong, hallFloor, type RoomParts } from './kien_truc/dien';
+import { cuaHang } from './kien_truc/cua_hang';
+import { hiDai } from './kien_truc/hi_dai';
+import { lauSach } from './kien_truc/lau_sach';
 import { addInterior, type LocalBox } from './kien_truc/noi_that';
-import { markDynamic, mergeStatic } from './merge';
+import { traLau } from './kien_truc/tra_lau';
+import type { LocalPad, WalkInBuilder } from './kien_truc/vao_trong';
+import { markDynamic, mergeStatic, mergeVertexColors } from './merge';
 import { rotateXZ, type BuildingSpec, type InteriorKind } from './spec';
-import { signTex } from './textures';
+import { signMesh } from './signAtlas';
+import { drawSign } from './textures';
 
 /** Nhà nào dùng nội thất nào: theo mã vùng bài học (nội dung bài ở code quyết). */
 export interface InteriorUse {
@@ -65,6 +71,7 @@ function worldRect(b: BuildingSpec, l: LocalBox): Rect {
 
 /** Làm mờ được: gộp các khối trong nhóm (ít draw call), mỗi vật liệu một bản riêng, không cho gộp chung với cảnh. */
 function fadeable(group: THREE.Group): THREE.Material[] {
+  mergeVertexColors(group); // mọi màu Lambert → 1 khối; còn lại (đèn lồng, biển) gộp theo vật liệu
   mergeStatic(group, new Set());
   const mats: THREE.Material[] = [];
   group.traverse((o) => {
@@ -99,10 +106,8 @@ export function addRoomBuilding(scene: THREE.Scene, colliders: Colliders, b: Bui
   g.add(parts.roof, parts.front);
   giangDuong(g, b, style, parts);
   if (b.notice) {
-    const n = new THREE.Mesh(
-      new THREE.PlaneGeometry(1.5, 0.75),
-      new THREE.MeshBasicMaterial({ map: signTex(b.notice[0], b.notice[1], { paper: true }) }),
-    );
+    const notice = b.notice;
+    const n = signMesh(1.5, 0.75, 512, 256, (c, w, h) => drawSign(c, w, h, notice[0], notice[1], { paper: true }));
     n.position.set(-b.w / 2 + 1.4, 1.9, b.d / 2 - 0.1);
     n.rotation.y = 0.15;
     parts.front.add(n);
@@ -171,6 +176,62 @@ export function addRoomBuilding(scene: THREE.Scene, colliders: Colliders, b: Bui
     hits: furnished.hits,
     anchor: new THREE.Vector3(ax, y0 + furnished.anchor.y, az),
     teacher,
+    update(dt, inside) {
+      const target = inside ? FADED : 1;
+      if (opacity === target) return;
+      const step = ((1 - FADED) * dt) / FADE_SECONDS;
+      opacity = opacity < target ? Math.min(target, opacity + step) : Math.max(target, opacity - step);
+      setOpacity(mats, opacity);
+    },
+  };
+}
+
+/** Kiểu nhà vào được không gắn bài học (tiện ích tông môn — R-VA-3, R-HUD-2). */
+export const WALK_IN: Partial<Record<NonNullable<BuildingSpec['kind']>, WalkInBuilder>> = {
+  'hi-dai': hiDai,
+  'tra-lau': traLau,
+  'lau-sach': lauSach,
+  'cua-hang': cuaHang,
+};
+
+function worldPad(b: BuildingSpec, p: LocalPad, y0: number): Pad {
+  const r = worldRect(b, p);
+  if (!p.ramp) return { ...r, y: y0 + p.y };
+  const { axis, at0, at1, y1 } = p.ramp;
+  const [x0, z0] = toWorld(b, axis === 'x' ? at0 : p.x, axis === 'z' ? at0 : p.z);
+  const [x1, z1] = toWorld(b, axis === 'x' ? at1 : p.x, axis === 'z' ? at1 : p.z);
+  const wx = Math.abs(x1 - x0) > Math.abs(z1 - z0) ? 'x' : 'z';
+  return { ...r, y: y0 + p.y, ramp: { axis: wx, at0: wx === 'x' ? x0 : z0, at1: wx === 'x' ? x1 : z1, y1: y0 + y1 } };
+}
+
+/**
+ * Nhà vào được không có bài học (trà lâu, hí đài, Tàng Thư Các, cửa hàng): dựng theo `WALK_IN`, mái / tầng trên mờ
+ * khi đứng trong sàn (R-HUD-2), va chạm theo phần (R-VA-3). `zoneId` = mã nhà; không có vật học.
+ */
+export function addWalkIn(scene: THREE.Scene, colliders: Colliders, b: BuildingSpec, style: Style, build: WalkInBuilder, y0 = 0): Room {
+  const g = new THREE.Group();
+  g.position.set(b.x, y0, b.z);
+  g.rotation.y = ((b.rotY ?? 0) * Math.PI) / 180;
+  const fade = new THREE.Group();
+  g.add(fade);
+  const shell = build(g, b, style, fade);
+  scene.add(g);
+  const mats = fadeable(fade);
+  for (const l of shell.boxes) {
+    const r = worldRect(b, l);
+    colliders.add((r.minX + r.maxX) / 2, (r.minZ + r.maxZ) / 2, r.maxX - r.minX, r.maxZ - r.minZ, l.h ?? 0);
+  }
+  for (const c of shell.circles) {
+    const [cx, cz] = toWorld(b, c.x, c.z);
+    colliders.addCircle(cx, cz, c.r);
+  }
+  let opacity = 1;
+  return {
+    zoneId: b.id,
+    floor: worldRect(b, shell.floor),
+    pads: shell.pads.map((p) => worldPad(b, p, y0)),
+    hits: [],
+    anchor: new THREE.Vector3(b.x, y0 + 2, b.z),
     update(dt, inside) {
       const target = inside ? FADED : 1;
       if (opacity === target) return;
