@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Bộ ảnh nhiều góc – Lò đan</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;700&amp;family=Lora:wght@700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2B5446}a:hover{color:#24323A}
+</style>
+</helmet>
+<div style="width: 1440px; height: 780px; box-sizing: border-box; padding: 40px; background: #F4F7F6; font-family: 'Be Vietnam Pro', system-ui, sans-serif; color: #24323A; display: flex; flex-direction: column; gap: 24px">
+  <div style="display: flex; flex-direction: column; gap: 6px">
+    <h1 style="margin: 0; font-family: 'Lora', Georgia, serif; font-size: 26px">Bộ ảnh nhiều góc — Lò đan đồng 丹爐 · Luyện Đan Phòng (đầu vào Hunyuan3D-2 đa góc)</h1>
+    <div style="font-size: 14px">Công trình 1/3 (hồ sơ docs/tham_khao/cong-trinh-noi-bat.md). Vạch xanh = đỉnh núm nắp (10 %), vạch đỏ = đáy bệ đá (90 %). Cao ≈ 4–5 m trong cảnh, gấp đôi nhân vật. Khói / lửa động do code làm — không vẽ khói.</div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 24px">
+    <sc-for list="{{slots}}" as="s" hint-placeholder-count="5">
+      <figure style="margin: 0; display: flex; flex-direction: column; gap: 10px">
+        <div style="position: relative; width: 254px; height: 254px; background: #DDDDDD; border: 1px solid rgba(36,50,58,.25); overflow: hidden">
+          <sc-if value="{{s.has}}" hint-placeholder-val="{{ false }}">
+            <img src="{{s.src}}" alt="{{s.alt}}" style="position: absolute; inset: 0; width: 254px; height: 254px; object-fit: contain">
+          </sc-if>
+          <sc-if value="{{s.empty}}" hint-placeholder-val="{{ true }}">
+            <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; text-align: center; padding: 0 24px; font-size: 13px; line-height: 1.5; color: #24323A">{{s.hint}}</div>
+          </sc-if>
+          <div aria-hidden="true" style="position: absolute; left: 0; right: 0; top: 25px; height: 0; border-top: 1px dashed #2B5446"></div>
+          <div aria-hidden="true" style="position: absolute; left: 0; right: 0; top: 229px; height: 0; border-top: 2px solid #A8322A"></div>
+        </div>
+        <figcaption style="display: flex; flex-direction: column; gap: 2px">
+          <code style="font-size: 13px; font-weight: 700">{{s.file}}</code>
+          <span style="font-size: 13px">{{s.desc}}</span>
+        </figcaption>
+      </figure>
+    </sc-for>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; font-size: 13px; line-height: 1.6">
+    <div>
+      <div style="font-weight: 700; margin-bottom: 4px">Kiểm từng ảnh trước khi đưa vào</div>
+      <div>☐ Kiểu đồ chơi vinyl / đất sét: khối dày, góc bo, không nét viền, ánh sáng đều (không bóng tối sâu)</div>
+      <div>☐ Nền xám trơn #DDDDDD, KHÔNG khói, không lửa bay, không sàn / cỏ, không bóng đổ, không chữ / sao mờ</div>
+      <div>☐ Chiếu thẳng, máy ngang tầm bụng lò; 4 góc cùng cỡ: núm nắp ở vạch xanh, đáy bệ ở vạch đỏ</div>
+      <div>☐ Đỉnh đồng 4 chân (Gemini vẽ 4, nhất quán cả 4 góc — chấp nhận), bụng tròn phình, 2 quai đứng trên miệng; nắp chóp 3 tầng có núm</div>
+      <div>☐ Cửa lò tròn phía TRƯỚC (chỉ thấy ở ảnh trước, nghiêng thấy mép), ánh lửa cam phẳng — không lỗ thủng</div>
+      <div>☐ Bệ đá bát giác thấp; hoa văn nổi nông (mây), không chi tiết mảnh / lỗ xuyên</div>
+    </div>
+    <div>
+      <div style="font-weight: 700; margin-bottom: 8px">Màu giữ đúng (theo ảnh gốc)</div>
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px">
+        <sc-for list="{{colors}}" as="c" hint-placeholder-count="8">
+          <div style="display: flex; align-items: center; gap: 8px">
+            <span aria-hidden="true" style="width: 22px; height: 22px; border-radius: 4px; border: 1px solid rgba(36,50,58,.25); background: {{c.hex}}"></span>
+            <span><b>{{c.hex}}</b><br>{{c.name}}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":780}}'>
+class Component extends DCLogic {
+renderVals() {
+return {
+  slots: [
+    { file: 'lo-dan-truoc.png', desc: 'Thẳng từ trước. Cửa lò lửa ✓ (lệch phải nhẹ ≈ 4 %), quai đứng, nắp 3 tầng, 4 chân, bệ bát giác ✓.', has: true, empty: false, src: '/_blob/30a23a450f56eeeb35cd34ac95aabb44', alt: 'Lò đan nhìn thẳng từ trước', hint: '' },
+    { file: 'lo-dan-trai.png', desc: 'Bên trái: cửa lò chỉ thấy mép ở phải ảnh ✓, quai nhìn cạnh ✓.', has: true, empty: false, src: '/_blob/916f8872f9f38de7ecba1d53c5a3b077', alt: 'Lò đan nhìn từ bên trái', hint: '' },
+    { file: 'lo-dan-sau.png', desc: 'Từ sau: bụng trơn, không cửa lò ✓.', has: true, empty: false, src: '/_blob/6c5fc2035a42a577ac109fe24cfdbf6e', alt: 'Lò đan nhìn từ sau', hint: '' },
+    { file: 'lo-dan-phai.png', desc: 'Bên phải: cửa lò chỉ thấy mép ở trái ảnh ✓.', has: true, empty: false, src: '/_blob/2c8c9777f7d7c8e7c05b48af0dc21a31', alt: 'Lò đan nhìn từ bên phải', hint: '' },
+    { file: 'lo-dan-cheo.png', desc: 'Ảnh duyệt (Gemini cho gần như chính diện, không chếch trên — không dùng cho Hunyuan).', has: true, empty: false, src: '/_blob/8183d7fb0d85615a1b548e64b10ed2cc', alt: 'Lò đan ảnh duyệt', hint: '' }
+  ],
+  colors: [
+    { hex: '#5E8C7A', name: 'đồng xanh (thân)' },
+    { hex: '#86B09B', name: 'đồng sáng (mặt trên)' },
+    { hex: '#3D5E52', name: 'đồng tối (khe, đáy)' },
+    { hex: '#D4A64A', name: 'viền vàng, núm, quai' },
+    { hex: '#F08A3C', name: 'ánh lửa cửa lò' },
+    { hex: '#9A968C', name: 'bệ đá' },
+    { hex: '#24323A', name: 'chân lò sẫm' },
+    { hex: '#DDDDDD', name: 'nền trơn' }
+  ]
+};
+}
+}
+</script>
+</body>
+</html>

@@ -3,6 +3,27 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-13.2 — Bộ ảnh nhiều góc lò đan đồng 丹爐 (công trình 1/3, đầu vào Hunyuan3D đa góc)
+
+- Loại: tài nguyên 3D — ảnh đầu vào (vật / công trình). Không có phiếu: theo hồ sơ `docs/tham_khao/cong-trinh-noi-bat.md`
+  (người dùng chọn 2026-11-13: lai — 3 công trình nổi bật bằng AI; Luyện Đan Phòng **chỉ làm lò đan**, nhà giữ code).
+- Thiết kế: đỉnh đồng bụng tròn phình, hai quai đứng trên miệng, nắp chóp 3 tầng núm vàng, hoa văn mây nổi nông, cửa lò
+  tròn **chỉ ở mặt trước** (đĩa cam phẳng `#F08A3C`, không lỗ thủng), chân sẫm, bệ đá bát giác. Màu: đồng gỉ `#5E8C7A`
+  (sáng `#86B09B`, tối `#3D5E52`), viền vàng `#D4A64A`, bệ `#9A968C`, chân `#24323A`. Khói / lửa động: code (không vẽ).
+- Câu lệnh Gemini (chung): vật mới, cùng kiểu đồ chơi vinyl như `nhan-vat-truoc.png`; khối dày, không chi tiết mảnh,
+  không nhìn xuyên; ánh sáng đều, không bóng sâu, không nét viền; chiếu thẳng ngang bụng lò; không khói / lửa / tia; nền
+  #DDDDDD trơn, không sàn, không chữ / watermark; 1024², núm nắp 10 %, đáy bệ 90 %. Riêng góc: trước (cửa lò giữa) ·
+  bên trái (cửa lò chỉ là mép bên phải ảnh) · sau (không cửa) · bên phải (mép bên trái) · ¾ chếch trên (duyệt).
+- Soát: đúng các điểm trên, 4 góc khớp nhau (cửa lò / quai / nắp). **Chấp nhận**: Gemini vẽ **4 chân** thay vì 3 (nhất
+  quán cả 4 góc; phương đỉnh 4 chân có thật); ảnh trước cửa lò lệch phải ≈ 4 % (lò hơi xoay); ảnh "¾" ra gần chính diện
+  — chỉ duyệt, không đưa vào Hunyuan.
+- Chuẩn hoá: như bộ Mặc Ông (tách nền chặt, nền #DDDDDD, xoá sao, hệ số thu chung, đáy bệ 90 %, trục giữa).
+- Cỡ trong cảnh (tham khảo, code đặt): cao ≈ 4–5 m, gấp ≈ 2 lần nhân vật (ô so cỡ trên ảnh duyệt).
+- File: `models/anh/lo-dan-truoc.png`, `-trai.png`, `-sau.png`, `-phai.png`, `-cheo.png` · `screens/LoDan-bo-anh.png` ·
+  `source/LoDan-bo-anh.dc.html`, `source/canvas.json` · `models/LICENSES.md`.
+- Luật: không chạm. Việc tiếp (VS Code): `/tai-nguyen cong-trinh lo-dan` → `design/models/lo-dan.glb` (≤ 20 000 tam giác,
+  vật nên ≈ 8 000); đặt thay `props[lo-dan]` khối, giữ khói + va chạm từ code (`/lead`).
+
 ## 2026-11-13.1 — Bộ ảnh nhiều góc Sư phụ Mặc Ông 墨翁 (đầu vào Hunyuan3D đa góc)
 
 - Loại: tài nguyên 3D — ảnh đầu vào. Phiếu: `docs/phieu_thiet_ke/2026-11-12-anh-su-phu.md`.

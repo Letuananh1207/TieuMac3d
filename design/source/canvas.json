@@ -177,6 +177,13 @@
       "w": 1440,
       "h": 780,
       "title": "Sư phụ Mặc Ông 墨翁 · bộ ảnh 4 góc + cận mặt (phiếu 2026-11-12-anh-su-phu)"
+    },
+    "LoDan-bo-anh.dc.html": {
+      "x": 0,
+      "y": 14040,
+      "w": 1440,
+      "h": 780,
+      "title": "Công trình 1/3 · Lò đan đồng 丹爐 · bộ ảnh 4 góc + ¾"
     }
   },
   "order": [
@@ -203,7 +210,8 @@
     "TrongNha-ngang.dc.html",
     "NhanVat-bo-anh.dc.html",
     "TieuMac-bo-anh.dc.html",
-    "SuPhu-bo-anh.dc.html"
+    "SuPhu-bo-anh.dc.html",
+    "LoDan-bo-anh.dc.html"
   ],
   "notes": {
     "cach-dung": {
@@ -338,6 +346,13 @@
       "x": 0,
       "y": 12300,
       "text": "Sư phụ Mặc Ông 墨翁 — ảnh nhiều góc cho Hunyuan3D",
+      "kind": "title1",
+      "maxW": 2060
+    },
+    "tieu-de-cong-trinh": {
+      "x": 0,
+      "y": 13800,
+      "text": "Công trình nổi bật — ảnh nhiều góc cho Hunyuan3D (lò đan · cổng · điện)",
       "kind": "title1",
       "maxW": 2060
     }
