@@ -3,6 +3,17 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-13.10 — Cảnh: ghép sát các viện, dùng chung tường
+
+- Loại: cảnh 3D — **bố cục**. Người dùng: "diện tích tông môn đang quá lớn có những chỗ không cần cách tường" → chọn ghép
+  sát, dùng chung tường. Phiên VS Code làm thay `/canh`.
+- Cụm đông (Truyền Tống Đài + Đệ Tử Cư Xá, mọi thứ x ≥ 24, z −18…48) dời x − 6; cụm tây (Linh Dược Viên + Luyện Đan Phòng,
+  x ≤ −24, z −45…23) dời x + 6. Bỏ hai đoạn tường dọc x = ±27 (kẹp dải trống 6 m với tường Ngoại Môn) — Truyền Tống Đài và
+  Linh Dược Viên dùng chung tường đông / tây Ngoại Môn có cổng trăng. Khu: Truyền Tống Đài / Cư Xá x 21…54, Linh Dược Viên /
+  Luyện Đan Phòng x −56…−21. Lối vào Truyền Tống Đài [21; 0] → [25; 0] (mép sân đài).
+- `scene:check`: Không có lỗi · không chồng lấn. Luật: ví dụ R-HUD-1, R-HUD-3 theo toạ độ mới (sổ + online).
+- Ảnh: `screens/Canh-ghep-tuong.png` (trên xuống · cổng trăng tường đông).
+
 ## 2026-11-13.9 — Bản đồ truyền tống + thẻ học bộ thủ + nút hành động + hội thoại NPC
 
 - Loại: giao diện · token · chuỗi · dữ liệu (toạ độ bản đồ) · luồng/luật (đề xuất).
