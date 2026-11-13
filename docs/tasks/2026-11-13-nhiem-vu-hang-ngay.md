@@ -3,7 +3,7 @@
   2026-11-13: việc = **lĩnh hội từ mới + ôn tập**; **3 mới/ngày + ôn theo ngày lấy quy luật Hán Tự Ký**
   (`Start up/Han_tu_ky` — `lib/domain/rules/review_rules.dart`, sổ R-ON-1…7, R-DD-1/3); ôn **bằng câu đố**; thưởng =
   **chuỗi ngày liên tiếp**; mở bảng **cả hai** cách (nút ở bảng + hỏi Tiểu Mặc).
-- Loại: thêm · Cỡ: lớn · Trạng thái: đang làm
+- Loại: thêm · Cỡ: lớn · Trạng thái: xong (giao diện áp từ thiết kế 2026-11-13.25)
 
 ## Quy luật mang sang (Hán Tự Ký → Học Xá 3D)
 | Hán Tự Ký | Học Xá 3D (đề xuất) |
@@ -52,14 +52,14 @@ số bộ đã học, không theo ôn).
 
 ## Nhiệm vụ
 - [x] 1. Sổ quy tắc: R-NV-1…4, R-ON-1…6, sửa R-HANH-3 → online (Chờ) → `--mark-synced`.
-- [ ] 2. `app/lib/journey/review.dart` + `daily.dart` + test (`app/test/rules/on_tap_test.dart`, `nhiem_vu_test.dart`)
+- [x] 2. `app/lib/journey/review.dart` + `daily.dart` + test (`app/test/rules/on_tap_test.dart`, `nhiem_vu_test.dart`)
       — đỏ trước, rồi code (Flutter · test theo ví dụ sổ).
-- [ ] 3. `progress_store.dart`: lưu lịch ôn / ngày / chuỗi; chuyển bộ đã học cũ vào lịch (test).
-- [ ] 4. Cầu nối: `docs/bridge.md` trước → `getProgress.due`, `openReview`, `openDaily` hai phía (scene_event test).
-- [ ] 5. Web: `DialogChoice.action`; Tiểu Mặc "Hôm nay có việc gì?"; `meditate` định tuyến theo `due` (sau cờ).
-- [ ] 6. Phiếu `/ui-design` nhiệm vụ hằng ngày (chờ thiết kế); phiếu bảng vinh danh → bỏ.
-- [ ] 7. Màn bảng nhiệm vụ + màn ôn câu đố + nút "Xem bảng" — **chờ thiết kế (phiếu 2026-11-13-nhiem-vu-hang-ngay)**.
-- [ ] 8. `npm run build` + Kiểm tra cuối.
+- [x] 3. `progress_store.dart`: lưu lịch ôn / ngày / chuỗi; chuyển bộ đã học cũ vào lịch (test).
+- [x] 4. Cầu nối: `docs/bridge.md` trước → `getProgress.due`, `openReview`, `openDaily` hai phía (scene_event test).
+- [x] 5. Web: `DialogChoice.action`; Tiểu Mặc "Hôm nay có việc gì?"; `meditate` định tuyến theo `due` (sau cờ).
+- [x] 6. Phiếu `/ui-design` nhiệm vụ hằng ngày (chờ thiết kế); phiếu bảng vinh danh → bỏ.
+- [x] 7. Màn bảng nhiệm vụ + màn ôn câu đố + nút "Xem bảng" — áp 2026-11-13.25 (/ui-apply).
+- [x] 8. `npm run build` + Kiểm tra cuối.
 
 ## Kiểm tra cuối
 dart tool/check.dart --changed · cd web && npx tsc --noEmit && npm run build · cd app && flutter analyze ·

@@ -1,7 +1,7 @@
 # Học bằng tu luyện (ngồi thiền) thay bia bộ thủ
 - Yêu cầu: "thay đổi cách học ở các màn thay vì bia như hiện nay vì nhìn rất mệt" → sau này nhiều người chung một
   vùng → chốt hướng "tu luyện": cảnh là của chung, việc học là của riêng (người dùng "đồng ý", 2026-11-13).
-- Loại: sửa hành vi + xoá (bia) · Cỡ: lớn · Trạng thái: xong (phần nhìn chờ thiết kế — phiếu 2026-11-13-tu-luyen)
+- Loại: sửa hành vi + xoá (bia) · Cỡ: lớn · Trạng thái: xong (phần nhìn đã áp 2026-11-13.19 — docs/tasks/2026-11-13-ap-tu-luyen.md)
 
 ## Nguyên tắc (giữ cho lúc có nhiều người chơi)
 - **Cảnh chung** (`design/scene/*.json`): rừng, suối, đình, NPC, linh địa — không chứa bài học, không có trạng thái

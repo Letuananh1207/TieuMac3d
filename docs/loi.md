@@ -18,6 +18,75 @@ Mức độ:
 
 ## Đang mở
 
+### L-6 · Cầu thang trà lâu + Tàng Thư Các khó đi, đi lên bị che khuất
+
+- Trạng thái: chờ thử máy · Mức độ: khó chịu (lên tầng 2 vất vả, camera bị che) · Phần: nhà vào được — `scene/kien_truc/cau_thang.ts`,
+  `lau_sach.ts`, `tra_lau.ts` · Quy tắc: R-VA-3 (+ R-DIEU-4 camera)
+- Báo: 2026-11-13 — "cầu thang hiện nay đang rất khó đi ở cả trà lâu và tàng thư các khi hướng lên lại bị che đi đổi
+  phong cách khác"
+- Các bước: 1. Vào Tàng Thư Các (−39; −34) hoặc trà lâu Phẩm Minh Các (0; −64). 2. Đi lên cầu thang gian phải.
+- Mong đợi / thực tế: lên tầng 2 dễ, nhìn rõ / thang gấp khúc hai vế trong gian hẹp ~3 m có tường: khó lái, quay đầu ở
+  chiếu nghỉ, camera sau lưng bị tường + sàn tầng 2 che.
+- Bằng chứng: lời người dùng; chưa có ảnh.
+- Hướng sửa (Claude chọn — người dùng "tiếp tục làm"): thang **thẳng một vế ngoài trời** dọc đầu hồi phải, chiếu nghỉ +
+  cầu nối vào sàn tầng 2.
+
+**Sửa**
+- Nguyên nhân: thang gấp khúc hai vế (mỗi vế 1,5 m) trong gian hồi kín tường: phải quay đầu 180° ở chiếu nghỉ; camera sau
+  lưng nằm trong gian ~3 m bị tường (vật cản che tầm nhìn, R-DIEU-4) và sàn tầng 2 ép sát / che.
+- Test: `web/src/lauSach.test.ts`, `web/src/traLau.test.ts` — `'R-VA-3 (L-6): thang thẳng một vế ngoài trời…'`, `'R-VA-3 (L-6):
+  đang trên thang đi ngang → lan can hai bên chặn…'`, `'R-VA-3 (L-6): dưới đất không lọt vào gầm thang…'` + leo lên / xuống,
+  mép hồi chỉ hở chỗ cầu nối (17 test, xanh). Camera thoáng: chưa khoá được bằng test (cần thử máy).
+- Code: `scene/kien_truc/cau_thang.ts` viết lại (`stairLayout` thang thẳng ngoài trời rộng 1,8 m, dốc 30°, chiếu nghỉ + cầu
+  nối; `gapForBridge` mở đầu tường cho cầu nối), `lau_sach.ts` (`lauSachStairs`, sàn tầng 2 liền, kệ tầng 1 hết bị gian
+  thang cắt), `tra_lau.ts` (tầng 1 lại 3 bàn trà). Luật R-VA-3 sửa (sổ + online, `--mark-synced`). Cảnh: hồ phải Tàng Thư Các
+  (−30; −25) rộng 7 → (−31,5; −25) rộng 5 (hồ trái đối xứng −46,5), tùng (−24; −31) → (−22; −31) — không chắn thang
+  (design 2026-11-13.26). Ảnh `design/screens/Canh-loi-L6-*.png`.
+- Thử máy: trà lâu (0; −64): ra ngoài hồi phải, đi thẳng lên thang → camera không bị che, qua cầu nối vào tầng 2. Tàng Thư
+  Các: chân thang ở (−27,4; −25), đi thẳng về bắc lên. Còn khó / bị che → quay màn hình gửi.
+- Lần 2 (trà lâu — khe giữa lan can thang và mép sàn tầng 2): thang đặt cách mép nền 1 m (`clear: 1`) để tránh hiên lửng
+  → dọc vế thang có khe ~1 m nhìn xuống mái hiên, chỉ đoạn chiếu nghỉ có cầu nối. Người dùng chọn "áp thang sát nhà":
+  `tra_lau.ts` `clear: 0` (thang sát mép nền), hiên lửng phía hồi phải lùi vào sát tường (`skirt` thêm tham số `dx` —
+  `mai.ts`), cầu nối gỗ lấn 0,15 m vào trong mép nền phủ chỗ nối (`cau_thang.ts`, dùng chung cả Tàng Thư Các). Test:
+  `web/src/traLau.test.ts` — `'R-VA-3 (L-6): thang áp sát nhà — … không còn khe hở'`, `'(L-6): mái hiên lửng phía hồi phải
+  lùi vào, không đâm vào thang'` (đỏ trước, xanh sau). Tàng Thư Các chưa đổi: thang ở ngoài nền đá rộng 1 m có lan can →
+  áp sát vẫn còn khe trên nền; muốn liền phải làm hành lang tầng 2 — chờ người dùng quyết.
+- Thử máy (lần 2): trà lâu — leo thang hồi phải, nhìn sang trái: lan can thang sát mép sàn tầng 2, không còn dải hở; qua cầu
+  nối vào tầng 2 không thấy khe. Còn hở → chụp màn gửi.
+- Commit: chưa (chưa được yêu cầu).
+
+**Lịch sử**
+- 2026-11-13: ghi, sửa luôn.
+- 2026-11-13: thử máy trà lâu — "khoảng cách giữa lan can đến bề mặt tầng 2 có khoảng trống mặc dù vẫn đi qua được" (ảnh: khung lan can cầu nối, mặt lối xám, hở trước sàn tầng 2). Mở lại, sửa luôn.
+
+### L-5 · Cổng Sơn Môn (model AI) quá lớn, đế đá chân trụ cao hơn người
+
+- Trạng thái: chờ thử máy · Mức độ: nhỏ (sai tỉ lệ nhìn thấy rõ nhưng không cản chơi) · Phần: cảnh — cổng `gates[].model`
+  (`web/src/scene/gate.ts`) · Quy tắc: chưa có (R-VA-1 cột cổng — va chạm giữ nguyên)
+- Báo: 2026-11-13 — "cổng sơn môn hiện tại đang quá lớn đặc biệt là các khối đã ở chân"
+- Các bước: 1. Mở app / Canvas 3D. 2. Đi từ chỗ xuất phát (0; 50) lên cổng Sơn Môn (0; 44).
+- Mong đợi / thực tế: cổng cỡ như cổng khối cũ (~15 m), đế đá thấp hơn vai nhân vật / cổng rộng 19,9 m, cao 18,8 m, đế đá
+  cao ~3 m, rộng 2,1 m (nhân vật 2,1 m).
+- Bằng chứng: ảnh chụp Canvas 3D khi làm `docs/tasks/2026-11-13-cong-son-mon-model.md` (scratchpad); trên máy: chưa có.
+- Hướng sửa (người dùng chọn): thu nhỏ cả cổng × 0,75 + nén riêng khối đá chân xuống ~1,2 m, hẹp lại.
+
+**Sửa**
+- Nguyên nhân: model giữ tỉ lệ ảnh thiết kế (đế đá ≈ 0,16 chiều cao cổng) và được co cho bề ngang bằng cổng khối
+  (19,9 m) → cổng cao 18,8 m, đế ~3 m. Co đều cả cổng không đủ: cổng vừa cảnh thì đế vẫn ≈ cao người.
+- Test: `web/src/scene/gateFeet.test.ts` — `'(L-5): khối đá chân trụ thấp xuống ~1,2 m và hẹp lại, trụ giữ nguyên bề dày'`,
+  `'(L-5): đế đã thấp hơn mức cần → không đổi gì'` (đỏ trước khi có `squashFeet`).
+- Code: `web/src/scene/gateFeet.ts` (mới, `squashFeet` — tìm trục trụ + đỉnh đế từ lưới, nén đế về 1,2 m, thu ngang × 0,75,
+  hạ phần trên), `scene/staticModel.ts` `bakeTransforms` (toạ độ meshopt lượng tử hoá → số thực), `scene/gate.ts`
+  (`FEET`, `modelScale`), `scene/spec.ts` + `specCheck.ts` (`gates[].modelScale`), `design/scene/scene.json`
+  `modelScale: 0.75` (design 2026-11-13.22). Kết quả: cổng rộng ≈ 14,9 m, cao ≈ 13 m, đế 1,2 m; ảnh
+  `design/screens/Canh-loi-L5.png`.
+- Thử máy: `flutter run` → đi từ (0; 50) lên cổng: đế đá thấp hơn vai nhân vật, đi qua khe giữa được, đâm trụ thì dừng.
+  Còn lỗi → gửi ảnh chụp màn.
+- Commit: chưa (chưa được yêu cầu).
+
+**Lịch sử**
+- 2026-11-13: ghi, sửa luôn (người dùng chọn).
+
 ### L-4 · Quảng trường Văn Uyên Tông: lư hương + "cục trắng" + cây đặt không hợp lý
 
 - Trạng thái: chờ thử máy · Mức độ: nhỏ (bố cục / thẩm mỹ, không cản chơi) · Phần: cảnh — bố cục `design/scene/scene.json`

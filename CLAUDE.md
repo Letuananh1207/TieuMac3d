@@ -4,8 +4,7 @@ App mobile thử nghiệm: một "học xá" low-poly 3D, người dùng điều
 học thì hiện thẻ mời vào học chữ Hán. Giao diện **tiếng Việt**; trả lời người dùng bằng tiếng Việt. Người dùng là
 dev Flutter chưa làm game: mỗi khi chọn thư viện / cách làm, giải thích ngắn vì sao; chỗ cần quyết định thì hỏi.
 
-- `web/` — scene 3D: three.js + TypeScript + Vite, build ra file tĩnh, **chạy offline (không CDN)** — ngoại lệ duy nhất: video rạp phim tải
-  từ mạng lúc xem (`decisions/0004-video-mang.md`).
+- `web/` — scene 3D: three.js + TypeScript + Vite, build ra file tĩnh, **chạy offline (không CDN)**.
 - `app/` — Flutter (Android, iOS, **web**), hiển thị scene bằng WebView (`flutter_inappwebview`; Android / iOS qua
   `InAppLocalhostServer`, web nạp thẳng asset — `app/lib/scene/scene_server.dart`). Không làm bản desktop.
 - Làm theo mốc; xong mốc nào báo người dùng rồi mới sang mốc sau. Không multiplayer / đăng nhập / backend.

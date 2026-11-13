@@ -43,4 +43,17 @@ abstract final class AppColors {
 
   /// giấy bản đồ / ô "Từ hình đến chữ" (token map-paper, 2026-11-13.9)
   static const mapPaper = Color(0xFFF2EADA);
+
+  /// Nền đáp án / phản hồi đúng, mức "Nhớ rõ" (token `answer-right-bg` = rgba(43,84,70,.10), 2026-11-13.25).
+  static const answerRightBg = Color(0x1A2B5446);
+
+  /// Nền đáp án / phản hồi sai, mức "Chưa nhớ" (token `answer-wrong-bg` = rgba(168,50,42,.08)).
+  static const answerWrongBg = Color(0x14A8322A);
+
+  /// Nền mức "Nhớ một phần" (token `answer-partial-bg` = rgba(212,166,74,.16)).
+  static const answerPartialBg = Color(0x29D4A64A);
+
+  /// Tầng kệ gỗ danh mục sách + bóng dưới (token `shelf-wood` #8A5A3A, bóng #6B4429 — 2026-11-13.28).
+  static const shelfWood = Color(0xFF8A5A3A);
+  static const shelfShadow = Color(0xFF6B4429);
 }

@@ -1,5 +1,5 @@
 # Phiếu: Dòng gợi ý HUD — bỏ "chạm mặt đất để đi tới đó"
-- Trạng thái: chờ thiết kế (code đã sửa trước — chỉ bỏ một vế, không thêm chữ mới)
+- Trạng thái: đã áp (2026-11-13.19)
 - Đã vẽ: 2026-11-13.19
 - Đợi bởi: không (đồng bộ canvas với code)
 

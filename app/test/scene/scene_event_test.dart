@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hoc_xa_3d/journey/daily.dart';
 import 'package:hoc_xa_3d/journey/journey.dart';
 import 'package:hoc_xa_3d/scene/scene_event.dart';
 
@@ -44,7 +45,9 @@ void main() {
   });
 
   test('resume: gọi window.scene.handle, trang chưa sẵn sàng thì bỏ qua', () {
-    expect(resumeScript, 'window.scene&&window.scene.handle({"type":"resume","payload":{}});');
+    expect(resumeScript(), 'window.scene&&window.scene.handle({"type":"resume","payload":{}});');
+    // R-HANH-3: thẻ bộ thủ đóng bằng "Xuất định" → nhân vật đứng dậy
+    expect(resumeScript(stand: true), 'window.scene&&window.scene.handle({"type":"resume","payload":{"stand":true}});');
   });
 
   test('lifecycle / debug: đúng tên và dạng trong docs/bridge.md', () {
@@ -68,7 +71,21 @@ void main() {
         'tu-cam-thanh': {'chars': 1800},
         'to-lua': {'chars': 3000},
       },
+      'due': <String>[],
+      'daily': {'learned': 0, 'goal': 3, 'due': 0, 'streak': 0, 'best': 0},
+      'book': null,
     });
+  });
+
+  test('getProgress: kèm bộ đến hạn ôn + bảng nhiệm vụ hôm nay (docs/bridge.md, R-ON-4, R-NV-1)', () {
+    final r = progressReply(
+      const Progress(radicals: {'truc', 'moc'}),
+      due: ['moc', 'truc'],
+      daily: const DailyStatus(newToday: 1, dueLeft: 2, allLearned: false),
+      streak: (current: 4, best: 6),
+    );
+    expect(r['due'], ['moc', 'truc']);
+    expect(r['daily'], {'learned': 1, 'goal': 3, 'due': 2, 'streak': 4, 'best': 6});
   });
 
   test('back: hỏi trang, trả true khi trang đã xử lý (docs/bridge.md)', () {

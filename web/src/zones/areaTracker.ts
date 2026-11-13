@@ -3,7 +3,7 @@ import type { PointXZ } from '../collision/colliders';
 /** Một khu có tên: hình chữ nhật từ góc `from` tới góc `to` ([x, z]). Trùng hình với `scene/spec` `AreaSpec`. */
 export interface Area {
   name: string;
-  /** chữ Hán trên thẻ tên khu (R-HUD-3); thiếu = chỉ tên Việt */
+  /** chữ Hán của khu (dữ liệu đặc tả; thẻ tên khu đã bỏ — R-HUD-3) */
   han?: string;
   from: [number, number];
   to: [number, number];
@@ -18,28 +18,4 @@ function inside(a: Area, p: PointXZ): boolean {
 /** Khu chứa `p` (khu khai báo trước thắng), không có thì null. */
 export function areaAt(areas: readonly Area[], p: PointXZ): Area | null {
   return areas.find((a) => inside(a, p)) ?? null;
-}
-
-/**
- * Báo khi nhân vật bước VÀO một khu (R-HUD-3): từ ngoài mọi khu vào, hoặc từ khu này sang khu khác.
- * Ra khỏi mọi khu không báo; lần cập nhật đầu (khu xuất phát lúc mở app) không báo. Chỉ xét khu của đặc tả —
- * nhà vào được không phải khu, nên bước vào / ra nhà không đổi khu, không báo.
- */
-export class AreaEntryTracker {
-  private current: Area | null = null;
-  private started = false;
-
-  constructor(
-    private readonly areas: readonly Area[],
-    private readonly onEnter: (area: Area) => void,
-  ) {}
-
-  update(pos: PointXZ): void {
-    const area = areaAt(this.areas, pos);
-    const first = !this.started;
-    this.started = true;
-    if (area === this.current) return;
-    this.current = area;
-    if (area && !first) this.onEnter(area);
-  }
 }

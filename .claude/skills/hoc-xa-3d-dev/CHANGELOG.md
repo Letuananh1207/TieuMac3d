@@ -15,3 +15,5 @@
 - 2026-11-13 — Rạp phim (decisions/0004 — ngoại lệ offline cho video): `VideoScreen` (VideoTexture, chọn định dạng theo `canPlayType`), kiểu `rap-phim`, luật R-RAP-1..3.
 - 2026-11-13 — Khu giao lưu Kỳ Văn Uyển: lớp mới `games/` (luật thuần, chỉ import `zones`), test TS bằng vitest 3.2.4 (`npm test`, môi trường node), ghép `gamePlay.ts` ở gốc cạnh `main.ts`, đặc tả `gameTables`, luật R-GIAO-1, R-CO-1..3, R-DAU-1..2; `?dung=x,z` để thử trên trình duyệt.
 - 2026-11-13 — Công trình `.glb` đầu tiên: `scene/staticModel.ts` (bộ nạp riêng của `scene/`, không import `player/`), `gates[].model` + `addGateModel` (Cổng Sơn Môn).
+- 2026-11-13: NPC gắn xương theo dáng riêng (`NPC_RIGS` trong `npc.ts`), không quay theo người chơi.
+- 2026-11-13 — Xoá rạp phim: bỏ `rapPhim.ts`, `videoScreen.ts`, `kien_truc/rap_phim.ts`, `zones/videos.ts`, kiểu `rap-phim`; `Seat` → `scene/seat.ts`, `nearestSeat` → `zones/seats.ts`; decisions/0004 bãi bỏ (lại offline hoàn toàn).

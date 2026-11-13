@@ -39,6 +39,36 @@ export async function loadStaticModel(url: string): Promise<THREE.Group> {
 }
 
 /**
+ * Đưa mọi lưới con về thẳng dưới `root`, toạ độ đỉnh tính sẵn trong hệ của `root` (số thực — file nén meshopt lưu toạ độ
+ * số nguyên lượng tử hoá, sửa đỉnh trực tiếp sẽ tràn) → sửa được đỉnh theo toạ độ của `root` (vd. `squashFeet`).
+ * Pháp tuyến tính lại. Trả về các lưới.
+ */
+export function bakeTransforms(root: THREE.Object3D): THREE.Mesh[] {
+  root.updateMatrixWorld(true);
+  const toRoot = root.matrixWorld.clone().invert();
+  const meshes: THREE.Mesh[] = [];
+  root.traverse((o) => {
+    if (o instanceof THREE.Mesh) meshes.push(o);
+  });
+  const v = new THREE.Vector3();
+  for (const mesh of meshes) {
+    const m = toRoot.clone().multiply(mesh.matrixWorld);
+    const src = mesh.geometry.getAttribute('position');
+    const out = new Float32Array(src.count * 3);
+    for (let i = 0; i < src.count; i++) v.fromBufferAttribute(src, i).applyMatrix4(m).toArray(out, 3 * i);
+    mesh.geometry.setAttribute('position', new THREE.BufferAttribute(out, 3));
+    mesh.geometry.deleteAttribute('normal');
+    mesh.geometry.computeVertexNormals();
+    mesh.removeFromParent();
+    mesh.position.set(0, 0, 0);
+    mesh.rotation.set(0, 0, 0);
+    mesh.scale.set(1, 1, 1);
+    root.add(mesh);
+  }
+  return meshes;
+}
+
+/**
  * Chân đế của model (gốc toạ độ của `root`, sau co giãn): đỉnh thấp hơn `band` × chiều cao, gom cụm theo x (khe > `gap` ×
  * bề ngang là cụm mới) → mỗi cụm một hộp [minX, maxX, minZ, maxZ]. Dùng làm vật cản trụ / chân (cổng 4 trụ → 4 hộp).
  */

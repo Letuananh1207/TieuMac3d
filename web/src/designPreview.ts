@@ -83,15 +83,16 @@ async function boot(): Promise<void> {
   // ?nhan-vat=gau → gấu khối cũ, =khoi → đệ tử khối; mặc định như app (model .glb nếu có, không thì đệ tử khối)
   // Canvas 3D mặc định nhân vật chibi (bản mẫu chờ duyệt — docs/tasks/2026-11-12-nhan-vat-chibi.md); nút ở bảng đổi
   const character = await createPlayerCharacter(new URLSearchParams(location.search).get('nhan-vat') ?? 'chibi');
-  // ?nv=x,z — đặt nhân vật chỗ khác (vd. trong giảng đường để xem nội thất, mái mờ)
+  // ?nv=x,z[,y] — đặt nhân vật chỗ khác (vd. trong giảng đường để xem nội thất, mái mờ); y = chân ở độ cao nào (tầng 2)
   const nv = (new URLSearchParams(location.search).get('nv') ?? '').split(',').map(Number);
-  const [sx, sz] = nv.length === 2 && nv.every(Number.isFinite) ? nv : spec.player.start;
-  const startY = world.surface.heightAt(sx, sz);
+  const nvOk = (nv.length === 2 || nv.length === 3) && nv.every(Number.isFinite);
+  const [sx, sz] = nvOk ? nv : spec.player.start;
+  const startY = world.surface.heightAt(sx, sz, nvOk ? nv[2] : undefined);
   character.root.position.set(sx, Number.isFinite(startY) ? startY : 0, sz);
   scene.add(character.root);
   // NPC như app (R-NPC-1); lỗi nạp hiện cùng lỗi đặc tả ở bảng
   const npcSet = await placeNpcs(scene, colliders, spec.npcs, (x, z) => world.surface.heightAt(x, z));
-  for (const npc of npcSet.npcs) npc.update(1, character.root.position); // ảnh chụp: quay xong ngay, không đợi
+  for (const npc of npcSet.npcs) npc.update(0);
   world.update(1, character.root.position); // mờ mái ngay nếu đặt trong nhà (ảnh chụp không đợi 0,3 s)
 
   /* ---------- bảng: nguồn + lỗi đặc tả ---------- */
@@ -282,7 +283,7 @@ async function boot(): Promise<void> {
     controls.update();
     world.update(dt, character.root.position);
     character.animate(dt, stateNow().mps / RUN_SPEED, stateNow());
-    for (const npc of npcSet.npcs) npc.update(dt, character.root.position);
+    for (const npc of npcSet.npcs) npc.update(dt);
     renderer.render(scene, camera);
     acc += dt;
     frames++;

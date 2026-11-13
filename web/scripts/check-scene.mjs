@@ -113,7 +113,7 @@ function checkScene(rel, raw) {
 
   if (spec.lessons.radicals) {
     all.push(...checkRadicals(RADICALS));
-    console.log(`Tu luyện bộ thủ: ngồi thiền ≥ 1 giây → thẻ bộ chưa học đầu tiên (${RADICALS.length} bộ — R-HANH-3)`);
+    console.log(`Tu luyện bộ thủ: Ngồi ôn ≥ 1 giây → cuộn sách, "Học bộ mới" mở bộ chưa học đầu tiên (${RADICALS.length} bộ — R-HANH-3, R-ON-8)`);
   }
   const tp = spec.teleport;
   if (tp.enabled) {

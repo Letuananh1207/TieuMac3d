@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import './style.css';
 import { FlutterBridge, getProgress, type JourneyProgress } from './bridge/flutterBridge';
 import { Colliders } from './collision/colliders';
-import { GamePlay } from './gamePlay';
+import { GamePlay, type TableSeat } from './gamePlay';
 import { Joystick } from './input/joystick';
 import { Keyboard } from './input/keyboard';
 import { OrbitCamera } from './input/orbitCamera';
@@ -22,23 +22,31 @@ import { mergeStatic } from './scene/merge';
 import { inRect, type Room } from './scene/rooms';
 import { signText } from './scene/signAtlas';
 import { buildWorld } from './scene/world';
+import { NHAP_DINH_OPEN_AT, NhapDinh } from './scene/nhapDinh';
 import { el } from './ui/dom';
 import { LearnButton } from './ui/learnButton';
-import { AreaBanner } from './ui/areaBanner';
 import { FpsCounter, NameTag } from './ui/hud';
 import { LessonBoard } from './ui/lessonBoard';
 import { MapHud } from './ui/mapHud';
 import { ActionButtons } from './ui/actionButtons';
 import { DialogBox, TalkButton } from './ui/dialogBox';
+import { SeatButton } from './ui/seatButton';
+import { BoardButton } from './ui/boardButton';
+import { GuideButton } from './ui/guideButton';
+import { gameSigns, guideDialog, signInRange } from './zones/gameGuides';
+import { dailyBoardSpot, nearBoard, tasksLeft } from './zones/dailyBoard';
+import { seatInRange, type SeatSpot } from './zones/seats';
+import { addSeatGlow } from './scene/seatGlow';
 import { LoadingScreen, nextPaint } from './ui/loadingScreen';
-import { AreaEntryTracker } from './zones/areaTracker';
 import { ZoneTracker } from './zones/zoneTracker';
 import { JOURNEY_MAP, placeAt, placeScene, placeStates, type PlaceState } from './zones/journeyMap';
 import { RingCharge } from './zones/ringCharge';
-import { DIALOGS, DialogRunner, type Dialog } from './zones/dialogs';
+import { DIALOGS, DialogRunner, dailyLine, type Dialog } from './zones/dialogs';
+import { LIBRARIAN, LibraryDesk } from './libraryDesk';
+import { reviewItems } from './zones/review';
+import { fallbackStudy, studyMenu } from './zones/studyMenu';
 import { RADICALS, type Radical } from './zones/radicals';
 import { placeZones, ZONE_CONTENT, type Zone } from './zones/zones';
-import { FILMS, nearestSeat } from './zones/videos';
 
 /** Nhãn tên cao hơn đỉnh búi tóc đệ tử (~2,2 m) một chút. */
 const NAME_TAG_HEIGHT = 2.5;
@@ -59,7 +67,7 @@ async function boot(): Promise<void> {
   loading.progress(10);
   // Biển hiệu, bảng phấn vẽ chữ lên canvas, nên phải nạp font trước khi dựng cảnh.
   // bộ thủ tu luyện ở vùng có bài học bộ thủ (R-HANH-3) — thẻ HTML dự phòng vẽ chữ bằng font này
-  const hanText = [spec.site.han, TELEPORT_TEXT, '此', ...(spec.lessons.radicals ? RADICALS.map((r) => r.form) : []), ...JOURNEY_MAP.places.map((p) => p.han), ...spec.site.areas.map((a) => a.han ?? ''), ...ZONE_CONTENT.map((c) => c.lesson.han), signText(spec), ...FILMS.map((f) => f.title)].join('');
+  const hanText = [spec.site.han, TELEPORT_TEXT, '此', ...(spec.lessons.radicals ? RADICALS.map((r) => r.form) : []), ...JOURNEY_MAP.places.map((p) => p.han), ...spec.site.areas.map((a) => a.han ?? ''), ...ZONE_CONTENT.map((c) => c.lesson.han), signText(spec)].join('');
   await Promise.allSettled([
     document.fonts.load('700 72px Lora'),
     document.fonts.load('700 13px "Be Vietnam Pro"'),
@@ -107,7 +115,7 @@ async function boot(): Promise<void> {
     // thầy không cử động → gộp ~25 khối thành vài khối theo màu (ngân sách ≤ 150 draw call)
     mergeStatic(t.root, new Set());
   }
-  // NPC đứng tại chỗ, quay về người chơi khi lại gần (R-NPC-1)
+  // NPC đứng tại chỗ, giữ hướng đặc tả (R-NPC-1)
   const npcSet = await placeNpcs(scene, colliders, spec.npcs, groundAt);
   if (npcSet.problems.length) console.warn(npcSet.problems.join('\n'));
   const roomAt = (x: number, z: number): Room | undefined => world.rooms.find((r) => inRect(r.floor, x, z));
@@ -132,6 +140,7 @@ async function boot(): Promise<void> {
       progress = p;
       open = openList(p);
       learnedRadicals = new Set(p.radicals);
+      desk.sync(p.book); // màn danh mục Flutter có thể vừa ghi mượn (R-SACH-1)
     });
   };
   const lesson = new LessonBoard(closeLesson);
@@ -144,7 +153,6 @@ async function boot(): Promise<void> {
     const want = !appHidden && !document.hidden;
     if (want === running) return;
     running = want;
-    if (!want) world.cinema?.screen.pause(); // app xuống nền → dừng phim (R-RAP-2)
     if (want) {
       clock.getDelta(); // bỏ khoảng thời gian đã dừng
       requestAnimationFrame(tick);
@@ -152,7 +160,10 @@ async function boot(): Promise<void> {
   };
   document.addEventListener('visibilitychange', setRunning);
   const bridge = new FlutterBridge({
-    onResume: closeLesson,
+    onResume: (stand) => {
+      closeLesson();
+      if (stand && player.isSitting) player.toggleSit(); // "Xuất định" → đứng dậy (R-HANH-3)
+    },
     onVisible: (visible) => {
       appHidden = !visible;
       setRunning();
@@ -176,7 +187,8 @@ async function boot(): Promise<void> {
   /* ---------- tu luyện (R-HANH-3): ngồi thiền ≥ 1 giây ở vùng có bộ thủ → thẻ bộ chưa học đầu tiên ---------- */
   // Bài học là lớp riêng của người học (theo tiến độ của họ) — cảnh không đổi theo tiến độ (R-VUNG-1).
   let learnedRadicals = new Set(progress?.radicals ?? []);
-  const SIT_TO_LEARN = 1; // giây ngồi trước khi thẻ mở
+  // ngồi 1 s nhập định + 0,15 s chữ tan rồi thẻ mới mở (thiết kế 2026-11-13.19 — scene/nhapDinh.ts)
+  const SIT_TO_LEARN = NHAP_DINH_OPEN_AT;
   let sitTime = 0;
   let sitOpened = false; // lần ngồi này đã mở thẻ → đứng dậy rồi ngồi lại mới mở thẻ sau
   const openRadical = (r: Radical): void => {
@@ -204,45 +216,118 @@ async function boot(): Promise<void> {
       learnedRadicals.add(id);
     });
   };
-  /** Mỗi khung: đếm thời gian ngồi thiền; đủ `SIT_TO_LEARN` thì mở thẻ bộ chưa học đầu tiên (R-HANH-3). */
+  let onSeat = false; // ngồi bằng nút nổi "Ngồi" / "Vào bàn" (R-NGOI-1) → không mở cuộn sách (R-ON-8)
+  /** Mỗi khung: đếm thời gian ngồi ôn tại chỗ, ở bất kỳ đâu; đủ `SIT_TO_LEARN` thì mở cuộn sách Ngồi ôn (R-ON-8). */
   const meditate = (dt: number, busy: boolean): void => {
-    if (!spec.lessons.radicals || !player.isSitting) {
+    if (!player.isSitting) {
       sitTime = 0;
       sitOpened = false;
+      onSeat = false;
       return;
     }
-    if (sitOpened || busy) return;
+    if (onSeat || sitOpened || busy) return;
     sitTime += dt;
     if (sitTime < SIT_TO_LEARN) return;
     sitOpened = true;
-    const next = RADICALS.find((r) => !learnedRadicals.has(r.id));
-    if (next) openRadical(next); // học đủ → ngồi thiền chỉ là ngồi
+    study();
   };
+  /** Cuộn sách Ngồi ôn (R-ON-8): bảng chọn ở Flutter; chưa có màn → còn bộ đến hạn thì lượt ôn, không thì thẻ bộ mới. */
+  const study = (): void => {
+    const due = progress?.due ?? [];
+    const menu = studyMenu({ due, learned: learnedRadicals, hasLessons: !!spec.lessons.radicals });
+    paused = true;
+    learn.suspend(true);
+    player.moveTarget = null;
+    const learned = RADICALS.filter((r) => learnedRadicals.has(r.id));
+    void bridge.openStudy({ menu, review: reviewItems(due), learned, region: spec.site.name }).then((native) => {
+      if (native) {
+        covered = true; // "Đứng dậy" → resume {stand: true} → closeLesson hỏi lại tiến độ, nhân vật đứng dậy
+        return;
+      }
+      paused = false;
+      learn.suspend(false);
+      const pick = fallbackStudy(menu);
+      if (pick === 'review') openReview(due, menu.next);
+      else if (pick === 'learn' && menu.next) openRadical(menu.next);
+    });
+  };
+  /** Lượt ôn câu đố (R-ON-5); chưa có màn ôn → thẻ bộ mới nếu học được ở đây. */
+  const openReview = (due: readonly string[], next: Radical | null): void => {
+    paused = true;
+    learn.suspend(true);
+    player.moveTarget = null;
+    void bridge.openReview(reviewItems(due), spec.site.name).then((native) => {
+      if (native) {
+        covered = true; // đóng màn ôn → resume → closeLesson hỏi lại tiến độ (bộ đã ôn hết đến hạn)
+        return;
+      }
+      paused = false;
+      learn.suspend(false);
+      if (next) openRadical(next);
+    });
+  };
+  /** Bảng nhiệm vụ hằng ngày (R-NV-3): màn Flutter; chưa có màn → Tiểu Mặc đọc bảng qua khung thoại. */
+  const openDaily = (): void => {
+    paused = true;
+    learn.suspend(true);
+    player.moveTarget = null;
+    // hỏi tiến độ mới nhất (sang ngày mới → bộ đến hạn đổi) rồi gửi kèm câu đố "Ôn ngay" + chữ từng bộ
+    void (async () => {
+      const fresh = await getProgress();
+      if (fresh) progress = fresh;
+      const forms = Object.fromEntries(RADICALS.map((r) => [r.id, r.form]));
+      if (await bridge.openDaily(reviewItems(progress?.due ?? []), forms)) {
+        covered = true; // đóng bảng → resume → closeLesson hỏi lại tiến độ
+        return;
+      }
+      paused = false;
+      learn.suspend(false);
+      say('tieu-mac', dailyLine(progress?.daily ?? null), () => {});
+    })();
+  };
+  /** Bộ sắp học khi tu luyện (vùng có bộ thủ, còn bộ chưa học) — `undefined` = không tu luyện được ở đây. */
+  const nextRadical = (): Radical | undefined => (spec.lessons.radicals ? RADICALS.find((r) => !learnedRadicals.has(r.id)) : undefined);
+  const nhapDinh = new NhapDinh(scene);
   const zones = new ZoneTracker(placed.zones, (z) => learn.setZone(z));
 
-  /* ---------- rạp phim (R-RAP-1): Ngồi gần bồ đoàn → lên bồ đoàn, nhìn về màn; xa → ngồi thiền tại chỗ ---------- */
-  world.cinema?.screen.setFilms(FILMS);
-  const sitOrWatch = (): void => {
-    if (gamePlay.trySit()) return; // gần ghế bàn chơi → ngồi vào bàn (R-GIAO-1)
-    const seat = !player.isSitting && world.cinema ? nearestSeat(world.cinema.seats, player.position.x, player.position.z) : undefined;
-    if (seat) {
-      player.position.set(seat.x, seat.y, seat.z);
-      character.facing.rotation.y = seat.rotY;
-      orbit.yaw = seat.rotY - Math.PI; // camera sau lưng, nhìn về màn
+  /* ---------- chỗ ngồi (R-NGOI-1): nút nổi "Ngồi" / "Vào bàn"; nút Ngồi ôn ngồi tại chỗ ---------- */
+  type SeatPick = TableSeat | SeatSpot;
+  let seatList: SeatPick[] | null = null; // dựng lần đầu cần (gamePlay khai báo bên dưới)
+  const seatSpots = (): SeatPick[] =>
+    (seatList ??= [
+      ...gamePlay.seatSpots(),
+      ...world.seats.map((s) => ({ ...s, kind: 'ngoi' as const })),
+    ]);
+  const sitAt = (spot: SeatPick): void => {
+    if (player.isSitting) return;
+    onSeat = true;
+    if ('table' in spot) {
+      gamePlay.sitAt(spot); // ghế bàn chơi (R-GIAO-1)
+      return;
     }
+    // án thư / bàn trà (R-VA-4)
+    player.moveTarget = null;
+    player.position.set(spot.x, spot.y ?? player.position.y, spot.z);
+    character.facing.rotation.y = spot.rotY;
+    orbit.yaw = spot.rotY - Math.PI; // camera sau lưng, nhìn về án
     player.toggleSit();
   };
+  const seatButton = new SeatButton<SeatPick>((spot) => sitAt(spot));
+  const seatGlow = addSeatGlow(scene, spec.lanternStyle.trim);
 
   /* ---------- điều khiển ---------- */
   const orbit = new OrbitCamera(spec.camera);
   const joystick = new Joystick(el('joy'), el('knob'), el('joyGhost'));
   const picker = new GroundPicker(camera, world.ground);
-  // Space nhảy, F chào, C ngồi thiền (R-DIEU-6, R-DIEU-7); đang học / màn tải thì bỏ qua
+  // Space nhảy, F chào, C ngồi ôn (R-DIEU-6, R-DIEU-7); đang học / màn tải thì bỏ qua
   const keyboard = new Keyboard((a) => {
     if (paused || loading.active || mapOpen || talking) return;
     if (a === 'jump') player.jump();
     else if (a === 'bow') player.bow();
-    else sitOrWatch();
+    else if (a === 'seat') {
+      const spot = seatButton.current;
+      if (spot) sitAt(spot); // phím E = nút nổi Ngồi (R-NGOI-1)
+    } else player.toggleSit(); // C: ngồi ôn tại chỗ (R-DIEU-7)
   });
   attachPointerInput(canvas, {
     joystick,
@@ -256,7 +341,6 @@ async function boot(): Promise<void> {
       }
       if (paused || talking) return;
       if (gamePlay.tap(x, y, camera)) return; // đang ngồi chơi: chạm vào bàn, không đi (R-GIAO-1)
-      if (world.cinema?.screen.playing) world.cinema.screen.unmute(); // chạm lần đầu khi xem → có tiếng (R-RAP-2)
       // đang trong nhà: chạm trúng vật học của nhà → mở bài (R-VUNG-2)
       const room = roomAt(player.position.x, player.position.z);
       const hit = room ? picker.pickObject(x, y, room.hits) : null;
@@ -269,20 +353,22 @@ async function boot(): Promise<void> {
     },
   });
 
-  /* ---------- thẻ tên khu (R-HUD-3); chip tên nơi + nút góc nhìn đã bỏ (R-HUD-1, 2026-11-13) ---------- */
-  // thẻ tên khu chỉ theo khu của đặc tả (không theo nhà) → vào / ra nhà không hiện thẻ (R-HUD-3)
-  const banner = new AreaBanner();
-  const entries = new AreaEntryTracker(spec.site.areas, (a) => banner.show(a));
+  // không báo tên khu: chip tên nơi + nút góc nhìn bỏ (R-HUD-1), thẻ tên khu giữa màn bỏ (R-HUD-3) — 2026-11-13
 
   /* ---------- nút hành động (R-DIEU-6/7) + hội thoại NPC (R-NPC-2) — thiết kế 2026-11-13.9 ---------- */
   const actions = new ActionButtons({
     jump: () => player.jump(),
     bow: () => player.bow(),
-    sit: () => sitOrWatch(),
+    sit: () => player.toggleSit(), // Thiền: luôn tại chỗ (R-DIEU-7)
   });
   let runner: DialogRunner | null = null;
   const dialogBox = new DialogBox(
-    (i) => runner?.choose(i) ?? null,
+    (i) => {
+      const c = runner?.current?.choices[i];
+      if (c?.action === 'daily') afterSay = openDaily; // đóng khung rồi mở bảng (R-NV-3)
+      if (LibraryDesk.handles(c)) afterSay = () => desk.act(c); // mượn / trả sách (R-SACH-1, R-SACH-4)
+      return runner?.choose(i) ?? null;
+    },
     () => {
       runner?.close();
       runner = null;
@@ -292,17 +378,45 @@ async function boot(): Promise<void> {
       then?.();
     },
   );
-  const talk = new TalkButton((d) => {
+  const startTalk = (d: Dialog): void => {
     runner = new DialogRunner(d);
     talking = true;
     player.moveTarget = null;
     joystick.end();
     dialogBox.open(d, runner.start());
-  });
+  };
+  const talk = new TalkButton(startTalk);
+  // nút "Xem bảng" trên bảng nhiệm vụ 日課榜, chấm son = số việc còn hôm nay (R-NV-3)
+  const boardAt = isHome ? dailyBoardSpot(spec.props) : null;
+  const boardButton = boardAt ? new BoardButton({ ...boardAt, y: groundAt(boardAt.x, boardAt.z) }, openDaily) : null;
+  // nút "Cách chơi" trên biển tên trò chơi Kỳ Văn Uyển → NPC của bàn giảng luật (R-GIAO-2)
+  const signs = gameSigns(spec.gameTables);
+  const guideButton = signs.length ? new GuideButton((sign) => startTalk(guideDialog(sign))) : null;
   const dialogOf = new Map(DIALOGS.map((d) => [d.npc, d]));
+  // thủ thư Tàng Thư Các: thoại đổi theo việc đang mượn sách (R-SACH-1, R-SACH-4)
+  const desk = new LibraryDesk(bridge, progress?.book ?? null, {
+    talk: startTalk,
+    say: (text) => say(LIBRARIAN, text, () => {}),
+    cover: () => {
+      paused = true;
+      covered = true;
+      learn.suspend(true);
+    },
+  });
+  const dialogFor = (npcId: string): Dialog | undefined => (npcId === LIBRARIAN ? desk.dialog() : dialogOf.get(npcId));
 
   /* ---------- khu giao lưu (R-GIAO-1, R-CO-1..3, R-DAU-1): bàn cờ, bàn đấu chữ — gamePlay.ts ---------- */
   let afterSay: (() => void) | null = null;
+  /** Một câu NPC nói qua khung thoại có sẵn; đóng khung → `onClose`. */
+  const say = (npcId: string, text: string, onClose: () => void): void => {
+    const base = dialogFor(npcId);
+    const d: Dialog = { npc: npcId, name: base?.name ?? npcId, han: base?.han, start: 'loi', lines: [{ id: 'loi', text, choices: [{ text: 'Vâng', next: null }] }] };
+    runner = new DialogRunner(d);
+    talking = true;
+    joystick.end();
+    afterSay = onClose;
+    dialogBox.open(d, runner.start());
+  };
   const gamePlay = new GamePlay(world.gameTables, {
     scene,
     colliders,
@@ -312,16 +426,7 @@ async function boot(): Promise<void> {
       orbit.yaw = rotY - Math.PI; // đứng dậy: camera sau lưng
     },
     groundAt,
-    // một câu NPC nói qua khung thoại có sẵn; đóng khung → onClose
-    say: (npcId, text, onClose) => {
-      const base = dialogOf.get(npcId);
-      const d: Dialog = { npc: npcId, name: base?.name ?? npcId, han: base?.han, start: 'loi', lines: [{ id: 'loi', text, choices: [{ text: 'Vâng', next: null }] }] };
-      runner = new DialogRunner(d);
-      talking = true;
-      joystick.end();
-      afterSay = onClose;
-      dialogBox.open(d, runner.start());
-    },
+    say,
     learned: () => learnedRadicals,
   });
   void gamePlay.placeNpcs().then((p) => {
@@ -408,38 +513,54 @@ async function boot(): Promise<void> {
     player.update(dt, input, orbit.yaw, paused || loading.active || mapOpen || talking);
     const pos = player.position;
     orbit.follow(dt, pos.x - fromX, pos.z - fromZ); // camera tự xoay ra sau lưng khi đi (R-DIEU-3)
-    for (const npc of npcSet.npcs) npc.update(dt, pos);
-    gamePlay.update(dt, pos);
+    for (const npc of npcSet.npcs) npc.update(dt);
+    gamePlay.update(dt);
     if (ring && !travelling && !loading.active && !mapOpen) {
       if (ring.update(pos, dt)) openMap();
       world.teleport?.setCharge(ring.charge);
     }
     scroll.update(dt);
     zones.update(pos);
-    entries.update(pos);
     world.update(dt, pos);
-    // R-RAP-2: đang ngồi trên bồ đoàn → phim phát; đứng dậy → dừng
-    if (world.cinema) {
-      const watching = player.isSitting && !!nearestSeat(world.cinema.seats, pos.x, pos.z, 0.3);
-      if (watching) world.cinema.screen.play();
-      else world.cinema.screen.pause();
-    }
     const room = roomAt(pos.x, pos.z);
     if (!gamePlay.placeCamera(camera)) orbit.update(camera, pos, dt, false, groundAt, room?.floor, sight);
     if (!covered) renderer.render(scene, camera);
     nameTag.update(pos, camera, NAME_TAG_HEIGHT);
-    meditate(dt, paused || covered || loading.active || mapOpen || talking);
+    const busy = paused || covered || loading.active || mapOpen || talking;
+    meditate(dt, busy);
+    // nhập định (R-HANH-3): vòng sáng + chữ bộ sắp học; đứng dậy / đã mở thẻ → tắt dần
+    const upcoming = player.isSitting && !onSeat && !sitOpened && !busy ? nextRadical() : undefined;
+    nhapDinh.update(dt, pos, upcoming ? sitTime : null, upcoming?.form ?? '');
+    nameTag.setVisible(!nhapDinh.charShown);
     learn.follow(zones.current ? anchorOf.get(zones.current.id) : undefined, camera);
     // nút "Nói chuyện": NPC gần nhất trong 2,5 m, không đang học / ngồi / bản đồ / thoại / màn tải (R-NPC-2)
     const near = paused || mapOpen || talking || loading.active || player.isSitting ? null : npcInTalkRange(npcSet.npcs, pos);
-    talk.set(near ? (dialogOf.get(near.id) ?? null) : null);
+    talk.set(near ? (dialogFor(near.id) ?? null) : null);
     if (near) talk.follow(talkAnchor.copy(near.root.position).setY(near.root.position.y + 2.3), camera);
+    // nút nổi "Ngồi": chỗ ngồi gần nhất trong tầm, cùng tầng; không khi đang ngồi / bay / bận (R-NGOI-1)
+    const seatFree = !(paused || covered || loading.active || mapOpen || talking || player.isSitting || player.state.air);
+    const spot = seatFree ? (seatInRange(seatSpots(), pos.x, pos.z, pos.y) ?? null) : null;
+    seatButton.set(spot);
+    seatButton.follow(camera);
+    if (boardButton && boardAt) {
+      const allLearned = (progress?.radicals.length ?? 0) >= RADICALS.length;
+      boardButton.set(seatFree && nearBoard(boardAt, pos.x, pos.z), tasksLeft(progress?.daily ?? null, allLearned));
+      boardButton.follow(camera);
+    }
+    if (guideButton) {
+      const sign = seatFree ? signInRange(signs, pos.x, pos.z) : null;
+      guideButton.set(sign, sign ? groundAt(sign.x, sign.z) : 0);
+      guideButton.follow(camera);
+    }
+    seatGlow.set(spot);
+    seatGlow.update(dt);
     dialogBox.update(dt);
     actions.update({
       hidden: paused || covered || loading.active || mapOpen || talking,
       air: player.state.air,
       sitting: player.isSitting,
       bowing: player.isBowing,
+      cultivate: spec.lessons.radicals ? RADICALS.filter((r) => !learnedRadicals.has(r.id)).length || null : null,
     });
     fps.tick(dt, renderer.info.render.calls, renderer.info.render.triangles);
     if (!firstFrame) {

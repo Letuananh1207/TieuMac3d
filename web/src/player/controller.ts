@@ -35,12 +35,12 @@ export const MAX_SLOPE = 35;
  * Luật R-VA-2: có bước từ (fromX, fromZ) tới (toX, toZ) trên địa hình được không.
  * Không vào mặt dốc hơn `MAX_SLOPE` (lên hay xuống), không ra ngoài lưới; đang trên mặt dốc thì chỉ đi xuống.
  */
-export function canStep(ground: Ground, fromX: number, fromZ: number, toX: number, toZ: number): boolean {
-  const to = ground.heightAt(toX, toZ);
+export function canStep(ground: Ground, fromX: number, fromZ: number, toX: number, toZ: number, fromY?: number): boolean {
+  const to = ground.heightAt(toX, toZ, fromY);
   if (!Number.isFinite(to)) return false;
-  if (ground.slopeAt(toX, toZ) <= MAX_SLOPE) return true;
+  if (ground.slopeAt(toX, toZ, fromY) <= MAX_SLOPE) return true;
   // mặt mới dốc: chỉ cho khi đang mắc trên mặt dốc và bước này đi xuống (thoát ra được, không kẹt mãi)
-  return ground.slopeAt(fromX, fromZ) > MAX_SLOPE && to <= ground.heightAt(fromX, fromZ);
+  return ground.slopeAt(fromX, fromZ, fromY) > MAX_SLOPE && to <= ground.heightAt(fromX, fromZ, fromY);
 }
 
 /** Hướng điều khiển từ joystick / bàn phím: x sang phải, y xuống dưới (y = -1 là đi tới). */
@@ -159,6 +159,8 @@ export class PlayerController {
       this.sitting = false;
       this.bowLeft = 0;
     }
+    // chân đang ở độ cao nào (mặt đất dưới chân, không tính nhảy) — nhà nhiều tầng chọn đúng sàn (R-VA-3)
+    const footY = this.position.y - this.airY;
     // nhảy: vận tốc dọc + trọng lực (R-DIEU-6); va chạm ngang vẫn như khi đi
     if (st.air) {
       st.vy -= GRAVITY * dt;
@@ -175,14 +177,14 @@ export class PlayerController {
       this.before.copy(pos);
       pos.x += mx * k * dt;
       pos.z += mz * k * dt;
-      this.colliders.resolve(pos, PLAYER_RADIUS);
+      this.colliders.resolve(pos, PLAYER_RADIUS, footY);
       const g = this.ground;
-      if (g && !canStep(g, this.before.x, this.before.z, pos.x, pos.z)) {
+      if (g && !canStep(g, this.before.x, this.before.z, pos.x, pos.z, footY)) {
         // dốc quá: thử trượt dọc một trục (như chạm tường), không được thì đứng yên
         const tx = pos.x;
         const tz = pos.z;
-        if (canStep(g, this.before.x, this.before.z, tx, this.before.z)) pos.set(tx, pos.y, this.before.z);
-        else if (canStep(g, this.before.x, this.before.z, this.before.x, tz)) pos.set(this.before.x, pos.y, tz);
+        if (canStep(g, this.before.x, this.before.z, tx, this.before.z, footY)) pos.set(tx, pos.y, this.before.z);
+        else if (canStep(g, this.before.x, this.before.z, this.before.x, tz, footY)) pos.set(this.before.x, pos.y, tz);
         else pos.set(this.before.x, pos.y, this.before.z);
       }
       // kẹt tường khi đang đi tới điểm chạm: bỏ điểm đến
@@ -196,7 +198,7 @@ export class PlayerController {
     }
     // độ cao: mặt đất (+ đang nhảy)
     const g = this.ground;
-    const h = g ? g.heightAt(pos.x, pos.z) : 0;
+    const h = g ? g.heightAt(pos.x, pos.z, footY) : 0;
     if (Number.isFinite(h)) pos.y = h + this.airY;
     // chào: đếm lùi; ngồi: hoà mượt 0 ↔ 1; đứng lâu: đếm giây (R-DIEU-7, R-DIEU-8)
     this.bowLeft = Math.max(0, this.bowLeft - dt);

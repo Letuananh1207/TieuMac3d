@@ -6,10 +6,10 @@ import * as THREE from 'three';
  * y = 0, tâm x/z = 0, mặt trước +z): hông → đầu, tay trái / phải, chân trái / phải. Trọng số mềm ở khớp để không rách.
  */
 
-/** Tỉ lệ dáng chibi (phần của chiều cao / bề rộng) — chỉnh nếu model khác dáng. */
-/** Đo trên model nhân vật chính (2026-11-12, mặt cắt ngang theo độ cao): vai ở 53 % H, cách trục 17 % W; bàn tay
+/** Tỉ lệ dáng chibi (phần của chiều cao H / bề rộng W). Model khác dáng (NPC) truyền `shape` riêng cho `autoRig`.
+ *  Đo trên model nhân vật chính (2026-11-12, mặt cắt ngang theo độ cao): vai ở 53 % H, cách trục 17 % W; bàn tay
  *  thấp tới 26–32 % H; mép thân (áo xoè) rộng dần từ 17 % W ở vai tới 25 % W ngang bàn tay. W = bề ngang cả hai tay. */
-const P = {
+const DEFAULT_SHAPE = {
   hip: 0.32, // gốc thân (xoay nhẹ khi đi)
   neck: 0.6, // trên đây là đầu
   shoulderY: 0.53,
@@ -19,6 +19,9 @@ const P = {
   handY: 0.26, // đáy bàn tay
   legTop: 0.15, // dưới đây là chân (lộ ra dưới vạt áo)
 };
+
+/** Tỉ lệ dáng để gắn xương — mặc định đo trên nhân vật chính. */
+export type RigShape = typeof DEFAULT_SHAPE;
 
 export interface Rig {
   root: THREE.Bone;
@@ -55,7 +58,12 @@ const smooth = (a: number, b: number, v: number): number => {
  * Biến các mesh trong `model` (đã chuẩn hoá cỡ, nằm trong `model`) thành SkinnedMesh dùng chung một bộ xương.
  * Trả về mesh mới (đặt thay chỗ) và xương để `glbCharacter` điều khiển.
  */
-export function autoRig(model: THREE.Object3D, height: number): { group: THREE.Group; rig: Rig } {
+export function autoRig(
+  model: THREE.Object3D,
+  height: number,
+  shape: Partial<RigShape> = {},
+): { group: THREE.Group; rig: Rig } {
+  const P: RigShape = { ...DEFAULT_SHAPE, ...shape };
   model.updateMatrixWorld(true);
   const box = new THREE.Box3().setFromObject(model);
   const W = Math.max(box.max.x - box.min.x, 1e-3);

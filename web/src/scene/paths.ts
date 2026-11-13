@@ -1,18 +1,29 @@
 import * as THREE from 'three';
 import type { GroundY } from './terrainHeight';
 import { lambert } from './materials';
-import type { PathSpec } from './spec';
+import { brickTexture, paveTileM } from './environment';
+import type { PathSpec, SceneSpec } from './spec';
 import { SLAB_TILE_M, slabTex } from './textures';
 
 /**
  * Lối lát đá: dải hơi nổi trên mặt sân (không đè hình nhau), không va chạm. Có địa hình: lưới bám theo độ cao mặt đất
  * (`groundY`) từng mét — lên xuống bục, gờ, dốc theo đất (L-3).
+ * `pave` (đặc tả `buildingStyle.pathLook: "san"`): mặt lối là gạch của sân lát, UV theo toạ độ cảnh như sân
+ * (`terrain.ts` `addPaving`) → lối chạy trên sân không lộ mạch lệch; bỏ qua màu `path` / `color` từng lối.
  */
-export function addPaths(scene: THREE.Scene, paths: PathSpec[], defaultColor: string, groundY: GroundY = () => 0): void {
+export function addPaths(
+  scene: THREE.Scene,
+  paths: PathSpec[],
+  defaultColor: string,
+  groundY: GroundY = () => 0,
+  pave?: SceneSpec['ground'],
+): void {
   const base = new Map<string, THREE.CanvasTexture>();
+  const paveTex = pave ? brickTexture(pave) : null;
+  const paveTile = pave ? paveTileM(pave) : 1;
   paths.forEach((p, i) => {
     const color = p.color ?? defaultColor;
-    let tex = base.get(color);
+    let tex = paveTex ?? base.get(color);
     if (!tex) {
       tex = slabTex(color); // phiến đá so le, mép vát (2026-11-13)
       base.set(color, tex);
@@ -40,7 +51,8 @@ export function addPaths(scene: THREE.Scene, paths: PathSpec[], defaultColor: st
         const x = x1 + dx * t + nx * o;
         const z = z1 + dz * t + nz * o;
         pos.push(x, groundY(x, z) + lift, z);
-        uv.push(((b / across) * p.width) / SLAB_TILE_M, t / SLAB_TILE_M);
+        if (pave) uv.push(x / paveTile, -z / paveTile);
+        else uv.push(((b / across) * p.width) / SLAB_TILE_M, t / SLAB_TILE_M);
       }
     }
     const idx: number[] = [];

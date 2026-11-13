@@ -25,7 +25,6 @@
 | dốc | `MAX_SLOPE` 35° + `canStep` (R-VA-2) trong `player/controller.ts`; camera không chui xuống đất (`orbit.update(…, groundAt)`) | |
 | chiều cao kiến trúc | `buildingStyle.heightScale` qua `hk(style)` (`kien_truc/chi_tiet.ts`): nhân nền, cột, tường thân, cửa, mái, tầng tháp, cổng sơn môn; **giữ cỡ người**: bậc (thêm bậc — `stepCount`), lan can, biển, đèn lồng, cửa sổ tròn, đồ đạc. Sàn nhà vào được `hallFloor(style)`. Nội thất đặt theo kích thước phòng (phòng to → thêm án / kệ); cổng trăng thu bán kính cho vừa tường (`moonRadius`) | `kien_truc/` |
 | tiện ích vào được (2026-11-13.13) | `hi-dai` · `tra-lau` · `lau-sach` · `cua-hang`: hàm dựng `kien_truc/<kiểu>.ts` trả `Shell` (`kien_truc/vao_trong.ts`: hộp / tròn va chạm, `pads` nền + dốc, `floor`) → `rooms.ts` `addWalkIn` (bảng `WALK_IN`) → `Room` không vật học; nhóm `fade` gộp **màu theo đỉnh** (`mergeVertexColors`) → ~3 draw call / nhà dù nhiều màu. Đồ phố chợ `kien_truc/do_pho.ts` (bàn trà, sạp ô, cờ, bảng) | `world.ts` |
-| rạp phim (R-RAP-*, decisions/0004) | `rap-phim` → `scene/rapPhim.ts` `addCinema` (hình `kien_truc/rap_phim.ts`, bồ đoàn `InstancedMesh`) → `World.cinema`; `scene/videoScreen.ts` `VideoScreen`: `HTMLVideoElement` → `VideoTexture`, chọn `.webm` VP9 hay `.mov` H.264 theo `canPlayType`, nhớ chỗ xem, tắt tiếng tới lần chạm đầu, mất mạng → chữ trên màn. `main.ts` ghép: Ngồi gần bồ đoàn (`zones/videos.ts` `nearestSeat`) → lên bồ đoàn + phát; đứng / xuống nền → dừng | `world.ts`, `main.ts` |
 | nhà vào được | nhà kiểu giảng đường có `zone` mà `ZONE_CONTENT` cho `interior` (`lop-hoc` · `thu-vien`) → `scene/rooms.ts`: thân rỗng, gian giữa mặt trước để trống làm cửa, nội thất `kien_truc/noi_that.ts`; va chạm theo lan can + tường + đồ đạc (R-VA-3); nền + dốc bậc là `Pad` trong `collision/ground.ts` (`LayeredGround`, `World.surface`); mái + tường trước + hàng cột trước gộp riêng rồi mờ 15 % / 0,3 s khi đứng trên sàn (R-HUD-2); hộp bắt chạm vô hình `markDynamic` (R-VUNG-2). Vùng học = điểm học trong nhà (`interiorSpot`, R-VUNG-1) | `world.ts` `buildWorld(…, interiors)` |
 | bậc đá, cỏ, đá rải | `terrain.stairs` ép dải dốc trong `terrainHeight.ts` (`stairEnds`), khối bậc ở `scene/stairs.ts`; cỏ búi + đá rải `scene/grass.ts` (mỗi loại 1 `InstancedMesh`, `setColorAt`, tối đa 3000 / 400) | `world.ts` khi có địa hình |
 | núi xa, biển mây | `scene/farMountains.ts`: không chịu sương, tự pha màu; far plane = `viewDistance(spec)` | `renderer.ts` nhận `far` |
@@ -70,7 +69,7 @@ export interface Character {
 
 `PlayerController` chỉ biết `Character`. Có sẵn: `discipleCharacter.ts` (đệ tử khối), `blockCharacter.ts` (gấu),
 `glbCharacter.ts` (model .glb — `references/tai_nguyen.md`); chọn ở `playerCharacter.ts`. NPC (`npc.ts`, R-NPC-1)
-dùng chung `loadGlbModel`, không gắn xương (xương tự gắn đo theo nhân vật chính), đặt theo `spec.npcs` qua `placeNpcs`. Nhân vật mới = một hàm trả
+dùng chung `loadGlbModel` + `autoRig` với dáng riêng từng model (`NPC_RIGS` — NPC mới phải đo vai / tay trên ảnh `-truoc.png`, chưa đo thì chỉ thở), tay buông, giữ hướng đặc tả (không quay theo người chơi); đặt theo `spec.npcs` qua `placeNpcs`. Nhân vật mới = một hàm trả
 về `Character`; không sửa controller.
 
 ## Điều khiển (input/)

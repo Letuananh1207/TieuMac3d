@@ -79,10 +79,11 @@ export function signMesh(w: number, h: number, pw: number, ph: number, draw: Dra
 }
 
 /** Mọi chữ sẽ vẽ lên biển / cờ / bảng của cảnh: nạp font "Han Serif" cho các chữ Hán trong đó trước khi dựng. */
-export function signText(spec: Pick<SceneSpec, 'buildings' | 'gates' | 'props'>): string {
+export function signText(spec: Pick<SceneSpec, 'buildings' | 'gates' | 'props' | 'gameTables'>): string {
   return [
     ...spec.buildings.flatMap((b) => [b.title, b.sign ?? '']),
     ...spec.gates.flatMap((g) => [g.title, g.hanTitle ?? '']),
     ...spec.props.map((p) => p.text ?? ''),
+    ...spec.gameTables.map((t) => t.sign?.han ?? ''),
   ].join('');
 }

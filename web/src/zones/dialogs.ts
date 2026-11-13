@@ -7,6 +7,11 @@
 export interface DialogChoice {
   text: string;
   next: string | null;
+  /** đóng khung thoại rồi làm việc này: `daily` = mở bảng nhiệm vụ hằng ngày (R-NV-3); `borrow` = mượn cuốn `book`, hoặc
+   *  mở danh mục khi không có `book` (R-SACH-1); `return` = trả sách đang mượn (R-SACH-4) */
+  action?: 'daily' | 'borrow' | 'return';
+  /** mã sách cho `action: 'borrow'` */
+  book?: string;
 }
 
 /** Một câu NPC nói, kèm các lựa chọn (1–3; câu nào cũng có "Tạm biệt"). */
@@ -42,7 +47,7 @@ export const DIALOGS: Dialog[] = [
         text: 'Đạo hữu mới đến Văn Uyên Tông à? Tiểu Mặc là đệ tử ngoại môn, hôm nay được giao trông bảng nhiệm vụ hằng ngày của tông đó!',
         choices: [
           { text: 'Tiểu Mặc đứng đây làm gì?', next: 'don-khach' },
-          { text: 'Hôm nay Tiểu Mặc thế nào?', next: 'hom-nay' },
+          { text: 'Hôm nay có việc gì?', next: null, action: 'daily' },
           BYE,
         ],
       },
@@ -54,7 +59,7 @@ export const DIALOGS: Dialog[] = [
       {
         id: 'tu-chu',
         text: 'Sư phụ Mặc Ông đứng ở Truyền Tống Đài giữa sân đó! Đạo hữu tới hỏi thầy, thầy chỉ cho cách sang Rừng trúc tu chữ.',
-        choices: [OTHER, BYE],
+        choices: [{ text: 'Hôm nay Tiểu Mặc thế nào?', next: 'hom-nay' }, OTHER, BYE],
       },
       {
         id: 'hom-nay',
@@ -112,6 +117,28 @@ export const DIALOGS: Dialog[] = [
     ],
   },
 ];
+
+/** Bảng nhiệm vụ hôm nay (docs/bridge.md `getProgress.daily`) — kiểu riêng ở đây để `zones` không phụ thuộc `bridge`. */
+export interface DailySummary {
+  learned: number;
+  goal: number;
+  due: number;
+  streak: number;
+  best: number;
+}
+
+/** Tiểu Mặc đọc bảng nhiệm vụ hôm nay (R-NV-1, R-NV-2) — dùng khi chưa có màn bảng (chờ thiết kế). `null` = không có
+ * tiến độ (chạy trình duyệt thường). */
+export function dailyLine(d: DailySummary | null): string {
+  if (!d) return `Bảng hôm nay giao hai việc: lĩnh hội 3 bộ thủ mới, và ôn hết các bộ đến hạn. Sang Rừng trúc ngồi thiền là làm được cả hai!`;
+  const learn = d.learned >= d.goal ? `lĩnh hội xong ${d.learned} bộ mới rồi` : `lĩnh hội ${d.learned}/${d.goal} bộ mới`;
+  const review = d.due > 0 ? `còn ${d.due} bộ cần ôn` : 'không còn bộ nào cần ôn';
+  const done = d.learned >= d.goal && d.due === 0;
+  const streak = d.streak > 0 ? ` Đạo hữu đã tu liền ${d.streak} ngày${d.best > d.streak ? `, kỷ lục ${d.best}` : ''}!` : '';
+  return done
+    ? `Hôm nay đạo hữu ${learn}, ${review} — xong cả hai việc trên bảng!${streak}`
+    : `Hôm nay đạo hữu ${learn}, ${review}. Sang Rừng trúc ngồi thiền mà làm cho xong nha!${streak}`;
+}
 
 /** Lỗi dữ liệu hội thoại: câu bắt đầu / câu tiếp không tồn tại, câu thiếu "Tạm biệt", quá 3 lựa chọn, mã trùng. */
 export function checkDialog(d: Dialog): string[] {

@@ -9,15 +9,16 @@ import 'svg_strokes.dart';
 
 /// Thẻ học bộ thủ (native), che toàn bộ cảnh 3D — R-HANH-3.
 /// Thiết kế: design/docs/screen_specs.md "Thẻ học bộ thủ" (artboard `TheBoThu-doc`, `TheBoThu-doc-on`, `TheBoThu-ngang`);
-/// khung như màn bài học. Lần đầu: nút "Đã học · khắc vào bia" → [onLearn] rồi đóng; đã học: huy hiệu "Đã học", nút
-/// "Về rừng trúc". Nút quay lại của máy → đóng, không ghi học.
+/// khung như màn bài học. Lần đầu: nút "Đã lĩnh hội" → [onLearn] rồi đóng, vẫn ngồi; đã học: huy hiệu "Đã học", nút
+/// "Xuất định" → đóng, trả `true` (nhân vật đứng dậy — R-HANH-3, thiết kế 2026-11-13.19). Nút quay lại của máy → đóng,
+/// không ghi học, không đứng dậy.
 class RadicalScreen extends StatelessWidget {
   const RadicalScreen({super.key, required this.request, required this.onLearn});
 
   final OpenRadicalRequest request;
   final Future<void> Function() onLearn;
 
-  static Route<void> route(OpenRadicalRequest request, Future<void> Function() onLearn) => PageRouteBuilder<void>(
+  static Route<bool> route(OpenRadicalRequest request, Future<void> Function() onLearn) => PageRouteBuilder<bool>(
         transitionDuration: const Duration(milliseconds: 220),
         reverseTransitionDuration: const Duration(milliseconds: 180),
         pageBuilder: (_, _, _) => RadicalScreen(request: request, onLearn: onLearn),
@@ -38,7 +39,7 @@ class RadicalScreen extends StatelessWidget {
       onPressed: () async {
         final nav = Navigator.of(context);
         if (!request.learned) await onLearn();
-        nav.pop();
+        nav.pop(request.learned); // "Xuất định" (đã học) → đứng dậy; "Đã lĩnh hội" → vẫn ngồi
       },
     );
 
@@ -327,7 +328,7 @@ class _Table extends StatelessWidget {
   }
 }
 
-/// Nút chính: lần đầu "✓ Đã học · khắc vào bia"; đã học "‹ Về rừng trúc".
+/// Nút chính: lần đầu "✓ Đã lĩnh hội"; đã học "‹ Xuất định".
 class _MainButton extends StatelessWidget {
   const _MainButton({required this.learned, required this.onPressed});
 
@@ -344,7 +345,7 @@ class _MainButton extends StatelessWidget {
       child: FilledButton.icon(
         onPressed: onPressed,
         icon: Icon(learned ? Icons.chevron_left : Icons.check, size: 20),
-        label: Text(learned ? 'Về rừng trúc' : 'Đã học · khắc vào bia'), // radicalBack / radicalLearn
+        label: Text(learned ? 'Xuất định' : 'Đã lĩnh hội'), // radicalBack / radicalLearn
         style: FilledButton.styleFrom(
           minimumSize: const Size.fromHeight(52),
           backgroundColor: AppColors.jade,

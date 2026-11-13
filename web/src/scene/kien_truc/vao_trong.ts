@@ -16,6 +16,8 @@ export interface LocalPad {
   d: number;
   y: number;
   ramp?: { axis: 'x' | 'z'; at0: number; at1: number; y1: number };
+  /** tấm tầng trên (sàn tầng 2, cầu thang) — xem `Pad.upper` */
+  upper?: boolean;
 }
 
 export interface Shell {
@@ -27,10 +29,17 @@ export interface Shell {
   pads: LocalPad[];
   /** sàn trong nhà: đứng trong đây = "ở trong" (mái mờ R-HUD-2, camera ≤ 6 m) */
   floor: LocalBox;
+  /** nhà lên được tầng 2: chân cao từ mức này (m, từ chân nhà) trở lên = đang ở tầng 2 → `fadeLow` hiện lại (R-HUD-2) */
+  upperY?: number;
+  /** chỗ ngồi (bồ đoàn) — bấm Ngồi khi đứng gần thì dời lên đó (R-VA-4); `y` từ chân nhà, `rotY` hướng nhìn (0 = +z) */
+  seats?: { x: number; z: number; y: number; rotY: number }[];
 }
 
-/** `fade` = nhóm mờ đi khi người chơi ở trong (mái, sàn lầu, tầng 2). */
-export type WalkInBuilder = (g: THREE.Group, b: BuildingSpec, style: Style, fade: THREE.Group) => Shell;
+/**
+ * `fade` = nhóm mờ đi khi người chơi ở trong (mái, sàn lầu, tầng 2). `fadeLow` = nhóm chỉ mờ khi ở tầng 1 (sàn, tường,
+ * kệ tầng 2 của nhà lên được tầng 2 — đứng trên tầng 2 thì hiện); nhà một tầng không dùng.
+ */
+export type WalkInBuilder = (g: THREE.Group, b: BuildingSpec, style: Style, fade: THREE.Group, fadeLow: THREE.Group) => Shell;
 
 /** Dốc lên nền thấp trước mặt tiền: dải rộng `w`, từ mép nền `z0` ra +z dài `run`. */
 export function frontRamp(w: number, z0: number, run: number, y: number): LocalPad {

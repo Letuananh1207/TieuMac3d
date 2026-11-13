@@ -92,10 +92,13 @@ function addPaving(scene: THREE.Scene, spec: SceneSpec): void {
     const d = Math.abs(p.to[1] - p.from[1]);
     const geo = new THREE.PlaneGeometry(w, d);
     const uv = geo.getAttribute('uv') as THREE.BufferAttribute;
-    for (let i = 0; i < uv.count; i++) uv.setXY(i, (uv.getX(i) * w) / tile, (uv.getY(i) * d) / tile);
+    const cx = (p.from[0] + p.to[0]) / 2;
+    const cz = (p.from[1] + p.to[1]) / 2;
+    // UV theo toạ độ cảnh (x, −z): mạch gạch các bục và lối lát `pathLook: "san"` (paths.ts) liền nhau
+    for (let i = 0; i < uv.count; i++) uv.setXY(i, (cx + (uv.getX(i) - 0.5) * w) / tile, (-cz + (uv.getY(i) - 0.5) * d) / tile);
     const m = new THREE.Mesh(geo, mat);
     m.rotation.x = -Math.PI / 2;
-    m.position.set((p.from[0] + p.to[0]) / 2, p.y + PAVE_LIFT, (p.from[1] + p.to[1]) / 2);
+    m.position.set(cx, p.y + PAVE_LIFT, cz);
     scene.add(m);
   }
 }

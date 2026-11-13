@@ -7,7 +7,7 @@ import * as THREE from 'three';
 import { lambert } from '../materials';
 import { markDynamic } from '../merge';
 import { signMesh } from '../signAtlas';
-import { drawBanner, drawBoard } from '../textures';
+import { drawBanner, drawBoard, drawSign } from '../textures';
 import type { Style } from './chi_tiet';
 import { box, column } from './hinh';
 import type { LocalBox } from './noi_that';
@@ -88,4 +88,21 @@ export function honorBoard(g: THREE.Group, style: Style, title: string): LocalBo
   paper.position.set(0, 1.75, 0.07);
   g.add(paper);
   return { x: 0, z: 0, w: 3.4, d: 0.5 };
+}
+
+/**
+ * Biển tên trò chơi (R-GIAO-2): biển gỗ đứng 1,8 m — hai trụ, xà trên, tấm giấy ngà viền vàng ghi tên Hán + tên Việt,
+ * hai mặt đều đọc được. Mặt trước nhìn +z. Trả về hộp va chạm theo toạ độ `g`.
+ */
+export function gameSign(g: THREE.Group, style: Style, han: string, name: string): LocalBox {
+  for (const sx of [-1, 1]) g.add(column(0.06, 1.75, style.timber, sx * 0.8, 0, 0, 6));
+  g.add(box(1.9, 0.1, 0.16, style.timber, 0, 1.78, 0));
+  g.add(box(1.62, 0.84, 0.08, style.timber, 0, 1.22, 0));
+  const front = signMesh(1.5, 0.75, 512, 256, (c, w, h) => drawSign(c, w, h, han, name, { paper: true }));
+  front.position.set(0, 1.22, 0.05);
+  const back = new THREE.Mesh(front.geometry, front.material);
+  back.position.set(0, 1.22, -0.05);
+  back.rotation.y = Math.PI;
+  g.add(front, back);
+  return { x: 0, z: 0, w: 1.8, d: 0.3 };
 }

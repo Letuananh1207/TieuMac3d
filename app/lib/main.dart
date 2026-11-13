@@ -5,8 +5,13 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 import 'journey/journey.dart';
 import 'journey/progress_store.dart';
+import 'lesson/book_screen.dart';
+import 'lesson/daily_screen.dart';
 import 'lesson/lesson_screen.dart';
+import 'lesson/library_screen.dart';
 import 'lesson/radical_screen.dart';
+import 'lesson/review_screen.dart';
+import 'scene/review_event.dart';
 import 'scene/scene_event.dart';
 import 'scene/scene_server.dart';
 import 'scene/scene_view.dart';
@@ -78,15 +83,58 @@ class HocXaApp extends StatelessWidget {
                 progress?.learnChar(request.lesson.han);
                 return Navigator.of(context).push(LessonScreen.route(request.lesson));
               },
-              // thẻ học bộ thủ: "Đã học · khắc vào bia" → ghi bộ thủ đã học (R-HANH-3)
+              // thẻ học bộ thủ: "Đã lĩnh hội" → ghi bộ thủ đã học; "Xuất định" → đóng + đứng dậy (R-HANH-3)
               onOpenRadical: (context, request) => Navigator.of(context).push(
                 RadicalScreen.route(request, () async {
                   await progress?.learnRadical(request.radical.id);
                 }),
               ),
-              onGetProgress: () => progressReply(progress?.progress ?? const Progress()),
+              onGetProgress: () {
+                final store = progress;
+                if (store == null) return progressReply(const Progress());
+                store.checkDaily(); // sang ngày mới mà không có gì phải làm → ngày đó vẫn được tính (R-NV-2)
+                return progressReply(
+                  store.progress,
+                  due: store.dueRadicals,
+                  daily: store.daily,
+                  streak: store.streak,
+                  book: store.borrowedBook,
+                );
+              },
+              // Tàng Thư Các: cuốn sổ từ đang mượn giữ qua tắt app (R-SACH-1, R-SACH-2, R-SACH-4)
+              onBorrowBook: (id) async => await progress?.borrowBook(id) ?? false,
+              onReturnBook: () async => await progress?.returnBook() ?? false,
+              // ôn câu đố + bảng nhiệm vụ 日課榜 (R-ON-5, R-NV-3); không có kho tiến độ → trang tự lo (thẻ bộ mới / Tiểu Mặc)
+              onOpenReview: progress == null
+                  ? null
+                  : (context, request) => Navigator.of(context).push(_reviewRoute(progress!, request.items)),
+              onOpenDaily: progress == null
+                  ? null
+                  : (context, request) => Navigator.of(context).push(DailyScreen.route(
+                        request,
+                        () => DailyView.of(progress!),
+                        (items) => Navigator.of(context).push(_reviewRoute(progress!, items)),
+                      )),
+              // Tàng Thư Các: danh mục (chọn → ghi mượn) và sổ từ (mở ở trang đã nhớ, đóng → ghi trang) — R-SACH-1, R-SACH-3
+              onOpenLibrary: progress == null
+                  ? null
+                  : (context, request) => Navigator.of(context).push(LibraryScreen.route(request, progress!.borrowBook)),
+              onOpenBook: progress == null
+                  ? null
+                  : (context, request) => Navigator.of(context).push(BookScreen.route(
+                        request,
+                        progress!.bookPage(request.id),
+                        (page) => progress!.setBookPage(request.id, page, request.words.length),
+                      )),
             )
           : Scaffold(body: SceneErrorView(detail: startError!)),
     );
   }
 }
+
+/// Màn ôn: chấm từng bộ vào lịch ôn (R-ON-2), trả số ngày tới lần ôn kế cho câu "ôn lại sau n ngày".
+Route<void> _reviewRoute(ProgressStore store, List<ReviewItem> items) => ReviewScreen.route(
+      items,
+      (id, correct) async => await store.reviewRadical(id, correct) ? store.cards[id]?.interval : null,
+      daily: () => store.daily,
+    );

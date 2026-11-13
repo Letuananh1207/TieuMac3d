@@ -7,13 +7,13 @@
 
 export type XZ = [number, number];
 
-export const BUILDING_KINDS = ['giang-duong', 'dien', 'thap', 'nha-nho', 'dinh', 'hi-dai', 'tra-lau', 'lau-sach', 'cua-hang', 'rap-phim'] as const;
+export const BUILDING_KINDS = ['giang-duong', 'dien', 'thap', 'nha-nho', 'dinh', 'hi-dai', 'tra-lau', 'lau-sach', 'cua-hang'] as const;
 /** Hàng bày trong cửa hàng (`cua-hang`): bút mực · vải · bùa giấy · thuốc · thùng gỗ. */
 export const GOODS_KINDS = ['but', 'vai', 'bua', 'thuoc', 'thung'] as const;
 export const ROOF_KINDS = ['chop', 'cong'] as const;
 export const SIDES = ['bac', 'nam', 'dong', 'tay'] as const;
 /** NPC có model: `design/models/<mã>.glb` (tạo bằng /tai-nguyen). Thêm NPC mới = thêm mã ở đây + đặt file model. */
-export const NPC_IDS = ['tieu-mac', 'su-phu'] as const;
+export const NPC_IDS = ['tieu-mac', 'su-phu', 'thu-thu'] as const;
 /** Bàn chơi ở khu giao lưu (R-GIAO-1): `co` = Ngũ Tử Kỳ (R-CO-1), `dau-chu` = Đấu chữ (R-DAU-1). */
 export const GAME_KINDS = ['co', 'dau-chu'] as const;
 export const PROP_KINDS = [
@@ -80,6 +80,21 @@ export interface WallGate {
   width: number;
 }
 
+/** Dây đèn lồng đỏ giăng giữa hai cột gỗ ở `from` / `to` (góc tự do), võng xuống ở giữa — kiểu dáng chung ở `lanternStyle`. */
+export interface LanternString {
+  from: XZ;
+  to: XZ;
+}
+
+/** Vật treo dọc dây đèn: đèn lồng · dải tua rua. */
+export const HANG_KINDS = ['den', 'tua'] as const;
+
+/** Đoạn lan can gỗ thấp, thẳng trục (from / to cùng x hoặc cùng z). */
+export interface FenceSpec {
+  from: XZ;
+  to: XZ;
+}
+
 /** Đoạn tường thêm, thẳng trục (from / to cùng x hoặc cùng z), dày 1, màu như tường bao. */
 export interface WallSegment {
   from: XZ;
@@ -113,12 +128,14 @@ export interface GateSpec {
    * khối cùng `width`, biển chữ dán lên biển trống của model. Thiếu trường / thiếu file / nạp lỗi → cổng khối như cũ.
    */
   model?: string;
+  /** hệ số cỡ model so với bề ngang cổng khối (mặc định 1) — L-5: 0,75 */
+  modelScale?: number;
 }
 
-/** Một khu có tên (hình chữ nhật từ góc `from` tới góc `to`) — bước vào thì hiện thẻ tên khu (R-HUD-3). */
+/** Một khu có tên (hình chữ nhật từ góc `from` tới góc `to`) (dữ liệu; thẻ tên khu khi bước vào đã bỏ — R-HUD-3). */
 export interface AreaSpec {
   name: string;
-  /** chữ Hán của khu trên thẻ tên khu (R-HUD-3), vd. "外門"; thiếu thì thẻ chỉ hiện tên Việt */
+  /** chữ Hán của khu, vd. "外門" (dữ liệu — thẻ tên khu đã bỏ, R-HUD-3) */
   han?: string;
   from: XZ;
   to: XZ;
@@ -164,7 +181,28 @@ export interface GameTableSpec {
   z: number;
   rotY?: number;
   npc: (typeof NPC_IDS)[number];
+  /** bàn dài: số chỗ chơi dọc trục x cục bộ (1–4, mặc định 1 = bàn vuông như cũ), mỗi chỗ cách nhau `GAME_SLOT` m;
+   *  bàn dài có hai ghế đối diện mỗi chỗ */
+  boards?: number;
+  /** NPC đứng sau bàn (mặc định `true`); `false` = NPC chỉ nói qua khung thoại (R-GIAO-1) */
+  npcStand?: boolean;
+  /** biển gỗ đứng ghi tên trò (R-GIAO-2); không có → không biển */
+  sign?: GameSignSpec;
 }
+
+/** Biển tên trò chơi (R-GIAO-2): toạ độ cảnh, mặt chữ nhìn về +z khi `rotY` = 0 (độ, bội 90). */
+export interface GameSignSpec {
+  x: number;
+  z: number;
+  rotY?: number;
+  /** tên chữ Hán, vd. "五子棋" */
+  han: string;
+  /** tên tiếng Việt, vd. "Ngũ Tử Kỳ" */
+  name: string;
+}
+
+/** Khoảng cách tâm hai chỗ chơi liền nhau trên bàn dài (m) — mặt bàn 1,6 + lối 0,6. */
+export const GAME_SLOT = 2.2;
 
 /** Cụm cây rải ngẫu nhiên (theo `trees.seed`) trong hình chữ nhật tâm (x, z). */
 export interface GroveSpec {
@@ -274,7 +312,7 @@ export interface DaisSpec {
 }
 
 export interface SceneSpec {
-  /** tên nơi + các khu (thẻ tên khu R-HUD-3, màn tải); khu khai báo trước thắng khi chồng nhau */
+  /** tên nơi + các khu (màn tải; thẻ tên khu đã bỏ — R-HUD-3); khu khai báo trước thắng khi chồng nhau */
   /** `han`: chữ Hán tên nơi trên màn tải (R-MAN-2), rỗng = chỉ tên Việt */
   site: { name: string; han: string; areas: AreaSpec[] };
   /** trời: dải màu từ đỉnh xuống chân trời (điểm giữa ở 55%) */
@@ -355,6 +393,8 @@ export interface SceneSpec {
     stone: string;
     water: string;
     path: string;
+    /** mặt lối lát: `phien` phiến đá màu `path` (cảnh gốc) · `san` cùng gạch với sân lát (`ground`), mạch gạch liền */
+    pathLook: 'phien' | 'san';
     bronze: string;
     herb: string;
     smoke: string;
@@ -410,6 +450,27 @@ export interface SceneSpec {
   npcs: NpcSpec[];
   /** bàn chơi khu giao lưu (R-GIAO-1) */
   gameTables: GameTableSpec[];
+  /** dây đèn lồng giăng trên sân (vd. khu giao lưu) — chỉ ngắm, cột hai đầu có va chạm */
+  lanternStrings: LanternString[];
+  /** dây đèn lồng: `height` đỉnh cột / chỗ buộc dây, `sag` độ võng giữa dây, `spacing` khoảng hai đèn (m);
+   *  màu dây, thân đèn, chóp + tua (`trim`), cột gỗ */
+  lanternStyle: {
+    height: number;
+    sag: number;
+    spacing: number;
+    rope: string;
+    lantern: string;
+    trim: string;
+    pole: string;
+    /** vật treo dọc dây: `den` = đèn lồng (như cũ) · `tua` = dải tua rua dài `drop` m, cứ `lanternEvery` dải xen 1 đèn (0 = không đèn) */
+    hang: (typeof HANG_KINDS)[number];
+    drop: number;
+    lanternEvery: number;
+  };
+  /** lan can gỗ thấp quây sân (thẳng trục như `wallSegments`), có va chạm — kiểu dáng ở `fenceStyle` */
+  fences: FenceSpec[];
+  /** lan can: cao, khoảng hai trụ (m), màu thân (sơn son), màu chóp trụ */
+  fenceStyle: { height: number; postEvery: number; color: string; cap: string };
   camera: { fov: number; minDist: number; maxDist: number; near: CameraView; far: CameraView };
 }
 
@@ -463,6 +524,7 @@ export const DEFAULT_SCENE: SceneSpec = {
     stone: '#8d877f',
     water: '#2b4a6a',
     path: '#7d726a',
+    pathLook: 'phien',
     bronze: '#8a6a3a',
     herb: '#5f9a48',
     smoke: '#d8d4cc',
@@ -543,6 +605,21 @@ export const DEFAULT_SCENE: SceneSpec = {
   player: { start: [0, 6] },
   npcs: [], // cảnh mặc định chưa có NPC
   gameTables: [],
+  lanternStrings: [],
+  lanternStyle: {
+    height: 4.6,
+    sag: 0.8,
+    spacing: 1.5,
+    rope: '#9e2a20',
+    lantern: '#d8382a',
+    trim: '#e0ae4c',
+    pole: '#5a3a28',
+    hang: 'den',
+    drop: 1.4,
+    lanternEvery: 0,
+  },
+  fences: [],
+  fenceStyle: { height: 1.0, postEvery: 1.6, color: '#9e2a20', cap: '#e0ae4c' },
   camera: { fov: 55, minDist: 5, maxDist: 22, near: { dist: 9, pitch: 0.42 }, far: { dist: 17, pitch: 0.75 } },
 };
 

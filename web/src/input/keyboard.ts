@@ -1,9 +1,9 @@
 import type { MoveInput } from '../player/controller';
 
 /** Hành động bằng phím (R-DIEU-6, R-DIEU-7) — trên điện thoại là nút (chờ thiết kế). */
-export type KeyAction = 'jump' | 'bow' | 'sit';
+export type KeyAction = 'jump' | 'bow' | 'sit' | 'seat';
 
-const ACTION_KEYS: Record<string, KeyAction> = { ' ': 'jump', f: 'bow', c: 'sit' };
+const ACTION_KEYS: Record<string, KeyAction> = { ' ': 'jump', f: 'bow', c: 'sit', e: 'seat' };
 
 /** WASD / phím mũi tên (chạy; giữ Shift = đi bộ — R-DIEU-5), Space nhảy, F chào, C ngồi thiền — thử trên máy tính. */
 export class Keyboard {

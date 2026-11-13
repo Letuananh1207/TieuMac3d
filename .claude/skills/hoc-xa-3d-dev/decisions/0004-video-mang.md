@@ -1,6 +1,6 @@
 # 0004 — Video rạp phim tải từ mạng (ngoại lệ "chạy offline")
 
-Ngày: 2026-11-13 · Trạng thái: đã chốt (người dùng) · Kế hoạch: `docs/tasks/2026-11-13-rap-phim-nghe-nhac-on-tap.md`
+Ngày: 2026-11-13 · Trạng thái: **bãi bỏ 2026-11-13** — người dùng xoá rạp phim (`docs/tasks/2026-11-13-xoa-rap-phim-cu-xa.md`); app lại chạy offline hoàn toàn · Kế hoạch: `docs/tasks/2026-11-13-rap-phim-nghe-nhac-on-tap.md`
 
 ## Bối cảnh
 

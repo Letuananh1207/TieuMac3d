@@ -12,8 +12,10 @@ import { resetSignAtlas } from './signAtlas';
 import { addPaths } from './paths';
 import { addProps } from './props';
 import { addFloating } from './sky';
-import { addCinema, type Cinema } from './rapPhim';
-import { addGameTable, type GameTable } from './gameTable';
+import type { Seat } from './seat';
+import { addLanternStrings } from './dayDenLong';
+import { addFences } from './lanCan';
+import { addGameSign, addGameTable, type GameTable } from './gameTable';
 import { addRoomBuilding, addWalkIn, inRect, WALK_IN, type InteriorUse, type Room } from './rooms';
 import { addStairs } from './stairs';
 import { roomKinds, zoneAnchors, type SceneSpec, type ZoneAnchor } from './spec';
@@ -35,14 +37,14 @@ export interface World {
   rooms: Room[];
   /** vị trí các vùng sự kiện, neo theo nhà trong đặc tả */
   zoneAnchors: ZoneAnchor[];
-  /** rạp phim (nhà kiểu `rap-phim` đầu tiên) — R-RAP-1..3 */
-  cinema: Cinema | null;
+  /** chỗ ngồi trong nhà vào được (án thư Tàng Thư Các — R-VA-4), toạ độ cảnh */
+  seats: Seat[];
   /** bàn chơi khu giao lưu (R-GIAO-1) */
   gameTables: GameTable[];
   /** vòng trận truyền tống (`teleport.enabled`) */
   teleport: TeleportRing | null;
   /** gọi mỗi khung hình: khói lò đan, mây, đảo nổi, mờ mái nhà khi `player` đứng trong */
-  update(dt: number, player?: { x: number; z: number }): void;
+  update(dt: number, player?: { x: number; y?: number; z: number }): void;
 }
 
 /**
@@ -77,23 +79,19 @@ export function buildWorld(
   addCloudSea(scene, spec);
   // độ cao nền của nhà / cổng / ao / giếng: tâm của nó trên mặt đất (nằm trên bục → độ cao bục)
   const base = (x: number, z: number): number => (groundY ? groundY(x, z) : 0);
-  addPaths(scene, spec.paths, style.path, groundY);
+  addPaths(scene, spec.paths, style.path, groundY, style.pathLook === 'san' ? spec.ground : undefined);
   addWalls(scene, colliders, spec.walls, spec.wallSegments, style);
   const kinds = roomKinds(spec.buildings, interiors);
   const rooms: Room[] = [];
-  let cinema: Cinema | null = null;
   for (const b of spec.buildings) {
     const use = b.zone && kinds[b.zone.id] ? interiors[b.zone.id] : undefined;
-    if (b.kind === 'rap-phim') {
-      cinema ??= addCinema(scene, colliders, b, style, base(b.x, b.z));
-      continue;
-    }
     const walkIn = b.kind ? WALK_IN[b.kind] : undefined;
     if (use) rooms.push(addRoomBuilding(scene, colliders, b, style, use, base(b.x, b.z)));
     else if (walkIn) rooms.push(addWalkIn(scene, colliders, b, style, walkIn, base(b.x, b.z)));
     else addBuilding(scene, colliders, b, style, base(b.x, b.z));
   }
-  const gameTables = spec.gameTables.map((t) => addGameTable(scene, colliders, t, style, base(t.x, t.z)));
+  const gameTables = spec.gameTables.flatMap((t) => addGameTable(scene, colliders, t, style, base(t.x, t.z)));
+  for (const t of spec.gameTables) if (t.sign) addGameSign(scene, colliders, t.sign, style, base(t.sign.x, t.sign.z));
   for (const g of spec.gates) {
     // cổng model AI: nạp sau (không qua mergeStatic); thiếu file / nạp lỗi → cổng khối (thêm sau gộp, vài draw call)
     const url = g.model ? staticModelUrl(g.model) : null;
@@ -108,6 +106,8 @@ export function buildWorld(
   addWater(scene, colliders, spec.water, style, groundY);
   const props = addProps(scene, colliders, spec.props, style, groundY);
   const trees = addTrees(scene, colliders, spec.trees, groundY);
+  addLanternStrings(scene, colliders, spec, groundY);
+  addFences(scene, colliders, spec, groundY);
   if (spec.well.enabled) addWell(scene, colliders, spec.well, base(spec.well.x, spec.well.z));
   const teleport = spec.teleport.enabled ? addTeleport(scene, colliders, spec.teleport, groundY) : null;
   const floating = addFloating(scene, spec.floating, style, spec.trees.leaves[1], spec.trees.seed);
@@ -117,7 +117,7 @@ export function buildWorld(
     ground,
     surface: new LayeredGround(hf, [...(teleport?.pads ?? []), ...rooms.flatMap((r) => r.pads)]),
     rooms,
-    cinema,
+    seats: rooms.flatMap((r) => r.seats ?? []),
     gameTables,
     zoneAnchors: zoneAnchors(spec.buildings, kinds),
     teleport,
@@ -127,7 +127,7 @@ export function buildWorld(
       floating(dt);
       waterways(dt);
       teleport?.update(dt);
-      for (const r of rooms) r.update(dt, !!player && inRect(r.floor, player.x, player.z));
+      for (const r of rooms) r.update(dt, !!player && inRect(r.floor, player.x, player.z), player?.y);
     },
   };
 }

@@ -9,9 +9,16 @@ import { BLACK, Gomoku, WHITE, npcMove } from './games/gomoku';
 import { makeQuestions } from './games/charDuel';
 import { NPC_RADIUS, createNpc, type Npc } from './player/npc';
 import type { BoardPoint, GameTable } from './scene/gameTable';
+import type { SeatSpot } from './zones/seats';
 
 /** R-GIAO-1: đứng cách ghế dưới khoảng này (m) thì Ngồi = ngồi vào bàn. */
 export const TABLE_SIT_DIST = 1.5;
+
+/** Ghế bàn chơi cho nút nổi (R-NGOI-1): chỗ ngồi + chỗ chơi + chỉ số ghế. */
+export interface TableSeat extends SeatSpot {
+  table: GameTable;
+  seat: number;
+}
 
 /** Lời NPC (R-CO-3, R-DAU-1). */
 export const GAME_LINES = {
@@ -45,6 +52,8 @@ export interface GamePlayHost {
 
 interface Seated {
   table: GameTable;
+  /** chỉ số ghế trong `table.seats` (bàn dài: 0 phía +z, 1 phía −z) */
+  seat: number;
   gomoku: Gomoku | null;
   /** NPC đang "nghĩ": còn bao nhiêu giây (R-CO-2) */
   npcWait: number;
@@ -68,6 +77,7 @@ export class GamePlay {
   async placeNpcs(): Promise<string[]> {
     const problems: string[] = [];
     for (const t of this.tables) {
+      if (!t.npcSpot) continue; // bàn dài: NPC không đứng ở bàn, chỉ nói qua khung thoại (R-GIAO-1)
       const { x, z, rotY } = t.npcSpot;
       try {
         const npc = await createNpc({ id: t.spec.npc, x, z, rotY });
@@ -91,34 +101,58 @@ export class GamePlay {
     return this.seated !== null;
   }
 
-  /** Bàn có ghế gần người chơi nhất, dưới `TABLE_SIT_DIST`; không có → `undefined`. */
-  private nearTable(x: number, z: number): GameTable | undefined {
-    let best: GameTable | undefined;
+  /** Ghế gần người chơi nhất (mọi chỗ chơi, mọi phía), dưới `TABLE_SIT_DIST`; không có → `undefined`. */
+  private nearSeat(x: number, z: number): { table: GameTable; seat: number } | undefined {
+    let best: { table: GameTable; seat: number } | undefined;
     let bestD = TABLE_SIT_DIST;
-    for (const t of this.tables) {
-      const d = Math.hypot(t.seat.x - x, t.seat.z - z);
-      if (d < bestD) {
-        bestD = d;
-        best = t;
-      }
+    for (const table of this.tables) {
+      table.seats.forEach((s, seat) => {
+        const d = Math.hypot(s.x - x, s.z - z);
+        if (d < bestD) {
+          bestD = d;
+          best = { table, seat };
+        }
+      });
     }
     return best;
+  }
+
+  /** Ghế đang ngồi chơi (chỉ số trong `seats`); không ngồi → −1. */
+  get seatIndex(): number {
+    return this.seated?.seat ?? -1;
+  }
+
+  /** Mọi ghế bàn chơi (R-NGOI-1: nút nổi "Vào bàn"). */
+  seatSpots(): TableSeat[] {
+    return this.tables.flatMap((table) =>
+      table.seats.map((s, seat) => ({ x: s.x, y: s.y, z: s.z, rotY: s.rotY, kind: 'ban-choi' as const, table, seat })),
+    );
+  }
+
+  /** Bấm nút "Vào bàn" (R-NGOI-1): ngồi vào đúng ghế `spot`, ván mới ở chỗ đó; đang ngồi → `false`. */
+  sitAt(spot: TableSeat): boolean {
+    const p = this.host.player;
+    if (p.isSitting || this.seated) return false;
+    const { table, seat } = spot;
+    const at = table.seats[seat];
+    p.moveTarget = null;
+    p.position.set(at.x, at.y, at.z);
+    this.host.face(at.rotY);
+    p.toggleSit();
+    this.seated = { table, seat, gomoku: null, npcWait: 0, speaking: false };
+    if (table.spec.kind === 'co') this.newGomoku();
+    else this.startDuel();
+    return true;
   }
 
   /** Nút Ngồi (R-GIAO-1): đang đứng gần ghế một bàn → ngồi vào bàn, bắt đầu ván; trả `true` nếu đã xử lý. */
   trySit(): boolean {
     const p = this.host.player;
     if (p.isSitting || this.seated) return false;
-    const table = this.nearTable(p.position.x, p.position.z);
-    if (!table) return false;
-    p.moveTarget = null;
-    p.position.set(table.seat.x, table.seat.y, table.seat.z);
-    this.host.face(table.seat.rotY);
-    p.toggleSit();
-    this.seated = { table, gomoku: null, npcWait: 0, speaking: false };
-    if (table.spec.kind === 'co') this.newGomoku();
-    else this.startDuel();
-    return true;
+    const near = this.nearSeat(p.position.x, p.position.z);
+    if (!near) return false;
+    const at = near.table.seats[near.seat];
+    return this.sitAt({ x: at.x, y: at.y, z: at.z, rotY: at.rotY, kind: 'ban-choi', ...near });
   }
 
   private newGomoku(): void {
@@ -149,7 +183,7 @@ export class GamePlay {
     if (!s) return;
     s.table.setStones(new Uint8Array(169));
     s.table.highlight([]);
-    s.table.showCard(null);
+    s.table.showCard(null, s.seat);
     this.seated = null;
   }
 
@@ -196,9 +230,9 @@ export class GamePlay {
     });
   }
 
-  /** Mỗi khung hình: NPC bàn quay về người chơi, NPC đi cờ khi hết giờ nghĩ, đứng dậy → bỏ ván. */
-  update(dt: number, playerPos: THREE.Vector3): void {
-    for (const npc of this.npcs) npc.update(dt, playerPos);
+  /** Mỗi khung hình: NPC bàn cử động, NPC đi cờ khi hết giờ nghĩ, đứng dậy → bỏ ván. */
+  update(dt: number): void {
+    for (const npc of this.npcs) npc.update(dt);
     const s = this.seated;
     if (!s) return;
     if (!this.host.player.isSitting) {
@@ -230,8 +264,8 @@ export class GamePlay {
     const dist = Math.max(2.2, 0.85 / Math.tan(Math.min(halfW, halfH)));
     const pitch = 1.3; // ~75° nhìn xuống — camera ở trước đầu nhân vật, không bị che
     const back = Math.cos(pitch) * dist;
-    const a = s.table.angle;
-    camera.position.set(c.x + Math.sin(a) * back, c.y + Math.sin(pitch) * dist, c.z + Math.cos(a) * back);
+    const r = s.table.seats[s.seat].rotY; // sau lưng người ngồi: ngược hướng nhìn của ghế
+    camera.position.set(c.x - Math.sin(r) * back, c.y + Math.sin(pitch) * dist, c.z - Math.cos(r) * back);
     camera.lookAt(this.look.copy(c));
     return true;
   }

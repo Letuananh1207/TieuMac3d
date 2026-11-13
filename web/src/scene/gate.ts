@@ -5,7 +5,8 @@ import { addSign, hk } from './kien_truc/chi_tiet';
 import { box } from './kien_truc/hinh';
 import { hipRoof } from './kien_truc/mai';
 import { rotateXZ, type GateSpec } from './spec';
-import { footprints, loadStaticModel } from './staticModel';
+import { squashFeet } from './gateFeet';
+import { bakeTransforms, footprints, loadStaticModel } from './staticModel';
 
 const P = 0.7; // cạnh trụ vuông
 const SIDE = 3.5; // bề rộng gian bên
@@ -15,6 +16,8 @@ const LOW_BEAM = 6.2; // đáy xà thấp nhất của gian giữa (× hệ số
  * trên ảnh thiết kế `design/models/anh/cong-son-mon-truoc.png`. Model cổng khác cần biển cùng chỗ.
  */
 const MODEL_SIGN = { y: 0.67, w: 0.247, h: 0.113 };
+/** Đế đá chân trụ model sau khi nén (L-5): cao 1,2 m (dưới vai nhân vật 2,1 m), bề ngang × 0,75 — giữ cỡ người. */
+const FEET = { height: 1.2, shrink: 0.75 };
 
 /** Bề ngang tổng (m) của cổng khối có khoảng trống giữa `width`: hai gian bên + bốn trụ + chân đá. */
 export function gateSpan(width: number): number {
@@ -77,8 +80,8 @@ export function addGate(scene: THREE.Scene, colliders: Colliders, gate: GateSpec
 }
 
 /**
- * Cổng bằng model AI (`gate.model`, file `url`): co đều cho bề ngang = `gateSpan(width)` (giữ tỉ lệ ảnh thiết kế), đáy chạm
- * đất ở `y0`, mặt trước +z trước khi quay. Vật cản = chân đế đo từ lưới (`footprints` — bốn trụ); biển chữ (`hanTitle`
+ * Cổng bằng model AI (`gate.model`, file `url`): co đều cho bề ngang = `gateSpan(width)` × `modelScale` (giữ tỉ lệ ảnh
+ * thiết kế), nén đế đá chân trụ về cỡ người (`squashFeet`, L-5), đáy chạm đất ở `y0`, mặt trước +z trước khi quay. Vật cản = chân đế đo từ lưới (`footprints` — bốn trụ); biển chữ (`hanTitle`
  * hoặc `title`) dán sát mặt trước biển trống của model. Nạp lỗi → ném, nơi gọi dựng cổng khối.
  */
 export async function addGateModel(
@@ -90,18 +93,29 @@ export async function addGateModel(
 ): Promise<void> {
   const model = await loadStaticModel(url);
   const raw = new THREE.Box3().setFromObject(model).getSize(new THREE.Vector3());
-  const span = gateSpan(gate.width);
+  const span = gateSpan(gate.width) * (gate.modelScale ?? 1);
   model.scale.setScalar(span / raw.x);
   const g = new THREE.Group();
   g.add(model);
-  g.updateMatrixWorld(true);
-  const box = new THREE.Box3().setFromObject(model);
-  const H = box.max.y - box.min.y;
+  const H = new THREE.Box3().setFromObject(model).getSize(new THREE.Vector3()).y;
+
+  // L-5: đế đá của model cao ~1/6 cổng → nén về cỡ người, phần trên hạ xuống theo
+  const centers = footprints(g).map(([x0, x1, z0, z1]): [number, number] => [(x0 + x1) / 2, (z0 + z1) / 2]);
+  let drop = 0;
+  for (const mesh of bakeTransforms(g)) {
+    const pos = mesh.geometry.getAttribute('position') as THREE.BufferAttribute;
+    drop = squashFeet(pos.array as Float32Array, centers, FEET);
+    pos.needsUpdate = true;
+    mesh.geometry.computeVertexNormals();
+    mesh.geometry.computeBoundingBox();
+    mesh.geometry.computeBoundingSphere();
+  }
+  const box = new THREE.Box3().setFromObject(g);
 
   // biển chữ: tia từ trước vào giữa biển trống → mặt biển; tấm chữ vừa lòng biển (90 %)
-  const y = MODEL_SIGN.y * H;
+  const y = MODEL_SIGN.y * H - drop;
   const ray = new THREE.Raycaster(new THREE.Vector3(0, y, box.max.z + 1), new THREE.Vector3(0, 0, -1));
-  const hit = ray.intersectObject(model, true)[0];
+  const hit = ray.intersectObject(g, true)[0];
   const scale = Math.min((0.9 * MODEL_SIGN.w * span) / 2.8, (0.9 * MODEL_SIGN.h * H) / 0.9);
   addSign(g, gate.hanTitle ?? gate.title, y, (hit ? hit.point.z : 0) + 0.04, scale);
 

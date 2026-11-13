@@ -5,12 +5,27 @@ import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 import '../theme/app_colors.dart';
+import 'library_event.dart';
+import 'review_event.dart';
 import 'safe_area_script.dart';
 import 'scene_event.dart';
 
 /// Màn chính: WebView phủ toàn màn hình, hiển thị scene 3D.
 class SceneView extends StatefulWidget {
-  const SceneView({super.key, required this.url, this.onOpenLesson, this.onOpenRadical, this.onGetProgress});
+  const SceneView({
+    super.key,
+    required this.url,
+    this.onOpenLesson,
+    this.onOpenRadical,
+    this.onGetProgress,
+    this.onBorrowBook,
+    this.onReturnBook,
+    this.onOpenReview,
+    this.onOpenDaily,
+    this.onOpenStudy,
+    this.onOpenLibrary,
+    this.onOpenBook,
+  });
 
   final WebUri url;
 
@@ -19,10 +34,35 @@ class SceneView extends StatefulWidget {
   final Future<void> Function(BuildContext context, OpenLessonRequest request)? onOpenLesson;
 
   /// Mở thẻ học bộ thủ native (R-HANH-3); Future xong khi đóng → gửi `resume`. `null` → trả `false`, trang dùng bảng HTML.
-  final Future<void> Function(BuildContext context, OpenRadicalRequest request)? onOpenRadical;
+  /// Kết quả `true` = đóng bằng "Xuất định" → `resume {stand: true}` (nhân vật đứng dậy — R-HANH-3).
+  final Future<bool?> Function(BuildContext context, OpenRadicalRequest request)? onOpenRadical;
 
   /// Trả lời `getProgress` (vùng đã mở — R-HANH-1). `null` → trang dùng mặc định (chỉ Rừng trúc).
   final Map<String, Object?> Function()? onGetProgress;
+
+  /// Ghi sổ từ đang mượn (`borrowBook` — R-SACH-1). `null` → trả `false`, trang giữ trong bộ nhớ trang.
+  final Future<bool> Function(String id)? onBorrowBook;
+
+  /// Trả sổ từ đang mượn (`returnBook` — R-SACH-4). `null` → trả `false`.
+  final Future<bool> Function()? onReturnBook;
+
+  /// Mở màn ôn câu đố (`openReview` — R-ON-5); Future xong khi đóng → gửi `resume`. `null` → trả `false`, trang mở thẻ
+  /// bộ mới như cũ.
+  final Future<void> Function(BuildContext context, OpenReviewRequest request)? onOpenReview;
+
+  /// Mở bảng nhiệm vụ 日課榜 (`openDaily` — R-NV-3); đóng → `resume`. `null` → trả `false`, Tiểu Mặc đọc bảng.
+  final Future<void> Function(BuildContext context, OpenDailyRequest request)? onOpenDaily;
+
+  /// Mở bảng chọn cuộn sách Ngồi ôn (`openStudy` — R-ON-8); bảng đóng bằng "Đứng dậy" → `resume {stand: true}`.
+  /// `null` (chưa có màn — chờ thiết kế, phiếu `2026-11-13-ngoi-on`) → trả `false`, trang tự mở lượt ôn / thẻ bộ mới.
+  final Future<void> Function(BuildContext context, OpenStudyRequest request)? onOpenStudy;
+
+  /// Mở danh mục sách Tàng Thư Các (`openLibrary` — R-SACH-1); chọn "Mượn" → Flutter ghi mượn → đóng → `resume`.
+  /// `null` → trả `false`, trang cho chọn cuốn trong khung thoại.
+  final Future<void> Function(BuildContext context, OpenLibraryRequest request)? onOpenLibrary;
+
+  /// Mở sổ từ cuốn đang mượn (`openBook` — R-SACH-3); đóng → ghi trang → `resume`. `null` → trả `false`.
+  final Future<void> Function(BuildContext context, OpenBookRequest request)? onOpenBook;
 
   @override
   State<SceneView> createState() => _SceneViewState();
@@ -97,18 +137,63 @@ class _SceneViewState extends State<SceneView> {
   Object? _onSceneEvent(List<dynamic> args) {
     final type = sceneEventType(args);
     if (type == 'getProgress') return widget.onGetProgress?.call();
+    // Future<bool> → callHandler phía JS nhận true / false khi ghi xong
+    if (type == 'borrowBook') {
+      final id = borrowBookId(args);
+      final borrow = widget.onBorrowBook;
+      return borrow != null && id != null ? borrow(id) : false;
+    }
+    if (type == 'returnBook') return widget.onReturnBook?.call() ?? false;
+    if (type == 'openLibrary' || type == 'openBook') {
+      final Future<void>? opened = type == 'openLibrary'
+          ? switch ((widget.onOpenLibrary, OpenLibraryRequest.parse(args))) {
+              (final f?, final req?) => f(context, req),
+              _ => null,
+            }
+          : switch ((widget.onOpenBook, OpenBookRequest.parse(args))) {
+              (final f?, final req?) => f(context, req),
+              _ => null,
+            };
+      if (opened == null) return false;
+      opened.whenComplete(() => _controller?.evaluateJavascript(source: resumeScript()));
+      return true;
+    }
+    if (type == 'openReview') {
+      final f = widget.onOpenReview;
+      final req = OpenReviewRequest.parse(args);
+      if (f == null || req == null) return false;
+      f(context, req).whenComplete(() => _controller?.evaluateJavascript(source: resumeScript()));
+      return true;
+    }
+    if (type == 'openStudy') {
+      final f = widget.onOpenStudy;
+      final req = OpenStudyRequest.parse(args);
+      if (f == null || req == null) return false;
+      f(context, req).whenComplete(() => _controller?.evaluateJavascript(source: resumeScript(stand: true)));
+      return true;
+    }
+    if (type == 'openDaily') {
+      final f = widget.onOpenDaily;
+      final req = OpenDailyRequest.parse(args);
+      if (f == null || req == null) return false;
+      f(context, req).whenComplete(() => _controller?.evaluateJavascript(source: resumeScript()));
+      return true;
+    }
     if (type == 'openRadical') {
       final openR = widget.onOpenRadical;
       final req = OpenRadicalRequest.parse(args);
       if (openR == null || req == null) return false;
-      openR(context, req).whenComplete(() => _controller?.evaluateJavascript(source: resumeScript));
+      openR(context, req).then(
+        (stand) => _controller?.evaluateJavascript(source: resumeScript(stand: stand == true)),
+        onError: (_) => _controller?.evaluateJavascript(source: resumeScript()),
+      );
       return true;
     }
     final open = widget.onOpenLesson;
     final request = OpenLessonRequest.parse(args);
     if (open == null || request == null) return false;
     // mở màn native; trang ngừng vẽ tới khi nhận resume
-    open(context, request).whenComplete(() => _controller?.evaluateJavascript(source: resumeScript));
+    open(context, request).whenComplete(() => _controller?.evaluateJavascript(source: resumeScript()));
     return true;
   }
 

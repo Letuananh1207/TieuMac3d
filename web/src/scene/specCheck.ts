@@ -8,6 +8,8 @@ import {
   DEFAULT_SCENE,
   NPC_IDS,
   GAME_KINDS,
+  GAME_SLOT,
+  HANG_KINDS,
   PAVE_PATTERNS,
   PROP_KINDS,
   ROOF_KINDS,
@@ -161,6 +163,20 @@ const floorsRange = (o: Obj, path: string): string[] =>
 
 const rot = oneOf('rotY', ROTATIONS);
 
+const boardsRange = (o: Obj, path: string): string[] =>
+  o.boards === undefined || ((o.boards as number) >= 1 && (o.boards as number) <= 4 && Number.isInteger(o.boards))
+    ? []
+    : [`${path}.boards: số nguyên 1–4`];
+
+/** Biển tên trò chơi (R-GIAO-2): quay bội 90, có đủ tên Hán + Việt. */
+const signRot = (o: Obj, path: string): string[] => {
+  const sg = o.sign as Obj | undefined;
+  if (!sg) return [];
+  const out = rot(sg, `${path}.sign`);
+  if (!sg.han || !sg.name) out.push(`${path}.sign: cần han và name`);
+  return out;
+};
+
 /** Suối: `points` là danh sách [x, z] dài ngắn tuỳ ý (≥ 2), không đọc được bằng `item` (mảng cố định số phần tử). */
 const streamItem: ItemParser = (raw, path, out) => {
   if (!isObj(raw)) {
@@ -193,12 +209,18 @@ const LISTS: Record<string, ItemParser> = {
   'walls.gates': item({ side: '', at: 0, width: 0 }, {}, all(oneOf('side', SIDES), positive('width'))),
   wallSegments: item({ from: XZ0, to: XZ0 }, { height: 0 }, all(axisAligned, positive('height'))),
   paths: item({ from: XZ0, to: XZ0, width: 0 }, { color: '#000000' }, positive('width')),
-  gates: item({ id: '', x: 0, z: 0, width: 0, title: '' }, { rotY: 0, hanTitle: '', roofColor: '#000000', model: '' }, all(rot, positive('width'))),
+  gates: item({ id: '', x: 0, z: 0, width: 0, title: '' }, { rotY: 0, hanTitle: '', roofColor: '#000000', model: '', modelScale: 0 }, all(rot, positive('width', 'modelScale'))),
   'site.areas': item({ name: '', from: XZ0, to: XZ0 }, { han: '' }),
   water: item({ x: 0, z: 0 }, { r: 0, w: 0, d: 0, rotY: 0 }, all(waterShape, rot, positive('r', 'w', 'd'))),
   props: item({ kind: '', x: 0, z: 0 }, { rotY: 0, scale: 0, text: '' }, all(oneOf('kind', PROP_KINDS), rot, positive('scale'))),
   npcs: item({ id: '', x: 0, z: 0 }, { rotY: 0 }, oneOf('id', NPC_IDS)),
-  gameTables: item({ id: '', kind: '', x: 0, z: 0, npc: '' }, { rotY: 0 }, all(oneOf('kind', GAME_KINDS), oneOf('npc', NPC_IDS), rot)),
+  lanternStrings: item({ from: XZ0, to: XZ0 }, {}),
+  fences: item({ from: XZ0, to: XZ0 }, {}, axisAligned),
+  gameTables: item(
+    { id: '', kind: '', x: 0, z: 0, npc: '' },
+    { rotY: 0, boards: 0, npcStand: true, sign: { x: 0, z: 0, rotY: 0, han: '', name: '' } },
+    all(oneOf('kind', GAME_KINDS), oneOf('npc', NPC_IDS), rot, boardsRange, signRot),
+  ),
   'trees.yard': item({ x: 0, z: 0, scale: 0 }, { kind: '' }, all(oneOf('kind', TREE_KINDS), positive('scale'))),
   'trees.groves': item(
     { kind: '', x: 0, z: 0, w: 0, d: 0, count: 0 },
@@ -254,6 +276,7 @@ function checkConsistency(s: SceneSpec): string[] {
     'mã cổng',
   );
   if (s.fog.near >= s.fog.far) out.push('fog: near phải nhỏ hơn far');
+  if (!['phien', 'san'].includes(s.buildingStyle.pathLook)) out.push(`buildingStyle.pathLook: "phien" | "san" (đang "${s.buildingStyle.pathLook}")`);
   const k = s.buildingStyle.heightScale;
   if (k < 0.5 || k > 3) out.push(`buildingStyle.heightScale: 0,5–3 (đang ${k}; code kẹp về khoảng này)`);
   if (s.camera.minDist > s.camera.maxDist) out.push('camera: minDist phải ≤ maxDist');
@@ -276,7 +299,7 @@ function checkConsistency(s: SceneSpec): string[] {
   if (t.enabled && t.edge.radius + t.edge.width > t.size / 2) {
     out.push(`terrain.edge: mép vực (radius + width = ${t.edge.radius + t.edge.width}) vượt nửa vùng lưới (${t.size / 2}) — tăng size`);
   }
-  out.push(...checkTeleport(s));
+  out.push(...checkTeleport(s), ...checkLanterns(s));
   if (s.cloudSea.radius < 0) out.push('cloudSea.radius: phải ≥ 0');
   if (t.enabled && t.size > 0 && t.cell > 0) out.push(...checkOnFlatGround(s));
   if (t.enabled) {
@@ -313,6 +336,24 @@ function checkTeleport(s: SceneSpec): string[] {
   return out;
 }
 
+/** Dây đèn lồng: đèn thấp nhất (giữa dây, kể thân đèn ~0,7 m) phải cao hơn đầu người để đi dưới không vướng mắt. */
+function checkLanterns(s: SceneSpec): string[] {
+  const out: string[] = [];
+  const st = s.lanternStyle;
+  if (!s.lanternStrings.length) return out;
+  if (st.spacing < 0.8) out.push('lanternStyle.spacing: ≥ 0,8 m');
+  if (st.sag < 0) out.push('lanternStyle.sag: ≥ 0');
+  if (!(HANG_KINDS as readonly string[]).includes(st.hang)) out.push(`lanternStyle.hang: một trong ${HANG_KINDS.join(', ')}`);
+  const low = st.hang === 'tua' ? Math.max(st.drop, st.lanternEvery > 0 ? 0.7 : 0) : 0.7;
+  if (st.height - st.sag - low < 2.4) out.push('lanternStyle: vật treo thấp nhất dưới 2,4 m — tăng height hoặc giảm sag / drop');
+  if (st.drop <= 0) out.push('lanternStyle.drop: > 0');
+  if (s.fences.length && (s.fenceStyle.height <= 0 || s.fenceStyle.postEvery < 0.5)) out.push('fenceStyle: height > 0, postEvery ≥ 0,5');
+  s.lanternStrings.forEach((l, i) => {
+    if (Math.hypot(l.to[0] - l.from[0], l.to[1] - l.from[1]) < 2) out.push(`lanternStrings[${i}]: dây ngắn hơn 2 m`);
+  });
+  return out;
+}
+
 /** Ngưỡng chênh độ cao (m) trong chân một vật để coi là "đất phẳng". */
 const FLAT_TOLERANCE = 0.3;
 
@@ -334,13 +375,15 @@ function checkOnFlatGround(s: SceneSpec): string[] {
   for (const b of s.buildings) flat(`nhà "${b.id}"`, box(b.x, b.z, b.w + 1, b.d + 1, b.rotY));
   for (const g of s.gates) flat(`cổng "${g.id}"`, box(g.x, g.z, g.width + 8, 2, g.rotY));
   for (const w of s.water) flat(`ao (${w.x}; ${w.z})`, box(w.x, w.z, w.r !== undefined ? w.r * 2 : (w.w ?? 0), w.r !== undefined ? w.r * 2 : (w.d ?? 0), w.rotY));
-  for (const t of s.gameTables) flat(`bàn chơi "${t.id}"`, box(t.x, t.z, 3, 4, t.rotY));
+  for (const t of s.gameTables) flat(`bàn chơi "${t.id}"`, box(t.x, t.z, (t.boards ?? 1) * GAME_SLOT + 1, 4, t.rotY));
+  for (const t of s.gameTables) if (t.sign) flat(`biển bàn "${t.id}"`, box(t.sign.x, t.sign.z, 2, 1, t.sign.rotY));
   if (s.well.enabled) flat('giếng', box(s.well.x, s.well.z, 2.4, 2.4));
   const hw = s.walls.half;
   if (s.walls.enabled) flat('tường bao', [[-hw, -hw], [hw, -hw], [-hw, hw], [hw, hw], [0, -hw], [0, hw], [-hw, 0], [hw, 0]]);
   const tp = s.teleport;
   const pad = Math.max(tp.radius, tp.ringRadius + 0.7, tp.dais.tiers > 0 ? daisLayout(tp).footprint : 0) * 2;
   if (tp.enabled) flat('vòng trận (teleport)', box(tp.center[0], tp.center[1], pad, pad));
+  s.fences.forEach((w, i) => flat(`fences[${i}]`, [w.from, w.to, [(w.from[0] + w.to[0]) / 2, (w.from[1] + w.to[1]) / 2]]));
   s.wallSegments.forEach((w, i) => flat(`wallSegments[${i}]`, [w.from, w.to, [(w.from[0] + w.to[0]) / 2, (w.from[1] + w.to[1]) / 2]]));
   flat('điểm xuất phát (player.start)', box(s.player.start[0], s.player.start[1], 2, 2));
   return out;

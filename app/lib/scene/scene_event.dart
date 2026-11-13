@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import '../journey/daily.dart';
 import '../journey/journey.dart';
 
 /// Sự kiện qua cầu nối Flutter ↔ scene web. Hợp đồng (tên, dạng): docs/bridge.md.
@@ -96,42 +97,48 @@ class OpenRadicalRequest {
     if (event is! Map || event['type'] != 'openRadical') return null;
     final p = event['payload'];
     if (p is! Map) return null;
-    final r = p['radical'];
-    if (r is! Map) return null;
-    final id = r['id'], form = r['form'], name = r['name'], meaning = r['meaning'], pinyin = r['pinyin'], strokes = r['strokes'];
-    if (id is! String || form is! String || name is! String || meaning is! String || pinyin is! String || strokes is! num) {
-      return null;
-    }
-    final examples = <(String, String, String)>[];
-    final ex = r['examples'];
-    if (ex is List) {
-      for (final e in ex) {
-        if (e is Map && e['han'] is String && e['pinyin'] is String && e['meaning'] is String) {
-          examples.add((e['han'] as String, e['pinyin'] as String, e['meaning'] as String));
-        }
-      }
-    }
-    List<String> paths(Object? v) => v is List ? [for (final s in v) if (s is String) s] : const [];
-    final evo = r['evolution'];
-    final full = r['full'], fullStrokes = r['fullStrokes'];
+    final radical = parseRadical(p['radical']);
+    if (radical == null) return null;
     return OpenRadicalRequest(
-      radical: Radical(
-        id: id,
-        form: form,
-        full: full is String ? full : null,
-        name: name,
-        meaning: meaning,
-        pinyin: pinyin,
-        strokes: strokes.toInt(),
-        fullStrokes: fullStrokes is num ? fullStrokes.toInt() : null,
-        examples: examples,
-        hinh: evo is Map ? paths(evo['hinh']) : const [],
-        trien: evo is Map ? paths(evo['trien']) : const [],
-      ),
+      radical: radical,
       learned: p['learned'] == true,
       region: p['region'] is String ? p['region'] as String : 'Rừng trúc',
     );
   }
+}
+
+/// Đọc một bộ thủ dạng `Radical` của web (`openRadical`, `openReview`, `openDaily`); sai dạng → `null`.
+Radical? parseRadical(Object? r) {
+  if (r is! Map) return null;
+  final id = r['id'], form = r['form'], name = r['name'], meaning = r['meaning'], pinyin = r['pinyin'], strokes = r['strokes'];
+  if (id is! String || form is! String || name is! String || meaning is! String || pinyin is! String || strokes is! num) {
+    return null;
+  }
+  final examples = <(String, String, String)>[];
+  final ex = r['examples'];
+  if (ex is List) {
+    for (final e in ex) {
+      if (e is Map && e['han'] is String && e['pinyin'] is String && e['meaning'] is String) {
+        examples.add((e['han'] as String, e['pinyin'] as String, e['meaning'] as String));
+      }
+    }
+  }
+  List<String> paths(Object? v) => v is List ? [for (final s in v) if (s is String) s] : const [];
+  final evo = r['evolution'];
+  final full = r['full'], fullStrokes = r['fullStrokes'];
+  return Radical(
+    id: id,
+    form: form,
+    full: full is String ? full : null,
+    name: name,
+    meaning: meaning,
+    pinyin: pinyin,
+    strokes: strokes.toInt(),
+    fullStrokes: fullStrokes is num ? fullStrokes.toInt() : null,
+    examples: examples,
+    hinh: evo is Map ? paths(evo['hinh']) : const [],
+    trien: evo is Map ? paths(evo['trien']) : const [],
+  );
 }
 
 /// Loại sự kiện JS gửi sang (`type`), hoặc `null` nếu sai dạng.
@@ -143,13 +150,41 @@ String? sceneEventType(List<dynamic> args) {
   return type is String ? type : null;
 }
 
-/// Trả lời `getProgress` (docs/bridge.md): vùng đã mở theo thứ tự hành trình, số chữ đã học, mốc vùng còn khoá.
-Map<String, Object?> progressReply(Progress p) => {
+/// Trả lời `getProgress` (docs/bridge.md): vùng đã mở theo thứ tự hành trình, số chữ đã học, mốc vùng còn khoá;
+/// [due] = bộ thủ đến hạn ôn theo thứ tự hỏi (R-ON-4); [daily] + [streak] = bảng nhiệm vụ hôm nay (R-NV-1, R-NV-2);
+/// [book] = sổ từ đang mượn ở Tàng Thư Các (R-SACH-2).
+Map<String, Object?> progressReply(
+  Progress p, {
+  List<String> due = const [],
+  String? book,
+  DailyStatus? daily,
+  ({int current, int best}) streak = (current: 0, best: 0),
+}) =>
+    {
       'open': p.openRegions,
       'chars': p.chars.length,
       'radicals': p.radicals.toList(),
       'need': p.needs,
+      'due': due,
+      'daily': {
+        'learned': daily?.newToday ?? 0,
+        'goal': dailyNewGoal,
+        'due': daily?.dueLeft ?? due.length,
+        'streak': streak.current,
+        'best': streak.best,
+      },
+      'book': book,
     };
+
+/// `id` của sự kiện `borrowBook` (docs/bridge.md, R-SACH-1); sai dạng → `null`.
+String? borrowBookId(List<dynamic> args) {
+  if (args.isEmpty) return null;
+  final e = args.first;
+  if (e is! Map || e['type'] != 'borrowBook') return null;
+  final p = e['payload'];
+  final id = p is Map ? p['id'] : null;
+  return id is String && id.isNotEmpty ? id : null;
+}
 
 /// Đoạn JS gửi một sự kiện sang trang: `window.scene.handle({type, payload})`.
 /// Trang chưa sẵn sàng (chưa có `window.scene`) thì bỏ qua, không văng lỗi.
@@ -160,8 +195,9 @@ String sceneEventScript(String type, [Map<String, Object?> payload = const {}]) 
 /// như thường. Trang chưa sẵn sàng → `false`.
 final backScript = 'window.scene?window.scene.handle(${jsonEncode({'type': 'back', 'payload': <String, Object?>{}})})===true:false;';
 
-/// Đóng màn bài học → cảnh chạy tiếp.
-final resumeScript = sceneEventScript('resume');
+/// Đóng màn bài học / thẻ bộ thủ → cảnh chạy tiếp. `stand` = thẻ đóng bằng "Xuất định" → nhân vật đang ngồi đứng dậy
+/// (R-HANH-3, docs/bridge.md).
+String resumeScript({bool stand = false}) => sceneEventScript('resume', stand ? {'stand': true} : const {});
 
 /// App xuống nền / hiện lại → trang dừng / chạy vòng lặp vẽ (mốc 4).
 String lifecycleScript({required bool visible}) =>

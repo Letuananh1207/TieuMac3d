@@ -1,5 +1,5 @@
 # Phiếu: Bảng nhiệm vụ hằng ngày 日課榜 + màn ôn câu đố
-- Trạng thái: chờ thiết kế
+- Trạng thái: đã áp (2026-11-13.25)
 - Đã vẽ: 2026-11-13.25
 - Đợi bởi: kế hoạch `docs/tasks/2026-11-13-nhiem-vu-hang-ngay.md` (nhiệm vụ 7). Logic đã làm: lịch ôn, hai việc mỗi ngày,
   chuỗi ngày (Flutter, có test); câu đố dựng sẵn ở trang (`openReview`); bảng hỏi qua `openDaily`. Hiện Flutter chưa có

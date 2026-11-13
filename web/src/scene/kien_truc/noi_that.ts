@@ -20,6 +20,9 @@ export interface LocalBox {
   d: number;
   /** > 0: vật cao che tầm nhìn camera (tường nhà) — R-DIEU-4 */
   h?: number;
+  /** chỉ chặn khi chân nhân vật ở khoảng cao này (m, tính từ chân nhà) — nhà nhiều tầng (R-VA-3); thiếu = mọi độ cao */
+  minY?: number;
+  maxY?: number;
 }
 
 export interface Furnished {
@@ -113,7 +116,7 @@ function lopHoc(g: THREE.Group, b: BuildingSpec, floor: number, han: string, k: 
 }
 
 /** Một kệ sách dài `len` (theo trục x của kệ), 4 tầng gáy sách nhiều màu; mặt sách nhìn về +z của kệ. */
-function shelf(g: THREE.Group, len: number, x: number, z: number, rotY: number, floor: number, seed: number): void {
+export function shelf(g: THREE.Group, len: number, x: number, z: number, rotY: number, floor: number, seed: number): void {
   const k = new THREE.Group();
   k.position.set(x, floor, z);
   k.rotation.y = rotY;
@@ -140,21 +143,27 @@ function shelf(g: THREE.Group, len: number, x: number, z: number, rotY: number, 
 /** Kệ đứng giữa phòng (thư viện rộng): dài 2 m, cách kệ sau 1,3 m; chỉ đặt khi lối hai bên còn ≥ 1,1 m. */
 const FREE_SHELF = 2;
 
-/** Thư viện: kệ sách tường sau + hai tường bên (dài theo phòng), phòng rộng thì thêm hai kệ đứng; án đọc giữa phòng. */
-function thuVien(g: THREE.Group, b: BuildingSpec, floor: number): Furnished {
+/**
+ * Thư viện: kệ sách tường sau + hai tường bên (dài theo phòng), phòng rộng thì thêm hai kệ đứng; án đọc giữa phòng.
+ * `stairX` = gian cầu thang bắt đầu từ x này về +x (Tàng Thư Các): bỏ kệ bên phải, kệ sau dừng trước gian đó.
+ */
+function thuVien(g: THREE.Group, b: BuildingSpec, floor: number, stairX?: number): Furnished {
   const zi = -(b.d - 0.8) / 2 + 0.25;
   const xi = (b.w - 0.8) / 2 - 0.25;
   const id = b.d - 0.8;
   const boxes: LocalBox[] = [];
-  const backLen = 2 * xi - 0.1;
-  shelf(g, backLen, 0, zi + 0.225, 0, floor, 1);
-  boxes.push({ x: 0, z: zi + 0.225, w: backLen, d: 0.45 });
+  const backEnd = stairX === undefined ? xi - 0.05 : stairX - 0.15;
+  const backLen = backEnd + xi - 0.05;
+  const backX = (backEnd - xi + 0.05) / 2;
+  shelf(g, backLen, backX, zi + 0.225, 0, floor, 1);
+  boxes.push({ x: backX, z: zi + 0.225, w: backLen, d: 0.45 });
   // kệ hai bên: từ kệ sau ra tới cách tường trước ~1,75 m (nhà gốc: 3 m)
   const sideLen = Math.max(3, id - 2.2);
   const sideZ = zi + 0.45 + sideLen / 2;
+  const sides = stairX === undefined ? [-1, 1] : [-1];
   shelf(g, sideLen, -xi + 0.225, sideZ, Math.PI / 2, floor, 7);
-  shelf(g, sideLen, xi - 0.225, sideZ, -Math.PI / 2, floor, 13);
-  for (const s of [-1, 1]) boxes.push({ x: s * (xi - 0.225), z: sideZ, w: 0.45, d: sideLen });
+  if (stairX === undefined) shelf(g, sideLen, xi - 0.225, sideZ, -Math.PI / 2, floor, 13);
+  for (const s of sides) boxes.push({ x: s * (xi - 0.225), z: sideZ, w: 0.45, d: sideLen });
   // kệ đứng: lối giữa ≥ 2,8 m, lối tới kệ bên ≥ 1,1 m, cách án đọc ≥ 1,5 m
   const freeX = 1.4 + FREE_SHELF / 2;
   const freeZ = zi + 0.45 + 1.3 + 0.225;
@@ -178,15 +187,22 @@ function thuVien(g: THREE.Group, b: BuildingSpec, floor: number): Furnished {
   boxes.push({ x: 0, z: 0, w: 1.4, d: 0.7 });
   const hits = [
     hitBox(g, 1.6, 1.3, 0.9, 0, floor + 0.65, 0), // án đọc
-    hitBox(g, backLen, 2.4, 0.6, 0, floor + 1.2, zi + 0.225), // kệ sau
-    hitBox(g, 0.6, 2.4, sideLen, -xi + 0.225, floor + 1.2, sideZ),
-    hitBox(g, 0.6, 2.4, sideLen, xi - 0.225, floor + 1.2, sideZ),
+    hitBox(g, backLen, 2.4, 0.6, backX, floor + 1.2, zi + 0.225), // kệ sau
+    ...sides.map((s) => hitBox(g, 0.6, 2.4, sideLen, s * (xi - 0.225), floor + 1.2, sideZ)),
     ...extra.map(([x, z]) => hitBox(g, FREE_SHELF + 0.1, 2.4, 0.6, x, floor + 1.2, z)),
   ];
   return { boxes, hits, anchor: new THREE.Vector3(0, floor + 1.9, 0) };
 }
 
-/** Dựng nội thất theo kiểu; `han` = chữ trên bảng (lớp học). */
-export function addInterior(g: THREE.Group, b: BuildingSpec, style: Style, kind: InteriorKind, floor: number, han: string): Furnished {
-  return kind === 'lop-hoc' ? lopHoc(g, b, floor, han, hk(style)) : thuVien(g, b, floor);
+/** Dựng nội thất theo kiểu; `han` = chữ trên bảng (lớp học); `stairX` = chừa gian cầu thang (thư viện, xem `thuVien`). */
+export function addInterior(
+  g: THREE.Group,
+  b: BuildingSpec,
+  style: Style,
+  kind: InteriorKind,
+  floor: number,
+  han: string,
+  stairX?: number,
+): Furnished {
+  return kind === 'lop-hoc' ? lopHoc(g, b, floor, han, hk(style)) : thuVien(g, b, floor, stairX);
 }

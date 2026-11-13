@@ -30,9 +30,9 @@ export function cornerTips(g: THREE.Group, y: number, hw: number, hd: number, co
 }
 
 /** Hiên váy: chóp cụt từ đáy `bw` × `bd` (mép hiên, ở `y`) lên đỉnh `tw` × `td`, cao `h`. */
-export function skirt(g: THREE.Group, y: number, bw: number, bd: number, tw: number, td: number, h: number, color: string): void {
+export function skirt(g: THREE.Group, y: number, bw: number, bd: number, tw: number, td: number, h: number, color: string, dx = 0): void {
   const m = new THREE.Mesh(frustum(bw, bd, tw, td, h), roofMat(color));
-  m.position.y = y;
+  m.position.set(dx, y, 0); // dx ≠ 0: lệch ngang (hiên một bên hẹp hơn — trà lâu chừa chỗ thang, L-6)
   g.add(m);
 }
 

@@ -1,5 +1,18 @@
+import type { BookEntry, Word } from '../zones/books';
 import type { Radical } from '../zones/radicals';
+import type { ReviewItem } from '../zones/review';
+import type { StudyMenu } from '../zones/studyMenu';
 import type { Lesson } from '../zones/zones';
+
+/** Dữ liệu cuộn sách Ngồi ôn gửi Flutter (`openStudy` — R-ON-8). */
+export interface StudyPayload {
+  menu: StudyMenu;
+  /** câu đố các bộ đến hạn (như `openReview`) */
+  review: ReviewItem[];
+  /** các bộ đã học, theo thứ tự Rừng trúc */
+  learned: Radical[];
+  region: string;
+}
 
 /** Sự kiện qua cầu nối — hợp đồng ở `docs/bridge.md`. */
 export interface SceneEvent {
@@ -22,8 +35,8 @@ declare global {
 
 /** Việc trang làm khi Flutter gửi sự kiện sang. */
 export interface BridgeHandlers {
-  /** `resume`: Flutter đóng màn bài học → cảnh chạy tiếp */
-  onResume(): void;
+  /** `resume`: Flutter đóng màn bài học → cảnh chạy tiếp; `stand` = thẻ bộ thủ đóng bằng "Xuất định" → đứng dậy (R-HANH-3) */
+  onResume(stand: boolean): void;
   /** `lifecycle`: app xuống nền (`false`) / hiện lại (`true`) */
   onVisible(visible: boolean): void;
   /** `debug`: bật / tắt bảng gỡ lỗi */
@@ -48,6 +61,24 @@ export interface JourneyProgress {
   radicals: string[];
   /** mốc của vùng còn khoá: số chữ (`chars`) hoặc số bộ thủ (`radicals`) — bản đồ ghi "Cần … chữ" */
   need: Record<string, { chars?: number; radicals?: number }>;
+  /** mã bộ thủ đến hạn ôn hôm nay, theo thứ tự hỏi (R-ON-4) — ngồi thiền mở lượt ôn trước (R-ON-5) */
+  due: string[];
+  /** bảng nhiệm vụ hôm nay (R-NV-1, R-NV-2); `null` = Flutter bản cũ không gửi */
+  daily: DailyBoard | null;
+  /** mã sổ từ đang mượn ở Tàng Thư Các (R-SACH-2); `null` = không mượn */
+  book: string | null;
+}
+
+/** Hai việc hôm nay + chuỗi ngày (docs/bridge.md `getProgress.daily`). */
+export interface DailyBoard {
+  /** số bộ mới đã học hôm nay */
+  learned: number;
+  /** mục tiêu bộ mới mỗi ngày */
+  goal: number;
+  /** số bộ còn đến hạn ôn */
+  due: number;
+  streak: number;
+  best: number;
 }
 
 /** Cầu nối có sẵn chưa; chưa thì đợi sự kiện `flutterInAppWebViewPlatformReady` (tối đa `READY_WAIT_MS`). */
@@ -84,7 +115,7 @@ export async function getProgress(): Promise<JourneyProgress | null> {
 /** Đọc câu trả lời `getProgress`; sai dạng → `null`. */
 export function parseProgress(v: unknown): JourneyProgress | null {
   if (typeof v !== 'object' || v === null) return null;
-  const { open, chars, need, radicals } = v as Record<string, unknown>;
+  const { open, chars, need, radicals, due, daily, book } = v as Record<string, unknown>;
   if (!Array.isArray(open) || !open.every((x) => typeof x === 'string')) return null;
   const needs: JourneyProgress['need'] = {};
   if (typeof need === 'object' && need !== null) {
@@ -95,7 +126,26 @@ export function parseProgress(v: unknown): JourneyProgress | null {
     }
   }
   const learned = Array.isArray(radicals) ? radicals.filter((x): x is string => typeof x === 'string') : [];
-  return { open, chars: typeof chars === 'number' ? chars : 0, radicals: learned, need: needs };
+  const dueIds = Array.isArray(due) ? due.filter((x): x is string => typeof x === 'string') : [];
+  return {
+    open,
+    chars: typeof chars === 'number' ? chars : 0,
+    radicals: learned,
+    need: needs,
+    due: dueIds,
+    daily: parseDaily(daily),
+    book: typeof book === 'string' && book ? book : null,
+  };
+}
+
+/** Đọc `getProgress.daily`; thiếu / sai dạng → `null`. */
+function parseDaily(v: unknown): DailyBoard | null {
+  if (typeof v !== 'object' || v === null) return null;
+  const d = v as Record<string, unknown>;
+  const n = (k: string): number | null => (typeof d[k] === 'number' ? (d[k] as number) : null);
+  const [learned, goal, due, streak, best] = ['learned', 'goal', 'due', 'streak', 'best'].map(n);
+  if (learned === null || goal === null || due === null || streak === null || best === null) return null;
+  return { learned, goal, due, streak, best };
 }
 
 /**
@@ -135,11 +185,64 @@ export class FlutterBridge {
     }
   }
 
+  /** Nhờ Flutter mở lượt ôn câu đố (R-ON-5). `false` = không có Flutter / chưa có màn ôn → trang mở thẻ bộ mới. */
+  openReview(items: ReviewItem[], region: string): Promise<boolean> {
+    return this.ask({ type: 'openReview', payload: { items, region } });
+  }
+
+  /**
+   * Nhờ Flutter mở bảng chọn cuộn sách Ngồi ôn (R-ON-8). Bảng chỉ đóng bằng "Đứng dậy" → `resume {stand: true}`.
+   * `false` = không có Flutter / chưa có màn → trang tự mở lượt ôn hoặc thẻ bộ mới (`fallbackStudy`).
+   */
+  openStudy({ menu, review, learned, region }: StudyPayload): Promise<boolean> {
+    const { items, highlight, next } = menu;
+    return this.ask({ type: 'openStudy', payload: { items, highlight, review, next, learned, region } });
+  }
+
+  /**
+   * Nhờ Flutter mở bảng nhiệm vụ hằng ngày (R-NV-3), kèm câu đố các bộ đến hạn (`review` — "Ôn ngay", R-ON-5) và chữ của
+   * từng bộ thủ (`forms`, mã → chữ). `false` = không có Flutter → Tiểu Mặc nói tóm tắt qua khung thoại.
+   */
+  openDaily(review: ReviewItem[], forms: Record<string, string>): Promise<boolean> {
+    return this.ask({ type: 'openDaily', payload: { review, forms } });
+  }
+
+  /** Ghi cuốn đang mượn (R-SACH-1). `false` = không có Flutter → trang giữ trong bộ nhớ. */
+  borrowBook(id: string): Promise<boolean> {
+    return this.ask({ type: 'borrowBook', payload: { id } });
+  }
+
+  /** Trả cuốn đang mượn (R-SACH-4). `false` = không có Flutter → trang xoá trong bộ nhớ. */
+  returnBook(): Promise<boolean> {
+    return this.ask({ type: 'returnBook', payload: {} });
+  }
+
+  /** Mở danh mục sách (R-SACH-1). `false` = chưa có màn (chờ thiết kế) → chọn cuốn trong khung thoại. */
+  openLibrary(books: readonly BookEntry[], borrowed: string | null): Promise<boolean> {
+    return this.ask({ type: 'openLibrary', payload: { books, borrowed } });
+  }
+
+  /** Mở sổ từ cuốn đang mượn (R-SACH-3). `false` = chưa có màn đọc (chờ thiết kế). */
+  openBook(book: Pick<BookEntry, 'id' | 'title' | 'subtitle'>, words: Word[]): Promise<boolean> {
+    const { id, title, subtitle } = book;
+    return this.ask({ type: 'openBook', payload: { book: { id, title, subtitle }, words } });
+  }
+
+  private async ask(event: SceneEvent): Promise<boolean> {
+    const host = window.flutter_inappwebview;
+    if (!host || typeof host.callHandler !== 'function') return false;
+    try {
+      return (await host.callHandler(HANDLER, event)) === true;
+    } catch {
+      return false;
+    }
+  }
+
   private handle(e: unknown): boolean {
     if (typeof e !== 'object' || e === null) return false;
     const { type, payload } = e as Partial<SceneEvent>;
     const p = typeof payload === 'object' && payload !== null ? payload : {};
-    if (type === 'resume') this.on.onResume();
+    if (type === 'resume') this.on.onResume(p.stand === true);
     else if (type === 'lifecycle' && (p.state === 'hidden' || p.state === 'visible')) this.on.onVisible(p.state === 'visible');
     else if (type === 'debug') this.on.onDebug(p.on === true);
     else if (type === 'back') return this.on.onBack();

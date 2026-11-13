@@ -14,6 +14,7 @@ import { lauSach } from './kien_truc/lau_sach';
 import { addInterior, type LocalBox } from './kien_truc/noi_that';
 import { traLau } from './kien_truc/tra_lau';
 import type { LocalPad, WalkInBuilder } from './kien_truc/vao_trong';
+import type { Seat } from './seat';
 import { markDynamic, mergeStatic, mergeVertexColors } from './merge';
 import { rotateXZ, type BuildingSpec, type InteriorKind } from './spec';
 import { signMesh } from './signAtlas';
@@ -45,8 +46,10 @@ export interface Room {
   anchor: THREE.Vector3;
   /** chỗ thầy đứng + hướng nhìn (lớp học) */
   teacher?: { x: number; y: number; z: number; rotY: number };
-  /** gọi mỗi khung: mờ dần mái + tường trước khi `inside` */
-  update(dt: number, inside: boolean): void;
+  /** chỗ ngồi trong nhà (toạ độ cảnh) — án thư Tàng Thư Các (R-VA-4) */
+  seats?: Seat[];
+  /** gọi mỗi khung: mờ dần mái + tường trước khi `inside`; `y` = chân nhân vật (nhà nhiều tầng: tầng 2 không mờ sàn) */
+  update(dt: number, inside: boolean, y?: number): void;
 }
 
 /** Mờ còn bao nhiêu khi ở trong, trong bao lâu (R-HUD-2). */
@@ -195,7 +198,7 @@ export const WALK_IN: Partial<Record<NonNullable<BuildingSpec['kind']>, WalkInBu
 };
 
 function worldPad(b: BuildingSpec, p: LocalPad, y0: number): Pad {
-  const r = worldRect(b, p);
+  const r = { ...worldRect(b, p), ...(p.upper ? { upper: true } : {}) };
   if (!p.ramp) return { ...r, y: y0 + p.y };
   const { axis, at0, at1, y1 } = p.ramp;
   const [x0, z0] = toWorld(b, axis === 'x' ? at0 : p.x, axis === 'z' ? at0 : p.z);
@@ -213,31 +216,53 @@ export function addWalkIn(scene: THREE.Scene, colliders: Colliders, b: BuildingS
   g.position.set(b.x, y0, b.z);
   g.rotation.y = ((b.rotY ?? 0) * Math.PI) / 180;
   const fade = new THREE.Group();
-  g.add(fade);
-  const shell = build(g, b, style, fade);
+  const fadeLow = new THREE.Group();
+  g.add(fade, fadeLow);
+  const shell = build(g, b, style, fade, fadeLow);
   scene.add(g);
   const mats = fadeable(fade);
+  const lowMats = fadeLow.children.length > 0 ? fadeable(fadeLow) : [];
   for (const l of shell.boxes) {
     const r = worldRect(b, l);
-    colliders.add((r.minX + r.maxX) / 2, (r.minZ + r.maxZ) / 2, r.maxX - r.minX, r.maxZ - r.minZ, l.h ?? 0);
+    const range = {
+      ...(l.minY !== undefined ? { minY: y0 + l.minY } : {}),
+      ...(l.maxY !== undefined ? { maxY: y0 + l.maxY } : {}),
+    };
+    colliders.add((r.minX + r.maxX) / 2, (r.minZ + r.maxZ) / 2, r.maxX - r.minX, r.maxZ - r.minZ, l.h ?? 0, range);
   }
   for (const c of shell.circles) {
     const [cx, cz] = toWorld(b, c.x, c.z);
     colliders.addCircle(cx, cz, c.r);
   }
   let opacity = 1;
+  let lowOpacity = 1;
   return {
     zoneId: b.id,
     floor: worldRect(b, shell.floor),
     pads: shell.pads.map((p) => worldPad(b, p, y0)),
+    seats: (shell.seats ?? []).map((s) => {
+      const [sx, sz] = toWorld(b, s.x, s.z);
+      return { x: sx, y: y0 + s.y, z: sz, rotY: s.rotY + ((b.rotY ?? 0) * Math.PI) / 180 };
+    }),
     hits: [],
     anchor: new THREE.Vector3(b.x, y0 + 2, b.z),
-    update(dt, inside) {
-      const target = inside ? FADED : 1;
-      if (opacity === target) return;
+    update(dt, inside, y) {
       const step = ((1 - FADED) * dt) / FADE_SECONDS;
-      opacity = opacity < target ? Math.min(target, opacity + step) : Math.max(target, opacity - step);
-      setOpacity(mats, opacity);
+      const approach = (v: number, target: number): number =>
+        v < target ? Math.min(target, v + step) : Math.max(target, v - step);
+      const target = inside ? FADED : 1;
+      if (opacity !== target) {
+        opacity = approach(opacity, target);
+        setOpacity(mats, opacity);
+      }
+      if (lowMats.length === 0) return;
+      // tầng 2: sàn, tường, kệ tầng 2 hiện; ở tầng 1 mờ như mái (R-HUD-2)
+      const up = shell.upperY !== undefined && y !== undefined && y >= y0 + shell.upperY;
+      const lowTarget = inside && !up ? FADED : 1;
+      if (lowOpacity !== lowTarget) {
+        lowOpacity = approach(lowOpacity, lowTarget);
+        setOpacity(lowMats, lowOpacity);
+      }
     },
   };
 }

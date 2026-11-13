@@ -38,6 +38,11 @@ export class NameTag {
   private readonly tag = el('nameTag');
   private readonly v = new THREE.Vector3();
 
+  /** Ẩn khi chữ nhập định hiện trên đầu (khỏi chồng — thiết kế 2026-11-13.19). */
+  setVisible(on: boolean): void {
+    this.tag.style.visibility = on ? '' : 'hidden';
+  }
+
   update(world: THREE.Vector3, camera: THREE.Camera, height = 2.25): void {
     this.v.set(world.x, world.y + height, world.z).project(camera);
     this.tag.style.left = `${((this.v.x + 1) / 2) * window.innerWidth}px`;
