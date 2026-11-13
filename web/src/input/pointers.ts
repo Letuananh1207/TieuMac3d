@@ -18,7 +18,7 @@ interface LookPointer {
 export interface PointerHandlers {
   joystick: Joystick;
   orbit: OrbitCamera;
-  /** chạm ngắn ở nửa phải (hoặc chuột): đi tới đó */
+  /** chạm ngắn ở nửa phải (hoặc chuột) — chỉ để chạm vật học trong nhà, không còn đi tới đó (R-DIEU-2) */
   onTap(clientX: number, clientY: number): void;
   /** chạm đầu tiên: ẩn dòng hướng dẫn */
   onFirstInput(): void;
