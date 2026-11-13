@@ -18,9 +18,13 @@ Mức độ:
 
 ## Đang mở
 
+(không có)
+
+## Đã xong
+
 ### L-6 · Cầu thang trà lâu + Tàng Thư Các khó đi, đi lên bị che khuất
 
-- Trạng thái: chờ thử máy · Mức độ: khó chịu (lên tầng 2 vất vả, camera bị che) · Phần: nhà vào được — `scene/kien_truc/cau_thang.ts`,
+- Trạng thái: xong · Mức độ: khó chịu (lên tầng 2 vất vả, camera bị che) · Phần: nhà vào được — `scene/kien_truc/cau_thang.ts`,
   `lau_sach.ts`, `tra_lau.ts` · Quy tắc: R-VA-3 (+ R-DIEU-4 camera)
 - Báo: 2026-11-13 — "cầu thang hiện nay đang rất khó đi ở cả trà lâu và tàng thư các khi hướng lên lại bị che đi đổi
   phong cách khác"
@@ -58,10 +62,11 @@ Mức độ:
 **Lịch sử**
 - 2026-11-13: ghi, sửa luôn.
 - 2026-11-13: thử máy trà lâu — "khoảng cách giữa lan can đến bề mặt tầng 2 có khoảng trống mặc dù vẫn đi qua được" (ảnh: khung lan can cầu nối, mặt lối xám, hở trước sàn tầng 2). Mở lại, sửa luôn.
+- 2026-11-13: người dùng báo đã thử máy, đạt → xong.
 
 ### L-5 · Cổng Sơn Môn (model AI) quá lớn, đế đá chân trụ cao hơn người
 
-- Trạng thái: chờ thử máy · Mức độ: nhỏ (sai tỉ lệ nhìn thấy rõ nhưng không cản chơi) · Phần: cảnh — cổng `gates[].model`
+- Trạng thái: xong · Mức độ: nhỏ (sai tỉ lệ nhìn thấy rõ nhưng không cản chơi) · Phần: cảnh — cổng `gates[].model`
   (`web/src/scene/gate.ts`) · Quy tắc: chưa có (R-VA-1 cột cổng — va chạm giữ nguyên)
 - Báo: 2026-11-13 — "cổng sơn môn hiện tại đang quá lớn đặc biệt là các khối đã ở chân"
 - Các bước: 1. Mở app / Canvas 3D. 2. Đi từ chỗ xuất phát (0; 50) lên cổng Sơn Môn (0; 44).
@@ -86,10 +91,11 @@ Mức độ:
 
 **Lịch sử**
 - 2026-11-13: ghi, sửa luôn (người dùng chọn).
+- 2026-11-13: người dùng báo đã thử máy, đạt → xong.
 
 ### L-4 · Quảng trường Văn Uyên Tông: lư hương + "cục trắng" + cây đặt không hợp lý
 
-- Trạng thái: chờ thử máy · Mức độ: nhỏ (bố cục / thẩm mỹ, không cản chơi) · Phần: cảnh — bố cục `design/scene/scene.json`
+- Trạng thái: xong · Mức độ: nhỏ (bố cục / thẩm mỹ, không cản chơi) · Phần: cảnh — bố cục `design/scene/scene.json`
   (props, trees.yard, rạp phim), khói `scene/props.ts` · Quy tắc: chưa có
 - Báo: 2026-11-13 — "ở quảng trường có 1 số món đồ đặt không hợp lý như lô hương cục gì trắng nổi lên và cây không
   đúng chỗ" (kèm ảnh: khu rạp phim 影戲臺, bồ đoàn, khối trắng góc phải)
@@ -119,10 +125,11 @@ Mức độ:
   (x −31).
 - 2026-11-13: "cỏ và cây ở chỗ ngoài … lộn xộn xấu; phường thị … vô dụng" → xoá khu Thị Tập, cây ngoài xếp đối xứng,
   cỏ búi 6 → 1,5 / 100 m² (mục thiết kế 2026-11-13.15, đợt 3). Khu giao lưu thay chỗ Thị Tập = tính năng mới, chờ `/lead`.
+- 2026-11-13: người dùng báo đã thử máy, đạt → xong.
 
 ### L-3 · Lối lát đá bị cắt ngang, chìm dưới nền gạch khi nhìn gần
 
-- Trạng thái: chờ thử máy · Mức độ: khó chịu (thấy ngay ở chỗ xuất phát) · Phần: cảnh — lối đá (`scene/paths.ts`) · Quy tắc: chưa có
+- Trạng thái: xong · Mức độ: khó chịu (thấy ngay ở chỗ xuất phát) · Phần: cảnh — lối đá (`scene/paths.ts`) · Quy tắc: chưa có
 - Báo: 2026-11-13 — "ở góc nhìn gần cũng đang xảy ra lỗi khi đường đi bị cắt như ảnh" (kèm ảnh: sân Sơn Môn, lối đá
   dừng giữa chừng, phía trước chỉ còn gạch nâu)
 - Các bước: 1. Mở app / Canvas 3D. 2. Đứng ở chỗ xuất phát (0; 80), nhìn về cổng Sơn Môn.
@@ -140,10 +147,11 @@ Mức độ:
 
 **Lịch sử**
 - 2026-11-13: ghi + sửa.
+- 2026-11-13: người dùng báo đã thử máy, đạt → xong.
 
 ### L-2 · Nhân vật .glb: mặt loang lổ, sống mũi gồ, vệt trắng ở tai / cạnh đầu
 
-- Trạng thái: chờ thử máy · Mức độ: khó chịu (nhân vật chính nhìn lỗi ở mọi khung hình) · Phần: nhân vật, model .glb
+- Trạng thái: xong · Mức độ: khó chịu (nhân vật chính nhìn lỗi ở mọi khung hình) · Phần: nhân vật, model .glb
   (`player/glbCharacter.ts`, `web/scripts/model-paint.mjs`, `tai-nguyen/scripts/atlas.py`) · Quy tắc: chưa có
 - Báo: 2026-11-12 — "nhân vật đang bị lỗi và đang khá cứng đờ tôi cần có động tác" (kèm ảnh)
 - Các bước: 1. `cd web && npm run dev`, mở Chrome. 2. Nhìn nhân vật ở góc chơi.
@@ -165,10 +173,11 @@ Mức độ:
 
 **Lịch sử**
 - 2026-11-12: ghi; sửa pháp tuyến + lan màu mép (chờ thử máy).
+- 2026-11-13: người dùng báo đã thử máy, đạt → xong.
 
 ### L-1 · Chạy app trên máy tính (Windows) / web báo lỗi build
 
-- Trạng thái: chờ thử máy · Mức độ: chặn dùng (không mở được app trên máy tính) · Phần: app Flutter, WebView · Quy tắc: chưa có
+- Trạng thái: xong · Mức độ: chặn dùng (không mở được app trên máy tính) · Phần: app Flutter, WebView · Quy tắc: chưa có
 - Báo: 2026-11-11 — "vì ứng dụng này sẽ chạy được cả trên nền tảng web nhưng hiện tại khi run ở web thì đang báo lỗi"
 - Các bước: 1. `cd app && flutter run`, chọn thiết bị Windows. 2. Build lỗi.
 - Mong đợi / thực tế: app mở, thấy cảnh 3D / build thất bại `error MSB3073 … NUGET-NOTFOUND install Microsoft.Web.WebView2`,
@@ -196,5 +205,4 @@ Mức độ:
 **Lịch sử**
 - 2026-11-11: ghi; người dùng chọn "ghi rồi sửa luôn". Log người dùng dán là bản **Windows** (thiếu NuGet); hỏi lại →
   người dùng chọn chỉ web.
-
-## Đã xong
+- 2026-11-13: người dùng báo đã thử máy, đạt → xong.
