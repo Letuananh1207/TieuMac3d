@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Bản đồ truyền tống – tấm giấy + trạng thái</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;700&amp;family=Lora:wght@700&amp;family=Noto+Serif+SC:wght@700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2B5446}a:hover{color:#24323A}
+</style>
+</helmet>
+<div style="width: 1440px; height: 920px; box-sizing: border-box; padding: 36px 40px; background: #E9EEEC; font-family: 'Be Vietnam Pro', system-ui, sans-serif; color: #24323A; display: grid; grid-template-columns: 1024px minmax(0, 1fr); column-gap: 32px; row-gap: 16px">
+  <div style="grid-column: 1 / -1; display: flex; flex-direction: column; gap: 4px">
+    <h1 style="margin: 0; font-family: 'Lora', Georgia, serif; font-size: 26px">Tấm giấy bản đồ truyền tống — ảnh nền 2048 × 1152 + lớp trạng thái (code vẽ)</h1>
+    <div style="font-size: 13px">Trên: ảnh nền (không trạng thái) · Dưới: ví dụ trạng thái chồng lên. Toạ độ từng nơi: <code>design/scene/ban-do/ban-do.json</code>.</div>
+  </div>
+  <div style="display: flex; flex-direction: column; gap: 12px">
+    <img src="/_blob/c71491c1b4a0bba240d49bb45cae5fa5" alt="Ảnh nền bản đồ hành trình, không trạng thái" width="512" height="288" style="width: 512px; height: 288px; box-shadow: 0 6px 18px rgba(36,50,58,.2)">
+    <img src="/_blob/310f17c38437eef154dd046f4ad54017" alt="Bản đồ có lớp trạng thái ví dụ" width="1024" height="576" style="width: 1024px; height: 576px; box-shadow: 0 6px 18px rgba(36,50,58,.2)">
+  </div>
+  <div style="display: flex; flex-direction: column; gap: 14px; font-size: 13px; line-height: 1.55">
+    <div style="font-family: 'Lora', Georgia, serif; font-size: 18px; font-weight: 700">Lớp trạng thái (theo px ảnh 2048 × 1152)</div>
+    <div><b>Đã mở</b>: vòng tròn r 150 nét 10 ngọc lục <code>#2B5446</code> + chấm vàng 12 ở đỉnh vòng. Chạm được.</div>
+    <div><b>Đang ở đây</b>: như đã mở + dấu triện son 84 × 84 chữ 此 ở góc trên trái biểu tượng (x − 160, y − 175).</div>
+    <div><b>Sắp mở</b> (đủ mốc nhưng chưa có cảnh): vòng nét đứt 26 / 18 ngọc lục + huy hiệu đồng hồ r 40 ở góc trên phải.</div>
+    <div><b>Khoá</b>: đĩa giấy mờ r 150 <code>rgba(242,234,218,.72)</code> phủ biểu tượng + huy hiệu khoá r 40 <code>#24323A</code> ở góc trên phải (x + 100, y − 100).</div>
+    <div><b>Vừa chạm nơi khoá</b>: thêm vòng son <code>#A8322A</code> nét 10 + vòng mờ r 172, nhấp nháy 2 lần (0,6 s); HUD hiện thẻ "&lt;tên&gt; — cần N chữ · Bạn đã học M chữ".</div>
+    <div>Chữ yêu cầu ("Cần 300 chữ", "Sắp mở") <b>không vẽ trên giấy</b> — ở cỡ dọc giấy chỉ còn ≈ 17 % → chữ quá nhỏ; hiện ở thẻ HUD khi chạm.</div>
+    <div><b>Vùng chạm</b>: tròn r 150 quanh (x, y) → dọc ≈ 51 px, ngang ≈ 72 px (≥ 44).</div>
+    <div><b>Chữ trên giấy</b>: Hán 92 px Noto Serif SC, Việt 62 px Be Vietnam Pro 700 viền giấy 14 → dọc (giấy rộng 352) ≈ 16 / 11 px; ngang (484) ≈ 22 / 15 px.</div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":920}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

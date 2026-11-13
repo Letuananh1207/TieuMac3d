@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Bản đồ truyền tống</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@700&family=Noto+Serif+SC:wght@700&display=swap">
+<style>body{margin:0;background:#888} canvas{width:1024px;height:576px;display:block}</style>
+</head>
+<body>
+<canvas id="c" width="2048" height="1152"></canvas>
+<script>
+// Bản đồ hành trình — tấm giấy cuộn truyền tống. Toạ độ theo ảnh 2048 × 1152.
+const W = 2048, H = 1152;
+const PAPER = '#F2EADA', INK = '#24323A', JADE = '#2B5446', SON = '#A8322A', GOLD = '#C9A13B';
+const PLACES = [
+  { id: 'van-uyen', han: '文淵', name: 'Văn Uyên Tông', x: 260, y: 760 },
+  { id: 'rung-truc', han: '竹林', name: 'Rừng trúc', x: 760, y: 760 },
+  { id: 'giang-nam', han: '江南', name: 'Giang Nam', x: 1260, y: 760 },
+  { id: 'bong-lai', han: '蓬萊', name: 'Bồng Lai', x: 1760, y: 760 },
+  { id: 'truong-thanh', han: '長城', name: 'Trường Thành', x: 1760, y: 300 },
+  { id: 'tu-cam-thanh', han: '紫禁', name: 'Tử Cấm Thành', x: 1160, y: 300 },
+  { id: 'to-lua', han: '絲路', name: 'Con đường tơ lụa', x: 560, y: 300 }
+];
+const R = 150;          // vùng chạm quanh biểu tượng
+const LABEL_HAN = 92, LABEL_VI = 62;
+
+function rnd(seed) { let s = seed; return () => (s = (s * 16807) % 2147483647) / 2147483647; }
+const rand = rnd(7);
+
+function paper(g) {
+  g.fillStyle = PAPER; g.fillRect(0, 0, W, H);
+  // vân giấy nhẹ
+  for (let i = 0; i < 2200; i++) {
+    g.fillStyle = `rgba(120,100,70,${0.015 + rand() * 0.02})`;
+    g.fillRect(rand() * W, rand() * H, 1 + rand() * 3, 1 + rand() * 2);
+  }
+  // viền ố
+  const v = g.createRadialGradient(W / 2, H / 2, H * 0.35, W / 2, H / 2, W * 0.62);
+  v.addColorStop(0, 'rgba(160,130,90,0)'); v.addColorStop(1, 'rgba(160,130,90,.22)');
+  g.fillStyle = v; g.fillRect(0, 0, W, H);
+}
+
+function mountains(g, baseY, amp, color, alpha, seed, step) {
+  const r = rnd(seed);
+  g.save(); g.globalAlpha = alpha; g.fillStyle = color;
+  g.beginPath(); g.moveTo(0, H);
+  let x = 0; g.lineTo(0, baseY);
+  while (x < W) {
+    const w = step * (0.6 + r() * 0.8), h = amp * (0.4 + r() * 0.9);
+    g.quadraticCurveTo(x + w * 0.35, baseY - h, x + w * 0.5, baseY - h * 0.95);
+    g.quadraticCurveTo(x + w * 0.7, baseY - h * 0.6, x + w, baseY - r() * amp * 0.15);
+    x += w;
+  }
+  g.lineTo(W, H); g.closePath(); g.fill(); g.restore();
+}
+
+function cloud(g, x, y, s, a) {
+  g.save(); g.globalAlpha = a; g.fillStyle = '#FFFFFF';
+  for (const [dx, dy, r] of [[0, 0, 60], [60, -18, 46], [-58, -10, 44], [110, 8, 36], [-104, 10, 34]]) {
+    g.beginPath(); g.ellipse(x + dx * s, y + dy * s, r * s * 1.4, r * s * 0.7, 0, 0, Math.PI * 2); g.fill();
+  }
+  g.restore();
+}
+
+function river(g) {
+  // sông nối các nơi theo thứ tự (rắn: phải → lên → trái)
+  g.save(); g.lineCap = 'round'; g.lineJoin = 'round';
+  const pts = [[60, 980], [260, 900], [520, 960], [760, 900], [1010, 960], [1260, 900], [1520, 960], [1860, 900], [1960, 640],
+               [1860, 470], [1500, 470], [1160, 440], [860, 470], [560, 440], [240, 470], [80, 380]];
+  const path = () => { g.beginPath(); g.moveTo(...pts[0]); for (let i = 1; i < pts.length - 1; i++) { const m = [(pts[i][0] + pts[i + 1][0]) / 2, (pts[i][1] + pts[i + 1][1]) / 2]; g.quadraticCurveTo(pts[i][0], pts[i][1], m[0], m[1]); } g.lineTo(...pts[pts.length - 1]); };
+  g.strokeStyle = 'rgba(122,160,160,.35)'; g.lineWidth = 64; path(); g.stroke();
+  g.strokeStyle = 'rgba(160,195,190,.6)'; g.lineWidth = 34; path(); g.stroke();
+  // lối đi chấm mực son nối các nơi
+  g.setLineDash([2, 26]); g.strokeStyle = 'rgba(138,91,59,.85)'; g.lineWidth = 12;
+  g.beginPath(); g.moveTo(PLACES[0].x, PLACES[0].y);
+  for (let i = 1; i < PLACES.length; i++) {
+    const a = PLACES[i - 1], b = PLACES[i];
+    const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2 + (a.y === b.y ? -70 : 0) + (a.x === b.x ? 0 : 0);
+    if (a.x === b.x) g.quadraticCurveTo(a.x + 220, (a.y + b.y) / 2, b.x, b.y); else g.quadraticCurveTo(mx, my, b.x, b.y);
+  }
+  g.stroke(); g.restore();
+}
+
+// ---------- biểu tượng ----------
+function roof(g, cx, y, w, h, color) {
+  g.fillStyle = color; g.beginPath();
+  g.moveTo(cx - w / 2 - 18, y + h); g.quadraticCurveTo(cx - w / 2, y + h * 0.7, cx - w * 0.32, y);
+  g.lineTo(cx + w * 0.32, y); g.quadraticCurveTo(cx + w / 2, y + h * 0.7, cx + w / 2 + 18, y + h); g.closePath(); g.fill();
+}
+function hall(g, cx, cy, s, roofColor, wallColor) {
+  g.save(); g.translate(cx, cy); g.scale(s, s);
+  g.fillStyle = '#D9D4C7'; g.fillRect(-90, 40, 180, 22);
+  g.fillStyle = wallColor; g.fillRect(-70, -10, 140, 50);
+  g.fillStyle = 'rgba(36,50,58,.5)'; for (const x of [-45, -15, 15, 45]) g.fillRect(x - 4, -10, 8, 50);
+  roof(g, 0, -48, 180, 40, roofColor);
+  g.fillStyle = INK; g.fillRect(-60, -50, 120, 6);
+  g.restore();
+}
+const ICONS = {
+  'van-uyen'(g, x, y) {
+    hall(g, x, y + 10, 1.15, JADE, '#E8E1D2');
+    g.fillStyle = SON; g.fillRect(x + 70, y - 90, 54, 54);
+    g.fillStyle = '#F2EADA'; g.font = `700 34px "Noto Serif SC"`; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('家', x + 97, y - 62);
+  },
+  'rung-truc'(g, x, y) {
+    g.save(); g.lineCap = 'round';
+    for (const [dx, h, c] of [[-50, 190, '#4F7A35'], [0, 220, '#7D9A4A'], [48, 175, '#5E8A3E']]) {
+      g.strokeStyle = c; g.lineWidth = 16; g.beginPath(); g.moveTo(x + dx, y + 80); g.lineTo(x + dx * 1.1, y + 80 - h); g.stroke();
+      g.strokeStyle = PAPER; g.lineWidth = 3; for (let k = 1; k < 5; k++) { const yy = y + 80 - k * h / 5; g.beginPath(); g.moveTo(x + dx - 9, yy); g.lineTo(x + dx + 9, yy); g.stroke(); }
+      g.fillStyle = '#5E8A3E';
+      for (let k = 0; k < 4; k++) { const ly = y + 80 - h + 20 + k * 22, s = k % 2 ? 1 : -1; g.beginPath(); g.ellipse(x + dx + s * 34, ly, 34, 9, s * -0.5, 0, Math.PI * 2); g.fill(); }
+    }
+    g.restore();
+  },
+  'giang-nam'(g, x, y) {
+    g.save();
+    g.fillStyle = 'rgba(122,160,160,.6)'; g.fillRect(x - 110, y + 50, 220, 30);
+    g.strokeStyle = '#9A968C'; g.lineWidth = 18; g.beginPath(); g.arc(x - 10, y + 70, 70, Math.PI, 0); g.stroke();
+    g.fillStyle = '#F4F1EA'; g.fillRect(x + 40, y - 70, 80, 70);
+    g.fillStyle = '#3A3F44'; roof(g, x + 80, y - 100, 90, 30, '#3A3F44');
+    g.fillRect(x + 66, y - 40, 14, 22);
+    g.restore();
+  },
+  'bong-lai'(g, x, y) {
+    g.save();
+    for (const [dx, dy, s] of [[-40, 10, 1], [70, -50, 0.7]]) {
+      g.fillStyle = '#86AE5A'; g.beginPath(); g.ellipse(x + dx, y + dy, 80 * s, 22 * s, 0, 0, Math.PI * 2); g.fill();
+      g.fillStyle = '#8D8A84'; g.beginPath(); g.moveTo(x + dx - 78 * s, y + dy); g.lineTo(x + dx + 78 * s, y + dy); g.lineTo(x + dx + 10 * s, y + dy + 110 * s); g.closePath(); g.fill();
+    }
+    hall(g, x - 40, y - 30, 0.42, JADE, '#E8E1D2');
+    cloud(g, x - 10, y + 95, 0.8, 0.95);
+    g.strokeStyle = INK; g.lineWidth = 5; g.beginPath(); g.moveTo(x + 40, y - 120); g.quadraticCurveTo(x + 60, y - 135, x + 80, y - 120); g.quadraticCurveTo(x + 100, y - 135, x + 120, y - 120); g.stroke();
+    g.restore();
+  },
+  'truong-thanh'(g, x, y) {
+    g.save(); g.fillStyle = '#9A968C';
+    g.beginPath(); g.moveTo(x - 130, y + 70); g.lineTo(x - 60, y + 20); g.lineTo(x + 20, y + 40); g.lineTo(x + 130, y - 10); g.lineTo(x + 130, y + 30); g.lineTo(x + 20, y + 80); g.lineTo(x - 60, y + 60); g.lineTo(x - 130, y + 100); g.closePath(); g.fill();
+    g.fillStyle = '#7A766C'; g.fillRect(x - 10, y - 70, 64, 110);
+    for (let i = 0; i < 4; i++) g.fillRect(x - 12 + i * 18, y - 86, 12, 18);
+    g.fillStyle = INK; g.fillRect(x + 12, y - 40, 18, 26);
+    g.strokeStyle = INK; g.lineWidth = 4; g.beginPath(); g.moveTo(x + 22, y - 86); g.lineTo(x + 22, y - 140); g.stroke();
+    g.fillStyle = SON; g.beginPath(); g.moveTo(x + 22, y - 140); g.lineTo(x + 66, y - 128); g.lineTo(x + 22, y - 116); g.closePath(); g.fill();
+    g.restore();
+  },
+  'tu-cam-thanh'(g, x, y) { hall(g, x, y + 10, 1.2, GOLD, SON); g.save(); g.fillStyle = GOLD; roof(g, x, y - 95, 120, 26, GOLD); g.restore(); },
+  'to-lua'(g, x, y) {
+    g.save(); g.fillStyle = '#D2B98C'; g.beginPath(); g.ellipse(x, y + 80, 150, 40, 0, Math.PI, 0); g.fill();
+    g.fillStyle = '#8A5B3B';
+    g.beginPath(); g.ellipse(x - 10, y + 10, 62, 34, 0, 0, Math.PI * 2); g.fill();
+    g.beginPath(); g.ellipse(x - 20, y - 22, 22, 22, 0, 0, Math.PI * 2); g.fill();
+    g.beginPath(); g.ellipse(x + 18, y - 22, 22, 22, 0, 0, Math.PI * 2); g.fill();
+    g.fillRect(x + 40, y - 50, 18, 60); g.beginPath(); g.ellipse(x + 64, y - 54, 22, 13, 0, 0, Math.PI * 2); g.fill();
+    for (const lx of [-50, -26, 14, 36]) g.fillRect(x + lx, y + 30, 11, 50);
+    g.restore();
+  }
+};
+
+function label(g, p) {
+  g.save(); g.textAlign = 'center'; g.textBaseline = 'alphabetic';
+  g.font = `700 ${LABEL_HAN}px "Noto Serif SC"`;
+  const hy = p.y + 120 + LABEL_HAN * 0.85;
+  g.lineWidth = 14; g.strokeStyle = 'rgba(242,234,218,.9)'; g.strokeText(p.han, p.x, hy);
+  g.fillStyle = INK; g.fillText(p.han, p.x, hy);
+  g.font = `700 ${LABEL_VI}px "Be Vietnam Pro"`;
+  const vy = hy + LABEL_VI + 6;
+  g.strokeText(p.name, p.x, vy); g.fillStyle = JADE; g.fillText(p.name, p.x, vy);
+  p.labelTop = Math.round(hy - LABEL_HAN * 0.85); p.labelBottom = Math.round(vy + 14);
+  g.restore();
+}
+
+async function draw() {
+  await document.fonts.load(`700 ${LABEL_HAN}px "Noto Serif SC"`, '文淵竹林江南蓬萊長城紫禁絲路家');
+  await document.fonts.load(`700 ${LABEL_VI}px "Be Vietnam Pro"`, 'Văn Uyên Tông Rừng trúc Trường Thành Tử Cấm Thành tơ lụa');
+  const g = document.getElementById('c').getContext('2d');
+  paper(g);
+  mountains(g, 230, 160, '#9FB0B0', 0.35, 11, 260);
+  mountains(g, 600, 120, '#7F9594', 0.25, 23, 300);
+  cloud(g, 360, 170, 1.4, 0.7); cloud(g, 1480, 140, 1.2, 0.6); cloud(g, 980, 600, 1.1, 0.55); cloud(g, 1900, 580, 1, 0.5);
+  river(g);
+  for (const p of PLACES) { ICONS[p.id](g, p.x, p.y - 30); label(g, p); }
+  // dấu triện góc + tên bản đồ
+  g.save(); g.fillStyle = SON; g.fillRect(40, 40, 120, 120);
+  g.fillStyle = PAPER; g.font = '700 46px "Noto Serif SC"'; g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.fillText('文淵', 100, 72); g.fillText('行旅', 100, 128); g.restore();
+  return PLACES.map(p => ({ id: p.id, han: p.han, name: p.name, x: p.x, y: p.y - 30, r: R, labelTop: p.labelTop, labelBottom: p.labelBottom }));
+}
+window.ready = draw();
+// ---------- lớp trạng thái (code vẽ chồng; đây là bản mẫu để duyệt) ----------
+function lockBadge(g, x, y) {
+  g.save(); g.fillStyle = '#24323A'; g.beginPath(); g.arc(x, y, 40, 0, Math.PI * 2); g.fill();
+  g.strokeStyle = '#F4F7F6'; g.lineWidth = 7; g.beginPath(); g.arc(x, y - 10, 14, Math.PI, 0); g.stroke();
+  g.fillStyle = '#F4F7F6'; g.fillRect(x - 20, y - 8, 40, 30); g.restore();
+}
+function drawState(g, p, st) {
+  const { x, y } = p;
+  if (st === 'khoa' || st === 'khoa-chon') {
+    g.save(); g.fillStyle = 'rgba(242,234,218,.72)'; g.beginPath(); g.arc(x, y, 150, 0, Math.PI * 2); g.fill(); g.restore();
+    lockBadge(g, x + 100, y - 100);
+  }
+  if (st === 'khoa-chon') {
+    g.save(); g.strokeStyle = '#A8322A'; g.lineWidth = 10; g.beginPath(); g.arc(x, y, 150, 0, Math.PI * 2); g.stroke();
+    g.globalAlpha = .45; g.lineWidth = 6; g.beginPath(); g.arc(x, y, 172, 0, Math.PI * 2); g.stroke(); g.restore();
+  }
+  if (st === 'mo' || st === 'o-day') {
+    g.save(); g.strokeStyle = '#2B5446'; g.lineWidth = 10; g.beginPath(); g.arc(x, y, 150, 0, Math.PI * 2); g.stroke();
+    g.fillStyle = '#D4A64A'; g.beginPath(); g.arc(x, y - 150, 12, 0, Math.PI * 2); g.fill(); g.restore();
+  }
+  if (st === 'sap-mo') {
+    g.save(); g.setLineDash([26, 18]); g.strokeStyle = '#2B5446'; g.lineWidth = 8; g.beginPath(); g.arc(x, y, 150, 0, Math.PI * 2); g.stroke(); g.restore();
+    g.save(); g.fillStyle = '#F4F7F6'; g.strokeStyle = '#2B5446'; g.lineWidth = 6; g.beginPath(); g.arc(x + 100, y - 100, 40, 0, Math.PI * 2); g.fill(); g.stroke();
+    g.strokeStyle = '#2B5446'; g.lineWidth = 6; g.beginPath(); g.moveTo(x + 100, y - 122); g.lineTo(x + 100, y - 100); g.lineTo(x + 116, y - 90); g.stroke(); g.restore();
+  }
+  if (st === 'o-day') {
+    g.save(); g.fillStyle = '#A8322A'; g.fillRect(x - 160, y - 175, 84, 84);
+    g.fillStyle = '#F4F7F6'; g.font = '700 58px "Noto Serif SC"'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('此', x - 118, y - 131); g.restore();
+  }
+}
+window.states = async (map) => { const meta = await window.ready; const g = document.getElementById('c').getContext('2d'); for (const p of meta) if (map[p.id]) drawState(g, p, map[p.id]); return true; };
+
+</script>
+</body>
+</html>

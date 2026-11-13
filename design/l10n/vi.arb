@@ -64,5 +64,75 @@
   "roomThuVien": "Thư viện",
   "@roomGiangDuong": {
     "description": "Tên nhà trên chip khi đứng trong nhà: \"<tên nơi> · <tên nhà>\" (R-HUD-1)"
+  },
+  "mapHint": "Chạm một nơi để truyền tống",
+  "mapClose": "Đóng bản đồ",
+  "mapNeedChars": "{name} — cần {n} chữ",
+  "@mapNeedChars": {
+    "description": "Thẻ HUD khi chạm nơi khoá",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "mapNeedRadicals": "{name} — cần học xong bộ thủ Rừng trúc",
+  "@mapNeedRadicals": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mapLearnedCount": "Bạn đã học {n} chữ.",
+  "@mapLearnedCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "mapSoon": "{name} — sắp mở",
+  "@mapSoon": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "mapHere": "Đang ở đây",
+  "placeVanUyen": "Văn Uyên Tông",
+  "placeRungTruc": "Rừng trúc",
+  "placeGiangNam": "Giang Nam",
+  "placeBongLai": "Bồng Lai",
+  "placeTruongThanh": "Trường Thành",
+  "placeTuCamThanh": "Tử Cấm Thành",
+  "placeToLua": "Con đường tơ lụa",
+  "radicalEyebrow": "Bộ thủ · {region}",
+  "@radicalEyebrow": {
+    "placeholders": {
+      "region": {
+        "type": "String"
+      }
+    }
+  },
+  "radicalFullForm": "dạng đủ",
+  "radicalEvolution": "Từ hình đến chữ",
+  "radicalStrokes": "Nét",
+  "radicalExamples": "Chữ có bộ này",
+  "radicalLearn": "Đã học · khắc vào bia",
+  "radicalBack": "Về rừng trúc",
+  "radicalLearned": "Đã học",
+  "actionJump": "Nhảy",
+  "actionBow": "Chào",
+  "actionSit": "Thiền",
+  "actionSitting": "Đang thiền",
+  "actionSitLabel": "Ngồi thiền",
+  "talk": "Nói chuyện",
+  "@talk": {
+    "description": "Nút nổi trên đầu NPC (R-NPC-2). Lời thoại giữ trong dữ liệu hội thoại (web/src/zones/dialogs.ts), không ở đây."
   }
 }

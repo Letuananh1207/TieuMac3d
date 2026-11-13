@@ -129,3 +129,83 @@ Mẫu một mục:
   thật `ZONE_CONTENT[].action`), `roomGiangDuong`, `roomThuVien`.
 - Luật: `R-VUNG-1`, `R-VUNG-2`, `R-VUNG-3`, `R-VA-3`, `R-HUD-1`, `R-HUD-2`.
 - Ảnh: `screens/NoiThat-giang-duong-doc.png`, `screens/NoiThat-thu-vien-ngang.png` (chụp Canvas 3D, chưa có HUD).
+
+## Bản đồ truyền tống (cuộn tranh 3D + HUD) · artboard `BanDo-giay.dc.html`, `BanDo-doc.dc.html`, `BanDo-ngang.dc.html` · từ mục 2026-11-13.9
+
+- Mục đích: chọn vùng để truyền tống. Mở khi: nhân vật bước vào vòng trận (giữa Truyền Tống Đài, hoặc vòng trận ở mỗi
+  vùng) → hiệu ứng ~1,2 s → cuộn bản đồ bay lên, mở ra trước mặt nhân vật, quay về camera. Đóng khi: bấm "Đóng bản đồ"
+  (hoặc nút quay lại của máy) → cuộn lại, bay xuống; hoặc chạm nơi đã mở → màn tải → vùng.
+- **Tấm giấy**: `design/scene/ban-do/ban-do-goc.png` 2048 × 1152 (vẽ bằng `ve-ban-do.html`); toạ độ 7 nơi + mọi số đo lớp
+  trạng thái: `design/scene/ban-do/ban-do.json`. Đường đi "rắn": hàng dưới trái → phải (Văn Uyên · Rừng trúc · Giang Nam ·
+  Bồng Lai), rẽ lên Trường Thành, hàng trên phải → trái (Tử Cấm Thành · Tơ lụa). Chữ trên giấy: Hán 92 Noto Serif SC
+  `slate`, Việt 62 Be Vietnam Pro 700 `jade`, viền giấy 14.
+- **Lớp trạng thái** (code vẽ chồng lên giấy, theo `ban-do.json`): đã mở (vòng ngọc lục + chấm vàng) · đang ở đây (như mở
+  + triện son 此) · sắp mở (vòng nét đứt + huy hiệu đồng hồ) · khoá (đĩa giấy mờ + huy hiệu khoá) · vừa chạm nơi khoá
+  (vòng son nhấp nháy 2 lần / 0,6 s). Ảnh mẫu: `screens/BanDo-trang-thai.png`. **Chữ yêu cầu không vẽ trên giấy** (dọc
+  giấy chỉ ≈ 17 % → chữ quá nhỏ) — hiện ở thẻ HUD.
+- **Cuộn** (vật 3D, code dựng): hai trục `scroll-wood` dày ≈ 1/25 bề rộng, đầu trục `jade` viền `gold`; giấy giữa.
+- Bố cục dọc: cuộn rộng ≈ 97 % màn (giấy 352 × 198), tâm trên ≈ 40 % chiều cao; trên cuộn dòng gợi ý "Chạm một nơi để
+  truyền tống" (viên thuốc `frost-strong`, 13/700); dưới cuộn thẻ HUD khi chạm nơi khoá / sắp mở; nút "Đóng bản đồ"
+  giữa, dưới cùng (dưới 24 + safe area), cao 48. Cảnh tối 28 %.
+- Bố cục ngang: cuộn cao ≈ 76 % màn (giấy 484 × 272), giữa trên; thẻ HUD góc dưới trái (trái safe + 12); nút đóng góc
+  dưới phải (phải safe + 12), cao 44.
+- **Thẻ HUD nơi chưa đi được**: kính sương .92, viền ngoài son 35 %, bo 14, đệm 12 × 16; huy hiệu khoá 28 + dòng 15/700
+  "<Hán> <tên> — cần N chữ" (hoặc "… — cần học xong bộ thủ Rừng trúc", "… — sắp mở") + dòng 13 "Bạn đã học M chữ.". Tự ẩn
+  sau 3 s hoặc khi chạm chỗ khác.
+- **Nút "Đóng bản đồ"**: viên thuốc kính sương .92, viền ngoài `slate` 22 %, dấu × 18 + chữ 15/700.
+- Trong lúc bản đồ mở: nhân vật đứng yên, joystick + cụm nút hành động ẩn (như `R-VUNG-3`).
+- Vùng chạm mỗi nơi: tròn r 150 px giấy → dọc ≈ 51 px, ngang ≈ 72 px.
+- Chuỗi: `mapHint`, `mapClose`, `mapNeedChars`, `mapNeedRadicals`, `mapSoon`, `mapLearnedCount`, `mapHere`, `place*`.
+- Luật: `R-HANH-1` (mốc mở); đề xuất mới — xem CHANGELOG 2026-11-13.9.
+- Ảnh: `screens/BanDo-trang-thai.png` (giấy + trạng thái); màn ghép: chưa có ảnh (nền giữ chỗ là đài cũ 6 cột).
+
+## Thẻ học bộ thủ (Flutter native) · artboard `TheBoThu-doc.dc.html`, `TheBoThu-doc-on.dc.html`, `TheBoThu-ngang.dc.html` · từ mục 2026-11-13.9
+
+- Mục đích: học một bộ thủ ở Rừng trúc. Mở khi: chạm bia bộ thủ hoặc vật "sống" (suối → 氵/水, đá → 石, trúc → ⺮/竹…),
+  hoặc nút học nổi cạnh bia. Đóng khi: nút chính / nút quay lại của máy. Nhân vật đứng yên khi thẻ mở (như `R-VUNG-3`).
+- Khung: dùng lại **màn bài học** (nền `mist` + núi, eyebrow, thẻ lụa, nút chính đáy) — cùng số đo lề / thẻ / nút.
+- Nội dung thẻ (dọc, từ trên): bộ thủ 120/700 Noto Serif SC `jade` + (nếu hai dạng) cột "dạng đủ" 12/700 + chữ 56 ·
+  pinyin Lora 22 `lacquer` · tên "thuỷ — nước" 18/700 · vạch chấm vàng · "Từ hình đến chữ" 15/700 `jade` + 3 ô 78 × 78
+  nền `map-paper` (hình vẽ nét 3,2 → chữ triện → chữ khải `jade`) nối bằng mũi tên · bảng dòng phụ ("Nét", "Chữ có bộ
+  này": 2–3 chữ, chữ Hán 20 + pinyin + nghĩa).
+- Ngang: cột trái 168 (bộ thủ 104 + dạng đủ 40, pinyin 20, tên 16) · vạch dọc · cột phải (dải hình 62 × 62, bảng 14) ·
+  cột nút 150 bên phải (eyebrow trên, nút đáy).
+- Trạng thái: **lần đầu** — nút "Đã học · khắc vào bia" (dấu ✓) → bia viền vàng; **đã học** — huy hiệu "Đã học" góc trên
+  phải thẻ (viền `jade`, chấm vàng), nút "Về rừng trúc" (mũi tên trái); **hai dạng** (氵/水); **một dạng** (石 — lưu ý 竹
+  có dạng ⺮ khi đứng trên).
+- Hình "từ hình đến chữ": SVG nét (dữ liệu bộ thủ), không ảnh bitmap.
+- Chuỗi: `radicalEyebrow`, `radicalFullForm`, `radicalEvolution`, `radicalStrokes`, `radicalExamples`, `radicalLearn`,
+  `radicalBack`, `radicalLearned`; nội dung bộ thủ (tên, pinyin, ví dụ) ở dữ liệu.
+- Ảnh: chưa có ảnh (dùng `source/TheBoThu-*.dc.html`).
+
+## Nút hành động (HUD) · artboard `HUD-hanh-dong-doc.dc.html`, `HUD-hanh-dong-ngang.dc.html`, `NutHanhDong-trang-thai.dc.html` · từ mục 2026-11-13.9
+
+- Cụm góc dưới phải (nửa phải màn — `R-DIEU-1`; chạm nút không tính là kéo xoay camera): **Nhảy** tròn 68 nền `jade`
+  viền trắng 2, biểu tượng mũi tên lên trên gợn mây 30 trắng, sát góc (dọc: phải 16, dưới 16 + safe; ngang: phải safe +
+  12, dưới safe + 9); **Chào** tròn 52 kính sương, trái Nhảy (cách tâm ≈ 86 px), biểu tượng tay chắp 拱手; **Ngồi thiền**
+  tròn 52 kính sương, trên Nhảy (≈ 96 px), biểu tượng người ngồi trên đệm. Nhãn 11/700 dưới mỗi nút (viên thuốc kính .82).
+- Trạng thái: bình thường · đang nhấn (thu 94 %; Nhảy `jade-press`, nút kính nền tối hơn) · **Thiền đang bật** (nền
+  `jade`, viền `gold` 2 + quầng vàng 4, nhãn "Đang thiền" `jade`) · Chào đang diễn 1,6 s (như bật) · vô hiệu (kính .6,
+  biểu tượng 45 %, không bóng) — Nhảy khi đang ngồi / không đứng trên đất; Chào, Thiền khi đang bay (`R-DIEU-6/7`).
+- Ẩn khi: mở bài học / thẻ bộ thủ, màn tải, bản đồ mở, đang hội thoại.
+- Không đè: nút học nổi + nút "Nói chuyện" bám vật trong cảnh (phía trên); joystick nửa trái; chip + nút góc nhìn ở trên.
+- Chuỗi: `actionJump`, `actionBow`, `actionSit`, `actionSitting`, `actionSitLabel` (nhãn trợ năng).
+- Ảnh: chưa có ảnh.
+
+## Hội thoại NPC (HUD) · artboard `HoiThoai-doc.dc.html`, `HoiThoai-doc-dai.dc.html`, `HoiThoai-ngang.dc.html` · từ mục 2026-11-13.9
+
+- **Nút "Nói chuyện"** (`R-NPC-2`): kiểu nút học nổi — viên thuốc `jade` cao 46, biểu tượng bóng thoại 20 + chữ 15/700,
+  mũi nhọn chỉ xuống NPC, dưới là bảng tên kính sương 24 "Tiểu Mặc 小墨"; bám trên đầu NPC. Đang nhấn: `jade-press`.
+- **Khung thoại**: tấm kính sương .94 đáy màn (dọc: trái / phải 12, dưới 12 + safe; ngang: trái / phải safe + 12, dưới
+  safe + 12), bo 16, đệm 26 × 18 × 16, bóng ngược lên. Chân dung tròn 64 (ảnh mặt NPC, viền trắng 3) chồng mép trên trái
+  (trái 4, trên −36); bảng tên `jade` cao 32 "Tiểu Mặc 小墨" 14/700 cạnh chân dung (trái 76, trên −16).
+- Lời: 16/500 `slate`, cao dòng 1,55, **chạy dần ≈ 40 chữ / giây**; chạm vào khung khi đang chạy → hiện hết; hết lời có
+  chấm `jade` 8 cuối câu. Lựa chọn hiện khi lời đã hiện hết.
+- Lựa chọn: xếp dọc, cách 8, cao ≥ 46, bo 12, chữ 15/700 trái; thường: nền trắng .7 viền `slate` 18 % + chấm vàng 6;
+  "Tạm biệt" luôn cuối: nền trong suốt, viền `slate` 30 %, dấu × 16.
+- Ngang: lời bên trái (giãn), cột lựa chọn 270 bên phải. Khung được phủ vùng joystick vì khi thoại joystick không có
+  tác dụng (`R-NPC-2`).
+- Đang thoại: ẩn joystick, cụm nút hành động, nút góc nhìn, nút "Nói chuyện"; giữ chip tên khu; cảnh tối 18 %.
+- Đã vẽ: câu chào (3 lựa chọn) · câu dài nhất "tu-chu" (2 lựa chọn) · ngang.
+- Chuỗi: `talk`; lời thoại giữ trong dữ liệu hội thoại (`web/src/zones/dialogs.ts`).
+- Ảnh: chưa có ảnh.

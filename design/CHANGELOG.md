@@ -3,6 +3,41 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-13.9 — Bản đồ truyền tống + thẻ học bộ thủ + nút hành động + hội thoại NPC
+
+- Loại: giao diện · token · chuỗi · dữ liệu (toạ độ bản đồ) · luồng/luật (đề xuất).
+- Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-13-hanh-trinh-hud.md` (bản đồ + bộ thủ), `2026-11-13-nut-hanh-dong.md`,
+  `2026-11-13-hoi-thoai-npc.md`.
+- Màn / thành phần: **Bản đồ truyền tống** (tấm giấy + lớp trạng thái + màn ghép dọc / ngang + nút đóng + thẻ HUD) ·
+  **Thẻ học bộ thủ** (Flutter native) · **Nút hành động** (nhảy, chào, ngồi thiền) · **Hội thoại NPC** (nút "Nói chuyện"
+  + khung thoại). Đặc tả: `docs/screen_specs.md` 4 mục mới; thành phần: `docs/components.md`.
+- Quyết định thiết kế:
+  - Bản đồ: ảnh nền 2048 × 1152 vẽ bằng code (`scene/ban-do/ve-ban-do.html`, sơn thuỷ phẳng hợp vinyl) + toạ độ
+    (`scene/ban-do/ban-do.json`); **code vẽ trạng thái** lên giấy; **chữ yêu cầu không vẽ trên giấy** (quá nhỏ ở dọc) →
+    thẻ HUD khi chạm. Bố cục "rắn", đúng hướng địa lý (Bồng Lai đông, Tơ lụa tây).
+  - Đóng bản đồ: nút "Đóng bản đồ" (viên thuốc kính) — dọc giữa dưới, ngang góc dưới phải. Bản đồ mở: đứng yên,
+    joystick + nút hành động ẩn.
+  - Thẻ bộ thủ: màn Flutter native, dùng khung màn bài học. Ví dụ "một dạng" là 石 — 竹 có dạng ⺮.
+  - Nút hành động: cụm góc dưới phải, Nhảy 68 nổi bật (ngọc lục), Chào / Thiền 52 kính; nhãn nhỏ dưới mỗi nút.
+  - Hội thoại: khung đáy màn, chân dung + bảng tên, lời chạy dần (chạm để hiện hết), "Tạm biệt" luôn cuối; lời giữ trong
+    dữ liệu hội thoại.
+- Token mới: `jade-press` #1F4035, `map-paper` #F2EADA, `scroll-wood` #3A2418; `size.action-main` 68, `action-sub` 52,
+  `dialog-option` 46.
+- Chuỗi mới (`l10n/vi.arb`): `map*`, `place*`, `radical*`, `action*`, `talk`.
+- **Đề xuất luật** (phiên code hỏi người dùng rồi ghi sổ):
+  - Bản đồ: bước vào vòng trận → bản đồ mở; trong lúc mở nhân vật đứng yên (joystick, phím, nút hành động không có tác
+    dụng); "Đóng bản đồ" / nút quay lại → đóng, đi lại được. Chạm nơi khoá / sắp mở → không truyền tống, hiện thẻ yêu
+    cầu ≈ 3 s. Ví dụ: 128 chữ, chạm Bồng Lai → thẻ "Bồng Lai — cần 300 chữ · Bạn đã học 128 chữ."; chạm Rừng trúc → màn tải.
+  - Thẻ bộ thủ: lần đầu bấm "Đã học · khắc vào bia" → bộ thủ thành đã học, bia viền vàng; mở lại → huy hiệu "Đã học".
+  - Nút hành động: ẩn khi bài học / thẻ bộ thủ / màn tải / bản đồ / hội thoại đang mở; vô hiệu (mờ) đúng như `R-DIEU-6/7`.
+- Luật hiện có bị chạm: `R-HANH-1` (mốc), `R-NPC-2` (đúng theo), `R-DIEU-1` (nút nửa phải; khung thoại phủ vùng joystick
+  khi thoại — joystick tắt), `R-DIEU-6/7`, `R-VUNG-3` (đứng yên), `R-MAN-1` (safe area).
+- File: `source/BanDo-*.dc.html`, `source/TheBoThu-*.dc.html`, `source/HUD-hanh-dong-*.dc.html`,
+  `source/NutHanhDong-trang-thai.dc.html`, `source/HoiThoai-*.dc.html`, `source/canvas.json` · `scene/ban-do/ban-do-goc.png`,
+  `ban-do.json`, `ve-ban-do.html` · `screens/BanDo-trang-thai.png` · `tokens/design_tokens.json` · `l10n/vi.arb` ·
+  `docs/screen_specs.md`, `docs/components.md`.
+- Ảnh: chỉ `BanDo-trang-thai.png`; các màn chưa có ảnh (dùng `source/*.dc.html`).
+
 ## 2026-11-13.8 — Camera: bố cục như game góc nhìn thứ ba
 
 - Loại: cảnh 3D — **ngoại hình** (camera) + code. Người dùng: "cảm giác vẫn chưa chuyên nghiệp như cách các game làm" →

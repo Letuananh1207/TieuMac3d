@@ -29,3 +29,15 @@ Một chất liệu: kính mờ `frost*` + viền `frost-line` / `frost-outline`
 | Vạch trang trí (đường 1 px + chấm vàng giữa) | thẻ tên khu, màn tải | rgba(36,50,58,.3), gold |
 | Màn tải (mới) | `ManTai-doc`, `ManTai-ngang` | mist, mist-far, mist-near, jade, slate, gold, loading-han 56, loading-title 24 |
 | fps (chỉ gỡ lỗi) | `HUD-thanh-phan` | frost .8, mono 11 |
+
+## Thêm ở 2026-11-13.9
+
+| Thành phần | Artboard | Token |
+|---|---|---|
+| Cuộn bản đồ (trục + giấy, vật 3D) + lớp trạng thái 5 loại | `BanDo-giay`, `BanDo-doc` | map-paper, scroll-wood, jade, gold, lacquer, slate |
+| Thẻ HUD "chưa đi được" (khoá / sắp mở) | `BanDo-doc`, `BanDo-ngang` | frost .92, lacquer 35 %, slate |
+| Nút "Đóng bản đồ" (viên thuốc kính + ×) | `BanDo-doc` | frost .92, slate |
+| Thẻ học bộ thủ (khung màn bài học) + dải "Từ hình đến chữ" | `TheBoThu-*` | mist, frost-strong, jade, lacquer, map-paper |
+| Nút hành động tròn 68 / 52 (chính / kính) + nhãn | `HUD-hanh-dong-*`, `NutHanhDong-trang-thai` | jade, jade-press, frost, gold, action-main, action-sub |
+| Nút "Nói chuyện" (kiểu nút học nổi + bảng tên) | `HUD-hanh-dong-*` | jade, frost |
+| Khung thoại (chân dung, bảng tên, lời chạy, lựa chọn) | `HoiThoai-*` | frost .94, jade, slate, gold, dialog-option |

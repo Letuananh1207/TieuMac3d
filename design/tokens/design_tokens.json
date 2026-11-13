@@ -145,6 +145,21 @@
       "value": "#BFCFCB",
       "note": "núi lớp trước trên màn tải; mây #F4F7F6",
       "code": "chưa có"
+    },
+    "jade-press": {
+      "value": "#1F4035",
+      "note": "nút ngọc lục đang nhấn (Nhảy) — 2026-11-13.9",
+      "code": "chưa có"
+    },
+    "map-paper": {
+      "value": "#F2EADA",
+      "note": "giấy bản đồ truyền tống; đĩa mờ nơi khoá rgba(242,234,218,.72); nền ô \"Từ hình đến chữ\" — 2026-11-13.9",
+      "code": "chưa có"
+    },
+    "scroll-wood": {
+      "value": "#3A2418",
+      "note": "trục cuộn bản đồ (đầu trục jade viền gold) — 2026-11-13.9",
+      "code": "chưa có"
     }
   },
   "font": {
@@ -340,5 +355,22 @@
       "value": 6
     },
     "$note": "backdrop-filter; máy yếu / WebView không hỗ trợ thì bỏ blur, giữ nguyên nền frost (đủ tương phản không cần blur)"
+  },
+  "size": {
+    "action-main": {
+      "value": 68,
+      "note": "nút Nhảy (tròn)",
+      "code": "chưa có"
+    },
+    "action-sub": {
+      "value": 52,
+      "note": "nút Chào, Ngồi thiền (tròn)",
+      "code": "chưa có"
+    },
+    "dialog-option": {
+      "value": 46,
+      "note": "chiều cao tối thiểu nút lựa chọn hội thoại",
+      "code": "chưa có"
+    }
   }
 }

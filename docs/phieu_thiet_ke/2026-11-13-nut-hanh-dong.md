@@ -1,5 +1,6 @@
 # Phiếu: Nút hành động trên HUD — nhảy, chào, ngồi thiền
 - Trạng thái: chờ thiết kế
+- Đã vẽ: 2026-11-13.9
 - Đợi bởi: kế hoạch `docs/tasks/2026-11-13-chay-nhay-hanh-dong.md` (nhiệm vụ 6 — nối nút vào logic đã có)
 
 ## Dán vào canvas

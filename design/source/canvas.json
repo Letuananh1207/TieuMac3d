@@ -212,6 +212,90 @@
       "w": 1200,
       "h": 760,
       "title": "Truyền Tống Đài 傳送台 · thay Diễn Võ Trường (đề xuất)"
+    },
+    "BanDo-giay.dc.html": {
+      "x": 0,
+      "y": 18540,
+      "w": 1440,
+      "h": 920,
+      "title": "Bản đồ truyền tống · tấm giấy 2048×1152 + lớp trạng thái"
+    },
+    "BanDo-doc.dc.html": {
+      "x": 1520,
+      "y": 18540,
+      "w": 390,
+      "h": 844,
+      "title": "Bản đồ mở · dọc · trên Truyền Tống Đài, vừa chạm Bồng Lai (khoá)"
+    },
+    "BanDo-ngang.dc.html": {
+      "x": 1990,
+      "y": 18540,
+      "w": 844,
+      "h": 390,
+      "title": "Bản đồ mở · ngang"
+    },
+    "TheBoThu-doc.dc.html": {
+      "x": 0,
+      "y": 19700,
+      "w": 390,
+      "h": 844,
+      "title": "Thẻ học bộ thủ · dọc · 氵/水 lần đầu (hai dạng)"
+    },
+    "TheBoThu-doc-on.dc.html": {
+      "x": 470,
+      "y": 19700,
+      "w": 390,
+      "h": 844,
+      "title": "Thẻ học bộ thủ · dọc · 石 đã học (một dạng, ôn lại)"
+    },
+    "TheBoThu-ngang.dc.html": {
+      "x": 940,
+      "y": 19700,
+      "w": 844,
+      "h": 390,
+      "title": "Thẻ học bộ thủ · ngang · 氵/水 lần đầu"
+    },
+    "HUD-hanh-dong-doc.dc.html": {
+      "x": 0,
+      "y": 20800,
+      "w": 390,
+      "h": 844,
+      "title": "HUD · dọc · cụm nút hành động (nhảy, chào, thiền) + nút Nói chuyện trên NPC"
+    },
+    "HUD-hanh-dong-ngang.dc.html": {
+      "x": 470,
+      "y": 20800,
+      "w": 844,
+      "h": 390,
+      "title": "HUD · ngang · cụm nút hành động + Nói chuyện"
+    },
+    "NutHanhDong-trang-thai.dc.html": {
+      "x": 1394,
+      "y": 20800,
+      "w": 1200,
+      "h": 600,
+      "title": "Nút hành động · mọi trạng thái (trên trời sáng)"
+    },
+    "HoiThoai-doc.dc.html": {
+      "x": 0,
+      "y": 21860,
+      "w": 390,
+      "h": 844,
+      "title": "Hội thoại · dọc · câu chào (3 lựa chọn)"
+    },
+    "HoiThoai-doc-dai.dc.html": {
+      "x": 470,
+      "y": 21860,
+      "w": 390,
+      "h": 844,
+      "title": "Hội thoại · dọc · câu dài nhất (2 lựa chọn)"
+    },
+    "HoiThoai-ngang.dc.html": {
+      "x": 940,
+      "y": 21860,
+      "w": 844,
+      "h": 390,
+      "title": "Hội thoại · ngang · câu chào"
     }
   },
   "order": [
@@ -243,7 +327,19 @@
     "CongSonMon-bo-anh.dc.html",
     "ChuongMonDien-bo-anh.dc.html",
     "HanhTrinh-so-do.dc.html",
-    "TruyenTongDai.dc.html"
+    "TruyenTongDai.dc.html",
+    "BanDo-giay.dc.html",
+    "BanDo-doc.dc.html",
+    "BanDo-ngang.dc.html",
+    "TheBoThu-doc.dc.html",
+    "TheBoThu-doc-on.dc.html",
+    "TheBoThu-ngang.dc.html",
+    "HUD-hanh-dong-doc.dc.html",
+    "HUD-hanh-dong-ngang.dc.html",
+    "NutHanhDong-trang-thai.dc.html",
+    "HoiThoai-doc.dc.html",
+    "HoiThoai-doc-dai.dc.html",
+    "HoiThoai-ngang.dc.html"
   ],
   "notes": {
     "cach-dung": {
@@ -402,6 +498,36 @@
       "size": "m",
       "fill": "teal",
       "text": "Đã chọn (2026-11-13):\n• Tông môn = nhà / trạm gốc; vùng = chuyến du học theo cấp.\n• Đi lại: trận truyền tống TRONG tông môn (không có màn bản đồ).\n• Mở khoá theo cấp HSK / số chữ.\n• Vùng đầu: Rừng trúc (bộ thủ).\n• Truyền Tống Đài thay Diễn Võ Trường.\n\nViệc tiếp:\n1. /khao-cuu Rừng trúc.\n2. Phiên code /lead: nhiều cảnh (mỗi vùng một đặc tả), lưu tiến độ, mở khoá, chuyển cảnh qua màn tải.\n3. Luật mới (mở khoá, về nhà) — duyệt ở sổ quy tắc.\n4. /canh: Truyền Tống Đài, rồi cảnh Rừng trúc."
+    },
+    "tieu-de-ban-do": {
+      "x": 0,
+      "y": 18300,
+      "text": "Truyền tống bằng cuộn bản đồ + thẻ học bộ thủ (phiếu 2026-11-13-hanh-trinh-hud)",
+      "kind": "title1",
+      "maxW": 2834
+    },
+    "ban-do-ghi-chu": {
+      "x": 2914,
+      "y": 18540,
+      "w": 460,
+      "size": "m",
+      "fill": "teal",
+      "text": "Đề xuất, chưa chốt.\n\nBản đồ: ảnh nền 2048×1152 (vẽ bằng code canvas, kiểu sơn thuỷ phẳng) + toạ độ từng nơi; code vẽ trạng thái lên (vòng mở, khoá, sắp mở, đang ở đây 此, vừa chạm khoá nhấp nháy). Chữ \"Cần N chữ\" KHÔNG vẽ trên giấy (quá nhỏ ở dọc) → thẻ HUD khi chạm.\n\nNút đóng: \"Đóng bản đồ\" — viên thuốc kính sương, dưới bản đồ, giữa (dọc) / góc dưới phải (ngang). Trong lúc bản đồ mở: nhân vật đứng yên, joystick ẩn, cảnh tối nhẹ 28 %.\n\nThẻ bộ thủ: màn Flutter native dùng khung màn bài học. Lần đầu: nút \"Đã học · khắc vào bia\" (bia viền vàng). Đã học: huy hiệu \"Đã học\", nút \"Về rừng trúc\". Ghi chú: 竹 cũng có hai dạng (⺮ khi đứng trên) — ví dụ một dạng dùng 石."
+    },
+    "tieu-de-hanh-dong": {
+      "x": 0,
+      "y": 20560,
+      "text": "Nút hành động + hội thoại NPC (phiếu 2026-11-13-nut-hanh-dong, -hoi-thoai-npc)",
+      "kind": "title1",
+      "maxW": 2594
+    },
+    "hanh-dong-ghi-chu": {
+      "x": 2674,
+      "y": 20800,
+      "w": 460,
+      "size": "m",
+      "fill": "teal",
+      "text": "Đề xuất, chưa chốt.\n\nCụm nút góc dưới phải (nửa phải màn — R-DIEU-1): Nhảy 68 ngọc lục (bấm nhiều nhất, sát mép phải); Chào 52 bên trái, Thiền 52 phía trên — kính sương. Nhãn nhỏ 11 dưới mỗi nút. Thiền đang bật: nền ngọc lục + viền vàng + nhãn \"Đang thiền\". Vô hiệu: mờ 45 %.\n\nNút \"Nói chuyện\": kiểu nút học nổi, bám trên đầu NPC, kèm tên Tiểu Mặc 小墨.\n\nKhung thoại: tấm kính sương đáy màn, chân dung tròn + bảng tên ngọc lục chồng mép trên; lời 16/500 chạy dần (chạm để hiện hết); lựa chọn xếp dọc cao ≥ 46, chấm vàng; \"Tạm biệt\" viền mảnh + ×. Đang thoại: ẩn joystick + cụm nút + nút góc nhìn, cảnh tối 18 %. Ngang: lời bên trái, lựa chọn cột phải 270 — được phủ vùng joystick vì joystick tắt khi thoại."
     }
   },
   "designSystems": []
