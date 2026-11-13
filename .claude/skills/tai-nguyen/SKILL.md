@@ -102,6 +102,13 @@ khớp ảnh nên màu chiếu từ chính bộ ảnh lên không lem; vật li�
 
 NPC (vd. Tiểu Mặc): cùng luồng, `<tên>` riêng (`tieu-mac`); app chưa nạp NPC `.glb` → kế hoạch `/lead` để đặt vào cảnh.
 
+**Công trình / đồ vật** (cổng, điện, lò đan — 2026-11-13, lần đầu: `cong-son-mon`):
+`bash .claude/skills/tai-nguyen/scripts/cong-trinh.sh <tên> <scratchpad>/<tên> --seed 1234,7` (nền, ~5 phút / seed).
+Khác nhân vật: làm mịn nhẹ (`--min 1`, cạnh mái / cột giữ sắc), 20 000 tam giác, `bake.py --cong-trinh` (bỏ dò cổ / tóc,
+khớp khung cả vật), `model:clean --loai cong-trinh`, ảnh so bằng `xem.py` (không Canvas 3D — xương tự gắn uốn công
+trình). `--bo-dung` = chỉ làm lại từ bước mịn. Soát thêm góc chếch ¾ (mặt trong cột, đế — chỗ ảnh thẳng không thấy).
+**Không** dùng `--tu-bang` cho công trình (mất vân ngói, đế loang đen). Hỏi người dùng chọn seed như nhân vật.
+
 ## Dự phòng: chỉ có một ảnh
 
 1. **API**: `node .claude/skills/tai-nguyen/scripts/hunyuan.mjs kiem`. Không chạy → hướng dẫn người dùng: PowerShell trong

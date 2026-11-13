@@ -20,6 +20,9 @@ def opt(name, default):
     return args[args.index('--' + name) + 1] if '--' + name in args else default
 
 src, folder, name, out = args[0], args[1], args[2], args[3]
+# --cong-trinh: công trình / đồ vật (cổng, điện, lò đan) — bỏ hết phần riêng của nhân vật (dò cổ, khớp riêng đầu, tóc /
+# chân tóc / tóc mai, nướng theo vùng tóc); chỉ khớp khung cả vật từng góc rồi trộn 4 ảnh theo hướng mặt + che khuất
+CT = '--cong-trinh' in args
 TS = int(opt('co', '1024'))
 MU = float(opt('mu', '4'))
 palette_arg = opt('bang-mau', '')
@@ -138,7 +141,7 @@ for k, (fu0, fv0) in _raw.items():
 # thái dương / chân tóc thành mảng da lấn tóc. Đầu (trên cổ) khớp khung đầu ↔ khung đầu, thân khớp cả người, chuyển mượt quanh cổ.
 HEAD = {}
 _nm = _ni = None
-for k, (fu0, fv0) in _raw.items():  # 'truoc' đầu tiên: đo cổ ở góc trước, các góc khác dùng chung (4 ảnh cùng chuẩn dọc)
+for k, (fu0, fv0) in ([] if CT else _raw.items()):  # 'truoc' đầu tiên: đo cổ ở góc trước, các góc khác dùng chung (4 ảnh cùng chuẩn dọc)
     mh = model_head(fu0(V), fv0(V), _nm)
     ih = img_head(masks[k], _ni)
     if k == 'truoc':
@@ -153,6 +156,8 @@ for k, (fu0, fv0) in _raw.items():  # 'truoc' đầu tiên: đo cổ ở góc tr
 
 def _blend(k, P):
     v0 = vmap(P)
+    if CT:  # công trình: không có đầu — cả vật khớp một khung
+        return v0, np.ones_like(v0)
     neck = HEAD[k][0][3]
     t = np.clip((v0 - (neck - 0.015)) / 0.03, 0, 1)  # 0 = đầu, 1 = thân
     return v0, t * t * (3 - 2 * t)
@@ -161,6 +166,8 @@ def _blend(k, P):
 def fit_u(k):
     fu0 = _raw[k][0]
     um, uM, _, _, a0, a1, _, _ = FIT[k]
+    if CT:
+        return lambda P: a0 + (fu0(P) - um) / (uM - um) * (a1 - a0)
     (hu0, hu1, _, _, hc), (ha0, ha1, _, _, ac) = HEAD[k]
     def f(P):
         u0 = fu0(P)
@@ -174,6 +181,8 @@ def fit_u(k):
 
 def fit_v(k):
     _, _, vm_, vM, _, _, b0, b1 = FIT[k]
+    if CT:
+        return lambda P: b0 + (vmap(P) - vm_) / (vM - vm_) * (b1 - b0)
     (_, _, hv0, hv1, _), (_, _, hb0, hb1, _) = HEAD[k]
     def f(P):
         v0, t = _blend(k, P)
@@ -183,25 +192,27 @@ def fit_v(k):
     return f
 VIEWS = {k: (d, fit_u(k), fd, fit_v(k)) for k, (d, fu, fd) in VIEWS.items()}
 XIEN = None if opt('xien', '0.3') == 'khong' else float(opt('xien', '0.3'))  # ngưỡng hướng mặt bỏ ảnh trước ở đầu
-neck_y = maxY - (HEAD['truoc'][0][3] - 0.1) / 0.8 * H  # độ cao cổ (model) từ góc trước
+neck_y = maxY + H if CT else maxY - (HEAD['truoc'][0][3] - 0.1) / 0.8 * H  # độ cao cổ (model) từ góc trước; công trình: không điểm nào "trên cổ"
 
 # chân tóc trán (ảnh trước, dải giữa mặt): hàng đầu tiên từ đỉnh đầu xuống có màu da. Trên đầu, điểm cao hơn hàng này
 # mà mang màu da (do ảnh trước / bên chiếu trượt ở mép đầu — tóc model mỏng hơn ảnh) → đổi thành màu tóc (2026-11-12.10)
 def is_skin(c):
     r, g, b = c[..., 0], c[..., 1], c[..., 2]
     return (0.299 * r + 0.587 * g + 0.114 * b > 110) & (r - b > 20) & (b > 0.55 * r)
-_ih = HEAD['truoc'][1]
-_fi = imgs['truoc']
-_cols = slice(int((_ih[4] - 0.02) * IW), int((_ih[4] + 0.02) * IW))
-hair_v = _ih[3]
-for r in range(int(_ih[2] * IH), int(_ih[3] * IH)):
-    if is_skin(_fi[r, _cols]).mean() > 0.6:
-        hair_v = r / IH + float(opt('chan-toc', '0'))
-        break
-_hp = _fi[int(_ih[2] * IH):int(hair_v * IH), int(_ih[0] * IW):int(_ih[1] * IW)].reshape(-1, 3)
-_hl = _hp @ np.array([0.299, 0.587, 0.114])
-HAIR = np.median(_hp[_hl < 70], 0) if (_hl < 70).any() else np.array([40, 40, 45.0])
-print(f'chan toc anh truoc v {hair_v:.3f}, mau toc', HAIR.astype(int))
+hair_v, HAIR = 0.0, np.array([40, 40, 45.0])
+if not CT:
+    _ih = HEAD['truoc'][1]
+    _fi = imgs['truoc']
+    _cols = slice(int((_ih[4] - 0.02) * IW), int((_ih[4] + 0.02) * IW))
+    hair_v = _ih[3]
+    for r in range(int(_ih[2] * IH), int(_ih[3] * IH)):
+        if is_skin(_fi[r, _cols]).mean() > 0.6:
+            hair_v = r / IH + float(opt('chan-toc', '0'))
+            break
+    _hp = _fi[int(_ih[2] * IH):int(hair_v * IH), int(_ih[0] * IW):int(_ih[1] * IW)].reshape(-1, 3)
+    _hl = _hp @ np.array([0.299, 0.587, 0.114])
+    HAIR = np.median(_hp[_hl < 70], 0) if (_hl < 70).any() else HAIR
+    print(f'chan toc anh truoc v {hair_v:.3f}, mau toc', HAIR.astype(int))
 
 
 def bo_toc_mai(k):
@@ -235,7 +246,7 @@ def bo_toc_mai(k):
     print(f'bo toc mai {k}: {int(kill.sum())} diem anh')
     return kill
 
-if '--giu-toc-mai' not in args:
+if '--giu-toc-mai' not in args and not CT:
     _kill = {k: bo_toc_mai(k) for k in ('trai', 'phai')}
     if '--xem-toc-mai' in args:
         for k in ('trai', 'phai'):
@@ -284,7 +295,7 @@ print('do sau 4 goc xong')
 # 2) mỗi đỉnh lưới bỏ phiếu tóc / không-tóc qua các ảnh thấy nó (trọng số hướng nhìn, kiểm che khuất); trên chân tóc trán
 #    nghiêng về tóc; 3) làm mượt phiếu trên bề mặt lưới (ranh mượt, không răng cưa);
 # 4) điểm tóc chỉ lấy màu từ ảnh thấy tóc ở đó, điểm da chỉ từ ảnh thấy da → hết vệt lai / vệt đen trên má.
-SEM = '--cu' not in args
+SEM = '--cu' not in args and not CT
 LUMA = np.array([0.299, 0.587, 0.114])
 if SEM:
     from scipy import ndimage as nd
@@ -434,7 +445,7 @@ for f in idx:
     sub[hit] = col[seen]
     cov[y0:y0 + inside.shape[0], x0:x0 + inside.shape[1]] |= hit
     fmask = np.zeros_like(inside)
-    fmask[inside] = (P[:, 1] > minY + 0.62 * H) & (Nn[:, 2] > 0.15)
+    fmask[inside] = (P[:, 1] > minY + 0.62 * H) & (Nn[:, 2] > 0.15) & (not CT)  # công trình: không có mặt để giữ
     face[y0:y0 + inside.shape[0], x0:x0 + inside.shape[1]] |= fmask
 print('nuong xong, phu', round(cov.mean() * 100), '% texture')
 

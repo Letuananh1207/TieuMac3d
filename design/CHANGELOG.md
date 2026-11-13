@@ -3,6 +3,19 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-13.16 — Model AI Cổng Sơn Môn 山門 (công trình 2/3, seed 7)
+
+- Loại: tài nguyên 3D (`/tai-nguyen`). Bộ ảnh 4 góc 2026-11-13.3 → Hunyuan3D-2mv đầy đủ (seed 1234, 7) → luồng công trình
+  mới `tai-nguyen/scripts/cong-trinh.sh` (làm mịn nhẹ `--min 1`, 20 000 tam giác; `bake.py --cong-trinh`: bỏ dò cổ / tóc,
+  khớp khung cả vật từng góc). Người dùng chọn **seed 7**.
+- File: `models/cong-son-mon.glb` (20 000 tam giác, 267 KB, 1 vật liệu không-sáng, texture 1024² JPEG) · ảnh
+  `screens/Model-cong-son-mon-so-thiet-ke.png` (trên ảnh thiết kế · dưới model, 4 góc), `screens/Model-cong-son-mon.png`
+  (3 góc chếch ¾).
+- Còn lại: vệt nhạt nhỏ ở mặt trong cột và vài đốm màu trên đế đá (chỗ không ảnh thẳng nào nhìn rõ); thử ép bảng màu
+  (`--tu-bang 12`) làm mất vân ngói → bỏ.
+- Cần code: **có** — app chưa nạp công trình `.glb` (trường `buildings[].model`, nạp + scale theo `son-mon` rộng 6, giữ va
+  chạm 4 trụ, bản khối dự phòng) → kế hoạch `/lead` (đợt D, `docs/tasks/2026-11-11-nang-cap-do-hoa.md`).
+
 ## 2026-11-13.13 — Văn Uyên Tông: tiện ích giao lưu thay lớp học (bản mẫu hướng A) + Truyền Tống Đài thu nhỏ
 
 - Loại: cảnh 3D — **bố cục** (đã vào `scene.json`) · bản mẫu kiến trúc (canvas) · luồng/luật (đề xuất). Phiên VS Code làm
