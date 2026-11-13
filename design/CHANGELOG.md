@@ -3,6 +3,19 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-13.34 — Co lòng chảo cỏ quanh tông môn
+
+- Loại: cảnh 3D — **ngoại hình / địa hình** (đã vào `scene.json`). Phiên VS Code (`/canh`), người dùng: "diện tích vùng xanh
+  đang quá lớn so với toàn bộ kiến trúc hãy co lại vừa đủ" (sau khi .32 thu gọn bố cục, lòng chảo vẫn rộng như cũ).
+- Đổi: chỉ `terrain.peaks` (x, z của các đỉnh; r, h giữ nguyên) — mỗi đỉnh kéo vào theo hướng của nó (tâm (−3; −12)) để
+  chân núi (chỗ đất nhô > 1,5 m) cách khu cần giữ ~10 m; không kéo nếu chân núi lấn vào khu tây, sân Ngoại Môn, Sơn Môn,
+  Thiên Bậc + Nội Môn, Hậu Sơn, suối. Cỏ thừa ngoài khu: đông bắc → đông nam 44–47 → 12–19 m · nam 20–24 → 12–15 m ·
+  tây nam 24–31 → 9–24 m; tây, bắc không đổi. Giữ đồi cỏ phía đông (suối Hậu Sơn, ra cổng đông) ~28 m.
+- Không đổi: bục, bậc đá, suối, thác, cụm tùng, mép vực (bán kính 112 — còn vài dải cỏ nhỏ giữa vòng núi và mép, chỉ thấy
+  từ trên cao).
+- Luật: không chạm (bố cục nhà / vùng / tường giữ nguyên). `scene:check`: không có lỗi. Draw call / tam giác: không đổi.
+- Canvas 3D: bản 32. Ảnh: `screens/Canh-tren.png`, `screens/Canh-ca-san.png` (ghi đè ảnh .32).
+
 ## 2026-11-13.33 — Bộ ảnh nhiều góc NPC thủ thư Điển Thư 典書
 
 - Loại: tài nguyên 3D — ảnh đầu vào (Hunyuan3D-2mv). Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-13-anh-thu-thu.md`.
