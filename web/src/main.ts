@@ -11,7 +11,7 @@ import { GroundPicker } from './input/tapToMove';
 import { createDiscipleCharacter } from './player/discipleCharacter';
 import { createPlayerCharacter } from './player/playerCharacter';
 import { PlayerController, type MoveInput } from './player/controller';
-import { npcInTalkRange, placeNpcs } from './player/npc';
+import { npcInTalkRange, placeNpcs, showNearNpcs } from './player/npc';
 import { HOME_SCENE, loadScene, REGION_SCENES } from './scene/loadSpec';
 import { createMapScroll } from './scene/banDo';
 import { arrivalSpot, CHARGE_SECONDS, ringTrigger } from './scene/teleportLayout';
@@ -50,6 +50,7 @@ import { fallbackStudy, studyMenu } from './zones/studyMenu';
 import { RADICALS, type Radical } from './zones/radicals';
 import { placeZones, ZONE_CONTENT, type Zone } from './zones/zones';
 import { musicVolume, TRACKS } from './zones/music';
+import { journeyLine } from './zones/tranSu';
 import { AmbientMusic } from './ui/ambientMusic';
 
 /** Nhãn tên cao hơn đỉnh búi tóc đệ tử (~2,2 m) một chút. */
@@ -378,6 +379,7 @@ async function boot(): Promise<void> {
     (i) => {
       const c = runner?.current?.choices[i];
       if (c?.action === 'daily') afterSay = openDaily; // đóng khung rồi mở bảng (R-NV-3)
+      if (c?.action === 'journey') afterSay = () => say('tran-su', journeyLine(progress && { chars: progress.chars, radicals: progress.radicals.length, need: progress.need }, JOURNEY_MAP.places), () => {}); // R-NPC-5
       if (LibraryDesk.handles(c)) afterSay = () => desk.act(c); // mượn / trả sách (R-SACH-1, R-SACH-4)
       return runner?.choose(i) ?? null;
     },
@@ -530,7 +532,7 @@ async function boot(): Promise<void> {
     player.update(dt, input, orbit.yaw, paused || loading.active || mapOpen || talking);
     const pos = player.position;
     orbit.follow(dt, pos.x - fromX, pos.z - fromZ); // camera tự xoay ra sau lưng khi đi (R-DIEU-3)
-    for (const npc of npcSet.npcs) npc.update(dt);
+    for (const npc of showNearNpcs(npcSet.npcs, pos.x, pos.z)) npc.update(dt); // xa từ 35 m → ẩn (R-NPC-1)
     gamePlay.update(dt);
     if (ring && !travelling && !loading.active && !mapOpen) {
       if (ring.update(pos, dt)) openMap();

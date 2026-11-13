@@ -1,10 +1,11 @@
-# NPC cho các công trình (tiểu nhị, quản sự, coi rạp, trận sư)
+# NPC cho các công trình (tiểu nhị, quản sự, trận sư)
 - Yêu cầu: "Lên kế hoạch npc tiểu nhị và npc cho các công trình khác như khu vui chơi" → chọn: **Tiểu nhị trà lâu**
   (gọi trà mang tới bàn), **Quản sự Kỳ Văn Uyển**, **Người coi rạp phim**, **Trận sư Truyền Tống Đài**
-- Loại: thêm (tài nguyên + dữ liệu + hành vi) · Cỡ: lớn · Trạng thái: chờ duyệt
+- Loại: thêm (tài nguyên + dữ liệu + hành vi) · Cỡ: lớn · Trạng thái: đợt 1 code xong — chờ thiết kế ảnh + tài nguyên (2026-11-13)
+- Duyệt 2026-11-13: **bỏ "Người coi rạp"** (rạp phim đã xoá, thiết kế .30) — còn 3 NPC; làm **đợt 1 trước**, đợt 2 sau.
 
 ## Ràng buộc chính
-- **Ngân sách**: mỗi NPC hiện tại 16k tam giác (Tiểu Mặc, Mặc Ông). Thêm 4 NPC + thủ thư (phiên khác) = 7 × 16k = 112k —
+- **Ngân sách**: mỗi NPC hiện tại 16k tam giác (Tiểu Mặc, Mặc Ông). Thêm 3 NPC + thủ thư (phiên khác) = 6 NPC —
   vượt xa trần 150k cùng cảnh. Cách giải: (a) model NPC mới **8k tam giác** (`smooth.py --tam-giac 8000`), (b) **ẩn NPC
   ở xa > 35 m** (mỗi khu cách nhau ≥ 40 m → cùng lúc thấy ≤ 2–3 NPC), (c) đo ngân sách **trong app** (Canvas 3D không nạp
   NPC). Ghi vào R-NPC-1.
@@ -16,14 +17,13 @@
 |---|---|---|---|
 | `tieu-nhi` | Tiểu nhị 小二 | sau quầy trà tầng 1 Phẩm Minh Các | chào khách, giới thiệu trà, "lên lầu ngồi, tiểu nhân mang trà lên" |
 | `quan-su` | Quản sự Kỳ Văn Uyển | cạnh lối vào sân chơi (−39; 1) | luật Ngũ Tử Kỳ, Đấu chữ (ôn bộ đã học), ghế đối diện để dành |
-| `coi-rap` | Người coi rạp | cạnh màn rạp Tụ Hiền Viên | phim đang chiếu, cách ngồi xem |
 | `tran-su` | Trận sư 陣師 | chân bậc tây Truyền Tống Đài (−8,2; 2) | các vùng hành trình, mở vùng theo số chữ đã học (đọc tiến độ) |
 
-- [ ] 1. Phiếu ảnh 4 góc cho 4 NPC (`/ui-apply phieu`, mẫu `2026-11-12-anh-su-phu.md`) → **chờ thiết kế**.
+- [x] 1. Phiếu ảnh 4 góc cho 3 NPC: `docs/phieu_thiet_ke/2026-11-13-anh-{tieu-nhi,quan-su,tran-su}.md` → **chờ thiết kế** (`/ui-design`).
 - [ ] 2. `/tai-nguyen` mỗi NPC → `design/models/<mã>.glb` 8k tam giác → **chờ tài nguyên** (máy người dùng).
-- [ ] 3. Sổ: R-NPC-1 thêm "ẩn khi cách người chơi > 35 m"; luật hội thoại từng NPC (R-NPC-3…6) → online → mark-synced.
-- [ ] 4. Code: `NPC_IDS` thêm 4 mã; ẩn theo khoảng cách (`player/npc.ts`); dữ liệu thoại 4 NPC; test.
-- [ ] 5. `/canh`: đặt 4 NPC trong `scene.json`; đo ngân sách trong app (build + thiết bị).
+- [x] 3. Sổ: R-NPC-1 thêm "ẩn khi cách nhân vật từ 35 m"; R-NPC-3 tiểu nhị, R-NPC-4 quản sự, R-NPC-5 trận sư (đọc tiến độ — khác Mặc Ông) → online → mark-synced.
+- [x] 4. Code: `NPC_IDS` thêm 3 mã; `showNearNpcs` (`player/npc.ts`) ẩn từ 35 m; thoại 3 NPC (`zones/dialogs.ts`); trận sư đọc tiến độ `zones/tranSu.ts` (`action: 'journey'`); test `dialogs.test.ts`, `tranSu.test.ts`, `player/npcVisibility.test.ts`.
+- [ ] 5. `/canh`: đặt 3 NPC trong `scene.json`; đo ngân sách trong app (build + thiết bị).
 (Bước 3–4 làm được trước khi có model — thiếu model thì NPC bị bỏ qua như R-NPC-1.)
 
 ## Đợt 2 — Tiểu nhị mang trà tới bàn (luật mới, lớn)

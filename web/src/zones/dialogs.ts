@@ -8,8 +8,9 @@ export interface DialogChoice {
   text: string;
   next: string | null;
   /** đóng khung thoại rồi làm việc này: `daily` = mở bảng nhiệm vụ hằng ngày (R-NV-3); `borrow` = mượn cuốn `book`, hoặc
-   *  mở danh mục khi không có `book` (R-SACH-1); `return` = trả sách đang mượn (R-SACH-4) */
-  action?: 'daily' | 'borrow' | 'return';
+   *  mở danh mục khi không có `book` (R-SACH-1); `return` = trả sách đang mượn (R-SACH-4); `journey` = trận sư đọc tiến
+   *  độ hành trình (R-NPC-5) */
+  action?: 'daily' | 'borrow' | 'return' | 'journey';
   /** mã sách cho `action: 'borrow'` */
   book?: string;
 }
@@ -113,6 +114,95 @@ export const DIALOGS: Dialog[] = [
         id: 'lau',
         text: 'Lâu lắm rồi, tóc lão phu bạc cùng mấy chồng sách trong Tàng Thư Các. Tiểu Mặc ngoài sân kia cũng là học trò lão phu đấy.',
         choices: [OTHER, BYE],
+      },
+    ],
+  },
+  // Tiểu nhị trà lâu (R-NPC-3): lanh lợi, xưng "tiểu nhân", gọi "khách quan" (không phân nam nữ).
+  {
+    npc: 'tieu-nhi',
+    name: 'Tiểu nhị',
+    han: '小二',
+    start: 'chao',
+    lines: [
+      {
+        id: 'chao',
+        text: 'Khách quan mời vào! Phẩm Minh Các có trà ngon, có đàn hay — khách quan muốn ngồi dưới này hay lên lầu ạ?',
+        choices: [
+          { text: 'Quán có trà gì?', next: 'tra' },
+          { text: 'Lên lầu ngồi thế nào?', next: 'lau' },
+          BYE,
+        ],
+      },
+      {
+        id: 'tra',
+        text: 'Long Tỉnh Tây Hồ thơm cốm non, Bích La Xuân xoăn như ốc, Thiết Quan Âm đậm vị, còn Phổ Nhĩ để lâu năm thì càng uống càng êm. Khách quan cứ chọn chỗ ngồi, trà sẽ có ngay!',
+        choices: [{ text: 'Tiếng nhạc ở đâu ra vậy?', next: 'nhac' }, { text: 'Hỏi chuyện khác', next: 'chao' }, BYE],
+      },
+      {
+        id: 'nhac',
+        text: 'Đàn cổ cầm của quán phát suốt ngày đó ạ! Vào quán là nghe, ra xa thì nhỏ dần. Ai đến lúc nào cũng nghe cùng một khúc — như cả tông đang ngồi chung một bàn.',
+        choices: [{ text: 'Lên lầu ngồi thế nào?', next: 'lau' }, { text: 'Hỏi chuyện khác', next: 'chao' }, BYE],
+      },
+      {
+        id: 'lau',
+        text: 'Thang ở ngoài hồi bên phải, khách quan đi thẳng lên là tới. Trên lầu có sập trà ngồi đôi, ghế sát lan can ngắm núi, bàn dài cho cả hội. Dưới này thì ngồi đôn quanh bàn trà — đến gần chỗ nào ưng thì bấm Ngồi.',
+        choices: [{ text: 'Quán có trà gì?', next: 'tra' }, { text: 'Hỏi chuyện khác', next: 'chao' }, BYE],
+      },
+    ],
+  },
+  // Quản sự Kỳ Văn Uyển (R-NPC-4): chừng mực, xưng "tại hạ", gọi "đạo hữu".
+  {
+    npc: 'quan-su',
+    name: 'Quản sự',
+    han: '管事',
+    start: 'chao',
+    lines: [
+      {
+        id: 'chao',
+        text: 'Đạo hữu đến chơi à? Tại hạ trông coi Kỳ Văn Uyển. Trong sân có hai bàn đá dài: một bàn Ngũ Tử Kỳ, một bàn Đấu chữ — mỗi bàn ba chỗ, ai đến trước ngồi trước.',
+        choices: [
+          { text: 'Ngũ Tử Kỳ chơi thế nào?', next: 'co' },
+          { text: 'Đấu chữ là gì?', next: 'dau' },
+          BYE,
+        ],
+      },
+      {
+        id: 'co',
+        text: 'Đạo hữu cầm quân đen, đi trước; Tiểu Mặc cầm quân trắng. Mỗi lượt đặt một quân vào giao điểm trống. Bên nào có 5 quân liền nhau theo hàng ngang, dọc hay chéo trước thì thắng.',
+        choices: [{ text: 'Vào bàn thế nào?', next: 'vao' }, { text: 'Hỏi chuyện khác', next: 'chao' }, BYE],
+      },
+      {
+        id: 'dau',
+        text: 'Mặc Ông ra 10 câu, mỗi câu một bộ thủ đạo hữu đã học cùng bốn nghĩa — chọn nghĩa đúng. Chỉ là ôn cho nhớ, không ghi gì vào tiến độ, thua cũng chẳng mất gì.',
+        choices: [{ text: 'Vào bàn thế nào?', next: 'vao' }, { text: 'Hỏi chuyện khác', next: 'chao' }, BYE],
+      },
+      {
+        id: 'vao',
+        text: 'Đến gần một ghế bên bàn, nút "Vào bàn" hiện lên thì bấm. Muốn xem kỹ luật, đọc biển "Cách chơi" ở đầu mỗi bàn.',
+        choices: [{ text: 'Hỏi chuyện khác', next: 'chao' }, BYE],
+      },
+    ],
+  },
+  // Trận sư Truyền Tống Đài (R-NPC-5): trầm tĩnh, xưng "bần đạo", gọi "đạo hữu"; đọc tiến độ thật (`tranSu.ts`).
+  {
+    npc: 'tran-su',
+    name: 'Trận sư',
+    han: '陣師',
+    start: 'chao',
+    lines: [
+      {
+        id: 'chao',
+        text: 'Bần đạo giữ trận đồ của Truyền Tống Đài. Mỗi vùng là một nút trên trận đồ — chữ đạo hữu học được càng nhiều, nút sáng càng nhiều.',
+        choices: [
+          { text: 'Ta còn thiếu bao nhiêu?', next: null, action: 'journey' },
+          { text: 'Trận đồ là gì?', next: 'tran' },
+          BYE,
+        ],
+      },
+      {
+        id: 'tran',
+        text: 'Bước vào vòng trận giữa đài, đứng yên chốc lát cho trận sáng lên, bản đồ truyền tống sẽ mở. Vùng nào đã sáng thì chạm là đi; vùng còn tối thì phải học thêm chữ.',
+        choices: [{ text: 'Ta còn thiếu bao nhiêu?', next: null, action: 'journey' }, { text: 'Hỏi chuyện khác', next: 'chao' }, BYE],
       },
     ],
   },
