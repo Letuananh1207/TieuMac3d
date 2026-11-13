@@ -3,6 +3,21 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-13.33 — Bộ ảnh nhiều góc NPC thủ thư Điển Thư 典書
+
+- Loại: tài nguyên 3D — ảnh đầu vào (Hunyuan3D-2mv). Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-13-anh-thu-thu.md`.
+- Hồ sơ: `docs/tham_khao/thu-thu.md` (hướng A — nữ văn sĩ trẻ thời Tống, bối tử thanh lục #B9D0C2 viền #2B5446, áo trong ngà
+  vạt trái đè phải, váy lục xám, búi cao + trâm vàng, ngọc bội + thẻ gỗ 典 bên đai). Cao ngang nhân vật chính.
+- Ảnh: `models/anh/thu-thu-{truoc,trai,sau,phai,mat}.png` — Google Gemini (người dùng chạy). Câu lệnh: ảnh trước đính kèm
+  `anh/nhan-vat-truoc.png` ("NEW character in exactly the same 3D vinyl toy style… beizi… A-pose… orthographic… plain #DDDDDD");
+  ảnh trái / sau / phải / cận mặt mỗi ảnh một cuộc trò chuyện mới, đính kèm ảnh trước, tả đúng phần thấy được ở góc đó.
+- Chuẩn hoá (Pillow): tách nền chặt, nền #DDDDDD, xoá sao Gemini, 4 góc chung một hệ số thu, đỉnh búi 10 %, đế giày 90 %, trục
+  thân giữa ảnh; PNG 1024 × 1024. Ảnh duyệt: `screens/ThuThu-bo-anh.png`; canvas `source/ThuThu-bo-anh.dc.html`.
+- **Lưu ý cho `/tai-nguyen`**: ngọc bội + thẻ 典 ở ảnh trước treo hông **trái** nhân vật (bên phải ảnh), ảnh phải lại thấy ở hông
+  **phải** — lệch nhẹ; người dùng chọn giữ nguyên. Lúc nướng màu kiểm vùng hông hai bên (có thể hiện vệt ngọc mờ).
+- Bước kế: `bash .claude/skills/tai-nguyen/scripts/nhan-vat.sh thu-thu <ra>` → `models/thu-thu.glb` (phiên `/tai-nguyen`).
+- File: `models/anh/thu-thu-*.png` (5), `models/LICENSES.md`, `screens/ThuThu-bo-anh.png`, `source/ThuThu-bo-anh.dc.html`, `source/canvas.json`.
+
 ## 2026-11-13.32 — Thu gọn bố cục tông môn + bỏ cổng Sơn Môn
 
 - Loại: cảnh 3D — **bố cục** (đã vào `scene.json`). Phiên VS Code làm thay theo yêu cầu người dùng ("phân bổ diện tích

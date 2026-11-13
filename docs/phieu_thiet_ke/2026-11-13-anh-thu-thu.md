@@ -1,6 +1,7 @@
 # Phiếu: Bộ ảnh nhiều góc NPC thủ thư Điển Thư 典書 (đầu vào dựng model 3D bằng Hunyuan3D)
 
 - Trạng thái: chờ thiết kế
+- Đã vẽ: 2026-11-13.33
 - Hồ sơ khảo cứu: `docs/tham_khao/thu-thu.md` (hướng A "nữ văn sĩ trẻ, bối tử thanh lục" — Claude chọn theo luồng một bước)
 - Đợi bởi: skill `/tai-nguyen nhan-vat thu-thu` (dựng `design/models/thu-thu.glb`); kế hoạch
   `docs/tasks/2026-11-13-tang-thu-cac-muon-sach.md` nhiệm vụ 10 (thủ thư cho mượn sổ từ HSK ở tầng 1 Tàng Thư Các)
