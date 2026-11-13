@@ -123,8 +123,8 @@
   "radicalEvolution": "Từ hình đến chữ",
   "radicalStrokes": "Nét",
   "radicalExamples": "Chữ có bộ này",
-  "radicalLearn": "Đã học · khắc vào bia",
-  "radicalBack": "Về rừng trúc",
+  "radicalLearn": "Đã lĩnh hội",
+  "radicalBack": "Xuất định",
   "radicalLearned": "Đã học",
   "actionJump": "Nhảy",
   "actionBow": "Chào",
@@ -134,5 +134,41 @@
   "talk": "Nói chuyện",
   "@talk": {
     "description": "Nút nổi trên đầu NPC (R-NPC-2). Lời thoại giữ trong dữ liệu hội thoại (web/src/zones/dialogs.ts), không ở đây."
+  },
+  "@radicalBack": {
+    "description": "Thẻ bộ thủ đã học: đóng thẻ; đang ngồi thì đứng dậy luôn (đề xuất 2026-11-13.19)."
+  },
+  "actionCultivate": "Tu luyện",
+  "actionCultivating": "Đang tu luyện",
+  "actionCultivateLabel": "Tu luyện, còn {n} bộ thủ chưa học",
+  "@actionCultivateLabel": {
+    "description": "Nhãn trợ năng nút ngồi ở vùng có bài học",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "radicalLeft": "{n}",
+  "@radicalLeft": {
+    "description": "Chấm son trên nút Tu luyện; ≥ 100 → \"99+\"",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "spiritTap": "Lĩnh hội {radical}",
+  "@spiritTap": {
+    "description": "Nút nổi cạnh đốm linh tự (đợt 2)",
+    "placeholders": {
+      "radical": {
+        "type": "String"
+      }
+    }
+  },
+  "hintFirst": "Kéo nửa trái để đi · kéo nửa phải để xoay · chụm 2 ngón để zoom",
+  "@hintFirst": {
+    "description": "Dòng gợi ý lần đầu (R-DIEU-2: bỏ \"chạm mặt đất để đi tới đó\")"
   }
 }

@@ -3,6 +3,33 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-13.19 — Tu luyện: nhập định, nút "Tu luyện", chữ thẻ bộ thủ · dòng gợi ý HUD
+
+- Loại: giao diện · token · chuỗi · luồng/luật (đề xuất).
+- Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-13-tu-luyen.md`, `docs/phieu_thiet_ke/2026-11-13-chu-goi-y-hud.md`.
+- Màn / thành phần: **Tu luyện** (mục mới `screen_specs.md`): nhập định 1 s (vòng sáng dưới đệm + chữ bộ sắp học hiện
+  trên đầu), nút ngồi "Tu luyện" + chấm đếm ở vùng có bài học, chốt hướng "người khác thấy" và đốm linh tự (đợt 2),
+  gợi ý linh địa cho `/canh`. **Thẻ học bộ thủ**: "Đã lĩnh hội" / "Xuất định"; sửa ô chữ khải của 石 (trước vẽ nhầm 水).
+  **HUD**: dòng gợi ý bỏ "chạm mặt đất để đi tới đó"; canvas bỏ chip tên khu + nút "Góc nhìn" ở `HUD-doc/-ngang`,
+  `HUD-hanh-dong-*` cho khớp `R-HUD-1` (code đã bỏ).
+- Người dùng chọn: nhãn "Tu luyện" + chấm "còn N bộ" ở vùng học (tông môn giữ "Thiền"); thẻ "Đã lĩnh hội" / "Xuất định".
+  Người dùng nhờ quyết hộ "Xuất định" làm gì → **đóng thẻ và đứng dậy** (đúng nghĩa "ra khỏi định").
+- Token mới: `size.count-badge` 22, `color.aura-light` rgba(255,236,190,.75).
+- Chuỗi (`l10n/vi.arb`): đổi `radicalLearn` "Đã lĩnh hội", `radicalBack` "Xuất định"; mới `actionCultivate`,
+  `actionCultivating`, `actionCultivateLabel`, `radicalLeft`, `spiritTap`, `hintFirst`. (`camNear`, `camYard` không còn
+  dùng — R-HUD-1.)
+- **Đề xuất luật** (phiên code hỏi người dùng rồi ghi sổ):
+  - `R-DIEU-7` thêm: ở vùng có bài học còn bộ chưa học, nút ngồi ghi "Tu luyện" (chấm đếm số bộ còn lại), đang ngồi ghi
+    "Đang tu luyện"; tông môn / học đủ giữ "Thiền" / "Đang thiền". Ví dụ: Rừng trúc đã học 3 bộ → nút "Tu luyện" chấm "47".
+  - `R-HANH-3` thêm: thẻ bộ thủ đã học có nút "Xuất định" — bấm thì đóng thẻ và nhân vật đang ngồi đứng dậy; "Đã lĩnh
+    hội" (lần đầu) vẫn như cũ — đóng thẻ, vẫn ngồi. Ngồi đủ 1 s mới có vòng sáng + chữ → thẻ; đứng dậy sớm thì tắt.
+  - Đốm linh tự (đợt 2): mở bằng nút nổi khi đứng gần, không bằng chạm vào cảnh (giữ `R-VUNG-2`).
+- Luật bị chạm: `R-HANH-3`, `R-DIEU-7`, `R-DIEU-2` (chữ gợi ý), `R-HUD-1`, `R-VUNG-1/2/3`, `R-MAN-1`.
+- File: `source/TuLuyen-*.dc.html` (6), `source/HUD-doc`, `HUD-ngang`, `HUD-hanh-dong-doc`, `HUD-hanh-dong-ngang`,
+  `TheBoThu-doc`, `TheBoThu-doc-on`, `TheBoThu-ngang` `.dc.html`, `source/canvas.json` · `tokens/design_tokens.json` ·
+  `l10n/vi.arb` · `docs/screen_specs.md`, `docs/components.md`.
+- Ảnh: chưa có ảnh (dùng `source/*.dc.html`).
+
 ## 2026-11-13.16 — Model AI Cổng Sơn Môn 山門 (công trình 2/3, seed 7)
 
 - Loại: tài nguyên 3D (`/tai-nguyen`). Bộ ảnh 4 góc 2026-11-13.3 → Hunyuan3D-2mv đầy đủ (seed 1234, 7) → luồng công trình

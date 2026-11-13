@@ -170,8 +170,8 @@ Mẫu một mục:
   này": 2–3 chữ, chữ Hán 20 + pinyin + nghĩa).
 - Ngang: cột trái 168 (bộ thủ 104 + dạng đủ 40, pinyin 20, tên 16) · vạch dọc · cột phải (dải hình 62 × 62, bảng 14) ·
   cột nút 150 bên phải (eyebrow trên, nút đáy).
-- Trạng thái: **lần đầu** — nút "Đã học · khắc vào bia" (dấu ✓) → bia viền vàng; **đã học** — huy hiệu "Đã học" góc trên
-  phải thẻ (viền `jade`, chấm vàng), nút "Về rừng trúc" (mũi tên trái); **hai dạng** (氵/水); **một dạng** (石 — lưu ý 竹
+- Trạng thái: **lần đầu** — nút "Đã lĩnh hội" (dấu ✓; từ 2026-11-13.19); **đã học** — huy hiệu "Đã học" góc trên
+  phải thẻ (viền `jade`, chấm vàng), nút "Xuất định" (mũi tên trái); **hai dạng** (氵/水); **một dạng** (石 — lưu ý 竹
   có dạng ⺮ khi đứng trên).
 - Hình "từ hình đến chữ": SVG nét (dữ liệu bộ thủ), không ảnh bitmap.
 - Chuỗi: `radicalEyebrow`, `radicalFullForm`, `radicalEvolution`, `radicalStrokes`, `radicalExamples`, `radicalLearn`,
@@ -188,7 +188,7 @@ Mẫu một mục:
   `jade`, viền `gold` 2 + quầng vàng 4, nhãn "Đang thiền" `jade`) · Chào đang diễn 1,6 s (như bật) · vô hiệu (kính .6,
   biểu tượng 45 %, không bóng) — Nhảy khi đang ngồi / không đứng trên đất; Chào, Thiền khi đang bay (`R-DIEU-6/7`).
 - Ẩn khi: mở bài học / thẻ bộ thủ, màn tải, bản đồ mở, đang hội thoại.
-- Không đè: nút học nổi + nút "Nói chuyện" bám vật trong cảnh (phía trên); joystick nửa trái; chip + nút góc nhìn ở trên.
+- Không đè: nút học nổi + nút "Nói chuyện" bám vật trong cảnh (phía trên); joystick nửa trái; góc trên trống (R-HUD-1).
 - Chuỗi: `actionJump`, `actionBow`, `actionSit`, `actionSitting`, `actionSitLabel` (nhãn trợ năng).
 - Ảnh: chưa có ảnh.
 
@@ -205,7 +205,39 @@ Mẫu một mục:
   "Tạm biệt" luôn cuối: nền trong suốt, viền `slate` 30 %, dấu × 16.
 - Ngang: lời bên trái (giãn), cột lựa chọn 270 bên phải. Khung được phủ vùng joystick vì khi thoại joystick không có
   tác dụng (`R-NPC-2`).
-- Đang thoại: ẩn joystick, cụm nút hành động, nút góc nhìn, nút "Nói chuyện"; giữ chip tên khu; cảnh tối 18 %.
+- Đang thoại: ẩn joystick, cụm nút hành động, nút "Nói chuyện"; cảnh tối 18 % (chip tên khu, nút góc nhìn đã bỏ — R-HUD-1).
 - Đã vẽ: câu chào (3 lựa chọn) · câu dài nhất "tu-chu" (2 lựa chọn) · ngang.
 - Chuỗi: `talk`; lời thoại giữ trong dữ liệu hội thoại (`web/src/zones/dialogs.ts`).
 - Ảnh: chưa có ảnh.
+
+## Tu luyện (hiệu ứng cảnh + nút ngồi) · artboard `TuLuyen-nhap-dinh-doc.dc.html`, `TuLuyen-nhap-dinh-ngang.dc.html`, `TuLuyen-trinh-tu.dc.html`, `TuLuyen-nut-trang-thai.dc.html`, `TuLuyen-nguoi-khac-thay.dc.html`, `TuLuyen-dom-linh-tu-doc.dc.html` · từ mục 2026-11-13.19
+
+- Mục đích: học bộ thủ bằng ngồi thiền ở vùng có bài học (`R-HANH-3`). Cảnh là của chung, việc học của riêng: nhập
+  định + thẻ chỉ máy mình thấy; người khác chỉ thấy kết quả trên nhân vật.
+- **Nút ngồi** (cụm nút hành động, cùng chỗ / cỡ 52): tông môn và vùng đã học đủ → "Thiền" như cũ. Vùng có bài học còn
+  bộ chưa học → nhãn **"Tu luyện"** + chấm son đếm `count-badge` 22 ở góc trên phải nút (số bộ còn lại; ≥ 100 → "99+");
+  trợ năng "Tu luyện, còn N bộ thủ chưa học". Đang ngồi → như "Đang thiền" (`R-DIEU-7`: nền `jade`, viền `gold` + quầng)
+  nhãn **"Đang tu luyện"**, ẩn chấm đếm. Đang bay: mờ.
+- **Nhập định** (1 s từ lúc ngồi tới lúc thẻ mở; vật 3D / lớp cảnh, không phải HUD):
+  - 0 → 0,3 s: **vòng sáng** nở dưới đệm ngồi — elip phẳng trên mặt đất ≈ 1,6 m × 0,45 m (rộng ≈ 1,3 × vai nhân vật),
+    lõi `aura-light` mờ dần ra ngoài, viền `gold` .85 nét mảnh + vòng trong trắng .8. Sau đó "thở" nhẹ (co giãn 4 %, 2 s).
+  - 0,3 → 1 s: **chữ của bộ sắp học** hiện dần trên đầu (≈ 0,5 m trên đỉnh đầu, cao ≈ 0,5 m), màu `jade`, quầng trắng →
+    vàng; mờ 0 → 0,7.
+  - 1 s: chữ lớn lên 1,15 lần, sáng hẳn rồi tan (0,15 s) → thẻ học bộ thủ mở. Không có thanh tiến trình.
+  - Đứng dậy trước 1 s: vòng sáng + chữ tắt dần 0,2 s, không mở thẻ.
+  - Vùng không có bài (tông môn) hoặc đã học đủ: không có vòng sáng / chữ.
+- HUD khi đang tu: joystick vẫn hiện (kéo = đứng dậy, chữ "kéo để đứng dậy"), Nhảy mờ, Chào thường.
+- **Thẻ học bộ thủ**: nút "Đã lĩnh hội" (lần đầu) — đóng thẻ, **vẫn ngồi** (`R-HANH-3`); "Xuất định" (bộ đã học) —
+  đóng thẻ và **đứng dậy** nếu đang ngồi (đề xuất luật, xem CHANGELOG 2026-11-13.19).
+- **Người khác thấy** (chốt hướng, code làm sau — `TuLuyen-nguoi-khac-thay`): đang tu → 2–3 chữ đã học bay vòng ngang
+  ngực (bán kính ≈ 1,1 m, 1 vòng / 8 s, mờ 75 %, viền trắng mảnh), chữ của người khác mờ 60 %; học xong một bộ → chữ mới
+  từ trên đầu thu vào ngực 0,6 s, hào quang sau lưng sáng một nhịp; hào quang theo số bộ đã học (mờ 8 % / 16 % / 28 %
+  ở 10 / 25 / 50 bộ, `gold`, không tia); xa > 12 m chỉ còn vòng sáng; mỗi người tối đa 3 chữ.
+- **Đốm linh tự** (đợt 2, chốt hướng — `TuLuyen-dom-linh-tu-doc`): đốm sáng ≈ 0,25 m (`aura-light`) ở vật hợp nghĩa,
+  chữ bộ thủ mờ 55 % phía trên; đứng trong ≈ 2 m → nút nổi "Lĩnh hội 木" (kiểu nút "Nói chuyện"). Không mở bằng chạm vào
+  cảnh (`R-VUNG-2`). Chỉ người đó thấy.
+- **Linh địa** gợi ý cho `/canh` (3–5 chỗ ở Rừng trúc): đình trúc, bờ suối (氵), chân thác, gốc trúc già (竹 / 木), mỏm đá
+  ngắm núi (山 / 石).
+- Chuỗi: `actionCultivate`, `actionCultivating`, `actionCultivateLabel`, `radicalLeft`, `radicalLearn`, `radicalBack`,
+  `spiritTap`.
+- Ảnh: nền giữ chỗ `screens/Canh-rung-truc-tu-luyen.png` (nhân vật trong ảnh đang đứng); màn ghép chưa có ảnh.

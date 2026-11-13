@@ -310,6 +310,42 @@
       "w": 1440,
       "h": 1080,
       "title": "Tiện ích giao lưu · mặt bằng hướng A (quảng trường làm tim, phố chợ trên lối Sơn Môn)"
+    },
+    "TuLuyen-nhap-dinh-doc.dc.html": {
+      "x": 0,
+      "y": 24960,
+      "w": 390,
+      "h": 844
+    },
+    "TuLuyen-nhap-dinh-ngang.dc.html": {
+      "x": 470,
+      "y": 24960,
+      "w": 844,
+      "h": 390
+    },
+    "TuLuyen-trinh-tu.dc.html": {
+      "x": 1394,
+      "y": 24960,
+      "w": 1300,
+      "h": 500
+    },
+    "TuLuyen-nut-trang-thai.dc.html": {
+      "x": 0,
+      "y": 25924,
+      "w": 1240,
+      "h": 480
+    },
+    "TuLuyen-nguoi-khac-thay.dc.html": {
+      "x": 1320,
+      "y": 25924,
+      "w": 1440,
+      "h": 520
+    },
+    "TuLuyen-dom-linh-tu-doc.dc.html": {
+      "x": 2840,
+      "y": 25924,
+      "w": 390,
+      "h": 844
     }
   },
   "order": [
@@ -355,7 +391,13 @@
     "HoiThoai-doc-dai.dc.html",
     "HoiThoai-ngang.dc.html",
     "TienIch-kien-truc.dc.html",
-    "TienIch-mat-bang.dc.html"
+    "TienIch-mat-bang.dc.html",
+    "TuLuyen-nhap-dinh-doc.dc.html",
+    "TuLuyen-nhap-dinh-ngang.dc.html",
+    "TuLuyen-trinh-tu.dc.html",
+    "TuLuyen-nut-trang-thai.dc.html",
+    "TuLuyen-nguoi-khac-thay.dc.html",
+    "TuLuyen-dom-linh-tu-doc.dc.html"
   ],
   "notes": {
     "cach-dung": {
@@ -559,6 +601,21 @@
       "size": "m",
       "fill": "teal",
       "text": "Đề xuất, chưa chốt. Duyệt hình dáng trước khi code.\n\nHồ sơ: docs/tham_khao/tien-ich-giao-luu.md.\n\nVì sao nhà cũ xấu, hẹp: cả 4 kiểu nhà đang là khối kín một cửa. Hí đài, sạp mượn nhà nhỏ đệ tử nên không thấy công năng.\n\nMới: mặt tiền MỞ (thấy bàn trà, hàng hoá, sân khấu), 2 tầng có lan can, hí đài nền cao 1,5 m, tàng thư dài thấp ngói đen viền lục + ao trước.\n\nNgười 1,6 m đứng cạnh để so độ rộng.\n\nSau khi duyệt: phiên code thêm kiểu nhà (hi-dai, tra-lau, lau-sach, cua-hang) + đồ (sạp ô, bàn trà, cờ) + gộp biển tên vào một ảnh chung (giữ ≤ 150 draw call)."
+    },
+    "tieu-de-tu-luyen": {
+      "x": 0,
+      "y": 24700,
+      "text": "Tu luyện — học bộ thủ bằng ngồi thiền",
+      "kind": "title1",
+      "maxW": 3230
+    },
+    "tu-luyen-ghi-chu": {
+      "x": 2774,
+      "y": 24960,
+      "w": 420,
+      "fill": "teal",
+      "size": "s",
+      "text": "Phiếu 2026-11-13-tu-luyen (đợt 1).\n• Nút ngồi: tông môn \"Thiền\"; vùng có bài học \"Tu luyện\" + chấm son \"còn N bộ\"; học đủ → về \"Thiền\".\n• Thẻ bộ thủ: \"Đã lĩnh hội\" (lần đầu) · \"Xuất định\" (đã học).\n• Nhập định 1 s: vòng sáng dưới đệm + chữ bộ sắp học hiện dần trên đầu → thẻ mở. Không thanh tiến trình.\n• Người khác thấy / đốm linh tự: chốt hướng, code làm sau.\n• Linh địa gợi ý cho /canh: đình trúc, bờ suối (氵), chân thác, gốc trúc già (竹/木), mỏm đá ngắm núi (山/石)."
     }
   },
   "designSystems": []

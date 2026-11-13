@@ -41,3 +41,12 @@ Một chất liệu: kính mờ `frost*` + viền `frost-line` / `frost-outline`
 | Nút hành động tròn 68 / 52 (chính / kính) + nhãn | `HUD-hanh-dong-*`, `NutHanhDong-trang-thai` | jade, jade-press, frost, gold, action-main, action-sub |
 | Nút "Nói chuyện" (kiểu nút học nổi + bảng tên) | `HUD-hanh-dong-*` | jade, frost |
 | Khung thoại (chân dung, bảng tên, lời chạy, lựa chọn) | `HoiThoai-*` | frost .94, jade, slate, gold, dialog-option |
+
+## Thêm ở 2026-11-13.19
+
+| Thành phần | Artboard | Token |
+|---|---|---|
+| Chấm son đếm trên nút tròn | `TuLuyen-nut-trang-thai` | lacquer, count-badge |
+| Vòng sáng nhập định (dưới đệm ngồi, vật 3D) + chữ hiện trên đầu | `TuLuyen-nhap-dinh-*`, `TuLuyen-trinh-tu` | aura-light, gold, jade |
+| Chữ bay quanh người + hào quang theo tiến độ (người khác thấy) | `TuLuyen-nguoi-khac-thay` | jade, gold |
+| Đốm linh tự + nút nổi "Lĩnh hội" (kiểu "Nói chuyện") | `TuLuyen-dom-linh-tu-doc` | aura-light, jade |

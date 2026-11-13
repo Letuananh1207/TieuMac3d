@@ -160,6 +160,11 @@
       "value": "#3A2418",
       "note": "trục cuộn bản đồ (đầu trục jade viền gold) — 2026-11-13.9",
       "code": "chưa có"
+    },
+    "aura-light": {
+      "value": "rgba(255,236,190,.75)",
+      "note": "lõi vòng sáng nhập định / đốm linh tự (viền gold .85) — hiệu ứng trong cảnh, không dùng cho chữ — 2026-11-13.19",
+      "code": "chưa có"
     }
   },
   "font": {
@@ -370,6 +375,11 @@
     "dialog-option": {
       "value": 46,
       "note": "chiều cao tối thiểu nút lựa chọn hội thoại",
+      "code": "chưa có"
+    },
+    "count-badge": {
+      "value": 22,
+      "note": "chấm son đếm trên nút tròn (vd. \"còn N bộ\" trên nút Tu luyện) — nền lacquer, viền trắng 2, chữ 11/700 — 2026-11-13.19",
       "code": "chưa có"
     }
   }
