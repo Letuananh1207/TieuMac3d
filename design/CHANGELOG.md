@@ -3,6 +3,37 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-13.1 — Bộ ảnh nhiều góc Sư phụ Mặc Ông 墨翁 (đầu vào Hunyuan3D đa góc)
+
+- Loại: tài nguyên 3D — ảnh đầu vào. Phiếu: `docs/phieu_thiet_ke/2026-11-12-anh-su-phu.md`.
+- **Đổi thiết kế so với phiếu**: phiếu (hướng A "lão phu tử văn nhân Tống" — mũ Đông Pha, hạc sưởng ngà, râu ba chòm)
+  được thay bằng **Sư phụ Mặc Ông 墨翁** theo tờ thiết kế của người dùng (`models/anh/su-phu-thiet-ke.webp`): vị đạo sư
+  thư pháp giảng bài trong màn Truyện, thầy của Tiểu Mặc. Giữa chừng người dùng còn bỏ mũ Đông Pha; một bộ ảnh lão phu
+  tử đã làm rồi bỏ (không vào repo). Hồ sơ `docs/tham_khao/su-phu.md` không còn khớp — chỉ tham khảo.
+  Tên file giữ `su-phu-*` (khớp phiếu và `/tai-nguyen nhan-vat su-phu`).
+- Thiết kế (màu rút từ tờ): búi tóc bạc #F2EFE7 đội đạo quan nhỏ #2C2D33, trâm gỗ #845D3F cắm ngang; mắt cười, mày bạc rủ,
+  má hồng #F1BDAE, da rất nhạt; ria + **một chòm râu dài nhọn** tới đai; đạo bào xanh mực #3D4B5E dài chấm đất, cổ chéo
+  màu giấy #E6E3D9 (vạt trái đè phải), gấu viền giấy; đai gỗ nâu #845D3F tua vàng #D4A64A phía trước (theo phần chữ của
+  tờ — dáng "Đứng chờ" vẽ đai màu giấy có khoá tròn); giày đen.
+- Chọn: tư thế chữ A tay không; **bút lông là vật gắn riêng** (không vào ảnh); mặt mặc định mắt cười (dáng "khen") —
+  biểu cảm giảng / nhắc / khen của tờ làm sau bằng ảnh mặt.
+- Câu lệnh Gemini (chung): render 3D đồ chơi vinyl, không nét viền; chiếu thẳng ngang ngực; chữ A, tay không; nền
+  #DDDDDD trơn, không chữ / watermark; 1024²; đỉnh đạo quan 10 %, đế 90 %; đặc điểm + màu như trên. Riêng góc: trước ·
+  profile thấy bên trái · sau (không thấy râu) · profile thấy bên phải · cận đạo quan + mặt + râu.
+- Soát: đúng tờ ở mọi điểm trên ✓; tua vàng thấy ở ảnh trước + hai ảnh nghiêng ✓; trâm ở ảnh nghiêng chỉ thấy đầu (đúng);
+  4 góc gốc cao 948–952 px ✓.
+- Chuẩn hoá: tách nền chặt — nền = điểm xám trung tính (|r−b| ≤ 4) lệch ≤ 8 so với màu góc ảnh, tô loang từ mép, bỏ đốm
+  lẻ (tóc / râu / áo sáng gần màu nền nên cách cũ ăn mất mảng); nền → #DDDDDD; một hệ số thu chung cho 4 góc; đế giày →
+  90 %, trục thân giữa. Ảnh cận: sao Gemini nằm trên vạt áo → vá bằng nội suy màu áo xung quanh (còn một chấm rất nhỏ).
+- So cỡ (ảnh duyệt): Mặc Ông cao hơn nhân vật chính ≈ 20 % theo dáng trên tờ — chỉ tham khảo, chiều cao trong cảnh do
+  code đặt.
+- File: `models/anh/su-phu-truoc.png`, `-trai.png`, `-sau.png`, `-phai.png`, `-mat.png` · `screens/SuPhu-bo-anh.png` ·
+  `source/SuPhu-bo-anh.dc.html`, `source/canvas.json` · `models/LICENSES.md`. (`su-phu-thiet-ke.webp`,
+  `su-phu-chan-dung.png` đã vào repo ở commit `2aa4b8a`.)
+- Luật: không chạm. Việc tiếp (VS Code): `/tai-nguyen nhan-vat su-phu` →
+  `bash .claude/skills/tai-nguyen/scripts/nhan-vat.sh su-phu <thư mục ra>` → `design/models/su-phu.glb`; thay thầy dựng
+  bằng khối trong giảng đường là việc code sau (`/lead`).
+
 ## 2026-11-12.15 — Cảnh: NPC Tiểu Mặc đứng cạnh cổng Sơn Môn
 
 - Loại: cảnh 3D — **bố cục** (vật cản mới). Người dùng chọn vị trí + động tác (phiên VS Code làm thay `/canh`); kế hoạch
