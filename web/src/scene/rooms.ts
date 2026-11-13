@@ -124,16 +124,16 @@ export function addRoomBuilding(scene: THREE.Scene, colliders: Colliders, b: Bui
     { x: -pw / 2 + 0.15, z: 0, w: 0.3, d: pd },
     { x: pw / 2 - 0.15, z: 0, w: 0.3, d: pd },
     ...[-1, 1].map((s) => ({ x: (s * (pw / 2 + RAIL_GAP / 2)) / 2, z: pd / 2 - 0.15, w: pw / 2 - RAIL_GAP / 2, d: 0.3 })),
-    // tường sau, hai tường bên, tường trước hai bên cửa
-    { x: 0, z: -id / 2 + 0.125, w: iw, d: 0.3 },
-    { x: -iw / 2 + 0.125, z: 0, w: 0.3, d: id },
-    { x: iw / 2 - 0.125, z: 0, w: 0.3, d: id },
-    ...[-1, 1].map((s) => ({ x: (s * (iw / 2 + door / 2)) / 2, z: id / 2, w: iw / 2 - door / 2, d: 0.3 })),
+    // tường sau, hai tường bên, tường trước hai bên cửa — cao tới mái: che tầm nhìn camera (R-DIEU-4)
+    { x: 0, z: -id / 2 + 0.125, w: iw, d: 0.3, h: Infinity },
+    { x: -iw / 2 + 0.125, z: 0, w: 0.3, d: id, h: Infinity },
+    { x: iw / 2 - 0.125, z: 0, w: 0.3, d: id, h: Infinity },
+    ...[-1, 1].map((s) => ({ x: (s * (iw / 2 + door / 2)) / 2, z: id / 2, w: iw / 2 - door / 2, d: 0.3, h: Infinity })),
     ...furnished.boxes,
   ];
   for (const l of local) {
     const r = worldRect(b, l);
-    colliders.add((r.minX + r.maxX) / 2, (r.minZ + r.maxZ) / 2, r.maxX - r.minX, r.maxZ - r.minZ);
+    colliders.add((r.minX + r.maxX) / 2, (r.minZ + r.maxZ) / 2, r.maxX - r.minX, r.maxZ - r.minZ, l.h ?? 0);
   }
   // cột hiên trước (đứng trên hiên, ngoài tường trước)
   for (const x of columnXs(b.w, 2.5)) {

@@ -171,7 +171,9 @@ async function boot(): Promise<void> {
   /* ---------- vòng lặp ---------- */
   const nameTag = new NameTag();
   const input: MoveInput = { x: 0, y: 0 };
-  orbit.update(camera, player.position, 0, true, groundAt);
+  // tường / nhà chắn tầm nhìn → camera kéo lại gần (R-DIEU-4)
+  const sight = colliders.sightBlock.bind(colliders);
+  orbit.update(camera, player.position, 0, true, groundAt, undefined, sight);
 
   function tick(): void {
     if (!running) return; // vòng lặp tự tắt; setRunning gọi lại khi hiện
@@ -182,15 +184,18 @@ async function boot(): Promise<void> {
     keyboard.apply(input);
 
     // màn tải còn hiện (kể cả lúc mờ ra) → không điều khiển (R-MAN-2); chạm đã bị lớp màn tải chặn
+    const fromX = player.position.x;
+    const fromZ = player.position.z;
     player.update(dt, input, orbit.yaw, paused || loading.active);
     const pos = player.position;
+    orbit.follow(dt, pos.x - fromX, pos.z - fromZ); // camera tự xoay ra sau lưng khi đi (R-DIEU-3)
     for (const npc of npcSet.npcs) npc.update(dt, pos);
     zones.update(pos);
     areas.update(pos);
     entries.update(pos);
     world.update(dt, pos);
     const room = roomAt(pos.x, pos.z);
-    orbit.update(camera, pos, dt, false, groundAt, room?.floor);
+    orbit.update(camera, pos, dt, false, groundAt, room?.floor, sight);
     if (!covered) renderer.render(scene, camera);
     nameTag.update(pos, camera, NAME_TAG_HEIGHT);
     learn.follow(zones.current ? anchorOf.get(zones.current.id) : undefined, camera);

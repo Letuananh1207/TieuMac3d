@@ -42,7 +42,8 @@ export function addBuilding(scene: THREE.Scene, colliders: Colliders, b: Buildin
   const extra = FOOTPRINT_EXTRA[kind];
   const [w, d] = [b.w + extra, b.d + extra];
   // quay 90 / 270 thì hộp va chạm đổi rộng ↔ sâu
-  if (rot % 180 !== 0) colliders.add(b.x, b.z, d, w);
-  else colliders.add(b.x, b.z, w, d);
+  // nhà cao hơn tầm camera → luôn che tầm nhìn (R-DIEU-4)
+  if (rot % 180 !== 0) colliders.add(b.x, b.z, d, w, Infinity);
+  else colliders.add(b.x, b.z, w, d, Infinity);
   return g;
 }

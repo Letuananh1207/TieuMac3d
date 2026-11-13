@@ -18,6 +18,8 @@ export interface LocalBox {
   z: number;
   w: number;
   d: number;
+  /** > 0: vật cao che tầm nhìn camera (tường nhà) — R-DIEU-4 */
+  h?: number;
 }
 
 export interface Furnished {

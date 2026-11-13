@@ -8,6 +8,8 @@ export interface Box {
   maxX: number;
   minZ: number;
   maxZ: number;
+  /** cao bao nhiêu thì che tầm nhìn camera (m, từ mặt đất); 0 = vật thấp, không che (R-DIEU-4) */
+  h: number;
 }
 
 export interface PointXZ {
@@ -26,9 +28,42 @@ export class Colliders {
   readonly boxes: Box[] = [];
   readonly circles: Circle[] = [];
 
-  /** Thêm hộp tâm (x, z), rộng w theo trục x, sâu d theo trục z. */
-  add(x: number, z: number, w: number, d: number): void {
-    this.boxes.push({ minX: x - w / 2, maxX: x + w / 2, minZ: z - d / 2, maxZ: z + d / 2 });
+  /** Thêm hộp tâm (x, z), rộng w theo trục x, sâu d theo trục z. `h` > 0: vật cao che tầm nhìn camera (tường, nhà). */
+  add(x: number, z: number, w: number, d: number, h = 0): void {
+    this.boxes.push({ minX: x - w / 2, maxX: x + w / 2, minZ: z - d / 2, maxZ: z + d / 2, h });
+  }
+
+  /**
+   * Tầm nhìn (R-DIEU-4): đoạn từ (x0, y0, z0) tới (x1, y1, z1) — y tính từ mặt đất chỗ nhân vật — đi vào hộp che tầm nhìn
+   * đầu tiên ở phần t ∈ (0, 1] nào, mà tại đó đoạn còn thấp hơn đỉnh hộp. Không bị che → 1. Bỏ hộp chứa điểm đầu.
+   */
+  sightBlock(x0: number, y0: number, z0: number, x1: number, y1: number, z1: number): number {
+    const dx = x1 - x0;
+    const dz = z1 - z0;
+    let best = 1;
+    for (const b of this.boxes) {
+      if (b.h <= 0) continue;
+      let t0 = 0;
+      let t1 = 1;
+      // cắt đoạn với hai cặp mặt phẳng x, z (slab)
+      for (const [o, d, lo, hi] of [
+        [x0, dx, b.minX, b.maxX],
+        [z0, dz, b.minZ, b.maxZ],
+      ]) {
+        if (Math.abs(d) < 1e-9) {
+          if (o < lo || o > hi) t0 = 2; // song song, ngoài hộp
+          continue;
+        }
+        let a = (lo - o) / d;
+        let c = (hi - o) / d;
+        if (a > c) [a, c] = [c, a];
+        t0 = Math.max(t0, a);
+        t1 = Math.min(t1, c);
+      }
+      if (t0 > t1 || t0 <= 0 || t0 >= best) continue;
+      if (y0 + (y1 - y0) * t0 < b.h) best = t0;
+    }
+    return best;
   }
 
   /** Thêm vật cản tròn tâm (x, z), bán kính r. */

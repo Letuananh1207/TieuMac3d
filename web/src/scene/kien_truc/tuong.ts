@@ -139,8 +139,8 @@ function moonColliders(colliders: Colliders, gate: WallGate, w: Walls): void {
   const len = moonHalf(gate) - c;
   for (const s of [-1, 1]) {
     const along = gate.at + s * (c + len / 2);
-    if (gate.side === 'bac' || gate.side === 'nam') colliders.add(along, gate.side === 'bac' ? -half : half, len, 1);
-    else colliders.add(gate.side === 'tay' ? -half : half, along, 1, len);
+    if (gate.side === 'bac' || gate.side === 'nam') colliders.add(along, gate.side === 'bac' ? -half : half, len, 1, w.height + 0.5);
+    else colliders.add(gate.side === 'tay' ? -half : half, along, 1, len, w.height + 0.5);
   }
 }
 
@@ -157,8 +157,9 @@ export function addPlasterWalls(
     plasterRun(g, r, w, style, mats);
     const len = r.b - r.a;
     const mid = (r.a + r.b) / 2;
-    if (r.axis === 'x') colliders.add(mid, r.fixed, len, 1);
-    else colliders.add(r.fixed, mid, 1, len);
+    // che tầm nhìn tới đỉnh mái ngói trên tường (R-DIEU-4)
+    if (r.axis === 'x') colliders.add(mid, r.fixed, len, 1, r.height + 0.5);
+    else colliders.add(r.fixed, mid, 1, len, r.height + 0.5);
   }
   for (const gate of w.gates) {
     moonGate(g, gate, w, style, mats);
