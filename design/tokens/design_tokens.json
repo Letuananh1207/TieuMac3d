@@ -165,6 +165,21 @@
       "value": "rgba(255,236,190,.75)",
       "note": "lõi vòng sáng nhập định / đốm linh tự (viền gold .85) — hiệu ứng trong cảnh, không dùng cho chữ — 2026-11-13.19",
       "code": "chưa có"
+    },
+    "answer-right-bg": {
+      "value": "rgba(43,84,70,.10)",
+      "note": "nền đáp án / phản hồi đúng, mức \"Nhớ rõ\" (viền + chữ jade) — 2026-11-13.25",
+      "code": "chưa có"
+    },
+    "answer-wrong-bg": {
+      "value": "rgba(168,50,42,.08)",
+      "note": "nền đáp án / phản hồi sai, mức \"Chưa nhớ\" (viền + chữ lacquer) — 2026-11-13.25",
+      "code": "chưa có"
+    },
+    "answer-partial-bg": {
+      "value": "rgba(212,166,74,.16)",
+      "note": "nền mức \"Nhớ một phần\" (viền gold, chữ slate) — 2026-11-13.25",
+      "code": "chưa có"
     }
   },
   "font": {
@@ -380,6 +395,11 @@
     "count-badge": {
       "value": 22,
       "note": "chấm son đếm trên nút tròn (vd. \"còn N bộ\" trên nút Tu luyện) — nền lacquer, viền trắng 2, chữ 11/700 — 2026-11-13.19",
+      "code": "chưa có"
+    },
+    "option-row": {
+      "value": 58,
+      "note": "chiều cao tối thiểu phương án câu đố (ngang 50) — 2026-11-13.25",
       "code": "chưa có"
     }
   }

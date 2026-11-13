@@ -3,6 +3,24 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-13.25 — Bảng nhiệm vụ hằng ngày 日課榜 + màn ôn câu đố + nút "Xem bảng"
+
+- Loại: giao diện · token · chuỗi.
+- Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-13-nhiem-vu-hang-ngay.md` (thay phiếu bảng vinh danh đã bỏ).
+- Màn / thành phần: **Bảng nhiệm vụ hằng ngày** (Flutter; đang dở · mới cài · xong cả 2 + chuỗi dài; ngang) · **Màn ôn
+  câu đố** (Flutter; chưa chọn · đã chọn · đúng · sai · kết quả một bộ · tổng kết; ngang; bảng 3 mức) · **Nút "Xem
+  bảng"** (HUD dọc + ngang). Đặc tả: `docs/screen_specs.md` 3 mục mới; thành phần: `docs/components.md`.
+- Quyết định thiết kế: dùng khung màn bài học; "Ôn ngay" là nút chính trong thẻ, "Đóng bảng" là nút phụ; xong cả 2 →
+  triện son 畢; chuỗi = số lớn + dải 7 ngày; ôn theo kiểu chọn → "Kiểm tra" → phản hồi → "Câu tiếp"; thoát giữa lượt
+  không hỏi lại; số việc còn lại chỉ hiện ở chấm son trên nút "Xem bảng" (không chấm trên bảng 3D / Tiểu Mặc).
+- Token mới: `answer-right-bg`, `answer-wrong-bg`, `answer-partial-bg`, `size.option-row` 58.
+- Chuỗi mới (`l10n/vi.arb`): `daily*`, `boardOpen*`, `review*`.
+- Luật: theo đúng `R-NV-1/2/3`, `R-ON-1…5`, `R-MAN-1` — không đề xuất đổi. (Tiêu đề bảng 3D trong ảnh `Canh-tieu-mac-bang.png`
+  còn 文淵榜 — cảnh cần đổi 日課榜 nếu chưa đổi.)
+- File: `source/NhiemVu-*.dc.html` (4), `source/OnTap-*.dc.html` (8), `source/XemBang-*.dc.html` (2), `source/canvas.json` ·
+  `tokens/design_tokens.json` · `l10n/vi.arb` · `docs/screen_specs.md`, `docs/components.md`.
+- Ảnh: chưa có ảnh (dùng `source/*.dc.html`).
+
 ## 2026-11-13.21 — Văn Uyên Tông: khu giao lưu Kỳ Văn Uyển 棋文苑 (bàn cờ + bàn đấu chữ)
 
 - Loại: cảnh 3D — **bố cục** (đã vào `scene.json`) + trường đặc tả mới `gameTables`. Phiên VS Code làm thay `/canh` trong

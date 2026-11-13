@@ -241,3 +241,65 @@ Mẫu một mục:
 - Chuỗi: `actionCultivate`, `actionCultivating`, `actionCultivateLabel`, `radicalLeft`, `radicalLearn`, `radicalBack`,
   `spiritTap`.
 - Ảnh: nền giữ chỗ `screens/Canh-rung-truc-tu-luyen.png` (nhân vật trong ảnh đang đứng); màn ghép chưa có ảnh.
+
+## Bảng nhiệm vụ hằng ngày 日課榜 (Flutter native) · artboard `NhiemVu-doc.dc.html`, `NhiemVu-doc-moi.dc.html`, `NhiemVu-doc-xong.dc.html`, `NhiemVu-ngang.dc.html` · từ mục 2026-11-13.25
+
+- Mục đích: xem 2 việc hôm nay + chuỗi ngày (`R-NV-1/2`). Mở khi: nút "Xem bảng" gần bảng (dưới 2,5 m) hoặc chọn "Hôm nay
+  có việc gì?" với Tiểu Mặc (`openDaily`, `R-NV-3`). Đóng: "Đóng bảng" / nút quay lại của máy. Nhân vật đứng yên khi mở.
+- Khung: **màn bài học** (nền `mist` + núi, eyebrow 11/700 hoa "Văn Uyên Tông · cổng nam", thẻ lụa `frost` .86 bo 16,
+  nút đáy 52). Nút đáy là nút **phụ** (viền `slate` 30 %, nền trắng .55, dấu ×) — hành động chính là "Ôn ngay" trong thẻ.
+- Thẻ (dọc, từ trên): tiêu đề 日課榜 40 Noto Serif SC `jade` giãn chữ .08em + dòng "Nhiệm vụ hằng ngày · <thứ> <ngày/tháng>"
+  13/700 · vạch chấm vàng · **việc 1 "Lĩnh hội"** · **việc 2 "Ôn tập"** · vạch chấm vàng · **chuỗi**.
+- Một việc: vòng trạng thái 36 (chưa xong: viền `slate` 30 % 2 px; xong: nền `jade` + ✓ trắng + quầng vàng 3) · tên
+  16/700 · phải: tiến độ (Lĩnh hội: 3 chấm 14 — đã học tô `jade`, chưa viền `jade` 40 % — + "n/3" 14/700; Ôn tập: "còn n")
+  · dòng phụ 13 (xong → chữ `jade`). Ôn tập có bộ đến hạn: hàng ô chữ 34 × 34 nền `map-paper` (chữ Hán 20 `jade`, tối đa
+  một hàng, thừa → "+n") + nút **"Ôn ngay"** chính cao 46 rộng hết cột (mở màn ôn tại chỗ — `R-ON-5`).
+- Chuỗi: "Tu liền" 13/700 + số Lora 40 `jade` + "ngày"; phải "Kỷ lục **n** ngày" 13. Dải 7 ngày (T2 … CN) vòng 26: đã
+  tính = `jade` + ✓; hôm nay chưa xong = viền đứt `jade` 2; hôm nay đã xong = như đã tính + quầng vàng; bỏ ngày = nền
+  `slate` 8 %; chưa tới = viền mảnh. Dòng phụ 12 theo trạng thái (`dailyKeep` / `dailyDone` / `dailyStart`). Chuỗi
+  hôm nay = kỷ lục và vừa tăng → viên "Kỷ lục mới" (viền `gold`, nền vàng 14 %, chấm vàng, chữ `slate`).
+- **Xong cả 2**: triện son 62 × 62 xoay −8° góc trên phải thẻ (viền `lacquer` 3, chữ 畢 30 + "xong" 9/700), trợ năng
+  "Hôm nay đã xong".
+- Trạng thái đã vẽ: đang dở (2/3, còn 4 bộ, chuỗi 5 / kỷ lục 7) · mới cài (0/3, không bộ đến hạn → Ôn tập xong, chuỗi 0)
+  · xong cả 2 + chuỗi dài (23, kỷ lục mới). Học đủ 50 bộ: Lĩnh hội xong, dòng phụ `dailyLearnAll`.
+- Ngang: một thẻ hai cột — trái 2 việc (nút "Ôn ngay" cao 42), vạch dọc, phải 250 (tiêu đề + chuỗi); cột nút 120 phải,
+  nút "Đóng" cao 48 ở đáy.
+- Chuỗi: `daily*`, `boardOpen`, `boardOpenLabel`. Luật: `R-NV-1/2/3`, `R-ON-5`, `R-MAN-1`.
+- Ảnh: chưa có ảnh.
+
+## Màn ôn câu đố (Flutter native) · artboard `OnTap-doc-chua-chon.dc.html`, `OnTap-doc.dc.html`, `OnTap-doc-dung.dc.html`, `OnTap-doc-sai.dc.html`, `OnTap-doc-ket-qua-bo.dc.html`, `OnTap-doc-tong-ket.dc.html`, `OnTap-ngang.dc.html`, `OnTap-muc-ket-qua.dc.html` · từ mục 2026-11-13.25
+
+- Mục đích: ôn các bộ đến hạn (`R-ON-1…5`, dữ liệu `openReview`). Mở khi: ngồi thiền ở Rừng trúc còn bộ đến hạn, hoặc
+  "Ôn ngay" trên bảng nhiệm vụ. Nhân vật đứng yên khi mở.
+- Khung: màn bài học (như trên) nhưng **không eyebrow** — thay bằng thanh trên: nút tròn × 44 (kính sương, "Thoát lượt
+  ôn") + cột: dòng "ÔN TẬP" 12/700 hoa · "Bộ i / n" phải, dưới là thanh tiến độ chia n đoạn cao 6 cách 4 (đã xong
+  `jade`, đang làm `jade` 45 %, chưa `slate` 14 %).
+- Thẻ câu hỏi: "Câu 1 / 2 · Pinyin" (hoặc "Câu 2 / 2 · Nghĩa") 12/700 `jade` · bộ thủ 110 Noto Serif SC `jade` · câu hỏi
+  17/700 ("Bộ này đọc là gì?" / "Bộ này nghĩa là gì?") · 3 phương án dồn đáy thẻ, cách 10.
+- Phương án: cao ≥ `option-row` 58, bo 14, đệm ngang 16, nền trắng .75, viền `slate` 18 % 1 px; dấu tròn 20 bên trái;
+  chữ: pinyin Lora 22, nghĩa 16/700 ("thuỷ — nước"). **Đang chọn**: viền `jade` 2, nền `jade` 8 %, dấu tròn có chấm
+  `jade`. Đổi được tới khi bấm "Kiểm tra".
+- Nút đáy **"Kiểm tra"** (chính 52): chưa chọn → vô hiệu (nền `jade` 35 %, không bóng).
+- Sau khi kiểm tra: đáp án đúng viền `jade` 2 + nền `answer-right-bg` + dấu ✓ tròn `jade`; chọn sai viền `lacquer` 2 + nền
+  `answer-wrong-bg` + dấu × tròn `lacquer`; các phương án khác mờ 60 %. Nút "Kiểm tra" thay bằng **khung phản hồi**
+  (bo 14, đệm 14 × 16, viền + nền theo đúng / sai): dòng 16/700 có dấu ("Đúng rồi!" / "Chưa đúng — thuỷ · nước") + nút
+  chính "Câu tiếp →".
+- **Kết quả một bộ** (sau câu 2): thẻ giữa — "Kết quả bộ này" 12/700 `jade`, bộ thủ 110, pinyin Lora 22 `lacquer`, tên 18/700,
+  vạch chấm vàng, **viên mức** cao 40 (Nhớ rõ · 2/2 — `jade` / nền `answer-right-bg`; Nhớ một phần · 1/2 — viền `gold`,
+  nền `answer-partial-bg`, chữ `slate`; Chưa nhớ · 0/2 — `lacquer` / nền `answer-wrong-bg`), câu hạn kế 15
+  ("Lên bậc — ôn lại sau 7 ngày", "Lùi một bậc — ôn lại sau 3 ngày", "Về bậc đầu — mai ôn lại"; số ngày từ dữ liệu),
+  bảng nhỏ Pinyin / Nghĩa đúng-sai. Nút "Bộ tiếp →" (bộ cuối: thẳng tổng kết).
+- **Tổng kết**: vòng ✓ 48 `jade` + quầng vàng, "Ôn xong n bộ" 22/700, "Việc Ôn tập hôm nay đã xong." · 3 ô đếm (Lora 28)
+  theo 3 mức · các ô chữ của lượt (nền `map-paper`, viền màu mức + "n/2") · dòng gợi ý việc còn lại · nút "✓ Xong".
+- Thoát giữa lượt (×): đóng ngay, **không hỏi lại** — bộ đã chấm giữ kết quả, bộ chưa chấm vẫn đến hạn (`R-ON-5`).
+- Ngang: thẻ hai cột — trái 220 (bước, bộ thủ 96, câu hỏi), phải 3 phương án cao 50; cột phải 150: thanh tiến độ trên,
+  nút "Kiểm tra" / "Câu tiếp" đáy.
+- Chuỗi: `review*`. Luật: `R-ON-1…5`, `R-NV-1`, `R-MAN-1`.
+- Ảnh: chưa có ảnh.
+
+## Nút "Xem bảng" (HUD) · artboard `XemBang-doc.dc.html`, `XemBang-ngang.dc.html` · từ mục 2026-11-13.25
+
+- Kiểu nút "Nói chuyện" (viên thuốc `jade` 46, biểu tượng bảng 20, mũi nhọn xuống) bám trên bảng 日課榜, dưới là nhãn
+  kính sương "Nhiệm vụ hằng ngày 日課榜". Hiện khi đứng dưới 2,5 m (`R-NV-3`). Còn việc hôm nay → chấm son `count-badge`
+  số việc còn (1 / 2); xong cả 2 → không chấm. Trợ năng `boardOpenLabel`.
+- Ảnh nền giữ chỗ `screens/Canh-tieu-mac-bang.png` (bảng trong ảnh còn ghi 文淵榜).

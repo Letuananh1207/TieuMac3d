@@ -50,3 +50,18 @@ Một chất liệu: kính mờ `frost*` + viền `frost-line` / `frost-outline`
 | Vòng sáng nhập định (dưới đệm ngồi, vật 3D) + chữ hiện trên đầu | `TuLuyen-nhap-dinh-*`, `TuLuyen-trinh-tu` | aura-light, gold, jade |
 | Chữ bay quanh người + hào quang theo tiến độ (người khác thấy) | `TuLuyen-nguoi-khac-thay` | jade, gold |
 | Đốm linh tự + nút nổi "Lĩnh hội" (kiểu "Nói chuyện") | `TuLuyen-dom-linh-tu-doc` | aura-light, jade |
+
+## Thêm ở 2026-11-13.25
+
+| Thành phần | Artboard | Token |
+|---|---|---|
+| Dòng việc (vòng trạng thái 36 + tên + tiến độ chấm) | `NhiemVu-*` | jade, gold, slate |
+| Dải chuỗi 7 ngày + số chuỗi + viên "Kỷ lục mới" | `NhiemVu-*` | jade, gold |
+| Triện son 畢 "hôm nay đã xong" | `NhiemVu-doc-xong` | lacquer |
+| Ô chữ nhỏ 34 (giấy, chữ Hán) | `NhiemVu-doc`, `OnTap-doc-tong-ket` | map-paper, jade |
+| Nút phụ viền (Đóng bảng) | `NhiemVu-*` | slate, frost |
+| Thanh trên màn ôn (× + "Bộ i / n" + tiến độ chia đoạn) | `OnTap-*` | jade, slate |
+| Phương án câu đố (thường / chọn / đúng / sai / mờ) | `OnTap-*` | option-row, answer-right-bg, answer-wrong-bg |
+| Khung phản hồi đúng / sai + "Câu tiếp" | `OnTap-doc-dung`, `OnTap-doc-sai` | answer-right-bg, answer-wrong-bg |
+| Viên mức nhớ (3 mức) | `OnTap-muc-ket-qua` | answer-*-bg, jade, gold, lacquer |
+| Nút nổi "Xem bảng" + chấm đếm | `XemBang-*` | jade, lacquer, count-badge |

@@ -170,5 +170,135 @@
   "hintFirst": "Kéo nửa trái để đi · kéo nửa phải để xoay · chụm 2 ngón để zoom",
   "@hintFirst": {
     "description": "Dòng gợi ý lần đầu (R-DIEU-2: bỏ \"chạm mặt đất để đi tới đó\")"
-  }
+  },
+  "dailyTitle": "Nhiệm vụ hằng ngày",
+  "dailyEyebrow": "Văn Uyên Tông · cổng nam",
+  "dailyClose": "Đóng bảng",
+  "dailyLearn": "Lĩnh hội",
+  "dailyLearnSub": "Học {goal} bộ thủ mới. Ngồi thiền ở Rừng trúc để lĩnh hội bộ kế tiếp.",
+  "@dailyLearnSub": {
+    "placeholders": {
+      "goal": {
+        "type": "int"
+      }
+    }
+  },
+  "dailyLearnFirst": "Học {goal} bộ thủ mới. Tới Truyền Tống Đài → Rừng trúc, ngồi thiền để lĩnh hội bộ đầu tiên.",
+  "@dailyLearnFirst": {
+    "placeholders": {
+      "goal": {
+        "type": "int"
+      }
+    }
+  },
+  "dailyLearnDone": "Đã học {goal} bộ mới hôm nay.",
+  "@dailyLearnDone": {
+    "placeholders": {
+      "goal": {
+        "type": "int"
+      }
+    }
+  },
+  "dailyLearnAll": "Đã học đủ 50 bộ thủ.",
+  "dailyReview": "Ôn tập",
+  "dailyReviewDue": "Còn {n} bộ đến hạn hôm nay.",
+  "@dailyReviewDue": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "dailyReviewNone": "Không có bộ nào đến hạn.",
+  "dailyReviewDone": "Đã ôn hết bộ đến hạn.",
+  "dailyReviewNow": "Ôn ngay",
+  "dailyStreak": "Tu liền {n} ngày",
+  "@dailyStreak": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "dailyBest": "Kỷ lục {n} ngày",
+  "@dailyBest": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "dailyNewRecord": "Kỷ lục mới",
+  "dailyDone": "Hôm nay đã xong — ngày được tính vào chuỗi.",
+  "dailyKeep": "Hôm nay chưa xong — chuỗi vẫn giữ {n} tới hết ngày.",
+  "@dailyKeep": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "dailyStart": "Xong cả 2 việc hôm nay để bắt đầu chuỗi.",
+  "dailySealLabel": "Hôm nay đã xong",
+  "boardOpen": "Xem bảng",
+  "boardOpenLabel": "Xem bảng, còn {n} việc hôm nay",
+  "@boardOpenLabel": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewTitle": "Ôn tập",
+  "reviewProgress": "Bộ {i} / {n}",
+  "@reviewProgress": {
+    "placeholders": {
+      "i": {
+        "type": "int"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewExit": "Thoát lượt ôn",
+  "reviewStepPinyin": "Câu 1 / 2 · Pinyin",
+  "reviewStepMeaning": "Câu 2 / 2 · Nghĩa",
+  "reviewAskPinyin": "Bộ này đọc là gì?",
+  "reviewAskMeaning": "Bộ này nghĩa là gì?",
+  "reviewCheck": "Kiểm tra",
+  "reviewNext": "Câu tiếp",
+  "reviewNextRadical": "Bộ tiếp",
+  "reviewFinish": "Xong",
+  "reviewRight": "Đúng rồi!",
+  "reviewWrong": "Chưa đúng — {answer}",
+  "@reviewWrong": {
+    "placeholders": {
+      "answer": {
+        "type": "String"
+      }
+    }
+  },
+  "reviewResult": "Kết quả bộ này",
+  "reviewLevel2": "Nhớ rõ",
+  "reviewLevel1": "Nhớ một phần",
+  "reviewLevel0": "Chưa nhớ",
+  "reviewNextIn": "ôn lại sau {n} ngày",
+  "@reviewNextIn": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewTomorrow": "mai ôn lại",
+  "reviewSummary": "Ôn xong {n} bộ",
+  "@reviewSummary": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewSummaryDone": "Việc Ôn tập hôm nay đã xong."
 }

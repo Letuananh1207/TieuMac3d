@@ -346,6 +346,90 @@
       "y": 25924,
       "w": 390,
       "h": 844
+    },
+    "NhiemVu-doc.dc.html": {
+      "x": 0,
+      "y": 27148,
+      "w": 390,
+      "h": 844
+    },
+    "NhiemVu-doc-moi.dc.html": {
+      "x": 470,
+      "y": 27148,
+      "w": 390,
+      "h": 844
+    },
+    "NhiemVu-doc-xong.dc.html": {
+      "x": 940,
+      "y": 27148,
+      "w": 390,
+      "h": 844
+    },
+    "NhiemVu-ngang.dc.html": {
+      "x": 1410,
+      "y": 27148,
+      "w": 844,
+      "h": 390
+    },
+    "XemBang-doc.dc.html": {
+      "x": 2334,
+      "y": 27148,
+      "w": 390,
+      "h": 844
+    },
+    "XemBang-ngang.dc.html": {
+      "x": 1410,
+      "y": 27602,
+      "w": 844,
+      "h": 390
+    },
+    "OnTap-doc-chua-chon.dc.html": {
+      "x": 0,
+      "y": 28112,
+      "w": 390,
+      "h": 844
+    },
+    "OnTap-doc.dc.html": {
+      "x": 470,
+      "y": 28112,
+      "w": 390,
+      "h": 844
+    },
+    "OnTap-doc-dung.dc.html": {
+      "x": 940,
+      "y": 28112,
+      "w": 390,
+      "h": 844
+    },
+    "OnTap-doc-sai.dc.html": {
+      "x": 1410,
+      "y": 28112,
+      "w": 390,
+      "h": 844
+    },
+    "OnTap-doc-ket-qua-bo.dc.html": {
+      "x": 1880,
+      "y": 28112,
+      "w": 390,
+      "h": 844
+    },
+    "OnTap-doc-tong-ket.dc.html": {
+      "x": 2350,
+      "y": 28112,
+      "w": 390,
+      "h": 844
+    },
+    "OnTap-ngang.dc.html": {
+      "x": 2820,
+      "y": 28112,
+      "w": 844,
+      "h": 390
+    },
+    "OnTap-muc-ket-qua.dc.html": {
+      "x": 2820,
+      "y": 28566,
+      "w": 1080,
+      "h": 360
     }
   },
   "order": [
@@ -397,7 +481,21 @@
     "TuLuyen-trinh-tu.dc.html",
     "TuLuyen-nut-trang-thai.dc.html",
     "TuLuyen-nguoi-khac-thay.dc.html",
-    "TuLuyen-dom-linh-tu-doc.dc.html"
+    "TuLuyen-dom-linh-tu-doc.dc.html",
+    "NhiemVu-doc.dc.html",
+    "NhiemVu-doc-moi.dc.html",
+    "NhiemVu-doc-xong.dc.html",
+    "NhiemVu-ngang.dc.html",
+    "XemBang-doc.dc.html",
+    "XemBang-ngang.dc.html",
+    "OnTap-doc-chua-chon.dc.html",
+    "OnTap-doc.dc.html",
+    "OnTap-doc-dung.dc.html",
+    "OnTap-doc-sai.dc.html",
+    "OnTap-doc-ket-qua-bo.dc.html",
+    "OnTap-doc-tong-ket.dc.html",
+    "OnTap-ngang.dc.html",
+    "OnTap-muc-ket-qua.dc.html"
   ],
   "notes": {
     "cach-dung": {
@@ -616,6 +714,21 @@
       "fill": "teal",
       "size": "s",
       "text": "Phiếu 2026-11-13-tu-luyen (đợt 1).\n• Nút ngồi: tông môn \"Thiền\"; vùng có bài học \"Tu luyện\" + chấm son \"còn N bộ\"; học đủ → về \"Thiền\".\n• Thẻ bộ thủ: \"Đã lĩnh hội\" (lần đầu) · \"Xuất định\" (đã học).\n• Nhập định 1 s: vòng sáng dưới đệm + chữ bộ sắp học hiện dần trên đầu → thẻ mở. Không thanh tiến trình.\n• Người khác thấy / đốm linh tự: chốt hướng, code làm sau.\n• Linh địa gợi ý cho /canh: đình trúc, bờ suối (氵), chân thác, gốc trúc già (竹/木), mỏm đá ngắm núi (山/石)."
+    },
+    "tieu-de-nhiem-vu": {
+      "x": 0,
+      "y": 26888,
+      "text": "Nhiệm vụ hằng ngày 日課榜 + màn ôn câu đố",
+      "kind": "title1",
+      "maxW": 3900
+    },
+    "nhiem-vu-ghi-chu": {
+      "x": 2804,
+      "y": 27148,
+      "w": 440,
+      "fill": "teal",
+      "size": "s",
+      "text": "Phiếu 2026-11-13-nhiem-vu-hang-ngay.\n• Bảng + màn ôn: màn Flutter, khung màn bài học (nền sương + núi, thẻ lụa, nút đáy).\n• Việc xong: vòng ngọc lục + dấu ✓; xong cả 2: triện son 畢.\n• Chuỗi: số lớn + dải 7 ngày (đã tính · hôm nay nét đứt · chưa tới). Kỷ lục mới: viên vàng.\n• Ôn: chọn (đổi được) → \"Kiểm tra\" → đúng / sai + đáp án → \"Câu tiếp\". 2 câu → kết quả bộ (3 mức) → tổng kết. Nút × thoát ngay, không hỏi lại (bộ chưa chấm vẫn đến hạn).\n• \"Xem bảng\": kiểu nút \"Nói chuyện\" + chấm son số việc còn lại."
     }
   },
   "designSystems": []
