@@ -13,7 +13,9 @@ import { createDiscipleCharacter } from './player/discipleCharacter';
 import { placeNpcs } from './player/npc';
 import type { CharacterState } from './player/character';
 import { RUN_SPEED, WALK_SPEED } from './player/controller';
-import { SCENE, SCENE_FILE } from './scene/loadSpec';
+import { HOME_SCENE, loadScene } from './scene/loadSpec';
+import { createMapScroll } from './scene/banDo';
+import { JOURNEY_MAP, placeStates } from './zones/journeyMap';
 import { viewDistance } from './scene/farMountains';
 import { mergeStatic } from './scene/merge';
 import { createStage } from './scene/renderer';
@@ -32,6 +34,9 @@ function li(text: string, cls?: string): HTMLLIElement {
 
 async function boot(): Promise<void> {
   await Promise.allSettled([document.fonts.load('700 72px Lora'), document.fonts.load('700 13px "Be Vietnam Pro"')]);
+  // ?vung=rung-truc → xem cảnh vùng; không có → tông môn
+  const SCENE = loadScene(new URLSearchParams(location.search).get('vung'));
+  const SCENE_FILE = SCENE.file;
   const { spec } = SCENE;
   const canvas = el<HTMLCanvasElement>('stage');
   // nhìn từ trên: đủ cao để thấy cả sân / cả vùng địa hình
@@ -50,6 +55,24 @@ async function boot(): Promise<void> {
     mergeStatic(t.root, new Set()); // như main.ts: thầy đứng yên, gộp khối theo màu
   }
   const placed = placeZones(ZONE_CONTENT, world.zoneAnchors);
+  // vòng trận: ?nap=0..1 — xem hiệu ứng nạp (vòng sáng, cột sáng) để chụp (R-HANH-2)
+  const nap = Number(new URLSearchParams(location.search).get('nap') ?? 0);
+  world.teleport?.setCharge(Number.isFinite(nap) ? nap : 0);
+  world.teleport?.update(0.6);
+  // ?bando — mở sẵn cuộn bản đồ truyền tống để chụp (trạng thái như mới cài app: chỉ Rừng trúc mở — R-HANH-1/2)
+  if (new URLSearchParams(location.search).has('bando')) {
+    const scroll = createMapScroll(scene, camera, JOURNEY_MAP);
+    const states = placeStates(JOURNEY_MAP.places, SCENE.id, HOME_SCENE, ['rung-truc', 'giang-nam'], new Set(['rung-truc']));
+    camera.updateMatrixWorld();
+    scroll.open(world.teleport?.center ?? new THREE.Vector3(), states);
+    const cham = new URLSearchParams(location.search).get('cham');
+    for (let i = 0; i < 30; i++) scroll.update(0.05);
+    if (cham) scroll.flash(cham);
+    requestAnimationFrame(function keep() {
+      scroll.update(0); // giữ cuộn trước camera khi camera bay
+      requestAnimationFrame(keep);
+    });
+  }
 
   // ?nhan-vat=gau → gấu khối cũ, =khoi → đệ tử khối; mặc định như app (model .glb nếu có, không thì đệ tử khối)
   // Canvas 3D mặc định nhân vật chibi (bản mẫu chờ duyệt — docs/tasks/2026-11-12-nhan-vat-chibi.md); nút ở bảng đổi
@@ -69,7 +92,8 @@ async function boot(): Promise<void> {
   el('source').textContent = SCENE.fromFile
     ? `Đọc từ ${SCENE_FILE}`
     : `Chưa có ${SCENE_FILE} — đang xem cảnh mặc định trong code (web/src/scene/spec.ts)`;
-  const problems = [...SCENE.problems, ...placed.problems, ...npcSet.problems];
+  // bài học chỉ ở tông môn → cảnh vùng không báo thiếu vùng học
+  const problems = [...SCENE.problems, ...(SCENE.id === HOME_SCENE ? placed.problems : []), ...npcSet.problems];
   const box = el('problems');
   if (problems.length === 0) {
     const ok = document.createElement('div');

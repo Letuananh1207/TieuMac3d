@@ -1,5 +1,5 @@
 # Phiếu: Hành trình — cuộn bản đồ truyền tống + thẻ học bộ thủ
-- Trạng thái: chờ thiết kế
+- Trạng thái: mục 1–2 (bản đồ + nút đóng) **đã áp (2026-11-13.9)**; mục 3 (thẻ bộ thủ) đã vẽ, chờ áp ở đợt 2
 - Đã vẽ: 2026-11-13.9
 - Đợi bởi: kế hoạch `docs/tasks/2026-11-13-hanh-trinh-nhieu-vung.md` (đợt 1b nhiệm vụ 19–20: bản đồ; nhiệm vụ 14: bộ thủ)
 - Sửa 2026-11-13: bỏ "nhãn cột trận khoá" (đài không còn 6 cột — người dùng đổi kiểu truyền tống), thay bằng bản đồ.

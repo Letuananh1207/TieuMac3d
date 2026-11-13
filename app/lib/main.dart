@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
+import 'journey/journey.dart';
+import 'journey/progress_store.dart';
 import 'lesson/lesson_screen.dart';
+import 'scene/scene_event.dart';
 import 'scene/scene_server.dart';
 import 'scene/scene_view.dart';
 import 'theme/app_colors.dart';
@@ -37,14 +40,23 @@ Future<void> main() async {
     startError = 'Không mở được máy chủ nội bộ ở cổng ${server.port}: $e';
   }
 
-  runApp(HocXaApp(server: server, startError: startError));
+  // tiến độ học (R-HANH-1); không mở được kho → vẫn chạy, chỉ Rừng trúc mở, không lưu
+  ProgressStore? progress;
+  try {
+    progress = await ProgressStore.open();
+  } catch (e) {
+    debugPrint('Không mở được kho tiến độ: $e');
+  }
+
+  runApp(HocXaApp(server: server, startError: startError, progress: progress));
 }
 
 class HocXaApp extends StatelessWidget {
-  const HocXaApp({super.key, required this.server, this.startError});
+  const HocXaApp({super.key, required this.server, this.startError, this.progress});
 
   final SceneServer server;
   final String? startError;
+  final ProgressStore? progress;
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +72,12 @@ class HocXaApp extends StatelessWidget {
           ? SceneView(
               url: server.url,
               // trang gửi openLesson → mở màn bài học native; đóng màn → SceneView gửi resume (docs/bridge.md)
-              onOpenLesson: (context, request) => Navigator.of(context).push(LessonScreen.route(request.lesson)),
+              // mở bài lần đầu = đã học chữ đó (R-HANH-1, tạm tới khi có nút "Đã thuộc")
+              onOpenLesson: (context, request) {
+                progress?.learnChar(request.lesson.han);
+                return Navigator.of(context).push(LessonScreen.route(request.lesson));
+              },
+              onGetProgress: () => progressReply(progress?.progress ?? const Progress()),
             )
           : Scaffold(body: SceneErrorView(detail: startError!)),
     );

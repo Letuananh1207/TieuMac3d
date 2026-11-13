@@ -35,6 +35,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   flutter_inappwebview: 6.1.5
+  shared_preferences: 2.5.3
 
 dev_dependencies:
   flutter_test:
@@ -87,6 +88,10 @@ flutter:
     - family: HanSerif100
       fonts:
         - asset: assets/fonts/han-100.ttf
+          weight: 700
+    - family: HanSerif111
+      fonts:
+        - asset: assets/fonts/han-111.ttf
           weight: 700
     - family: HanSerif114
       fonts:

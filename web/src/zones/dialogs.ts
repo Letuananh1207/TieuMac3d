@@ -39,21 +39,21 @@ export const DIALOGS: Dialog[] = [
     lines: [
       {
         id: 'chao',
-        text: 'Đạo hữu mới đến Văn Uyên Tông à? Tiểu Mặc là đệ tử ngoại môn, hôm nay được giao canh cổng Sơn Môn đó!',
+        text: 'Đạo hữu mới đến Văn Uyên Tông à? Tiểu Mặc là đệ tử ngoại môn, hôm nay được giao đón người mới ở sân Ngoại Môn đó!',
         choices: [
-          { text: 'Tiểu Mặc canh cổng làm gì?', next: 'canh-cong' },
+          { text: 'Tiểu Mặc đứng đây làm gì?', next: 'don-khach' },
           { text: 'Hôm nay Tiểu Mặc thế nào?', next: 'hom-nay' },
           BYE,
         ],
       },
       {
-        id: 'canh-cong',
-        text: 'Đón người mới chứ sao! Ai bước qua cổng này là bắt đầu đường tu chữ — học thêm một chữ, thêm một phần tu vi.',
+        id: 'don-khach',
+        text: 'Đón người mới chứ sao! Ai bước qua cổng trăng này là bắt đầu đường tu chữ — học thêm một chữ, thêm một phần tu vi.',
         choices: [{ text: 'Tu chữ ở đâu?', next: 'tu-chu' }, OTHER, BYE],
       },
       {
         id: 'tu-chu',
-        text: 'Vào giảng đường nghe giảng, sang thư viện ôn bài. Cứ đi thẳng qua cổng trăng là tới. Chăm chỉ là lên cảnh giới nhanh lắm!',
+        text: 'Vào giảng đường nghe giảng, sang thư viện ôn bài. Giảng đường ở ngay phía bắc sân, thư viện bên tây. Chăm chỉ là lên cảnh giới nhanh lắm!',
         choices: [OTHER, BYE],
       },
       {

@@ -1,5 +1,5 @@
 // Cắt font chữ Hán Noto Serif SC 700 chỉ còn các chữ app dùng → web/src/fonts/ (file sinh tự động, không sửa tay).
-// Chữ quét từ web/src/**/*.ts, web/*.html, design/scene/scene.json. Nguồn: @fontsource/noto-serif-sc (devDependency,
+// Chữ quét từ web/src/**/*.ts, web/*.html, design/scene/*.json. Nguồn: @fontsource/noto-serif-sc (devDependency,
 // 102 file chia theo unicode-range) → mỗi file có chữ cần thì cắt còn đúng các chữ đó (vài KB), sinh han.css.
 // Chạy trước dev / build (package.json). Thiếu chữ trong font → báo lỗi, thoát 1.
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
@@ -26,8 +26,13 @@ function walk(dir, out = []) {
 const sources = [
   ...walk(join(WEB, 'src')),
   ...readdirSync(WEB).filter((n) => n.endsWith('.html')).map((n) => join(WEB, n)),
-  join(WEB, '../design/scene/scene.json'),
 ].filter(existsSync);
+// mọi đặc tả cảnh: tông môn + từng vùng (tên vùng, tên khu trên màn tải / chip)
+const SCENE_DIR = join(WEB, '../design/scene');
+if (existsSync(SCENE_DIR)) sources.push(...readdirSync(SCENE_DIR).filter((n) => n.endsWith('.json')).map((n) => join(SCENE_DIR, n)));
+// bản đồ truyền tống: chữ Hán tên các nơi (thẻ yêu cầu HUD)
+const MAP_JSON = join(SCENE_DIR, 'ban-do', 'ban-do.json');
+if (existsSync(MAP_JSON)) sources.push(MAP_JSON);
 const chars = new Set();
 for (const f of sources) for (const m of readFileSync(f, 'utf8').matchAll(HAN)) chars.add(m[0]);
 

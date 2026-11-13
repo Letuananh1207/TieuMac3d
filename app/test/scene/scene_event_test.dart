@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hoc_xa_3d/journey/journey.dart';
 import 'package:hoc_xa_3d/scene/scene_event.dart';
 
 void main() {
@@ -50,5 +51,28 @@ void main() {
     expect(lifecycleScript(visible: false), contains('{"type":"lifecycle","payload":{"state":"hidden"}}'));
     expect(lifecycleScript(visible: true), contains('{"type":"lifecycle","payload":{"state":"visible"}}'));
     expect(debugScript(on: true), contains('{"type":"debug","payload":{"on":true}}'));
+  });
+
+  test('getProgress: nhận loại sự kiện, trả vùng đã mở + số chữ (docs/bridge.md)', () {
+    expect(sceneEventType([{'type': 'getProgress', 'payload': {}}]), 'getProgress');
+    expect(sceneEventType([]), isNull);
+    expect(sceneEventType(['x']), isNull);
+    expect(progressReply(const Progress(chars: {'快', '書'})), {
+      'open': ['rung-truc'],
+      'chars': 2,
+      'need': {
+        'giang-nam': {'radicals': 50},
+        'bong-lai': {'chars': 300},
+        'truong-thanh': {'chars': 900},
+        'tu-cam-thanh': {'chars': 1800},
+        'to-lua': {'chars': 3000},
+      },
+    });
+  });
+
+  test('back: hỏi trang, trả true khi trang đã xử lý (docs/bridge.md)', () {
+    expect(backScript, contains('"type":"back"'));
+    expect(backScript, contains('===true'));
+    expect(backScript, startsWith('window.scene?'));
   });
 }

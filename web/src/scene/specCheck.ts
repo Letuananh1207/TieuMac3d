@@ -16,6 +16,7 @@ import {
   type SceneSpec,
   type XZ,
 } from './spec';
+import { ringTrigger } from './teleportLayout';
 import { stairEnds, terrainHeightFn } from './terrainHeight';
 
 export interface ResolvedScene {
@@ -272,6 +273,7 @@ function checkConsistency(s: SceneSpec): string[] {
   if (t.enabled && t.edge.radius + t.edge.width > t.size / 2) {
     out.push(`terrain.edge: mép vực (radius + width = ${t.edge.radius + t.edge.width}) vượt nửa vùng lưới (${t.size / 2}) — tăng size`);
   }
+  out.push(...checkTeleport(s));
   if (s.cloudSea.radius < 0) out.push('cloudSea.radius: phải ≥ 0');
   if (t.enabled && t.size > 0 && t.cell > 0) out.push(...checkOnFlatGround(s));
   if (t.enabled) {
@@ -282,6 +284,18 @@ function checkConsistency(s: SceneSpec): string[] {
       if (deg > 35) out.push(`terrain.stairs[${i}]: dốc ${deg.toFixed(0)}° > 35° — nhân vật không leo được (R-VA-2); kéo dài bậc hoặc hạ đầu trên`);
     });
   }
+  return out;
+}
+
+/** Vòng trận (R-HANH-2): nằm trong sân; chỗ xuất phát của cảnh không nằm trong vòng (phải bước vào mới truyền tống). */
+function checkTeleport(s: SceneSpec): string[] {
+  const out: string[] = [];
+  const tp = s.teleport;
+  if (!tp.enabled) return out;
+  if (tp.ringRadius <= 0) out.push('teleport.ringRadius: phải > 0');
+  if (tp.radius > 0 && tp.ringRadius + 0.6 > tp.radius) out.push('teleport: vòng trận chạm viền sân (ringRadius + 0,6 > radius)');
+  const d = Math.hypot(s.player.start[0] - tp.center[0], s.player.start[1] - tp.center[1]);
+  if (d < ringTrigger(tp) + 1) out.push(`teleport: chỗ xuất phát (player.start) cách tâm vòng ${d.toFixed(1)} m — dời ra ngoài vòng (≥ ${ringTrigger(tp) + 1} m)`);
   return out;
 }
 
@@ -306,9 +320,12 @@ function checkOnFlatGround(s: SceneSpec): string[] {
   for (const b of s.buildings) flat(`nhà "${b.id}"`, box(b.x, b.z, b.w + 1, b.d + 1, b.rotY));
   for (const g of s.gates) flat(`cổng "${g.id}"`, box(g.x, g.z, g.width + 8, 2, g.rotY));
   for (const w of s.water) flat(`ao (${w.x}; ${w.z})`, box(w.x, w.z, w.r !== undefined ? w.r * 2 : (w.w ?? 0), w.r !== undefined ? w.r * 2 : (w.d ?? 0), w.rotY));
-  flat('giếng', box(s.well.x, s.well.z, 2.4, 2.4));
+  if (s.well.enabled) flat('giếng', box(s.well.x, s.well.z, 2.4, 2.4));
   const hw = s.walls.half;
-  flat('tường bao', [[-hw, -hw], [hw, -hw], [-hw, hw], [hw, hw], [0, -hw], [0, hw], [-hw, 0], [hw, 0]]);
+  if (s.walls.enabled) flat('tường bao', [[-hw, -hw], [hw, -hw], [-hw, hw], [hw, hw], [0, -hw], [0, hw], [-hw, 0], [hw, 0]]);
+  const tp = s.teleport;
+  const pad = Math.max(tp.radius, tp.ringRadius + 0.7) * 2;
+  if (tp.enabled) flat('vòng trận (teleport)', box(tp.center[0], tp.center[1], pad, pad));
   s.wallSegments.forEach((w, i) => flat(`wallSegments[${i}]`, [w.from, w.to, [(w.from[0] + w.to[0]) / 2, (w.from[1] + w.to[1]) / 2]]));
   flat('điểm xuất phát (player.start)', box(s.player.start[0], s.player.start[1], 2, 2));
   return out;

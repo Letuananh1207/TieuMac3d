@@ -19,9 +19,15 @@ Ví dụ: đủ 6 khu phẳng `docs/phieu_thiet_ke/2026-11-11-tong-mon-dot-1-mau
 | `buildingStyle.heightScale` | `1.6` | hệ số chiều cao kiến trúc (nền, cột, tường, cửa, mái, tầng tháp, cổng); thứ cỡ người (bậc — thêm bậc, lan can, biển, đèn, đồ đạc) giữ. Mặc định 1 |
 | `gates` | `{ "id": "son-mon", "x": 0, "z": 45, "width": 6, "title": "Thanh Vân Tông", "hanTitle": "文淵宗", "roofColor": "#3e6b5a" }` | cổng sơn môn 3 gian 4 trụ (gian giữa = `width`, gian bên 3,5 m); va chạm chỉ trụ |
 | `water` | `{ "x": -45, "z": 10, "r": 4 }` · `{ "x": 52, "z": -8, "w": 6, "d": 4 }` | ao tròn / chữ nhật, không đi xuống được |
-| `props` | `{ "kind": "lo-dan", "x": -41, "z": -27, "scale": 1 }` | dai-ti-thi (r 6) · gia-binh-khi · luong-thuoc · lo-dan (khói) · da-thai-ho · den-da · dinh-dong (khói hương) |
+| `props` | `{ "kind": "lo-dan", "x": -41, "z": -27, "scale": 1 }` | luong-thuoc · lo-dan (khói) · da-thai-ho · den-da · dinh-dong (khói hương) |
 | `site` | `{ "name": "Văn Uyên Tông", "han": "文淵宗", "areas": [{ "name": "Diễn Võ Trường", "han": "演武場", "from": [27, -15], "to": [60, 15] }] }` | chip HUD (R-HUD-1) + thẻ tên khu (R-HUD-3) + màn tải; chữ Hán mới tự được cắt font khi build |
 | `player.start` | `[0, 80]` | điểm xuất phát (bố cục) |
+| `teleport` | `{ "enabled": true, "center": [44, 0], "radius": 13, "ringRadius": 4 }` | vòng trận truyền tống (R-HANH-2): tông môn = sân đá ∅ `2 × radius` + vòng giữa sân; vùng: `"radius": 0` = vòng trên bệ đá. `player.start` phải ngoài vòng (≥ 0,8 × ringRadius + 1 m). `colors`. Canvas 3D `?nap=0..1` xem hiệu ứng nạp |
+| `walls.enabled` · `well.enabled` | `false` | cảnh vùng: không tường bao (đoạn `wallSegments` vẫn dựng), không giếng |
+
+**Nhiều cảnh** (mục 2026-11-13.6): `scene.json` = tông môn; mỗi vùng một file `design/scene/<mã vùng>.json` (vd.
+`rung-truc.json`), ghép lên khuôn mặc định như `scene.json` — danh sách (`buildings`, `trees.yard`…) ghi rõ `[]` nếu
+không muốn thứ của khuôn. Canvas 3D: `?vung=<mã>` xem cảnh vùng.
 
 ## Cây, trời
 

@@ -14,6 +14,7 @@
   --slate:#24323a;      /* chữ chính */
   --jade:#2b5446;       /* ngọc lục: nút chính, núm joystick, tên khu */
   --on-jade:#fff;
+  --jade-press:#1f4035; /* nút ngọc lục đang nhấn (token jade-press, 2026-11-13.9) */
   --gold:#d4a64a;       /* chấm vàng — hoạ tiết duy nhất */
   --frost:rgba(244,247,246,.82);
   --frost-strong:rgba(244,247,246,.8);   /* thẻ tên khu */
@@ -128,6 +129,77 @@ button:focus-visible{outline:2px solid var(--jade);outline-offset:2px}
 .board dd{margin:0}
 .board button{font-size:15px;border-radius:999px;padding:10px 18px;background:var(--lacquer);border:1px solid var(--lacquer);color:#fff}
 
+/* cụm nút hành động (R-DIEU-6/7) — canvas HUD-hanh-dong-doc / -ngang, NutHanhDong-trang-thai, mục 2026-11-13.9 */
+#actions{position:fixed;z-index:5;right:16px;bottom:calc(var(--sa-bottom) + 16px);width:170px;height:170px;pointer-events:none}
+#actions .act{position:absolute;display:flex;flex-direction:column;align-items:center;gap:3px}
+#actions .act-jump{right:0;bottom:0}
+#actions .act-bow{right:86px;bottom:6px}
+#actions .act-sit{right:8px;bottom:96px}
+#actions button{pointer-events:auto;width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-sizing:border-box;padding:0;color:var(--slate);background:rgba(244,247,246,.86);border:1px solid var(--frost-line);outline:1px solid var(--frost-outline);box-shadow:var(--shadow-hud);-webkit-backdrop-filter:var(--blur-hud);backdrop-filter:var(--blur-hud);transition:transform .08s;touch-action:none}
+#actions .act-jump button{width:68px;height:68px;color:#fff;background:var(--jade);border:2px solid rgba(255,255,255,.9);outline:0;box-shadow:inset 0 -3px 0 rgba(0,0,0,.18),0 6px 16px rgba(43,84,70,.35)}
+#actions button:active{transform:scale(.94);background:rgba(220,228,225,.92)}
+#actions .act-jump button:active{background:var(--jade-press)}
+#actions button.on{color:#fff;background:var(--jade);border:2px solid var(--gold);box-shadow:0 0 0 4px rgba(212,166,74,.35),var(--shadow-hud)}
+#actions button.off{background:rgba(244,247,246,.6);box-shadow:none}
+#actions button.off svg{opacity:.45}
+#actions .act-jump button.off{background:rgba(43,84,70,.55)}
+#actions .lbl{font-size:11px;font-weight:700;color:var(--slate);background:rgba(244,247,246,.82);border-radius:999px;padding:1px 7px;white-space:nowrap}
+#actions .act-sit button.on + .lbl{color:var(--jade)}
+#actions[hidden]{display:none}
+/* nút "Nói chuyện" bám trên NPC — kiểu nút học nổi */
+#talk{position:fixed;z-index:6;transform:translate(-50%,calc(-100% - 10px));display:flex;flex-direction:column;align-items:center}
+#talk[hidden]{display:none}
+#talkBtn{height:46px;box-sizing:border-box;padding:0 18px 0 14px;font:inherit;font-size:15px;font-weight:700;color:var(--on-jade);background:var(--jade);border:1px solid var(--frost-line);border-radius:999px;box-shadow:inset 0 -2px 0 rgba(0,0,0,.18),0 6px 16px rgba(36,50,58,.3);display:flex;align-items:center;gap:8px;white-space:nowrap}
+#talkBtn:active{background:var(--jade-press)}
+#talk .tip{width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:8px solid var(--jade)}
+#talk .who{margin-top:4px;height:24px;box-sizing:border-box;padding:0 10px;display:flex;align-items:center;gap:6px;background:rgba(244,247,246,.86);border:1px solid var(--frost-line);outline:1px solid var(--frost-outline);border-radius:999px;font-size:12px;font-weight:700;white-space:nowrap;pointer-events:none}
+#talk .han,#dialog .han{font-family:var(--han);font-weight:700}
+/* khung thoại đáy màn */
+#dialogDim{position:fixed;inset:0;z-index:6;background:rgba(36,50,58,.18);pointer-events:none;display:none}
+body.talking #dialogDim{display:block}
+#dialog{position:fixed;z-index:8;left:12px;right:12px;bottom:calc(var(--sa-bottom) + 12px);box-sizing:border-box;padding:26px 18px 16px;background:rgba(244,247,246,.94);border:1px solid var(--frost-line);outline:1px solid var(--frost-outline);border-radius:16px;box-shadow:0 -6px 28px rgba(36,50,58,.25);display:flex;flex-direction:column;gap:14px;-webkit-backdrop-filter:var(--blur-card);backdrop-filter:var(--blur-card)}
+#dialog[hidden]{display:none}
+#dlgFace{position:absolute;left:4px;top:-36px;width:64px;height:64px;border-radius:50%;object-fit:cover;object-position:50% 22%;border:3px solid #fff;background:var(--mist);box-shadow:var(--shadow-hud)}
+#dialog .name{position:absolute;left:76px;top:-16px;height:32px;box-sizing:border-box;padding:0 14px;display:flex;align-items:center;gap:8px;background:var(--jade);color:#fff;border:1px solid var(--frost-line);border-radius:999px;font-size:14px;font-weight:700}
+#dialog .say{padding-top:8px}
+#dialog .say p{margin:0;font-size:16px;font-weight:500;line-height:1.55;color:var(--slate);min-height:3.1em}
+#dialog .end{display:inline-block;width:8px;height:8px;margin-left:6px;border-radius:50%;background:var(--jade);vertical-align:middle}
+#dialog .end[hidden]{display:none}
+#dialog .choices{display:flex;flex-direction:column;gap:8px}
+#dialog .choices:empty{display:none}
+#dialog .choices button{min-height:46px;box-sizing:border-box;padding:10px 16px;font:inherit;font-size:15px;font-weight:700;text-align:left;border-radius:12px;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.7);border:1px solid rgba(36,50,58,.18);color:var(--slate);box-shadow:0 2px 6px rgba(36,50,58,.08)}
+#dialog .choices .dot{width:6px;height:6px;border-radius:50%;background:var(--gold);flex:none}
+#dialog .choices button.bye{background:transparent;border-color:rgba(36,50,58,.3);box-shadow:none}
+#dialog .choices .x{font-size:18px;line-height:1;width:16px;text-align:center;flex:none}
+body.talking #joy,body.talking #joyGhost,body.talking #hint,body.talking #btnCam,body.talking .learn,body.talking #actions,body.talking #talk{display:none}
+body.map-open #actions,body.map-open #talk{display:none}
+@media (orientation:landscape){
+  #actions{right:calc(var(--sa-right) + 12px);bottom:calc(var(--sa-bottom) + 9px)}
+  #dialog{left:calc(var(--sa-left) + 12px);right:calc(var(--sa-right) + 12px);display:grid;grid-template-columns:1fr 270px;column-gap:18px;align-items:start}
+  #dialog .choices{grid-column:2;grid-row:1}
+  #dialog .say{grid-column:1;grid-row:1}
+}
+/* bản đồ truyền tống (R-HANH-2) — canvas BanDo-doc / BanDo-ngang, mục 2026-11-13.9. Cuộn 3D ở dọc: rộng 97 % màn
+   (cao ≈ 57,2vw), tâm ở 40 % chiều cao → gợi ý ở trên mép cuộn 46 px, thẻ dưới mép cuộn 21 px */
+#mapHud{position:fixed;inset:0;z-index:7;pointer-events:none}
+#mapHint{position:absolute;left:50%;top:calc(40% - 28.6vw - 46px);transform:translateX(-50%);height:32px;box-sizing:border-box;padding:0 14px;display:flex;align-items:center;background:rgba(244,247,246,.86);outline-color:rgba(36,50,58,.14);border-radius:999px;font-size:13px;font-weight:700;white-space:nowrap}
+.map-card{position:absolute;left:24px;right:24px;top:calc(40% + 28.6vw + 21px);box-sizing:border-box;padding:12px 16px;display:flex;align-items:center;gap:12px;background:rgba(244,247,246,.92);border:1px solid var(--frost-line);outline:1px solid rgba(168,50,42,.35);border-radius:14px;box-shadow:0 8px 22px rgba(36,50,58,.25);-webkit-backdrop-filter:var(--blur-hud);backdrop-filter:var(--blur-hud)}
+.map-card .lock{flex:none;width:28px;height:28px;border-radius:50%;background:var(--slate);position:relative}
+.map-card .lock::before{content:"";position:absolute;left:8px;top:13px;width:12px;height:9px;border-radius:2px;background:#f4f7f6}
+.map-card .lock::after{content:"";position:absolute;left:10px;top:6px;width:8px;height:8px;box-sizing:border-box;border:2px solid #f4f7f6;border-bottom:0;border-radius:5px 5px 0 0}
+.map-card .l1{font-size:15px;font-weight:700}
+.map-card .l1 .han{font-family:var(--han)}
+.map-card .l2{font-size:13px}
+#mapClose{position:absolute;left:50%;bottom:calc(var(--sa-bottom) + 24px);transform:translateX(-50%);pointer-events:auto;height:48px;box-sizing:border-box;padding:0 24px 0 18px;display:flex;align-items:center;gap:8px;font:inherit;font-size:15px;font-weight:700;color:var(--slate);background:rgba(244,247,246,.92);border:1px solid var(--frost-line);outline:1px solid rgba(36,50,58,.22);border-radius:999px;box-shadow:0 6px 18px rgba(36,50,58,.25);-webkit-backdrop-filter:var(--blur-hud);backdrop-filter:var(--blur-hud)}
+#mapClose .x{font-size:18px;line-height:1}
+body.map-open #joy,body.map-open #joyGhost,body.map-open #hint,body.map-open .learn{display:none}
+@media (orientation:landscape){
+  #mapHint{display:none}
+  .map-card{left:var(--edge-left);right:auto;top:auto;bottom:calc(var(--sa-bottom) + 12px);max-width:calc(50% - var(--edge-left))}
+  .map-card .l1{font-size:14px}
+  .map-card .l2{font-size:12px}
+  #mapClose{left:auto;right:var(--edge-right);transform:none;bottom:calc(var(--sa-bottom) + 12px);height:44px}
+}
 @media (prefers-reduced-motion:reduce){#hint,#areaCard,#areaCard.on,#loading,#loading .fill{transition:none}}
 
 /* Màn ngang trên điện thoại (thấp) */

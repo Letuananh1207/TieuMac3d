@@ -16,6 +16,7 @@ import { roomKinds, zoneAnchors, type SceneSpec, type ZoneAnchor } from './spec'
 import { addTerrain } from './terrain';
 import { buildHeightfield, type GroundY } from './terrainHeight';
 import { addTrees } from './trees';
+import { addTeleport, type TeleportRing } from './truyenTong';
 import { addWaterways } from './waterways';
 import { addWalls } from './walls';
 import { addWater } from './water';
@@ -30,6 +31,8 @@ export interface World {
   rooms: Room[];
   /** vị trí các vùng sự kiện, neo theo nhà trong đặc tả */
   zoneAnchors: ZoneAnchor[];
+  /** vòng trận truyền tống (`teleport.enabled`) */
+  teleport: TeleportRing | null;
   /** gọi mỗi khung hình: khói lò đan, mây, đảo nổi, mờ mái nhà khi `player` đứng trong */
   update(dt: number, player?: { x: number; z: number }): void;
 }
@@ -73,7 +76,8 @@ export function buildWorld(scene: THREE.Scene, colliders: Colliders, spec: Scene
   addWater(scene, colliders, spec.water, style, groundY);
   const props = addProps(scene, colliders, spec.props, style, groundY);
   const trees = addTrees(scene, colliders, spec.trees, groundY);
-  addWell(scene, colliders, spec.well, base(spec.well.x, spec.well.z));
+  if (spec.well.enabled) addWell(scene, colliders, spec.well, base(spec.well.x, spec.well.z));
+  const teleport = spec.teleport.enabled ? addTeleport(scene, spec.teleport, groundY) : null;
   const floating = addFloating(scene, spec.floating, style, spec.trees.leaves[1], spec.trees.seed);
   // dựng xong mới gộp: khối đứng yên cùng vật liệu → một draw call (scene/merge.ts)
   mergeStatic(scene, new Set([ground]));
@@ -82,11 +86,13 @@ export function buildWorld(scene: THREE.Scene, colliders: Colliders, spec: Scene
     surface: new LayeredGround(hf, rooms.flatMap((r) => r.pads)),
     rooms,
     zoneAnchors: zoneAnchors(spec.buildings, kinds),
+    teleport,
     update(dt, player) {
       props(dt);
       trees(dt);
       floating(dt);
       waterways(dt);
+      teleport?.update(dt);
       for (const r of rooms) r.update(dt, !!player && inRect(r.floor, player.x, player.z));
     },
   };

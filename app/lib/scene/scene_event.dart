@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import '../journey/journey.dart';
+
 /// Sự kiện qua cầu nối Flutter ↔ scene web. Hợp đồng (tên, dạng): docs/bridge.md.
 /// Tên handler JS gọi sang: `window.flutter_inappwebview.callHandler('sceneEvent', {type, payload})`.
 const sceneEventHandler = 'sceneEvent';
@@ -47,10 +49,26 @@ class OpenLessonRequest {
   }
 }
 
+/// Loại sự kiện JS gửi sang (`type`), hoặc `null` nếu sai dạng.
+String? sceneEventType(List<dynamic> args) {
+  if (args.isEmpty) return null;
+  final event = args.first;
+  if (event is! Map) return null;
+  final type = event['type'];
+  return type is String ? type : null;
+}
+
+/// Trả lời `getProgress` (docs/bridge.md): vùng đã mở theo thứ tự hành trình, số chữ đã học, mốc vùng còn khoá.
+Map<String, Object?> progressReply(Progress p) => {'open': p.openRegions, 'chars': p.chars.length, 'need': p.needs};
+
 /// Đoạn JS gửi một sự kiện sang trang: `window.scene.handle({type, payload})`.
 /// Trang chưa sẵn sàng (chưa có `window.scene`) thì bỏ qua, không văng lỗi.
 String sceneEventScript(String type, [Map<String, Object?> payload = const {}]) =>
     'window.scene&&window.scene.handle(${jsonEncode({'type': type, 'payload': payload})});';
+
+/// Nút quay lại của máy: trang trả `true` nếu đã xử lý (đóng bản đồ truyền tống — R-HANH-2), khác → Flutter thoát
+/// như thường. Trang chưa sẵn sàng → `false`.
+final backScript = 'window.scene?window.scene.handle(${jsonEncode({'type': 'back', 'payload': <String, Object?>{}})})===true:false;';
 
 /// Đóng màn bài học → cảnh chạy tiếp.
 final resumeScript = sceneEventScript('resume');

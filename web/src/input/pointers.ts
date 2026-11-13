@@ -24,6 +24,8 @@ export interface PointerHandlers {
   onFirstInput(): void;
   /** joystick bắt đầu: bỏ điểm đến đang có */
   onJoystickStart(): void;
+  /** `true` = chỉ nhận chạm ngắn (bản đồ truyền tống đang mở — R-HANH-2): không joystick, không xoay / zoom camera */
+  tapOnly?(): boolean;
 }
 
 /**
@@ -41,6 +43,10 @@ export function attachPointerInput(canvas: HTMLCanvasElement, h: PointerHandlers
   canvas.addEventListener('pointerdown', (e) => {
     canvas.setPointerCapture(e.pointerId);
     h.onFirstInput();
+    if (h.tapOnly?.()) {
+      looks.set(e.pointerId, { x: e.clientX, y: e.clientY, sx: e.clientX, sy: e.clientY, t: performance.now() });
+      return;
+    }
     if (e.clientX < window.innerWidth * JOYSTICK_ZONE && joystick.id === null && e.pointerType !== 'mouse') {
       joystick.start(e.pointerId, e.clientX, e.clientY);
       h.onJoystickStart();
@@ -60,6 +66,7 @@ export function attachPointerInput(canvas: HTMLCanvasElement, h: PointerHandlers
     }
     const p = looks.get(e.pointerId);
     if (!p) return;
+    if (h.tapOnly?.()) return; // chỉ chờ nhả để tính chạm
     if (looks.size === 2) {
       p.x = e.clientX;
       p.y = e.clientY;
@@ -93,7 +100,7 @@ export function attachPointerInput(canvas: HTMLCanvasElement, h: PointerHandlers
     'wheel',
     (e) => {
       e.preventDefault();
-      orbit.wheel(e.deltaY);
+      if (!h.tapOnly?.()) orbit.wheel(e.deltaY);
     },
     { passive: false },
   );

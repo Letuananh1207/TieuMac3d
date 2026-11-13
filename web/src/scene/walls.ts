@@ -28,6 +28,7 @@ export function cutRun(run: Run, gaps: [number, number][]): Run[] {
 
 /** Bốn cạnh tường bao (dày 1, góc chồng lên nhau) đã trừ khe cổng; `pad` = nới mỗi khe thêm bao nhiêu mét mỗi bên. */
 export function ringRuns(spec: SceneSpec['walls'], pad = 0): Run[] {
+  if (!spec.enabled) return []; // cảnh vùng không có tường bao (đoạn tường lẻ vẫn dựng)
   const { half, height } = spec;
   const end = half + 0.5;
   const sides: [WallGate['side'], Run][] = [

@@ -1,5 +1,5 @@
 # Phiếu: Hội thoại với NPC — nút "Nói chuyện" + khung thoại có lựa chọn
-- Trạng thái: chờ thiết kế
+- Trạng thái: đã áp (2026-11-13.9)
 - Đã vẽ: 2026-11-13.9
 - Đợi bởi: kế hoạch `docs/tasks/2026-11-13-bo-cham-di-hoi-thoai.md` (nhiệm vụ 4 — nối giao diện vào logic đã có),
   luật R-NPC-2 (App: sửa)

@@ -83,6 +83,16 @@ export class PlayerController {
   }
 
   /** R-DIEU-6: nhảy — chỉ khi đang trên đất, không ngồi. Trả về true nếu bật lên. */
+  /** đang ngồi thiền (R-DIEU-7) — nút Thiền sáng, nút Nhảy mờ */
+  get isSitting(): boolean {
+    return this.sitting;
+  }
+
+  /** đang chắp tay chào (R-DIEU-7) */
+  get isBowing(): boolean {
+    return this.bowLeft > 0;
+  }
+
   jump(): boolean {
     if (this.state.air || this.sitting) return false;
     this.bowLeft = 0;

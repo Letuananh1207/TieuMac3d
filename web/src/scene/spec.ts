@@ -13,8 +13,6 @@ export const SIDES = ['bac', 'nam', 'dong', 'tay'] as const;
 /** NPC có model: `design/models/<mã>.glb` (tạo bằng /tai-nguyen). Thêm NPC mới = thêm mã ở đây + đặt file model. */
 export const NPC_IDS = ['tieu-mac'] as const;
 export const PROP_KINDS = [
-  'dai-ti-thi',
-  'gia-binh-khi',
   'luong-thuoc',
   'lo-dan',
   'da-thai-ho',
@@ -207,6 +205,19 @@ export interface MountainLayer {
   spurs?: number;
 }
 
+/**
+ * Vòng trận truyền tống (R-HANH-2): một vòng bán kính `ringRadius` tâm `center`. Tông môn: nằm giữa sân đá tròn bán
+ * kính `radius` (Truyền Tống Đài); cảnh vùng: `radius` 0 = chỉ có vòng (bệ đá nhỏ).
+ */
+export interface TeleportSpec {
+  enabled: boolean;
+  center: XZ;
+  radius: number;
+  ringRadius: number;
+  /** sân đá, viền + phù hiệu, vòng khi tắt, vòng sáng (ngọc lục), chấm vàng / hạt sáng */
+  colors: { floor: string; rim: string; dim: string; lit: string; spark: string };
+}
+
 export interface SceneSpec {
   /** tên nơi + các khu cho chip HUD; khu khai báo trước thắng khi chồng nhau */
   /** `han`: chữ Hán tên nơi trên màn tải (R-MAN-2), rỗng = chỉ tên Việt */
@@ -260,8 +271,9 @@ export interface SceneSpec {
   farMountains: { layers: MountainLayer[]; base: number };
   /** biển mây phẳng dưới mép cao nguyên; `radius` 0 = tắt */
   cloudSea: { radius: number; y: number; color: string };
-  /** tường bao: nằm ở ±half; `gates` = khe chừa lối đi */
+  /** tường bao: nằm ở ±half; `gates` = khe chừa lối đi; `enabled: false` = không có tường bao (cảnh vùng) */
   walls: {
+    enabled: boolean;
     half: number;
     height: number;
     color: string;
@@ -320,7 +332,10 @@ export interface SceneSpec {
     /** hạt giống ngẫu nhiên: cùng số → cây giống hệt nhau trên Canvas 3D và trong app */
     seed: number;
   };
-  well: { x: number; z: number; stone: string; water: string };
+  /** `enabled: false` = không có giếng (cảnh vùng) */
+  well: { enabled: boolean; x: number; z: number; stone: string; water: string };
+  /** vòng trận truyền tống (R-HANH-2): tông môn = Truyền Tống Đài; vùng = vòng về / đi tiếp; `player.start` ngoài vòng */
+  teleport: TeleportSpec;
   /** đảo đá lơ lửng (chỉ ngắm) + mây trôi quanh tâm cảnh ở độ cao `height` */
   floating: {
     islands: { x: number; y: number; z: number; scale: number }[];
@@ -368,7 +383,7 @@ export const DEFAULT_SCENE: SceneSpec = {
   },
   farMountains: { layers: [], base: -40 },
   cloudSea: { radius: 0, y: -10, color: '#f4f1ea' },
-  walls: { half: 21, height: 2.6, color: '#4a2b24', brickHue: 8, capColor: '#6e2f26', gates: [], style: 'gach', windows: 0 },
+  walls: { enabled: true, half: 21, height: 2.6, color: '#4a2b24', brickHue: 8, capColor: '#6e2f26', gates: [], style: 'gach', windows: 0 },
   wallSegments: [],
   paths: [],
   buildingStyle: {
@@ -434,7 +449,15 @@ export const DEFAULT_SCENE: SceneSpec = {
     ring: { count: 26, radius: 25, spread: 6, scaleMin: 1.6, scaleMax: 2.4 },
     seed: 7,
   },
-  well: { x: 6, z: 2, stone: '#6c6660', water: '#2b4a6a' },
+  well: { enabled: true, x: 6, z: 2, stone: '#6c6660', water: '#2b4a6a' },
+  // tắt: đặc tả tông môn / vùng bật (mục 2026-11-13.6, đổi kiểu một vòng 2026-11-13); giá trị dưới = Truyền Tống Đài khu 3
+  teleport: {
+    enabled: false,
+    center: [44, 0],
+    radius: 13,
+    ringRadius: 4,
+    colors: { floor: '#b9b4a8', rim: '#8d877f', dim: '#7f8a84', lit: '#4fd1a5', spark: '#f2c45a' },
+  },
   floating: {
     islands: [],
     clouds: { count: 0, height: 26, radius: 60, speed: 0.6, color: '#d9dce8' },

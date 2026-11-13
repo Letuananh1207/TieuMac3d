@@ -117,6 +117,7 @@ flutter test -r failures-only test/<phần> · dart tool/rule_trace.dart
 | thiết kế cảnh (không cần code mới) | — | `/canh` (sửa `design/scene/scene.json`) |
 | NPC, Tiểu Mặc, nhân vật đứng trong cảnh | `npc`, `placeNpcs` | `web/src/player/npc.ts`, `npcs` trong đặc tả cảnh (R-NPC-1); model `design/models/<mã>.glb`, mã thêm ở `NPC_IDS` (`scene/spec.ts`) |
 | model .glb: tạo / thay nhân vật / công trình bằng AI | `glbCharacter`, `playerCharacter` | `/tai-nguyen` (Hunyuan3D); code nạp: `web/src/player/glbCharacter.ts`; công trình .glb chưa có code đặt vào cảnh |
+| hành trình, vùng, Truyền Tống Đài, vòng trận, bản đồ truyền tống, mở vùng theo số chữ, về nhà, Rừng trúc, tiến độ học | `truyenTong`, `teleportLayout`, `ringCharge`, `loadSpec`, `journey`, `progress_store` | `web/src/scene/{truyenTong,teleportLayout,loadSpec}.ts`, `web/src/zones/ringCharge.ts`, `main.ts`; mốc mở + tiến độ: `app/lib/journey/`; cảnh vùng `design/scene/<mã>.json`; kế hoạch `docs/tasks/2026-11-13-hanh-trinh-nhieu-vung.md` |
 | hiệu năng, draw call, tam giác (mốc 4) | `merge`, `renderer` | `docs/tasks/2026-11-11-moc-4-hieu-nang.md`, `web/src/scene/merge.ts` |
 
 Thêm tính năng / thư mục mới → thêm một dòng vào bảng này cùng lúc.

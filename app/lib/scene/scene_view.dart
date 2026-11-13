@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 import '../theme/app_colors.dart';
@@ -9,13 +10,16 @@ import 'scene_event.dart';
 
 /// Màn chính: WebView phủ toàn màn hình, hiển thị scene 3D.
 class SceneView extends StatefulWidget {
-  const SceneView({super.key, required this.url, this.onOpenLesson});
+  const SceneView({super.key, required this.url, this.onOpenLesson, this.onGetProgress});
 
   final WebUri url;
 
   /// Mở màn bài học native; Future xong khi người chơi đóng màn → gửi `resume` cho trang.
   /// `null` (chưa có màn — phiếu 2026-11-10-man-bai-hoc chờ thiết kế) → trả `false`, trang tự mở bảng HTML.
   final Future<void> Function(BuildContext context, OpenLessonRequest request)? onOpenLesson;
+
+  /// Trả lời `getProgress` (vùng đã mở — R-HANH-1). `null` → trang dùng mặc định (chỉ Rừng trúc).
+  final Map<String, Object?> Function()? onGetProgress;
 
   @override
   State<SceneView> createState() => _SceneViewState();
@@ -87,7 +91,8 @@ class _SceneViewState extends State<SceneView> {
   }
 
   /// Sự kiện từ trang (docs/bridge.md). Giá trị trả về là kết quả `callHandler` phía JS.
-  bool _onSceneEvent(List<dynamic> args) {
+  Object? _onSceneEvent(List<dynamic> args) {
+    if (sceneEventType(args) == 'getProgress') return widget.onGetProgress?.call();
     final open = widget.onOpenLesson;
     final request = OpenLessonRequest.parse(args);
     if (open == null || request == null) return false;
@@ -96,8 +101,32 @@ class _SceneViewState extends State<SceneView> {
     return true;
   }
 
+  /// Nút quay lại của máy: hỏi trang trước (đóng bản đồ truyền tống — docs/bridge.md `back`); trang không xử lý → thoát.
+  Future<void> _onBack() async {
+    final c = _controller;
+    var handled = false;
+    if (_loaded && c != null) {
+      try {
+        handled = await c.evaluateJavascript(source: backScript) == true;
+      } catch (_) {
+        handled = false;
+      }
+    }
+    if (!handled) await SystemNavigator.pop();
+  }
+
   @override
   Widget build(BuildContext context) {
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) _onBack();
+      },
+      child: _scaffold(context),
+    );
+  }
+
+  Widget _scaffold(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.sceneBackground,
       body: Stack(

@@ -31,6 +31,18 @@ export class LoadingScreen {
     this.status.textContent = `Đang mở sơn môn… ${p}%`;
   }
 
+  /** Hiện lại (đổi vùng — R-MAN-2, R-HANH-2): tên + chữ Hán nơi đến; trang sắp tải lại nên không cần `done`. */
+  show(site: { name: string; han: string }): void {
+    const han = el('loadHan');
+    han.textContent = site.han;
+    han.hidden = !site.han;
+    el('loadName').textContent = site.name;
+    this.root.hidden = false;
+    this.root.classList.remove('done');
+    this.active = true;
+    this.progress(0);
+  }
+
   done(): void {
     this.progress(100);
     this.root.classList.add('done');
