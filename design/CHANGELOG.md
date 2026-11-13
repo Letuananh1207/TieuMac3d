@@ -3,6 +3,25 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-13.32 — Thu gọn bố cục tông môn + bỏ cổng Sơn Môn
+
+- Loại: cảnh 3D — **bố cục** (đã vào `scene.json`). Phiên VS Code làm thay theo yêu cầu người dùng ("phân bổ diện tích
+  các khu không hợp lý, có chỗ quá rộng gây mệt khi đi lại"; "bỏ cổng sơn môn 3d"). Người dùng chọn cả 4 hướng thu gọn.
+- Sân Ngoại Môn ±21 → **±17** (34 × 34 m); cổng tây tâm z −4 → −6. Tiểu Mặc (7,6; 17,6) → (7,6; 13,6), bảng 日課榜
+  z 19,2 → 15,2.
+- Sơn Môn: xuất phát (0; 50) → **(0; 36)**, lối (0; 17 → 40), tùng z 28/52 → 22/38, đèn đá z 41,5 → 27,5.
+  **Bỏ cổng `son-mon`** (model `cong-son-mon`) — lối vào giờ chỉ có hai đèn đá + hai cây tùng.
+- Đỉnh: bục y 11 dời z −71…−56 → −67…−52, trà lâu (0; −64) → (0; −60), cờ 茶 z −58,5 → −54,5, bậc đá (0; −20 → −53).
+- Khu tây 40 × 68 m → **34 × 50 m** (tường x −51…−17, z −32…18). Tàng Thư Các (−39; −34) → (−33; −22), ao / đèn đá
+  theo; Kỳ Văn Uyển (bàn, biển, rào, dây đèn, mai) dời (+6; −2): bàn cờ (−34; 4), Đấu chữ (−34; 11).
+- Phía đông: bỏ 3 nền lát trống (Tụ Hiền Viên + nền cư xá cũ), lối cụt, 2 mai, tên khu "Tụ Hiền Viên"; giữ cổng đông
+  (ra đồi cỏ, suối Hậu Sơn).
+- Đường đi (chạy 7 m/s): xuất phát → giữa sân 50 → 36 m; giữa sân → bàn cờ ~45 → ~37 m; → cửa Tàng Thư Các ~64 → ~45 m;
+  → trà lâu ~60 → ~56 m.
+- Luật chạm (đã sửa ví dụ trong sổ + online, `--mark-synced`): R-VA-1, R-DIEU-4, R-NGOI-1, R-VA-3, R-NPC-1, R-NPC-2,
+  R-NV-3, R-GIAO-1, R-GIAO-2; test ví dụ `gamePlay`, `gameGuides`, `seats` dời theo. `scene:check`: không có lỗi.
+- Ảnh: `screens/Canh-tren.png`, `Canh-son-mon.png`, `Canh-khu-tay.png`, `Canh-ca-san.png`.
+
 ## 2026-11-13.31 — Nghe nhạc ở bàn trà Phẩm Minh Các
 
 - Loại: giao diện · chuỗi · luồng/luật (đề xuất).
@@ -18,6 +37,27 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
 - Luật bị chạm: `R-VA-4`, `R-NGOI-1`, `R-DIEU-7`, `R-MAN-1`.
 - File: `source/Nhac-*.dc.html` (5), `source/canvas.json` · `l10n/vi.arb` · `docs/screen_specs.md`, `docs/components.md`.
 - Ảnh: chưa có ảnh (nền giữ chỗ vẽ tay).
+
+## 2026-11-13.30 — Xoá rạp phim 影戲臺 và Đệ Tử Cư Xá
+
+- Loại: cảnh 3D — **bố cục** (đã vào `scene.json`). Phiên VS Code làm thay theo yêu cầu người dùng ("xóa chỗ xem phim
+  chung và cư xá"), kế hoạch `docs/tasks/2026-11-13-xoa-rap-phim-cu-xa.md`.
+- Bỏ: nhà `rap-phim` (32; −19) và lối đá (32; −2,4 → −15); 4 nhà `cu-xa-1..4`, lối đá (37,5; 0 → 46) và khu tên
+  "Đệ Tử Cư Xá 弟子居". Giữ: khu Tụ Hiền Viên (trống, 2 cây mai), lối từ cổng đông sân (21; 0 → 37,5; 0).
+- Giao diện còn nhắc nhãn "Ngồi xem" (`docs/screen_specs.md` §nút Ngồi, `components.md`) — nhãn này không còn dùng;
+  phiên thiết kế bỏ khi sửa lần tới.
+
+## 2026-11-13.29 — Biển tên trò chơi ở Kỳ Văn Uyển (五子棋 · 鬥字)
+
+- Loại: cảnh 3D — **đồ vật** (đã vào `scene.json`). Phiên VS Code làm thay phần cảnh theo kế hoạch đã duyệt
+  `docs/tasks/2026-11-13-bien-tro-choi.md` (người dùng: "ở mỗi trò chơi thì cần có biển tên trò chơi và lại gần để xem
+  hướng dẫn").
+- Đổi: `gameTables[].sign` mới — biển gỗ đứng 1,9 × 1,85 m (hai trụ, xà, giấy ngà viền vàng, hai mặt) ở đầu đông mỗi
+  bàn, quay về đông: `ban-co` (−35,5; 6) **五子棋 · Ngũ Tử Kỳ**, `ban-dau-chu` (−35,5; 13) **鬥字 · Đấu chữ**. Chữ vẽ vào
+  ảnh biển chung (không thêm draw call).
+- Giao diện: nút nổi "Cách chơi" dùng lại kiểu nút "Xem bảng" (2026-11-13.25), nhãn kính sương = tên trò; lời giảng đi
+  qua khung thoại có sẵn (R-GIAO-2). Không thành phần mới.
+- Ảnh: `screens/Canh-bien-tro-choi.png`, `screens/Canh-bien-ngu-tu-ky.png`. `scene:check`: không lỗi.
 
 ## 2026-11-13.28 — Tàng Thư Các: danh mục sách + sổ từ HSK + nút "Đọc sách" · nút nổi "Ngồi"
 
@@ -57,6 +97,14 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
   `docs/components.md`.
 - Ảnh: chưa có ảnh (dùng `source/*.dc.html`).
 
+## 2026-11-13.26 — Tàng Thư Các: hồ trước nhà nhỏ lại, tùng lùi — chừa chỗ thang ngoài trời (L-6)
+
+- Loại: cảnh 3D — **bố cục** (đã vào `scene.json`). Phiên VS Code sửa lỗi L-6 (thang lên tầng 2 đổi sang thang thẳng ngoài
+  trời ở đầu hồi phải — code `scene/kien_truc/cau_thang.ts`).
+- Đổi: `water` hồ phải (−30; −25) 7 × 3 → **(−31,5; −25) 5 × 3**, hồ trái (−48; −25) 7 × 3 → **(−46,5; −25) 5 × 3** (đối
+  xứng); `trees.yard` tùng (−24; −31) → **(−22; −31)**. Trà lâu Phẩm Minh Các: không đổi đặc tả (thang nằm trong bục).
+- Ảnh: `screens/Canh-loi-L6-tang-thu-cac.png`, `screens/Canh-loi-L6-tra-lau.png`. `scene:check`: không lỗi.
+
 ## 2026-11-13.25 — Bảng nhiệm vụ hằng ngày 日課榜 + màn ôn câu đố + nút "Xem bảng"
 
 - Loại: giao diện · token · chuỗi.
@@ -74,6 +122,33 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
 - File: `source/NhiemVu-*.dc.html` (4), `source/OnTap-*.dc.html` (8), `source/XemBang-*.dc.html` (2), `source/canvas.json` ·
   `tokens/design_tokens.json` · `l10n/vi.arb` · `docs/screen_specs.md`, `docs/components.md`.
 - Ảnh: chưa có ảnh (dùng `source/*.dc.html`).
+
+## 2026-11-13.24 — Chưởng Môn Điện → trà lâu Phẩm Minh Các 品茗閣 (nơi giao lưu)
+
+- Loại: cảnh 3D — **bố cục** (đã vào `scene.json`). Người dùng: "phần chưởng môn điện đang bị không dùng hãy sửa nó thành
+  1 nơi gì đó để mọi người dùng chung giao lưu"; chọn **trà lâu trên đỉnh** (bỏ hướng hí đài, Luận Đạo Đường).
+- Đổi: `buildings` `chuong-mon-dien` (kiểu `dien`, mái vàng, 19,2 × 12,8) → **`pham-minh-cac`** kiểu `tra-lau` (vào được,
+  3 bàn trà, 2 tầng), tâm (0; −64) 19,2 × 11,2, mái lục `#2b5446`, biển 品茗閣 · `props` + cờ 茶 (11,5; −58,5).
+  Khu `site.areas` "Nội Môn" giữ tên.
+- Ảnh 4 góc Chưởng Môn Điện (`models/anh/chuong-mon-dien-*`) **để dành** (người dùng chọn) — chưa dựng model.
+- Không người chơi thật (dự án không multiplayer): "dùng chung" = chỗ công cộng; NPC / hoạt động trong trà lâu → `/lead` sau.
+- Ảnh: `screens/Canh-pham-minh-cac.png`. `scene:check`: không lỗi. Cần code: không.
+
+## 2026-11-13.23 — Lối lát đá cùng gạch với sân
+
+- Loại: cảnh 3D — **màu / chất liệu** (đã vào `scene.json`). Phiên VS Code, người dùng: "bỏ phần gạch màu trắng dẫn lối
+  đi đổi thành chung 1 màu gạch với các chỗ khác".
+- Đổi: `buildingStyle.pathLook` (trường mới, mặc định `phien` = cảnh cũ) → **`san`**: mọi lối lát dùng gạch vuông của sân
+  (`ground`), mạch gạch theo toạ độ cảnh nên lối chạy qua sân liền mạch; màu `path` không còn dùng khi `san`.
+- Code: `scene/paths.ts`, `scene/terrain.ts` (UV sân lát theo toạ độ cảnh), `scene/spec.ts`, `specCheck.ts`, `world.ts`.
+- Ảnh: `screens/Canh-loi-gach-chung.png`. `scene:check`: không lỗi.
+
+## 2026-11-13.22 — Cổng Sơn Môn model nhỏ lại, đế đá thấp (L-5)
+
+- Loại: cảnh 3D — **dữ liệu** (đã vào `scene.json`). Phiên VS Code sửa lỗi L-5 (người dùng chọn "thu nhỏ cả + nén đế").
+- Đổi: `gates[son-mon]` thêm `"modelScale": 0.75` → rộng ≈ 14,9 m, cao ≈ 13 m. Đế đá chân trụ nén về 1,2 m, hẹp × 0,75
+  (code `scene/gateFeet.ts`, không sửa file model).
+- Ảnh: `screens/Canh-loi-L5.png`. `scene:check`: không lỗi.
 
 ## 2026-11-13.21 — Văn Uyên Tông: khu giao lưu Kỳ Văn Uyển 棋文苑 (bàn cờ + bàn đấu chữ)
 
