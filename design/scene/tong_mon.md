@@ -1,5 +1,8 @@
 # Quy hoạch tông môn (đề xuất cảnh 3D) · từ mục 2026-11-10.3
 
+> **2026-11-13.6**: tông môn là **nhà / trạm gốc** của hành trình nhiều vùng — xem `hanh_trinh.md`. Khu 3 Diễn Võ
+> Trường đổi thành **Truyền Tống Đài** (6 cột trận sang các vùng).
+
 Bản vẽ: `source/TongMon-ban-do.dc.html` (canvas, artboard "Đề xuất: quy hoạch tông môn"). Chưa có ảnh.
 
 Mở rộng cảnh từ một sân học thành một **tông môn tu tiên** (bối cảnh tiểu thuyết tiên hiệp) gồm nhiều khu. Sân

@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Hành trình – sơ đồ 6 vùng</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;700&amp;family=Lora:wght@700&amp;family=Noto+Serif+SC:wght@700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2B5446}a:hover{color:#24323A}
+</style>
+</helmet>
+<div style="width: 1680px; height: 900px; box-sizing: border-box; padding: 40px 48px; background: #E9EEEC; font-family: 'Be Vietnam Pro', system-ui, sans-serif; color: #24323A; display: flex; flex-direction: column; gap: 22px">
+  <div style="display: flex; flex-direction: column; gap: 6px">
+    <h1 style="margin: 0; font-family: 'Lora', Georgia, serif; font-size: 28px">Hành trình du học — tông môn là nhà, mỗi vùng một cấp</h1>
+    <div style="font-size: 14px; line-height: 1.5; max-width: 1200px">Người chơi học bài mỗi ngày ở Văn Uyên Tông, đi các vùng qua <b>Truyền Tống Đài</b> trong tông môn. Vùng mở theo <b>số chữ đã học</b> (mốc theo HSK 3.0: HSK1 300 chữ · HSK3 900 · HSK6 1 800 · HSK9 3 000). Mỗi vùng là một cảnh 3D nhỏ riêng; có trận truyền tống về nhà. Số mốc là đề xuất — duyệt ở sổ quy tắc.</div>
+  </div>
+
+  <div style="position: relative; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 16px; flex: 1 1 auto">
+    <div aria-hidden="true" style="position: absolute; left: 70px; right: 70px; top: 46px; height: 0; border-top: 3px dashed rgba(43,84,70,.45)"></div>
+    <sc-for list="{{stops}}" as="v" hint-placeholder-count="7">
+      <article style="position: relative; display: flex; flex-direction: column; gap: 10px">
+        <div style="align-self: center; width: 92px; height: 92px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: {{v.disc}}; border: 3px solid {{v.ring}}; box-shadow: 0 6px 16px rgba(36,50,58,.18)">
+          <span lang="zh" style="font-family: 'Noto Serif SC', serif; font-weight: 700; font-size: 30px; color: {{v.ink}}">{{v.han}}</span>
+        </div>
+        <div style="background: rgba(244,247,246,.92); border: 1px solid rgba(255,255,255,.95); outline: 1px solid rgba(36,50,58,.14); border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 8px; flex: 1 1 auto">
+          <div style="font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #2B5446">{{v.level}}</div>
+          <h2 style="margin: 0; font-family: 'Lora', Georgia, serif; font-size: 19px; line-height: 1.25">{{v.name}}</h2>
+          <div style="font-size: 12px; font-weight: 700; color: #24323A; background: {{v.chip}}; border-radius: 999px; padding: 3px 10px; align-self: flex-start">{{v.unlock}}</div>
+          <div style="font-size: 13px; line-height: 1.5"><b>Nhận diện:</b> {{v.see}}</div>
+          <div style="font-size: 13px; line-height: 1.5"><b>Việc học:</b> {{v.learn}}</div>
+          <div style="font-size: 13px; line-height: 1.5"><b>Tiểu Mặc:</b> {{v.tm}}</div>
+          <div style="font-size: 12px; line-height: 1.5; color: #24323A; opacity: .8; margin-top: auto">{{v.build}}</div>
+        </div>
+      </article>
+    </sc-for>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1680,"height":900}}'>
+class Component extends DCLogic {
+renderVals() {
+return { stops: [
+  { han: '文淵', name: 'Văn Uyên Tông', level: 'Nhà · trạm gốc', unlock: 'luôn mở', disc: '#2B5446', ring: '#D4A64A', ink: '#F4F7F6', chip: '#D9E8E1',
+    see: 'cổng sơn môn, giảng đường, Tàng Kinh Các, Chưởng Môn Điện ngói vàng trên đỉnh, Truyền Tống Đài 6 cột.',
+    learn: 'bài mới mỗi ngày với Mặc Ông; ôn; lên cấp (đột phá) ở Chưởng Môn Điện.', tm: 'chào ở Sơn Môn, dẫn đường.', build: 'Đã có — thêm Truyền Tống Đài thay Diễn Võ Trường.' },
+  { han: '竹', name: 'Rừng trúc', level: 'Bộ thủ', unlock: 'mở từ đầu', disc: '#7D9A4A', ring: '#4F7A35', ink: '#F4F7F6', chip: '#E3ECD3',
+    see: 'trúc xanh dày, suối nhỏ, đình trúc, bia đá khắc bộ thủ dọc lối.', learn: 'bộ thủ — nền của mọi chữ.', tm: 'ôm quyền chào giữa rừng trúc.', build: 'Vùng đầu tiên — nhỏ, dễ dựng (đã có kiểu cây trúc).' },
+  { han: '江南', name: 'Giang Nam', level: 'HSK 1', unlock: 'xong bộ thủ', disc: '#E8E1D2', ring: '#4F5A63', ink: '#24323A', chip: '#E6E3D9',
+    see: 'phố nước tường trắng ngói đen, cầu đá vòm, thuyền ô bồng, liễu.', learn: '300 chữ HSK 1.', tm: 'chèo thuyền ô bồng trên sông.', build: 'Cần code: nước có bờ, cầu vòm, thuyền.' },
+  { han: '蓬萊', name: 'Bồng Lai tiên cảnh', level: 'HSK 2 – 3', unlock: '≥ 300 chữ', disc: '#A8C0D6', ring: '#F4F1EA', ink: '#24323A', chip: '#DCE6EF',
+    see: 'đảo nổi trong biển mây, hạc trắng, cầu treo, lầu các trên mây.', learn: '600 chữ HSK 2 – 3.', tm: 'ngự kiếm phi hành trên biển mây.', build: 'Dùng lại đảo nổi + biển mây; thêm cầu treo, hạc bay.' },
+  { han: '長城', name: 'Trường Thành', level: 'HSK 4 – 6', unlock: '≥ 900 chữ', disc: '#9A968C', ring: '#5F5A50', ink: '#F4F7F6', chip: '#E2DFD8',
+    see: 'tường thành gạch chạy trên sống núi, tháp canh, cờ bay, núi trùng điệp.', learn: '900 chữ HSK 4 – 6.', tm: 'đeo kiếm sải bước trên tường thành.', build: 'Cần code: tường bám địa hình, tháp canh.' },
+  { han: '紫禁', name: 'Tử Cấm Thành', level: 'HSK 7 – 9', unlock: '≥ 1 800 chữ', disc: '#A8322A', ring: '#C9A13B', ink: '#F4F7F6', chip: '#F1DAD6',
+    see: 'mái ngói vàng nối tiếp, sân đá mênh mông, cửa son đinh vàng, hành lang đỏ.', learn: '1 200 chữ HSK 7 – 9.', tm: 'ôm quyền bước vào hoàng cung.', build: 'Dùng lại điện ngói vàng (model Chưởng Môn Điện) lặp lại.' },
+  { han: '絲路', name: 'Con đường tơ lụa', level: 'Mở rộng', unlock: '≥ 3 000 chữ', disc: '#D2B98C', ring: '#8A5B3B', ink: '#24323A', chip: '#EFE6D3',
+    see: 'đồi cát, ốc đảo, đoàn lạc đà, hang đá có bích hoạ.', learn: 'thành ngữ, chữ phồn thể, thư pháp.', tm: 'chống kiếm làm gậy đi qua sa mạc.', build: 'Để sau cùng.' }
+] };
+}
+}
+</script>
+</body>
+</html>

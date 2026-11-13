@@ -3,6 +3,30 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-13.6 — Hành trình nhiều vùng + Truyền Tống Đài (hướng C)
+
+- Loại: luồng/luật (đề xuất luật mới) · cảnh 3D (**bố cục** — khu 3 đổi vai) · dữ liệu (vùng, mốc mở khoá).
+- Quyết định người dùng (2026-11-13), sau thảo luận "hình tượng bài trí tông môn": hướng **C — hành trình nhiều vùng**;
+  tông môn = nhà / trạm gốc; đi lại bằng **trận truyền tống trong tông môn** (không màn bản đồ); **mở theo số chữ / cấp
+  HSK**; vùng đầu **Rừng trúc** (hồ sơ `docs/tham_khao/rung-truc.md`: hướng A Giang Nam + thác; bia + vật "sống");
+  **Truyền Tống Đài thay Diễn Võ Trường**.
+- Tài liệu: `scene/hanh_trinh.md` (7 chặng, mốc, Truyền Tống Đài); `scene/tong_mon.md` (ghi chú đầu file).
+- Artboard: `source/HanhTrinh-so-do.dc.html`, `source/TruyenTongDai.dc.html`, `source/canvas.json`. Chưa có ảnh.
+- **Đề xuất luật mới** (phiên code hỏi người dùng rồi ghi sổ):
+  - Mở vùng: cột trận của vùng sáng khi số chữ đã học ≥ mốc của vùng (Rừng trúc từ đầu; Giang Nam khi xong bộ thủ;
+    Bồng Lai 300; Trường Thành 900; Tử Cấm Thành 1 800; Tơ lụa 3 000). Ví dụ: 299 chữ → Bồng Lai còn tối, tới gần hiện
+    "Cần 300 chữ"; 300 chữ → sáng.
+  - Truyền tống: đứng vào vòng trận **sáng** → màn tải → cảnh vùng, xuất hiện cạnh vòng trận về nhà; vòng tối không có
+    tác dụng. Về nhà: đứng vào vòng trận về nhà → về Truyền Tống Đài, trước cột của vùng vừa rời.
+  - Bia bộ thủ: bia của bộ thủ đã học có viền vàng; chưa học thì mờ.
+- **Cần code** (`/lead`): nhiều cảnh (mỗi vùng một đặc tả, vd. `scene/rung-truc.json`), chuyển cảnh qua màn tải, lưu tiến
+  độ (số chữ, bộ thủ đã học), mở khoá; Truyền Tống Đài (sân tròn, 6 cột + biểu tượng, vòng trận sáng / tối, hạt sáng,
+  nhãn "Cần … chữ"); bỏ đài tỉ thí + giá binh khí khu 3; vùng 1 Rừng trúc (trúc mao cao dày đung đưa, đình mái chóp,
+  bia bộ thủ có chữ, chạm vật hiện bộ thủ) — chi tiết `docs/tham_khao/rung-truc.md` mục "Đưa vào cảnh".
+- Giao diện mới sẽ cần (phiếu `/ui-design` khi phiên code soạn): thẻ học bộ thủ (chạm bia / vật), nhãn "Cần … chữ" ở cột
+  khoá, thẻ tên vùng khi tới.
+- Luật hiện có bị chạm: `R-HUD-1` (chip tên — thêm tên vùng), `R-VA-1` / `R-VUNG-*` (theo từng cảnh) — phiên code soát.
+
 ## 2026-11-13.5 — Cảnh: thu tông môn ×0,625 (giữ cỡ nhà), sân gạch xanh xám, tường vôi, lối đá bám đất (L-3)
 
 - Loại: cảnh 3D — **bố cục** + **ngoại hình**. Người dùng (kèm ảnh): "tỉ lệ và kích thước của vùng đất đang quá lớn tôi

@@ -198,6 +198,20 @@
       "w": 1440,
       "h": 780,
       "title": "Công trình 3/3 · Chưởng Môn Điện 掌門殿 · bộ ảnh 4 góc"
+    },
+    "HanhTrinh-so-do.dc.html": {
+      "x": 0,
+      "y": 17100,
+      "w": 1680,
+      "h": 900,
+      "title": "Hành trình · sơ đồ tông môn + 6 vùng (đề xuất)"
+    },
+    "TruyenTongDai.dc.html": {
+      "x": 1760,
+      "y": 17100,
+      "w": 1200,
+      "h": 760,
+      "title": "Truyền Tống Đài 傳送台 · thay Diễn Võ Trường (đề xuất)"
     }
   },
   "order": [
@@ -227,7 +241,9 @@
     "SuPhu-bo-anh.dc.html",
     "LoDan-bo-anh.dc.html",
     "CongSonMon-bo-anh.dc.html",
-    "ChuongMonDien-bo-anh.dc.html"
+    "ChuongMonDien-bo-anh.dc.html",
+    "HanhTrinh-so-do.dc.html",
+    "TruyenTongDai.dc.html"
   ],
   "notes": {
     "cach-dung": {
@@ -371,6 +387,21 @@
       "text": "Công trình nổi bật — ảnh nhiều góc cho Hunyuan3D (lò đan · cổng · điện)",
       "kind": "title1",
       "maxW": 2060
+    },
+    "tieu-de-hanh-trinh": {
+      "x": 0,
+      "y": 16860,
+      "text": "Hướng C — hành trình nhiều vùng (người dùng chọn 2026-11-13)",
+      "kind": "title1",
+      "maxW": 2960
+    },
+    "hanh-trinh-ghi-chu": {
+      "x": 3040,
+      "y": 17100,
+      "w": 440,
+      "size": "m",
+      "fill": "teal",
+      "text": "Đã chọn (2026-11-13):\n• Tông môn = nhà / trạm gốc; vùng = chuyến du học theo cấp.\n• Đi lại: trận truyền tống TRONG tông môn (không có màn bản đồ).\n• Mở khoá theo cấp HSK / số chữ.\n• Vùng đầu: Rừng trúc (bộ thủ).\n• Truyền Tống Đài thay Diễn Võ Trường.\n\nViệc tiếp:\n1. /khao-cuu Rừng trúc.\n2. Phiên code /lead: nhiều cảnh (mỗi vùng một đặc tả), lưu tiến độ, mở khoá, chuyển cảnh qua màn tải.\n3. Luật mới (mở khoá, về nhà) — duyệt ở sổ quy tắc.\n4. /canh: Truyền Tống Đài, rồi cảnh Rừng trúc."
     }
   },
   "designSystems": []

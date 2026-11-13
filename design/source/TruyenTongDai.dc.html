@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Truyền Tống Đài</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;700&amp;family=Lora:wght@700&amp;family=Noto+Serif+SC:wght@700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2B5446}a:hover{color:#24323A}
+</style>
+</helmet>
+<div style="position: relative; width: 1200px; height: 760px; background: #E9EEEC; font-family: 'Be Vietnam Pro', system-ui, sans-serif; color: #24323A; overflow: hidden">
+  <h1 style="position: absolute; left: 40px; top: 28px; margin: 0; font-family: 'Lora', Georgia, serif; font-size: 24px">Truyền Tống Đài <span lang="zh" style="font-family: 'Noto Serif SC', serif">傳送台</span> — nhìn từ trên</h1>
+  <div style="position: absolute; left: 40px; top: 66px; font-size: 13px; width: 600px; line-height: 1.5">Thay Diễn Võ Trường (x 27…60, z −15…15 — toạ độ sau mục 2026-11-13.5), ngay ngoài cổng đông Ngoại Môn. Đi vào từ phía tây.</div>
+
+  <div aria-hidden="true" style="position: absolute; left: 90px; top: 130px; width: 560px; height: 560px; box-sizing: border-box; border-radius: 50%; background: #D9D4C7; border: 10px solid #C9C3B4"></div>
+  <div aria-hidden="true" style="position: absolute; left: 230px; top: 270px; width: 280px; height: 280px; box-sizing: border-box; border-radius: 50%; border: 3px dashed rgba(43,84,70,.5)"></div>
+  <div style="position: absolute; left: 320px; top: 360px; width: 100px; height: 100px; border-radius: 50%; background: #2B5446; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 6px rgba(212,166,74,.5)">
+    <span lang="zh" style="font-family: 'Noto Serif SC', serif; font-weight: 700; font-size: 26px; color: #F4F7F6">文淵</span>
+  </div>
+  <div style="position: absolute; left: 34px; top: 396px; width: 70px; text-align: center; font-size: 12px; font-weight: 700">← lối vào<br>(Ngoại Môn)</div>
+
+  <sc-for list="{{pillars}}" as="p" hint-placeholder-count="6">
+    <div style="position: absolute; left: {{p.cx}}px; top: {{p.cy}}px; width: 0; height: 0">
+      <div aria-hidden="true" style="position: absolute; left: {{p.rx}}px; top: {{p.ry}}px; width: 64px; height: 64px; border-radius: 50%; box-sizing: border-box; border: 3px solid {{p.ring}}; background: {{p.glow}}"></div>
+      <div style="position: absolute; left: -26px; top: -26px; width: 52px; height: 52px; border-radius: 10px; background: {{p.col}}; border: 2px solid {{p.edge}}; display: flex; align-items: center; justify-content: center">
+        <span lang="zh" style="font-family: 'Noto Serif SC', serif; font-weight: 700; font-size: 20px; color: {{p.ink}}">{{p.han}}</span>
+      </div>
+      <div style="position: absolute; left: {{p.lx}}px; top: {{p.ly}}px; width: 120px; font-size: 12px; line-height: 1.35; text-align: center"><b>{{p.name}}</b><br>{{p.state}}</div>
+    </div>
+  </sc-for>
+
+  <div style="position: absolute; left: 720px; top: 130px; width: 440px; display: flex; flex-direction: column; gap: 14px; font-size: 13px; line-height: 1.55">
+    <div style="font-family: 'Lora', Georgia, serif; font-size: 18px; font-weight: 700">Mỗi cột = một vùng</div>
+    <div>• Sân đá tròn ∅ ≈ 26 m, viền đá; 6 cột trận cao ≈ 5 m xếp vòng, mở về phía tây (lối từ Ngoại Môn). Giữa sân: phù hiệu 文淵 khắc nền.</div>
+    <div>• Trước mỗi cột một <b>vòng trận</b> ∅ ≈ 4 m. Đứng vào vòng <b>sáng</b> → màn tải → sang vùng.</div>
+    <div>• <b>Đã mở</b>: cột đá trắng, đỉnh có biểu tượng vùng, vòng trận phát sáng ngọc lục + chấm vàng, hạt sáng bay lên.</div>
+    <div>• <b>Chưa mở</b>: cột đá xám, biểu tượng mờ, vòng trận tắt; tới gần hiện "Cần 300 chữ" (số theo vùng).</div>
+    <div>• Ví dụ trạng thái trên hình: người mới — chỉ Rừng trúc mở.</div>
+    <div>• Mỗi vùng có một vòng trận <b>về nhà</b> đặt ngay chỗ xuất hiện.</div>
+    <div style="opacity: .8">Biểu tượng đỉnh cột (khối đơn giản): lá trúc · cầu vòm · đảo nổi · tháp canh · mái vàng · lạc đà.</div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1200,"height":760}}'>
+class Component extends DCLogic {
+renderVals() {
+  const list = [
+    { han: '竹', name: 'Rừng trúc', state: 'đã mở', open: true },
+    { han: '江南', name: 'Giang Nam', state: 'xong bộ thủ', open: false },
+    { han: '蓬萊', name: 'Bồng Lai', state: 'cần 300 chữ', open: false },
+    { han: '長城', name: 'Trường Thành', state: 'cần 900 chữ', open: false },
+    { han: '紫禁', name: 'Tử Cấm Thành', state: 'cần 1 800 chữ', open: false },
+    { han: '絲路', name: 'Tơ lụa', state: 'cần 3 000 chữ', open: false }
+  ];
+  const cx = 370, cy = 410, R = 230;
+  const pillars = list.map((p, i) => {
+    const a = (-120 + i * 48) * Math.PI / 180; // cung phía đông, chừa lối tây
+    const x = cx + R * Math.cos(a), y = cy + R * Math.sin(a);
+    const ix = -Math.cos(a) * 56, iy = -Math.sin(a) * 56;
+    const ox = Math.cos(a) * 70, oy = Math.sin(a) * 70;
+    return Object.assign({}, p, {
+      cx: Math.round(x), cy: Math.round(y),
+      rx: Math.round(ix - 32), ry: Math.round(iy - 32),
+      lx: Math.round(ox - 60), ly: Math.round(oy - 14),
+      col: p.open ? '#F4F7F6' : '#9A968C', edge: p.open ? '#D4A64A' : '#7A766C', ink: p.open ? '#2B5446' : '#5F5A50',
+      ring: p.open ? '#2B5446' : 'rgba(36,50,58,.25)', glow: p.open ? 'rgba(43,84,70,.25)' : 'transparent'
+    });
+  });
+  return { pillars };
+}
+}
+</script>
+</body>
+</html>
