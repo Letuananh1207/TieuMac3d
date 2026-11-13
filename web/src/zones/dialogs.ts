@@ -183,7 +183,7 @@ export const DIALOGS: Dialog[] = [
       },
     ],
   },
-  // Trận sư Truyền Tống Đài (R-NPC-5): trầm tĩnh, xưng "bần đạo", gọi "đạo hữu"; đọc tiến độ thật (`tranSu.ts`).
+  // Trận sư Truyền Tống Đài (R-NPC-5): trầm tĩnh, xưng "bần đạo", gọi "đạo hữu"; đọc tiến độ + vùng đi được (`tranSu.ts`).
   {
     npc: 'tran-su',
     name: 'Trận sư',
@@ -192,17 +192,17 @@ export const DIALOGS: Dialog[] = [
     lines: [
       {
         id: 'chao',
-        text: 'Bần đạo giữ trận đồ của Truyền Tống Đài. Mỗi vùng là một nút trên trận đồ — chữ đạo hữu học được càng nhiều, nút sáng càng nhiều.',
+        text: 'Bần đạo giữ trận đồ của Truyền Tống Đài. Mỗi vùng là một nút trên trận đồ — vùng nào dựng xong thì nút ấy sáng, ai cũng đi được.',
         choices: [
-          { text: 'Ta còn thiếu bao nhiêu?', next: null, action: 'journey' },
+          { text: 'Ta đi được những đâu?', next: null, action: 'journey' },
           { text: 'Trận đồ là gì?', next: 'tran' },
           BYE,
         ],
       },
       {
         id: 'tran',
-        text: 'Bước vào vòng trận giữa đài, đứng yên chốc lát cho trận sáng lên, bản đồ truyền tống sẽ mở. Vùng nào đã sáng thì chạm là đi; vùng còn tối thì phải học thêm chữ.',
-        choices: [{ text: 'Ta còn thiếu bao nhiêu?', next: null, action: 'journey' }, { text: 'Hỏi chuyện khác', next: 'chao' }, BYE],
+        text: 'Bước vào vòng trận giữa đài, đứng yên chốc lát cho trận sáng lên, bản đồ truyền tống sẽ mở. Vùng nào đã sáng thì chạm là đi; vùng còn mờ là sắp mở, chờ thêm ít lâu.',
+        choices: [{ text: 'Ta đi được những đâu?', next: null, action: 'journey' }, { text: 'Hỏi chuyện khác', next: 'chao' }, BYE],
       },
     ],
   },

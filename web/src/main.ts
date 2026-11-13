@@ -379,7 +379,7 @@ async function boot(): Promise<void> {
     (i) => {
       const c = runner?.current?.choices[i];
       if (c?.action === 'daily') afterSay = openDaily; // đóng khung rồi mở bảng (R-NV-3)
-      if (c?.action === 'journey') afterSay = () => say('tran-su', journeyLine(progress && { chars: progress.chars, radicals: progress.radicals.length, need: progress.need }, JOURNEY_MAP.places), () => {}); // R-NPC-5
+      if (c?.action === 'journey') afterSay = () => say('tran-su', journeyLine(progress && { chars: progress.chars, radicals: progress.radicals.length }, JOURNEY_MAP.places, REGION_SCENES), () => {}); // R-NPC-5
       if (LibraryDesk.handles(c)) afterSay = () => desk.act(c); // mượn / trả sách (R-SACH-1, R-SACH-4)
       return runner?.choose(i) ?? null;
     },

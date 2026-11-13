@@ -45,10 +45,10 @@ describe('Hội thoại NPC công trình', () => {
     expect(lines).toContain('không ghi');
   });
 
-  it('R-NPC-5: Trận sư có lựa chọn "Ta còn thiếu bao nhiêu?" đóng khung rồi đọc tiến độ', () => {
+  it('R-NPC-5: Trận sư có lựa chọn "Ta đi được những đâu?" đóng khung rồi đọc tiến độ', () => {
     const d = of('tran-su')!;
     expect(d.han).toBe('陣師');
-    const c = d.lines.flatMap((l) => l.choices).find((x) => x.text === 'Ta còn thiếu bao nhiêu?')!;
+    const c = d.lines.flatMap((l) => l.choices).find((x) => x.text === 'Ta đi được những đâu?')!;
     expect(c.action).toBe('journey');
     expect(c.next).toBeNull();
   });

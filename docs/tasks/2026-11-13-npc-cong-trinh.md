@@ -33,6 +33,18 @@
 - Cần: dáng đi cho NPC (dùng `player/autoRig.ts` như nhân vật chính), lối đi = các điểm mốc trong `traLauLayout`
   (cùng chỗ cầu thang), vật cản NPC tạm bỏ khi đi (không kẹt người chơi).
 - Sau này nhiều người chơi: ai thấy tiểu nhị đi → để đợt nhiều người chơi.
+- Bản nháp luật (người dùng chọn 2026-11-13: thiếu model → đệ tử khối áo lam tạp dề; phục vụ **mọi chỗ** trong trà lâu,
+  tầng 1 + tầng 2). **Chưa vào sổ** — đợi phiên VS Code đang sửa luật trà lâu (sập 0,45, đôn 0,58, camera khi ngồi…)
+  push xong rồi mới chép vào sổ (sau dòng R-NHAC-2) + online. Cũng sửa kèm: R-NPC-1 "(… riêng tiểu nhị đứng theo quầy
+  trà lâu và đi lại — R-TRA-1)", R-NPC-3 "Chưa mang trà tới bàn" → "Ngồi vào một chỗ trong trà lâu thì tiểu nhị mang
+  trà tới (R-TRA-1); đang đi phục vụ thì không nói chuyện được (chỉ khi đứng ở quầy)."
+
+  | R-TRA-1 | **Tiểu nhị mang trà tới chỗ ngồi**: tiểu nhị đứng sau quầy trà tầng 1 Phẩm Minh Các (vị trí theo quầy, không theo đặc tả cảnh), mặt nhìn ra cửa; thiếu model `tieu-nhi.glb` → hiện bằng **đệ tử khối áo lam, tạp dề trắng** (ngoại lệ R-NPC-1). Người chơi ngồi vào **bất kỳ chỗ nào trong trà lâu** bằng nút "Ngồi" (tầng 1: 12 đôn — R-NHAC-2; tầng 2: 18 chỗ — R-VA-4): sau **2 giây** tiểu nhị rời quầy, **đi bộ** (≈ 2 m/s, có dáng đi, quay theo hướng đi) theo lối: ra sau quầy → trước quầy; chỗ tầng 1 → đi vòng tránh bàn ghế tới cạnh chỗ ngồi; chỗ tầng 2 → ra cửa trước, vòng sang chân thang ngoài hồi phải, lên thang, qua cầu nối, rồi đi vòng tránh bàn ghế tầng 2 tới cạnh chỗ ngồi. Tới nơi (cách chỗ ngồi **dưới 1,2 m**): quay về phía chỗ ngồi, rót trà **2 giây**, rồi **một chén trà** hiện trên bàn / kỷ trước mặt người ngồi; tiểu nhị đi ngược lối cũ về quầy, quay mặt ra cửa. Người chơi **đứng dậy** trước khi rót xong → tiểu nhị quay về ngay, không có chén. Chén trà mất khi người chơi đứng dậy. Mỗi lúc phục vụ **một** chỗ: đang về quầy mà người chơi ngồi chỗ khác → về tới quầy rồi mới đi tiếp (lại chờ 2 giây). Tiểu nhị **không chặn** người chơi (không có vật cản khi đi). Đang đi / rót → không có nút "Nói chuyện" (R-NPC-3). | Ngồi đôn nam bàn trà giữa tầng 1 → 2 giây sau tiểu nhị rời quầy, đi vòng ra trước quầy tới cạnh đôn, quay về đôn, 2 giây sau chén trà hiện trên mặt bàn trước mặt; tiểu nhị về quầy. Lên tầng 2 ngồi ghế đơn mặt trước → tiểu nhị đi ra cửa, lên thang ngoài, qua cầu nối, vòng qua bàn dài tới sau ghế, rót trà, chén hiện trên bàn nhỏ. Ngồi rồi đứng dậy khi tiểu nhị đang trên thang → tiểu nhị quay về, không có chén. | chờ | sửa |
+
+- Thiết kế đợt 2 (đã chốt hướng): `collision/gridPath.ts` (BFS lưới 0,25 m trên vật cản theo tầng) · `zones/teaService.ts`
+  (máy trạng thái thuần: chờ 2 s → đi → rót 2 s → chén → về; đứng dậy → quay về) · `tra_lau.ts` thêm `service` (quầy,
+  lối cố định quầy → trước quầy → cửa → chân thang → cầu nối) + `cup` cho từng chỗ ngồi · `rooms.ts` đổi sang toạ độ
+  cảnh · `main.ts`: đệ tử khối / `loadGlbCharacter`, độ cao theo `world.surface`, chén trà.
 - [ ] 6. Sổ R-TRA-1 → online → mark-synced; test đỏ (máy trạng thái tiểu nhị: chờ → đi tới → rót → về).
 - [ ] 7. `player/npcWalker.ts` (đi theo điểm mốc + dáng đi), điểm mốc trà lâu, chén trà.
 - [ ] 8. Ghép `main.ts`; thử trên máy.
