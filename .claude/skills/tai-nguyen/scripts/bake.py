@@ -5,6 +5,7 @@
 # 1) xatlas trải UV riêng cho model; 2) mỗi điểm texture: vị trí + pháp tuyến 3D → chiếu sang 4 ảnh (trước +z, trái +x,
 #    sau −z, phải −x; ảnh chuẩn hoá đỉnh 10 %, đế 90 %, trục thân giữa — phiếu 2026-11-12-anh-nhan-vat-3d);
 # 3) trộn màu các ảnh theo trọng số max(0, n·hướng)^mu, bỏ ảnh mà điểm bị che (bộ đệm độ sâu từng góc);
+# 3b) đầu (trên cổ) nướng THEO VÙNG: tóc / không-tóc bỏ phiếu theo đỉnh lưới, mỗi vùng chỉ lấy màu từ ảnh cùng vùng (`--cu` = cũ);
 # 4) --bang-mau: ép mỗi điểm về màu gần nhất trong bảng (bỏ bóng đổ / vệt sáng sẵn trong ảnh render) + lọc mode;
 # 5) lan màu ra rãnh giữa các mảnh UV; xuất glb (pháp tuyến mịn từ lưới gốc).
 import os
@@ -78,15 +79,26 @@ for k in VIEWS:
 IH, IW = imgs['truoc'].shape[:2]
 
 
+def neck_index(widths):
+    """Cổ trong dãy bề ngang theo hàng (từ đỉnh xuống, 0..1 chiều cao nhân vật): tìm hàng RỘNG nhất của đầu trong dải
+    15–40 % (dưới đó là vai / tay dang), rồi hàng HẸP nhất từ đó tới 60 %. (Trước đây: hẹp nhất trong 22–45 % — đầu to / đuôi ngựa trên đỉnh (Tiểu
+    Mặc) làm nó rơi vào đỉnh đầu → cả vùng má, tóc mai bị coi là thân.)"""
+    n = len(widths)
+    w = np.where(np.isfinite(widths), widths, np.nan)
+    a, b, c = int(0.15 * n), int(0.40 * n), int(0.60 * n)
+    top = a + int(np.nanargmax(w[a:b]))
+    return top + int(np.nanargmin(w[top:c]))
+
+
 def img_head(m, neck_v=None):
-    # cổ = hàng hẹp nhất trong dải 22–45 % chiều cao nhân vật (từ đỉnh); khung đầu = phần trên cổ
+    # khung đầu = phần trên cổ (cổ: `neck_index`)
     rows = np.flatnonzero(m.any(1))
     r0, r1 = rows[0], rows[-1]
-    best, neck = 1e9, r0
-    for r in range(int(r0 + 0.22 * (r1 - r0)), int(r0 + 0.45 * (r1 - r0))):
+    widths = []
+    for r in range(r0, r1 + 1):
         xs = np.flatnonzero(m[r])
-        if len(xs) and xs[-1] - xs[0] < best:
-            best, neck = xs[-1] - xs[0], r
+        widths.append(xs[-1] - xs[0] if len(xs) else np.nan)
+    neck = r0 + neck_index(np.array(widths, float))
     if neck_v is not None:  # góc bên: cổ lấy theo góc trước (đuôi ngựa / kiếm làm sai chỗ hẹp nhất)
         neck = int(round(neck_v * m.shape[0]))
     xs = np.flatnonzero(m[r0:neck + 1].any(0))
@@ -97,17 +109,20 @@ def img_head(m, neck_v=None):
 
 def model_head(u0, v0, neck_v=None):
     vmin, vmax = v0.min(), v0.max()
-    lo, hi = vmin + 0.22 * (vmax - vmin), vmin + 0.45 * (vmax - vmin)
-    best, neck = 1e9, lo
-    for c in np.linspace(lo, hi, 50):
-        sel = np.abs(v0 - c) < (hi - lo) / 50
-        if sel.sum() > 3 and np.ptp(u0[sel]) < best:
-            best, neck = np.ptp(u0[sel]), c
+    nb_ = 120
+    edges = np.linspace(vmin, vmax, nb_ + 1)
+    bi = np.clip(((v0 - vmin) / (vmax - vmin) * nb_).astype(int), 0, nb_ - 1)
+    widths = np.full(nb_, np.nan)
+    for i in range(nb_):
+        sel = bi == i
+        if sel.sum() > 3:
+            widths[i] = np.ptp(u0[sel])
+    neck = (edges[neck_index(widths)] + edges[neck_index(widths) + 1]) / 2
     if neck_v is not None:
         neck = neck_v
     hd = v0 < neck
-    nb = np.abs(v0 - neck) < (hi - lo) / 50
-    mid = (u0[nb].min() + u0[nb].max()) / 2
+    nb = np.abs(v0 - neck) < (vmax - vmin) / nb_
+    mid = np.median(u0[nb])  # trung vị: vật lệch một bên ngang cổ (chuôi kiếm) không kéo trục đầu
     return u0[hd].min(), u0[hd].max(), vmin, neck, mid
 
 # khớp khung từng góc: khung bao model chiếu theo góc đó ↦ khung nhân vật thật trong ảnh (model Hunyuan có tỉ lệ hơi
@@ -128,6 +143,10 @@ for k, (fu0, fv0) in _raw.items():  # 'truoc' đầu tiên: đo cổ ở góc tr
     ih = img_head(masks[k], _ni)
     if k == 'truoc':
         _nm, _ni = mh[3], ih[3]
+    # trục đầu trên model: suy từ ảnh (lệch trục so với tâm khung đầu, theo tỉ lệ) — đo thẳng ở tầng cổ model dính cổ
+    # áo / kiếm chéo lưng (Tiểu Mặc lệch 4 % → mắt bóng đôi)
+    ic, mc = (ih[0] + ih[1]) / 2, (mh[0] + mh[1]) / 2
+    mh = (*mh[:4], mc + (ih[4] - ic) * (mh[1] - mh[0]) / (ih[1] - ih[0]))
     HEAD[k] = (mh, ih)
     print(f'dau {k}: model u {mh[0]:.3f}|{mh[4]:.3f}|{mh[1]:.3f} v {mh[2]:.3f}-{mh[3]:.3f} | anh u {ih[0]:.3f}|{ih[4]:.3f}|{ih[1]:.3f} v {ih[2]:.3f}-{ih[3]:.3f}')
 
@@ -259,9 +278,58 @@ for k, (_, fu, fd, fv) in VIEWS.items():
     depth[k] = buf
 print('do sau 4 goc xong')
 
+# ---------- nướng theo VÙNG trên đầu (mặc định từ 2026-11-13; `--cu` = các luật vá cũ) ----------
+# Trộn điểm ảnh 4 góc ở ranh tóc / da luôn lem: hình lệch ảnh vài mm là ảnh này thấy tóc, ảnh kia thấy da. Thay vào đó:
+# 1) mặt nạ tóc từng ảnh = mảng tối LỚN trên cổ (mắt / lông mày là mảng nhỏ → không phải tóc);
+# 2) mỗi đỉnh lưới bỏ phiếu tóc / không-tóc qua các ảnh thấy nó (trọng số hướng nhìn, kiểm che khuất); trên chân tóc trán
+#    nghiêng về tóc; 3) làm mượt phiếu trên bề mặt lưới (ranh mượt, không răng cưa);
+# 4) điểm tóc chỉ lấy màu từ ảnh thấy tóc ở đó, điểm da chỉ từ ảnh thấy da → hết vệt lai / vệt đen trên má.
+SEM = '--cu' not in args
+LUMA = np.array([0.299, 0.587, 0.114])
+if SEM:
+    from scipy import ndimage as nd
+    from scipy import sparse
+    HM = {}
+    for k in VIEWS:
+        lum = imgs[k] @ LUMA
+        neck_r = int((HEAD[k][1][3] + 0.03) * IH)
+        dark = (lum < float(opt('toc-toi', '85'))) & masks[k]
+        dark[neck_r:] = False
+        lab, n = nd.label(dark, structure=np.ones((3, 3)))
+        sizes = nd.sum(dark, lab, range(1, n + 1)) if n else np.zeros(0)
+        hm = np.isin(lab, np.flatnonzero(sizes >= float(opt('toc-manh', '0.004')) * IH * IW) + 1)
+        # vệt bóng sáng trên tóc (sáng hơn ngưỡng) → lấp lỗ, không thì lủng thành mảng xám
+        HM[k] = nd.binary_fill_holes(nd.binary_closing(hm, iterations=3)) & masks[k]
+        if '--xem-vung' in args:
+            Image.fromarray((HM[k] * 255).astype(np.uint8)).save(os.path.splitext(out)[0] + f'-toc-{k}.png')
+    hv = np.zeros(len(V))
+    wv = np.zeros(len(V))
+    for k, (dirv, fu, fd, fv) in VIEWS.items():
+        w = np.clip(N @ dirv, 0, 1) ** MU
+        u, v = fu(V), fv(V)
+        di = np.clip((v * DB).astype(int), 0, DB - 1)
+        dj = np.clip((u * DB).astype(int), 0, DB - 1)
+        w = w * (fd(V) >= depth[k][di, dj] - 0.012 * H)
+        lab = HM[k][np.clip((v * IH).astype(int), 0, IH - 1), np.clip((u * IW).astype(int), 0, IW - 1)]
+        hv += w * lab
+        wv += w
+    hvote = np.where(wv > 1e-3, hv / np.maximum(wv, 1e-6), 0.5)
+    if '--khong-chan-toc' not in args:  # trên chân tóc trán (đo ở ảnh trước) → nghiêng hẳn về tóc
+        above = (V[:, 1] > neck_y) & (VIEWS['truoc'][3](V) < hair_v)
+        hvote = np.where(above, np.maximum(hvote, 0.85), hvote)
+    hvote[V[:, 1] < neck_y - 0.03 * H] = 0
+    e = np.concatenate([F[:, [0, 1]], F[:, [1, 2]], F[:, [2, 0]]])
+    A = sparse.coo_matrix((np.ones(2 * len(e)), (np.r_[e[:, 0], e[:, 1]], np.r_[e[:, 1], e[:, 0]])), shape=(len(V),) * 2).tocsr()
+    A.data[:] = 1
+    deg = np.maximum(np.asarray(A.sum(1)).ravel(), 1)
+    for _ in range(int(opt('muot', '6'))):
+        hvote = 0.5 * hvote + 0.5 * (A @ hvote) / deg
+    print(f'vung toc: {int((hvote > 0.5).sum())} dinh toc / {int((V[:, 1] > neck_y).sum())} dinh tren co')
+
 # ---------- UV riêng (xatlas) + nướng ----------
 vm, idx, uvs = xatlas.parametrize(V.astype(np.float32), F.astype(np.uint32))
 V2, N2 = V[vm], N[vm]
+H2 = hvote[vm] if SEM else None
 tex = np.zeros((TS, TS, 3), np.float32)
 cov = np.zeros((TS, TS), bool)
 face = np.zeros((TS, TS), bool)  # vùng mặt (đầu, quay về trước) — giữ ảnh gốc khi ép màu
@@ -277,10 +345,10 @@ for f in idx:
     Nn /= np.linalg.norm(Nn, axis=1, keepdims=True) + 1e-9
     acc = np.zeros((len(P), 3), np.float32)
     wsum = np.zeros(len(P), np.float32)
-    cols, wts = [], []
+    cols, wts, labs = [], [], []
     for k, (dirv, fu, fd, fv) in VIEWS.items():
         w = np.clip(Nn @ dirv, 0, 1) ** MU
-        if k == 'truoc' and XIEN is not None:  # đầu: ảnh trước nhìn quá xiên (mép tóc sát mặt) chiếu trượt sang bên đầu
+        if k == 'truoc' and XIEN is not None and not SEM:  # đầu: ảnh trước nhìn quá xiên (mép tóc sát mặt) chiếu trượt sang bên đầu
             # thành vệt cong đen (nhân vật chính). Tóc mai rủ hai bên má (Tiểu Mặc) cần ảnh trước → `--xien khong`
             w = w * np.where(P[:, 1] > neck_y, np.clip((Nn[:, 2] - XIEN) / 0.2, 0, 1), 1)
         u = fu(P)
@@ -296,6 +364,8 @@ for f in idx:
         wsum += w
         cols.append(c)
         wts.append(w)
+        if SEM:
+            labs.append(HM[k][ii, jj])
     # điểm không ảnh nào thấy rõ (dưới nách, hõm, chỉ thấy rất xiên) → để trống, lát nữa loang màu từ vùng áo bên cạnh
     # trong cùng mảnh UV (trước đây lấy đại ảnh gần nhất không kiểm che khuất → dính màu tay áo / nền)
     seen = wsum >= 0.02
@@ -314,25 +384,39 @@ for f in idx:
     lum = Cs @ np.array([0.299, 0.587, 0.114])
     darkest = Cs[np.arange(len(P)), np.where(strong, lum, 1e9).argmin(1)]
     head_pt = P[:, 1] > neck_y
-    # trên đầu chỉ cắt cứng khi bất đồng về LOẠI (ảnh này tóc, ảnh kia da). Da – da chỉ lệch sáng tối (ánh sáng mỗi ảnh
-    # khác nhau) → trộn mượt; cắt cứng ở đó thành đường ranh chéo qua má khi nhìn 3/4
-    dark_any = (np.where(strong, lum, 1e9) < 90).any(1)
-    light_any = (np.where(strong, lum, -1) >= 90).any(1)
-    head_split = head_pt & dark_any & light_any
-    body_split = split & ~head_pt
-    col[head_split] = darkest[head_split]
-    col[body_split] = cbest[body_split]
-    if '--khong-chan-toc' not in args:
-        vf = VIEWS['truoc'][3](P)
-        # bỏ tóc mai: dưới chân tóc, ảnh trước thấy da (và thấy được điểm này) → chỉ trộn các ảnh có màu da; vệt tóc mai
-        # trước tai trong ảnh bên không vẽ lên má (người dùng 2026-11-12: "phần màu đen ở mai đáng ra không có")
-        sk = is_skin(Cs)
-        cheek = head_pt & (vf >= hair_v) & (Ws[:, 0] > 0) & sk[:, 0] & ~is_skin(col)
-        ws = Ws * sk
-        col[cheek] = (ws[cheek, :, None] * Cs[cheek]).sum(1) / np.maximum(ws[cheek].sum(1), 1e-6)[:, None]
-        above = head_pt & (vf < hair_v) & is_skin(col)
-        dk = (darkest @ np.array([0.299, 0.587, 0.114])) < 90
-        col[above] = np.where(dk[above, None], darkest[above], HAIR)
+    if SEM:
+        hp = (l0 * H2[f[0]] + l1 * H2[f[1]] + l2 * H2[f[2]])[inside]  # phiếu tóc nội suy trong tam giác
+        L = np.stack(labs, 1)
+        wh, wk = Ws * L, Ws * ~L
+        sh, sk_ = wh.sum(1), wk.sum(1)
+        hair_col = np.where(sh[:, None] > 1e-4, (wh[..., None] * Cs).sum(1) / np.maximum(sh, 1e-6)[:, None], HAIR)
+        skin_col = np.where(sk_[:, None] > 1e-4, (wk[..., None] * Cs).sum(1) / np.maximum(sk_, 1e-6)[:, None], cbest)
+        a_ = np.clip((hp - 0.4) / 0.2, 0, 1) * (sh > 1e-4)  # không ảnh nào thấy tóc ở đây (dây buộc, trâm) → giữ màu ảnh
+        a_ = (a_ * a_ * (3 - 2 * a_))[:, None]
+        zone = P[:, 1] > neck_y - 0.03 * H
+        col[zone] = (a_ * hair_col + (1 - a_) * skin_col)[zone]
+        body_split = split & ~zone
+        col[body_split] = cbest[body_split]
+    else:
+        # trên đầu chỉ cắt cứng khi bất đồng về LOẠI (ảnh này tóc, ảnh kia da). Da – da chỉ lệch sáng tối (ánh sáng mỗi ảnh
+        # khác nhau) → trộn mượt; cắt cứng ở đó thành đường ranh chéo qua má khi nhìn 3/4
+        dark_any = (np.where(strong, lum, 1e9) < 90).any(1)
+        light_any = (np.where(strong, lum, -1) >= 90).any(1)
+        head_split = head_pt & dark_any & light_any
+        body_split = split & ~head_pt
+        col[head_split] = darkest[head_split]
+        col[body_split] = cbest[body_split]
+        if '--khong-chan-toc' not in args:
+            vf = VIEWS['truoc'][3](P)
+            # bỏ tóc mai: dưới chân tóc, ảnh trước thấy da (và thấy được điểm này) → chỉ trộn các ảnh có màu da; vệt tóc mai
+            # trước tai trong ảnh bên không vẽ lên má (người dùng 2026-11-12: "phần màu đen ở mai đáng ra không có")
+            sk = is_skin(Cs)
+            cheek = head_pt & (vf >= hair_v) & (Ws[:, 0] > 0) & sk[:, 0] & ~is_skin(col)
+            ws = Ws * sk
+            col[cheek] = (ws[cheek, :, None] * Cs[cheek]).sum(1) / np.maximum(ws[cheek].sum(1), 1e-6)[:, None]
+            above = head_pt & (vf < hair_v) & is_skin(col)
+            dk = (darkest @ np.array([0.299, 0.587, 0.114])) < 90
+            col[above] = np.where(dk[above, None], darkest[above], HAIR)
     sub = tex[y0:y0 + inside.shape[0], x0:x0 + inside.shape[1]]
     hit = np.zeros_like(inside)
     hit[inside] = seen

@@ -31,6 +31,13 @@ Quyết định: `.claude/skills/hoc-xa-3d-dev/decisions/0003-tai-san-ai.md` (la
   app Claude tạo ảnh được), mẫu `docs/phieu_thiet_ke/2026-11-12-anh-nhan-vat-3d.md`: bộ 4 góc trước / trái / sau / phải
   (+ cận mặt), tư thế chữ A, render kiểu đồ chơi 3D (không vẽ phẳng), không viền, nền trơn sáng, không watermark, chuẩn
   hoá: vuông 1024, đỉnh búi 10 %, đế 90 %, trục thân giữa ảnh, 4 góc cùng tỉ lệ. In khối "Dán vào canvas" cho người dùng chép sang.
+  **Tóc và mặt cho 3D** (2026-11-13 — chỗ hay lỗi nhất; luôn chép vào phiếu ảnh):
+  - tóc là khối liền ôm đầu; tóc mai ngắn hoặc ép sát má, **không lọn rủ hở khỏi mặt / cổ** (Hunyuan không dựng được lọn
+    tóc tách rời → dính vào má thành vệt sọc); đuôi ngựa / búi được, miễn liền khối;
+  - ranh tóc – da rõ, tóc tối đều (bóng sáng trên tóc vừa phải), da sáng đều — bước nướng tách tóc / da theo độ tối;
+  - phụ kiện trên tóc (dây buộc, trâm) màu tách khỏi tóc (không đen / xám đậm), không che mặt;
+  - (nên có, khi nhân vật mới) thêm 2 ảnh chếch 45° `<tên>-truoc-trai.png`, `<tên>-truoc-phai.png` cùng chuẩn hoá — phủ
+    vùng thái dương. Hunyuan chỉ dựng hình từ 4 góc; `bake.py` CHƯA đọc ảnh 45° — làm khi có bộ ảnh đầu tiên (`/lead`).
 - Ghi: `design/models/*.glb`, `design/models/LICENSES.md`, `design/CHANGELOG.md`, ảnh `design/screens/Model-<tên>*.png`.
   **Không** sửa code `web/` `app/`; cần code (vd. NPC chưa có chỗ đặt) → kế hoạch `/lead`.
 - Ảnh có bản quyền (phim, game, truyện) không làm đầu vào cho tài nguyên đưa vào app — nhắc người dùng.
@@ -80,7 +87,10 @@ khớp ảnh nên màu chiếu từ chính bộ ảnh lên không lem; vật li�
    Seed lỗi FlashVDM / không ra hình → thêm seed khác (42, 99).
 4. **Xem + chọn**: Read các `-so.png` / `-6goc.png`, soát: dáng khớp ảnh, chân tóc / thái dương / tóc mai, mặt, viền áo,
    tay. Trình người dùng (đính đường dẫn ảnh), **hỏi chọn seed** — không tự quyết thẩm mỹ. Lỗi màu còn lại → sửa
-   `bake.py` (có cờ: `--bat-dong`, `--khong-chan-toc`, `--giu-toc-mai`, `--xem-toc-mai`, `--xien <ngưỡng|khong>`, `--nen`,
+   `bake.py` nướng đầu **theo vùng** (mặc định từ 2026-11-13): mặt nạ tóc từng ảnh (mảng tối lớn trên cổ) → mỗi đỉnh bỏ
+   phiếu tóc / không-tóc qua các ảnh thấy nó → làm mượt trên lưới → tóc chỉ lấy màu ảnh thấy tóc, da chỉ ảnh thấy da.
+   Xem mặt nạ: `--xem-vung`; chỉnh: `--toc-toi 85` (ngưỡng tối), `--toc-manh 0.004` (mảng nhỏ hơn = mắt, không phải tóc),
+   `--muot 6`; `--cu` = luật vá cũ. Cờ khác: `--bat-dong`, `--khong-chan-toc`, `--giu-toc-mai`, `--xem-toc-mai`, `--xien <ngưỡng|khong>`, `--nen`,
    `--mu`; truyền qua `nhan-vat.sh --nuong "<cờ>"`), không vẽ tay. Nhân vật **có tóc mai** trong thiết kế (Tiểu Mặc) →
    `--nuong "--giu-toc-mai"`. Xem model ở tư thế gốc, không xương (NPC, hoặc tách lỗi màu khỏi lỗi xương):
    `python.exe -s scripts/xem.py <màu.glb — bản TRƯỚC model:clean> design/models/anh <tên> <ra.png>`.

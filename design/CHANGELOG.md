@@ -34,6 +34,24 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
   `bash .claude/skills/tai-nguyen/scripts/nhan-vat.sh su-phu <thư mục ra>` → `design/models/su-phu.glb`; thay thầy dựng
   bằng khối trong giảng đường là việc code sau (`/lead`).
 
+## 2026-11-13.1 — Nhân vật chính + Tiểu Mặc: nướng màu đầu THEO VÙNG (hết lem mặt / tóc mai)
+
+- Loại: tài nguyên 3D — **ngoại hình**. Người dùng: "quy trình và mô hình hiện tại … hay bị lỗi ở mặt ở tóc mai" → đồng ý
+  hướng 1 + 2.
+- Nguyên nhân gốc: màu chiếu từ 4 ảnh lên hình Hunyuan; hình lệch ảnh vài mm ở ranh tóc / da nên ảnh này thấy tóc, ảnh kia
+  thấy da → vệt lai, vệt sọc; các luật vá trước (.10, .11, cờ `--xien`) chỉ chữa từng ca.
+- Sửa (`tai-nguyen/scripts/bake.py`, mặc định; `--cu` = cách cũ): mặt nạ tóc từng ảnh (mảng tối LỚN trên cổ, lấp lỗ vệt
+  bóng sáng; mắt / lông mày là mảng nhỏ) → mỗi đỉnh lưới bỏ phiếu tóc / không-tóc (trọng số hướng nhìn + che khuất, trên
+  chân tóc trán nghiêng về tóc) → làm mượt trên lưới → tóc chỉ lấy màu ảnh thấy tóc, da / phụ kiện chỉ ảnh thấy không-tóc.
+  Kèm: tìm cổ = hẹp nhất DƯỚI hàng rộng nhất của đầu (cũ rơi vào đỉnh đầu ở Tiểu Mặc → má, tóc mai bị coi là thân); trục
+  đầu model suy từ ảnh (cổ áo / kiếm làm lệch 4 % → mắt bóng đôi).
+- Kết quả: Tiểu Mặc hết vệt sọc trên má và khe da giữa tóc mai – khối tóc, mắt hết bóng đôi; nhân vật chính hết vệt ở thái
+  dương khi nhìn 3/4. Còn: viền rất mảnh ở mép thái dương phải Tiểu Mặc. 215 KB · 239 KB, 16 000 tam giác mỗi model.
+- Mẫu phiếu ảnh (skill `/tai-nguyen`): thêm "Tóc và mặt cho 3D" — tóc liền khối, tóc mai sát má, không lọn rủ hở; phụ
+  kiện tóc khác màu tóc; nên có 2 ảnh chếch 45° (bake chưa đọc — làm khi có bộ đầu tiên).
+- Ảnh: `screens/Model-dau-theo-vung.png` (tư thế gốc: hàng 1–2 Tiểu Mặc cũ / mới, 3–4 nhân vật chính cũ / mới),
+  `screens/Model-dau-theo-vung-34.png` (trong cảnh, chếch 3/4: trên cũ, dưới mới).
+
 ## 2026-11-12.15 — Cảnh: NPC Tiểu Mặc đứng cạnh cổng Sơn Môn
 
 - Loại: cảnh 3D — **bố cục** (vật cản mới). Người dùng chọn vị trí + động tác (phiên VS Code làm thay `/canh`); kế hoạch
