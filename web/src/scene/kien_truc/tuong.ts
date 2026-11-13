@@ -7,6 +7,7 @@
 import * as THREE from 'three';
 import type { Colliders } from '../../collision/colliders';
 import { lambert } from '../materials';
+import { ASHLAR_TILE_M, ashlarTex, meterUV, PLASTER_TILE_M, plasterTex } from '../textures';
 import type { SceneSpec, WallGate } from '../spec';
 import { ringRuns, segmentRun, type Run } from '../walls';
 import { box, prism } from './hinh';
@@ -30,8 +31,28 @@ export const moonOpening = (r: number): number => Math.sqrt(1 - ARC_LIFT * ARC_L
 /** Nửa bề rộng tấm cổng = nửa khe + `PAD` (tường vòng bị cắt rộng đúng chừng ấy — `ringRuns(w, PAD)`). */
 const moonHalf = (gate: WallGate): number => gate.width / 2 + PAD;
 
+/** Vật liệu tường vôi + chân đá xếp (dùng chung mọi đoạn — một texture mỗi loại, 2026-11-13). */
+interface WallMats {
+  plaster: THREE.MeshLambertMaterial;
+  ashlar: THREE.MeshLambertMaterial;
+}
+
+function wallMats(w: Walls, style: Style): WallMats {
+  return {
+    plaster: lambert(0xffffff, { map: plasterTex(w.color) }),
+    ashlar: lambert(0xffffff, { map: ashlarTex(style.stone) }),
+  };
+}
+
+/** Vôi cho tấm cổng trăng: UV của ExtrudeGeometry là mét theo hình → lặp ngang `PLASTER_TILE_M`, dọc đúng cao `h`. */
+function panelMat(mats: WallMats, h: number): THREE.MeshLambertMaterial {
+  const map = mats.plaster.map!.clone();
+  map.repeat.set(1 / PLASTER_TILE_M, 1 / h);
+  return lambert(0xffffff, { map });
+}
+
 /** Một đoạn tường vôi: thân vôi, chân đá, mái ngói hai mái trên đỉnh, cửa sổ hoa cách nhau `windows` m. */
-function plasterRun(g: THREE.Group, r: Run, w: Walls, style: Style): void {
+function plasterRun(g: THREE.Group, r: Run, w: Walls, style: Style, mats: WallMats): void {
   const len = r.b - r.a;
   const mid = (r.a + r.b) / 2;
   const run = new THREE.Group();
@@ -40,8 +61,12 @@ function plasterRun(g: THREE.Group, r: Run, w: Walls, style: Style): void {
     run.position.set(r.fixed, 0, mid);
     run.rotation.y = Math.PI / 2;
   }
-  run.add(box(len, r.height, 1, w.color, 0, r.height / 2, 0));
-  run.add(box(len, 0.5, 1.15, style.stone, 0, 0.25, 0));
+  // thân vôi: v trải đúng chiều cao (ố chân tường ở dưới), u theo mét
+  const body = new THREE.Mesh(meterUV(new THREE.BoxGeometry(len, r.height, 1), len, r.height, 1, PLASTER_TILE_M, r.height), mats.plaster);
+  body.position.y = r.height / 2;
+  const foot = new THREE.Mesh(meterUV(new THREE.BoxGeometry(len, 0.5, 1.15), len, 0.5, 1.15, ...ASHLAR_TILE_M), mats.ashlar);
+  foot.position.y = 0.25;
+  run.add(body, foot);
   const cap = new THREE.Mesh(prism(len + 0.3, 1.5, 0.5), roofMat(w.capColor));
   cap.position.y = r.height;
   run.add(cap);
@@ -58,7 +83,7 @@ function plasterRun(g: THREE.Group, r: Run, w: Walls, style: Style): void {
 }
 
 /** Tấm tường có vòm trăng cho khe `gate`, đứng ở tâm khe. Trả về hai hộp va chạm hai bên vòm (theo hệ của run). */
-function moonGate(g: THREE.Group, gate: WallGate, w: Walls, style: Style): void {
+function moonGate(g: THREE.Group, gate: WallGate, w: Walls, style: Style, mats: WallMats): void {
   const r = moonRadius(gate.width, w.height);
   const cy = ARC_LIFT * r;
   const c = moonOpening(r);
@@ -76,7 +101,7 @@ function moonGate(g: THREE.Group, gate: WallGate, w: Walls, style: Style): void 
   shape.closePath();
   const panel = new THREE.Mesh(
     new THREE.ExtrudeGeometry(shape, { depth: 1.1, bevelEnabled: false, curveSegments: 20 }).translate(0, 0, -0.55),
-    lambert(w.color),
+    panelMat(mats, h),
   );
   const rim = new THREE.Mesh(
     new THREE.TorusGeometry(r, 0.14, 5, 24, Math.PI + 2 * Math.asin(ARC_LIFT)),
@@ -86,7 +111,8 @@ function moonGate(g: THREE.Group, gate: WallGate, w: Walls, style: Style): void 
   rim.position.y = cy;
   const cap = new THREE.Mesh(prism(2 * hw + 0.4, 1.6, 0.6), roofMat(w.capColor));
   cap.position.y = h;
-  const foot = box(2 * hw, 0.5, 1.2, style.stone, 0, 0.25, 0);
+  const foot = new THREE.Mesh(meterUV(new THREE.BoxGeometry(2 * hw, 0.5, 1.2), 2 * hw, 0.5, 1.2, ...ASHLAR_TILE_M), mats.ashlar);
+  foot.position.y = 0.25;
   const grp = new THREE.Group();
   grp.add(panel, rim, cap);
   // chân đá chỉ ở hai bên vòm
@@ -126,15 +152,16 @@ export function addPlasterWalls(
   style: Style,
 ): void {
   const g = new THREE.Group();
+  const mats = wallMats(w, style);
   for (const r of [...ringRuns(w, PAD), ...extra.map((s) => segmentRun(s, w.height))]) {
-    plasterRun(g, r, w, style);
+    plasterRun(g, r, w, style, mats);
     const len = r.b - r.a;
     const mid = (r.a + r.b) / 2;
     if (r.axis === 'x') colliders.add(mid, r.fixed, len, 1);
     else colliders.add(r.fixed, mid, 1, len);
   }
   for (const gate of w.gates) {
-    moonGate(g, gate, w, style);
+    moonGate(g, gate, w, style, mats);
     moonColliders(colliders, gate, w);
   }
   scene.add(g);

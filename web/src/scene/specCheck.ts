@@ -6,6 +6,7 @@ import {
   BUILDING_KINDS,
   DEFAULT_SCENE,
   NPC_IDS,
+  PAVE_PATTERNS,
   PROP_KINDS,
   ROOF_KINDS,
   SIDES,
@@ -259,6 +260,7 @@ function checkConsistency(s: SceneSpec): string[] {
     }
   }
   if (s.floating.clouds.count < 0) out.push('floating.clouds.count: phải ≥ 0');
+  if (!PAVE_PATTERNS.includes(s.ground.pattern)) out.push(`ground.pattern: chỉ ${PAVE_PATTERNS.join(' · ')}`);
   if (!WALL_STYLES.includes(s.walls.style)) out.push(`walls.style: chỉ ${WALL_STYLES.join(' · ')}`);
   if (s.walls.windows < 0) out.push('walls.windows: phải ≥ 0');
   const t = s.terrain;

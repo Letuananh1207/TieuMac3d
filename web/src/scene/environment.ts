@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { lambert } from './materials';
 import type { SceneSpec } from './spec';
-import { makeCanvasTex } from './textures';
+import { makeCanvasTex, SQUARE_TILE_M, squareTileTex } from './textures';
 
 /** Trời, sương mù, đèn. Mặt đất dựng riêng: phẳng (`addFlatGround`) hoặc địa hình (`terrain.ts`). */
 export function addEnvironment(scene: THREE.Scene, spec: SceneSpec): void {
@@ -25,7 +25,15 @@ export function addEnvironment(scene: THREE.Scene, spec: SceneSpec): void {
 }
 
 /** Texture gạch lát sân (một ô ảnh = 8 × 4 viên). `repeat` thiếu = lặp theo UV của lưới. */
+/** Số mét một lần lặp của texture sân theo kiểu gạch (`gach`: 8 m như cũ). */
+export const paveTileM = (gs: SceneSpec['ground']): number => (gs.pattern === 'vuong' ? SQUARE_TILE_M : 8);
+
 export function brickTexture(gs: SceneSpec['ground'], repeat?: [number, number]): THREE.CanvasTexture {
+  if (gs.pattern === 'vuong') {
+    const t = squareTileTex(gs.color);
+    if (repeat) t.repeat.set(repeat[0], repeat[1]);
+    return t;
+  }
   return makeCanvasTex(
     256,
     256,
@@ -48,7 +56,7 @@ export function brickTexture(gs: SceneSpec['ground'], repeat?: [number, number])
 
 /** Mặt sân gạch phẳng cạnh `ground.size` (cảnh không bật địa hình). Trả về mặt sân để dò điểm chạm. */
 export function addFlatGround(scene: THREE.Scene, gs: SceneSpec['ground']): THREE.Mesh {
-  const ground = new THREE.Mesh(new THREE.PlaneGeometry(gs.size, gs.size), lambert(0xffffff, { map: brickTexture(gs, [24, 24]) }));
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(gs.size, gs.size), lambert(0xffffff, { map: brickTexture(gs, gs.pattern === 'vuong' ? [gs.size / SQUARE_TILE_M, gs.size / SQUARE_TILE_M] : [24, 24]) }));
   ground.rotation.x = -Math.PI / 2;
   scene.add(ground);
   return ground;

@@ -23,6 +23,8 @@ export const PROP_KINDS = [
 ] as const;
 export const TREE_KINDS = ['tan', 'truc', 'tung', 'lieu', 'mai'] as const;
 export const WALL_STYLES = ['gach', 'voi'] as const;
+/** Kiểu gạch lát sân: `gach` = gạch chữ nhật nâu như cũ, `vuong` = gạch vuông xanh xám 0,6 m (方磚, 2026-11-13). */
+export const PAVE_PATTERNS = ['gach', 'vuong'] as const;
 
 export interface BuildingSpec {
   /** mã nhà, duy nhất */
@@ -220,7 +222,8 @@ export interface SceneSpec {
     sunIntensity: number;
     sunPosition: [number, number, number];
   };
-  ground: { size: number; color: string; brickHue: number };
+  /** `pattern`: kiểu gạch lát (`PAVE_PATTERNS`); `vuong` lấy `color` làm màu viên gạch, bỏ qua `brickHue`. */
+  ground: { size: number; color: string; brickHue: number; pattern: (typeof PAVE_PATTERNS)[number] };
   /**
    * Địa hình cao thấp (`enabled: false` = mặt sân phẳng `ground` như cũ). Đất tự nhiên = nhiễu nhẹ + các đỉnh;
    * bục khu và lối lát đá được ép phẳng; ngoài bán kính `edge.radius` (tính từ `center`) đất đổ xuống vực.
@@ -342,7 +345,7 @@ export const DEFAULT_SCENE: SceneSpec = {
     sunIntensity: 0.85,
     sunPosition: [-12, 20, 8],
   },
-  ground: { size: 90, color: '#5b3f37', brickHue: 10 },
+  ground: { size: 90, color: '#5b3f37', brickHue: 10, pattern: 'gach' },
   // tắt: cảnh gốc phẳng. Giá trị dưới là gợi ý cho hướng "cao nguyên giữa biển mây" (docs/tham_khao/dia-hinh-tong-mon.md)
   terrain: {
     enabled: false,

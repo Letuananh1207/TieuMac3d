@@ -1,18 +1,18 @@
 {
   "doc": "https://claude.ai/artifact/UF5NiGq5yVL1imQWFeMgh6",
   "rules": {
-    "R-VUNG-1": "35d194e1",
-    "R-VUNG-2": "607952ef",
+    "R-VUNG-1": "8d725a97",
+    "R-VUNG-2": "5ff907f7",
     "R-VUNG-3": "a56f4e5c",
     "R-DIEU-1": "36fe47ab",
     "R-DIEU-2": "5b55174a",
-    "R-VA-1": "46098655",
+    "R-VA-1": "b3819dbc",
     "R-VA-2": "ebf236a7",
-    "R-VA-3": "04087ce5",
-    "R-NPC-1": "f28c1167",
-    "R-HUD-1": "a009d7e2",
+    "R-VA-3": "84e79464",
+    "R-NPC-1": "0d813911",
+    "R-HUD-1": "42c9b811",
     "R-HUD-2": "03a5e207",
-    "R-HUD-3": "0e3c048f",
+    "R-HUD-3": "08796d29",
     "R-MAN-1": "0308105f",
     "R-MAN-2": "a34b00aa"
   }

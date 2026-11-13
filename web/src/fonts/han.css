@@ -8,13 +8,14 @@
 @font-face{font-family:'Han Serif';font-style:normal;font-weight:700;font-display:swap;src:url(./han-112.woff2) format('woff2');unicode-range:U+4e39,U+5b97}
 @font-face{font-family:'Han Serif';font-style:normal;font-weight:700;font-display:swap;src:url(./han-114.woff2) format('woff2');unicode-range:U+6b66,U+7c89,U+9986}
 @font-face{font-family:'Han Serif';font-style:normal;font-weight:700;font-display:swap;src:url(./han-115.woff2) format('woff2');unicode-range:U+5c45,U+6f14}
-@font-face{font-family:'Han Serif';font-style:normal;font-weight:700;font-display:swap;src:url(./han-116.woff2) format('woff2');unicode-range:U+4e66,U+5c71,U+623f,U+6df1,U+724c}
+@font-face{font-family:'Han Serif';font-style:normal;font-weight:700;font-display:swap;src:url(./han-116.woff2) format('woff2');unicode-range:U+4e66,U+5c71,U+623f,U+6df1,U+724c,U+9752}
 @font-face{font-family:'Han Serif';font-style:normal;font-weight:700;font-display:swap;src:url(./han-117.woff2) format('woff2');unicode-range:U+4e50,U+5b57,U+5feb}
-@font-face{font-family:'Han Serif';font-style:normal;font-weight:700;font-display:swap;src:url(./han-118.woff2) format('woff2');unicode-range:U+56fe,U+5916,U+5929,U+5b50,U+5c0f,U+6587}
+@font-face{font-family:'Han Serif';font-style:normal;font-weight:700;font-display:swap;src:url(./han-118.woff2) format('woff2');unicode-range:U+56fe,U+5916,U+5929,U+5b50,U+5c0f,U+6587,U+65b9}
 @font-face{font-family:'Han Serif';font-style:normal;font-weight:700;font-display:swap;src:url(./han-119.woff2) format('woff2');unicode-range:U+6708}
 @font-face{font-family:'Han Serif';font-style:normal;font-weight:700;font-display:swap;src:url(./han-27.woff2) format('woff2');unicode-range:U+968e,U+9748}
 @font-face{font-family:'Han Serif';font-style:normal;font-weight:700;font-display:swap;src:url(./han-32.woff2) format('woff2');unicode-range:U+9060}
 @font-face{font-family:'Han Serif';font-style:normal;font-weight:700;font-display:swap;src:url(./han-39.woff2) format('woff2');unicode-range:U+85e5}
+@font-face{font-family:'Han Serif';font-style:normal;font-weight:700;font-display:swap;src:url(./han-50.woff2) format('woff2');unicode-range:U+78da}
 @font-face{font-family:'Han Serif';font-style:normal;font-weight:700;font-display:swap;src:url(./han-56.woff2) format('woff2');unicode-range:U+7246}
 @font-face{font-family:'Han Serif';font-style:normal;font-weight:700;font-display:swap;src:url(./han-57.woff2) format('woff2');unicode-range:U+7149}
 @font-face{font-family:'Han Serif';font-style:normal;font-weight:700;font-display:swap;src:url(./han-59.woff2) format('woff2');unicode-range:U+6df5}

@@ -18,6 +18,27 @@ Mức độ:
 
 ## Đang mở
 
+### L-3 · Lối lát đá bị cắt ngang, chìm dưới nền gạch khi nhìn gần
+
+- Trạng thái: chờ thử máy · Mức độ: khó chịu (thấy ngay ở chỗ xuất phát) · Phần: cảnh — lối đá (`scene/paths.ts`) · Quy tắc: chưa có
+- Báo: 2026-11-13 — "ở góc nhìn gần cũng đang xảy ra lỗi khi đường đi bị cắt như ảnh" (kèm ảnh: sân Sơn Môn, lối đá
+  dừng giữa chừng, phía trước chỉ còn gạch nâu)
+- Các bước: 1. Mở app / Canvas 3D. 2. Đứng ở chỗ xuất phát (0; 80), nhìn về cổng Sơn Môn.
+- Mong đợi / thực tế: lối đá liền tới chân / lối đá bị cắt, đoạn gần chìm dưới nền gạch.
+- Bằng chứng: ảnh người dùng chụp trên Chrome.
+
+**Sửa**
+- Nguyên nhân: mỗi lối đá là MỘT tứ giác phẳng nối hai đầu (Sơn Môn: z 33,6 → 89,6, dài 56 m), độ cao lấy ở hai đầu, ở
+  giữa nội suy thẳng; mặt đất ở giữa cao hơn đường nội suy (bục, gờ, nhiễu) → lối chìm dưới nền.
+- Test: chưa khoá được bằng test (hình ảnh) — chụp Canvas 3D ở góc người dùng.
+- Code: `web/src/scene/paths.ts` — chia lối thành đoạn ≤ 1 m theo chiều dài, 3 điểm theo bề ngang, mỗi điểm lấy độ cao
+  mặt đất.
+- Thử máy: đứng ở chỗ xuất phát nhìn về cổng; đi dọc lối đá lên Thiên Bậc. Ảnh sau sửa: `design/screens/Canh-loi-L3.png`.
+- Commit: …
+
+**Lịch sử**
+- 2026-11-13: ghi + sửa.
+
 ### L-2 · Nhân vật .glb: mặt loang lổ, sống mũi gồ, vệt trắng ở tai / cạnh đầu
 
 - Trạng thái: chờ thử máy · Mức độ: khó chịu (nhân vật chính nhìn lỗi ở mọi khung hình) · Phần: nhân vật, model .glb

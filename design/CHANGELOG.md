@@ -3,6 +3,25 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-13.5 — Cảnh: thu tông môn ×0,625 (giữ cỡ nhà), sân gạch xanh xám, tường vôi, lối đá bám đất (L-3)
+
+- Loại: cảnh 3D — **bố cục** + **ngoại hình**. Người dùng (kèm ảnh): "tỉ lệ và kích thước của vùng đất đang quá lớn tôi
+  muốn thu hẹp lại … đường đi bị cắt … cải thiện chất lượng của các viên gạch và tường". Chọn: thu ×0,625 (bỏ lần phóng
+  ×1,6 của 2026-11-11.11), nhà / cổng / tường / đồ / cây giữ cỡ, gạch xanh xám cổ + tường vôi. Phiên VS Code làm thay `/canh`.
+- Bố cục (`scene.json`): mọi toạ độ ×0,625; khu, bục, lối đá, tường bao (±33,6 → ±21), ao, cụm cây (số cây ×0,39), núi,
+  sương, biển mây thu theo; địa hình thu cả chiều cao (giữ độ dốc, R-VA-2); `terrain.cell` 3 → 2. Đi từ chỗ xuất phát
+  (0; 50) tới Nội Môn (0; −64): 114 m ≈ 27 giây (cũ 182 m ≈ 43 giây). Dàn lại chỗ chồng do giữ cỡ: đèn đá + mai trước
+  giảng đường giữ khoảng cách cũ tới mặt nhà; đỉnh đồng ra giữa sân (0; 7); 4 nhà cư xá xếp 2 × 2 (35 | 52; 25,5 | 36,5);
+  tùng hai bên lối Sơn Môn ra x = ±11; lối Diễn Võ dừng ở mép đài; lối phụ hẹp lại (4,8 / 3,6). NPC Tiểu Mặc (3,5; 46,25).
+- Ngoại hình: trường mới `ground.pattern: "vuong"` (mặc định `"gach"` = như cũ) — gạch vuông 0,6 m màu `ground.color`
+  `#727a7e`, mạch vữa sáng, mép vát, viên đậm nhạt; lối đá = phiến chữ nhật so le mép vát; tường vôi có loang nhẹ + ố chân
+  tường, chân đá xếp; lọc nghiêng ×8 (gạch xa không nhoè).
+- L-3: lối đá là một tứ giác phẳng nội suy hai đầu → chìm dưới nền ở giữa; nay lưới bám mặt đất từng mét.
+- Luật: không đổi nội dung; ví dụ toạ độ R-VUNG-1, R-VUNG-2, R-VA-1, R-VA-3, R-HUD-1, R-HUD-3, R-NPC-1 tính lại theo bản đồ
+  mới (sổ + tài liệu online). `npm run scene:check`: Không có lỗi.
+- Ảnh: `screens/Canh-thu-nho-gach-tuong.png` (trên xuống, chỗ xuất phát, cổng trăng cận, sân giảng đường, Diễn Võ, cư xá),
+  `screens/Canh-loi-L3.png`.
+
 ## 2026-11-13.4 — Bộ ảnh nhiều góc Chưởng Môn Điện 掌門殿 (công trình 3/3, đầu vào Hunyuan3D đa góc)
 
 - Loại: tài nguyên 3D — ảnh đầu vào (công trình). Hồ sơ `docs/tham_khao/cong-trinh-noi-bat.md` (hướng: ngói vàng).

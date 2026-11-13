@@ -1,11 +1,9 @@
 import * as THREE from 'three';
 import type { Heightfield } from '../collision/heightfield';
-import { brickTexture } from './environment';
+import { brickTexture, paveTileM } from './environment';
 import { lambert } from './materials';
 import type { SceneSpec } from './spec';
 
-/** Một ô ảnh gạch phủ bao nhiêu mét (cảnh gốc: sân 200 m lặp 24 lần ≈ 8 m). */
-const BRICK_TILE = 8;
 /** Sân lát nổi trên mặt đất một chút để không nhấp nháy (z-fighting). */
 const PAVE_LIFT = 0.03;
 
@@ -87,13 +85,14 @@ function addPaving(scene: THREE.Scene, spec: SceneSpec): void {
   const paved = spec.terrain.plateaus.filter((p) => p.pave);
   if (!paved.length) return;
   const tex = brickTexture(spec.ground);
+  const tile = paveTileM(spec.ground);
   const mat = lambert(0xffffff, { map: tex });
   for (const p of paved) {
     const w = Math.abs(p.to[0] - p.from[0]);
     const d = Math.abs(p.to[1] - p.from[1]);
     const geo = new THREE.PlaneGeometry(w, d);
     const uv = geo.getAttribute('uv') as THREE.BufferAttribute;
-    for (let i = 0; i < uv.count; i++) uv.setXY(i, (uv.getX(i) * w) / BRICK_TILE, (uv.getY(i) * d) / BRICK_TILE);
+    for (let i = 0; i < uv.count; i++) uv.setXY(i, (uv.getX(i) * w) / tile, (uv.getY(i) * d) / tile);
     const m = new THREE.Mesh(geo, mat);
     m.rotation.x = -Math.PI / 2;
     m.position.set((p.from[0] + p.to[0]) / 2, p.y + PAVE_LIFT, (p.from[1] + p.to[1]) / 2);
