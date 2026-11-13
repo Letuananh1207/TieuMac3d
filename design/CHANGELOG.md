@@ -3,6 +3,29 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-13.11 — Cảnh: Truyền Tống Đài một vòng trận + vùng 1 Rừng trúc + Tiểu Mặc vào sân Ngoại Môn
+
+- Loại: cảnh 3D — **bố cục** + đặc tả cảnh mới. Phiên VS Code làm thay `/canh` (người dùng nhờ, duyệt ảnh trong phiên).
+- Truyền Tống Đài (khu 3, sau phép dời 2026-11-13.10: tâm (38; 0)): sân đá ∅ 26, **một vòng trận** bán kính 4 giữa sân
+  (phù hiệu 文淵 trong vòng) — người dùng đổi từ "6 cột / 6 vòng" (mục .6) sang một vòng + bản đồ (mục .9). Bỏ đài tỉ thí +
+  4 giá binh khí; khu đổi tên "Truyền Tống Đài 傳送台"; lối đá vào đài dừng ở mép sân. Trường mới `teleport`
+  `{enabled, center, radius, ringRadius, colors}` (mặc định tắt → cảnh cũ giữ nguyên).
+- Hiệu ứng (code): vòng sáng dần + cột sáng mờ dần lên trên + hạt vàng xoáy trong 1,2 s rồi cuộn bản đồ bay lên.
+- **Vùng 1 Rừng trúc** — đặc tả mới `scene/rung-truc.json` (mỗi vùng một file): không tường bao, không giếng (trường mới
+  `walls.enabled`, `well.enabled`); lối đá uốn 4 đoạn, suối, thác trên sườn núi cuối lối, đồi bao, sương lục nhạt, trúc dày
+  hai bên lối (kiểu trúc hiện có — trúc mao cao dày, đình, bia bộ thủ: đợt 2), 3 khu Cửa rừng 林口 · Lối trúc 竹徑 · Chân
+  thác 瀑下; vòng trận (0; 39) trên bệ lát đá, xuất hiện ở (0; 34,5).
+- NPC Tiểu Mặc dời từ cổng Sơn Môn (3,5; 46,25) vào sân Ngoại Môn, sau cổng trăng nam (4,5; 15), nhìn ra cổng (người dùng
+  yêu cầu); lời thoại đổi theo (`web/src/zones/dialogs.ts`).
+- Luật: R-HANH-1 (mốc mở), R-HANH-2 (vòng → bản đồ), R-VA-1 (bỏ đài tỉ thí / giá binh khí), R-NPC-1/2 (toạ độ Tiểu Mặc),
+  R-MAN-2 (màn tải khi đổi vùng) — sổ + online.
+- `npm run scene:check`: cả `scene.json` và `rung-truc.json` "Không có lỗi". Đài ≈ 7 draw call (ít hơn đài + giá cũ cộng
+  6 cột).
+- Ảnh: `screens/Canh-truyen-tong-dai.png`, `Canh-truyen-tong-nap.png`, `Canh-rung-truc-vong.png`, `Canh-rung-truc-loi.png`,
+  `Canh-rung-truc-thac.png`.
+- Ghi chú cho thiết kế bản đồ (.9): chấm vàng trạng thái "mở" của Rừng trúc (dy −150) đè dấu nặng chữ "lụa" của nhãn Con
+  đường tơ lụa phía trên — nên dời chấm hoặc nhãn.
+
 ## 2026-11-13.10 — Cảnh: ghép sát các viện, dùng chung tường
 
 - Loại: cảnh 3D — **bố cục**. Người dùng: "diện tích tông môn đang quá lớn có những chỗ không cần cách tường" → chọn ghép
