@@ -16,9 +16,24 @@
       `app/lib/scene/scene_view.dart`, `scene_event.dart`; test Dart: chuỗi sự kiện.)
 - [x] 2. Bảng gỡ lỗi bật từ Flutter: bản debug gửi `debug {on: true}` → "fps · draw call · tam giác"
       (`ui/hud.ts` `FpsCounter`); `?debug` vẫn dùng được trên trình duyệt.
-- [ ] 3. Đo lại sau khi phiên song song commit "kiến trúc cao"; giảm tam giác về ≤ 150k (ứng viên: cây ngoài tường
+- [x] 3. Đo lại sau khi phiên song song commit "kiến trúc cao"; giảm tam giác về ≤ 150k (ứng viên: cây ngoài tường
       instanced theo kiểu, địa hình bớt ô ở vùng xa, mái / nhà gộp thêm). Chờ phiên kia xong để không sửa cùng file.
 - [ ] 4. Đo trên máy Android thật (bản debug hiện bảng gỡ lỗi): fps ở góc chơi / cả sân / trong nhà, nóng máy.
+
+## Đo lại (2026-11-13, phiên đám mây, sau `2026-11-13.32` thu gọn bố cục + `.34` lòng chảo cỏ + trà lâu 18 chỗ)
+Canvas 3D (Chromium headless, swiftshader), "không tính lớp phủ":
+
+| Góc | Draw call | Tam giác |
+|---|---|---|
+| Tông môn `?view=tren` | 113 | 130.776 |
+| Tông môn `?view=ca-san` | 88 | 126.410 |
+| Tông môn góc chơi | 102 | 130.118 |
+| Trà lâu tầng 2 | 56 | 114.758 |
+| Trong Tàng Thư Các | 70 | 124.218 |
+| Rừng trúc (`?vung=rung-truc`, mọi góc) | 48 | 101.448 |
+
+→ Bước 3 **đạt không cần sửa code**: cao nhất 130,8k ≤ 150k (còn dư ~19k), draw call ≤ 113. Các ứng viên giảm (cây
+ngoài tường instanced theo kiểu, địa hình bớt ô vùng xa) để dành khi thêm nội dung làm vượt lại.
 
 ## Ghi chú
 - Chụp headless trang chính (`dist/index.html`) dừng ở màn tải 80–100 % cả với bản đã commit `90106ff` → giới hạn của
