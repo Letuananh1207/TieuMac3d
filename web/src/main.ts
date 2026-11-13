@@ -32,6 +32,8 @@ import { ActionButtons } from './ui/actionButtons';
 import { DialogBox, TalkButton } from './ui/dialogBox';
 import { SeatButton } from './ui/seatButton';
 import { BoardButton } from './ui/boardButton';
+import { ReadBookButton } from './ui/readBookButton';
+import { borrowedBook } from './zones/library';
 import { GuideButton } from './ui/guideButton';
 import { gameSigns, guideDialog, signInRange } from './zones/gameGuides';
 import { dailyBoardSpot, nearBoard, tasksLeft } from './zones/dailyBoard';
@@ -404,6 +406,11 @@ async function boot(): Promise<void> {
     },
   });
   const dialogFor = (npcId: string): Dialog | undefined => (npcId === LIBRARIAN ? desk.dialog() : dialogOf.get(npcId));
+  // thẻ "Đọc sách" khi đang mượn sổ từ, mọi khu mọi vùng → mở sổ từ Flutter (R-SACH-2, R-SACH-3)
+  const readBook = new ReadBookButton(() => {
+    player.moveTarget = null;
+    void desk.read();
+  });
 
   /* ---------- khu giao lưu (R-GIAO-1, R-CO-1..3, R-DAU-1): bàn cờ, bàn đấu chữ — gamePlay.ts ---------- */
   let afterSay: (() => void) | null = null;
@@ -542,6 +549,8 @@ async function boot(): Promise<void> {
     const spot = seatFree ? (seatInRange(seatSpots(), pos.x, pos.z, pos.y) ?? null) : null;
     seatButton.set(spot);
     seatButton.follow(camera);
+    seatButton.avoid(el('talk')); // không đè nút "Nói chuyện"
+    readBook.set(borrowedBook(desk.book) ?? null, !(paused || covered || loading.active || mapOpen || talking || player.isSitting));
     if (boardButton && boardAt) {
       const allLearned = (progress?.radicals.length ?? 0) >= RADICALS.length;
       boardButton.set(seatFree && nearBoard(boardAt, pos.x, pos.z), tasksLeft(progress?.daily ?? null, allLearned));

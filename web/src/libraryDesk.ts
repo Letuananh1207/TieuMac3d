@@ -1,5 +1,5 @@
 import type { FlutterBridge } from './bridge/flutterBridge';
-import { BOOKS } from './zones/books';
+import { BOOKS, bookWords } from './zones/books';
 import type { Dialog, DialogChoice } from './zones/dialogs';
 import { borrowedBook, canBorrow, LIBRARIAN, librarianDialog } from './zones/library';
 
@@ -15,12 +15,15 @@ export interface DeskHost {
 
 /**
  * Quầy mượn sách Tàng Thư Các (R-SACH-1, R-SACH-4) — ghép luật `zones/library.ts` với cầu nối và khung thoại.
- * Cuốn đang mượn: Flutter lưu (`getProgress.book`); trình duyệt thường giữ ở đây. Nút "Đọc sách" + màn đọc chờ thiết kế
- * (phiếu `2026-11-13-muon-sach`).
+ * Cuốn đang mượn: Flutter lưu (`getProgress.book`); trình duyệt thường giữ ở đây. Danh mục + sổ từ là màn Flutter
+ * (`openLibrary`, `openBook` — thiết kế 2026-11-13.28).
  */
 export class LibraryDesk {
-  /** có màn danh mục Flutter (chờ thiết kế) — chưa có → chọn cuốn ngay trong khung thoại */
-  private readonly catalog = false;
+  /** "Mượn sách" mở màn danh mục Flutter (thiết kế 2026-11-13.28); trình duyệt thường → chọn trong khung thoại */
+  private readonly catalog = true;
+
+  /** đang mở màn danh mục Flutter (đóng → `sync` biết vừa mượn ở đó) */
+  private catalogOpen = false;
 
   constructor(
     private readonly bridge: FlutterBridge,
@@ -33,9 +36,21 @@ export class LibraryDesk {
     return this.borrowed;
   }
 
-  /** Flutter trả lời `getProgress` (sau `resume`) → nhận cuốn đang mượn mới nhất. */
+  /** Flutter trả lời `getProgress` (sau `resume`) → nhận cuốn đang mượn mới nhất; vừa mượn ở màn danh mục → thủ thư giao sách. */
   sync(book: string | null): void {
+    const gave = this.catalogOpen && !this.borrowed && !!book;
+    this.catalogOpen = false;
     this.borrowed = book;
+    if (gave) this.host.say(handOver(book));
+  }
+
+  /** Mở sổ từ cuốn đang mượn (nút "Đọc sách" — R-SACH-3). `false` = không có màn đọc (trình duyệt thường). */
+  async read(): Promise<boolean> {
+    const book = borrowedBook(this.borrowed);
+    if (!book) return false;
+    if (!(await this.bridge.openBook(book, bookWords(book.id)))) return false;
+    this.host.cover();
+    return true;
   }
 
   /** Hội thoại thủ thư theo việc đang mượn. */
@@ -56,6 +71,7 @@ export class LibraryDesk {
 
   private async openCatalog(): Promise<void> {
     if (await this.bridge.openLibrary(BOOKS, this.borrowed)) {
+      this.catalogOpen = true;
       this.host.cover(); // chọn xong → Flutter ghi mượn → `resume` → main hỏi lại getProgress → `sync`
       return;
     }
@@ -70,8 +86,7 @@ export class LibraryDesk {
     }
     await this.bridge.borrowBook(id); // không có Flutter → chỉ giữ trong trang
     this.borrowed = id;
-    const title = borrowedBook(id)?.title ?? id;
-    this.host.say(`Đây, sổ từ ${title}. Cứ mang theo mà đọc, đi đâu cũng được — muốn đổi cuốn thì đem trả cho ta.`);
+    this.host.say(handOver(id));
   }
 
   private async giveBack(): Promise<void> {
@@ -81,6 +96,11 @@ export class LibraryDesk {
     this.borrowed = null;
     this.host.say(`Ta nhận lại sổ từ ${title} rồi. Muốn mượn cuốn khác cứ nói ta.`);
   }
+}
+
+/** Câu thủ thư giao sách (R-SACH-1). */
+function handOver(id: string): string {
+  return `Đây, sổ từ ${borrowedBook(id)?.title ?? id}. Cứ mang theo mà đọc, đi đâu cũng được — muốn đổi cuốn thì đem trả cho ta.`;
 }
 
 export { LIBRARIAN };

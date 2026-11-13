@@ -4,7 +4,7 @@
 - Người dùng chọn (2026-11-13): nội dung = **sổ từ theo cấp HSK** (chữ, pinyin, nghĩa Việt, câu ví dụ — tự soạn theo
   danh sách từ HSK công khai, không chép giáo trình có bản quyền); **mang sách đi được** (đọc ở đâu cũng được, trả rồi
   mới mượn cuốn khác); thủ thư **model riêng bằng /tai-nguyen**.
-- Loại: thêm (dữ liệu + hành vi + cảnh + giao diện) · Cỡ: lớn · Trạng thái: chờ thiết kế (đợt A xong 2026-11-13; duyệt: HSK 2.0 sáu cấp, đợt 1 HSK 1–2)
+- Loại: thêm (dữ liệu + hành vi + cảnh + giao diện) · Cỡ: lớn · Trạng thái: xong (giao diện áp 2026-11-13.28)
 
 ## Phạm vi
 **Sẽ sửa**
@@ -47,9 +47,9 @@ bàn cờ. Không làm sách cầm trên tay nhân vật (để sau nếu muốn
       thêm `'thu-thu'` vào `NPC_IDS` (zones + ghép · test `dialogs.test.ts`).
 
 **Đợt B — chờ thiết kế** (phiếu `docs/phieu_thiet_ke/2026-11-13-muon-sach.md` — đã đẩy lên `main` 3ce589b)
-- [ ] 7. Màn danh mục sách (6 cuốn, cuốn đang mượn, "Đang biên soạn") — chờ thiết kế.
-- [ ] 8. Màn đọc sổ từ (lật trang, chữ lớn, pinyin, nghĩa, ví dụ; nhớ trang đang đọc) — chờ thiết kế.
-- [ ] 9. Nút "Đọc sách" trên HUD khi đang mang sách — chờ thiết kế.
+- [x] 7. Màn danh mục sách — áp 2026-11-13.28 (`app/lib/lesson/library_screen.dart`, `book_cover.dart`).
+- [x] 8. Màn đọc sổ từ — áp 2026-11-13.28 (`app/lib/lesson/book_screen.dart`).
+- [x] 9. Thẻ "Đọc sách" — áp 2026-11-13.28 (`web/src/ui/readBookButton.ts`).
 
 **Đợt C — tài nguyên + cảnh**
 - [ ] 10. (đang: hồ sơ `docs/tham_khao/thu-thu.md` + phiếu `2026-11-13-anh-thu-thu.md` đã đẩy — chờ bộ ảnh) `/tai-nguyen thu-thu` (một bước): khảo cứu thủ thư Tàng Thư Các → phiếu ảnh 4 góc cho `/ui-design` → bạn

@@ -16,19 +16,22 @@ function setup(borrowed: string | null, native = false) {
 const flush = (): Promise<void> => new Promise((r) => setTimeout(r, 0));
 
 describe('Quầy mượn sách', () => {
-  it('R-SACH-1: chưa có màn danh mục → "Mượn sách" mở bước chọn cuốn trong khung thoại → chọn HSK 1 → đang mượn', async () => {
+  it('R-SACH-1: "Mượn sách" mở màn danh mục; không có Flutter → chọn cuốn trong khung thoại → chọn HSK 1 → đang mượn', async () => {
     const { desk, sent, said, talks } = setup(null);
     const d = desk.dialog();
     const muon = d.lines[0].choices[0];
     expect(muon.text).toBe('Mượn sách');
-    expect(muon.next).toBe('chon'); // chưa có danh mục: chọn ngay trong thoại
+    expect(muon.action).toBe('borrow'); // có màn danh mục (thiết kế 2026-11-13.28)
+    desk.act(muon);
+    await flush();
+    expect(sent).toEqual(['openLibrary']);
+    expect(talks[0]?.start).toBe('chon'); // trình duyệt thường: chọn ngay trong thoại
     const pick = d.lines.find((l) => l.id === 'chon')!.choices[0];
     desk.act(pick);
     await flush();
     expect(desk.book).toBe('hsk1');
-    expect(sent).toEqual(['borrowBook']);
+    expect(sent).toEqual(['openLibrary', 'borrowBook']);
     expect(said[0]).toContain('HSK 1');
-    expect(talks).toEqual([]);
   });
 
   it('R-SACH-1: không mượn được cuốn đang biên soạn, hay khi đang giữ cuốn khác', async () => {
@@ -59,5 +62,39 @@ describe('Quầy mượn sách', () => {
     const { desk } = setup(null);
     desk.sync('hsk2');
     expect(desk.dialog().lines[0].choices[0].text).toBe('Trả sách «HSK 2»');
+  });
+
+  it('R-SACH-1: mượn ở màn danh mục Flutter (resume → sync) → thủ thư nói câu giao sách', async () => {
+    const { desk, sent, said } = setup(null, true);
+    desk.act(desk.dialog().lines[0].choices[0]);
+    await flush();
+    expect(sent).toEqual(['openLibrary', 'cover']);
+    desk.sync('hsk2');
+    expect(desk.book).toBe('hsk2');
+    expect(said[said.length - 1]).toContain('sổ từ HSK 2');
+  });
+
+  it('R-SACH-1: đóng danh mục không mượn → thủ thư không nói gì', async () => {
+    const { desk, said } = setup(null, true);
+    desk.act(desk.dialog().lines[0].choices[0]);
+    await flush();
+    desk.sync(null);
+    expect(said).toEqual([]);
+  });
+});
+
+describe('Đọc sách', () => {
+  it('R-SACH-3: "Đọc sách" mở sổ từ cuốn đang mượn kèm đủ trang; không có Flutter → false', async () => {
+    const opened: string[] = [];
+    const mk = (native: boolean) =>
+      new LibraryDesk(
+        { openBook: async (b: { id: string }, w: unknown[]) => (opened.push(`${b.id}:${w.length}`), native) } as unknown as FlutterBridge,
+        'hsk1',
+        { talk: () => {}, say: () => {}, cover: () => opened.push('cover') },
+      );
+    expect(await mk(true).read()).toBe(true);
+    expect(opened[0]).toMatch(/^hsk1:\d{3}$/);
+    expect(opened[1]).toBe('cover');
+    expect(await mk(false).read()).toBe(false);
   });
 });

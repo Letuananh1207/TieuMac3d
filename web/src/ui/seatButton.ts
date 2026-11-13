@@ -40,4 +40,19 @@ export class SeatButton<T extends SeatSpot> {
     this.root.style.left = `${Math.min(w - 90, Math.max(90, ((this.v.x + 1) / 2) * w))}px`;
     this.root.style.top = `${Math.min(h - 120, Math.max(130, ((1 - this.v.y) / 2) * h))}px`;
   }
+
+  /**
+   * Cùng lúc với nút "Nói chuyện" (thiết kế 2026-11-13.28): hai khung chồng nhau → dời nút Ngồi xuống tới khi cách ≥ 8 px;
+   * "Nói chuyện" giữ chỗ trên đầu NPC. Gọi sau `follow` của cả hai nút.
+   */
+  avoid(other: HTMLElement): void {
+    if (this.root.hidden || other.hidden) return;
+    const a = this.root.getBoundingClientRect();
+    const b = other.getBoundingClientRect();
+    const gap = 8;
+    const overlap = a.left < b.right + gap && b.left < a.right + gap && a.top < b.bottom + gap && b.top < a.bottom + gap;
+    if (!overlap) return;
+    const top = parseFloat(this.root.style.top) || 0;
+    this.root.style.top = `${top + (b.bottom + gap - a.top)}px`;
+  }
 }

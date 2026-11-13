@@ -143,7 +143,7 @@ class PrimaryButton extends StatelessWidget {
 
 /// Nút phụ: viền `slate` 30 %, nền trắng .55 ("Đóng bảng").
 class SecondaryButton extends StatelessWidget {
-  const SecondaryButton({super.key, required this.label, this.icon, required this.onPressed, this.height = 52});
+  const SecondaryButton({super.key, required this.label, this.icon, required this.onPressed, this.height = 52, this.wide = true});
 
   final String label;
   final IconData? icon;
@@ -152,13 +152,17 @@ class SecondaryButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final double height;
 
+  /// `false` → rộng theo chữ (đặt trong hàng, vd. "Chọn cuốn khác")
+  final bool wide;
+
   @override
   Widget build(BuildContext context) => Opacity(opacity: onPressed == null ? .4 : 1, child: _button());
 
   Widget _button() => OutlinedButton(
         onPressed: onPressed,
         style: OutlinedButton.styleFrom(
-          minimumSize: Size.fromHeight(height),
+          minimumSize: wide ? Size.fromHeight(height) : Size(0, height),
+          padding: wide ? null : const EdgeInsets.symmetric(horizontal: 16),
           backgroundColor: AppColors.onJade.withValues(alpha: .55),
           foregroundColor: AppColors.slate,
           disabledForegroundColor: AppColors.slate,

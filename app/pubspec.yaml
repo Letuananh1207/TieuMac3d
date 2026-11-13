@@ -181,6 +181,10 @@ flutter:
       fonts:
         - asset: assets/fonts/han-27.ttf
           weight: 700
+    - family: HanSerif28
+      fonts:
+        - asset: assets/fonts/han-28.ttf
+          weight: 700
     - family: HanSerif30
       fonts:
         - asset: assets/fonts/han-30.ttf

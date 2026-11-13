@@ -85,7 +85,15 @@ class _LibraryScreenState extends State<LibraryScreen> {
             const SizedBox(width: 14),
             SizedBox(
               width: 190,
-              child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [closeBtn, const Spacer(), ?confirm]),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  closeBtn,
+                  const SizedBox(height: 10),
+                  // thẻ xác nhận bám đáy cột; chữ dài / màn thấp → cuộn thay vì tràn
+                  Expanded(child: Align(alignment: Alignment.bottomCenter, child: SingleChildScrollView(child: confirm))),
+                ],
+              ),
             ),
           ],
         );
@@ -247,7 +255,7 @@ class _Confirm extends StatelessWidget {
   Widget build(BuildContext context) {
     final landscape = MediaQuery.of(context).size.width > MediaQuery.of(context).size.height;
     final buttons = [
-      SecondaryButton(label: 'Chọn cuốn khác', onPressed: onCancel), // libPickOther
+      SecondaryButton(label: 'Chọn cuốn khác', onPressed: onCancel, wide: landscape), // libPickOther
       PrimaryButton(label: 'Mượn', icon: Icons.menu_book, onPressed: onBorrow), // libBorrow
     ];
     return Container(
