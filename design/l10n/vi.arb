@@ -914,5 +914,25 @@
   "decorSlotIndoor": "Ô trong nhà",
   "decorPick": "Chọn vật để đặt vào ô",
   "decorReplace": "Chạm vật khác để thay",
-  "decorFooter": "Vật có khoá: mua ở Tạp hoá phố chợ · mua một lần, đặt được nhiều ô"
+  "decorFooter": "Vật có khoá: mua ở Tạp hoá phố chợ · mua một lần, đặt được nhiều ô",
+  "studyGuideButton": "Hướng dẫn",
+  "studyGuideEyebrow": "Tàng Thư Các · Hướng dẫn",
+  "studyGuideTitle": "Khu tự học",
+  "@studyGuideTitle": {
+    "description": "Kèm chữ Hán 自習"
+  },
+  "studyGuideIntro": "Ngồi bồ đoàn, mở cuộn sách ôn bộ thủ đã học.",
+  "studyGuideFigure": "Ngồi 1 giây → cuộn sách mở. Ở đây ôn và xem bộ đã học; học bộ mới ở Rừng trúc.",
+  "studyGuideStep1Title": "Ngồi vào bồ đoàn",
+  "studyGuideStep1": "Đứng gần một bồ đoàn đỏ → nút nổi \"Ngồi\". Bấm → ngồi xếp bằng, quay mặt về phía nam. Bồ đoàn nào cũng được — 24 chỗ.",
+  "studyGuideStep2Title": "Cuộn sách ôn",
+  "studyGuideStep2": "Ngồi đủ 1 giây → nhập định, cuộn sách mở trên tay. Chọn \"Ôn bộ đến hạn\" để ôn (ôn đúng được Văn tiền) hoặc \"Xem bộ đã học\" để mở lại thẻ cũ. Đóng thẻ / màn ôn → vẫn ngồi, cuộn sách hiện lại.",
+  "studyGuideStep3Title": "Học bộ mới ở Rừng trúc",
+  "studyGuideStep3": "Trong trấn, \"Học bộ mới\" mờ, ghi \"Học ở Rừng trúc\". Muốn học bộ mới: ra Truyền Tống Đài, chọn Rừng trúc rồi Ngồi ôn ở đó.",
+  "studyGuideStep4Title": "Đứng dậy",
+  "studyGuideStep4": "Bấm \"Đứng dậy\" trên cuộn sách → đứng khỏi bồ đoàn. Lúc cuộn sách mở, nhân vật ngồi yên.",
+  "studyGuideTipName": "Lời thủ thư Điển Thư",
+  "studyGuideTip": "Mỗi ngày ôn một ít, chữ sẽ ở lại lâu. Số son trên nút Ngồi ôn là số bộ đến hạn hôm nay.",
+  "studyGuideNoneTitle": "Đạo hữu chưa học bộ thủ nào",
+  "studyGuideNoneBody": "Cuộn sách ở đây chỉ để ôn, nên chưa có gì để ôn. Hãy tới Rừng trúc học bộ đầu tiên — đi Truyền Tống Đài, chọn Rừng trúc."
 }

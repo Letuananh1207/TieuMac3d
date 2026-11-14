@@ -127,3 +127,5 @@ Một chất liệu: kính mờ `frost*` + viền `frost-line` / `frost-outline`
 | Dấu ô trang trí trong cảnh (elip trống nét đứt · có vật viền `gold` · chọn `jade` + quầng) + nút tròn 40 nổi trên ô, huy hiệu loại ô 18 | `NhaTa-doc-*`, `NhaTa-ngang-o` | frost, gold, jade, aura-light |
 | Bảng danh mục trang trí (dọc tấm đáy 392 / ngang cột phải 310; đầu loại ô + "Gỡ" son; lưới 3 cột thẻ vật) | `NhaTa-doc-o-*`, `NhaTa-doc-the-khoa`, `NhaTa-ngang-o` | frost, jade, lacquer, slate-muted |
 | Biểu tượng bản đồ "Nhà của ta" (tiểu viện) | `NhaTa-ban-do`, `scene/ban-do/ve-ban-do.html` | map-paper, lacquer |
+| Bảng hướng dẫn khu (khung Bảng cách chơi dùng lại cho nơi không phải trò chơi; minh hoạ người ngồi + cuộn treo mini 3 mục) | `TuHoc-doc`, `TuHoc-doc-chua-hoc`, `TuHoc-ngang` | frost, jade, map-paper, scroll-wood, gold |
+| Nút nổi "Hướng dẫn" trên biển khu (viên `jade` 46 + sách mở, đuôi, chip tên) | `TuHoc-doc-nut`, `TuHoc-ngang-nut` | jade, frost |

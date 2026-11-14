@@ -909,6 +909,41 @@
       "w": 844,
       "h": 390,
       "title": "Nhà của ta · ngang · ô có vật, bảng cột phải"
+    },
+    "TuHoc-doc-nut.dc.html": {
+      "x": 0,
+      "y": 49916,
+      "w": 390,
+      "h": 844,
+      "title": "Khu tự học · dọc · nút nổi \"Hướng dẫn\" trên biển"
+    },
+    "TuHoc-doc.dc.html": {
+      "x": 470,
+      "y": 49916,
+      "w": 390,
+      "h": 844,
+      "title": "Khu tự học · dọc · bảng hướng dẫn"
+    },
+    "TuHoc-doc-chua-hoc.dc.html": {
+      "x": 940,
+      "y": 49916,
+      "w": 390,
+      "h": 844,
+      "title": "Khu tự học · dọc · chưa học bộ nào"
+    },
+    "TuHoc-ngang-nut.dc.html": {
+      "x": 1410,
+      "y": 49916,
+      "w": 844,
+      "h": 390,
+      "title": "Khu tự học · ngang · nút nổi"
+    },
+    "TuHoc-ngang.dc.html": {
+      "x": 1410,
+      "y": 50370,
+      "w": 844,
+      "h": 390,
+      "title": "Khu tự học · ngang · bảng"
     }
   },
   "order": [
@@ -1047,7 +1082,12 @@
     "NhaTa-doc-o-co-vat.dc.html",
     "NhaTa-doc-the-khoa.dc.html",
     "NhaTa-ngang.dc.html",
-    "NhaTa-ngang-o.dc.html"
+    "NhaTa-ngang-o.dc.html",
+    "TuHoc-doc-nut.dc.html",
+    "TuHoc-doc.dc.html",
+    "TuHoc-doc-chua-hoc.dc.html",
+    "TuHoc-ngang-nut.dc.html",
+    "TuHoc-ngang.dc.html"
   ],
   "notes": {
     "cach-dung": {
@@ -1415,6 +1455,19 @@
       "y": 47772,
       "w": 460,
       "text": "Phiếu 2026-11-14-nha-nguoi-dung. Đề xuất, chưa chốt.\n\n• Bản đồ: nơi \"Nhà của ta\" ở góc trên phải Trung Nguyên (gần Khởi Nguyên Trấn), biểu tượng tiểu viện, vùng chạm r 80.\n• Nút \"Trang trí\": tròn 52 kính, chỉ ở nhà — dọc: trên nút Trò chuyện; ngang: trái nút Trò chuyện.\n• Chế độ trang trí: ẩn joystick, cụm nút, Trò chuyện; giữ ví (tiền); viên trên trái \"Chạm một ô để đặt vật\"; nút \"Xong\" jade dưới ví.\n• Dấu ô trong cảnh: vòng elip nét đứt trắng (trống) · viền vàng (có vật) · jade đậm + quầng (đang chọn). Nút tròn 40 nổi trên ô: \"+\" khi trống, biểu tượng loại ô (lá · đèn · mái nhà) ở góc.\n• Chạm ô → bảng danh mục: dọc nửa dưới (cao 392), ngang cột phải 310. Lưới 3 cột thẻ vật hợp loại ô (thẻ Văn tiền 2026-11-14.12): đã có trước, khoá sau. Chạm thẻ → đặt / thay ngay, bảng vẫn mở. \"Gỡ\" viền son khi ô có vật.\n• Không thẻ tên khu (R-HUD-3) — mục 4 của phiếu bỏ.\n• Nền là hình vẽ giữ chỗ — cảnh nhà làm bằng /canh."
+    },
+    "tieu-de-tu-hoc": {
+      "x": 0,
+      "y": 49676,
+      "text": "Hướng dẫn Khu tự học 自習 — tầng 2 Tàng Thư Các (phiếu 2026-11-14-huong-dan-tu-hoc)",
+      "kind": "title1",
+      "maxW": 2254
+    },
+    "tu-hoc-ghi-chu": {
+      "x": 2334,
+      "y": 49916,
+      "w": 420,
+      "text": "Phiếu 2026-11-14-huong-dan-tu-hoc. Đề xuất, chưa chốt.\n\n• Dùng lại nguyên khung \"Bảng cách chơi\" (2026-11-13.35): kính sương, đầu bảng eyebrow + tên Hán + Việt, vùng cuộn, 4 mục vòng jade, ô mẹo, nút Đóng.\n• Nút nổi trên biển: nhãn \"Hướng dẫn\" (cùng kiểu nút nổi \"Nghe nhạc\" / \"Cách chơi\": viên jade 46 + biểu tượng sách mở, đuôi chỉ xuống, chip tên dưới \"Khu tự học 自習\").\n• Tên Hán 自習 (tự tập). Eyebrow \"Tàng Thư Các · Hướng dẫn\".\n• Minh hoạ: người ngồi bồ đoàn cầm cuộn sách + cuộn treo nhỏ 3 mục (Ôn sáng, Học mờ, Xem).\n• 4 mục: Ngồi vào bồ đoàn · Cuộn sách ôn · Học bộ mới ở Rừng trúc · Đứng dậy.\n• Ô mẹo: lời thủ thư Điển Thư 典書.\n• Chưa học bộ nào: ô báo vàng đầu vùng cuộn (biểu tượng bản đồ).\n• Giữ \"Ngồi\" trên bồ đoàn và tên vùng trên cuộn sách như đã chốt.\n• Nền là hình vẽ giữ chỗ."
     }
   },
   "designSystems": []

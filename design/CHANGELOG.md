@@ -3,6 +3,19 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-14.17 — Hướng dẫn Khu tự học 自習 (tầng 2 Tàng Thư Các): nút nổi + bảng
+
+- Loại: giao diện · chuỗi. Màn: **Hướng dẫn Khu tự học** (HUD web) — đặc tả `docs/screen_specs.md` mục cùng tên.
+- Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-14-huong-dan-tu-hoc.md`. Vẽ trong phiên VS Code theo vai thiết kế; người dùng duyệt
+  "Ổn, chốt".
+- Artboard: `TuHoc-doc-nut`, `TuHoc-doc`, `TuHoc-doc-chua-hoc`, `TuHoc-ngang-nut`, `TuHoc-ngang` (+ `canvas.json`).
+- Quyết định: nhãn nút **"Hướng dẫn"**; tên Hán **自習**; dùng nguyên khung Bảng cách chơi (2026-11-13.35); minh hoạ người ngồi
+  bồ đoàn + cuộn treo mini 3 mục; ô mẹo lời thủ thư Điển Thư (chân dung `models/anh/thu-thu-mat.png`); chưa học bộ nào → ô báo
+  vàng biểu tượng bản đồ. Giữ nhãn "Ngồi" trên bồ đoàn và tên vùng trên cuộn sách (đã chốt).
+- Token: không thêm. Chuỗi mới: `studyGuide*` (17).
+- Luật: không đổi. Gợi ý cho phiên code: R-VA-4 câu "chưa có nút Hướng dẫn trên biển" → cập nhật khi áp.
+- Ảnh: chưa có.
+
 ## 2026-11-14.16 — Nhà của ta: vườn theo cảnh (đặc tả HUD) · chữ vòng trận 我家 (Cần code)
 
 - Loại: cảnh 3D — **ngoại hình** (đề xuất, chưa đổi được bằng đặc tả) + sửa ghi chú đặc tả giao diện. Phiên VS Code (`/canh`),
