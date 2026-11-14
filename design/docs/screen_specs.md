@@ -701,4 +701,9 @@ Mẫu một mục:
   ngang — đi lại · ô có vật (bảng cột phải).
 - Chuỗi: `homeName`, `decorButton`, `decorHint`, `decorDone`, `decorRemove`, `decorSlotGarden`, `decorSlotYard`,
   `decorSlotIndoor`, `decorPick`, `decorReplace`, `decorFooter` (+ `decorPlacedHere`, `decorOwned`, `decorBuyAtShop*` của 2026-11-14.12).
-- Ảnh: `screens/BanDo-trang-thai.png` (bản đồ có Nhà của ta); màn HUD: chưa có ảnh — nền là hình vẽ giữ chỗ, cảnh nhà dựng bằng `/canh`.
+- **Theo cảnh thật** (`design/scene/nha-ta.json`, mục 2026-11-14.15): **Vườn ở phía đông** (bên phải khi đứng ở cổng nhìn vào nhà, sau
+  cổng trăng), Sân trước phía tây + trước nhà, ô Trong nhà sát tường sau nhà chính; vòng trận về ở (0; 7) ngay sau cổng. Nền các artboard
+  (vườn vẽ bên trái) chỉ là hình giữ chỗ — **vị trí ô, dấu ô, camera lấy theo cảnh**, không theo artboard. Bảng danh mục / nút / viên
+  nhắc giữ nguyên số đo ở trên.
+- Ảnh: `screens/BanDo-trang-thai.png` (bản đồ có Nhà của ta); cảnh nhà: `screens/Canh-nha-ta.png`, `screens/Canh-nha-ta-tren.png`;
+  màn HUD trang trí: chưa có ảnh.

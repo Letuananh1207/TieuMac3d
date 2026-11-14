@@ -3,6 +3,22 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-14.16 — Nhà của ta: vườn theo cảnh (đặc tả HUD) · chữ vòng trận 我家 (Cần code)
+
+- Loại: cảnh 3D — **ngoại hình** (đề xuất, chưa đổi được bằng đặc tả) + sửa ghi chú đặc tả giao diện. Phiên VS Code (`/canh`),
+  người dùng nhờ "Sửa cả hai" sau khi soát cảnh 2026-11-14.15 với giao diện 2026-11-14.13.
+- **Vườn**: cảnh `nha-ta.json` đặt Vườn phía **đông** (sau cổng trăng), artboard HUD 2026-11-14.13 vẽ vườn bên trái (hình giữ chỗ).
+  Giữ cảnh; `docs/screen_specs.md` mục "Nhà của ta" thêm dòng: vị trí ô, dấu ô, camera lấy theo cảnh, không theo nền artboard.
+  Không đổi `nha-ta.json`, không đổi mã ô.
+- **Chữ trên vòng trận**: vòng trận về ở nhà đang khắc 起源 (Khởi Nguyên) như ở trấn. Đề xuất: ở Nhà của ta khắc **我家**; trấn giữ 起源;
+  cảnh vùng khác giữ như hiện tại.
+- **Cần code**: `TeleportSpec` thêm trường `text` (chuỗi Hán 1–3 chữ, mặc định `"起源"` — giữ cảnh cũ); `web/src/scene/truyenTong.ts`
+  dùng `tp.text` thay hằng `TELEPORT_TEXT` khi vẽ phù hiệu; `specCheck` nhận trường mới; `designPreview.ts` nạp font cho chữ đó.
+  Xong thì `design/scene/nha-ta.json` đặt `"teleport": { …, "text": "我家" }` (`/canh`).
+- Luật: không chạm (R-NHA-1 chỉ nói có vòng trận).
+- `scene:check`: không chạy lại (không đổi đặc tả). Ảnh: không chụp mới.
+- File: `docs/screen_specs.md`, `CHANGELOG.md`.
+
 ## 2026-11-14.15 — Cảnh: Nhà của ta 我家 (tiểu viện riêng, 12 ô trang trí)
 
 - Loại: cảnh 3D — **bố cục** (cảnh vùng mới `design/scene/nha-ta.json`, mã cảnh `nha-ta`). Đáp ứng kế hoạch
