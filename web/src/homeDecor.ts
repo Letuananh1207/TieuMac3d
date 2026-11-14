@@ -1,10 +1,12 @@
 /**
  * Ghép trang trí Nhà của ta (R-NHA-2, R-NHA-3, R-NHA-4 — thiết kế 2026-11-14.13): nạp nhà đã lưu (`getHome`), dựng vật
  * ở ô (`scene/decorLayer.ts`), nút "Trang trí" + chế độ trang trí (`ui/decorHud.ts`, `ui/decorPanel.ts`), luật chạm thẻ
- * (`zones/decorMode.ts`), lưu từng ô qua cầu nối (`setDecor`). File gốc như `main.ts` (được import mọi lớp);
+ * (`zones/decorMode.ts`), lưu từng ô qua cầu nối (`setDecor`); không có Flutter → nhà + đồ sở hữu ở ví thử trong trình duyệt
+ * (`bridge/browserStore.ts`, R-TIEN-7). File gốc như `main.ts` (được import mọi lớp);
  * `main.ts` chỉ tạo khi cảnh có `decorSlots` và gọi vài hàm.
  */
 import type * as THREE from 'three';
+import type { TrialStore } from './bridge/browserStore';
 import { getHome } from './bridge/flutterBridge';
 import type { Colliders } from './collision/colliders';
 import { addDecorMarkers, DecorLayer, slotFloorY, slotMark, type DecorMarkers, type SlotMark } from './scene/decorLayer';
@@ -14,6 +16,7 @@ import { DecorHud } from './ui/decorHud';
 import { DecorPanel } from './ui/decorPanel';
 import { cleanHome, decorItem, NEW_HOME, type HomeState } from './zones/decor';
 import { buyAtShopText, decorCards, panelHint, removeFrom, SLOT_LABEL, tapCard } from './zones/decorMode';
+import { placeTrial } from './zones/walletRules';
 
 /** Màu dấu ô = token thiết kế (`design/tokens/design_tokens.json`): white, aura-light (bỏ alpha — vật liệu tự mờ), gold, jade. */
 const MARKER_COLORS = { white: '#FFFFFF', aura: '#FFECBE', gold: '#D4A64A', jade: '#2B5446' };
@@ -29,6 +32,8 @@ export interface HomeDecorDeps {
   coins(): number;
   /** vào chế độ trang trí: dừng joystick / bỏ đích đi */
   onEnter(): void;
+  /** ví thử (không có Flutter — R-TIEN-7): nhà, đồ sở hữu, số dư lấy / ghi ở đây thay cho `getHome` / `save` / `coins` */
+  trial?: TrialStore | null;
 }
 
 export class HomeDecor {
@@ -54,9 +59,10 @@ export class HomeDecor {
     return this.on;
   }
 
-  /** Nạp nhà đã lưu (R-NHA-3): `getHome` → làm sạch theo cảnh → dựng vật. Không có Flutter → nhà mới. */
+  /** Nạp nhà đã lưu (R-NHA-3): `getHome` (chế độ thử: ví thử — đồ vừa mua ở Tạp hoá web) → làm sạch theo cảnh → dựng vật. */
   async load(): Promise<void> {
-    this.home = cleanHome(await getHome(), this.slots);
+    const w = this.d.trial?.wallet;
+    this.home = cleanHome(w ? { placed: w.placed, owned: w.owned } : await getHome(), this.slots);
     this.layer.setAll(this.home.placed, decorItem);
   }
 
@@ -112,7 +118,7 @@ export class HomeDecor {
     const slot = this.selected;
     if (!slot) return;
     const t = tapCard(this.home, slot, itemId);
-    if (t.kind === 'locked') this.panel.toast(buyAtShopText(t.item, this.d.coins()), t.item.name);
+    if (t.kind === 'locked') this.panel.toast(buyAtShopText(t.item, this.d.trial?.wallet.coins ?? this.d.coins()), t.item.name);
     if (t.kind !== 'place') return;
     this.apply(t.home, slot, itemId);
   }
@@ -123,11 +129,13 @@ export class HomeDecor {
     if (slot && next) this.apply(next, slot, null);
   }
 
-  /** Đổi nhà: vật hiện ngay ở ô, lưu ô đó qua cầu nối (không chờ — không có Flutter thì giữ trong bộ nhớ trang). */
+  /** Đổi nhà: vật hiện ngay ở ô, lưu ô đó qua cầu nối (không chờ) — chế độ thử: ghi ví thử trong trình duyệt. */
   private apply(home: HomeState, slot: DecorSlotSpec, itemId: string | null): void {
     this.home = home;
     this.layer.set(slot.id, itemId ? decorItem(itemId) ?? null : null);
-    void this.d.save(slot.id, itemId);
+    const trial = this.d.trial;
+    if (trial) trial.update((w) => placeTrial(w, slot.id, itemId));
+    else void this.d.save(slot.id, itemId);
     this.refresh();
   }
 

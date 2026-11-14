@@ -146,28 +146,29 @@ không thưởng; `openShop` trả `false` → khung thoại "Tiệm chưa mở"
    - **Duyệt xong người dùng thấy**: trên web, hôm nay chơi đến 60 thì ván sau hiện "Hôm nay trò chơi đã đủ thưởng" y như app.
 
 ## Nhiệm vụ
-- [ ] 1. Sổ: thêm **R-TIEN-7**, sửa câu R-TIEN-1, R-TIEN-6, R-NHA-3 theo "Luật đề xuất" + quyết định 1–4 → `/dong-bo-quy-tac`
-      (tự chép online, `--mark-synced`). (`docs/testing/quy_tac.md` · xong khi `dart tool/rule_trace.dart` thấy R-TIEN-7, cột
+- [x] 1. Sổ: thêm **R-TIEN-7**, sửa câu R-TIEN-1, R-TIEN-6, R-NHA-3 theo "Luật đề xuất" + quyết định 1–4 → `/dong-bo-quy-tac`
+      (tự chép online, `--mark-synced`) — **chưa đồng bộ online** (phiên làm việc không đồng bộ; còn R-NHA-3, R-TIEN-1,
+      R-TIEN-6, R-TIEN-7 chờ `/dong-bo-quy-tac`). (`docs/testing/quy_tac.md` · xong khi `dart tool/rule_trace.dart` thấy R-TIEN-7, cột
       App `sửa`)
-- [ ] 2. `docs/bridge.md`: cột "khác" của `getProgress.coins`, `getHome`, `setDecor`, `earnGame`, `openShop` + mục "Không có
+- [x] 2. `docs/bridge.md`: cột "khác" của `getProgress.coins`, `getHome`, `setDecor`, `earnGame`, `openShop` + mục "Không có
       `window.flutter_inappwebview`" → chế độ thử (R-TIEN-7). Không đổi tên / dạng. (cầu nối · xong khi người dùng duyệt)
-- [ ] 3. `zones/walletRules.ts` + `walletRules.test.ts` (test đỏ trước): `gameEarn`, `LEARN_COINS`, `buyDecor`, `dayKey`,
+- [x] 3. `zones/walletRules.ts` + `walletRules.test.ts` (test đỏ trước): `gameEarn`, `LEARN_COINS`, `buyDecor`, `dayKey`,
       `TrialWallet` / `parseTrial`, `learnOnce`. (zones · `npm test` · xong khi ví dụ R-TIEN-3 "57 → +3 → 60 → 0 + đủ thưởng",
       R-TIEN-4 "100 mua Mai → 40; 40 Tùng → còn thiếu 40", R-TIEN-7 "mở lại 竹 → 0" xanh)
-- [ ] 4. `zones/shopView.ts` + test: thẻ 4 trạng thái, tab + nhóm, dải nghèo / đã mua hết, chữ xác nhận + "Đã mua …". Chuỗi
+- [x] 4. `zones/shopView.ts` + test: thẻ 4 trạng thái, tab + nhóm, dải nghèo / đã mua hết, chữ xác nhận + "Đã mua …". Chuỗi
       `shop*`, `slot*` chép đúng `vi.arb`. (zones · `npm test`)
-- [ ] 5. `bridge/browserStore.ts` + test (kho giả): đọc / ghi `hoc-xa.thu.v1`, hỏng → ví mới, bị chặn → bộ nhớ; `?tien=` theo
+- [x] 5. `bridge/browserStore.ts` + test (kho giả): đọc / ghi `hoc-xa.thu.v1`, hỏng → ví mới, bị chặn → bộ nhớ; `?tien=` theo
       quyết định 2. (bridge · `npm test` · `dart tool/check.dart --changed` sạch `E-LOP`)
-- [ ] 6. HUD `ui/shopPanel.ts` + `ui/shop.css` + khung `index.html`: Tạp hoá HTML theo 6 artboard `CuaHang-*` (đầu ấn son
+- [x] 6. HUD `ui/shopPanel.ts` (DOM gốc `#shopPanel` — `#shop` đã là nút nổi "Vào tiệm") + `ui/shop.css` + khung `index.html`: Tạp hoá HTML theo 6 artboard `CuaHang-*` (đầu ấn son
       雜貨 + ví, tab, lưới 3 / 5 cột, thẻ, tấm đáy xác nhận, tấm "Đã mua" 3 s, dải nghèo, dải hết; "Đóng" + Esc); hình vật
       `decorIcons.ts`, xu `coinIcon`. (ui · xong khi khớp artboard dọc 390×844 + ngang 844×390, safe area, không `innerHTML`)
-- [ ] 7. Ghép: `walletRoom.ts` (ví thử: `sync`, `gameEnded`, "Vào tiệm" → `ShopPanel`, mua → kho + "−n", `learned(r)`),
+- [x] 7. Ghép: `walletRoom.ts` (ví thử: `sync`, `gameEnded`, "Vào tiệm" → `ShopPanel`, mua → kho + "−n", `learned(r)`),
       `homeDecor.ts` (nạp / lưu nhà + sở hữu từ kho thử), `main.ts` (chọn chế độ một lần; thẻ HTML → +10 lần đầu, bộ đã học
       từ kho thử; ví ẩn khi Tạp hoá mở; `console.info` theo quyết định 3). Có Flutter: không nhánh nào đổi. (ghép · `npx tsc
       --noEmit` · test `gamePlay.test.ts` vẫn xanh)
-- [ ] 8. Dọn + build: bỏ `SHOP_CLOSED_TEXT` (+ test), Bản đồ tính năng `lead/SKILL.md`, `npm run build`.
-- [ ] 9. Thử máy: `npm run dev` trên máy tính + điện thoại cùng Wi-Fi (dọc + ngang): ví "0" → Đấu chữ thắng → "+8" khi rời bàn
-      → tải lại còn 8 → `?tien=500` → Vào tiệm mua Mai (xác nhận, "Đã mua Mai", ví "−60") → Nhà của ta đặt Mai → tải lại còn Mai.
+- [x] 8. Dọn + build: bỏ `SHOP_CLOSED_TEXT` (+ test), Bản đồ tính năng `lead/SKILL.md`, `npm run build`.
+- [ ] 9. Thử máy: `npm run dev` trên máy tính + điện thoại cùng Wi-Fi (dọc + ngang): `?tien=xoa` → ví "300" → Đấu chữ thắng → "+8" khi rời bàn
+      → tải lại còn 308 → Vào tiệm mua Mai (xác nhận, "Đã mua Mai", ví "−60") → Nhà của ta đặt Mai → tải lại còn Mai.
       Rồi `flutter run` (Android) → ví app không đổi, "Vào tiệm" mở màn Flutter như cũ.
 
 Thứ tự: 1–2 trước (sổ, cầu nối docs) → 3–5 song song được → 6 → 7 → 8 → 9. Không chạm file của việc khác đang làm ngoài

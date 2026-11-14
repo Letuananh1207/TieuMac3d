@@ -3,7 +3,8 @@ import './style.css';
 import cursorArrow from './cursor/tro.svg?raw';
 import cursorButton from './cursor/tro-nut.svg?raw';
 import { installCursors } from './ui/cursor';
-import { FlutterBridge, getProgress } from './bridge/flutterBridge';
+import { openTrialStore } from './bridge/browserStore';
+import { FlutterBridge, getProgress, hasFlutter } from './bridge/flutterBridge';
 import { Colliders } from './collision/colliders';
 import { GamePlay, type TableSeat } from './gamePlay';
 import { Joystick } from './input/joystick';
@@ -80,6 +81,7 @@ async function boot(): Promise<void> {
   const { spec } = SCENE;
   // tiến độ học: Flutter giữ; không khoá vùng (R-HANH-1). Hỏi song song với nạp font.
   const progressAsk = getProgress();
+  const flutterAsk = hasFlutter(); // không có Flutter → Văn tiền chế độ thử trong trình duyệt (R-TIEN-7)
   // màn tải che tới khung hình đầu (R-MAN-2); tiến độ theo các bước dựng thật
   const loading = new LoadingScreen(spec.site);
   loading.progress(10);
@@ -92,6 +94,7 @@ async function boot(): Promise<void> {
     document.fonts.load('700 52px "Han Serif"', hanText || '字'),
   ]);
   let progress = await progressAsk;
+  const trial = (await flutterAsk) ? null : openTrialStore();
   loading.progress(30);
   await nextPaint();
 
@@ -224,7 +227,7 @@ async function boot(): Promise<void> {
 
   /* ---------- tu luyện (R-HANH-3): ngồi thiền ≥ 1 giây ở vùng có bộ thủ → thẻ bộ chưa học đầu tiên ---------- */
   // Bài học là lớp riêng của người học (theo tiến độ của họ) — cảnh không đổi theo tiến độ (R-VUNG-1).
-  let learnedRadicals = new Set(progress?.radicals ?? []);
+  let learnedRadicals = new Set(progress?.radicals ?? trial?.wallet.learned ?? []); // chế độ thử: bộ đã mở thẻ HTML (R-TIEN-7)
   // ngồi ôn 1 s → bảng chọn cuộn sách (R-ON-8, thiết kế 2026-11-14.10 — scene/nhapDinh.ts)
   const SIT_TO_LEARN = NHAP_DINH_OPEN_AT;
   let sitTime = 0;
@@ -240,7 +243,7 @@ async function boot(): Promise<void> {
         covered = true;
         return;
       }
-      // không có Flutter (trình duyệt): bảng HTML dự phòng; mở là coi như đã học (chỉ trong phiên, không lưu)
+      // không có Flutter (trình duyệt): bảng HTML dự phòng; mở là coi như đã học — lưu ở ví thử, lần đầu +10 (R-TIEN-7)
       lesson.open({
         han: r.form,
         pinyin: r.pinyin,
@@ -252,6 +255,7 @@ async function boot(): Promise<void> {
         ],
       });
       learnedRadicals.add(id);
+      walletRoom.learned(r); // xu bay khi đóng thẻ (ví hiện lại)
     });
   };
   let onSeat = false; // ngồi bằng nút nổi "Ngồi" / "Vào bàn" (R-NGOI-1) → không mở cuộn sách (R-ON-8)
@@ -373,6 +377,7 @@ async function boot(): Promise<void> {
         groundY: groundAt,
         save: (slot, item): Promise<boolean> => bridge.setDecor(slot, item),
         coins: () => progress?.coins ?? 0,
+        trial,
         onEnter: () => {
           player.moveTarget = null;
           joystick.end();
@@ -527,9 +532,10 @@ async function boot(): Promise<void> {
     npcInfo: (id) => dialogFor(id),
     ended: (game, outcome, result) => walletRoom.gameEnded(game, outcome, result), // R-TIEN-3
   });
-  // Văn tiền (R-TIEN-1..6): ví HUD, thưởng trò, nút "Vào tiệm" Tạp hoá — walletRoom.ts
+  // Văn tiền (R-TIEN-1..7): ví HUD, thưởng trò, nút "Vào tiệm" Tạp hoá — walletRoom.ts
   const walletRoom = new WalletRoom({
     bridge,
+    trial,
     buildings: spec.buildings,
     groundAt,
     cover: () => {
@@ -538,7 +544,7 @@ async function boot(): Promise<void> {
       learn.suspend(true);
       player.moveTarget = null;
     },
-    notice: (text) => say('Tạp hoá', text, () => {}),
+    uncover: closeLesson, // Tạp hoá bản web đóng ("Đóng" / Esc)
     setReward: (result, line) => gamePlay.setReward(result, line),
   });
   walletRoom.sync(progress);

@@ -9,9 +9,6 @@ export const SHOP_ID = 'tap-hoa';
 /** R-TIEN-6: đứng cách cửa tiệm dưới khoảng này (m) thì hiện nút "Vào tiệm" (như "Xem bảng", R-NV-3). */
 export const SHOP_RANGE = 2.5;
 
-/** Chữ khung thoại khi không có Flutter (trình duyệt thường — R-TIEN-6). */
-export const SHOP_CLOSED_TEXT = 'Tiệm chưa mở';
-
 /** Nhà trong đặc tả cảnh (cùng dạng `BuildingSpec` của `scene/spec.ts` — zones không import scene). */
 export interface BuildingLike {
   id: string;

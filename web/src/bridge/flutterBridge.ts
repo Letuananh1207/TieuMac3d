@@ -100,6 +100,14 @@ function hostReady(): Promise<InAppWebViewHost | null> {
 }
 
 /**
+ * Có Flutter không (chờ cầu nối như `getProgress`, tối đa `READY_WAIT_MS`). Không có → trang chạy chế độ thử trình duyệt
+ * (R-TIEN-7). Flutter bản cũ (không gửi `coins`) vẫn là "có Flutter".
+ */
+export async function hasFlutter(): Promise<boolean> {
+  return (await hostReady()) !== null;
+}
+
+/**
  * Hỏi Flutter tiến độ học (`getProgress`). `null` = không có Flutter / lỗi → trang dùng mặc định.
  * Hàm rời (không cần `FlutterBridge`) để gọi sớm, song song với nạp font.
  */
@@ -261,8 +269,8 @@ export class FlutterBridge {
   }
 
   /**
-   * Mở Tạp hoá (R-TIEN-4, R-TIEN-6) với danh mục + giá của `zones/decor.ts` (một nguồn giá). `false` = không có Flutter →
-   * trang báo "Tiệm chưa mở".
+   * Mở Tạp hoá (R-TIEN-4, R-TIEN-6) với danh mục + giá của `zones/decor.ts` (một nguồn giá). `false` = không có Flutter /
+   * Flutter không mở (không có Flutter thì trang mở Tạp hoá bản web — R-TIEN-7, không gọi tới đây).
    */
   openShop(items: readonly DecorItem[]): Promise<boolean> {
     return this.ask({ type: 'openShop', payload: { items: shopPayload(items) } });

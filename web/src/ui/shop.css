@@ -1,0 +1,95 @@
+/* Tạp hoá 雜貨 bản HTML (R-TIEN-4, chế độ thử R-TIEN-7) — design/docs/screen_specs.md "Tạp hoá 雜貨" (2026-11-14.12),
+   artboard CuaHang-doc / -doc-ngheo / -doc-xac-nhan / -doc-vua-mua / -doc-het / -ngang. Dọc 390×844: khung trái/phải 16,
+   trên safe + 10, dưới safe + 16; ngang 844×390: trái/phải safe + 12, trên 10, dưới safe + 10. */
+#shopPanel{position:fixed;inset:0;z-index:10;background:var(--mist);color:var(--slate);overflow:hidden}
+.sp-hills{position:absolute;left:0;bottom:0;width:100%;height:304px;pointer-events:none}
+.sp-wrap{position:absolute;left:var(--edge-left);right:var(--edge-right);top:calc(var(--sa-top) + 10px);bottom:calc(var(--sa-bottom) + 16px);display:flex;flex-direction:column;gap:12px}
+/* đầu: ấn son chữ dọc 15 + "Tạp hoá" Lora 22 + dòng phụ 12; ví bên phải */
+.sp-head{display:flex;align-items:center;gap:10px}
+.sp-brand{flex:1;min-width:0;display:flex;align-items:center;gap:10px}
+.sp-seal{flex:0 0 auto;font-family:var(--han);font-weight:700;writing-mode:vertical-rl;font-size:15px;line-height:1;padding:6px 5px;border-radius:4px;background:var(--lacquer);color:#fff;letter-spacing:2px}
+.sp-titles{display:flex;flex-direction:column;min-width:0}
+.sp-titles h1{margin:0;font-family:var(--display);font-weight:700;font-size:22px}
+.sp-titles .sub{font-size:12px;color:var(--slate-muted)}
+.sp-walletWrap{position:relative;flex:0 0 auto}
+.sp-wallet{height:36px;box-sizing:border-box;padding:0 12px 0 5px;border-radius:999px;background:rgba(244,247,246,.86);border:1px solid var(--frost-line);outline:1px solid var(--frost-outline);box-shadow:var(--shadow-hud);display:flex;align-items:center;gap:7px}
+.sp-wallet .num{font-size:15px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.sp-wallet.down{outline:2px solid var(--lacquer);box-shadow:0 0 0 5px rgba(168,50,42,.18),var(--shadow-hud)}
+/* tab lọc: viên cao 34 (ngang 30) */
+.sp-bar{display:flex;align-items:center;gap:10px}
+.sp-tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.sp-tab{flex:0 0 auto;height:34px;padding:0 12px;font-size:13px;font-weight:700;border-radius:999px;background:rgba(255,255,255,.6);color:var(--slate);border:1px solid rgba(36,50,58,.2);touch-action:manipulation}
+.sp-tab.on{background:var(--slate);color:#fff;border:0}
+.sp-closeSmall{display:none;margin-left:auto;height:30px;padding:0 12px;font-size:13px;border-radius:10px;border:1px solid rgba(36,50,58,.3);background:rgba(255,255,255,.55);align-items:center;gap:6px;touch-action:manipulation}
+/* dải nghèo (gold 14 %) / đã mua hết (jade 8 %) */
+.sp-banner{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;font-size:13px;line-height:1.45}
+.sp-banner svg{flex:0 0 auto}
+.sp-banner.poor{background:rgba(212,166,74,.14);border:1px solid var(--gold)}
+.sp-banner.allBought{background:rgba(43,84,70,.08);border:1px solid rgba(43,84,70,.28)}
+/* lưới: dọc 3 cột, ngang 5 cột, cách 8; cuộn dọc, mờ đáy 40 */
+.sp-listWrap{position:relative;flex:1;min-height:0}
+.sp-list{position:absolute;inset:0;overflow-y:auto;overscroll-behavior:contain;display:flex;flex-direction:column;gap:12px;padding:4px 0 40px;box-sizing:border-box;scrollbar-width:none}
+.sp-list::-webkit-scrollbar,.sp-tabs::-webkit-scrollbar{display:none}
+.sp-fade{position:absolute;left:0;right:0;bottom:0;height:40px;background:linear-gradient(rgba(233,238,236,0),var(--mist));pointer-events:none}
+.sp-group{display:flex;flex-direction:column;gap:6px}
+.sp-group h3{margin:0;font-size:12px;font-weight:700;color:var(--slate-muted);letter-spacing:.08em;text-transform:uppercase}
+.sp-grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+/* thẻ vật: bo 14, đệm 8; chưa có trắng, đã có trắng 55 %; đang chọn viền ngoài gold 3 cách 2 */
+.sp-card{box-sizing:border-box;padding:8px;border-radius:14px;background:#fff;border:1px solid rgba(36,50,58,.14);display:flex;flex-direction:column;gap:4px;min-width:0}
+.sp-card.owned{background:rgba(255,255,255,.55)}
+.sp-card.picked{outline:3px solid var(--gold);outline-offset:2px}
+.sp-card .art{position:relative;height:64px;border-radius:10px;background:var(--map-paper,#f2eada);display:flex;align-items:center;justify-content:center}
+.sp-card .art .han{position:absolute;right:6px;top:3px;font-family:var(--han);font-weight:700;font-size:16px;color:var(--jade)}
+.sp-card .name{font-size:13px;font-weight:700;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sp-card .price{display:flex;align-items:center;gap:4px;font-size:12px;min-width:0}
+.sp-card .price b{font-variant-numeric:tabular-nums}
+.sp-card .price .ph{font-family:var(--han);font-weight:700;font-size:10px;color:var(--slate-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sp-card .act{height:34px;padding:0 4px;white-space:nowrap;overflow:hidden;border-radius:10px;display:flex;align-items:center;justify-content:center;gap:5px;font-size:13px;font-weight:700;touch-action:manipulation}
+.sp-card .act.buy{border:0;background:var(--jade);color:#fff;box-shadow:inset 0 -2px 0 rgba(0,0,0,.18)}
+.sp-card .act.buy:active{background:var(--jade-press)}
+.sp-card .act.owned{color:var(--jade);background:rgba(43,84,70,.10)}
+.sp-card .act.short{border:1px dashed rgba(36,50,58,.35);background:transparent;font-size:12px;color:var(--slate-muted);cursor:default}
+.sp-close{flex:0 0 auto;height:52px;font-size:15px;border-radius:12px;border:1px solid rgba(36,50,58,.3);background:rgba(255,255,255,.55);display:flex;align-items:center;justify-content:center;gap:8px;touch-action:manipulation}
+.sp-close:active,.sp-closeSmall:active{background:rgba(214,222,220,.95)}
+/* xác nhận: cảnh tối 28 %, tấm đáy kính .98 bo 16 */
+.sp-dim{position:absolute;inset:0;background:rgba(36,50,58,.28)}
+.sp-confirm{position:absolute;left:var(--edge-left);right:var(--edge-right);bottom:calc(var(--sa-bottom) + 16px);max-width:520px;margin:0 auto;box-sizing:border-box;padding:16px;border-radius:16px;background:rgba(244,247,246,.98);border:1px solid rgba(36,50,58,.16);box-shadow:0 -6px 24px rgba(36,50,58,.25);display:flex;flex-direction:column;gap:14px}
+.sp-confirm .top{display:flex;gap:14px;align-items:center}
+.sp-confirm .art{flex:0 0 76px;height:76px;border-radius:12px;background:var(--map-paper,#f2eada);display:flex;align-items:center;justify-content:center}
+.sp-confirm .txt{display:flex;flex-direction:column;gap:3px}
+.sp-confirm .q{font-size:16px;font-weight:700}
+.sp-confirm .q .han,.sp-toast .han{font-family:var(--han);font-weight:700}
+.sp-confirm .q .han{color:var(--jade)}
+.sp-confirm .sub{font-size:13px;color:var(--slate-muted)}
+.sp-confirm dl{margin:0;display:grid;grid-template-columns:1fr auto;row-gap:4px;font-size:14px;font-variant-numeric:tabular-nums}
+.sp-confirm dd{margin:0;text-align:right;font-weight:700}
+.sp-confirm dd:nth-of-type(2){color:var(--lacquer)}
+.sp-confirm dt:nth-of-type(3),.sp-confirm dd:nth-of-type(3){border-top:1px solid rgba(36,50,58,.15);padding-top:4px}
+.sp-confirm .row{display:flex;gap:10px}
+.sp-confirm .row button{height:52px;font-size:15px;border-radius:12px;touch-action:manipulation}
+.sp-confirm .cancel{flex:0 0 auto;padding:0 18px;border:1px solid rgba(36,50,58,.3);background:rgba(255,255,255,.55)}
+.sp-confirm .buy{flex:1;border:0;background:var(--jade);color:#fff;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:inset 0 -2px 0 rgba(0,0,0,.18),0 4px 12px rgba(43,84,70,.3)}
+.sp-confirm .buy:active{background:var(--jade-press)}
+/* vừa mua: tấm slate, trên nút "Đóng" (dọc), 3 s */
+.sp-toast{position:absolute;left:var(--edge-left);right:var(--edge-right);bottom:calc(var(--sa-bottom) + 82px);max-width:520px;margin:0 auto;box-sizing:border-box;padding:12px 14px;border-radius:14px;background:var(--slate);color:#fff;box-shadow:0 8px 22px rgba(36,50,58,.35);display:flex;align-items:center;gap:12px;pointer-events:none}
+.sp-toast .art{flex:0 0 48px;height:48px;border-radius:10px;background:var(--map-paper,#f2eada);display:flex;align-items:center;justify-content:center}
+.sp-toast .txt{flex:1;font-size:14px;line-height:1.4;display:flex;flex-direction:column}
+.sp-toast .sub{opacity:.85}
+@media (orientation:landscape){
+  .sp-hills{height:140px}
+  .sp-wrap{top:calc(var(--sa-top) + 10px);bottom:calc(var(--sa-bottom) + 10px);gap:8px}
+  .sp-seal{font-size:13px}
+  .sp-titles h1{font-size:19px}
+  .sp-titles .sub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sp-tab{height:30px;padding:0 10px}
+  .sp-closeSmall{display:flex}
+  .sp-close{display:none}
+  .sp-grid{grid-template-columns:repeat(5,minmax(0,1fr))}
+  .sp-card{padding:6px;gap:3px}
+  .sp-card .art{height:50px}
+  .sp-card .art svg{width:42px;height:42px}
+  .sp-card .art .han{font-size:14px}
+  .sp-card .name{font-size:12px}
+  .sp-confirm{bottom:calc(var(--sa-bottom) + 10px)}
+  .sp-toast{bottom:calc(var(--sa-bottom) + 10px)}
+}
