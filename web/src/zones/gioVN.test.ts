@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { canhDem, canhGio, cauHoiGio, cauRao, gioNoi, gioVN, giayTrongNgayVN, lechGioThu, maNgayVN, soTiengMo } from './gioVN';
+import { canhDem, canhGio, cauHoiGio, cauRao, gioNoi, giayTrongNgayVN, lechGioThu, maNgayVN, soTiengMo } from './gioVN';
 
 /** Mốc UTC của giờ VN `y-m-d h:mi` (GMT+7). */
 const vn = (y: number, mo: number, d: number, h: number, mi = 0, s = 0): number => Date.UTC(y, mo - 1, d, h - 7, mi, s);
@@ -7,15 +7,14 @@ const vn = (y: number, mo: number, d: number, h: number, mi = 0, s = 0): number 
 describe('Đồng hồ giờ Việt Nam (GMT+7)', () => {
   it('R-TIEN-8: giờ và ngày theo GMT+7 từ mốc UTC, không theo múi giờ máy', () => {
     const t = vn(2026, 11, 14, 10, 5);
-    expect(gioVN(t)).toBeCloseTo(10 + 5 / 60, 9);
-    expect(giayTrongNgayVN(t)).toBe(10 * 3600 + 5 * 60);
+        expect(giayTrongNgayVN(t)).toBe(10 * 3600 + 5 * 60);
   });
 
   it('R-TIEN-8: London 18 giờ ngày 14 (UTC 18:00) là 1 giờ sáng ngày 15 ở VN → đã sang ngày mới', () => {
     const london = Date.UTC(2026, 10, 14, 18, 0); // tháng 11 London = UTC
     expect(maNgayVN(london)).toBe(maNgayVN(vn(2026, 11, 15, 0, 1)));
     expect(maNgayVN(london)).toBe(maNgayVN(vn(2026, 11, 14, 23, 59)) + 1);
-    expect(Math.floor(gioVN(london))).toBe(1);
+    expect(Math.floor(giayTrongNgayVN(london) / 3600)).toBe(1);
   });
 
   it('R-TIEN-8: 23 giờ 59 và 0 giờ 01 (GMT+7) là hai ngày liền nhau', () => {

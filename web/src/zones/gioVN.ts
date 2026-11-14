@@ -1,20 +1,14 @@
 /**
- * Đồng hồ chung giờ Việt Nam (GMT+7) — tính từ mốc UTC (`Date.now()`), **không** đọc múi giờ của máy: máy đặt múi giờ nào
- * cũng ra cùng giờ, cùng ngày (R-TIEN-8, R-NPC-7, R-NPC-8). Kèm canh giờ / canh đêm, câu rao của Lão Canh, số tiếng mõ.
- * Thuần (không three, không DOM).
+ * Đồng hồ chung giờ Việt Nam (GMT+7) cho lớp `zones/` — tính từ mốc UTC (`Date.now()`), **không** đọc múi giờ của máy: máy
+ * đặt múi giờ nào cũng ra cùng giờ, cùng ngày (R-TIEN-8, R-NPC-7, R-NPC-8). Kèm canh giờ / canh đêm, câu rao của Lão Canh,
+ * số tiếng mõ. Thuần (không three, không DOM).
  *
- * Trùng ý với `gioVN` của ngày đêm V-27 (`scene/ngayDem.ts`): cùng tên, cùng nghĩa (giờ thập phân 0…24). Hai bản vì
- * `zones/` không được import `scene/`; gộp xong có thể cho `scene/ngayDem.ts` dùng lại bản này.
+ * Giờ thập phân (`gioVN`) dùng bản của ngày đêm V-27: `scene/ngayDem.ts` — không viết lại ở đây. File này chỉ thêm phần
+ * ngày đêm chưa có (giây trong ngày, mã ngày, canh giờ); `zones/` không import được `scene/` nên tự tính từ cùng công thức.
  */
 
 const VN_OFFSET_MS = 7 * 3_600_000;
 const DAY_MS = 86_400_000;
-
-/** Giờ VN thập phân 0…24 từ mốc UTC `nowMs`. */
-export function gioVN(nowMs: number): number {
-  const h = (nowMs / 3_600_000 + 7) % 24;
-  return h < 0 ? h + 24 : h;
-}
 
 /** Giây VN tính từ 0 giờ hôm nay (0 … 86 399,999…). */
 export function giayTrongNgayVN(nowMs: number): number {
@@ -98,7 +92,7 @@ export function cauHoiGio(nowMs: number): string {
 
 /**
  * Ép giờ thử (Canvas 3D `?gio=…`, chỉ để xem): "08:59:50", "8:59" hoặc số giờ thập phân "21.5" (như `?gio` của V-27) →
- * độ lệch ms cộng vào `Date.now()` sao cho đồng hồ VN bắt đầu từ giờ đó. Sai dạng → `null`.
+ * độ lệch ms cộng vào `Date.now()` sao cho đồng hồ VN bắt đầu từ giờ đó (rồi chạy đúng tốc độ thật). Sai dạng → `null`.
  */
 export function lechGioThu(value: string | null, nowMs: number): number | null {
   if (!value) return null;
