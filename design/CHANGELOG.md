@@ -3,28 +3,7 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
-## 2026-11-14.31 — Xoay cách bày Kỳ Văn Uyển 90°: bàn dài chạy bắc – nam
-
-- Loại: cảnh 3D — **bố cục**. Ai làm: phiên code V-20261114-29 làm thay vai thiết kế (`/canh`). Người dùng: "trình bày
-  hãy xoay hướng 90 độ khu vui chơi" (ảnh đứng gần cổng trăng x −17, z 4 nhìn vào sân). **Đã duyệt 2026-11-14.**
-- Xoay theo chiều kim đồng hồ nhìn từ trên (bắc → đông) quanh tâm cụm bàn (−34; 7,5). `gameTables[].rotY` 0 → **270**:
-  bàn cờ (−34; 4) → **(−30,5; 7,5)** (phía đông, gần cổng trăng), bàn Đấu chữ (−34; 11) → **(−37,5; 7,5)**; 3 chỗ mỗi bàn
-  ở z 5 / 7,5 / 10, ghế tây (nhìn đông) + ghế đông (nhìn tây); lối giữa hai bàn 4,2 m, thẳng lối lát x −33 từ phía bắc.
-- Biển trò: "Cờ caro" (−29,5; 4) → **(−30,5; 2,6)** (đầu bắc bàn cờ), "Đấu chữ" (−29,5; 11) → **(−37,5; 12,4)** (đầu nam
-  bàn Đấu chữ) — vẫn `rotY` 90 nhìn về cổng, đặt so le để từ cổng không che nhau.
-- `lanternStrings`: 4 dây đông – tây (x −45,2 → −22,8 ở z 0,5 / 5 / 9,5 / 14) → **bắc – nam** z −0,5 → 15,5 ở x −40,75 /
-  −36,25 / −31,75 / −27,25 (ngắn hơn: sân hẹp chiều nam – bắc, tường nam z 17).
-- `props` đèn đá (−37; −3,5), (−29; −3,5) → **(−23; 0,5), (−23; 7,5)** hai bên lối cổng trăng. `trees.yard` mai
-  (−43,5; 13,5), (−24,5; 13,5) → **(−45; 1,5), (−45; 13,5)** làm nền phía tây.
-- Code: không trường mới (`rotY` bàn đã có — camera bàn, thẻ bộ thủ, tay đặt quân, vật cản theo góc bàn); `tableSlots`
-  gói hướng ghế về [0; 2π).
-- Luật: R-GIAO-1, R-GIAO-2, R-NGOI-1, R-BANDO-1, R-BANDO-2 sửa mô tả / ví dụ toạ độ — Xác nhận `chờ`. `scene:check` không
-  lỗi. Góc trên (`?view=tren`, sau khi gộp .29 / .30): 131 draw call / 146 118 tam giác (xoay không đổi draw call; trước
-  gộp 136 / 150 424 → 136 / 149 744).
-- Ảnh: `screens/Canh-ky-van-cong.png` (góc ảnh người dùng `?nv=-19.5,4&cam=-19,3.2,4&tam=-34,7.5`),
-  `screens/Canh-ky-van-tren.png` (`?cam=-34,38,8.5&tam=-34,7.5`). Canvas 3D chưa đăng lại.
-- File: `scene/scene.json`, ảnh trên.
-## 2026-11-14.31 — Cổng đầu lối xuống núi hạ còn 6,6 m, biển "Khởi Nguyên Trấn"
+## 2026-11-14.32 — Cổng đầu lối xuống núi hạ còn 6,6 m, biển "Khởi Nguyên Trấn"
 
 - Loại: cảnh 3D — **ngoại hình** (cổng) + chữ biển. Ai làm: phiên code V-20261114-32 làm thay vai thiết kế (`/canh`).
   Người dùng: "cổng xuống núi đang quá cao và tên biển nên là khởi nguyên trấn". **Đã duyệt 2026-11-14 (theo yêu cầu
@@ -68,6 +47,27 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
 - Phương án khác (chưa làm): lối sang Hậu Sơn; Dược Viên; Mặc Trì "có ích" (bồ đoàn ngồi ôn, nước màu mực — **cần code**).
 - Canvas 3D: bản 56 (trước khi bỏ chữ Hán — chưa đăng lại). Ảnh: `screens/Canh-truyen-tong-quay.png` (góc ảnh người dùng
   `?nv=10,0&cam=3,3.6,1&tam=30,0`), `screens/Canh-mac-tri.png` (`?nv=23,8&cam=19,7,4&tam=33,16`).
+- File: `scene/scene.json`, ảnh trên.
+## 2026-11-14.31 — Xoay cách bày Kỳ Văn Uyển 90°: bàn dài chạy bắc – nam
+
+- Loại: cảnh 3D — **bố cục**. Ai làm: phiên code V-20261114-29 làm thay vai thiết kế (`/canh`). Người dùng: "trình bày
+  hãy xoay hướng 90 độ khu vui chơi" (ảnh đứng gần cổng trăng x −17, z 4 nhìn vào sân). **Đã duyệt 2026-11-14.**
+- Xoay theo chiều kim đồng hồ nhìn từ trên (bắc → đông) quanh tâm cụm bàn (−34; 7,5). `gameTables[].rotY` 0 → **270**:
+  bàn cờ (−34; 4) → **(−30,5; 7,5)** (phía đông, gần cổng trăng), bàn Đấu chữ (−34; 11) → **(−37,5; 7,5)**; 3 chỗ mỗi bàn
+  ở z 5 / 7,5 / 10, ghế tây (nhìn đông) + ghế đông (nhìn tây); lối giữa hai bàn 4,2 m, thẳng lối lát x −33 từ phía bắc.
+- Biển trò: "Cờ caro" (−29,5; 4) → **(−30,5; 2,6)** (đầu bắc bàn cờ), "Đấu chữ" (−29,5; 11) → **(−37,5; 12,4)** (đầu nam
+  bàn Đấu chữ) — vẫn `rotY` 90 nhìn về cổng, đặt so le để từ cổng không che nhau.
+- `lanternStrings`: 4 dây đông – tây (x −45,2 → −22,8 ở z 0,5 / 5 / 9,5 / 14) → **bắc – nam** z −0,5 → 15,5 ở x −40,75 /
+  −36,25 / −31,75 / −27,25 (ngắn hơn: sân hẹp chiều nam – bắc, tường nam z 17).
+- `props` đèn đá (−37; −3,5), (−29; −3,5) → **(−23; 0,5), (−23; 7,5)** hai bên lối cổng trăng. `trees.yard` mai
+  (−43,5; 13,5), (−24,5; 13,5) → **(−45; 1,5), (−45; 13,5)** làm nền phía tây.
+- Code: không trường mới (`rotY` bàn đã có — camera bàn, thẻ bộ thủ, tay đặt quân, vật cản theo góc bàn); `tableSlots`
+  gói hướng ghế về [0; 2π).
+- Luật: R-GIAO-1, R-GIAO-2, R-NGOI-1, R-BANDO-1, R-BANDO-2 sửa mô tả / ví dụ toạ độ — Xác nhận `chờ`. `scene:check` không
+  lỗi. Góc trên (`?view=tren`, sau khi gộp .29 / .30): 131 draw call / 146 118 tam giác (xoay không đổi draw call; trước
+  gộp 136 / 150 424 → 136 / 149 744).
+- Ảnh: `screens/Canh-ky-van-cong.png` (góc ảnh người dùng `?nv=-19.5,4&cam=-19,3.2,4&tam=-34,7.5`),
+  `screens/Canh-ky-van-tren.png` (`?cam=-34,38,8.5&tam=-34,7.5`). Canvas 3D chưa đăng lại.
 - File: `scene/scene.json`, ảnh trên.
 ## 2026-11-14.30 — Biển, tên nơi, chữ trang trí chỉ tiếng Việt (luật mới R-HUD-4)
 
