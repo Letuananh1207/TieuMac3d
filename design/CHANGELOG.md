@@ -3,6 +3,11 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-14.28 — Biển cổng trăng mới phía Quảng Trường: "Khu vui chơi"
+
+- Loại: cảnh 3D — chuỗi. Người dùng: "tên biển nên đổi thành khu vui chơi hay gì đó". `walls.gates` (tay, at 4) `signs.dong`
+  "Kỳ Văn Uyển · 棋文苑" → **"Khu vui chơi · 棋文苑"**. **Đã duyệt 2026-11-14.** Luật: không đổi. File: `scene/scene.json`.
+
 ## 2026-11-14.27 — Cổng trăng thứ hai trên tường tây Quảng Trường, ngang bàn chơi (sửa .24 đặt nhầm tường)
 
 - Loại: cảnh 3D — **bố cục**. Ai làm: phiên code V-20261114-24 (làm lại) làm thay vai thiết kế (`/canh`). Người dùng gửi
