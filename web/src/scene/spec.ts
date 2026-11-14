@@ -6,6 +6,7 @@
  */
 
 import { DEFAULT_LOOK, type LookSpec } from './look';
+import { DEFAULT_DAY_NIGHT, type DayNightSpec } from './ngayDem';
 
 export type XZ = [number, number];
 
@@ -808,6 +809,8 @@ export interface SceneSpec {
   portals: PortalSpec[];
   /** kiểu nhìn: `cu` (mặc định, như trước) · `mem` hoạt hình mềm màu ấm — `scene/look.ts` */
   look: LookSpec;
+  /** ngày đêm theo giờ Việt Nam (`enabled: false` = luôn ban ngày như cũ) — `scene/ngayDem.ts`, R-NGAY-1…4 */
+  dayNight: DayNightSpec;
   /** dây đèn lồng giăng trên sân (vd. khu giao lưu) — chỉ ngắm, cột hai đầu có va chạm */
   lanternStrings: LanternString[];
   /** dây đèn lồng: `height` đỉnh cột / chỗ buộc dây, `sag` độ võng giữa dây, `spacing` khoảng hai đèn (m);
@@ -993,6 +996,7 @@ export const DEFAULT_SCENE: SceneSpec = {
   decorSlots: [],
   portals: [], // cảnh cũ không có cổng đi bộ
   look: DEFAULT_LOOK, // kiểu cũ — cảnh không đổi
+  dayNight: DEFAULT_DAY_NIGHT, // tắt — cảnh luôn ban ngày như cũ
   lanternStrings: [],
   lanternStyle: {
     height: 4.6,

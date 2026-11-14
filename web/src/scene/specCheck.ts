@@ -31,6 +31,7 @@ import {
 import { checkDecorSlots } from './decorSlots';
 import { checkPortals } from './portals';
 import { checkLook } from './look';
+import { checkDayNight } from './ngayDem';
 import { daisLayout, ringTrigger } from './teleportLayout';
 import { stairEnds, terrainHeightFn } from './terrainHeight';
 
@@ -443,7 +444,7 @@ function checkConsistency(s: SceneSpec): string[] {
   if (t.enabled && t.edge.radius + t.edge.width > t.size / 2) {
     out.push(`terrain.edge: mép vực (radius + width = ${t.edge.radius + t.edge.width}) vượt nửa vùng lưới (${t.size / 2}) — tăng size`);
   }
-  out.push(...checkTeleport(s), ...checkLanterns(s), ...checkDecorSlots(s), ...checkPortals(s), ...checkLook(s.look));
+  out.push(...checkTeleport(s), ...checkLanterns(s), ...checkDecorSlots(s), ...checkPortals(s), ...checkLook(s.look), ...checkDayNight(s.dayNight));
   out.push(...hanOnDisplay(s).map((h) => `${h.path}: biển / tên trong game chỉ tiếng Việt, không chữ Hán (R-HUD-4) — đang là "${h.text}"`));
   if (s.cloudSea.radius < 0) out.push('cloudSea.radius: phải ≥ 0');
   if (!(s.light.lampGlow >= 0 && s.light.lampGlow <= 1)) out.push(`light.lampGlow: 0…1 (đang ${s.light.lampGlow})`);
