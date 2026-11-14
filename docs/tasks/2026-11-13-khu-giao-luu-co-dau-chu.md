@@ -1,7 +1,7 @@
 # Khu giao lưu: Ngũ Tử Kỳ + Đấu chữ với NPC
 
 - Yêu cầu: "khu giao lưu ở bãi phía tây Sơn Môn: cờ chung với NPC + trò chơi chữ Hán"
-- Loại: thêm · Cỡ: lớn · Trạng thái: chờ thiết kế
+- Loại: thêm · Cỡ: lớn · Trạng thái: xong
 
 Người dùng đã chọn (2026-11-13): cờ **Ngũ Tử Kỳ 五子棋** (caro 5, bàn 13 × 13) · trò chữ **Đấu chữ với NPC** (một bộ
 thủ + 4 nghĩa, thay phiên, 10 câu) · **chỉ ôn bộ đã học** (không mở bài mới, không tính tiến độ — R-VUNG-1 thêm một ý) ·
@@ -71,7 +71,7 @@ z 22…58 (chỗ Thị Tập cũ, L-4).
   **không** dựng HUD mới. (thử tay `npm run dev` · xong khi chơi trọn một ván cờ)
 - [x] 8. Phiếu thiết kế `docs/phieu_thiet_ke/2026-11-13-tro-choi-giao-luu.md` (`/ui-apply phieu`): HUD trong ván (lượt,
   điểm, câu hỏi + 4 nghĩa, kết quả, nút Rời bàn). → **chờ thiết kế**
-- [ ] 9. Sau thiết kế: HUD trò chơi (`ui/gameHud.ts`), Đấu chữ chơi được trọn. **chờ thiết kế (phiếu ở nhiệm vụ 8)**
+- [x] 9. Sau thiết kế: HUD trò chơi (`ui/gameHud.ts`), Đấu chữ chơi được trọn. **đã áp 2026-11-13.27** — `ui/gameHud.ts`, `ui/gameView.ts`, `games/duelRound.ts`, `gamePlay.ts` (`view()`, `stand()`, `newRound()`, `pick()`), chấm son `gameTable.mark()`
 - [x] 10. Bản đồ tính năng trong `lead/SKILL.md`; `npm run build`.
 
 ## Kiểm tra cuối

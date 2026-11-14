@@ -147,3 +147,63 @@ export function addWillow(scene: THREE.Scene, spec: Trees, list: Placed[], seed:
     place();
   };
 }
+
+/**
+ * Đào tiên (蟠桃, Bồng Lai): dáng mai to hơn (thân sẫm, cành gãy, hoa hồng) + tán lá dẹt xanh nhạt + quả hồng cam
+ * treo dưới tán — 3 InstancedMesh thêm cho mọi cây.
+ */
+export function addPeach(scene: THREE.Scene, spec: Trees, list: Placed[], seed: number): void {
+  if (!list.length) return;
+  const big = list.map((t) => ({ ...t, scale: t.scale * 1.5 }));
+  addPlum(scene, { ...spec, plum: [spec.peach[0], spec.peach[1], '#e88aa4'] }, big, seed + 7);
+  const rand = seededRandom(seed * 7919 + 3);
+  const FRUIT = 7;
+  const fruit = new THREE.InstancedMesh(new THREE.SphereGeometry(0.16, 6, 4).scale(1, 1.1, 1), lambert(spec.peach[2]), list.length * FRUIT);
+  const leafGeo = new THREE.SphereGeometry(1, 7, 4).scale(1.6, 0.45, 1.6);
+  const leaf = new THREE.InstancedMesh(leafGeo, lambert('#8fb35e'), list.length * 2);
+  const m = new THREE.Matrix4();
+  let f = 0;
+  let l = 0;
+  for (const t of big) {
+    const s = t.scale;
+    const y0 = (t.y ?? 0) + 2.5 * s;
+    for (let k = 0; k < 2; k++) {
+      const a = rand() * Math.PI * 2;
+      m.makeTranslation(t.x + Math.cos(a) * 0.4 * s, y0 + k * 0.5 * s, t.z + Math.sin(a) * 0.4 * s).scale(new THREE.Vector3(s * (0.9 - k * 0.25), s, s * (0.9 - k * 0.25)));
+      leaf.setMatrixAt(l++, m);
+    }
+    for (let k = 0; k < FRUIT; k++) {
+      const a = (k / FRUIT) * Math.PI * 2 + rand();
+      const r = (0.8 + rand() * 0.6) * s;
+      m.makeTranslation(t.x + Math.cos(a) * r, y0 - (0.35 + rand() * 0.3) * s, t.z + Math.sin(a) * r).scale(new THREE.Vector3(s, s, s));
+      fruit.setMatrixAt(f++, m);
+    }
+  }
+  finish(scene, [leaf, fruit]);
+}
+
+/** Bụi lá thu (hoàng lư 黃櫨 — Trường Thành mùa thu): cụm 3 khối tròn thấp, hai màu đỏ / vàng xen. 2 InstancedMesh. */
+export function addBush(scene: THREE.Scene, spec: Trees, list: Placed[], seed: number): void {
+  if (!list.length) return;
+  const rand = seededRandom(seed * 3571 + 11);
+  const geo = new THREE.IcosahedronGeometry(0.8, 0).scale(1, 0.75, 1);
+  const red = new THREE.InstancedMesh(geo, lambert(spec.autumn[0]), list.length * 3);
+  const gold = new THREE.InstancedMesh(geo, lambert(spec.autumn[1]), list.length * 3);
+  const m = new THREE.Matrix4();
+  let r = 0;
+  let o = 0;
+  for (const t of list) {
+    const s = t.scale;
+    for (let k = 0; k < 3; k++) {
+      const a = rand() * Math.PI * 2;
+      const d = (0.2 + rand() * 0.6) * s;
+      const k2 = (0.7 + rand() * 0.5) * s;
+      m.makeTranslation(t.x + Math.cos(a) * d, (t.y ?? 0) + 0.5 * k2, t.z + Math.sin(a) * d).scale(new THREE.Vector3(k2, k2, k2));
+      if ((k + Math.round(t.x)) % 2 === 0) red.setMatrixAt(r++, m);
+      else gold.setMatrixAt(o++, m);
+    }
+  }
+  red.count = r;
+  gold.count = o;
+  finish(scene, [red, gold]);
+}

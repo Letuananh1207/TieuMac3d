@@ -4,7 +4,7 @@
  * Xem docs/tham_khao/dia-hinh-tong-mon.md.
  */
 import { Heightfield } from '../collision/heightfield';
-import type { PathSpec, PlateauSpec, SceneSpec, StairSpec, XZ } from './spec';
+import type { DuneSpec, PathSpec, PlateauSpec, SceneSpec, StairSpec, XZ } from './spec';
 
 type Terrain = SceneSpec['terrain'];
 
@@ -102,6 +102,28 @@ function pathZone(path: PathSpec, plateaus: PlateauSpec[], blend: number): FlatZ
 }
 
 /** Đất tự nhiên (nhiễu + các đỉnh), chưa ép phẳng, chưa đổ vực. */
+/**
+ * Cồn cát lưỡi liềm (Minh Sa Sơn): sống lưng sắc chạy dọc `len` m (quay `rotY` độ; 0 = dọc trục x), hai sừng cong về phía
+ * khuất gió (+z cục bộ). Mặt đón gió thoải (70 % bề ngang `width`), mặt khuất dốc (30 %). Thuần.
+ */
+export function duneHeight(d: DuneSpec, x: number, z: number): number {
+  const a = ((d.rotY ?? 0) * Math.PI) / 180;
+  const dx = x - d.x;
+  const dz = z - d.z;
+  const u = dx * Math.cos(a) - dz * Math.sin(a); // dọc sống
+  const v = dx * Math.sin(a) + dz * Math.cos(a); // ngang (+ = phía khuất)
+  const half = d.len / 2;
+  const t = u / half;
+  if (Math.abs(t) >= 1) return 0;
+  const w = d.width ?? d.h * 3.2;
+  const crest = 0.35 * w * t * t; // sừng cong về phía khuất
+  const s = v - crest;
+  const across = s < 0 ? 1 + s / (0.7 * w) : 1 - s / (0.3 * w);
+  if (across <= 0) return 0;
+  const along = 1 - t * t;
+  return d.h * along * across;
+}
+
 function naturalFn(t: Terrain): (x: number, z: number) => number {
   const { seed, amp, scale } = t.noise;
   return (x, z) => {
@@ -112,6 +134,7 @@ function naturalFn(t: Terrain): (x: number, z: number) => number {
       // sườn lõm, đỉnh nhọn (núi Trung Hoa cao hơn rộng) + gợn đá theo nhiễu
       h += p.h * Math.pow(k, 1.6) + p.h * 0.12 * k * fbm(x / 9, z / 9, seed + 7);
     }
+    for (const d of t.dunes ?? []) h += duneHeight(d, x, z);
     return h;
   };
 }

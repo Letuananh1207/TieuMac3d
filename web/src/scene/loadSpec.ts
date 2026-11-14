@@ -14,7 +14,7 @@ for (const [path, raw] of Object.entries(found)) {
   byId.set(name === 'scene' ? HOME_SCENE : name, raw);
 }
 
-/** Các vùng đã có cảnh (có file đặc tả riêng) — vòng trận chỉ sáng khi vùng mở **và** có cảnh (R-HANH-1). */
+/** Các vùng đã có cảnh (có file đặc tả riêng) — chỉ vùng có cảnh mới đi được, không khoá theo tiến độ (R-HANH-1). */
 export const REGION_SCENES: ReadonlySet<string> = new Set([...byId.keys()].filter((id) => id !== HOME_SCENE));
 
 export type LoadedScene = ResolvedScene & { id: string; file: string; fromFile: boolean };

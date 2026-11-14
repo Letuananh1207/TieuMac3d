@@ -7,7 +7,7 @@ const CHARS_PER_S = 40;
 
 // chân dung NPC: design/models/anh/<mã>-chan-dung.png (Vite chép vào bản build, chạy offline)
 const portraits = import.meta.glob('../../../design/models/anh/*-chan-dung.png', { eager: true, query: '?url', import: 'default' });
-function portraitOf(npc: string): string | undefined {
+export function portraitOf(npc: string): string | undefined {
   const hit = Object.entries(portraits).find(([p]) => p.endsWith(`/${npc}-chan-dung.png`));
   return hit?.[1] as string | undefined;
 }

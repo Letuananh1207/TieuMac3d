@@ -98,3 +98,14 @@ export class CharDuel {
     return this.score.nguoi > this.score.npc ? 'nguoi' : 'npc';
   }
 }
+
+/** Nhãn một nghĩa trên ô chọn: âm Hán Việt của bộ có nghĩa đó + nghĩa — "mộc — cây" (R-DAU-1, thiết kế 2026-11-13.27). */
+export function meaningLabel(meaning: string, pool: readonly Radical[] = RADICALS): string {
+  const r = pool.find((x) => x.meaning === meaning);
+  return r ? `${r.name} — ${meaning}` : meaning;
+}
+
+/** Dòng phụ sau khi chấm: "mộc · mù — cây". */
+export function radicalDetail(r: Radical): string {
+  return `${r.name} · ${r.pinyin} — ${r.meaning}`;
+}

@@ -39,12 +39,11 @@ export const DIALOGS: Dialog[] = [
   {
     npc: 'tieu-mac',
     name: 'Tiểu Mặc',
-    han: '小墨',
     start: 'chao',
     lines: [
       {
         id: 'chao',
-        text: 'Đạo hữu mới đến Văn Uyên Tông à? Tiểu Mặc là đệ tử ngoại môn, hôm nay được giao trông bảng nhiệm vụ hằng ngày của tông đó!',
+        text: 'Đạo hữu mới đến Khởi Nguyên Trấn à? Ai cũng bắt đầu từ đây đó! Hôm nay Tiểu Mặc được giao trông bảng nhiệm vụ hằng ngày của trấn.',
         choices: [
           { text: 'Tiểu Mặc đứng đây làm gì?', next: 'don-khach' },
           { text: 'Hôm nay có việc gì?', next: null, action: 'daily' },
@@ -53,12 +52,12 @@ export const DIALOGS: Dialog[] = [
       },
       {
         id: 'don-khach',
-        text: 'Trông bảng nhiệm vụ, đón người mới chứ sao! Việc tông giao mỗi ngày đều dán ở bảng này — đạo hữu nhớ ghé xem nha. Ai bước qua cổng trăng kia là bắt đầu đường tu chữ — học thêm một chữ, thêm một phần tu vi.',
+        text: 'Trông bảng nhiệm vụ, đón người mới chứ sao! Việc trấn giao mỗi ngày đều dán ở bảng này — đạo hữu nhớ ghé xem nha. Ai bước qua cổng trăng kia là bắt đầu đường tu chữ — học thêm một chữ, thêm một phần tu vi.',
         choices: [{ text: 'Tu chữ ở đâu?', next: 'tu-chu' }, OTHER, BYE],
       },
       {
         id: 'tu-chu',
-        text: 'Sư phụ Mặc Ông đứng ở Truyền Tống Đài giữa sân đó! Đạo hữu tới hỏi thầy, thầy chỉ cho cách sang Rừng trúc tu chữ.',
+        text: 'Sư phụ Mặc Ông đứng ở Truyền Tống Đài ngoài cổng đông đó! Đạo hữu tới hỏi thầy, thầy chỉ cho cách sang Rừng trúc tu chữ.',
         choices: [{ text: 'Hôm nay Tiểu Mặc thế nào?', next: 'hom-nay' }, OTHER, BYE],
       },
       {
@@ -77,12 +76,11 @@ export const DIALOGS: Dialog[] = [
   {
     npc: 'su-phu',
     name: 'Mặc Ông',
-    han: '墨翁',
     start: 'chao',
     lines: [
       {
         id: 'chao',
-        text: 'Con đến rồi đấy à. Lão phu là Mặc Ông, giữ Truyền Tống Đài này. Văn Uyên Tông tu bằng chữ — muốn học, con phải đi qua đài sang các vùng.',
+        text: 'Con đến rồi đấy à. Lão phu là Mặc Ông, giữ Truyền Tống Đài này. Khởi Nguyên Trấn là nơi mọi người bắt đầu, đường nào cũng qua đây — muốn học, con phải đi qua đài sang các vùng.',
         choices: [
           { text: 'Thưa thầy, đi thế nào ạ?', next: 'di' },
           { text: 'Thưa thầy, học thế nào ạ?', next: 'hoc' },
@@ -91,7 +89,7 @@ export const DIALOGS: Dialog[] = [
       },
       {
         id: 'di',
-        text: 'Bước vào vòng trận giữa đài, đứng yên một lát cho trận sáng lên, bản đồ truyền tống sẽ hiện. Chạm nơi đã mở là đi. Lúc muốn về, cứ vào vòng trận ở vùng đó, chọn Văn Uyên Tông.',
+        text: 'Bước vào vòng trận giữa đài, đứng yên một lát cho trận sáng lên, bản đồ truyền tống sẽ hiện. Chạm nơi đã mở là đi. Lúc muốn về, cứ vào vòng trận ở vùng đó, chọn Khởi Nguyên Trấn.',
         choices: [{ text: 'Con đi được những đâu ạ?', next: 'vung' }, OTHER, BYE],
       },
       {
@@ -117,28 +115,6 @@ export const DIALOGS: Dialog[] = [
     ],
   },
 ];
-
-/** Bảng nhiệm vụ hôm nay (docs/bridge.md `getProgress.daily`) — kiểu riêng ở đây để `zones` không phụ thuộc `bridge`. */
-export interface DailySummary {
-  learned: number;
-  goal: number;
-  due: number;
-  streak: number;
-  best: number;
-}
-
-/** Tiểu Mặc đọc bảng nhiệm vụ hôm nay (R-NV-1, R-NV-2) — dùng khi chưa có màn bảng (chờ thiết kế). `null` = không có
- * tiến độ (chạy trình duyệt thường). */
-export function dailyLine(d: DailySummary | null): string {
-  if (!d) return `Bảng hôm nay giao hai việc: lĩnh hội 3 bộ thủ mới, và ôn hết các bộ đến hạn. Sang Rừng trúc ngồi thiền là làm được cả hai!`;
-  const learn = d.learned >= d.goal ? `lĩnh hội xong ${d.learned} bộ mới rồi` : `lĩnh hội ${d.learned}/${d.goal} bộ mới`;
-  const review = d.due > 0 ? `còn ${d.due} bộ cần ôn` : 'không còn bộ nào cần ôn';
-  const done = d.learned >= d.goal && d.due === 0;
-  const streak = d.streak > 0 ? ` Đạo hữu đã tu liền ${d.streak} ngày${d.best > d.streak ? `, kỷ lục ${d.best}` : ''}!` : '';
-  return done
-    ? `Hôm nay đạo hữu ${learn}, ${review} — xong cả hai việc trên bảng!${streak}`
-    : `Hôm nay đạo hữu ${learn}, ${review}. Sang Rừng trúc ngồi thiền mà làm cho xong nha!${streak}`;
-}
 
 /** Lỗi dữ liệu hội thoại: câu bắt đầu / câu tiếp không tồn tại, câu thiếu "Tạm biệt", quá 3 lựa chọn, mã trùng. */
 export function checkDialog(d: Dialog): string[] {

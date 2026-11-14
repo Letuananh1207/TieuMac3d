@@ -37,7 +37,6 @@ export function librarianDialog(borrowed: string | null, catalog: boolean): Dial
   return {
     npc: LIBRARIAN,
     name: 'Điển Thư',
-    han: '典書',
     start: 'chao',
     lines: [
       {

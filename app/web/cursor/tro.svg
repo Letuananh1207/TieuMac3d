@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <!-- con trỏ hoạt hình: mũi tên ngọc lục (token jade), viền mực (token ink) bo tròn, bóng đổ, chấm vàng (token gold) -->
+  <path d="M4 3v20.5l5.2-4.7 3.6 7.8q.5 1 1.5.6l2.3-1q1-.5.5-1.5l-3.5-7.5h7z" transform="translate(1.6 1.6)" fill="#1f1610" opacity=".28"/>
+  <path d="M4 3v20.5l5.2-4.7 3.6 7.8q.5 1 1.5.6l2.3-1q1-.5.5-1.5l-3.5-7.5h7z" fill="#2b5446" stroke="#1f1610" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M6 7v11.5" stroke="#fff" stroke-opacity=".5" stroke-width="1.6" stroke-linecap="round"/>
+  <circle cx="9.5" cy="14" r="1.8" fill="#d4a64a"/>
+</svg>

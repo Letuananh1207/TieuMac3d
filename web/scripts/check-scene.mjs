@@ -15,7 +15,8 @@ const out = await build({
       "export { roomKinds, zoneAnchors } from './src/scene/spec.ts';\n" +
       "export { resolveSceneSpec } from './src/scene/specCheck.ts';\n" +
       "export { placeZones, ZONE_CONTENT } from './src/zones/zones.ts';\n" +
-      "export { moonRadius, moonOpening } from './src/scene/kien_truc/tuong.ts';\n" +
+      "export { moonRadius, gateOpening, lauClearHeight } from './src/scene/kien_truc/tuong.ts';\n" +
+      "export { wallGates } from './src/scene/walls.ts';\n" +
       "export { ringTrigger, arrivalSpot, daisLayout } from './src/scene/teleportLayout.ts';\n" +
       "export { RADICALS, checkRadicals } from './src/zones/radicals.ts';\n",
     resolveDir: web,
@@ -27,7 +28,7 @@ const out = await build({
   write: false,
   logLevel: 'error',
 });
-const { resolveSceneSpec, roomKinds, zoneAnchors, placeZones, ZONE_CONTENT, moonRadius, moonOpening, ringTrigger, arrivalSpot, daisLayout, RADICALS, checkRadicals } = await import(
+const { resolveSceneSpec, roomKinds, zoneAnchors, placeZones, ZONE_CONTENT, moonRadius, gateOpening, lauClearHeight, wallGates, ringTrigger, arrivalSpot, daisLayout, RADICALS, checkRadicals } = await import(
   `data:text/javascript;base64,${Buffer.from(out.outputFiles[0].text).toString('base64')}`
 );
 
@@ -68,19 +69,30 @@ function checkScene(rel, raw) {
 
   console.log(`Hệ số chiều cao kiến trúc: ${n(spec.buildingStyle.heightScale)}`);
   if (!spec.walls.enabled) console.log(`Không tường bao · người chơi bắt đầu (${n(spec.player.start[0])}; ${n(spec.player.start[1])})`);
-  else console.log(`Tường: ±${n(spec.walls.half)} cao ${n(spec.walls.height)} kiểu ${spec.walls.style} · người chơi bắt đầu (${n(spec.player.start[0])}; ${n(spec.player.start[1])})`);
+  else console.log(`Tường: ±${n(spec.walls.half)} cao ${n(spec.walls.height)} dày ${n(spec.walls.thickness)} kiểu ${spec.walls.style} · người chơi bắt đầu (${n(spec.player.start[0])}; ${n(spec.player.start[1])})`);
   console.log(`Nơi: ${spec.site.name}${spec.site.areas.length ? ` · khu: ${spec.site.areas.map((a) => a.name).join(', ')}` : ''}`);
   for (const b of spec.buildings) {
     console.log(`Nhà ${b.id} (${b.kind ?? 'giang-duong'}): tâm (${n(b.x)}; ${n(b.z)}) ${n(b.w)}×${n(b.d)} quay ${b.rotY ?? 0}°`);
   }
   for (const z of placed.zones) console.log(`Vùng ${z.id}: tâm (${n(z.x)}; ${n(z.z)}) bán kính ${n(z.r)}${rooms[z.id] ? ` · trong nhà (${rooms[z.id]})` : ""}`);
   console.log(`Cây lẻ: ${spec.trees.yard.length} · cụm cây: ${spec.trees.groves.length} ${spec.well.enabled ? ` · giếng (${n(spec.well.x)}; ${n(spec.well.z)})` : ''}`);
-  for (const g of spec.walls.gates) {
-    const moon = spec.walls.style === 'voi' ? moonRadius(g.width, spec.walls.height) : 0;
-    const how = moon ? ` · cổng trăng đỉnh ${n(+(1.6 * moon).toFixed(2))} m, lối đi ${n(+(2 * moonOpening(moon)).toFixed(2))} m` : '';
-    console.log(`Khe cổng tường ${g.side}: tâm ${n(g.at)}, rộng ${n(g.width)}${how}`);
+  for (const s of spec.wallSegments) {
+    const extra = [s.height !== undefined ? `cao ${n(s.height)}` : '', s.thickness !== undefined ? `dày ${n(s.thickness)}` : ''].filter(Boolean).join(' ');
+    console.log(`Đoạn tường (${n(s.from[0])}; ${n(s.from[1])}) → (${n(s.to[0])}; ${n(s.to[1])})${extra ? ` ${extra}` : ''}`);
   }
-  for (const s of spec.wallSegments) console.log(`Đoạn tường (${n(s.from[0])}; ${n(s.from[1])}) → (${n(s.to[0])}; ${n(s.to[1])})`);
+  // cổng trên tường bao + trên đoạn tường thêm: kiểu, lối đi ở mặt đất, biển từng mặt (R-VA-1)
+  const fix = (v) => n(+v.toFixed(3));
+  for (const g of wallGates(spec.walls, spec.wallSegments)) {
+    const where = g.axis === 'x' ? `tường z ${n(g.fixed)}, tâm x ${n(g.at)}` : `tường x ${n(g.fixed)}, tâm z ${n(g.at)}`;
+    let how = '';
+    if (spec.walls.style === 'voi') {
+      const half = gateOpening(g);
+      const shape = g.kind === 'lau' ? `cổng mái ngói, lối cao ${fix(lauClearHeight(g.height))} m` : `cổng trăng đỉnh ${fix(1.6 * moonRadius(g.width, g.height))} m`;
+      how = ` · ${shape}, lối đi ${fix(2 * half)} m (${g.axis} ${fix(g.at - half)} … ${fix(g.at + half)})`;
+    }
+    const signs = Object.entries(g.signs).filter(([, v]) => v).map(([k, v]) => `${k} ${v}`).join(' · ');
+    console.log(`Cổng ${where}, rộng ${n(g.width)}${how}${signs ? ` · biển: ${signs}` : ''}`);
+  }
   for (const g of spec.gates) console.log(`Cổng ${g.id}: tâm (${n(g.x)}; ${n(g.z)}) rộng ${n(g.width)} quay ${g.rotY ?? 0}°`);
   for (const w of spec.water) console.log(`Ao (${n(w.x)}; ${n(w.z)}) ${w.r !== undefined ? `tròn r ${n(w.r)}` : `${n(w.w)}×${n(w.d)}`}`);
   const kinds = {};

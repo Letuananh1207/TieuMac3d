@@ -1,6 +1,6 @@
 /**
  * Vòng trận truyền tống (R-HANH-2; đổi kiểu một vòng — người dùng 2026-11-13). Tông môn: Truyền Tống Đài 傳送台 — sân đá
- * tròn, giữa sân một vòng trận lớn có phù hiệu 文淵. Cảnh vùng: chỉ vòng trên bệ đá. Đứng trong vòng → `setCharge` 0 → 1
+ * tròn, giữa sân một vòng trận lớn có phù hiệu 起源 (Khởi Nguyên Trấn). Cảnh vùng: chỉ vòng trên bệ đá. Đứng trong vòng → `setCharge` 0 → 1
  * trong 1,2 s: vòng sáng dần, cột sáng bốc lên, hạt xoáy nhanh dần. Cuộn bản đồ chọn vùng chờ thiết kế
  * (docs/phieu_thiet_ke/2026-11-13-hanh-trinh-hud.md).
  * Ngân sách: sân + viền / bệ (gộp) ≈ 2 · phù hiệu 1 · vòng 1 · chấm 1 · cột sáng 1 · hạt 1.
@@ -16,7 +16,7 @@ import type { GroundY } from './terrainHeight';
 import { addDais } from './truyenTongDai';
 
 /** Chữ Hán vẽ lên canvas (phù hiệu) — `main.ts` nạp font cho các chữ này trước khi dựng cảnh. */
-export const TELEPORT_TEXT = '文淵';
+export const TELEPORT_TEXT = '起源';
 
 const DOTS = 12; // chấm vàng quanh vòng
 const SPARKS = 48; // hạt sáng
@@ -30,7 +30,7 @@ function flat<T extends THREE.BufferGeometry>(geo: T): T {
   return geo;
 }
 
-/** Phù hiệu 文淵 khắc trong vòng: vòng tròn mảnh + chữ, nền trong suốt. */
+/** Phù hiệu 起源 khắc trong vòng: vòng tròn mảnh + chữ, nền trong suốt. */
 function emblemTex(color: string): THREE.CanvasTexture {
   return makeCanvasTex(512, 512, (g, w, h) => {
     g.clearRect(0, 0, w, h);
@@ -43,7 +43,7 @@ function emblemTex(color: string): THREE.CanvasTexture {
     g.font = '700 150px "Han Serif", serif';
     g.textAlign = 'center';
     g.textBaseline = 'middle';
-    g.fillText('文淵', w / 2, h / 2 + 8);
+    g.fillText(TELEPORT_TEXT, w / 2, h / 2 + 8);
   });
 }
 

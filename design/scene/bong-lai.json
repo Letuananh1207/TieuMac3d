@@ -1,0 +1,900 @@
+{
+  "site": {
+    "name": "Bồng Lai",
+    "han": "蓬萊",
+    "areas": [
+      {
+        "name": "Vân Độ",
+        "han": "雲渡",
+        "from": [
+          -22,
+          28
+        ],
+        "to": [
+          22,
+          54
+        ]
+      },
+      {
+        "name": "Bàn Đào Viên",
+        "han": "蟠桃園",
+        "from": [
+          -22,
+          -12
+        ],
+        "to": [
+          -4,
+          26
+        ]
+      },
+      {
+        "name": "Bàn Đào Yến",
+        "han": "蟠桃宴",
+        "from": [
+          -4,
+          -10
+        ],
+        "to": [
+          11,
+          12
+        ]
+      },
+      {
+        "name": "Bát Tiên Đài",
+        "han": "八仙臺",
+        "from": [
+          11,
+          -10
+        ],
+        "to": [
+          22,
+          8
+        ]
+      },
+      {
+        "name": "Đan Nhai · Bồng Lai Các",
+        "han": "丹崖",
+        "from": [
+          -22,
+          -46
+        ],
+        "to": [
+          22,
+          -12
+        ]
+      },
+      {
+        "name": "Doanh Châu",
+        "han": "瀛洲",
+        "from": [
+          30,
+          12
+        ],
+        "to": [
+          40,
+          27
+        ]
+      },
+      {
+        "name": "Phương Trượng",
+        "han": "方丈",
+        "from": [
+          -40,
+          -3
+        ],
+        "to": [
+          -30,
+          10
+        ]
+      }
+    ]
+  },
+  "sky": {
+    "top": "#5f95c4",
+    "middle": "#a9cbe0",
+    "horizon": "#f2e3c2"
+  },
+  "fog": {
+    "color": "#e6ecf0",
+    "near": 40,
+    "far": 160
+  },
+  "light": {
+    "skyColor": "#f6f4ff",
+    "groundColor": "#6a7860",
+    "hemiIntensity": 0.8,
+    "sunColor": "#ffe6b8",
+    "sunIntensity": 0.85,
+    "sunPosition": [
+      30,
+      18,
+      -6
+    ]
+  },
+  "ground": {
+    "size": 160,
+    "color": "#7c8c66",
+    "brickHue": 80,
+    "pattern": "gach"
+  },
+  "terrain": {
+    "enabled": true,
+    "center": [
+      0,
+      -2
+    ],
+    "size": 140,
+    "cell": 2,
+    "plateaus": [
+      {
+        "from": [
+          -22,
+          -44
+        ],
+        "to": [
+          22,
+          -21
+        ],
+        "y": 6,
+        "pave": false,
+        "blend": 1
+      },
+      {
+        "from": [
+          -39,
+          -2
+        ],
+        "to": [
+          -31,
+          9
+        ],
+        "y": 0,
+        "pave": false,
+        "blend": 1
+      },
+      {
+        "from": [
+          31,
+          14
+        ],
+        "to": [
+          39,
+          25
+        ],
+        "y": 0,
+        "pave": false,
+        "blend": 1
+      },
+      {
+        "from": [
+          -20,
+          -10
+        ],
+        "to": [
+          20,
+          40
+        ],
+        "y": 0,
+        "pave": false,
+        "blend": 7
+      },
+      {
+        "from": [
+          10,
+          -19
+        ],
+        "to": [
+          22,
+          -10
+        ],
+        "y": 0,
+        "pave": false,
+        "blend": 4
+      }
+    ],
+    "peaks": [
+      {
+        "x": 0,
+        "z": -50,
+        "r": 12,
+        "h": 20
+      },
+      {
+        "x": -30,
+        "z": -26,
+        "r": 14,
+        "h": 12
+      },
+      {
+        "x": 30,
+        "z": -26,
+        "r": 12,
+        "h": 10
+      },
+      {
+        "x": 25.5,
+        "z": 11,
+        "r": 5.5,
+        "h": -14
+      },
+      {
+        "x": 25.5,
+        "z": 19.5,
+        "r": 5.5,
+        "h": -14
+      },
+      {
+        "x": 25.5,
+        "z": 28,
+        "r": 5.5,
+        "h": -14
+      },
+      {
+        "x": -25.5,
+        "z": -4,
+        "r": 5.5,
+        "h": -14
+      },
+      {
+        "x": -25.5,
+        "z": 4,
+        "r": 5.5,
+        "h": -14
+      },
+      {
+        "x": -25.5,
+        "z": 12,
+        "r": 5.5,
+        "h": -14
+      }
+    ],
+    "noise": {
+      "seed": 31,
+      "amp": 0.7,
+      "scale": 18
+    },
+    "edge": {
+      "radius": 50,
+      "width": 12,
+      "y": -30,
+      "wobble": 5
+    },
+    "blend": 6,
+    "colors": {
+      "grass": [
+        "#5c8044",
+        "#6f9550",
+        "#4f7140"
+      ],
+      "dirt": "#8e5e44",
+      "rock": "#9c5236",
+      "highRock": "#b8704a",
+      "highFrom": 12
+    },
+    "slopeDirt": 20,
+    "slopeRock": 35,
+    "stairs": [
+      {
+        "from": [
+          0,
+          -10
+        ],
+        "to": [
+          0,
+          -21
+        ],
+        "width": 5
+      }
+    ],
+    "grass": {
+      "density": 7,
+      "colors": [
+        "#5c8044",
+        "#86a860"
+      ]
+    },
+    "rocks": {
+      "density": 5,
+      "color": "#9a978e"
+    },
+    "waterfalls": [
+      {
+        "x": 0,
+        "z": -45.5,
+        "top": 18,
+        "bottom": 6.2,
+        "width": 3
+      }
+    ],
+    "streams": []
+  },
+  "farMountains": {
+    "layers": [
+      {
+        "radius": 170,
+        "height": 30,
+        "color": "#3f8f7a",
+        "peaks": 6,
+        "width": 1.2,
+        "spurs": 2
+      },
+      {
+        "radius": 240,
+        "height": 48,
+        "color": "#2f6b9a",
+        "peaks": 5,
+        "width": 1.4,
+        "spurs": 1
+      }
+    ],
+    "base": -14
+  },
+  "cloudSea": {
+    "radius": 420,
+    "y": -12,
+    "color": "#f6f2ea"
+  },
+  "walls": {
+    "enabled": false
+  },
+  "wallSegments": [],
+  "paths": [
+    {
+      "from": [
+        0,
+        43
+      ],
+      "to": [
+        0,
+        -10
+      ],
+      "width": 4
+    },
+    {
+      "from": [
+        0,
+        -4
+      ],
+      "to": [
+        -8,
+        -4
+      ],
+      "width": 2.6
+    },
+    {
+      "from": [
+        0,
+        19.5
+      ],
+      "to": [
+        19.5,
+        19.5
+      ],
+      "width": 2.6
+    },
+    {
+      "from": [
+        -2,
+        4
+      ],
+      "to": [
+        -19.5,
+        4
+      ],
+      "width": 2.6
+    }
+  ],
+  "buildingStyle": {
+    "path": "#b3ab9c",
+    "stone": "#a29d92",
+    "water": "#5fa3a8",
+    "pillar": "#8a2f24",
+    "base": "#a29d92",
+    "heightScale": 1.1
+  },
+  "buildings": [
+    {
+      "id": "bong-lai-cac",
+      "x": 0,
+      "z": -31,
+      "w": 14,
+      "d": 8,
+      "title": "Bồng Lai Các",
+      "roofColor": "#4f5a63",
+      "kind": "lau-sach",
+      "trim": "#d4a64a",
+      "pillarColor": "#a8322a"
+    },
+    {
+      "id": "vong-hai-dinh",
+      "x": 14,
+      "z": -37,
+      "w": 4,
+      "d": 4,
+      "title": "Vọng Hải Đình",
+      "roofColor": "#2f6f6a",
+      "kind": "dinh",
+      "sides": 6
+    },
+    {
+      "id": "thap-tien",
+      "x": 17,
+      "z": -15,
+      "w": 5,
+      "d": 5,
+      "title": "Vọng Tiên Tháp",
+      "roofColor": "#2f6f6a",
+      "kind": "thap",
+      "floors": 5
+    },
+    {
+      "id": "dinh-vong-hac",
+      "x": 35,
+      "z": 19.5,
+      "w": 4.5,
+      "d": 4.5,
+      "rotY": 270,
+      "title": "Vọng Hạc Đình",
+      "roofColor": "#2f6f6a",
+      "kind": "dinh",
+      "sides": 6
+    },
+    {
+      "id": "luyen-dan-dinh",
+      "x": -35,
+      "z": 7,
+      "w": 3,
+      "d": 3,
+      "title": "Luyện Đan Đình",
+      "roofColor": "#2f6f6a",
+      "kind": "dinh",
+      "sides": 6
+    }
+  ],
+  "gates": [
+    {
+      "id": "cong-tien",
+      "x": 0,
+      "z": 15,
+      "width": 5,
+      "title": "Bồng Lai",
+      "hanTitle": "蓬萊",
+      "roofColor": "#2f6f6a"
+    }
+  ],
+  "water": [
+    {
+      "x": -13,
+      "z": -4,
+      "r": 4
+    }
+  ],
+  "props": [
+    {
+      "kind": "dinh-dong",
+      "x": 4,
+      "z": 0,
+      "scale": 1.3
+    },
+    {
+      "kind": "ban-tra",
+      "x": 4,
+      "z": 6
+    },
+    {
+      "kind": "ban-tra",
+      "x": 7.5,
+      "z": -5
+    },
+    {
+      "kind": "ban-tra",
+      "x": 9,
+      "z": 4
+    },
+    {
+      "kind": "lo-dan",
+      "x": -35,
+      "z": 3
+    },
+    {
+      "kind": "den-da",
+      "x": -3.5,
+      "z": 44
+    },
+    {
+      "kind": "den-da",
+      "x": 3.5,
+      "z": 44
+    },
+    {
+      "kind": "den-da",
+      "x": -3,
+      "z": -9
+    },
+    {
+      "kind": "den-da",
+      "x": 3,
+      "z": -9
+    },
+    {
+      "kind": "lau-thuyen",
+      "x": 5.6,
+      "z": 50,
+      "y": -0.6
+    },
+    {
+      "kind": "cu-ngao",
+      "x": 0,
+      "z": -56,
+      "y": -5,
+      "rotY": 180
+    },
+    {
+      "kind": "hac",
+      "x": 33,
+      "z": 23
+    },
+    {
+      "kind": "hac",
+      "x": 37,
+      "z": 16,
+      "rotY": 270
+    },
+    {
+      "kind": "huou",
+      "x": 32.5,
+      "z": 16.5,
+      "rotY": 90
+    },
+    {
+      "kind": "hac",
+      "x": -8.6,
+      "z": -1.2,
+      "rotY": 270
+    },
+    {
+      "kind": "da-thai-ho",
+      "x": -17.5,
+      "z": -7,
+      "scale": 1.1
+    },
+    {
+      "kind": "phap-bao",
+      "x": 16.91,
+      "z": -6.74,
+      "text": "葫"
+    },
+    {
+      "kind": "phap-bao",
+      "x": 17.97,
+      "z": -5.97,
+      "text": "扇"
+    },
+    {
+      "kind": "phap-bao",
+      "x": 18.74,
+      "z": -4.91,
+      "text": "板"
+    },
+    {
+      "kind": "phap-bao",
+      "x": 19.15,
+      "z": -3.66,
+      "text": "笛"
+    },
+    {
+      "kind": "phap-bao",
+      "x": 19.15,
+      "z": -2.34,
+      "text": "荷"
+    },
+    {
+      "kind": "phap-bao",
+      "x": 18.74,
+      "z": -1.09,
+      "text": "籃"
+    },
+    {
+      "kind": "phap-bao",
+      "x": 17.97,
+      "z": -0.03,
+      "text": "劍"
+    },
+    {
+      "kind": "phap-bao",
+      "x": 16.91,
+      "z": 0.74,
+      "text": "鼓"
+    }
+  ],
+  "trees": {
+    "yard": [
+      {
+        "kind": "dao",
+        "x": -18,
+        "z": -9,
+        "scale": 1.15
+      },
+      {
+        "kind": "dao",
+        "x": -9,
+        "z": -9,
+        "scale": 1.15
+      },
+      {
+        "kind": "dao",
+        "x": -19,
+        "z": 0,
+        "scale": 1.15
+      },
+      {
+        "kind": "dao",
+        "x": -18,
+        "z": 8,
+        "scale": 1.15
+      },
+      {
+        "kind": "dao",
+        "x": -12,
+        "z": 9,
+        "scale": 1.15
+      },
+      {
+        "kind": "dao",
+        "x": -6,
+        "z": 9,
+        "scale": 1.15
+      },
+      {
+        "kind": "dao",
+        "x": -19,
+        "z": 14,
+        "scale": 1.15
+      },
+      {
+        "kind": "dao",
+        "x": -13,
+        "z": 15,
+        "scale": 1.6
+      },
+      {
+        "kind": "dao",
+        "x": -7,
+        "z": 15,
+        "scale": 1.15
+      },
+      {
+        "kind": "dao",
+        "x": -18,
+        "z": 21,
+        "scale": 1.15
+      },
+      {
+        "kind": "dao",
+        "x": -12,
+        "z": 22,
+        "scale": 1.15
+      },
+      {
+        "kind": "dao",
+        "x": -6,
+        "z": 22,
+        "scale": 1.15
+      },
+      {
+        "kind": "dao",
+        "x": -9,
+        "z": 0.5,
+        "scale": 1.15
+      },
+      {
+        "kind": "tung",
+        "x": -8,
+        "z": -17,
+        "scale": 1.2
+      },
+      {
+        "kind": "tung",
+        "x": 9,
+        "z": -12,
+        "scale": 1.1
+      }
+    ],
+    "groves": [
+      {
+        "kind": "tung",
+        "x": -12,
+        "z": 34,
+        "w": 10,
+        "d": 8,
+        "count": 4
+      },
+      {
+        "kind": "tung",
+        "x": 12,
+        "z": 32,
+        "w": 8,
+        "d": 10,
+        "count": 3
+      },
+      {
+        "kind": "tung",
+        "x": -30,
+        "z": 0,
+        "w": 10,
+        "d": 40,
+        "count": 8,
+        "collide": false
+      },
+      {
+        "kind": "tung",
+        "x": 32,
+        "z": -12,
+        "w": 10,
+        "d": 14,
+        "count": 5,
+        "collide": false
+      }
+    ],
+    "ring": {
+      "count": 0,
+      "radius": 25,
+      "spread": 6,
+      "scaleMin": 1.6,
+      "scaleMax": 2.4
+    },
+    "seed": 41
+  },
+  "floating": {
+    "islands": [
+      {
+        "x": -60,
+        "y": 20,
+        "z": -50,
+        "scale": 2
+      },
+      {
+        "x": 58,
+        "y": 28,
+        "z": -42,
+        "scale": 1.6
+      },
+      {
+        "x": -48,
+        "y": 14,
+        "z": 44,
+        "scale": 1.2
+      },
+      {
+        "x": 66,
+        "y": 16,
+        "z": 32,
+        "scale": 1.4
+      },
+      {
+        "x": 0,
+        "y": 40,
+        "z": -96,
+        "scale": 2.6
+      }
+    ],
+    "clouds": {
+      "count": 14,
+      "height": 16,
+      "radius": 70,
+      "speed": 0.5,
+      "color": "#f2f0ec"
+    }
+  },
+  "bridges": [
+    {
+      "kind": "treo",
+      "x": 25.5,
+      "z": 19.5,
+      "rotY": 90,
+      "length": 12,
+      "width": 2.4
+    },
+    {
+      "kind": "treo",
+      "x": -25.5,
+      "z": 4,
+      "rotY": 90,
+      "length": 12,
+      "width": 2.4
+    },
+    {
+      "kind": "tau",
+      "x": 0,
+      "z": 48,
+      "length": 10,
+      "width": 4
+    }
+  ],
+  "flocks": [
+    {
+      "x": 0,
+      "z": -10,
+      "y": 22,
+      "radius": 26,
+      "count": 7,
+      "speed": 4
+    },
+    {
+      "x": 35,
+      "z": 19.5,
+      "y": 12,
+      "radius": 10,
+      "count": 3,
+      "speed": 3
+    }
+  ],
+  "well": {
+    "enabled": false
+  },
+  "npcs": [],
+  "gameTables": [],
+  "camera": {
+    "fov": 55,
+    "minDist": 3,
+    "maxDist": 24,
+    "near": {
+      "dist": 4.2,
+      "pitch": 0.32
+    },
+    "far": {
+      "dist": 19,
+      "pitch": 0.72
+    }
+  },
+  "player": {
+    "start": [
+      0,
+      34
+    ]
+  },
+  "teleport": {
+    "enabled": true,
+    "center": [
+      0,
+      39
+    ],
+    "radius": 0,
+    "ringRadius": 4
+  },
+  "lessons": {
+    "radicals": false
+  },
+  "lanternStrings": [
+    {
+      "from": [
+        -1,
+        9
+      ],
+      "to": [
+        11,
+        9
+      ]
+    },
+    {
+      "from": [
+        -1,
+        -8
+      ],
+      "to": [
+        11,
+        -8
+      ]
+    }
+  ],
+  "mirages": [
+    {
+      "x": 95,
+      "y": 8,
+      "z": -40,
+      "width": 50,
+      "rotY": 270,
+      "period": 40
+    }
+  ]
+}

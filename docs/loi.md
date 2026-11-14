@@ -18,6 +18,179 @@ Mức độ:
 
 ## Đang mở
 
+### L-10 · Bề mặt chớp sáng liên tục (sàn tầng 2 trong nhà, cổng mái ngói)
+
+- Trạng thái: chờ thử máy (đợt 2: các vùng) · Mức độ: khó chịu (chớp liên tục trên mặt sàn / cổng khi camera di chuyển, khó chịu mắt) · Phần:
+  kiến trúc — `scene/kien_truc/tuong.ts` (cổng `lau`), `lau_sach.ts` (hiên lửng), `mai.ts` / `hinh.ts` · Quy tắc: chưa có
+- Báo: 2026-11-14 — "đôi khi ở các đồ họa như sàn hoặc cổng lại xuất hiện những chớp sáng liên tục trên bề mặt"
+- Các bước: 1. Trình duyệt máy tính. 2. Đứng trong nhà / lên tầng 2 (Thư viện), hoặc nhìn cổng "Bậc lên Trà lâu" (cổng
+  bắc, mái ngói) từ trong sân. 3. Xoay / di chuyển camera.
+- Mong đợi / thực tế: bề mặt đứng yên một màu / mặt sàn và cạnh trong khung cửa chớp sọc hai màu (z-fighting: hai mặt
+  khác màu nằm trùng một mặt phẳng).
+- Bằng chứng: ảnh người dùng (cổng bắc — cạnh trong khung cửa phải có vệt sọc sáng); ảnh L-6 lần 3 (sàn tầng 2 Thư viện
+  có vệt sọc mảnh). Chạy trên trình duyệt máy tính.
+
+**Sửa**
+- Nguyên nhân (quét hình học các khối trong nhà + tường): (1) Tàng Thư Các — hiên lửng tầng 1 (`skirt`, chóp cụt có nắp
+  trên) cao đúng tới mặt sàn tầng 2: nắp 18,2 × 9,2 m màu ngói nằm trùng mặt sàn gỗ (y = 6,26) gần như cả sàn. (2) Cổng
+  `lau` (門樓): trụ khung gỗ áp mặt trong trụ vôi đúng mép lối đi (x = ±2,9) — hai mặt trùng; xà ngang trên lối có mặt dưới
+  trùng mặt dưới mảng tường trên cửa (y = 3,2).
+- Test: `web/src/scene/zfight.test.ts` — quét mặt các khối hộp tìm cặp cùng mặt phẳng khác vật liệu:
+  `'(L-10): cổng mái ngói — khung gỗ (trụ, xà) không nằm trùng mặt tường vôi của cổng'` (đỏ: 12 cặp → xanh),
+  `'(L-10): Tàng Thư Các — hiên lửng tầng 1 thấp hơn mặt sàn tầng 2'` (đỏ: đỉnh hiên 6,26 = mặt sàn → xanh). Toàn bộ 205 test
+  web xanh. Chớp thật chỉ thấy khi camera chuyển động trên GPU thật — ảnh tĩnh không bắt được, nên khoá bằng hình học.
+- Code: `kien_truc/tuong.ts` (`PROUD` 3 cm: trụ khung gỗ nhô vào lối, xà ngang thò xuống dưới mảng tường, dải xà dưới mái
+  hạ dưới đỉnh trụ), `kien_truc/lau_sach.ts` (hiên lửng cao 0,9 → 0,86: nắp thấp hơn sàn tầng 2 4 cm). Đã `npm run build`.
+  Trà lâu: hiên lửng đỉnh ở mặt dưới sàn (ngược chiều) — không chớp, không đổi.
+- Thử máy: trình duyệt máy tính — (1) đứng trong sân nhìn cổng bắc "Bậc lên Trà lâu" / cổng nam, xoay camera: cạnh trong
+  khung cửa và mặt dưới xà không chớp; (2) lên tầng 2 Thư viện, đi quanh, xoay camera: mặt sàn không chớp sọc. Còn chớp ở
+  chỗ khác → chụp màn (hoặc quay) gửi, ghi đứng ở đâu.
+
+- **Đợt 2 (2026-11-14, người dùng chọn "sửa tận gốc từng chỗ")** — dò cả cảnh: `web/src/scene/zfightScan.ts` so mặt phẳng
+  từng tam giác (tắt gộp khối), tính cả hai khối **cùng ảnh** (vôi, gạch, đá — UV lệch nhau nên vẫn lấm tấm), bỏ mặt bị khối
+  khác che, khối vô hình, vật liệu có polygonOffset. Sau lọc còn ~200 chỗ thấy được; nguyên nhân + sửa:
+  - Cửa bức bàn (`kien_truc/chi_tiet.ts` `addDoors`, mọi điện / nhà ở Tử Cấm Thành, Bồng Lai, tông môn): chân cửa gỗ rộng đúng
+    bằng tấm vôi (mặt đầu trùng), song gỗ có mặt sau trùng mặt sau tấm → chân cửa thò vào cột 1 cm, song lệch ra trước 1 cm.
+  - Góc tường (`walls.ts` gạch — Tử Cấm Thành, Con đường tơ lụa; `kien_truc/tuong.ts` vôi — Giang Nam): hai đoạn kéo dài nửa bề
+    dày, chồng nhau ở góc → mặt ngoài trùng → đoạn trục x dài thêm, trục z ngắn lại `CORNER_EPS` 5 mm mỗi đầu (vật cản giữ nguyên);
+    chân đá xếp dài hơn thân vôi 5 mm mỗi đầu.
+  - Cuộn lụa trên sạp (`vat_sa_mac.ts`, ảnh 5): 3 cuộn cùng trục, cùng bán kính, nối đuôi lồng nhau → xếp cạnh nhau.
+  - Cổng chào (`gate.ts`): mặt trên xà trên trùng đỉnh cột giữa → hạ xà 1 cm.
+  - Lan can thang (`kien_truc/cau_thang.ts`): cột 0,1 áp sát tường thành / đáy trùng đáy bậc → cột 0,096, nhấc 2 mm.
+- Test đợt 2: `web/src/scene/zfightRegions.test.ts` — `'(L-10): <cảnh> — không có mặt trùng khác màu'` (đỏ trước khi sửa:
+  bong-lai 49, to-lua 19, tu-cam-thanh 129, giang-nam 5 … → 0 cả 7 cảnh). Mặc định chạy to-lua + bong-lai (≈ 3 s mỗi cảnh);
+  cả 7 cảnh: `ZFIGHT=1 npx vitest run src/scene/zfightRegions.test.ts` (≈ 2 phút). 208 test web xanh. Đã `npm run build`.
+- Chưa khoá được bằng test: ảnh 4 (chân cầu đá trên hồ Giang Nam) và ảnh 1 (góc tường nhà 2 tầng Giang Nam) — máy dò không thấy
+  mặt trùng ở đó sau khi sửa; nếu còn chớp có thể là hai mặt **gần** trùng (lệch vài mm) hoặc ảnh lấm tấm của vôi → cần ảnh /
+  vị trí đứng để xem tiếp.
+- Thử máy đợt 2 (trình duyệt): Tử Cấm Thành — nhìn gần cửa các điện + góc tường thành, thang lên tường; Con đường tơ lụa —
+  sạp lều vải (cuộn lụa), góc tường; Giang Nam — cổng chào, chân tường vôi, chân cầu; Bồng Lai — cửa Tàng Thư Các, lan can
+  thang. Xoay / đi quanh camera: không còn vệt chớp. Còn chỗ chớp → ảnh + đứng ở đâu (vùng, gần vật gì).
+
+**Lịch sử**
+- 2026-11-14: ghi, sửa luôn → chờ thử máy.
+- 2026-11-14: thử máy trình duyệt đạt (người dùng `/loi xong L-10`) → xong.
+- 2026-11-14: **tái phát ở các vùng** (mở lại) — "hiện nay có 1 số lỗi hiện tượng chớp ở các kiến trúc ở 1 số map như
+  giang nam (chân cầu, chân cổng,..), tử cấm thành, mở rộng tôi sẽ gửi ảnh". Trình duyệt máy tính; 5 ảnh: nhà 2 tầng
+  Giang Nam (góc tường dưới mái), chân tường / chân cổng đỏ Tử Cấm Thành, chân cầu đá trên hồ, cuộn vải trên sạp (Con
+  đường tơ lụa). Dò cả cảnh bằng `web/src/scene/zfightScan.ts` + `zfightRegions.test.ts` (chạy riêng:
+  `ZFIGHT=1 npx vitest run src/scene/zfightRegions.test.ts`, tắt gộp khối): tong-mon 259 · bong-lai 164 · giang-nam 137 ·
+  rung-truc 27 · to-lua 23 · truong-thanh 13 · tu-cam-thanh 380 chỗ (~195 cặp khối, ~10–15 file dựng). Nhiều nhất: song
+  gỗ cửa trên tường đỏ (điện Tử Cấm Thành), cột / khung sẫm chìm trong tường vôi (Giang Nam), kệ trong nhà (0,6×2,4 × nẹp
+  gỗ), đài tròn tông môn (mặt nắp trùng mặt bậc), cuộn vải đồng trục cùng bán kính (sạp tơ lụa).
+- 2026-11-14: lọc mặt bị che / vô hình / có polygonOffset → còn thật ~200; sửa 5 chỗ dựng (xem Đợt 2) → 0 cả 7 cảnh, chờ thử máy.
+
+
+### L-11 · Nhãn tên người chơi nổi đè lên bản đồ truyền tống
+
+- Trạng thái: chờ thử máy · Mức độ: nhỏ (nhãn che một phần chữ trên bản đồ) · Phần: HUD — `web/src/ui/hud.ts`
+  (`NameTag`), `web/src/main.ts` · Quy tắc: R-HANH-2 (bản đồ mở: nhân vật đứng yên, HUD điều khiển ẩn)
+- Báo: 2026-11-14 — "tên người dùng đang bị nổi lên trên cả bản đồ" (ảnh: pill "Tuấn Anh" đè chữ 長城 Trường Thành)
+- Các bước: 1. Vào vòng trận Truyền Tống Đài, đứng 1,2 s. 2. Bản đồ mở.
+- Mong đợi / thực tế: bản đồ phủ, không có nhãn tên / pill "Tuấn Anh" nằm trên giấy bản đồ.
+- Nguyên nhân: nhãn tên là lớp HTML (z-index 4) trên canvas 3D; cuộn bản đồ là vật 3D nên luôn nằm dưới nhãn. `main.ts`
+  chỉ ẩn nhãn khi chữ nhập định hiện.
+- Sửa: ẩn nhãn tên khi bản đồ mở, màn tải đang hiện, hoặc màn bài học che cảnh (`main.ts`, `nameTag.setVisible`).
+  Không có test (vòng lặp khung hình trong `main.ts` — kiểm bằng thử tay).
+
+### L-9 · Để yên chuột trên cảnh thì con trỏ hoạt hình thỉnh thoảng thành chuột máy tính
+
+- Trạng thái: chờ thử máy · Mức độ: nhỏ (chỉ đổi hình con trỏ, vẫn dùng bình thường; di chuột là trở lại) · Phần: HUD /
+  con trỏ chuột — `web/src/style.css` (`cursor: url(./cursor/*.svg)`) · Quy tắc: chưa có
+- Báo: 2026-11-14 — "bây giờ có 1 vài lúc đôi khi để yên thì chuột lại quay về chuột máy tính sau đó di chuyển thì lại
+  trở về chuột hoạt hình"
+- Các bước: 1. `npm run dev`, mở trên trình duyệt máy tính. 2. Để chuột đứng yên trên cảnh 3D (không trên nút), chờ.
+- Mong đợi / thực tế: con trỏ luôn là mũi tên ngọc lục / thỉnh thoảng thành mũi tên mặc định của máy, di chuột thì trở lại.
+- Bằng chứng: chưa có (trình duyệt, `npm run dev`, chuột trên cảnh 3D).
+
+**Sửa**
+- Nguyên nhân: con trỏ trỏ tới file ảnh riêng (`url(./cursor/tro.svg)`). Bản dev phục vụ file với `Cache-Control:
+  no-cache`, bản build cũng để file riêng (`assetsInlineLimit: 0`) → trình duyệt có lúc phải hỏi lại máy chủ. Để yên
+  chuột mà DOM dưới chuột đổi (bong bóng thoại, nhãn tên, NPC nói trên kênh chung…) thì Chrome tính lại con trỏ; ảnh
+  chưa sẵn → dùng con trỏ dự phòng `default` và giữ tới lần di chuột kế tiếp.
+- Test: `web/src/ui/cursor.test.ts` — `'(L-9): style.css không trỏ con trỏ tới file ảnh riêng …'` (đỏ trước khi sửa),
+  `'(L-9): con trỏ là data URI nhúng sẵn …'`. Hiện tượng trên màn (con trỏ đổi khi để yên) chưa khoá được bằng test —
+  headless không vẽ con trỏ; đã kiểm `getComputedStyle(...).cursor` = `url("data:image/svg+xml,…")`.
+- Code: `web/src/ui/cursor.ts` (`installCursors` → biến `--cur`, `--cur-btn` từ `src/cursor/*.svg?raw`), gọi đầu
+  `web/src/main.ts`; `web/src/style.css` dùng `cursor:var(--cur,default)` / `var(--cur-btn,pointer)`;
+  `web/src/node-fs.d.ts` (kiểu `readFileSync` cho test). Đã `npm run build`.
+- Thử máy: `npm run dev` (tải lại trang, Ctrl+F5), để chuột yên trên cảnh 2–3 phút (gần Tiểu Mặc để có bong bóng hiện /
+  mất) → con trỏ luôn là mũi tên ngọc lục. Còn lỗi → quay màn hình lúc con trỏ đổi.
+- Commit: chưa (chưa được bảo).
+
+**Lịch sử**
+- 2026-11-14: ghi lỗi, sửa luôn (người dùng chọn) → nhúng con trỏ thành data URI, chờ thử máy.
+
+### L-8 · Bàn ngồi ở các nơi nhỏ hẹp: bàn ghế nhỏ so người, ngồi sát nhau, camera khi ngồi chật
+
+- Trạng thái: chờ thử máy · Mức độ: khó chịu (trông như đồ chơi, ngồi chen chúc, nhìn chật chội) · Phần: nội thất + chỗ ngồi —
+  `scene/kien_truc/{tra_lau,lau_sach,noi_that}.ts`, `scene/gameTable.ts`, `scene/seat.ts` · Quy tắc: R-VA-4, R-GIAO-1, R-NGOI-1
+- Báo: 2026-11-13 — "bàn ngồi ở các nới đang hơi nhỏ hẹp"
+- Các bước: 1. Vào trà lâu / Tàng Thư Các tầng 2 / Kỳ Văn Uyển. 2. Đứng cạnh hoặc ngồi vào bàn.
+- Mong đợi / thực tế: bàn ghế vừa tầm người, chỗ ngồi thoáng, camera khi ngồi thấy rõ / bàn ghế nhỏ so nhân vật, ngồi
+  sát nhau, camera khi ngồi chật. Cả ba nơi (người dùng chọn "tất cả các nơi").
+- Bằng chứng: chưa có
+
+**Sửa**
+- Nguyên nhân: nhân vật chibi cao 2,1 m nhưng bàn ghế làm theo cỡ người thật ~1,65 m (bàn thấp 0,35–0,4, bồ đoàn ∅ ~0,65,
+  ghế cách tâm bàn 0,6–0,8, hai ghế cạnh nhau 1,0–1,2); ngồi xuống camera giữ góc đứng (4,2 m, ngang, ngắm cao 1,2 m).
+- Test: `scene/gameTable.test.ts` `'R-GIAO-1 (L-8): …'` (toạ độ ghế thật), `input/orbitCamera.test.ts` `'R-NGOI-1 (L-8): …'`
+  (camera ngồi); cập nhật số trong `gamePlay.test.ts`, `zones/seats.test.ts`, `traLau.test.ts`. vitest 145/145.
+- Code: kế hoạch `docs/tasks/2026-11-13-ban-ghe-rong-hon.md` — `kien_truc/{do_pho,tra_lau,lau_sach}.ts`, `gameTable.ts`,
+  `spec.ts` (GAME_SLOT 2,5, `camera.seated`), `input/orbitCamera.ts` (`sit`), `main.ts`.
+- Thử máy: 1. Trà lâu tầng 1 + tầng 2, Tàng Thư Các tầng 2, Kỳ Văn Uyển: bàn ghế vừa tầm nhân vật, ngồi không chen
+  nhau. 2. Bấm "Ngồi" ở án thư / bàn trà → camera lùi ra, chúc xuống thấy cả bàn; đi → camera về như cũ. 3. Đi quanh
+  bàn tầng 2 trà lâu, lối phía đông → không vướng. Còn lỗi: ảnh chụp chỗ chật.
+- Commit: …
+
+**Lịch sử**
+- 2026-11-13: ghi; người dùng chọn ghi rồi sửa luôn.
+- 2026-11-13: duyệt ×1,3, camera ngồi "lùi xa + hơi chúc", làm cả 3 nơi; Kỳ Văn Uyển dọc bàn 2,5 (biển tên). Sửa xong, build.
+
+### L-7 · Quay đầu đi về phía camera thì chỉ thấy mặt nhân vật, không thấy phía trước
+
+- Trạng thái: chờ thử máy · Mức độ: khó chịu (điều khiển / tầm nhìn sai, không thấy đường đi) · Phần: điều khiển + camera —
+  `input/orbitCamera.ts`, `main.ts` · Quy tắc: R-DIEU-3
+- Báo: 2026-11-13 — "hiện nay cảm giác camera đang chưa xoay đúng ý đảm bảo tầm nhìn khi người dùng di chuyển, đặc biệt là
+  khi quay lại thì lại chỉ thấy mặt nhân vật đi lên chứ không thấy những gì nhân vật đang nhìn thấy"
+- Các bước: 1. Đi tới một đoạn. 2. Kéo joystick xuống (quay đầu, đi về phía camera) và giữ.
+- Mong đợi / thực tế: camera vòng ra sau lưng, thấy phía trước nhân vật / camera đứng yên, chỉ thấy mặt nhân vật đi tới.
+- Bằng chứng: chưa có
+
+**Sửa**
+- Nguyên nhân: R-DIEU-3 cũ cố ý không tự xoay khi hướng đi lệch hướng nhìn ≥ 120°, vì hướng joystick tính theo camera
+  từng khung hình — camera mà xoay thì "xuống" đổi nghĩa, nhân vật đi vòng. Đổi luật: khoá hướng đi khi giữ joystick
+  cùng hướng, nên camera xoay ra sau lưng cả khi đi về phía camera.
+- Test: `web/src/input/orbitCamera.test.ts` — `'R-DIEU-3 (L-7): giữ joystick xuống (đi về phía camera) → đi thẳng, camera
+  vòng ra sau lưng trong ~1,5 s'` (+ 5 test R-DIEU-3: đi ngang, thả tay bấm lại, đổi hướng ≥ 45°, kéo tay khi đi, chờ 1,5 s).
+  Đỏ trước khi sửa, xanh sau (vitest 128/128).
+- Code: `orbitCamera.ts` — thêm `steerYaw(ix, iy)` (khoá hướng đi; thả tay / đổi hướng ≥ 45° → theo camera; kéo tay → xoay
+  theo), bỏ ngưỡng 120°, lệch càng nhiều xoay càng nhanh (180° → gấp ba). `main.ts` — controller nhận `orbit.steerYaw(…)`
+  thay cho `orbit.yaw`. Cảm giác (tốc độ xoay, ngưỡng 45°) chỉ thử máy mới chốt được.
+- Thử máy: 0. Đi vòng, rẽ trái / phải → camera xoay êm, không chóng mặt; dừng → camera hãm lại, đứng yên, không tự xoay
+  về chính diện. 1. Đi tới vài bước. 2. Kéo joystick xuống và giữ → nhân vật đi thẳng (không vòng), camera vòng êm ra sau
+  lưng trong ~3 s, thấy phía trước. 3. Vẫn giữ → đi tiếp đúng hướng. 4. Thả, đẩy lên → đi tới theo camera mới. 5. Đang đi
+  dùng ngón kia kéo xoay camera → hướng đi xoay theo. Còn lỗi: quay màn / mô tả lúc nào thấy khó chịu.
+- Commit: …
+
+**Lịch sử**
+- 2026-11-13: ghi; người dùng chọn "khoá hướng + xoay ra sau".
+- 2026-11-13: sửa xong, build; R-DIEU-3 sửa trong sổ, **chưa chép lên tài liệu xác nhận online** (phiên VS Code không có
+  công cụ Claude Docs).
+- 2026-11-13: thử máy — "camera vẫn bị lệch góc nhìn từ mắt nhân vật": đổi trái / phải rồi dừng thì camera đứng chéo sau
+  vai (có ảnh). Nguyên nhân: xoay theo hàm mũ nên càng gần càng chậm, bám theo quãng vừa đi (không theo hướng quay mặt),
+  dừng là thôi xoay. Sửa: bám hướng quay mặt bằng lò xo giảm chấn (`AUTO_SMOOTH` 0,22 s → rẽ / quay đầu ~0,8 s lệch
+  < 3°), dừng thì xoay nốt 0,8 s; `follow(dt, facing, moving)`. Thêm 3 test (trái/phải liên tục, dừng xoay nốt, kéo tay
+  rồi đứng). R-DIEU-3 sửa lần 2 — cần chép lại lên tài liệu online.
+- 2026-11-13: thử máy — "nhanh chóng mặt", nhờ bắt chước game cùng thể loại. Làm lại theo kiểu Zelda / Genshin / Mario
+  (Cinemachine "recentering"): **dây kéo** (`LEASH` 0,6 — đi ngang thì camera bị kéo vòng theo) + **tự về sau lưng
+  chậm** (lò xo `AUTO_SMOOTH` 0,5 s, tối đa 75°/s, gia tốc 200°/s² nên bắt đầu êm) + tổng xoay ≤ 90°/s; dừng thì xoay
+  nốt 1,5 s. Rẽ 90° ~2 s, quay đầu ~3 s. `follow(dt, dx, dz, facing, moving)`. 10 test (có kiểm tốc độ xoay ≤ 90°/s,
+  0,3 s đầu rẽ < 20°). R-DIEU-3 sửa lần 3.
+- 2026-11-13: thử máy — "vẫn còn chóng mặt ở chỗ sau khi nhân vật đứng lại thì camera tự xoay về chính diện". Bỏ xoay
+  nốt khi dừng: dừng thì hãm (`AUTO_BRAKE` 400°/s², ~0,2 s) rồi đứng yên, đứng yên không tự xoay (như game cùng thể
+  loại). R-DIEU-3 sửa lần 4.
+
 ### L-6 · Cầu thang trà lâu + Tàng Thư Các khó đi, đi lên bị che khuất
 
 - Trạng thái: chờ thử máy · Mức độ: khó chịu (lên tầng 2 vất vả, camera bị che) · Phần: nhà vào được — `scene/kien_truc/cau_thang.ts`,
@@ -53,11 +226,22 @@ Mức độ:
   áp sát vẫn còn khe trên nền; muốn liền phải làm hành lang tầng 2 — chờ người dùng quyết.
 - Thử máy (lần 2): trà lâu — leo thang hồi phải, nhìn sang trái: lan can thang sát mép sàn tầng 2, không còn dải hở; qua cầu
   nối vào tầng 2 không thấy khe. Còn hở → chụp màn gửi.
+- Lần 3 (Tàng Thư Các — khe giữa cầu nối và sàn tầng 2): nguyên nhân — sàn tầng 2 chỉ tới x = w / 2 (9) mà cầu nối gỗ +
+  lan can hai bên bắt đầu từ mặt ngoài nền đá (w / 2 + 1 = 10) → dải hở ~0,85 m nhìn xuống mái hiên, và dải đó không có lan
+  can (bước ra là rơi). Sửa: `StairInput.deckX` (mới; thiếu = `xWall`, trà lâu giữ nguyên) — cầu nối, lan can trước / sau
+  và hộp chặn mép trước kéo vào tới hàng lan can tầng 2; `lauSachStairs` đặt `deckX` = hàng cột hồi tầng 2 (8,4).
+  Test `web/src/lauSach.test.ts` — `'R-VA-3 (L-6): cầu nối + lan can kéo vào tới hàng lan can tầng 2 …'`, `'R-VA-3 (L-6):
+  đứng trên cầu nối ở dải giữa sàn tầng 2 và nền đá, đi ra trước → lan can chặn …'` (đỏ trước, xanh sau; 27 test Tàng
+  Thư Các + trà lâu xanh). Code: `scene/kien_truc/cau_thang.ts`, `lau_sach.ts`. Đã `npm run build`.
+- Thử máy (lần 3): Tàng Thư Các (−33; −22) — lên thang hồi phải tới chiếu nghỉ, nhìn về phía nhà: cầu nối gỗ liền vào sàn
+  tầng 2, lan can hai bên chạy tới hàng cột; đi dọc mép trước cầu nối → bị lan can chặn. Còn hở → chụp màn gửi.
 - Commit: chưa (chưa được yêu cầu).
 
 **Lịch sử**
 - 2026-11-13: ghi, sửa luôn.
 - 2026-11-13: thử máy trà lâu — "khoảng cách giữa lan can đến bề mặt tầng 2 có khoảng trống mặc dù vẫn đi qua được" (ảnh: khung lan can cầu nối, mặt lối xám, hở trước sàn tầng 2). Mở lại, sửa luôn.
+- 2026-11-14: "cầu thang ở tàng thư các vẫn đang lỗi . Phần cầu thang lên với phần tầng vẫn chưa khớp nhau vẫn còn khoảng
+  trống" (ảnh: từ chiếu nghỉ thấy dải mái xám giữa cầu nối và sàn tầng 2). Sửa luôn (lần 3) → chờ thử máy.
 
 ### L-5 · Cổng Sơn Môn (model AI) quá lớn, đế đá chân trụ cao hơn người
 
@@ -198,3 +382,4 @@ Mức độ:
   người dùng chọn chỉ web.
 
 ## Đã xong
+

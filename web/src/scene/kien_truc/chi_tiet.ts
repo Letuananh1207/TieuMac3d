@@ -99,8 +99,10 @@ export function addDoors(g: THREE.Group, xs: number[], y0: number, h: number, z:
     const cx = (a + b) / 2;
     const isDoor = i >= first && i < first + doors;
     g.add(box(w, h - 0.3, 0.12, style.wall, cx, y0 + (h - 0.3) / 2, z));
-    g.add(box(w, 0.55, 0.16, style.timber, cx, y0 + 0.275, z + 0.01));
+    // chân cửa thò vào cột 1 cm mỗi đầu: mặt đầu không trùng mặt đầu tấm vôi (L-10: chớp)
+    g.add(box(w + 0.02, 0.55, 0.16, style.timber, cx, y0 + 0.275, z + 0.01));
     if (!isDoor) continue;
-    for (const f of [0.25, 0.5, 0.75]) g.add(box(0.06, h - 0.9, 0.16, style.timber, a + w * f, y0 + 0.55 + (h - 0.9) / 2, z + 0.02));
+    // song gỗ lệch ra trước 3 cm: mặt sau (z − 0,05) nằm trong tấm vôi, không trùng mặt sau tấm (z − 0,06) — L-10
+    for (const f of [0.25, 0.5, 0.75]) g.add(box(0.06, h - 0.9, 0.16, style.timber, a + w * f, y0 + 0.55 + (h - 0.9) / 2, z + 0.03));
   }
 }

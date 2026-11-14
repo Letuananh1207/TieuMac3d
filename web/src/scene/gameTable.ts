@@ -18,15 +18,23 @@ const LINES = 13;
 /** Khoảng cách hai đường (m). */
 const CELL = 0.1;
 const SPAN = (LINES - 1) * CELL;
-const TOP_Y = 0.42;
-const TOP = 1.6;
-/** Ghế người chơi / chỗ NPC đứng, theo trục z cục bộ. */
-const SEAT_Z = 1.1;
-const NPC_Z = -1.25;
+/** Mặt bàn cao, bàn sâu (m) — × 1,3 cho vừa nhân vật chibi (L-8, như `FURN` của kien_truc/do_pho). */
+const TOP_Y = 0.5;
+const TOP = 2.0;
+/** Ghế người chơi / chỗ NPC đứng, theo trục z cục bộ (L-8: ghế 1,1 → 1,4). */
+export const SEAT_Z = 1.4;
+const NPC_Z = -1.55;
+/** Bồ đoàn: bán kính mặt trên / đáy, cao (L-8: ~0,42 như mọi nơi). */
+const CUSHION_TOP = 0.42;
+const CUSHION_BOT = 0.46;
+/** Chân bàn mỗi chỗ chơi (m). */
+const FOOT = 1.3;
 const STONE_R = 0.042;
 const BLACK = '#0b0b0d';
 const WHITE = '#f2efe6';
 const GLOW = '#ffd66b';
+/** chấm son nước vừa đi — token `lacquer` */
+const LACQUER = '#a8322a';
 const WOOD = '#d9b47a';
 const INK = '#4a3420';
 
@@ -52,8 +60,10 @@ export interface GameTable {
   pointAt(world: THREE.Vector3): BoardPoint | null;
   /** vẽ lại quân theo `cells` (0 trống · 1 đen · 2 trắng, chỉ số y × 13 + x) */
   setStones(cells: ArrayLike<number>): void;
-  /** làm sáng các giao điểm (quân thắng R-CO-3, hoặc nước NPC vừa đi) */
+  /** làm sáng các giao điểm (5 quân thắng — viền vàng, R-CO-3) */
   highlight(points: readonly BoardPoint[]): void;
+  /** chấm son trên quân vừa đi (thiết kế 2026-11-13.27); `null` = bỏ chấm */
+  mark(point: BoardPoint | null): void;
   /** thẻ bộ thủ trên bàn đấu chữ, chữ quay về ghế `seat`; `null` = úp thẻ (R-DAU-1) */
   showCard(text: string | null, seat?: number): void;
 }
@@ -112,6 +122,35 @@ function drawCard(canvas: HTMLCanvasElement, text: string | null): void {
 
 const pointLocal = (p: BoardPoint): [number, number] => [-SPAN / 2 + p.x * CELL, -SPAN / 2 + p.y * CELL];
 
+/** Một chỗ chơi: tâm (toạ độ cảnh), `sx` dọc trục x cục bộ, các ghế (bàn dài: nam rồi bắc). */
+export interface TableSlot {
+  sx: number;
+  x: number;
+  z: number;
+  seats: Seat[];
+}
+
+/** Vị trí các chỗ chơi + ghế của bàn `t` — thuần, không dựng gì (R-GIAO-1). */
+export function tableSlots(t: GameTableSpec, y0 = 0): TableSlot[] {
+  const rot = t.rotY ?? 0;
+  const angle = (rot * Math.PI) / 180;
+  const long = t.boards !== undefined;
+  const n = long ? Math.max(1, Math.round(t.boards ?? 1)) : 1;
+  const at = (x: number, z: number): [number, number] => {
+    const [dx, dz] = rotateXZ(x, z, rot);
+    return [t.x + dx, t.z + dz];
+  };
+  return Array.from({ length: n }, (_, k) => {
+    const sx = (k - (n - 1) / 2) * GAME_SLOT;
+    const [x, z] = at(sx, 0);
+    const seats = (long ? [1, -1] : [1]).map((side): Seat => {
+      const [px, pz] = at(sx, side * SEAT_Z);
+      return { x: px, y: y0, z: pz, rotY: side > 0 ? angle + Math.PI : angle };
+    });
+    return { sx, x, z, seats };
+  });
+}
+
 /**
  * Dựng bàn chơi; trả một `GameTable` cho mỗi chỗ chơi. Không `boards` → bàn vuông một ghế (+z), NPC đứng phía −z như cũ.
  * Có `boards` → bàn đá dài `boards` chỗ dọc trục x cục bộ, mỗi chỗ hai bồ đoàn đối diện (R-GIAO-1).
@@ -128,10 +167,10 @@ export function addGameTable(scene: THREE.Scene, colliders: Colliders, t: GameTa
 
   // bàn đá thấp (dài) + chân mỗi chỗ (đứng yên → gộp)
   g.add(box(length, 0.12, TOP, style.base, 0, TOP_Y - 0.06, 0));
-  const cushionGeo = new THREE.CylinderGeometry(0.36, 0.4, 0.14, 12);
+  const cushionGeo = new THREE.CylinderGeometry(CUSHION_TOP, CUSHION_BOT, 0.14, 12);
   const slotX = Array.from({ length: n }, (_, k) => (k - (n - 1) / 2) * GAME_SLOT);
   for (const sx of slotX) {
-    g.add(box(1.0, TOP_Y - 0.12, 1.0, style.base, sx, (TOP_Y - 0.12) / 2, 0));
+    g.add(box(FOOT, TOP_Y - 0.12, FOOT, style.base, sx, (TOP_Y - 0.12) / 2, 0));
     for (const side of long ? [1, -1] : [1]) {
       const cushion = new THREE.Mesh(cushionGeo, lambert('#8a3b2c'));
       cushion.position.set(sx, 0.07, side * SEAT_Z);
@@ -152,9 +191,11 @@ export function addGameTable(scene: THREE.Scene, colliders: Colliders, t: GameTa
   const boardTex = isBoard ? boardTexture() : null;
   const stoneGeo = new THREE.CylinderGeometry(STONE_R, STONE_R * 1.05, 0.03, 12);
   const glowGeo = new THREE.CylinderGeometry(STONE_R * 1.45, STONE_R * 1.45, 0.012, 16);
+  const markGeo = new THREE.CylinderGeometry(STONE_R / 3, STONE_R / 3, 0.004, 10); // ≈ 1/3 đường kính quân
   const npcStand = t.npcStand !== false;
 
-  const slots = slotX.map((sx): GameTable => {
+  const seatsAt = tableSlots(t, y0);
+  const slots = slotX.map((sx, k): GameTable => {
     const slot = new THREE.Group();
     slot.position.x = sx;
     g.add(slot);
@@ -178,6 +219,7 @@ export function addGameTable(scene: THREE.Scene, colliders: Colliders, t: GameTa
     const blacks = isBoard ? makeSet(BLACK, LINES * LINES, stoneGeo) : null;
     const whites = isBoard ? makeSet(WHITE, LINES * LINES, stoneGeo) : null;
     const glow = isBoard ? makeSet(GLOW, LINES, glowGeo, true) : null;
+    const dot = isBoard ? makeSet(LACQUER, 1, markGeo, true) : null;
 
     // thẻ bộ thủ (chỉ bàn đấu chữ)
     let card: { canvas: HTMLCanvasElement; tex: THREE.CanvasTexture; mesh: THREE.Mesh } | null = null;
@@ -195,10 +237,7 @@ export function addGameTable(scene: THREE.Scene, colliders: Colliders, t: GameTa
       card = { canvas, tex, mesh };
     }
 
-    const seats: Seat[] = (long ? [1, -1] : [1]).map((side) => {
-      const [x, z] = at(sx, side * SEAT_Z);
-      return { x, y: y0, z, rotY: side > 0 ? angle + Math.PI : angle };
-    });
+    const seats = seatsAt[k].seats;
     const [nx, nz] = at(sx, NPC_Z);
     const [ox, oz] = at(sx, 0);
     const m4 = new THREE.Matrix4();
@@ -241,6 +280,9 @@ export function addGameTable(scene: THREE.Scene, colliders: Colliders, t: GameTa
       },
       highlight(points) {
         if (glow) place(glow, points.slice(0, LINES), TOP_Y + 0.008);
+      },
+      mark(point) {
+        if (dot) place(dot, point ? [point] : [], TOP_Y + 0.035); // trên mặt quân (quân cao 0,03 từ 0,018)
       },
       showCard(text, seat = 0) {
         if (!card) return;

@@ -28,7 +28,7 @@ export class LoadingScreen {
     const p = Math.round(Math.min(100, Math.max(0, percent)));
     this.fill.style.width = `${p}%`;
     this.bar.setAttribute('aria-valuenow', String(p));
-    this.status.textContent = `Đang mở sơn môn… ${p}%`;
+    this.status.textContent = `Đang mở đường… ${p}%`;
   }
 
   /** Hiện lại (đổi vùng — R-MAN-2, R-HANH-2): tên + chữ Hán nơi đến; trang sắp tải lại nên không cần `done`. */

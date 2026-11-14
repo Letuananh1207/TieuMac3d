@@ -22,13 +22,113 @@ export const PROP_KINDS = [
   'da-thai-ho',
   'den-da',
   'dinh-dong',
+  /** nhật quỹ 日晷: bệ đá tu-di 1,4 × 1,4 m, mặt quỹ nghiêng ngửa về bắc (−z) khắc 12 giờ, kim đồng */
+  'nhat-quy',
+  /** bồn hoa đá lục giác; `text` chọn cây tứ quân tử: 梅 mai · 蘭 lan · 竹 trúc · 菊 cúc */
+  'bon-hoa',
   'sap-o',
   'ban-tra',
   'co',
   'bang',
+  /** hạc đồng đứng trên bệ đá (cung điện) */
+  'hac-dong',
+  /** rùa đồng trên bệ đá */
+  'rua-dong',
+  /** lạc đà hai bướu đứng nghỉ, cúi đầu chậm */
+  'lac-da',
+  /** cửa hang trong vách đá + tấm bích hoạ (hoa văn tự vẽ) — không vào được; mặt nhìn +z */
+  'hang',
+  /** Rừng trúc (2026-11-14): cổng trúc mái tranh (lòng 3,5 m, mặt +z) */
+  'cong-truc',
+  /** giá phơi thẻ trúc 2,4 × 1,8 m, 4 hàng thẻ treo */
+  'gia-the',
+  /** bó trúc chẻ dựng nghiêng */
+  'bo-truc',
+  /** đèn trúc: khung trúc + giấy tự sáng, cao 1,4 m */
+  'den-truc',
+  /** đá khắc ngang 2,6 × 1,2 m, `text` chữ khắc (mặt +z) */
+  'da-khac',
+  /** ngỗng trắng bơi vòng quanh (x, z), bán kính 1,5 × scale; không va chạm */
+  'ngong',
+  /** chỗ ngồi văn nhân: đá phẳng + bồ đoàn rơm + án nhỏ (mặt nhìn +z) */
+  'bo-doan',
+  /** Giang Nam: bậc xuống nước 河埠頭 (đặt ở mép kè, mặt +z nhìn ra nước, bậc đi xuống phía +z) — chỉ để nhìn */
+  'ben-nuoc',
+  /** giàn đèn đố 燈棚: khung gỗ 3 m + 2 hàng đèn giấy trắng */
+  'gian-den',
+  /** chồng vò rượu */
+  'vo-ruou',
+  /** chậu sen 荷花缸 */
+  'chau-sen',
+  /** sào tre phơi áo (dài 3 m dọc x cục bộ) */
+  'sao-ao',
+  /** mèo nằm */
+  'meo',
+  /** chó ngồi */
+  'cho',
+  /** Bồng Lai: pháp bảo Bát Tiên trên bệ, `text` một trong `PHAP_BAO` */
+  'phap-bao',
+  /** lâu thuyền Từ Phúc dài 12 m (dọc z) — thường đặt ngoài mép đảo với `y` */
+  'lau-thuyen',
+  /** đầu cự ngao đá nhô dưới mép đảo (dùng `y`); không va chạm */
+  'cu-ngao',
+  /** hạc trắng đứng */
+  'hac',
+  /** hươu trắng cúi gặm */
+  'huou',
+  /** Trường Thành: địch lâu vuông 9 × 9, cao 13 m */
+  'dich-lau',
+  /** cổng quan thành: đài gạch 14 × 10 cao 8 m, cửa vòm xuyên dọc z, lầu cổng; `text` biển */
+  'quan-thanh',
+  /** phong hoả đài: tháp gạch cao 8 m có khói */
+  'phong-hoa',
+  /** lều lính 4 × 4 */
+  'leu',
+  /** soái trướng 8 × 6 mở mặt trước + bàn sa bàn */
+  'soai-truong',
+  /** lửa trại + 6 đôn */
+  'lua-trai',
+  /** ngựa đứng cúi gặm */
+  'ngua',
+  /** tường đề thơ 7 × 3 m, `text` câu thơ */
+  'tho-bich',
+  /** Tử Cấm Thành: tấm đá ngự lộ chạm rồng (dốc 11 m, đầu −z cao 2,7 — khớp Tam Đài); không đi được */
+  'ngu-lo',
+  /** Ngọ Môn chữ 凹: hai cánh tường son nhô về +z 16 m ở x ±15 + lầu mái vàng — đặt giữa mép tường nam */
+  'ngo-mon',
+  /** sư tử đồng trên bệ */
+  'su-tu-dong',
+  /** khảo án thi Đình */
+  'khao-an',
+  /** giá sách Tứ Khố bìa bốn màu */
+  'gia-sach',
+  /** Con đường tơ lụa: đoạn vách Mạc Cao 20 × 16 m, 3 tầng cửa hang + sạn đạo (mặt +z) */
+  'vach-hang',
+  /** Cửu Tầng Lâu áp vách: rộng 11, sâu 3, cao 21 m */
+  'lau-vach',
+  /** nhà đất nện mái bằng 8 × 6 */
+  'nha-dat',
+  /** lều vải chợ 3 × 3 + hàng */
+  'leu-vai',
+  /** cụm lau sậy */
+  'lau-say',
+  /** cổng quan đất nện (Dương Quan), như `quan-thanh` — `text` biển */
+  'cong-quan',
+  /** phong hoả đài đất nện */
+  'phong-hoa-dat',
 ] as const;
-export const TREE_KINDS = ['tan', 'truc', 'tung', 'lieu', 'mai', 'truc-mao'] as const;
-export const WALL_STYLES = ['gach', 'voi'] as const;
+/** tám pháp bảo Bát Tiên (ám Bát Tiên): hồ lô · quạt · ngọc bản · sáo · sen · giỏ hoa · kiếm · ống phách */
+export const PHAP_BAO: readonly string[] = ['葫', '扇', '板', '笛', '荷', '籃', '劍', '鼓'];
+/** kiểu cầu: `vom` cầu vòm đá lưng gù · `da` cầu đá phẳng lan can cẩm thạch · `treo` cầu treo ván gỗ dây võng */
+/** `tau` = cầu tàu ra mây: đầu −z (cục bộ) trên đất, đầu kia hẫng trên trụ — chỉ đầu −z cần đất phẳng */
+export const BRIDGE_KINDS = ['vom', 'da', 'treo', 'tau'] as const;
+/** cây trong bồn hoa (`bon-hoa`, prop `text`): tứ quân tử — mai (đông) · lan (xuân) · trúc (hạ) · cúc (thu) */
+export const FLOWER_POTS: readonly string[] = ['梅', '蘭', '竹', '菊'];
+export const TREE_KINDS = ['tan', 'truc', 'tung', 'lieu', 'mai', 'truc-mao', 'dao', 'bui'] as const;
+export const WALL_STYLES = ['gach', 'voi', 'dat'] as const;
+/** Kiểu cổng trên tường vôi: `trang` = cổng trăng (月洞門, mặc định) · `lau` = cổng mái ngói (門樓): cửa chữ nhật,
+ *  khung gỗ, mái ngói nhỏ nhô ra hai mặt tường, biển gỗ dưới mái. */
+export const GATE_KINDS = ['trang', 'lau', 'thanh'] as const;
 /** Kiểu gạch lát sân: `gach` = gạch chữ nhật nâu như cũ, `vuong` = gạch vuông xanh xám 0,6 m (方磚, 2026-11-13). */
 export const PAVE_PATTERNS = ['gach', 'vuong'] as const;
 
@@ -73,9 +173,28 @@ export interface CameraView {
   pitch: number;
 }
 
+/**
+ * Chữ biển trên cổng, theo hướng **mặt cổng nhìn ra** (vd. cổng nam: `nam` = mặt nhìn về phía Sơn Môn). Thường ghi tên
+ * khu người đi qua sẽ bước vào. Thiếu / rỗng = mặt đó không có biển.
+ */
+export type GateSigns = Partial<Record<(typeof SIDES)[number], string>>;
+
+/** Kiểu + biển của một cổng tường (tường vôi `voi`; tường gạch `gach` chỉ chừa khe trơn). */
+export interface WallGateLook {
+  /** mặc định `trang` */
+  kind?: (typeof GATE_KINDS)[number];
+  signs?: GateSigns;
+}
+
 /** Khe cổng trên vòng tường: cạnh, tâm khe dọc theo cạnh (x với bắc/nam, z với đông/tây), rộng. */
-export interface WallGate {
+export interface WallGate extends WallGateLook {
   side: (typeof SIDES)[number];
+  at: number;
+  width: number;
+}
+
+/** Cổng trên một đoạn tường thêm: tâm khe theo trục của đoạn (x nếu đoạn chạy theo x, z nếu theo z), rộng. */
+export interface SegmentGate extends WallGateLook {
   at: number;
   width: number;
 }
@@ -95,11 +214,16 @@ export interface FenceSpec {
   to: XZ;
 }
 
-/** Đoạn tường thêm, thẳng trục (from / to cùng x hoặc cùng z), dày 1, màu như tường bao. */
+/** Đoạn tường thêm, thẳng trục (from / to cùng x hoặc cùng z), màu như tường bao; dày / cao mặc định như tường bao. */
 export interface WallSegment {
   from: XZ;
   to: XZ;
   height?: number;
+  thickness?: number;
+  /** tường gạch bám địa hình (Trường Thành): chia khúc ~2 m, mỗi khúc đặt theo mặt đất, đỉnh răng cưa. Cần `terrain`. */
+  follow?: boolean;
+  /** một cổng trên đoạn (cần nhiều cổng → chia thành nhiều đoạn) */
+  gate?: SegmentGate;
 }
 
 /** Lối lát đá: dải nền từ `from` tới `to`, góc tự do, không va chạm. */
@@ -119,7 +243,7 @@ export interface GateSpec {
   /** khoảng trống giữa hai cột */
   width: number;
   title: string;
-  /** biển chữ Hán giữa cổng (vd. "文淵宗"); thiếu thì biển ghi `title` */
+  /** biển chữ Hán giữa cổng (vd. "起源鎮"); thiếu thì biển ghi `title` */
   hanTitle?: string;
   /** màu ba mái nhỏ (ngói lưu ly lục); thiếu thì `buildingStyle.eave` */
   roofColor?: string;
@@ -149,6 +273,118 @@ export interface WaterSpec {
   w?: number;
   d?: number;
   rotY?: number;
+  /** mặt nước thấp hơn mặt đất bao nhiêu m (kênh có kè đá — Giang Nam); 0 = sát mặt sân như cũ */
+  sunk?: number;
+  /** `trang` = hồ lưỡi liềm (Nguyệt Nha Tuyền) bán kính ngoài `r`, bụng phình về +z (cục bộ), hai mũi nhọn; quay `rotY` */
+  shape?: 'trang';
+  /** ao chữ nhật: cạnh không xây bờ (nối liền ao khác — ngã ba kênh): bac (−z) · nam (+z) · dong (+x) · tay (−x) */
+  open?: (typeof SIDES)[number][];
+}
+
+/**
+ * Cầu (R-VA-1): mặt cầu thẳng trục dọc z cục bộ, dài `length`, rộng `width`, tâm (x, z); `rotY` 0 · 90 · 180 · 270.
+ * Đi được trên mặt cầu (vòm: lên dốc tới giữa cầu cao `rise` rồi xuống); lan can hai bên chặn. Nước dưới cầu: đặt
+ * hai ao hai bên chừa khe đúng chỗ cầu — cầu tự vẽ mặt nước trong khe (`water: true`).
+ */
+export interface BridgeSpec {
+  kind: (typeof BRIDGE_KINDS)[number];
+  x: number;
+  z: number;
+  rotY?: number;
+  length: number;
+  width: number;
+  /** vòm: độ cao giữa cầu so với hai đầu (mặc định 18 % dài) · đá: 0,3 · treo: 0 */
+  rise?: number;
+  /** vẽ mặt nước dưới cầu (khe giữa hai ao) */
+  water?: boolean;
+  /** mặt nước thấp hơn hai đầu cầu bao nhiêu m (khớp `water[].sunk`) */
+  sunk?: number;
+  /** cầu đá phẳng (`da`): `vuong` = lòng cầu rỗng lỗ vuông (cầu Vĩnh An), không thì thân đặc */
+  arch?: 'vuong';
+}
+
+/** Hiên lang bồng 廊棚: mái một dốc trên cột gỗ dọc mép nước, ghế tựa 美人靠 phía nước, đèn lồng. Thẳng trục. */
+export interface GallerySpec {
+  from: XZ;
+  to: XZ;
+  /** bề rộng (m), mặc định 3 */
+  width?: number;
+  /** phía nước so với đường from→to: +1 = phía + trục còn lại (vd. +z khi chạy theo x), −1 = phía − */
+  waterSide: number;
+}
+
+/** Đàn hạc bay vòng quanh (x, z) ở độ cao `y`, bán kính `radius`; không va chạm. */
+export interface FlockSpec {
+  x: number;
+  z: number;
+  y: number;
+  radius: number;
+  count: number;
+  /** m/s dọc vòng bay */
+  speed?: number;
+}
+
+/** Độ cao giữa cầu so với hai đầu khi không ghi `rise`. */
+export function bridgeRise(kind: BridgeSpec['kind'], length: number): number {
+  return kind === 'vom' ? 0.18 * length : kind === 'da' ? 0.3 : 0;
+}
+
+/** Mương khúc thuỷ (曲水): đường cong mềm qua các điểm, thành đá hai bên, nước chảy; `cups` chén sơn trôi dọc mương. */
+export interface ChannelSpec {
+  points: XZ[];
+  /** lòng mương (m), mặc định 0,6 */
+  width?: number;
+  /** số chén trôi (0 = không) */
+  cups?: number;
+  /** m/s */
+  speed?: number;
+}
+
+/**
+ * Đoạn tường đi được (Trường Thành, R-VA-1): thẳng trục, cao `height`, mặt rộng `width` (mặc định 5); đoạ khẩu phía
+ * `outSide` (+1 = phía + trục còn lại), vũ tường phía kia. `ramps`: mã đạo men mặt trong — đầu trên chạm mặt tường tại
+ * toạ độ dọc `at`, đi xuống theo `dir` (+1 / −1 dọc trục) dài `length` (mặc định 12), rộng `width` (mặc định 3).
+ */
+export interface RampartSpec {
+  from: XZ;
+  to: XZ;
+  height: number;
+  width?: number;
+  outSide: number;
+  ramps?: { at: number; dir: number; length?: number; width?: number }[];
+}
+
+/** Đoàn lạc đà đi qua lại dọc `path` (ping-pong): `count` con nối nhau cách `spacing` m; không va chạm. */
+export interface CaravanSpec {
+  path: XZ[];
+  count?: number;
+  spacing?: number;
+  speed?: number;
+}
+
+/** Thành ảo 海市蜃樓: cụm lầu thành nhạt màu nổi trên mây, mờ hiện rồi tan theo chu kỳ (giây). */
+export interface MirageSpec {
+  x: number;
+  y: number;
+  z: number;
+  width: number;
+  rotY?: number;
+  period?: number;
+}
+
+/** Thuyền ô bồng trôi qua lại dọc `path` (các điểm trên mặt nước); không va chạm. */
+export interface BoatSpec {
+  path: XZ[];
+  /** m/s */
+  speed?: number;
+  /** màu mui (mui đen tre đan) */
+  canopy?: string;
+  /** mặt nước thấp hơn mặt đất (khớp `water[].sunk`) */
+  sunk?: number;
+  /** neo yên ở điểm đầu, mũi nhìn về điểm thứ hai (chỉ dập dềnh) */
+  moored?: boolean;
+  /** thuyền hàng: chở rổ rau quả, vò, bao trà */
+  cargo?: boolean;
 }
 
 export interface PropSpec {
@@ -157,8 +393,10 @@ export interface PropSpec {
   z: number;
   rotY?: number;
   scale?: number;
-  /** cờ dọc (`co`): một chữ Hán; bảng vinh danh (`bang`): dòng tiêu đề */
+  /** cờ dọc (`co`): một chữ Hán; bảng vinh danh (`bang`): dòng tiêu đề; bồn hoa (`bon-hoa`): 梅 · 蘭 · 竹 · 菊 */
   text?: string;
+  /** độ cao gốc tuyệt đối (m) — vật ngoài mép đảo / trên mây; thiếu = mặt đất tại (x, z) */
+  y?: number;
 }
 
 /** NPC đứng tại chỗ (R-NPC-1): mặt trước nhìn về +z khi `rotY` = 0; `rotY` độ, tuỳ ý (không cần bội 90 — không có
@@ -195,14 +433,15 @@ export interface GameSignSpec {
   x: number;
   z: number;
   rotY?: number;
-  /** tên chữ Hán, vd. "五子棋" */
+  /** tên chữ Hán (dòng trên biển, vd. "五子棋"); rỗng = biển chỉ ghi `name` (tông môn 2026-11-13: biển chữ Việt) */
   han: string;
-  /** tên tiếng Việt, vd. "Ngũ Tử Kỳ" */
+  /** tên tiếng Việt, vd. "Cờ caro" — cũng là nhãn nút "Cách chơi" */
   name: string;
 }
 
-/** Khoảng cách tâm hai chỗ chơi liền nhau trên bàn dài (m) — mặt bàn 1,6 + lối 0,6. */
-export const GAME_SLOT = 2.2;
+/** Khoảng cách tâm hai chỗ chơi liền nhau trên bàn dài (m). L-8: 2,2 → 2,5 — bàn ghế ×1,3 nhưng dọc bàn chỉ ×1,14
+ *  vì biển tên ở x −29,5 (scene.json) sẽ chạm đầu bàn. */
+export const GAME_SLOT = 2.5;
 
 /** Cụm cây rải ngẫu nhiên (theo `trees.seed`) trong hình chữ nhật tâm (x, z). */
 export interface GroveSpec {
@@ -231,9 +470,21 @@ export interface PlateauSpec {
   pave?: boolean;
   /** khoảng chuyển (m) từ mép bục ra đất tự nhiên; thiếu thì `terrain.blend`. Nhỏ (≤ 1) = kè đá dựng đứng */
   blend?: number;
+  /** lan can đá trắng quanh mép bục (Tam Đài), tự chừa chỗ bậc đá */
+  rail?: boolean;
 }
 
 /** Đỉnh núi / đồi cộng vào địa hình: cao `h` ở tâm, thoải dần tới bán kính `r`. */
+/** Cồn cát lưỡi liềm (`terrain.dunes`, Con đường tơ lụa): sống lưng sắc dài `len`, cao `h`, bề ngang `width`. */
+export interface DuneSpec {
+  x: number;
+  z: number;
+  len: number;
+  h: number;
+  rotY?: number;
+  width?: number;
+}
+
 export interface PeakSpec {
   x: number;
   z: number;
@@ -341,6 +592,8 @@ export interface SceneSpec {
     cell: number;
     plateaus: PlateauSpec[];
     peaks: PeakSpec[];
+    /** cồn cát sống lưng sắc (không có = như cũ) */
+    dunes: DuneSpec[];
     noise: { seed: number; amp: number; scale: number };
     /** mép cao nguyên: `wobble` = độ lượn của mép (m) cho đỡ tròn đều */
     edge: { radius: number; width: number; y: number; wobble: number };
@@ -369,6 +622,8 @@ export interface SceneSpec {
     enabled: boolean;
     half: number;
     height: number;
+    /** dày (m) — tường bao và mặc định cho đoạn tường thêm */
+    thickness: number;
     color: string;
     brickHue: number;
     capColor: string;
@@ -377,6 +632,8 @@ export interface SceneSpec {
     style: (typeof WALL_STYLES)[number];
     /** tường vôi: cửa sổ hoa cách nhau bao nhiêu mét (0 = không có) */
     windows: number;
+    /** tường gạch: độ bão hoà màu gạch (%) — 40 như cũ; thấp = gạch xám (Trường Thành) */
+    brickSat: number;
   };
   wallSegments: WallSegment[];
   paths: PathSpec[];
@@ -411,6 +668,21 @@ export interface SceneSpec {
   buildings: BuildingSpec[];
   gates: GateSpec[];
   water: WaterSpec[];
+  /** cầu đi qua nước / vực (cảnh vùng) */
+  bridges: BridgeSpec[];
+  /** đàn hạc bay, thuyền trôi — chỉ để nhìn */
+  flocks: FlockSpec[];
+  boats: BoatSpec[];
+  /** mương khúc thuỷ (Rừng trúc) */
+  channels: ChannelSpec[];
+  /** hiên lang bồng ven nước (Giang Nam) */
+  galleries: GallerySpec[];
+  /** thành ảo trên biển mây (Bồng Lai) */
+  mirages: MirageSpec[];
+  /** đoạn tường đi được (Trường Thành) */
+  ramparts: RampartSpec[];
+  /** đoàn lạc đà (Con đường tơ lụa) */
+  caravans: CaravanSpec[];
   props: PropSpec[];
   trees: {
     trunk: string;
@@ -423,6 +695,14 @@ export interface SceneSpec {
     willow: [string, string];
     /** mai: cành, hoa đậm, hoa nhạt */
     plum: [string, string, string];
+    /** đào tiên (Bồng Lai, `dao`): thân, hoa, quả */
+    peach: [string, string, string];
+    /** bụi lá thu (`bui`, Trường Thành): hai màu lá xen */
+    autumn: [string, string];
+    /** lan (bồn hoa 蘭): lá, hoa */
+    orchid: [string, string];
+    /** cúc (bồn hoa 菊): lá, hoa */
+    mum: [string, string];
     /** cây lẻ, có va chạm */
     yard: TreePlace[];
     groves: GroveSpec[];
@@ -471,7 +751,8 @@ export interface SceneSpec {
   fences: FenceSpec[];
   /** lan can: cao, khoảng hai trụ (m), màu thân (sơn son), màu chóp trụ */
   fenceStyle: { height: number; postEvery: number; color: string; cap: string };
-  camera: { fov: number; minDist: number; maxDist: number; near: CameraView; far: CameraView };
+  /** `seated`: khi ngồi vào án thư / bàn trà (R-NGOI-1) — camera lùi ra, chúc xuống thấy cả bàn */
+  camera: { fov: number; minDist: number; maxDist: number; near: CameraView; far: CameraView; seated: CameraView };
 }
 
 export const DEFAULT_SCENE: SceneSpec = {
@@ -496,6 +777,7 @@ export const DEFAULT_SCENE: SceneSpec = {
     cell: 2.5,
     plateaus: [],
     peaks: [],
+    dunes: [],
     noise: { seed: 3, amp: 1.2, scale: 30 },
     edge: { radius: 110, width: 18, y: -30, wobble: 8 },
     blend: 6,
@@ -510,7 +792,7 @@ export const DEFAULT_SCENE: SceneSpec = {
   },
   farMountains: { layers: [], base: -40 },
   cloudSea: { radius: 0, y: -10, color: '#f4f1ea' },
-  walls: { enabled: true, half: 21, height: 2.6, color: '#4a2b24', brickHue: 8, capColor: '#6e2f26', gates: [], style: 'gach', windows: 0 },
+  walls: { enabled: true, half: 21, height: 2.6, thickness: 1, color: '#4a2b24', brickHue: 8, capColor: '#6e2f26', gates: [], style: 'gach', windows: 0, brickSat: 40 },
   wallSegments: [],
   paths: [],
   buildingStyle: {
@@ -560,6 +842,14 @@ export const DEFAULT_SCENE: SceneSpec = {
   ],
   gates: [],
   water: [],
+  bridges: [],
+  flocks: [],
+  boats: [],
+  channels: [],
+  galleries: [],
+  mirages: [],
+  ramparts: [],
+  caravans: [],
   props: [],
   trees: {
     trunk: '#4a3222',
@@ -568,6 +858,10 @@ export const DEFAULT_SCENE: SceneSpec = {
     mao: ['#6f8f3c', '#a99f5a', '#4f7a35'],
     willow: ['#8fb35e', '#a6c470'],
     plum: ['#3a2418', '#e88aa4', '#f2b8c6'],
+    peach: ['#4a3428', '#f2b8c6', '#f49a7a'],
+    autumn: ['#b8462a', '#d8a03a'],
+    orchid: ['#3f6a34', '#efe6c4'],
+    mum: ['#4f7a35', '#e8b23a'],
     yard: [
       { x: 14, z: -14, scale: 1.2 },
       { x: 15, z: 12, scale: 1.1 },
@@ -620,7 +914,14 @@ export const DEFAULT_SCENE: SceneSpec = {
   },
   fences: [],
   fenceStyle: { height: 1.0, postEvery: 1.6, color: '#9e2a20', cap: '#e0ae4c' },
-  camera: { fov: 55, minDist: 5, maxDist: 22, near: { dist: 9, pitch: 0.42 }, far: { dist: 17, pitch: 0.75 } },
+  camera: {
+    fov: 55,
+    minDist: 5,
+    maxDist: 22,
+    near: { dist: 9, pitch: 0.42 },
+    far: { dist: 17, pitch: 0.75 },
+    seated: { dist: 5.5, pitch: 0.44 },
+  },
 };
 
 /* ---------------- suy ra từ đặc tả ---------------- */

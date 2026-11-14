@@ -144,7 +144,7 @@ class _DailyScreenState extends State<DailyScreen> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Eyebrow('Văn Uyên Tông · cổng nam'), // dailyEyebrow
+            const Eyebrow('Khởi Nguyên Trấn · cổng nam'), // dailyEyebrow
             const SizedBox(height: 14),
             Expanded(
               child: SilkCard(

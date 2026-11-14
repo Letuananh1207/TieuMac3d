@@ -42,7 +42,7 @@ async function boot(): Promise<void> {
   await Promise.allSettled([
     document.fonts.load('700 72px Lora'),
     document.fonts.load('700 13px "Be Vietnam Pro"'),
-    document.fonts.load('700 52px "Han Serif"', `文淵此${RADICALS.map((r) => r.form).join('')}${signText(spec)}`),
+    document.fonts.load('700 52px "Han Serif"', `起源此${RADICALS.map((r) => r.form).join('')}${signText(spec)}`),
   ]);
   const canvas = el<HTMLCanvasElement>('stage');
   // nhìn từ trên: đủ cao để thấy cả sân / cả vùng địa hình
@@ -65,10 +65,10 @@ async function boot(): Promise<void> {
   const nap = Number(new URLSearchParams(location.search).get('nap') ?? 0);
   world.teleport?.setCharge(Number.isFinite(nap) ? nap : 0);
   world.teleport?.update(0.6);
-  // ?bando — mở sẵn cuộn bản đồ truyền tống để chụp (trạng thái như mới cài app: chỉ Rừng trúc mở — R-HANH-1/2)
+  // ?bando — mở sẵn cuộn bản đồ truyền tống để chụp (không khoá vùng: vùng có cảnh đi được, còn lại sắp mở — R-HANH-1/2)
   if (new URLSearchParams(location.search).has('bando')) {
     const scroll = createMapScroll(scene, camera, JOURNEY_MAP);
-    const states = placeStates(JOURNEY_MAP.places, SCENE.id, HOME_SCENE, ['rung-truc', 'giang-nam'], new Set(['rung-truc']));
+    const states = placeStates(JOURNEY_MAP.places, SCENE.id, HOME_SCENE, new Set(['rung-truc']));
     camera.updateMatrixWorld();
     scroll.open(world.teleport?.center ?? new THREE.Vector3(), states);
     const cham = new URLSearchParams(location.search).get('cham');

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <title>Học Xá 3D</title>
+  <title>Tiểu Mặc 3D</title>
 </head>
 <body>
   <canvas id="stage"></canvas>
@@ -13,7 +13,7 @@
 
   <div id="joyGhost" aria-hidden="true"><div class="knob"></div><span>kéo để đi</span></div>
   <div id="joy" hidden><div id="knob"></div></div>
-  <div class="label" id="nameTag"><span class="dot" aria-hidden="true"></span>Tuấn Anh</div>
+  <div class="label" id="nameTag">Tuấn Anh</div>
 
   <!-- nút học nổi trên vật học trong nhà (R-VUNG-1), canvas TrongNha-doc / TrongNha-ngang -->
   <button class="learn" id="learn" type="button" hidden>
@@ -22,9 +22,9 @@
 
   <!-- cụm nút hành động (R-DIEU-6/7), canvas HUD-hanh-dong-doc / -ngang, NutHanhDong-trang-thai -->
   <div id="actions">
-    <div class="act act-jump"><button id="actJump" type="button" aria-label="Nhảy"><svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4"></path><path d="M7 9l5-5 5 5"></path><path d="M5 20c1.5-1.6 3.5-1.6 5 0s3.5 1.6 5 0 3.5-1.6 4 0"></path></svg></button><span class="lbl">Nhảy</span></div>
-    <div class="act act-bow"><button id="actBow" type="button" aria-label="Chào"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 9c0-2 1.6-3 3-3h4c1.6 0 3 1.2 3 3v4c0 3-2.2 5-5 5s-5-2-5-5z"></path><circle cx="12" cy="11.5" r="2.6"></circle><path d="M12 18v3"></path></svg></button><span class="lbl">Chào</span></div>
-    <div class="act act-sit"><button id="actSit" type="button" aria-label="Ngồi thiền" aria-pressed="false"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2.2"></circle><path d="M12 8v5"></path><path d="M6 13c2 1 4 1 6 0 2 1 4 1 6 0"></path><path d="M4 18c2.5-2 13.5-2 16 0"></path><ellipse cx="12" cy="20" rx="8" ry="1.6"></ellipse></svg><span class="badge" id="actSitBadge" aria-hidden="true" hidden></span></button><span class="lbl" id="actSitLabel">Thiền</span></div>
+    <div class="act act-jump"><button id="actJump" type="button" aria-label="Nhảy"><svg aria-hidden="true" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4"></path><path d="M7 9l5-5 5 5"></path><path d="M5 20c1.5-1.6 3.5-1.6 5 0s3.5 1.6 5 0 3.5-1.6 4 0"></path></svg></button><span class="lbl">Nhảy</span><kbd class="key" aria-hidden="true">Space</kbd></div>
+    <div class="act act-bow"><button id="actBow" type="button" aria-label="Chào"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 9c0-2 1.6-3 3-3h4c1.6 0 3 1.2 3 3v4c0 3-2.2 5-5 5s-5-2-5-5z"></path><circle cx="12" cy="11.5" r="2.6"></circle><path d="M12 18v3"></path></svg></button><span class="lbl">Chào</span><kbd class="key" aria-hidden="true">F</kbd></div>
+    <div class="act act-sit"><button id="actSit" type="button" aria-label="Ngồi thiền" aria-pressed="false"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2.2"></circle><path d="M12 8v5"></path><path d="M6 13c2 1 4 1 6 0 2 1 4 1 6 0"></path><path d="M4 18c2.5-2 13.5-2 16 0"></path><ellipse cx="12" cy="20" rx="8" ry="1.6"></ellipse></svg><span class="badge" id="actSitBadge" aria-hidden="true" hidden></span></button><span class="lbl" id="actSitLabel">Thiền</span><kbd class="key" aria-hidden="true">C</kbd></div>
   </div>
 
   <!-- nút "Nói chuyện" bám trên NPC + khung thoại (R-NPC-2), canvas HUD-hanh-dong-doc, HoiThoai-doc / -ngang -->
@@ -47,6 +47,31 @@
     <div class="tip" aria-hidden="true"></div>
     <div class="who"><span id="guideName"></span> <span class="han" lang="zh" id="guideHan"></span></div>
   </div>
+  <!-- HUD trò chơi Kỳ Văn Uyển khi ngồi vào bàn (R-GIAO-1, R-CO-3, R-DAU-2) — canvas Co-* / Dau-* (2026-11-13.27); JS dựng -->
+  <div id="game" hidden></div>
+  <!-- bảng cách chơi Kỳ Văn Uyển (R-GIAO-2) — canvas CachChoi-doc-* / CachChoi-ngang (2026-11-13.35); nội dung do JS dựng -->
+  <div id="guidePanel" hidden>
+    <section class="gp-card" role="dialog" aria-labelledby="gpName">
+      <header class="gp-head">
+        <div class="gp-titles">
+          <div class="gp-eyebrow">Kỳ Văn Uyển · Cách chơi</div>
+          <div class="gp-name"><span class="gp-han" lang="zh" id="gpHan"></span><span class="gp-vi" id="gpName"></span><span class="gp-intro gp-intro-row" id="gpIntroRow"></span></div>
+          <div class="gp-intro" id="gpIntro"></div>
+        </div>
+        <button class="gp-close gp-close-top" id="gpCloseTop" type="button"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>Đóng</button>
+      </header>
+      <div class="gp-rule" aria-hidden="true"><span></span><span class="dot"></span><span></span></div>
+      <div class="gp-body">
+        <div class="gp-scroll" id="gpScroll">
+          <div class="gp-side" id="gpSide"></div>
+          <div class="gp-main" id="gpMain"></div>
+        </div>
+      </div>
+      <footer class="gp-foot">
+        <button class="gp-close" id="gpClose" type="button"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>Đóng</button>
+      </footer>
+    </section>
+  </div>
   <div id="seat" hidden>
     <button id="seatBtn" type="button"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2.3"></circle><path d="M12 8v6"></path><path d="M8 11.5c1.3 1 2.6 1.3 4 1.3s2.7-.3 4-1.3"></path><path d="M7 16.5c3-1.2 7-1.2 10 0"></path><ellipse cx="12" cy="19" rx="8" ry="2.4"></ellipse></svg><span id="seatLabel">Ngồi</span></button>
     <div class="tip" aria-hidden="true"></div>
@@ -67,6 +92,15 @@
       <div><div class="l1" id="mapCardTitle"></div><div class="l2" id="mapCardSub"></div></div>
     </div>
     <button id="mapClose" type="button"><span class="x" aria-hidden="true">×</span>Đóng bản đồ</button>
+  </div>
+
+  <!-- bảng nhiệm vụ hằng ngày 日課榜 (R-NV-3) khi không có màn Flutter; canvas NhiemVu-doc / NhiemVu-ngang; nội dung do JS dựng -->
+  <div id="daily" role="dialog" aria-label="Bảng nhiệm vụ hằng ngày" hidden>
+    <div class="dl-wrap">
+      <div class="dl-eyebrow">Khởi Nguyên Trấn · cổng nam</div>
+      <main class="dl-card" id="dailyCard"></main>
+      <button id="dailyClose" type="button"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg><span>Đóng<span class="more"> bảng</span></span></button>
+    </div>
   </div>
 
   <!-- Mốc 1 còn giữ bảng bài học HTML; mốc 3 thay bằng màn Flutter -->

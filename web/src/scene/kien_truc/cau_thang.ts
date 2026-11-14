@@ -19,6 +19,10 @@ const RISE = 0.18;
 /** lan can tay vịn cao bao nhiêu trên mặt bậc / sàn; dày cầu nối */
 const RAIL_H = 0.9;
 const RAIL = '#5a3a24';
+/** Cột lan can 9,6 cm (không tròn 10): thang đặt sát tường / mép sàn thì mặt cột không trùng mặt đó (L-10: chớp). */
+const POST = 0.096;
+/** Chân cột nhấc 2 mm: đáy cột không trùng đáy bậc / sàn (L-10). */
+const LIFT = 0.002;
 const BRIDGE = 0.3;
 /** cầu nối lấn vào trong mép nền bao nhiêu (phủ khe giữa mép sàn tầng 2 và thang) */
 const BRIDGE_IN = 0.15;
@@ -37,6 +41,11 @@ export interface StairInput {
   yTop: number;
   /** mép sàn tầng 2 đi được phía hồi phải (x) — cầu nối chạy từ đây ra chiếu nghỉ */
   floorX: number;
+  /**
+   * hàng lan can tầng 2 của nhà ở hồi phải (x): cầu nối gỗ + lan can hai bên + hộp chặn kéo vào tới đây (L-6 — sàn tầng 2
+   * hẹp hơn nền đá thì giữa mép sàn và mặt ngoài nền còn dải hở). Thiếu = `xWall` (sàn tầng 2 ra tới mép nền).
+   */
+  deckX?: number;
 }
 
 export interface StairLayout {
@@ -52,6 +61,8 @@ export interface StairLayout {
   run: number;
   xWall: number;
   floorX: number;
+  /** cầu nối + lan can hai bên bắt đầu từ đây (x, phía nhà) */
+  deckX: number;
   /** tấm đi được (tầng trên): vế, chiếu nghỉ, cầu nối */
   pads: LocalPad[];
   /** vật cản (có khoảng cao): gầm thang (người dưới đất), lan can hai bên vế, lan can chiếu nghỉ + cầu nối */
@@ -76,6 +87,7 @@ export function stairLayout(o: StairInput): StairLayout {
     { x: (o.floorX + x0) / 2, z: zl, w: x0 - o.floorX, d: LANDING, y: o.yTop, upper: true },
   ];
   const top = o.yTop - 0.4;
+  const deckX = o.deckX ?? o.xWall;
   const boxes: LocalBox[] = [
     // gầm thang + khe giữa thang và nhà: chặn người dưới đất (người trên thang đã cao hơn sau `FOOT` m)
     { x: (o.xWall + x1) / 2, z: (zBack + zStart - FOOT) / 2, w: x1 - o.xWall, d: zStart - FOOT - zBack, maxY: GROUND_ONLY },
@@ -84,9 +96,9 @@ export function stairLayout(o: StairInput): StairLayout {
     { x: x0 - 0.05, z: (zTop + zStart) / 2, w: 0.1, d: run, minY: GROUND_ONLY + 0.1 },
     // chiếu nghỉ + cầu nối: lan can phía sau, mép trước cầu nối (trên khe)
     { x: (o.floorX + x1) / 2, z: zBack - 0.05, w: x1 - o.floorX, d: 0.1, minY: top },
-    { x: (o.xWall + x0) / 2, z: zTop + 0.05, w: x0 - o.xWall, d: 0.1, minY: top },
+    { x: (deckX + x0) / 2, z: zTop + 0.05, w: x0 - deckX, d: 0.1, minY: top },
   ];
-  return { x0, x1, zStart, zTop, zBack, yTop: o.yTop, run, xWall: o.xWall, floorX: o.floorX, pads, boxes };
+  return { x0, x1, zStart, zTop, zBack, yTop: o.yTop, run, xWall: o.xWall, floorX: o.floorX, deckX, pads, boxes };
 }
 
 /**
@@ -116,7 +128,7 @@ function slopedRail(g: THREE.Group, x: number, zA: number, yA: number, zB: numbe
   const n = Math.max(1, Math.round(Math.abs(zB - zA) / 1.2));
   for (let i = 0; i <= n; i++) {
     const f = i / n;
-    g.add(box(0.1, RAIL_H, 0.1, RAIL, x, yA + (yB - yA) * f + RAIL_H / 2, zA + (zB - zA) * f));
+    g.add(box(POST, RAIL_H, POST, RAIL, x, yA + (yB - yA) * f + RAIL_H / 2 + LIFT, zA + (zB - zA) * f));
   }
 }
 
@@ -129,7 +141,7 @@ function flatRail(g: THREE.Group, xa: number, za: number, xb: number, zb: number
     [xa, za],
     [xb, zb],
   ]) {
-    g.add(box(0.1, RAIL_H, 0.1, RAIL, x, y + RAIL_H / 2, z));
+    g.add(box(POST, RAIL_H, POST, RAIL, x, y + RAIL_H / 2 + LIFT, z));
   }
 }
 
@@ -149,11 +161,11 @@ export function addStairs(g: THREE.Group, l: StairLayout, style: Style): void {
   const zl = (l.zBack + l.zTop) / 2;
   // cầu nối gỗ: từ hơi lấn vào trong mép nền (phủ kín chỗ nối với sàn tầng 2 — L-6) tới chiếu nghỉ; mặt thấp hơn sàn
   // một chút để chỗ chồng lên sàn không nhấp nháy
-  const xa = l.xWall - BRIDGE_IN;
+  const xa = l.deckX - BRIDGE_IN;
   g.add(box(l.x0 - xa + 0.05, BRIDGE, LANDING, style.timber, (xa + l.x0 + 0.05) / 2, l.yTop - BRIDGE / 2 - 0.005, zl));
   slopedRail(g, l.x1 - 0.05, l.zStart, 0, l.zTop, l.yTop);
   slopedRail(g, l.x0 + 0.05, l.zStart, 0, l.zTop, l.yTop);
   flatRail(g, l.x1 - 0.05, l.zTop, l.x1 - 0.05, l.zBack + 0.05, l.yTop);
-  flatRail(g, l.xWall, l.zBack + 0.05, l.x1 - 0.05, l.zBack + 0.05, l.yTop);
-  flatRail(g, l.xWall, l.zTop + 0.05, l.x0 + 0.05, l.zTop + 0.05, l.yTop);
+  flatRail(g, l.deckX, l.zBack + 0.05, l.x1 - 0.05, l.zBack + 0.05, l.yTop);
+  flatRail(g, l.deckX, l.zTop + 0.05, l.x0 + 0.05, l.zTop + 0.05, l.yTop);
 }

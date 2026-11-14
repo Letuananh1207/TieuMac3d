@@ -58,6 +58,9 @@ const smooth = (a: number, b: number, v: number): number => {
  * Biến các mesh trong `model` (đã chuẩn hoá cỡ, nằm trong `model`) thành SkinnedMesh dùng chung một bộ xương.
  * Trả về mesh mới (đặt thay chỗ) và xương để `glbCharacter` điều khiển.
  */
+/** Nới khung bao model có xương (lần) để cắt bỏ ngoài khung nhìn mà không mất tay / chân khi chuyển động. */
+const SKIN_BOUND_PAD = 1.5;
+
 export function autoRig(
   model: THREE.Object3D,
   height: number,
@@ -131,9 +134,13 @@ export function autoRig(
     geo.setAttribute('skinIndex', new THREE.Uint16BufferAttribute(skinIndex, 4));
     geo.setAttribute('skinWeight', new THREE.Float32BufferAttribute(skinWeight, 4));
     const skinned = new THREE.SkinnedMesh(geo, m.material);
-    skinned.frustumCulled = false; // khung bao tĩnh không theo xương → tránh biến mất khi tay / chân vung
     group.add(skinned);
     skinned.bind(skeleton);
+    // Khung bao để cắt bỏ khi ngoài khung nhìn: khung dáng đứng nới rộng SKIN_BOUND_PAD lần — đủ chứa tay / chân vung,
+    // ngồi, chào. Trước đây tắt hẳn cắt bỏ → 3 model × 16k tam giác luôn được vẽ dù ở sau lưng camera (bench 2026-11-14).
+    geo.computeBoundingSphere();
+    skinned.boundingSphere = geo.boundingSphere!.clone();
+    skinned.boundingSphere.radius *= SKIN_BOUND_PAD;
   }
   return { group, rig: { root, hips, head, armL, armR, legL, legR } };
 }

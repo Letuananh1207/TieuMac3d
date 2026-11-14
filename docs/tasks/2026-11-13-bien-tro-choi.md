@@ -1,7 +1,7 @@
 # Biển tên trò chơi + xem cách chơi
 
 - Yêu cầu: "ở mỗi trò chơi thì cần có biển tên trò chơi và lại gần để xem hướng dẫn"
-- Loại: thêm · Cỡ: vừa · Trạng thái: chờ thiết kế
+- Loại: thêm · Cỡ: vừa · Trạng thái: xong
 
 Người dùng đã chọn (2026-11-13): hướng dẫn = **nút nổi "Cách chơi"** (kiểu nút "Xem bảng" đã thiết kế 2026-11-13.25) +
 **NPC của bàn giảng luật trong khung thoại có sẵn**, nhiều trang — không chờ thiết kế mới.
@@ -44,9 +44,8 @@ Người dùng đã chọn (2026-11-13): hướng dẫn = **nút nổi "Cách ch
 - [x] 4. Cảnh: `gameSign()` + dựng trong `gameTable.ts`. (xong khi chụp thấy biển, draw call không tăng quá 1)
 - [x] 5. HUD + ghép: `guideButton.ts`, `#guide`, `main.ts`. (xong khi đứng gần biển → nút → NPC giảng trọn)
 - [x] 6. `npm run build`, Bản đồ tính năng.
-- [ ] 7. Người dùng (2026-11-13): "nên có 1 bảng giải thích cách chơi" thay khung thoại — R-GIAO-2 đã sửa (sửa · chờ
-  thiết kế). Có thiết kế → dựng bảng, nút "Cách chơi" mở bảng, bỏ lời giảng tạm. **chờ thiết kế (phiếu
-  `docs/phieu_thiet_ke/2026-11-13-bang-cach-choi.md`)**
+- [x] 7. Người dùng (2026-11-13): "nên có 1 bảng giải thích cách chơi" thay khung thoại — R-GIAO-2 đã sửa (sửa · chờ
+  thiết kế). Có thiết kế → dựng bảng, nút "Cách chơi" mở bảng, bỏ lời giảng tạm. **đã áp 2026-11-13.35** — `ui/guidePanel.ts`, nội dung `zones/gameGuides.ts`
 
 ## Kiểm tra cuối
 dart tool/check.dart --changed · cd web && npm test && npx tsc --noEmit && npm run build · dart tool/rule_trace.dart

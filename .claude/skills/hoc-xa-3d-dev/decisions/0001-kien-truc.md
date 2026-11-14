@@ -25,10 +25,11 @@ mọi thứ không phải cảnh 3D ở Flutter.
 | `collision/` | — | toán thuần, không three, không DOM |
 | `zones/` | `collision` | dữ liệu + theo dõi vùng, không three, không DOM |
 | `games/` | `zones` | luật trò chơi khu giao lưu (Ngũ Tử Kỳ, Đấu chữ) + NPC chơi; thuần, không three, không DOM — test bằng vitest |
+| `chat/` | — | trò chuyện kênh chung: kiểu tin, kiểm tin, hợp đồng `ChatChannel` (kênh trong máy, sau thay kênh mạng), hẹn giờ bong bóng, NPC nói; thuần, không three, không DOM — vitest |
 | `scene/` | `collision`, `three` | dựng cảnh; đăng ký vật cản vào `Colliders` |
 | `player/` | `collision`, `scene`, `three` | `Character` (hình) tách khỏi `PlayerController` (di chuyển) |
 | `input/` | `player`, `three` | chỉ dùng kiểu `MoveInput` của player |
-| `ui/` | `zones`, `three` | HUD HTML; không biết tới scene/player |
+| `ui/` | `zones`, `chat`, `three` | HUD HTML; không biết tới scene/player |
 | `bridge/` | `zones` | cầu nối Flutter ↔ JS theo `docs/bridge.md` (kiểu `Lesson`); không DOM, không three |
 | `main.ts` (gốc) | mọi thứ | nơi duy nhất ghép các lớp, giữ vòng lặp |
 

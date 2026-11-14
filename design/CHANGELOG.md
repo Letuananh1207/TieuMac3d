@@ -3,6 +3,103 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-14.8 — Đổi tên: app "Tiểu Mặc 3D", trung tâm "Khởi Nguyên Trấn"
+
+- Loại: chuỗi · dữ liệu (cảnh, bản đồ) · luồng/luật (chỉ chữ). Phiên VS Code (`/lead`, kế hoạch
+  `docs/tasks/2026-11-14-doi-ten-khoi-nguyen-tran.md`); người dùng: "không muốn tên là văn uyên tông nữa mà cả ứng dụng
+  tên Tiểu Mặc 3D còn phần trung tâm hãy tìm 1 cái tên khác phù hợp với vai trò của nó" → chọn **Khởi Nguyên Trấn**
+  起源鎮 (nơi chung, ai cũng bắt đầu ở đây, trung tâm nối đi mọi vùng); đổi luôn tên khu kiểu môn phái. Chỉ tên hiển thị
+  (mã `van-uyen`, `tong-mon`, gói `hoc_xa_3d` giữ).
+- Tên app trên máy: "Học Xá 3D" → **"Tiểu Mặc 3D"** (Android, iOS, web, tiêu đề trang).
+- `scene.json`: `site.name` Văn Uyên Tông → Khởi Nguyên Trấn, biển cổng 文淵宗 → 起源鎮; khu Sơn Môn 山門 → **Cổng Trấn**
+  鎮門, Ngoại Môn 外門 → **Quảng Trường** 廣場, Nội Môn 內門 → **Thượng Trấn** 上鎮.
+- Bản đồ: nơi `van-uyen` → "Khởi Nguyên Trấn" (Hán 起源), vẽ lại giấy. Phù hiệu vòng trận 文淵 → 起源.
+- Chuỗi (`l10n/vi.arb`): `siteName`, `siteHan`, `areaNgoaiMon`, `areaSonMon`, `placeVanUyen`, `dailyEyebrow`, màn tải
+  "Đang mở sơn môn…" → "Đang mở đường…". Lời thoại Tiểu Mặc / Mặc Ông viết lại theo vai trấn chung.
+- Luật: 14 quy tắc chỉ đổi chữ (tông môn → trấn, tên khu) — sổ + tài liệu online, đã `--mark-synced`.
+- File: `scene/scene.json`, `scene/ban-do/{ban-do.json,ve-ban-do.html,ban-do-goc.png}`, `screens/BanDo-trang-thai.png`,
+  `l10n/vi.arb`. Tài liệu cũ (`scene/tong_mon.md`, `hanh_trinh.md`, mục CHANGELOG cũ) giữ tên cũ như lịch sử.
+
+## 2026-11-14.7 — Bản đồ truyền tống: chỉ chữ Việt, bỏ đường toả về trung tâm
+
+- Loại: giao diện (tấm giấy bản đồ). Phiên VS Code làm thay thiết kế; người dùng: "trên bản đồ bỏ tiếng trung và các
+  đường nối đến trung tâm".
+- Bỏ mọi chữ Hán trên giấy: tên vùng, tên nơi, dấu triện 文淵行旅, chữ 北 trên la bàn (→ "B"), triện 家 trên biểu tượng
+  Văn Uyên Tông. Tên nơi chỉ còn tiếng Việt 46/700 `slate` viền giấy, cách tâm biểu tượng 76. Tên vùng: tiếng Việt in hoa
+  46/700 giãn 12 px, mờ .42; vùng chưa khám phá giữ một dòng "MẠC BẮC · chưa khám phá".
+- Bỏ quan đạo từ Văn Uyên Tông tới các nơi và đường cụt Văn Uyên → Lĩnh Nam. Giữ: đường biển Giang Nam → Bồng Lai, đường
+  cụt từ các nơi vào vùng chưa khám phá (Tơ lụa → tây, Rừng trúc → Điền Nam, Trường Thành → Mạc Bắc qua cổng).
+- Vị trí tên vùng dời theo chữ Việt dài hơn: Tây Vực (190; 538) · Kinh Kỳ (1560; 140) · Trung Nguyên (990; 925) · Ngô Việt
+  (1420; 1050) · Đông Hải (1850; 1010).
+- Toạ độ nơi, vùng chạm, ghim, huy hiệu: không đổi so với .6. `ban-do.json` giữ `han` (thẻ HUD "sắp mở" vẫn dùng). Cần
+  code: không — `npm run build`.
+- File: `scene/ban-do/ve-ban-do.html`, `ban-do-goc.png`, `ban-do.json` · `screens/BanDo-trang-thai.png` · `docs/screen_specs.md`.
+
+## 2026-11-14.6 — Bản đồ truyền tống: thế giới chia vùng, mỗi cảnh là một điểm trong vùng
+
+- Loại: giao diện (tấm giấy bản đồ) · dữ liệu (toạ độ + danh sách vùng). Phiên VS Code làm thay thiết kế; người dùng:
+  "các vùng đất vẫn đang lớn… phải phân thành các vùng và các map hiện tại chỉ là 1 phần của vùng đó… trên nền 1 bản đồ
+  có ý nghĩa chứ không phải chỉ cách thể hiện 7 vùng".
+- **Nền = các miền** (theo địa lý Trung Hoa cổ, phân vùng nhiễu, ranh nét mực nâu đứt): 西域 Tây Vực (tơ lụa) · 燕雲 Yên
+  Vân (Trường Thành) · 京畿 Kinh Kỳ (Tử Cấm Thành) · 中原 Trung Nguyên (Văn Uyên Tông, nhà) · 巴蜀 Ba Thục (Rừng trúc —
+  "biển trúc" Thục Nam) · 吳越 Ngô Việt (Giang Nam) · 東海 Đông Hải (Bồng Lai). **Chưa khám phá** (giấy gạch chéo, chỗ cho
+  nơi mới): 漠北 Mạc Bắc (bắc Trường Thành) · 嶺南 Lĩnh Nam · 滇南 Điền Nam.
+- Tên vùng: Hán 96 mờ (.30) giãn 18 px + tên Việt in hoa 32 giãn 6 px (.62); vùng chưa khám phá một dòng "漠北 MẠC BẮC ·
+  chưa khám phá" (Hán 40, Việt 26).
+- **Nơi = điểm nhỏ**: biểu tượng × 0,6 trên đế elip giấy 184 × 52; tên Hán 56 / Việt 40 cách tâm 72; vùng chạm r 105.
+  Toạ độ: Tơ lụa (380; 300) · Trường Thành (960; 225) · Tử Cấm Thành (1450; 290) · Rừng trúc (480; 770) · Văn Uyên
+  (1000; 680) · Giang Nam (1450; 760) · Bồng Lai (1880; 610).
+- Giữ từ .5: quan đạo toả từ nhà (dừng trước biểu tượng), đường biển + thuyền sang Bồng Lai, đường cụt nét đứt vào vùng
+  chưa khám phá (Mạc Bắc qua cổng tường, Lĩnh Nam, Điền Nam, tây), Trường Thành = ranh Mạc Bắc. Sông Hoàng Hà / Trường
+  Giang vắt ngang các miền.
+- Lớp trạng thái theo cỡ mới: ghim dx −72 dy −40 r 52; huy hiệu dx 62 dy −62 r 28.
+- `ban-do.json` thêm `vung` (id, Hán, tên, `noi` thuộc vùng, `chuaKhamPha`) — để tra khi thêm nơi; code chưa đọc.
+  Cần code: không — `npm run build` (bộ cắt font lấy thêm chữ Hán tên vùng).
+- Ở màn dọc tên nơi ≈ 7 px (Việt 40 trên giấy rộng 352) — nhỏ; hướng sau: bản đồ kéo / phóng được (cần code).
+- File: `scene/ban-do/ve-ban-do.html`, `ban-do-goc.png`, `ban-do.json` · `screens/BanDo-trang-thai.png` · `docs/screen_specs.md`.
+
+## 2026-11-14.5 — Bản đồ truyền tống: nối các khu thành một thế giới
+
+- Loại: giao diện (tấm giấy bản đồ) · dữ liệu (toạ độ). Phiên VS Code làm thay thiết kế; người dùng: "cách trình bày của
+  các vùng đất đang tách rời chứ chưa có logic nào".
+- **Quan đạo toả từ nhà**: Văn Uyên Tông ở giữa, mỗi khu một đường đất (viền nâu 20 px, lòng #F3E9D2 9 px) về nhà — hình
+  sao, không thứ tự (khác đường "rắn" cũ). Đường chỉ chạy giữa mép hai khu, không xuyên biểu tượng / chữ; đường lên
+  Trường Thành vào sườn đông của khu để tránh nhãn.
+- **Đường biển**: Giang Nam → bến bờ đông → nét đứt trắng + thuyền sang đảo Bồng Lai; một tuyến mờ ra khơi phía đông.
+- **Đường cụt vào sương** (chỗ cho nơi mới): Tơ lụa → tây, Rừng trúc → tây nam, Văn Uyên → nam, Trường Thành → bắc (qua
+  cổng trên tường), Giang Nam → nam; nửa sau nét đứt mờ dần, cuối đường có sương.
+- **Trường Thành** chạy dọc dãy núi phía bắc (y ≈ 78), tháp canh cách 200 px, chừa cổng ở x 1000.
+- Giãn khu: elip khu rx 190 · ry 180 (tâm dưới biểu tượng 60); bờ biển dời đông 90 px. Toạ độ: Tơ lụa (470; 320) ·
+  Trường Thành (1000; 230) · Tử Cấm Thành (1500; 320) · Rừng trúc (500; 790) · Văn Uyên (1000; 700) · Giang Nam
+  (1480; 800) · Bồng Lai (1880; 640). Cần code: không — `npm run build`.
+- File: `scene/ban-do/ve-ban-do.html`, `ban-do-goc.png`, `ban-do.json` · `screens/BanDo-trang-thai.png` · `docs/screen_specs.md`.
+
+## 2026-11-14.4 — Bản đồ truyền tống: khu nhỏ lại, chừa đất chưa khám phá
+
+- Loại: giao diện (tấm giấy bản đồ) · dữ liệu (toạ độ). Phiên VS Code làm thay thiết kế; người dùng: "các vùng đất trên
+  bản đồ hiện quá lớn tôi muốn nhỏ hơn vì sau này còn có những chỗ khác".
+- Mỗi khu chỉ chiếm một mảng elip quanh biểu tượng (rx 205 · ry 185, tâm dưới biểu tượng 45 px, mép uốn nhiễu); phần đất
+  còn lại là **đất chưa khám phá**: giấy #ECE5D3, vân gạch chéo mờ, núi xám nhạt, sương — chỗ cho nơi mới (rìa tây, rìa
+  nam, khe giữa các khu, biển đông). Đảo Bồng Lai nhỏ lại (150 × 130).
+- Biểu tượng × 0,8; nhãn Hán 92 → 74, Việt 62 → 50, cách tâm biểu tượng 150 → 120. Vùng chạm r 150 → **130**.
+- Toạ độ (cũ → mới): Tơ lụa (330; 300) → (560; 330) · Trường Thành (950; 230) → (1000; 250) · Tử Cấm Thành (1450; 280) →
+  (1400; 330) · Rừng trúc (300; 780) → (600; 760) · Văn Uyên (820; 720) → (1000; 680) · Giang Nam (1300; 770) → (1390; 760) ·
+  Bồng Lai (1850; 700) → (1830; 640).
+- Lớp trạng thái theo cỡ mới: ghim (dx −95, dy −50, r 66); huy hiệu đồng hồ (dx 82, dy −82, r 34). Cần code: không (code
+  đọc số từ `ban-do.json`) — `npm run build`.
+- Ở màn dọc chữ nhỏ hơn ≈ 20 % (Việt ≈ 9 px trên giấy rộng 352). Nếu khó đọc → hướng sau: bản đồ kéo / phóng được (cần code).
+- File: `scene/ban-do/ve-ban-do.html`, `ban-do-goc.png`, `ban-do.json` · `screens/BanDo-trang-thai.png` · `docs/screen_specs.md`.
+
+## 2026-11-14.3 — Nhãn tên trên đầu nhân vật: chữ trơn viền mực
+
+- Loại: giao diện (thành phần HUD). Phiên VS Code làm thay thiết kế; người dùng: "thay đổi phong cách hiện tên sao cho
+  chuyên nghiệp" → chọn **chữ trơn viền tối** (trong 3 hướng: chữ trơn · chữ trơn + danh hiệu · thẻ tên cổ trang).
+- Cũ → mới: pill cao 24, nền `frost` .88, chấm vàng 4 px, chữ 12/700 `slate` → không nền / khung / chấm; chữ 13/700 ngà
+  #F4F1EA, giãn .02em, viền mực .6 px, bóng 0 1 2 px `slate` .85 + quầng 6 px .45.
+- Kèm sửa lỗi L-11: nhãn ẩn khi bản đồ truyền tống / màn tải / bài học phủ cảnh.
+- Đã áp: `web/src/style.css` `.label`, `web/index.html` (bỏ chấm). Luật: không đổi.
+- File: `docs/components.md`, `docs/screen_specs.md`.
+
 ## 2026-11-14.2 — Bản đồ truyền tống: lục địa chia khu + ghim đầu nhân vật chính (bỏ vòng tròn, bỏ triện 此)
 
 - Loại: giao diện (tấm giấy bản đồ) · dữ liệu (toạ độ `ban-do.json`). Phiên VS Code (`/canh`), người dùng: "đổi phong

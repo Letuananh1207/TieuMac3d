@@ -1,11 +1,15 @@
 import * as THREE from 'three';
 import { el } from './dom';
+import { frameStats, FrameWindow } from './frameStats';
 
-/** Đếm fps, cập nhật mỗi 0.5 giây; chỉ hiện ở chế độ gỡ lỗi (`?debug` trên địa chỉ trang). */
+/** Bảng gỡ lỗi: fps, ms / khung, 1 % chậm nhất, khựng, draw call, tam giác; cập nhật mỗi 0,5 s; chỉ hiện ở chế độ gỡ lỗi (`?debug`). */
 export class FpsCounter {
   private readonly out = el('fps');
-  private frames = 0;
+  /** ~2 giây khung gần nhất (ms) — đủ để "1 % chậm nhất" có nghĩa */
+  private readonly window = new FrameWindow(2000);
   private t = 0;
+  /** dòng thứ hai: GPU, độ phân giải vẽ — `setInfo` */
+  private info = '';
 
   constructor(private enabled: boolean) {
     this.out.hidden = !enabled;
@@ -15,21 +19,31 @@ export class FpsCounter {
   setEnabled(on: boolean): void {
     this.enabled = on;
     this.out.hidden = !on;
-    this.frames = 0;
+    this.window.clear();
     this.t = 0;
   }
 
-  /** @param calls, triangles số draw call / tam giác của khung vừa vẽ (renderer.info) */
-  tick(dt: number, calls = 0, triangles = 0): void {
+  /** Dòng thông tin máy dưới số đo (vd. "Adreno 610 · 1,5× · 1080×2160"). */
+  setInfo(text: string): void {
+    this.info = text;
+  }
+
+  /**
+   * @param rawDt thời gian thật của khung (giây, **không kẹp** — kẹp thì giấu mất khựng)
+   * @param calls, triangles số draw call / tam giác của khung vừa vẽ (renderer.info)
+   */
+  tick(rawDt: number, calls = 0, triangles = 0): void {
     if (!this.enabled) return;
-    this.frames++;
-    this.t += dt;
-    if (this.t > 0.5) {
-      const tri = triangles >= 1000 ? `${Math.round(triangles / 1000)}k` : `${triangles}`;
-      this.out.textContent = `${Math.round(this.frames / this.t)} fps · ${calls} dc · ${tri} ▲`;
-      this.frames = 0;
-      this.t = 0;
-    }
+    this.window.push(rawDt * 1000);
+    this.t += rawDt;
+    if (this.t < 0.5) return;
+    this.t = 0;
+    const s = frameStats(this.window.values);
+    const tri = triangles >= 1000 ? `${Math.round(triangles / 1000)}k` : `${triangles}`;
+    // fps · ms trung bình (1 % chậm nhất) · số lần khựng trong ~2 s · draw call · tam giác
+    const line = `${Math.round(s.fps)} fps · ${s.avgMs.toFixed(1)} ms (1%: ${Math.round(s.p99Ms)}) · khựng ${s.hitches} · ${calls} dc · ${tri} ▲`;
+    this.out.textContent = this.info ? `${line}
+${this.info}` : line;
   }
 }
 

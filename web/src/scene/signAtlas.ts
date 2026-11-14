@@ -5,7 +5,7 @@
  */
 import * as THREE from 'three';
 import type { SceneSpec } from './spec';
-import { makeCanvasTex } from './textures';
+import { makeCanvasTex, SUNDIAL_HOURS } from './textures';
 
 type Draw = (g: CanvasRenderingContext2D, w: number, h: number) => void;
 
@@ -79,11 +79,13 @@ export function signMesh(w: number, h: number, pw: number, ph: number, draw: Dra
 }
 
 /** Mọi chữ sẽ vẽ lên biển / cờ / bảng của cảnh: nạp font "Han Serif" cho các chữ Hán trong đó trước khi dựng. */
-export function signText(spec: Pick<SceneSpec, 'buildings' | 'gates' | 'props' | 'gameTables'>): string {
+export function signText(spec: Pick<SceneSpec, 'buildings' | 'gates' | 'props' | 'gameTables' | 'walls' | 'wallSegments'>): string {
+  const gateSigns = [...spec.walls.gates, ...spec.wallSegments.map((s) => s.gate)].flatMap((g) => Object.values(g?.signs ?? {}));
   return [
+    ...gateSigns,
     ...spec.buildings.flatMap((b) => [b.title, b.sign ?? '']),
     ...spec.gates.flatMap((g) => [g.title, g.hanTitle ?? '']),
-    ...spec.props.map((p) => p.text ?? ''),
+    ...spec.props.map((p) => p.text ?? (p.kind === 'nhat-quy' ? SUNDIAL_HOURS : '')),
     ...spec.gameTables.map((t) => t.sign?.han ?? ''),
   ].join('');
 }

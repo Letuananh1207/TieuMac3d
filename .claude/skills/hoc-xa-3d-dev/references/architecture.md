@@ -16,9 +16,9 @@ Dòng chảy build: `web/src` → `npm run build` → `web/dist` → tự chép 
 
 ```
 main.ts ──► mọi lớp
-ui ──► zones            input ──► player
+ui ──► zones, chat      input ──► player
 player ──► scene, collision      scene ──► collision
-zones ──► collision     collision ──► (không gì)
+zones ──► collision     collision, chat ──► (không gì)
 three: chỉ scene, player, input, ui
 ```
 

@@ -109,8 +109,8 @@ describe('Trà lâu lên được tầng 2 (Phẩm Minh Các)', () => {
   type S = NonNullable<ReturnType<typeof addWalkIn>['seats']>[number];
   /** điểm cách chỗ ngồi 1,5 m theo hướng nhìn nằm ngoài sàn tầng 2 = người ngồi quay ra ngoài */
   const facesOut = (s: S): boolean => {
-    const x = s.x + Math.sin(s.rotY) * 1.5;
-    const z = s.z + Math.cos(s.rotY) * 1.5;
+    const x = s.x + Math.sin(s.rotY) * 2;
+    const z = s.z + Math.cos(s.rotY) * 2;
     return Math.abs(x) > iw / 2 || Math.abs(z) > id / 2;
   };
   /** chỗ đứng trống (nhân vật bán kính 0,5 không bị đẩy) trên sàn tầng 2 */
@@ -127,7 +127,7 @@ describe('Trà lâu lên được tầng 2 (Phẩm Minh Các)', () => {
     expect(seats).toHaveLength(18);
     const onBed = seats.filter((s) => s.y > yf + 0.1);
     expect(onBed).toHaveLength(4);
-    for (const s of onBed) expect(s.y).toBeCloseTo(yf + 0.35, 5);
+    for (const s of onBed) expect(s.y).toBeCloseTo(yf + 0.45, 5);
     for (const s of seats.filter((s) => s.y <= yf + 0.1)) expect(s.y).toBeCloseTo(yf, 5);
     // sập: hai chỗ mỗi sập quay mặt vào nhau (dọc trục x)
     for (const s of onBed) expect(Math.abs(Math.abs(s.rotY) - Math.PI / 2)).toBeLessThan(1e-9);
@@ -178,7 +178,7 @@ describe('Trà lâu lên được tầng 2 (Phẩm Minh Các)', () => {
     player.position.set(s.x, s.y, s.z);
     player.toggleSit();
     for (let i = 0; i < 30; i++) player.update(1 / 60, { x: 0, y: 0 }, 0, false);
-    expect(player.position.y).toBeCloseTo(yf + 0.35, 5);
+    expect(player.position.y).toBeCloseTo(yf + 0.45, 5);
     expect(player.isSitting).toBe(true);
     for (let i = 0; i < 30; i++) player.update(1 / 60, { x: 0, y: -1 }, 0, false);
     expect(player.isSitting).toBe(false);
@@ -192,16 +192,16 @@ describe('Trà lâu lên được tầng 2 (Phẩm Minh Các)', () => {
     expect(nearestSeat(seats, seats[0].x + 0.8, seats[0].z, 1.2, plat)).toBeUndefined();
   });
 
-  it('R-NHAC-2: tầng 1 có 3 bàn trà × 4 đôn ngồi được, mặt đôn cao 0,45, quay vào bàn', () => {
+  it('R-NHAC-2: tầng 1 có 3 bàn trà × 4 đôn ngồi được, mặt đôn cao 0,58, quay vào bàn', () => {
     const { room } = setup();
     const low = (room.seats ?? []).filter((s) => s.y < yf - 1);
     expect(low).toHaveLength(12);
-    for (const s of low) expect(s.y).toBeCloseTo(plat + 0.45, 5);
+    for (const s of low) expect(s.y).toBeCloseTo(plat + 0.58, 5);
     // đứng trước bàn giữa (0; 0,6), cách đôn nam ~1 m → đôn nam, nhìn về bắc (vào bàn)
     const s = nearestSeat(low, 0, 2.5, 1.2, plat)!;
     expect(s).toBeDefined();
     expect(s.x).toBeCloseTo(0, 5);
-    expect(s.z).toBeCloseTo(1.55, 5);
+    expect(s.z).toBeCloseTo(0.6 + 0.95 * 1.3, 5);
     expect(Math.abs(Math.abs(s.rotY) - Math.PI)).toBeLessThan(1e-9);
     // ở tầng 2 ngay trên → không tính
     expect(nearestSeat(low, 0, 2.5, 1.2, yf)).toBeUndefined();
@@ -213,7 +213,7 @@ describe('Trà lâu lên được tầng 2 (Phẩm Minh Các)', () => {
     player.position.set(s.x, s.y, s.z);
     player.toggleSit();
     for (let i = 0; i < 30; i++) player.update(1 / 60, { x: 0, y: 0 }, 0, false);
-    expect(player.position.y).toBeCloseTo(plat + 0.45, 5);
+    expect(player.position.y).toBeCloseTo(plat + 0.58, 5);
     for (let i = 0; i < 30; i++) player.update(1 / 60, { x: 0, y: -1 }, 0, false);
     expect(player.isSitting).toBe(false);
     expect(player.position.y).toBeCloseTo(plat, 5);

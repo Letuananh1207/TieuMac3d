@@ -48,7 +48,7 @@ function start(p: PlayerController, x: number, z: number): void {
   p.snapToGround();
 }
 
-/** Từ mặt đất trước chân thang: đi thẳng lên chiếu nghỉ, qua cầu nối vào sàn tầng 2, ra giữa sàn (giữa hai hàng án). */
+/** Từ mặt đất trước chân thang: đi thẳng lên chiếu nghỉ, qua cầu nối vào sàn tầng 2, ra giữa sàn (dải đông, ngoài lưới bồ đoàn). */
 function climb(p: PlayerController): void {
   start(p, xc, L.zStart + 1.5);
   walkTo(p, xc, zl);
@@ -68,6 +68,22 @@ describe('Tàng Thư Các lên được tầng 2', () => {
     expect(player.position.y).toBeCloseTo(yf, 2);
     walkTo(player, -5, 0);
     expect(player.position.x).toBeCloseTo(-5, 0);
+    expect(player.position.y).toBeCloseTo(yf, 2);
+  });
+
+  it('R-VA-3 (L-6): cầu nối + lan can kéo vào tới hàng lan can tầng 2 — không còn dải hở giữa sàn tầng 2 và nền đá', () => {
+    const railX = (b.w - 0.6) / 2 - 0.3; // hàng cột / lan can hồi phải tầng 2 (`lauSach`: cx)
+    expect(L.deckX).toBeCloseTo(railX, 6);
+    expect(L.deckX).toBeLessThan(b.w / 2); // sàn tầng 2 tới w / 2 → cầu nối bắt đầu trên sàn, không hở
+  });
+
+  it('R-VA-3 (L-6): đứng trên cầu nối ở dải giữa sàn tầng 2 và nền đá, đi ra trước → lan can chặn, vẫn ở tầng 2', () => {
+    const { player } = setup();
+    climb(player);
+    walkTo(player, b.w / 2 + 0.4, zl);
+    expect(player.position.y).toBeCloseTo(yf, 2);
+    walkTo(player, b.w / 2 + 0.4, L.zTop + 2);
+    expect(player.position.z).toBeLessThan(L.zTop + 0.2);
     expect(player.position.y).toBeCloseTo(yf, 2);
   });
 
@@ -137,12 +153,17 @@ describe('Tàng Thư Các lên được tầng 2', () => {
     room.update(1, true, yf);
     expect(opacity()).toBe(1);
   });
-  it('R-VA-4: tầng 2 có 8 bồ đoàn trước án thư, cùng độ cao sàn tầng 2, nhìn về nam', () => {
+  it('R-VA-4: tầng 2 có 24 bồ đoàn (4 hàng × 6), cùng độ cao sàn tầng 2, nhìn về nam', () => {
     const { room } = setup();
-    expect(room.seats).toHaveLength(8);
-    for (const s of room.seats ?? []) {
+    const seats = room.seats ?? [];
+    expect(seats).toHaveLength(24);
+    expect(new Set(seats.map((s) => s.z)).size).toBe(4);
+    expect(new Set(seats.map((s) => s.x)).size).toBe(6);
+    for (const s of seats) {
       expect(s.y).toBeCloseTo(yf, 5);
       expect(s.rotY).toBe(0);
+      expect(Math.abs(s.z)).toBeLessThan(id / 2 - 0.5); // trong lan can
+      expect(s.x).toBeLessThan(L.floorX - 4); // dải đông (lối từ cầu nối thang) để trống
     }
   });
 
@@ -152,22 +173,20 @@ describe('Tàng Thư Các lên được tầng 2', () => {
     const s = seats[0];
     expect(nearestSeat(seats, s.x + 0.8, s.z, 1.2, yf)).toBe(s);
     expect(nearestSeat(seats, s.x + 0.8, s.z, 1.2, plat)).toBeUndefined(); // tầng 1 ngay dưới → ngồi thiền tại chỗ
-    expect(nearestSeat(seats, s.x - 2, s.z, 1.2, yf)).toBeUndefined(); // án đầu hàng: phía tây không còn bồ đoàn
+    expect(nearestSeat(seats, s.x - 2, s.z, 1.2, yf)).toBeUndefined(); // đầu hàng: phía tây không còn bồ đoàn
   });
 
-  it('R-VA-4: án thư chặn người ở tầng 2, không chặn người ở tầng 1 ngay dưới', () => {
+  it('R-VA-4: không có án — đi thẳng qua hàng bồ đoàn ở tầng 2 không bị chặn', () => {
     const { player, room } = setup();
-    const s = (room.seats ?? [])[0];
-    const deskZ = s.z + 0.7;
+    const seats = room.seats ?? [];
+    const x = seats[0].x;
+    const zs = seats.map((s) => s.z);
+    const zMin = Math.min(...zs);
+    const zMax = Math.max(...zs);
     climb(player);
-    walkTo(player, s.x, deskZ + 1.2);
-    walkTo(player, s.x, deskZ - 1.5); // đi thẳng xuyên qua án
-    expect(player.position.z).toBeGreaterThan(deskZ);
+    walkTo(player, x, zMax + 0.5);
+    walkTo(player, x, zMin - 0.5); // đi xuyên cả cột bồ đoàn (xa hơn thì chạm tường sau)
+    expect(player.position.z).toBeLessThan(zMin - 0.2); // qua hết các hàng (chạm để đi dừng cách đích < 0,25)
     expect(player.position.y).toBeCloseTo(yf, 2);
-    start(player, 0, id / 2 - 1);
-    walkTo(player, s.x, deskZ + 1.2);
-    walkTo(player, s.x, deskZ - 1);
-    expect(player.position.z).toBeCloseTo(deskZ - 1, 0);
-    expect(player.position.y).toBeCloseTo(plat, 5);
   });
 });

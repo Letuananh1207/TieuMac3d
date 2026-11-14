@@ -12,7 +12,7 @@ import type { BuildingSpec } from '../spec';
 import { addBeamBand, addLanterns, addSign, hk, type Style } from './chi_tiet';
 import { addStairs, gapForBridge, stairLayout, type StairLayout } from './cau_thang';
 import { columnXs } from './dien';
-import { guqinTable, longTeaTable, soloSeat, STOOL_H, TEA_STOOLS, teaBed, teaTable, type LocalSeat } from './do_pho';
+import { CUSHION_R, FURN, guqinTable, longTeaTable, soloSeat, STOOL_H, TEA_STOOLS, teaBed, teaTable, type LocalSeat } from './do_pho';
 import { box, column } from './hinh';
 import { upperRail } from './lau_sach';
 import { gableHipRoof, skirt } from './mai';
@@ -30,17 +30,17 @@ const PLAT_OVER = 0.3;
 const SLAB_OVER = 0.2;
 const EAVE_OVER = 1.1;
 const EAVE_IN = 0.15;
-/** Bàn trà đôi tầng 2 (ngồi bồ đoàn): cạnh, cao; bồ đoàn cách tâm bàn */
-const LOW_W = 1;
-const LOW_H = 0.4;
-const SEAT_GAP = 0.75;
+/** Bàn trà đôi tầng 2 (ngồi bồ đoàn): cạnh, cao; bồ đoàn cách tâm bàn — × FURN (L-8) */
+const LOW_W = 1 * FURN;
+const LOW_H = 0.4 * FURN;
+const SEAT_GAP = 0.75 * FURN;
 /**
  * Bày tầng 2 (R-VA-4), toạ độ tính từ mép lòng sàn (`iw` × `id`): x từ mép tây, z từ mép sau (sập) / mép trước (ghế
  * mặt trước); bàn dài, bàn trà đôi: x bàn dài từ tâm, bàn đôi từ mép tây. Mép đông để trống: cầu nối thang vào ở góc sau – đông.
  */
 const BEDS_X = [3.2, 7.2];
-const BED_FROM_BACK = 0.9;
-const SOLO_IN = 1.25;
+const BED_FROM_BACK = 1.0; // L-8: sập to hơn → cách tường sau thêm chút
+const SOLO_IN = 1.5; // L-8: bàn nhỏ to + xa bồ đoàn hơn → lùi vào khỏi lan can
 const SOLO_WEST_Z = [-1.4, 1.6];
 const SOLO_FRONT_X = [4.5, 10.3];
 const LONG_AT = { x: 2.6, z: -1.6 };
@@ -74,7 +74,7 @@ function lowTeaTable(g: THREE.Group, x: number, z: number, y: number, wood: stri
   for (const sx of [-1, 1]) for (const sz of [-1, 1]) g.add(box(0.06, LOW_H - 0.06, 0.06, wood, x + sx * (LOW_W / 2 - 0.08), y + (LOW_H - 0.06) / 2, z + sz * (LOW_W / 2 - 0.08)));
   g.add(column(0.11, 0.16, POT, x - 0.15, y + LOW_H, z, 8));
   for (const dz of [-0.2, 0.2]) g.add(column(0.05, 0.06, CUP, x + 0.2, y + LOW_H, z + dz, 6));
-  for (const s of [-1, 1]) g.add(column(0.34, 0.12, CUSHION, x, y, z + s * SEAT_GAP));
+  for (const s of [-1, 1]) g.add(column(CUSHION_R, 0.12, CUSHION, x, y, z + s * SEAT_GAP));
 }
 
 export function traLau(g: THREE.Group, b: BuildingSpec, style: Style, fade: THREE.Group, fadeLow: THREE.Group): Shell {
@@ -114,7 +114,7 @@ export function traLau(g: THREE.Group, b: BuildingSpec, style: Style, fade: THRE
     boxes.push({ ...teaTable(g, tx, TEA_Z, PLAT), maxY: low });
     for (const [dx, dz] of TEA_STOOLS) {
       seats.push({ x: tx + dx, z: TEA_Z + dz, y: PLAT + STOOL_H, rotY: Math.atan2(-dx, -dz) });
-      seatPads.push({ x: tx + dx, z: TEA_Z + dz, w: 0.5, d: 0.5, y: PLAT + STOOL_H, upper: true });
+      seatPads.push({ x: tx + dx, z: TEA_Z + dz, w: 0.5 * FURN, d: 0.5 * FURN, y: PLAT + STOOL_H, upper: true });
     }
   }
   boxes.push({ ...guqinTable(g, -w / 2 + GUQIN_IN.x, -d / 2 + GUQIN_IN.z, PLAT), maxY: low });

@@ -1,11 +1,11 @@
 {
   "@@locale": "vi",
-  "siteName": "Văn Uyên Tông",
+  "siteName": "Khởi Nguyên Trấn",
   "@siteName": {
-    "description": "Tên nơi trên chip HUD (scene.json site.name), chữ Hán 文淵宗 trên biển cổng sơn môn"
+    "description": "Tên nơi trên chip HUD (scene.json site.name), chữ Hán 起源鎮 trên biển cổng trấn"
   },
-  "areaNgoaiMon": "Ngoại Môn",
-  "areaSonMon": "Sơn Môn",
+  "areaNgoaiMon": "Quảng Trường",
+  "areaSonMon": "Cổng Trấn",
   "areaDienVoTruong": "Diễn Võ Trường",
   "areaDeTuCuXa": "Đệ Tử Cư Xá",
   "areaLinhDuocVien": "Linh Dược Viên",
@@ -13,7 +13,7 @@
   "@areaNgoaiMon": {
     "description": "Tên khu trên chip HUD: \"<tên nơi> · <tên khu>\" (R-HUD-1); nguồn thật là scene.json site.areas"
   },
-  "siteHan": "文淵宗",
+  "siteHan": "起源鎮",
   "@siteHan": {
     "description": "Chữ Hán tên nơi trên màn tải"
   },
@@ -26,7 +26,7 @@
   "@areaHanNgoaiMon": {
     "description": "Chữ Hán trên thẻ tên khu (hiện ~2 s khi bước vào khu). Nguồn: design/scene/tong_mon.md"
   },
-  "loadingStatus": "Đang mở sơn môn… {percent}%",
+  "loadingStatus": "Đang mở đường… {percent}%",
   "@loadingStatus": {
     "description": "Dòng dưới thanh tiến trình màn tải",
     "placeholders": {
@@ -104,7 +104,7 @@
     }
   },
   "mapHere": "Đang ở đây",
-  "placeVanUyen": "Văn Uyên Tông",
+  "placeVanUyen": "Khởi Nguyên Trấn",
   "placeRungTruc": "Rừng trúc",
   "placeGiangNam": "Giang Nam",
   "placeBongLai": "Bồng Lai",
@@ -172,7 +172,7 @@
     "description": "Dòng gợi ý lần đầu (R-DIEU-2: bỏ \"chạm mặt đất để đi tới đó\")"
   },
   "dailyTitle": "Nhiệm vụ hằng ngày",
-  "dailyEyebrow": "Văn Uyên Tông · cổng nam",
+  "dailyEyebrow": "Khởi Nguyên Trấn · cổng nam",
   "dailyClose": "Đóng bảng",
   "dailyLearn": "Lĩnh hội",
   "dailyLearnSub": "Học {goal} bộ thủ mới. Ngồi thiền ở Rừng trúc để lĩnh hội bộ kế tiếp.",

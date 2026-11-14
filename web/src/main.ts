@@ -1,10 +1,14 @@
 import * as THREE from 'three';
 import './style.css';
-import { FlutterBridge, getProgress, type JourneyProgress } from './bridge/flutterBridge';
+import cursorArrow from './cursor/tro.svg?raw';
+import cursorButton from './cursor/tro-nut.svg?raw';
+import { installCursors } from './ui/cursor';
+import { FlutterBridge, getProgress } from './bridge/flutterBridge';
 import { Colliders } from './collision/colliders';
 import { GamePlay, type TableSeat } from './gamePlay';
 import { Joystick } from './input/joystick';
 import { Keyboard } from './input/keyboard';
+import { ChatRoom } from './chatRoom';
 import { OrbitCamera } from './input/orbitCamera';
 import { attachPointerInput } from './input/pointers';
 import { GroundPicker } from './input/tapToMove';
@@ -17,7 +21,8 @@ import { createMapScroll } from './scene/banDo';
 import { arrivalSpot, CHARGE_SECONDS, ringTrigger } from './scene/teleportLayout';
 import { TELEPORT_TEXT } from './scene/truyenTong';
 import { viewDistance } from './scene/farMountains';
-import { createStage } from './scene/renderer';
+import { createStage, gpuName, MAX_PIXEL_RATIO, probeGpu } from './scene/renderer';
+import { FrameCap, pickTier, ResolutionGovernor, TIERS } from './scene/quality';
 import { mergeStatic } from './scene/merge';
 import { inRect, type Room } from './scene/rooms';
 import { signText } from './scene/signAtlas';
@@ -35,15 +40,18 @@ import { BoardButton } from './ui/boardButton';
 import { ReadBookButton } from './ui/readBookButton';
 import { borrowedBook } from './zones/library';
 import { GuideButton } from './ui/guideButton';
-import { gameSigns, guideDialog, signInRange } from './zones/gameGuides';
-import { dailyBoardSpot, nearBoard, tasksLeft } from './zones/dailyBoard';
+import { GuidePanel } from './ui/guidePanel';
+import { GameHud } from './ui/gameHud';
+import { gameGuide, gameSigns, signInRange, type GameSign } from './zones/gameGuides';
+import { DailyPanel } from './ui/dailyPanel';
+import { DAILY_NEW_GOAL, dailyBoardSpot, dailyBoardView, nearBoard, tasksLeft } from './zones/dailyBoard';
 import { seatInRange, type SeatSpot } from './zones/seats';
 import { addSeatGlow } from './scene/seatGlow';
 import { LoadingScreen, nextPaint } from './ui/loadingScreen';
 import { ZoneTracker } from './zones/zoneTracker';
 import { JOURNEY_MAP, placeAt, placeScene, placeStates, type PlaceState } from './zones/journeyMap';
 import { RingCharge } from './zones/ringCharge';
-import { DIALOGS, DialogRunner, dailyLine, type Dialog } from './zones/dialogs';
+import { DIALOGS, DialogRunner, type Dialog } from './zones/dialogs';
 import { LIBRARIAN, LibraryDesk } from './libraryDesk';
 import { reviewItems } from './zones/review';
 import { fallbackStudy, studyMenu } from './zones/studyMenu';
@@ -51,6 +59,9 @@ import { RADICALS, type Radical } from './zones/radicals';
 import { placeZones, ZONE_CONTENT, type Zone } from './zones/zones';
 import { musicVolume, TRACKS } from './zones/music';
 import { AmbientMusic } from './ui/ambientMusic';
+
+// con trỏ hoạt hình nhúng sẵn (L-9) — đặt sớm nhất, trước cả màn tải
+installCursors(cursorArrow, cursorButton);
 
 /** Nhãn tên cao hơn đỉnh búi tóc đệ tử (~2,2 m) một chút. */
 const NAME_TAG_HEIGHT = 2.5;
@@ -64,9 +75,7 @@ async function boot(): Promise<void> {
   const SCENE_FILE = SCENE.file;
   const isHome = SCENE.id === HOME_SCENE;
   const { spec } = SCENE;
-  // vùng đã mở (R-HANH-1): Flutter giữ tiến độ; không có Flutter → ?mo=<mã>,<mã> hoặc chỉ Rừng trúc. Hỏi song song với nạp font.
-  const fallbackOpen = (params.get('mo') ?? 'rung-truc').split(',').filter(Boolean);
-  const openList = (p: JourneyProgress | null): string[] => p?.open ?? fallbackOpen;
+  // tiến độ học: Flutter giữ; không khoá vùng (R-HANH-1). Hỏi song song với nạp font.
   const progressAsk = getProgress();
   // màn tải che tới khung hình đầu (R-MAN-2); tiến độ theo các bước dựng thật
   const loading = new LoadingScreen(spec.site);
@@ -80,12 +89,21 @@ async function boot(): Promise<void> {
     document.fonts.load('700 52px "Han Serif"', hanText || '字'),
   ]);
   let progress = await progressAsk;
-  let open = openList(progress);
   loading.progress(30);
   await nextPaint();
 
   const canvas = el<HTMLCanvasElement>('stage');
-  const { renderer, scene, camera } = createStage(canvas, spec.camera.fov, viewDistance(spec));
+  // mức đồ hoạ theo máy + độ nét động (R-HIEU-1): chọn trước khi tạo WebGL (khử răng cưa chỉ đặt được lúc tạo)
+  const gpu = probeGpu();
+  const tier = pickTier(gpu, (navigator as Navigator & { deviceMemory?: number }).deviceMemory);
+  const tierSpec = TIERS[tier];
+  const maxRatio = Math.min(window.devicePixelRatio || 1, tierSpec.maxRatio, MAX_PIXEL_RATIO);
+  const governor = new ResolutionGovernor(Math.min(tierSpec.minRatio, maxRatio), maxRatio);
+  const frameCap = new FrameCap(); // tối đa 60 fps; không gánh nổi → 30 đều (R-HIEU-2)
+  const { renderer, scene, camera } = createStage(canvas, spec.camera.fov, viewDistance(spec), {
+    antialias: tierSpec.antialias,
+    ratio: maxRatio,
+  });
   const clock = new THREE.Clock();
   const colliders = new Colliders();
   // nhà nào có nội thất: theo nội dung bài (lớp học / thư viện), chữ phấn trên bảng = chữ của bài
@@ -140,18 +158,25 @@ async function boot(): Promise<void> {
     paused = false;
     covered = false;
     learn.suspend(false);
-    // vừa học thêm chữ → có thể mở vùng mới (R-HANH-1)
     void getProgress().then((p) => {
       if (!p) return;
       progress = p;
-      open = openList(p);
       learnedRadicals = new Set(p.radicals);
       desk.sync(p.book); // màn danh mục Flutter có thể vừa ghi mượn (R-SACH-1)
     });
   };
   const lesson = new LessonBoard(closeLesson);
+  const dailyPanel = new DailyPanel(closeLesson);
   // bảng gỡ lỗi: ?debug (trình duyệt) hoặc Flutter gửi `debug` (bản debug của app)
   const fps = new FpsCounter(new URLSearchParams(location.search).has('debug'));
+  // `?debug`: cho công cụ đo (`npm run bench -- --tam-giac`) đọc cảnh — chỉ gỡ lỗi, không dùng trong app
+  if (new URLSearchParams(location.search).has('debug')) Object.assign(window, { __hocXa: { scene, camera } });
+  const TIER_NAME = { cao: 'Cao', vua: 'Vừa', thap: 'Thấp' } as const;
+  const showInfo = (): void =>
+    fps.setInfo(
+      `${gpuName(renderer)} · ${TIER_NAME[tier]} ${renderer.getPixelRatio()}× · ${frameCap.fps} fps · ${renderer.domElement.width}×${renderer.domElement.height}`,
+    );
+  showInfo();
   // dừng hẳn vòng lặp khi app xuống nền (Flutter gửi `lifecycle`) hoặc tab bị ẩn — đỡ tốn pin (mốc 4)
   let appHidden = false;
   let running = true;
@@ -177,7 +202,7 @@ async function boot(): Promise<void> {
       setRunning();
     },
     onDebug: (on) => fps.setEnabled(on),
-    onBack: () => mapBack(),
+    onBack: () => mapBack() || (gamePlay.active && (gamePlay.stand(), true)), // nút quay lại: đóng lớp phủ, rồi rời bàn
   });
   const openLesson = (zone: Zone): void => {
     if (paused) return; // đang mở rồi (chạm hai lần khi chờ Flutter trả lời)
@@ -231,6 +256,7 @@ async function boot(): Promise<void> {
       sitTime = 0;
       sitOpened = false;
       onSeat = false;
+      orbit.sit(false); // đứng dậy: camera về khoảng cách + góc cũ (R-NGOI-1)
       return;
     }
     if (onSeat || sitOpened || busy) return;
@@ -274,7 +300,7 @@ async function boot(): Promise<void> {
       if (next) openRadical(next);
     });
   };
-  /** Bảng nhiệm vụ hằng ngày (R-NV-3): màn Flutter; chưa có màn → Tiểu Mặc đọc bảng qua khung thoại. */
+  /** Bảng nhiệm vụ hằng ngày (R-NV-3): màn Flutter; không có Flutter → bảng HTML `ui/dailyPanel.ts`. */
   const openDaily = (): void => {
     paused = true;
     learn.suspend(true);
@@ -288,9 +314,13 @@ async function boot(): Promise<void> {
         covered = true; // đóng bảng → resume → closeLesson hỏi lại tiến độ
         return;
       }
-      paused = false;
-      learn.suspend(false);
-      say('tieu-mac', dailyLine(progress?.daily ?? null), () => {});
+      // không có Flutter (trình duyệt): bảng HTML theo thiết kế; không có tiến độ → tính theo phiên này
+      const due = progress?.due ?? [];
+      const daily = progress?.daily ?? { learned: learnedRadicals.size, goal: DAILY_NEW_GOAL, due: due.length, streak: 0, best: 0 };
+      const allLearned = learnedRadicals.size >= RADICALS.length;
+      dailyPanel.open(dailyBoardView(daily, allLearned, learnedRadicals.size), due.map((id) => forms[id] ?? ''), () =>
+        openReview(due, null),
+      );
     })();
   };
   /** Bộ sắp học khi tu luyện (vùng có bộ thủ, còn bộ chưa học) — `undefined` = không tu luyện được ở đây. */
@@ -319,6 +349,7 @@ async function boot(): Promise<void> {
     character.facing.rotation.y = spot.rotY;
     orbit.yaw = spot.rotY - Math.PI; // camera sau lưng, nhìn về án
     player.toggleSit();
+    orbit.sit(true); // lùi ra, chúc xuống thấy cả bàn (R-NGOI-1, L-8)
   };
   const seatButton = new SeatButton<SeatPick>((spot) => sitAt(spot));
   // nhạc nền trà lâu (R-NHAC-1): đài phát theo giờ thật, âm lượng theo khoảng cách tới sàn trà lâu
@@ -331,9 +362,19 @@ async function boot(): Promise<void> {
   const orbit = new OrbitCamera(spec.camera);
   const joystick = new Joystick(el('joy'), el('knob'), el('joyGhost'));
   const picker = new GroundPicker(camera, world.ground);
+  // trò chuyện kênh chung (R-CHAT-1..3, thiết kế 2026-11-14.1) — tên NPC lấy từ dữ liệu hội thoại
+  const chat = new ChatRoom((id) => dialogFor(id));
   // Space nhảy, F chào, C ngồi ôn (R-DIEU-6, R-DIEU-7); đang học / màn tải thì bỏ qua
   const keyboard = new Keyboard((a) => {
+    if (a === 'back') {
+      if (!mapBack()) gamePlay.stand(); // Esc: đóng bảng / thoại / bản đồ, không có thì rời bàn (R-GIAO-1)
+      return;
+    }
     if (paused || loading.active || mapOpen || talking) return;
+    if (a === 'chat') {
+      if (!gamePlay.active) chat.open(); // Enter: mở ô nhập (gửi do ô nhập tự lo)
+      return;
+    }
     if (a === 'jump') player.jump();
     else if (a === 'bow') player.bow();
     else if (a === 'seat') {
@@ -345,12 +386,13 @@ async function boot(): Promise<void> {
     joystick,
     orbit,
     onJoystickStart: () => (player.moveTarget = null),
-    tapOnly: () => mapOpen || talking,
+    tapOnly: () => mapOpen || talking || gamePlay.active || chat.typing, // ngồi chơi: chạm là chạm bàn (R-GIAO-1, R-DIEU-1)
     onTap: (x, y) => {
       if (mapOpen) {
         onMapTap(x, y);
         return;
       }
+      if (chat.close()) return; // đang gõ: chạm cảnh = đóng ô nhập
       if (paused || talking) return;
       if (gamePlay.tap(x, y, camera)) return; // đang ngồi chơi: chạm vào bàn, không đi (R-GIAO-1)
       // đang trong nhà: chạm trúng vật học của nhà → mở bài (R-VUNG-2)
@@ -401,10 +443,21 @@ async function boot(): Promise<void> {
   // nút "Xem bảng" trên bảng nhiệm vụ 日課榜, chấm son = số việc còn hôm nay (R-NV-3)
   const boardAt = isHome ? dailyBoardSpot(spec.props) : null;
   const boardButton = boardAt ? new BoardButton({ ...boardAt, y: groundAt(boardAt.x, boardAt.z) }, openDaily) : null;
-  // nút "Cách chơi" trên biển tên trò chơi Kỳ Văn Uyển → NPC của bàn giảng luật (R-GIAO-2)
-  const signs = gameSigns(spec.gameTables);
-  const guideButton = signs.length ? new GuideButton((sign) => startTalk(guideDialog(sign))) : null;
   const dialogOf = new Map(DIALOGS.map((d) => [d.npc, d]));
+  // nút "Cách chơi" trên biển tên trò chơi Kỳ Văn Uyển → bảng cách chơi, nhân vật đứng yên tới khi đóng (R-GIAO-2)
+  const signs = gameSigns(spec.gameTables);
+  const guidePanel = new GuidePanel(() => {
+    paused = false;
+  });
+  const openGuide = (sign: GameSign): void => {
+    const g = gameGuide(sign.kind);
+    if (!g || paused) return;
+    paused = true;
+    player.moveTarget = null;
+    joystick.end();
+    guidePanel.open(g, dialogOf.get(g.tipBy)?.name ?? g.tipBy, learnedRadicals.size === 0);
+  };
+  const guideButton = signs.length ? new GuideButton(openGuide) : null;
   // thủ thư Tàng Thư Các: thoại đổi theo việc đang mượn sách (R-SACH-1, R-SACH-4)
   const desk = new LibraryDesk(bridge, progress?.book ?? null, {
     talk: startTalk,
@@ -425,9 +478,9 @@ async function boot(): Promise<void> {
   /* ---------- khu giao lưu (R-GIAO-1, R-CO-1..3, R-DAU-1): bàn cờ, bàn đấu chữ — gamePlay.ts ---------- */
   let afterSay: (() => void) | null = null;
   /** Một câu NPC nói qua khung thoại có sẵn; đóng khung → `onClose`. */
-  const say = (npcId: string, text: string, onClose: () => void): void => {
+  const say = (npcId: string, text: string, onClose: () => void, choice = 'Vâng'): void => {
     const base = dialogFor(npcId);
-    const d: Dialog = { npc: npcId, name: base?.name ?? npcId, han: base?.han, start: 'loi', lines: [{ id: 'loi', text, choices: [{ text: 'Vâng', next: null }] }] };
+    const d: Dialog = { npc: npcId, name: base?.name ?? npcId, han: base?.han, start: 'loi', lines: [{ id: 'loi', text, choices: [{ text: choice, next: null }] }] };
     runner = new DialogRunner(d);
     talking = true;
     joystick.end();
@@ -445,6 +498,13 @@ async function boot(): Promise<void> {
     groundAt,
     say,
     learned: () => learnedRadicals,
+    npcInfo: (id) => dialogFor(id),
+  });
+  // HUD trò chơi (thiết kế 2026-11-13.27): "Rời bàn", tỉ số, lượt, câu hỏi Đấu chữ, thẻ kết quả
+  const gameHud = new GameHud({
+    leave: () => gamePlay.stand(),
+    newRound: () => gamePlay.newRound(),
+    pick: (i) => gamePlay.pick(i),
   });
   void gamePlay.placeNpcs().then((p) => {
     if (p.length) console.warn(p.join('\n'));
@@ -465,8 +525,10 @@ async function boot(): Promise<void> {
     return true;
   };
   const mapHud = new MapHud(closeMap);
-  // nút quay lại: đóng khung thoại trước, rồi bản đồ (docs/bridge.md `back`)
+  // nút quay lại: đóng bảng cách chơi / khung thoại trước, rồi bản đồ (docs/bridge.md `back`)
   mapBack = (): boolean => {
+    if (chat.close()) return true; // nút quay lại / Esc: đóng ô nhập trò chuyện trước
+    if (guidePanel.close()) return true;
     if (dialogBox.isOpen) {
       dialogBox.close();
       return true;
@@ -477,7 +539,7 @@ async function boot(): Promise<void> {
     mapOpen = true;
     player.moveTarget = null;
     joystick.end();
-    states = placeStates(JOURNEY_MAP.places, SCENE.id, HOME_SCENE, open, REGION_SCENES);
+    states = placeStates(JOURNEY_MAP.places, SCENE.id, HOME_SCENE, REGION_SCENES);
     scroll.open(world.teleport?.center ?? player.position, states);
     mapHud.show(true);
   };
@@ -488,22 +550,21 @@ async function boot(): Promise<void> {
     loading.show(loadScene(to).spec.site); // loading.active → nhân vật đứng yên
     const next = new URLSearchParams(to === HOME_SCENE ? { tu: SCENE.id } : { vung: to });
     // giữ tham số thử trên trình duyệt
-    for (const k of ['debug', 'mo', 'nhan-vat']) if (params.has(k)) next.set(k, params.get(k) ?? '');
+    for (const k of ['debug', 'nhan-vat']) if (params.has(k)) next.set(k, params.get(k) ?? '');
     // replace: không chất lịch sử trang mỗi lần đi về
     void nextPaint().then(() => location.replace(`${location.pathname}?${next.toString()}`));
   };
   onMapTap = (x, y) => {
-    mapHud.hideCard(); // chạm chỗ khác → ẩn thẻ yêu cầu
+    mapHud.hideCard(); // chạm chỗ khác → ẩn thẻ "sắp mở"
     const hit = scroll.pick(x, y);
     const place = hit ? placeAt(JOURNEY_MAP.places, hit.px, hit.py) : null;
     if (!place || travelling) return;
     const st = states[place.id];
     const to = placeScene(place.id, HOME_SCENE);
     if (st === 'mo') travel(to);
-    else if (st === 'khoa' || st === 'sapMo') {
+    else if (st === 'sapMo') {
       scroll.flash(place.id);
-      const need = st === 'khoa' ? progress?.need[to] : undefined;
-      mapHud.need({ han: place.han, name: place.ten, ...need }, progress?.chars ?? 0);
+      mapHud.soon({ han: place.han, name: place.ten });
     }
     // nơi đang ở ('oDay') → không có gì
   };
@@ -518,8 +579,14 @@ async function boot(): Promise<void> {
 
   function tick(): void {
     if (!running) return; // vòng lặp tự tắt; setRunning gọi lại khi hiện
+    // R-HIEU-2: chưa tới nhịp (60 fps trên màn 120 Hz, hoặc chế độ 30 fps) → bỏ nhịp này; dt khung sau gộp cả nhịp bỏ
+    if (!frameCap.shouldRender(performance.now())) {
+      requestAnimationFrame(tick);
+      return;
+    }
     // kẹp dt: tab bị treo vài giây rồi chạy lại thì nhân vật không "dịch chuyển tức thời"
-    const dt = Math.min(clock.getDelta(), 0.05);
+    const rawDt = clock.getDelta();
+    const dt = Math.min(rawDt, 0.05);
     input.x = joystick.x;
     input.y = joystick.y;
     keyboard.apply(input);
@@ -527,11 +594,14 @@ async function boot(): Promise<void> {
     // màn tải còn hiện (kể cả lúc mờ ra) → không điều khiển (R-MAN-2); chạm đã bị lớp màn tải chặn
     const fromX = player.position.x;
     const fromZ = player.position.z;
-    player.update(dt, input, orbit.yaw, paused || loading.active || mapOpen || talking);
+    // hướng đi khoá khi giữ joystick cùng hướng → camera tự xoay không làm nhân vật đi vòng (R-DIEU-3)
+    player.update(dt, input, orbit.steerYaw(input.x, input.y), paused || loading.active || mapOpen || talking || chat.typing);
     const pos = player.position;
-    orbit.follow(dt, pos.x - fromX, pos.z - fromZ); // camera tự xoay ra sau lưng khi đi (R-DIEU-3)
+    // camera bám êm: dây kéo + tự về sau lưng chậm (R-DIEU-3)
+    orbit.follow(dt, pos.x - fromX, pos.z - fromZ, character.facing.rotation.y, player.state.mps > 0);
     for (const npc of npcSet.npcs) npc.update(dt);
     gamePlay.update(dt);
+    gameHud.render(talking ? null : gamePlay.view());
     if (ring && !travelling && !loading.active && !mapOpen) {
       if (ring.update(pos, dt)) openMap();
       world.teleport?.setCharge(ring.charge);
@@ -548,7 +618,9 @@ async function boot(): Promise<void> {
     // nhập định (R-HANH-3): vòng sáng + chữ bộ sắp học; đứng dậy / đã mở thẻ → tắt dần
     const upcoming = player.isSitting && !onSeat && !sitOpened && !busy ? nextRadical() : undefined;
     nhapDinh.update(dt, pos, upcoming ? sitTime : null, upcoming?.form ?? '');
-    nameTag.setVisible(!nhapDinh.charShown);
+    // ẩn khi chữ nhập định hiện, khi bản đồ / màn tải / bài học phủ cảnh (L-11: nhãn HTML luôn đè lên cuộn bản đồ 3D)
+    nameTag.setVisible(!nhapDinh.charShown && !mapOpen && !loading.active && !covered);
+    chat.update({ camera, player: pos, nameTagHeight: NAME_TAG_HEIGHT, npcs: npcSet.npcs, busy: busy || gamePlay.active });
     learn.follow(zones.current ? anchorOf.get(zones.current.id) : undefined, camera);
     // nút "Nói chuyện": NPC gần nhất trong 2,5 m, không đang học / ngồi / bản đồ / thoại / màn tải (R-NPC-2)
     const near = paused || mapOpen || talking || loading.active || player.isSitting ? null : npcInTalkRange(npcSet.npcs, pos);
@@ -583,7 +655,13 @@ async function boot(): Promise<void> {
       bowing: player.isBowing,
       cultivate: spec.lessons.radicals ? RADICALS.filter((r) => !learnedRadicals.has(r.id)).length || null : null,
     });
-    fps.tick(dt, renderer.info.render.calls, renderer.info.render.triangles);
+    fps.tick(rawDt, renderer.info.render.calls, renderer.info.render.triangles);
+    // độ nét động (R-HIEU-1): chậm kéo dài → vẽ thưa đi một bậc; mượt lại → nét lên. HUD là HTML nên vẫn nét.
+    if (frameCap.fps === 60 && governor.update(rawDt * 1000)) {
+      renderer.setPixelRatio(governor.ratio);
+      showInfo();
+    }
+    if (frameCap.observe(rawDt * 1000, governor)) showInfo(); // 60 ↔ 30 fps (R-HIEU-2)
     if (!firstFrame) {
       firstFrame = true;
       loading.done();
@@ -591,6 +669,12 @@ async function boot(): Promise<void> {
     requestAnimationFrame(tick);
   }
   let firstFrame = false;
+  // biên dịch sẵn shader mọi vật liệu trong cảnh lúc màn tải còn che (như game) → lần đầu vào nhà / thấy vật mới không
+  // khựng vì GPU dịch shader giữa chừng. Máy hỗ trợ KHR_parallel_shader_compile thì dịch song song, không treo trang.
+  loading.progress(90);
+  const compileStart = performance.now();
+  await renderer.compileAsync(scene, camera).catch(() => undefined);
+  if (params.has('debug')) console.info(`biên dịch shader: ${Math.round(performance.now() - compileStart)} ms`);
   requestAnimationFrame(tick);
 }
 

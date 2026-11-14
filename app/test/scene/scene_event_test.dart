@@ -56,21 +56,13 @@ void main() {
     expect(debugScript(on: true), contains('{"type":"debug","payload":{"on":true}}'));
   });
 
-  test('getProgress: nhận loại sự kiện, trả vùng đã mở + số chữ (docs/bridge.md)', () {
+  test('getProgress: nhận loại sự kiện, trả số chữ, bộ thủ đã học — không khoá vùng (docs/bridge.md, R-HANH-1)', () {
     expect(sceneEventType([{'type': 'getProgress', 'payload': {}}]), 'getProgress');
     expect(sceneEventType([]), isNull);
     expect(sceneEventType(['x']), isNull);
     expect(progressReply(const Progress(chars: {'快', '書'})), {
-      'open': ['rung-truc'],
       'chars': 2,
       'radicals': <String>[],
-      'need': {
-        'giang-nam': {'radicals': 50},
-        'bong-lai': {'chars': 300},
-        'truong-thanh': {'chars': 900},
-        'tu-cam-thanh': {'chars': 1800},
-        'to-lua': {'chars': 3000},
-      },
       'due': <String>[],
       'daily': {'learned': 0, 'goal': 3, 'due': 0, 'streak': 0, 'best': 0},
       'book': null,

@@ -18,20 +18,26 @@
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="Học Xá 3D — học chữ Hán trong không gian 3D">
+  <meta name="description" content="Tiểu Mặc 3D — học chữ Hán trong không gian 3D">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="Học Xá 3D">
+  <meta name="apple-mobile-web-app-title" content="Tiểu Mặc 3D">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>Học Xá 3D</title>
+  <title>Tiểu Mặc 3D</title>
   <link rel="manifest" href="manifest.json">
+  <!-- con trỏ chuột hoạt hình (người dùng 2026-11-14), cùng ảnh với web/src/cursor/: Flutter đặt cursor inline,
+       !important thắng; chỗ Flutter báo "pointer" (nút bấm được) → mũi tên vàng -->
+  <style>
+    *, *::before, *::after { cursor: url("cursor/tro.svg") 5 4, default !important; }
+    [style*="cursor: pointer"], [style*="cursor: pointer"] * { cursor: url("cursor/tro-nut.svg") 5 4, pointer !important; }
+  </style>
 </head>
 <body style="background:#141b2c">
   <!-- flutter_inappwebview trên web: WebView là iframe, cần script hỗ trợ của gói (gọi JS trong iframe, sự kiện tải trang) -->

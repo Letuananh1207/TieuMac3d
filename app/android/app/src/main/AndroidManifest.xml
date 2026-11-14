@@ -2,7 +2,7 @@
     <!-- Máy chủ nội bộ (127.0.0.1) phục vụ scene cho WebView cần quyền mở socket -->
     <uses-permission android:name="android.permission.INTERNET" />
     <application
-        android:label="Học Xá 3D"
+        android:label="Tiểu Mặc 3D"
         android:networkSecurityConfig="@xml/network_security_config"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">

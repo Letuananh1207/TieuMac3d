@@ -51,7 +51,7 @@ void main() {
         'review': [_item('truc', '竹')],
         'next': null,
         'learned': [_radical('truc', '竹'), _radical('moc', '木')],
-        'region': 'Văn Uyên Tông',
+        'region': 'Khởi Nguyên Trấn',
       };
 
   test('R-ON-8: openStudy đọc 3 mục, mục nổi bật, câu đố đến hạn, bộ đã học (docs/bridge.md)', () {
@@ -65,7 +65,7 @@ void main() {
     expect(s.review.single.radical.id, 'truc');
     expect(s.next, isNull);
     expect(s.learned.map((r) => r.form), ['竹', '木']);
-    expect(s.region, 'Văn Uyên Tông');
+    expect(s.region, 'Khởi Nguyên Trấn');
   });
 
   test('R-ON-8: openStudy thiếu mục / sai loại → null (trang tự mở lượt ôn / thẻ bộ mới)', () {

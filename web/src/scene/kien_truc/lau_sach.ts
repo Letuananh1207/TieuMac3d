@@ -4,7 +4,7 @@
  * thuỷ, như Văn Uyên Các), cột theo `pillarColor` (lục). Tầng 1 vào được qua hai gian giữa: kệ sách + án đọc (nội thất
  * thư viện); nền đá có lan can + bậc như giảng đường. Hiên lửng giữa hai tầng; không treo đèn lồng (lầu sách kỵ lửa).
  * Lên được tầng 2 (R-VA-3) bằng thang thẳng ngoài trời dọc đầu hồi phải (`cau_thang.ts`, L-6); tầng 2 mở bốn phía (chỉ cột +
- * lan can thấp), 8 án thư tự học ngồi được (R-VA-4).
+ * lan can thấp), 24 bồ đoàn vuông tự học ngồi được, không án (R-VA-4).
  */
 import type * as THREE from 'three';
 import type { BuildingSpec } from '../spec';
@@ -13,6 +13,7 @@ import { columnXs, hallFloor } from './dien';
 import { box, column } from './hinh';
 import { gableHipRoof, skirt } from './mai';
 import { addStairs, gapForBridge, stairLayout, type StairLayout } from './cau_thang';
+import { CUSHION_R } from './do_pho';
 import { addInterior, type LocalBox } from './noi_that';
 import type { Shell } from './vao_trong';
 
@@ -20,15 +21,14 @@ const BAYS = 6;
 const STEP_W = 4;
 const RAIL_GAP = 4.4;
 const WALL = 0.25;
-/** Án thư tự học tầng 2 (R-VA-4): rộng × sâu × cao, toạ độ tâm (x theo hàng, z theo hai hàng), bồ đoàn cách tâm án về bắc */
-const DESK_W = 1.2;
-const DESK_D = 0.6;
-const DESK_H = 0.4;
-const DESK_XS = [-6.5, -3.5, -0.5, 2.5];
-const DESK_ROWS = [-1.9, 1.6];
-const SEAT_GAP = 0.7;
-const DESK_WOOD = '#3a2418';
-const PAGE = '#efe6cf';
+/**
+ * Bồ đoàn vuông tự học tầng 2 (R-VA-4): lưới 4 hàng × 6, không án; x ≤ 3 để dải đông (lối từ cầu nối thang) trống.
+ * Cạnh ≈ đường kính bồ đoàn tròn chung (`CUSHION_R`), dày 0,12 như bồ đoàn trà lâu.
+ */
+const SEAT_XS = [-7, -5, -3, -1, 1, 3];
+const SEAT_ROWS = [-2.7, -1, 0.7, 2.4];
+const CUSHION_SIDE = 1.9 * CUSHION_R;
+const CUSHION_H = 0.12;
 const CUSHION = '#8a3b2c';
 const RAIL_WOOD = '#5a3a24';
 const RAIL_H = 0.9;
@@ -52,18 +52,6 @@ export function upperRail(g: THREE.Group, xa: number, za: number, xb: number, zb
   }
 }
 
-/** Án thư thấp (ngồi xếp bằng) tâm (x, z): mặt án, 4 chân, sách mở; bồ đoàn phía bắc. */
-function studyDesk(g: THREE.Group, x: number, z: number, y: number): void {
-  g.add(box(DESK_W, 0.06, DESK_D, DESK_WOOD, x, y + DESK_H - 0.03, z));
-  for (const sx of [-1, 1]) for (const sz of [-1, 1]) g.add(box(0.06, DESK_H - 0.06, 0.06, DESK_WOOD, x + sx * (DESK_W / 2 - 0.08), y + (DESK_H - 0.06) / 2, z + sz * (DESK_D / 2 - 0.08)));
-  for (const s of [-1, 1]) {
-    const page = box(0.28, 0.02, 0.38, PAGE, x + s * 0.15, y + DESK_H + 0.02, z);
-    page.rotation.z = -s * 0.12;
-    g.add(page);
-  }
-  g.add(column(0.34, 0.12, CUSHION, x, y, z - SEAT_GAP));
-}
-
 /** Viền mép mái: 4 thanh màu `trim` quanh mép hiên `bw` × `bd` ở `y`. */
 function eaveTrim(g: THREE.Group, y: number, bw: number, bd: number, trim: string): void {
   for (const s of [-1, 1]) {
@@ -78,7 +66,9 @@ export function lauSachStairs(b: BuildingSpec, style: Style): StairLayout {
   const iw = b.w - 0.8;
   const id = b.d - 0.8;
   // ngoài mép hiên lửng (rộng w + 3) · chiếu nghỉ trước mặt trong tường sau để cầu nối không vướng tường
-  return stairLayout({ xWall: b.w / 2 + 1, clear: 0.7, zBack: -id / 2 + 0.3, yTop: yf, floorX: iw / 2 });
+  // L-6: sàn tầng 2 chỉ tới w / 2 mà nền đá tới w / 2 + 1 → cầu nối + lan can kéo vào tới hàng lan can tầng 2 (`cx` ở `lauSach`)
+  const deckX = (b.w - 0.6) / 2 - 0.3;
+  return stairLayout({ xWall: b.w / 2 + 1, clear: 0.7, zBack: -id / 2 + 0.3, yTop: yf, floorX: iw / 2, deckX });
 }
 
 export function lauSach(g: THREE.Group, b: BuildingSpec, style: Style, fade: THREE.Group, fadeLow: THREE.Group): Shell {
@@ -123,7 +113,8 @@ export function lauSach(g: THREE.Group, b: BuildingSpec, style: Style, fade: THR
   /* ---------- trần, hiên lửng, tầng 2, mái (mờ khi ở trong; sàn + tường tầng 2 hiện khi đứng trên tầng 2) ---------- */
   addBeamBand(fade, w, d, y1 - 0.5, style);
   fadeLow.add(box(w, yf - y1, d, style.timber, 0, (y1 + yf) / 2, 0));
-  skirt(fade, y1 - 0.4, w + 3, d + 3, w + 0.2, d + 0.2, 0.9, b.roofColor);
+  // hiên lửng: đỉnh (có nắp) thấp hơn mặt sàn tầng 2 4 cm — trùng mặt sàn thì cả sàn chớp sọc xám / nâu (L-10)
+  skirt(fade, y1 - 0.4, w + 3, d + 3, w + 0.2, d + 0.2, 0.86, b.roofColor);
   eaveTrim(fade, y1 - 0.38, w + 3, d + 3, trim);
   const uw = w - 0.6;
   const ud = d - 0.6;
@@ -135,14 +126,12 @@ export function lauSach(g: THREE.Group, b: BuildingSpec, style: Style, fade: THR
   for (const s of [-1, 1]) fadeLow.add(column(0.17, h2, pillar, s * cx, yf, 0));
   for (let i = 0; i < BAYS; i++) for (const z of [-cz, cz]) upperRail(fadeLow, uxs[i], z, uxs[i + 1], z, yf);
   for (const s of [-1, 1]) for (const [za, zb] of [[s > 0 ? stairs.zTop : -cz, 0], [0, cz]]) upperRail(fadeLow, s * cx, za, s * cx, zb, yf); // hồi phải: chừa lối ra cầu nối
-  // 8 án thư thấp + bồ đoàn (R-VA-4): người ngồi phía bắc án, nhìn về nam
+  // 24 bồ đoàn vuông, không án (R-VA-4): người ngồi nhìn về nam; bồ đoàn thấp, không chặn người đi
   const seats: NonNullable<Shell['seats']> = [];
-  const deskBoxes: LocalBox[] = [];
-  for (const dz of DESK_ROWS) {
-    for (const dx of DESK_XS) {
-      studyDesk(fadeLow, dx, dz, yf);
-      seats.push({ x: dx, z: dz - SEAT_GAP, y: yf, rotY: 0 });
-      deskBoxes.push({ x: dx, z: dz, w: DESK_W, d: DESK_D, minY: yf - 0.4 });
+  for (const sz of SEAT_ROWS) {
+    for (const sx of SEAT_XS) {
+      fadeLow.add(box(CUSHION_SIDE, CUSHION_H, CUSHION_SIDE, CUSHION, sx, yf + CUSHION_H / 2, sz));
+      seats.push({ x: sx, z: sz, y: yf, rotY: 0 });
     }
   }
   const y2 = yf + h2;
@@ -165,9 +154,8 @@ export function lauSach(g: THREE.Group, b: BuildingSpec, style: Style, fade: THR
     { x: (gapR + iw / 2) / 2, z: id / 2, w: iw / 2 - gapR, d: 0.3, h: Infinity },
     // nội thất tầng 1 chỉ chặn người ở tầng 1
     ...furnished.boxes.map((f) => ({ ...f, maxY: plat + 1.5 })),
-    // tầng 2: lan can mặt tiền (hồi + sau trùng tường tầng 1, đã chặn), án thư — chỉ chặn người ở tầng 2
+    // tầng 2: lan can mặt tiền (hồi + sau trùng tường tầng 1, đã chặn) — chỉ chặn người ở tầng 2
     { x: 0, z: id / 2, w: iw, d: 0.3, minY: yf - 0.4 },
-    ...deskBoxes,
     ...stairs.boxes,
   ];
   const run = stepCount(style) * STEP_DEPTH;

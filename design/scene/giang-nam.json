@@ -1,0 +1,1116 @@
+{
+  "site": {
+    "name": "Giang Nam",
+    "han": "江南",
+    "areas": [
+      {
+        "name": "Nhai Khẩu",
+        "han": "街口",
+        "from": [
+          -30,
+          32
+        ],
+        "to": [
+          30,
+          44
+        ]
+      },
+      {
+        "name": "Đăng Thị",
+        "han": "燈市",
+        "from": [
+          -14,
+          18
+        ],
+        "to": [
+          14,
+          32
+        ]
+      },
+      {
+        "name": "Hà Nhai",
+        "han": "河街",
+        "from": [
+          -30,
+          -4
+        ],
+        "to": [
+          30,
+          18
+        ]
+      },
+      {
+        "name": "Thuyền Thị",
+        "han": "船市",
+        "from": [
+          8,
+          -18
+        ],
+        "to": [
+          24,
+          -12
+        ]
+      },
+      {
+        "name": "Song Kiều",
+        "han": "雙橋",
+        "from": [
+          -22,
+          -17
+        ],
+        "to": [
+          -8,
+          -4
+        ]
+      },
+      {
+        "name": "Tiểu Viên",
+        "han": "小園",
+        "from": [
+          -30,
+          -27
+        ],
+        "to": [
+          -18,
+          -15
+        ]
+      },
+      {
+        "name": "Bờ bắc",
+        "han": "北岸",
+        "from": [
+          -30,
+          -32
+        ],
+        "to": [
+          30,
+          -4
+        ]
+      }
+    ]
+  },
+  "sky": {
+    "top": "#8fa9b8",
+    "middle": "#c9d5d6",
+    "horizon": "#e9d9c4"
+  },
+  "fog": {
+    "color": "#cfd8d4",
+    "near": 14,
+    "far": 72
+  },
+  "light": {
+    "skyColor": "#f2f4ee",
+    "groundColor": "#5d6658",
+    "hemiIntensity": 0.78,
+    "sunColor": "#ffe0b8",
+    "sunIntensity": 0.62,
+    "sunPosition": [
+      -30,
+      14,
+      4
+    ]
+  },
+  "ground": {
+    "size": 160,
+    "color": "#8a8780",
+    "brickHue": 30,
+    "pattern": "vuong"
+  },
+  "terrain": {
+    "enabled": true,
+    "center": [
+      0,
+      6
+    ],
+    "size": 120,
+    "cell": 1,
+    "plateaus": [
+      {
+        "from": [
+          -29,
+          -11
+        ],
+        "to": [
+          29,
+          -5
+        ],
+        "y": -1,
+        "pave": false,
+        "blend": 0.05
+      },
+      {
+        "from": [
+          -15,
+          -25
+        ],
+        "to": [
+          -11,
+          -11
+        ],
+        "y": -1,
+        "pave": false,
+        "blend": 0.05
+      },
+      {
+        "from": [
+          11,
+          -15
+        ],
+        "to": [
+          21,
+          -11
+        ],
+        "y": -1,
+        "pave": false,
+        "blend": 0.05
+      },
+      {
+        "from": [
+          -32,
+          -4
+        ],
+        "to": [
+          32,
+          44
+        ],
+        "y": 0,
+        "pave": true,
+        "blend": 6
+      },
+      {
+        "from": [
+          -32,
+          -32
+        ],
+        "to": [
+          -16,
+          -12
+        ],
+        "y": 0,
+        "pave": true,
+        "blend": 6
+      },
+      {
+        "from": [
+          -16,
+          -32
+        ],
+        "to": [
+          -10,
+          -26
+        ],
+        "y": 0,
+        "pave": true,
+        "blend": 6
+      },
+      {
+        "from": [
+          -10,
+          -32
+        ],
+        "to": [
+          10,
+          -12
+        ],
+        "y": 0,
+        "pave": true,
+        "blend": 6
+      },
+      {
+        "from": [
+          10,
+          -32
+        ],
+        "to": [
+          22,
+          -16
+        ],
+        "y": 0,
+        "pave": true,
+        "blend": 6
+      },
+      {
+        "from": [
+          22,
+          -32
+        ],
+        "to": [
+          32,
+          -12
+        ],
+        "y": 0,
+        "pave": true,
+        "blend": 6
+      }
+    ],
+    "peaks": [
+      {
+        "x": -40,
+        "z": -28,
+        "r": 16,
+        "h": 9
+      },
+      {
+        "x": 40,
+        "z": -30,
+        "r": 16,
+        "h": 10
+      },
+      {
+        "x": 0,
+        "z": -40,
+        "r": 14,
+        "h": 8
+      },
+      {
+        "x": -42,
+        "z": 30,
+        "r": 14,
+        "h": 5
+      },
+      {
+        "x": 42,
+        "z": 30,
+        "r": 14,
+        "h": 5
+      }
+    ],
+    "noise": {
+      "seed": 23,
+      "amp": 0.6,
+      "scale": 24
+    },
+    "edge": {
+      "radius": 50,
+      "width": 10,
+      "y": -20,
+      "wobble": 3
+    },
+    "blend": 6,
+    "colors": {
+      "grass": [
+        "#5f7a48",
+        "#6c8852",
+        "#56713f"
+      ],
+      "dirt": "#7a6e58",
+      "rock": "#7f7d76",
+      "highRock": "#9a988f",
+      "highFrom": 14
+    },
+    "slopeDirt": 20,
+    "slopeRock": 35,
+    "stairs": [],
+    "grass": {
+      "density": 4,
+      "colors": [
+        "#56713f",
+        "#7a9658"
+      ]
+    },
+    "rocks": {
+      "density": 3,
+      "color": "#8b8a82"
+    },
+    "waterfalls": [],
+    "streams": []
+  },
+  "farMountains": {
+    "layers": [
+      {
+        "radius": 150,
+        "height": 26,
+        "color": "#a3b2b0",
+        "peaks": 10,
+        "width": 1.8,
+        "spurs": 1
+      },
+      {
+        "radius": 210,
+        "height": 40,
+        "color": "#c3ccca",
+        "peaks": 8,
+        "width": 2
+      }
+    ],
+    "base": -20
+  },
+  "cloudSea": {
+    "radius": 0,
+    "y": -10,
+    "color": "#f4f1ea"
+  },
+  "walls": {
+    "enabled": false,
+    "style": "voi",
+    "color": "#eeebe2",
+    "capColor": "#3b3f44",
+    "height": 3.2,
+    "thickness": 0.6,
+    "windows": 5
+  },
+  "wallSegments": [
+    {
+      "from": [
+        -30,
+        -27
+      ],
+      "to": [
+        30,
+        -27
+      ],
+      "height": 3.2
+    },
+    {
+      "from": [
+        -30,
+        15
+      ],
+      "to": [
+        -6,
+        15
+      ],
+      "height": 2.6
+    },
+    {
+      "from": [
+        6,
+        15
+      ],
+      "to": [
+        30,
+        15
+      ],
+      "height": 2.6
+    },
+    {
+      "from": [
+        -30,
+        -15.5
+      ],
+      "to": [
+        -18,
+        -15.5
+      ],
+      "height": 2.8,
+      "gate": {
+        "at": -24,
+        "width": 2.4,
+        "kind": "trang",
+        "signs": {
+          "nam": "小園"
+        }
+      }
+    },
+    {
+      "from": [
+        -18,
+        -27
+      ],
+      "to": [
+        -18,
+        -15.5
+      ],
+      "height": 2.8
+    }
+  ],
+  "paths": [
+    {
+      "from": [
+        0,
+        43.5
+      ],
+      "to": [
+        0,
+        0
+      ],
+      "width": 4
+    },
+    {
+      "from": [
+        -28,
+        -2
+      ],
+      "to": [
+        28,
+        -2
+      ],
+      "width": 4
+    },
+    {
+      "from": [
+        -28,
+        -14
+      ],
+      "to": [
+        -17.5,
+        -14
+      ],
+      "width": 3
+    },
+    {
+      "from": [
+        -8.5,
+        -14
+      ],
+      "to": [
+        10,
+        -14
+      ],
+      "width": 3
+    },
+    {
+      "from": [
+        10,
+        -14
+      ],
+      "to": [
+        10,
+        -17.5
+      ],
+      "width": 3
+    },
+    {
+      "from": [
+        10,
+        -17.5
+      ],
+      "to": [
+        22,
+        -17.5
+      ],
+      "width": 3
+    },
+    {
+      "from": [
+        22,
+        -17.5
+      ],
+      "to": [
+        22,
+        -14
+      ],
+      "width": 3
+    },
+    {
+      "from": [
+        22,
+        -14
+      ],
+      "to": [
+        28,
+        -14
+      ],
+      "width": 3
+    }
+  ],
+  "buildingStyle": {
+    "path": "#8e8b84",
+    "stone": "#8a8780",
+    "water": "#4d7f86",
+    "wall": "#f1eee6",
+    "pillar": "#3a3430",
+    "ridge": "#2f3236",
+    "eave": "#33363a",
+    "base": "#8c8a84",
+    "timber": "#3a3430",
+    "heightScale": 1
+  },
+  "buildings": [
+    {
+      "id": "nha-tay-nam",
+      "x": -19,
+      "z": 6.5,
+      "w": 8,
+      "d": 6,
+      "rotY": 180,
+      "title": "Nhà ven sông",
+      "roofColor": "#3b3f44",
+      "kind": "nha-nho"
+    },
+    {
+      "id": "hang-but",
+      "x": -9,
+      "z": 6,
+      "w": 6,
+      "d": 6,
+      "rotY": 180,
+      "title": "Hiệu bút",
+      "roofColor": "#3b3f44",
+      "kind": "cua-hang",
+      "sign": "筆",
+      "goods": "but"
+    },
+    {
+      "id": "hang-lua",
+      "x": 8,
+      "z": 6,
+      "w": 6,
+      "d": 6,
+      "rotY": 180,
+      "title": "Hiệu lụa",
+      "roofColor": "#3b3f44",
+      "kind": "cua-hang",
+      "sign": "綢",
+      "goods": "vai"
+    },
+    {
+      "id": "tra-lau",
+      "x": 20,
+      "z": 7.5,
+      "w": 12,
+      "d": 9,
+      "rotY": 180,
+      "title": "Trà lâu",
+      "roofColor": "#3b3f44",
+      "kind": "tra-lau"
+    },
+    {
+      "id": "thu-phong",
+      "x": -4,
+      "z": -20,
+      "w": 7,
+      "d": 6,
+      "title": "Thư phòng",
+      "roofColor": "#3b3f44",
+      "kind": "nha-nho"
+    },
+    {
+      "id": "thuy-cac",
+      "x": 5,
+      "z": -19.5,
+      "w": 6,
+      "d": 5,
+      "title": "Thuỷ các",
+      "roofColor": "#3b3f44",
+      "kind": "nha-nho"
+    },
+    {
+      "id": "lau-ngam",
+      "x": 16,
+      "z": -22.5,
+      "w": 6,
+      "d": 6,
+      "title": "Vọng Giang Lâu",
+      "roofColor": "#3b3f44",
+      "kind": "thap",
+      "floors": 3,
+      "roof": "cong"
+    },
+    {
+      "id": "dinh-vien",
+      "x": -21.5,
+      "z": -21,
+      "w": 3.5,
+      "d": 3.5,
+      "title": "Đình vườn",
+      "roofColor": "#3b3f44",
+      "kind": "dinh",
+      "sides": 6
+    }
+  ],
+  "gates": [
+    {
+      "id": "cong-pho",
+      "x": 0,
+      "z": 18,
+      "width": 5,
+      "title": "Giang Nam",
+      "hanTitle": "江南",
+      "roofColor": "#3b3f44"
+    }
+  ],
+  "water": [
+    {
+      "x": -25.375,
+      "z": -8.0,
+      "w": 9.25,
+      "d": 8,
+      "sunk": 1
+    },
+    {
+      "x": -16.625,
+      "z": -8.0,
+      "w": 1.25,
+      "d": 8,
+      "sunk": 1
+    },
+    {
+      "x": -13.0,
+      "z": -8.0,
+      "w": 6,
+      "d": 8,
+      "sunk": 1,
+      "open": [
+        "bac"
+      ]
+    },
+    {
+      "x": -6.0,
+      "z": -8.0,
+      "w": 8,
+      "d": 8,
+      "sunk": 1
+    },
+    {
+      "x": 6.0,
+      "z": -8.0,
+      "w": 8,
+      "d": 8,
+      "sunk": 1
+    },
+    {
+      "x": 16.0,
+      "z": -8.0,
+      "w": 12,
+      "d": 8,
+      "sunk": 1,
+      "open": [
+        "bac"
+      ]
+    },
+    {
+      "x": 23.25,
+      "z": -8.0,
+      "w": 2.5,
+      "d": 8,
+      "sunk": 1
+    },
+    {
+      "x": 28.75,
+      "z": -8.0,
+      "w": 2.5,
+      "d": 8,
+      "sunk": 1
+    },
+    {
+      "x": -13.0,
+      "z": -21.0,
+      "w": 6,
+      "d": 10,
+      "sunk": 1,
+      "open": [
+        "nam"
+      ]
+    },
+    {
+      "x": 16.0,
+      "z": -14.0,
+      "w": 12,
+      "d": 4,
+      "sunk": 1,
+      "open": [
+        "nam"
+      ]
+    },
+    {
+      "x": -26,
+      "z": -22,
+      "r": 2
+    }
+  ],
+  "bridges": [
+    {
+      "kind": "vom",
+      "x": 0,
+      "z": -8,
+      "length": 10,
+      "width": 4,
+      "rise": 2.2,
+      "water": true,
+      "sunk": 1
+    },
+    {
+      "kind": "vom",
+      "x": -19,
+      "z": -8,
+      "length": 10,
+      "width": 3.5,
+      "rise": 2.2,
+      "water": true,
+      "sunk": 1
+    },
+    {
+      "kind": "da",
+      "x": -13,
+      "z": -14,
+      "rotY": 90,
+      "length": 9,
+      "width": 4,
+      "rise": 0.6,
+      "arch": "vuong",
+      "water": true,
+      "sunk": 1
+    },
+    {
+      "kind": "da",
+      "x": 26,
+      "z": -8,
+      "length": 10,
+      "width": 3,
+      "water": true,
+      "sunk": 1
+    }
+  ],
+  "boats": [
+    {
+      "path": [
+        [
+          -27,
+          -8.6
+        ],
+        [
+          23,
+          -8.6
+        ]
+      ],
+      "speed": 1.0
+    },
+    {
+      "path": [
+        [
+          -13,
+          -24.5
+        ],
+        [
+          -13,
+          -9
+        ]
+      ],
+      "speed": 0.7
+    },
+    {
+      "path": [
+        [
+          12.5,
+          -14.2
+        ],
+        [
+          14,
+          -14.2
+        ]
+      ],
+      "moored": true,
+      "cargo": true
+    },
+    {
+      "path": [
+        [
+          19.5,
+          -13.8
+        ],
+        [
+          21,
+          -13.8
+        ]
+      ],
+      "moored": true,
+      "cargo": true
+    },
+    {
+      "path": [
+        [
+          -26,
+          -6.2
+        ],
+        [
+          -22,
+          -6.2
+        ]
+      ],
+      "moored": true
+    }
+  ],
+  "props": [
+    {
+      "kind": "sap-o",
+      "x": -11,
+      "z": 22,
+      "rotY": 90
+    },
+    {
+      "kind": "sap-o",
+      "x": 11,
+      "z": 22,
+      "rotY": 270
+    },
+    {
+      "kind": "gian-den",
+      "x": -6,
+      "z": 24
+    },
+    {
+      "kind": "gian-den",
+      "x": 6,
+      "z": 24
+    },
+    {
+      "kind": "gian-den",
+      "x": -6,
+      "z": 29
+    },
+    {
+      "kind": "gian-den",
+      "x": 6,
+      "z": 29
+    },
+    {
+      "kind": "den-da",
+      "x": -2.6,
+      "z": -3.6
+    },
+    {
+      "kind": "den-da",
+      "x": 2.6,
+      "z": -3.6
+    },
+    {
+      "kind": "da-thai-ho",
+      "x": 10,
+      "z": -21
+    },
+    {
+      "kind": "da-thai-ho",
+      "x": -28.5,
+      "z": -17.5,
+      "scale": 0.8
+    },
+    {
+      "kind": "ben-nuoc",
+      "x": -12,
+      "z": -4,
+      "rotY": 180
+    },
+    {
+      "kind": "ben-nuoc",
+      "x": -24,
+      "z": -4,
+      "rotY": 180
+    },
+    {
+      "kind": "ben-nuoc",
+      "x": 14,
+      "z": -4,
+      "rotY": 180
+    },
+    {
+      "kind": "ben-nuoc",
+      "x": -4,
+      "z": -12
+    },
+    {
+      "kind": "ben-nuoc",
+      "x": 6,
+      "z": -12
+    },
+    {
+      "kind": "vo-ruou",
+      "x": 12.6,
+      "z": 2.2
+    },
+    {
+      "kind": "chau-sen",
+      "x": -4,
+      "z": 3
+    },
+    {
+      "kind": "chau-sen",
+      "x": 4,
+      "z": 3
+    },
+    {
+      "kind": "sao-ao",
+      "x": -13.5,
+      "z": 6,
+      "rotY": 90
+    },
+    {
+      "kind": "meo",
+      "x": -11,
+      "z": -1.4,
+      "rotY": 90
+    },
+    {
+      "kind": "cho",
+      "x": 3,
+      "z": 16.6,
+      "rotY": 180
+    },
+    {
+      "kind": "chau-sen",
+      "x": -23,
+      "z": -17
+    }
+  ],
+  "trees": {
+    "yard": [
+      {
+        "kind": "lieu",
+        "x": -9,
+        "z": -11.6,
+        "scale": 1
+      },
+      {
+        "kind": "lieu",
+        "x": 9,
+        "z": -11.6,
+        "scale": 1.1
+      },
+      {
+        "kind": "lieu",
+        "x": 28.5,
+        "z": -1,
+        "scale": 1.1
+      },
+      {
+        "kind": "lieu",
+        "x": -29,
+        "z": -13.5,
+        "scale": 1
+      },
+      {
+        "kind": "mai",
+        "x": -23,
+        "z": -25.5,
+        "scale": 0.9
+      },
+      {
+        "kind": "mai",
+        "x": -14,
+        "z": 21,
+        "scale": 1
+      },
+      {
+        "kind": "mai",
+        "x": 14,
+        "z": 21,
+        "scale": 1
+      }
+    ],
+    "groves": [
+      {
+        "kind": "lieu",
+        "x": -18,
+        "z": 30,
+        "w": 16,
+        "d": 14,
+        "count": 6
+      },
+      {
+        "kind": "lieu",
+        "x": 18,
+        "z": 30,
+        "w": 16,
+        "d": 14,
+        "count": 6
+      },
+      {
+        "kind": "lieu",
+        "x": -44,
+        "z": 0,
+        "w": 12,
+        "d": 60,
+        "count": 10,
+        "collide": false
+      },
+      {
+        "kind": "lieu",
+        "x": 44,
+        "z": 0,
+        "w": 12,
+        "d": 60,
+        "count": 10,
+        "collide": false
+      },
+      {
+        "kind": "truc",
+        "x": 0,
+        "z": -31,
+        "w": 50,
+        "d": 4,
+        "count": 10,
+        "collide": false
+      }
+    ],
+    "ring": {
+      "count": 0,
+      "radius": 25,
+      "spread": 6,
+      "scaleMin": 1.6,
+      "scaleMax": 2.4
+    },
+    "seed": 29
+  },
+  "lanternStrings": [],
+  "floating": {
+    "islands": [],
+    "clouds": {
+      "count": 0,
+      "height": 26,
+      "radius": 60,
+      "speed": 0.6,
+      "color": "#d9dce8"
+    }
+  },
+  "well": {
+    "enabled": false
+  },
+  "npcs": [],
+  "gameTables": [],
+  "camera": {
+    "fov": 55,
+    "minDist": 3,
+    "maxDist": 24,
+    "near": {
+      "dist": 4.2,
+      "pitch": 0.32
+    },
+    "far": {
+      "dist": 19,
+      "pitch": 0.72
+    }
+  },
+  "player": {
+    "start": [
+      0,
+      33.5
+    ]
+  },
+  "teleport": {
+    "enabled": true,
+    "center": [
+      0,
+      39
+    ],
+    "radius": 0,
+    "ringRadius": 4
+  },
+  "lessons": {
+    "radicals": false
+  },
+  "galleries": [
+    {
+      "from": [
+        -28,
+        -2.5
+      ],
+      "to": [
+        -4,
+        -2.5
+      ],
+      "waterSide": -1
+    },
+    {
+      "from": [
+        4,
+        -2.5
+      ],
+      "to": [
+        24,
+        -2.5
+      ],
+      "waterSide": -1
+    }
+  ]
+}

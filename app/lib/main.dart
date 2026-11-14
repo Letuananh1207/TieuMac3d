@@ -46,7 +46,7 @@ Future<void> main() async {
     startError = 'Không mở được máy chủ nội bộ ở cổng ${server.port}: $e';
   }
 
-  // tiến độ học (R-HANH-1); không mở được kho → vẫn chạy, chỉ Rừng trúc mở, không lưu
+  // tiến độ học (R-HANH-1); không mở được kho → vẫn chạy, không lưu
   ProgressStore? progress;
   try {
     progress = await ProgressStore.open();
@@ -67,7 +67,7 @@ class HocXaApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Học Xá 3D',
+      title: 'Tiểu Mặc 3D',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.dark,

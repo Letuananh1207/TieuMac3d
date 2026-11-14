@@ -1,0 +1,810 @@
+{
+  "site": {
+    "name": "Trường Thành",
+    "han": "長城",
+    "areas": [
+      {
+        "name": "Doanh Trại",
+        "han": "營寨",
+        "from": [
+          -16,
+          0
+        ],
+        "to": [
+          16,
+          44
+        ]
+      },
+      {
+        "name": "Khương Nữ Từ",
+        "han": "姜女祠",
+        "from": [
+          -30,
+          0
+        ],
+        "to": [
+          -16,
+          12
+        ]
+      },
+      {
+        "name": "Quan Thành",
+        "han": "關城",
+        "from": [
+          -8,
+          -16
+        ],
+        "to": [
+          8,
+          -4
+        ]
+      },
+      {
+        "name": "Mặt Tường",
+        "han": "城牆",
+        "from": [
+          -34,
+          -13
+        ],
+        "to": [
+          34,
+          -4
+        ]
+      },
+      {
+        "name": "Ung Thành",
+        "han": "瓮城",
+        "from": [
+          -12,
+          -27
+        ],
+        "to": [
+          12,
+          -15
+        ]
+      },
+      {
+        "name": "Mã Thị",
+        "han": "馬市",
+        "from": [
+          -24,
+          -46
+        ],
+        "to": [
+          24,
+          -28
+        ]
+      }
+    ]
+  },
+  "sky": {
+    "top": "#5a86b4",
+    "middle": "#a6c0d4",
+    "horizon": "#ece2c8"
+  },
+  "fog": {
+    "color": "#d8d6c8",
+    "near": 30,
+    "far": 130
+  },
+  "light": {
+    "skyColor": "#f6f0e0",
+    "groundColor": "#6a5a40",
+    "hemiIntensity": 0.72,
+    "sunColor": "#ffe6b8",
+    "sunIntensity": 0.95,
+    "sunPosition": [
+      24,
+      26,
+      18
+    ]
+  },
+  "ground": {
+    "size": 160,
+    "color": "#8a7a56",
+    "brickHue": 40,
+    "pattern": "gach"
+  },
+  "terrain": {
+    "enabled": true,
+    "center": [
+      0,
+      -6
+    ],
+    "size": 220,
+    "cell": 2.5,
+    "plateaus": [
+      {
+        "from": [
+          -46,
+          -15
+        ],
+        "to": [
+          46,
+          0
+        ],
+        "y": 0,
+        "pave": false,
+        "blend": 5
+      },
+      {
+        "from": [
+          -16,
+          0
+        ],
+        "to": [
+          16,
+          42
+        ],
+        "y": 0,
+        "pave": false,
+        "blend": 7
+      },
+      {
+        "from": [
+          -30,
+          0
+        ],
+        "to": [
+          -16,
+          10
+        ],
+        "y": 0,
+        "pave": false,
+        "blend": 5
+      },
+      {
+        "from": [
+          -24,
+          -46
+        ],
+        "to": [
+          24,
+          -15
+        ],
+        "y": 0,
+        "pave": false,
+        "blend": 6
+      }
+    ],
+    "peaks": [
+      {
+        "x": -40,
+        "z": -42,
+        "r": 30,
+        "h": 22
+      },
+      {
+        "x": 40,
+        "z": -44,
+        "r": 30,
+        "h": 24
+      },
+      {
+        "x": 0,
+        "z": -72,
+        "r": 30,
+        "h": 30
+      },
+      {
+        "x": -46,
+        "z": 24,
+        "r": 26,
+        "h": 16
+      },
+      {
+        "x": 46,
+        "z": 22,
+        "r": 26,
+        "h": 14
+      },
+      {
+        "x": -66,
+        "z": -8,
+        "r": 20,
+        "h": 18
+      },
+      {
+        "x": 66,
+        "z": -10,
+        "r": 20,
+        "h": 20
+      }
+    ],
+    "noise": {
+      "seed": 7,
+      "amp": 1.2,
+      "scale": 20
+    },
+    "edge": {
+      "radius": 92,
+      "width": 16,
+      "y": -30,
+      "wobble": 8
+    },
+    "blend": 6,
+    "colors": {
+      "grass": [
+        "#7d7a46",
+        "#8e8a52",
+        "#6f6e40"
+      ],
+      "dirt": "#8a7350",
+      "rock": "#8a8276",
+      "highRock": "#a8a092",
+      "highFrom": 16
+    },
+    "slopeDirt": 18,
+    "slopeRock": 32,
+    "stairs": [],
+    "grass": {
+      "density": 4,
+      "colors": [
+        "#7d7a46",
+        "#a39a5c"
+      ]
+    },
+    "rocks": {
+      "density": 8,
+      "color": "#968e80"
+    },
+    "waterfalls": [],
+    "streams": []
+  },
+  "farMountains": {
+    "layers": [
+      {
+        "radius": 160,
+        "height": 46,
+        "color": "#7f93a4",
+        "peaks": 11,
+        "width": 1.4,
+        "spurs": 2
+      },
+      {
+        "radius": 230,
+        "height": 62,
+        "color": "#a8b6c2",
+        "peaks": 9,
+        "width": 1.8,
+        "spurs": 1
+      }
+    ],
+    "base": -30
+  },
+  "cloudSea": {
+    "radius": 420,
+    "y": -18,
+    "color": "#efece2"
+  },
+  "walls": {
+    "enabled": false,
+    "style": "gach",
+    "color": "#686c67",
+    "brickHue": 200,
+    "capColor": "#8a8a82",
+    "height": 6,
+    "thickness": 1.2,
+    "windows": 0,
+    "brickSat": 6
+  },
+  "wallSegments": [
+    {
+      "from": [
+        -84,
+        -10
+      ],
+      "to": [
+        -34.5,
+        -10
+      ],
+      "height": 6,
+      "thickness": 1.2,
+      "follow": true
+    },
+    {
+      "from": [
+        34.5,
+        -10
+      ],
+      "to": [
+        84,
+        -10
+      ],
+      "height": 6,
+      "thickness": 1.2,
+      "follow": true
+    },
+    {
+      "from": [
+        -12,
+        -15
+      ],
+      "to": [
+        -12,
+        -27
+      ],
+      "height": 6,
+      "thickness": 1.2,
+      "gate": {
+        "at": -21,
+        "width": 4
+      }
+    },
+    {
+      "from": [
+        -12,
+        -27
+      ],
+      "to": [
+        12,
+        -27
+      ],
+      "height": 6,
+      "thickness": 1.2
+    },
+    {
+      "from": [
+        12,
+        -27
+      ],
+      "to": [
+        12,
+        -15
+      ],
+      "height": 6,
+      "thickness": 1.2
+    }
+  ],
+  "paths": [
+    {
+      "from": [
+        0,
+        42
+      ],
+      "to": [
+        0,
+        -15
+      ],
+      "width": 4
+    },
+    {
+      "from": [
+        0,
+        -15
+      ],
+      "to": [
+        0,
+        -21
+      ],
+      "width": 4
+    },
+    {
+      "from": [
+        0,
+        -21
+      ],
+      "to": [
+        -16,
+        -21
+      ],
+      "width": 4
+    },
+    {
+      "from": [
+        -16,
+        -21
+      ],
+      "to": [
+        -16,
+        -36
+      ],
+      "width": 4
+    },
+    {
+      "from": [
+        -16,
+        -36
+      ],
+      "to": [
+        8,
+        -36
+      ],
+      "width": 4
+    },
+    {
+      "from": [
+        -40,
+        -3
+      ],
+      "to": [
+        40,
+        -3
+      ],
+      "width": 3
+    },
+    {
+      "from": [
+        -6,
+        5
+      ],
+      "to": [
+        -18,
+        5
+      ],
+      "width": 2.5
+    }
+  ],
+  "buildingStyle": {
+    "path": "#9c9282",
+    "stone": "#8f877a",
+    "pillar": "#6a3a28",
+    "base": "#8f877a",
+    "ridge": "#3c3a36",
+    "eave": "#3c3a36",
+    "heightScale": 1
+  },
+  "buildings": [
+    {
+      "id": "kho-luong",
+      "x": 10,
+      "z": 16,
+      "w": 8,
+      "d": 6,
+      "rotY": 270,
+      "title": "Kho lương",
+      "roofColor": "#4a4a46",
+      "kind": "nha-nho"
+    },
+    {
+      "id": "khuong-nu-tu",
+      "x": -23,
+      "z": 5,
+      "w": 6,
+      "d": 5,
+      "rotY": 90,
+      "title": "Khương Nữ Từ",
+      "roofColor": "#4a4a46",
+      "kind": "nha-nho"
+    }
+  ],
+  "gates": [],
+  "water": [],
+  "props": [
+    {
+      "kind": "quan-thanh",
+      "x": 0,
+      "z": -10,
+      "text": "長城"
+    },
+    {
+      "kind": "dich-lau",
+      "x": -30,
+      "z": -10
+    },
+    {
+      "kind": "dich-lau",
+      "x": 30,
+      "z": -10
+    },
+    {
+      "kind": "phong-hoa",
+      "x": -40,
+      "z": -42
+    },
+    {
+      "kind": "phong-hoa",
+      "x": 40,
+      "z": -44
+    },
+    {
+      "kind": "phong-hoa",
+      "x": 0,
+      "z": -72
+    },
+    {
+      "kind": "phong-hoa",
+      "x": -66,
+      "z": -8
+    },
+    {
+      "kind": "phong-hoa",
+      "x": 66,
+      "z": -10
+    },
+    {
+      "kind": "tho-bich",
+      "x": 10.4,
+      "z": -21,
+      "rotY": 270,
+      "text": "黃河遠上白雲間"
+    },
+    {
+      "kind": "tho-bich",
+      "x": 0,
+      "z": -25.6,
+      "text": "不教胡馬度陰山"
+    },
+    {
+      "kind": "soai-truong",
+      "x": -10,
+      "z": 14,
+      "rotY": 90
+    },
+    {
+      "kind": "leu",
+      "x": -11,
+      "z": 26
+    },
+    {
+      "kind": "leu",
+      "x": -11,
+      "z": 32
+    },
+    {
+      "kind": "leu",
+      "x": 11,
+      "z": 26
+    },
+    {
+      "kind": "leu",
+      "x": 11,
+      "z": 32
+    },
+    {
+      "kind": "leu",
+      "x": 11,
+      "z": 6
+    },
+    {
+      "kind": "leu",
+      "x": -11,
+      "z": 38
+    },
+    {
+      "kind": "lua-trai",
+      "x": 5,
+      "z": 28
+    },
+    {
+      "kind": "co",
+      "x": -5,
+      "z": 12,
+      "text": "帥"
+    },
+    {
+      "kind": "co",
+      "x": -6,
+      "z": -1.8,
+      "text": "長"
+    },
+    {
+      "kind": "co",
+      "x": 6,
+      "z": -1.8,
+      "text": "城"
+    },
+    {
+      "kind": "sap-o",
+      "x": -6,
+      "z": -32
+    },
+    {
+      "kind": "sap-o",
+      "x": 6,
+      "z": -32
+    },
+    {
+      "kind": "sap-o",
+      "x": -6,
+      "z": -41
+    },
+    {
+      "kind": "sap-o",
+      "x": 6,
+      "z": -41
+    },
+    {
+      "kind": "ngua",
+      "x": 15,
+      "z": -31,
+      "rotY": 90
+    },
+    {
+      "kind": "ngua",
+      "x": 15,
+      "z": -35,
+      "rotY": 90
+    },
+    {
+      "kind": "ngua",
+      "x": 15,
+      "z": -39,
+      "rotY": 270
+    },
+    {
+      "kind": "ban-tra",
+      "x": -12,
+      "z": -42
+    },
+    {
+      "kind": "da-thai-ho",
+      "x": -20,
+      "z": 8,
+      "scale": 0.9
+    }
+  ],
+  "trees": {
+    "yard": [
+      {
+        "kind": "tung",
+        "x": 8,
+        "z": 38,
+        "scale": 1.2
+      }
+    ],
+    "groves": [
+      {
+        "kind": "bui",
+        "x": -34,
+        "z": 20,
+        "w": 18,
+        "d": 22,
+        "count": 16,
+        "collide": false
+      },
+      {
+        "kind": "bui",
+        "x": 34,
+        "z": 20,
+        "w": 18,
+        "d": 22,
+        "count": 16,
+        "collide": false
+      },
+      {
+        "kind": "bui",
+        "x": -34,
+        "z": -32,
+        "w": 16,
+        "d": 14,
+        "count": 12,
+        "collide": false
+      },
+      {
+        "kind": "bui",
+        "x": 34,
+        "z": -32,
+        "w": 16,
+        "d": 14,
+        "count": 12,
+        "collide": false
+      },
+      {
+        "kind": "tung",
+        "x": -30,
+        "z": -38,
+        "w": 16,
+        "d": 12,
+        "count": 5,
+        "collide": false
+      },
+      {
+        "kind": "tung",
+        "x": 30,
+        "z": -38,
+        "w": 16,
+        "d": 12,
+        "count": 5,
+        "collide": false
+      },
+      {
+        "kind": "tung",
+        "x": -36,
+        "z": 24,
+        "w": 14,
+        "d": 18,
+        "count": 5,
+        "collide": false
+      }
+    ],
+    "ring": {
+      "count": 0,
+      "radius": 25,
+      "spread": 6,
+      "scaleMin": 1.6,
+      "scaleMax": 2.4
+    },
+    "seed": 53
+  },
+  "floating": {
+    "islands": [],
+    "clouds": {
+      "count": 0,
+      "height": 26,
+      "radius": 60,
+      "speed": 0.6,
+      "color": "#d9dce8"
+    }
+  },
+  "well": {
+    "enabled": false
+  },
+  "npcs": [],
+  "gameTables": [],
+  "camera": {
+    "fov": 55,
+    "minDist": 3,
+    "maxDist": 24,
+    "near": {
+      "dist": 4.2,
+      "pitch": 0.32
+    },
+    "far": {
+      "dist": 19,
+      "pitch": 0.72
+    }
+  },
+  "player": {
+    "start": [
+      0,
+      34.5
+    ]
+  },
+  "teleport": {
+    "enabled": true,
+    "center": [
+      0,
+      39
+    ],
+    "radius": 0,
+    "ringRadius": 4
+  },
+  "lessons": {
+    "radicals": false
+  },
+  "ramparts": [
+    {
+      "from": [
+        -30,
+        -10
+      ],
+      "to": [
+        -7,
+        -10
+      ],
+      "height": 6,
+      "width": 5,
+      "outSide": -1,
+      "ramps": [
+        {
+          "at": -12,
+          "dir": -1,
+          "length": 12,
+          "width": 3
+        }
+      ]
+    },
+    {
+      "from": [
+        7,
+        -10
+      ],
+      "to": [
+        30,
+        -10
+      ],
+      "height": 6,
+      "width": 5,
+      "outSide": -1,
+      "ramps": [
+        {
+          "at": 12,
+          "dir": 1,
+          "length": 12,
+          "width": 3
+        }
+      ]
+    }
+  ]
+}

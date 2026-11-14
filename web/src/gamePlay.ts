@@ -1,12 +1,14 @@
 /**
- * Ghép trò chơi khu giao lưu (R-GIAO-1, R-CO-1..3, R-DAU-1): ngồi vào bàn, camera nhìn xuống bàn, chạm ô → quân,
- * NPC đáp, hết ván → NPC nói qua khung thoại. Cùng tầng với `main.ts` (ghép lớp) — tách ra cho `main.ts` gọn.
- * HUD trong ván (lượt, điểm, câu hỏi Đấu chữ) chờ thiết kế (phiếu 2026-11-13-tro-choi-giao-luu).
+ * Ghép trò chơi khu giao lưu (R-GIAO-1, R-CO-1..3, R-DAU-1/2): ngồi vào bàn, camera nhìn xuống bàn, chạm ô → quân / chạm
+ * nghĩa, NPC đáp, hết ván → thẻ kết quả. Dựng `GameView` cho HUD (`ui/gameHud.ts`, thiết kế 2026-11-13.27). Cùng tầng
+ * với `main.ts` (ghép lớp) — tách ra cho `main.ts` gọn.
  */
 import * as THREE from 'three';
 import type { Colliders } from './collision/colliders';
 import { BLACK, Gomoku, WHITE, npcMove } from './games/gomoku';
-import { makeQuestions } from './games/charDuel';
+import { makeQuestions, meaningLabel, radicalDetail } from './games/charDuel';
+import { DuelRound } from './games/duelRound';
+import type { GameNpc, GameResult, GameView } from './ui/gameView';
 import { NPC_RADIUS, createNpc, type Npc } from './player/npc';
 import type { BoardPoint, GameTable } from './scene/gameTable';
 import type { SeatSpot } from './zones/seats';
@@ -20,13 +22,16 @@ export interface TableSeat extends SeatSpot {
   seat: number;
 }
 
-/** Lời NPC (R-CO-3, R-DAU-1). */
+/** Lời NPC (R-CO-3, R-DAU-1, R-DAU-2). `coThua` / `dauThua` = NPC thua (người thắng). */
 export const GAME_LINES = {
   coThua: 'Đạo hữu cao tay quá!',
   coThang: 'Ha, lần này đệ thắng rồi!',
   coHoa: 'Ngang tài ngang sức!',
   dauChuaHoc: 'Con hãy tới Rừng trúc tu luyện trước, học vài bộ thủ rồi lại đây đấu với lão.',
-  dauSapMo: 'Lão đang soạn đề đấu chữ, ít hôm nữa con quay lại nhé.',
+  dauChuaHocRoi: 'Vâng, con đi đây (rời bàn)',
+  dauThua: 'Khá lắm! Con nhớ bộ thủ chắc hơn lão tưởng.',
+  dauThang: 'Lần này lão hơn một chút. Ôn thêm rồi lại đấu nhé con.',
+  dauHoa: 'Ngang tay rồi — con với lão cùng đấu ván nữa chứ?',
 } as const;
 
 /** Phần của `PlayerController` mà trò chơi dùng (test thay bằng bản giả). */
@@ -44,10 +49,12 @@ export interface GamePlayHost {
   /** đặt hướng nhìn nhân vật (radian) */
   face(rotY: number): void;
   groundAt(x: number, z: number): number;
-  /** NPC `npcId` nói một câu qua khung thoại; đóng khung → `onClose` */
-  say(npcId: string, text: string, onClose: () => void): void;
+  /** NPC `npcId` nói một câu qua khung thoại (lựa chọn [choice], mặc định "Vâng"); đóng khung → `onClose` */
+  say(npcId: string, text: string, onClose: () => void, choice?: string): void;
   /** bộ thủ đã học (R-DAU-1) */
   learned(): ReadonlySet<string>;
+  /** tên NPC theo mã (thẻ kết quả, thẻ điểm) */
+  npcInfo?(npcId: string): { name: string; han?: string } | undefined;
 }
 
 interface Seated {
@@ -57,8 +64,14 @@ interface Seated {
   gomoku: Gomoku | null;
   /** NPC đang "nghĩ": còn bao nhiêu giây (R-CO-2) */
   npcWait: number;
-  /** đang hiện câu kết / câu thoại — không nhận chạm */
+  /** đang hiện câu thoại (Đấu chữ chưa học) — không nhận chạm */
   speaking: boolean;
+  /** ván Đấu chữ đang chơi */
+  round: DuelRound | null;
+  /** tỉ số phiên Ngũ Tử Kỳ: số ván thắng từ lúc ngồi (R-CO-3) */
+  wins: { you: number; npc: number };
+  /** thẻ kết quả ván vừa xong — chờ "Ván mới" / "Rời bàn" */
+  result: GameResult | null;
 }
 
 export class GamePlay {
@@ -139,7 +152,7 @@ export class GamePlay {
     p.position.set(at.x, at.y, at.z);
     this.host.face(at.rotY);
     p.toggleSit();
-    this.seated = { table, seat, gomoku: null, npcWait: 0, speaking: false };
+    this.seated = { table, seat, gomoku: null, npcWait: 0, speaking: false, round: null, wins: { you: 0, npc: 0 }, result: null };
     if (table.spec.kind === 'co') this.newGomoku();
     else this.startDuel();
     return true;
@@ -162,19 +175,49 @@ export class GamePlay {
     s.gomoku.reset();
     s.npcWait = 0;
     s.speaking = false;
+    s.result = null;
     s.table.setStones(s.gomoku.cells);
     s.table.highlight([]);
+    s.table.mark(null);
   }
 
-  /** R-DAU-1: chưa học bộ nào → câu thoại, không có ván. Đấu chữ đủ cần HUD (chờ thiết kế) → tạm báo sắp mở. */
+  /** R-DAU-1: chưa học bộ nào → câu thoại + "Vâng, con đi đây (rời bàn)", không có ván; có → 10 câu (R-DAU-2). */
   private startDuel(): void {
     const s = this.seated;
     if (!s) return;
-    s.speaking = true;
-    const none = makeQuestions([...this.host.learned()]).length === 0;
-    this.host.say(s.table.spec.npc, none ? GAME_LINES.dauChuaHoc : GAME_LINES.dauSapMo, () => {
-      if (this.seated === s) s.speaking = false;
-    });
+    s.result = null;
+    const questions = makeQuestions([...this.host.learned()]);
+    if (questions.length === 0) {
+      s.speaking = true;
+      s.round = null;
+      s.table.showCard(null, s.seat);
+      this.host.say(
+        s.table.spec.npc,
+        GAME_LINES.dauChuaHoc,
+        () => {
+          if (this.seated === s) this.stand();
+        },
+        GAME_LINES.dauChuaHocRoi,
+      );
+      return;
+    }
+    s.round = new DuelRound(questions);
+    s.table.showCard(s.round.question?.radical.form ?? null, s.seat);
+  }
+
+  /** Rời bàn (nút "Rời bàn", phím Esc — R-GIAO-1): đứng dậy, ván bỏ, bàn dọn sạch. */
+  stand(): void {
+    if (!this.seated) return;
+    if (this.host.player.isSitting) this.host.player.toggleSit();
+    this.leave();
+  }
+
+  /** "Ván mới" trên thẻ kết quả (R-CO-3, R-DAU-2): bàn dọn, ván mới; vẫn ngồi. */
+  newRound(): void {
+    const s = this.seated;
+    if (!s?.result) return;
+    if (s.table.spec.kind === 'co') this.newGomoku();
+    else this.startDuel();
   }
 
   /** Đứng dậy / rời bàn: ván bỏ, bàn dọn sạch (R-GIAO-1). */
@@ -183,6 +226,7 @@ export class GamePlay {
     if (!s) return;
     s.table.setStones(new Uint8Array(169));
     s.table.highlight([]);
+    s.table.mark(null);
     s.table.showCard(null, s.seat);
     this.seated = null;
   }
@@ -203,10 +247,10 @@ export class GamePlay {
   playAt(pt: BoardPoint): boolean {
     const s = this.seated;
     const g = s?.gomoku;
-    if (!s || !g || s.speaking || g.result || g.turn !== BLACK || s.npcWait > 0) return false;
+    if (!s || !g || s.speaking || s.result || g.result || g.turn !== BLACK || s.npcWait > 0) return false;
     if (!g.play(pt.x, pt.y)) return false;
     s.table.setStones(g.cells);
-    s.table.highlight([]);
+    s.table.mark(pt); // chấm son: nước vừa đi
     if (g.result) this.endGomoku();
     else s.npcWait = 0.5 + Math.random() * 0.5; // R-CO-2: 0,5–1 giây
     return true;
@@ -217,17 +261,87 @@ export class GamePlay {
     return this.seated?.gomoku ?? null;
   }
 
+  /** Hết ván cờ (R-CO-3): 5 quân thắng sáng, cộng tỉ số phiên, thẻ kết quả. */
   private endGomoku(): void {
     const s = this.seated;
     const g = s?.gomoku;
     if (!s || !g?.result) return;
     s.table.highlight(g.result.line);
-    s.speaking = true;
+    s.table.mark(null);
     const w = g.result.winner;
-    const text = w === BLACK ? GAME_LINES.coThua : w === WHITE ? GAME_LINES.coThang : GAME_LINES.coHoa;
-    this.host.say(s.table.spec.npc, text, () => {
-      if (this.seated === s) this.newGomoku(); // R-CO-3: đóng thoại → ván mới, người đi trước
-    });
+    if (w === BLACK) s.wins.you++;
+    else if (w === WHITE) s.wins.npc++;
+    s.result = {
+      outcome: w === BLACK ? 'thang' : w === WHITE ? 'thua' : 'hoa',
+      you: s.wins.you,
+      npc: s.wins.npc,
+      line: w === BLACK ? GAME_LINES.coThua : w === WHITE ? GAME_LINES.coThang : GAME_LINES.coHoa,
+    };
+  }
+
+  /** Người chạm một nghĩa Đấu chữ (R-DAU-2: chạm là chọn). */
+  pick(option: number): boolean {
+    const s = this.seated;
+    if (!s?.round || s.result) return false;
+    return s.round.choose(option);
+  }
+
+  /** Hết 10 câu (R-DAU-2): thẻ kết quả với điểm ván. */
+  private endDuel(): void {
+    const s = this.seated;
+    const r = s?.round;
+    if (!s || !r) return;
+    const { nguoi, npc } = r.duel.score;
+    const outcome = nguoi > npc ? 'thang' : nguoi < npc ? 'thua' : 'hoa';
+    const line = outcome === 'thang' ? GAME_LINES.dauThua : outcome === 'thua' ? GAME_LINES.dauThang : GAME_LINES.dauHoa;
+    s.result = { outcome, you: nguoi, npc, line };
+    s.table.showCard(null, s.seat);
+  }
+
+  private npcOf(s: Seated): GameNpc {
+    const id = s.table.spec.npc;
+    const info = this.host.npcInfo?.(id);
+    return { id, name: info?.name ?? id, han: info?.han };
+  }
+
+  /** Dữ liệu HUD khi đang ngồi chơi; không ngồi / đang thoại "chưa học" → `null`. */
+  view(): GameView | null {
+    const s = this.seated;
+    if (!s || s.speaking) return null;
+    const npc = this.npcOf(s);
+    const g = s.gomoku;
+    if (g) {
+      const turn = s.result || g.result ? 'het' : s.npcWait > 0 || g.turn !== BLACK ? 'npc' : 'you';
+      return { kind: 'co', npc, you: s.wins.you, npcWins: s.wins.npc, turn, result: s.result };
+    }
+    const r = s.round;
+    const q = r?.question;
+    if (!r || !q) return null;
+    const cham = r.phase === 'cham' && !s.result;
+    const by = r.lastBy === 'npc' ? 'npc' : 'you';
+    const answer = `${q.radical.name} · ${q.radical.meaning}`;
+    let toast: { right: boolean; text: string } | null = null;
+    if (cham && by === 'you') toast = { right: r.lastRight, text: r.lastRight ? 'Đúng rồi! +1 điểm' : `Chưa đúng — ${answer}` };
+    else if (cham) toast = { right: r.lastRight, text: r.lastRight ? `${npc.name} đúng · +1` : `${npc.name} sai — ${answer}` };
+    return {
+      kind: 'dau-chu',
+      npc,
+      step: r.shown,
+      total: r.duel.questions.length,
+      marks: r.marks.slice(),
+      you: r.duel.score.nguoi,
+      npcScore: r.duel.score.npc,
+      answerer: q.answerer === 'npc' ? 'npc' : 'you',
+      form: q.radical.form,
+      detail: radicalDetail(q.radical),
+      options: q.options.map((m) => meaningLabel(m)),
+      phase: s.result ? 'het' : r.phase,
+      optionMarks: q.options.map((_, i) => (!cham ? null : i === q.answer ? 'dung' : i === r.picked ? 'sai' : 'mo')),
+      npcPick: cham && by === 'npc' ? r.picked : null,
+      toast,
+      scored: cham && r.lastRight ? by : null,
+      result: s.result,
+    };
   }
 
   /** Mỗi khung hình: NPC bàn cử động, NPC đi cờ khi hết giờ nghĩ, đứng dậy → bỏ ván. */
@@ -239,6 +353,14 @@ export class GamePlay {
       this.leave(); // kéo cần điều khiển / bấm Ngồi lần nữa → đứng dậy (R-DIEU-7)
       return;
     }
+    const r = s.round;
+    if (r && !s.result) {
+      const before = r.shown;
+      r.update(dt);
+      if (r.phase === 'het') this.endDuel();
+      else if (r.shown !== before) s.table.showCard(r.question?.radical.form ?? null, s.seat); // câu mới: lật thẻ
+      return;
+    }
     const g = s.gomoku;
     if (!g || s.npcWait <= 0) return;
     s.npcWait -= dt;
@@ -247,7 +369,7 @@ export class GamePlay {
     const m = npcMove(g.cells, WHITE);
     g.play(m.x, m.y);
     s.table.setStones(g.cells);
-    s.table.highlight(g.result ? [] : [m]); // vòng sáng nhỏ: nước NPC vừa đi
+    s.table.mark(m); // chấm son: nước NPC vừa đi
     if (g.result) this.endGomoku();
   }
 

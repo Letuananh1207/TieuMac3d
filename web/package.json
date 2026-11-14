@@ -14,7 +14,8 @@
     "fonts:han": "node scripts/subset-han.mjs",
     "fonts:app": "node scripts/fonts-app.mjs",
     "model:clean": "node scripts/model-clean.mjs",
-    "model:paint": "node scripts/model-paint.mjs"
+    "model:paint": "node scripts/model-paint.mjs",
+    "bench": "node scripts/bench.mjs"
   },
   "dependencies": {
     "@fontsource/be-vietnam-pro": "5.2.5",

@@ -1,0 +1,102 @@
+/* Trò chuyện kênh chung (R-CHAT-1..3) — thiết kế 2026-11-14.1, design/source/Chat-*.dc.html; DOM: ui/chatPanel.ts, ui/chatBubbles.ts */
+#chat{--kb:0px}
+#chat .han,#chatBubbles .han{font-family:var(--han);font-weight:700}
+#chat .jade{color:var(--jade)}
+
+/* nút "Trò chuyện": tròn 48 kính, bên phải ngay trên cụm hành động */
+#chatBtn{position:fixed;z-index:5;right:20px;bottom:calc(var(--sa-bottom) + 204px);display:flex;flex-direction:column;align-items:center;gap:3px}
+#chatBtn button{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-sizing:border-box;padding:0;color:var(--slate);background:rgba(244,247,246,.86);border:1px solid var(--frost-line);outline:1px solid var(--frost-outline);box-shadow:var(--shadow-hud);-webkit-backdrop-filter:var(--blur-hud);backdrop-filter:var(--blur-hud);transition:transform .08s;touch-action:manipulation}
+#chatBtn button:active{transform:scale(.94);background:rgba(214,222,220,.95);outline-color:rgba(36,50,58,.22);box-shadow:none}
+#chatBtn .lbl{font-size:11px;font-weight:700;color:var(--slate);background:rgba(244,247,246,.82);border-radius:999px;padding:1px 7px;white-space:nowrap}
+#chatBtn .key{display:none;min-width:22px;box-sizing:border-box;padding:1px 7px;border-radius:5px;font:700 11px/16px var(--ui);text-align:center;color:var(--slate);background:rgba(244,247,246,.92);border:1px solid var(--frost-outline);box-shadow:inset 0 -2px 0 rgba(36,50,58,.18)}
+@media (hover:hover) and (pointer:fine){#chatBtn .lbl{display:none}#chatBtn .key{display:block}}
+
+/* khung thu gọn: 3 tin cuối trên joystick, không bắt chạm (R-DIEU-1); im lặng 10 s → mờ hết (R-CHAT-3) */
+#chatFeed{position:fixed;z-index:3;left:16px;bottom:calc(var(--sa-bottom) + 184px);width:min(250px,calc(100% - 120px));display:flex;flex-direction:column;align-items:flex-start;gap:4px;pointer-events:none;opacity:0;transition:opacity .6s}
+#chatFeed.show{opacity:1;transition-duration:.2s}
+.cf-line{max-width:100%;box-sizing:border-box;padding:3px 9px;border-radius:8px;background:rgba(244,247,246,.78);font-size:13px;line-height:1.35;color:var(--slate);overflow-wrap:anywhere}
+.cf-line:nth-last-child(3){opacity:.55}
+.cf-line:nth-last-child(2){opacity:.8}
+.cf-npc{background:rgba(242,234,218,.88)}
+
+/* bận (bài học, thoại, bàn chơi, bản đồ, màn tải) hoặc đang gõ → ẩn nút + khung thu gọn */
+#chat.busy #chatBtn,#chat.busy #chatFeed,#chat.open #chatBtn,#chat.open #chatFeed{display:none}
+body.chatting #joy,body.chatting #joyGhost,body.chatting #actions,body.chatting .learn,body.chatting #talk,body.chatting #seat,body.chatting #board,body.chatting #guide,body.chatting #readBook{display:none}
+
+/* khung mở rộng: kính .93 bo 16, cao 260, đáy cách ô nhập 8 */
+#chatBox{position:fixed;z-index:8;left:12px;right:12px;bottom:calc(var(--kb) + 72px);height:min(260px,calc(100% - var(--kb) - 84px - var(--sa-top)));box-sizing:border-box;background:rgba(244,247,246,.93);border:1px solid rgba(255,255,255,.95);outline:1px solid var(--frost-outline);border-radius:16px;box-shadow:var(--shadow-card);-webkit-backdrop-filter:var(--blur-card);backdrop-filter:var(--blur-card);display:flex;flex-direction:column;overflow:hidden;color:var(--slate)}
+#chatBox[hidden],#chatForm[hidden]{display:none}
+.cx-head{height:44px;flex:none;padding:0 4px 0 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(36,50,58,.1)}
+.cx-head .dot{width:6px;height:6px;border-radius:50%;background:var(--gold)}
+.cx-head h2{margin:0;font-size:15px;font-weight:700}
+.cx-head .han{font-size:14px;color:var(--jade)}
+.cx-head .grow{flex:1}
+.cx-close{width:44px;height:44px;border:0;padding:0;background:transparent;color:var(--slate);display:flex;align-items:center;justify-content:center}
+.cx-body{position:relative;flex:1;min-height:0}
+.cx-body::before{content:"";position:absolute;z-index:1;left:0;right:0;top:0;height:24px;background:linear-gradient(rgba(244,247,246,.96),rgba(244,247,246,0));pointer-events:none}
+.cx-scroll{position:absolute;inset:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:rgba(36,50,58,.25) transparent;display:flex;flex-direction:column}
+.cx-scroll::-webkit-scrollbar{width:3px}
+.cx-scroll::-webkit-scrollbar-thumb{border-radius:2px;background:rgba(36,50,58,.25)}
+.cx-list{list-style:none;margin:auto 0 0;padding:4px 8px 8px;display:flex;flex-direction:column;gap:2px}
+.cx-msg{padding:5px 8px;border-radius:10px}
+.cx-player{background:rgba(43,84,70,.10)}
+.cx-npc{background:rgba(242,234,218,.85)}
+.cx-who{display:flex;gap:6px;align-items:baseline;font-size:13px}
+.cx-time{font-size:11px;color:rgba(36,50,58,.7)}
+.cx-say{font-size:14px;line-height:1.4;overflow-wrap:anywhere}
+.cx-say .han{color:var(--jade)}
+.cx-empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center;font-size:13px}
+.cx-empty b{font-size:14px}
+.cx-empty[hidden]{display:none}
+.cx-new{position:absolute;z-index:2;left:50%;bottom:10px;transform:translateX(-50%);height:32px;padding:0 12px;font:700 13px var(--ui);border-radius:999px;border:0;background:var(--jade);color:#fff;box-shadow:0 4px 12px rgba(43,84,70,.3);display:flex;align-items:center;gap:6px}
+.cx-new[hidden]{display:none}
+
+/* ô nhập + Gửi: thanh kính .96 sát mép trên bàn phím */
+#chatForm{position:fixed;z-index:8;left:0;right:0;bottom:var(--kb);box-sizing:border-box;padding:10px calc(var(--sa-right) + 12px) calc(10px + var(--form-sa,0px)) calc(var(--sa-left) + 12px);background:rgba(244,247,246,.96);border-top:1px solid rgba(36,50,58,.14);display:flex;flex-direction:column;gap:6px}
+.cx-row{display:flex;gap:8px;align-items:center}
+.cx-field{position:relative;flex:1;min-width:0;height:44px;box-sizing:border-box;border-radius:12px;background:#fff;border:2px solid var(--jade);display:flex;align-items:center}
+.cx-field.bad{border-color:var(--lacquer)}
+.cx-field input{flex:1;min-width:0;height:100%;box-sizing:border-box;padding:0 12px;border:0;outline:0;background:transparent;font:500 15px var(--ui);color:var(--slate)}
+.cx-field input::placeholder{color:rgba(36,50,58,.55)}
+.cx-count{position:absolute;right:10px;font-size:12px;font-weight:700;color:var(--slate);background:#fff;padding-left:4px}
+.cx-count[hidden]{display:none}
+.cx-field:has(.cx-count:not([hidden])) input{padding-right:56px}
+.cx-field.bad .cx-count{color:var(--lacquer)}
+.cx-send{flex:none;height:44px;padding:0 14px;font:700 15px var(--ui);border-radius:12px;border:0;background:var(--jade);color:#fff;box-shadow:var(--shadow-primary);display:flex;align-items:center;gap:6px}
+.cx-send:disabled{background:rgba(43,84,70,.35);box-shadow:none}
+.cx-send .spin{display:none}
+#chatForm.wait .cx-send svg:first-child{display:none}
+#chatForm.wait .cx-send .spin{display:block;animation:cx-spin .75s linear infinite}
+@keyframes cx-spin{to{transform:rotate(360deg)}}
+.cx-note{font-size:12px;font-weight:700;padding-left:4px}
+.cx-note:empty{display:none}
+.cx-note.bad{color:var(--lacquer)}
+
+/* ngang (bàn phím ≈ 200): khung gọn trái trên, rộng 470, cao 104, tin một dòng; cột phải 44 có × và 傳音 dọc */
+@media (orientation:landscape) and (max-height:600px){
+  #chatBtn{right:calc(var(--sa-right) + 16px);bottom:214px}
+  #chatFeed{left:calc(var(--sa-left) + 12px);bottom:145px;width:300px}
+  #chatBox{left:calc(var(--sa-left) + 12px);right:auto;top:calc(var(--sa-top) + 12px);bottom:auto;width:min(470px,calc(100% - var(--sa-left) - var(--sa-right) - 24px));height:max(56px,min(104px,calc(100% - var(--kb) - 88px - var(--sa-top))));flex-direction:row-reverse;border-radius:14px;box-shadow:0 8px 22px rgba(36,50,58,.2)}
+  .cx-head{width:44px;height:auto;flex-direction:column;padding:0 0 6px;gap:2px;border-bottom:0;border-left:1px solid rgba(36,50,58,.1)}
+  .cx-head .dot,.cx-head h2{display:none}
+  .cx-head .grow{order:1}
+  .cx-head .han{order:2;writing-mode:vertical-rl;font-size:13px}
+  .cx-msg{padding:2px 8px;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .cx-who,.cx-say{display:inline;font-size:13px}
+  .cx-who{margin-right:6px}
+  .cx-time{display:none}
+}
+
+/* bong bóng trên đầu (R-CHAT-2): đáy đuôi ở điểm neo; bo 12, chữ 14, rộng ≤ 168 (ngang 200) */
+#chatBubbles{position:fixed;inset:0;z-index:4;pointer-events:none;overflow:hidden}
+.cb{position:absolute;transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;--bg:rgba(244,247,246,.94);--line:1px solid var(--frost-outline)}
+.cb-box{max-width:168px;box-sizing:border-box;padding:7px 11px;border-radius:12px;font-size:14px;line-height:1.4;font-weight:500;color:var(--slate);box-shadow:0 4px 12px rgba(36,50,58,.18);overflow-wrap:anywhere;transform-origin:50% 100%;background:var(--bg);border:var(--line)}
+.cb-box .han{color:var(--jade)}
+.cb-tail{width:12px;height:12px;margin-top:-7px;transform:rotate(45deg);background:var(--bg);border-right:var(--line);border-bottom:var(--line)}
+.cb-player{--bg:rgba(244,247,246,.95);--line:1.5px solid var(--jade)}
+.cb-npc{--bg:#f2eada;--line:1px solid rgba(212,166,74,.75)}
+.cb-stem{width:1.5px;height:0;background:var(--jade);opacity:.7;position:relative}
+.cb.lifted .cb-tail{display:none}
+.cb.lifted .cb-stem::after{content:"";position:absolute;left:50%;bottom:-3px;width:6px;height:6px;margin-left:-3px;border-radius:50%;background:var(--jade)}
+.cb:not(.lifted) .cb-stem{display:none}
+@media (orientation:landscape) and (max-height:600px){.cb-box{max-width:200px;padding:6px 10px;font-size:13px}}

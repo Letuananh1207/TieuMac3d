@@ -29,6 +29,22 @@ Ví dụ: đủ 6 khu phẳng `docs/phieu_thiet_ke/2026-11-11-tong-mon-dot-1-mau
 | `trees.groves[].kind: "truc-mao"` | — | trúc mao 12–18 m, 4 thân / khóm, đung đưa; màu `trees.mao` (thân, thân già, lá). ≈ 60 tam giác / thân — giữ ≤ 1 500 thân thấy được |
 | `buildings[].kind: "dinh"` | `{ "kind": "dinh", "sides": 6, "w": 5, "d": 5, "roofColor": "#56635b" }` | đình mái chóp không tường (đi vào được, chỉ chân cột chặn); `sides` 4 / 6 |
 | `walls.enabled` · `well.enabled` | `false` | cảnh vùng: không tường bao (đoạn `wallSegments` vẫn dựng), không giếng |
+| `bridges` (2026-11-14) | `{ "kind": "vom", "x": 0, "z": -8, "length": 9, "width": 5, "rise": 1.5, "water": true }` | cầu đi được (R-VA-1): `vom` cầu vòm lưng gù (lỗ vòm, dốc ≤ 35°) · `da` cầu đá phẳng lan can cẩm thạch (cao `rise` 0,3) · `treo` cầu treo ván + dây võng. Chạy dọc z khi `rotY` 0 (bội 90). Hai đầu trên đất phẳng cùng độ cao; nước: hai ao chừa khe đúng bề rộng cầu, `water: true` vẽ nước trong khe. Vực cho cầu treo: `terrain.peaks` có `h` âm (hố) giữa hai bục |
+| `flocks` | `{ "x": 0, "z": -10, "y": 22, "radius": 26, "count": 7, "speed": 4 }` | đàn hạc bay vòng, không va chạm; 3 draw call / đàn |
+| `boats` | `{ "path": [[-24, -8.4], [24, -8.4]], "speed": 1.1 }` | thuyền ô bồng trôi qua lại dọc đường (đi được dưới lỗ cầu vòm), không va chạm; `canopy` màu mui |
+| `props` vùng | `hac-dong` · `rua-dong` · `lac-da` (cúi gặm) · `hang` (vách + cửa hang + bích hoạ, rộng 8,8 m) | có va chạm |
+| `wallSegments[].follow` | `true` | tường gạch bám địa hình (khúc 2 m, răng cưa) — Trường Thành; không cần bục phẳng |
+| cổng tường `kind: "thanh"` | `{ "side": "nam", "at": 0, "width": 6, "kind": "thanh", "signs": { "nam": "午門" } }` | cổng thành: cửa vòm, cánh son đinh vàng, lầu cổng hai mái (tường vôi `voi`) |
+| `channels` (Rừng trúc) | `{ "points": [[13.5, -11], [10, -9], [8, -6.5]], "width": 0.6, "cups": 9, "speed": 0.4 }` | mương khúc thuỷ uốn mềm, thành đá, chén sơn trôi; không va chạm |
+| props Rừng trúc | `cong-truc` · `gia-the` · `bo-truc` · `den-truc` · `da-khac` (`text`) · `ngong` · `bo-doan` | cổng trúc, giá phơi thẻ, bó trúc, đèn trúc, đá khắc chữ, ngỗng bơi, chỗ ngồi văn nhân |
+| `water[].sunk` · `open` · `shape` | `{ "x": 0, "z": -8, "w": 20, "d": 8, "sunk": 1, "open": ["bac"] }` · `{ "r": 12, "shape": "trang", "rotY": 180 }` | kênh có kè (đáy kênh = bục `y` −1, `blend` 0,05, lùi vào 1 m; ô lưới 1 m) · cạnh không kè chỗ kênh nối · hồ lưỡi liềm |
+| `galleries` (Giang Nam) | `{ "from": [-28, -2.5], "to": [-4, -2.5], "waterSide": -1 }` | hiên lang bồng: cột, mái một dốc, ghế tựa, đèn lồng; có va chạm |
+| `boats[].moored` · `cargo` · `bridges[].arch: "vuong"` · `sunk` | — | thuyền neo, thuyền chở hàng (1 draw call / thuyền) · cầu đá lỗ vuông · nước dưới cầu thấp hơn |
+| props Giang Nam | `ben-nuoc` · `gian-den` · `vo-ruou` · `chau-sen` · `sao-ao` · `meo` · `cho` | bậc xuống nước (kè 1 m), giàn đèn đố, vò rượu, chậu sen, sào phơi, mèo, chó |
+| Bồng Lai | cây `dao` (`trees.peach`) · cầu `tau` (một đầu hẫng) · `mirages` · props `phap-bao` (`text` 葫扇板笛荷籃劍鼓) · `lau-thuyen` · `cu-ngao` · `hac` · `huou` · `props[].y` (độ cao tuyệt đối) | vực giữa đảo: `peaks` `h` âm |
+| Trường Thành | `ramparts` (mặt tường đi được + mã đạo, R-VA-1) · cây `bui` (`trees.autumn`) · `walls.brickSat` · props `dich-lau` · `quan-thanh` · `phong-hoa` · `leu` · `soai-truong` · `lua-trai` · `ngua` · `tho-bich` | `{ "from": [-30, -10], "to": [-7, -10], "height": 6, "outSide": -1, "ramps": [{ "at": -12, "dir": -1 }] }` |
+| Tử Cấm Thành | `terrain.plateaus[].rail` (lan can đá theo mép bục, chừa bậc) · props `ngu-lo` · `ngo-mon` · `su-tu-dong` · `khao-an` · `gia-sach` | Tam Đài: 3 bục lồng `blend` 1, bục cao liệt kê trước |
+| Con đường tơ lụa | `terrain.dunes` (cồn sống sắc) · `caravans` (đoàn lạc đà) · `walls.style: "dat"` (đất nện) · props `vach-hang` · `lau-vach` · `nha-dat` · `leu-vai` · `lau-say` · `cong-quan` · `phong-hoa-dat` | `{ "x": 52, "z": -10, "len": 56, "h": 16, "rotY": 90, "width": 44 }` |
 
 **Nhiều cảnh** (mục 2026-11-13.6): `scene.json` = tông môn; mỗi vùng một file `design/scene/<mã vùng>.json` (vd.
 `rung-truc.json`), ghép lên khuôn mặc định như `scene.json` — danh sách (`buildings`, `trees.yard`…) ghi rõ `[]` nếu

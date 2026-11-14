@@ -13,7 +13,7 @@
 		<true/>
 	</dict>
 	<key>CFBundleDisplayName</key>
-	<string>Học Xá 3D</string>
+	<string>Tiểu Mặc 3D</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>

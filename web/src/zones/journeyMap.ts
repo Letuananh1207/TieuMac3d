@@ -13,8 +13,8 @@ export interface MapPlace {
   r: number;
 }
 
-/** `mo` đã mở, đi được · `oDay` đang ở đây · `sapMo` mở nhưng chưa có cảnh · `khoa` chưa mở. */
-export type PlaceState = 'mo' | 'oDay' | 'sapMo' | 'khoa';
+/** `mo` đi được · `oDay` đang ở đây · `sapMo` chưa có cảnh. Không khoá vùng theo tiến độ (R-HANH-1). */
+export type PlaceState = 'mo' | 'oDay' | 'sapMo';
 
 export interface JourneyMapData {
   width: number;
@@ -46,14 +46,13 @@ export function placeScene(placeId: string, home: string): string {
 }
 
 /**
- * Trạng thái từng nơi (R-HANH-1/2). `here` = mã cảnh đang ở; `open` = vùng đã mở (Flutter); `hasScene` = vùng có cảnh.
- * Tông môn luôn mở.
+ * Trạng thái từng nơi (R-HANH-1/2). `here` = mã cảnh đang ở; `hasScene` = vùng có cảnh. Tông môn luôn đi được;
+ * vùng có cảnh đi được, chưa có cảnh là "sắp mở" — không khoá theo tiến độ học.
  */
 export function placeStates(
   places: MapPlace[],
   here: string,
   home: string,
-  open: readonly string[],
   hasScene: ReadonlySet<string>,
 ): Record<string, PlaceState> {
   const out: Record<string, PlaceState> = {};
@@ -61,7 +60,6 @@ export function placeStates(
     const scene = placeScene(p.id, home);
     if (scene === here) out[p.id] = 'oDay';
     else if (scene === home) out[p.id] = 'mo';
-    else if (!open.includes(scene)) out[p.id] = 'khoa';
     else out[p.id] = hasScene.has(scene) ? 'mo' : 'sapMo';
   }
   return out;

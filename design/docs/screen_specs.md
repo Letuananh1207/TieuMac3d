@@ -31,7 +31,9 @@ Mẫu một mục:
     phần " · <khu>" màu `jade`; không xuống dòng (tên dài nhất "Văn Uyên Tông · Linh Dược Viên" vẫn một dòng).
   - Nút góc nhìn: phải 16, trên safe + 8; cao 44, pill, padding 0 16, chữ 13/700.
   - ~~Thẻ mời~~ — **đã bỏ** (2026-11-11.4): học bằng nút nổi trên vật trong nhà, xem mục "Trong nhà".
-  - Nhãn tên trên đầu nhân vật: cao 24, pill, padding 0 10, `frost` .88, chấm vàng 4 px + chữ 12/700 `slate`.
+  - Nhãn tên trên đầu nhân vật (từ 2026-11-14.3): **chữ trơn** kiểu game nhập vai — không nền, không khung, không chấm;
+    chữ 13/700 ngà #F4F1EA, giãn .02em, viền mực `slate` .6 px + bóng 0 1 2 `slate` .85 và quầng 6 px .45. Ẩn khi
+    chữ nhập định hiện, khi bản đồ truyền tống / màn tải / bài học phủ cảnh (L-11).
   - Dòng hướng dẫn lần đầu: trái/phải 24, dưới 186 (trên vùng joystick); padding 10 14, radius 12, `frost` .84,
     chữ 13 line-height 1.5 giữa.
   - Joystick gợi ý (chưa chạm): tròn 110, trái 36, dưới safe + 28; nền `frost-weak`, núm 40 `jade` 85 %, chữ
@@ -140,7 +142,14 @@ Mẫu một mục:
   mỗi nơi một vùng đất tô màu riêng, ranh giới nét mực nâu, đúng hướng địa lý, không đường nối — Tơ lụa tây bắc,
   Trường Thành bắc, Tử Cấm Thành đông bắc, Rừng trúc tây nam, Văn Uyên Tông giữa (triện 家), Giang Nam đông nam, Bồng
   Lai đảo ngoài biển đông. Sông Hoàng Hà / Trường Giang chảy ra biển, la bàn 北 góc trên phải. Chữ trên giấy: Hán 92
-  Noto Serif SC `slate`, Việt 62 Be Vietnam Pro 700 `jade`, viền giấy 16 (đè lên màu khu).
+  Noto Serif SC `slate`, Việt 62 Be Vietnam Pro 700 `jade`, viền giấy 16 (đè lên màu khu). **Từ 2026-11-14.4**: mỗi khu một
+  mảng nhỏ (elip ≈ 410 × 370) giữa **đất chưa khám phá** (giấy nhạt gạch chéo, núi xám, sương) — chỗ cho nơi mới; biểu
+  tượng × 0,8, nhãn Hán 74 / Việt 50, vùng chạm r 130. **Từ 2026-11-14.5**: quan đạo toả từ Văn Uyên Tông tới mép từng
+  khu (hình sao, không thứ tự), đường biển sang Bồng Lai, đường cụt nét đứt đi vào sương (nơi mới sau này), Trường
+  Thành dọc rìa bắc. **Từ 2026-11-14.6**: nền là **các miền** (Tây Vực, Yên Vân, Kinh Kỳ, Trung Nguyên,
+  Ba Thục, Ngô Việt, Đông Hải; Mạc Bắc, Lĩnh Nam, Điền Nam chưa khám phá) — mỗi nơi chỉ là một điểm nhỏ trong miền
+  (biểu tượng × 0,6 trên đế giấy, tên Hán 56 / Việt 40, vùng chạm r 105); danh sách vùng ở `ban-do.json` `vung`. **Từ 2026-11-14.7**: trên giấy **chỉ chữ Việt** (không chữ Hán, không
+  triện); không còn đường toả về Văn Uyên Tông — chỉ đường biển và đường cụt vào vùng chưa khám phá.
 - **Lớp trạng thái** (code vẽ chồng lên giấy, theo `ban-do.json`; từ 2026-11-14.2 **không vòng tròn**): đã mở (không vẽ
   gì) · đang ở đây (ghim tròn đầu nhân vật chính `ban-do-nhan-vat.png`, viền ngọc lục + vàng, đuôi chỉ xuống, trên trái
   biểu tượng) · sắp mở (huy hiệu đồng hồ) · vừa chạm nơi sắp mở (viền huy hiệu đổi son, nhấp nháy 2 lần / 0,6 s). Không

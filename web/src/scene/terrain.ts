@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import type { Heightfield } from '../collision/heightfield';
 import { brickTexture, paveTileM } from './environment';
 import { lambert } from './materials';
+import { markDynamic } from './merge';
 import type { SceneSpec } from './spec';
 
 /** Sân lát nổi trên mặt đất một chút để không nhấp nháy (z-fighting). */
@@ -13,15 +14,21 @@ function hash(i: number, j: number): number {
 }
 
 /**
- * Lưới địa hình: mỗi tam giác một màu theo độ dốc + độ cao (flat shading, kiểu low-poly), một draw call.
- * Cách chia tam giác khớp `collision/heightfield.ts`. Trả về lưới để dò điểm chạm (chạm để đi).
+ * Địa hình chia thành mảnh `TERRAIN_TILE` × `TERRAIN_TILE` ô: mảnh ngoài khung nhìn không vẽ (three tự cắt bỏ theo khung
+ * bao từng mảnh). Một lưới liền ~45k tam giác thì mọi khung đều vẽ hết dù màn dọc chỉ nhìn ngang ~27° (bench 2026-11-14,
+ * kế hoạch 2026-11-14-muot-ma-nhu-game). Hình dáng, màu không đổi; thêm vài draw call cho các mảnh đang thấy.
  */
-export function addTerrain(scene: THREE.Scene, spec: SceneSpec, hf: Heightfield): THREE.Mesh {
+export const TERRAIN_TILE = 24;
+
+/**
+ * Lưới địa hình: mỗi tam giác một màu theo độ dốc + độ cao (flat shading, kiểu low-poly), chia mảnh `TERRAIN_TILE`.
+ * Cách chia tam giác khớp `collision/heightfield.ts`. Trả về nhóm các mảnh để dò điểm chạm (tia dò cần `recursive`).
+ */
+export function addTerrain(scene: THREE.Scene, spec: SceneSpec, hf: Heightfield): THREE.Group {
   const t = spec.terrain;
   const { nx, nz, cell, originX, originZ } = hf;
-  const tris = nx * nz * 2;
-  const pos = new Float32Array(tris * 9);
-  const col = new Float32Array(tris * 9);
+  let pos = new Float32Array(0);
+  let col = new Float32Array(0);
   const grass = t.colors.grass.map((c) => new THREE.Color(c));
   const dirt = new THREE.Color(t.colors.dirt);
   const rock = new THREE.Color(t.colors.rock);
@@ -62,22 +69,35 @@ export function addTerrain(scene: THREE.Scene, spec: SceneSpec, hf: Heightfield)
     }
   };
 
-  for (let j = 0; j < nz; j++) {
-    for (let i = 0; i < nx; i++) {
-      // a = (i, j), b = (i+1, j), c = (i, j+1), d = (i+1, j+1); tam giác (a, c, b) và (b, c, d) — mặt hướng lên
-      tri(i, j, i, j + 1, i + 1, j, i, j);
-      tri(i + 1, j, i, j + 1, i + 1, j + 1, i + 1, j);
+  const group = new THREE.Group();
+  markDynamic(group); // mergeStatic không gộp các mảnh lại thành một (mất cắt bỏ)
+  const mat = lambert(0xffffff, { vertexColors: true, flatShading: true });
+  for (let j0 = 0; j0 < nz; j0 += TERRAIN_TILE) {
+    for (let i0 = 0; i0 < nx; i0 += TERRAIN_TILE) {
+      const j1 = Math.min(nz, j0 + TERRAIN_TILE);
+      const i1 = Math.min(nx, i0 + TERRAIN_TILE);
+      const tris = (j1 - j0) * (i1 - i0) * 2;
+      pos = new Float32Array(tris * 9);
+      col = new Float32Array(tris * 9);
+      k = 0;
+      for (let j = j0; j < j1; j++) {
+        for (let i = i0; i < i1; i++) {
+          // a = (i, j), b = (i+1, j), c = (i, j+1), d = (i+1, j+1); tam giác (a, c, b) và (b, c, d) — mặt hướng lên
+          tri(i, j, i, j + 1, i + 1, j, i, j);
+          tri(i + 1, j, i, j + 1, i + 1, j + 1, i + 1, j);
+        }
+      }
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+      geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
+      geo.computeVertexNormals(); // lưới không chia sẻ đỉnh → pháp tuyến từng mặt (flat)
+      group.add(new THREE.Mesh(geo, mat));
     }
   }
-  const geo = new THREE.BufferGeometry();
-  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-  geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
-  geo.computeVertexNormals(); // lưới không chia sẻ đỉnh → pháp tuyến từng mặt (flat)
-  const mesh = new THREE.Mesh(geo, lambert(0xffffff, { vertexColors: true, flatShading: true }));
-  scene.add(mesh);
+  scene.add(group);
 
   addPaving(scene, spec);
-  return mesh;
+  return group;
 }
 
 /** Sân lát gạch trên các bục `pave`; cùng một texture, UV theo mét → gộp được thành một draw call. */

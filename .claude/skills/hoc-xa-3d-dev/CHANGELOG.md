@@ -17,3 +17,4 @@
 - 2026-11-13 — Công trình `.glb` đầu tiên: `scene/staticModel.ts` (bộ nạp riêng của `scene/`, không import `player/`), `gates[].model` + `addGateModel` (Cổng Sơn Môn).
 - 2026-11-13: NPC gắn xương theo dáng riêng (`NPC_RIGS` trong `npc.ts`), không quay theo người chơi.
 - 2026-11-13 — Xoá rạp phim: bỏ `rapPhim.ts`, `videoScreen.ts`, `kien_truc/rap_phim.ts`, `zones/videos.ts`, kiểu `rap-phim`; `Seat` → `scene/seat.ts`, `nearestSeat` → `zones/seats.ts`; decisions/0004 bãi bỏ (lại offline hoàn toàn).
+- 2026-11-14 — Trò chuyện kênh chung: lớp mới `chat/` (thuần, không import gì; `ui/` được import `chat`), hợp đồng `ChatChannel` + `LocalChannel` (chưa có máy chủ), luật R-CHAT-1..3; giao diện chờ phiếu `2026-11-14-tro-chuyen-kenh-chung`.

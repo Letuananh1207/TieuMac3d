@@ -1,5 +1,5 @@
 # Phiếu: HUD trò chơi khu giao lưu — Ngũ Tử Kỳ + Đấu chữ
-- Trạng thái: chờ vẽ
+- Trạng thái: đã áp (2026-11-13.27)
 - Đã vẽ: 2026-11-13.27
 - Đợi bởi: kế hoạch `docs/tasks/2026-11-13-khu-giao-luu-co-dau-chu.md` (nhiệm vụ 9 — HUD trò chơi, Đấu chữ chơi trọn)
 

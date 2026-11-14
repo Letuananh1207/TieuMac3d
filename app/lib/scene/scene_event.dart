@@ -150,7 +150,7 @@ String? sceneEventType(List<dynamic> args) {
   return type is String ? type : null;
 }
 
-/// Trả lời `getProgress` (docs/bridge.md): vùng đã mở theo thứ tự hành trình, số chữ đã học, mốc vùng còn khoá;
+/// Trả lời `getProgress` (docs/bridge.md): số chữ, bộ thủ đã học (không khoá vùng — R-HANH-1);
 /// [due] = bộ thủ đến hạn ôn theo thứ tự hỏi (R-ON-4); [daily] + [streak] = bảng nhiệm vụ hôm nay (R-NV-1, R-NV-2);
 /// [book] = sổ từ đang mượn ở Tàng Thư Các (R-SACH-2).
 Map<String, Object?> progressReply(
@@ -161,10 +161,8 @@ Map<String, Object?> progressReply(
   ({int current, int best}) streak = (current: 0, best: 0),
 }) =>
     {
-      'open': p.openRegions,
       'chars': p.chars.length,
       'radicals': p.radicals.toList(),
-      'need': p.needs,
       'due': due,
       'daily': {
         'learned': daily?.newToday ?? 0,

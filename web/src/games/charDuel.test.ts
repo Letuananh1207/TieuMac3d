@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { RADICALS } from '../zones/radicals';
-import { CharDuel, makeQuestions, npcPick } from './charDuel';
+import { CharDuel, makeQuestions, meaningLabel, npcPick, radicalDetail } from './charDuel';
 
 /** Số giả ngẫu nhiên có hạt — test lặp lại được. */
 function seeded(seed: number): () => number {
@@ -92,5 +92,14 @@ describe('Đấu chữ — lượt và điểm', () => {
     expect(pick).not.toBe(q.answer);
     expect(pick).toBeGreaterThanOrEqual(0);
     expect(pick).toBeLessThan(4);
+  });
+});
+
+describe('Nhãn nghĩa Đấu chữ — R-DAU-1', () => {
+  it('R-DAU-1: mỗi nghĩa kèm âm Hán Việt của bộ có nghĩa đó; dòng chấm "âm · pinyin — nghĩa"', () => {
+    const moc = RADICALS.find((r) => r.id === 'moc')!;
+    expect(meaningLabel(moc.meaning)).toBe('mộc — cây');
+    expect(radicalDetail(moc)).toBe('mộc · mù — cây');
+    expect(meaningLabel('không có')).toBe('không có');
   });
 });

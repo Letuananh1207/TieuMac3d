@@ -5,7 +5,7 @@
 | Thành phần | Trong code | Token |
 |---|---|---|
 | Chip HUD (chấm trạng thái + chữ) | `web/index.html .chip`, CSS `.chip` | hud-glass, gold-line, paper, hud 13, pill |
-| Nhãn tên trên đầu nhân vật | `#nameTag` / `.label`, `web/src/ui/hud.ts` | gold, label-text, label 12, pill |
+| Nhãn tên trên đầu nhân vật | `#nameTag` / `.label`, `web/src/ui/hud.ts` | chữ trơn ngà #F4F1EA 13/700, viền mực .6 px + bóng mờ, không nền (2026-11-14.3) |
 | Nút nổi trên cảnh | `.btns button` (`#btnCam`) | hud-glass, paper-line, hud 13, pill |
 | Thẻ mời (eyebrow, tiêu đề có chữ Hán, nút chính + phụ) | `#card`, `web/src/ui/eventCard.ts` | ink, gold-line, eyebrow 11, card-title 17, accent 22, card 14, shadow.card |
 | Nút chính / nút phụ | `button.primary` / `button` | lacquer · ink-2 + paper-line, body 15, pill |
@@ -20,7 +20,7 @@ Một chất liệu: kính mờ `frost*` + viền `frost-line` / `frost-outline`
 |---|---|---|
 | Chip tên khu (chấm vàng + "<nơi> · <khu>") | `HUD-thanh-phan`, `HUD-doc` | frost, frost-line, frost-outline, slate, jade, gold, hud 13, pill, shadow.hud, blur.hud |
 | Nút nổi (góc nhìn) | `HUD-thanh-phan` | như chip; cao 44 |
-| Nhãn tên | `HUD-thanh-phan` | frost .88, gold 4 px, label 12, pill |
+| Nhãn tên | `HUD-thanh-phan` (cũ) | chữ trơn viền mực, không nền — 2026-11-14.3 |
 | ~~Thẻ mời~~ — **bỏ** ở 2026-11-11.4 | — | — |
 | Nút học nổi trên vật (chấm vàng + "Học chữ 快", mũi nhọn chỉ xuống) | `TrongNha-doc`, `TrongNha-ngang` | jade, on-jade, frost-line, gold, body 15, han 20, pill, shadow.primary |
 | Thẻ tên khu (mới) | `HUD-doc-vao-khu`, `HUD-ngang-vao-khu` | frost-strong .80, area-han 52, area-name 20, jade, slate, gold |

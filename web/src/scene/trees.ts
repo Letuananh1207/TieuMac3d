@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import type { Colliders } from '../collision/colliders';
 import { lambert } from './materials';
-import { addPine, addPlum, addWillow } from './cay_moi';
+import { addPine, addBush, addPeach, addPlum, addWillow } from './cay_moi';
 import { addTallBamboo } from './trucMao';
 import type { Updater } from './props';
 import { seededRandom } from './random';
@@ -112,7 +112,7 @@ export function addTrees(scene: THREE.Scene, colliders: Colliders, spec: SceneSp
     const scale = ring.scaleMin + rand() * (ring.scaleMax - ring.scaleMin);
     ringTrees.push({ x: Math.cos(a) * r, z: Math.sin(a) * r, scale, collide: false });
   }
-  const byKind: Record<NonNullable<TreePlace['kind']>, Placed[]> = { tan: [], truc: [], tung: [], lieu: [], mai: [], 'truc-mao': [] };
+  const byKind: Record<NonNullable<TreePlace['kind']>, Placed[]> = { tan: [], truc: [], tung: [], lieu: [], mai: [], 'truc-mao': [], dao: [], bui: [] };
   const put = (kind: TreePlace['kind'], p: Placed): void => void byKind[kind ?? 'tan'].push(p);
   for (const t of spec.yard) put(t.kind, { ...t, collide: true });
   byKind.tan.push(...ringTrees);
@@ -124,6 +124,8 @@ export function addTrees(scene: THREE.Scene, colliders: Colliders, spec: SceneSp
   bamboo(scene, spec, byKind.truc, spec.seed);
   addPine(scene, spec, byKind.tung, spec.seed);
   addPlum(scene, spec, byKind.mai, spec.seed);
+  addPeach(scene, spec, byKind.dao, spec.seed);
+  addBush(scene, spec, byKind.bui, spec.seed);
   const willow = addWillow(scene, spec, byKind.lieu, spec.seed);
   const mao = addTallBamboo(scene, spec, byKind['truc-mao'], spec.seed);
   const sway: Updater = (dt) => {
@@ -131,7 +133,7 @@ export function addTrees(scene: THREE.Scene, colliders: Colliders, spec: SceneSp
     mao(dt);
   };
   // va chạm: thân cây, to nhỏ theo kiểu
-  const trunkSize = { tan: 0.8, truc: 1.2, tung: 0.9, lieu: 0.8, mai: 0.5, 'truc-mao': 1.1 } as const;
+  const trunkSize = { tan: 0.8, truc: 1.2, tung: 0.9, lieu: 0.8, mai: 0.5, 'truc-mao': 1.1, dao: 0.6, bui: 0.9 } as const;
   for (const [kind, list] of Object.entries(byKind) as [keyof typeof trunkSize, Placed[]][]) {
     for (const t of list) if (t.collide) colliders.add(t.x, t.z, trunkSize[kind] * t.scale, trunkSize[kind] * t.scale);
   }

@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import { WALK_SPEED } from '../player/controller';
 
 const MIN_PITCH = 0.12;
 const MAX_PITCH = 1.2;
@@ -7,11 +6,20 @@ const MAX_PITCH = 1.2;
 const CAMERA_CLEARANCE = 0.8;
 /** R-DIEU-3: sau khi kéo xoay camera, chờ bao lâu (s) mới tự xoay theo hướng đi */
 const AUTO_DELAY = 1.5;
-/** R-DIEU-3: tốc độ tự xoay (1/s, theo hàm mũ) khi đi hết tốc độ — ~0,7 s đi được nửa đường còn lại */
-const AUTO_RATE = 1.0;
-/** R-DIEU-3: hướng đi lệch hướng nhìn từ góc này trở lên (đi về phía camera) thì không tự xoay; mờ dần từ 100° */
-const AUTO_MAX_OFF = (120 * Math.PI) / 180;
-const AUTO_FADE = (20 * Math.PI) / 180;
+/** R-DIEU-3: thời gian "lò xo" tự về sau lưng (s) — càng lớn càng êm */
+const AUTO_SMOOTH = 0.5;
+/** R-DIEU-3: tự về sau lưng nhanh nhất (rad/s) ~75°/s — rẽ 90° ~2 s, quay đầu ~3 s; nhanh hơn dễ chóng mặt */
+const AUTO_MAX_SPEED = (75 * Math.PI) / 180;
+/** R-DIEU-3: tự về sau lưng tăng / giảm tốc tối đa (rad/s²) — bắt đầu xoay từ từ, ~0,4 s mới tới tốc độ lớn nhất */
+const AUTO_ACCEL = (200 * Math.PI) / 180;
+/** R-DIEU-3: cả dây kéo lẫn tự về sau lưng, camera không xoay nhanh hơn (rad/s) */
+const YAW_MAX_SPEED = (90 * Math.PI) / 180;
+/** R-DIEU-3: dây kéo — camera theo bao nhiêu phần góc bị kéo khi nhân vật đi ngang (1 = như buộc dây cứng) */
+const LEASH = 0.6;
+/** R-DIEU-3: nhân vật dừng thì tự xoay hãm lại (rad/s²) — ~0,2 s là đứng yên, không khựng, không xoay về chính diện */
+const AUTO_BRAKE = (400 * Math.PI) / 180;
+/** R-DIEU-3: đổi hướng joystick từ góc này trở lên thì thôi khoá hướng đi, tính lại theo camera */
+const STEER_BREAK = (45 * Math.PI) / 180;
 /** R-DIEU-4: kéo lại gần nhanh (1/s), lùi ra chậm (1/s); đứng trước vật chắn cách nó bao nhiêu (m); gần nhất (m) */
 const OCC_IN = 30;
 const OCC_OUT = 2.5;
@@ -48,6 +56,8 @@ export interface OrbitSettings {
   /** góc gần (mặc định) và góc cả sân: khoảng cách + góc ngẩng (radian) */
   near: { dist: number; pitch: number };
   far: { dist: number; pitch: number };
+  /** khi ngồi vào án thư / bàn trà (R-NGOI-1); không có → `DEFAULT_ORBIT.seated` */
+  seated?: { dist: number; pitch: number };
 }
 
 export const DEFAULT_ORBIT: OrbitSettings = {
@@ -55,7 +65,13 @@ export const DEFAULT_ORBIT: OrbitSettings = {
   maxDist: 22,
   near: { dist: 9, pitch: 0.42 },
   far: { dist: 17, pitch: 0.75 },
+  seated: { dist: 5.5, pitch: 0.44 },
 };
+
+/** đầu nhân vật cao hơn chân (m): camera ngắm / dò vật chắn từ đây */
+const HEAD_Y = 1.2;
+/** R-NGOI-1: ngồi thì đầu thấp xuống (m) — trùng dáng ngồi của nhân vật (`glbCharacter` hạ 0,3 m) */
+const SIT_DROP = 0.3;
 
 /** Camera bám theo nhân vật, quay quanh nó (yaw = quay ngang, pitch = ngẩng/cúi, dist = khoảng cách). */
 export class OrbitCamera {
@@ -65,8 +81,16 @@ export class OrbitCamera {
   near = true;
   /** giây kể từ lần cuối người chơi kéo xoay camera (R-DIEU-3) */
   private idle = AUTO_DELAY;
+  /** vận tốc góc tự xoay (rad/s) của lò xo R-DIEU-3 */
+  private yawVel = 0;
+  /** R-DIEU-3 khoá hướng đi: yaw dùng để đổi joystick ra hướng trên mặt đất; null = đang không giữ joystick */
+  private steer: number | null = null;
+  /** hướng joystick khung trước (rad) — đổi gắt thì mở khoá */
+  private steerIn = 0;
   /** khoảng cách đang dùng sau khi tránh vật chắn (R-DIEU-4) */
   private shown: number;
+  /** đang ngồi: khoảng cách + góc ngẩng trước khi ngồi, để đứng dậy trả lại (R-NGOI-1); null = đang đứng */
+  private beforeSit: { dist: number; pitch: number } | null = null;
   private readonly want = new THREE.Vector3();
   private readonly target = new THREE.Vector3();
 
@@ -81,10 +105,32 @@ export class OrbitCamera {
     this.shown = this.dist;
   }
 
+  /**
+   * Ngồi vào án thư / bàn trà (R-NGOI-1): `true` → lùi ra, chúc xuống (`seated`), ngắm thấp theo người ngồi;
+   * `false` → trả khoảng cách + góc ngẩng như trước khi ngồi. Gọi lặp cùng giá trị không sao.
+   */
+  sit(on: boolean): void {
+    if (on === (this.beforeSit !== null)) return;
+    if (on) {
+      this.beforeSit = { dist: this.dist, pitch: this.pitch };
+      const v = this.settings.seated ?? DEFAULT_ORBIT.seated!;
+      this.dist = this.clampDist(v.dist);
+      this.pitch = v.pitch;
+    } else {
+      const b = this.beforeSit!;
+      this.beforeSit = null;
+      this.dist = b.dist;
+      this.pitch = b.pitch;
+    }
+    this.shown = this.dist;
+  }
+
   /** Kéo ngón tay dx, dy pixel. */
   rotate(dx: number, dy: number): void {
     this.idle = 0;
+    this.yawVel = 0;
     this.yaw -= dx * 0.006;
+    if (this.steer !== null) this.steer -= dx * 0.006; // kéo tay khi đang đi → hướng đi xoay theo
     this.pitch = Math.min(MAX_PITCH, Math.max(MIN_PITCH, this.pitch + dy * 0.004));
   }
 
@@ -99,22 +145,81 @@ export class OrbitCamera {
   }
 
   /**
-   * Tự xoay ra sau lưng nhân vật khi đi (R-DIEU-3). `dx`, `dz` = quãng nhân vật vừa đi trong `dt` (gồm joystick, phím,
-   * chạm để đi). Không xoay khi vừa kéo camera chưa tới `AUTO_DELAY`, khi đứng yên, khi đi về phía camera (lệch ≥ 120°).
+   * Yaw để đổi joystick (ix, iy) ra hướng đi (R-DIEU-3 khoá hướng). Đang giữ cùng hướng → giữ yaw lúc bắt đầu bấm, nên
+   * camera tự xoay (kể cả quay đầu đi về phía camera) không làm nhân vật đi vòng. Thả tay / đổi hướng ≥ 45° → theo camera.
+   * Gọi mỗi khung hình, kể cả khi không bấm (để mở khoá).
    */
-  follow(dt: number, dx: number, dz: number): void {
+  steerYaw(ix: number, iy: number): number {
+    if (!ix && !iy) {
+      this.steer = null;
+      return this.yaw;
+    }
+    const a = Math.atan2(ix, iy);
+    if (this.steer === null || Math.abs(wrap(a - this.steerIn)) >= STEER_BREAK) this.steer = this.yaw;
+    this.steerIn = a;
+    return this.steer;
+  }
+
+  /**
+   * Camera bám nhân vật khi đi (R-DIEU-3), êm như game góc nhìn thứ ba:
+   * - dây kéo: nhân vật đi ngang (`dx`, `dz` = quãng vừa đi) thì camera bị kéo vòng theo `LEASH` phần;
+   * - tự về sau lưng hướng quay mặt (`facing` = rotation.y nhân vật) bằng lò xo giảm chấn, tối đa `AUTO_MAX_SPEED`;
+   *   không làm khi vừa kéo camera chưa tới `AUTO_DELAY`; nhân vật dừng thì hãm lại (`AUTO_BRAKE`), không xoay về
+   *   chính diện khi đứng yên.
+   * Tổng tốc độ xoay không quá `YAW_MAX_SPEED`. Đi về phía camera cũng về sau lưng — hướng đi đã khoá ở `steerYaw`.
+   */
+  follow(dt: number, dx: number, dz: number, facing: number, moving: boolean): void {
     this.idle += dt;
-    const moved = Math.hypot(dx, dz);
-    if (dt <= 0 || moved < 1e-4 || this.idle < AUTO_DELAY) return;
-    const speed = Math.min(1, moved / dt / WALK_SPEED); // đi bộ hay chạy đều xoay đủ nhanh
-    // camera đứng ở hướng `yaw` tính từ nhân vật; sau lưng hướng đi (dx, dz) là hướng ngược lại
-    const delta = wrap(Math.atan2(-dx, -dz) - this.yaw);
-    const off = Math.abs(delta); // = góc lệch giữa hướng đi và hướng camera đang nhìn
-    const w = Math.min(1, Math.max(0, (AUTO_MAX_OFF - off) / AUTO_FADE));
-    this.yaw += delta * w * (1 - Math.exp(-dt * AUTO_RATE * speed));
-    // góc ngẩng về góc chuẩn của chế độ đang dùng (gần / cả sân)
-    const base = this.near ? this.settings.near.pitch : this.settings.far.pitch;
-    this.pitch += (base - this.pitch) * (1 - Math.exp(-dt * PITCH_RATE * speed));
+    if (dt <= 0) return;
+    const from = this.yaw;
+    // dây kéo: camera đứng yên, nhân vật dịch (dx, dz) → hướng từ nhân vật tới camera lệch đi
+    if (moving && (dx || dz)) {
+      const h = this.dist * Math.cos(this.pitch);
+      const vx = Math.sin(this.yaw) * h - dx;
+      const vz = Math.cos(this.yaw) * h - dz;
+      this.yaw += wrap(Math.atan2(vx, vz) - this.yaw) * LEASH;
+    }
+    if (!moving) {
+      // dừng: trượt nốt rồi đứng yên trong ~0,2 s — không tự xoay về sau lưng khi đứng
+      const v = Math.max(0, Math.abs(this.yawVel) - AUTO_BRAKE * dt);
+      this.yawVel = Math.sign(this.yawVel) * v;
+      this.yaw += this.yawVel * dt;
+    } else if (this.idle < AUTO_DELAY) this.yawVel = 0;
+    else this.recenter(dt, facing + Math.PI);
+    // không xoay nhanh hơn YAW_MAX_SPEED (chống chóng mặt)
+    const step = wrap(this.yaw - from);
+    const cap = YAW_MAX_SPEED * dt;
+    this.yaw = wrap(from + Math.min(cap, Math.max(-cap, step)));
+    // góc ngẩng về góc chuẩn của chế độ đang dùng (gần / cả sân) — chỉ khi đang đi
+    if (moving) {
+      const base = this.near ? this.settings.near.pitch : this.settings.far.pitch;
+      this.pitch += (base - this.pitch) * (1 - Math.exp(-dt * PITCH_RATE));
+    }
+  }
+
+  /**
+   * Lò xo giảm chấn tới hạn (SmoothDamp) đưa yaw về `want`: vận tốc góc không quá `AUTO_MAX_SPEED`, tăng / giảm tốc
+   * không quá `AUTO_ACCEL` (khởi động êm), không vọt quá.
+   */
+  private recenter(dt: number, want: number): void {
+    const off = wrap(want - this.yaw);
+    const goal = this.yaw + off;
+    const omega = 2 / AUTO_SMOOTH;
+    const x = omega * dt;
+    const k = 1 / (1 + x + 0.48 * x * x + 0.235 * x * x * x);
+    const change = this.yaw - goal;
+    const temp = (this.yawVel + omega * change) * dt;
+    const next = goal + (change + temp) * k;
+    const clamp = (v: number, m: number): number => Math.min(m, Math.max(-m, v));
+    const wantVel = clamp((next - this.yaw) / dt, AUTO_MAX_SPEED);
+    this.yawVel += clamp(wantVel - this.yawVel, AUTO_ACCEL * dt);
+    const step = this.yawVel * dt;
+    if (Math.sign(step) === Math.sign(off) && Math.abs(step) >= Math.abs(off)) {
+      this.yaw = goal; // tới nơi: dừng đúng sau lưng, không vọt quá
+      this.yawVel = 0;
+      return;
+    }
+    this.yaw += step;
   }
 
   /** Đổi giữa góc gần và góc cả sân. Trả về true nếu đang ở góc gần. */
@@ -141,10 +246,12 @@ export class OrbitCamera {
   ): void {
     // trong nhà (R-HUD-2): kéo gần tối đa ROOM_MAX_DIST, không ra sau tường (giữ camera trong sàn nhà)
     let dist = room ? Math.min(this.dist, ROOM_MAX_DIST) : this.dist;
+    // độ cao đầu nhân vật tính từ chân; ngồi thì thấp xuống (R-NGOI-1)
+    const head = this.beforeSit ? HEAD_Y - SIT_DROP : HEAD_Y;
     // tránh vật chắn (R-DIEU-4): tường / nhà cắt tầm nhìn đầu → camera thì đứng trước nó; kéo vào nhanh, lùi ra chậm
     if (sight && !room) {
       const h = dist * Math.cos(this.pitch);
-      const t = sight(focus.x, 1.2, focus.z, focus.x + Math.sin(this.yaw) * h, 1.2 + dist * Math.sin(this.pitch), focus.z + Math.cos(this.yaw) * h);
+      const t = sight(focus.x, head, focus.z, focus.x + Math.sin(this.yaw) * h, head + dist * Math.sin(this.pitch), focus.z + Math.cos(this.yaw) * h);
       const goal = t < 1 ? Math.max(OCC_MIN, t * dist - OCC_MARGIN) : dist;
       const rate = goal < this.shown ? OCC_IN : OCC_OUT;
       this.shown = snap ? goal : this.shown + (goal - this.shown) * (1 - Math.exp(-dt * rate));
@@ -153,7 +260,7 @@ export class OrbitCamera {
     const horiz = dist * Math.cos(this.pitch);
     this.want.set(
       focus.x + Math.sin(this.yaw) * horiz,
-      focus.y + 1.2 + dist * Math.sin(this.pitch),
+      focus.y + head + dist * Math.sin(this.pitch),
       focus.z + Math.cos(this.yaw) * horiz,
     );
     if (room) {
@@ -168,7 +275,7 @@ export class OrbitCamera {
     if (snap) camera.position.copy(this.want);
     else camera.position.lerp(this.want, 1 - Math.exp(-dt * 8));
     // ngắm cao hơn đầu nhân vật (LOOK_UP): nhân vật nằm 1/3 dưới màn hình, thấy xa phía trước
-    this.target.set(focus.x, focus.y + 1.2 + dist * LOOK_UP, focus.z);
+    this.target.set(focus.x, focus.y + head + dist * LOOK_UP, focus.z);
     camera.lookAt(this.target);
   }
 

@@ -57,7 +57,7 @@ export function addGate(scene: THREE.Scene, colliders: Colliders, gate: GateSpec
   const midSpan = 2 * inner + P + 0.6;
   g.add(box(midSpan, 0.5, 0.6, style.eave, 0, low + 0.25, 0));
   g.add(box(midSpan + 0.04, 0.12, 0.64, style.beamBlue, 0, low + 0.25, 0));
-  g.add(box(midSpan, 0.4, 0.55, style.eave, 0, low + 1.4 * k, 0));
+  g.add(box(midSpan, 0.4, 0.55, style.eave, 0, low + 1.4 * k - 0.01, 0)); // hạ 1 cm: mặt trên xà không trùng đỉnh cột giữa (L-10)
   // biển giữ cỡ, nằm giữa khoảng hai xà
   addSign(g, gate.hanTitle ?? gate.title, low + 0.82 + 0.7 * (k - 1), 0.32, Math.min(1.1, gate.width / 3));
   hipRoof(g, { y: midTop, w: 2 * inner + P, d: 1, over: 0.9, h: 1.3 * k, color: roofColor, ridgeColor: style.ridge });

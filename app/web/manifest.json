@@ -1,11 +1,11 @@
 {
-    "name": "Học Xá 3D",
-    "short_name": "Học Xá 3D",
+    "name": "Tiểu Mặc 3D",
+    "short_name": "Tiểu Mặc 3D",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#141B2C",
     "theme_color": "#141B2C",
-    "description": "Học Xá 3D — học chữ Hán trong không gian 3D",
+    "description": "Tiểu Mặc 3D — học chữ Hán trong không gian 3D",
     "orientation": "any",
     "prefer_related_applications": false,
     "icons": [

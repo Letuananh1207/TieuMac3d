@@ -1,3 +1,10 @@
+import { addBridges } from './bridges';
+import { addChannels } from './channels';
+import { addGalleries } from './vat_giang_nam';
+import { addMirages } from './vat_bong_lai';
+import { addRamparts } from './thanh_luy';
+import { addPlateauRails } from './cung_dien';
+import { addFauna } from './fauna';
 import type * as THREE from 'three';
 import type { Colliders } from '../collision/colliders';
 import { LayeredGround, type Ground } from '../collision/ground';
@@ -30,7 +37,7 @@ import { addWell } from './well';
 
 export interface World {
   /** mặt đất: đích của tia dò khi chạm để đi (sân phẳng hoặc lưới địa hình) */
-  ground: THREE.Mesh;
+  ground: THREE.Object3D;
   /** mặt đất cho nhân vật / camera: địa hình (hoặc phẳng y = 0) + nền nhà vào được */
   surface: Ground;
   /** nhà vào được (giảng đường, thư viện) */
@@ -80,7 +87,7 @@ export function buildWorld(
   // độ cao nền của nhà / cổng / ao / giếng: tâm của nó trên mặt đất (nằm trên bục → độ cao bục)
   const base = (x: number, z: number): number => (groundY ? groundY(x, z) : 0);
   addPaths(scene, spec.paths, style.path, groundY, style.pathLook === 'san' ? spec.ground : undefined);
-  addWalls(scene, colliders, spec.walls, spec.wallSegments, style);
+  addWalls(scene, colliders, spec.walls, spec.wallSegments, style, groundY);
   const kinds = roomKinds(spec.buildings, interiors);
   const rooms: Room[] = [];
   for (const b of spec.buildings) {
@@ -104,18 +111,26 @@ export function buildWorld(
       });
   }
   addWater(scene, colliders, spec.water, style, groundY);
-  const props = addProps(scene, colliders, spec.props, style, groundY);
+  const bridgePads = addBridges(scene, colliders, spec.bridges, style, groundY);
+  const fauna = addFauna(scene, spec, groundY);
+  const channels = addChannels(scene, spec.channels, style, groundY);
+  addGalleries(scene, colliders, spec.galleries, groundY);
+  const mirages = addMirages(scene, spec.mirages);
+  const rampartPads = addRamparts(scene, colliders, spec.ramparts, spec.walls, groundY);
+  if (spec.terrain.enabled) addPlateauRails(scene, colliders, spec.terrain);
+  const props = addProps(scene, colliders, spec.props, style, spec.trees, groundY);
   const trees = addTrees(scene, colliders, spec.trees, groundY);
   addLanternStrings(scene, colliders, spec, groundY);
   addFences(scene, colliders, spec, groundY);
   if (spec.well.enabled) addWell(scene, colliders, spec.well, base(spec.well.x, spec.well.z));
   const teleport = spec.teleport.enabled ? addTeleport(scene, colliders, spec.teleport, groundY) : null;
   const floating = addFloating(scene, spec.floating, style, spec.trees.leaves[1], spec.trees.seed);
-  // dựng xong mới gộp: khối đứng yên cùng vật liệu → một draw call (scene/merge.ts)
+  // dựng xong mới gộp: khối đứng yên cùng vật liệu → một draw call (scene/merge.ts). Đã thử gộp theo ô (2026-11-14):
+  // tam giác gần như không giảm, draw call tăng — phần nặng là địa hình + model người, không phải khối gộp.
   mergeStatic(scene, new Set([ground]));
   return {
     ground,
-    surface: new LayeredGround(hf, [...(teleport?.pads ?? []), ...rooms.flatMap((r) => r.pads)]),
+    surface: new LayeredGround(hf, [...(teleport?.pads ?? []), ...bridgePads, ...rampartPads, ...rooms.flatMap((r) => r.pads)]),
     rooms,
     seats: rooms.flatMap((r) => r.seats ?? []),
     gameTables,
@@ -126,6 +141,9 @@ export function buildWorld(
       trees(dt);
       floating(dt);
       waterways(dt);
+      fauna(dt);
+      channels(dt);
+      mirages(dt);
       teleport?.update(dt);
       for (const r of rooms) r.update(dt, !!player && inRect(r.floor, player.x, player.z), player?.y);
     },

@@ -15,7 +15,7 @@ export interface ScrollPlace {
   y: number;
   r: number;
 }
-export type ScrollPlaceState = 'mo' | 'oDay' | 'sapMo' | 'khoa';
+export type ScrollPlaceState = 'mo' | 'oDay' | 'sapMo';
 export interface ScrollMap {
   width: number;
   height: number;
@@ -26,6 +26,9 @@ export interface ScrollMap {
 // ảnh giấy: Vite chép vào bản build, trả đường dẫn (chạy offline — không mạng)
 const imgFound = import.meta.glob('../../../design/scene/ban-do/ban-do-goc.png', { eager: true, query: '?url', import: 'default' });
 const PAPER_URL = Object.values(imgFound)[0] as string | undefined;
+// đầu nhân vật chính cho ghim "đang ở đây" (thiết kế 2026-11-14.2)
+const pinFound = import.meta.glob('../../../design/scene/ban-do/ban-do-nhan-vat.png', { eager: true, query: '?url', import: 'default' });
+const PIN_URL = Object.values(pinFound)[0] as string | undefined;
 
 const PAPER_W = 6; // bề rộng giấy trong cảnh (m), cỡ thật ≈ 6 × 3,4 m
 const ROD_D = PAPER_W / 25; // trục dày ≈ 1/25 bề rộng (đặc tả)
@@ -48,34 +51,24 @@ function str(o: unknown, path: string[], d: string): string {
   return typeof v === 'string' ? v : d;
 }
 
-/** Huy hiệu tròn: đồng hồ (sắp mở) hoặc khoá. */
-function badge(g: CanvasRenderingContext2D, x: number, y: number, r: number, kind: 'dong-ho' | 'khoa', bg: string, line: string): void {
+/** Huy hiệu tròn đồng hồ (nơi sắp mở — chưa có cảnh). */
+function clockBadge(g: CanvasRenderingContext2D, x: number, y: number, r: number, bg: string, line: string): void {
   g.beginPath();
   g.arc(x, y, r, 0, Math.PI * 2);
   g.fillStyle = bg;
   g.fill();
-  if (kind === 'dong-ho') {
-    g.lineWidth = r * 0.16;
-    g.strokeStyle = line;
-    g.stroke();
-    g.beginPath();
-    g.arc(x, y, r * 0.62, 0, Math.PI * 2);
-    g.lineWidth = r * 0.12;
-    g.stroke();
-    g.beginPath();
-    g.moveTo(x, y - r * 0.4);
-    g.lineTo(x, y);
-    g.lineTo(x + r * 0.3, y + r * 0.2);
-    g.stroke();
-  } else {
-    g.fillStyle = '#F4F7F6';
-    g.fillRect(x - r * 0.42, y - r * 0.05, r * 0.84, r * 0.6);
-    g.beginPath();
-    g.arc(x, y - r * 0.05, r * 0.27, Math.PI, 0);
-    g.lineWidth = r * 0.14;
-    g.strokeStyle = '#F4F7F6';
-    g.stroke();
-  }
+  g.lineWidth = r * 0.16;
+  g.strokeStyle = line;
+  g.stroke();
+  g.beginPath();
+  g.arc(x, y, r * 0.62, 0, Math.PI * 2);
+  g.lineWidth = r * 0.12;
+  g.stroke();
+  g.beginPath();
+  g.moveTo(x, y - r * 0.4);
+  g.lineTo(x, y);
+  g.lineTo(x + r * 0.3, y + r * 0.2);
+  g.stroke();
 }
 
 export interface MapScroll {
@@ -83,7 +76,7 @@ export interface MapScroll {
   /** bay lên từ `from` (tâm vòng trận) và mở ra; trạng thái từng nơi vẽ lên giấy */
   open(from: THREE.Vector3, states: Record<string, ScrollPlaceState>): void;
   close(): void;
-  /** vòng son nhấp nháy quanh nơi khoá vừa chạm */
+  /** viền huy hiệu đồng hồ của nơi sắp mở vừa chạm nhấp nháy son */
   flash(placeId: string): void;
   /** chạm ở (clientX, clientY) trúng giấy ở toạ độ px nào (đã mở xong); không trúng → `null` */
   pick(clientX: number, clientY: number): { px: number; py: number } | null;
@@ -103,6 +96,15 @@ export function createMapScroll(scene: THREE.Scene, camera: THREE.PerspectiveCam
   tex.colorSpace = THREE.SRGBColorSpace;
   tex.anisotropy = 4;
   let img: HTMLImageElement | null = null;
+  let pinImg: HTMLImageElement | null = null;
+  if (PIN_URL) {
+    const im = new Image();
+    im.onload = () => {
+      pinImg = im;
+      redraw();
+    };
+    im.src = PIN_URL;
+  }
   if (PAPER_URL) {
     const im = new Image();
     im.onload = () => {
@@ -161,8 +163,8 @@ export function createMapScroll(scene: THREE.Scene, camera: THREE.PerspectiveCam
   let states: Record<string, ScrollPlaceState> = {};
   let flashId: string | null = null;
   let flashT = 0;
-  const flashDur = num(map.style, ['khoaVuaCham', 'nhapNhay', 'giay'], 0.6);
-  const flashTimes = num(map.style, ['khoaVuaCham', 'nhapNhay', 'lan'], 2);
+  const flashDur = num(map.style, ['vuaCham', 'nhapNhay', 'giay'], 0.6);
+  const flashTimes = num(map.style, ['vuaCham', 'nhapNhay', 'lan'], 2);
 
   function ring(x: number, y: number, r: number, w: number, color: string, alpha = 1, dash: number[] = []): void {
     g.save();
@@ -184,46 +186,62 @@ export function createMapScroll(scene: THREE.Scene, camera: THREE.PerspectiveCam
       g.fillStyle = '#F2EADA'; // map-paper khi chưa nạp xong ảnh
       g.fillRect(0, 0, map.width, map.height);
     }
+    // thiết kế 2026-11-14.2: không vòng tròn quanh nơi nào; `mo` không vẽ gì
     for (const p of map.places) {
-      const st = states[p.id] ?? 'khoa';
-      if (st === 'mo' || st === 'oDay') {
-        ring(p.x, p.y, num(s, ['mo', 'vong', 'r'], p.r), num(s, ['mo', 'vong', 'net'], 10), str(s, ['mo', 'vong', 'mau'], COLORS.jade));
-        g.beginPath();
-        g.arc(p.x + num(s, ['mo', 'cham', 'dx'], 0), p.y + num(s, ['mo', 'cham', 'dy'], -150), num(s, ['mo', 'cham', 'r'], 12), 0, Math.PI * 2);
-        g.fillStyle = str(s, ['mo', 'cham', 'mau'], COLORS.gold);
-        g.fill();
-      }
-      if (st === 'oDay') {
-        const side = num(s, ['oDay', 'trien', 'canh'], 84);
-        const x0 = p.x + num(s, ['oDay', 'trien', 'dx'], -160);
-        const y0 = p.y + num(s, ['oDay', 'trien', 'dy'], -175);
-        g.fillStyle = str(s, ['oDay', 'trien', 'mau'], '#A8322A');
-        g.fillRect(x0, y0, side, side);
-        g.fillStyle = str(s, ['oDay', 'trien', 'chuMau'], '#F4F7F6');
-        g.font = `700 ${num(s, ['oDay', 'trien', 'coChu'], 58)}px "Han Serif", serif`;
-        g.textAlign = 'center';
-        g.textBaseline = 'middle';
-        g.fillText(str(s, ['oDay', 'trien', 'chu'], '此'), x0 + side / 2, y0 + side / 2 + 3);
-      }
+      const st = states[p.id] ?? 'sapMo';
+      if (st === 'oDay') drawPin(p.x, p.y);
       if (st === 'sapMo') {
-        const gach = (s.sapMo as { vongDut?: { gach?: number[] } } | undefined)?.vongDut?.gach ?? [26, 18];
-        ring(p.x, p.y, num(s, ['sapMo', 'vongDut', 'r'], p.r), num(s, ['sapMo', 'vongDut', 'net'], 8), str(s, ['sapMo', 'vongDut', 'mau'], COLORS.jade), 1, gach);
-        badge(g, p.x + num(s, ['sapMo', 'huyHieu', 'dx'], 100), p.y + num(s, ['sapMo', 'huyHieu', 'dy'], -100), num(s, ['sapMo', 'huyHieu', 'r'], 40), 'dong-ho', str(s, ['sapMo', 'huyHieu', 'nen'], '#F4F7F6'), str(s, ['sapMo', 'huyHieu', 'vien'], COLORS.jade));
-      }
-      if (st === 'khoa') {
-        g.beginPath();
-        g.arc(p.x, p.y, num(s, ['khoa', 'dia', 'r'], p.r), 0, Math.PI * 2);
-        g.fillStyle = str(s, ['khoa', 'dia', 'mau'], 'rgba(242,234,218,.72)');
-        g.fill();
-        badge(g, p.x + num(s, ['khoa', 'huyHieu', 'dx'], 100), p.y + num(s, ['khoa', 'huyHieu', 'dy'], -100), num(s, ['khoa', 'huyHieu', 'r'], 40), 'khoa', str(s, ['khoa', 'huyHieu', 'nen'], '#24323A'), '#F4F7F6');
-      }
-      // vừa chạm nơi khoá / sắp mở: vòng son nhấp nháy (hiện ở nửa đầu mỗi lần nháy)
-      if (p.id === flashId && flashT > 0 && Math.floor((flashT / flashDur) * flashTimes * 2) % 2 === 0) {
-        ring(p.x, p.y, num(s, ['khoaVuaCham', 'vong', 'r'], 150), num(s, ['khoaVuaCham', 'vong', 'net'], 10), str(s, ['khoaVuaCham', 'vong', 'mau'], '#A8322A'));
-        ring(p.x, p.y, num(s, ['khoaVuaCham', 'vongMo', 'r'], 172), num(s, ['khoaVuaCham', 'vongMo', 'net'], 6), str(s, ['khoaVuaCham', 'vong', 'mau'], '#A8322A'), num(s, ['khoaVuaCham', 'vongMo', 'alpha'], 0.45));
+        const bx = p.x + num(s, ['sapMo', 'huyHieu', 'dx'], 100);
+        const by = p.y + num(s, ['sapMo', 'huyHieu', 'dy'], -100);
+        const br = num(s, ['sapMo', 'huyHieu', 'r'], 40);
+        clockBadge(g, bx, by, br, str(s, ['sapMo', 'huyHieu', 'nen'], '#F4F7F6'), str(s, ['sapMo', 'huyHieu', 'vien'], COLORS.jade));
+        // vừa chạm: viền huy hiệu son nhấp nháy (hiện ở nửa đầu mỗi lần nháy)
+        if (p.id === flashId && flashT > 0 && Math.floor((flashT / flashDur) * flashTimes * 2) % 2 === 0) {
+          ring(bx, by, br, num(s, ['sapMo', 'huyHieu', 'net'], 6) * 1.4, str(s, ['vuaCham', 'huyHieu', 'vien'], '#A8322A'));
+        }
       }
     }
     tex.needsUpdate = true;
+  }
+
+  /** nơi đang ở: ghim tròn đầu nhân vật chính, đuôi chỉ xuống (số đo `oDay.ghim`) */
+  function drawPin(x: number, y: number): void {
+    const s = map.style;
+    const k = (key: string, d: number): number => num(s, ['oDay', 'ghim', key], d);
+    const c = (key: string, d: string): string => str(s, ['oDay', 'ghim', key], d);
+    const cx = x + k('dx', -110);
+    const cy = y + k('dy', -60);
+    const r = k('r', 80);
+    const net = k('net', 8);
+    const tail = num(s, ['oDay', 'ghim', 'duoi', 'dai'], 30);
+    const half = num(s, ['oDay', 'ghim', 'duoi', 'rong'], 48) / 2;
+    g.save();
+    g.fillStyle = str(s, ['oDay', 'ghim', 'bong', 'mau'], 'rgba(36,50,58,.22)');
+    g.beginPath();
+    g.ellipse(cx, cy + r + tail + 6, num(s, ['oDay', 'ghim', 'bong', 'rx'], 26), num(s, ['oDay', 'ghim', 'bong', 'ry'], 8), 0, 0, Math.PI * 2);
+    g.fill();
+    g.fillStyle = c('vien', COLORS.jade);
+    g.beginPath();
+    g.moveTo(cx - half, cy + r - 12);
+    g.lineTo(cx, cy + r + tail);
+    g.lineTo(cx + half, cy + r - 12);
+    g.closePath();
+    g.fill();
+    for (const [rr, col] of [
+      [r + net + k('netNgoai', 4), c('vienNgoai', COLORS.gold)],
+      [r + net, c('vien', COLORS.jade)],
+      [r, c('nen', '#F4F7F6')],
+    ] as const) {
+      g.fillStyle = col;
+      g.beginPath();
+      g.arc(cx, cy, rr, 0, Math.PI * 2);
+      g.fill();
+    }
+    if (pinImg) {
+      g.clip();
+      g.drawImage(pinImg, cx - r * 1.08, cy - r * 1.02, r * 2.16, r * 2.16);
+    }
+    g.restore();
   }
 
   // vị trí đích trước camera (tính lại mỗi khung — camera còn trượt nhẹ theo nhân vật)

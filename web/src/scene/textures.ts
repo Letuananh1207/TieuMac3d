@@ -44,6 +44,20 @@ export function drawSign(g: CanvasRenderingContext2D, w: number, h: number, text
   }
 }
 
+/** Biển đá khắc trên cổng trăng (門額): nền đá `stone`, viền khắc chìm, chữ khắc màu mực. */
+export function drawStoneSign(g: CanvasRenderingContext2D, w: number, h: number, text: string, stone: string): void {
+  g.fillStyle = stone;
+  g.fillRect(0, 0, w, h);
+  g.strokeStyle = 'rgba(40, 38, 34, 0.55)';
+  g.lineWidth = 6;
+  g.strokeRect(10, 10, w - 20, h - 20);
+  g.fillStyle = '#2f3236';
+  g.textAlign = 'center';
+  g.textBaseline = 'middle';
+  g.font = `700 ${Math.round(h * 0.62)}px ${SIGN_FONT}`;
+  g.fillText(text, w / 2, h / 2 + 3, w - 40);
+}
+
 /** Cờ dọc (幌子): vải ngà viền son, một chữ Hán lớn giữa, tua dưới. Khung dọc (vd. 160 × 456). */
 export function drawBanner(g: CanvasRenderingContext2D, w: number, h: number, text: string): void {
   g.fillStyle = '#efe6d2';
@@ -54,11 +68,60 @@ export function drawBanner(g: CanvasRenderingContext2D, w: number, h: number, te
   g.fillStyle = '#2f3236';
   g.textAlign = 'center';
   g.textBaseline = 'middle';
-  g.font = `700 ${Math.round(w * 0.62)}px ${SIGN_FONT}`;
-  g.fillText(text, w / 2, h * 0.42, w - 24);
+  const letters = [...text].filter((ch) => ch !== ' ');
+  const han = letters.some((ch) => ch.codePointAt(0)! >= 0x3400);
+  if (han || letters.length < 2) {
+    g.font = `700 ${Math.round(w * 0.62)}px ${SIGN_FONT}`;
+    g.fillText(text, w / 2, h * 0.42, w - 24);
+    return;
+  }
+  // chữ Việt nhiều chữ cái: viết hoa, xếp dọc từ trên xuống (kiểu cờ chữ dọc), cỡ vừa bề ngang cờ
+  const size = Math.min(w * 0.6, (h * 0.78) / letters.length);
+  g.font = `700 ${Math.round(size)}px ${SIGN_FONT}`;
+  const top = h * 0.42 - ((letters.length - 1) * size * 1.05) / 2;
+  letters.forEach((ch, i) => g.fillText(ch.toUpperCase(), w / 2, top + i * size * 1.05, w - 24));
 }
 
 /** Bảng vinh danh: giấy ngà, dòng tiêu đề + các dòng kẻ (tên người học điền sau — chờ thiết kế). */
+/** 12 giờ (thời thần) khắc quanh mặt nhật quỹ, 子 trên cùng (nửa đêm) → 午 dưới cùng (chính ngọ). */
+export const SUNDIAL_HOURS = '子丑寅卯辰巳午未申酉戌亥';
+
+/** Mặt nhật quỹ 日晷 (ô vuông, vẽ đĩa tròn): nền đá [face], vòng chỉ + vạch giờ + 12 chữ thời thần mực [ink]. */
+export function drawSundial(g: CanvasRenderingContext2D, w: number, h: number, face: string, ink: string): void {
+  const cx = w / 2;
+  const cy = h / 2;
+  const r = Math.min(w, h) / 2;
+  g.fillStyle = face;
+  g.fillRect(0, 0, w, h);
+  g.strokeStyle = ink;
+  g.lineCap = 'round';
+  for (const [k, lw] of [[0.95, 6], [0.62, 4], [0.14, 4]] as const) {
+    g.lineWidth = lw;
+    g.beginPath();
+    g.arc(cx, cy, r * k, 0, Math.PI * 2);
+    g.stroke();
+  }
+  g.fillStyle = ink;
+  g.textAlign = 'center';
+  g.textBaseline = 'middle';
+  g.font = `700 ${Math.round(r * 0.22)}px ${SIGN_FONT}`;
+  [...SUNDIAL_HOURS].forEach((ch, i) => {
+    const a = (i / 12) * Math.PI * 2; // 0 = trên cùng, theo chiều kim đồng hồ
+    // vạch ranh giới giữa hai giờ
+    const b = a + Math.PI / 12;
+    g.lineWidth = 3;
+    g.beginPath();
+    g.moveTo(cx + Math.sin(b) * r * 0.62, cy - Math.cos(b) * r * 0.62);
+    g.lineTo(cx + Math.sin(b) * r * 0.95, cy - Math.cos(b) * r * 0.95);
+    g.stroke();
+    g.save();
+    g.translate(cx + Math.sin(a) * r * 0.785, cy - Math.cos(a) * r * 0.785);
+    g.rotate(a);
+    g.fillText(ch, 0, 0);
+    g.restore();
+  });
+}
+
 export function drawBoard(g: CanvasRenderingContext2D, w: number, h: number, title: string): void {
   g.fillStyle = '#f3e6c8';
   g.fillRect(0, 0, w, h);

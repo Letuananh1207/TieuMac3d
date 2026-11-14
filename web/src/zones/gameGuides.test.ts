@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { checkDialog, DialogRunner } from './dialogs';
-import { gameSigns, guideDialog, signInRange } from './gameGuides';
+import { boldParts, gameGuide, gameSigns, signInRange } from './gameGuides';
 
 const TABLES = [
   { kind: 'co', npc: 'tieu-mac', sign: { x: -29.5, z: 4, han: '五子棋', name: 'Ngũ Tử Kỳ' } },
@@ -18,33 +17,37 @@ describe('Biển tên trò chơi — R-GIAO-2', () => {
     expect(signInRange(signs, -29.5, 9)?.name).toBe('Đấu chữ');
   });
 
-  it('R-GIAO-2: lời giảng là thoại hợp lệ của NPC bàn, "Tiếp" đi hết các trang, trang cuối chỉ "Đã hiểu"', () => {
-    for (const s of gameSigns(TABLES)) {
-      const d = guideDialog(s);
-      expect(checkDialog(d)).toEqual([]);
-      expect(d.npc).toBe(s.npc);
-      expect(d.lines.length).toBeGreaterThanOrEqual(3);
-      const r = new DialogRunner(d);
-      let line = r.start();
-      let pages = 1;
-      while (line.choices[0].text === 'Tiếp') {
-        line = r.choose(0)!;
-        pages++;
-      }
-      expect(pages).toBe(d.lines.length);
-      expect(line.choices.map((c) => c.text)).toEqual(['Đã hiểu']);
-      expect(r.choose(0)).toBeNull();
+  it('R-GIAO-2: bảng cách chơi — đủ 4 mục theo thứ tự, mẹo của NPC bàn, Đấu chữ có ô "chưa học bộ nào"', () => {
+    for (const kind of ['co', 'dau-chu']) {
+      const g = gameGuide(kind)!;
+      expect(g.sections.map((x) => x.title)).toEqual(['Mục tiêu', 'Mỗi lượt', 'Thắng · thua · hoà', 'Vào bàn · rời bàn']);
+      expect(g.han.length).toBeGreaterThan(0);
     }
+    expect(gameGuide('co')!.tipBy).toBe('tieu-mac');
+    expect(gameGuide('dau-chu')!.tipBy).toBe('su-phu');
+    expect(gameGuide('co')!.none).toBeUndefined();
+    expect(gameGuide('dau-chu')!.none?.title).toBe('Đạo hữu chưa học bộ thủ nào');
+    expect(gameGuide('khac')).toBeNull();
   });
 
-  it('R-GIAO-2: lời giảng nói đúng luật (R-CO-1, R-DAU-1/2)', () => {
-    const co = guideDialog({ kind: 'co', npc: 'tieu-mac' }).lines.map((l) => l.text).join(' ');
-    expect(co).toContain('13 × 13');
-    expect(co).toContain('5 quân');
-    expect(co).toContain('đen');
-    const dau = guideDialog({ kind: 'dau-chu', npc: 'su-phu' }).lines.map((l) => l.text).join(' ');
-    expect(dau).toContain('10 câu');
-    expect(dau).toContain('4 nghĩa');
-    expect(guideDialog({ kind: 'dau-chu', npc: 'su-phu' }).name).toBe('Mặc Ông');
+  it('R-GIAO-2: bảng nói đúng luật (R-CO-1, R-DAU-1/2)', () => {
+    const all = (kind: string): string => {
+      const g = gameGuide(kind)!;
+      return [g.caption, ...g.sections.map((x) => x.body)].join(' ').replace(/\*\*/g, '');
+    };
+    expect(all('co')).toContain('13 × 13');
+    expect(all('co')).toContain('5 quân');
+    expect(all('co')).toContain('quân đen, đi trước');
+    expect(all('dau-chu')).toContain('10 câu');
+    expect(all('dau-chu')).toContain('4 nghĩa');
+    expect(all('dau-chu')).toContain('không tính tiến độ');
+  });
+
+  it('chữ đậm: tách đoạn "**…**" thành phần thường / đậm', () => {
+    expect(boldParts('Xếp **5 quân** liền')).toEqual([
+      { text: 'Xếp ', bold: false },
+      { text: '5 quân', bold: true },
+      { text: ' liền', bold: false },
+    ]);
   });
 });

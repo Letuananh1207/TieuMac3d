@@ -51,16 +51,12 @@ const HANDLER = 'sceneEvent';
 /** Chờ cầu nối sẵn sàng lúc trang mới tải tối đa bấy nhiêu ms (trình duyệt thường: không bao giờ sẵn sàng). */
 const READY_WAIT_MS = 800;
 
-/** Tiến độ Flutter trả về cho `getProgress` (docs/bridge.md, R-HANH-1). */
+/** Tiến độ Flutter trả về cho `getProgress` (docs/bridge.md). Không khoá vùng (R-HANH-1) — không có vùng mở / mốc. */
 export interface JourneyProgress {
-  /** mã vùng đã mở */
-  open: string[];
   /** số chữ đã học */
   chars: number;
   /** mã bộ thủ đã học — tu luyện mở bộ chưa học đầu tiên (R-HANH-3) */
   radicals: string[];
-  /** mốc của vùng còn khoá: số chữ (`chars`) hoặc số bộ thủ (`radicals`) — bản đồ ghi "Cần … chữ" */
-  need: Record<string, { chars?: number; radicals?: number }>;
   /** mã bộ thủ đến hạn ôn hôm nay, theo thứ tự hỏi (R-ON-4) — ngồi thiền mở lượt ôn trước (R-ON-5) */
   due: string[];
   /** bảng nhiệm vụ hôm nay (R-NV-1, R-NV-2); `null` = Flutter bản cũ không gửi */
@@ -98,7 +94,7 @@ function hostReady(): Promise<InAppWebViewHost | null> {
 }
 
 /**
- * Hỏi Flutter vùng nào đã mở (`getProgress`). `null` = không có Flutter / lỗi → trang dùng mặc định.
+ * Hỏi Flutter tiến độ học (`getProgress`). `null` = không có Flutter / lỗi → trang dùng mặc định.
  * Hàm rời (không cần `FlutterBridge`) để gọi sớm, song song với nạp font.
  */
 export async function getProgress(): Promise<JourneyProgress | null> {
@@ -115,23 +111,12 @@ export async function getProgress(): Promise<JourneyProgress | null> {
 /** Đọc câu trả lời `getProgress`; sai dạng → `null`. */
 export function parseProgress(v: unknown): JourneyProgress | null {
   if (typeof v !== 'object' || v === null) return null;
-  const { open, chars, need, radicals, due, daily, book } = v as Record<string, unknown>;
-  if (!Array.isArray(open) || !open.every((x) => typeof x === 'string')) return null;
-  const needs: JourneyProgress['need'] = {};
-  if (typeof need === 'object' && need !== null) {
-    for (const [id, n] of Object.entries(need as Record<string, unknown>)) {
-      if (typeof n !== 'object' || n === null) continue;
-      const { chars: c, radicals: r } = n as Record<string, unknown>;
-      needs[id] = { ...(typeof c === 'number' ? { chars: c } : {}), ...(typeof r === 'number' ? { radicals: r } : {}) };
-    }
-  }
+  const { chars, radicals, due, daily, book } = v as Record<string, unknown>;
   const learned = Array.isArray(radicals) ? radicals.filter((x): x is string => typeof x === 'string') : [];
   const dueIds = Array.isArray(due) ? due.filter((x): x is string => typeof x === 'string') : [];
   return {
-    open,
     chars: typeof chars === 'number' ? chars : 0,
     radicals: learned,
-    need: needs,
     due: dueIds,
     daily: parseDaily(daily),
     book: typeof book === 'string' && book ? book : null,
@@ -201,7 +186,7 @@ export class FlutterBridge {
 
   /**
    * Nhờ Flutter mở bảng nhiệm vụ hằng ngày (R-NV-3), kèm câu đố các bộ đến hạn (`review` — "Ôn ngay", R-ON-5) và chữ của
-   * từng bộ thủ (`forms`, mã → chữ). `false` = không có Flutter → Tiểu Mặc nói tóm tắt qua khung thoại.
+   * từng bộ thủ (`forms`, mã → chữ). `false` = không có Flutter → bảng HTML trên web (`ui/dailyPanel.ts`).
    */
   openDaily(review: ReviewItem[], forms: Record<string, string>): Promise<boolean> {
     return this.ask({ type: 'openDaily', payload: { review, forms } });

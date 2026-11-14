@@ -12,7 +12,7 @@ export class GroundPicker {
 
   pick(clientX: number, clientY: number): THREE.Vector3 | null {
     this.aim(clientX, clientY);
-    const hit = this.ray.intersectObject(this.ground, false)[0];
+    const hit = this.ray.intersectObject(this.ground, true)[0]; // địa hình là nhóm mảnh (terrain.ts)
     return hit ? hit.point.clone() : null;
   }
 
