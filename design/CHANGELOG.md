@@ -3,6 +3,17 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-14.24 — Cổng trăng riêng trên tường tây khu vui chơi
+
+- Loại: cảnh 3D — **bố cục**. Ai làm: phiên code V-20261114-24 làm thay vai thiết kế (`/canh`), người dùng: "ở chỗ tường
+  ở khu vui chơi hãy mở riêng 1 cổng". **Đã duyệt 2026-11-14** (đúng chỗ trong ảnh, giữ chữ biển tạm).
+- `scene.json` `wallSegments[1]` (tường tây x −51, z −32 … 17) thêm `gate`: cổng trăng tâm z −26,5, rộng 6,4, lối 4,6 m;
+  biển tây "Sân chơi · Thư viện" / đông "Ra sườn núi". `paths` thêm (−51,5; −26,5) → (−59; −26,5) rộng 3,6. Cổng ra dải
+  đất ngoài tường tây, nối vòng xuống Cổng Trấn.
+- Luật: R-VA-1 (thêm ví dụ cổng mới), R-GIAO-1 (thêm lối vào). `scene:check` không lỗi. Draw call nhìn trên +2.
+- Ảnh: `screens/Canh-cong-ky-van.png` (`?nv=-47,-25&cam=-42.5,4.2,-24.5&tam=-51,-26`).
+- File: `scene/scene.json`.
+
 ## 2026-11-14.23 — Khởi Nguyên Trấn kiểu hoạt hình mềm, màu ấm (bảng màu A Xuân ấm)
 
 - Loại: cảnh 3D — **ngoại hình** (không dời gì). Ai làm: phiên code V-20261114-17 làm thay vai thiết kế (`/canh`), người dùng:
