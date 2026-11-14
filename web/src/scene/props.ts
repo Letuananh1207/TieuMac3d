@@ -5,7 +5,7 @@ import { lambert } from './materials';
 import { markDynamic } from './merge';
 import { rotateXZ, type PropSpec, type SceneSpec } from './spec';
 import type { GroundY } from './terrainHeight';
-import { banner, honorBoard, teaTable, umbrellaStall } from './kien_truc/do_pho';
+import { banner, gameSign, honorBoard, teaTable, umbrellaStall } from './kien_truc/do_pho';
 import { signMesh } from './signAtlas';
 import { drawSundial } from './textures';
 import { hacDong, hang, lacDa, ruaDong } from './vat_vung';
@@ -356,6 +356,12 @@ export function addProps(
         break;
       case 'bang': {
         const t = honorBoard(g, style, p.text ?? 'Bảng vinh danh');
+        box(t.w, t.d);
+        break;
+      }
+      case 'bien-go': {
+        const [han, name] = (p.text ?? '').includes('|') ? (p.text ?? '').split('|', 2) : ['', p.text ?? ''];
+        const t = gameSign(g, style, han, name);
         box(t.w, t.d);
         break;
       }

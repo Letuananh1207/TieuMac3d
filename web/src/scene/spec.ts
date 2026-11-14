@@ -36,6 +36,8 @@ export const PROP_KINDS = [
   'ban-tra',
   'co',
   'bang',
+  /** biển gỗ chỉ đường 1,8 m hai mặt (như biển trò chơi); `text` "<chữ Hán>|<dòng Việt>" (thiếu "|" = một dòng Việt) */
+  'bien-go',
   /** hạc đồng đứng trên bệ đá (cung điện) */
   'hac-dong',
   /** rùa đồng trên bệ đá */
@@ -404,7 +406,8 @@ export interface PropSpec {
   z: number;
   rotY?: number;
   scale?: number;
-  /** cờ dọc (`co`): một chữ Hán; bảng vinh danh (`bang`): dòng tiêu đề; bồn hoa (`bon-hoa`): 梅 · 蘭 · 竹 · 菊 */
+  /** cờ dọc (`co`): một chữ Hán; bảng vinh danh (`bang`): dòng tiêu đề; bồn hoa (`bon-hoa`): 梅 · 蘭 · 竹 · 菊;
+   *  biển gỗ (`bien-go`): "<Hán>|<Việt>" */
   text?: string;
   /** độ cao gốc tuyệt đối (m) — vật ngoài mép đảo / trên mây; thiếu = mặt đất tại (x, z) */
   y?: number;

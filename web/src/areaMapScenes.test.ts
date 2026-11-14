@@ -39,7 +39,7 @@ describe('bản đồ vùng — đủ mọi cảnh (R-BANDO-2)', () => {
     });
   }
 
-  it('R-BANDO-2: Khởi Nguyên Trấn — 8 khu, cổng ngõ (−22; 36) ghi "Nhà của ta", bàn cờ + Đấu chữ, Tạp hoá, bảng nhiệm vụ', () => {
+  it('R-BANDO-2: Khởi Nguyên Trấn — 8 khu, lối xuống núi (0; 45) ghi "Nhà của ta", bàn cờ + Đấu chữ, Tạp hoá, bảng nhiệm vụ', () => {
     const m = mapOf(HOME_SCENE);
     expect(m.labels.filter((l) => l.kind === 'khu').map((l) => l.text)).toEqual([
       'Truyền Tống Đài',
@@ -53,8 +53,8 @@ describe('bản đồ vùng — đủ mọi cảnh (R-BANDO-2)', () => {
     ]);
     expect(m.icons.find((i) => i.kind === 'vong-tran')).toMatchObject({ x: 30, z: 0 });
     const gate = m.icons.find((i) => i.kind === 'cong-canh');
-    expect(Math.round(gate!.x)).toBe(-22);
-    expect(Math.round(gate!.z)).toBe(36);
+    expect(Math.round(gate!.x)).toBe(0);
+    expect(Math.round(gate!.z)).toBe(45);
     expect(m.labels.find((l) => l.kind === 'cong')?.text).toBe('Nhà của ta');
     expect(m.icons.find((i) => i.kind === 'ban-co')).toMatchObject({ x: -34, z: 4 });
     expect(m.icons.find((i) => i.kind === 'ban-dau-chu')).toMatchObject({ x: -34, z: 11 });

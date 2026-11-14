@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { buildAreaMap, footprint, mapBounds, type AreaMapSource } from './areaMap';
 
-/** Cảnh nhỏ kiểu Khởi Nguyên Trấn (số thật của scene.json cho vòng trận, cổng ngõ, bàn chơi). */
+/** Cảnh nhỏ kiểu Khởi Nguyên Trấn (số lấy từ scene.json lúc viết test: vòng trận, cổng đi bộ — ngõ cũ V-16, bàn chơi). */
 function town(over: Partial<AreaMapSource> = {}): AreaMapSource {
   return {
     site: {

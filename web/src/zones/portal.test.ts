@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { PortalTrigger } from './portal';
 
-// vùng chạm như lòng khoảnh tường cuối ngõ ở Khởi Nguyên Trấn: x −24,6 … −19,5, z 32,9 … 39,1
-const AREA = { from: [-24.6, 32.9] as [number, number], to: [-19.5, 39.1] as [number, number] };
-const ARRIVE = { x: -16.5, z: 36 };
+// vùng chạm như mấy bậc đầu lối xuống núi ở Khởi Nguyên Trấn: x −1,8 … 1,8, z 43,2 … 47
+const AREA = { from: [-1.8, 43.2] as [number, number], to: [1.8, 47] as [number, number] };
+const ARRIVE = { x: 0, z: 38.4 };
 
 /** Đi thẳng từ `a` tới `b` theo `steps` bước; trả số lần cổng báo sang. */
 function walk(t: PortalTrigger, a: { x: number; z: number }, b: { x: number; z: number }, steps = 40, enabled = true): number {
@@ -23,32 +23,32 @@ describe('cổng sang cảnh (R-HANH-4)', () => {
 
   it('R-HANH-4: từ ngoài bước vào vùng → sang ngay, đúng một lần', () => {
     const t = new PortalTrigger(AREA, ARRIVE);
-    expect(walk(t, ARRIVE, { x: -22, z: 36 })).toBe(1);
+    expect(walk(t, ARRIVE, { x: 0, z: 45 })).toBe(1);
     // đứng tiếp trong vùng, đi ra rồi vào lại → không báo nữa (đã sang)
-    expect(walk(t, { x: -22, z: 36 }, ARRIVE)).toBe(0);
-    expect(walk(t, ARRIVE, { x: -22, z: 36 })).toBe(0);
+    expect(walk(t, { x: 0, z: 45 }, ARRIVE)).toBe(0);
+    expect(walk(t, ARRIVE, { x: 0, z: 45 })).toBe(0);
   });
 
   it('R-HANH-4: xuất hiện trong vùng → không tính; ra rồi vào lại mới sang', () => {
-    const t = new PortalTrigger(AREA, { x: -22, z: 36 });
-    expect(t.update({ x: -22, z: 36 })).toBe(false);
-    expect(t.update({ x: -21, z: 36 })).toBe(false); // vẫn trong vùng
-    expect(walk(t, { x: -21, z: 36 }, ARRIVE)).toBe(0); // ra
-    expect(walk(t, ARRIVE, { x: -22, z: 36 })).toBe(1); // vào lại
+    const t = new PortalTrigger(AREA, { x: 0, z: 45 });
+    expect(t.update({ x: 0, z: 45 })).toBe(false);
+    expect(t.update({ x: 0, z: 44 })).toBe(false); // vẫn trong vùng
+    expect(walk(t, { x: 0, z: 44 }, ARRIVE)).toBe(0); // ra
+    expect(walk(t, ARRIVE, { x: 0, z: 45 })).toBe(1); // vào lại
   });
 
   it('R-HANH-4: đang bận (bản đồ / thoại / màn tải / trang trí) → không tính, phải ra rồi vào lại', () => {
     const t = new PortalTrigger(AREA, ARRIVE);
-    expect(walk(t, ARRIVE, { x: -22, z: 36 }, 40, false)).toBe(0);
+    expect(walk(t, ARRIVE, { x: 0, z: 45 }, 40, false)).toBe(0);
     // hết bận khi vẫn đứng trong vùng → không sang
-    expect(t.update({ x: -22, z: 36 })).toBe(false);
-    expect(walk(t, { x: -22, z: 36 }, ARRIVE)).toBe(0);
-    expect(walk(t, ARRIVE, { x: -22, z: 36 })).toBe(1);
+    expect(t.update({ x: 0, z: 45 })).toBe(false);
+    expect(walk(t, { x: 0, z: 45 }, ARRIVE)).toBe(0);
+    expect(walk(t, ARRIVE, { x: 0, z: 45 })).toBe(1);
   });
 
   it('R-HANH-4: vùng ghi ngược chiều (from > to) vẫn đúng; mép vùng tính là trong', () => {
     const t = new PortalTrigger({ from: AREA.to, to: AREA.from }, ARRIVE);
-    expect(t.update({ x: -19.5, z: 36 })).toBe(true);
+    expect(t.update({ x: 0, z: 43.2 })).toBe(true);
   });
 
   it('R-HANH-4 R-NHA-1: ở nhà, đứng (0; 10) vừa tới → không ra; đi về nam qua cổng → về trấn', () => {
