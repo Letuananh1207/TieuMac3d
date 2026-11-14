@@ -200,6 +200,21 @@
       "value": "#5E6A70",
       "note": "chữ phụ / lý do mờ trên giấy và kính (≥ 4,5:1 trên map-paper, mist) — đã dùng từ 2026-11-13.x, đặt tên ở 2026-11-14.12",
       "code": "chưa có"
+    },
+    "map-ink": {
+      "value": "rgba(58,48,36,1)",
+      "note": "mực nâu bản đồ (dùng với độ mờ: tường .8, viền nhà .7, chân nhà .2, lối lát .13, viền khu .28, mép đất .18) — như ve-ban-do.html; 2026-11-14.20",
+      "code": "chưa có"
+    },
+    "map-cloud": {
+      "value": "#DCE3E2",
+      "note": "ngoài đất trên bản đồ vùng (biển mây / vực) — 2026-11-14.20",
+      "code": "chưa có"
+    },
+    "map-water": {
+      "value": "#BFD5D1",
+      "note": "nước trên bản đồ vùng, viền #6F9590 (như biển bản đồ truyền tống) — 2026-11-14.20",
+      "code": "chưa có"
     }
   },
   "font": {
@@ -425,6 +440,16 @@
     "wallet": {
       "value": 36,
       "note": "ví Văn tiền: viên kính cao 36, xu 26, số 15/700 tabular — 2026-11-14.12",
+      "code": "chưa có"
+    },
+    "minimap-portrait": {
+      "value": 104,
+      "note": "bản đồ nhỏ tròn, dọc — 2026-11-14.20",
+      "code": "chưa có"
+    },
+    "minimap-landscape": {
+      "value": 96,
+      "note": "bản đồ nhỏ tròn, ngang — 2026-11-14.20",
       "code": "chưa có"
     }
   }
