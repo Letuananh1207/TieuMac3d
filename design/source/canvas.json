@@ -650,6 +650,41 @@
       "w": 844,
       "h": 390,
       "title": "Cách chơi · ngang · Ngũ Tử Kỳ"
+    },
+    "Chat-doc.dc.html": {
+      "x": 0,
+      "y": 37446,
+      "w": 390,
+      "h": 844,
+      "title": "Trò chuyện · dọc · đang đi lại (khung thu gọn + bong bóng)"
+    },
+    "Chat-doc-go.dc.html": {
+      "x": 470,
+      "y": 37446,
+      "w": 390,
+      "h": 844,
+      "title": "Trò chuyện · dọc · đang gõ (bàn phím, khung mở rộng)"
+    },
+    "Chat-ngang.dc.html": {
+      "x": 940,
+      "y": 37446,
+      "w": 844,
+      "h": 390,
+      "title": "Trò chuyện · ngang · đang đi lại"
+    },
+    "Chat-ngang-go.dc.html": {
+      "x": 940,
+      "y": 37900,
+      "w": 844,
+      "h": 390,
+      "title": "Trò chuyện · ngang · đang gõ"
+    },
+    "Chat-trang-thai.dc.html": {
+      "x": 0,
+      "y": 38410,
+      "w": 1300,
+      "h": 820,
+      "title": "Trò chuyện · thành phần + trạng thái"
     }
   },
   "order": [
@@ -751,7 +786,12 @@
     "CachChoi-doc-co.dc.html",
     "CachChoi-doc-dau.dc.html",
     "CachChoi-doc-dau-chua-hoc.dc.html",
-    "CachChoi-ngang.dc.html"
+    "CachChoi-ngang.dc.html",
+    "Chat-doc.dc.html",
+    "Chat-doc-go.dc.html",
+    "Chat-ngang.dc.html",
+    "Chat-ngang-go.dc.html",
+    "Chat-trang-thai.dc.html"
   ],
   "notes": {
     "cach-dung": {
@@ -1052,6 +1092,21 @@
       "size": "m",
       "fill": "teal",
       "text": "Phiếu 2026-11-13-bang-cach-choi. Đề xuất, chưa chốt.\n\n• Lớp phủ HUD web (như khung thoại): nút \"Cách chơi\" đã ở web, nội dung chỉ là chữ tĩnh, chạy được cả khi không có Flutter (chơi thử, Canvas 3D).\n• Một khung chung cho 2 trò: đầu bảng tên Hán + Việt, hình minh hoạ, 4 mục đánh số, mẹo của NPC, nút \"Đóng\" ở đáy (ngón cái). Nội dung dài → cuộn trong bảng, đầu + nút đứng yên.\n• Không có \"Vào bàn\" trong bảng: biển cách ghế gần nhất ~2,5 m, đứng ở biển không ở trong 1,5 m của ghế (R-GIAO-1).\n• Mục \"rời bàn\" ghi đúng R-GIAO-1 hiện tại (kéo cần / Ngồi ôn). Nếu áp nút \"Rời bàn\" (đề xuất .27) thì đổi chữ mục 4."
+    },
+    "tieu-de-chat": {
+      "x": 0,
+      "y": 37206,
+      "text": "Trò chuyện kênh chung — ô nhập, khung kênh, bong bóng trên đầu",
+      "kind": "title1",
+      "maxW": 1784
+    },
+    "chat-ghi-chu": {
+      "x": 1864,
+      "y": 37446,
+      "w": 440,
+      "size": "m",
+      "fill": "teal",
+      "text": "Phiếu 2026-11-14-tro-chuyen-kenh-chung. Đề xuất, chưa chốt.\n\n• Nút \"Trò chuyện\" tròn 48 bên phải, ngay trên cụm Nhảy/Chào/Ngồi ôn (ngón cái với tới; góc trên vẫn trống — R-HUD-1).\n• Khung thu gọn trái, trên joystick: 3 tin cuối mờ dần, không bắt chạm (R-DIEU-1).\n• Bấm nút → ô nhập trên bàn phím + khung mở rộng cuộn được. Gửi xong ĐÓNG ô nhập để thấy bong bóng của mình ngay.\n• Đếm chữ chỉ hiện từ 50/60; quá 60 → đỏ, Gửi mờ (không cắt chữ). Gửi dồn < 1,5 s → Gửi mờ + vòng chờ.\n• Bong bóng: mình viền ngọc, người khác kính sương, NPC giấy viền vàng.\n• Tên kênh \"Kênh chung\" + 傳音 (truyền âm)."
     }
   },
   "designSystems": []

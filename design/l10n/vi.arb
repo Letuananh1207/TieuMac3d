@@ -544,5 +544,54 @@
   "guideSeatBody": "Đứng gần một bồ đoàn → nút \"Vào bàn\". Muốn đứng dậy: kéo cần điều khiển hoặc bấm Ngồi ôn — ván đang chơi bỏ, không tính.",
   "@guideSeatBody": {
     "description": "Theo R-GIAO-1 hiện tại. Nếu áp nút \"Rời bàn\" (đề xuất 2026-11-13.27) → \"…Muốn đứng dậy: bấm Rời bàn — …\""
+  },
+  "chatOpen": "Trò chuyện",
+  "@chatOpen": {
+    "description": "Nhãn + trợ năng nút mở trò chuyện (HUD) — 2026-11-14.1"
+  },
+  "chatChannel": "Kênh chung",
+  "@chatChannel": {
+    "description": "Tên kênh; cạnh có chữ Hán 傳音 (truyền âm) trang trí"
+  },
+  "chatHint": "Nói gì đó với đồng môn…",
+  "@chatHint": {
+    "description": "Gợi ý trong ô nhập trống"
+  },
+  "chatSend": "Gửi",
+  "chatClose": "Đóng kênh chung",
+  "@chatClose": {
+    "description": "Trợ năng nút × của khung kênh"
+  },
+  "chatEmpty": "Chưa ai lên tiếng…",
+  "chatEmptySub": "Hãy chào đồng môn một câu.",
+  "chatSelf": "Ta",
+  "@chatSelf": {
+    "description": "Tên của mình trong khung kênh chung (người khác thấy tên nhân vật)"
+  },
+  "chatCount": "{n}/60",
+  "@chatCount": {
+    "description": "Đếm chữ trong ô nhập, hiện khi ≥ 50",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "chatTooLong": "Quá dài — tối đa 60 chữ",
+  "@chatTooLong": {
+    "description": "R-CHAT-1 quá 60 ký tự"
+  },
+  "chatWait": "Chờ chút rồi gửi tiếp…",
+  "@chatWait": {
+    "description": "R-CHAT-1 gửi lại dưới 1,5 giây"
+  },
+  "chatNew": "Tin mới · {n}",
+  "@chatNew": {
+    "description": "Viên báo tin mới khi đang cuộn xem tin cũ",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
   }
 }

@@ -452,3 +452,44 @@ Mẫu một mục:
 - Không có nút "Vào bàn" trong bảng: biển cách ghế gần nhất ~2,5 m, chỉ vào bàn được trong 1,5 m của ghế (`R-GIAO-1`).
 - Chuỗi: `guide*`. Luật: `R-GIAO-1/2`, `R-CO-1/2/3`, `R-DAU-1/2`, `R-MAN-1`.
 - Ảnh: nền giữ chỗ `screens/Canh-bien-ngu-tu-ky.png`, `Canh-bien-tro-choi.png`; màn ghép chưa có ảnh.
+
+## Trò chuyện kênh chung (HUD) · artboard `Chat-doc.dc.html`, `Chat-doc-go.dc.html`, `Chat-ngang.dc.html`, `Chat-ngang-go.dc.html`, `Chat-trang-thai.dc.html` · từ mục 2026-11-14.1
+
+- Mục đích: gõ một câu ngắn lên kênh chung của tông môn → bong bóng trên đầu người nói + một dòng trong khung kênh
+  (`R-CHAT-1/2/3`). Chưa có máy chủ: chỉ mình + NPC nói câu có sẵn, nhưng thiết kế như có nhiều người (Vân Nhi, Lâm Phong
+  trong artboard là người chơi giả).
+- **Nút "Trò chuyện"**: tròn 48 kính sương (như nút Chào / Ngồi ôn), biểu tượng bóng thoại có 2 dòng 24, nhãn 11/700
+  "Trò chuyện" dưới. Đặt **bên phải, ngay trên cụm hành động** — dọc: phải 20, dưới 238 (≈ 188 + safe); ngang: phải safe
+  + 16, dưới 214. Góc trên vẫn trống (`R-HUD-1`). Đang nhấn: thu 94 %, nền tối hơn.
+- **Khung kênh thu gọn** (khi đi lại): trái 16 (ngang: safe + 12), ngay trên joystick (dọc: dưới 184; ngang: dưới 145),
+  rộng ≤ 250 (ngang 300). 3 tin cuối, mỗi tin một viên kính `frost` .78 bo 8 đệm 3 9, chữ 13 dòng 1,35, tên đậm; mờ
+  .55 / .8 / 1 (cũ → mới). Tin NPC: nền `map-paper` .88, tên `jade` + chữ Hán. Tên mình "Ta" `jade`. **Không bắt chạm**
+  (`pointer-events: none`) → không chặn joystick (`R-DIEU-1`). Im lặng 10 giây → mờ hết; tin mới → hiện lại.
+- **Bấm nút → ô nhập + khung mở rộng**; bàn phím máy bật lên. Joystick, cụm hành động, khung thu gọn ẩn.
+  - Ô nhập: thanh kính .96 sát mép trên bàn phím (cao 64, đệm 10 12; ngang: đệm 10 + safe), ô trắng cao 44 bo 12 viền
+    `jade` 2 (đang gõ), chữ 15; gợi ý `chatHint` `slate` 55 %. Nút **"Gửi"** `jade` 44 bo 12, biểu tượng giấy bay 18 +
+    chữ 15/700; ô rỗng → mờ (`jade` 35 %).
+  - Đếm chữ: **chỉ hiện từ 50 chữ** ("54/60" 12/700 trong ô, phải 10). **Quá 60** (thường do dán): không cắt chữ; viền
+    `lacquer` 2, số `lacquer`, dòng dưới `chatTooLong` 12/700 `lacquer`, Gửi mờ.
+  - Gửi lại dưới 1,5 giây: Gửi mờ + vòng chờ 18 quay hết 1,5 s, dòng dưới `chatWait` 12/700.
+  - **Gửi xong → đóng ô nhập** (bàn phím hạ, về cảnh, thấy ngay bong bóng của mình). Đóng khác: × của khung, chạm cảnh
+    phía trên khung, nút quay lại của máy. Máy tính: **Enter** mở / gửi, **Esc** đóng; đang gõ phím không điều khiển nhân vật.
+  - Khung mở rộng (dọc): trái / phải 12, đáy cách ô nhập 8, cao 260, kính .93 bo 16. Đầu 44: chấm vàng 6 + "Kênh chung"
+    15/700 + 傳音 14 `jade` + nút × 44. Danh sách bám đáy (tin mới nhất dưới cùng), mỗi tin đệm 5 8 bo 10: tên 13/700 +
+    giờ 11 (`slate` 70 %), nội dung 14 dòng 1,4. Dòng của mình nền `answer-right-bg`, tên "Ta" `jade`; dòng NPC nền
+    `map-paper` .85, tên `jade` + chữ Hán. Mép trên mờ dần 24; thanh cuộn 3 px. Đang cuộn xem tin cũ mà có tin mới →
+    viên "Tin mới · n ↓" `jade` cao 32 giữa đáy; chạm → cuộn xuống cuối. Rỗng: `chatEmpty` 14/700 + `chatEmptySub` 13 giữa khung.
+  - Ngang (bàn phím ≈ 200): khung gọn trái safe + 12, trên 12, rộng 470, cao 104 (tin một dòng: tên đậm + nội dung 13);
+    cột phải 44 có × và 傳音 dọc; ô nhập ngay dưới.
+- **Bong bóng trên đầu** (`R-CHAT-2`): neo trên nhãn tên (đuôi cách nhãn 4), đi theo đầu như nút học nổi. Bo 12, đệm 7 11,
+  chữ 14/500 dòng 1,4 (ngang 13, đệm 6 10), rộng tối đa 168 (ngang 200) → 60 chữ ≤ 3 dòng; đuôi vuông 12 xoay 45°; bóng
+  `0 4px 12px rgba(36,50,58,.18)`. Ba kiểu: **mình** kính .95 viền `jade` 1,5 · **người khác** kính .94 viền
+  `frost-outline` · **NPC** `map-paper` viền vàng 75 %. Chữ Hán trong câu: Noto Serif SC 700 `jade`.
+  - Vòng đời: hiện phóng 90 → 100 % trong 0,15 s · giữ tới 5 s · mờ dần 1 s cuối. Tin mới cùng người → thay ngay.
+  - Hai bong bóng chồng nhau: bong bóng **cũ hơn** đẩy lên tới khi hở 6 px, nối xuống nhãn tên bằng vạch `jade` 1,5 (70 %)
+    + chấm 6 thay cho đuôi.
+  - Không vẽ: cách camera > 25 m, sau camera, đang mở bài học / thoại NPC / bàn chơi (tin vẫn vào khung).
+- Ẩn nút + khung thu gọn khi: bài học / thẻ bộ thủ / bảng phủ, thoại NPC (`R-NPC-2`), ngồi bàn chơi, bản đồ, màn tải.
+- Chuỗi: `chat*` trong `l10n/vi.arb`. Luật: `R-CHAT-1/2/3`, `R-DIEU-1`, `R-NPC-2`, `R-HUD-1`, `R-MAN-1`.
+- Ảnh: nền giữ chỗ chụp từ Canvas 3D (`?chup&nv=5.6,14.6&cam=6.8,4.6,5.2&tam=6.6,14.6`, dọc 390×844 / ngang 844×390); bàn
+  phím trong artboard chỉ là khối giữ chỗ — cao thật khác nhau Android / iOS, thử máy. Màn ghép chưa có ảnh.

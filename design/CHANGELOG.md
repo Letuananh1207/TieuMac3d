@@ -3,6 +3,30 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-14.1 — Trò chuyện kênh chung (nút, ô nhập, khung kênh, bong bóng trên đầu)
+
+- Loại: giao diện · chuỗi. Màn: **Trò chuyện kênh chung** (HUD web) — đặc tả `docs/screen_specs.md` mục cùng tên.
+- Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-14-tro-chuyen-kenh-chung.md` (phiếu còn trong máy, chưa lên GitHub — phiên
+  code đang soạn; dòng "Đã vẽ" ghi ở bản trong máy).
+- Artboard: `Chat-doc` (đi lại: khung thu gọn + bong bóng mình / NPC), `Chat-doc-go` (đang gõ, bàn phím, khung mở rộng,
+  52/60), `Chat-ngang` (bong bóng chồng → đẩy lên + vạch nối), `Chat-ngang-go`, `Chat-trang-thai` (5 trạng thái ô nhập,
+  khung rỗng / đầy + "Tin mới", bong bóng 1 từ / 57 chữ / Hán + Việt / NPC, vòng đời 6 s, nút thường / nhấn, khi nào
+  ẩn). Nền giữ chỗ: ảnh Canvas 3D mới tải lên canvas (`chat-nen-doc.png`, `chat-nen-ngang.png`).
+- Quyết định thiết kế (phiếu để ngỏ):
+  - Nút "Trò chuyện" tròn 48 bên phải ngay trên cụm hành động (ngón cái với tới; góc trên trống theo `R-HUD-1`).
+  - Khung thu gọn trái trên joystick, không bắt chạm (`R-DIEU-1`), mờ hết sau 10 s im lặng.
+  - **Gửi xong đóng ô nhập** (thấy ngay bong bóng của mình).
+  - Đếm chữ chỉ hiện từ 50; quá 60 không cắt chữ — báo đỏ, Gửi mờ. Gửi dồn < 1,5 s: Gửi mờ + vòng chờ.
+  - Bong bóng 3 kiểu: mình viền `jade`, người khác kính, NPC giấy viền vàng. Chồng nhau → bong bóng cũ hơn đẩy lên.
+  - Tên kênh "Kênh chung" + 傳音; tên mình "Ta".
+- Thành phần mới (`docs/components.md`): nút Trò chuyện, khung thu gọn, khung mở rộng, ô nhập + Gửi, bong bóng. Token: không
+  thêm.
+- Chuỗi mới (`l10n/vi.arb`): `chatOpen`, `chatChannel`, `chatHint`, `chatSend`, `chatClose`, `chatEmpty`, `chatEmptySub`,
+  `chatSelf`, `chatCount`, `chatTooLong`, `chatWait`, `chatNew`.
+- Luật: không đổi. Theo `R-CHAT-1/2/3` (đang "chờ"), `R-DIEU-1`, `R-NPC-2`, `R-HUD-1`, `R-MAN-1`. Đề xuất ghi thêm vào
+  `R-CHAT-3` (phiên code hỏi người dùng): khung thu gọn tự mờ sau 10 s im lặng; gửi xong ô nhập đóng.
+- File: `source/Chat-*.dc.html` (mới), `source/canvas.json`, `docs/screen_specs.md`, `docs/components.md`, `l10n/vi.arb`.
+
 ## 2026-11-13.35 — Bảng cách chơi Kỳ Văn Uyển (Ngũ Tử Kỳ · Đấu chữ)
 
 - Loại: giao diện · chuỗi. Màn: **Bảng cách chơi** (HUD web, lớp phủ) — đặc tả `docs/screen_specs.md` mục "Bảng cách chơi
