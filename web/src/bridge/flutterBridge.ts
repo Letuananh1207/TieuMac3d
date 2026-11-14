@@ -4,6 +4,7 @@ import type { Radical } from '../zones/radicals';
 import type { ReviewItem } from '../zones/review';
 import type { StudyMenu } from '../zones/studyMenu';
 import { parseGameEarning, type GameEarning, type GameKind, type GameOutcome } from '../zones/wallet';
+import { parseAlms, type AlmsRecord, type AlmsResult } from '../zones/walletRules';
 import type { Lesson } from '../zones/zones';
 
 /** Dữ liệu cuộn sách Ngồi ôn gửi Flutter (`openStudy` — R-ON-8). */
@@ -69,6 +70,8 @@ export interface JourneyProgress {
   coins: number | null;
   /** Văn tiền trò chơi đã nhận hôm nay (trần 60 — R-TIEN-3) */
   gameCoinsToday: number;
+  /** đã cho Tiểu Khất (R-NPC-6, R-TIEN-8); Flutter bản cũ không gửi → chưa cho lần nào */
+  alms: AlmsRecord;
 }
 
 /** Hai việc hôm nay + chuỗi ngày (docs/bridge.md `getProgress.daily`). */
@@ -140,7 +143,7 @@ export async function getHome(): Promise<unknown> {
 /** Đọc câu trả lời `getProgress`; sai dạng → `null`. */
 export function parseProgress(v: unknown): JourneyProgress | null {
   if (typeof v !== 'object' || v === null) return null;
-  const { chars, radicals, due, daily, book, coins, gameCoinsToday } = v as Record<string, unknown>;
+  const { chars, radicals, due, daily, book, coins, gameCoinsToday, alms } = v as Record<string, unknown>;
   const learned = Array.isArray(radicals) ? radicals.filter((x): x is string => typeof x === 'string') : [];
   const dueIds = Array.isArray(due) ? due.filter((x): x is string => typeof x === 'string') : [];
   return {
@@ -151,6 +154,7 @@ export function parseProgress(v: unknown): JourneyProgress | null {
     book: typeof book === 'string' && book ? book : null,
     coins: typeof coins === 'number' && Number.isFinite(coins) ? Math.max(0, coins) : null,
     gameCoinsToday: typeof gameCoinsToday === 'number' && gameCoinsToday > 0 ? gameCoinsToday : 0,
+    alms: parseAlms(alms),
   };
 }
 
@@ -269,6 +273,20 @@ export class FlutterBridge {
   }
 
   /**
+   * Cho Tiểu Khất 5 văn (R-TIEN-8): Flutter tính (mỗi ngày giờ VN một lần, ví ≥ 5) và ghi ngay. `null` = không có Flutter /
+   * lỗi / bản cũ → không cho được.
+   */
+  async giveAlms(): Promise<AlmsResult | null> {
+    const host = window.flutter_inappwebview;
+    if (!host || typeof host.callHandler !== 'function') return null;
+    try {
+      return parseAlmsReply(await host.callHandler(HANDLER, { type: 'giveAlms', payload: {} }));
+    } catch {
+      return null;
+    }
+  }
+
+  /**
    * Mở Tạp hoá (R-TIEN-4, R-TIEN-6) với danh mục + giá của `zones/decor.ts` (một nguồn giá). `false` = không có Flutter /
    * Flutter không mở (không có Flutter thì trang mở Tạp hoá bản web — R-TIEN-7, không gọi tới đây).
    */
@@ -296,4 +314,18 @@ export class FlutterBridge {
     else if (type === 'back') return this.on.onBack();
     return false;
   }
+}
+
+/** Đọc câu trả lời `giveAlms` (docs/bridge.md); sai dạng → `null`. */
+export function parseAlmsReply(v: unknown): AlmsResult | null {
+  if (!v || typeof v !== 'object') return null;
+  const o = v as Record<string, unknown>;
+  const balance = typeof o.balance === 'number' && Number.isFinite(o.balance) && o.balance >= 0 ? o.balance : null;
+  if (balance === null) return null;
+  if (o.ok === true) {
+    const alms = parseAlms(o.alms);
+    return alms.lastDay >= 0 ? { ok: true, balance, alms } : null;
+  }
+  if (o.ok === false && (o.reason === 'given' || o.reason === 'short')) return { ok: false, reason: o.reason, balance };
+  return null;
 }

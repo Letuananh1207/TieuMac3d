@@ -68,11 +68,13 @@ export interface TrialWallet {
   placed: Record<string, string>;
   /** mã bộ thủ đã mở thẻ HTML (R-TIEN-2 — +10 lần đầu) */
   learned: string[];
+  /** đã cho Tiểu Khất (R-TIEN-8) */
+  alms: AlmsRecord;
 }
 
 /** Ví thử mới: 300 Văn tiền, 3 vật khởi đầu, nhà trống, chưa học bộ nào. */
 export function newTrial(): TrialWallet {
-  return { coins: TRIAL_START_COINS, gameDay: '', gameToday: 0, owned: [...STARTER_DECOR], placed: {}, learned: [] };
+  return { coins: TRIAL_START_COINS, gameDay: '', gameToday: 0, owned: [...STARTER_DECOR], placed: {}, learned: [], alms: { ...NO_ALMS } };
 }
 
 const strings = (v: unknown): string[] => (Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string') : []);
@@ -94,6 +96,7 @@ export function parseTrial(raw: unknown): TrialWallet {
     owned: Array.isArray(o.owned) ? [...new Set(strings(o.owned).filter((id) => decorItem(id)))] : [...STARTER_DECOR],
     placed,
     learned: [...new Set(strings(o.learned))],
+    alms: parseAlms(o.alms),
   };
 }
 
@@ -172,4 +175,10 @@ export function parseAlms(v: unknown): AlmsRecord {
 /** Nhãn trừ tiền trên ví HUD (R-TIEN-5, R-TIEN-8): "−5 · Cho Tiểu Khất" (dấu trừ U+2212). */
 export function almsLabel(amount = ALMS_COINS): string {
   return `−${amount} · Cho Tiểu Khất`;
+}
+
+/** Cho Tiểu Khất ở chế độ thử (R-TIEN-7, R-TIEN-8): như `giveAlms` của Flutter; không được → ví giữ nguyên. */
+export function giveTrialAlms(w: TrialWallet, today: number): { wallet: TrialWallet; result: AlmsResult } {
+  const result = giveAlms(w.coins, w.alms, today);
+  return { wallet: result.ok ? { ...w, coins: result.balance, alms: result.alms } : w, result };
 }

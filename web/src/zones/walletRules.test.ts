@@ -88,7 +88,7 @@ describe('chế độ thử trên trình duyệt (R-TIEN-7)', () => {
 
   it('R-TIEN-7: đọc lại ví đã lưu; bỏ mã vật lạ; thiếu `owned` → vật khởi đầu', () => {
     const w = parseTrial({ coins: 240, gameDay: '2026-11-14', gameToday: 8, owned: ['truc-canh', 'mai', 'rong-vang', 7], placed: { 'vuon-1': 'mai', 'x': 3 }, learned: ['truc', 9] });
-    expect(w).toEqual({ coins: 240, gameDay: '2026-11-14', gameToday: 8, owned: ['truc-canh', 'mai'], placed: { 'vuon-1': 'mai' }, learned: ['truc'] });
+    expect(w).toEqual({ coins: 240, gameDay: '2026-11-14', gameToday: 8, owned: ['truc-canh', 'mai'], placed: { 'vuon-1': 'mai' }, learned: ['truc'], alms: { lastDay: -1, count: 0 } });
     expect(parseTrial({ coins: 10 }).owned).toEqual([...STARTER_DECOR]);
   });
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { newTrial } from '../zones/walletRules';
+import { giveTrialAlms, newTrial } from '../zones/walletRules';
 import { TRIAL_KEY, TrialStore, wantsReset, type KeyValue } from './browserStore';
 
 /** Kho giả như `localStorage`; `blocked` = trình duyệt chặn dữ liệu trang (mọi lệnh ném lỗi). */
@@ -23,6 +23,18 @@ function fakeStorage(init: Record<string, string> = {}, blocked = false): KeyVal
 }
 
 describe('kho ví thử trong trình duyệt (R-TIEN-7)', () => {
+  it('R-TIEN-8: cho Tiểu Khất trên ví thử → −5, lưu ngày + số lần, tải lại trang vẫn còn', () => {
+    const s = fakeStorage();
+    const a = new TrialStore(s);
+    const r = giveTrialAlms(a.wallet, 20771);
+    expect(r.result.ok).toBe(true);
+    a.update(() => r.wallet);
+    const b = new TrialStore(s);
+    expect(b.wallet.coins).toBe(295);
+    expect(b.wallet.alms).toEqual({ lastDay: 20771, count: 1 });
+    expect(giveTrialAlms(b.wallet, 20771).result).toEqual({ ok: false, reason: 'given', balance: 295 });
+  });
+
   it('R-TIEN-7: mới mở → 300; ghi rồi mở lại (tải lại trang) → còn nguyên', () => {
     const s = fakeStorage();
     const a = new TrialStore(s);
