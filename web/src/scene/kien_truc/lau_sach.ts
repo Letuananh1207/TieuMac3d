@@ -4,16 +4,17 @@
  * thuỷ, như Văn Uyên Các), cột theo `pillarColor` (lục). Tầng 1 vào được qua hai gian giữa: kệ sách + án đọc (nội thất
  * thư viện); nền đá có lan can + bậc như giảng đường. Hiên lửng giữa hai tầng; không treo đèn lồng (lầu sách kỵ lửa).
  * Lên được tầng 2 (R-VA-3) bằng thang thẳng ngoài trời dọc đầu hồi phải (`cau_thang.ts`, L-6); tầng 2 mở bốn phía (chỉ cột +
- * lan can thấp), 24 bồ đoàn vuông tự học ngồi được, không án (R-VA-4).
+ * lan can thấp), 24 bồ đoàn vuông tự học ngồi được (ngồi đủ 1 giây → cuộn sách Ngồi ôn), không án; biển gỗ "Khu tự học"
+ * sát tường sau phía đông (R-VA-4).
  */
-import type * as THREE from 'three';
+import * as THREE from 'three';
 import type { BuildingSpec } from '../spec';
 import { addBeamBand, addDoors, addRailing, addSign, addSteps, hk, STEP_DEPTH, stepCount, type Style } from './chi_tiet';
 import { columnXs, hallFloor } from './dien';
 import { box, column } from './hinh';
 import { gableHipRoof, skirt } from './mai';
 import { addStairs, gapForBridge, stairLayout, type StairLayout } from './cau_thang';
-import { CUSHION_R } from './do_pho';
+import { CUSHION_R, gameSign } from './do_pho';
 import { addInterior, type LocalBox } from './noi_that';
 import type { Shell } from './vao_trong';
 
@@ -31,6 +32,11 @@ const CUSHION_SIDE = 1.9 * CUSHION_R;
 const CUSHION_H = 0.12;
 const CUSHION = '#8a3b2c';
 const RAIL_WOOD = '#5a3a24';
+/**
+ * Biển gỗ "Khu tự học" tầng 2 (R-VA-4, chữ Việt như biển Kỳ Văn Uyển): sát tường sau phía đông — giữa lưới bồ đoàn
+ * (x ≤ 3) và lối từ cầu nối thang (dải đông) —, mặt nhìn vào sàn (+z). `w` = bề ngang biển `gameSign`.
+ */
+export const STUDY_SIGN = { x: 5, z: -3.55, rotY: 0, w: 1.8, name: 'Khu tự học' } as const;
 const RAIL_H = 0.9;
 
 /** Lan can gỗ thấp tầng 2 từ (xa, za) tới (xb, zb): tay vịn, thanh dưới, song đứng mỗi ~0,5 m. */
@@ -131,9 +137,13 @@ export function lauSach(g: THREE.Group, b: BuildingSpec, style: Style, fade: THR
   for (const sz of SEAT_ROWS) {
     for (const sx of SEAT_XS) {
       fadeLow.add(box(CUSHION_SIDE, CUSHION_H, CUSHION_SIDE, CUSHION, sx, yf + CUSHION_H / 2, sz));
-      seats.push({ x: sx, z: sz, y: yf, rotY: 0 });
+      seats.push({ x: sx, z: sz, y: yf, rotY: 0, study: true });
     }
   }
+  const signGroup = new THREE.Group();
+  signGroup.position.set(STUDY_SIGN.x, yf, STUDY_SIGN.z);
+  fadeLow.add(signGroup);
+  const sign = gameSign(signGroup, style, '', STUDY_SIGN.name);
   const y2 = yf + h2;
   addBeamBand(fade, uw, ud, y2, style);
   const over = 1.6;
@@ -156,6 +166,8 @@ export function lauSach(g: THREE.Group, b: BuildingSpec, style: Style, fade: THR
     ...furnished.boxes.map((f) => ({ ...f, maxY: plat + 1.5 })),
     // tầng 2: lan can mặt tiền (hồi + sau trùng tường tầng 1, đã chặn) — chỉ chặn người ở tầng 2
     { x: 0, z: id / 2, w: iw, d: 0.3, minY: yf - 0.4 },
+    // biển "Khu tự học" (R-VA-4): chỉ chặn người ở tầng 2
+    { x: STUDY_SIGN.x + sign.x, z: STUDY_SIGN.z + sign.z, w: sign.w, d: sign.d, minY: yf - 0.4 },
     ...stairs.boxes,
   ];
   const run = stepCount(style) * STEP_DEPTH;

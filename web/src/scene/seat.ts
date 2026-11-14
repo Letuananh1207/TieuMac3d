@@ -5,4 +5,6 @@ export interface Seat {
   z: number;
   /** hướng nhìn của người ngồi (radian, 0 = nhìn +z) */
   rotY: number;
+  /** bồ đoàn khu tự học tầng 2 Tàng Thư Các: ngồi đủ 1 giây → cuộn sách Ngồi ôn (R-VA-4, R-ON-8) */
+  study?: boolean;
 }

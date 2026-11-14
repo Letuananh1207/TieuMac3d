@@ -31,8 +31,11 @@ export interface Shell {
   floor: LocalBox;
   /** nhà lên được tầng 2: chân cao từ mức này (m, từ chân nhà) trở lên = đang ở tầng 2 → `fadeLow` hiện lại (R-HUD-2) */
   upperY?: number;
-  /** chỗ ngồi (bồ đoàn) — bấm Ngồi khi đứng gần thì dời lên đó (R-VA-4); `y` từ chân nhà, `rotY` hướng nhìn (0 = +z) */
-  seats?: { x: number; z: number; y: number; rotY: number }[];
+  /**
+   * chỗ ngồi (bồ đoàn) — bấm Ngồi khi đứng gần thì dời lên đó (R-VA-4); `y` từ chân nhà, `rotY` hướng nhìn (0 = +z);
+   * `study` = bồ đoàn khu tự học: ngồi đủ 1 giây mở cuộn sách như Ngồi ôn (R-ON-8)
+   */
+  seats?: { x: number; z: number; y: number; rotY: number; study?: boolean }[];
 }
 
 /**

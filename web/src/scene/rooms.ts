@@ -244,7 +244,8 @@ export function addWalkIn(scene: THREE.Scene, colliders: Colliders, b: BuildingS
     pads: shell.pads.map((p) => worldPad(b, p, y0)),
     seats: (shell.seats ?? []).map((s) => {
       const [sx, sz] = toWorld(b, s.x, s.z);
-      return { x: sx, y: y0 + s.y, z: sz, rotY: s.rotY + ((b.rotY ?? 0) * Math.PI) / 180 };
+      const rotY = s.rotY + ((b.rotY ?? 0) * Math.PI) / 180;
+      return { x: sx, y: y0 + s.y, z: sz, rotY, ...(s.study ? { study: true } : {}) };
     }),
     hits: [],
     anchor: new THREE.Vector3(b.x, y0 + 2, b.z),

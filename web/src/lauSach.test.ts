@@ -5,7 +5,7 @@ import { LayeredGround } from './collision/ground';
 import { PlayerController } from './player/controller';
 import { flightSlope } from './scene/kien_truc/cau_thang';
 import { hallFloor } from './scene/kien_truc/dien';
-import { lauSach, lauSachStairs } from './scene/kien_truc/lau_sach';
+import { lauSach, lauSachStairs, STUDY_SIGN } from './scene/kien_truc/lau_sach';
 import { addWalkIn } from './scene/rooms';
 import { nearestSeat } from './zones/seats';
 import { DEFAULT_SCENE, type BuildingSpec } from './scene/spec';
@@ -26,7 +26,7 @@ const xc = (L.x0 + L.x1) / 2; // giữa vế thang
 const zl = (L.zBack + L.zTop) / 2; // giữa chiếu nghỉ / cầu nối
 const zMid = (L.zTop + L.zStart) / 2; // giữa vế
 
-function setup(): { scene: THREE.Scene; player: PlayerController; room: ReturnType<typeof addWalkIn> } {
+function setup(): { scene: THREE.Scene; player: PlayerController; room: ReturnType<typeof addWalkIn>; colliders: Colliders } {
   const scene = new THREE.Scene();
   const colliders = new Colliders();
   const room = addWalkIn(scene, colliders, b, style, lauSach);
@@ -34,7 +34,7 @@ function setup(): { scene: THREE.Scene; player: PlayerController; room: ReturnTy
   const facing = new THREE.Object3D();
   root.add(facing);
   const player = new PlayerController({ root, facing, animate: () => {} }, colliders, new LayeredGround(null, room.pads));
-  return { scene, player, room };
+  return { scene, player, room, colliders };
 }
 
 /** Đi (chạm để đi) tới (x, z); dừng khi tới nơi hoặc kẹt. */
@@ -187,6 +187,47 @@ describe('Tàng Thư Các lên được tầng 2', () => {
     walkTo(player, x, zMax + 0.5);
     walkTo(player, x, zMin - 0.5); // đi xuyên cả cột bồ đoàn (xa hơn thì chạm tường sau)
     expect(player.position.z).toBeLessThan(zMin - 0.2); // qua hết các hàng (chạm để đi dừng cách đích < 0,25)
+    expect(player.position.y).toBeCloseTo(yf, 2);
+  });
+
+  it('R-VA-4: mọi bồ đoàn tầng 2 là chỗ ngồi khu tự học (ngồi đủ 1 giây → cuộn sách, R-ON-8)', () => {
+    const { room } = setup();
+    const seats = room.seats ?? [];
+    expect(seats.length).toBeGreaterThan(0);
+    for (const s of seats) expect(s.study).toBe(true);
+  });
+
+  it('R-VA-4: biển "Khu tự học" sát tường sau phía đông, ngoài lưới bồ đoàn và lối từ cầu nối thang', () => {
+    const { room } = setup();
+    const seats = room.seats ?? [];
+    expect(STUDY_SIGN.rotY).toBe(0); // mặt nhìn vào sàn (+z)
+    expect(STUDY_SIGN.z).toBeLessThan(Math.min(...seats.map((s) => s.z))); // sau hàng bồ đoàn cuối
+    expect(STUDY_SIGN.z).toBeGreaterThan(-id / 2); // trong tường sau
+    expect(STUDY_SIGN.x - STUDY_SIGN.w / 2).toBeGreaterThan(Math.max(...seats.map((s) => s.x)) + 0.5); // phía đông lưới
+    expect(STUDY_SIGN.x + STUDY_SIGN.w / 2).toBeLessThan(L.floorX - 2); // chừa lối từ cầu nối thang
+  });
+
+  it('R-VA-4: biển chặn người ở tầng 2, không chặn tầng 1', () => {
+    const { colliders } = setup();
+    // điểm sát mép trước biển, bán kính nhỏ: không chạm tường sau
+    const z0 = STUDY_SIGN.z + 0.15;
+    const pos = { x: STUDY_SIGN.x, z: z0 };
+    colliders.resolve(pos, 0.1, yf);
+    expect(pos.z).toBeGreaterThan(z0 + 0.05);
+    // hộp của biển chỉ chặn từ sàn tầng 2 (tầng 1 chỗ đó là kệ sách sát tường — kệ chặn riêng)
+    const signBox = colliders.boxes.find(
+      (c) => c.minY !== undefined && c.minX < STUDY_SIGN.x && c.maxX > STUDY_SIGN.x && c.minZ < STUDY_SIGN.z && c.maxZ > STUDY_SIGN.z,
+    );
+    expect(signBox?.minY).toBeGreaterThan(plat + 1.5);
+    expect(signBox?.minY).toBeLessThanOrEqual(yf);
+  });
+
+  it('R-VA-4: ở tầng 2 đi về phía biển → bị chặn trước biển', () => {
+    const { player } = setup();
+    climb(player);
+    walkTo(player, STUDY_SIGN.x, 0);
+    walkTo(player, STUDY_SIGN.x, STUDY_SIGN.z - 1);
+    expect(player.position.z).toBeGreaterThan(STUDY_SIGN.z);
     expect(player.position.y).toBeCloseTo(yf, 2);
   });
 });

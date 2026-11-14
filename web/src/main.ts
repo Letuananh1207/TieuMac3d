@@ -252,16 +252,18 @@ async function boot(): Promise<void> {
     });
   };
   let onSeat = false; // ngồi bằng nút nổi "Ngồi" / "Vào bàn" (R-NGOI-1) → không mở cuộn sách (R-ON-8)
+  let seatStudy = false; // … trừ bồ đoàn khu tự học Tàng Thư Các: vẫn nhập định + cuộn sách (R-VA-4)
   /** Mỗi khung: đếm thời gian ngồi ôn tại chỗ, ở bất kỳ đâu; đủ `SIT_TO_LEARN` thì mở cuộn sách Ngồi ôn (R-ON-8). */
   const meditate = (dt: number, busy: boolean): void => {
     if (!player.isSitting) {
       sitTime = 0;
       sitOpened = false;
       onSeat = false;
+      seatStudy = false;
       orbit.sit(false); // đứng dậy: camera về khoảng cách + góc cũ (R-NGOI-1)
       return;
     }
-    if (onSeat || sitOpened || busy) return;
+    if ((onSeat && !seatStudy) || sitOpened || busy) return;
     sitTime += dt;
     if (sitTime < SIT_TO_LEARN) return;
     sitOpened = true;
@@ -339,6 +341,7 @@ async function boot(): Promise<void> {
   const sitAt = (spot: SeatPick): void => {
     if (player.isSitting) return;
     onSeat = true;
+    seatStudy = !!spot.study;
     if ('table' in spot) {
       gamePlay.sitAt(spot); // ghế bàn chơi (R-GIAO-1)
       return;
@@ -617,7 +620,7 @@ async function boot(): Promise<void> {
     const busy = paused || covered || loading.active || mapOpen || talking;
     meditate(dt, busy);
     // nhập định khi Ngồi ôn (R-ON-8, thiết kế 2026-11-14.10): vòng sáng + cuộn sách trên tay; đứng dậy → tắt / cuộn lại
-    nhapDinh.update(dt, pos, character.facing.rotation.y, player.isSitting && !onSeat ? sitTime : null);
+    nhapDinh.update(dt, pos, character.facing.rotation.y, player.isSitting && (!onSeat || seatStudy) ? sitTime : null);
     // ẩn khi bản đồ / màn tải / bài học phủ cảnh (L-11: nhãn HTML luôn đè lên cuộn bản đồ 3D)
     nameTag.setVisible(!mapOpen && !loading.active && !covered);
     // màn Flutter đè cảnh (bảng chọn cuộn sách, thẻ học, màn ôn…) → ẩn cần điều khiển (R-ON-8)
