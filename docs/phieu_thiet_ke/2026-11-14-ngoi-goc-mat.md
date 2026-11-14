@@ -1,5 +1,5 @@
 # Phiếu: Ngồi — nhìn từ mắt nhân vật, hai bàn tay + cuộn sách 3D có mục chạm được
-- Trạng thái: chờ thiết kế
+- Trạng thái: đã áp (2026-11-14.21)
 - Đã vẽ: 2026-11-14.21
 - Đợi bởi: kế hoạch `docs/tasks/2026-11-14-ngoi-goc-mat.md` (nhiệm vụ 12, 13). Quyết định đã duyệt 2026-11-14 (Q1-C,
   Q2-A, Q3-B, Q4-A, Q5-A, Q6-A).

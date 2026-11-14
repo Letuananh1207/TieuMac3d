@@ -7,7 +7,7 @@
   giở / trỏ) · hai bàn tay **dựng bằng khối trong code** (tay áo cùng màu áo) · **kéo để nhìn quanh có giới hạn**
   (~±60° ngang, ngẩng / cúi giới hạn), thả tay thì từ từ nhìn lại tài liệu · "người bên ngoài thấy như cũ" = thân nhân
   vật vẫn ngồi đúng dáng cũ trong cảnh, chỉ camera của mình đổi, đầu / thân mình ẩn khỏi camera mình.
-- Loại: sửa hành vi + giao diện mới · Cỡ: lớn · Trạng thái: **đang làm** (đợt 1; phần chữ trên cuộn + cầu nối: chờ thiết kế —
+- Loại: sửa hành vi + giao diện mới · Cỡ: lớn · Trạng thái: **xong — chờ thử máy** (chữ trên cuộn + cầu nối `openLearned` áp thiết kế 2026-11-14.21 ở V-20261114-34; trước đó chờ thiết kế —
   phiếu `docs/phieu_thiet_ke/2026-11-14-ngoi-goc-mat.md`)
 
 ## Phạm vi
@@ -189,12 +189,12 @@ Ký hiệu: **[trước]** làm được trước thiết kế · **[chờ TK]**
 - [x] 11. **[trước]** Canvas 3D: `designPreview.ts` thêm `?dang=ngoi-mat[&cho=on|tra|an|co|dau|tu-hoc]` hiện khung ngôi
   1 bằng code thật (cuộn trống + tay) — phiên thiết kế chụp nền để vẽ chữ lên. (xong khi `npm run build:design` chạy —
   build từ PowerShell)
-- [ ] 12. **[chờ TK]** Chữ + mục trên cuộn: `ui/cuonMuc.ts` vẽ canvas 2D theo thiết kế (đầu cuộn, 3 mục, nổi bật / thường
+- [x] 12. **[chờ TK → đã áp 2026-11-14.21, V-34]** Chữ + mục trên cuộn: `ui/cuonMuc.ts` vẽ canvas 2D theo thiết kế (đầu cuộn, 3 mục, nổi bật / thường
   / mờ + lý do, gợi ý chưa học, "Đứng dậy"), vùng chạm theo (u, v), chạm → tay `tro` → mở mục; máy tính ↑ ↓ Enter, Esc
   = Đứng dậy; trợ năng (nút ẩn trong DOM cho đọc màn hình). `main.ts` `study()` mở cuộn thay `bridge.openStudy`.
   (lớp ui + ghép · test: vùng chạm (u, v) → đúng mục; mục mờ chạm không mở · chuỗi: dùng `reviewDue*`, `learnNew*`,
   `learnAt*`, `viewLearned*`, `hintGoForest`, `standUp` có sẵn; chuỗi mới theo phiếu)
-- [ ] 13. **[chờ Q4]** Cầu nối: `docs/bridge.md` thêm `openLearned`, `openStudy` ghi "thôi dùng"; web
+- [x] 13. **[đã áp V-34]** Cầu nối: `docs/bridge.md` thêm `openLearned`, `openStudy` ghi "thôi dùng"; web
   `bridge/flutterBridge.ts`; Flutter `app/lib/scene/` đón `openLearned` → `LearnedScreen`; bỏ `StudyScreen` khỏi luồng.
   (lớp cầu nối + Flutter · test `flutter test` phần scene event · xong khi chạm "Xem bộ đã học" trên cuộn mở màn Bộ đã
   học, đóng → cuộn hiện lại)
@@ -226,6 +226,12 @@ sau quyết định: 1 → 9 → 10 · sau thiết kế: 12 → 13 → 14.
 - Cảnh "mềm" (V-17): tay dùng vật liệu mềm cùng `look.wrap`; tay / cuộn lớp `LAYER_MAT` + `markDynamic` → `mergeSoft`
   không gộp.
 - Canvas 3D thêm `cho=lan-can`.
+
+## Áp thiết kế 2026-11-14.21 (V-20261114-34)
+- Mục / vùng chạm thuần `web/src/zones/cuonMuc.ts` (+ test), vẽ giấy `web/src/ui/cuonMucPaint.ts` (CanvasTexture 1024 × 985, vẽ lại chỉ khi đổi; nút ẩn trợ năng), ghép `ngoiMat.setMenu` / `tapScroll` (viền vàng 0,15 s rồi mở; "Đứng dậy" thêm chữ mờ 0,15 s), `main.ts` (`scrollOpen`: đóng màn Flutter → cuộn hiện lại, mục vừa dùng viền ngọc nhấp 0,6 s; Esc / nút quay lại = Đứng dậy; `body.scroll-open` ẩn joystick / cụm nút / Trò chuyện).
+- Giấy 0,26 × 0,25 m (trục 0,29), trục ra ngoài mép giấy; khung vừa màn theo thiết kế (dọc cả cuộn ~92 % bề ngang, ngang ~86 % chiều cao, lệch phải 47 %).
+- Cầu nối: `openLearned` mới (web `flutterBridge.ts`, Flutter `OpenLearnedRequest` + `SceneView.onOpenLearned` + `main.dart`); `openStudy` thôi dùng, `StudyScreen` bỏ khỏi luồng (file còn — xoá sau thử máy).
+- Theo R-HUD-4: ấn son "Ôn" thay 溫故 (`docs/testing/gui_thiet_ke_2026-11-15.md`). Chưa làm: hiệu ứng hai trục chập khi chữ mờ đi lúc chuyển màn, tay áo trắng ngà theo token `robe-sleeve` / `skin` (tay đang dùng màu `camera.firstPerson`).
 
 ## Hiệu năng (ước tính)
 - Thêm khi ngôi 1: tay 2–4 draw call (mỗi tay: ống tay + bàn tay gộp màu theo đỉnh; ngón trỏ riêng để trỏ) · cuộn trước

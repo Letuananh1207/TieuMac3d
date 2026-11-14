@@ -14,7 +14,7 @@ import 'lesson/review_screen.dart';
 import 'lesson/reward_overlay.dart';
 import 'lesson/shop_screen.dart';
 import 'lesson/study_board.dart';
-import 'lesson/study_screen.dart';
+import 'lesson/learned_screen.dart';
 import 'scene/review_event.dart';
 import 'scene/scene_event.dart';
 import 'scene/scene_server.dart';
@@ -148,19 +148,24 @@ class HocXaApp extends StatelessWidget {
                         (items) => Navigator.of(context).push(_reviewRoute(progress!, items)),
                         rewards: _rewards(progress!),
                       )),
-              // cuộn sách Ngồi ôn (R-ON-8): chọn mục → màn ôn / thẻ bộ mới / Bộ đã học đè lên, đóng → bảng tính lại;
-              // "Đứng dậy" → SceneView gửi resume {stand: true}
-              onOpenStudy: progress == null
+              // cuộn sách Ngồi ôn (R-ON-8, thiết kế 2026-11-14.21): mục in trên cuộn 3D ở trang; "Ôn" → openReview,
+              // "Học bộ mới" → openRadical, "Xem bộ đã học" → màn Bộ đã học (chạm một bộ → thẻ "Đã học"), đóng → resume.
+              // Bảng chọn Flutter `StudyScreen` (openStudy) thôi dùng — xoá sau khi thử máy.
+              onOpenLearned: progress == null
                   ? null
-                  : (context, request) => Navigator.of(context).push(StudyScreen.route(
-                        request,
-                        () => StudyProgress.of(progress!),
-                        (items) => Navigator.of(context).push(_reviewRoute(progress!, items)),
-                        (id) async {
-                          await progress!.learnRadical(id, char: _formIn(request, id));
+                  : (context, request) async {
+                      final nav = Navigator.of(context);
+                      final p = StudyProgress.of(progress!);
+                      final picked = await nav.push(LearnedScreen.route(learnedEntries(request.learned, p.cards, p.today)));
+                      if (picked == null) return;
+                      await nav.push(RadicalScreen.route(
+                        OpenRadicalRequest(radical: picked, learned: true, region: request.region),
+                        () async {
+                          await progress!.learnRadical(picked.id, char: picked.form);
                         },
                         rewards: _rewards(progress!),
-                      )),
+                      ));
+                    },
               // Tàng Thư Các: danh mục (chọn → ghi mượn) và sổ từ (mở ở trang đã nhớ, đóng → ghi trang) — R-SACH-1, R-SACH-3
               onOpenLibrary: progress == null
                   ? null
@@ -193,5 +198,3 @@ Route<void> _reviewRoute(ProgressStore store, List<ReviewItem> items) => ReviewS
 /// Khoản thưởng vừa cộng + số dư cho hiệu ứng nhận tiền trên màn Flutter (R-TIEN-5).
 RewardFeed _rewards(ProgressStore store) => () => (rewards: store.takeRewards(), balance: store.coins);
 
-/// Dạng bộ thủ [id] trong bảng chọn cuộn sách (nhãn "Học bộ 竹").
-String? _formIn(OpenStudyRequest r, String id) => [?r.next, ...r.upcoming, ...r.learned].where((x) => x.id == id).firstOrNull?.form;

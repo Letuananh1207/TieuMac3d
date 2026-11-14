@@ -136,6 +136,26 @@ class OpenStudyRequest {
   }
 }
 
+/// JS nhờ mở màn "Bộ đã học" (chạm "Xem bộ đã học" trên cuộn sách Ngồi ôn 3D — R-ON-8, docs/bridge.md `openLearned`).
+class OpenLearnedRequest {
+  const OpenLearnedRequest({required this.learned, required this.region});
+
+  /// các bộ đã học, theo thứ tự Rừng trúc
+  final List<Radical> learned;
+  final String region;
+
+  /// Sai dạng → `null` (Flutter trả `false`, trang tự mở thẻ HTML).
+  static OpenLearnedRequest? parse(List<dynamic> args) {
+    final p = _payload(args, 'openLearned');
+    final learned = p?['learned'];
+    if (p == null || learned is! List) return null;
+    return OpenLearnedRequest(
+      learned: [for (final r in learned) ?parseRadical(r)],
+      region: p['region'] is String ? p['region'] as String : 'Rừng trúc',
+    );
+  }
+}
+
 /// Đọc danh sách `items` của `openReview`; mục sai dạng bị bỏ qua.
 List<ReviewItem> parseReviewItems(Object? v) {
   if (v is! List) return const [];

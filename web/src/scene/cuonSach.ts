@@ -15,12 +15,12 @@ import { markDynamic } from './merge';
 import { CUON_AN, CUON_CAO, CUON_TRUOC, isOpen, poseOf, stepCuon, type CuonState } from './cuonSachNhip';
 
 // cỡ (m) — nhân vật cao 2,1 m
-const TRUC_DAI = 0.22;
+const TRUC_DAI = 0.29;
 const TRUC_R = 0.015; // Ø 0,03, trụ 8 cạnh
 const DAU_R = 0.02; // đầu trục cầu Ø 0,04
 const VIEN_R = 0.019; // viền vàng giữa trục và đầu trục
 const GIAY_W = 0.26;
-const GIAY_H = 0.18;
+const GIAY_H = 0.25; // thiết kế 2026-11-14.21: giấy 0,26 × 0,25 (đổi từ 0,18) để 3 mục + "Đứng dậy" đủ cao chạm
 const AN_CO = 0.03; // ấn son mặt sau
 // chỗ: `CUON_CAO` / `CUON_TRUOC` (cuonSachNhip.ts — trước ngực người ngồi, tay chibi cầm hai đầu); mặt giấy ngửa 30° về phía mặt
 const NGUA = Math.PI / 6;
@@ -128,6 +128,11 @@ export class CuonSach {
     return Math.abs(this.trucs[0].position.x) * this.holder.scale.x;
   }
 
+  /** Đã mở hết (giấy giãn xong, chưa cuộn lại) — chữ trên giấy hiện từ lúc này (thiết kế 2026-11-14.21). */
+  get open(): boolean {
+    return this.root.visible && isOpen(this.state);
+  }
+
   /** Đang hiện (đã qua 0,3 s ngồi, chưa tắt). */
   get shown(): boolean {
     return this.root.visible;
@@ -163,8 +168,10 @@ export class CuonSach {
     this.root.rotation.y = yaw;
     this.holder.scale.setScalar(p.scale);
     const half = (GIAY_W / 2) * p.mo;
-    this.trucs[0].position.x = Math.max(TRUC_R, half);
-    this.trucs[1].position.x = -Math.max(TRUC_R, half);
+    // trục nằm ngoài mép giấy (thiết kế 2026-11-14.21: trục chỉ lấn mép giấy ~4 px) — chữ sát lề không bị trục che
+    const trucX = Math.max(TRUC_R, half + TRUC_R * 0.7 * p.mo);
+    this.trucs[0].position.x = trucX;
+    this.trucs[1].position.x = -trucX;
     for (const g of this.giay) {
       g.scale.x = Math.max(p.mo, 0.001);
       g.visible = p.mo > 0.02;

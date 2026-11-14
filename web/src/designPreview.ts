@@ -21,6 +21,8 @@ import { createMapScroll } from './scene/banDo';
 import { CuonSach } from './scene/cuonSach';
 import { JOURNEY_MAP, placeStates } from './zones/journeyMap';
 import { RADICALS } from './zones/radicals';
+import { cuonView } from './zones/cuonMuc';
+import { studyMenu } from './zones/studyMenu';
 import { viewDistance } from './scene/farMountains';
 import { mergeStatic } from './scene/merge';
 import { portalRect } from './scene/portals';
@@ -352,6 +354,12 @@ async function boot(): Promise<void> {
         placeGame = () => tableCamera(g, t.center, s.rotY);
       }
     } else character.facing.rotation.y = 0;
+    if (place.kind === 'on') {
+      // mục mẫu trên cuộn (thiết kế 2026-11-14.21 `NgoiMat-on`): 2 bộ đến hạn, đã học 5 bộ, trấn không học bộ mới
+      const learned = RADICALS.slice(0, 5).map((r) => r.id);
+      const due = learned.slice(0, 2);
+      ngoi.setMenu(cuonView(studyMenu({ due, learned, hasLessons: !!spec.lessons.radicals }), due, spec.site.name));
+    }
     world.update(1, character.root.position); // trong nhà: mái mờ sẵn
     // camera ngôi 3 lúc trước khi ngồi: sau lưng như app
     const orbit = new OrbitCamera(spec.camera);

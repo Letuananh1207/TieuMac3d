@@ -13,6 +13,16 @@ Map<String, Object?> _item(String id, String form) => {
     };
 
 void main() {
+  test('R-ON-8: openLearned — các bộ đã học từ cuộn sách 3D; sai dạng → null (docs/bridge.md)', () {
+    final r = OpenLearnedRequest.parse([
+      {'type': 'openLearned', 'payload': {'learned': [_radical('truc', '竹'), {'id': 1}], 'region': 'Khởi Nguyên Trấn'}},
+    ]);
+    expect(r!.learned.map((x) => x.form), ['竹']);
+    expect(r.region, 'Khởi Nguyên Trấn');
+    expect(OpenLearnedRequest.parse([{'type': 'openLearned', 'payload': {}}]), isNull);
+    expect(OpenLearnedRequest.parse([{'type': 'openReview', 'payload': {'learned': []}}]), isNull);
+  });
+
   test('openReview: đọc bộ + 2 câu (docs/bridge.md)', () {
     final r = OpenReviewRequest.parse([
       {'type': 'openReview', 'payload': {'items': [_item('truc', '竹')], 'region': 'Rừng trúc'}},

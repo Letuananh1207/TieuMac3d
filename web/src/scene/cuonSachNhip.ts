@@ -112,7 +112,7 @@ export function poseOf(s: CuonState): CuonPose {
  * (~36° ngang sau khi nới FOV), màn ngang rộng. `fovDeg` FOV dọc đang dùng, `aspect` rộng / cao, `halfW` / `halfH` nửa bề
  * ngang / nửa chiều cao cả cuộn (m). Trả `dist` khoảng cách từ mắt tới tâm cuộn theo hướng nhìn chuẩn, `side` dời ngang
  * (m, dương = sang phải người cầm — màn ngang: cuộn lệch phải, cảnh bên trái).
- * Dọc: cuộn rộng ~74 % bề ngang (chừa chỗ cho hai bàn tay ở hai mép); ngang: cao ~62 % chiều cao, lệch phải ~30 % nửa màn. Khoảng cách giữ trong tầm tay.
+ * Thiết kế 2026-11-14.21: dọc giấy ~88 % bề ngang (cả cuộn kể trục ~92 %); ngang giấy ~73 % chiều cao (cả cuộn ~86 %), tâm lệch\n * phải ~47 % nửa màn (giấy từ x 470 trên 844). Khoảng cách giữ trong tầm tay.
  */
 export const CUON_GAN = 0.3;
 export const CUON_XA = 0.7;
@@ -120,9 +120,9 @@ export const CUON_XA = 0.7;
 export function fitScroll(fovDeg: number, aspect: number, halfW: number, halfH: number): { dist: number; side: number } {
   const tv = Math.tan((fovDeg * Math.PI) / 360);
   const th = tv * aspect;
-  const byW = halfW / (0.74 * th);
-  const byH = halfH / (0.62 * tv);
+  const byW = halfW / (0.92 * th);
+  const byH = halfH / (0.86 * tv);
   const dist = Math.min(CUON_XA, Math.max(CUON_GAN, byW, byH));
-  const side = aspect > 1 ? 0.3 * th * dist : 0;
+  const side = aspect > 1 ? 0.47 * th * dist : 0;
   return { dist, side };
 }

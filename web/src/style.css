@@ -489,3 +489,8 @@ body.at-table #joy,body.at-table #joyGhost,body.at-table #actions,body.at-table 
   .gh-opts{flex:1;grid-template-columns:1fr;gap:8px}
   .gh-opt{min-height:48px}
 }
+
+/* cuộn sách Ngồi ôn trước mắt đang mở (R-ON-8, thiết kế 2026-11-14.21): cần điều khiển, cụm nút, nút Trò chuyện ẩn */
+body.scroll-open #joy,body.scroll-open #joyGhost,body.scroll-open #actions,body.scroll-open #talk,body.scroll-open #chatBtn{display:none}
+/* chỉ cho đọc màn hình (nút ẩn các mục trên cuộn 3D) */
+.sr-only{position:fixed;left:0;top:0;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}

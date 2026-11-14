@@ -6,7 +6,8 @@
  *
  * `main.ts` (và Canvas 3D) chỉ: `sit(chỗ)` / `stand()`, chuyển kéo màn vào `drag`, mỗi khung `update` với camera ngôi 3
  * (OrbitCamera vẽ vào camera phụ) và camera bàn chơi (`GamePlay.placeCamera` vẽ vào camera phụ).
- * Chữ / mục trên cuộn: chờ thiết kế (phiếu 2026-11-14-ngoi-goc-mat) — giờ giấy trơn; `tapScroll` trả (u, v) sẵn.
+ * Chữ / mục trên cuộn (thiết kế 2026-11-14.21): `setMenu` vẽ các mục lên giấy (`ui/cuonMucPaint.ts`) — hiện khi giấy mở hết,
+ * mờ → rõ 0,2 s; chạm mục dùng được → ngón trỏ chỉ vào + viền vàng 0,15 s rồi gọi `onPick` (R-ON-8).
  */
 import * as THREE from 'three';
 import {
@@ -27,6 +28,8 @@ import { fitScroll } from './scene/cuonSachNhip';
 import { LAYER_MAT, LAYER_THAN, setLayer, viewLayers } from './scene/layers';
 import { isSoft, type LookSpec } from './scene/look';
 import type { FirstPersonSpec } from './scene/spec';
+import { CuonA11y, loadCuonFonts, paintCuon, type CuonPaintState } from './ui/cuonMucPaint';
+import { cuonHit, cuonLayout, cuonUsable, type CuonLayout, type CuonRowId, type CuonView } from './zones/cuonMuc';
 import { TayNgoi, worldToBody } from './scene/tayNgoi';
 import {
   bookPose,
@@ -84,6 +87,22 @@ export class NgoiMat {
   private reachK = Infinity;
   private reachAt: V3 = [0, 0, 0];
   private reachStone = false;
+  /** mục in trên giấy (thiết kế 2026-11-14.21) */
+  private menu: CuonView | null = null;
+  private onPick: ((id: CuonRowId) => void) | null = null;
+  private layout: CuonLayout = cuonLayout(false);
+  private readonly paperCanvas = document.createElement('canvas');
+  private readonly paperTex = new THREE.CanvasTexture(this.paperCanvas);
+  private readonly paint: CuonPaintState = { alpha: 0, press: null, flash: null };
+  private paperOn = false;
+  private dirty = true;
+  /** giây còn lại: chữ mờ → rõ · viền vàng trước khi mở · chữ mờ đi trước khi đứng dậy · viền ngọc nhấp */
+  private fadeIn = 0;
+  private pressT = 0;
+  private fadeOut = 0;
+  private flashT = 0;
+  private picked: CuonRowId | null = null;
+  private readonly a11y = new CuonA11y((id) => this.pick(id));
 
   constructor(
     scene: THREE.Scene,
@@ -99,6 +118,87 @@ export class NgoiMat {
     this.scroll = new CuonSach(scene, { layer: LAYER_MAT });
     this.hands = new TayNgoi(scene, character.palette ?? { sleeve: fp.sleeve, cuff: fp.cuff, skin: fp.skin }, look && isSoft(look) ? look.wrap : undefined);
     this.ray.layers.set(LAYER_MAT);
+    this.paperTex.colorSpace = THREE.SRGBColorSpace;
+    this.paperTex.anisotropy = 4;
+    void loadCuonFonts().then(() => (this.dirty = true)); // chữ Việt (Lora, Be Vietnam Pro) nạp xong → vẽ lại giấy
+  }
+
+  /**
+   * Các mục in trên cuộn (R-ON-8). `flash` = mục vừa dùng (đóng màn → viền ngọc nhấp 0,6 s); cuộn đang hiện chữ thì không
+   * chạy lại nhịp mờ → rõ. `null` = bỏ mục (giấy trơn).
+   */
+  setMenu(view: CuonView | null, onPick?: (id: CuonRowId) => void, flash: CuonRowId | null = null): void {
+    const wasShown = this.paperOn && this.menu !== null;
+    this.menu = view;
+    this.onPick = onPick ?? null;
+    this.picked = null;
+    this.pressT = 0;
+    this.fadeOut = 0;
+    this.paint.press = null;
+    this.paint.flash = flash;
+    this.flashT = flash ? 0.6 : 0;
+    if (!wasShown) this.paint.alpha = 0;
+    this.dirty = true;
+    this.a11y.set(view);
+  }
+
+  /** Chọn một mục (chạm giấy / nút trợ năng): mục mờ bỏ qua; viền vàng 0,15 s rồi gọi `onPick` ("Đứng dậy": chữ mờ thêm 0,15 s). */
+  private pick(id: CuonRowId): boolean {
+    if (!this.menu || this.picked || !cuonUsable(this.menu, id)) return false;
+    this.picked = id;
+    this.pressT = 0.15;
+    this.paint.press = id;
+    this.dirty = true;
+    return true;
+  }
+
+  /** Mỗi khung: giấy có chữ khi cuộn mở hết; nhịp mờ → rõ / nhấn / đứng dậy; vẽ lại ảnh giấy khi đổi. */
+  private updatePaper(dt: number, landscape: boolean): void {
+    const show = !!this.menu && this.place?.kind === 'on' && this.scroll.open;
+    if (show !== this.paperOn) {
+      this.paperOn = show;
+      this.scroll.setPaper(show ? this.paperTex : null);
+      if (show && this.paint.alpha < 1) this.fadeIn = 0.2;
+      this.dirty = true;
+    }
+    if (!show) return;
+    if (landscape !== this.layout.landscape) {
+      this.layout = cuonLayout(landscape);
+      this.dirty = true;
+    }
+    if (this.fadeIn > 0) {
+      this.fadeIn = Math.max(0, this.fadeIn - dt);
+      this.paint.alpha = 1 - this.fadeIn / 0.2;
+      this.dirty = true;
+    } else if (this.paint.alpha < 1 && !this.fadeOut && !this.picked) this.paint.alpha = 1;
+    if (this.flashT > 0 && (this.flashT -= dt) <= 0) {
+      this.paint.flash = null;
+      this.dirty = true;
+    }
+    if (this.picked && this.pressT > 0 && (this.pressT -= dt) <= 0) {
+      const id = this.picked;
+      if (id === 'stand') this.fadeOut = 0.15;
+      else {
+        this.paint.press = null;
+        this.picked = null;
+        this.dirty = true;
+        this.onPick?.(id);
+      }
+    }
+    if (this.fadeOut > 0) {
+      this.fadeOut = Math.max(0, this.fadeOut - dt);
+      this.paint.alpha = this.fadeOut / 0.15;
+      this.dirty = true;
+      if (this.fadeOut === 0) {
+        this.picked = null;
+        this.onPick?.('stand');
+      }
+    }
+    if (this.dirty && this.menu) {
+      paintCuon(this.paperCanvas, this.layout, this.menu, this.paint);
+      this.paperTex.needsUpdate = true;
+      this.dirty = false;
+    }
   }
 
   /** Ngồi xuống (mọi kiểu ngồi): bắt đầu trượt vào mắt. */
@@ -144,19 +244,22 @@ export class NgoiMat {
   }
 
   /**
-   * Chạm màn (client px) khi ngồi ôn: trúng giấy cuộn trước mắt → (u, v) và ngón trỏ tay phải chỉ vào đó; không trúng →
-   * `null`. Mục trên giấy: chờ thiết kế.
+   * Chạm màn (client px) khi ngồi ôn: trúng giấy cuộn trước mắt → `true` (nuốt chạm). Trúng mục dùng được (chữ đã hiện)
+   * → ngón trỏ tay phải chỉ vào, viền vàng 0,15 s rồi `onPick` (R-ON-8); mục mờ / chỗ trống → không gì.
    */
-  tapScroll(x: number, y: number, camera: THREE.Camera): { u: number; v: number } | null {
-    if (this.place?.kind !== 'on' || !this.firstPerson) return null;
+  tapScroll(x: number, y: number, camera: THREE.Camera): boolean {
+    if (this.place?.kind !== 'on' || !this.firstPerson) return false;
     this.ndc.set((x / window.innerWidth) * 2 - 1, -(y / window.innerHeight) * 2 + 1);
     this.ray.setFromCamera(this.ndc, camera);
     const hit = this.scroll.hitUv(this.ray);
-    if (!hit) return null;
-    this.reachAt = worldToBody(hit.point, this.eye, this.character.facing.rotation.y);
-    this.reachK = 0;
-    this.reachStone = false;
-    return { u: hit.u, v: hit.v };
+    if (!hit) return false;
+    const id = this.menu && this.paperOn && this.paint.alpha >= 1 ? cuonHit(this.layout, this.menu, hit.u, hit.v) : null;
+    if (id && this.pick(id)) {
+      this.reachAt = worldToBody(hit.point, this.eye, this.character.facing.rotation.y);
+      this.reachK = 0;
+      this.reachStone = false;
+    }
+    return true;
   }
 
   private readonly tmp = new THREE.Vector3();
@@ -225,6 +328,7 @@ export class NgoiMat {
     const cz = Math.cos(base) * dist;
     this.scroll.setMount(-side, cy, cz, -base); // gốc cuộn quay theo hướng mặt: +x là bên trái người ngồi
     this.scroll.update(dt, this.eye, yaw, cuonT);
+    this.updatePaper(dt, camera.aspect > 1);
 
     if (!p || !fp) {
       this.hands.hide();

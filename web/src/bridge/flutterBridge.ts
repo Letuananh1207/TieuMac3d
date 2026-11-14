@@ -216,8 +216,16 @@ export class FlutterBridge {
   }
 
   /**
-   * Nhờ Flutter mở bảng chọn cuộn sách Ngồi ôn (R-ON-8). Bảng chỉ đóng bằng "Đứng dậy" → `resume {stand: true}`.
-   * `false` = không có Flutter / chưa có màn → trang tự mở lượt ôn hoặc thẻ bộ mới (`fallbackStudy`).
+   * Nhờ Flutter mở màn "Bộ đã học" (chạm "Xem bộ đã học" trên cuộn sách 3D — R-ON-8, thiết kế 2026-11-14.21). Đóng →
+   * `resume` (vẫn ngồi). `false` = không có Flutter → trang mở thẻ HTML.
+   */
+  openLearned(learned: Radical[], region: string): Promise<boolean> {
+    return this.ask({ type: 'openLearned', payload: { learned, region } });
+  }
+
+  /**
+   * **Thôi dùng** (V-20261114-34 — mục in trên cuộn 3D, docs/bridge.md). Nhờ Flutter mở bảng chọn cuộn sách Ngồi ôn
+   * (R-ON-8). Bảng chỉ đóng bằng "Đứng dậy" → `resume {stand: true}`.
    */
   openStudy({ menu, review, learned, region }: StudyPayload): Promise<boolean> {
     const { items, highlight, next, upcoming } = menu;

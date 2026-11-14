@@ -26,6 +26,7 @@ class SceneView extends StatefulWidget {
     this.onOpenReview,
     this.onOpenDaily,
     this.onOpenStudy,
+    this.onOpenLearned,
     this.onOpenLibrary,
     this.onOpenBook,
     this.onEarnGame,
@@ -69,6 +70,10 @@ class SceneView extends StatefulWidget {
   /// `null` (không có kho tiến độ) → trả `false`, trang tự mở lượt ôn / thẻ bộ mới. Nút quay lại của máy đóng bảng
   /// như "Đứng dậy".
   final Future<void> Function(BuildContext context, OpenStudyRequest request)? onOpenStudy;
+
+  /// Mở màn "Bộ đã học" từ cuộn sách Ngồi ôn 3D (`openLearned` — R-ON-8); đóng → `resume` (vẫn ngồi, cuộn hiện lại).
+  /// `null` → trả `false`, trang mở thẻ HTML.
+  final Future<void> Function(BuildContext context, OpenLearnedRequest request)? onOpenLearned;
 
   /// Mở danh mục sách Tàng Thư Các (`openLibrary` — R-SACH-1); chọn "Mượn" → Flutter ghi mượn → đóng → `resume`.
   /// `null` → trả `false`, trang cho chọn cuốn trong khung thoại.
@@ -215,6 +220,13 @@ class _SceneViewState extends State<SceneView> {
       final req = OpenStudyRequest.parse(args);
       if (f == null || req == null) return false;
       f(context, req).whenComplete(() => _controller?.evaluateJavascript(source: resumeScript(stand: true)));
+      return true;
+    }
+    if (type == 'openLearned') {
+      final f = widget.onOpenLearned;
+      final req = OpenLearnedRequest.parse(args);
+      if (f == null || req == null) return false;
+      f(context, req).whenComplete(() => _controller?.evaluateJavascript(source: resumeScript()));
       return true;
     }
     if (type == 'openDaily') {

@@ -63,7 +63,8 @@ import { PortalTrigger } from './zones/portal';
 import { DIALOGS, DialogRunner, type Dialog } from './zones/dialogs';
 import { LIBRARIAN, LibraryDesk } from './libraryDesk';
 import { reviewItems } from './zones/review';
-import { fallbackStudy, sitBadge, studyMenu } from './zones/studyMenu';
+import { sitBadge, studyMenu, type StudyMenu } from './zones/studyMenu';
+import { cuonView, type CuonRowId } from './zones/cuonMuc';
 import { RADICALS, type Radical } from './zones/radicals';
 import { placeZones, ZONE_CONTENT, type Zone } from './zones/zones';
 import { musicVolume, TRACKS } from './zones/music';
@@ -179,16 +180,21 @@ async function boot(): Promise<void> {
   const zoneById = new Map(placed.zones.map((z) => [z.id, z]));
   const anchorOf = new Map(world.rooms.map((r) => [r.zoneId, r.anchor]));
   let covered = false; // màn bài học Flutter đang che cảnh → ngừng vẽ (docs/bridge.md)
+  let scrollOpen = false; // cuộn sách Ngồi ôn trước mắt đang mở (R-ON-8) — đóng màn Flutter thì vẫn ngồi, cuộn hiện lại
+  let lastPick: CuonRowId | null = null; // mục vừa mở từ cuộn → viền ngọc nhấp khi cuộn hiện lại
   const closeLesson = (): void => {
-    paused = false;
+    paused = scrollOpen;
     covered = false;
-    learn.suspend(false);
+    learn.suspend(scrollOpen);
     void getProgress().then((p) => {
-      if (!p) return;
-      progress = p;
-      learnedRadicals = new Set(p.radicals);
-      desk.sync(p.book); // màn danh mục Flutter có thể vừa ghi mượn (R-SACH-1)
-      walletRoom.sync(p); // về từ Tạp hoá: ví "−n" (R-TIEN-4)
+      if (p) {
+        progress = p;
+        learnedRadicals = new Set(p.radicals);
+        desk.sync(p.book); // màn danh mục Flutter có thể vừa ghi mượn (R-SACH-1)
+        walletRoom.sync(p); // về từ Tạp hoá: ví "−n" (R-TIEN-4)
+      }
+      if (scrollOpen) showScroll(lastPick); // cuộn hiện lại ngay, mục vừa dùng cập nhật (thiết kế 2026-11-14.21)
+      lastPick = null;
     });
   };
   const lesson = new LessonBoard(closeLesson);
@@ -295,6 +301,13 @@ async function boot(): Promise<void> {
   /** Mỗi khung: đếm thời gian ngồi ôn tại chỗ, ở bất kỳ đâu; đủ `SIT_TO_LEARN` thì mở cuộn sách Ngồi ôn (R-ON-8). */
   const meditate = (dt: number, busy: boolean): void => {
     if (!player.isSitting) {
+      if (scrollOpen) {
+        scrollOpen = false; // đứng dậy (Xuất định / phím) khi cuộn còn mở
+        lastPick = null;
+        ngoiMat.setMenu(null);
+        paused = false;
+        learn.suspend(false);
+      }
       sitTime = 0;
       sitOpened = false;
       onSeat = false;
@@ -309,25 +322,66 @@ async function boot(): Promise<void> {
     sitOpened = true;
     study();
   };
-  /** Cuộn sách Ngồi ôn (R-ON-8): bảng chọn ở Flutter; chưa có màn → còn bộ đến hạn thì lượt ôn, không thì thẻ bộ mới. */
-  const study = (): void => {
+  /** Dòng nơi đang ngồi trên đầu cuộn: "Khởi Nguyên Trấn · Quảng Trường" (khu `site.areas` chứa chỗ ngồi). */
+  const sitPlaceName = (): string => {
+    const { x, z } = player.position;
+    const a = spec.site.areas.find((q) => x >= Math.min(q.from[0], q.to[0]) && x <= Math.max(q.from[0], q.to[0]) && z >= Math.min(q.from[1], q.to[1]) && z <= Math.max(q.from[1], q.to[1]));
+    return a ? `${spec.site.name} · ${a.name}` : spec.site.name;
+  };
+  /** Mục in trên cuộn trước mắt theo tiến độ mới nhất (`flash` = mục vừa dùng — viền ngọc nhấp). */
+  const showScroll = (flash: CuonRowId | null = null): void => {
     const due = progress?.due ?? [];
     const menu = studyMenu({ due, learned: learnedRadicals, hasLessons: !!spec.lessons.radicals });
+    ngoiMat.setMenu(cuonView(menu, due, sitPlaceName()), (id) => pickScroll(id, menu, due), flash);
+  };
+  /**
+   * Cuộn sách Ngồi ôn (R-ON-8, thiết kế 2026-11-14.21): các mục in thẳng trên cuộn trước mắt; nhân vật đứng yên, cần điều
+   * khiển / cụm nút / nút Trò chuyện ẩn tới khi "Đứng dậy". Chọn mục → màn Flutter đè (đóng → cuộn hiện lại, mục cập nhật).
+   */
+  const study = (): void => {
+    scrollOpen = true;
     paused = true;
     learn.suspend(true);
     player.moveTarget = null;
+    joystick.end();
+    showScroll();
+  };
+  const pickScroll = (id: CuonRowId, menu: StudyMenu, due: readonly string[]): void => {
+    if (id === 'stand') {
+      standFromScroll();
+      return;
+    }
+    lastPick = id;
+    paused = false; // các màn tự đặt lại `paused`
+    if (id === 'review') openReview(due, menu.next);
+    else if (id === 'learn' && menu.next) openRadical(menu.next);
+    else if (id === 'learned') openLearned();
+  };
+  /** "Xem bộ đã học" (R-ON-8): màn Bộ đã học Flutter (`openLearned`); không có Flutter → thẻ HTML bộ học gần nhất. */
+  const openLearned = (): void => {
+    paused = true;
+    learn.suspend(true);
     const learned = RADICALS.filter((r) => learnedRadicals.has(r.id));
-    void bridge.openStudy({ menu, review: reviewItems(due), learned, region: spec.site.name }).then((native) => {
+    void bridge.openLearned(learned, spec.site.name).then((native) => {
       if (native) {
-        covered = true; // "Đứng dậy" → resume {stand: true} → closeLesson hỏi lại tiến độ, nhân vật đứng dậy
+        covered = true; // đóng màn → resume → closeLesson: cuộn hiện lại
         return;
       }
       paused = false;
-      learn.suspend(false);
-      const pick = fallbackStudy(menu);
-      if (pick === 'review') openReview(due, menu.next);
-      else if (pick === 'learn' && menu.next) openRadical(menu.next);
+      const last = learned[learned.length - 1];
+      if (last) openRadical(last);
+      else closeLesson();
     });
+  };
+  /** "Đứng dậy" trên cuộn / Esc / nút quay lại: chữ đã mờ → cuộn lại 0,25 s → đứng dậy (R-ON-8). */
+  const standFromScroll = (): void => {
+    scrollOpen = false;
+    lastPick = null;
+    ngoiMat.setMenu(null);
+    paused = false;
+    learn.suspend(false);
+    ngoiMat.rollUp();
+    nhapDinh.rollUpThen(() => player.isSitting && player.toggleSit());
   };
   /** Lượt ôn câu đố (R-ON-5); chưa có màn ôn → thẻ bộ mới nếu học được ở đây. */
   const openReview = (due: readonly string[], next: Radical | null): void => {
@@ -342,6 +396,7 @@ async function boot(): Promise<void> {
       paused = false;
       learn.suspend(false);
       if (next) openRadical(next);
+      else if (scrollOpen) closeLesson(); // không mở gì: cuộn vẫn mở, đứng yên (R-ON-8)
     });
   };
   /** Bảng nhiệm vụ hằng ngày (R-NV-3): màn Flutter; không có Flutter → bảng HTML `ui/dailyPanel.ts`. */
@@ -458,7 +513,7 @@ async function boot(): Promise<void> {
     tapOnly: () => mapOpen || areaMap.open || talking || gamePlay.active || chat.typing, // ngồi chơi: chạm là chạm bàn (R-GIAO-1, R-DIEU-1)
     lookMode: () => ngoiMat.seated, // ngồi: kéo = nhìn quanh từ mắt, chụm không zoom (R-DIEU-7, R-DIEU-1)
     onLook: (dx, dy) => ngoiMat.drag(dx, dy),
-    noJoystick: () => !!decor?.active, // trang trí: đứng yên, kéo đâu cũng xoay camera (R-NHA-2)
+    noJoystick: () => !!decor?.active || scrollOpen, // trang trí: kéo đâu cũng xoay camera (R-NHA-2); cuộn mở: kéo = nhìn quanh (R-ON-8)
     onTap: (x, y) => {
       if (mapOpen) {
         onMapTap(x, y);
@@ -466,13 +521,17 @@ async function boot(): Promise<void> {
       }
       if (chat.close()) return; // đang gõ: chạm cảnh = đóng ô nhập
       if (decor?.tap()) return; // trang trí: chạm cảnh trống = đóng bảng danh mục
+      if (scrollOpen && !covered && !talking) {
+        ngoiMat.tapScroll(x, y, camera); // cuộn sách mở: chạm thẳng vào mục trên giấy (R-ON-8)
+        return;
+      }
       if (paused || talking) return;
       if (gamePlay.tap(x, y, camera)) {
         const at = gamePlay.takePlayed();
         if (at) ngoiMat.playAt(at); // tay phải đưa quân tới giao điểm (R-GIAO-1)
         return; // đang ngồi chơi: chạm vào bàn, không đi (R-GIAO-1)
       }
-      if (ngoiMat.tapScroll(x, y, camera)) return; // chạm giấy cuộn trước mắt: tay trỏ (mục trên cuộn — chờ thiết kế)
+      if (ngoiMat.tapScroll(x, y, camera)) return; // chạm giấy cuộn trước mắt: tay trỏ vào mục rồi mở (R-ON-8)
       // đang trong nhà: chạm trúng vật học của nhà → mở bài (R-VUNG-2)
       const room = roomAt(player.position.x, player.position.z);
       const hit = room ? picker.pickObject(x, y, room.hits) : null;
@@ -650,6 +709,10 @@ async function boot(): Promise<void> {
   // nút quay lại: đóng bảng cách chơi / khung thoại trước, rồi bản đồ (docs/bridge.md `back`)
   mapBack = (): boolean => {
     if (areaMap.back()) return true; // bản đồ lớn (R-BANDO-5)
+    if (scrollOpen && !covered) {
+      standFromScroll(); // Esc / nút quay lại khi cuộn sách mở = "Đứng dậy" (R-ON-8)
+      return true;
+    }
     if (chat.close()) return true; // nút quay lại / Esc: đóng ô nhập trò chuyện trước
     if (guidePanel.close()) return true;
     if (dialogBox.isOpen) {
@@ -761,6 +824,7 @@ async function boot(): Promise<void> {
     nameTag.setVisible(!mapOpen && !loading.active && !covered && !ngoiMat.firstPerson); // nhìn từ mắt: không nhãn tên mình
     // màn Flutter đè cảnh (bảng chọn cuộn sách, thẻ học, màn ôn…) → ẩn cần điều khiển (R-ON-8)
     if (document.body.classList.contains('covered') !== covered) document.body.classList.toggle('covered', covered);
+    if (document.body.classList.contains('scroll-open') !== scrollOpen) document.body.classList.toggle('scroll-open', scrollOpen);
     chat.update({ camera, player: pos, nameTagHeight: NAME_TAG_HEIGHT, npcs: npcSet.npcs, busy: busy || gamePlay.active, hideMe: ngoiMat.firstPerson });
     learn.follow(zones.current ? anchorOf.get(zones.current.id) : undefined, camera);
     // nút "Nói chuyện": NPC gần nhất trong 2,5 m, không đang học / ngồi / bản đồ / thoại / màn tải (R-NPC-2)
