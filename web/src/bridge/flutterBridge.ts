@@ -1,7 +1,9 @@
 import type { BookEntry, Word } from '../zones/books';
+import type { DecorItem } from '../zones/decor';
 import type { Radical } from '../zones/radicals';
 import type { ReviewItem } from '../zones/review';
 import type { StudyMenu } from '../zones/studyMenu';
+import { parseGameEarning, type GameEarning, type GameKind, type GameOutcome } from '../zones/wallet';
 import type { Lesson } from '../zones/zones';
 
 /** Dữ liệu cuộn sách Ngồi ôn gửi Flutter (`openStudy` — R-ON-8). */
@@ -63,6 +65,10 @@ export interface JourneyProgress {
   daily: DailyBoard | null;
   /** mã sổ từ đang mượn ở Tàng Thư Các (R-SACH-2); `null` = không mượn */
   book: string | null;
+  /** số dư Văn tiền (R-TIEN-1); `null` = Flutter không gửi (bản cũ / không có ví) → ví ẩn */
+  coins: number | null;
+  /** Văn tiền trò chơi đã nhận hôm nay (trần 60 — R-TIEN-3) */
+  gameCoinsToday: number;
 }
 
 /** Hai việc hôm nay + chuỗi ngày (docs/bridge.md `getProgress.daily`). */
@@ -126,7 +132,7 @@ export async function getHome(): Promise<unknown> {
 /** Đọc câu trả lời `getProgress`; sai dạng → `null`. */
 export function parseProgress(v: unknown): JourneyProgress | null {
   if (typeof v !== 'object' || v === null) return null;
-  const { chars, radicals, due, daily, book } = v as Record<string, unknown>;
+  const { chars, radicals, due, daily, book, coins, gameCoinsToday } = v as Record<string, unknown>;
   const learned = Array.isArray(radicals) ? radicals.filter((x): x is string => typeof x === 'string') : [];
   const dueIds = Array.isArray(due) ? due.filter((x): x is string => typeof x === 'string') : [];
   return {
@@ -135,6 +141,8 @@ export function parseProgress(v: unknown): JourneyProgress | null {
     due: dueIds,
     daily: parseDaily(daily),
     book: typeof book === 'string' && book ? book : null,
+    coins: typeof coins === 'number' && Number.isFinite(coins) ? Math.max(0, coins) : null,
+    gameCoinsToday: typeof gameCoinsToday === 'number' && gameCoinsToday > 0 ? gameCoinsToday : 0,
   };
 }
 
@@ -146,6 +154,11 @@ function parseDaily(v: unknown): DailyBoard | null {
   const [learned, goal, due, streak, best] = ['learned', 'goal', 'due', 'streak', 'best'].map(n);
   if (learned === null || goal === null || due === null || streak === null || best === null) return null;
   return { learned, goal, due, streak, best };
+}
+
+/** Vật bày bán gửi Flutter (`openShop`, docs/bridge.md) — bỏ trường chỉ cảnh dùng (`blocks`). */
+export function shopPayload(items: readonly DecorItem[]): Record<string, unknown>[] {
+  return items.map(({ id, name, han, slot, price, priceHan }) => ({ id, name, han, slot, price, priceHan }));
 }
 
 /**
@@ -231,6 +244,28 @@ export class FlutterBridge {
   openBook(book: Pick<BookEntry, 'id' | 'title' | 'subtitle'>, words: Word[]): Promise<boolean> {
     const { id, title, subtitle } = book;
     return this.ask({ type: 'openBook', payload: { book: { id, title, subtitle }, words } });
+  }
+
+  /**
+   * Hết một ván ở bàn chơi (R-TIEN-3): Flutter tính thưởng (bảng + trần 60 / ngày) và ghi ngay. `null` = không có
+   * Flutter / lỗi → không thưởng, ví ẩn.
+   */
+  async earnGame(game: GameKind, outcome: GameOutcome): Promise<GameEarning | null> {
+    const host = window.flutter_inappwebview;
+    if (!host || typeof host.callHandler !== 'function') return null;
+    try {
+      return parseGameEarning(await host.callHandler(HANDLER, { type: 'earnGame', payload: { game, outcome } }));
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * Mở Tạp hoá (R-TIEN-4, R-TIEN-6) với danh mục + giá của `zones/decor.ts` (một nguồn giá). `false` = không có Flutter →
+   * trang báo "Tiệm chưa mở".
+   */
+  openShop(items: readonly DecorItem[]): Promise<boolean> {
+    return this.ask({ type: 'openShop', payload: { items: shopPayload(items) } });
   }
 
   private async ask(event: SceneEvent): Promise<boolean> {
