@@ -7,7 +7,6 @@
 /* đầu: ấn son chữ dọc 15 + "Tạp hoá" Lora 22 + dòng phụ 12; ví bên phải */
 .sp-head{display:flex;align-items:center;gap:10px}
 .sp-brand{flex:1;min-width:0;display:flex;align-items:center;gap:10px}
-.sp-seal{flex:0 0 auto;font-family:var(--han);font-weight:700;writing-mode:vertical-rl;font-size:15px;line-height:1;padding:6px 5px;border-radius:4px;background:var(--lacquer);color:#fff;letter-spacing:2px}
 .sp-titles{display:flex;flex-direction:column;min-width:0}
 .sp-titles h1{margin:0;font-family:var(--display);font-weight:700;font-size:22px}
 .sp-titles .sub{font-size:12px;color:var(--slate-muted)}
@@ -39,11 +38,9 @@
 .sp-card.owned{background:rgba(255,255,255,.55)}
 .sp-card.picked{outline:3px solid var(--gold);outline-offset:2px}
 .sp-card .art{position:relative;height:64px;border-radius:10px;background:var(--map-paper,#f2eada);display:flex;align-items:center;justify-content:center}
-.sp-card .art .han{position:absolute;right:6px;top:3px;font-family:var(--han);font-weight:700;font-size:16px;color:var(--jade)}
 .sp-card .name{font-size:13px;font-weight:700;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sp-card .price{display:flex;align-items:center;gap:4px;font-size:12px;min-width:0}
 .sp-card .price b{font-variant-numeric:tabular-nums}
-.sp-card .price .ph{font-family:var(--han);font-weight:700;font-size:10px;color:var(--slate-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sp-card .act{height:34px;padding:0 4px;white-space:nowrap;overflow:hidden;border-radius:10px;display:flex;align-items:center;justify-content:center;gap:5px;font-size:13px;font-weight:700;touch-action:manipulation}
 .sp-card .act.buy{border:0;background:var(--jade);color:#fff;box-shadow:inset 0 -2px 0 rgba(0,0,0,.18)}
 .sp-card .act.buy:active{background:var(--jade-press)}
@@ -58,8 +55,6 @@
 .sp-confirm .art{flex:0 0 76px;height:76px;border-radius:12px;background:var(--map-paper,#f2eada);display:flex;align-items:center;justify-content:center}
 .sp-confirm .txt{display:flex;flex-direction:column;gap:3px}
 .sp-confirm .q{font-size:16px;font-weight:700}
-.sp-confirm .q .han,.sp-toast .han{font-family:var(--han);font-weight:700}
-.sp-confirm .q .han{color:var(--jade)}
 .sp-confirm .sub{font-size:13px;color:var(--slate-muted)}
 .sp-confirm dl{margin:0;display:grid;grid-template-columns:1fr auto;row-gap:4px;font-size:14px;font-variant-numeric:tabular-nums}
 .sp-confirm dd{margin:0;text-align:right;font-weight:700}
@@ -78,7 +73,6 @@
 @media (orientation:landscape){
   .sp-hills{height:140px}
   .sp-wrap{top:calc(var(--sa-top) + 10px);bottom:calc(var(--sa-bottom) + 10px);gap:8px}
-  .sp-seal{font-size:13px}
   .sp-titles h1{font-size:19px}
   .sp-titles .sub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .sp-tab{height:30px;padding:0 10px}
@@ -88,7 +82,6 @@
   .sp-card{padding:6px;gap:3px}
   .sp-card .art{height:50px}
   .sp-card .art svg{width:42px;height:42px}
-  .sp-card .art .han{font-size:14px}
   .sp-card .name{font-size:12px}
   .sp-confirm{bottom:calc(var(--sa-bottom) + 10px)}
   .sp-toast{bottom:calc(var(--sa-bottom) + 10px)}

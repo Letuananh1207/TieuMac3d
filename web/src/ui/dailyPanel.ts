@@ -51,11 +51,10 @@ export class DailyPanel {
   open(v: DailyBoardView, dueForms: readonly string[], onReview: () => void): void {
     const now = new Date();
     const title = node('div', 'dl-title');
-    const han = node('div', 'dl-han', '日課榜');
-    han.lang = 'zh';
-    const date = node('div', 'dl-date', 'Nhiệm vụ hằng ngày · ');
+    const head = node('div', 'dl-head', 'Nhiệm vụ hằng ngày'); // chỉ tiếng Việt (R-HUD-4)
+    const date = node('div', 'dl-date');
     date.append(node('span', 'wd', `${WEEKDAYS[now.getDay()]} `), `${now.getDate()}/${now.getMonth() + 1}`); // ngang: bỏ thứ
-    title.append(han, date);
+    title.append(head, date);
 
     let learnProg: HTMLElement | null = null;
     if (v.learn.count) {
@@ -95,9 +94,7 @@ export class DailyPanel {
       const seal = node('div', 'dl-seal');
       seal.setAttribute('role', 'img');
       seal.setAttribute('aria-label', 'Hôm nay đã xong');
-      const h = node('span', 'h', '畢');
-      h.lang = 'zh';
-      seal.append(h, node('span', 's', 'xong'));
+      seal.append(node('span', 'h', 'Xong'), node('span', 's', 'hôm nay'));
       this.card.append(seal);
     }
     this.root.hidden = false;

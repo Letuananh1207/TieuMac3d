@@ -10,7 +10,7 @@ export const BOARD_RANGE = 2.5;
 export const DAILY_NEW_GOAL = 3;
 
 /** Tiêu đề của bảng nhiệm vụ (prop `bang`). */
-export const DAILY_BOARD_TEXT = '日課榜';
+export const DAILY_BOARD_TEXT = 'Nhiệm vụ hằng ngày';
 
 /** Vật trong đặc tả cảnh (cùng dạng `PropSpec` của `scene/spec.ts` — zones không import scene). */
 export interface PropLike {

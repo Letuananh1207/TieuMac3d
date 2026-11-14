@@ -2,6 +2,9 @@
 
 Đang có trong app (vẽ mẫu trên artboard "Bảng token"). Màn mới nên dùng lại trước khi nghĩ thành phần mới.
 
+> Luật R-HUD-4 (2026-11-14.29): thành phần không mang chữ Hán trang trí — triện "Xong" (không 畢), "Kênh chung" (không
+> 傳音), đồng xu mặt trước trơn (không 文 錢). Chữ Hán chỉ ở nội dung học.
+
 | Thành phần | Trong code | Token |
 |---|---|---|
 | Chip HUD (chấm trạng thái + chữ) | `web/index.html .chip`, CSS `.chip` | hud-glass, gold-line, paper, hud 13, pill |

@@ -81,7 +81,7 @@ class ScrollPaper extends StatelessWidget {
       );
 }
 
-/// Ấn son 溫故 chữ dọc ("Ôn cũ biết mới").
+/// Ấn son chữ "Ôn" ("Ôn cũ biết mới") — chỉ tiếng Việt (R-HUD-4).
 class StudySeal extends StatelessWidget {
   const StudySeal({super.key});
 
@@ -92,16 +92,7 @@ class StudySeal extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 6),
           decoration: BoxDecoration(color: AppColors.lacquer, borderRadius: BorderRadius.circular(4)),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              for (final c in const ['溫', '故'])
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 1),
-                  child: Text(c, style: hanText.copyWith(fontSize: AppTextSize.studySeal, height: 1, color: AppColors.onJade)),
-                ),
-            ],
-          ),
+          child: Text('Ôn', style: displayText.copyWith(fontSize: AppTextSize.studySeal, height: 1, color: AppColors.onJade)),
         ),
       );
 }

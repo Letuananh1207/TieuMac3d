@@ -22,7 +22,6 @@ import { HOME_SCENE, loadScene, REGION_SCENES } from './scene/loadSpec';
 import { createMapScroll } from './scene/banDo';
 import { arrivalSpot, CHARGE_SECONDS, ringTrigger } from './scene/teleportLayout';
 import { arrivalFor } from './scene/portals';
-import { TELEPORT_TEXT } from './scene/truyenTong';
 import { viewDistance } from './scene/farMountains';
 import { createStage, gpuName, MAX_PIXEL_RATIO, probeGpu } from './scene/renderer';
 import { detailOf, FrameCap, pickTier, ResolutionGovernor, tierParam, TIERS } from './scene/quality';
@@ -95,7 +94,8 @@ async function boot(): Promise<void> {
   loading.progress(10);
   // Biển hiệu, bảng phấn vẽ chữ lên canvas, nên phải nạp font trước khi dựng cảnh.
   // bộ thủ tu luyện ở vùng có bài học bộ thủ (R-HANH-3) — thẻ HTML dự phòng vẽ chữ bằng font này
-  const hanText = [spec.site.han, TELEPORT_TEXT, spec.teleport.text, '此', ...(spec.lessons.radicals ? RADICALS.map((r) => r.form) : []), ...JOURNEY_MAP.places.map((p) => p.han), ...spec.site.areas.map((a) => a.han ?? ''), ...ZONE_CONTENT.map((c) => c.lesson.han), signText(spec)].join('');
+  // biển / tên nơi chỉ tiếng Việt (R-HUD-4) — chữ Hán chỉ còn ở nội dung học
+  const hanText = [...(spec.lessons.radicals ? RADICALS.map((r) => r.form) : []), ...ZONE_CONTENT.map((c) => c.lesson.han), signText(spec)].join('');
   await Promise.allSettled([
     document.fonts.load('700 72px Lora'),
     document.fonts.load('700 13px "Be Vietnam Pro"'),
@@ -653,7 +653,7 @@ async function boot(): Promise<void> {
     if (st === 'mo') travel(to);
     else if (st === 'sapMo') {
       scroll.flash(place.id);
-      mapHud.soon({ han: place.han, name: place.ten });
+      mapHud.soon({ name: place.ten });
     }
     // nơi đang ở ('oDay') → không có gì
   };

@@ -97,7 +97,8 @@ describe('bản đồ vùng — nội dung (R-BANDO-2)', () => {
     expect(m.icons.find((i) => i.kind === 'tap-hoa')).toMatchObject({ x: 10, z: 27.5 });
     expect(m.icons.find((i) => i.kind === 'bang-nhiem-vu')).toMatchObject({ x: 5.5, z: 15.2 });
     expect(m.icons.find((i) => i.kind === 'tu-hoc')).toMatchObject({ floor: 2, building: 'tang-thu-cac' });
-    expect(m.labels.find((l) => l.text === 'Khu tự học')).toMatchObject({ floor: 2, han: '自習' });
+    expect(m.labels.find((l) => l.text === 'Khu tự học')).toMatchObject({ floor: 2 });
+    expect(JSON.stringify(m)).not.toMatch(/\p{Script=Han}/u); // nhãn bản đồ chỉ tiếng Việt (R-HUD-4)
     const seats = m.icons.filter((i) => i.kind === 'cho-ngoi');
     expect(seats).toHaveLength(3);
     expect(seats[0]).toMatchObject({ building: 'tang-thu-cac', floor: 1, x: -34, z: -22 });

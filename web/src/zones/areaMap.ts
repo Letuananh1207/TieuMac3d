@@ -99,7 +99,6 @@ export interface MapLabel {
 
 export interface AreaMap {
   name: string;
-  han: string;
   bounds: Bounds;
   shapes: MapShape[];
   icons: MapIcon[];
@@ -255,16 +254,16 @@ export function buildAreaMap(src: AreaMapSource, spots: AreaMapSpots = {}): Area
   if (study) {
     const floor = study.floor ?? 1;
     icons.push({ kind: 'tu-hoc', x: round(study.x), z: round(study.z), floor, ...at(study.x, study.z) });
-    labels.push({ kind: 'cho', text: 'Khu tự học', han: '自習', x: round(study.x), z: round(study.z), floor });
+    labels.push({ kind: 'cho', text: 'Khu tự học', x: round(study.x), z: round(study.z), floor });
   }
   icons.push(...seatIcons(spots.seats ?? [], houses));
 
   for (const a of src.site.areas) {
-    labels.push({ kind: 'khu', text: a.name, ...(a.han ? { han: a.han } : {}), x: (a.from[0] + a.to[0]) / 2, z: (a.from[1] + a.to[1]) / 2, floor: 1 });
+    labels.push({ kind: 'khu', text: a.name, x: (a.from[0] + a.to[0]) / 2, z: (a.from[1] + a.to[1]) / 2, floor: 1 });
   }
   for (const h of houses) labels.push({ kind: 'nha', text: h.title, x: h.rect.x, z: h.rect.z, floor: 1 });
 
-  return { name: src.site.name, han: src.site.han, bounds: mapBounds(src), shapes, icons, labels };
+  return { name: src.site.name, bounds: mapBounds(src), shapes, icons, labels };
 }
 
 /** Bồ đoàn khu tự học không có biển → dấu ở tâm các bồ đoàn. */

@@ -1,6 +1,6 @@
 /**
  * Vòng trận truyền tống (R-HANH-2; đổi kiểu một vòng — người dùng 2026-11-13). Tông môn: Truyền Tống Đài 傳送台 — sân đá
- * tròn, giữa sân một vòng trận lớn có phù hiệu 起源 (Khởi Nguyên Trấn). Cảnh vùng: chỉ vòng trên bệ đá. Đứng trong vòng → `setCharge` 0 → 1
+ * tròn, giữa sân một vòng trận lớn có phù hiệu hoa văn (không chữ Hán — R-HUD-4). Cảnh vùng: chỉ vòng trên bệ đá. Đứng trong vòng → `setCharge` 0 → 1
  * trong 1,2 s: vòng sáng dần, cột sáng bốc lên, hạt xoáy nhanh dần. Cuộn bản đồ chọn vùng chờ thiết kế
  * (docs/phieu_thiet_ke/2026-11-13-hanh-trinh-hud.md).
  * Ngân sách: sân + viền / bệ (gộp) ≈ 2 · phù hiệu 1 · vòng 1 · chấm 1 · cột sáng 1 · hạt 1.
@@ -15,9 +15,6 @@ import { makeCanvasTex } from './textures';
 import type { GroundY } from './terrainHeight';
 import { addDais } from './truyenTongDai';
 
-/** Chữ Hán mặc định của phù hiệu (đặc tả `teleport.text`; Nhà của ta: 我家) — `main.ts` nạp font cho chữ của cảnh trước khi dựng. */
-export const TELEPORT_TEXT = '起源';
-
 const DOTS = 12; // chấm vàng quanh vòng
 const SPARKS = 48; // hạt sáng
 const PILLAR_HEIGHT = 9; // cột sáng khi nạp đầy (m)
@@ -30,20 +27,44 @@ function flat<T extends THREE.BufferGeometry>(geo: T): T {
   return geo;
 }
 
-/** Phù hiệu khắc trong vòng (`text`, mặc định 起源): vòng tròn mảnh + chữ, nền trong suốt; 3 chữ thì thu cỡ cho vừa vòng. */
+/**
+ * Phù hiệu khắc trong vòng: vòng tròn mảnh + hoa văn (vòng trong, 8 cánh sen nhọn, tâm tròn), nền trong suốt. Có `text`
+ * (tên Việt ngắn, đặc tả `teleport.text`) → khắc chữ giữa thay tâm. Không chữ Hán (R-HUD-4, người dùng 2026-11-14).
+ */
 function emblemTex(color: string, text: string): THREE.CanvasTexture {
   return makeCanvasTex(512, 512, (g, w, h) => {
+    const [cx, cy] = [w / 2, h / 2];
     g.clearRect(0, 0, w, h);
     g.strokeStyle = color;
+    g.fillStyle = color;
     g.lineWidth = 10;
     g.beginPath();
-    g.arc(w / 2, h / 2, 230, 0, Math.PI * 2);
+    g.arc(cx, cy, 230, 0, Math.PI * 2);
     g.stroke();
-    g.fillStyle = color;
-    g.font = `700 ${[...text].length > 2 ? 110 : 150}px "Han Serif", serif`;
-    g.textAlign = 'center';
-    g.textBaseline = 'middle';
-    g.fillText(text, w / 2, h / 2 + 8);
+    g.lineWidth = 6;
+    g.beginPath();
+    g.arc(cx, cy, 170, 0, Math.PI * 2);
+    g.stroke();
+    if (text) {
+      g.font = '700 64px Lora, Georgia, serif';
+      g.textAlign = 'center';
+      g.textBaseline = 'middle';
+      g.fillText(text, cx, cy + 4, 300);
+      return;
+    }
+    // 8 cánh nhọn từ vòng trong vào tâm
+    for (let i = 0; i < 8; i++) {
+      const a = (i / 8) * Math.PI * 2;
+      const [ux, uy, px, py] = [Math.sin(a), -Math.cos(a), Math.cos(a), Math.sin(a)];
+      g.beginPath();
+      g.moveTo(cx + ux * 160, cy + uy * 160);
+      g.quadraticCurveTo(cx + ux * 95 + px * 40, cy + uy * 95 + py * 40, cx + ux * 50, cy + uy * 50);
+      g.quadraticCurveTo(cx + ux * 95 - px * 40, cy + uy * 95 - py * 40, cx + ux * 160, cy + uy * 160);
+      g.stroke();
+    }
+    g.beginPath();
+    g.arc(cx, cy, 36, 0, Math.PI * 2);
+    g.fill();
   });
 }
 
@@ -82,7 +103,7 @@ export function addTeleport(scene: THREE.Scene, colliders: Colliders, tp: Telepo
   rim.position.set(cx, y0 + 0.065, cz);
   const emblem = new THREE.Mesh(
     flat(new THREE.PlaneGeometry(R * 1.5, R * 1.5)),
-    lambert('#ffffff', { map: emblemTex(colors.rim, tp.text || TELEPORT_TEXT), transparent: true, polygonOffset: true, polygonOffsetFactor: -1 }),
+    lambert('#ffffff', { map: emblemTex(colors.rim, tp.text), transparent: true, polygonOffset: true, polygonOffsetFactor: -1 }),
   );
   emblem.position.set(cx, y0 + 0.07, cz);
   scene.add(rim, emblem);

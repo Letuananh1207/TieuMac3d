@@ -29,7 +29,6 @@ body.chatting #joy,body.chatting #joyGhost,body.chatting #actions,body.chatting 
 .cx-head{height:44px;flex:none;padding:0 4px 0 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(36,50,58,.1)}
 .cx-head .dot{width:6px;height:6px;border-radius:50%;background:var(--gold)}
 .cx-head h2{margin:0;font-size:15px;font-weight:700}
-.cx-head .han{font-size:14px;color:var(--jade)}
 .cx-head .grow{flex:1}
 .cx-close{width:44px;height:44px;border:0;padding:0;background:transparent;color:var(--slate);display:flex;align-items:center;justify-content:center}
 .cx-body{position:relative;flex:1;min-height:0}
@@ -72,7 +71,7 @@ body.chatting #joy,body.chatting #joyGhost,body.chatting #actions,body.chatting 
 .cx-note:empty{display:none}
 .cx-note.bad{color:var(--lacquer)}
 
-/* ngang (bàn phím ≈ 200): khung gọn trái trên, rộng 470, cao 104, tin một dòng; cột phải 44 có × và 傳音 dọc */
+/* ngang (bàn phím ≈ 200): khung gọn trái trên, rộng 470, cao 104, tin một dòng; cột phải 44 có × */
 @media (orientation:landscape) and (max-height:600px){
   #chatBtn{right:calc(var(--sa-right) + 16px);bottom:214px}
   #chatFeed{left:calc(var(--sa-left) + 12px);bottom:145px;width:300px}
@@ -80,7 +79,6 @@ body.chatting #joy,body.chatting #joyGhost,body.chatting #actions,body.chatting 
   .cx-head{width:44px;height:auto;flex-direction:column;padding:0 0 6px;gap:2px;border-bottom:0;border-left:1px solid rgba(36,50,58,.1)}
   .cx-head .dot,.cx-head h2{display:none}
   .cx-head .grow{order:1}
-  .cx-head .han{order:2;writing-mode:vertical-rl;font-size:13px}
   .cx-msg{padding:2px 8px;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .cx-who,.cx-say{display:inline;font-size:13px}
   .cx-who{margin-right:6px}

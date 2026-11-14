@@ -8,7 +8,7 @@ import type { Style } from './buildings';
 import { lambert } from './materials';
 import { markDynamic } from './merge';
 import { signMesh } from './signAtlas';
-import { drawStoneSign } from './textures';
+import { drawStoneSign, textUnits } from './textures';
 import type { PropCollide } from './vat_truc';
 
 type Updater = (dt: number) => void;
@@ -229,7 +229,7 @@ function ngua(g: THREE.Group, seed: number, updaters: Updater[]): PropCollide {
 function thoBich(g: THREE.Group, text: string): PropCollide {
   put(g, new THREE.BoxGeometry(7, 3, 0.8), lambert(BRICK), 0, 1.5, 0);
   put(g, new THREE.BoxGeometry(7.4, 0.3, 1.1), lambert(CAP), 0, 3.15, 0);
-  const w = Math.min(6.4, 0.55 * [...text].length + 0.6);
+  const w = Math.min(6.4, 0.55 * textUnits(text) + 0.6);
   const face = signMesh(w, 0.9, Math.round(w * 110), 100, (c, pw, ph) => drawStoneSign(c, pw, ph, text, '#b9b4a8'));
   face.position.set(0, 1.8, 0.42);
   g.add(face);
@@ -242,13 +242,13 @@ export function bienAiProp(kind: string, g: THREE.Group, style: Style, text: str
     case 'dich-lau':
       return dichLau(g, style);
     case 'quan-thanh':
-      return quanThanh(g, text ?? '長城');
+      return quanThanh(g, text ?? 'Trường Thành');
     case 'phong-hoa':
       return phongHoa(g, updaters);
     case 'phong-hoa-dat':
       return phongHoa(g, updaters, DAT.body);
     case 'cong-quan':
-      return quanThanh(g, text ?? '陽關', DAT);
+      return quanThanh(g, text ?? 'Dương Quan', DAT);
     case 'leu':
       return leu(g);
     case 'soai-truong':
@@ -258,7 +258,7 @@ export function bienAiProp(kind: string, g: THREE.Group, style: Style, text: str
     case 'ngua':
       return ngua(g, seed, updaters);
     case 'tho-bich':
-      return thoBich(g, text ?? '黃河遠上白雲間');
+      return thoBich(g, text ?? 'Hoàng Hà xa tít giữa mây trắng');
     default:
       return null;
   }

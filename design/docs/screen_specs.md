@@ -3,6 +3,13 @@
 Mỗi màn đã vẽ trên canvas một mục `## <Màn>` — `/ui-apply` chỉ đọc đúng mục của màn đang áp. Màn chưa có ở đây
 thì vẫn theo code (`/ui-apply kiem` bỏ qua).
 
+> **Luật R-HUD-4 (người dùng 2026-11-14, mục CHANGELOG 2026-11-14.29) — ghi đè các mục cũ dưới đây:** biển, tên nơi /
+> khu, vòng trận, ấn son, chữ trang trí chỉ tiếng Việt. Đã bỏ: tiêu đề 日課榜 (→ "Nhiệm vụ hằng ngày" Lora 28), triện 畢
+> (→ "Xong" + "hôm nay"), tiêu đề 藏書閣 (→ "Tàng Thư Các" Lora 24), ấn son 雜貨 (bỏ), ấn son 溫故 (→ "Ôn"), chữ 文 錢
+> mặt trước xu (trơn), chữ Hán góc thẻ vật + giá chữ Hán ở Tạp hoá / Trang trí, 傳音 cạnh "Kênh chung", 自習 / 典書 ở
+> Khu tự học, tên Hán 五子棋 / 鬥字 đầu bảng cách chơi, chữ Hán trên màn tải và thẻ "sắp mở", 園 / 院 / 房 ở ô trang
+> trí. Chữ Hán chỉ còn ở **nội dung học** (thẻ bộ thủ, màn ôn, Đấu chữ, sổ từ HSK, mặt sau xu khắc bộ vừa học).
+
 Mẫu một mục:
 
 ```markdown

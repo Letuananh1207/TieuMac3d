@@ -181,10 +181,6 @@ flutter:
       fonts:
         - asset: assets/fonts/han-27.ttf
           weight: 700
-    - family: HanSerif28
-      fonts:
-        - asset: assets/fonts/han-28.ttf
-          weight: 700
     - family: HanSerif30
       fonts:
         - asset: assets/fonts/han-30.ttf
@@ -217,21 +213,9 @@ flutter:
       fonts:
         - asset: assets/fonts/han-38.ttf
           weight: 700
-    - family: HanSerif39
-      fonts:
-        - asset: assets/fonts/han-39.ttf
-          weight: 700
-    - family: HanSerif40
-      fonts:
-        - asset: assets/fonts/han-40.ttf
-          weight: 700
     - family: HanSerif42
       fonts:
         - asset: assets/fonts/han-42.ttf
-          weight: 700
-    - family: HanSerif44
-      fonts:
-        - asset: assets/fonts/han-44.ttf
           weight: 700
     - family: HanSerif46
       fonts:
@@ -292,10 +276,6 @@ flutter:
     - family: HanSerif74
       fonts:
         - asset: assets/fonts/han-74.ttf
-          weight: 700
-    - family: HanSerif77
-      fonts:
-        - asset: assets/fonts/han-77.ttf
           weight: 700
     - family: HanSerif82
       fonts:

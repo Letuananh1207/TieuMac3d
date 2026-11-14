@@ -112,7 +112,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
   }
 
   Widget _title(bool landscape) {
-    final han = Text('藏書閣', style: hanText.copyWith(fontSize: AppTextSize.libTitle, letterSpacing: AppTextSize.libTitle * .1));
+    final han = Text('Tàng Thư Các', style: displayText.copyWith(fontSize: AppTextSize.libTitle, color: AppColors.jade)); // chỉ tiếng Việt (R-HUD-4)
     final name = Text('Sổ từ HSK', style: uiText.copyWith(fontSize: AppTextSize.body, fontWeight: FontWeight.w700)); // libTitle
     const sub = 'Mỗi lần mượn một cuốn · mang theo đi khắp nơi'; // libSubtitle
     if (landscape) {

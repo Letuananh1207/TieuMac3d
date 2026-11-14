@@ -15,10 +15,7 @@ export class LoadingScreen {
   private readonly status = el('loadStatus');
   active = true;
 
-  constructor(site: { name: string; han: string }) {
-    const han = el('loadHan');
-    han.textContent = site.han;
-    han.hidden = !site.han;
+  constructor(site: { name: string }) {
     el('loadName').textContent = site.name;
     this.progress(0);
   }
@@ -31,11 +28,8 @@ export class LoadingScreen {
     this.status.textContent = `Đang mở đường… ${p}%`;
   }
 
-  /** Hiện lại (đổi vùng — R-MAN-2, R-HANH-2): tên + chữ Hán nơi đến; trang sắp tải lại nên không cần `done`. */
-  show(site: { name: string; han: string }): void {
-    const han = el('loadHan');
-    han.textContent = site.han;
-    han.hidden = !site.han;
+  /** Hiện lại (đổi vùng — R-MAN-2, R-HANH-2): tên Việt nơi đến (R-HUD-4); trang sắp tải lại nên không cần `done`. */
+  show(site: { name: string }): void {
     el('loadName').textContent = site.name;
     this.root.hidden = false;
     this.root.classList.remove('done');

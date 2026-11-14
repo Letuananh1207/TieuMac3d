@@ -158,7 +158,6 @@ export class GuidePanel {
   /** Mở bảng [g]; [tipName] = tên NPC cho "Mẹo của …"; [noneLearned] = chưa học bộ thủ nào (ô báo của bảng có `none`). */
   open(g: GameGuide, tipName: string, noneLearned: boolean): void {
     el('gpEyebrow').textContent = g.eyebrow;
-    el('gpHan').textContent = g.han;
     el('gpName').textContent = g.name;
     el('gpIntro').textContent = g.intro;
     el('gpIntroRow').textContent = `· ${g.intro}`;

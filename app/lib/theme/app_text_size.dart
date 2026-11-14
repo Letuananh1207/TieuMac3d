@@ -13,8 +13,8 @@ abstract final class AppTextSize {
   static const hanExample = 20.0;
   static const caption = 12.0;
 
-  /// bảng nhiệm vụ + màn ôn (thiết kế 2026-11-13.25): tiêu đề 日課榜 / số chuỗi · bộ thủ câu đố · dòng phụ · câu hỏi
-  static const dailyTitle = 40.0;
+  /// bảng nhiệm vụ + màn ôn (thiết kế 2026-11-13.25; tiêu đề tiếng Việt — R-HUD-4): tiêu đề / số chuỗi · bộ thủ câu đố · dòng phụ · câu hỏi
+  static const dailyTitle = 28.0;
   static const reviewHero = 110.0;
   static const reviewHeroLandscape = 96.0;
   static const small = 13.0;
@@ -22,15 +22,15 @@ abstract final class AppTextSize {
   static const question = 17.0;
   static const countLarge = 28.0;
 
-  /// triện son 畢 trên bảng nhiệm vụ: chữ · chữ "xong"
-  static const seal = 30.0;
+  /// triện son trên bảng nhiệm vụ: chữ "Xong" · chữ "hôm nay" (chỉ tiếng Việt — R-HUD-4)
+  static const seal = 15.0;
   static const sealCaption = 9.0;
 
   /// chữ nhỏ nhất: "简体" trên bìa sách, "HSK n" bìa mini (2026-11-13.28)
   static const tiny = 9.0;
 
-  /// tiêu đề 藏書閣 danh mục sách (2026-11-13.28)
-  static const libTitle = 30.0;
+  /// tiêu đề "Tàng Thư Các" danh mục sách (2026-11-13.28; tiếng Việt — R-HUD-4)
+  static const libTitle = 24.0;
 
   /// sổ từ (2026-11-13.28): từ 1–2 chữ · 3–4 chữ · hai phần / dài · pinyin · nghĩa · câu ví dụ Hán
   static const wordShort = 104.0;
@@ -40,15 +40,12 @@ abstract final class AppTextSize {
   static const meaning = 20.0;
   static const exampleHan = 24.0;
 
-  /// Ngồi ôn + Bộ đã học (2026-11-14.10): ấn son 溫故 · tiêu đề ngang "Bộ đã học" · chữ ô bộ đã học (dọc / ngang)
+  /// Ngồi ôn + Bộ đã học (2026-11-14.10): ấn son "Ôn" · tiêu đề ngang "Bộ đã học" · chữ ô bộ đã học (dọc / ngang)
   static const studySeal = 15.0;
   static const titleCompact = 19.0;
   static const learnedHan = 40.0;
   static const learnedHanLandscape = 30.0;
 
-  /// Tạp hoá (2026-11-14.12): giá chữ Hán trên thẻ · chữ Hán góc ô hình
-  static const priceHan = 10.0;
-  static const itemHan = 16.0;
 }
 
 /// Kích thước cố định theo token `size.*` (design_tokens.json).

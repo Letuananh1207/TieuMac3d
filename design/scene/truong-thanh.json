@@ -475,7 +475,7 @@
       "kind": "quan-thanh",
       "x": 0,
       "z": -10,
-      "text": "長城"
+      "text": "Trường Thành"
     },
     {
       "kind": "dich-lau",
@@ -517,13 +517,13 @@
       "x": 10.4,
       "z": -21,
       "rotY": 270,
-      "text": "黃河遠上白雲間"
+      "text": "Hoàng Hà xa tít giữa mây trắng"
     },
     {
       "kind": "tho-bich",
       "x": 0,
       "z": -25.6,
-      "text": "不教胡馬度陰山"
+      "text": "Chẳng để ngựa Hồ vượt Âm Sơn"
     },
     {
       "kind": "soai-truong",
@@ -570,19 +570,19 @@
       "kind": "co",
       "x": -5,
       "z": 12,
-      "text": "帥"
+      "text": "Soái"
     },
     {
       "kind": "co",
       "x": -6,
       "z": -1.8,
-      "text": "長"
+      "text": "Trường"
     },
     {
       "kind": "co",
       "x": 6,
       "z": -1.8,
-      "text": "城"
+      "text": "Thành"
     },
     {
       "kind": "sap-o",

@@ -330,7 +330,7 @@
         "width": 7,
         "kind": "thanh",
         "signs": {
-          "nam": "午門"
+          "nam": "Ngọ Môn"
         }
       },
       {
@@ -339,7 +339,7 @@
         "width": 5,
         "kind": "lau",
         "signs": {
-          "bac": "坤寧門"
+          "bac": "Khôn Ninh Môn"
         }
       }
     ]
@@ -360,7 +360,7 @@
         "width": 6,
         "kind": "thanh",
         "signs": {
-          "nam": "太和門"
+          "nam": "Thái Hoà Môn"
         }
       }
     },
@@ -379,7 +379,7 @@
         "width": 4,
         "kind": "lau",
         "signs": {
-          "tay": "文華門"
+          "tay": "Văn Hoa Môn"
         }
       }
     },
@@ -398,7 +398,7 @@
         "width": 4,
         "kind": "lau",
         "signs": {
-          "dong": "武英門"
+          "dong": "Võ Anh Môn"
         }
       }
     },
@@ -754,13 +754,13 @@
       "kind": "co",
       "x": -8,
       "z": 72,
-      "text": "紫"
+      "text": "Tử"
     },
     {
       "kind": "co",
       "x": 8,
       "z": 72,
-      "text": "禁"
+      "text": "Cấm"
     },
     {
       "kind": "dinh-dong",
@@ -850,7 +850,7 @@
       "kind": "bang",
       "x": 22,
       "z": 26,
-      "text": "金榜"
+      "text": "Bảng vàng"
     },
     {
       "kind": "gia-sach",

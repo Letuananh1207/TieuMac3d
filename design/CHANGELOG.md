@@ -27,6 +27,47 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
 - Canvas 3D: bản 56 (trước khi bỏ chữ Hán — chưa đăng lại). Ảnh: `screens/Canh-truyen-tong-quay.png` (góc ảnh người dùng
   `?nv=10,0&cam=3,3.6,1&tam=30,0`), `screens/Canh-mac-tri.png` (`?nv=23,8&cam=19,7,4&tam=33,16`).
 - File: `scene/scene.json`, ảnh trên.
+## 2026-11-14.29 — Biển, tên nơi, chữ trang trí chỉ tiếng Việt (luật mới R-HUD-4)
+
+- Loại: cảnh 3D (chuỗi) + giao diện + luồng/luật. Ai làm: phiên code V-20261114-28 làm thay vai thiết kế (`/canh`,
+  `/ui-design`). Người dùng: "bắt đầu từ nay các bảng hay tên trong game không được có tiếng Trung, ví dụ bảng '歸家 ·
+  Xuống núi · Về nhà' chỉ nên có tiếng Việt" — áp cho biển, tên nơi / khu, vòng trận, câu đối / ấn son / chữ trang trí.
+  **Đã duyệt 2026-11-14 theo luật mới của người dùng.** Chữ Hán chỉ còn ở nội dung học (thẻ bộ thủ, màn ôn, Đấu chữ, sổ
+  từ HSK, mặt sau đồng xu khắc bộ vừa học).
+- `scene/scene.json`: biển gỗ `歸家|Xuống núi · Về nhà` → "Xuống núi · Về nhà"; cổng đá bỏ `hanTitle` 下山 (biển
+  "Xuống núi"); cổng trăng (tay, at 4) "Khu vui chơi · 棋文苑" → **"Khu vui chơi"**; cổng trăng (tay, at −6) "Sân chơi ·
+  Thư viện" → **"Thư viện"** (người dùng: khu vui chơi đã có cổng riêng); cờ Tạp hoá `sign` 雜 → "Tạp hoá" (cờ dọc
+  "TẠP HOÁ"). `site.han`, `areas[].han` giữ làm dữ liệu, **không hiển thị** ở đâu nữa.
+- Cảnh vùng: `nha-ta.json` bỏ `teleport.text` 我家; `giang-nam.json` bỏ `hanTitle` 江南, cờ 筆 / 綢 → "Bút" / "Lụa",
+  biển cổng 小園 → "Tiểu Viên"; `bong-lai.json` bỏ `hanTitle` 蓬萊; `rung-truc.json` cờ 竹 → "Trúc", đá khắc 曲水流觴 →
+  "Khúc thuỷ lưu thương", 望竹 → "Vọng Trúc"; `to-lua.json` cổng 陽關 → "Dương Quan", đá thơ → "Ra Dương Quan rồi,
+  vắng cố nhân", cờ 驛 / 市 → "Trạm" / "Chợ", bảng 市估 → "Giá chợ"; `truong-thanh.json` cổng 長城 → "Trường Thành",
+  tường thơ → "Hoàng Hà xa tít giữa mây trắng" / "Chẳng để ngựa Hồ vượt Âm Sơn", cờ 帥 / 長 / 城 → "Soái" / "Trường" /
+  "Thành"; `tu-cam-thanh.json` biển cổng 午門 / 坤寧門 / 太和門 / 文華門 / 武英門 → "Ngọ Môn" / "Khôn Ninh Môn" / "Thái Hoà
+  Môn" / "Văn Hoa Môn" / "Võ Anh Môn", cờ 紫 / 禁 → "Tử" / "Cấm", bảng 金榜 → "Bảng vàng". `text` của bồn hoa (梅 蘭 菊
+  竹) và pháp bảo (葫 扇 …) giữ — chỉ là mã chọn hình, không vẽ chữ.
+- Vòng trận: phù hiệu 起源 / 我家 → **hoa văn 8 cánh** (vòng ngoài + vòng trong + 8 cánh nhọn + tâm tròn);
+  `teleport.text` mặc định rỗng, có thì tên Việt ≤ 14 ký tự. Nhật quỹ: 12 giờ 子丑寅… → Tý, Sửu, Dần, Mão, Thìn, Tỵ, Ngọ,
+  Mùi, Thân, Dậu, Tuất, Hợi. Tranh chữ (đồ trang trí) 書 → "Học".
+- Giao diện (HUD web + màn Flutter): màn tải bỏ dòng chữ Hán lớn (chỉ tên Việt); thẻ bản đồ "蓬萊 Bồng Lai — sắp mở" →
+  "Bồng Lai — sắp mở"; bảng nhiệm vụ tiêu đề 日課榜 → "Nhiệm vụ hằng ngày" (Lora 28 `jade`), triện 畢 → "Xong · hôm
+  nay"; nhãn nút "Nhiệm vụ hằng ngày 日課榜", "Tạp hoá 雜貨" → bỏ chữ Hán; Tạp hoá bỏ ấn son 雜貨, bỏ chữ Hán góc thẻ
+  vật và giá chữ Hán ("一百六十文"); Trang trí bỏ chữ Hán góc thẻ và 園 / 院 / 房 ở đầu bảng; danh mục sách 藏書閣 →
+  "Tàng Thư Các" (Lora 24); cuộn Ngồi ôn ấn son 溫故 → "Ôn"; đồng xu mặt trước bỏ 文 錢 (trơn); kênh chung bỏ 傳音; bảng
+  cách chơi / Khu tự học bỏ 五子棋 / 鬥字 / 自習 / 典書. Cầu nối `openShop` bỏ `han`, `priceHan` (`docs/bridge.md`).
+- Giữ (nội dung học): thẻ bộ thủ, màn ôn, Đấu chữ (bộ thủ + nghĩa, thẻ 木 minh hoạ trong bảng cách chơi), sổ từ HSK
+  (bìa số cấp 一…六, "简体"), bài học `zones/`, mặt sau xu khắc bộ vừa học, câu thoại dạy chữ.
+- Tài liệu: `docs/screen_specs.md`, `docs/components.md` thêm ghi chú R-HUD-4 ở đầu (ghi đè chữ Hán trang trí trong các
+  mục cũ — 日課榜, 畢, 藏書閣, 雜貨, 溫故, 文錢, 傳音, 自習, 典書, 五子棋 / 鬥字, 我家, 園; chưa sửa từng dòng); `l10n/vi.arb`
+  bỏ `siteHan`, `areaHan*`, sửa mô tả `siteName`, `chatChannel`, `reviewScrollSeal`, `shopName`, `homeName`,
+  `studyGuideTitle`; `scene/phong_cach.md` (không dùng `hanTitle`), `scene/hanh_trinh.md` (phù hiệu hoa văn).
+- Luật: thêm **R-HUD-4**; sửa ví dụ R-VA-5, R-NPC-3/4/5, R-HANH-2, R-GIAO-1, R-CO-1, R-NHA-1, R-NHA-4, R-TIEN-1/4/6,
+  R-BANDO-3 (dấu "B" thay 北), R-MAN-2 — Xác nhận `chờ`, chưa đồng bộ online. `scene:check` bắt chữ Hán ở chỗ hiển thị.
+  `scene:check`: 8 cảnh **Không có lỗi**.
+- Ảnh: chụp so trước / sau (biển gỗ, cổng Xuống núi, vòng trận, Tạp hoá, cổng trăng, nhật quỹ, màn tải) trong phiên —
+  không đăng Canvas 3D.
+- File: `scene/scene.json`, `scene/{nha-ta,giang-nam,bong-lai,rung-truc,to-lua,truong-thanh,tu-cam-thanh}.json`,
+  `scene/phong_cach.md`, `scene/hanh_trinh.md`, `docs/screen_specs.md`, `docs/components.md`, `l10n/vi.arb`.
 
 ## 2026-11-14.28 — Biển cổng trăng mới phía Quảng Trường: "Khu vui chơi"
 

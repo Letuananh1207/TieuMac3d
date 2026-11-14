@@ -81,6 +81,8 @@ dart tool/rule_trace.dart --pending           # quy tắc chờ đồng bộ onl
 7. Sửa web xong thì `npm run build` để app nhận bản mới.
 8. Vị trí, kích thước, màu, đèn, camera của cảnh lấy từ `SceneSpec` (`web/src/scene/spec.ts`), không viết số mới
    thẳng trong code dựng cảnh; thêm trường thì thêm cả giá trị mặc định giữ nguyên cảnh cũ.
+9. Biển, tên nơi / khu, chữ trang trí trong game chỉ tiếng Việt; chữ Hán chỉ ở nội dung học (thẻ, ôn, Đấu chữ, sách)
+   — luật `R-HUD-4`, `scene:check` bắt chữ Hán trong đặc tả cảnh.
 
 ## Quy tắc nghiệp vụ
 

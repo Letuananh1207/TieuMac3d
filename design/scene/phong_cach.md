@@ -107,7 +107,7 @@ Mỗi thứ thêm vào `SceneSpec` có mặc định giữ cảnh cũ (quy tắc
    đồng hồ lô 2 bầu.
 4. **Cổng sơn môn 3 gian 4 trụ**: gian giữa = `width`, hai gian bên 3,5 m, gian giữa cao hơn; ba mái nhỏ ngói lưu ly
    lục; biển chữ Hán (văn bản `title`) giữa; chân trụ đá. **Xà thấp nhất ≥ 6 m** để camera không lọt sau biển khi
-   đi qua (lỗi thấy khi chơi thử). Va chạm: 4 trụ. Có thể thêm trường `hanTitle` (vd. "文淵宗") cho biển chữ Hán.
+   đi qua (lỗi thấy khi chơi thử). Va chạm: 4 trụ. Biển chỉ chữ Việt (`title`) — không dùng `hanTitle` chữ Hán (R-HUD-4, 2026-11-14).
 5. **Tường vôi mái ngói + cổng trăng**: tường bao và `wallSegments` dùng tường vôi trắng trơn (không vân gạch) +
    chân đá xám + mái ngói nhỏ trên đỉnh; màu tường đặt được riêng (hiện vân gạch luôn tối, không ra trắng được).
    Mỗi khe cổng thành **cổng trăng**: vòm tròn viền đá, đường kính = bề rộng khe. Cửa sổ hoa (lậu song) rải dọc tường.

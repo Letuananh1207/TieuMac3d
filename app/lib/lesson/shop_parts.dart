@@ -45,31 +45,20 @@ class ItemArt extends StatelessWidget {
       );
 }
 
-/// Ô hình nền `map-paper` bo 10 + chữ Hán 16 `jade` góc trên phải.
+/// Ô hình nền `map-paper` bo 10 (không chữ Hán góc — R-HUD-4).
 class ItemPicture extends StatelessWidget {
-  const ItemPicture({super.key, required this.item, required this.height, this.han = true, this.radius = 10});
+  const ItemPicture({super.key, required this.item, required this.height, this.radius = 10});
 
   final ShopItem item;
   final double height;
-  final bool han;
   final double radius;
 
   @override
   Widget build(BuildContext context) => Container(
         height: height,
         decoration: BoxDecoration(color: AppColors.mapPaper, borderRadius: BorderRadius.circular(radius)),
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            ItemArt(item: item, size: height * .6),
-            if (han)
-              Positioned(
-                right: 6,
-                top: 3,
-                child: Text(item.han, style: hanText.copyWith(fontSize: AppTextSize.itemHan, height: 1.2)),
-              ),
-          ],
-        ),
+        alignment: Alignment.center,
+        child: ItemArt(item: item, size: height * .6),
       );
 }
 
@@ -107,7 +96,7 @@ class ShopCard extends StatelessWidget {
       ),
     );
     return Semantics(
-      label: '${item.name} ${item.han}, ${item.price} Văn tiền',
+      label: '${item.name}, ${item.price} Văn tiền',
       child: picked
           ? DecoratedBox(
               position: DecorationPosition.foreground,
@@ -183,7 +172,7 @@ class _Dashed extends CustomPainter {
   bool shouldRepaint(_Dashed old) => false;
 }
 
-/// Giá: xu 14 + số 12/700 + số chữ Hán 10 `slate-muted` ("160 · 一百六十文").
+/// Giá: xu 14 + số 12/700 (không viết giá bằng chữ Hán — R-HUD-4).
 class PriceLine extends StatelessWidget {
   const PriceLine({super.key, required this.item});
 
@@ -195,16 +184,6 @@ class PriceLine extends StatelessWidget {
           const Coin(size: 14),
           const SizedBox(width: 4),
           Text(formatCoins(item.price), style: uiText.copyWith(fontSize: AppTextSize.caption, fontWeight: FontWeight.w700, fontFeatures: const [FontFeature.tabularFigures()])),
-          const SizedBox(width: 4),
-          Flexible(
-            child: Text(
-              item.priceHan,
-              maxLines: 1,
-              overflow: TextOverflow.clip,
-              softWrap: false,
-              style: hanText.copyWith(fontSize: AppTextSize.priceHan, color: AppColors.slateMuted),
-            ),
-          ),
         ],
       );
 }
@@ -271,13 +250,12 @@ class BoughtToast extends StatelessWidget {
         ),
         child: Row(
           children: [
-            SizedBox(width: 48, child: ItemPicture(item: item, height: 48, han: false)),
+            SizedBox(width: 48, child: ItemPicture(item: item, height: 48)),
             const SizedBox(width: 12),
             Expanded(
               child: Text.rich(
                 TextSpan(children: [
-                  TextSpan(text: 'Đã mua ${item.name} ', style: const TextStyle(fontWeight: FontWeight.w700)), // shopBought
-                  TextSpan(text: item.han, style: hanText.copyWith(color: AppColors.onJade)),
+                  TextSpan(text: 'Đã mua ${item.name}', style: const TextStyle(fontWeight: FontWeight.w700)), // shopBought
                   const TextSpan(text: '\n'),
                   TextSpan(
                     text: 'Về nhà để đặt — chạm ô ${item.slot.label} khi trang trí.', // shopBoughtSub

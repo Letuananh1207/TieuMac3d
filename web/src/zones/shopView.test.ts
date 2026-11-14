@@ -38,13 +38,12 @@ describe('Tạp hoá bản web — thẻ, tab, dải (R-TIEN-4)', () => {
   it('R-TIEN-4: hộp xác nhận — đang có / giá / còn lại, nút "Mua · n"; báo "Đã mua …" — về nhà để đặt', () => {
     expect(confirmView(item('da-thai-ho'), 160)).toEqual({
       before: 'Mua Đá Thái Hồ',
-      han: '石',
       after: 'với 160 Văn tiền?',
       sub: 'Đặt ở ô Vườn · mua một lần, đặt được nhiều ô',
       rows: [['Đang có', '160'], ['Giá', '−160'], ['Còn lại', '0']],
       buy: 'Mua · 160',
     });
     expect(confirmView(item('mai'), 100).rows[2]).toEqual(['Còn lại', '40']);
-    expect(boughtView(item('ban-tra'))).toEqual({ title: 'Đã mua Bàn trà', han: '茶', sub: 'Về nhà để đặt — chạm ô Sân khi trang trí.' });
+    expect(boughtView(item('ban-tra'))).toEqual({ title: 'Đã mua Bàn trà', sub: 'Về nhà để đặt — chạm ô Sân khi trang trí.' });
   });
 });

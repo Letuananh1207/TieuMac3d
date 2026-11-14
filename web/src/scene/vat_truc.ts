@@ -8,7 +8,7 @@ import type { Style } from './buildings';
 import { lambert, lampMaterial } from './materials';
 import { markDynamic } from './merge';
 import { signMesh } from './signAtlas';
-import { drawStoneSign } from './textures';
+import { drawStoneSign, textUnits } from './textures';
 
 type Updater = (dt: number) => void;
 
@@ -101,7 +101,7 @@ export function daKhac(g: THREE.Group, style: Style, text: string): [number, num
   const rock = new THREE.Mesh(new THREE.DodecahedronGeometry(1, 0).scale(1.45, 0.75, 0.5), lambert(style.stone));
   rock.position.y = 0.62;
   g.add(rock);
-  const w = Math.min(2.2, 0.45 * [...text].length + 0.3);
+  const w = Math.min(2.2, 0.45 * textUnits(text) + 0.3);
   const face = signMesh(w, 0.6, Math.round(w * 160), 96, (cx, pw, ph) => drawStoneSign(cx, pw, ph, text, style.stone));
   face.position.set(0, 0.72, 0.44);
   face.rotation.x = -0.12;
@@ -163,7 +163,7 @@ export function trucProp(kind: string, g: THREE.Group, style: Style, text: strin
     case 'den-truc':
       return { circle: denTruc(g) };
     case 'da-khac':
-      return { box: daKhac(g, style, text ?? '竹') };
+      return { box: daKhac(g, style, text ?? 'Trúc') };
     case 'ngong':
       ngong(g, seed, updaters);
       return {};

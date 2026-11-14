@@ -65,7 +65,7 @@ class DailyView {
 const _weekdays = ['Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy', 'Chủ nhật'];
 const _dayLabels = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'];
 
-/// Bảng nhiệm vụ hằng ngày 日課榜 (native) — R-NV-1/2/3. Thiết kế: design/docs/screen_specs.md "Bảng nhiệm vụ hằng ngày"
+/// Bảng nhiệm vụ hằng ngày (native) — R-NV-1/2/3. Thiết kế: design/docs/screen_specs.md "Bảng nhiệm vụ hằng ngày"
 /// (artboard `NhiemVu-doc`, `-doc-moi`, `-doc-xong`, `-ngang`). "Ôn ngay" mở màn ôn tại chỗ ([onReview], R-ON-5); đóng
 /// bằng "Đóng bảng" / nút quay lại của máy.
 class DailyScreen extends StatefulWidget {
@@ -190,10 +190,10 @@ class _DailyScreenState extends State<DailyScreen> {
     final date = '${n.day}/${n.month}';
     return Column(
       children: [
-        Text('日課榜', style: hanText.copyWith(fontSize: AppTextSize.dailyTitle, height: 1.1, letterSpacing: AppTextSize.dailyTitle * .08)),
+        Text('Nhiệm vụ hằng ngày', textAlign: TextAlign.center, style: displayText.copyWith(fontSize: AppTextSize.dailyTitle, height: 1.15, color: AppColors.jade)), // dailyTitle — chỉ tiếng Việt (R-HUD-4)
         const SizedBox(height: 2),
         Text(
-          landscape ? 'Nhiệm vụ hằng ngày · $date' : 'Nhiệm vụ hằng ngày · ${_weekdays[n.weekday - 1]} $date', // dailyTitle
+          landscape ? date : '${_weekdays[n.weekday - 1]} $date',
           textAlign: TextAlign.center,
           style: uiText.copyWith(fontSize: AppTextSize.small, fontWeight: FontWeight.w700),
         ),

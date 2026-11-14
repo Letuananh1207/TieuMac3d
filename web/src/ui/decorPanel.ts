@@ -19,16 +19,9 @@ function h<K extends keyof HTMLElementTagNameMap>(tag: K, cls = '', text = ''): 
   return e;
 }
 
-function hanSpan(text: string): HTMLSpanElement {
-  const s = h('span', 'han', text);
-  s.lang = 'zh';
-  return s;
-}
-
 export interface PanelView {
   kind: DecorSlotKind;
   name: string;
-  han: string;
   sub: string;
   canRemove: boolean;
   cards: readonly DecorCard[];
@@ -80,7 +73,7 @@ export class DecorPanel {
   show(v: PanelView): void {
     this.root.setAttribute('aria-label', `Danh mục cho ${v.name.toLowerCase()}`);
     this.kind.replaceChildren(svgIcon(ICON_SLOT[v.kind], 20, undefined, { ...STROKE, 'stroke-width': '2' }));
-    this.title.replaceChildren(`${v.name} `, hanSpan(v.han));
+    this.title.textContent = v.name;
     this.sub.textContent = v.sub;
     this.removeBtn.hidden = !v.canRemove;
     this.grid.replaceChildren(...v.cards.map((c) => this.card(c)));
@@ -110,7 +103,7 @@ export class DecorPanel {
     const pic = h('span', 'dk-pic');
     const art = h('span', 'art');
     art.append(svgIcon(DECOR_PICTURES[item.id] ?? [], 50, '0 0 64 64', { fill: 'none' }));
-    pic.append(art, hanSpan(item.han));
+    pic.append(art);
     const status = h('span', 'dk-state');
     if (state === 'locked') {
       const lock = h('span', 'dk-lock');

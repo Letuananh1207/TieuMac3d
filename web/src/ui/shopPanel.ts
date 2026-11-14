@@ -28,12 +28,6 @@ function h<K extends keyof HTMLElementTagNameMap>(tag: K, cls = '', text = ''): 
   return e;
 }
 
-function han(text: string, cls = 'han'): HTMLSpanElement {
-  const s = h('span', cls, text);
-  s.lang = 'zh';
-  return s;
-}
-
 function button(cls: string, label: string, icon?: SVGElement): HTMLButtonElement {
   const b = h('button', cls);
   b.type = 'button';
@@ -139,7 +133,7 @@ export class ShopPanel {
     const name = h('h1', '', 'Tạp hoá'); // shopName
     titles.append(name, h('span', 'sub', 'Đồ trang trí Nhà của ta · mua một lần, đặt được nhiều ô')); // shopSubtitle
     const brand = h('div', 'sp-brand');
-    brand.append(han('雜貨', 'sp-seal'), titles);
+    brand.append(titles); // không ấn son chữ Hán (R-HUD-4)
     this.walletBtn.setAttribute('role', 'img');
     this.walletBtn.append(coinIcon(26), this.num);
     this.walletWrap.append(this.walletBtn);
@@ -218,14 +212,14 @@ export class ShopPanel {
     } else this.banner.replaceChildren();
   }
 
-  /** Thẻ vật: ô hình + chữ Hán, tên, giá (xu + số + số chữ Hán), nút Mua / Đã có / Còn thiếu n. */
+  /** Thẻ vật: ô hình, tên, giá (xu + số), nút Mua / Đã có / Còn thiếu n. */
   private card(c: ShopCard): HTMLLIElement {
     const { item } = c;
     const li = h('li', `sp-card ${c.state}${c.picked ? ' picked' : ''}`);
     const art = h('div', 'art');
-    art.append(picture(item, 54), han(item.han));
+    art.append(picture(item, 54));
     const price = h('div', 'price');
-    price.append(svgIcon(COIN, 14, '0 0 100 100'), h('b', '', formatCoins(item.price)), han(item.priceHan, 'ph'));
+    price.append(svgIcon(COIN, 14, '0 0 100 100'), h('b', '', formatCoins(item.price)));
     let act: HTMLElement;
     if (c.state === 'owned') {
       act = h('span', 'act owned');
@@ -254,7 +248,7 @@ export class ShopPanel {
     const art = h('div', 'art');
     art.append(picture(item, 64));
     const q = h('div', 'q');
-    q.append(`${v.before} `, han(v.han), ` ${v.after}`); // shopConfirm
+    q.textContent = `${v.before} ${v.after}`; // shopConfirm
     const txt = h('div', 'txt');
     txt.append(q, h('div', 'sub', v.sub)); // shopConfirmSub
     const top = h('div', 'top');
@@ -288,8 +282,7 @@ export class ShopPanel {
     const v = boughtView(item);
     const art = h('div', 'art');
     art.append(picture(item, 40));
-    const b = h('b', '', `${v.title} `); // shopBought
-    b.append(han(v.han));
+    const b = h('b', '', v.title); // shopBought
     const txt = h('div', 'txt');
     txt.append(b, h('span', 'sub', v.sub)); // shopBoughtSub
     this.toast.replaceChildren(art, txt);

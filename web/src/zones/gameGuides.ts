@@ -46,9 +46,7 @@ export interface GameGuide {
   label: string;
   /** dòng chữ nhỏ trên đầu bảng */
   eyebrow: string;
-  /** tên Hán (đầu bảng) */
-  han: string;
-  /** tên Việt (Lora, cạnh tên Hán) */
+  /** tên Việt (Lora, đầu bảng — không kèm chữ Hán, R-HUD-4) */
   name: string;
   intro: string;
   /** hình minh hoạ: lưới cờ, thẻ bộ thủ + 4 nghĩa, hay người ngồi bồ đoàn + cuộn sách (khu tự học) */
@@ -77,7 +75,6 @@ const GUIDES: Record<string, GameGuide> = {
   co: {
     label: 'Cách chơi',
     eyebrow: EYEBROW,
-    han: '五子棋',
     name: 'Ngũ Tử Kỳ',
     intro: 'Cờ năm quân — đấu với Tiểu Mặc.',
     figure: 'co',
@@ -100,7 +97,6 @@ const GUIDES: Record<string, GameGuide> = {
   'dau-chu': {
     label: 'Cách chơi',
     eyebrow: EYEBROW,
-    han: '鬥字',
     name: 'Đấu chữ',
     intro: 'Ôn bộ thủ đã học — đấu 10 câu với Mặc Ông.',
     figure: 'dau-chu',

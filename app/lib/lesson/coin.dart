@@ -4,8 +4,8 @@ import '../theme/app_colors.dart';
 import '../theme/app_fonts.g.dart';
 
 /// Đồng xu Văn tiền 文錢 (thiết kế 2026-11-14.12, artboard `VanTien-vi-trang-thai`): tròn, vành `coin-rim`, mặt `gold`,
-/// vòng trong, lỗ vuông 24 %. Xu ≥ 30 px khắc chữ `coin-ink`: mặt trước 文 (trên) 錢 (dưới); [char] ≠ `null` → mặt sau
-/// một chữ (chữ / bộ thủ vừa học, ôn). Xu trong ví (26) và nhỏ hơn: không khắc. Vẽ bằng [CustomPainter] — không ảnh.
+/// vòng trong, lỗ vuông 24 %. Mặt trước trơn (không chữ Hán — R-HUD-4); xu ≥ 30 px có [char] ≠ `null`
+/// → mặt sau khắc `coin-ink` một chữ (chữ / bộ thủ vừa học, ôn — nội dung học). Xu trong ví (26) và nhỏ hơn: không khắc. Vẽ bằng [CustomPainter] — không ảnh.
 class Coin extends StatelessWidget {
   const Coin({super.key, this.size = 26, this.char});
 
@@ -48,13 +48,9 @@ class _CoinPainter extends CustomPainter {
     canvas.drawRect(const Rect.fromLTWH(38, 38, 24, 24), Paint()..color = AppColors.coinHoleRim);
     canvas.drawRect(const Rect.fromLTWH(41, 41, 18, 18), Paint()..color = AppColors.coinHole);
     if (!engrave) return;
+    // mặt trước trơn (không khắc chữ Hán — R-HUD-4); mặt sau khắc bộ thủ vừa học / ôn (nội dung học)
     final back = char;
-    if (back != null && back.isNotEmpty) {
-      _text(canvas, back, 24, 30);
-    } else {
-      _text(canvas, '文', 20, 30);
-      _text(canvas, '錢', 20, 88);
-    }
+    if (back != null && back.isNotEmpty) _text(canvas, back, 24, 30);
   }
 
   /// Chữ khắc giữa theo chiều ngang, [baseline] như `y` của `<text>` SVG.

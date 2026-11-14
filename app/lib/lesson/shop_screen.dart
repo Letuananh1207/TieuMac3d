@@ -11,7 +11,7 @@ import 'shop_confirm.dart';
 import 'shop_parts.dart';
 import 'wallet_chip.dart';
 
-/// Tạp hoá 雜貨 — cửa hàng đồ trang trí Nhà của ta (native) — R-TIEN-4. Thiết kế: design/docs/screen_specs.md "Tạp hoá 雜貨"
+/// Tạp hoá — cửa hàng đồ trang trí Nhà của ta (native) — R-TIEN-4. Thiết kế: design/docs/screen_specs.md "Tạp hoá 雜貨"
 /// (artboard `CuaHang-doc`, `-doc-ngheo`, `-doc-xac-nhan`, `-doc-vua-mua`, `-doc-het`, `-ngang`). Danh mục + giá do trang
 /// gửi (`openShop`); mua qua [onBuy] (kho trừ ví + ghi sở hữu — `ProgressStore.buyDecor`). Đóng: "Đóng" / quay lại → về cảnh.
 class ShopScreen extends StatefulWidget {
@@ -141,23 +141,10 @@ class _ShopScreenState extends State<ShopScreen> {
     });
   }
 
-  /// Ấn son 雜貨 (chữ dọc 15, nền `lacquer`, bo 4) + "Tạp hoá" Lora 22 (ngang 19) + dòng phụ; ví bên phải.
+  /// "Tạp hoá" Lora 22 (ngang 19) + dòng phụ; ví bên phải. Không ấn son chữ Hán (R-HUD-4).
   Widget _header(bool landscape) {
-    final seal = Container(
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 6),
-      decoration: BoxDecoration(color: AppColors.lacquer, borderRadius: BorderRadius.circular(4)),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          for (final c in '雜貨'.split(''))
-            Text(c, style: hanText.copyWith(fontSize: AppTextSize.studySeal, color: AppColors.onJade, height: 1.15)),
-        ],
-      ),
-    );
     return Row(
       children: [
-        ExcludeSemantics(child: seal),
-        const SizedBox(width: 10),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

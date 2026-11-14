@@ -48,7 +48,7 @@ class ShopConfirm extends StatelessWidget {
           children: [
             Row(
               children: [
-                SizedBox(width: 76, child: ItemPicture(item: item, height: 76, han: false, radius: 12)),
+                SizedBox(width: 76, child: ItemPicture(item: item, height: 76, radius: 12)),
                 const SizedBox(width: 14),
                 Expanded(
                   child: Column(
@@ -56,8 +56,7 @@ class ShopConfirm extends StatelessWidget {
                     children: [
                       Text.rich(
                         TextSpan(children: [
-                          TextSpan(text: 'Mua ${item.name} '), // shopConfirm
-                          TextSpan(text: item.han, style: hanText),
+                          TextSpan(text: 'Mua ${item.name}'), // shopConfirm
                           TextSpan(text: ' với ${formatCoins(item.price)} Văn tiền?'),
                         ]),
                         style: uiText.copyWith(fontSize: AppTextSize.task, fontWeight: FontWeight.w700),

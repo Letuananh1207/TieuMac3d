@@ -14,7 +14,6 @@ const ANCHOR_Y = 2.1;
 export class GuideButton {
   private readonly root = el('guide');
   private readonly name = el('guideName');
-  private readonly han = el('guideHan');
   private readonly label = el('guideLabel');
   private readonly at = new THREE.Vector3();
   private readonly v = new THREE.Vector3();
@@ -34,7 +33,6 @@ export class GuideButton {
     this.sign = sign;
     if (!sign) return;
     this.name.textContent = sign.name;
-    this.han.textContent = sign.han;
     const study = sign.kind === STUDY_KIND;
     const label = study ? 'Hướng dẫn' : 'Cách chơi';
     this.label.textContent = label;

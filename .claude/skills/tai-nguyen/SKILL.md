@@ -31,6 +31,7 @@ Quyết định: `.claude/skills/hoc-xa-3d-dev/decisions/0003-tai-san-ai.md` (la
   app Claude tạo ảnh được), mẫu `docs/phieu_thiet_ke/2026-11-12-anh-nhan-vat-3d.md`: bộ 4 góc trước / trái / sau / phải
   (+ cận mặt), tư thế chữ A, render kiểu đồ chơi 3D (không vẽ phẳng), không viền, nền trơn sáng, không watermark, chuẩn
   hoá: vuông 1024, đỉnh búi 10 %, đế 90 %, trục thân giữa ảnh, 4 góc cùng tỉ lệ. In khối "Dán vào canvas" cho người dùng chép sang.
+  Ảnh / model **không có chữ Hán** trên biển, áo, đồ vật (chữ trên cảnh chỉ tiếng Việt — R-HUD-4, người dùng 2026-11-14).
   **Tóc và mặt cho 3D** (2026-11-13 — chỗ hay lỗi nhất; luôn chép vào phiếu ảnh):
   - tóc là khối liền ôm đầu; tóc mai ngắn hoặc ép sát má, **không lọn rủ hở khỏi mặt / cổ** (Hunyuan không dựng được lọn
     tóc tách rời → dính vào má thành vệt sọc); đuôi ngựa / búi được, miễn liền khối;

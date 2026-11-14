@@ -8,7 +8,6 @@
 .coin{flex:0 0 auto;display:block}
 .coin .rim{fill:var(--coin-rim)}
 .coin .face{fill:var(--gold)}
-.coin .ink{fill:var(--coin-ink);font-family:var(--han);font-weight:700}
 /* viên "+n" / "−n" dưới ví 1,5 s */
 .wl-delta{position:absolute;right:4px;top:42px;height:22px;padding:0 9px;border-radius:999px;font-size:12px;font-weight:700;color:#fff;background:var(--jade);display:flex;align-items:center;white-space:nowrap;pointer-events:none;animation:wl-out 1.5s ease-in forwards}
 .wl-delta.down{background:var(--lacquer)}

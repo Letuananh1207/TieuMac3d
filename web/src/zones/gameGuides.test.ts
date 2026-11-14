@@ -21,7 +21,7 @@ describe('Biển tên trò chơi — R-GIAO-2', () => {
     for (const kind of ['co', 'dau-chu']) {
       const g = gameGuide(kind)!;
       expect(g.sections.map((x) => x.title)).toEqual(['Mục tiêu', 'Mỗi lượt', 'Thắng · thua · hoà', 'Vào bàn · rời bàn']);
-      expect(g.han.length).toBeGreaterThan(0);
+      expect(JSON.stringify(g)).not.toMatch(/[\u4e00-\u9fff]{2}/); // tên bảng không kèm chữ Hán (R-HUD-4); mẹo một chữ 木 là nội dung học
     }
     expect(gameGuide('co')!.tipBy).toBe('tieu-mac');
     expect(gameGuide('dau-chu')!.tipBy).toBe('su-phu');

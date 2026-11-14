@@ -91,14 +91,12 @@ export class ChatPanel {
     const head = h('header', 'cx-head');
     const dot = h('span', 'dot');
     dot.setAttribute('aria-hidden', 'true');
-    const han = h('span', 'han', '傳音');
-    han.lang = 'zh';
     const close = h('button', 'cx-close');
     close.type = 'button';
     close.setAttribute('aria-label', 'Đóng kênh chung');
     close.append(icon(18, ['M6 6l12 12M18 6L6 18'], 2.4));
     close.addEventListener('click', () => this.hide());
-    head.append(dot, h('h2', '', 'Kênh chung'), han, h('span', 'grow'), close);
+    head.append(dot, h('h2', '', 'Kênh chung'), h('span', 'grow'), close);
     this.empty.append(h('b', '', 'Chưa ai lên tiếng…'), h('span', '', 'Hãy chào đồng môn một câu.'));
     this.pill.type = 'button';
     this.pill.hidden = true;

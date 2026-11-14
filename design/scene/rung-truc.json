@@ -471,7 +471,7 @@
       "kind": "co",
       "x": 3,
       "z": 34,
-      "text": "竹",
+      "text": "Trúc",
       "scale": 0.7
     },
     {
@@ -495,7 +495,7 @@
       "x": 0.5,
       "z": -8,
       "rotY": 270,
-      "text": "曲水流觴"
+      "text": "Khúc thuỷ lưu thương"
     },
     {
       "kind": "den-truc",
@@ -595,7 +595,7 @@
       "kind": "da-khac",
       "x": -17,
       "z": -23.6,
-      "text": "望竹",
+      "text": "Vọng Trúc",
       "scale": 0.6
     }
   ],

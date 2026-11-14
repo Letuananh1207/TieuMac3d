@@ -2,6 +2,8 @@
 
 Kiểu + chú thích đầy đủ: `web/src/scene/spec.ts`; khuôn mặc định: `web/dist-design/scene.default.json`. Mọi trường mới
 mặc định giữ cảnh cũ. Vật có va chạm chỉ quay 0 · 90 · 180 · 270; lối đá, mây, đảo, thác, suối: không va chạm.
+**Chữ trên cảnh chỉ tiếng Việt** (R-HUD-4, người dùng 2026-11-14): biển, cờ, cổng, đá khắc, bảng, vòng trận, tên nơi / khu
+không có chữ Hán — `scene:check` báo lỗi. Chữ Hán chỉ ở nội dung học (thẻ, ôn, Đấu chữ, sách).
 Ví dụ: đủ 6 khu phẳng `docs/phieu_thiet_ke/2026-11-11-tong-mon-dot-1-mau.json` · mọi kiểu Trung Hoa
 `docs/phieu_thiet_ke/2026-11-11-phong-cach-mau.json` · địa hình `docs/phieu_thiet_ke/2026-11-11-dia-hinh-mau.json`.
 
@@ -15,16 +17,16 @@ Ví dụ: đủ 6 khu phẳng `docs/phieu_thiet_ke/2026-11-11-tong-mon-dot-1-mau
 | `paths` | `{ "from": [0, 21], "to": [0, 55], "width": 5 }` | lối lát đá, góc tự do; `color` tuỳ chọn; nối hai bục khác độ cao thành dốc |
 | `buildings[].kind` | `"dien"` · `"thap"` (+ `"floors": 5`) · `"nha-nho"` | thiếu = `giang-duong`; `"roof": "cong"` = mái cong đầu đao (tháp mặc định cong) |
 | `buildings[].kind` tiện ích (2026-11-13.13, **vào được**) | `"hi-dai"` · `"tra-lau"` · `"lau-sach"` · `"cua-hang"` | hí đài: nền 1,5 m, dốc bậc 3 m sau lưng hai bên (chừa ≥ 2 m tới tường), `w` ~11 × `d` ~9; trà lâu: 2 tầng, tầng 1 mở (3 bàn trà), `w` 12 × `d` 9; Tàng Thư Các: 2 tầng 6 gian, lan can + bậc như giảng đường, `w` 18 × `d` 9; cửa hàng: 2 tầng mặt tiền mở, `w` 4–8 × `d` 6. Mái / tầng trên mờ khi ở trong (R-HUD-2). Bản mẫu `source/TienIch-kien-truc.dc.html` |
-| `buildings[]` trường phụ | `"trim": "#2b5446"` · `"pillarColor": "#2f6f73"` · `"sign": "筆"` · `"goods": "but"` | `trim` bờ nóc + viền mép mái, `pillarColor` màu cột (Tàng Thư Các: lục); cửa hàng: `sign` một chữ Hán trên cờ dọc, `goods` but · vai · bua · thuoc · thung |
+| `buildings[]` trường phụ | `"trim": "#2b5446"` · `"pillarColor": "#2f6f73"` · `"sign": "Bút"` · `"goods": "but"` | `trim` bờ nóc + viền mép mái, `pillarColor` màu cột (Tàng Thư Các: lục); cửa hàng: `sign` chữ Việt ngắn trên cờ dọc (viết hoa xếp dọc), `goods` but · vai · bua · thuoc · thung |
 | `buildings[].zone` | `{ "id": "lop-hsk3", "front": 3, "r": 1.8 }` | nhà giảng đường có `zone` mà `ZONE_CONTENT` cho nội thất → **nhà vào được** (cửa giữa, nội thất, mái mờ; vùng học trong nhà, `front` / `r` không tác dụng) |
 | `buildingStyle` | `stone` · `water` · `path` · `bronze` · `herb` · `smoke` · `beamBlue` · `gold` · `timber` · `cloth` (ô giấy dầu) | màu chung (xà lam, vàng kim, gỗ sẫm) |
 | `buildingStyle.heightScale` | `1.6` | hệ số chiều cao kiến trúc (nền, cột, tường, cửa, mái, tầng tháp, cổng); thứ cỡ người (bậc — thêm bậc, lan can, biển, đèn, đồ đạc) giữ. Mặc định 1 |
-| `gates` | `{ "id": "son-mon", "x": 0, "z": 45, "width": 6, "title": "Thanh Vân Tông", "hanTitle": "文淵宗", "roofColor": "#3e6b5a" }` | cổng sơn môn 3 gian 4 trụ (gian giữa = `width`, gian bên 3,5 m); va chạm chỉ trụ |
+| `gates` | `{ "id": "son-mon", "x": 0, "z": 45, "width": 6, "title": "Thanh Vân Tông", "roofColor": "#3e6b5a" }` | cổng sơn môn 3 gian 4 trụ (gian giữa = `width`, gian bên 3,5 m); va chạm chỉ trụ |
 | `water` | `{ "x": -45, "z": 10, "r": 4 }` · `{ "x": 52, "z": -8, "w": 6, "d": 4 }` | ao tròn / chữ nhật, không đi xuống được |
 | `props` | `{ "kind": "lo-dan", "x": -41, "z": -27, "scale": 1 }` | luong-thuoc · lo-dan (khói) · da-thai-ho · den-da · dinh-dong (khói hương) · ban-tra (bàn trà + 4 đôn) · sap-o (sạp ô giấy) · co (cột cờ 9 m, `text` một chữ Hán, phấp phới) · bang (bảng vinh danh, `text` = tiêu đề) |
-| `site` | `{ "name": "Văn Uyên Tông", "han": "文淵宗", "areas": [{ "name": "Diễn Võ Trường", "han": "演武場", "from": [27, -15], "to": [60, 15] }] }` | chip HUD (R-HUD-1) + thẻ tên khu (R-HUD-3) + màn tải; chữ Hán mới tự được cắt font khi build |
+| `site` | `{ "name": "Văn Uyên Tông", "areas": [{ "name": "Diễn Võ Trường", "from": [27, -15], "to": [60, 15] }] }` | chip HUD (R-HUD-1) + thẻ tên khu (R-HUD-3) + màn tải — chỉ `name` tiếng Việt hiển thị; `han` (nếu còn) là dữ liệu, không hiện (R-HUD-4) |
 | `player.start` | `[0, 80]` | điểm xuất phát (bố cục) |
-| `teleport` | `{ "enabled": true, "center": [44, 0], "radius": 13, "ringRadius": 4 }` | vòng trận truyền tống (R-HANH-2): tông môn = sân đá ∅ `2 × radius` + vòng giữa sân; vùng: `"radius": 0` = vòng trên bệ đá. `player.start` phải ngoài vòng (≥ 0,8 × ringRadius + 1 m). `colors`. Canvas 3D `?nap=0..1` xem hiệu ứng nạp |
+| `teleport` | `{ "enabled": true, "center": [44, 0], "radius": 13, "ringRadius": 4 }` | vòng trận truyền tống (R-HANH-2): tông môn = sân đá ∅ `2 × radius` + vòng giữa sân; vùng: `"radius": 0` = vòng trên bệ đá. `player.start` phải ngoài vòng (≥ 0,8 × ringRadius + 1 m). `colors`; `text` rỗng = khắc hoa văn, có thì tên Việt ≤ 14 ký tự (không chữ Hán — R-HUD-4). Canvas 3D `?nap=0..1` xem hiệu ứng nạp |
 | `steles` | `{ "x": -2.9, "z": 31.4, "rotY": 77, "radical": "thuy" }` | bia bộ thủ (R-HANH-3, Rừng trúc): mặt khắc nhìn +z khi `rotY` 0 (độ, tuỳ ý); `radical` = mã trong `web/src/zones/radicals.ts` (50 bộ, không trùng). Màu `stele` (đá, chữ, viền vàng). Canvas 3D `?hoc=n` = n bộ đầu đã học |
 | `trees.groves[].kind: "truc-mao"` | — | trúc mao 12–18 m, 4 thân / khóm, đung đưa; màu `trees.mao` (thân, thân già, lá). ≈ 60 tam giác / thân — giữ ≤ 1 500 thân thấy được |
 | `buildings[].kind: "dinh"` | `{ "kind": "dinh", "sides": 6, "w": 5, "d": 5, "roofColor": "#56635b" }` | đình mái chóp không tường (đi vào được, chỉ chân cột chặn); `sides` 4 / 6 |
@@ -35,14 +37,14 @@ Ví dụ: đủ 6 khu phẳng `docs/phieu_thiet_ke/2026-11-11-tong-mon-dot-1-mau
 | `boats` | `{ "path": [[-24, -8.4], [24, -8.4]], "speed": 1.1 }` | thuyền ô bồng trôi qua lại dọc đường (đi được dưới lỗ cầu vòm), không va chạm; `canopy` màu mui |
 | `props` vùng | `hac-dong` · `rua-dong` · `lac-da` (cúi gặm) · `hang` (vách + cửa hang + bích hoạ, rộng 8,8 m) | có va chạm |
 | `wallSegments[].follow` | `true` | tường gạch bám địa hình (khúc 2 m, răng cưa) — Trường Thành; không cần bục phẳng |
-| cổng tường `kind: "thanh"` | `{ "side": "nam", "at": 0, "width": 6, "kind": "thanh", "signs": { "nam": "午門" } }` | cổng thành: cửa vòm, cánh son đinh vàng, lầu cổng hai mái (tường vôi `voi`) |
+| cổng tường `kind: "thanh"` | `{ "side": "nam", "at": 0, "width": 6, "kind": "thanh", "signs": { "nam": "Ngọ Môn" } }` | cổng thành: cửa vòm, cánh son đinh vàng, lầu cổng hai mái (tường vôi `voi`) |
 | `channels` (Rừng trúc) | `{ "points": [[13.5, -11], [10, -9], [8, -6.5]], "width": 0.6, "cups": 9, "speed": 0.4 }` | mương khúc thuỷ uốn mềm, thành đá, chén sơn trôi; không va chạm |
 | props Rừng trúc | `cong-truc` · `gia-the` · `bo-truc` · `den-truc` · `da-khac` (`text`) · `ngong` · `bo-doan` | cổng trúc, giá phơi thẻ, bó trúc, đèn trúc, đá khắc chữ, ngỗng bơi, chỗ ngồi văn nhân |
 | `water[].sunk` · `open` · `shape` | `{ "x": 0, "z": -8, "w": 20, "d": 8, "sunk": 1, "open": ["bac"] }` · `{ "r": 12, "shape": "trang", "rotY": 180 }` | kênh có kè (đáy kênh = bục `y` −1, `blend` 0,05, lùi vào 1 m; ô lưới 1 m) · cạnh không kè chỗ kênh nối · hồ lưỡi liềm |
 | `galleries` (Giang Nam) | `{ "from": [-28, -2.5], "to": [-4, -2.5], "waterSide": -1 }` | hiên lang bồng: cột, mái một dốc, ghế tựa, đèn lồng; có va chạm |
 | `boats[].moored` · `cargo` · `bridges[].arch: "vuong"` · `sunk` | — | thuyền neo, thuyền chở hàng (1 draw call / thuyền) · cầu đá lỗ vuông · nước dưới cầu thấp hơn |
 | props Giang Nam | `ben-nuoc` · `gian-den` · `vo-ruou` · `chau-sen` · `sao-ao` · `meo` · `cho` | bậc xuống nước (kè 1 m), giàn đèn đố, vò rượu, chậu sen, sào phơi, mèo, chó |
-| Bồng Lai | cây `dao` (`trees.peach`) · cầu `tau` (một đầu hẫng) · `mirages` · props `phap-bao` (`text` 葫扇板笛荷籃劍鼓) · `lau-thuyen` · `cu-ngao` · `hac` · `huou` · `props[].y` (độ cao tuyệt đối) | vực giữa đảo: `peaks` `h` âm |
+| Bồng Lai | cây `dao` (`trees.peach`) · cầu `tau` (một đầu hẫng) · `mirages` · props `phap-bao` (`text` 葫扇板笛荷籃劍鼓 — chỉ là mã chọn hình, không vẽ chữ) · `lau-thuyen` · `cu-ngao` · `hac` · `huou` · `props[].y` (độ cao tuyệt đối) | vực giữa đảo: `peaks` `h` âm |
 | Trường Thành | `ramparts` (mặt tường đi được + mã đạo, R-VA-1) · cây `bui` (`trees.autumn`) · `walls.brickSat` · props `dich-lau` · `quan-thanh` · `phong-hoa` · `leu` · `soai-truong` · `lua-trai` · `ngua` · `tho-bich` | `{ "from": [-30, -10], "to": [-7, -10], "height": 6, "outSide": -1, "ramps": [{ "at": -12, "dir": -1 }] }` |
 | Tử Cấm Thành | `terrain.plateaus[].rail` (lan can đá theo mép bục, chừa bậc) · props `ngu-lo` · `ngo-mon` · `su-tu-dong` · `khao-an` · `gia-sach` | Tam Đài: 3 bục lồng `blend` 1, bục cao liệt kê trước |
 | Con đường tơ lụa | `terrain.dunes` (cồn sống sắc) · `caravans` (đoàn lạc đà) · `walls.style: "dat"` (đất nện) · props `vach-hang` · `lau-vach` · `nha-dat` · `leu-vai` · `lau-say` · `cong-quan` · `phong-hoa-dat` | `{ "x": 52, "z": -10, "len": 56, "h": 16, "rotY": 90, "width": 44 }` |

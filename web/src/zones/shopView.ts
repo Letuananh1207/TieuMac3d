@@ -78,9 +78,8 @@ export const POOR_HINT: readonly [string, boolean][] = [
 export const ALL_BOUGHT: readonly [string, string] = ['Đã có đủ 13 món.', ' Văn tiền để dành cho đồ mới sắp về (đồ mặc, thức ăn linh thú).'];
 
 export interface ConfirmView {
-  /** "Mua {item} {chữ} với {n} Văn tiền?" (`shopConfirm`) tách quanh chữ Hán */
+  /** "Mua {item} với {n} Văn tiền?" (`shopConfirm`) */
   before: string;
-  han: string;
   after: string;
   /** `shopConfirmSub` */
   sub: string;
@@ -94,7 +93,6 @@ export function confirmView(item: DecorItem, balance: number): ConfirmView {
   const price = formatCoins(item.price);
   return {
     before: `Mua ${item.name}`,
-    han: item.han,
     after: `với ${price} Văn tiền?`,
     sub: `Đặt ở ô ${SLOT_NAME[item.slot]} · mua một lần, đặt được nhiều ô`,
     rows: [
@@ -107,6 +105,6 @@ export function confirmView(item: DecorItem, balance: number): ConfirmView {
 }
 
 /** Tấm "Đã mua" 3 s (`shopBought`, `shopBoughtSub`) — không tự đưa về nhà. */
-export function boughtView(item: DecorItem): { title: string; han: string; sub: string } {
-  return { title: `Đã mua ${item.name}`, han: item.han, sub: `Về nhà để đặt — chạm ô ${SLOT_NAME[item.slot]} khi trang trí.` };
+export function boughtView(item: DecorItem): { title: string; sub: string } {
+  return { title: `Đã mua ${item.name}`, sub: `Về nhà để đặt — chạm ô ${SLOT_NAME[item.slot]} khi trang trí.` };
 }

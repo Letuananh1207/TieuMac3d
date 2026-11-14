@@ -44,6 +44,11 @@ export function drawSign(g: CanvasRenderingContext2D, w: number, h: number, text
   }
 }
 
+/** Bề ngang chữ tính theo ô chữ Hán: chữ Hán 1, chữ cái / dấu 0,5, khoảng trắng 0,3 (đo bề rộng tấm khắc). */
+export function textUnits(text: string): number {
+  return [...text].reduce((n, ch) => n + (ch === ' ' ? 0.3 : (ch.codePointAt(0) ?? 0) >= 0x3400 ? 1 : 0.5), 0);
+}
+
 /** Biển đá khắc trên cổng trăng (門額): nền đá `stone`, viền khắc chìm, chữ khắc màu mực. */
 export function drawStoneSign(g: CanvasRenderingContext2D, w: number, h: number, text: string, stone: string): void {
   g.fillStyle = stone;
@@ -54,11 +59,15 @@ export function drawStoneSign(g: CanvasRenderingContext2D, w: number, h: number,
   g.fillStyle = '#2f3236';
   g.textAlign = 'center';
   g.textBaseline = 'middle';
-  g.font = `700 ${Math.round(h * 0.62)}px ${SIGN_FONT}`;
+  // chữ dài (câu chữ Việt) → thu cỡ chữ tới 70 % trước, còn dài mới ép hẹp (maxWidth)
+  const size = h * 0.62;
+  g.font = `700 ${Math.round(size)}px ${SIGN_FONT}`;
+  const k = Math.max(0.7, Math.min(1, (w - 40) / g.measureText(text).width));
+  if (k < 1) g.font = `700 ${Math.round(size * k)}px ${SIGN_FONT}`;
   g.fillText(text, w / 2, h / 2 + 3, w - 40);
 }
 
-/** Cờ dọc (幌子): vải ngà viền son, một chữ Hán lớn giữa, tua dưới. Khung dọc (vd. 160 × 456). */
+/** Cờ dọc (幌子): vải ngà viền son, chữ Việt viết hoa xếp dọc (khoảng trắng = một ô trống), tua dưới. Khung dọc (vd. 160 × 456). */
 export function drawBanner(g: CanvasRenderingContext2D, w: number, h: number, text: string): void {
   g.fillStyle = '#efe6d2';
   g.fillRect(0, 0, w, h);
@@ -68,7 +77,7 @@ export function drawBanner(g: CanvasRenderingContext2D, w: number, h: number, te
   g.fillStyle = '#2f3236';
   g.textAlign = 'center';
   g.textBaseline = 'middle';
-  const letters = [...text].filter((ch) => ch !== ' ');
+  const letters = [...text.trim()];
   const han = letters.some((ch) => ch.codePointAt(0)! >= 0x3400);
   if (han || letters.length < 2) {
     g.font = `700 ${Math.round(w * 0.62)}px ${SIGN_FONT}`;
@@ -79,14 +88,14 @@ export function drawBanner(g: CanvasRenderingContext2D, w: number, h: number, te
   const size = Math.min(w * 0.6, (h * 0.78) / letters.length);
   g.font = `700 ${Math.round(size)}px ${SIGN_FONT}`;
   const top = h * 0.42 - ((letters.length - 1) * size * 1.05) / 2;
-  letters.forEach((ch, i) => g.fillText(ch.toUpperCase(), w / 2, top + i * size * 1.05, w - 24));
+  letters.forEach((ch, i) => ch !== ' ' && g.fillText(ch.toUpperCase(), w / 2, top + i * size * 1.05, w - 24));
 }
 
 /** Bảng vinh danh: giấy ngà, dòng tiêu đề + các dòng kẻ (tên người học điền sau — chờ thiết kế). */
-/** 12 giờ (thời thần) khắc quanh mặt nhật quỹ, 子 trên cùng (nửa đêm) → 午 dưới cùng (chính ngọ). */
-export const SUNDIAL_HOURS = '子丑寅卯辰巳午未申酉戌亥';
+/** 12 giờ (thời thần) khắc quanh mặt nhật quỹ bằng tên Việt (R-HUD-4), Tý trên cùng (nửa đêm) → Ngọ dưới cùng (chính ngọ). */
+export const SUNDIAL_HOURS: readonly string[] = ['Tý', 'Sửu', 'Dần', 'Mão', 'Thìn', 'Tỵ', 'Ngọ', 'Mùi', 'Thân', 'Dậu', 'Tuất', 'Hợi'];
 
-/** Mặt nhật quỹ 日晷 (ô vuông, vẽ đĩa tròn): nền đá [face], vòng chỉ + vạch giờ + 12 chữ thời thần mực [ink]. */
+/** Mặt nhật quỹ (ô vuông, vẽ đĩa tròn): nền đá [face], vòng chỉ + vạch giờ + 12 tên giờ mực [ink]. */
 export function drawSundial(g: CanvasRenderingContext2D, w: number, h: number, face: string, ink: string): void {
   const cx = w / 2;
   const cy = h / 2;
@@ -104,8 +113,8 @@ export function drawSundial(g: CanvasRenderingContext2D, w: number, h: number, f
   g.fillStyle = ink;
   g.textAlign = 'center';
   g.textBaseline = 'middle';
-  g.font = `700 ${Math.round(r * 0.22)}px ${SIGN_FONT}`;
-  [...SUNDIAL_HOURS].forEach((ch, i) => {
+  g.font = `700 ${Math.round(r * 0.12)}px ${SIGN_FONT}`;
+  SUNDIAL_HOURS.forEach((ch, i) => {
     const a = (i / 12) * Math.PI * 2; // 0 = trên cùng, theo chiều kim đồng hồ
     // vạch ranh giới giữa hai giờ
     const b = a + Math.PI / 12;

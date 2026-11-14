@@ -1,5 +1,5 @@
 /**
- * Nhà của ta (我家): danh mục đồ trang trí + luật đặt / thay / gỡ vào ô (R-NHA-2, R-NHA-4) + làm sạch nhà đã lưu
+ * Nhà của ta: danh mục đồ trang trí + luật đặt / thay / gỡ vào ô (R-NHA-2, R-NHA-4) + làm sạch nhà đã lưu
  * (R-NHA-3) + giá ở Tạp hoá (R-TIEN-4 — **một nguồn giá**, Flutter nhận qua `openShop`; luật mua ở Dart `wallet.dart`).
  * Thuần dữ liệu — không three, không DOM. Vị trí ô ở đặc tả cảnh (`decorSlots`, `scene/spec.ts`); lưu ở
  * Flutter (`getHome` / `setDecor`, docs/bridge.md).
@@ -17,65 +17,33 @@ export interface DecorSlot {
 export interface DecorItem {
   /** mã ASCII — Flutter lưu mã này; không đổi mã vật đã phát hành */
   id: string;
-  /** tên tiếng Việt trên thẻ danh mục */
+  /** tên tiếng Việt trên thẻ danh mục (không kèm chữ Hán — R-HUD-4) */
   name: string;
-  /** một chữ Hán trên thẻ */
-  han: string;
   /** loại ô nhận vật này */
   slot: DecorSlotKind;
   /** vật to chặn người đi (R-NHA-2) */
   blocks: boolean;
   /** giá ở Tạp hoá, Văn tiền (R-TIEN-4) */
   price: number;
-  /** giá viết số chữ Hán, vd. "一百六十文" (thẻ Tạp hoá) */
-  priceHan: string;
 }
 
-const DIGITS = '零一二三四五六七八九';
-
-/** Số chữ Hán của giá + 文 (0 < n < 10 000): 30 → 三十文, 160 → 一百六十文, 105 → 一百零五文, 15 → 十五文. */
-export function hanPrice(n: number): string {
-  const units: [number, string][] = [[1000, '千'], [100, '百'], [10, '十'], [1, '']];
-  let out = '';
-  let zero = false;
-  for (const [u, name] of units) {
-    const d = Math.floor(n / u) % 10;
-    if (d === 0) {
-      if (out) zero = true;
-      continue;
-    }
-    if (zero) out += '零';
-    zero = false;
-    out += d === 1 && u === 10 && !out ? name : DIGITS[d] + name;
-  }
-  return out + '文';
-}
-
-const item = (id: string, name: string, han: string, slot: DecorSlotKind, price: number, blocks = false): DecorItem => ({
-  id,
-  name,
-  han,
-  slot,
-  blocks,
-  price,
-  priceHan: hanPrice(price),
-});
+const item = (id: string, name: string, slot: DecorSlotKind, price: number, blocks = false): DecorItem => ({ id, name, slot, blocks, price });
 
 /** Danh mục 13 vật theo thứ tự hiện trên bảng (R-NHA-4) + giá Tạp hoá (R-TIEN-4, thiết kế 2026-11-14.12). */
 export const DECOR_ITEMS: readonly DecorItem[] = [
-  item('truc-canh', 'Trúc cảnh', '竹', 'vuon', 30),
-  item('mai', 'Mai', '梅', 'vuon', 60),
-  item('tung', 'Tùng', '松', 'vuon', 80),
-  item('da-thai-ho', 'Đá Thái Hồ', '石', 'vuon', 160, true),
-  item('ao-sen', 'Ao sen', '蓮', 'vuon', 200, true),
-  item('den-long', 'Đèn lồng', '燈', 'san', 30),
-  item('ban-tra', 'Bàn trà', '茶', 'san', 100, true),
-  item('chau-lan', 'Chậu lan', '蘭', 'san', 50),
-  item('lu-huong', 'Lư hương', '爐', 'san', 70),
-  item('tranh-chu', 'Tranh chữ', '書', 'trong', 40),
-  item('ke-sach', 'Kệ sách', '架', 'trong', 120, true),
-  item('an-doc', 'Án đọc', '案', 'trong', 90),
-  item('binh-phong', 'Bình phong', '屏', 'trong', 150, true),
+  item('truc-canh', 'Trúc cảnh', 'vuon', 30),
+  item('mai', 'Mai', 'vuon', 60),
+  item('tung', 'Tùng', 'vuon', 80),
+  item('da-thai-ho', 'Đá Thái Hồ', 'vuon', 160, true),
+  item('ao-sen', 'Ao sen', 'vuon', 200, true),
+  item('den-long', 'Đèn lồng', 'san', 30),
+  item('ban-tra', 'Bàn trà', 'san', 100, true),
+  item('chau-lan', 'Chậu lan', 'san', 50),
+  item('lu-huong', 'Lư hương', 'san', 70),
+  item('tranh-chu', 'Tranh chữ', 'trong', 40),
+  item('ke-sach', 'Kệ sách', 'trong', 120, true),
+  item('an-doc', 'Án đọc', 'trong', 90),
+  item('binh-phong', 'Bình phong', 'trong', 150, true),
 ];
 
 /** Vật sở hữu sẵn khi mới cài app (R-NHA-4) — trùng `starterDecor` ở Dart `wallet.dart`. */

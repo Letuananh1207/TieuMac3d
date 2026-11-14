@@ -4,11 +4,11 @@
  */
 import { catalogForSlot, placeDecor, type DecorItem, type DecorSlot, type DecorSlotKind, type HomeState } from './decor';
 
-/** Tên loại ô trên viên nhắc + đầu bảng (chuỗi `decorSlot*`); chữ Hán: 園 theo thiết kế, 院 / 房 theo tên khu cảnh. */
-export const SLOT_LABEL: Readonly<Record<DecorSlotKind, { name: string; han: string }>> = {
-  vuon: { name: 'Ô vườn', han: '園' },
-  san: { name: 'Ô sân', han: '院' },
-  trong: { name: 'Ô trong nhà', han: '房' },
+/** Tên loại ô trên viên nhắc + đầu bảng (chuỗi `decorSlot*`) — chỉ tiếng Việt (R-HUD-4). */
+export const SLOT_LABEL: Readonly<Record<DecorSlotKind, { name: string }>> = {
+  vuon: { name: 'Ô vườn' },
+  san: { name: 'Ô sân' },
+  trong: { name: 'Ô trong nhà' },
 };
 
 /** Trạng thái thẻ: đang đặt ở ô này · đã có · chưa có (khoá — chỉ dẫn Tạp hoá). */

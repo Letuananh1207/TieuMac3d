@@ -95,7 +95,7 @@
   "player": { "start": [-5, 0.5] },
   "npcs": [],
   "camera": { "fov": 55, "minDist": 3, "maxDist": 20, "near": { "dist": 4.2, "pitch": 0.32 }, "far": { "dist": 16, "pitch": 0.72 } },
-  "teleport": { "enabled": true, "center": [-10, -1.5], "radius": 0, "ringRadius": 4, "text": "我家" },
+  "teleport": { "enabled": true, "center": [-10, -1.5], "radius": 0, "ringRadius": 4 },
   "lessons": { "radicals": false },
   "decorSlots": [
     { "id": "trong-1", "kind": "trong", "x": -3.2, "z": -9.8 },

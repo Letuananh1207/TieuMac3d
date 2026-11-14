@@ -105,7 +105,6 @@ button:focus-visible{outline:2px solid var(--jade);outline-offset:2px}
 #loading svg{position:absolute;left:0;bottom:0;width:100%;height:300px}
 #loading .mt-ngang{display:none}
 #loading main{position:absolute;left:0;right:0;top:calc(var(--sa-top) + 223px);display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}
-#loading .han{font-family:var(--han);font-weight:700;font-size:56px;line-height:1.05;letter-spacing:.16em;padding-left:.16em;color:var(--jade)}
 #loading .rule{width:180px}
 #loading h1{margin:0;font-family:var(--display);font-weight:700;font-size:24px}
 #loading .progress{margin-top:48px;display:flex;flex-direction:column;align-items:center;gap:10px}
@@ -131,7 +130,7 @@ button:focus-visible{outline:2px solid var(--jade);outline-offset:2px}
 .dl-eyebrow{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;text-align:center}
 .dl-card{position:relative;padding:20px 20px 18px;background:rgba(244,247,246,.86);border:1px solid var(--frost-outline);border-radius:16px;box-shadow:0 12px 32px rgba(36,50,58,.22);display:flex;flex-direction:column;gap:16px}
 .dl-title{display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center}
-.dl-han{font-family:var(--han);font-weight:700;font-size:40px;line-height:1.1;color:var(--jade);letter-spacing:.08em}
+.dl-head{font-family:var(--display);font-weight:700;font-size:28px;line-height:1.15;color:var(--jade)}
 .dl-date{font-size:13px;font-weight:700}
 .dl-rule{display:flex;align-items:center;gap:8px}
 .dl-rule span{flex:1;height:1px;background:rgba(36,50,58,.2)}
@@ -172,7 +171,7 @@ button:focus-visible{outline:2px solid var(--jade);outline-offset:2px}
 .dl-day .lbl.now{font-weight:700;color:var(--jade)}
 .dl-foot{font-size:12px;line-height:1.45}
 .dl-seal{position:absolute;right:16px;top:16px;width:62px;height:62px;box-sizing:border-box;border:3px solid var(--lacquer);border-radius:10px;color:var(--lacquer);transform:rotate(-8deg);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
-.dl-seal .h{font-family:var(--han);font-weight:700;font-size:30px}
+.dl-seal .h{font-family:var(--display);font-weight:700;font-size:17px}
 .dl-seal .s{font-size:9px;font-weight:700}
 #dailyClose{flex:none;height:52px;font-size:15px;border-radius:12px;border:1px solid rgba(36,50,58,.3);background:rgba(255,255,255,.55);display:flex;align-items:center;justify-content:center;gap:8px}
 /* ngang: một thẻ hai cột — trái 2 việc, vạch dọc, phải 250 (tiêu đề + chuỗi); nút "Đóng" bên phải */
@@ -220,7 +219,7 @@ button:focus-visible{outline:2px solid var(--jade);outline-offset:2px}
 #talkBtn:active,#seatBtn:active,#boardBtn:active,#guideBtn:active,#shopBtn:active{background:var(--jade-press)}
 #talk .tip,#seat .tip,#board .tip,#guide .tip,#shop .tip{width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:8px solid var(--jade)}
 #talk .who,#board .who,#guide .who,#shop .who{margin-top:4px;height:24px;box-sizing:border-box;padding:0 10px;display:flex;align-items:center;gap:6px;background:rgba(244,247,246,.86);border:1px solid var(--frost-line);outline:1px solid var(--frost-outline);border-radius:999px;font-size:12px;font-weight:700;white-space:nowrap;pointer-events:none}
-#talk .han,#board .han,#guide .han,#shop .han,#dialog .han{font-family:var(--han);font-weight:700}
+#talk .han,#dialog .han{font-family:var(--han);font-weight:700}
 /* thẻ "Đọc sách": ngay trên cụm nút hành động (cao 170 + cách 12) — 2026-11-13.28 */
 #readBook{position:fixed;z-index:5;right:16px;bottom:calc(var(--sa-bottom) + 198px);height:52px;box-sizing:border-box;padding:0 14px 0 8px;font:inherit;color:var(--slate);border-radius:14px;background:rgba(244,247,246,.88);border:1px solid var(--frost-line);outline:1px solid var(--frost-outline);box-shadow:0 4px 14px rgba(36,50,58,.18);display:flex;align-items:center;gap:10px}
 #readBook[hidden]{display:none}
@@ -296,7 +295,6 @@ body.map-open #joy,body.map-open #joyGhost,body.map-open .learn{display:none}
   #loading .mt-doc{display:none}
   #loading .mt-ngang{display:block}
   #loading main{top:calc(var(--sa-top) + 70px);gap:10px}
-  #loading .han{font-size:48px}
   #loading .rule{width:170px}
   #loading h1{font-size:22px}
   #loading .progress{margin-top:22px}
@@ -316,7 +314,6 @@ body.map-open #joy,body.map-open #joyGhost,body.map-open .learn{display:none}
 .gp-titles{display:flex;flex-direction:column;align-items:center;gap:4px}
 .gp-eyebrow{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
 .gp-name{display:flex;align-items:baseline;gap:10px}
-.gp-han{font-family:var(--han);font-weight:700;font-size:36px;line-height:1.15;color:var(--jade);letter-spacing:.08em}
 .gp-vi{font-family:var(--display);font-weight:700;font-size:20px}
 .gp-intro{font-size:14px;line-height:1.45}
 .gp-intro-row,.gp-head .gp-close-top{display:none}
@@ -376,7 +373,6 @@ body.map-open #joy,body.map-open #joyGhost,body.map-open .learn{display:none}
   .gp-head{padding:12px 16px 10px;flex-direction:row;align-items:center;gap:16px;text-align:left}
   .gp-titles{flex:1;min-width:0;align-items:flex-start;gap:2px}
   .gp-name{flex-wrap:wrap}
-  .gp-han{font-size:28px}
   .gp-vi{font-size:18px}
   .gp-intro{display:none}
   .gp-intro.gp-intro-row{display:inline;font-size:13px}

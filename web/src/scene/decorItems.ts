@@ -257,7 +257,7 @@ function luHuong(g: THREE.Group, c: Colors): void {
 /* ---------- Trong nhà ---------- */
 
 let scrollTex: THREE.CanvasTexture | null | undefined;
-/** Mặt tranh chữ 書 (vẽ một lần, dùng chung); không có DOM (test) → không chữ. */
+/** Mặt tranh chữ "Học" (chữ Việt — R-HUD-4; vẽ một lần, dùng chung); không có DOM (test) → không chữ. */
 function scrollTexture(): THREE.CanvasTexture | null {
   if (scrollTex === undefined) {
     scrollTex = typeof document === 'undefined'
@@ -266,10 +266,10 @@ function scrollTexture(): THREE.CanvasTexture | null {
           ctx.fillStyle = PAPER;
           ctx.fillRect(0, 0, w, h);
           ctx.fillStyle = INK;
-          ctx.font = '700 96px "Han Serif", serif';
+          ctx.font = '700 52px Lora, Georgia, serif';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
-          ctx.fillText('書', w / 2, h * 0.42);
+          ctx.fillText('Học', w / 2, h * 0.42, w - 16);
           ctx.fillStyle = '#a8322a'; // ấn son
           ctx.fillRect(w * 0.62, h * 0.74, 18, 18);
         });

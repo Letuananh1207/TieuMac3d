@@ -399,7 +399,7 @@
         "width": 2.4,
         "kind": "trang",
         "signs": {
-          "nam": "小園"
+          "nam": "Tiểu Viên"
         }
       }
     },
@@ -539,7 +539,7 @@
       "title": "Hiệu bút",
       "roofColor": "#3b3f44",
       "kind": "cua-hang",
-      "sign": "筆",
+      "sign": "Bút",
       "goods": "but"
     },
     {
@@ -552,7 +552,7 @@
       "title": "Hiệu lụa",
       "roofColor": "#3b3f44",
       "kind": "cua-hang",
-      "sign": "綢",
+      "sign": "Lụa",
       "goods": "vai"
     },
     {
@@ -617,7 +617,6 @@
       "z": 18,
       "width": 5,
       "title": "Giang Nam",
-      "hanTitle": "江南",
       "roofColor": "#3b3f44"
     }
   ],

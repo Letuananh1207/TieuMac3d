@@ -10,7 +10,7 @@ import './wallet.css';
 
 const SVG = 'http://www.w3.org/2000/svg';
 
-/** Đồng xu lỗ vuông (thiết kế "Đồng xu"): ≥ 30 px khắc 文 (trên) 錢 (dưới); nhỏ hơn chỉ vành + lỗ vuông. */
+/** Đồng xu lỗ vuông (thiết kế "Đồng xu"): vành + vòng trong + lỗ vuông, không khắc chữ (R-HUD-4). */
 export function coinIcon(size: number): SVGSVGElement {
   const s = document.createElementNS(SVG, 'svg');
   s.setAttribute('viewBox', '0 0 100 100');
@@ -18,10 +18,9 @@ export function coinIcon(size: number): SVGSVGElement {
   s.setAttribute('height', String(size));
   s.setAttribute('aria-hidden', 'true');
   s.classList.add('coin');
-  const add = (tag: string, attrs: Record<string, string>, text?: string): void => {
+  const add = (tag: string, attrs: Record<string, string>): void => {
     const e = document.createElementNS(SVG, tag);
     for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
-    if (text) e.textContent = text;
     s.append(e);
   };
   add('circle', { cx: '50', cy: '50', r: '48', class: 'rim' });
@@ -29,10 +28,6 @@ export function coinIcon(size: number): SVGSVGElement {
   add('circle', { cx: '50', cy: '50', r: '38', fill: 'none', stroke: '#b88f3a', 'stroke-width': '2' });
   add('rect', { x: '38', y: '38', width: '24', height: '24', fill: '#8a6a2a' });
   add('rect', { x: '41', y: '41', width: '18', height: '18', fill: '#f4f0e6' });
-  if (size >= 30) {
-    add('text', { x: '50', y: '30', 'text-anchor': 'middle', 'font-size': '20', class: 'ink' }, '文');
-    add('text', { x: '50', y: '88', 'text-anchor': 'middle', 'font-size': '20', class: 'ink' }, '錢');
-  }
   return s;
 }
 

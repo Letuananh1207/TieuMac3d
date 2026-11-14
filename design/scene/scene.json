@@ -79,7 +79,7 @@
         "at": -6,
         "width": 6.4,
         "signs": {
-          "dong": "Sân chơi · Thư viện",
+          "dong": "Thư viện",
           "tay": "Quảng trường"
         }
       },
@@ -88,7 +88,7 @@
         "at": 4,
         "width": 6.4,
         "signs": {
-          "dong": "Khu vui chơi · 棋文苑",
+          "dong": "Khu vui chơi",
           "tay": "Quảng trường"
         }
       }
@@ -343,7 +343,7 @@
       "rotY": 90,
       "title": "Tạp hoá",
       "roofColor": "#3b3f44",
-      "sign": "雜",
+      "sign": "Tạp hoá",
       "goods": "thung"
     },
     {
@@ -366,7 +366,6 @@
       "rotY": 180,
       "width": 5,
       "title": "Xuống núi",
-      "hanTitle": "下山",
       "roofColor": "#3b3f44"
     }
   ],
@@ -483,7 +482,7 @@
       "x": 3.4,
       "z": 37.6,
       "rotY": 180,
-      "text": "歸家|Xuống núi · Về nhà"
+      "text": "Xuống núi · Về nhà"
     },
     {
       "kind": "den-da",

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { DECOR_ITEMS, NEW_HOME, STARTER_DECOR, catalogForSlot, cleanHome, decorItem, hanPrice, itemsForSlot, placeDecor, type DecorSlot, type HomeState } from './decor';
+import { DECOR_ITEMS, NEW_HOME, STARTER_DECOR, catalogForSlot, cleanHome, decorItem, itemsForSlot, placeDecor, type DecorSlot, type HomeState } from './decor';
 
 const vuon1: DecorSlot = { id: 'vuon-1', kind: 'vuon' };
 const san2: DecorSlot = { id: 'san-2', kind: 'san' };
@@ -19,7 +19,7 @@ describe('danh mục và sở hữu (R-NHA-4)', () => {
     expect(DECOR_ITEMS).toHaveLength(13);
     expect(new Set(DECOR_ITEMS.map((i) => i.id)).size).toBe(13);
     expect(itemsForSlot(RICH, 'vuon').map((i) => i.name)).toEqual(['Trúc cảnh', 'Mai', 'Tùng', 'Đá Thái Hồ', 'Ao sen']);
-    expect(itemsForSlot(RICH, 'san').map((i) => i.han).join('')).toBe('燈茶蘭爐');
+    expect(itemsForSlot(RICH, 'san').map((i) => i.name)).toEqual(['Đèn lồng', 'Bàn trà', 'Chậu lan', 'Lư hương']);
     expect(itemsForSlot(RICH, 'trong').map((i) => i.name)).toEqual(['Tranh chữ', 'Kệ sách', 'Án đọc', 'Bình phong']);
   });
 
@@ -65,15 +65,9 @@ describe('giá Tạp hoá (R-TIEN-4)', () => {
     });
   });
 
-  it('R-TIEN-4: số chữ Hán của giá', () => {
-    expect(hanPrice(30)).toBe('三十文');
-    expect(hanPrice(100)).toBe('一百文');
-    expect(hanPrice(120)).toBe('一百二十文');
-    expect(hanPrice(160)).toBe('一百六十文');
-    expect(hanPrice(200)).toBe('二百文');
-    expect(hanPrice(105)).toBe('一百零五文');
-    expect(hanPrice(15)).toBe('十五文');
-    expect(decorItem('ao-sen')?.priceHan).toBe('二百文');
+  it('R-HUD-4: vật trang trí chỉ có tên Việt — không chữ Hán trên thẻ, không giá viết chữ Hán', () => {
+    for (const i of DECOR_ITEMS) expect(Object.values(i).join(' '), i.id).not.toMatch(/\p{Script=Han}/u);
+    expect(decorItem('ao-sen')).toEqual({ id: 'ao-sen', name: 'Ao sen', slot: 'vuon', blocks: true, price: 200 });
   });
 });
 

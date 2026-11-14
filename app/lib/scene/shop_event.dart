@@ -22,16 +22,14 @@ enum SlotKind {
 
 /// Một vật bày bán ở Tạp hoá.
 class ShopItem {
-  const ShopItem({required this.id, required this.name, required this.han, required this.slot, required this.price, required this.priceHan});
+  const ShopItem({required this.id, required this.name, required this.slot, required this.price});
 
   final String id;
+
+  /// tên Việt (không kèm chữ Hán — R-HUD-4)
   final String name;
-  final String han;
   final SlotKind slot;
   final int price;
-
-  /// số chữ Hán của giá, vd. "一百六十文"
-  final String priceHan;
 }
 
 /// JS nhờ mở Tạp hoá (nút "Vào tiệm" — R-TIEN-6).
@@ -52,10 +50,10 @@ class OpenShopRequest {
 
 ShopItem? _item(Object? i) {
   if (i is! Map) return null;
-  final id = i['id'], name = i['name'], han = i['han'], price = i['price'], priceHan = i['priceHan'];
+  final id = i['id'], name = i['name'], price = i['price'];
   final slot = SlotKind.parse(i['slot']);
-  if (id is! String || id.isEmpty || name is! String || han is! String || price is! num || price <= 0 || slot == null) return null;
-  return ShopItem(id: id, name: name, han: han, slot: slot, price: price.toInt(), priceHan: priceHan is String ? priceHan : '');
+  if (id is! String || id.isEmpty || name is! String || price is! num || price <= 0 || slot == null) return null;
+  return ShopItem(id: id, name: name, slot: slot, price: price.toInt());
 }
 
 /// Trò + kết quả của sự kiện `earnGame`; sai dạng → `null` (luật thưởng tự trả 0 cho trò / kết quả lạ).

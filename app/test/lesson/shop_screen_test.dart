@@ -6,19 +6,19 @@ import 'package:hoc_xa_3d/scene/shop_event.dart';
 
 /// Danh mục như trang gửi (`DECOR_ITEMS` của web/src/zones/decor.ts).
 const _items = [
-  ShopItem(id: 'truc-canh', name: 'Trúc cảnh', han: '竹', slot: SlotKind.vuon, price: 30, priceHan: '三十文'),
-  ShopItem(id: 'mai', name: 'Mai', han: '梅', slot: SlotKind.vuon, price: 60, priceHan: '六十文'),
-  ShopItem(id: 'tung', name: 'Tùng', han: '松', slot: SlotKind.vuon, price: 80, priceHan: '八十文'),
-  ShopItem(id: 'da-thai-ho', name: 'Đá Thái Hồ', han: '石', slot: SlotKind.vuon, price: 160, priceHan: '一百六十文'),
-  ShopItem(id: 'ao-sen', name: 'Ao sen', han: '蓮', slot: SlotKind.vuon, price: 200, priceHan: '二百文'),
-  ShopItem(id: 'den-long', name: 'Đèn lồng', han: '燈', slot: SlotKind.san, price: 30, priceHan: '三十文'),
-  ShopItem(id: 'ban-tra', name: 'Bàn trà', han: '茶', slot: SlotKind.san, price: 100, priceHan: '一百文'),
-  ShopItem(id: 'chau-lan', name: 'Chậu lan', han: '蘭', slot: SlotKind.san, price: 50, priceHan: '五十文'),
-  ShopItem(id: 'lu-huong', name: 'Lư hương', han: '爐', slot: SlotKind.san, price: 70, priceHan: '七十文'),
-  ShopItem(id: 'tranh-chu', name: 'Tranh chữ', han: '書', slot: SlotKind.trong, price: 40, priceHan: '四十文'),
-  ShopItem(id: 'ke-sach', name: 'Kệ sách', han: '架', slot: SlotKind.trong, price: 120, priceHan: '一百二十文'),
-  ShopItem(id: 'an-doc', name: 'Án đọc', han: '案', slot: SlotKind.trong, price: 90, priceHan: '九十文'),
-  ShopItem(id: 'binh-phong', name: 'Bình phong', han: '屏', slot: SlotKind.trong, price: 150, priceHan: '一百五十文'),
+  ShopItem(id: 'truc-canh', name: 'Trúc cảnh', slot: SlotKind.vuon, price: 30),
+  ShopItem(id: 'mai', name: 'Mai', slot: SlotKind.vuon, price: 60),
+  ShopItem(id: 'tung', name: 'Tùng', slot: SlotKind.vuon, price: 80),
+  ShopItem(id: 'da-thai-ho', name: 'Đá Thái Hồ', slot: SlotKind.vuon, price: 160),
+  ShopItem(id: 'ao-sen', name: 'Ao sen', slot: SlotKind.vuon, price: 200),
+  ShopItem(id: 'den-long', name: 'Đèn lồng', slot: SlotKind.san, price: 30),
+  ShopItem(id: 'ban-tra', name: 'Bàn trà', slot: SlotKind.san, price: 100),
+  ShopItem(id: 'chau-lan', name: 'Chậu lan', slot: SlotKind.san, price: 50),
+  ShopItem(id: 'lu-huong', name: 'Lư hương', slot: SlotKind.san, price: 70),
+  ShopItem(id: 'tranh-chu', name: 'Tranh chữ', slot: SlotKind.trong, price: 40),
+  ShopItem(id: 'ke-sach', name: 'Kệ sách', slot: SlotKind.trong, price: 120),
+  ShopItem(id: 'an-doc', name: 'Án đọc', slot: SlotKind.trong, price: 90),
+  ShopItem(id: 'binh-phong', name: 'Bình phong', slot: SlotKind.trong, price: 150),
 ];
 
 void main() {

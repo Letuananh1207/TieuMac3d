@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { dailyBoardSpot, dailyBoardView, nearBoard, tasksLeft, type PropLike } from './dailyBoard';
 
-describe('Bảng nhiệm vụ 日課榜', () => {
-  const board: PropLike = { kind: 'bang', x: 5.5, z: 19.2, text: '日課榜' };
+describe('Bảng nhiệm vụ hằng ngày', () => {
+  const board: PropLike = { kind: 'bang', x: 5.5, z: 19.2, text: 'Nhiệm vụ hằng ngày' };
 
   it('R-NV-3: tìm bảng trong đặc tả; đứng cách 2 m → trong tầm, 2,5 m → ngoài tầm', () => {
     const spot = dailyBoardSpot([{ kind: 'den-da', x: 0, z: 0 }, board]);

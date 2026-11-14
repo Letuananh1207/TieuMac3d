@@ -32,6 +32,6 @@ describe('Văn tiền (docs/bridge.md)', () => {
   it('R-TIEN-4: openShop gửi đủ 13 vật với giá + số chữ Hán (một nguồn giá decor.ts)', () => {
     const items = shopPayload(DECOR_ITEMS);
     expect(items).toHaveLength(13);
-    expect(items.find((i) => i.id === 'da-thai-ho')).toEqual({ id: 'da-thai-ho', name: 'Đá Thái Hồ', han: '石', slot: 'vuon', price: 160, priceHan: '一百六十文' });
+    expect(items.find((i) => i.id === 'da-thai-ho')).toEqual({ id: 'da-thai-ho', name: 'Đá Thái Hồ', slot: 'vuon', price: 160 });
   });
 });

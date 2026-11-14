@@ -13,8 +13,8 @@ const SIGNS = [
 const plain = (t: string): string => t.replace(/\*\*/g, '');
 
 describe('Hướng dẫn Khu tự học — R-VA-5', () => {
-  it('R-VA-5: cùng tầng, dưới 2,5 m → nút trên biển "Khu tự học 自習"; xa hơn → không có', () => {
-    expect(SIGN).toMatchObject({ kind: STUDY_KIND, name: 'Khu tự học', han: '自習', npc: LIBRARIAN });
+  it('R-VA-5: cùng tầng, dưới 2,5 m → nút trên biển "Khu tự học"; xa hơn → không có', () => {
+    expect(SIGN).toMatchObject({ kind: STUDY_KIND, name: 'Khu tự học', han: '', npc: LIBRARIAN });
     expect(signInRange(SIGNS, 10, -2, 6.1)?.kind).toBe(STUDY_KIND); // cách 1,5 m
     expect(signInRange(SIGNS, 10, 0, 6.1)).toBeNull(); // cách 3,5 m
   });
@@ -25,17 +25,17 @@ describe('Hướng dẫn Khu tự học — R-VA-5', () => {
     expect(signInRange(SIGNS, -28, 4, 6.1)?.kind).toBe('co'); // biển bàn chơi không có y
   });
 
-  it('R-VA-5: bảng — đầu "Tàng Thư Các · Hướng dẫn", 自習, 4 mục theo thứ tự, lời thủ thư', () => {
+  it('R-VA-5: bảng — đầu "Tàng Thư Các · Hướng dẫn", không chữ Hán (R-HUD-4), 4 mục theo thứ tự, lời thủ thư', () => {
     const g = guideOf(STUDY_KIND)!;
     expect(g).toBe(STUDY_GUIDE);
     expect(g.label).toBe('Hướng dẫn');
     expect(g.eyebrow).toBe('Tàng Thư Các · Hướng dẫn');
-    expect(g.han).toBe('自習');
+    expect(JSON.stringify(g)).not.toMatch(/\p{Script=Han}/u);
     expect(g.name).toBe('Khu tự học');
     expect(g.figure).toBe('tu-hoc');
     expect(g.sections.map((s) => s.title)).toEqual(['Ngồi vào bồ đoàn', 'Cuộn sách ôn', 'Học bộ mới ở Rừng trúc', 'Đứng dậy']);
     expect(g.tipBy).toBe(LIBRARIAN);
-    expect(g.tipTitle).toBe('Lời thủ thư Điển Thư 典書');
+    expect(g.tipTitle).toBe('Lời thủ thư Điển Thư');
   });
 
   it('R-VA-5: bảng nói đúng luật (R-NGOI-1, R-ON-8, R-VUNG-1, R-VA-4)', () => {

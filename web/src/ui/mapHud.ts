@@ -3,9 +3,8 @@ import { el } from './dom';
 /** Bằng thời gian thẻ "sắp mở" tự ẩn (đặc tả "Bản đồ truyền tống": 3 s). */
 const CARD_MS = 3000;
 
-/** Một nơi chưa đi được (chưa có cảnh): chữ Hán + tên. */
+/** Một nơi chưa đi được (chưa có cảnh): tên Việt (R-HUD-4 — không kèm chữ Hán). */
 export interface MapPlaceName {
-  han: string;
   name: string;
 }
 
@@ -31,13 +30,9 @@ export class MapHud {
     if (!on) this.hideCard();
   }
 
-  /** Thẻ "蓬萊 Bồng Lai — sắp mở" (mapSoon). */
+  /** Thẻ "Bồng Lai — sắp mở" (mapSoon). */
   soon(n: MapPlaceName): void {
-    const han = document.createElement('span');
-    han.className = 'han';
-    han.lang = 'zh';
-    han.textContent = n.han;
-    this.title.replaceChildren(han, document.createTextNode(` ${n.name} — sắp mở`));
+    this.title.textContent = `${n.name} — sắp mở`;
     this.sub.hidden = true; // dòng "Bạn đã học N chữ" chỉ có nghĩa khi còn mốc mở vùng — đã bỏ
     this.card.hidden = false;
     clearTimeout(this.timer);

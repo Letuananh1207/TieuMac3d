@@ -970,7 +970,7 @@ export const DEFAULT_SCENE: SceneSpec = {
     radius: 13,
     ringRadius: 4,
     colors: { floor: '#b9b4a8', rim: '#8d877f', dim: '#7f8a84', lit: '#4fd1a5', spark: '#f2c45a' },
-    text: '起源',
+    text: '',
     // 0 tầng = sân / bệ phẳng (cảnh cũ không đổi)
     dais: {
       tiers: 0,

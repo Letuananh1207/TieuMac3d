@@ -166,7 +166,7 @@ function parseDaily(v: unknown): DailyBoard | null {
 
 /** Vật bày bán gửi Flutter (`openShop`, docs/bridge.md) — bỏ trường chỉ cảnh dùng (`blocks`). */
 export function shopPayload(items: readonly DecorItem[]): Record<string, unknown>[] {
-  return items.map(({ id, name, han, slot, price, priceHan }) => ({ id, name, han, slot, price, priceHan }));
+  return items.map(({ id, name, slot, price }) => ({ id, name, slot, price }));
 }
 
 /**

@@ -444,6 +444,7 @@ function checkConsistency(s: SceneSpec): string[] {
     out.push(`terrain.edge: mép vực (radius + width = ${t.edge.radius + t.edge.width}) vượt nửa vùng lưới (${t.size / 2}) — tăng size`);
   }
   out.push(...checkTeleport(s), ...checkLanterns(s), ...checkDecorSlots(s), ...checkPortals(s), ...checkLook(s.look));
+  out.push(...hanOnDisplay(s).map((h) => `${h.path}: biển / tên trong game chỉ tiếng Việt, không chữ Hán (R-HUD-4) — đang là "${h.text}"`));
   if (s.cloudSea.radius < 0) out.push('cloudSea.radius: phải ≥ 0');
   if (!(s.light.lampGlow >= 0 && s.light.lampGlow <= 1)) out.push(`light.lampGlow: 0…1 (đang ${s.light.lampGlow})`);
   if (t.enabled && t.size > 0 && t.cell > 0) out.push(...checkOnFlatGround(s));
@@ -458,16 +459,38 @@ function checkConsistency(s: SceneSpec): string[] {
   return out;
 }
 
+/** Prop mà `text` chỉ là mã chọn hình (không vẽ lên cảnh): bồn hoa tứ quân tử, pháp bảo Bát Tiên. */
+const TEXT_IS_KEY = new Set(['bon-hoa', 'phap-bao']);
+
+/**
+ * Chuỗi có chữ Hán ở chỗ hiện trong game (biển, cờ, cổng, tên nơi / khu, vòng trận, tên NPC…) — R-HUD-4: chỉ tiếng Việt.
+ * Bỏ qua: `site.han`, `site.areas[].han` (dữ liệu giữ, không hiển thị); `text` của prop là mã hình (`TEXT_IS_KEY`);
+ * `buildings[].notice` (bảng bài học — nội dung học).
+ */
+export function hanOnDisplay(s: SceneSpec): { path: string; text: string }[] {
+  const out: { path: string; text: string }[] = [];
+  const walk = (v: unknown, path: string): void => {
+    if (typeof v === 'string') {
+      if (/\p{Script=Han}/u.test(v)) out.push({ path, text: v });
+    } else if (Array.isArray(v)) v.forEach((x, i) => walk(x, `${path}[${i}]`));
+    else if (isObj(v)) for (const [k, x] of Object.entries(v)) walk(x, path ? `${path}.${k}` : k);
+  };
+  walk(s, '');
+  return out.filter(({ path }) => {
+    if (/^site(\.areas\[\d+\])?\.han$/.test(path) || /^buildings\[\d+\]\.notice/.test(path)) return false;
+    const m = /^props\[(\d+)\]\.text$/.exec(path);
+    return !(m && TEXT_IS_KEY.has(s.props[Number(m[1])].kind));
+  });
+}
+
 /** Vòng trận (R-HANH-2): nằm trong sân; chỗ xuất phát của cảnh không nằm trong vòng (phải bước vào mới truyền tống). */
 function checkTeleport(s: SceneSpec): string[] {
   const out: string[] = [];
   const tp = s.teleport;
   if (!tp.enabled) return out;
   if (tp.ringRadius <= 0) out.push('teleport.ringRadius: phải > 0');
-  const chars = [...tp.text];
-  if (chars.length < 1 || chars.length > 3 || !chars.every((c) => /\p{Script=Han}/u.test(c))) {
-    out.push(`teleport.text: 1–3 chữ Hán (đang là "${tp.text}")`);
-  }
+  // chữ khắc giữa vòng: rỗng = hoa văn; có thì tên Việt ngắn (chữ Hán bị `hanOnDisplay` bắt — R-HUD-4)
+  if ([...tp.text].length > 14) out.push(`teleport.text: tối đa 14 ký tự (đang là "${tp.text}")`);
   if (tp.radius > 0 && tp.ringRadius + 0.6 > tp.radius) out.push('teleport: vòng trận chạm viền sân (ringRadius + 0,6 > radius)');
   const d = Math.hypot(s.player.start[0] - tp.center[0], s.player.start[1] - tp.center[1]);
   if (d < ringTrigger(tp) + 1) out.push(`teleport: chỗ xuất phát (player.start) cách tâm vòng ${d.toFixed(1)} m — dời ra ngoài vòng (≥ ${ringTrigger(tp) + 1} m)`);

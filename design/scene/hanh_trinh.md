@@ -31,7 +31,7 @@ Mốc theo số chữ HSK 3.0 (HSK1 300 · HSK3 900 · HSK6 1 800 · HSK9 3 000)
 
 - Thay **Diễn Võ Trường** (khu 3, x 27…60, z −15…15 — toạ độ sau mục 2026-11-13.5), ra cổng đông Ngoại Môn là tới;
   lối vào từ phía tây.
-- Sân đá tròn ∅ ≈ 26 m, viền đá; giữa khắc phù hiệu 文淵. **6 cột trận** cao ≈ 5 m xếp cung phía đông (chừa lối tây),
+- Sân đá tròn ∅ ≈ 26 m, viền đá; giữa khắc phù hiệu hoa văn (không chữ Hán — R-HUD-4, 2026-11-14). **6 cột trận** cao ≈ 5 m xếp cung phía đông (chừa lối tây),
   mỗi cột một vùng, đỉnh có biểu tượng vùng (lá trúc · cầu vòm · đảo nổi · tháp canh · mái vàng · lạc đà).
 - Trước mỗi cột một **vòng trận** ∅ ≈ 4 m. **Đã mở**: cột đá trắng, vòng trận sáng ngọc lục + chấm vàng, hạt sáng bay.
   **Chưa mở**: cột đá xám, biểu tượng mờ, vòng tắt; tới gần hiện "Cần … chữ".

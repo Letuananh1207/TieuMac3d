@@ -7,7 +7,7 @@ import '../theme/app_colors.dart';
 import '../theme/app_text_size.dart';
 import 'screen_parts.dart';
 
-/// Mẩu giao diện của bảng nhiệm vụ 日課榜 (`daily_screen.dart`, thiết kế 2026-11-13.25).
+/// Mẩu giao diện của bảng nhiệm vụ (`daily_screen.dart`, thiết kế 2026-11-13.25).
 
 /// Một việc: vòng trạng thái 36 · tên · tiến độ bên phải · dòng phụ · (ô chữ + nút "Ôn ngay").
 class DailyTask extends StatelessWidget {
@@ -217,7 +217,7 @@ class RecordPill extends StatelessWidget {
       );
 }
 
-/// Triện son 畢 "hôm nay đã xong" — 62 × 62, xoay −8°.
+/// Triện son "Xong · hôm nay" (chỉ tiếng Việt — R-HUD-4) — 62 × 62, xoay −8°.
 class DoneSeal extends StatelessWidget {
   const DoneSeal({super.key});
 
@@ -238,8 +238,8 @@ class DoneSeal extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('畢', style: hanText.copyWith(fontSize: AppTextSize.seal, height: 1, color: AppColors.lacquer)),
-                  Text('xong', style: uiText.copyWith(fontSize: AppTextSize.sealCaption, fontWeight: FontWeight.w700, color: AppColors.lacquer)),
+                  Text('Xong', softWrap: false, style: displayText.copyWith(fontSize: AppTextSize.seal, height: 1, color: AppColors.lacquer)),
+                  Text('hôm nay', softWrap: false, style: uiText.copyWith(fontSize: AppTextSize.sealCaption, fontWeight: FontWeight.w700, color: AppColors.lacquer)),
                 ],
               ),
             ),

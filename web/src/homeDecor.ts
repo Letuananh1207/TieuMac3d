@@ -154,7 +154,6 @@ export class HomeDecor {
     this.panel.show({
       kind: s.kind,
       name: label.name,
-      han: label.han,
       sub: panelHint(this.home, s.id),
       canRemove: !!this.home.placed[s.id],
       cards: decorCards(this.home, s),

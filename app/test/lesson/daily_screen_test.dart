@@ -62,7 +62,7 @@ void main() {
     });
   }
 
-  testWidgets('R-NV-1/2: xong cả 2 → triện 畢, kỷ lục mới; không có nút "Ôn ngay"', (tester) async {
+  testWidgets('R-NV-1/2: xong cả 2 → triện "Xong" (R-HUD-4), kỷ lục mới; không có nút "Ôn ngay"', (tester) async {
     await _open(
       tester,
       const Size(390, 844),
@@ -78,6 +78,9 @@ void main() {
     );
     expect(find.bySemanticsLabel('Hôm nay đã xong'), findsOneWidget);
     expect(find.text('Kỷ lục mới'), findsOneWidget);
+    expect(find.text('Xong'), findsOneWidget); // triện chữ Việt
+    expect(find.text('Nhiệm vụ hằng ngày'), findsOneWidget); // tiêu đề chữ Việt, không 日課榜
+    expect(find.textContaining(RegExp(r'[\u4e00-\u9fff]')), findsNothing);
     expect(find.text('Ôn ngay'), findsNothing);
     expect(find.text('Đã ôn hết bộ đến hạn.'), findsOneWidget);
     await tester.tap(find.text('Đóng bảng'));

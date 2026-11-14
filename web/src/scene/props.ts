@@ -352,7 +352,7 @@ export function addProps(
         break;
       }
       case 'co':
-        updaters.push(banner(g, style, p.text ?? '茶', BANNER_POLE, p.x + p.z));
+        updaters.push(banner(g, style, p.text ?? 'Trà', BANNER_POLE, p.x + p.z));
         colliders.addCircle(p.x, p.z, 0.25 * s);
         break;
       case 'bang': {

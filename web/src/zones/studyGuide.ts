@@ -1,5 +1,5 @@
 /**
- * Hướng dẫn **Khu tự học 自習** tầng 2 Tàng Thư Các (R-VA-5, thiết kế 2026-11-14.17): đứng gần biển gỗ "Khu tự học"
+ * Hướng dẫn **Khu tự học** tầng 2 Tàng Thư Các (R-VA-5, thiết kế 2026-11-14.17): đứng gần biển gỗ "Khu tự học"
  * → nút nổi "Hướng dẫn" → bảng, cùng khung bảng cách chơi (`gameGuides.ts`, `ui/guidePanel.ts`). Chữ theo
  * `design/l10n/vi.arb` `studyGuide*`, nói đúng R-VA-4, R-ON-8, R-NGOI-1, R-VUNG-1. Thuần, không three, không DOM.
  */
@@ -12,7 +12,6 @@ export const STUDY_KIND = 'tu-hoc';
 export const STUDY_GUIDE: GameGuide = {
   label: 'Hướng dẫn',
   eyebrow: 'Tàng Thư Các · Hướng dẫn',
-  han: '自習',
   name: 'Khu tự học',
   intro: 'Ngồi bồ đoàn, mở cuộn sách ôn bộ thủ đã học.',
   figure: 'tu-hoc',
@@ -36,7 +35,7 @@ export const STUDY_GUIDE: GameGuide = {
     },
   ],
   tipBy: LIBRARIAN,
-  tipTitle: 'Lời thủ thư Điển Thư 典書',
+  tipTitle: 'Lời thủ thư Điển Thư',
   tip: 'Mỗi ngày ôn một ít, chữ sẽ ở lại lâu. Số son trên nút **Ngồi ôn** là số bộ đến hạn hôm nay.',
   none: {
     icon: 'ban-do',
@@ -45,9 +44,9 @@ export const STUDY_GUIDE: GameGuide = {
   },
 };
 
-/** Biển "Khu tự học" (chân biển, toạ độ cảnh) → biển có nút nổi; chip dưới nút ghi "Khu tự học 自習" (R-VA-5). */
+/** Biển "Khu tự học" (chân biển, toạ độ cảnh) → biển có nút nổi; chip dưới nút ghi "Khu tự học" (R-VA-5, R-HUD-4). */
 export function studySign(at: { x: number; y: number; z: number }): GameSign {
-  return { kind: STUDY_KIND, npc: LIBRARIAN, x: at.x, z: at.z, y: at.y, han: STUDY_GUIDE.han, name: STUDY_GUIDE.name };
+  return { kind: STUDY_KIND, npc: LIBRARIAN, x: at.x, z: at.z, y: at.y, han: '', name: STUDY_GUIDE.name };
 }
 
 /** Bảng của một biển: khu tự học hay cách chơi trò [kind]; chưa có bảng → `null`. */

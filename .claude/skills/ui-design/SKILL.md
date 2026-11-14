@@ -42,7 +42,8 @@ Không thuộc skill này: cảnh 3D → `/canh` · model .glb → `/tai-nguyen`
 - Mỗi màn hai artboard: `<Man>-doc.dc.html` 390×844 và `<Man>-ngang.dc.html` 844×390 (app xoay tự do), thêm
   artboard cho từng trạng thái phiếu yêu cầu. Vẽ vùng an toàn (gạch chéo): tai thỏ / thanh trạng thái trên 47 + dưới
   34 (dọc), hai bên 47 + dưới 21 (ngang).
-- Giao diện tiếng Việt; chữ Hán Noto Serif SC; pinyin Lora. Cảnh 3D không vẽ trên canvas 2D — dùng nền `scene-bg` /
+- Giao diện tiếng Việt; chữ Hán Noto Serif SC; pinyin Lora. **Chữ Hán chỉ ở nội dung học** (thẻ, ôn, Đấu chữ, sách) —
+  tiêu đề, tên nơi, ấn son, chữ trang trí chỉ tiếng Việt (R-HUD-4, người dùng 2026-11-14). Cảnh 3D không vẽ trên canvas 2D — dùng nền `scene-bg` /
   `mist` hoặc ảnh chụp Canvas 3D (`?chup`, xem `/canh`) làm nền giữ chỗ.
 - Màn Flutter (vd. màn bài học): vẽ như màn web; phiên code dựng bằng widget theo số đo + token (font Flutter đóng gói
   sẵn — `web/scripts/fonts-app.mjs`).
