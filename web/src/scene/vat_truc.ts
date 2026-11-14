@@ -5,7 +5,7 @@
  */
 import * as THREE from 'three';
 import type { Style } from './buildings';
-import { lambert } from './materials';
+import { lambert, lampMaterial } from './materials';
 import { markDynamic } from './merge';
 import { signMesh } from './signAtlas';
 import { drawStoneSign } from './textures';
@@ -83,10 +83,10 @@ export function boTruc(g: THREE.Group): number {
   return 0.35;
 }
 
-/** Đèn trúc (竹燈): cột trúc + lồng giấy vuông tự sáng (không đèn thật), cao 1,4 m. Va chạm tròn. */
+/** Đèn trúc (竹燈): cột trúc + lồng giấy vuông (tự sáng khi đèn bật — `light.lampGlow`; không đèn thật), cao 1,4 m. Va chạm tròn. */
 export function denTruc(g: THREE.Group): number {
   pole(g, 1.0, 0.08, 0, 0, BAMBOO_DRY);
-  put(g, new THREE.BoxGeometry(0.36, 0.42, 0.36), new THREE.MeshBasicMaterial({ color: '#ffd58a' }), 0, 1.2, 0);
+  put(g, new THREE.BoxGeometry(0.36, 0.42, 0.36), lampMaterial('#ffd58a'), 0, 1.2, 0);
   const frame = lambert(CORD);
   for (const [x, z] of [[-1, -1], [1, -1], [-1, 1], [1, 1]] as const) {
     put(g, new THREE.BoxGeometry(0.03, 0.46, 0.03), frame, x * 0.18, 1.2, z * 0.18);

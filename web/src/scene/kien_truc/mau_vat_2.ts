@@ -5,7 +5,7 @@
  * Toạ độ hệ mẫu, mặt trước nhìn +z; đông = +x, tây = −x. Dùng cho Catalog 3D; map chuyển sang ở GĐ 5.
  */
 import * as THREE from 'three';
-import { lambert } from '../materials';
+import { lambert, lampMaterial } from '../materials';
 import { than, type Build } from './bo_phan';
 import { addSteps, type Style } from './chi_tiet';
 import { cotSon, maiDua, ngoi } from './danh_muc';
@@ -226,7 +226,7 @@ function denDa(s: THREE.Group, style: Style): void {
   hex(0.13, 0.16, 0.7, 0.2);
   hex(0.38, 0.3, 0.14, 0.9);
   hex(0.26, 0.26, 0.36, 1.04);
-  const glow = new THREE.MeshBasicMaterial({ color: style.gold });
+  const glow = lampMaterial(style.gold); // ô giấy: sáng khi đèn bật (`light.lampGlow`)
   for (const [w, d] of [[0.16, 0.6], [0.6, 0.16]] as const) {
     const m = new THREE.Mesh(new THREE.BoxGeometry(w, 0.2, d), glow);
     m.position.y = 1.22;

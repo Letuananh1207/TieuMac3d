@@ -58,7 +58,7 @@ không muốn thứ của khuôn. Canvas 3D: `?vung=<mã>` xem cảnh vùng.
 | `trees.groves` | `{ "kind": "truc", "x": 63, "z": 30, "w": 4, "d": 20, "count": 10, "collide": false }` | cụm cây rải trong chữ nhật; `kind`: tan · truc · tung · lieu · mai |
 | `trees.leaves` · `willow` · `plum` | màu | tùng, liễu, mai |
 | `floating` | `"islands": [{ "x": -90, "y": 35, "z": -90, "scale": 2 }]`, `"clouds": { "count": 10 }` | đảo nổi, mây trôi |
-| `sky` · `fog` · `light` · `ground` · `well` | xem `spec.ts` | trời 3 màu, sương `near` / `far` (cảnh rộng: tăng `far`), đèn, màu gạch sân, giếng |
+| `sky` · `fog` · `light` · `ground` · `well` | xem `spec.ts` | trời 3 màu, sương `near` / `far` (cảnh rộng: tăng `far`), đèn, màu gạch sân, giếng. `light.lampGlow` 0…1 (mặc định 0): độ phát sáng đèn lồng / ô đèn đá / đèn giấy + quầng `look.lanternGlow` — 0 = ban ngày, đèn chỉ là vật (V-20261114-27; ngày đêm sẽ đổi theo giờ) |
 | `camera` | `fov`, `minDist`, `maxDist`, `near` / `far` (góc gần / xa) | `pitch` trong góc: radian |
 
 ## Địa hình (`terrain.enabled: true`)

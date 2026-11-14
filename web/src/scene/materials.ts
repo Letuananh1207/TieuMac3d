@@ -8,6 +8,31 @@ export function lambert(
   return new THREE.MeshLambertMaterial({ color, ...extra });
 }
 
+/**
+ * Độ phát sáng của đèn (đèn lồng, ô sáng đèn đá, đèn giấy…) trong cảnh đang dựng — `light.lampGlow` của đặc tả, `world.ts`
+ * đặt trước khi dựng (`setLampGlow`). 0 = đèn chỉ là vật (giấy / đá chịu sáng như mọi khối, không quầng) · 1 = phát sáng
+ * hết cỡ. Ngày đêm (kế hoạch docs/tasks/2026-11-14-ngay-dem.md) sẽ đổi số này theo giờ.
+ */
+let lampGlow = 0;
+
+export function setLampGlow(v: number): void {
+  lampGlow = Math.min(1, Math.max(0, v));
+}
+
+export const currentLampGlow = (): number => lampGlow;
+
+/**
+ * Vật liệu phần "lòng đèn": tắt (`lampGlow` 0) = Lambert thường, gộp chung với khối cùng màu; bật = Lambert tự phát
+ * sáng màu của chính nó (`emissive`) — không thêm đèn thật, không thêm draw call.
+ */
+export function lampMaterial(color: THREE.ColorRepresentation): THREE.MeshLambertMaterial {
+  if (lampGlow <= 0) return lambert(color);
+  return lambert(color, { emissive: color, emissiveIntensity: lampGlow });
+}
+
+/** Vật liệu có tự phát sáng (đèn đang bật) — các bước gộp màu đỉnh bỏ qua để không mất phần sáng. */
+export const isGlowing = (m: THREE.MeshLambertMaterial): boolean => m.emissiveIntensity > 0 && m.emissive.getHex() !== 0;
+
 /** Dòng tính độ sáng nắng của Lambert (three 0.170, `lights_lambert_pars_fragment`) — thay bằng wrap lighting. */
 const DOT_NL = 'float dotNL = saturate( dot( geometryNormal, directLight.direction ) );';
 

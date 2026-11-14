@@ -445,6 +445,7 @@ function checkConsistency(s: SceneSpec): string[] {
   }
   out.push(...checkTeleport(s), ...checkLanterns(s), ...checkDecorSlots(s), ...checkPortals(s), ...checkLook(s.look));
   if (s.cloudSea.radius < 0) out.push('cloudSea.radius: phải ≥ 0');
+  if (!(s.light.lampGlow >= 0 && s.light.lampGlow <= 1)) out.push(`light.lampGlow: 0…1 (đang ${s.light.lampGlow})`);
   if (t.enabled && t.size > 0 && t.cell > 0) out.push(...checkOnFlatGround(s));
   if (t.enabled) {
     t.stairs.forEach((st, i) => {

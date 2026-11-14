@@ -1,11 +1,11 @@
 /**
  * Đồ trang trí Nhà của ta (R-NHA-2): hình 13 vật trong danh mục (`zones/decor.ts` — lớp scene không import zones, nên
- * vật nhận theo mã), dựng bằng khối low-poly, gộp màu theo đỉnh → 1 draw call / vật (đèn lồng, tranh chữ: 2). Toạ độ
+ * vật nhận theo mã), dựng bằng khối low-poly, gộp màu theo đỉnh → 1 draw call / vật (tranh chữ, đèn lồng đang sáng: 2). Toạ độ
  * vật: tâm ô (0, 0), chân y = 0, mặt trước nhìn +z. Màu cây / đá / nước / đồng lấy từ đặc tả (`trees`, `buildingStyle`);
  * màu gỗ, giấy, gốm là màu đồ đạc như `kien_truc/noi_that.ts`. Đặt vào cảnh + va chạm: `decorLayer.ts`.
  */
 import * as THREE from 'three';
-import { lambert } from './materials';
+import { lambert, lampMaterial } from './materials';
 import { mergeVertexColors } from './merge';
 import type { SceneSpec } from './spec';
 import { makeCanvasTex } from './textures';
@@ -187,13 +187,13 @@ function aoSen(g: THREE.Group, c: Colors): void {
 
 /* ---------- Sân ---------- */
 
-/** Đèn lồng treo cột gỗ: bệ đá, cột, tay vươn, đèn đỏ (không chịu sáng, như `addLanterns`) + chóp vàng, tua. */
+/** Đèn lồng treo cột gỗ: bệ đá, cột, tay vươn, đèn đỏ (`lampMaterial` như `addLanterns`: ban ngày giấy đỏ, đèn bật mới sáng) + chóp vàng, tua. */
 function denLong(g: THREE.Group, c: Colors): void {
   const { stone, lantern, gold } = c.buildingStyle;
   g.add(box(0.36, 0.12, 0.36, stone, -0.12, 0.06, 0));
   g.add(column(0.05, 1.68, WOOD, -0.12, 0.12, 0));
   g.add(box(0.46, 0.05, 0.06, WOOD, 0.03, 1.72, 0));
-  const lamp = new THREE.Mesh(new THREE.SphereGeometry(0.2, 10, 8), new THREE.MeshBasicMaterial({ color: lantern }));
+  const lamp = new THREE.Mesh(new THREE.SphereGeometry(0.2, 10, 8), lampMaterial(lantern));
   lamp.scale.y = 1.3;
   lamp.position.set(0.17, 1.33, 0);
   g.add(lamp);

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import type { Colliders } from '../collision/colliders';
 import type { Style } from './buildings';
-import { lambert } from './materials';
+import { lambert, lampMaterial } from './materials';
 import { markDynamic } from './merge';
 import { rotateXZ, type PropSpec, type SceneSpec } from './spec';
 import type { GroundY } from './terrainHeight';
@@ -126,8 +126,9 @@ function denDa(g: THREE.Group, style: Style): number {
   add(new THREE.CylinderGeometry(0.16, 0.2, 0.9, 6), 0.75);
   add(new THREE.BoxGeometry(0.7, 0.15, 0.7), 1.25);
   add(new THREE.BoxGeometry(0.55, 0.5, 0.55), DEN_DA_LIGHT_Y);
-  add(new THREE.BoxGeometry(0.3, 0.3, 0.58), DEN_DA_LIGHT_Y, new THREE.MeshBasicMaterial({ color: style.gold })); // ô sáng
-  add(new THREE.BoxGeometry(0.58, 0.3, 0.3), DEN_DA_LIGHT_Y, new THREE.MeshBasicMaterial({ color: style.gold }));
+  const paper = lampMaterial(style.gold); // ô giấy: ban ngày chỉ là giấy vàng ấm, đèn bật mới phát sáng (`light.lampGlow`)
+  add(new THREE.BoxGeometry(0.3, 0.3, 0.58), DEN_DA_LIGHT_Y, paper);
+  add(new THREE.BoxGeometry(0.58, 0.3, 0.3), DEN_DA_LIGHT_Y, paper);
   add(new THREE.ConeGeometry(0.62, 0.45, 4).rotateY(Math.PI / 4), 2.05);
   add(new THREE.SphereGeometry(0.1, 6, 4), 2.35);
   return 0.5;

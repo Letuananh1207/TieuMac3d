@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import type { SceneSpec } from '../spec';
 import { signMesh } from '../signAtlas';
 import { drawSign } from '../textures';
+import { lampMaterial } from '../materials';
 import { box } from './hinh';
 
 export type Style = SceneSpec['buildingStyle'];
@@ -26,7 +27,7 @@ const lanternGeo = new THREE.SphereGeometry(0.22, 10, 8);
 
 /** Đèn lồng đỏ treo tại các điểm [x, y, z]. */
 export function addLanterns(g: THREE.Group, at: [number, number, number][], style: Style): void {
-  const mat = new THREE.MeshBasicMaterial({ color: style.lantern });
+  const mat = lampMaterial(style.lantern); // ban ngày chỉ là giấy đỏ (`light.lampGlow` 0)
   for (const [x, y, z] of at) {
     const l = new THREE.Mesh(lanternGeo, mat);
     l.scale.y = 1.3;

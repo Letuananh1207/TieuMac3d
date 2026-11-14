@@ -16,7 +16,7 @@ import { staticModelUrl } from './staticModel';
 import { addGrassAndRocks } from './grass';
 import { addSoftGrassAndFlowers } from './coHoa';
 import { mergeSoft, mergeStatic } from './merge';
-import { tickWind } from './materials';
+import { setLampGlow, tickWind } from './materials';
 import { isSoft } from './look';
 import { resetSignAtlas } from './signAtlas';
 import { addPaths } from './paths';
@@ -74,6 +74,7 @@ export function buildWorld(
 ): World {
   const style = spec.buildingStyle;
   resetSignAtlas(); // biển của cảnh này vẽ vào một ảnh chung → 1 draw call
+  setLampGlow(spec.light.lampGlow); // đèn dựng dưới đây (lampMaterial) sáng theo số này — 0 = ban ngày, không phát sáng
   addEnvironment(scene, spec, viewDistance(spec));
   const hf = spec.terrain.enabled ? buildHeightfield(spec.terrain, spec.paths) : null;
   // ngoài lưới (vực) → 0; nhà, tường, lối đi nằm trên bục phẳng nên không cần độ cao riêng
@@ -133,10 +134,10 @@ export function buildWorld(
   const props = addProps(scene, colliders, spec.props, style, spec.trees, groundY);
   const trees = addTrees(scene, colliders, spec.trees, groundY, spec.look);
   const lanternSpots = addLanternStrings(scene, colliders, spec, groundY);
-  if (isSoft(spec.look)) {
-    // quầng sáng giả: đèn lồng trên dây + hộp đèn đèn đá (quangDen.ts)
+  if (isSoft(spec.look) && spec.light.lampGlow > 0) {
+    // quầng sáng giả: đèn lồng trên dây + hộp đèn đèn đá (quangDen.ts) — chỉ khi đèn đang sáng (`light.lampGlow`)
     const stone = spec.props.filter((p) => p.kind === 'den-da').map((p) => new THREE.Vector3(p.x, (p.y ?? base(p.x, p.z)) + DEN_DA_LIGHT_Y * (p.scale ?? 1), p.z));
-    addLanternGlow(scene, [...lanternSpots, ...stone], spec.look);
+    addLanternGlow(scene, [...lanternSpots, ...stone], spec.look, spec.light.lampGlow);
   }
   addFences(scene, colliders, spec, groundY);
   if (spec.well.enabled) addWell(scene, colliders, spec.well, base(spec.well.x, spec.well.z));

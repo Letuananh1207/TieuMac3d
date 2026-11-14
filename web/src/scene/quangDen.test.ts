@@ -1,7 +1,9 @@
 import * as THREE from 'three';
 import { describe, expect, it, vi } from 'vitest';
 import { DEFAULT_LOOK } from './look';
+import { isGlowing, lampMaterial, setLampGlow } from './materials';
 import { addLanternGlow } from './quangDen';
+import { DEFAULT_SCENE } from './spec';
 
 // ảnh quầng vẽ bằng canvas 2D: Node không có — canvas giả
 const ctx: unknown = new Proxy({}, { get: (_t, key) => (key === 'createRadialGradient' ? () => ({ addColorStop: () => undefined }) : () => ctx) });
@@ -31,5 +33,26 @@ describe('quầng sáng đèn (kế hoạch canh-dep NV12)', () => {
     expect(addLanternGlow(scene, [], DEFAULT_LOOK)).toBeNull();
     expect(addLanternGlow(scene, [new THREE.Vector3()], { ...DEFAULT_LOOK, lanternGlow: { color: '#ffffff', size: 0 } })).toBeNull();
     expect(scene.children).toHaveLength(0);
+  });
+});
+
+describe('đèn ban ngày không phát sáng (V-20261114-27)', () => {
+  it('đặc tả mặc định: light.lampGlow = 0 → không quầng; đèn sáng thì quầng mờ theo độ sáng', () => {
+    expect(DEFAULT_SCENE.light.lampGlow).toBe(0);
+    const scene = new THREE.Scene();
+    expect(addLanternGlow(scene, [new THREE.Vector3()], DEFAULT_LOOK, DEFAULT_SCENE.light.lampGlow)).toBeNull();
+    const half = addLanternGlow(scene, [new THREE.Vector3()], DEFAULT_LOOK, 0.5);
+    expect((half?.material as THREE.MeshBasicMaterial).opacity).toBeCloseTo(0.5);
+  });
+
+  it('lòng đèn: tắt = Lambert thường (gộp chung), bật = tự phát sáng màu của nó', () => {
+    setLampGlow(0);
+    const off = lampMaterial('#f06a4a');
+    expect(isGlowing(off)).toBe(false);
+    setLampGlow(1);
+    const on = lampMaterial('#f06a4a');
+    expect(isGlowing(on)).toBe(true);
+    expect(on.emissive.getHexString()).toBe(on.color.getHexString());
+    setLampGlow(0);
   });
 });

@@ -641,6 +641,11 @@ export interface SceneSpec {
     sunColor: string;
     sunIntensity: number;
     sunPosition: [number, number, number];
+    /**
+     * Độ phát sáng của đèn (đèn lồng, ô sáng đèn đá, đèn giấy) 0…1, nhân cả quầng giả `look.lanternGlow`: 0 = ban ngày,
+     * đèn chỉ là vật, không quầng (V-20261114-27 — mặc định cho mọi cảnh) · 1 = đèn sáng hết cỡ (đêm, ngày đêm sau này).
+     */
+    lampGlow: number;
   };
   /** `pattern`: kiểu gạch lát (`PAVE_PATTERNS`); `vuong` lấy `color` làm màu viên gạch, bỏ qua `brickHue`. */
   ground: { size: number; color: string; brickHue: number; pattern: (typeof PAVE_PATTERNS)[number] };
@@ -849,6 +854,7 @@ export const DEFAULT_SCENE: SceneSpec = {
     sunColor: '#ffd8a8',
     sunIntensity: 0.85,
     sunPosition: [-12, 20, 8],
+    lampGlow: 0,
   },
   ground: { size: 90, color: '#5b3f37', brickHue: 10, pattern: 'gach' },
   // tắt: cảnh gốc phẳng. Giá trị dưới là gợi ý cho hướng "cao nguyên giữa biển mây" (docs/tham_khao/dia-hinh-tong-mon.md)

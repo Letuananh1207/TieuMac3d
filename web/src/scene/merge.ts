@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { bakeSoftColors, type SoftLook } from './bake';
-import { softMaterial } from './materials';
+import { isGlowing, softMaterial } from './materials';
 
 /** Đánh dấu vật chuyển động (khói, đảo nổi…): `mergeStatic` bỏ qua nó và mọi con của nó. */
 export function markDynamic(o: THREE.Object3D): void {
@@ -35,6 +35,7 @@ function materialKey(m: THREE.Material): string | null {
     m.opacity,
     m.side,
     m.polygonOffset ? m.polygonOffsetFactor : '',
+    m instanceof THREE.MeshLambertMaterial && isGlowing(m) ? `e${m.emissive.getHexString()}-${m.emissiveIntensity}` : '',
   ].join('|');
 }
 
@@ -95,7 +96,7 @@ export function mergeVertexColors(root: THREE.Object3D, look?: SoftLook): number
   root.traverse((o) => {
     if (!(o instanceof THREE.Mesh) || o instanceof THREE.InstancedMesh || isDynamic(o)) return;
     const m = o.material;
-    if (!(m instanceof THREE.MeshLambertMaterial) || m.map || m.transparent || m.vertexColors) return;
+    if (!(m instanceof THREE.MeshLambertMaterial) || m.map || m.transparent || m.vertexColors || isGlowing(m)) return;
     meshes.push(o);
   });
   if (meshes.length < 2) return 0;
@@ -154,7 +155,7 @@ export function mergeSoft(
   root.traverse((o) => {
     if (!(o instanceof THREE.Mesh) || o instanceof THREE.InstancedMesh || keep.has(o) || isDynamic(o) || ownsMaterials(o)) return;
     const m = o.material;
-    if (!(m instanceof THREE.MeshLambertMaterial) || m.map || m.transparent || m.vertexColors || m.userData.soft) return;
+    if (!(m instanceof THREE.MeshLambertMaterial) || m.map || m.transparent || m.vertexColors || m.userData.soft || isGlowing(m)) return;
     if (m.polygonOffset) return; // mặt dán đẩy độ sâu (chống nhấp nháy) giữ vật liệu riêng
     const list = bySide.get(m.side) ?? [];
     list.push(o);

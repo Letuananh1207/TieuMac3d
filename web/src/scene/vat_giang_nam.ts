@@ -5,7 +5,7 @@
 import * as THREE from 'three';
 import type { Colliders } from '../collision/colliders';
 import type { Style } from './buildings';
-import { lambert } from './materials';
+import { currentLampGlow, lambert, lampMaterial } from './materials';
 import type { GallerySpec } from './spec';
 import type { GroundY } from './terrainHeight';
 import type { PropCollide } from './vat_truc';
@@ -25,11 +25,12 @@ function put(g: THREE.Object3D, geo: THREE.BufferGeometry, mat: THREE.Material, 
   return m;
 }
 
-/** Đèn lồng đỏ tròn (vỏ son, lòng sáng), tâm ở (x, y, z). */
+/** Đèn lồng đỏ tròn (vỏ son; lòng sáng chỉ khi đèn bật — `light.lampGlow`), tâm ở (x, y, z). */
 function lantern(g: THREE.Object3D, x: number, y: number, z: number, r = 0.28): void {
-  put(g, new THREE.SphereGeometry(r, 8, 6).scale(1, 1.15, 1), new THREE.MeshBasicMaterial({ color: LANTERN }), x, y, z);
+  put(g, new THREE.SphereGeometry(r, 8, 6).scale(1, 1.15, 1), lampMaterial(LANTERN), x, y, z);
   put(g, new THREE.CylinderGeometry(r * 0.55, r * 0.55, 0.08, 8), lambert('#d4a64a'), x, y + r * 1.15, z);
-  put(g, new THREE.CylinderGeometry(r * 0.8, r * 0.8, r * 1.4, 8), new THREE.MeshBasicMaterial({ color: LANTERN_GLOW, transparent: true, opacity: 0.35 }), x, y, z);
+  const glow = currentLampGlow();
+  if (glow > 0) put(g, new THREE.CylinderGeometry(r * 0.8, r * 0.8, r * 1.4, 8), new THREE.MeshBasicMaterial({ color: LANTERN_GLOW, transparent: true, opacity: 0.35 * glow }), x, y, z);
 }
 
 /**
@@ -113,8 +114,8 @@ function gianDen(g: THREE.Group): PropCollide {
     beam.rotation.z = Math.PI / 2;
     for (let i = 0; i < 4; i++) {
       const x = -1.05 + i * 0.7;
-      put(g, new THREE.CylinderGeometry(0.17, 0.17, 0.42, 8), new THREE.MeshBasicMaterial({ color: PAPER }), x, y - 0.35, 0);
-      put(g, new THREE.CylinderGeometry(0.18, 0.18, 0.05, 8), new THREE.MeshBasicMaterial({ color: LANTERN }), x, y - 0.12, 0);
+      put(g, new THREE.CylinderGeometry(0.17, 0.17, 0.42, 8), lampMaterial(PAPER), x, y - 0.35, 0);
+      put(g, new THREE.CylinderGeometry(0.18, 0.18, 0.05, 8), lambert(LANTERN), x, y - 0.12, 0);
       put(g, new THREE.BoxGeometry(0.1, 0.24, 0.01), lambert('#e8e1d2'), x, y - 0.75, 0.02); // phiếu đố giấy treo dưới đèn
     }
   }
