@@ -3,6 +3,28 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-15.2 — Bộ ảnh nhiều góc NPC Tiểu Khất (đứa trẻ ăn xin — tóc rối bù, bát sứ nứt, chống gậy cành cây)
+
+- Loại: tài nguyên 3D — ảnh đầu vào (Hunyuan3D-2mv). Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-14-anh-khat-nhi.md` (phiếu còn trong máy,
+  chưa lên GitHub — dòng "Đã vẽ" ghi ở bản trong máy). Vẽ trong phiên VS Code theo vai thiết kế; người dùng duyệt "Ổn, chốt".
+- **Đổi hướng so với phiếu / hồ sơ** `docs/tham_khao/khat-nhi-go-mo.md` (hướng A "cậu bé lanh lợi, chỏm tóc dây rơm, cười láu lỉnh, tay
+  không"): người dùng thử ông lão ăn mày (`source/AnMay-huong.dc.html`, bỏ) → quay lại đứa trẻ: **tóc rối bù xoã, không dây**, **mặt hơi
+  buồn** (không khóc), **cầm dụng cụ ăn xin**: bát **sứ trắng có vết nứt** + mẻ miệng, **chống gậy cành cây** (không phải trúc) cắm đất.
+- Nhân vật: ≈ 9 tuổi, da #E9C2A4, má #E39C8C, vệt lấm nhỏ một bên má; áo gai ngắn #9C8664 vạt trái đè phải, mép sờn, dây rơm #D2B06E ở eo;
+  quần nâu #5A4A3A tới gối xắn ống; dép rơm thấy ngón; vá: rêu #6F8A6A ngực trái, chàm #5E6E86 to giữa lưng, vàng đất #C29A5E khuỷu + gối.
+  Bát #EEEBE3 · vết nứt #6E6A64; gậy cành cây #7A5A3C cao tới hông, hai mấu cành cụt.
+- **Ảnh lật trái – phải so với câu lệnh** (khớp ở cả 4 góc → giữ): bát ở **tay PHẢI**, gậy ở **tay TRÁI**, vá vàng ở **khuỷu TRÁI + gối PHẢI**.
+- Ảnh: `models/anh/khat-nhi-{truoc,trai,sau,phai,mat}.png` + `-truoc-trai.png` (chếch ≈ 20°, chỉ 1 ảnh — Gemini vẽ hai góc 45° giống nhau)
+  + `-dao-cu.png` (đối chiếu, không vào Hunyuan). Câu lệnh: ghi chú `khat-nhi-cau-lenh` trong `source/canvas.json`. Chuẩn hoá Pillow hệ số
+  0,839, đỉnh tóc 10 %, đế dép 90 %, trục theo chân. Ảnh duyệt: `screens/KhatNhi-bo-anh.png`.
+- **Cho phiên code** (V-31 đã ghép Tiểu Khất — ngồi, cho 5 văn, tin đồn): bát + gậy nằm **trong model** → bỏ bát / gậy dựng bằng code (nếu có);
+  model đứng chống gậy, phiếu cũ định bé **ngồi** xếp bằng — gậy cắm đất + bát trên tay khi ngồi bằng xương tự gắn dễ rách / xuyên → đề xuất
+  cho Tiểu Khất **đứng** (hoặc ngồi bệt, gậy dựa tường — cần thử với model). Đổi tư thế chạm R-NPC-6 (nháp) — hỏi người dùng rồi sửa sổ.
+  Mặt hơi buồn hợp lời thoại xin ăn; câu "cười láu lỉnh" trong hồ sơ cũ không còn đúng. Tên trong game giữ "Tiểu Khất".
+- Bước kế: `bash .claude/skills/tai-nguyen/scripts/nhan-vat.sh khat-nhi <ra>` → `models/khat-nhi.glb` (người cao ≈ 0,8 nhân vật chính, chỉnh trong code).
+- File: `models/anh/khat-nhi-*.png` (7), `models/LICENSES.md`, `screens/KhatNhi-bo-anh.png`, `source/AnMay-huong.dc.html`,
+  `source/KhatNhi-bo-anh.dc.html`, `source/canvas.json`.
+
 ## 2026-11-15.1 — Bộ ảnh nhiều góc NPC Lão Canh (người gõ mõ báo giờ — ông lão béo phúc hậu)
 
 - Loại: tài nguyên 3D — ảnh đầu vào (Hunyuan3D-2mv). Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-14-anh-go-mo.md` (phiếu còn trong máy,
