@@ -3,6 +3,16 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-15.8 — Thiên Bậc rút ngắn: bục Truyền Tống Đài hạ 11 → 5,5 m, dời gần Quảng Trường
+
+- Loại: cảnh 3D — **bố cục**. Phiên code V-20261114-41 làm thay `/canh`; người dùng: "bậc lên đài truyền tống đang quá dài".
+  **Đã duyệt 2026-11-15.**
+- Bục Truyền Tống Đài x −14…14, z −70…−52, cao 11 m → **x −9…9, z −53…−35, cao 5,5 m**; Thiên Bậc (0; −20)→(0; −53) dài 33 m →
+  **(0; −20)→(0; −36) dài 16 m** (dốc ≈ 20°). Vòng trận (0; −61,5) → **(0; −44,5)**; Mặc Ông (6,5; −38,5); đèn đá (±4,6; −37,2);
+  ruộng chè mép tây x 8 → 10; khu Thiên Bậc / Truyền Tống Đài / Đồi Chè theo bục mới. Lão Canh quay đầu z −35.
+- Luật: R-VA-2, R-HANH-2, R-BANDO-2, R-BANDO-3, R-NPC-7. `scene:check` không lỗi; 152 draw call / 149 142 tam giác (nhìn từ trên).
+- Ảnh: `screens/Canh-thien-bac-ngan.png`.
+
 ## 2026-11-15.7 — Cổng Trấn dài thêm, cổng xuống núi cao 8 m, đèn hai bên lối, vòng sáng "Về nhà", bỏ mái cổng nam
 
 - Loại: cảnh 3D — **bố cục**. Phiên code V-20261114-39 làm thay `/canh`; người dùng: "cách bài trí đèn … ngay đường đi,
