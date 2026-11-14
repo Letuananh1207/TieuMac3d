@@ -21,6 +21,16 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
   Ô gợi ý trải hết bề ngang, xuống dòng / thu chữ, không bị cắt. Hai tay giữ hai trục đối xứng, không che chữ.
 - Luật: R-ON-8. Canvas cần vẽ lại `NgoiMat-*` (`docs/testing/gui_thiet_ke_2026-11-15.md`).
 - Ảnh: `screens/NgoiMat-cuon-giua-ngang.png`.
+## 2026-11-15.10 — Hoạt cảnh cưỡi hạc khi truyền tống (chế độ thử `?hac`)
+
+- Loại: cảnh 3D + luồng. Phiên code V-20261114-40 (kế hoạch `docs/tasks/2026-11-15-cuoi-hac.md`); người dùng: "tôi muốn có hoạt
+  cảnh cưỡi hạc hoặc gì đó bay đến vùng đất". **Kế hoạch duyệt 2026-11-15; gộp ở chế độ thử.**
+- Hạc trắng đỉnh đỏ dựng khối (`scene/hac.ts`, 3 draw call) đáp đón ở vòng trận → bay biển mây của nơi đến theo giờ ngày / đêm
+  (`scene/bayMay.ts`, ≤ 12 draw call) trong lúc cảnh mới dựng theo bước (`buildWorldStepped`) → hạ cạnh chỗ xuất hiện (trấn: cổng
+  trấn). Chạm / nút quay lại để bỏ qua; giảm chuyển động → màn tải. Trường đặc tả mới `crane` (mặc định giữ cảnh cũ).
+- **Trong app vẫn màn tải cũ** (`CRANE_IN_APP = false`) tới khi có thiết kế màn mây + lớp chữ — phiếu
+  `docs/phieu_thiet_ke/2026-11-15-cuoi-hac.md` (chờ thiết kế).
+- Luật: R-HANH-2, R-HANH-5 (mới), R-MAN-2.
 
 ## 2026-11-15.7 — Cổng Trấn dài thêm, cổng xuống núi cao 8 m, đèn hai bên lối, vòng sáng "Về nhà", bỏ mái cổng nam
 
