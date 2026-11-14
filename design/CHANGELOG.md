@@ -3,6 +3,20 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-15.7 — Cổng Trấn dài thêm, cổng xuống núi cao 8 m, đèn hai bên lối, vòng sáng "Về nhà", bỏ mái cổng nam
+
+- Loại: cảnh 3D — **bố cục**. Phiên code V-20261114-39 làm thay `/canh`; người dùng: "cách bài trí đèn … ngay đường đi,
+  cổng đang quá thấp, … mở rộng dài lên 1 chút"; "bỏ mái chính giữa ở quảng trường"; "về nhà … 1 vòng sáng nhỏ trên đó có
+  chữ như các game"; "nơi bắt đầu … luôn là từ cổng Khởi Nguyên Trấn". **Đã duyệt 2026-11-15.**
+- Cổng xuống núi (0; 41) cao 6,6 → **(0; 51) cao 8**; lối `paths[0]` tới z 47, khu "Cổng Trấn" tới z 51; nền lát + cỏ +
+  chiếu nghỉ (−3; 51)…(3; 56); bậc xuống núi (0; 56→77). Đèn đá 4 trên nền lát → **6 đèn (±8,6; 35,5 / 41,5 / 47,5)** trên cỏ.
+- Cổng nam Quảng Trường bỏ mái ngói (`walls.gates[].roof: false` — mới, mặc định có mái), giữ khung gỗ + biển.
+- Bỏ biển gỗ "Xuống núi · Về nhà" → **vòng sáng nhỏ + chữ nổi** (`portals[].label` — mới): trấn "Về nhà" (0; 54),
+  Nhà của ta "Khởi Nguyên Trấn". `web/src/scene/vongCong.ts`, 4 draw call / cổng.
+- Chỗ xuất phát `player.start` (0; 36) → **(0; 48)**; `player.arriveAtStart: true` (mới) — về trấn bằng vòng trận cũng đứng ở đây.
+- Luật: R-VA-1, R-NPC-1, R-HUD-4, R-HANH-2, R-HANH-4, R-NHA-1, R-BANDO-2. `scene:check` không lỗi; nhìn từ trên 133 draw call.
+- Ảnh: `screens/Canh-cong-tran-vong-ve-nha.png`, `screens/Canh-cong-nam-bo-mai.png`.
+
 ## 2026-11-15.3 — Tiểu Mặc đứng ngay bên phải bảng nhiệm vụ
 
 - Loại: cảnh 3D — **bố cục**. Phiên code V-20261114-36 làm thay `/canh`; người dùng: "ý tôi Tiểu Mặc phải bên phải ngay
