@@ -3,6 +3,24 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-14.19 — Bộ ảnh nhiều góc NPC Trận sư 陣師 (đạo sĩ trận pháp trung niên)
+
+- Loại: tài nguyên 3D — ảnh đầu vào (Hunyuan3D-2mv). Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-13-anh-tran-su.md`.
+- Trình 3 hướng (`source/TranSu-huong.dc.html`: A trung niên xám tro · B thanh niên lam nhạt + sao Bắc Đẩu · C nữ đạo trưởng trắng viền
+  son) → người dùng chọn **A** (đúng mô tả phiếu). Hồ sơ `docs/tham_khao/tran-su.md`.
+- Nhân vật: ≈ 45 tuổi, đạo bào xám tro #6E7378 chấm đất viền đen #26262A, giao lĩnh vạt trái đè phải, cổ lót trắng; liên hoa quán gỗ vàng
+  #B8945A + trâm; râu dê khối liền; đai vàng đất #C9A35A thắt nút + ngọc bội vuông #8CCB9E; **bát quái** vàng đất giữa lưng. Cao hơn
+  nhân vật chính ≈ 8 %.
+- Ảnh: `models/anh/tran-su-{truoc,trai,sau,phai,mat}.png` — Google Gemini (người dùng chạy); nguyên văn câu lệnh: ghi chú
+  `tran-su-cau-lenh` trong `source/canvas.json`. **`-trai` = lật gương `-phai`** (ảnh Gemini góc trái lỗi — người dùng nhờ xử lý).
+  Chuẩn hoá Pillow: nền #DDDDDD, bỏ sao, hệ số thu chung 0,885, đỉnh mão 10 %, đế giày 90 %. Ảnh duyệt: `screens/TranSu-bo-anh.png`.
+- **Lưu ý cho `/tai-nguyen`**: do lật gương, ngọc bội hiện ở cả hai ảnh nghiêng (thật chỉ treo hông phải nhân vật — như ảnh trước) →
+  lúc nướng màu kiểm hai bên hông. Ảnh cận mặt: viền cổ có vạch hoạ tiết (ảnh trước trơn) — chỉ lấy chi tiết mặt.
+- Luật: không đổi (R-NPC-5 — xưng "bần đạo", hợp nhân vật).
+- Bước kế: `bash .claude/skills/tai-nguyen/scripts/nhan-vat.sh tran-su <ra>` → `models/tran-su.glb`.
+- File: `models/anh/tran-su-*.png` (5), `models/LICENSES.md`, `screens/TranSu-bo-anh.png`, `source/TranSu-huong.dc.html`,
+  `source/TranSu-bo-anh.dc.html`, `source/canvas.json`; ngoài design: `docs/tham_khao/tran-su.md` + README.
+
 ## 2026-11-14.18 — Bộ ảnh nhiều góc NPC khu trò chơi Kỳ Văn Uyển (thiếu nữ hoạt bát, mặt dịu dàng)
 
 - Loại: tài nguyên 3D — ảnh đầu vào (Hunyuan3D-2mv) · luồng/luật (đề xuất). Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-13-anh-quan-su.md`.
