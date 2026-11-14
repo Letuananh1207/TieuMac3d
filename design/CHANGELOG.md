@@ -3,6 +3,33 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-14.25 — Lối xuống núi: cuối lối Cổng Trấn thay ngõ về nhà
+
+- Loại: cảnh 3D — **bố cục** + **ngoại hình**. Ai làm: phiên code V-20261114-23 làm thay vai thiết kế (`/canh`), người dùng:
+  "rời vị trí về nhà sang hướng cuối con đường… không phải 1 ngôi nhà mà là 1 cái gì đó gợi xuống núi". **Đã duyệt
+  2026-11-14** (giữ cổng như hiện tại, giữ 2 đôi đèn, biển mây phía nam).
+- `scene.json` (Khởi Nguyên Trấn):
+  - Bỏ (của .20): `paths` ngõ (−4; 36) → (−19; 36); 4 `wallSegments` khoảnh (−25 … −19) × (32,5 … 39,5) + cổng "Nhà của ta
+    我家"; `trees.groves` tùng (−22; 36); `site.areas` Cổng Trấn `from` [−26, 17] → [−15, 17].
+  - Thêm: `gates` "cong-xuong-nui" (bài phường 3 gian) tại (0; 41) quay 180°, lòng 5 m, biển 下山, mái #3b3f44; `props`
+    đèn đá (±4,6; 39,4) (đôi thứ hai, đôi cũ (±4,5; 27,5) giữ), biển gỗ `bien-go` (3,4; 37,6) quay 180°
+    "歸家 · Xuống núi · Về nhà"; `terrain.stairs` (0; 41) → (0; 62) rộng 3,6 (dốc 25°); `terrain.plateaus` thung mây y −10
+    (−24 … 24 × 56 … 80) + (−44 … 44 × 80 … 150), blend 7,5 — dưới biển mây (−8), bậc đổ xuống mây.
+  - Đổi: `paths` lối chính (0; 17) → (0; 40) thành → (0; 37) (đầu tròn của lối không đè đầu bậc — nếu không bậc đầu dốc 38°,
+    kẹt); `terrain.peaks` bỏ 5 đỉnh phía nam (−9,4; 77,9), (18,4; 77,5), (−0,2; 85,3), (13; 91,3), (−18,7; 89) để thấy biển
+    mây; `groves` tùng (0; 84) w 110 tách thành (−50; 80) + (50; 76), 20 × 24, mỗi cụm 3.
+  - `portals` → `nha-ta`: vùng chạm (−1,8; 43,2) … (1,8; 47) (xuống ~5 bậc), chỗ tới (0; 38,4) quay 180° (giữa đôi đèn mới,
+    nhìn về trấn). `nha-ta.json` không đổi.
+- Luật bị chạm: R-NHA-1 (lối xuống núi thay ngõ + cổng gỗ), R-HANH-4 (ví dụ), R-BANDO-2 (ví dụ (0; 45)) — đã sửa sổ trong
+  cùng việc (chờ đồng bộ).
+- `scene:check`: cả 8 cảnh "Không có lỗi". Draw call (headless 900×600, sau V-17): nhìn từ trên 127, góc chơi (0; 30) 52;
+  trước khi rebase đo cùng cách: trên 148 → 147, góc chơi 68 → 69.
+- Cần code: kiểu vật `bien-go` (biển gỗ chỉ đường hai mặt, `text` "Hán|Việt") — làm trong cùng việc.
+- Canvas 3D: https://claude.ai/artifact/TyJxrgsBcj5ryHakv7c1so (bản 53, main + V-23) — `?nv=0,21&cam=0,3.4,16.5&tam=0,34`,
+  `?nv=0,43&cam=0,5.5,37&tam=0,60`.
+- Ảnh: `screens/Canh-loi-xuong-nui.png`, `screens/Canh-loi-xuong-nui-dau-bac.png`.
+- File: `scene/scene.json`, hai ảnh trên.
+
 ## 2026-11-14.24 — Cổng trăng riêng trên tường tây khu vui chơi
 
 - Loại: cảnh 3D — **bố cục**. Ai làm: phiên code V-20261114-24 làm thay vai thiết kế (`/canh`), người dùng: "ở chỗ tường

@@ -57,7 +57,7 @@ Trạng thái phải vẽ (luôn có dọc 390×844 + ngang 844×390):
 - Đang ở TRONG NHÀ: trong Tàng Thư Các tầng 1 (nhà tô đậm) và TẦNG 2 (thêm nhãn "Tầng 2").
 - Bản đồ nhỏ đang nhấn.
 - Đang ngồi (ghế / bàn trà / thiền / bồ đoàn) → bản đồ nhỏ ẩn (chỉ cần ghi chú trên artboard, không cần vẽ riêng).
-- Bản đồ lớn Khởi Nguyên Trấn (dọc + ngang): 8 khu, 3 nhà, vòng trận, cổng ngõ về nhà, 2 bàn chơi, Tạp hoá, khu tự học
+- Bản đồ lớn Khởi Nguyên Trấn (dọc + ngang): 8 khu, 3 nhà, vòng trận, lối xuống núi về nhà, 2 bàn chơi, Tạp hoá, khu tự học
   tầng 2, chỗ ngồi ôn, bảng nhiệm vụ 日課榜.
 - Bản đồ lớn Nhà của ta (dọc): 3 khu, 1 nhà, vòng trận, cổng về trấn.
 - Bản đồ lớn một cảnh vùng dài (Tử Cấm Thành ≈ 120 × 176 m, 9 khu) — để thấy chữ nhiều nhất / chồng nhãn.
@@ -66,7 +66,7 @@ Số liệu thật để vẽ (đặc tả cảnh, bắc = −z ở trên, tây 
 - Khởi Nguyên Trấn: khu Truyền Tống Đài [17,−10]→[41,10] · Cổng Trấn [−26,17]→[8,41] · Quảng Trường [−17,−17]→[17,17] ·
   Kỳ Văn Uyển [−51,−11]→[−17,17] · Thiên Bậc [−6,−52]→[6,−19] · Thượng Trấn [−14,−67]→[14,−52] · Hậu Sơn [32,−88]→[56,−60] ·
   Tàng Thư Các [−51,−32]→[−17,−11]. Nhà: Trà lâu (Phẩm Minh Các), Tàng Thư Các (2 tầng), Tạp hoá. Vòng trận (30; 0).
-  Cổng ngõ về nhà quanh (−22; 36). Bàn cờ (−34; 4), Đấu chữ (−34; 11).
+  Lối xuống núi về nhà (cổng đi bộ) quanh (0; 45) (V-23 — thay ngõ cũ (−22; 36)). Bàn cờ (−34; 4), Đấu chữ (−34; 11).
 - Nhà của ta: Chính phòng [−5,25,−11]→[5,25,−5] · Vườn [6,5,−14]→[16,12] · Sân trước [−16,−14]→[6,5,12]; vòng trận
   (−10; −1,5); cổng về trấn (0; 14).
 - Toạ độ đầy đủ: `cd web && npm run scene:check` (in toạ độ nhà / vùng / tường) hoặc design/scene/*.json.
@@ -74,7 +74,7 @@ Số liệu thật để vẽ (đặc tả cảnh, bắc = −z ở trên, tây 
 Biểu tượng cần vẽ (cỡ nhỏ trên bản đồ nhỏ ~14–18, trên bản đồ lớn ~20–24 — thiết kế chốt; nét mực trên đĩa giấy):
 - Mũi tên "mình" (+ ghim bản đồ lớn nếu khác).
 - Vòng trận truyền tống (cùng họ biểu tượng vòng trận ở bản đồ truyền tống).
-- Cổng sang cảnh (ngõ / cửa đi bộ sang cảnh khác).
+- Cổng sang cảnh (lối xuống núi / cửa đi bộ sang cảnh khác).
 - Bàn cờ Ngũ Tử Kỳ 五子棋 · bàn Đấu chữ 鬥字 (hai biểu tượng hay một biểu tượng "bàn chơi" — thiết kế chọn).
 - Tạp hoá (tiệm). Khu tự học 自習 / chỗ ngồi ôn (bồ đoàn, án thư — một hay hai biểu tượng). Bảng nhiệm vụ 日課榜.
 - Dấu mép (chỉ hướng vòng trận / cổng ngoài tầm). La bàn 北.
