@@ -6,6 +6,8 @@ import { GLB_HEIGHT, loadGlbModel } from './glbCharacter';
 
 /** Bán kính vật cản tròn của NPC (R-NPC-1). */
 export const NPC_RADIUS = 0.45;
+/** R-NPC-1: NPC cách nhân vật từ khoảng này (m) trở lên thì ẩn (không vẽ, không cử động). */
+export const NPC_HIDE_DIST = 35;
 /** R-NPC-2: người chơi gần hơn khoảng này (m) thì hiện nút "Nói chuyện". */
 export const NPC_TALK_DIST = 2.5;
 
@@ -116,4 +118,15 @@ export function npcInTalkRange(npcs: readonly Npc[], player: THREE.Vector3): Npc
     }
   }
   return best;
+}
+
+/** R-NPC-1: ẩn NPC cách (x, z) từ `NPC_HIDE_DIST` trở lên, hiện lại khi gần; trả về NPC đang hiện (để cập nhật dáng). */
+export function showNearNpcs<T extends Pick<Npc, 'root'>>(npcs: readonly T[], x: number, z: number): T[] {
+  const near: T[] = [];
+  for (const n of npcs) {
+    const show = Math.hypot(n.root.position.x - x, n.root.position.z - z) < NPC_HIDE_DIST;
+    n.root.visible = show;
+    if (show) near.push(n);
+  }
+  return near;
 }

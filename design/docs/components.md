@@ -101,3 +101,14 @@ Một chất liệu: kính mờ `frost*` + viền `frost-line` / `frost-outline`
 | Bảng cách chơi (kính sương .92 phủ cảnh tối .28; đầu bảng tên Hán + Việt; hình minh hoạ giấy `map-paper`; mục đánh số vòng `jade` 26; ô mẹo NPC vàng 16 %; nút "Đóng" đáy) | `CachChoi-*` | frost, frost-line, frost-outline, slate, jade, gold, map-paper, answer-right-bg |
 | Mục đánh số (vòng `jade` 26 + số trắng 13/700, tiêu đề 15/700, đoạn 14/1,5) | `CachChoi-*` | jade, on-jade, slate |
 | Ô mẹo của NPC (chân dung 40 + bong bóng góc trái trên 4, nền vàng 16 %, viền vàng 60 %) | `CachChoi-*` | gold, slate |
+| Nút "Trò chuyện" (tròn 48 kính sương, biểu tượng bóng thoại 24, nhãn 11/700 dưới) — trên cụm hành động | `Chat-doc`, `Chat-ngang`, `Chat-trang-thai` | frost, frost-line, frost-outline, slate, shadow.hud |
+| Khung kênh thu gọn (3 dòng cuối, viên kính .78 bo 8, chữ 13; mờ .55 / .8 / 1; không bắt chạm) | `Chat-doc`, `Chat-ngang` | frost, map-paper (NPC), jade (tên "Ta", NPC) |
+| Khung kênh mở rộng (kính .93 bo 16, đầu 44 "Kênh chung 傳音" + ×, danh sách cuộn, viên "Tin mới") | `Chat-doc-go`, `Chat-trang-thai` | frost, jade, answer-right-bg (dòng của mình), map-paper (NPC) |
+| Ô nhập + nút "Gửi" (thanh kính .96 trên bàn phím; ô trắng viền `jade` 2, cao 44; Gửi `jade` 44) | `Chat-doc-go`, `Chat-ngang-go`, `Chat-trang-thai` | jade, slate, lacquer (quá dài) |
+| Bong bóng trên đầu (bo 12, đệm 7 11, chữ 14, rộng ≤ 168 dọc / 200 ngang, đuôi 12; mình: viền `jade` 1,5 · người khác: kính · NPC: `map-paper` viền vàng) | `Chat-*` | frost, jade, map-paper, gold |
+| Nút "Ngồi ôn" (tròn 52 kính, biểu tượng người ngồi cầm cuộn sách 24; chấm son đếm; bật: `jade` viền `gold` + quầng) — thay nút Thiền / Tu luyện | `NgoiOn-nut-trang-thai`, `NgoiOn-*` | frost, frost-line, frost-outline, slate, jade, gold, lacquer |
+| Cuộn treo (bảng chọn): 2 trục `scroll-wood` đầu `jade` viền `gold`, giấy `map-paper` viền bồi `jade` 12 %, ấn son chữ dọc | `NgoiOn-doc-*`, `NgoiOn-ngang-*` | scroll-wood, jade, gold, map-paper, lacquer |
+| Mục chọn trên giấy (vòng biểu tượng + tiêu đề + dòng phụ + ›; nổi bật `jade` · thường trắng 72 % · mờ nét đứt + dòng lý do có biểu tượng) | `NgoiOn-doc-*`, `NgoiOn-ngang-*` | jade, slate, map-paper |
+| Khung gợi ý (nền `jade` 8 %, viền `jade` 28 %, bo 12, biểu tượng 18) | `NgoiOn-doc-chua-hoc`, `NgoiOn-ngang-chua-hoc` | jade, slate |
+| Ô bộ đã học (bo 14 kính .9; chữ Hán 40, tên 14/700, 7 chấm bậc nhớ, viên "Đến hạn" `lacquer` hoặc "Ôn sau n ngày"; đến hạn viền `lacquer` 45 %) | `BoDaHoc-*` | frost, jade, lacquer, slate |
+| Cuộn sách trên tay (vật 3D: trục `scroll-wood` + đầu `jade`/`gold`, giấy `map-paper`, ấn son mặt sau) | `NgoiOn-cuon-sach` | scroll-wood, jade, gold, map-paper, lacquer |

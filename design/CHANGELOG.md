@@ -3,6 +3,60 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-14.10 — Ngồi ôn: nút, cuộn sách trên tay, bảng chọn (cuộn treo), màn Bộ đã học
+
+- Loại: giao diện · chuỗi · luồng/luật (đề xuất). Màn: **Ngồi ôn** (HUD web + vật 3D + bảng chọn Flutter) và **Bộ đã
+  học** (Flutter) — đặc tả `docs/screen_specs.md` hai mục cùng tên.
+- Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-13-ngoi-on.md`.
+- Mã mục: phiên thiết kế ghi `.6`; khi gộp nhánh (2026-11-14) đổi thành `.10` vì máy VS Code đã dùng .1 → .8 (người dùng chọn giữ số bên máy).
+- Artboard: `NgoiOn-doc-ton-mon`, `NgoiOn-doc-rung-truc`, `NgoiOn-doc-chua-hoc`, `NgoiOn-doc-du-50`,
+  `NgoiOn-ngang-ton-mon`, `NgoiOn-ngang-chua-hoc`, `NgoiOn-nut-trang-thai`, `NgoiOn-cuon-sach`, `BoDaHoc-doc`,
+  `BoDaHoc-doc-day`, `BoDaHoc-ngang` (+ `canvas.json`).
+- Quyết định:
+  - Bảng chọn là **cuộn treo** (giấy `map-paper` giữa hai trục gỗ, đầu trục ngọc viền vàng, ấn son 溫故) — cùng họ với
+    cuộn sách trên tay và cuộn bản đồ. Đặt **nửa trên** (dọc) / **bên phải** (ngang) để luôn thấy nhân vật ngồi cầm cuộn;
+    cảnh tối 16 %; cần điều khiển, cụm nút, nút Trò chuyện ẩn khi bảng mở.
+  - Mục mờ: viền nét đứt + dòng lý do có biểu tượng (không chỉ giảm độ mờ — chữ vẫn đọc được ≥ 4,5:1).
+  - Cuộn sách trên tay: cuộn tay mở ngang, trục 0,22 m, giấy 0,26 × 0,18, tâm cao 0,30 trước ngực 0,18, ngửa 30°; nhịp mở
+    0,3 → 1 s; bỏ chữ Hán trên đầu lúc nhập định (mục 2026-11-13.19).
+  - Bộ đã học: lưới ô (chữ, tên, 7 chấm bậc nhớ theo R-ON-1, hạn ôn), bộ đến hạn viền son.
+- Token: không thêm (dùng scroll-wood, map-paper, jade, gold, lacquer, frost*). Màu chữ mờ `#5E6A70` đã dùng ở các mục
+  trước — phiên code xem có nên thành token `slate-muted`.
+- Chuỗi (`l10n/vi.arb`): đổi `actionSit` "Ngồi ôn", `actionSitting` "Đang ôn", `actionSitLabel` "Ngồi ôn"; **bỏ**
+  `actionCultivate`, `actionCultivating`, `actionCultivateLabel`; thêm `actionSit*Label`, `reviewScroll*`, `reviewDue*`,
+  `learnNew*`, `learnAt*`, `learnAllDone*`, `viewLearned*`, `hintGoForest`, `standUp`, `learned*`.
+- Luật bị chạm — **đề xuất** (phiên code hỏi người dùng rồi sửa sổ):
+  - **R-ON-8**: chưa học bộ nào → mục Ôn ghi "Chưa có bộ nào để ôn" (thay "Hôm nay đã ôn xong") và bảng có thêm dòng gợi ý
+    "Chưa học bộ nào. Đến Truyền Tống Đài, chọn Rừng trúc rồi Ngồi ôn để học bộ đầu tiên." Ôn khi n = 0 không ghi "(0)".
+    Không mục nào dùng được → không mục nào nổi bật.
+  - **R-ON-8 / R-VUNG-3**: khi bảng mở, ẩn cần điều khiển, cụm nút hành động, nút Trò chuyện.
+  - Người dùng đã duyệt bố cục ("Ổn, chốt").
+- Ảnh: chưa có (nền cảnh là hình vẽ giữ chỗ).
+
+## 2026-11-14.9 — Trò chuyện kênh chung (nút, ô nhập, khung kênh, bong bóng trên đầu)
+
+- Loại: giao diện · chuỗi. Màn: **Trò chuyện kênh chung** (HUD web) — đặc tả `docs/screen_specs.md` mục cùng tên.
+- Mã mục: phiên thiết kế ghi `.1`; khi gộp nhánh (2026-11-14) đổi thành `.9` vì máy VS Code đã dùng .1 cho "Tường mỏng…".
+- Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-14-tro-chuyen-kenh-chung.md` (phiếu còn trong máy, chưa lên GitHub — phiên
+  code đang soạn; dòng "Đã vẽ" ghi ở bản trong máy).
+- Artboard: `Chat-doc` (đi lại: khung thu gọn + bong bóng mình / NPC), `Chat-doc-go` (đang gõ, bàn phím, khung mở rộng,
+  52/60), `Chat-ngang` (bong bóng chồng → đẩy lên + vạch nối), `Chat-ngang-go`, `Chat-trang-thai` (5 trạng thái ô nhập,
+  khung rỗng / đầy + "Tin mới", bong bóng 1 từ / 57 chữ / Hán + Việt / NPC, vòng đời 6 s, nút thường / nhấn, khi nào
+  ẩn). Nền giữ chỗ: ảnh Canvas 3D mới tải lên canvas (`chat-nen-doc.png`, `chat-nen-ngang.png`).
+- Quyết định thiết kế (phiếu để ngỏ):
+  - Nút "Trò chuyện" tròn 48 bên phải ngay trên cụm hành động (ngón cái với tới; góc trên trống theo `R-HUD-1`).
+  - Khung thu gọn trái trên joystick, không bắt chạm (`R-DIEU-1`), mờ hết sau 10 s im lặng.
+  - **Gửi xong đóng ô nhập** (thấy ngay bong bóng của mình).
+  - Đếm chữ chỉ hiện từ 50; quá 60 không cắt chữ — báo đỏ, Gửi mờ. Gửi dồn < 1,5 s: Gửi mờ + vòng chờ.
+  - Bong bóng 3 kiểu: mình viền `jade`, người khác kính, NPC giấy viền vàng. Chồng nhau → bong bóng cũ hơn đẩy lên.
+  - Tên kênh "Kênh chung" + 傳音; tên mình "Ta".
+- Thành phần mới (`docs/components.md`): nút Trò chuyện, khung thu gọn, khung mở rộng, ô nhập + Gửi, bong bóng. Token: không
+  thêm.
+- Chuỗi mới (`l10n/vi.arb`): `chatOpen`, `chatChannel`, `chatHint`, `chatSend`, `chatClose`, `chatEmpty`, `chatEmptySub`,
+  `chatSelf`, `chatCount`, `chatTooLong`, `chatWait`, `chatNew`.
+- Luật: không đổi. Theo `R-CHAT-1/2/3` (đang "chờ"), `R-DIEU-1`, `R-NPC-2`, `R-HUD-1`, `R-MAN-1`. Đề xuất ghi thêm vào
+  `R-CHAT-3` (phiên code hỏi người dùng): khung thu gọn tự mờ sau 10 s im lặng; gửi xong ô nhập đóng.
+- File: `source/Chat-*.dc.html` (mới), `source/canvas.json`, `docs/screen_specs.md`, `docs/components.md`, `l10n/vi.arb`.
 ## 2026-11-14.8 — Đổi tên: app "Tiểu Mặc 3D", trung tâm "Khởi Nguyên Trấn"
 
 - Loại: chuỗi · dữ liệu (cảnh, bản đồ) · luồng/luật (chỉ chữ). Phiên VS Code (`/lead`, kế hoạch

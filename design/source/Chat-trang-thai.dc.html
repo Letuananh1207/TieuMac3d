@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Trò chuyện – thành phần và trạng thái</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;700&amp;family=Lora:wght@700&amp;family=Noto+Serif+SC:wght@700&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2B5446}a:hover{color:#24323A}
+</style>
+</helmet>
+<div style="width: 1300px; height: 820px; box-sizing: border-box; padding: 32px; background: linear-gradient(#A9C8E8 0 46%, #EEE9DF 46% 100%); font-family: 'Be Vietnam Pro', system-ui, sans-serif; color: #24323A; display: grid; grid-template-columns: 380px 400px minmax(0, 1fr); gap: 32px">
+
+  <!-- Cột 1: ô nhập -->
+  <section style="display: flex; flex-direction: column; gap: 12px">
+    <h2 style="margin: 0; font-family: 'Lora', Georgia, serif; font-size: 20px">Ô nhập · 60 chữ</h2>
+    <div style="font-size: 12px; font-weight: 700">Trống — gợi ý, Gửi mờ</div>
+    <div style="display: flex; gap: 8px; padding: 10px; border-radius: 14px; background: rgba(244,247,246,.96); outline: 1px solid rgba(36,50,58,.14)"><div style="flex: 1; height: 44px; box-sizing: border-box; padding: 0 12px; border-radius: 12px; background: #FFFFFF; border: 2px solid #2B5446; display: flex; align-items: center; font-size: 15px; color: rgba(36,50,58,.55)">Nói gì đó với đồng môn…</div><button type="button" disabled style="height: 44px; padding: 0 14px; font: inherit; font-size: 15px; font-weight: 700; border-radius: 12px; border: 0; background: rgba(43,84,70,.35); color: #FFFFFF">Gửi</button></div>
+    <div style="font-size: 12px; font-weight: 700">Đang gõ — chưa tới 50 chữ thì không đếm</div>
+    <div style="display: flex; gap: 8px; padding: 10px; border-radius: 14px; background: rgba(244,247,246,.96); outline: 1px solid rgba(36,50,58,.14)"><div style="flex: 1; height: 44px; box-sizing: border-box; padding: 0 12px; border-radius: 12px; background: #FFFFFF; border: 2px solid #2B5446; display: flex; align-items: center; font-size: 15px">Có ai đi Rừng trúc không?</div><button type="button" style="height: 44px; padding: 0 14px; font: inherit; font-size: 15px; font-weight: 700; border-radius: 12px; border: 0; background: #2B5446; color: #FFFFFF; box-shadow: inset 0 -2px 0 rgba(0,0,0,.18), 0 4px 12px rgba(43,84,70,.3)">Gửi</button></div>
+    <div style="font-size: 12px; font-weight: 700">Gần hết — từ 50 chữ hiện "n/60"</div>
+    <div style="display: flex; gap: 8px; padding: 10px; border-radius: 14px; background: rgba(244,247,246,.96); outline: 1px solid rgba(36,50,58,.14)"><div style="position: relative; flex: 1; height: 44px; box-sizing: border-box; padding: 0 54px 0 12px; border-radius: 12px; background: #FFFFFF; border: 2px solid #2B5446; display: flex; align-items: center; font-size: 15px; overflow: hidden; white-space: nowrap">…đánh một ván Ngũ Tử Kỳ không?<span style="position: absolute; right: 10px; font-size: 12px; font-weight: 700">54/60</span></div><button type="button" style="height: 44px; padding: 0 14px; font: inherit; font-size: 15px; font-weight: 700; border-radius: 12px; border: 0; background: #2B5446; color: #FFFFFF">Gửi</button></div>
+    <div style="font-size: 12px; font-weight: 700">Quá dài (dán vào) — không cắt chữ, báo đỏ, Gửi mờ</div>
+    <div style="display: flex; flex-direction: column; gap: 6px; padding: 10px; border-radius: 14px; background: rgba(244,247,246,.96); outline: 1px solid rgba(36,50,58,.14)"><div style="display: flex; gap: 8px"><div style="position: relative; flex: 1; height: 44px; box-sizing: border-box; padding: 0 54px 0 12px; border-radius: 12px; background: #FFFFFF; border: 2px solid #A8322A; display: flex; align-items: center; font-size: 15px; overflow: hidden; white-space: nowrap">…một ván cờ rồi đi Rừng trúc luôn nhé?<span style="position: absolute; right: 10px; font-size: 12px; font-weight: 700; color: #A8322A">64/60</span></div><button type="button" disabled style="height: 44px; padding: 0 14px; font: inherit; font-size: 15px; font-weight: 700; border-radius: 12px; border: 0; background: rgba(43,84,70,.35); color: #FFFFFF">Gửi</button></div><div role="alert" style="font-size: 12px; font-weight: 700; color: #A8322A; padding-left: 4px">Quá dài — tối đa 60 chữ</div></div>
+    <div style="font-size: 12px; font-weight: 700">Chờ — gửi lại trong 1,5 giây (R-CHAT-1)</div>
+    <div style="display: flex; flex-direction: column; gap: 6px; padding: 10px; border-radius: 14px; background: rgba(244,247,246,.96); outline: 1px solid rgba(36,50,58,.14)"><div style="display: flex; gap: 8px"><div style="flex: 1; height: 44px; box-sizing: border-box; padding: 0 12px; border-radius: 12px; background: #FFFFFF; border: 2px solid #2B5446; display: flex; align-items: center; font-size: 15px">Đợi ta với!</div><button type="button" disabled style="height: 44px; padding: 0 12px; font: inherit; font-size: 15px; font-weight: 700; border-radius: 12px; border: 0; background: rgba(43,84,70,.35); color: #FFFFFF; display: flex; align-items: center; gap: 6px"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="3"></circle><path d="M12 3a9 9 0 0 1 8.5 6" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"></path></svg>Gửi</button></div><div role="status" style="font-size: 12px; font-weight: 700; padding-left: 4px">Chờ chút rồi gửi tiếp…</div></div>
+  </section>
+
+  <!-- Cột 2: khung kênh chung -->
+  <section style="display: flex; flex-direction: column; gap: 12px">
+    <h2 style="margin: 0; font-family: 'Lora', Georgia, serif; font-size: 20px">Khung kênh chung · 50 tin</h2>
+    <div style="font-size: 12px; font-weight: 700">Rỗng (mới vào phiên)</div>
+    <div style="height: 150px; box-sizing: border-box; border-radius: 16px; background: rgba(244,247,246,.93); outline: 1px solid rgba(36,50,58,.16); display: flex; flex-direction: column; overflow: hidden">
+      <div style="height: 40px; flex: 0 0 auto; padding: 0 14px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid rgba(36,50,58,.1)"><span style="width: 6px; height: 6px; border-radius: 50%; background: #D4A64A"></span><b style="font-size: 15px">Kênh chung</b><span lang="zh" style="font-family: 'Noto Serif SC', serif; font-weight: 700; font-size: 14px; color: #2B5446">傳音</span></div>
+      <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-align: center"><b style="font-size: 14px">Chưa ai lên tiếng…</b><span style="font-size: 13px">Hãy chào đồng môn một câu.</span></div>
+    </div>
+    <div style="font-size: 12px; font-weight: 700">Đầy · đang cuộn xem tin cũ → viên "Tin mới"</div>
+    <div style="position: relative; height: 210px; box-sizing: border-box; border-radius: 16px; background: rgba(244,247,246,.93); outline: 1px solid rgba(36,50,58,.16); overflow: hidden">
+      <ol style="list-style: none; margin: 0; padding: 6px 8px; display: flex; flex-direction: column; gap: 2px">
+        <li style="padding: 5px 8px; border-radius: 10px"><div style="display: flex; gap: 6px; align-items: baseline"><b style="font-size: 13px">Lâm Phong</b><span style="font-size: 11px; color: rgba(36,50,58,.7)">13:58</span></div><div style="font-size: 14px; line-height: 1.4">Ai rảnh vào Kỳ Văn Uyển đánh một ván Ngũ Tử Kỳ không nào?</div></li>
+        <li style="padding: 5px 8px; border-radius: 10px; background: rgba(242,234,218,.85)"><div style="display: flex; gap: 6px; align-items: baseline"><b style="font-size: 13px; color: #2B5446">Mặc Ông <span lang="zh" style="font-family: 'Noto Serif SC', serif">墨翁</span></b><span style="font-size: 11px; color: rgba(36,50,58,.7)">13:59</span></div><div style="font-size: 14px; line-height: 1.4">Học mà không ôn, như nước chảy qua cát.</div></li>
+        <li style="padding: 5px 8px; border-radius: 10px; background: rgba(43,84,70,.10)"><div style="display: flex; gap: 6px; align-items: baseline"><b style="font-size: 13px; color: #2B5446">Ta</b><span style="font-size: 11px; color: rgba(36,50,58,.7)">13:59</span></div><div style="font-size: 14px; line-height: 1.4">Dạ, con nhớ rồi ạ.</div></li>
+      </ol>
+      <div aria-hidden="true" style="position: absolute; right: 3px; top: 30px; width: 3px; height: 50px; border-radius: 2px; background: rgba(36,50,58,.25)"></div>
+      <button type="button" style="position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%); height: 32px; padding: 0 12px; font: inherit; font-size: 13px; font-weight: 700; border-radius: 999px; border: 0; background: #2B5446; color: #FFFFFF; box-shadow: 0 4px 12px rgba(43,84,70,.3); display: flex; align-items: center; gap: 6px">Tin mới · 2<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"></path></svg></button>
+    </div>
+    <div style="font-size: 12px; font-weight: 700">Thu gọn (đang đi lại) — không bắt chạm; tin mờ hết sau 10 giây im lặng</div>
+    <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 14px; border-radius: 14px; background: #7E8C8F">
+      <div style="opacity: .55; padding: 3px 9px; border-radius: 8px; background: rgba(244,247,246,.78); font-size: 13px"><b>Vân Nhi</b> Có ai đi Rừng trúc không?</div>
+      <div style="opacity: .8; padding: 3px 9px; border-radius: 8px; background: rgba(244,247,246,.78); font-size: 13px"><b style="color: #2B5446">Ta</b> Đợi ta với!</div>
+      <div style="padding: 3px 9px; border-radius: 8px; background: rgba(242,234,218,.88); font-size: 13px"><b style="color: #2B5446">Tiểu Mặc <span lang="zh" style="font-family: 'Noto Serif SC', serif">小墨</span></b> Đi thôi, đệ dẫn đường!</div>
+    </div>
+  </section>
+
+  <!-- Cột 3: bong bóng + nút -->
+  <section style="display: flex; flex-direction: column; gap: 14px">
+    <h2 style="margin: 0; font-family: 'Lora', Georgia, serif; font-size: 20px">Bong bóng trên đầu · 6 giây</h2>
+    <div style="display: flex; gap: 22px; align-items: flex-end; flex-wrap: wrap">
+      <div style="display: flex; flex-direction: column; align-items: center"><div style="padding: 7px 11px; border-radius: 12px; background: rgba(244,247,246,.95); border: 1.5px solid #2B5446; box-shadow: 0 4px 12px rgba(36,50,58,.18); font-size: 14px; line-height: 1.4">Chào!</div><div style="width: 12px; height: 12px; margin-top: -7px; transform: rotate(45deg); background: rgba(244,247,246,.95); border-right: 1.5px solid #2B5446; border-bottom: 1.5px solid #2B5446"></div><span style="margin-top: 6px; font-size: 12px; font-weight: 700">Mình · 1 từ</span></div>
+      <div style="display: flex; flex-direction: column; align-items: center"><div style="max-width: 168px; padding: 7px 11px; border-radius: 12px; background: rgba(244,247,246,.94); border: 1px solid rgba(36,50,58,.16); box-shadow: 0 4px 12px rgba(36,50,58,.18); font-size: 14px; line-height: 1.4">Ai rảnh vào Kỳ Văn Uyển đánh một ván Ngũ Tử Kỳ không nào?</div><div style="width: 12px; height: 12px; margin-top: -7px; transform: rotate(45deg); background: rgba(244,247,246,.94); border-right: 1px solid rgba(36,50,58,.16); border-bottom: 1px solid rgba(36,50,58,.16)"></div><span style="margin-top: 6px; font-size: 12px; font-weight: 700">Người khác · 57 chữ (≤ 3 dòng)</span></div>
+      <div style="display: flex; flex-direction: column; align-items: center"><div style="max-width: 168px; padding: 7px 11px; border-radius: 12px; background: rgba(244,247,246,.94); border: 1px solid rgba(36,50,58,.16); box-shadow: 0 4px 12px rgba(36,50,58,.18); font-size: 14px; line-height: 1.4">Hôm nay học chữ <span lang="zh" style="font-family: 'Noto Serif SC', serif; font-weight: 700; color: #2B5446">永</span> — vĩnh, mãi mãi.</div><div style="width: 12px; height: 12px; margin-top: -7px; transform: rotate(45deg); background: rgba(244,247,246,.94); border-right: 1px solid rgba(36,50,58,.16); border-bottom: 1px solid rgba(36,50,58,.16)"></div><span style="margin-top: 6px; font-size: 12px; font-weight: 700">Chữ Hán lẫn tiếng Việt</span></div>
+      <div style="display: flex; flex-direction: column; align-items: center"><div style="max-width: 168px; padding: 7px 11px; border-radius: 12px; background: #F2EADA; border: 1px solid rgba(212,166,74,.75); box-shadow: 0 4px 12px rgba(36,50,58,.18); font-size: 14px; line-height: 1.4">Học mà không ôn, như nước chảy qua cát.</div><div style="width: 12px; height: 12px; margin-top: -7px; transform: rotate(45deg); background: #F2EADA; border-right: 1px solid rgba(212,166,74,.75); border-bottom: 1px solid rgba(212,166,74,.75)"></div><span style="margin-top: 6px; font-size: 12px; font-weight: 700">NPC · giấy viền vàng</span></div>
+    </div>
+
+    <div style="display: flex; gap: 28px; align-items: flex-start; margin-top: 8px">
+      <div style="display: flex; flex-direction: column; gap: 8px; width: 330px">
+        <div style="font-size: 12px; font-weight: 700">Hai người đứng gần → bong bóng cũ hơn đẩy lên, nối xuống bằng vạch</div>
+        <div style="position: relative; height: 170px; border-radius: 14px; background: #7E8C8F">
+          <div style="position: absolute; left: 150px; top: 14px; padding: 6px 10px; border-radius: 12px; background: rgba(244,247,246,.95); border: 1.5px solid #2B5446; font-size: 13px">Chào Tiểu Mặc!</div>
+          <div style="position: absolute; left: 207px; top: 45px; width: 1.5px; height: 82px; background: #2B5446; opacity: .7"></div>
+          <div style="position: absolute; left: 204px; top: 125px; width: 7px; height: 7px; border-radius: 50%; background: #2B5446"></div>
+          <div style="position: absolute; left: 30px; top: 58px; max-width: 170px; padding: 6px 10px; border-radius: 12px; background: #F2EADA; border: 1px solid rgba(212,166,74,.75); font-size: 13px; line-height: 1.4">Đạo hữu khoẻ không? Bảng nhiệm vụ có việc mới đó!</div>
+          <div style="position: absolute; left: 92px; top: 106px; width: 10px; height: 10px; transform: rotate(45deg); background: #F2EADA; border-right: 1px solid rgba(212,166,74,.75); border-bottom: 1px solid rgba(212,166,74,.75)"></div>
+          <div style="position: absolute; left: 70px; top: 134px; height: 22px; padding: 0 9px; border-radius: 999px; background: rgba(244,247,246,.86); font-size: 11px; font-weight: 700; display: flex; align-items: center">Tiểu Mặc</div>
+          <div style="position: absolute; left: 178px; top: 138px; height: 22px; padding: 0 9px; border-radius: 999px; background: rgba(244,247,246,.88); font-size: 11px; font-weight: 700; display: flex; align-items: center">Tuấn Anh</div>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px; flex: 1">
+        <div style="font-size: 12px; font-weight: 700">Vòng đời một bong bóng (R-CHAT-2)</div>
+        <div style="display: flex; height: 26px; border-radius: 8px; overflow: hidden; font-size: 11px; font-weight: 700; color: #FFFFFF">
+          <span style="flex: 0 0 34px; background: #3F5FA0; display: flex; align-items: center; justify-content: center">hiện</span>
+          <span style="flex: 5; background: #2B5446; display: flex; align-items: center; justify-content: center">giữ nguyên</span>
+          <span style="flex: 1; background: rgba(43,84,70,.45); display: flex; align-items: center; justify-content: center">mờ</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 11px"><span>0 s · phóng 90→100 % trong 0,15 s</span><span>5 s</span><span>6 s</span></div>
+        <div style="font-size: 12px; line-height: 1.5">Tin mới của cùng người → thay ngay, đếm lại 6 s. Cách camera trên 25 m hoặc sau camera → không vẽ (vẫn có trong khung). Đang mở bài học / thoại NPC / bàn chơi → không vẽ bong bóng.</div>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 22px; align-items: flex-end; margin-top: 6px">
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 3px"><button type="button" aria-label="Trò chuyện" style="width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; background: rgba(244,247,246,.86); border: 1px solid rgba(255,255,255,.95); outline: 1px solid rgba(36,50,58,.16); color: #24323A; box-shadow: 0 4px 14px rgba(36,50,58,.18)"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-8l-4 3v-3H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"></path><path d="M8 10h8M8 13h5"></path></svg></button><span style="font-size: 11px; font-weight: 700; background: rgba(244,247,246,.82); border-radius: 999px; padding: 1px 7px">Trò chuyện</span><span style="font-size: 11px">thường</span></div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 3px"><button type="button" aria-label="Trò chuyện (đang nhấn)" style="width: 48px; height: 48px; transform: scale(.94); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-sizing: border-box; background: rgba(214,222,220,.95); border: 1px solid rgba(255,255,255,.95); outline: 1px solid rgba(36,50,58,.22); color: #24323A"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-8l-4 3v-3H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"></path><path d="M8 10h8M8 13h5"></path></svg></button><span style="font-size: 11px; font-weight: 700; background: rgba(244,247,246,.82); border-radius: 999px; padding: 1px 7px">Trò chuyện</span><span style="font-size: 11px">đang nhấn</span></div>
+      <div style="flex: 1; font-size: 12px; line-height: 1.5; padding-bottom: 4px"><b>Ẩn nút + khung thu gọn khi:</b> mở bài học / thẻ bộ thủ / bảng, đang thoại NPC (R-NPC-2), đang ngồi bàn chơi, bản đồ mở, màn tải. Máy tính: <b>Enter</b> mở ô nhập / gửi, <b>Esc</b> đóng; đang gõ thì phím không điều khiển nhân vật.</div>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1300,"height":820}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

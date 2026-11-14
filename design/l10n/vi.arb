@@ -128,9 +128,9 @@
   "radicalLearned": "Đã học",
   "actionJump": "Nhảy",
   "actionBow": "Chào",
-  "actionSit": "Thiền",
-  "actionSitting": "Đang thiền",
-  "actionSitLabel": "Ngồi thiền",
+  "actionSit": "Ngồi ôn",
+  "actionSitting": "Đang ôn",
+  "actionSitLabel": "Ngồi ôn",
   "talk": "Nói chuyện",
   "@talk": {
     "description": "Nút nổi trên đầu NPC (R-NPC-2). Lời thoại giữ trong dữ liệu hội thoại (web/src/zones/dialogs.ts), không ở đây."
@@ -138,20 +138,9 @@
   "@radicalBack": {
     "description": "Thẻ bộ thủ đã học: đóng thẻ; đang ngồi thì đứng dậy luôn (đề xuất 2026-11-13.19)."
   },
-  "actionCultivate": "Tu luyện",
-  "actionCultivating": "Đang tu luyện",
-  "actionCultivateLabel": "Tu luyện, còn {n} bộ thủ chưa học",
-  "@actionCultivateLabel": {
-    "description": "Nhãn trợ năng nút ngồi ở vùng có bài học",
-    "placeholders": {
-      "n": {
-        "type": "int"
-      }
-    }
-  },
   "radicalLeft": "{n}",
   "@radicalLeft": {
-    "description": "Chấm son trên nút Tu luyện; ≥ 100 → \"99+\"",
+    "description": "Chấm son trên nút Ngồi ôn; ≥ 100 → \"99+\"",
     "placeholders": {
       "n": {
         "type": "int"
@@ -544,5 +533,167 @@
   "guideSeatBody": "Đứng gần một bồ đoàn → nút \"Vào bàn\". Muốn đứng dậy: kéo cần điều khiển hoặc bấm Ngồi ôn — ván đang chơi bỏ, không tính.",
   "@guideSeatBody": {
     "description": "Theo R-GIAO-1 hiện tại. Nếu áp nút \"Rời bàn\" (đề xuất 2026-11-13.27) → \"…Muốn đứng dậy: bấm Rời bàn — …\""
+  },
+  "chatOpen": "Trò chuyện",
+  "@chatOpen": {
+    "description": "Nhãn + trợ năng nút mở trò chuyện (HUD) — 2026-11-14.9"
+  },
+  "chatChannel": "Kênh chung",
+  "@chatChannel": {
+    "description": "Tên kênh; cạnh có chữ Hán 傳音 (truyền âm) trang trí"
+  },
+  "chatHint": "Nói gì đó với đồng môn…",
+  "@chatHint": {
+    "description": "Gợi ý trong ô nhập trống"
+  },
+  "chatSend": "Gửi",
+  "chatClose": "Đóng kênh chung",
+  "@chatClose": {
+    "description": "Trợ năng nút × của khung kênh"
+  },
+  "chatEmpty": "Chưa ai lên tiếng…",
+  "chatEmptySub": "Hãy chào đồng môn một câu.",
+  "chatSelf": "Ta",
+  "@chatSelf": {
+    "description": "Tên của mình trong khung kênh chung (người khác thấy tên nhân vật)"
+  },
+  "chatCount": "{n}/60",
+  "@chatCount": {
+    "description": "Đếm chữ trong ô nhập, hiện khi ≥ 50",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "chatTooLong": "Quá dài — tối đa 60 chữ",
+  "@chatTooLong": {
+    "description": "R-CHAT-1 quá 60 ký tự"
+  },
+  "chatWait": "Chờ chút rồi gửi tiếp…",
+  "@chatWait": {
+    "description": "R-CHAT-1 gửi lại dưới 1,5 giây"
+  },
+  "chatNew": "Tin mới · {n}",
+  "@chatNew": {
+    "description": "Viên báo tin mới khi đang cuộn xem tin cũ",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "actionSitDueLabel": "Ngồi ôn, còn {n} bộ đến hạn",
+  "@actionSitDueLabel": {
+    "description": "Trợ năng nút Ngồi ôn khi có chấm son bộ đến hạn (R-DIEU-7)",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "actionSitNewLabel": "Ngồi ôn, còn {n} bộ chưa học",
+  "@actionSitNewLabel": {
+    "description": "Trợ năng nút Ngồi ôn ở vùng có bài học, không bộ đến hạn",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "actionSitOnLabel": "Đang ôn, bấm để đứng dậy",
+  "reviewScroll": "Ngồi ôn",
+  "@reviewScroll": {
+    "description": "Tiêu đề cuộn sách bảng chọn (R-ON-8)"
+  },
+  "reviewScrollSeal": "Ôn cũ biết mới",
+  "@reviewScrollSeal": {
+    "description": "Nhãn trợ năng ấn son 溫故 trên cuộn sách"
+  },
+  "reviewDue": "Ôn bộ đến hạn ({n})",
+  "@reviewDue": {
+    "description": "n > 0; khi n = 0 dùng reviewDueNone làm tiêu đề",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewDueNone": "Ôn bộ đến hạn",
+  "reviewDueDone": "Hôm nay đã ôn xong",
+  "reviewDueNothing": "Chưa có bộ nào để ôn",
+  "@reviewDueNothing": {
+    "description": "Đề xuất 2026-11-14.10: thay \"Hôm nay đã ôn xong\" khi chưa học bộ nào (cần sửa R-ON-8)"
+  },
+  "reviewDueSub": "mỗi bộ 2 câu",
+  "learnNew": "Học bộ mới",
+  "learnNewNext": "Bộ kế tiếp: {radical}",
+  "@learnNewNext": {
+    "description": "radical = \"<chữ> <tên> — <nghĩa>\", vd. 山 sơn — núi",
+    "placeholders": {
+      "radical": {
+        "type": "String"
+      }
+    }
+  },
+  "learnAtForest": "Học ở Rừng trúc",
+  "learnAllDone": "Đã học đủ",
+  "learnAllDoneBanner": "Đã học đủ 50 bộ thủ Rừng trúc",
+  "viewLearned": "Xem bộ đã học",
+  "viewLearnedSub": "{n} / 50 bộ",
+  "@viewLearnedSub": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "viewLearnedNone": "Chưa học bộ nào",
+  "hintGoForest": "Chưa học bộ nào. Đến Truyền Tống Đài, chọn Rừng trúc rồi Ngồi ôn để học bộ đầu tiên.",
+  "standUp": "Đứng dậy",
+  "learnedTitle": "Bộ đã học",
+  "learnedHint": "Chạm một bộ để mở lại thẻ",
+  "learnedCount": "{n} / 50 bộ",
+  "@learnedCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "learnedLegend": "bậc nhớ (1 → 7)",
+  "learnedDueCount": "{n} bộ đến hạn",
+  "@learnedDueCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "learnedOrder": "Xếp theo thứ tự học",
+  "learnedDue": "Đến hạn",
+  "learnedNextIn": "Ôn sau {n} ngày",
+  "@learnedNextIn": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "learnedBack": "Về cuộn sách",
+  "learnedItemLabel": "{radical}, bậc {level}, {when}",
+  "@learnedItemLabel": {
+    "description": "Trợ năng ô bộ đã học; when = \"đến hạn ôn\" hoặc \"ôn sau n ngày\"",
+    "placeholders": {
+      "radical": {
+        "type": "String"
+      },
+      "level": {
+        "type": "int"
+      },
+      "when": {
+        "type": "String"
+      }
+    }
   }
 }

@@ -13,7 +13,7 @@ export const GOODS_KINDS = ['but', 'vai', 'bua', 'thuoc', 'thung'] as const;
 export const ROOF_KINDS = ['chop', 'cong'] as const;
 export const SIDES = ['bac', 'nam', 'dong', 'tay'] as const;
 /** NPC có model: `design/models/<mã>.glb` (tạo bằng /tai-nguyen). Thêm NPC mới = thêm mã ở đây + đặt file model. */
-export const NPC_IDS = ['tieu-mac', 'su-phu', 'thu-thu'] as const;
+export const NPC_IDS = ['tieu-mac', 'su-phu', 'thu-thu', 'tieu-nhi', 'quan-su', 'tran-su'] as const;
 /** Bàn chơi ở khu giao lưu (R-GIAO-1): `co` = Ngũ Tử Kỳ (R-CO-1), `dau-chu` = Đấu chữ (R-DAU-1). */
 export const GAME_KINDS = ['co', 'dau-chu'] as const;
 export const PROP_KINDS = [
