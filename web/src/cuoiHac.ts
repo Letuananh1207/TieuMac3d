@@ -79,6 +79,7 @@ export class CraneRide {
         : { a: landCurve(this.pad, this.padY, o.heading), b: leaveCurve(this.pad, this.padY, o.heading) };
     o.scene.add(this.crane.root);
     o.hud.capture(() => this.skip());
+    o.hud.hideGame(true);
     o.hud.hint('boQua');
     if (leg === 'ha') o.hud.veil(1);
   }
@@ -186,6 +187,7 @@ export class CraneRide {
     this.o.hud.veil(0);
     this.o.hud.hint(null);
     this.o.hud.capture(null);
+    this.o.hud.hideGame(false);
     this.owns = false;
     this.leaving = 0;
     this.o.onEnd();
@@ -233,6 +235,7 @@ export class CraneFlight {
     this.hud = new CraneHud(night);
     this.flight = buildFlight(spec, detail, gio, colorManaged);
     this.hud.capture(() => this.clock.skip());
+    this.hud.hideGame(true); // nút / cần điều khiển dựng dần trong lúc bay — ẩn tới khi hạ xong
     this.place = spec.site.name;
     this.ended = new Promise((r) => (this.resolveEnd = r));
     this.started = new Promise((r) => (this.firstFrame = r));

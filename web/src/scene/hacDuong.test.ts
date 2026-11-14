@@ -16,13 +16,13 @@ describe('hạc truyền tống — bãi đáp, đường bay (R-HANH-5)', () =>
     near(mountPad([0, 0], START_HEADING, 2), [0, -2]);
   });
 
-  it('R-HANH-5: đường hạ kết thúc đúng bãi đáp, bắt đầu cao phía sau; cất cánh bắt đầu ở bãi, vút lên', () => {
+  it('R-HANH-5: đường hạ kết thúc đúng bãi đáp, bắt đầu cao phía trước; cất cánh bắt đầu ở bãi, vút lên', () => {
     const pad: [number, number] = [2.5, 48];
     const land = landCurve(pad, 3, START_HEADING);
     near(bezier(land, 1), [2.5, 3, 48]);
     const s = bezier(land, 0);
     expect(s[1]).toBeGreaterThan(20);
-    expect(s[0]).toBeGreaterThan(20); // nhìn bắc → bên phải là +x: bay ngang vào từ bên phải
+    expect(s[2]).toBeLessThan(48 - 20); // nhìn bắc (−z) → tới từ phía trước
     near(bezier(arriveCurve(pad, 3, START_HEADING), 1), [2.5, 3, 48]);
     const up = takeoffCurve(pad, 3, START_HEADING);
     near(bezier(up, 0), [2.5, 3, 48]);

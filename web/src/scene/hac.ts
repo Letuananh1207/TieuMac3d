@@ -104,7 +104,8 @@ export class Crane {
   fold = 0;
 
   constructor(spec: CraneSpec) {
-    this.material = lambert('#ffffff', { vertexColors: true, side: THREE.DoubleSide });
+    // tự sáng nhẹ: mặt dưới cánh (pháp tuyến lật, ánh đất xanh của hemi) không bị xỉn màu rêu
+    this.material = lambert('#ffffff', { vertexColors: true, side: THREE.DoubleSide, emissive: '#2b2b2b' });
     const body = new THREE.Mesh(bodyGeometry(spec), this.material);
     this.geos.push(body.geometry);
     this.root.add(body);

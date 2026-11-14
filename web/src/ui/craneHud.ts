@@ -6,6 +6,7 @@
  */
 import type { CraneHint } from '../zones/cuoiHac';
 
+const HIDE_STYLE = 'hac-an-hud';
 const HINT: Record<CraneHint, string> = { boQua: 'Chạm để bỏ qua', sapToi: 'Sắp tới nơi…' };
 
 export class CraneHud {
@@ -60,6 +61,7 @@ export class CraneHud {
       e.stopPropagation();
       this.onTap();
     });
+    this.root.dataset.hac = '';
     document.body.append(this.root);
   }
 
@@ -90,7 +92,19 @@ export class CraneHud {
     if (h) this.hintEl.textContent = HINT[h];
   }
 
+  /** ẩn mọi lớp HUD của trò chơi (con trực tiếp của body, trừ cảnh, màn tải, lớp này) trong hoạt cảnh */
+  hideGame(on: boolean): void {
+    if (!document.getElementById(HIDE_STYLE)) {
+      const st = document.createElement('style');
+      st.id = HIDE_STYLE;
+      st.textContent = 'body.hac-bay > :not(#stage):not(#loading):not([data-hac]){visibility:hidden !important}';
+      document.head.append(st);
+    }
+    document.body.classList.toggle('hac-bay', on);
+  }
+
   remove(): void {
+    this.hideGame(false);
     this.root.remove();
   }
 }

@@ -71,10 +71,10 @@ export function takeoffCurve(pad: XZ, y: number, heading: number): Curve {
   return [p, off(p, heading, 5, 2), off(p, heading, 16, 9), off(p, heading, 34, 24)];
 }
 
-/** Hạ cánh xuống `pad`: lượn từ bên phải-trên bay ngang qua trước camera (thấy dáng hạc nghiêng), đáp ở bãi. */
+/** Hạ cánh xuống `pad`: lượn từ phía trước-phải trên cao (dọc lối nhìn của camera — ít bị cây che) về bãi. */
 export function landCurve(pad: XZ, y: number, heading: number): Curve {
   const p: V3 = [pad[0], y, pad[1]];
-  return [off(p, heading, 8, 24, 30), off(p, heading, 4, 11, 15), off(p, heading, 0.5, 2.5, 4), p];
+  return [off(p, heading, 30, 22, 12), off(p, heading, 14, 9, 8), off(p, heading, 3, 2.5, 3), p];
 }
 
 /** Bay đi sau khi thả người: lên cao về phía trước rồi khuất. */
@@ -114,7 +114,7 @@ export function departCamera(from: V3, crane: V3, heading: number, k: number): V
 
 /** Camera khúc bay (nhìn ngang ¾ từ bên phải, hạc ở 1/3 dưới màn): vị trí + điểm nhìn quanh hạc. */
 export function flightCamera(crane: V3, heading: number, sway: number): { pos: V3; look: V3 } {
-  return { pos: off(crane, heading, 3.2, 1.6 + sway * 0.25, 7.5), look: off(crane, heading, 0.6, 1.9, 0) };
+  return { pos: off(crane, heading, 2.4, 2.6 + sway * 0.25, 10.5), look: off(crane, heading, 0.4, 2.4, 0) };
 }
 
 /**
@@ -122,11 +122,11 @@ export function flightCamera(crane: V3, heading: number, sway: number): { pos: V
  * sau lưng của trò chơi lúc xuất hiện).
  */
 export function landCamera(home: { pos: V3; look: V3 }, crane: V3, rider: V3, k: number): { pos: V3; look: V3 } {
-  // lùi xa hơn camera thường 6 m, cao thêm 2,5 m — thấy cả hạc sải cánh lẫn chỗ đáp
+  // đứng đúng chỗ camera thường (đã tránh tường / cây — R-DIEU-4), cao thêm 0,8 m, nhìn theo hạc; lùi / nâng nhiều dễ chui vào cổng, cây
   const bx = home.pos[0] - home.look[0];
   const bz = home.pos[2] - home.look[2];
   const n = Math.hypot(bx, bz) || 1;
-  const watch = { pos: [home.pos[0] + (bx / n) * 6, home.pos[1] + 2.5, home.pos[2] + (bz / n) * 6] as V3, look: lerp3(crane, rider, 0.4) };
+  const watch = { pos: [home.pos[0] + (bx / n) * 0.3, home.pos[1] + 0.8, home.pos[2] + (bz / n) * 0.3] as V3, look: lerp3(crane, rider, 0.4) };
   return { pos: lerp3(watch.pos, home.pos, ease(k)), look: lerp3(watch.look, home.look, ease(k)) };
 }
 

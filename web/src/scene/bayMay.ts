@@ -115,7 +115,7 @@ export function buildFlight(spec: SceneSpec, detail: number, gio: number, colorM
       crane.root.position.set(x, FLY_Y + bob, z);
       crane.root.rotation.set(0, flight.heading, 0);
       crane.root.rotateZ(-0.12); // nghiêng nhẹ vào trong vòng lượn
-      crane.update(dt, 0.55, 3.2, 0.3);
+      crane.update(dt, 0.4, 3.2, 0.3);
       crane.seatWorld(seat);
       const cam = flightCamera([x, FLY_Y + bob, z] as V3, flight.heading, Math.sin(t * 3.2));
       camera.position.set(...cam.pos);

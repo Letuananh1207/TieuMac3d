@@ -56,6 +56,14 @@ describe('cưỡi hạc — dòng thời gian (R-HANH-5)', () => {
     expect([landStage(1), landStage(1.5), landStage(1.9)]).toEqual(['ha', 'nhay', 'veSau']);
   });
 
+  it('R-MAN-2: cổng đi bộ, giảm chuyển động, app (hoạt cảnh chưa bật) → màn tải; trang mở không có den=hac → màn tải', () => {
+    expect(wantsCrane({ how: 'cong', trial: true, reducedMotion: false, inApp: true })).toBe(false);
+    expect(wantsCrane({ how: 'vong', trial: false, reducedMotion: true, inApp: true })).toBe(false);
+    expect(wantsCrane({ how: 'vong', trial: false, reducedMotion: false })).toBe(false);
+    expect(arrivingByCrane(new URLSearchParams(''), false)).toBe(false);
+    expect(arrivingByCrane(new URLSearchParams('qua=nha-ta'), false)).toBe(false);
+  });
+
   it('R-HANH-5: chỉ vòng trận; giảm chuyển động → không hạc; chưa có thiết kế → chỉ bật ở chế độ thử', () => {
     expect(CRANE_IN_APP).toBe(false);
     expect(wantsCrane({ how: 'vong', trial: false, reducedMotion: false })).toBe(false);
