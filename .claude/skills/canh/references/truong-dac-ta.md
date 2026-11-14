@@ -60,7 +60,8 @@ không muốn thứ của khuôn. Canvas 3D: `?vung=<mã>` xem cảnh vùng.
 | `trees.groves` | `{ "kind": "truc", "x": 63, "z": 30, "w": 4, "d": 20, "count": 10, "collide": false }` | cụm cây rải trong chữ nhật; `kind`: tan · truc · tung · lieu · mai |
 | `trees.leaves` · `willow` · `plum` | màu | tùng, liễu, mai |
 | `floating` | `"islands": [{ "x": -90, "y": 35, "z": -90, "scale": 2 }]`, `"clouds": { "count": 10 }` | đảo nổi, mây trôi |
-| `sky` · `fog` · `light` · `ground` · `well` | xem `spec.ts` | trời 3 màu, sương `near` / `far` (cảnh rộng: tăng `far`), đèn, màu gạch sân, giếng. `light.lampGlow` 0…1 (mặc định 0): độ phát sáng đèn lồng / ô đèn đá / đèn giấy + quầng `look.lanternGlow` — 0 = ban ngày, đèn chỉ là vật (V-20261114-27; ngày đêm sẽ đổi theo giờ) |
+| `sky` · `fog` · `light` · `ground` · `well` | xem `spec.ts` | trời 3 màu, sương `near` / `far` (cảnh rộng: tăng `far`), đèn, màu gạch sân, giếng. `light.lampGlow` 0…1 (mặc định 0): độ phát sáng đèn lồng / ô đèn đá / đèn giấy + quầng `look.lanternGlow` — 0 = ban ngày, đèn chỉ là vật (V-20261114-27; bật `dayNight` thì đèn đổi theo giờ, số này bỏ qua) |
+| `dayNight` | `{ "enabled": true }` (mọi cảnh) | ngày đêm theo giờ VN (R-NGAY-1…5): `moc` (giờ bình minh / hoàng hôn / đèn bật tắt), `dem` (trời 3 màu, `fog`, `light.hemiScale` / `moonScale` (≥ 0,4 hemi — đêm vẫn rõ), `tint.near / far / water` nhân màu vật không chịu sáng, `lampGlow`, `windowGlow`, `windowColor`, `vignette`, `stars`, `moon`), `hoang` (màu cam bình minh / hoàng hôn), `trongNha` (đêm trong nhà vàng ấm). Thiếu = bảng đêm chung xanh tím (`scene/ngayDem.ts`). Xem: Canvas 3D `?gio=21`, thanh trượt Giờ |
 | `camera` | `fov`, `minDist`, `maxDist`, `near` / `far` (góc gần / xa) | `pitch` trong góc: radian |
 
 ## Địa hình (`terrain.enabled: true`)

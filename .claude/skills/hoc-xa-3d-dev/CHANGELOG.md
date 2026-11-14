@@ -20,3 +20,4 @@
 - 2026-11-14 — Trò chuyện kênh chung: lớp mới `chat/` (thuần, không import gì; `ui/` được import `chat`), hợp đồng `ChatChannel` + `LocalChannel` (chưa có máy chủ), luật R-CHAT-1..3; giao diện chờ phiếu `2026-11-14-tro-chuyen-kenh-chung`.
 - 2026-11-14 — Làm song song: tính năng mới ghép qua file riêng ở gốc `web/src/` (`main.ts` chỉ vài dòng gọi); mỗi việc một worktree (`tool/viec.dart`, CLAUDE.md "Làm song song").
 - 2026-11-14 — Cảnh hoạt hình mềm (decisions/0005): quy tắc 4 nới có đo — `softMaterial` (Lambert + wrap + màu đỉnh + gió), `ShaderMaterial` nước trong `scene/`, bóng nướng; cảnh báo mới `W-VATLIEU` (PBR / EffectComposer); trường đặc tả `look` (`cu` mặc định).
+- 2026-11-14 — Ngày đêm (V-20261114-27): web_scene.md thêm dòng `dayNight` / `apGio` / `dayNightTag` (vật Basic giữ màu ban đêm).
