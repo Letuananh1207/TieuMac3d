@@ -108,21 +108,30 @@ export function poseOf(s: CuonState): CuonPose {
 }
 
 /**
+ * Giấy cuộn (m): rộng × cao. V-43 (người dùng đổi thiết kế 2026-11-14.21 — giấy 0,26 × 0,25, màn ngang lệch phải): giấy dài
+ * hơn 0,26 × 0,35, cầm giữa màn. Bố cục chữ theo cùng tỉ lệ (`zones/cuonMuc.ts` `PAPER_RATIO`).
+ */
+export const CUON_GIAY_W = 0.26;
+export const CUON_GIAY_H = 0.35;
+
+/** Giấy chiếm chừng này bề ngang màn (màn dọc) / chiều cao màn (màn ngang) — lấy cái chật hơn. */
+export const CUON_GIAY_NGANG = 0.8;
+export const CUON_GIAY_CAO = 0.84;
+
+/**
  * Cuộn sách trước mắt khi nhìn từ mắt (R-DIEU-7, R-ON-8): đặt vừa khung màn thay vì cố định theo mét — màn dọc hẹp
  * (~36° ngang sau khi nới FOV), màn ngang rộng. `fovDeg` FOV dọc đang dùng, `aspect` rộng / cao, `halfW` / `halfH` nửa bề
- * ngang / nửa chiều cao cả cuộn (m). Trả `dist` khoảng cách từ mắt tới tâm cuộn theo hướng nhìn chuẩn, `side` dời ngang
- * (m, dương = sang phải người cầm — màn ngang: cuộn lệch phải, cảnh bên trái).
- * Thiết kế 2026-11-14.21: dọc giấy ~88 % bề ngang (cả cuộn kể trục ~92 %); ngang giấy ~73 % chiều cao (cả cuộn ~86 %), tâm lệch\n * phải ~47 % nửa màn (giấy từ x 470 trên 844). Khoảng cách giữ trong tầm tay.
+ * ngang / nửa chiều cao **giấy** (m). Trả khoảng cách từ mắt tới tâm cuộn theo hướng nhìn chuẩn — tâm cuộn luôn giữa màn
+ * (cả dọc lẫn ngang). Màn dọc: giấy ~80 % bề ngang (hai trục sát mép màn); màn ngang: giấy ~84 % chiều cao (đầu trục
+ * chạm / quá mép màn chút ít, chữ cách mép trên / dưới ~8 %). Khoảng cách giữ trong tầm tay.
  */
 export const CUON_GAN = 0.3;
 export const CUON_XA = 0.7;
 
-export function fitScroll(fovDeg: number, aspect: number, halfW: number, halfH: number): { dist: number; side: number } {
+export function fitScroll(fovDeg: number, aspect: number, halfW: number, halfH: number): number {
   const tv = Math.tan((fovDeg * Math.PI) / 360);
   const th = tv * aspect;
-  const byW = halfW / (0.92 * th);
-  const byH = halfH / (0.86 * tv);
-  const dist = Math.min(CUON_XA, Math.max(CUON_GAN, byW, byH));
-  const side = aspect > 1 ? 0.47 * th * dist : 0;
-  return { dist, side };
+  const byW = halfW / (CUON_GIAY_NGANG * th);
+  const byH = halfH / (CUON_GIAY_CAO * tv);
+  return Math.min(CUON_XA, Math.max(CUON_GAN, byW, byH));
 }

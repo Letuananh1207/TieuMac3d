@@ -1,6 +1,6 @@
 /**
  * Mục in trên cuộn sách Ngồi ôn trước mắt (R-ON-8; thiết kế 2026-11-14.21 `NgoiMat-*`): chữ từng dòng mực, bố cục giấy
- * (px thiết kế: dọc 343 × 330, ngang 300 × 288) và vùng chạm theo (u, v) trên giấy. Thuần — không three, không DOM;
+ * (px thiết kế: dọc 343 × 462, ngang 250 × 337 — V-43) và vùng chạm theo (u, v) trên giấy. Thuần — không three, không DOM;
  * vẽ ở `ui/cuonMucPaint.ts`. Chuỗi theo `design/l10n/vi.arb` (`reviewDue*`, `learnNew*`, `learnAt*`, `viewLearned*`,
  * `hintGoForest`, `standUp`). Ấn son chỉ chữ Việt "Ôn" (R-HUD-4).
  */
@@ -93,27 +93,72 @@ export interface CuonLayout {
   stand: CuonBox;
 }
 
-/** Tỉ lệ giấy cao / rộng (0,25 / 0,26 m). */
-export const PAPER_RATIO = 0.25 / 0.26;
+/** Tỉ lệ giấy cao / rộng (0,35 / 0,26 m — `scene/cuonSachNhip.ts` `CUON_GIAY_*`; V-43 đổi từ 0,25 / 0,26). */
+export const PAPER_RATIO = 0.35 / 0.26;
 
-/** Bố cục giấy theo thiết kế: dọc mục 56 · ngang mục 54, cách 2; "Đứng dậy" cao 44 sát đáy, bên phải. */
+/**
+ * Bố cục giấy (V-43 — giấy dài hơn, cầm giữa màn; thiết kế 2026-11-14.21 cũ: dọc 343 × 330, ngang 300 × 288): dọc 343 × 462
+ * (trên màn 390 rộng ~0,91 px màn / px giấy, 360 rộng ~0,84) mục 70 · ngang 250 × 337 (màn 844 × 390 ~0,97, 640 × 360
+ * ~0,9) mục 53, cách 2; dòng gợi ý cả bề ngang dưới mục (đủ chỗ xuống dòng, không bị cắt); "Đứng dậy" sát đáy, bên phải,
+ * cao 53 / 49 — trên màn nhỏ nhất (360 × 640 dọc, 640 × 360 ngang) vẫn ≥ 44 px.
+ */
 export function cuonLayout(landscape: boolean): CuonLayout {
-  const w = landscape ? 300 : 343;
+  const w = landscape ? 250 : 343;
   const h = Math.round(w * PAPER_RATIO);
-  const pad = landscape ? { top: 10, side: 14, bottom: 8 } : { top: 12, side: 16, bottom: 10 };
-  const headH = landscape ? 36 : 40;
-  const gap = landscape ? 4 : 6;
-  const rowH = landscape ? 54 : 56;
+  const pad = landscape ? { top: 10, side: 12, bottom: 8 } : { top: 14, side: 16, bottom: 12 };
+  const headH = landscape ? 36 : 42;
+  const gap = landscape ? 5 : 8;
+  const rowH = landscape ? 53 : 70;
+  const standH = landscape ? 49 : 53;
   const header = { x: pad.side, y: pad.top, w: w - pad.side * 2, h: headH };
   const ruleY = header.y + headH + gap + 2;
   const top = ruleY + 2 + gap;
   const rows = [0, 1, 2].map((i) => ({ x: pad.side, y: top + i * (rowH + 2), w: w - pad.side * 2, h: rowH }));
   const standW = 120;
-  const stand = { x: w - pad.side - standW, y: h - pad.bottom - 44, w: standW, h: 44 };
+  const stand = { x: w - pad.side - standW, y: h - pad.bottom - standH, w: standW, h: standH };
   const last = rows[2]!;
-  const hintY = last.y + last.h + 4;
-  const hint = { x: pad.side, y: hintY, w: w - pad.side * 2 - standW - 6, h: Math.max(0, h - pad.bottom - hintY) };
+  const hintY = last.y + last.h + (landscape ? 4 : 6);
+  const hint = { x: pad.side, y: hintY, w: w - pad.side * 2, h: Math.max(0, stand.y - (landscape ? 4 : 6) - hintY) };
   return { landscape, w, h, pad, header, ruleY, rows, hint, stand };
+}
+
+/** Gói chữ theo từ thành dòng rộng tối đa `max` (đo bằng `width`). */
+export function wrapWords(s: string, max: number, width: (line: string) => number): string[] {
+  const out: string[] = [];
+  let line = '';
+  for (const word of s.split(' ')) {
+    const next = line ? `${line} ${word}` : word;
+    if (line && width(next) > max) {
+      out.push(line);
+      line = word;
+    } else line = next;
+  }
+  if (line) out.push(line);
+  return out;
+}
+
+/** Đệm dòng gợi ý: trái (vạch 3 + cách) + phải, trên + dưới (px thiết kế). */
+export const HINT_PAD_X = 14;
+export const HINT_PAD_Y = 8;
+const HINT_MIN = 9;
+
+/** Dòng gợi ý đã gói: cỡ chữ, cao dòng, các dòng. */
+export interface HintFit {
+  size: number;
+  lineH: number;
+  lines: string[];
+}
+
+/**
+ * Gói dòng gợi ý vừa hộp `box` (V-43: không bao giờ cắt chữ): cỡ chữ từ `base` lùi dần 0,5 tới khi đủ chỗ cho mọi dòng
+ * (tối thiểu 9 — nhỏ hơn nữa vẫn trả đủ dòng, người vẽ nới hộp). `measure(chữ, cỡ)` = bề ngang px thiết kế.
+ */
+export function fitHint(text: string, box: CuonBox, base: number, measure: (s: string, size: number) => number): HintFit {
+  for (let size = base; ; size -= 0.5) {
+    const lineH = Math.round(size * 12.5) / 10;
+    const lines = wrapWords(text, box.w - HINT_PAD_X, (s) => measure(s, size));
+    if (lines.length * lineH + HINT_PAD_Y <= box.h || size <= HINT_MIN) return { size, lineH, lines };
+  }
 }
 
 const inside = (b: CuonBox, x: number, y: number): boolean => x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y + b.h;

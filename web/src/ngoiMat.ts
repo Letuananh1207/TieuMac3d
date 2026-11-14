@@ -23,8 +23,8 @@ import {
   type EyeSettings,
 } from './input/eyeCamera';
 import type { Character } from './player/character';
-import { CUON_NUA_CAO, CUON_NUA_RONG, CuonSach } from './scene/cuonSach';
-import { fitScroll } from './scene/cuonSachNhip';
+import { CuonSach } from './scene/cuonSach';
+import { CUON_GIAY_H, CUON_GIAY_W, fitScroll } from './scene/cuonSachNhip';
 import { LAYER_MAT, LAYER_THAN, setLayer, viewLayers } from './scene/layers';
 import { isSoft, type LookSpec } from './scene/look';
 import type { FirstPersonSpec } from './scene/spec';
@@ -322,11 +322,11 @@ export class NgoiMat {
 
     // cuộn sách trước mắt (Ngồi ôn, bồ đoàn khu tự học)
     const cuonT = p?.kind === 'on' ? studyT : null;
-    const { dist, side } = fitScroll(fov, camera.aspect, CUON_NUA_RONG, CUON_NUA_CAO);
+    const dist = fitScroll(fov, camera.aspect, CUON_GIAY_W / 2, CUON_GIAY_H / 2); // giữa màn cả dọc lẫn ngang (V-43)
     const base = p ? this.basePitch(p) : 0;
     const cy = Math.sin(base) * dist;
     const cz = Math.cos(base) * dist;
-    this.scroll.setMount(-side, cy, cz, -base); // gốc cuộn quay theo hướng mặt: +x là bên trái người ngồi
+    this.scroll.setMount(0, cy, cz, -base);
     this.scroll.update(dt, this.eye, yaw, cuonT);
     this.updatePaper(dt, camera.aspect > 1);
 
@@ -334,7 +334,7 @@ export class NgoiMat {
       this.hands.hide();
       return;
     }
-    this.hands.update(dt, this.eye, yaw, this.handsPose(p, dt, [side, cy, cz]), p.kind === 'ngoi' && p.hold === 'sach' ? BOOK : null);
+    this.hands.update(dt, this.eye, yaw, this.handsPose(p, dt, [0, cy, cz]), p.kind === 'ngoi' && p.hold === 'sach' ? BOOK : null);
   }
 
   private handsPose(p: SitPlace, dt: number, center: V3): HandsPose {

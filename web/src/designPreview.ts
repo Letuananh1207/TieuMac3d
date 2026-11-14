@@ -355,8 +355,8 @@ async function boot(): Promise<void> {
       }
     } else character.facing.rotation.y = 0;
     if (place.kind === 'on') {
-      // mục mẫu trên cuộn (thiết kế 2026-11-14.21 `NgoiMat-on`): 2 bộ đến hạn, đã học 5 bộ, trấn không học bộ mới
-      const learned = RADICALS.slice(0, 5).map((r) => r.id);
+      // mục mẫu trên cuộn (`NgoiMat-on`): 2 bộ đến hạn, đã học 5 bộ, trấn không học bộ mới; &muc=chua-hoc — chưa học bộ nào
+      const learned = params.get('muc') === 'chua-hoc' ? [] : RADICALS.slice(0, 5).map((r) => r.id);
       const due = learned.slice(0, 2);
       ngoi.setMenu(cuonView(studyMenu({ due, learned, hasLessons: !!spec.lessons.radicals }), due, spec.site.name));
     }

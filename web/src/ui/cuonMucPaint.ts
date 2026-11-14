@@ -4,9 +4,9 @@
  * nét đứt + lý do · nhấn viền vàng + quầng), dòng gợi ý, "Đứng dậy". Vẽ vào canvas (gắn làm `CanvasTexture` ở `ngoiMat.ts`)
  * — chỉ khi mục đổi / nhịp hiện chữ, không mỗi khung. Kèm nút ẩn cho đọc màn hình (`sitScrollItemLabel`).
  */
-import { CUON_SEAL, CUON_TITLE, STAND_UP, type CuonLayout, type CuonRowId, type CuonView } from '../zones/cuonMuc';
+import { CUON_SEAL, CUON_TITLE, fitHint, HINT_PAD_Y, STAND_UP, type CuonLayout, type CuonRowId, type CuonView } from '../zones/cuonMuc';
 
-/** Bề ngang ảnh giấy (px thật) — 1024 × 985, chữ nghiêng vẫn rõ (mipmap). */
+/** Bề ngang ảnh giấy (px thật) — 1024 × 1378 (giấy 0,26 × 0,35), chữ nghiêng vẫn rõ (mipmap). */
 export const PAPER_PX = 1024;
 
 const PAPER = '#f2eada';
@@ -54,21 +54,6 @@ function fit(c: Ctx, s: string, max: number): string {
   let t = s;
   while (t.length > 1 && c.measureText(`${t}…`).width > max) t = t.slice(0, -1);
   return `${t}…`;
-}
-
-/** Gói chữ thành dòng trong `max` px. */
-function wrap(c: Ctx, s: string, max: number): string[] {
-  const out: string[] = [];
-  let line = '';
-  for (const word of s.split(' ')) {
-    const next = line ? `${line} ${word}` : word;
-    if (line && c.measureText(next).width > max) {
-      out.push(line);
-      line = word;
-    } else line = next;
-  }
-  if (line) out.push(line);
-  return out;
 }
 
 /** Nạp sẵn font chữ Việt cho canvas (canvas không tự kéo phần font tiếng Việt như DOM) — xong thì vẽ lại. */
@@ -209,20 +194,21 @@ export function paintCuon(canvas: HTMLCanvasElement, l: CuonLayout, view: CuonVi
     }
   });
 
-  // dòng gợi ý chưa học: chữ ngọc 12, vạch trái 3, nền ngọc 8 %
-  if (view.hint && l.hint.h > 20) {
+  // dòng gợi ý chưa học: chữ ngọc 12, vạch trái 3, nền ngọc 8 % — cả bề ngang dưới mục, đủ mọi dòng (V-43: không cắt)
+  if (view.hint) {
     const hb = l.hint;
-    c.font = `500 ${ls ? 11 : 12}px ${UI}`;
-    const lines = wrap(c, view.hint, hb.w - 14);
-    const lh = ls ? 13 : 15;
-    const boxH = Math.min(hb.h, lines.length * lh + 8);
+    const font = (size: number): string => `500 ${size}px ${UI}`;
+    const fitted = fitHint(view.hint, hb, ls ? 11 : 12, (s, size) => {
+      c.font = font(size);
+      return c.measureText(s).width;
+    });
+    c.font = font(fitted.size);
+    const boxH = fitted.lines.length * fitted.lineH + HINT_PAD_Y;
     c.fillStyle = 'rgba(43,84,70,.08)';
     c.fillRect(hb.x, hb.y, hb.w, boxH);
     c.fillStyle = JADE;
     c.fillRect(hb.x, hb.y, 3, boxH);
-    lines.forEach((s, i) => {
-      if ((i + 1) * lh + 4 <= boxH) c.fillText(s, hb.x + 9, hb.y + 4 + (i + 1) * lh - 3);
-    });
+    fitted.lines.forEach((s, i) => c.fillText(s, hb.x + 9, hb.y + HINT_PAD_Y / 2 + (i + 1) * fitted.lineH - 3));
   }
 
   // "Đứng dậy": biểu tượng 16 + 14/700, gạch chân mực 45 %
@@ -230,9 +216,9 @@ export function paintCuon(canvas: HTMLCanvasElement, l: CuonLayout, view: CuonVi
   c.font = `700 14px ${UI}`;
   const tw = c.measureText(STAND_UP).width;
   const sx = sb.x + sb.w - tw - 8;
-  icon(c, 'stand', sx - 22, sb.y + 14, 16, SLATE);
+  icon(c, 'stand', sx - 22, sb.y + sb.h / 2 - 8, 16, SLATE);
   c.fillStyle = SLATE;
-  c.fillText(STAND_UP, sx, sb.y + 27);
+  c.fillText(STAND_UP, sx, sb.y + sb.h / 2 + 5);
   c.strokeStyle = 'rgba(58,48,36,.45)';
   c.lineWidth = 1.5;
   c.beginPath();

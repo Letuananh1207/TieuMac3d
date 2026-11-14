@@ -4,7 +4,7 @@
  * Nhịp mở / thu: `cuonSachNhip.ts` (hàm thuần, có test). 5 draw call khi hiện, 0 khi ẩn.
  * Cỡ, chỗ đặt, màu theo đặc tả màn (không thuộc bố cục cảnh `scene.json`) — "gần đúng, chỉnh theo model nhân vật".
  * Hai bản: trước ngực (mặc định, lớp thân — người ngoài nhìn thấy) và trước mắt khi nhìn từ mắt (lớp ngôi 1 — R-DIEU-7,
- * R-ON-8): `update` với gốc = mắt, `setMount` đặt tâm cuộn theo khung màn (`fitScroll`), mặt giấy quay về mắt; giấy trước
+ * R-ON-8): `update` với gốc = mắt, `setMount` đặt tâm cuộn giữa khung màn (`fitScroll`), mặt giấy quay về mắt; giấy trước
  * có chỗ gắn `CanvasTexture` (`setPaper`) và tia dò ra toạ độ (u, v) trên giấy (`hitUv`).
  */
 import * as THREE from 'three';
@@ -12,15 +12,15 @@ import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js
 import { setLayer } from './layers';
 import { lambert } from './materials';
 import { markDynamic } from './merge';
-import { CUON_AN, CUON_CAO, CUON_TRUOC, isOpen, poseOf, stepCuon, type CuonState } from './cuonSachNhip';
+import { CUON_AN, CUON_CAO, CUON_GIAY_H, CUON_GIAY_W, CUON_TRUOC, isOpen, poseOf, stepCuon, type CuonState } from './cuonSachNhip';
 
 // cỡ (m) — nhân vật cao 2,1 m
-const TRUC_DAI = 0.29;
+const GIAY_W = CUON_GIAY_W;
+const GIAY_H = CUON_GIAY_H; // V-43: 0,26 × 0,35 (thiết kế 2026-11-14.21: 0,26 × 0,25) — mục cao hơn, gợi ý không bị cắt
+const TRUC_DAI = GIAY_H + 0.02; // trục dài hơn giấy 1 cm mỗi đầu
 const TRUC_R = 0.015; // Ø 0,03, trụ 8 cạnh
 const DAU_R = 0.02; // đầu trục cầu Ø 0,04
 const VIEN_R = 0.019; // viền vàng giữa trục và đầu trục
-const GIAY_W = 0.26;
-const GIAY_H = 0.25; // thiết kế 2026-11-14.21: giấy 0,26 × 0,25 (đổi từ 0,18) để 3 mục + "Đứng dậy" đủ cao chạm
 const AN_CO = 0.03; // ấn son mặt sau
 // chỗ: `CUON_CAO` / `CUON_TRUOC` (cuonSachNhip.ts — trước ngực người ngồi, tay chibi cầm hai đầu); mặt giấy ngửa 30° về phía mặt
 const NGUA = Math.PI / 6;
@@ -58,11 +58,6 @@ export interface CuonOptions {
   /** lớp vẽ (`layers.ts`); không có = lớp 0 */
   layer?: number;
 }
-
-/** Mép ngoài đầu trục tới tâm (m) khi mở hết — bề ngang cả cuộn = 2 × chừng này. */
-export const CUON_NUA_RONG = GIAY_W / 2 + TRUC_R + DAU_R;
-/** Nửa chiều cao cả cuộn (trục + đầu trục). */
-export const CUON_NUA_CAO = TRUC_DAI / 2 + DAU_R * 1.6;
 
 export class CuonSach {
   private readonly root = new THREE.Group();
