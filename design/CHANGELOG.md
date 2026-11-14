@@ -3,6 +3,20 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-15.12 — Trấn mở: Quảng Trường lan can đá, bỏ tường ngăn khu, trục đông – tây, Sân Cổ Thụ
+
+- Loại: cảnh 3D — **bố cục**. Phiên code V-20261114-42 làm thay `/canh`; người dùng: "cảm giác bất tiện khi di chuyển trong trấn,
+  các vùng hỗn loạn nhiều tường" → đề xuất theo nghiên cứu (Lynch: lối / ranh giới / nút / cột mốc; "weenie"; trung tâm – nan hoa),
+  bản thử `?bocuc=mo` → người dùng chọn. **Đã duyệt 2026-11-15.**
+- Bỏ tường bao Quảng Trường + 4 cổng trăng; cổng nam / bắc thành **bài phường** đứng riêng; **lan can đá** thấp 0,8 m (trụ búp
+  sen, `fenceStyle.kind: "da"` — mới, mặc định `"go"`) có khe tây z −10…10, đông z −12…12. Bỏ tường Sân Đông (bắc, ngăn Mặc Trì)
+  và mẩu tây Mặc Trì → hàng bụi / hàng tùng; biển cổng trăng → biển gỗ đứng.
+- **Trục đông – tây** z 4 rộng 5 m (Kỳ Văn Uyển ↔ Quảng Trường ↔ Mặc Trì); chất nền khu `terrain.floors` (mới): Kỳ Văn Uyển gạch
+  vuông đỏ nhạt `#c48f72`, Cổng Trấn đá cũ. Sân Đông → **Sân Cổ Thụ**: bãi cỏ, tùng cổ thụ (30; −7), đèn đá, đá Thái Hồ.
+- Lối `pathLook: "san"` gộp một khối, chất nền một khối → nhìn từ trên 152 → **137 draw call** / 149 922 tam giác.
+- Luật: R-VA-1, R-VA-3, R-DIEU-4, R-NV-1, R-GIAO-1, R-GIAO-2, R-NPC-4, R-BANDO-2, R-NGAY-4. Biến thể `?bocuc=` giữ cho lần thử sau.
+- Ảnh: `screens/Canh-tran-mo-lan-can.png`, `screens/Canh-san-co-thu.png`.
+
 ## 2026-11-15.8 — Thiên Bậc rút ngắn: bục Truyền Tống Đài hạ 11 → 5,5 m, dời gần Quảng Trường
 
 - Loại: cảnh 3D — **bố cục**. Phiên code V-20261114-41 làm thay `/canh`; người dùng: "bậc lên đài truyền tống đang quá dài".
