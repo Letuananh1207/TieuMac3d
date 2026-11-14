@@ -3,6 +3,38 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-14.1 — Tường mỏng, cổng phân cấp, biển chữ Việt, Truyền Tống Đài sang đông
+
+- Loại: cảnh 3D — **bố cục** + **ngoại hình** (đã vào `scene.json`). Phiên VS Code (`/canh` + `/lead`), người dùng:
+  "phân bổ ngăn cách tường đang không hợp lý" → phương án A; "tráo vị trí truyền tống trận sang 1 khu khác hợp lý hơn";
+  "tường đang hơi dày… đổi phong cách cổng… biển treo đầu các cửa vào khu"; "tất cả các biển đều phải là tiếng việt và là
+  tên đọc dễ hiểu"; "tường ở phía trước tàng thư các" → bỏ.
+- **Tường**: `walls.thickness` (trường mới, mặc định 1) **1 → 0,5**. Khu tây: tường bắc z 18 → **17** (khớp góc Ngoại
+  Môn); bỏ lan can son quanh sân chơi (`fences` → rỗng). Tường chia sân z −11 (thêm rồi **bỏ** theo người dùng) — Kỳ Văn
+  Uyển và Tàng Thư Các chung sân, `site.areas` chia ở z −11.
+- **Cổng phân cấp** (`walls.gates[].kind`, trường mới): nam + bắc **`lau` cổng mái ngói 門樓** — cửa chữ nhật khung gỗ, lối
+  5,8 m, cao 3,2 m, trụ dày 0,8, mái nhô 0,8 m hai mặt, biển gỗ; đông + tây **`trang` cổng trăng** (lối 3,9 m) + biển đá
+  khắc trên vòm. Cổng đông **mở lại** (dẫn ra Truyền Tống Đài).
+- **Biển** (`walls.gates[].signs`, theo hướng mặt cổng nhìn ra, ghi khu người đi qua sẽ vào) — chữ Việt, tên công năng:
+  nam Quảng trường / Lối ra núi · bắc Bậc lên Trà lâu / Quảng trường · đông Đài truyền tống / Quảng trường · tây Sân chơi ·
+  Thư viện / Quảng trường. Biển nhà 品茗閣 → **Trà lâu**, 藏書閣 → **Thư viện**; cờ 茶 → **Trà** (chữ dọc T / R / À);
+  bảng 日課榜 → **Nhiệm vụ hằng ngày**; biển bàn chơi 五子棋 / 鬥字 → **Cờ caro** / **Đấu chữ** (một dòng, `han` rỗng).
+- **Truyền Tống Đài**: `teleport.center` (0; 0) → **(30; 0)** ngoài cổng đông, nền lát x 17…41, z −10…10 (`terrain.plateaus`
+  thêm 1); về tông môn đứng (21,8; 0). Sư phụ Mặc Ông (−3,5; 9) → **(21,5; −4,5)** nhìn tây. Khu "Truyền Tống Đài" x 17…41,
+  z −10…10. Giữa sân: phiên này đặt đỉnh đồng + 4 đèn đá + 4 tùng góc; **giữa sân hiện là nhật quỹ + 4 bồn hoa của phiên
+  khác** (chưa có mục nhật ký — bồn hoa ghi 梅 蘭 菊 竹, lệch yêu cầu "biển chữ Việt" nếu tính là biển).
+- Luật (đã sửa sổ + online, `--mark-synced`): R-VA-1 (tường dày 0,5 → dừng z −16,25; cổng 門樓 lối 5,8, x 3 dừng z 16,1),
+  R-DIEU-4 + R-HUD-3 (điểm giữa sân (0; 0) → (0; 6)), R-HANH-2 (về đứng (21,8; 0)), R-GIAO-1, R-GIAO-2, R-NV-1. Test mới
+  `web/src/scene/walls.test.ts` (R-VA-1).
+- `scene:check`: không có lỗi. Draw call / tam giác: góc chơi 76 (không đổi), nhìn trên 117 · 131,6k (≤ 150 / 150k).
+- Code (chưa commit — lẫn việc dở của phiên khác trong cùng file): `scene/walls.ts`, `kien_truc/tuong.ts`, `spec.ts`,
+  `specCheck.ts`, `signAtlas.ts`, `textures.ts` (`drawStoneSign`, cờ chữ dọc), `kien_truc/do_pho.ts`, `scripts/check-scene.mjs`,
+  `zones/dialogs.ts` (Tiểu Mặc: "Truyền Tống Đài ngoài cổng đông"). Kế hoạch `docs/tasks/2026-11-13-tuong-cong-khu.md`,
+  `docs/tasks/2026-11-13-bien-tieng-viet.md`.
+- Canvas 3D: bản 36. Ảnh: `screens/Canh-tren.png` (ghi đè), `Canh-cong-nam.png`, `Canh-cong-dong.png`, `Canh-cong-tay.png`,
+  `Canh-truyen-tong-dai.png` (ghi đè), `Canh-thu-vien-mat-tien.png`, `Canh-bien-tra-lau.png`, `Canh-bien-nhiem-vu.png`,
+  `Canh-bien-co-caro.png`.
+
 ## 2026-11-13.35 — Bảng cách chơi Kỳ Văn Uyển (Ngũ Tử Kỳ · Đấu chữ)
 
 - Loại: giao diện · chuỗi. Màn: **Bảng cách chơi** (HUD web, lớp phủ) — đặc tả `docs/screen_specs.md` mục "Bảng cách chơi
