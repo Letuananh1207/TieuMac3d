@@ -9,6 +9,7 @@ import '../theme/app_colors.dart';
 import '../theme/app_text_size.dart';
 import 'lesson_screen.dart';
 import 'daily_parts.dart';
+import 'reward_overlay.dart';
 import 'screen_parts.dart';
 
 /// Số liệu bảng nhiệm vụ hôm nay (đọc lại sau mỗi lượt ôn).
@@ -68,14 +69,22 @@ const _dayLabels = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'];
 /// (artboard `NhiemVu-doc`, `-doc-moi`, `-doc-xong`, `-ngang`). "Ôn ngay" mở màn ôn tại chỗ ([onReview], R-ON-5); đóng
 /// bằng "Đóng bảng" / nút quay lại của máy.
 class DailyScreen extends StatefulWidget {
-  const DailyScreen({super.key, required this.request, required this.read, required this.onReview});
+  const DailyScreen({super.key, required this.request, required this.read, required this.onReview, this.rewards});
 
   final OpenDailyRequest request;
   final DailyView Function() read;
   final Future<void> Function(List<ReviewItem> items) onReview;
 
-  static Route<void> route(OpenDailyRequest request, DailyView Function() read, Future<void> Function(List<ReviewItem>) onReview) =>
-      fadeRoute(DailyScreen(request: request, read: read, onReview: onReview));
+  /// khoản thưởng chưa chạy hiệu ứng (xong 2 việc +20, chuỗi 7 ngày +50 — R-TIEN-2); màn ôn mở từ đây tự chạy phần của nó
+  final RewardFeed? rewards;
+
+  static Route<void> route(
+    OpenDailyRequest request,
+    DailyView Function() read,
+    Future<void> Function(List<ReviewItem>) onReview, {
+    RewardFeed? rewards,
+  }) =>
+      fadeRoute(DailyScreen(request: request, read: read, onReview: onReview, rewards: rewards));
 
   @override
   State<DailyScreen> createState() => _DailyScreenState();
@@ -95,7 +104,9 @@ class _DailyScreenState extends State<DailyScreen> {
 
   Future<void> _review() async {
     await widget.onReview(_items);
-    if (mounted) setState(() => _v = widget.read());
+    if (!mounted) return;
+    setState(() => _v = widget.read());
+    playRewards(context, widget.rewards);
   }
 
   @override

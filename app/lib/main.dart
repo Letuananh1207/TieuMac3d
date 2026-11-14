@@ -11,12 +11,15 @@ import 'lesson/lesson_screen.dart';
 import 'lesson/library_screen.dart';
 import 'lesson/radical_screen.dart';
 import 'lesson/review_screen.dart';
+import 'lesson/reward_overlay.dart';
+import 'lesson/shop_screen.dart';
 import 'lesson/study_board.dart';
 import 'lesson/study_screen.dart';
 import 'scene/review_event.dart';
 import 'scene/scene_event.dart';
 import 'scene/scene_server.dart';
 import 'scene/scene_view.dart';
+import 'scene/shop_event.dart';
 import 'theme/app_colors.dart';
 
 Future<void> main() async {
@@ -86,28 +89,49 @@ class HocXaApp extends StatelessWidget {
                 return Navigator.of(context).push(LessonScreen.route(request.lesson));
               },
               // thẻ học bộ thủ: "Đã lĩnh hội" → ghi bộ thủ đã học; "Xuất định" → đóng + đứng dậy (R-HANH-3)
+              // lần đầu "Đã lĩnh hội" → +10 Văn tiền, hiệu ứng trên lớp phủ (R-TIEN-2, R-TIEN-5)
               onOpenRadical: (context, request) => Navigator.of(context).push(
-                RadicalScreen.route(request, () async {
-                  await progress?.learnRadical(request.radical.id);
-                }),
+                RadicalScreen.route(
+                  request,
+                  () async {
+                    await progress?.learnRadical(request.radical.id, char: request.radical.form);
+                  },
+                  rewards: progress == null ? null : _rewards(progress!),
+                ),
               ),
               onGetProgress: () {
                 final store = progress;
                 if (store == null) return progressReply(const Progress());
-                store.checkDaily(); // sang ngày mới mà không có gì phải làm → ngày đó vẫn được tính (R-NV-2)
+                // sang ngày mới mà không có gì phải làm → ngày đó vẫn được tính (R-NV-2); khoản thưởng phát sinh ở đây không
+                // chạy hiệu ứng (trang chỉ đổi số ví) → bỏ khỏi hàng
+                store.checkDaily().then((_) => store.takeRewards());
                 return progressReply(
                   store.progress,
                   due: store.dueRadicals,
                   daily: store.daily,
                   streak: store.streak,
                   book: store.borrowedBook,
+                  coins: store.coins,
+                  gameCoinsToday: store.gameCoinsToday,
                 );
               },
               // Tàng Thư Các: cuốn sổ từ đang mượn giữ qua tắt app (R-SACH-1, R-SACH-2, R-SACH-4)
               onBorrowBook: (id) async => await progress?.borrowBook(id) ?? false,
               onReturnBook: () async => await progress?.returnBook() ?? false,
               // nhà của ta: vật ở từng ô giữ qua tắt app (R-NHA-2, R-NHA-3)
-              onGetHome: progress == null ? null : () => homeReply(progress!.homePlaced),
+              onGetHome: progress == null ? null : () => homeReply(progress!.homePlaced, owned: progress!.ownedDecor),
+              // Văn tiền: hết ván ở bàn chơi → thưởng theo trần ngày (R-TIEN-3); Tạp hoá: mua → trừ ví + sở hữu (R-TIEN-4)
+              onEarnGame: progress == null
+                  ? null
+                  : (game, outcome) async => earnGameReply(await progress!.earnGame(game, outcome)),
+              onOpenShop: progress == null
+                  ? null
+                  : (context, request) => Navigator.of(context).push(ShopScreen.route(
+                        items: request.items,
+                        balance: progress!.coins,
+                        owned: progress!.ownedDecor,
+                        onBuy: (i) => progress!.buyDecor(i.id, i.price),
+                      )),
               onSetDecor: (slot, item) async => await progress?.placeDecor(slot, item) ?? false,
               // ôn câu đố + bảng nhiệm vụ 日課榜 (R-ON-5, R-NV-3); không có kho tiến độ → trang tự lo (thẻ bộ mới / Tiểu Mặc)
               onOpenReview: progress == null
@@ -119,6 +143,7 @@ class HocXaApp extends StatelessWidget {
                         request,
                         () => DailyView.of(progress!),
                         (items) => Navigator.of(context).push(_reviewRoute(progress!, items)),
+                        rewards: _rewards(progress!),
                       )),
               // cuộn sách Ngồi ôn (R-ON-8): chọn mục → màn ôn / thẻ bộ mới / Bộ đã học đè lên, đóng → bảng tính lại;
               // "Đứng dậy" → SceneView gửi resume {stand: true}
@@ -129,8 +154,9 @@ class HocXaApp extends StatelessWidget {
                         () => StudyProgress.of(progress!),
                         (items) => Navigator.of(context).push(_reviewRoute(progress!, items)),
                         (id) async {
-                          await progress!.learnRadical(id);
+                          await progress!.learnRadical(id, char: _formIn(request, id));
                         },
+                        rewards: _rewards(progress!),
                       )),
               // Tàng Thư Các: danh mục (chọn → ghi mượn) và sổ từ (mở ở trang đã nhớ, đóng → ghi trang) — R-SACH-1, R-SACH-3
               onOpenLibrary: progress == null
@@ -149,9 +175,20 @@ class HocXaApp extends StatelessWidget {
   }
 }
 
-/// Màn ôn: chấm từng bộ vào lịch ôn (R-ON-2), trả số ngày tới lần ôn kế cho câu "ôn lại sau n ngày".
+/// Màn ôn: chấm từng bộ vào lịch ôn (R-ON-2), trả số ngày tới lần ôn kế cho câu "ôn lại sau n ngày"; thưởng +5 / +2
+/// (R-TIEN-2) chạy hiệu ứng ngay trên màn ôn.
 Route<void> _reviewRoute(ProgressStore store, List<ReviewItem> items) => ReviewScreen.route(
       items,
-      (id, correct) async => await store.reviewRadical(id, correct) ? store.cards[id]?.interval : null,
+      (id, correct) async {
+        final form = items.where((i) => i.radical.id == id).firstOrNull?.radical.form;
+        return await store.reviewRadical(id, correct, char: form) ? store.cards[id]?.interval : null;
+      },
       daily: () => store.daily,
+      rewards: _rewards(store),
     );
+
+/// Khoản thưởng vừa cộng + số dư cho hiệu ứng nhận tiền trên màn Flutter (R-TIEN-5).
+RewardFeed _rewards(ProgressStore store) => () => (rewards: store.takeRewards(), balance: store.coins);
+
+/// Dạng bộ thủ [id] trong bảng chọn cuộn sách (nhãn "Học bộ 竹").
+String? _formIn(OpenStudyRequest r, String id) => [?r.next, ...r.upcoming, ...r.learned].where((x) => x.id == id).firstOrNull?.form;

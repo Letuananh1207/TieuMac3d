@@ -55,6 +55,8 @@ export interface GamePlayHost {
   learned(): ReadonlySet<string>;
   /** tên NPC theo mã (thẻ kết quả, thẻ điểm) */
   npcInfo?(npcId: string): { name: string; han?: string } | undefined;
+  /** hết một ván (R-TIEN-3): trò + kết quả phía người chơi; thẻ kết quả [result] nhận dòng thưởng qua `setReward` */
+  ended?(game: 'co' | 'dau-chu', outcome: GameResult['outcome'], result: GameResult): void;
 }
 
 interface Seated {
@@ -271,19 +273,16 @@ export class GamePlay {
     const w = g.result.winner;
     if (w === BLACK) s.wins.you++;
     else if (w === WHITE) s.wins.npc++;
-    s.result = {
-      outcome: w === BLACK ? 'thang' : w === WHITE ? 'thua' : 'hoa',
-      you: s.wins.you,
-      npc: s.wins.npc,
-      line: w === BLACK ? GAME_LINES.coThua : w === WHITE ? GAME_LINES.coThang : GAME_LINES.coHoa,
-    };
+    const outcome = w === BLACK ? 'thang' : w === WHITE ? 'thua' : 'hoa';
+    const line = w === BLACK ? GAME_LINES.coThua : w === WHITE ? GAME_LINES.coThang : GAME_LINES.coHoa;
+    s.result = { outcome, you: s.wins.you, npc: s.wins.npc, line };
+    this.host.ended?.('co', outcome, s.result);
   }
 
   /** Người chạm một nghĩa Đấu chữ (R-DAU-2: chạm là chọn). */
   pick(option: number): boolean {
     const s = this.seated;
-    if (!s?.round || s.result) return false;
-    return s.round.choose(option);
+    return !!s?.round && !s.result && s.round.choose(option);
   }
 
   /** Hết 10 câu (R-DAU-2): thẻ kết quả với điểm ván. */
@@ -296,6 +295,13 @@ export class GamePlay {
     const line = outcome === 'thang' ? GAME_LINES.dauThua : outcome === 'thua' ? GAME_LINES.dauThang : GAME_LINES.dauHoa;
     s.result = { outcome, you: nguoi, npc, line };
     s.table.showCard(null, s.seat);
+    this.host.ended?.('dau-chu', outcome, s.result);
+  }
+
+  /** Dòng "+8 Văn tiền" lên thẻ kết quả [result] khi thẻ còn hiện (R-TIEN-3); đã "Ván mới" / rời bàn / `null` → bỏ. */
+  setReward(result: GameResult, line: string | null): boolean {
+    if (!line || this.seated?.result !== result) return false;
+    return !!(result.reward = line);
   }
 
   private npcOf(s: Seated): GameNpc {

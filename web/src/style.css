@@ -35,6 +35,10 @@
   --lacquer:#a8322a;
   --shelf-wood:#8a5a3a; /* kệ gỗ / bìa sách — token shelf-wood, 2026-11-13.28 (bóng #6b4429) */
   --shelf-shadow:#6b4429;
+  --coin-rim:#a9802f;   /* đồng xu Văn tiền — token coin-rim / coin-ink, 2026-11-14.12 */
+  --coin-ink:#5a3e12;
+  --slate-muted:#5e6a70; /* chữ phụ (token slate-muted, 2026-11-14.12) */
+  --wallet:36px;        /* viên ví — token size.wallet */
   --count-badge:22px;   /* chấm son đếm trên nút tròn ("còn N bộ") — token size.count-badge, 2026-11-13.19 */
   --display:"Lora",Georgia,serif;
   --ui:"Be Vietnam Pro",system-ui,-apple-system,sans-serif;
@@ -210,13 +214,13 @@ button:focus-visible{outline:2px solid var(--jade);outline-offset:2px}
 #actions .badge[hidden]{display:none}
 #actions[hidden]{display:none}
 /* nút "Nói chuyện" bám trên NPC — kiểu nút học nổi */
-#talk,#seat,#board,#guide{position:fixed;z-index:6;transform:translate(-50%,calc(-100% - 10px));display:flex;flex-direction:column;align-items:center}
-#talk[hidden],#seat[hidden],#board[hidden],#guide[hidden]{display:none}
-#talkBtn,#seatBtn,#boardBtn,#guideBtn{height:46px;box-sizing:border-box;padding:0 18px 0 14px;font:inherit;font-size:15px;font-weight:700;color:var(--on-jade);background:var(--jade);border:1px solid var(--frost-line);border-radius:999px;box-shadow:inset 0 -2px 0 rgba(0,0,0,.18),0 6px 16px rgba(36,50,58,.3);display:flex;align-items:center;gap:8px;white-space:nowrap}
-#talkBtn:active,#seatBtn:active,#boardBtn:active,#guideBtn:active{background:var(--jade-press)}
-#talk .tip,#seat .tip,#board .tip,#guide .tip{width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:8px solid var(--jade)}
-#talk .who,#board .who,#guide .who{margin-top:4px;height:24px;box-sizing:border-box;padding:0 10px;display:flex;align-items:center;gap:6px;background:rgba(244,247,246,.86);border:1px solid var(--frost-line);outline:1px solid var(--frost-outline);border-radius:999px;font-size:12px;font-weight:700;white-space:nowrap;pointer-events:none}
-#talk .han,#board .han,#guide .han,#dialog .han{font-family:var(--han);font-weight:700}
+#talk,#seat,#board,#guide,#shop{position:fixed;z-index:6;transform:translate(-50%,calc(-100% - 10px));display:flex;flex-direction:column;align-items:center}
+#talk[hidden],#seat[hidden],#board[hidden],#guide[hidden],#shop[hidden]{display:none}
+#talkBtn,#seatBtn,#boardBtn,#guideBtn,#shopBtn{height:46px;box-sizing:border-box;padding:0 18px 0 14px;font:inherit;font-size:15px;font-weight:700;color:var(--on-jade);background:var(--jade);border:1px solid var(--frost-line);border-radius:999px;box-shadow:inset 0 -2px 0 rgba(0,0,0,.18),0 6px 16px rgba(36,50,58,.3);display:flex;align-items:center;gap:8px;white-space:nowrap}
+#talkBtn:active,#seatBtn:active,#boardBtn:active,#guideBtn:active,#shopBtn:active{background:var(--jade-press)}
+#talk .tip,#seat .tip,#board .tip,#guide .tip,#shop .tip{width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:8px solid var(--jade)}
+#talk .who,#board .who,#guide .who,#shop .who{margin-top:4px;height:24px;box-sizing:border-box;padding:0 10px;display:flex;align-items:center;gap:6px;background:rgba(244,247,246,.86);border:1px solid var(--frost-line);outline:1px solid var(--frost-outline);border-radius:999px;font-size:12px;font-weight:700;white-space:nowrap;pointer-events:none}
+#talk .han,#board .han,#guide .han,#shop .han,#dialog .han{font-family:var(--han);font-weight:700}
 /* thẻ "Đọc sách": ngay trên cụm nút hành động (cao 170 + cách 12) — 2026-11-13.28 */
 #readBook{position:fixed;z-index:5;right:16px;bottom:calc(var(--sa-bottom) + 198px);height:52px;box-sizing:border-box;padding:0 14px 0 8px;font:inherit;color:var(--slate);border-radius:14px;background:rgba(244,247,246,.88);border:1px solid var(--frost-line);outline:1px solid var(--frost-outline);box-shadow:0 4px 14px rgba(36,50,58,.18);display:flex;align-items:center;gap:10px}
 #readBook[hidden]{display:none}
@@ -382,7 +386,7 @@ body.map-open #joy,body.map-open #joyGhost,body.map-open .learn{display:none}
 
 /* ---------- HUD trò chơi Kỳ Văn Uyển (R-GIAO-1, R-CO-3, R-DAU-2) — canvas Co-* / Dau-*, 2026-11-13.27 ---------- */
 /* ngồi chơi: ẩn joystick + cụm nút hành động + nút nổi — cả màn là bàn */
-body.at-table #joy,body.at-table #joyGhost,body.at-table #actions,body.at-table .learn,body.at-table #talk,body.at-table #seat,body.at-table #guide,body.at-table #board,body.at-table #readBook{display:none}
+body.at-table #joy,body.at-table #joyGhost,body.at-table #actions,body.at-table .learn,body.at-table #talk,body.at-table #seat,body.at-table #guide,body.at-table #board,body.at-table #shop,body.at-table #readBook{display:none}
 #game{position:fixed;inset:0;z-index:7;pointer-events:none;color:var(--slate);--gx-l:max(16px,calc(var(--sa-left) + 12px));--gx-r:max(16px,calc(var(--sa-right) + 12px));--gy-t:calc(var(--sa-top) + 8px);--gy-b:calc(var(--sa-bottom) + 12px)}
 #game[hidden]{display:none}
 #game>*{pointer-events:auto}
@@ -451,6 +455,7 @@ body.at-table #joy,body.at-table #joyGhost,body.at-table #actions,body.at-table 
 .gh-result .out.thua{color:var(--lacquer)}
 .gh-result .out.hoa{color:var(--slate)}
 .gh-result .sc{font-size:14px;font-weight:700}
+.gh-result .coins{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--jade)}
 .gh-result .line{font-size:16px;font-weight:500;line-height:1.5}
 .gh-result .row{display:flex;gap:10px}
 .gh-result button{height:48px;font:inherit;font-weight:700;font-size:15px;border-radius:12px;display:flex;align-items:center;justify-content:center;gap:8px}

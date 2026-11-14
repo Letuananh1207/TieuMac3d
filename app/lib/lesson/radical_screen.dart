@@ -5,23 +5,27 @@ import '../theme/app_colors.dart';
 import '../theme/app_fonts.g.dart';
 import '../theme/app_text_size.dart';
 import 'lesson_screen.dart';
+import 'reward_overlay.dart';
 import 'svg_strokes.dart';
 
 /// Thẻ học bộ thủ (native), che toàn bộ cảnh 3D — R-HANH-3.
 /// Thiết kế: design/docs/screen_specs.md "Thẻ học bộ thủ" (artboard `TheBoThu-doc`, `TheBoThu-doc-on`, `TheBoThu-ngang`);
 /// khung như màn bài học. Lần đầu: nút "Đã lĩnh hội" → [onLearn] rồi đóng, vẫn ngồi; đã học: huy hiệu "Đã học", nút
 /// "Xuất định" → đóng, trả `true` (nhân vật đứng dậy — R-HANH-3, thiết kế 2026-11-13.19). Nút quay lại của máy → đóng,
-/// không ghi học, không đứng dậy.
+/// không ghi học, không đứng dậy. Học lần đầu có thưởng ([rewards]) → hiệu ứng "+10 · Học bộ 竹" chạy trên lớp phủ gốc,
+/// thẻ vẫn đóng ngay (R-TIEN-5).
 class RadicalScreen extends StatelessWidget {
-  const RadicalScreen({super.key, required this.request, required this.onLearn});
+  const RadicalScreen({super.key, required this.request, required this.onLearn, this.rewards});
 
   final OpenRadicalRequest request;
   final Future<void> Function() onLearn;
+  final RewardFeed? rewards;
 
-  static Route<bool> route(OpenRadicalRequest request, Future<void> Function() onLearn) => PageRouteBuilder<bool>(
+  static Route<bool> route(OpenRadicalRequest request, Future<void> Function() onLearn, {RewardFeed? rewards}) =>
+      PageRouteBuilder<bool>(
         transitionDuration: const Duration(milliseconds: 220),
         reverseTransitionDuration: const Duration(milliseconds: 180),
-        pageBuilder: (_, _, _) => RadicalScreen(request: request, onLearn: onLearn),
+        pageBuilder: (_, _, _) => RadicalScreen(request: request, onLearn: onLearn, rewards: rewards),
         transitionsBuilder: (_, a, _, child) => FadeTransition(opacity: a, child: child),
       );
 
@@ -38,7 +42,10 @@ class RadicalScreen extends StatelessWidget {
       learned: request.learned,
       onPressed: () async {
         final nav = Navigator.of(context);
-        if (!request.learned) await onLearn();
+        if (!request.learned) {
+          await onLearn();
+          if (context.mounted) playRewards(context, rewards);
+        }
         nav.pop(request.learned); // "Xuất định" (đã học) → đứng dậy; "Đã lĩnh hội" → vẫn ngồi
       },
     );

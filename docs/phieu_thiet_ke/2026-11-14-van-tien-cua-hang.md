@@ -1,5 +1,5 @@
 # Phiếu: Ví Văn tiền 文錢 (HUD) · hiệu ứng nhận tiền · Cửa hàng đồ trang trí
-- Trạng thái: chờ thiết kế
+- Trạng thái: đã áp (2026-11-14.12) — trừ thẻ vật khoá ở nhà (gộp Nhà của ta NV8)
 - Đã vẽ: 2026-11-14.12
 - Đợi bởi: ý tưởng `docs/y_tuong/2026-11-14-van-tien.md` (hướng A); kế hoạch `/lead Văn tiền — ví và luật thưởng` (chưa
   mở). Liên quan phiếu `2026-11-14-nha-nguoi-dung.md` (HUD trang trí — bảng danh mục chừa chỗ giá / tiền: hai phiếu nên

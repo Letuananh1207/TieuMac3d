@@ -26,6 +26,17 @@ Future<void> showRewards(BuildContext context, List<Reward> rewards, {required i
   overlay.insert(entry);
 }
 
+/// Nguồn khoản thưởng cho màn Flutter: lấy (và xoá khỏi hàng) các khoản vừa cộng + số dư sau đó — `main.dart` nối với
+/// `ProgressStore.takeRewards` / `coins`. Màn không biết kho.
+typedef RewardFeed = ({List<Reward> rewards, int balance}) Function();
+
+/// Sau khi học / ôn / chấm xong: lấy khoản thưởng từ [feed] và chạy hiệu ứng (R-TIEN-5); không có → không làm gì.
+void playRewards(BuildContext context, RewardFeed? feed, {Offset? from}) {
+  final r = feed?.call();
+  if (r == null || r.rewards.isEmpty) return;
+  showRewards(context, r.rewards, balance: r.balance, from: from);
+}
+
 class RewardOverlay extends StatefulWidget {
   const RewardOverlay({super.key, required this.rewards, required this.balance, this.from, this.onDone});
 

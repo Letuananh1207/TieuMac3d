@@ -7,14 +7,15 @@ import '../theme/app_text_size.dart';
 import 'lesson_screen.dart';
 import 'review_parts.dart';
 import 'review_session.dart';
+import 'reward_overlay.dart';
 import 'screen_parts.dart';
 
 /// Màn ôn câu đố (native) — R-ON-1…5. Thiết kế: design/docs/screen_specs.md "Màn ôn câu đố" (artboard `OnTap-*`).
 /// Mỗi bộ 2 câu Pinyin → Nghĩa; chọn → "Kiểm tra" → phản hồi → "Câu tiếp". Câu cuối của bộ kiểm tra xong → chấm ngay
 /// ([onGrade] lưu lịch ôn, trả số ngày tới hạn kế). Thoát (× / nút quay lại của máy) đóng ngay, không hỏi lại: bộ đã chấm
-/// giữ kết quả, bộ chưa chấm vẫn đến hạn (R-ON-5).
+/// giữ kết quả, bộ chưa chấm vẫn đến hạn (R-ON-5). Chấm xong một bộ có thưởng ([rewards]) → "+5 · Ôn đúng 木"… (R-TIEN-5).
 class ReviewScreen extends StatefulWidget {
-  const ReviewScreen({super.key, required this.items, required this.onGrade, this.daily});
+  const ReviewScreen({super.key, required this.items, required this.onGrade, this.daily, this.rewards});
 
   final List<ReviewItem> items;
 
@@ -24,8 +25,16 @@ class ReviewScreen extends StatefulWidget {
   /// Hai việc hôm nay sau lượt ôn — dòng gợi ý của tổng kết.
   final DailyStatus? Function()? daily;
 
-  static Route<void> route(List<ReviewItem> items, Future<int?> Function(String, int) onGrade, {DailyStatus? Function()? daily}) =>
-      fadeRoute(ReviewScreen(items: items, onGrade: onGrade, daily: daily));
+  /// khoản thưởng vừa cộng (ôn +5 / +2, xong nhiệm vụ +20, chuỗi +50 — R-TIEN-2)
+  final RewardFeed? rewards;
+
+  static Route<void> route(
+    List<ReviewItem> items,
+    Future<int?> Function(String, int) onGrade, {
+    DailyStatus? Function()? daily,
+    RewardFeed? rewards,
+  }) =>
+      fadeRoute(ReviewScreen(items: items, onGrade: onGrade, daily: daily, rewards: rewards));
 
   @override
   State<ReviewScreen> createState() => _ReviewScreenState();
@@ -43,7 +52,9 @@ class _ReviewScreenState extends State<ReviewScreen> {
     if (!graded) return;
     final i = _s.index;
     widget.onGrade(_s.item.radical.id, _s.scores.last).then((days) {
-      if (mounted) setState(() => _next[i] = days);
+      if (!mounted) return;
+      setState(() => _next[i] = days);
+      playRewards(context, widget.rewards);
     });
   }
 

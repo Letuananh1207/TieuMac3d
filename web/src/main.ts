@@ -9,6 +9,7 @@ import { GamePlay, type TableSeat } from './gamePlay';
 import { Joystick } from './input/joystick';
 import { Keyboard } from './input/keyboard';
 import { ChatRoom } from './chatRoom';
+import { WalletRoom } from './walletRoom';
 import { OrbitCamera } from './input/orbitCamera';
 import { attachPointerInput } from './input/pointers';
 import { GroundPicker } from './input/tapToMove';
@@ -164,6 +165,7 @@ async function boot(): Promise<void> {
       progress = p;
       learnedRadicals = new Set(p.radicals);
       desk.sync(p.book); // màn danh mục Flutter có thể vừa ghi mượn (R-SACH-1)
+      walletRoom.sync(p); // về từ Tạp hoá: ví "−n" (R-TIEN-4)
     });
   };
   const lesson = new LessonBoard(closeLesson);
@@ -503,7 +505,23 @@ async function boot(): Promise<void> {
     say,
     learned: () => learnedRadicals,
     npcInfo: (id) => dialogFor(id),
+    ended: (game, outcome, result) => walletRoom.gameEnded(game, outcome, result), // R-TIEN-3
   });
+  // Văn tiền (R-TIEN-1..6): ví HUD, thưởng trò, nút "Vào tiệm" Tạp hoá — walletRoom.ts
+  const walletRoom = new WalletRoom({
+    bridge,
+    buildings: spec.buildings,
+    groundAt,
+    cover: () => {
+      paused = true;
+      covered = true;
+      learn.suspend(true);
+      player.moveTarget = null;
+    },
+    notice: (text) => say('Tạp hoá', text, () => {}),
+    setReward: (result, line) => gamePlay.setReward(result, line),
+  });
+  walletRoom.sync(progress);
   // HUD trò chơi (thiết kế 2026-11-13.27): "Rời bàn", tỉ số, lượt, câu hỏi Đấu chữ, thẻ kết quả
   const gameHud = new GameHud({
     leave: () => gamePlay.stand(),
@@ -648,6 +666,7 @@ async function boot(): Promise<void> {
       guideButton.set(sign, sign ? groundAt(sign.x, sign.z) : 0);
       guideButton.follow(camera);
     }
+    walletRoom.update({ camera, player: pos, roomId: room?.zoneId, busy: busy || gamePlay.active, free: seatFree });
     seatGlow.set(spot);
     seatGlow.update(dt);
     // mở bài học / ôn / bảng, màn tải → nhạc tắt dần; đóng → phát tiếp theo giờ (R-NHAC-1)

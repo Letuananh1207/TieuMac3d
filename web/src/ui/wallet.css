@@ -1,0 +1,34 @@
+/* Ví Văn tiền 文錢 (R-TIEN-1, R-TIEN-5) — design/docs/screen_specs.md "Ví Văn tiền + hiệu ứng nhận tiền" (2026-11-14.12).
+   Dọc: phải 16, trên safe + 10; ngang: phải safe + 12, trên 12. Viên kính cao 36 (size.wallet). */
+#wallet{position:fixed;z-index:6;right:16px;top:calc(var(--sa-top) + 10px);display:flex;flex-direction:column;align-items:flex-end}
+#walletBtn{height:var(--wallet,36px);box-sizing:border-box;padding:0 12px 0 5px;font:inherit;border-radius:999px;background:rgba(244,247,246,.86);border:1px solid var(--frost-line);outline:1px solid var(--frost-outline);box-shadow:var(--shadow-hud);color:var(--slate);display:flex;align-items:center;gap:7px;-webkit-backdrop-filter:var(--blur-hud);backdrop-filter:var(--blur-hud)}
+#walletBtn .num{font-size:15px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+#walletBtn.up{outline:2px solid var(--jade);box-shadow:0 0 0 5px rgba(43,84,70,.18),var(--shadow-hud)}
+#walletBtn.down{outline:2px solid var(--lacquer);box-shadow:0 0 0 5px rgba(168,50,42,.18),var(--shadow-hud)}
+.coin{flex:0 0 auto;display:block}
+.coin .rim{fill:var(--coin-rim)}
+.coin .face{fill:var(--gold)}
+.coin .ink{fill:var(--coin-ink);font-family:var(--han);font-weight:700}
+/* viên "+n" / "−n" dưới ví 1,5 s */
+.wl-delta{position:absolute;right:4px;top:42px;height:22px;padding:0 9px;border-radius:999px;font-size:12px;font-weight:700;color:#fff;background:var(--jade);display:flex;align-items:center;white-space:nowrap;pointer-events:none;animation:wl-out 1.5s ease-in forwards}
+.wl-delta.down{background:var(--lacquer)}
+/* nhãn lý do: viên kính .94 cao 28, viền ngoài jade 35 %; giữ 1,2 s rồi mờ 0,3 s */
+.wl-label{position:absolute;right:0;top:71px;height:28px;box-sizing:border-box;padding:0 12px 0 6px;border-radius:999px;background:rgba(244,247,246,.94);border:1px solid var(--frost-line);outline:1px solid rgba(43,84,70,.35);box-shadow:var(--shadow-hud);display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;white-space:nowrap;pointer-events:none}
+.wl-label.capped{padding:0 12px;border:0;outline:1px dashed rgba(36,50,58,.3);color:var(--slate-muted);box-shadow:none}
+.wl-label.fade{animation:wl-label 1.5s linear forwards}
+/* thẻ "Văn tiền kiếm từ đâu": rộng 250, kính .96, bo 14 */
+.wl-card{position:absolute;right:0;top:44px;width:250px;box-sizing:border-box;padding:12px 14px;border-radius:14px;background:rgba(244,247,246,.96);border:1px solid var(--frost-line);outline:1px solid var(--frost-outline);box-shadow:0 8px 22px rgba(36,50,58,.2);font-size:13px;line-height:1.5;display:flex;flex-direction:column;gap:6px}
+.wl-card .head{display:flex;align-items:center;gap:8px;font-weight:700;font-size:14px}
+.wl-card .row{display:flex;justify-content:space-between;gap:8px}
+.wl-card .row b{color:var(--jade);white-space:nowrap}
+.wl-card .note{font-size:12px;color:var(--slate-muted)}
+/* xu bay (30 px, khắc 文錢) — vị trí do JS (transform) */
+.wl-fly{position:fixed;left:0;top:0;z-index:9;pointer-events:none;filter:drop-shadow(0 3px 4px rgba(36,50,58,.3))}
+@keyframes wl-out{0%,80%{opacity:1}100%{opacity:0}}
+@keyframes wl-label{0%,80%{opacity:1}100%{opacity:0}}
+@media (orientation:landscape){
+  #wallet{right:calc(var(--sa-right) + 12px);top:12px}
+}
+@media (prefers-reduced-motion:reduce){.wl-delta,.wl-label.fade{animation:none}}
+/* ví ẩn khi bận (JS ẩn theo khung; đây chặn thêm lúc chuyển) */
+body.at-table #wallet,body.covered #wallet,body.map-open #wallet,body.talking #wallet{display:none}

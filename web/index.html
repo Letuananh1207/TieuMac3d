@@ -15,6 +15,9 @@
   <div id="joy" hidden><div id="knob"></div></div>
   <div class="label" id="nameTag">Tuấn Anh</div>
 
+  <!-- ví Văn tiền 文錢 góc trên phải (R-TIEN-1), canvas VanTien-HUD-doc / -ngang; phần trong do JS dựng -->
+  <div id="wallet" hidden><button id="walletBtn" type="button" aria-label="Văn tiền: 0"></button></div>
+
   <!-- nút học nổi trên vật học trong nhà (R-VUNG-1), canvas TrongNha-doc / TrongNha-ngang -->
   <button class="learn" id="learn" type="button" hidden>
     <span class="dot" aria-hidden="true"></span><span id="learnText"></span><span class="han" id="learnHan" lang="zh"></span>
@@ -40,6 +43,12 @@
     <button id="boardBtn" type="button" aria-label="Xem bảng"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="14" rx="1.5"></rect><path d="M8 9h8M8 13h5M7 18v3M17 18v3"></path></svg>Xem bảng<span class="badge" id="boardBadge" aria-hidden="true" hidden></span></button>
     <div class="tip" aria-hidden="true"></div>
     <div class="who">Nhiệm vụ hằng ngày <span class="han" lang="zh">日課榜</span></div>
+  </div>
+  <!-- nút "Vào tiệm" trước cửa Tạp hoá 雜貨 (R-TIEN-6) — kiểu nút "Xem bảng" -->
+  <div id="shop" hidden>
+    <button id="shopBtn" type="button"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9l1.5-5h13L20 9"></path><path d="M4 9c0 1.4 1.1 2.5 2.7 2.5S9.3 10.4 9.3 9c0 1.4 1.2 2.5 2.7 2.5s2.7-1.1 2.7-2.5c0 1.4 1.1 2.5 2.6 2.5S20 10.4 20 9"></path><path d="M5.5 11.5V20h13v-8.5"></path><path d="M10 20v-5h4v5"></path></svg>Vào tiệm</button>
+    <div class="tip" aria-hidden="true"></div>
+    <div class="who">Tạp hoá <span class="han" lang="zh">雜貨</span></div>
   </div>
   <!-- nút "Cách chơi" trên biển tên trò chơi Kỳ Văn Uyển (R-GIAO-2) — kiểu nút "Xem bảng" -->
   <div id="guide" hidden>

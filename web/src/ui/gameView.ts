@@ -15,6 +15,8 @@ export interface GameResult {
   you: number;
   npc: number;
   line: string;
+  /** dòng nhỏ "+8 Văn tiền" khi Flutter đã ghi thưởng ván (R-TIEN-3, quyết định 4); chưa / không thưởng → không có */
+  reward?: string;
 }
 
 /** Ngũ Tử Kỳ (R-CO-1..3). */

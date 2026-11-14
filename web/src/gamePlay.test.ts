@@ -4,6 +4,7 @@ import { Colliders } from './collision/colliders';
 import { GAME_LINES, GamePlay, type SeatablePlayer } from './gamePlay';
 import { BLACK, WHITE } from './games/gomoku';
 import { SEAT_Z, tableSlots, type BoardPoint, type GameTable } from './scene/gameTable';
+import type { GameResult } from './ui/gameView';
 import type { GameTableSpec } from './scene/spec';
 
 /** Chỗ chơi giả: ghi lại trạng thái cảnh nhận được (không cần canvas / WebGL). Ghế 0 phía +z (nhìn bắc), ghế 1 phía −z. */
@@ -321,5 +322,65 @@ describe('Khu giao lưu — vào bàn bằng nút nổi', () => {
     const [a, b] = game.seatSpots();
     expect(game.sitAt(a)).toBe(true);
     expect(game.sitAt(b)).toBe(false);
+  });
+});
+
+describe('Văn tiền khi ngồi bàn (R-TIEN-3, quyết định 4)', () => {
+  function setupEarn(px: number, pz: number, learned: string[] = []) {
+    const co = fakeTable({ id: 'ban-co', kind: 'co', x: -22, z: 34, npc: 'tieu-mac' });
+    const dau = fakeTable({ id: 'ban-dau-chu', kind: 'dau-chu', x: -22, z: 46, npc: 'su-phu' });
+    const player = fakePlayer(px, pz);
+    const ended: { game: string; outcome: string; result: GameResult }[] = [];
+    const game = new GamePlay([co.table, dau.table], {
+      ...host(player, [], learned),
+      ended: (g, outcome, result) => ended.push({ game: g, outcome, result }),
+    });
+    return { game, ended };
+  }
+
+  it('R-TIEN-3: thắng ván cờ → báo một lần (co, thang); thẻ kết quả ghi "+3 Văn tiền" khi Flutter trả lời', () => {
+    const { game, ended } = setupEarn(-22, 36);
+    game.trySit();
+    const g = game.gomoku!;
+    for (const x of [3, 4, 5, 6]) g.cells[7 * 13 + x] = BLACK;
+    g.cells[0] = WHITE;
+    g.moves = 5;
+    game.playAt({ x: 7, y: 7 });
+    expect(ended).toHaveLength(1);
+    expect(ended[0]).toMatchObject({ game: 'co', outcome: 'thang' });
+    expect(game.setReward(ended[0].result, '+3 Văn tiền')).toBe(true);
+    expect(game.view()).toMatchObject({ result: { outcome: 'thang', reward: '+3 Văn tiền' } });
+  });
+
+  it('R-TIEN-3: không thưởng (đủ trần) → thẻ không có dòng; trả lời đến sau "Ván mới" / "Rời bàn" → bỏ', () => {
+    const { game, ended } = setupEarn(-22, 36);
+    game.trySit();
+    const g = game.gomoku!;
+    for (const x of [3, 4, 5, 6]) g.cells[7 * 13 + x] = BLACK;
+    g.moves = 4;
+    game.playAt({ x: 7, y: 7 });
+    expect(game.setReward(ended[0].result, null)).toBe(false);
+    expect(game.view()?.result?.reward).toBeUndefined();
+    game.newRound();
+    expect(game.setReward(ended[0].result, '+3 Văn tiền')).toBe(false);
+    game.stand();
+    expect(game.setReward(ended[0].result, '+3 Văn tiền')).toBe(false);
+  });
+
+  it('R-TIEN-3: hết 10 câu Đấu chữ → báo (dau-chu, kết quả ván); rời bàn giữa ván → không báo', () => {
+    const { game, ended } = setupEarn(-22, 48, ['moc', 'truc', 'thuy']);
+    game.trySit();
+    game.pick(0);
+    game.stand(); // rời giữa ván
+    expect(ended).toHaveLength(0);
+    game.trySit();
+    for (let k = 0; k < 400 && !game.view()?.result; k++) {
+      const v = game.view();
+      if (v?.kind === 'dau-chu' && v.phase === 'hoi') game.pick(0);
+      game.update(0.1);
+    }
+    expect(ended).toHaveLength(1);
+    expect(ended[0].game).toBe('dau-chu');
+    expect(ended[0].outcome).toBe(game.view()?.result?.outcome);
   });
 });

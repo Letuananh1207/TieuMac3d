@@ -8,6 +8,7 @@ import '../theme/app_colors.dart';
 import '../theme/app_text_size.dart';
 import 'learned_screen.dart';
 import 'radical_screen.dart';
+import 'reward_overlay.dart';
 import 'screen_parts.dart';
 import 'study_board.dart';
 import 'study_parts.dart';
@@ -18,7 +19,14 @@ import 'study_parts.dart';
 /// hiện lại, tính lại theo kho tiến độ. Bảng chỉ đóng bằng "Đứng dậy" (Esc, nút quay lại của máy) → SceneView gửi
 /// `resume {stand: true}` (docs/bridge.md `openStudy`).
 class StudyScreen extends StatefulWidget {
-  const StudyScreen({super.key, required this.request, required this.read, required this.onReview, required this.onLearn});
+  const StudyScreen({
+    super.key,
+    required this.request,
+    required this.read,
+    required this.onReview,
+    required this.onLearn,
+    this.rewards,
+  });
 
   final OpenStudyRequest request;
 
@@ -31,18 +39,22 @@ class StudyScreen extends StatefulWidget {
   /// ghi bộ thủ đã học ("Đã lĩnh hội" lần đầu — R-HANH-3)
   final Future<void> Function(String id) onLearn;
 
+  /// khoản thưởng học bộ mới (+10 — R-TIEN-2) cho thẻ bộ thủ mở từ đây
+  final RewardFeed? rewards;
+
   static Route<void> route(
     OpenStudyRequest request,
     StudyProgress Function() read,
     Future<void> Function(List<ReviewItem>) onReview,
-    Future<void> Function(String) onLearn,
-  ) =>
+    Future<void> Function(String) onLearn, {
+    RewardFeed? rewards,
+  }) =>
       PageRouteBuilder<void>(
         opaque: false,
         barrierColor: AppColors.sceneDim,
         transitionDuration: const Duration(milliseconds: 200),
         reverseTransitionDuration: const Duration(milliseconds: 150),
-        pageBuilder: (_, _, _) => StudyScreen(request: request, read: read, onReview: onReview, onLearn: onLearn),
+        pageBuilder: (_, _, _) => StudyScreen(request: request, read: read, onReview: onReview, onLearn: onLearn, rewards: rewards),
         // mờ → rõ + trượt xuống 12 px
         transitionsBuilder: (_, a, _, child) => FadeTransition(
           opacity: a,
@@ -81,6 +93,7 @@ class _StudyScreenState extends State<StudyScreen> {
   Route<bool> _card(Radical r, {required bool learned}) => RadicalScreen.route(
         OpenRadicalRequest(radical: r, learned: learned, region: widget.request.region),
         () => widget.onLearn(r.id),
+        rewards: widget.rewards,
       );
 
   void _open(String id) => _run((nav) async {

@@ -9,6 +9,7 @@ import 'library_event.dart';
 import 'review_event.dart';
 import 'safe_area_script.dart';
 import 'scene_event.dart';
+import 'shop_event.dart';
 
 /// Màn chính: WebView phủ toàn màn hình, hiển thị scene 3D.
 class SceneView extends StatefulWidget {
@@ -27,6 +28,8 @@ class SceneView extends StatefulWidget {
     this.onOpenStudy,
     this.onOpenLibrary,
     this.onOpenBook,
+    this.onEarnGame,
+    this.onOpenShop,
   });
 
   final WebUri url;
@@ -72,6 +75,13 @@ class SceneView extends StatefulWidget {
 
   /// Mở sổ từ cuốn đang mượn (`openBook` — R-SACH-3); đóng → ghi trang → `resume`. `null` → trả `false`.
   final Future<void> Function(BuildContext context, OpenBookRequest request)? onOpenBook;
+
+  /// Hết một ván ở bàn chơi (`earnGame` — R-TIEN-3): Flutter tính + ghi thưởng, trả `earnGameReply`. `null` → trả `null`
+  /// (trang không thưởng, ví ẩn).
+  final Future<Map<String, Object?>> Function(String game, String outcome)? onEarnGame;
+
+  /// Mở Tạp hoá (`openShop` — R-TIEN-4, R-TIEN-6); đóng → `resume`. `null` → trả `false`, trang báo "Tiệm chưa mở".
+  final Future<void> Function(BuildContext context, OpenShopRequest request)? onOpenShop;
 
   @override
   State<SceneView> createState() => _SceneViewState();
@@ -171,6 +181,18 @@ class _SceneViewState extends State<SceneView> {
             };
       if (opened == null) return false;
       opened.whenComplete(() => _controller?.evaluateJavascript(source: resumeScript()));
+      return true;
+    }
+    if (type == 'earnGame') {
+      final a = earnGameArgs(args);
+      final earn = widget.onEarnGame;
+      return earn != null && a != null ? earn(a.game, a.outcome) : null;
+    }
+    if (type == 'openShop') {
+      final f = widget.onOpenShop;
+      final req = OpenShopRequest.parse(args);
+      if (f == null || req == null) return false;
+      f(context, req).whenComplete(() => _controller?.evaluateJavascript(source: resumeScript()));
       return true;
     }
     if (type == 'openReview') {

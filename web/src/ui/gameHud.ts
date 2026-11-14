@@ -6,6 +6,7 @@
 import { portraitOf } from './dialogBox';
 import { el } from './dom';
 import type { DuelView, GameNpc, GameResult, GameView, GomokuView } from './gameView';
+import { coinIcon } from './wallet';
 
 const SVG = 'http://www.w3.org/2000/svg';
 
@@ -224,7 +225,14 @@ export class GameHud {
     leave.append(icon(18, EXIT), 'Rời bàn');
     leave.addEventListener('click', () => this.on.leave());
     row.append(again, leave);
-    c.append(avatar(npc.id, 56, 'big'), tag, head, line, row);
+    c.append(avatar(npc.id, 56, 'big'), tag, head);
+    if (r.reward) {
+      // dòng nhỏ "+8 Văn tiền" — tiền đã ghi, xu bay khi "Rời bàn" (R-TIEN-3, quyết định 4)
+      const coins = node('div', 'coins');
+      coins.append(coinIcon(18), r.reward);
+      c.append(coins);
+    }
+    c.append(line, row);
     return c;
   }
 }
