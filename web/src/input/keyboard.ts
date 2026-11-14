@@ -1,9 +1,10 @@
 import type { MoveInput } from '../player/controller';
 
 /** Hành động bằng phím (R-DIEU-6, R-DIEU-7) — trên điện thoại là nút (chờ thiết kế). */
-export type KeyAction = 'jump' | 'bow' | 'sit' | 'seat' | 'back' | 'chat';
+export type KeyAction = 'jump' | 'bow' | 'sit' | 'seat' | 'back' | 'chat' | 'map';
 
-const ACTION_KEYS: Record<string, KeyAction> = { ' ': 'jump', f: 'bow', c: 'sit', e: 'seat', escape: 'back', enter: 'chat' };
+/** M: mở / đóng bản đồ lớn (R-BANDO-5). */
+const ACTION_KEYS: Record<string, KeyAction> = { ' ': 'jump', f: 'bow', c: 'sit', e: 'seat', escape: 'back', enter: 'chat', m: 'map' };
 
 /** Đang gõ chữ (ô nhập trò chuyện…) → phím không điều khiển nhân vật (R-CHAT, thiết kế 2026-11-14.9). */
 function typingIn(t: EventTarget | null): boolean {

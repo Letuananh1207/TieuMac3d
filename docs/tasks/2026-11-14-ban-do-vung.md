@@ -1,6 +1,6 @@
 # Bản đồ vùng — bản đồ nhỏ góc màn + bản đồ lớn cả cảnh
 - Yêu cầu: "bây giờ khi vào các map tôi nghĩ chúng ta cũng nên có 1 cái gì đó để hiển thị bản đồ của map đó và vị trí chúng ta hiện tại"
-- Loại: thêm · Cỡ: vừa · Trạng thái: đang làm (phần HUD: chờ thiết kế — phiếu `docs/phieu_thiet_ke/2026-11-14-ban-do-vung.md`)
+- Loại: thêm · Cỡ: vừa · Trạng thái: xong (HUD áp thiết kế 2026-11-14.20 — V-20261114-34; chờ thử máy)
 - Việc: V-20261114-20
 
 ## Đã duyệt 2026-11-14
@@ -138,16 +138,21 @@ Làm được **trước thiết kế** (1–4):
       (gốc · vitest)
 
 **Chờ thiết kế** (`docs/phieu_thiet_ke/2026-11-14-ban-do-vung.md`):
-- [ ] 5. **Thiết kế** bản đồ nhỏ + bản đồ lớn (phiếu) — chờ `/ui-design` chốt mục trong `design/CHANGELOG.md`.
-- [ ] 6. `ui/areaMapPaint.ts` — vẽ `AreaMap` lên Canvas 2D một lần theo thiết kế (giấy, nét mực, biểu tượng). (ui ·
+- [x] 5. **Thiết kế** bản đồ nhỏ + bản đồ lớn (phiếu) — chờ `/ui-design` chốt mục trong `design/CHANGELOG.md`.
+- [x] 6. `ui/areaMapPaint.ts` — vẽ `AreaMap` lên Canvas 2D một lần theo thiết kế (giấy, nét mực, biểu tượng). (ui ·
       chờ thiết kế · xong khi ảnh 8 cảnh khớp artboard)
-- [ ] 7. `ui/miniMap.ts` + `areaMap.css` + khung trong `index.html` — bản đồ nhỏ: vòng tròn cắt, ảnh dịch / xoay bằng
+- [x] 7. `ui/miniMap.ts` + `areaMap.css` + khung trong `index.html` — bản đồ nhỏ: vòng tròn cắt, ảnh dịch / xoay bằng
       CSS transform, mũi tên, dấu mép, nhãn "Tầng 2"; dọc + ngang, safe area. (ui · chờ thiết kế)
-- [ ] 8. `ui/areaMapPanel.ts` — bản đồ lớn: lớp phủ, ảnh vừa khung, nhãn HTML, mũi tên mình, nút "Đóng". (ui · chờ thiết kế)
-- [ ] 9. Ghép `web/src/areaMapRoom.ts` + vài dòng `main.ts`: dựng khi vào cảnh (sau `world`), `update` mỗi khung với
+- [x] 8. `ui/areaMapPanel.ts` — bản đồ lớn: lớp phủ, ảnh vừa khung, nhãn HTML, mũi tên mình, nút "Đóng". (ui · chờ thiết kế)
+- [x] 9. Ghép `web/src/areaMapRoom.ts` + vài dòng `main.ts`: dựng khi vào cảnh (sau `world`), `update` mỗi khung với
       điều kiện ẩn R-BANDO-1, chặn joystick khi chạm bản đồ nhỏ, `player.update` đứng yên khi bản đồ lớn mở, thêm vào
       `onBack`, phím M / Esc. (ghép · xong khi đi thử đủ 8 cảnh trên `npm run dev`)
-- [ ] 10. Thêm dòng vào Bản đồ tính năng (`.claude/skills/lead/SKILL.md`); `npm run build`.
+- [x] 10. Thêm dòng vào Bản đồ tính năng (`.claude/skills/lead/SKILL.md`); `npm run build`.
+
+## Áp thiết kế 2026-11-14.20 (V-20261114-34)
+- Đất = bục `terrain.plateaus` (y ≥ −1) hoặc khung các khu nới 3 m (`landRects`); khu = hình `khu` (bản đồ lớn); đặt chữ `placeLabels` (3 chỗ cho tên khu, tên khu không bao giờ bị bỏ).
+- Theo luật, không theo artboard: bán kính bản đồ nhỏ giữ **30 m** (R-BANDO-3; artboard 25 m); dấu bắc / la bàn ghi **B**, bỏ chữ Hán tên cảnh ở đầu giấy, biểu tượng Đấu chữ thay 字 bằng dấu hỏi, nhãn bảng nhiệm vụ `Bảng nhiệm vụ` (R-HUD-4) — ghi `docs/testing/gui_thiet_ke_2026-11-15.md`.
+- Ảnh chụp headless (390×844, 844×390) ở scratchpad phiên; chưa thử máy.
 
 ## Hiệu năng
 - Draw call 3D: **+0** (toàn bộ là HTML / Canvas 2D). Vẽ canvas một lần mỗi lần vào cảnh (< 5 ms, lúc màn tải còn che).

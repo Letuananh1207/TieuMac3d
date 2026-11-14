@@ -11,6 +11,7 @@ import { Joystick } from './input/joystick';
 import { Keyboard } from './input/keyboard';
 import { ChatRoom } from './chatRoom';
 import { WalletRoom } from './walletRoom';
+import { AreaMapRoom } from './areaMapRoom';
 import { OrbitCamera } from './input/orbitCamera';
 import { attachPointerInput } from './input/pointers';
 import { GroundPicker } from './input/tapToMove';
@@ -434,6 +435,10 @@ async function boot(): Promise<void> {
       if (!mapBack() && !decor?.back()) gamePlay.stand(); // Esc: đóng bảng / thoại / bản đồ, không có thì rời bàn (R-GIAO-1)
       return;
     }
+    if (a === 'map') {
+      areaMap.toggle(); // M: mở / đóng bản đồ lớn (R-BANDO-5)
+      return;
+    }
     if (paused || loading.active || mapOpen || talking || decor?.active) return;
     if (a === 'chat') {
       if (!gamePlay.active) chat.open(); // Enter: mở ô nhập (gửi do ô nhập tự lo)
@@ -450,7 +455,7 @@ async function boot(): Promise<void> {
     joystick,
     orbit,
     onJoystickStart: () => (player.moveTarget = null),
-    tapOnly: () => mapOpen || talking || gamePlay.active || chat.typing, // ngồi chơi: chạm là chạm bàn (R-GIAO-1, R-DIEU-1)
+    tapOnly: () => mapOpen || areaMap.open || talking || gamePlay.active || chat.typing, // ngồi chơi: chạm là chạm bàn (R-GIAO-1, R-DIEU-1)
     lookMode: () => ngoiMat.seated, // ngồi: kéo = nhìn quanh từ mắt, chụm không zoom (R-DIEU-7, R-DIEU-1)
     onLook: (dx, dy) => ngoiMat.drag(dx, dy),
     noJoystick: () => !!decor?.active, // trang trí: đứng yên, kéo đâu cũng xoay camera (R-NHA-2)
@@ -606,6 +611,17 @@ async function boot(): Promise<void> {
       if (progress) progress = { ...progress, coins, alms };
     },
   });
+  // bản đồ vùng (R-BANDO-1…5, thiết kế 2026-11-14.20): bản đồ nhỏ góc trên trái + bản đồ lớn — areaMapRoom.ts
+  const areaMap = new AreaMapRoom({
+    spec,
+    seats: world.seats,
+    studySign: world.studySign,
+    groundAt,
+    opened: () => {
+      player.moveTarget = null;
+      joystick.end();
+    },
+  });
   // HUD trò chơi (thiết kế 2026-11-13.27): "Rời bàn", tỉ số, lượt, câu hỏi Đấu chữ, thẻ kết quả
   const gameHud = new GameHud({
     leave: () => gamePlay.stand(),
@@ -633,6 +649,7 @@ async function boot(): Promise<void> {
   const mapHud = new MapHud(closeMap);
   // nút quay lại: đóng bảng cách chơi / khung thoại trước, rồi bản đồ (docs/bridge.md `back`)
   mapBack = (): boolean => {
+    if (areaMap.back()) return true; // bản đồ lớn (R-BANDO-5)
     if (chat.close()) return true; // nút quay lại / Esc: đóng ô nhập trò chuyện trước
     if (guidePanel.close()) return true;
     if (dialogBox.isOpen) {
@@ -711,7 +728,7 @@ async function boot(): Promise<void> {
     const fromX = player.position.x;
     const fromZ = player.position.z;
     // hướng đi khoá khi giữ joystick cùng hướng → camera tự xoay không làm nhân vật đi vòng (R-DIEU-3)
-    player.update(dt, input, orbit.steerYaw(input.x, input.y), paused || loading.active || mapOpen || talking || chat.typing || !!decor?.active);
+    player.update(dt, input, orbit.steerYaw(input.x, input.y), paused || loading.active || mapOpen || areaMap.open || talking || chat.typing || !!decor?.active);
     const pos = player.position;
     // camera bám êm: dây kéo + tự về sau lưng chậm (R-DIEU-3)
     orbit.follow(dt, pos.x - fromX, pos.z - fromZ, character.facing.rotation.y, player.state.mps > 0);
@@ -768,13 +785,30 @@ async function boot(): Promise<void> {
       guideButton.follow(camera);
     }
     walletRoom.update({ camera, player: pos, roomId: room?.zoneId, busy: busy || gamePlay.active, free: seatFree });
+    areaMap.update(dt, {
+      x: pos.x,
+      y: pos.y,
+      z: pos.z,
+      facing: character.facing.rotation.y,
+      view: orbit.yaw + Math.PI,
+      busy: {
+        loading: loading.active || travelling,
+        travelMap: mapOpen,
+        covered: paused || covered,
+        talking,
+        gameTable: gamePlay.active,
+        sitting: player.isSitting,
+        chatTyping: chat.typing,
+        decorating: !!decor?.active,
+      },
+    });
     seatGlow.set(spot);
     decor?.update(dt, camera, seatFree); // nút "Trang trí" ẩn khi bản đồ / thoại / ngồi / màn Flutter
     seatGlow.update(dt);
     // mở bài học / ôn / bảng, màn tải → nhạc tắt dần; đóng → phát tiếp theo giờ (R-NHAC-1)
     music?.update(dt, paused || covered || loading.active ? 0 : musicVolume(teaFloors, pos.x, pos.z));
     actions.update({
-      hidden: paused || covered || loading.active || mapOpen || talking,
+      hidden: paused || covered || loading.active || mapOpen || areaMap.open || talking,
       air: player.state.air,
       sitting: player.isSitting,
       bowing: player.isBowing,

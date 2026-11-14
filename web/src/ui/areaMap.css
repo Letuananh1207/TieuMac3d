@@ -1,0 +1,61 @@
+/* Bản đồ vùng — bản đồ nhỏ + bản đồ lớn (thiết kế 2026-11-14.20; token map-ink, map-cloud, map-water, minimap-portrait 104,
+   minimap-landscape 96). DOM dựng trong ui/miniMap.ts, ui/areaMapPanel.ts. */
+:root{
+  --map-paper:#f2eada;
+  --map-ink:rgba(58,48,36,1);   /* token map-ink (dùng với độ mờ) */
+  --map-cloud:#dce3e2;          /* token map-cloud */
+  --map-water:#bfd5d1;          /* token map-water */
+  --scroll-wood:#3a2418;
+  --minimap:104px;              /* token size.minimap-portrait */
+}
+@media (orientation:landscape){:root{--minimap:96px}} /* token size.minimap-landscape */
+
+/* ---------- bản đồ nhỏ: dọc trái 20, trên safe + 14; ngang trái safe + 16, trên 16 ---------- */
+.mini-map{position:fixed;z-index:6;left:calc(var(--sa-left) + 20px);top:calc(var(--sa-top) + 14px);width:var(--minimap);height:var(--minimap);animation:mm-in .2s ease-out}
+@media (orientation:landscape){.mini-map{left:max(16px,calc(var(--sa-left) + 16px));top:16px}}
+@keyframes mm-in{from{opacity:0}to{opacity:1}}
+.mm-btn{position:absolute;inset:0;padding:0;border:0;border-radius:50%;background:transparent;box-shadow:0 0 0 4px rgba(244,247,246,.86),0 0 0 5px rgba(36,50,58,.16),0 6px 16px rgba(36,50,58,.28);transition:transform .12s ease-out,box-shadow .12s ease-out;touch-action:manipulation}
+.mm-btn:active{transform:scale(.94);box-shadow:0 0 0 4px rgba(244,247,246,.86),0 0 0 5px rgba(36,50,58,.16),0 0 0 8px rgba(43,84,70,.35)}
+.mm-clip{position:absolute;inset:0;border-radius:50%;overflow:hidden;background:var(--map-cloud)}
+.mm-base{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform}
+.mm-over{position:absolute;inset:0;width:100%;height:100%}
+.mm-ring{position:absolute;inset:0;border-radius:50%;box-shadow:inset 0 0 0 2px var(--gold);pointer-events:none}
+.mm-north{position:absolute;left:0;top:0;width:20px;height:20px;box-sizing:border-box;border-radius:50%;background:var(--jade);color:#fff;border:1.5px solid #fff;font-size:11px;font-weight:700;line-height:17px;text-align:center;pointer-events:none}
+.mm-floor{position:absolute;left:50%;bottom:-12px;transform:translateX(-50%);height:20px;box-sizing:border-box;padding:0 8px;border-radius:999px;background:var(--jade);color:#fff;border:1.5px solid #fff;font-size:11px;font-weight:700;line-height:17px;white-space:nowrap;pointer-events:none}
+.mm-hint{position:fixed;z-index:6;left:calc(var(--sa-left) + 20px + var(--minimap) + 12px);top:calc(var(--sa-top) + 14px + var(--minimap) / 2 - 15px);height:30px;box-sizing:border-box;padding:0 10px 0 6px;border-radius:999px;background:rgba(244,247,246,.92);outline:1px solid var(--frost-outline);display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;pointer-events:none;animation:mm-in .2s ease-out}
+@media (orientation:landscape){.mm-hint{left:calc(max(16px,calc(var(--sa-left) + 16px)) + var(--minimap) + 12px);top:calc(16px + var(--minimap) / 2 - 15px)}}
+.mm-hint svg{width:14px;height:14px;fill:none;stroke:var(--jade);stroke-width:2.6;stroke-linecap:round}
+
+/* ---------- bản đồ lớn: ẩn mọi HUD (cả ví), cảnh tối 32 % ---------- */
+body.area-map #joy,body.area-map #joyGhost,body.area-map #actions,body.area-map #talk,body.area-map #seat,body.area-map #guide,body.area-map #board,body.area-map #shop,body.area-map #readBook,body.area-map #wallet,body.area-map .learn,body.area-map #chat,body.area-map #chatBtn,body.area-map #chatBubbles,body.area-map #nameTag,body.area-map #decorBtn{display:none !important}
+.big-map{position:fixed;inset:0;z-index:30;touch-action:none}
+.bm-dim{position:absolute;inset:0;background:rgba(36,50,58,.32)}
+.bm-sheet{position:absolute;left:16px;right:16px;top:calc(var(--sa-top) + 10px);bottom:calc(var(--sa-bottom) + 18px + 48px + 14px);display:flex;flex-direction:column;filter:drop-shadow(0 10px 24px rgba(36,50,58,.35))}
+.bm-rod{position:relative;flex:none;height:12px;margin:0 -8px;border-radius:6px;background:linear-gradient(#5a3a28,var(--scroll-wood) 60%,#2a190f)}
+.bm-knob{position:absolute;top:-2px;width:16px;height:16px;box-sizing:border-box;border-radius:50%;background:var(--jade);border:2px solid var(--gold)}
+.bm-knob:first-child{left:-12px}
+.bm-knob:last-child{right:-12px}
+.bm-paper{flex:1;min-height:0;margin:0 2px;padding:10px 7px 8px;background:var(--map-paper);box-shadow:inset 0 0 0 4px rgba(43,84,70,.12),inset 0 0 0 5px rgba(58,36,24,.18);display:flex;flex-direction:column;gap:6px}
+.bm-head{display:flex;align-items:baseline;justify-content:center;gap:8px;padding:0 8px}
+.bm-eyebrow{font-size:11px;font-weight:700;color:var(--slate-muted);letter-spacing:.1em;text-transform:uppercase}
+.bm-title{margin:0;font-family:var(--display);font-size:20px;font-weight:700}
+.bm-frame{position:relative;flex:1;min-height:0;border-radius:4px;overflow:hidden;outline:1px solid rgba(58,48,36,.25)}
+.bm-canvas{display:block}
+.bm-legend{display:flex;flex-wrap:wrap;gap:2px 8px;padding:2px 6px;font-size:11px;color:var(--slate-muted)}
+.bm-legend-item{display:flex;align-items:center;gap:3px}
+.bm-close{height:48px;padding:0 18px;font-size:15px;font-weight:700;color:var(--slate);border-radius:999px;background:rgba(244,247,246,.92);border:1px solid var(--frost-line);outline:1px solid rgba(36,50,58,.22);display:flex;align-items:center;justify-content:center;gap:8px}
+.bm-close svg{fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round}
+.bm-close-bottom{position:absolute;left:50%;bottom:calc(var(--sa-bottom) + 18px);transform:translateX(-50%)}
+.bm-side{display:none}
+@media (orientation:landscape){
+  .bm-sheet{left:calc(var(--sa-left) + 12px);right:auto;top:8px;bottom:8px;width:min(600px,calc(100vw - var(--sa-left) - var(--sa-right) - 24px - 16px - 150px))}
+  .bm-paper{padding:6px 7px;gap:4px}
+  .bm-paper .bm-head,.bm-paper .bm-legend,.bm-close-bottom{display:none}
+  .bm-side{position:absolute;display:flex;flex-direction:column;gap:8px;left:calc(var(--sa-left) + 12px + min(600px,calc(100vw - var(--sa-left) - var(--sa-right) - 24px - 16px - 150px)) + 16px);right:calc(var(--sa-right) + 12px);top:12px;bottom:calc(var(--sa-bottom) + 12px)}
+  .bm-card{padding:10px 12px;border-radius:12px;background:rgba(244,247,246,.92);outline:1px solid var(--frost-outline)}
+  .bm-card .bm-eyebrow{font-size:10px}
+  .bm-card-title{font-family:var(--display);font-weight:700;font-size:17px;line-height:1.2}
+  .bm-card-legend{flex:1;min-height:0;padding:6px 4px;overflow:hidden}
+  .bm-card-legend .bm-legend{flex-direction:column;gap:4px 0}
+  .bm-close-side{flex:none;height:44px;font-size:14px;gap:6px}
+}

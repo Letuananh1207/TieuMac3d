@@ -11,6 +11,7 @@ import {
   miniMapShown,
   miniPoint,
   miniRotation,
+  placeLabels,
   toMap,
   whereAmI,
 } from './areaMapView';
@@ -102,6 +103,25 @@ describe('bản đồ vùng — nhãn chồng nhau (R-BANDO-2)', () => {
       (l) => LABEL_PRIORITY[l.kind],
     );
     expect(kept.map((k) => k.label.text)).toEqual(['Tàng Thư Các', 'Nhà của ta']);
+  });
+});
+
+describe('bản đồ lớn — luật đặt chữ (R-BANDO-2, thiết kế 2026-11-14.20)', () => {
+  it('R-BANDO-2: tên khu thử chỗ thứ hai khi chỗ đầu đè biểu tượng; chữ cấp sau đè → bỏ chữ', () => {
+    const icon = { x: 100, y: 20, w: 24, h: 24 };
+    const placed = placeLabels(
+      [
+        { item: 'cho', priority: 3, w: 60, h: 13, spots: [{ x: 100, y: 52 }] },
+        { item: 'khu', priority: 0, w: 80, h: 14, spots: [{ x: 100, y: 22 }, { x: 100, y: 52 }, { x: 100, y: 90 }] },
+      ],
+      [icon],
+    );
+    expect(placed).toEqual([{ item: 'khu', x: 100, y: 52 }]);
+  });
+
+  it('R-BANDO-3: biểu tượng cách mình quá 28 m (vành cắt) → thành dấu mép', () => {
+    expect(edgeMarks(MAP, { x: 1.5, z: -9 }, NORTH).filter((m) => m.kind === 'vong-tran')).toHaveLength(1);
+    expect(edgeMarks(MAP, { x: 2.5, z: -9 }, NORTH).filter((m) => m.kind === 'vong-tran')).toEqual([]);
   });
 });
 

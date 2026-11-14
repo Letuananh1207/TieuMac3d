@@ -1,5 +1,5 @@
 # Phiếu: Bản đồ vùng — bản đồ nhỏ góc màn + bản đồ lớn cả cảnh
-- Trạng thái: chờ thiết kế
+- Trạng thái: đã áp (2026-11-14.20)
 - Đã vẽ: 2026-11-14.20
 - Đợi bởi: kế hoạch `docs/tasks/2026-11-14-ban-do-vung.md` (nhiệm vụ 5–9)
 

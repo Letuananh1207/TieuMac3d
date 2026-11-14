@@ -14,6 +14,8 @@ export const MINI_RADIUS = 30;
 export const UPPER_FLOOR_MIN = 2;
 /** Biểu tượng ngoài tầm có dấu ở mép bản đồ nhỏ (R-BANDO-3). */
 export const EDGE_KINDS: readonly IconKind[] = ['vong-tran', 'cong-canh'];
+/** Biểu tượng cách mình quá [MINI_RADIUS] − chừng này (m) → dấu mép, không để vành cắt (thiết kế 2026-11-14.20). */
+export const EDGE_MARGIN = 2;
 
 const TAU = Math.PI * 2;
 const norm = (a: number): number => {
@@ -70,12 +72,12 @@ export interface EdgeMark {
 }
 
 /** Vòng trận / cổng sang cảnh ở ngoài [MINI_RADIUS] → dấu ở mép, chỉ về phía đó (R-BANDO-3). */
-export function edgeMarks(map: AreaMap, player: { x: number; z: number }, view: number): EdgeMark[] {
+export function edgeMarks(map: AreaMap, player: { x: number; z: number }, view: number, inner = MINI_RADIUS - EDGE_MARGIN): EdgeMark[] {
   const out: EdgeMark[] = [];
   for (const i of map.icons) {
     if (!EDGE_KINDS.includes(i.kind)) continue;
     const dist = Math.hypot(i.x - player.x, i.z - player.z);
-    if (dist <= MINI_RADIUS) continue;
+    if (dist <= inner) continue;
     const p = miniPoint(player, view, i.x, i.z);
     out.push({ kind: i.kind, ...(i.scene ? { scene: i.scene } : {}), angle: norm(Math.atan2(p.x, -p.y)), dist });
   }
@@ -115,6 +117,40 @@ export function fitLabels(
     if (!hit) kept.push({ p: { label: l, x: at.x, y: at.y }, w: m.w, h: m.h });
   }
   return kept.map((k) => k.p);
+}
+
+export interface Box {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}
+
+const overlaps = (a: Box, b: Box): boolean => Math.abs(a.x - b.x) * 2 < a.w + b.w && Math.abs(a.y - b.y) * 2 < a.h + b.h;
+
+/**
+ * Đặt chữ bản đồ lớn (thiết kế 2026-11-14.20): xét theo `priority` tăng dần; mỗi chữ thử lần lượt các chỗ trong
+ * `spots` (tâm hộp, px) — chỗ đầu không đè biểu tượng (`blocks`) / chữ đã đặt thì lấy; không chỗ nào → bỏ chữ.
+ */
+export function placeLabels<T>(
+  items: readonly { item: T; priority: number; w: number; h: number; spots: readonly { x: number; y: number }[]; keep?: boolean }[],
+  blocks: readonly Box[],
+): { item: T; x: number; y: number }[] {
+  const order = items.map((it, i) => ({ it, i })).sort((a, b) => a.it.priority - b.it.priority || a.i - b.i);
+  const taken: Box[] = [];
+  const out: { item: T; x: number; y: number }[] = [];
+  for (const { it } of order) {
+    const free = it.spots.find((s) => {
+      const box = { x: s.x, y: s.y, w: it.w, h: it.h };
+      return !blocks.some((b) => overlaps(b, box)) && !taken.some((b) => overlaps(b, box));
+    });
+    // `keep` (tên khu — cấp cao nhất): không chỗ nào trống vẫn đặt ở chỗ không đè chữ đã đặt, hoặc chỗ đầu
+    const s = free ?? (it.keep ? (it.spots.find((q) => !taken.some((b) => overlaps(b, { x: q.x, y: q.y, w: it.w, h: it.h }))) ?? it.spots[0]) : undefined);
+    if (!s) continue;
+    taken.push({ x: s.x, y: s.y, w: it.w, h: it.h });
+    out.push({ item: it.item, x: s.x, y: s.y });
+  }
+  return out;
 }
 
 /** Trạng thái màn — bản đồ nhỏ ẩn khi một cờ bật (R-BANDO-1). */

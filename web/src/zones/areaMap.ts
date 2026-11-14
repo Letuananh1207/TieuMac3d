@@ -11,7 +11,7 @@ type XZ = [number, number];
 /** Tập con của `SceneSpec` (`scene/spec.ts`) mà bản đồ cần — cùng dạng, zones không import scene. */
 export interface AreaMapSource {
   site: { name: string; han: string; areas: readonly { name: string; han?: string; from: XZ; to: XZ }[] };
-  terrain: { enabled: boolean; center: XZ; edge: { radius: number } };
+  terrain: { enabled: boolean; center: XZ; edge: { radius: number }; plateaus?: readonly { from: XZ; to: XZ; y: number }[] };
   walls: {
     enabled: boolean;
     half: number;
@@ -61,6 +61,10 @@ export interface MapRect {
 
 export type MapShape =
   | { kind: 'mep'; x: number; z: number; r: number }
+  /** đất (giấy) — mặt bằng bục; ngoài đất là biển mây (thiết kế 2026-11-14.20) */
+  | ({ kind: 'dat' } & MapRect)
+  /** khu `site.areas` (bản đồ lớn tô mảng nhạt, `index` để tô xen kẽ) */
+  | ({ kind: 'khu'; index: number } & MapRect)
   | { kind: 'nuoc'; x: number; z: number; r: number }
   | ({ kind: 'nuoc-vuong'; rot: number } & MapRect)
   | { kind: 'loi'; from: XZ; to: XZ; width: number }
@@ -95,6 +99,8 @@ export interface MapLabel {
   z: number;
   /** 2 = chỗ ở tầng trên — HUD ghi kèm "· tầng 2" (R-BANDO-4) */
   floor: number;
+  /** nhãn khu: vị trí khu trong `site.areas` (= `index` của hình `khu`) */
+  area?: number;
 }
 
 export interface AreaMap {
@@ -218,6 +224,11 @@ export function buildAreaMap(src: AreaMapSource, spots: AreaMapSpots = {}): Area
   if (src.terrain.enabled && src.terrain.edge.radius > 0) {
     shapes.push({ kind: 'mep', x: src.terrain.center[0], z: src.terrain.center[1], r: src.terrain.edge.radius });
   }
+  shapes.push(...landRects(src));
+  src.site.areas.forEach((a, index) => {
+    const r = landRect(a.from, a.to);
+    shapes.push({ kind: 'khu', index, x: r.x, z: r.z, w: r.w, d: r.d });
+  });
   for (const w of src.water) {
     if (w.w !== undefined && w.d !== undefined) shapes.push({ kind: 'nuoc-vuong', x: w.x, z: w.z, w: w.w, d: w.d, rot: rad(w.rotY) });
     else shapes.push({ kind: 'nuoc', x: w.x, z: w.z, r: w.r ?? 1 });
@@ -258,12 +269,33 @@ export function buildAreaMap(src: AreaMapSource, spots: AreaMapSpots = {}): Area
   }
   icons.push(...seatIcons(spots.seats ?? [], houses));
 
-  for (const a of src.site.areas) {
-    labels.push({ kind: 'khu', text: a.name, x: (a.from[0] + a.to[0]) / 2, z: (a.from[1] + a.to[1]) / 2, floor: 1 });
-  }
+  src.site.areas.forEach((a, area) => {
+    labels.push({ kind: 'khu', text: a.name, x: (a.from[0] + a.to[0]) / 2, z: (a.from[1] + a.to[1]) / 2, floor: 1, area });
+  });
   for (const h of houses) labels.push({ kind: 'nha', text: h.title, x: h.rect.x, z: h.rect.z, floor: 1 });
 
   return { name: src.site.name, bounds: mapBounds(src), shapes, icons, labels };
+}
+
+/** Bục thấp hơn mức này (m) là đáy vực / mặt nước — không vẽ thành đất. */
+export const LAND_MIN_Y = -1;
+/** Không có địa hình: đất = khung chung các khu nới thêm chừng này (m). */
+export const LAND_PAD = 3;
+
+/** Đất trên bản đồ: các bục `terrain.plateaus` có y ≥ [LAND_MIN_Y]; không có địa hình → khung các khu nới [LAND_PAD] m. */
+function landRect(a: XZ, b: XZ, pad = 0): MapRect {
+  return { x: (a[0] + b[0]) / 2, z: (a[1] + b[1]) / 2, w: Math.abs(b[0] - a[0]) + pad * 2, d: Math.abs(b[1] - a[1]) + pad * 2 };
+}
+
+export function landRects(src: AreaMapSource): MapShape[] {
+  const rect = (a: XZ, b: XZ, pad = 0): MapShape => ({ kind: 'dat', ...landRect(a, b, pad) });
+  const plateaus = src.terrain.enabled ? (src.terrain.plateaus ?? []).filter((p) => p.y >= LAND_MIN_Y) : [];
+  if (plateaus.length) return plateaus.map((p) => rect(p.from, p.to));
+  const areas = src.site.areas;
+  if (!areas.length) return [];
+  const xs = areas.flatMap((a) => [a.from[0], a.to[0]]);
+  const zs = areas.flatMap((a) => [a.from[1], a.to[1]]);
+  return [rect([Math.min(...xs), Math.min(...zs)], [Math.max(...xs), Math.max(...zs)], LAND_PAD)];
 }
 
 /** Bồ đoàn khu tự học không có biển → dấu ở tâm các bồ đoàn. */

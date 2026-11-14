@@ -65,6 +65,15 @@ describe('bản đồ vùng — đủ mọi cảnh (R-BANDO-2)', () => {
     expect(m.icons.some((i) => i.kind === 'bang-nhiem-vu')).toBe(true);
   });
 
+  it('R-BANDO-2: đất = các bục cao từ −1 m (trấn); không có địa hình → khung các khu nới 3 m (Nhà của ta)', () => {
+    const tran = loadScene(HOME_SCENE).spec;
+    const land = mapOf(HOME_SCENE).shapes.filter((s) => s.kind === 'dat');
+    expect(land).toHaveLength(tran.terrain.plateaus.filter((p) => p.y >= -1).length);
+    const nha = mapOf('nha-ta').shapes.filter((s) => s.kind === 'dat');
+    expect(nha).toEqual([{ kind: 'dat', x: 0, z: -1, w: 38, d: 32 }]);
+    for (const id of IDS) expect(mapOf(id).shapes.filter((s) => s.kind === 'khu')).toHaveLength(loadScene(id).spec.site.areas.length);
+  });
+
   it('R-BANDO-2: Nhà của ta — 3 khu, cổng (0; 14) ghi "Khởi Nguyên Trấn", không có dấu ô trang trí', () => {
     const m = mapOf('nha-ta');
     expect(m.labels.filter((l) => l.kind === 'khu').map((l) => l.text)).toEqual(['Chính phòng', 'Vườn', 'Sân trước']);
