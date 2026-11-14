@@ -111,6 +111,7 @@ export function createDiscipleCharacter(colors: DiscipleColors = {}): Character 
   return {
     root,
     facing: body,
+    palette: { sleeve: COLOR.robe, cuff: COLOR.trim, skin: COLOR.skin },
     animate(dt, speed) {
       time += dt;
       move += (speed - move) * Math.min(1, dt * 8);

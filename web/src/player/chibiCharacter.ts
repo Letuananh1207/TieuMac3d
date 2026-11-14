@@ -287,6 +287,7 @@ export function createChibiCharacter(look: ChibiLook = DE_TU): Character & { set
   return {
     root,
     facing,
+    palette: { sleeve: look.robe, cuff: look.trim, skin: look.skin },
     setExpression: (e) => face.draw(e),
     animate(dt, speed, state) {
       time += dt;

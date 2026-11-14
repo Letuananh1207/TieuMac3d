@@ -14,6 +14,11 @@ export interface Character {
    * qua): nhảy, ngồi thiền, chào, đứng lâu (R-DIEU-5…8) để nhân vật chọn dáng.
    */
   animate(dt: number, speed: number, state?: CharacterState): void;
+  /**
+   * Màu cho hai bàn tay lúc nhìn từ mắt khi ngồi (R-DIEU-7): tay áo, viền cổ tay, da. Không bắt buộc — thiếu (model
+   * .glb màu nướng trong ảnh) thì dùng `camera.firstPerson` của đặc tả.
+   */
+  readonly palette?: { sleeve: string; cuff: string; skin: string };
 }
 
 /** Trạng thái hành động do `PlayerController` tính (vật lý), nhân vật chỉ dựng dáng theo đó. */
