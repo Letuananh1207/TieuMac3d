@@ -100,17 +100,23 @@ Người dùng hay chạy nhiều phiên Claude cùng lúc. Việc **sửa file*
 code, sửa lỗi lớn) làm trong **worktree riêng**, không sửa thẳng thư mục chính:
 
 1. Đầu việc: công cụ `EnterWorktree` (`name` = tên việc không dấu, vd. `tro-chuyen`) → nhánh mới từ `main` của máy
-   (`worktree.baseRef: head`), thư mục `.claude/worktrees/<tên>` → chạy `dart tool/viec.dart chuan-bi` (nối
-   `web/node_modules` dùng chung).
+   (`worktree.baseRef: head`), thư mục `.claude/worktrees/<tên>` → chạy `dart tool/viec.dart chuan-bi` (gói npm dùng chung qua
+   `.claude/worktrees/node_modules` — ngoài mọi worktree, xoá worktree không đụng tới).
 2. Trong việc: commit trên nhánh việc thoải mái (chỉ trong máy, không push). Lỗi mới ghi mã tạm `L-?1`, `L-?2`…
    (không tự lấy số — việc khác có thể đang lấy). Thử trên trình duyệt: `npm run dev` **trong worktree**.
 3. Xong việc (kiểm đạt): commit hết → `dart tool/viec.dart gop` (rebase lên main, cấp số `L-`, build + kiểm, đưa main
-   tiến tới) → `ExitWorktree` **"keep"** → `dart tool/viec.dart don <tên>`. **Không** dùng ExitWorktree "remove"
-   (xoá xuyên qua nối `node_modules` → mất gói npm của thư mục chính). Xung đột khi rebase: tự sửa; nhật ký chỉ-thêm
+   tiến tới) → `ExitWorktree` "remove". Xung đột khi rebase: tự sửa; nhật ký chỉ-thêm
    (`docs/loi.md`, `design/CHANGELOG.md`, `docs/thiet_ke_da_ap.md`) git tự gộp; file sinh (font) lấy bên nào cũng được.
 4. Việc chỉ đọc / hỏi đáp / ghi sổ lỗi không sửa code: làm ở thư mục chính, không cần worktree.
 - Gộp vào `main` của máy là bước bình thường cuối việc (không cần hỏi); **push** lên GitHub vẫn chỉ khi người dùng bảo.
 - Xem các việc đang mở: `dart tool/viec.dart ds`. Công cụ (`tool/`, skill, `.gitattributes`) phải nằm trên `main` đã
   commit thì worktree mới có.
+- **Giao nhiều việc một lúc** ("làm song song A, B, C", "sửa hết các lỗi đang mở"): phiên chính là người điều phối —
+  mỗi việc một subagent (`Agent`, `isolation: "worktree"`, chạy nền), lời giao gồm: việc gì, file / kế hoạch / mục lỗi
+  liên quan, "commit trên nhánh của mình, không gộp, không hỏi người dùng — chỗ cần quyết định thì dừng và ghi vào báo
+  cáo". Chỉ giao việc **đã rõ** (kế hoạch đã duyệt, lỗi đã ghi đủ, phiếu thiết kế đã chốt); việc cần hỏi / duyệt thì
+  phiên chính hỏi trước. Subagent xong → phiên chính lần lượt `viec.dart gop` từng nhánh (trong worktree đó), báo kết
+  quả gộp + việc còn chờ quyết định. Tối đa ~4 việc cùng lúc (máy build / test nặng). Nhiều việc lớn hơn → đề xuất
+  Workflow, chỉ chạy khi người dùng đồng ý.
 - Tính năng mới ghép vào cảnh qua **file ghép riêng** ở gốc `web/src/` (như `gamePlay.ts`, `chatRoom.ts`), `main.ts` chỉ
   thêm vài dòng gọi — hai việc song song ít đụng cùng đoạn `main.ts`.

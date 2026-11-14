@@ -21,6 +21,14 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+
+/** vite.js gần nhất đi lên từ web/ (worktree dùng chung gói npm ở thư mục cha — tool/viec.dart). */
+function viteBin() {
+  for (let d = ROOT; ; d = dirname(d)) {
+    const p = join(d, 'node_modules/vite/bin/vite.js');
+    if (existsSync(p) || dirname(d) === d) return p;
+  }
+}
 const args = process.argv.slice(2);
 const only = args.includes('--ho-so') ? args[args.indexOf('--ho-so') + 1] : null;
 const write = args.includes('--ghi');
@@ -281,7 +289,7 @@ function table(res) {
   return lines.join('\n');
 }
 
-const preview = spawn(process.execPath, [join(ROOT, 'node_modules/vite/bin/vite.js'), 'preview', '--port', String(PORT), '--strictPort'], {
+const preview = spawn(process.execPath, [viteBin(), 'preview', '--port', String(PORT), '--strictPort'], {
   cwd: ROOT,
   stdio: 'ignore',
 });

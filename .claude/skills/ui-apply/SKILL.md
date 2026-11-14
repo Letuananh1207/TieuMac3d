@@ -64,7 +64,7 @@ lúc `/ui-apply` — cần đổi thiết kế thì chuyển sang skill thiết 
 5. **Duyệt.** Chỉ token / chuỗi, hoặc giao diện nhỏ (≤ 2 file, không màn mới) → làm luôn. Có luồng/luật, dữ liệu, màn
    mới, trái luật → trình bảng `mã · loại · file · cần quyết định`, chờ duyệt. Mục lớn → kế hoạch `docs/tasks/` như `/lead`.
 6. **Áp từng mục** trong worktree (CLAUDE.md "Làm song song": `EnterWorktree` + `dart tool/viec.dart chuan-bi`; xong →
-   commit, `viec.dart gop`, ExitWorktree "keep", `viec.dart don <tên>`), cũ → mới: đọc đúng mục đặc tả + ảnh + artboard của màn (không đọc cả file), sửa theo skill
+   commit, `viec.dart gop`, ExitWorktree "remove"), cũ → mới: đọc đúng mục đặc tả + ảnh + artboard của màn (không đọc cả file), sửa theo skill
    `hoc-xa-3d-dev`, kiểm cả màn dọc lẫn ngang và safe area. Nguồn thiết kế mâu thuẫn nhau → tin nguồn gần code
    nhất (`source/*.dc.html` / số đo > ảnh), ghi vào báo cáo. Kiểm: `dart tool/check.dart --changed`,
    `cd web && npx tsc --noEmit && npm run build`, `cd app && flutter analyze && flutter test -r failures-only test/<phần>`.

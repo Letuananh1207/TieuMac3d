@@ -8,7 +8,16 @@ import { fileURLToPath } from 'node:url';
 import subsetFont from 'subset-font';
 
 const WEB = join(dirname(fileURLToPath(import.meta.url)), '..');
-const SRC_DIR = join(WEB, 'node_modules/@fontsource/noto-serif-sc');
+
+/** Thư mục `node_modules/<rel>` gần nhất đi lên từ web/ — worktree dùng chung gói npm ở thư mục cha (tool/viec.dart). */
+function nodeModule(rel) {
+  for (let d = WEB; ; d = dirname(d)) {
+    const p = join(d, 'node_modules', rel);
+    if (existsSync(p)) return p;
+    if (dirname(d) === d) return join(WEB, 'node_modules', rel);
+  }
+}
+const SRC_DIR = nodeModule('@fontsource/noto-serif-sc');
 const OUT_DIR = join(WEB, 'src/fonts');
 const FAMILY = 'Han Serif';
 const HAN = /\p{Script=Han}/gu;

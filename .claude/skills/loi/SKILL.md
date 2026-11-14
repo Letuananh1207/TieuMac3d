@@ -63,8 +63,8 @@ Người dùng báo lỗi mà không gõ `/loi` → hỏi một câu "ghi rồi 
 7. Báo: nguyên nhân, đã sửa gì, test nào khoá, các bước thử máy.
 
 **Làm song song** (CLAUDE.md): `/loi sua` sửa code trong worktree — đầu bước 1 `EnterWorktree` + `dart tool/viec.dart
-chuan-bi`; xong bước 6 commit `fix: … (L-…)` trên nhánh việc → `viec.dart gop` → ExitWorktree "keep" → `viec.dart don
-<tên>`. Ghi lỗi mới (`/loi <mô tả>`) làm ở thư mục chính; đang trong worktree thì mã tạm `L-?1`. Push chỉ khi được bảo.
+chuan-bi`; xong bước 6 commit `fix: … (L-…)` trên nhánh việc → `viec.dart gop` → ExitWorktree "remove". Sửa nhiều lỗi một
+lúc → CLAUDE.md "Giao nhiều việc một lúc" (mỗi lỗi một subagent). Ghi lỗi mới (`/loi <mô tả>`) làm ở thư mục chính; đang trong worktree thì mã tạm `L-?1`. Push chỉ khi được bảo.
 
 ## Mẫu một mục lỗi
 

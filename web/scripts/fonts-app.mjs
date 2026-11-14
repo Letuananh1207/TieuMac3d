@@ -11,9 +11,18 @@ import { fileURLToPath } from 'node:url';
 import subsetFont from 'subset-font';
 
 const WEB = join(dirname(fileURLToPath(import.meta.url)), '..');
+
+/** Thư mục `node_modules/<rel>` gần nhất đi lên từ web/ — worktree dùng chung gói npm ở thư mục cha (tool/viec.dart). */
+function nodeModule(rel) {
+  for (let d = WEB; ; d = dirname(d)) {
+    const p = join(d, 'node_modules', rel);
+    if (existsSync(p)) return p;
+    if (dirname(d) === d) return join(WEB, 'node_modules', rel);
+  }
+}
 const APP = join(WEB, '../app');
 const OUT = join(APP, 'assets/fonts');
-const FS = join(WEB, 'node_modules/@fontsource');
+const FS = nodeModule('@fontsource');
 
 /** unicode-range của một file font trong `<độ đậm>.css` của gói → chuỗi mọi ký tự trong khoảng (giữ nguyên cả phần). */
 function rangeText(cssFile, fontFile) {

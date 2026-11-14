@@ -84,7 +84,7 @@ flutter test -r failures-only test/<phần> · dart tool/rule_trace.dart
 - Cuối: chạy Kiểm tra cuối, trạng thái `xong`, báo đã sửa gì / còn chờ gì / cần thử trên máy gì.
 - Các mốc của dự án: xong mốc nào báo người dùng rồi mới sang mốc sau.
 - **Worktree** (CLAUDE.md "Làm song song"): duyệt xong, trước khi sửa file → `EnterWorktree` + `dart tool/viec.dart
-  chuan-bi`; commit trên nhánh việc; xong → `viec.dart gop` → ExitWorktree "keep" → `viec.dart don <tên>`. Push chỉ
+  chuan-bi`; commit trên nhánh việc; xong → `viec.dart gop` → ExitWorktree "remove". Push chỉ
   khi được bảo.
 
 ## Bản đồ tính năng

@@ -5,9 +5,9 @@
 //   dart tool/viec.dart gop        (trong worktree, việc đã commit) rebase lên main → cấp mã L-? → build + kiểm →
 //                                  đưa main tiến tới nhánh việc → build lại ở thư mục chính
 //   dart tool/viec.dart gop --thu  như gop nhưng dừng trước khi đưa vào main (thử)
-//   dart tool/viec.dart don <tên>  (ở thư mục chính, sau ExitWorktree "keep") gỡ nối node_modules TRƯỚC, rồi xoá worktree
-//                                  + nhánh đã gộp. KHÔNG dùng ExitWorktree "remove": xoá xuyên qua nối có thể xoá
-//                                  luôn web/node_modules của thư mục chính.
+//   dart tool/viec.dart don <tên>  (ở thư mục chính) xoá worktree + nhánh đã gộp — khi worktree tạo tay / từ phiên trước;
+//                                  phiên đang ở trong worktree thì dùng ExitWorktree "remove" (gói npm dùng chung nằm ở
+//                                  .claude/worktrees/node_modules, ngoài mọi worktree, nên xoá worktree không đụng tới)
 //   dart tool/viec.dart ds         các việc đang mở (worktree, nhánh, số commit chưa gộp)
 //
 // Mã lỗi mới trong worktree ghi tạm `L-?1`, `L-?2`… (hai việc song song không lấy trùng số); `gop` cấp số thật
@@ -43,14 +43,16 @@ Never fail(String msg) {
 
 void chuanBi() {
   if (!inWorktree()) fail('Đang ở thư mục chính — lệnh này chạy trong worktree (sau EnterWorktree).');
-  final mods = Directory('${here()}/web/node_modules');
+  // Nối gói npm dùng chung ở .claude/worktrees/node_modules — NGOÀI mọi worktree: Node / npm / npx tìm node_modules
+  // ở thư mục cha (…/worktrees/<tên>/web → …/worktrees/node_modules), còn xoá worktree (kể cả tự động khi subagent
+  // xong) không bao giờ đi xuyên qua nối mà xoá mất web/node_modules của thư mục chính.
+  final link = Directory('${mainRoot()}/.claude/worktrees/node_modules');
   final shared = Directory('${mainRoot()}/web/node_modules');
-  if (!mods.existsSync() && shared.existsSync()) {
-    // junction (Windows, không cần quyền admin) / symlink: dùng chung gói npm, không cài lại
+  if (!link.existsSync() && shared.existsSync()) {
     final r = Platform.isWindows
-        ? run('cmd', ['/c', 'mklink', '/J', mods.path.replaceAll('/', '\\'), shared.path.replaceAll('/', '\\')])
-        : run('ln', ['-s', shared.path, mods.path]);
-    stdout.writeln(r.exitCode == 0 ? 'Đã nối web/node_modules → thư mục chính.' : 'Không nối được node_modules: ${r.stderr}');
+        ? run('cmd', ['/c', 'mklink', '/J', link.path.replaceAll('/', '\\'), shared.path.replaceAll('/', '\\')])
+        : run('ln', ['-s', shared.path, link.path]);
+    stdout.writeln(r.exitCode == 0 ? 'Đã nối .claude/worktrees/node_modules → web/node_modules.' : 'Không nối được node_modules: ${r.stderr}');
   }
   // driver "ours" cho file sinh (.gitattributes): khi gộp giữ bản bên mình, sau đó build lại
   git(['config', 'merge.ours.driver', 'true']);
@@ -137,12 +139,12 @@ void gop({bool thu = false}) {
   stdout.writeln('5/5 build lại ở thư mục chính (app/assets/scene)');
   final b = run('npm', ['--prefix', 'web', 'run', 'build'], cwd: root);
   stdout.writeln(b.exitCode == 0 ? '  xong' : '  build ở thư mục chính hỏng — chạy tay: cd web && npm run build');
-  stdout.writeln('Đã gộp $branch vào main. Tiếp: ExitWorktree (action "keep") → dart tool/viec.dart don ${here().split(RegExp(r'[\\/]')).last}');
+  stdout.writeln('Đã gộp $branch vào main. Tiếp: ExitWorktree "remove" (hoặc ở thư mục chính: dart tool/viec.dart don)${here().split(RegExp(r'[\\/]')).last}');
 }
 
 /// Gỡ nối node_modules (chỉ gỡ đường nối, không đụng nội dung) rồi xoá worktree + nhánh (nhánh phải đã gộp).
 void don(String name) {
-  if (inWorktree()) fail('Chạy ở thư mục chính (ExitWorktree "keep" trước).');
+  if (inWorktree()) fail('Chạy ở thư mục chính (đang trong worktree thì dùng ExitWorktree "remove").');
   final root = mainRoot();
   final path = '$root/.claude/worktrees/$name';
   if (!Directory(path).existsSync()) fail('Không có worktree $path');
