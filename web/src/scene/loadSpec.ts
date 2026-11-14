@@ -1,3 +1,4 @@
+import { applyVariant } from './bienThe';
 import { resolveSceneSpec, type ResolvedScene } from './specCheck';
 
 /** Mã cảnh tông môn (nhà, trạm gốc) — file `design/scene/scene.json`. Cảnh vùng: `design/scene/<mã vùng>.json`. */
@@ -25,8 +26,12 @@ export function sceneFile(id: string): string {
 }
 
 /** Cảnh đã kiểm. Mã lạ / chưa có file → tông môn (chưa có cả `scene.json` → cảnh mặc định trong code). */
-export function loadScene(id: string | null): LoadedScene {
+export function loadScene(id: string | null, variant?: { name: string; patch: unknown }): LoadedScene {
   const key = id && byId.has(id) ? id : HOME_SCENE;
   const raw = byId.get(key);
-  return { ...resolveSceneSpec(raw), id: key, file: sceneFile(key), fromFile: raw !== undefined };
+  if (!variant || raw === undefined) return { ...resolveSceneSpec(raw), id: key, file: sceneFile(key), fromFile: raw !== undefined };
+  // biến thể bố cục (chỉ Canvas 3D, `?bocuc=` — scene/bienThe.ts): ghép lên đặc tả rồi kiểm như thường
+  const problems: string[] = [];
+  const res = resolveSceneSpec(applyVariant(raw, variant.patch, problems));
+  return { spec: res.spec, problems: [...problems, ...res.problems], id: key, file: `${sceneFile(key)} + design/scene/bien_the/${variant.name}.json`, fromFile: true };
 }

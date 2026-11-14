@@ -32,7 +32,8 @@ export function addPaths(
     const [x2, z2] = p.to;
     const len = Math.hypot(x2 - x1, z2 - z1);
     if (len < 0.01) return;
-    const mat = lambert(0xffffff, { map: tex, polygonOffset: true, polygonOffsetFactor: -1 - i * 0.01 });
+    // units −2: nhìn thẳng từ trên (độ dốc sâu ≈ 0) lối vẫn nằm trên sân lát và trên chất nền khu (`terrain.floors`, units −1)
+    const mat = lambert(0xffffff, { map: tex, polygonOffset: true, polygonOffsetFactor: -1 - i * 0.01, polygonOffsetUnits: -2 });
     // lưới bám mặt đất (L-3): chia theo chiều dài ≤ 1 m, 3 điểm theo bề ngang, mỗi điểm lấy độ cao mặt đất. Trước đây một
     // tứ giác nội suy thẳng giữa hai đầu → mặt đất ở giữa cao hơn (bục, gờ, nhiễu) là lối chìm mất. UV theo mét (1 lần lặp = SLAB_TILE_M)
     const lift = 0.03 + i * 0.001;

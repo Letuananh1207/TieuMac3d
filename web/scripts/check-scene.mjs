@@ -31,7 +31,8 @@ const out = await build({
       "export { moonRadius, gateOpening, lauClearHeight, lauTop } from './src/scene/kien_truc/tuong.ts';\n" +
       "export { wallGates } from './src/scene/walls.ts';\n" +
       "export { ringTrigger, arrivalSpot, daisLayout } from './src/scene/teleportLayout.ts';\n" +
-      "export { RADICALS, checkRadicals } from './src/zones/radicals.ts';\n",
+      "export { RADICALS, checkRadicals } from './src/zones/radicals.ts';\n" +
+      "export { applyVariant } from './src/scene/bienThe.ts';\n",
     resolveDir: web,
     loader: 'ts',
   },
@@ -43,7 +44,7 @@ const out = await build({
   define: { 'import.meta.glob': 'globalThis.__viteGlob' },
   loader: { '.png': 'empty', '.jpg': 'empty', '.glb': 'empty', '.css': 'empty', '.woff2': 'empty' },
 });
-const { buildWorld, Colliders, checkRoute, routeLength, DRAFT_TOWN_NPCS, Scene, resolveSceneSpec, roomKinds, zoneAnchors, placeZones, ZONE_CONTENT, moonRadius, gateOpening, lauClearHeight, lauTop, wallGates, ringTrigger, arrivalSpot, daisLayout, RADICALS, checkRadicals } = await import(
+const { buildWorld, Colliders, checkRoute, routeLength, DRAFT_TOWN_NPCS, Scene, resolveSceneSpec, roomKinds, zoneAnchors, placeZones, ZONE_CONTENT, moonRadius, gateOpening, lauClearHeight, lauTop, wallGates, ringTrigger, arrivalSpot, daisLayout, RADICALS, checkRadicals, applyVariant } = await import(
   `data:text/javascript;base64,${Buffer.from(out.outputFiles[0].text).toString('base64')}`
 );
 
@@ -73,6 +74,25 @@ Chưa có ${rel} — dùng cảnh mặc định trong code.`);
   errors += checkScene(rel, raw);
 }
 errors += checkPortalPairs();
+// biến thể bố cục (design/scene/bien_the/*.json — chỉ Canvas 3D `?bocuc=`, scene/bienThe.ts): ghép lên scene.json rồi kiểm như tông môn
+const vdir = resolve(dir, 'bien_the');
+if (existsSync(vdir) && files.includes('scene.json')) {
+  const homeRaw = JSON.parse(readFileSync(resolve(dir, 'scene.json'), 'utf8'));
+  for (const f of readdirSync(vdir).filter((x) => x.endsWith('.json')).sort()) {
+    const rel = `design/scene/bien_the/${f}`;
+    console.log(`\n=== Biến thể: ${rel} (ghép lên design/scene/scene.json — Canvas 3D ?bocuc=${f.slice(0, -5)}) ===`);
+    let patch;
+    try {
+      patch = JSON.parse(readFileSync(resolve(vdir, f), 'utf8'));
+    } catch (e) {
+      console.error(`${rel}: không đọc được JSON — ${e.message}`);
+      errors++;
+      continue;
+    }
+    const merged = [];
+    errors += checkScene(rel, applyVariant(homeRaw, patch, merged), { home: true, extra: merged });
+  }
+}
 if (errors) process.exit(1);
 
 /** Cặp cổng giữa các cảnh: cảnh đích phải có file; cảnh đích không có cổng về → cảnh báo (tới nơi đứng ở player.start). */
@@ -120,10 +140,12 @@ function checkNpcRoutes(spec) {
 }
 
 /** In bố cục một cảnh; trả số lỗi. */
-function checkScene(rel, raw) {
+function checkScene(rel, raw, opt = {}) {
   const { spec, problems } = resolveSceneSpec(raw);
+  problems.unshift(...(opt.extra ?? []));
+  const home = opt.home ?? rel.endsWith('/scene.json');
   const drafts = new Set();
-  if (thuNpc && rel.endsWith('/scene.json')) {
+  if (thuNpc && home) {
     for (const d of DRAFT_TOWN_NPCS) {
       if (spec.npcs.some((p) => p.id === d.id)) continue;
       spec.npcs.push(d);
@@ -135,8 +157,7 @@ function checkScene(rel, raw) {
   const rooms = roomKinds(spec.buildings, Object.fromEntries(ZONE_CONTENT.map((c) => [c.id, { kind: c.interior }])));
   const placed = placeZones(ZONE_CONTENT, zoneAnchors(spec.buildings, rooms));
   // bài học (快, 書) chỉ ở tông môn; cảnh vùng không có nhà học → không đòi vùng học
-  const home = rel.endsWith('/scene.json');
-  portalsOf.set(home ? 'tong-mon' : rel.slice(rel.lastIndexOf('/') + 1, -'.json'.length), spec.portals);
+  if (!opt.home) portalsOf.set(home ? 'tong-mon' : rel.slice(rel.lastIndexOf('/') + 1, -'.json'.length), spec.portals);
   const all = [...problems, ...(home ? placed.problems : [])];
 
   console.log(`Hệ số chiều cao kiến trúc: ${n(spec.buildingStyle.heightScale)}`);

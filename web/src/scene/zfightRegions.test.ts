@@ -29,4 +29,18 @@ describe('(L-10) dò mặt trùng cả cảnh', () => {
       expect(hits.length).toBe(0);
     }, 300_000); // cảnh lớn quét lâu (tông môn ≈ 1,5 phút)
   }
+  // biến thể bố cục tông môn (design/scene/bien_the/, Canvas 3D `?bocuc=` — V-42): quét cùng lúc với cả 7 cảnh
+  const variants: Record<string, unknown> = import.meta.glob('../../../design/scene/bien_the/*.json', { eager: true, import: 'default' });
+  for (const [file, patch] of Object.entries(variants)) {
+    const name = file.slice(file.lastIndexOf('/') + 1, -'.json'.length);
+    it.skipIf(!ALL)(`(L-10): tông môn ?bocuc=${name} — không có mặt trùng khác màu`, () => {
+      const scene = new THREE.Scene();
+      const loaded = loadScene(HOME_SCENE, { name, patch });
+      expect(loaded.problems).toEqual([]);
+      buildWorld(scene, new Colliders(), loaded.spec);
+      const hits = scanZFight(scene);
+      if (hits.length) console.log(`${name}: ${hits.length}\n` + hits.slice(0, 400).map((h) => `  ${h.at.join(';')}  ${h.a}  ×  ${h.b}`).join('\n'));
+      expect(hits.length).toBe(0);
+    }, 300_000);
+  }
 });

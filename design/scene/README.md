@@ -14,3 +14,5 @@ làm code không sửa. Code đọc thẳng file này lúc build (`web/src/scene
 Kiểm bằng `cd web && npm run scene:check`: phải in "Không có lỗi", kèm toạ độ vùng, nhà và tường để đối chiếu
 luật `R-VA-1`, `R-VUNG-1`. Canvas 3D là trang `web/design.html` chạy đúng code app (`npm run build:design` →
 `web/dist-design/`). Sửa `scene.json` xong thì build lại và đăng lên link trên.
+
+Biến thể bố cục (bản thử để so, chỉ Canvas 3D, app không đọc): `bien_the/<tên>.json` chỉ ghi phần khác `scene.json` (ghép: object ghép sâu, mảng thay hẳn, `{ "bo": [mẫu], "them": [...] }` bỏ / thêm phần tử; khoá `_…` là ghi chú — `web/src/scene/bienThe.ts`). Xem: thêm `?bocuc=<tên>` vào link Canvas 3D. `scene:check` kiểm cả biến thể. Hiện có: `mo` — V-42 trấn mở.

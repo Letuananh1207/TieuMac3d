@@ -421,6 +421,7 @@ const LISTS: Record<string, ItemParser> = {
   'terrain.stairs': item({ from: XZ0, to: XZ0, width: 0 }, {}, positive('width')),
   'terrain.waterfalls': item({ x: 0, z: 0, top: 0, bottom: 0, width: 0 }, { rotY: 0 }, positive('width')),
   'terrain.streams': streamItem,
+  'terrain.floors': item({ from: XZ0, to: XZ0, color: '#000000' }, { y: 0, pattern: '', brickHue: 0 }, oneOf('pattern', PAVE_PATTERNS)),
   'farMountains.layers': item(
     { radius: 0, height: 0, color: '#000000', peaks: 0 },
     { width: 1, spurs: 0 },

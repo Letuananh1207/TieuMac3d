@@ -37,6 +37,9 @@ import { inRect } from './scene/rooms';
 import { el } from './ui/dom';
 import { placeZones, ZONE_CONTENT } from './zones/zones';
 
+// biến thể bố cục chỉ cho Canvas 3D (glob: chưa có file thì rỗng)
+const VARIANTS: Record<string, unknown> = import.meta.glob('../../design/scene/bien_the/*.json', { eager: true, import: 'default' });
+
 const fmt = (v: number): string => v.toFixed(1).replace('.', ',').replace('-', '−');
 
 function li(text: string, cls?: string): HTMLLIElement {
@@ -49,7 +52,11 @@ function li(text: string, cls?: string): HTMLLIElement {
 async function boot(): Promise<void> {
   // ?vung=rung-truc → xem cảnh vùng; không có → tông môn
   const query = new URLSearchParams(location.search);
-  const SCENE = loadScene(query.get('vung'));
+  // ?bocuc=mo → biến thể bố cục design/scene/bien_the/mo.json ghép lên tông môn (bản thử để so — V-42); app không đọc
+  const bocuc = query.get('bocuc');
+  const patch = bocuc ? VARIANTS[`../../design/scene/bien_the/${bocuc}.json`] : undefined;
+  const SCENE = loadScene(query.get('vung'), bocuc && patch !== undefined ? { name: bocuc, patch } : undefined);
+  if (bocuc && patch === undefined) SCENE.problems.push(`?bocuc=${bocuc}: không có design/scene/bien_the/${bocuc}.json — đang xem bản chính`);
   const SCENE_FILE = SCENE.file;
   // ?look=cu — xem kiểu nhìn cũ để so (kế hoạch 2026-11-14-canh-dep)
   const spec = withLookParam(SCENE.spec, query.get('look'));

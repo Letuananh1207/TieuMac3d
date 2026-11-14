@@ -578,6 +578,24 @@ export interface PlateauSpec {
   rail?: boolean;
 }
 
+/**
+ * Chất nền một khu (V-42 — "mỗi khu một chất nền", Kevin Lynch: khu nhận ra bằng mặt đất): hình chữ nhật `from`–`to`
+ * lát phẳng ở độ cao `y` (đặt trên bục phẳng cùng độ cao), gạch kiểu `pattern` màu `color` (`gach`: tông `brickHue`) —
+ * cùng cách vẽ với sân lát `ground`, chỉ khác màu / kiểu. Nằm trên sân lát của bục, dưới lối lát (`paths`), không va chạm.
+ * Các nền không nên chồng nhau (chồng → nền khai báo sau nằm trên).
+ */
+export interface FloorSpec {
+  from: XZ;
+  to: XZ;
+  /** thiếu = 0 */
+  y?: number;
+  color: string;
+  /** thiếu = `vuong` */
+  pattern?: (typeof PAVE_PATTERNS)[number];
+  /** chỉ `gach`; thiếu = `ground.brickHue` */
+  brickHue?: number;
+}
+
 /** Đỉnh núi / đồi cộng vào địa hình: cao `h` ở tâm, thoải dần tới bán kính `r`. */
 /** Cồn cát lưỡi liềm (`terrain.dunes`, Con đường tơ lụa): sống lưng sắc dài `len`, cao `h`, bề ngang `width`. */
 export interface DuneSpec {
@@ -738,6 +756,8 @@ export interface SceneSpec {
     waterfalls: WaterfallSpec[];
     /** suối chảy theo mặt đất */
     streams: StreamSpec[];
+    /** chất nền riêng từng khu (gạch đỏ, đá cũ…) lát đè lên sân lát của bục — xem `FloorSpec`; rỗng = như cũ */
+    floors: FloorSpec[];
   };
   /** núi xa nhiều lớp quanh tâm địa hình, chân ở `base`; rỗng = không có */
   farMountains: { layers: MountainLayer[]; base: number };
@@ -942,6 +962,7 @@ export const DEFAULT_SCENE: SceneSpec = {
     rocks: { density: 0, color: '#8d8a84' },
     waterfalls: [],
     streams: [],
+    floors: [], // không có = sân lát một kiểu `ground` như cũ
   },
   farMountains: { layers: [], base: -40 },
   cloudSea: { radius: 0, y: -10, color: '#f4f1ea' },

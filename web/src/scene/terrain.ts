@@ -115,6 +115,7 @@ export function addTerrain(scene: THREE.Scene, spec: SceneSpec, hf: Heightfield)
   scene.add(group);
 
   addPaving(scene, spec);
+  addFloors(scene, spec);
   return group;
 }
 
@@ -139,4 +140,27 @@ function addPaving(scene: THREE.Scene, spec: SceneSpec): void {
     m.position.set(cx, p.y + PAVE_LIFT, cz);
     scene.add(m);
   }
+}
+
+/**
+ * Chất nền từng khu (`terrain.floors`, V-42): cùng mặt phẳng với sân lát, vẽ đè nhờ polygonOffset (nền sau đè nền trước,
+ * lối lát `paths` — factor −1, units −2 — vẫn nằm trên). Mỗi kiểu nền một vật liệu → một draw call sau khi gộp.
+ */
+function addFloors(scene: THREE.Scene, spec: SceneSpec): void {
+  spec.terrain.floors.forEach((f, i) => {
+    const gs: SceneSpec['ground'] = { ...spec.ground, color: f.color, pattern: f.pattern ?? 'vuong', brickHue: f.brickHue ?? spec.ground.brickHue };
+    const tile = paveTileM(gs);
+    const mat = lambert(0xffffff, { map: brickTexture(gs), polygonOffset: true, polygonOffsetFactor: -0.5 - i * 0.01, polygonOffsetUnits: -1 });
+    const w = Math.abs(f.to[0] - f.from[0]);
+    const d = Math.abs(f.to[1] - f.from[1]);
+    const cx = (f.from[0] + f.to[0]) / 2;
+    const cz = (f.from[1] + f.to[1]) / 2;
+    const geo = new THREE.PlaneGeometry(w, d);
+    const uv = geo.getAttribute('uv') as THREE.BufferAttribute;
+    for (let k = 0; k < uv.count; k++) uv.setXY(k, (cx + (uv.getX(k) - 0.5) * w) / tile, (-cz + (uv.getY(k) - 0.5) * d) / tile);
+    const m = new THREE.Mesh(geo, mat);
+    m.rotation.x = -Math.PI / 2;
+    m.position.set(cx, (f.y ?? 0) + PAVE_LIFT, cz); // cùng mặt sân lát; thứ tự vẽ nhờ polygonOffset (lối lát units −2 vẫn trên)
+    scene.add(m);
+  });
 }
