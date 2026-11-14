@@ -3,7 +3,7 @@
   trình duyệt không có Flutter (`npm run dev`) thì vẫn có ví (lưu trong trình duyệt), thưởng trò chơi (và học nếu được),
   mua ở Tạp hoá bằng giao diện web, Nhà của ta dùng đồ sở hữu từ ví web. **Có Flutter thì giữ nguyên** (Flutter là nguồn thật).
 - Loại: sửa hành vi · giao diện (áp thiết kế có sẵn cho nền web) · luồng/luật · dữ liệu · Cỡ: vừa – lớn ·
-  Trạng thái: chờ duyệt
+  Trạng thái: đang làm (duyệt 2026-11-14)
 
 Hiện nay (đọc code): không Flutter → `getProgress()` trả `null` → `WalletHud.sync(null)` **ẩn ví**; `earnGame` trả `null` →
 không thưởng; `openShop` trả `false` → khung thoại "Tiệm chưa mở" (`zones/shop.ts` `SHOP_CLOSED_TEXT`); `getHome` `null` →
@@ -109,6 +109,13 @@ không thưởng; `openShop` trả `false` → khung thoại "Tiệm chưa mở"
   lưu trong trình duyệt — R-TIEN-7**)." Ví dụ giữ nguyên.
 - **R-NHA-4**: không đổi chữ (luật sở hữu như cũ; nguồn sở hữu ở chế độ thử đã nói trong R-TIEN-7).
 - R-TIEN-2 / R-TIEN-3 / R-TIEN-4 / R-TIEN-5: không đổi chữ (R-TIEN-7 dẫn sang).
+
+## Đã chốt (người dùng, 2026-11-14)
+1. Thưởng học trên web: **+10 khi lần đầu mở thẻ một bộ** (đề xuất); ôn / nhiệm vụ / chuỗi không thưởng.
+2. Tiền thử: **ví thử có sẵn 300 Văn tiền** khi mở web lần đầu (KHÔNG theo đề xuất `?tien=`); app vẫn bắt đầu 0.
+   Vẫn nên có cách xoá dữ liệu thử (vd. `?tien=xoa`) để về lại 300.
+3. Không thêm nhãn "Bản thử" — chỉ `console.info`.
+4. Luật web **giống hệt app** (trần 60 / ngày, giá, …), test dùng cùng ví dụ sổ.
 
 ## Cần quyết định
 1. **Thưởng học trên web tới đâu?** Bảng HTML chỉ có thẻ bộ thủ; không có màn ôn, bảng nhiệm vụ HTML chỉ để xem.
