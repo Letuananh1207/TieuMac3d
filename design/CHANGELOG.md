@@ -3,6 +3,38 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-14.12 — Văn tiền 文錢: ví HUD, hiệu ứng nhận tiền, Tạp hoá 雜貨, thẻ vật khoá ở nhà
+
+- Loại: giao diện · token · chuỗi · dữ liệu (bảng giá đề xuất) · luồng/luật (đề xuất). Màn: **Ví Văn tiền + hiệu ứng** (HUD
+  web + Flutter), **Tạp hoá** (Flutter, mới), **Danh mục trang trí — thẻ vật** (mở rộng phiếu `2026-11-14-nha-nguoi-dung`).
+  Đặc tả: `docs/screen_specs.md` ba mục cùng tên.
+- Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-14-van-tien-cua-hang.md` (phiếu còn trong máy, chưa lên GitHub — phiên code
+  đang soạn; dòng "Đã vẽ" ghi ở bản trong máy). Ý tưởng gốc: `docs/y_tuong/2026-11-14-van-tien.md` (hướng A).
+- Vẽ trong phiên VS Code theo vai thiết kế (người dùng dán phiếu, duyệt "Ổn, chốt").
+- Artboard: `VanTien-HUD-doc`, `VanTien-HUD-ngang`, `VanTien-vi-trang-thai`, `VanTien-hieu-ung`, `CuaHang-doc`,
+  `CuaHang-doc-ngheo`, `CuaHang-doc-xac-nhan`, `CuaHang-doc-vua-mua`, `CuaHang-doc-het`, `CuaHang-ngang`,
+  `TrangTri-the-vat` (+ `canvas.json`).
+- Quyết định:
+  - Ví ở **góc trên phải** (dọc + ngang), viên kính 36. Không trái R-HUD-1 (chỉ cấm chip tên khu + nút góc nhìn).
+  - Đồng xu lỗ vuông vàng đồng; xu bay khắc chữ vừa học ở mặt sau; xu trong ví không khắc.
+  - Màn Flutter che HUD → hiệu ứng dùng **ví tạm** trượt vào góc trên phải màn Flutter.
+  - Tạp hoá là màn Flutter cùng họ Danh mục sách; giá ghi số + số chữ Hán (…文).
+  - **Không mua trong nhà**: thẻ khoá ở danh mục trang trí chỉ dẫn ra Tạp hoá.
+  - Hình vật trong thẻ là bản vẽ phẳng giữ chỗ — phiên code có thể thay ảnh chụp vật 3D.
+- Token mới: `color.coin-rim` #A9802F, `color.coin-ink` #5A3E12 (đồng xu); `color.slate-muted` #5E6A70 (đã dùng từ các mục
+  trước, nay đặt tên); `size.wallet` 36.
+- Chuỗi mới (`l10n/vi.arb`): `coinName`, `wallet*`, `reward*`, `shop*`, `slotGarden/Yard/Indoor`, `decor*`.
+- Dữ liệu — **bảng giá đề xuất** (`web/src/zones/decor.ts` `price`): Trúc cảnh 30 · Đèn lồng 30 · Tranh chữ 40 · Chậu lan 50 ·
+  Mai 60 · Lư hương 70 · Tùng 80 · Án đọc 90 · Bàn trà 100 · Kệ sách 120 · Bình phong 150 · Đá Thái Hồ 160 · Ao sen 200.
+- Luật bị chạm — **đề xuất** (phiên code hỏi người dùng rồi sửa sổ):
+  - Nhóm mới **R-TIEN-*** theo ý tưởng (nguồn + mức thưởng, trần trò 60 / ngày, mua: đủ tiền → trừ → vào sở hữu, không âm,
+    không mất khi nghỉ) — thêm: số xu bay = 1 / 5 Văn tiền (tối đa 5) chỉ là hiệu ứng, không ảnh hưởng số dư.
+  - **R-NHA-4**: người mới sở hữu sẵn **Trúc cảnh, Đèn lồng, Tranh chữ**; các vật khác mua ở Tạp hoá với giá trên; thẻ chưa
+    có hiện khoá + giá, không đặt được.
+  - **R-NHA-2**: giữ "một vật đặt được ở nhiều ô" — mua một lần là đủ (bỏ cụm "tới khi có tiền tệ").
+  - Người dùng đã duyệt ("Ổn, chốt").
+- Ảnh: chưa có.
+
 ## 2026-11-14.11 — Bộ ảnh nhiều góc NPC Tiểu nhị 小二 (hướng A trà bác sĩ trẻ 茶博士)
 
 - Loại: tài nguyên 3D — ảnh đầu vào (Hunyuan3D-2mv). Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-13-anh-tieu-nhi.md`.

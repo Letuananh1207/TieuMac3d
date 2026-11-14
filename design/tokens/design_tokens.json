@@ -185,6 +185,21 @@
       "value": "#8A5A3A",
       "note": "tầng kệ gỗ danh mục sách (bóng dưới #6B4429); thẻ bài gỗ thủ thư — 2026-11-13.28",
       "code": "chưa có"
+    },
+    "coin-rim": {
+      "value": "#A9802F",
+      "note": "vành đồng xu Văn tiền 文錢 (mặt xu = gold) — 2026-11-14.12",
+      "code": "chưa có"
+    },
+    "coin-ink": {
+      "value": "#5A3E12",
+      "note": "chữ khắc trên đồng xu (文錢 / chữ vừa học) + viền lỗ vuông #8A6A2A — 2026-11-14.12",
+      "code": "chưa có"
+    },
+    "slate-muted": {
+      "value": "#5E6A70",
+      "note": "chữ phụ / lý do mờ trên giấy và kính (≥ 4,5:1 trên map-paper, mist) — đã dùng từ 2026-11-13.x, đặt tên ở 2026-11-14.12",
+      "code": "chưa có"
     }
   },
   "font": {
@@ -405,6 +420,11 @@
     "option-row": {
       "value": 58,
       "note": "chiều cao tối thiểu phương án câu đố (ngang 50) — 2026-11-13.25",
+      "code": "chưa có"
+    },
+    "wallet": {
+      "value": 36,
+      "note": "ví Văn tiền: viên kính cao 36, xu 26, số 15/700 tabular — 2026-11-14.12",
       "code": "chưa có"
     }
   }
