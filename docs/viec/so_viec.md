@@ -32,3 +32,4 @@ Trạng thái: `nhận` → `chờ trả lời` / `chờ duyệt` → `đang là
 | V-20261114-22 | Cây tùng che cầu thang ngoài lên tầng 2 Tàng Thư Các → dời ra sau tường bắc | canh | chờ thử máy — đã gộp, CHANGELOG .22 | — | thử: đứng chân cầu thang Tàng Thư Các nhìn lên → thang thoáng tới đỉnh |
 | V-20261114-23 | Dời lối về nhà ra cuối con đường (qua Tạp hoá, giữa 2 đèn đá) và thay khoảnh tường + cổng nhà bằng thứ gợi "xuống núi" | canh | đang làm — nhánh `viec/loi-xuong-nui` | R-NHA-1, R-HANH-4, R-BANDO-2 | duyệt trên Canvas 3D khi đăng |
 | V-20261114-24 | Mở riêng một cổng trên tường khu vui chơi (Kỳ Văn Uyển) | canh | đang làm — nhánh `viec/cong-ky-van` | R-VA-1? | duyệt ảnh / Canvas 3D |
+| V-20261114-25 | Đổi màu sắc Khởi Nguyên Trấn về như cũ — chỉ màu, giữ hiệu ứng mới (cỏ hoa, nước, cây, mây, bóng, quầng đèn) | canh | đang làm — nhánh `viec/mau-cu` | — | duyệt ảnh so |
