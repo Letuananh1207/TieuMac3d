@@ -10,7 +10,7 @@
 
 ## Phạm vi
 **Sẽ sửa**
-- `web/src/scene/spec.ts` — trường mới `decorSlots` (ô trang trí: mã, loại ô `vuon | san | trong`, x, z, hướng),
+- `web/src/scene/spec.ts` + `scene/decorSlots.ts` (kiểm ô) — trường mới `decorSlots` (ô trang trí: mã, loại ô `vuon | san | trong`, x, z, hướng),
   mặc định rỗng → cảnh cũ không đổi.
 - `web/scripts/check-scene.mjs` — kiểm ô: trùng mã, nằm trong nền, không đè tường / lối đi, cách nhau đủ.
 - `web/src/zones/decor.ts` (mới) — danh mục vật (mã, tên Việt, chữ Hán, loại ô nhận được, `price`) + luật thuần:
@@ -21,7 +21,7 @@
 - `web/src/main.ts` — gọi `homeDecor` khi cảnh hiện tại có `decorSlots`.
 - `web/src/ui/` — HUD trang trí (**chờ thiết kế**, phiếu `2026-11-14-nha-nguoi-dung`).
 - `web/src/bridge/flutterBridge.ts` + `docs/bridge.md` — sự kiện `getHome`, `setDecor`.
-- `app/lib/journey/progress_store.dart` — khoá `nha.dat` (ô → vật), `nha.so-huu` (vật sở hữu); hàm `placeDecor`.
+- `app/lib/journey/progress_store.dart` — khoá `nha.dat` (ô → vật), hàm `placeDecor` — chưa lưu "sở hữu" (giai đoạn này sở hữu hết; có tiền tệ thì thêm khoá `nha.so-huu`).
 - `app/lib/scene/scene_event.dart`, `app/lib/main.dart` — xử lý hai sự kiện mới.
 - `docs/testing/quy_tac.md` — mục mới **NHA** (R-NHA-1…4).
 - Test: `web/src/zones/decor.test.ts`, `app/test/rules/nha_test.dart`, `app/test/scene/scene_event_test.dart`.
@@ -42,17 +42,17 @@ người khác (cần multiplayer / backend — ngoài giai đoạn này).
 - Hiệu năng: cảnh nhỏ; mỗi vật 1–3 draw call (gộp theo vật liệu) → tối đa +36, cảnh tổng ước < 120 draw call.
 
 ## Nhiệm vụ
-- [ ] 1. Sổ quy tắc mục NHA: R-NHA-1 đi tới / về (nơi trên bản đồ, vòng trận), R-NHA-2 ô + loại ô + đặt / gỡ / thay,
+- [x] 1. Sổ quy tắc mục NHA: R-NHA-1 đi tới / về (nơi trên bản đồ, vòng trận), R-NHA-2 ô + loại ô + đặt / gỡ / thay,
       R-NHA-3 lưu qua tắt app, của riêng từng người, R-NHA-4 danh mục + sở hữu (mốc này sở hữu hết) → chép lên tài
       liệu online → `--mark-synced`. (`docs/testing/quy_tac.md` · xong khi người dùng xác nhận)
-- [ ] 2. `decorSlots` trong `SceneSpec` + mặc định rỗng + `check-scene.mjs` kiểm ô. (scene/spec · xong khi
+- [x] 2. `decorSlots` trong `SceneSpec` + mặc định rỗng + `check-scene.mjs` kiểm ô. (scene/spec · xong khi
       `npm run scene:check` qua với cảnh cũ không đổi)
-- [ ] 3. Danh mục + luật trang trí thuần `zones/decor.ts` + vitest theo R-NHA-2/4. (zones · `npm test`)
+- [x] 3. Danh mục + luật trang trí thuần `zones/decor.ts` + vitest theo R-NHA-2/4. (zones · `npm test`)
 - [ ] 4. **Thiết kế cảnh** `design/scene/nha-ta.json` bằng `/canh` (nhà, sân, vườn, vòng trận về, các ô) — cho
       duyệt trên Canvas 3D rồi mới chốt. (design · xong khi chốt mục trong `design/CHANGELOG.md`)
 - [ ] 5. **Thiết kế** nơi mới trên bản đồ + HUD trang trí — chờ thiết kế (`docs/phieu_thiet_ke/2026-11-14-nha-nguoi-dung.md`).
 - [ ] 6. Dựng mesh vật `scene/decorItems.ts` (+ collider vật to) và ô trống hiện mờ trong chế độ trang trí. (scene)
-- [ ] 7. Cầu nối `getHome` / `setDecor`: `docs/bridge.md` trước → `flutterBridge.ts` + test → `ProgressStore` +
+- [x] 7. Cầu nối `getHome` / `setDecor`: `docs/bridge.md` trước → `flutterBridge.ts` + test → `ProgressStore` +
       `scene_event.dart` + test Dart R-NHA-3. (bridge · app · xong khi test hai phía xanh)
 - [ ] 8. Ghép `homeDecor.ts` + `main.ts`; HUD theo thiết kế ở nhiệm vụ 5. (ui · ghép — sau nhiệm vụ 5)
 - [ ] 9. Bản đồ: thêm nơi `nha-ta` vào `journeyMap` theo `ban-do.json` mới. (zones · ui — sau nhiệm vụ 5)

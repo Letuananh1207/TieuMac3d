@@ -44,6 +44,7 @@ const zones = new ZoneTracker(ZONES, (z) => card.setZone(z));
 | nhân vật khác (vd. model .glb mốc 5) | `player/<tên>Character.ts` trả về `Character` |
 | vùng / bài học mới | thêm phần tử vào `ZONES` ở `zones/zones.ts` |
 | phần tử HUD | DOM trong `web/index.html` + CSS `style.css` + class trong `ui/` |
+| tính năng ghép nhiều lớp (scene + ui + zones…) | file ghép ở gốc `web/src/<tên>.ts` (như `gamePlay.ts`, `chatRoom.ts`, `libraryDesk.ts`); `main.ts` chỉ tạo + gọi `update` vài dòng — nhiều việc song song ít đụng cùng đoạn `main.ts` |
 | cầu nối Flutter ↔ JS (mốc 3) | `web/src/bridge/` + `docs/bridge.md` + bảng ở decisions/0001 + `LAYERS` trong `tool/check.dart` |
 
 ## Vòng lặp (main.ts)

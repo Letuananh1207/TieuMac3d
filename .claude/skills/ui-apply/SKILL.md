@@ -56,14 +56,15 @@ lúc `/ui-apply` — cần đổi thiết kế thì chuyển sang skill thiết 
    - model `.glb` mới trong `design/models/` (từ `/tai-nguyen`): nhân vật `nhan-vat.glb` → `npm run build` là đủ;
      công trình → kế hoạch `/lead` (chưa có code đặt vào cảnh).
 3. **Đối chiếu sổ quy tắc** `docs/testing/quy_tac.md` với mục luồng/luật: khớp → làm; thiết kế đổi luật chưa có
-   trong sổ → hỏi người dùng, chốt thì sửa sổ trước → chép lên tài liệu xác nhận online (nội dung đổi thì đưa ô
-   Xác nhận về Chờ) → `dart tool/rule_trace.dart --mark-synced <mã>` → test đỏ → code. Thiết kế **trái** luật đã
+   trong sổ → hỏi người dùng, chốt thì sửa sổ trước → skill `/dong-bo-quy-tac` (tự chép lên tài liệu online)
+   → test đỏ → code. Thiết kế **trái** luật đã
    chốt → không làm theo thiết kế; ghi vào `docs/testing/gui_thiet_ke_<ngày>.md` (mã luật, thiết kế vẽ gì, luật nói
    gì), cột App của luật ghi `tk`.
 4. **Đối chiếu sổ lỗi** `docs/loi.md`: mục chạm màn có lỗi đang mở → báo cùng kế hoạch. Áp xong sinh lỗi mới → `/loi`.
 5. **Duyệt.** Chỉ token / chuỗi, hoặc giao diện nhỏ (≤ 2 file, không màn mới) → làm luôn. Có luồng/luật, dữ liệu, màn
    mới, trái luật → trình bảng `mã · loại · file · cần quyết định`, chờ duyệt. Mục lớn → kế hoạch `docs/tasks/` như `/lead`.
-6. **Áp từng mục**, cũ → mới: đọc đúng mục đặc tả + ảnh + artboard của màn (không đọc cả file), sửa theo skill
+6. **Áp từng mục** trong worktree (CLAUDE.md "Làm song song": `EnterWorktree` + `dart tool/viec.dart chuan-bi`; xong →
+   commit, `viec.dart gop`, ExitWorktree "keep", `viec.dart don <tên>`), cũ → mới: đọc đúng mục đặc tả + ảnh + artboard của màn (không đọc cả file), sửa theo skill
    `hoc-xa-3d-dev`, kiểm cả màn dọc lẫn ngang và safe area. Nguồn thiết kế mâu thuẫn nhau → tin nguồn gần code
    nhất (`source/*.dc.html` / số đo > ảnh), ghi vào báo cáo. Kiểm: `dart tool/check.dart --changed`,
    `cd web && npx tsc --noEmit && npm run build`, `cd app && flutter analyze && flutter test -r failures-only test/<phần>`.

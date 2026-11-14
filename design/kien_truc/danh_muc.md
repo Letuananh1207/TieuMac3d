@@ -17,7 +17,7 @@ không nhân. Cảnh **chỉ** dùng mẫu trong danh mục này, ở một tron
 | Nền theo cấp | C1 tu di 3 tầng (rút gọn 6 m) · C2 tu di 1–2 tầng 1,8–2,5 m · C3 đá 1,2 m · C4 0,6 m · C5 0,4 m · C6 không / đất |
 | Ngói | vàng `#C9A13B` chỉ Tử Cấm Thành (+ Chưởng Môn Điện nếu dựng) · lục `#2B5446` C2–C4 có chủ đích · xám đen `#4F5A63` còn lại · đen viền lục cho tàng thư |
 | Mục đích | mỗi mẫu đặt vào cảnh ghi `purpose`: `hoat-dong` · `dan-duong` · `ke-chuyen` · `nen-xa` (+ một dòng lý do) |
-| Ngân sách | C1–C2 ≤ 8 draw call / ≤ 12k tam giác · C3 ≤ 6 / 8k · C4 ≤ 4 / 4k · C5–C6 ≤ 3 / 2k (gộp, instancing khi lặp) |
+| Ngân sách | tam giác: C1–C2 ≤ 12k · C3 ≤ 8k · C4 ≤ 4k · C5–C6 ≤ 2k. Draw call **không tính theo từng nhà**: khối cùng màu của mọi nhà trong cảnh gộp chung (`merge.ts`) → giữ màu trong bảng màu chung là đủ; Catalog vẫn in số màu mỗi mẫu |
 | Model AI | 1 công trình biểu tượng / vùng thay bản khối (mục 6); bản khối vẫn có để dự phòng |
 
 ## 1. Nhà (19 mẫu)
@@ -124,5 +124,5 @@ riêng qua `/lead`. Duyệt xong mỗi mẫu → ảnh `design/screens/KienTruc-
 | Phần | Trạng thái |
 |---|---|
 | Danh mục (bản này) | **đã duyệt** (người dùng 2026-11-14) — số đo có thể chỉnh khi xem Catalog 3D |
-| Catalog 3D | chưa dựng (cần code) |
+| Catalog 3D | **đợt 1 đã đăng** — https://claude.ai/artifact/VHdbpqKax8q8Ya5fUxeGXc (12 mẫu nhà; `?giong=tong|thanh|giang-nam|duong`, `?ma=<mã>`) — chờ duyệt từng mẫu |
 | Model AI biểu tượng | tông môn: chưa làm; các vùng: theo mục 6, làm sau khi Catalog duyệt mẫu khối tương ứng |

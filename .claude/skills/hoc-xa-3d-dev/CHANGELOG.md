@@ -18,3 +18,4 @@
 - 2026-11-13: NPC gắn xương theo dáng riêng (`NPC_RIGS` trong `npc.ts`), không quay theo người chơi.
 - 2026-11-13 — Xoá rạp phim: bỏ `rapPhim.ts`, `videoScreen.ts`, `kien_truc/rap_phim.ts`, `zones/videos.ts`, kiểu `rap-phim`; `Seat` → `scene/seat.ts`, `nearestSeat` → `zones/seats.ts`; decisions/0004 bãi bỏ (lại offline hoàn toàn).
 - 2026-11-14 — Trò chuyện kênh chung: lớp mới `chat/` (thuần, không import gì; `ui/` được import `chat`), hợp đồng `ChatChannel` + `LocalChannel` (chưa có máy chủ), luật R-CHAT-1..3; giao diện chờ phiếu `2026-11-14-tro-chuyen-kenh-chung`.
+- 2026-11-14 — Làm song song: tính năng mới ghép qua file riêng ở gốc `web/src/` (`main.ts` chỉ vài dòng gọi); mỗi việc một worktree (`tool/viec.dart`, CLAUDE.md "Làm song song").

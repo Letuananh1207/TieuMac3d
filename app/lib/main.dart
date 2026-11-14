@@ -104,6 +104,9 @@ class HocXaApp extends StatelessWidget {
               // Tàng Thư Các: cuốn sổ từ đang mượn giữ qua tắt app (R-SACH-1, R-SACH-2, R-SACH-4)
               onBorrowBook: (id) async => await progress?.borrowBook(id) ?? false,
               onReturnBook: () async => await progress?.returnBook() ?? false,
+              // nhà của ta: vật ở từng ô giữ qua tắt app (R-NHA-2, R-NHA-3)
+              onGetHome: progress == null ? null : () => homeReply(progress!.homePlaced),
+              onSetDecor: (slot, item) async => await progress?.placeDecor(slot, item) ?? false,
               // ôn câu đố + bảng nhiệm vụ 日課榜 (R-ON-5, R-NV-3); không có kho tiến độ → trang tự lo (thẻ bộ mới / Tiểu Mặc)
               onOpenReview: progress == null
                   ? null

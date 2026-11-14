@@ -26,6 +26,7 @@ class ProgressStore {
   static const _doneKey = 'nhiem-vu.ngay-xong';
   static const _bookKey = 'tang-thu.dang-muon';
   static const _pagesKey = 'tang-thu.trang';
+  static const _homeKey = 'nha.dat';
 
   final SharedPreferences _prefs;
   final DateTime Function() _clock;
@@ -171,6 +172,33 @@ class ProgressStore {
     } on FormatException {
       return {};
     }
+  }
+
+  /// Nhà của ta: mã ô → mã vật đang đặt (R-NHA-3). Không kiểm mã — trang bỏ ô / vật không còn (`cleanHome`).
+  /// Chưa lưu "sở hữu": giai đoạn này sở hữu sẵn mọi vật (R-NHA-4).
+  Map<String, String> get homePlaced {
+    final raw = _prefs.getString(_homeKey);
+    if (raw == null) return {};
+    try {
+      final j = jsonDecode(raw);
+      if (j is! Map) return {};
+      return {for (final e in j.entries) if (e.key is String && e.value is String) e.key as String: e.value as String};
+    } on FormatException {
+      return {};
+    }
+  }
+
+  /// Đặt / thay vật [item] ở ô [slot]; [item] `null` = gỡ (R-NHA-2). Mã ô rỗng → không đổi, `false`.
+  Future<bool> placeDecor(String slot, String? item) async {
+    if (slot.isEmpty || item == '') return false;
+    final placed = homePlaced;
+    if (item == null) {
+      placed.remove(slot);
+    } else {
+      placed[slot] = item;
+    }
+    await _prefs.setString(_homeKey, jsonEncode(placed));
+    return true;
   }
 
   Future<void> _saveCards() =>

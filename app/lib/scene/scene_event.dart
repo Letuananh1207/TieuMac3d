@@ -184,6 +184,23 @@ String? borrowBookId(List<dynamic> args) {
   return id is String && id.isNotEmpty ? id : null;
 }
 
+/// Trả lời `getHome` (docs/bridge.md, R-NHA-3): nhà đã lưu, mã ô → mã vật.
+Map<String, Object?> homeReply(Map<String, String> placed) => {'placed': placed};
+
+/// Ô + vật của sự kiện `setDecor` (docs/bridge.md, R-NHA-2); `item` `null` = gỡ. Sai dạng → `null`.
+({String slot, String? item})? setDecorArgs(List<dynamic> args) {
+  if (args.isEmpty) return null;
+  final e = args.first;
+  if (e is! Map || e['type'] != 'setDecor') return null;
+  final p = e['payload'];
+  if (p is! Map) return null;
+  final slot = p['slot'];
+  final item = p['item'];
+  if (slot is! String || slot.isEmpty) return null;
+  if (item != null && (item is! String || item.isEmpty)) return null;
+  return (slot: slot, item: item as String?);
+}
+
 /// Đoạn JS gửi một sự kiện sang trang: `window.scene.handle({type, payload})`.
 /// Trang chưa sẵn sàng (chưa có `window.scene`) thì bỏ qua, không văng lỗi.
 String sceneEventScript(String type, [Map<String, Object?> payload = const {}]) =>

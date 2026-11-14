@@ -62,7 +62,7 @@ cd app && flutter analyze && flutter test
 dart tool/check.dart --changed # quy tắc bộ chuẩn trên file vừa đổi (--summary: đếm)
 dart tool/guard.dart           # chốt chặn: lỗi biên dịch Dart/TS + lỗi E
 dart tool/rule_trace.dart      # quy tắc nghiệp vụ ↔ test
-dart tool/rule_trace.dart --mark-synced <mã>  # sau khi chép quy tắc lên tài liệu xác nhận online
+dart tool/rule_trace.dart --pending           # quy tắc chờ đồng bộ online (skill /dong-bo-quy-tac tự chép)
 ```
 
 ## Quy tắc khi viết code
@@ -83,7 +83,7 @@ dart tool/rule_trace.dart --mark-synced <mã>  # sau khi chép quy tắc lên t�
 ## Quy tắc nghiệp vụ
 
 Sổ: `docs/testing/quy_tac.md` (xác nhận trên tài liệu online — link trong sổ). Đổi hành vi: sửa sổ trước →
-chép lên tài liệu online → `--mark-synced` → test → code.
+`/dong-bo-quy-tac` (Claude **tự** chép lên tài liệu online — không nhờ người dùng) → test → code.
 
 ## Làm việc
 
@@ -91,4 +91,26 @@ chép lên tài liệu online → `--mark-synced` → test → code.
 - Báo lỗi: `/loi <mô tả>` ghi vào `docs/loi.md`; `/loi sua [L-…]` để sửa. Người dùng báo lỗi trong chat mà không
   gõ `/loi` thì vẫn ghi vào sổ.
 - Thiết kế: `/ui-design` (giao diện 2D) · `/canh` (cảnh 3D) · `/tai-nguyen` (model AI) · `/khao-cuu` (phong cách).
+- Ý tưởng sản phẩm (định hướng thế giới ảo kiểu 摩尔庄园): `/y-tuong <chủ đề>` → phiếu `docs/y_tuong/` → chọn → `/lead`.
 - Trợ giúp: `/guide` — có những lệnh gì, dùng lệnh nào để làm gì.
+
+## Làm song song (nhiều phiên cùng lúc) — mỗi việc một worktree
+
+Người dùng hay chạy nhiều phiên Claude cùng lúc. Việc **sửa file** (`/lead`, `/loi sua`, `/ui-apply`, `/canh` khi sửa
+code, sửa lỗi lớn) làm trong **worktree riêng**, không sửa thẳng thư mục chính:
+
+1. Đầu việc: công cụ `EnterWorktree` (`name` = tên việc không dấu, vd. `tro-chuyen`) → nhánh mới từ `main` của máy
+   (`worktree.baseRef: head`), thư mục `.claude/worktrees/<tên>` → chạy `dart tool/viec.dart chuan-bi` (nối
+   `web/node_modules` dùng chung).
+2. Trong việc: commit trên nhánh việc thoải mái (chỉ trong máy, không push). Lỗi mới ghi mã tạm `L-?1`, `L-?2`…
+   (không tự lấy số — việc khác có thể đang lấy). Thử trên trình duyệt: `npm run dev` **trong worktree**.
+3. Xong việc (kiểm đạt): commit hết → `dart tool/viec.dart gop` (rebase lên main, cấp số `L-`, build + kiểm, đưa main
+   tiến tới) → `ExitWorktree` **"keep"** → `dart tool/viec.dart don <tên>`. **Không** dùng ExitWorktree "remove"
+   (xoá xuyên qua nối `node_modules` → mất gói npm của thư mục chính). Xung đột khi rebase: tự sửa; nhật ký chỉ-thêm
+   (`docs/loi.md`, `design/CHANGELOG.md`, `docs/thiet_ke_da_ap.md`) git tự gộp; file sinh (font) lấy bên nào cũng được.
+4. Việc chỉ đọc / hỏi đáp / ghi sổ lỗi không sửa code: làm ở thư mục chính, không cần worktree.
+- Gộp vào `main` của máy là bước bình thường cuối việc (không cần hỏi); **push** lên GitHub vẫn chỉ khi người dùng bảo.
+- Xem các việc đang mở: `dart tool/viec.dart ds`. Công cụ (`tool/`, skill, `.gitattributes`) phải nằm trên `main` đã
+  commit thì worktree mới có.
+- Tính năng mới ghép vào cảnh qua **file ghép riêng** ở gốc `web/src/` (như `gamePlay.ts`, `chatRoom.ts`), `main.ts` chỉ
+  thêm vài dòng gọi — hai việc song song ít đụng cùng đoạn `main.ts`.

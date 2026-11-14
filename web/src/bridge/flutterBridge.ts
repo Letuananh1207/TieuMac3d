@@ -108,6 +108,21 @@ export async function getProgress(): Promise<JourneyProgress | null> {
   }
 }
 
+/**
+ * Hỏi Flutter nhà của ta đã lưu (`getHome` — R-NHA-3). Trả nguyên câu trả lời (`{placed}`) để `zones/decor.ts`
+ * `cleanHome` làm sạch theo cảnh; `null` = không có Flutter / lỗi → nhà trống.
+ */
+export async function getHome(): Promise<unknown> {
+  const host = await hostReady();
+  if (!host) return null;
+  const event: SceneEvent = { type: 'getHome', payload: {} };
+  try {
+    return await host.callHandler(HANDLER, event);
+  } catch {
+    return null;
+  }
+}
+
 /** Đọc câu trả lời `getProgress`; sai dạng → `null`. */
 export function parseProgress(v: unknown): JourneyProgress | null {
   if (typeof v !== 'object' || v === null) return null;
@@ -200,6 +215,11 @@ export class FlutterBridge {
   /** Trả cuốn đang mượn (R-SACH-4). `false` = không có Flutter → trang xoá trong bộ nhớ. */
   returnBook(): Promise<boolean> {
     return this.ask({ type: 'returnBook', payload: {} });
+  }
+
+  /** Ghi vật ở một ô nhà của ta (R-NHA-2/3); `item` `null` = gỡ. `false` = không có Flutter → giữ trong bộ nhớ trang. */
+  setDecor(slot: string, item: string | null): Promise<boolean> {
+    return this.ask({ type: 'setDecor', payload: { slot, item } });
   }
 
   /** Mở danh mục sách (R-SACH-1). `false` = chưa có màn (chờ thiết kế) → chọn cuốn trong khung thoại. */

@@ -110,6 +110,8 @@ function checkScene(rel, raw) {
     if (!has) all.push(`gameTables: thiếu design/models/${t.npc}.glb — bàn "${t.id}" không có NPC`);
     console.log(`Bàn chơi ${t.id} (${t.kind}): tâm (${n(t.x)}; ${n(t.z)}) quay ${t.rotY ?? 0}° · NPC ${t.npc}${has ? '' : ' — THIẾU MODEL'}`);
   }
+  // ô trang trí nhà của ta (R-NHA-2) — lỗi đã kiểm trong resolveSceneSpec (scene/decorSlots.ts)
+  for (const t of spec.decorSlots) console.log(`Ô trang trí ${t.id} (${t.kind}): tâm (${n(t.x)}; ${n(t.z)}) quay ${t.rotY ?? 0}°`);
   if (spec.paths.length) console.log(`Lối lát đá: ${spec.paths.length}`);
   const t = spec.terrain;
   if (t.enabled) {

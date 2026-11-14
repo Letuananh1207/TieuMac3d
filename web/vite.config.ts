@@ -28,7 +28,8 @@ export default defineConfig(({ mode }) => {
       target: ['es2020', 'chrome87', 'safari14'],
       assetsInlineLimit: 0,
       chunkSizeWarningLimit: 1000,
-      rollupOptions: { input: design ? 'design.html' : 'index.html' },
+      // Canvas 3D + Catalog kiến trúc (catalog.html — bộ asset chuẩn) cùng ra dist-design/
+      rollupOptions: { input: design ? { design: 'design.html', catalog: 'catalog.html' } : 'index.html' },
     },
   };
 });

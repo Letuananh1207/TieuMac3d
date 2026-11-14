@@ -42,8 +42,8 @@ Flutter (`app/lib/`) → test → build (`npm run build`).
 Mỗi nhiệm vụ: mục tiêu một câu · file · lớp (để đọc đúng reference) · chuỗi giao diện mới · test · "xong khi".
 
 Cờ cảnh báo:
-- đổi hành vi nghiệp vụ → sửa `docs/testing/quy_tac.md` trước, chép lên tài liệu xác nhận online (nội dung đổi thì
-  đưa ô Xác nhận về Chờ), `dart tool/rule_trace.dart --mark-synced <mã>`, rồi test, rồi code;
+- đổi hành vi nghiệp vụ → sửa `docs/testing/quy_tac.md` trước, chạy skill `/dong-bo-quy-tac` (tự chép lên tài liệu
+  online, không nhờ người dùng), rồi test, rồi code;
 - đổi tên / dạng sự kiện cầu nối → sửa `docs/bridge.md` trước, hai phía cùng lúc;
 - thêm thư mục trong `web/src` → bảng phụ thuộc (`decisions/0001`) + `LAYERS` trong `tool/check.dart`;
 - ảnh hưởng hiệu năng (thêm mesh, đèn, texture lớn) → ghi số draw call ước tính;
@@ -82,7 +82,10 @@ flutter test -r failures-only test/<phần> · dart tool/rule_trace.dart
 - **Vừa / lớn**: trình tóm tắt (phạm vi + nhiệm vụ + điểm cần quyết định) rồi **dừng chờ duyệt**.
 - Khi làm: đánh `[x]` ngay khi xong từng nhiệm vụ. Gặp việc ngoài phạm vi → dừng, báo, không tự mở rộng.
 - Cuối: chạy Kiểm tra cuối, trạng thái `xong`, báo đã sửa gì / còn chờ gì / cần thử trên máy gì.
-- Các mốc của dự án: xong mốc nào báo người dùng rồi mới sang mốc sau. Không commit khi chưa được yêu cầu.
+- Các mốc của dự án: xong mốc nào báo người dùng rồi mới sang mốc sau.
+- **Worktree** (CLAUDE.md "Làm song song"): duyệt xong, trước khi sửa file → `EnterWorktree` + `dart tool/viec.dart
+  chuan-bi`; commit trên nhánh việc; xong → `viec.dart gop` → ExitWorktree "keep" → `viec.dart don <tên>`. Push chỉ
+  khi được bảo.
 
 ## Bản đồ tính năng
 

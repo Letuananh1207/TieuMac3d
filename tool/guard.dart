@@ -115,6 +115,16 @@ String collectErrors() {
   return report.toString();
 }
 
+/// Phiên này có sửa sổ quy tắc không: dò transcript (JSONL) tìm lệnh Edit / Write / shell chạm `quy_tac.md`.
+/// Không đọc được transcript → coi như có (an toàn). Nhiều phiên chung máy: phiên không sửa sổ thì không bị nhắc.
+bool sessionTouchedRules(String? transcript) {
+  if (transcript == null) return true;
+  final f = File(transcript);
+  if (!f.existsSync()) return true;
+  final re = RegExp(r'"name"\s*:\s*"(Edit|Write|MultiEdit|NotebookEdit|Bash|PowerShell)".*quy_tac\.md');
+  return f.readAsLinesSync().any(re.hasMatch);
+}
+
 /// Sổ quy tắc đổi mà chưa chép lên tài liệu xác nhận online → dòng nhắc; không thì ''.
 String unsyncedRules() {
   final st = run('git', ['status', '--porcelain', '--', 'docs/testing/quy_tac.md']);
@@ -131,11 +141,13 @@ Future<void> main(List<String> args) async {
 
   if (mode == 'stop') {
     var active = false;
+    String? transcript;
     try {
       final input = await stdin.transform(utf8.decoder).join();
       if (input.trim().isNotEmpty) {
         final json = jsonDecode(input);
         active = json is Map && json['stop_hook_active'] == true;
+        if (json is Map && json['transcript_path'] is String) transcript = json['transcript_path'] as String;
       }
     } catch (_) {}
 
@@ -152,12 +164,13 @@ Future<void> main(List<String> args) async {
       stderr.writeln('Sửa các lỗi trên rồi mới báo xong.');
       exit(2);
     }
-    if (!active) {
+    // nhắc một lần, chỉ khi chính phiên này sửa sổ; lần dừng sau (active) cho qua — phiên không có connector không bị kẹt
+    if (!active && sessionTouchedRules(transcript)) {
       final unsynced = unsyncedRules();
       if (unsynced.isNotEmpty) {
         stderr.writeln(unsynced);
-        stderr.writeln('Chép các quy tắc này lên tài liệu xác nhận online rồi chạy '
-            '`dart tool/rule_trace.dart --mark-synced <mã>`, hoặc báo người dùng vì sao chưa.');
+        stderr.writeln('Tự đồng bộ ngay bằng skill /dong-bo-quy-tac (connector Claude Docs) — không nhờ người dùng chép. '
+            'Phiên không có connector: ghi một dòng "chưa đồng bộ online <mã>" rồi kết thúc.');
         exit(2);
       }
     }

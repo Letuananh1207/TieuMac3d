@@ -110,4 +110,13 @@ void main() {
     expect(r.learned, isTrue);
     expect(OpenRadicalRequest.parse([{'type': 'openRadical', 'payload': {'radical': {'id': 'x'}}}]), isNull);
   });
+
+  test('setDecor: đọc ô + vật (docs/bridge.md); item null = gỡ; sai dạng → null', () {
+    expect(setDecorArgs([{'type': 'setDecor', 'payload': {'slot': 'vuon-1', 'item': 'mai'}}]), (slot: 'vuon-1', item: 'mai'));
+    expect(setDecorArgs([{'type': 'setDecor', 'payload': {'slot': 'vuon-1', 'item': null}}]), (slot: 'vuon-1', item: null));
+    expect(setDecorArgs([{'type': 'setDecor', 'payload': {'slot': '', 'item': 'mai'}}]), isNull);
+    expect(setDecorArgs([{'type': 'setDecor', 'payload': {'slot': 'vuon-1', 'item': 3}}]), isNull);
+    expect(setDecorArgs([{'type': 'borrowBook', 'payload': {'slot': 'vuon-1'}}]), isNull);
+    expect(setDecorArgs([]), isNull);
+  });
 }

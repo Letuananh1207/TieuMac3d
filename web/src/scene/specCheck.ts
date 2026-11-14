@@ -4,6 +4,7 @@
  */
 import {
   BUILDING_KINDS,
+  DECOR_SLOT_KINDS,
   GOODS_KINDS,
   DEFAULT_SCENE,
   NPC_IDS,
@@ -27,6 +28,7 @@ import {
   rotateXZ,
   type BridgeSpec,
 } from './spec';
+import { checkDecorSlots } from './decorSlots';
 import { daisLayout, ringTrigger } from './teleportLayout';
 import { stairEnds, terrainHeightFn } from './terrainHeight';
 
@@ -344,6 +346,7 @@ const LISTS: Record<string, ItemParser> = {
     { rotY: 0, boards: 0, npcStand: true, sign: { x: 0, z: 0, rotY: 0, han: '', name: '' } },
     all(oneOf('kind', GAME_KINDS), oneOf('npc', NPC_IDS), rot, boardsRange, signRot),
   ),
+  decorSlots: item({ id: '', kind: '', x: 0, z: 0 }, { rotY: 0 }, all(oneOf('kind', DECOR_SLOT_KINDS), rot)),
   'trees.yard': item({ x: 0, z: 0, scale: 0 }, { kind: '' }, all(oneOf('kind', TREE_KINDS), positive('scale'))),
   'trees.groves': item(
     { kind: '', x: 0, z: 0, w: 0, d: 0, count: 0 },
@@ -428,7 +431,7 @@ function checkConsistency(s: SceneSpec): string[] {
   if (t.enabled && t.edge.radius + t.edge.width > t.size / 2) {
     out.push(`terrain.edge: mép vực (radius + width = ${t.edge.radius + t.edge.width}) vượt nửa vùng lưới (${t.size / 2}) — tăng size`);
   }
-  out.push(...checkTeleport(s), ...checkLanterns(s));
+  out.push(...checkTeleport(s), ...checkLanterns(s), ...checkDecorSlots(s));
   if (s.cloudSea.radius < 0) out.push('cloudSea.radius: phải ≥ 0');
   if (t.enabled && t.size > 0 && t.cell > 0) out.push(...checkOnFlatGround(s));
   if (t.enabled) {
@@ -507,6 +510,7 @@ function checkOnFlatGround(s: SceneSpec): string[] {
   for (const w of s.water.filter((w) => !w.sunk)) flat(`ao (${w.x}; ${w.z})`, box(w.x, w.z, w.r !== undefined ? w.r * 2 : (w.w ?? 0), w.r !== undefined ? w.r * 2 : (w.d ?? 0), w.rotY));
   for (const t of s.gameTables) flat(`bàn chơi "${t.id}"`, box(t.x, t.z, (t.boards ?? 1) * GAME_SLOT + 1, 4, t.rotY));
   for (const t of s.gameTables) if (t.sign) flat(`biển bàn "${t.id}"`, box(t.sign.x, t.sign.z, 2, 1, t.sign.rotY));
+  for (const t of s.decorSlots) flat(`decorSlots "${t.id}"`, box(t.x, t.z, 1.6, 1.6));
   if (s.well.enabled) flat('giếng', box(s.well.x, s.well.z, 2.4, 2.4));
   const hw = s.walls.half;
   if (s.walls.enabled) flat('tường bao', [[-hw, -hw], [hw, -hw], [-hw, hw], [hw, hw], [0, -hw], [0, hw], [-hw, 0], [hw, 0]]);

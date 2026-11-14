@@ -16,6 +16,10 @@ export const SIDES = ['bac', 'nam', 'dong', 'tay'] as const;
 export const NPC_IDS = ['tieu-mac', 'su-phu', 'thu-thu', 'tieu-nhi', 'quan-su', 'tran-su'] as const;
 /** Bàn chơi ở khu giao lưu (R-GIAO-1): `co` = Ngũ Tử Kỳ (R-CO-1), `dau-chu` = Đấu chữ (R-DAU-1). */
 export const GAME_KINDS = ['co', 'dau-chu'] as const;
+/** Loại ô trang trí nhà của ta (R-NHA-2): `vuon` vườn · `san` sân · `trong` trong nhà. */
+export const DECOR_SLOT_KINDS = ['vuon', 'san', 'trong'] as const;
+/** Khoảng tối thiểu (m) giữa tâm hai ô trang trí — vật to nhất (bình phong, ao sen) rộng ≈ 1,6 m. */
+export const DECOR_SLOT_GAP = 1.8;
 export const PROP_KINDS = [
   'luong-thuoc',
   'lo-dan',
@@ -428,6 +432,19 @@ export interface GameTableSpec {
   sign?: GameSignSpec;
 }
 
+/**
+ * Ô trang trí (R-NHA-2): chỗ đặt sẵn một vật trong danh mục (`zones/decor.ts`), tâm (x, z) trên mặt đất / sàn tầng 1.
+ * Ô `trong` phải nằm trong chân một nhà; `vuon` / `san` ở ngoài mọi nhà. Mặt trước vật nhìn về +z khi `rotY` = 0
+ * (độ, bội 90). `id` duy nhất trong cảnh — là khoá lưu nhà (R-NHA-3), đổi mã = mất vật đã đặt ở ô đó.
+ */
+export interface DecorSlotSpec {
+  id: string;
+  kind: (typeof DECOR_SLOT_KINDS)[number];
+  x: number;
+  z: number;
+  rotY?: number;
+}
+
 /** Biển tên trò chơi (R-GIAO-2): toạ độ cảnh, mặt chữ nhìn về +z khi `rotY` = 0 (độ, bội 90). */
 export interface GameSignSpec {
   x: number;
@@ -730,6 +747,8 @@ export interface SceneSpec {
   npcs: NpcSpec[];
   /** bàn chơi khu giao lưu (R-GIAO-1) */
   gameTables: GameTableSpec[];
+  /** ô trang trí nhà của ta (R-NHA-2); rỗng = cảnh không trang trí được */
+  decorSlots: DecorSlotSpec[];
   /** dây đèn lồng giăng trên sân (vd. khu giao lưu) — chỉ ngắm, cột hai đầu có va chạm */
   lanternStrings: LanternString[];
   /** dây đèn lồng: `height` đỉnh cột / chỗ buộc dây, `sag` độ võng giữa dây, `spacing` khoảng hai đèn (m);
@@ -899,6 +918,7 @@ export const DEFAULT_SCENE: SceneSpec = {
   player: { start: [0, 6] },
   npcs: [], // cảnh mặc định chưa có NPC
   gameTables: [],
+  decorSlots: [],
   lanternStrings: [],
   lanternStyle: {
     height: 4.6,

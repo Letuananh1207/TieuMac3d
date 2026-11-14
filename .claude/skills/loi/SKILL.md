@@ -38,8 +38,8 @@ Người dùng báo lỗi mà không gõ `/loi` → hỏi một câu "ghi rồi 
    ghi bằng lời thường. Nguyên nhân ở `app/assets/scene/` (bản build cũ) → chạy `cd web && npm run build`, không sửa
    tay. Hành vi đúng có sẵn trong prototype → đối chiếu `reference/hoc-xa-3d.html` (đọc đúng đoạn).
 2. **Hành vi đúng** theo quy tắc `R-…`. Quy tắc thiếu / sai, hoặc phải chọn giữa nhiều cách → dừng, trình lựa chọn
-   (đề xuất một), chờ người dùng. Đổi hành vi nghiệp vụ → sửa `docs/testing/quy_tac.md` trước → chép lên tài liệu
-   xác nhận online (nội dung đổi thì đưa ô Xác nhận về Chờ) → `dart tool/rule_trace.dart --mark-synced <mã>`.
+   (đề xuất một), chờ người dùng. Đổi hành vi nghiệp vụ → sửa `docs/testing/quy_tac.md` trước → skill
+   `/dong-bo-quy-tac` (tự chép lên tài liệu online, không nhờ người dùng).
 3. **Tái hiện bằng test đỏ**, tầng rẻ nhất mà đúng với lỗi:
 
    | Tầng | Có | Khi nào |
@@ -60,8 +60,11 @@ Người dùng báo lỗi mà không gõ `/loi` → hỏi một câu "ghi rồi 
    `cd app && flutter analyze && flutter test -r failures-only test/<phần>` · `dart tool/rule_trace.dart`.
 6. Trạng thái `chờ thử máy`, hoặc `xong` nếu test kiểm trọn lỗi (không dính thứ chỉ máy thật mới thấy). Ghi
    **Thử máy**: các bước ngắn nhất để xác nhận + thứ cần gửi nếu còn lỗi (ảnh, log `chrome://inspect`).
-7. Báo: nguyên nhân, đã sửa gì, test nào khoá, các bước thử máy. Không commit khi chưa được bảo; được bảo thì
-   commit `fix: … (L-…)` và ghi mã commit vào mục lỗi.
+7. Báo: nguyên nhân, đã sửa gì, test nào khoá, các bước thử máy.
+
+**Làm song song** (CLAUDE.md): `/loi sua` sửa code trong worktree — đầu bước 1 `EnterWorktree` + `dart tool/viec.dart
+chuan-bi`; xong bước 6 commit `fix: … (L-…)` trên nhánh việc → `viec.dart gop` → ExitWorktree "keep" → `viec.dart don
+<tên>`. Ghi lỗi mới (`/loi <mô tả>`) làm ở thư mục chính; đang trong worktree thì mã tạm `L-?1`. Push chỉ khi được bảo.
 
 ## Mẫu một mục lỗi
 

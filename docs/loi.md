@@ -9,7 +9,8 @@
 | `/loi mo L-…` | Thử trên máy vẫn lỗi → mở lại. |
 
 Trạng thái: `mới` → `đang sửa` → `chờ thử máy` → `xong` · `không sửa (<lý do>)`.
-Mã `L-<số>` tăng dần, không dùng lại.
+Mã `L-<số>` tăng dần, không dùng lại. Trong worktree (làm song song) ghi tạm `L-?1`, `L-?2`… — `dart tool/viec.dart
+gop` cấp số thật khi gộp vào main.
 
 Mức độ:
 - **chặn dùng** — văng app, màn trắng / scene không hiện, nhân vật không đi được hoặc kẹt cứng, không vào được bài học.

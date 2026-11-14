@@ -16,7 +16,7 @@ Chỉ đọc, không sửa gì, không tự chạy lệnh nào.
 ## Không tham số
 
 1. Bảng `Lệnh · Làm gì · Cửa sổ`, nhóm theo vai: **làm việc** (`lead`, `loi`), **thiết kế** (`ui-design` giao diện
-   2D, `canh` cảnh 3D, `tai-nguyen` model AI, `khao-cuu` nghiên cứu phong cách), **áp** (`ui-apply`), **trợ giúp**
+   2D, `canh` cảnh 3D, `tai-nguyen` model AI, `khao-cuu` nghiên cứu phong cách, `y-tuong` ý tưởng sản phẩm), **áp** (`ui-apply`), **trợ giúp**
    (`guide`). Cửa sổ = **VS Code** (phiên Claude trong dự án này); `ui-design` thường **ngoài VS Code** (claude.ai/code
    hoặc tab Code của app máy tính) nhưng người dùng có thể nhờ VS Code làm thay; `canh`, `tai-nguyen`, `khao-cuu`
    chạy ở đâu cũng được (`tai-nguyen` cần máy có Hunyuan3D). Skill không có lệnh gõ (`hoc-xa-3d-dev`) ghi **tự
@@ -24,6 +24,9 @@ Chỉ đọc, không sửa gì, không tự chạy lệnh nào.
 2. Các luồng thường dùng — chỉ liệt kê luồng mà mọi skill trong luồng đều có thật:
    - tính năng / mốc mới: `/lead <yêu cầu>` → duyệt kế hoạch → `/lead tiếp`
    - lỗi: `/loi <mô tả>` → `/loi sua L-…` → thử máy → `/loi xong L-…` (hoặc `/loi mo L-…`)
+   - làm nhiều việc cùng lúc: mở nhiều phiên Claude, mỗi phiên một việc — Claude tự vào worktree riêng và tự gộp về
+     `main` khi xong (`dart tool/viec.dart ds` xem việc đang mở); sổ quy tắc đổi → Claude tự `/dong-bo-quy-tac` lên
+     tài liệu online, người dùng không chép tay
    - giao diện 2D mới (HUD, màn): `/ui-apply phieu <yêu cầu>` → chép khối "Dán vào canvas" sang `/ui-design` → vẽ,
      góp ý trên canvas → "chốt" → `git pull` rồi `/ui-apply`
    - cảnh 3D (bố cục, nhà, địa hình, nước, cây, màu, ánh sáng, camera): `/canh <yêu cầu>` → xoay, góp ý trên Canvas

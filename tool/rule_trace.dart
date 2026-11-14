@@ -5,6 +5,8 @@
 //   dart tool/rule_trace.dart --mark-synced <mã>... | all
 //                                                 ghi dấu nội dung hiện tại vào quy_tac_online.json
 //                                                 (sau khi chép quy tắc lên tài liệu xác nhận online)
+//   dart tool/rule_trace.dart --pending           quy tắc chờ đồng bộ: MỚI / ĐỔI / XOÁ, nhóm, dòng bảng để chép
+//                                                 (skill /dong-bo-quy-tac đọc đầu ra này rồi tự ghi lên tài liệu)
 //
 // Sổ: docs/testing/quy_tac.md, dòng bảng `| R-… | Quy tắc | Ví dụ | Xác nhận | App |`.
 // Test: mã R-[A-Z]+-\d+ trong app/test, app/integration_test (*_test.dart) và web/ (*.test.ts).
@@ -17,8 +19,10 @@ const onlinePath = 'docs/testing/quy_tac_online.json';
 final codeRe = RegExp(r'R-[A-Z]+-\d+');
 
 class Rule {
-  Rule(this.code, this.text, this.example, this.status, this.exempt);
+  Rule(this.code, this.text, this.example, this.status, this.exempt, this.group);
   final String code;
+  /// tiêu đề nhóm trong sổ, vd. "CHAT — trò chuyện kênh chung"
+  final String group;
   final String text;
   final String example;
   final String status;
@@ -44,14 +48,16 @@ List<Rule> readBook() {
     exit(2);
   }
   final rules = <Rule>[];
+  var group = '';
   for (final line in f.readAsLinesSync()) {
     final t = line.trim();
+    if (t.startsWith('## ')) group = t.substring(3).trim();
     if (!t.startsWith('| R-')) continue;
     final cells = t.substring(1, t.endsWith('|') ? t.length - 1 : t.length).split('|').map((c) => c.trim()).toList();
     if (cells.length < 3 || !codeRe.hasMatch(cells[0])) continue;
     final last = cells.last;
     final status = last.split(RegExp(r'[\s(,·]')).first.toLowerCase();
-    rules.add(Rule(cells[0], cells[1], cells.length > 2 ? cells[2] : '', status, last.contains('miễn test')));
+    rules.add(Rule(cells[0], cells[1], cells.length > 2 ? cells[2] : '', status, last.contains('miễn test'), group));
   }
   return rules;
 }
@@ -110,8 +116,49 @@ void markSynced(List<Rule> rules, List<String> codes) {
   stdout.writeln('Đã đánh dấu đồng bộ online: ${targets.length} quy tắc.');
 }
 
+/// Quy tắc chờ đồng bộ, theo nhóm: MỚI (chưa có trên tài liệu) · ĐỔI (nội dung khác lần chép trước) · XOÁ (bỏ khỏi sổ).
+void printPending(List<Rule> rules) {
+  final synced = Map<String, dynamic>.from(readOnline()['rules'] as Map? ?? {});
+  final todo = rules.where((r) => synced[r.code] != r.fingerprint).toList();
+  final gone = synced.keys.where((c) => !rules.any((r) => r.code == c)).toList();
+  if (todo.isEmpty && gone.isEmpty) {
+    stdout.writeln('Không có quy tắc chờ đồng bộ.');
+    return;
+  }
+  stdout.writeln('Tài liệu: ${readOnline()['doc']}');
+  String? last;
+  for (final r in todo) {
+    if (r.group != last) {
+      stdout.writeln('\n## ${r.group}');
+      last = r.group;
+    }
+    final kind = synced.containsKey(r.code) ? 'ĐỔI (đưa ô Xác nhận về Chờ)' : 'MỚI';
+    stdout.writeln('- ${r.code} · $kind');
+    stdout.writeln('  | ${r.code} | ${r.text} | ${r.example} |');
+  }
+  if (gone.isNotEmpty) stdout.writeln('\nXOÁ (không còn trong sổ — xoá hàng trên tài liệu): ${gone.join(', ')}');
+  stdout.writeln('\nChép xong: dart tool/rule_trace.dart --mark-synced ${todo.map((r) => r.code).join(' ')}${gone.isEmpty ? '' : ' (+ --forget ${gone.join(' ')})'}');
+}
+
+/// Bỏ mã đã xoá khỏi sổ ra khỏi quy_tac_online.json (sau khi xoá hàng trên tài liệu).
+void forget(List<String> codes) {
+  final online = readOnline();
+  final rules = Map<String, dynamic>.from(online['rules'] as Map? ?? {})..removeWhere((k, _) => codes.contains(k));
+  File(onlinePath).writeAsStringSync('${const JsonEncoder.withIndent('  ').convert({'doc': online['doc'] ?? '', 'rules': rules})}\n');
+  stdout.writeln('Đã bỏ khỏi danh sách đồng bộ: ${codes.join(', ')}');
+}
+
 void main(List<String> args) {
   final rules = readBook();
+  if (args.contains('--pending')) {
+    printPending(rules);
+    return;
+  }
+  final fi = args.indexOf('--forget');
+  if (fi >= 0) {
+    forget(args.sublist(fi + 1).where((a) => !a.startsWith('-')).toList());
+    return;
+  }
 
   final mi = args.indexOf('--mark-synced');
   if (mi >= 0) {
@@ -153,7 +200,7 @@ void main(List<String> args) {
   final unsynced = rules.where((r) => synced[r.code] != r.fingerprint).map((r) => r.code).toList();
   if (unsynced.isNotEmpty) {
     stdout.writeln('Chưa đồng bộ online ($onlinePath): ${unsynced.join(', ')}');
-    stdout.writeln('  chép lên tài liệu xác nhận rồi chạy: dart tool/rule_trace.dart --mark-synced ${unsynced.join(' ')}');
+    stdout.writeln('  đồng bộ tự động: skill /dong-bo-quy-tac (dart tool/rule_trace.dart --pending để xem)');
   }
 
   final missing = needTest.where((r) => !counts.containsKey(r.code)).map((r) => r.code).toList();

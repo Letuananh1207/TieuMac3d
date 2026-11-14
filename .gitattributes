@@ -1,3 +1,11 @@
 # Script shell của git hook phải giữ LF, kể cả trên Windows (CRLF làm hỏng tham số)
 tool/git_hooks/* text eol=lf
 *.sh text eol=lf
+
+# Làm song song (tool/viec.dart): nhật ký chỉ-thêm → gộp giữ cả hai bên; file sinh → giữ một bên rồi build lại
+docs/loi.md merge=union
+design/CHANGELOG.md merge=union
+docs/thiet_ke_da_ap.md merge=union
+web/src/fonts/** merge=ours
+app/assets/fonts/** merge=ours
+app/lib/theme/app_fonts.g.dart merge=ours

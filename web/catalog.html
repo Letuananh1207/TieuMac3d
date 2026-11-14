@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Catalog kiến trúc</title>
+  <style>
+    /* Chỉ cho trang xem thiết kế (không vào app) — cùng kiểu bảng với Canvas 3D (design.html). */
+    #panel{position:fixed;top:max(12px,env(safe-area-inset-top));left:max(16px,env(safe-area-inset-left));
+      width:min(340px,calc(100vw - 32px));max-height:calc(100dvh - 24px);overflow:auto;box-sizing:border-box;
+      padding:12px 14px;border-radius:14px;background:rgba(31,22,16,.88);border:1px solid rgba(224,174,76,.35);
+      color:#f3e6c8;font:500 13px/1.45 var(--ui);user-select:text;-webkit-user-select:text}
+    #panel[data-collapsed] .body{display:none}
+    #panel h1{font:700 16px var(--display);margin:0;flex:1}
+    #panel .head{display:flex;align-items:center;gap:8px}
+    #panel h2{font:700 11px var(--ui);letter-spacing:.12em;text-transform:uppercase;color:#e0ae4c;margin:12px 0 4px}
+    #panel .muted{color:#c4b08a}
+    #panel .bad{color:#ffb0a0}
+    #panel .row{display:flex;flex-wrap:wrap;gap:6px}
+    #panel button{font:500 13px var(--ui);color:#f3e6c8;background:#2c2018;border:1px solid rgba(243,230,200,.25);
+      border-radius:999px;padding:6px 12px;min-height:32px;cursor:pointer}
+    #panel button[aria-pressed="true"]{background:#e0ae4c;color:#2a1a10}
+    #panel table{border-collapse:collapse;width:100%;font-size:12px}
+    #panel td{padding:3px 4px;border-top:1px solid rgba(243,230,200,.12);vertical-align:top}
+    #panel td button{padding:2px 8px;min-height:24px;font-size:12px}
+    #labels{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+    .lbl{position:absolute;transform:translate(-50%,-100%);white-space:nowrap;padding:3px 8px;border-radius:8px;
+      background:rgba(31,22,16,.82);color:#f3e6c8;font:600 12px/1.3 var(--ui);border:1px solid rgba(224,174,76,.4)}
+    .lbl.bad{border-color:#ff7a66;color:#ffd0c6}
+    .lbl small{display:block;font-weight:500;color:#c4b08a}
+  </style>
+</head>
+<body>
+  <canvas id="stage"></canvas>
+  <div id="labels"></div>
+  <aside id="panel">
+    <div class="head"><h1>Catalog kiến trúc</h1><button id="collapse" type="button">Thu gọn</button></div>
+    <div class="body">
+      <div class="muted">Bộ asset chuẩn — <code>design/kien_truc/danh_muc.md</code>. Mét cảnh, thước đo K = 1,25. Nhân vật đứng cạnh để so tỉ lệ.</div>
+      <h2>Giọng vùng (mái)</h2>
+      <div class="row" id="pickGiong">
+        <button type="button" data-giong="tong">Tống</button>
+        <button type="button" data-giong="thanh">Thanh</button>
+        <button type="button" data-giong="giang-nam">Giang Nam</button>
+        <button type="button" data-giong="duong">Đường</button>
+      </div>
+      <h2>Mẫu</h2>
+      <div class="muted" style="margin-bottom:4px">Bấm cỡ để bay tới. Số: màu / nghìn tam giác. Đỏ = vượt ngân sách tam giác theo cấp (khối cùng màu của mọi nhà gộp chung một lần vẽ, nên số màu không phải chi phí riêng).</div>
+      <table><tbody id="list"></tbody></table>
+      <h2>Tổng</h2>
+      <div id="stats" class="muted"></div>
+    </div>
+  </aside>
+  <script type="module" src="/src/catalogPreview.ts"></script>
+</body>
+</html>
