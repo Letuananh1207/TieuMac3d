@@ -129,7 +129,8 @@ async function boot(): Promise<void> {
   const character = await createPlayerCharacter(new URLSearchParams(location.search).get('nhan-vat'));
   // về nhà từ một vùng: đứng trước cột của vùng đó, ngoài vòng, nhìn vào cột (R-HANH-2)
   // qua cổng đi bộ: đứng ở chỗ của cổng dẫn về cảnh vừa rời; không có cổng về → chỗ xuất phát (R-HANH-4)
-  const back = arrivalFor(spec.portals, params.get('qua')) ?? (isHome && params.has('tu') && spec.teleport.enabled ? arrivalSpot(spec.teleport) : undefined);
+  const viaGate = arrivalFor(spec.portals, params.get('qua'));
+  const back = viaGate ?? (isHome && params.has('tu') && spec.teleport.enabled ? arrivalSpot(spec.teleport) : undefined);
   // ?dung=x,z — thử trên trình duyệt: đứng sẵn ở (x, z) (vd. cạnh bàn cờ ?dung=-22,36.5)
   const dung = (params.get('dung') ?? '').split(',').map(Number);
   const [sx, sz] = back ? back.at : dung.length === 2 && dung.every(Number.isFinite) ? dung : spec.player.start;
@@ -634,7 +635,8 @@ async function boot(): Promise<void> {
   const input: MoveInput = { x: 0, y: 0 };
   // tường / nhà chắn tầm nhìn → camera kéo lại gần (R-DIEU-4)
   const sight = colliders.sightBlock.bind(colliders);
-  if (back) orbit.yaw = back.rotY - Math.PI; // tới qua cổng / về trấn: nhìn theo hướng của chỗ đứng
+  // tới qua cổng: nhìn theo hướng của chỗ đứng (R-HANH-4); về trấn bằng vòng trận giữ hướng mặc định (R-HANH-2)
+  if (viaGate) orbit.yaw = viaGate.rotY - Math.PI;
   character.facing.rotation.y = orbit.yaw + Math.PI; // vào game: nhân vật quay lưng về camera, nhìn về phía trước
   orbit.update(camera, player.position, 0, true, groundAt, undefined, sight);
 

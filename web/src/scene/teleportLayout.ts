@@ -14,7 +14,7 @@ export function ringTrigger(tp: Pick<TeleportSpec, 'ringRadius'>): number {
 }
 
 /**
- * Chỗ đứng khi về tông môn: phía tây vòng, nhìn về đông (rotY radian, 0 = nhìn +z). Không đài: ngoài vòng 1,5 m;
+ * Chỗ đứng khi về tông môn: phía tây vòng, `rotY` = nhìn về đông (radian, 0 = nhìn +z; app chưa dùng — vào cảnh nhìn hướng mặc định, R-HANH-2). Không đài: ngoài vòng 1,5 m;
  * có đài: dưới chân lối bậc phía tây, cách chân bậc 1 m (lên bậc là thấy vòng).
  */
 export function arrivalSpot(tp: Pick<TeleportSpec, 'center' | 'ringRadius'> & { dais?: DaisSpec }): { at: XZ; rotY: number } {

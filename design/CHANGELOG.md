@@ -3,6 +3,31 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-14.20 — Ngõ về nhà: lối cạnh Tạp hoá vào Nhà của ta (cổng đi bộ)
+
+- Loại: cảnh 3D — **bố cục**. Ai làm: phiên code V-20261114-16 làm thay vai thiết kế (`/canh`), người dùng nhờ "vào nhà ở chỗ
+  lối đi gần tạp hoá". **Đã duyệt 2026-11-14** trên Canvas 3D (giữ nguyên, không dời cây tùng).
+- `scene.json` (Khởi Nguyên Trấn):
+  - `paths` thêm ngõ lát đá (−4; 36) → (−19; 36) rộng 2,2 — phía nam tiệm Tạp hoá, rẽ từ lối Cổng Trấn.
+  - `wallSegments` thêm khoảnh tường vôi (−25 … −19) × (32,5 … 39,5) cao 3,6; mặt đông có cổng `lau` tại z 36, rộng 2,8
+    (lối 2,2 m, cao 2,6 m), biển `dong` "Nhà của ta 我家".
+  - `trees.groves` thêm tùng ×2 tại (−22; 36), 3 × 4, không va chạm (ló qua tường).
+  - `site.areas` "Cổng Trấn": `from` [−15, 17] → [−26, 17] (trong ngõ chip vẫn ghi Cổng Trấn).
+  - `portals` (trường mới) → `nha-ta`: vùng chạm (−24,6; 32,9) … (−19,5; 39,1), chỗ tới (−16,5; 36) quay 90°.
+- `nha-ta.json` (Nhà của ta):
+  - đoạn tường nam `height` 2,8 → 3,6 (lối cổng mái ngói 1,8 → 2,6 m); cổng nam thêm biển `bac` "Khởi Nguyên Trấn".
+  - `teleport.center` (0; 7) → (−10; −1,5) — vòng trận không còn nằm giữa lối cổng → nhà chính.
+  - `player.start` (0; 2) → (−5; 0,5) (cạnh vòng mới).
+  - `portals` → `tong-mon`: vùng chạm (−4; 12,5) … (4; 16) ngoài tường nam, chỗ tới (0; 10) quay 180°.
+- Luật bị chạm: R-NHA-1 (sửa), R-HANH-4 (mới), R-MAN-2 (câu đầu) — đã sửa sổ trong cùng việc.
+- `scene:check`: cả 8 cảnh "Không có lỗi", cặp cổng ghép đúng.
+- Draw call trấn nhìn từ trên (headless 900×600) 155 → **156** (+1), ~+1k tam giác; cây trong khoảnh +0. Trấn đã vượt 150 từ
+  trước việc này (CHANGELOG .14 ghi 146 — đo lại 155) → để việc cảnh đẹp (V-17) xử lý. Góc chơi trong ngõ 129; Nhà của ta 34.
+- Cần code: không (trường `portals` + `PortalTrigger` làm trong cùng việc).
+- Canvas 3D: https://claude.ai/artifact/TyJxrgsBcj5ryHakv7c1so (bản 49) — `?cam=-6,20,50&tam=-17,34&nv=-16.5,36`, `?vung=nha-ta`.
+- Ảnh: `screens/Canh-ngo-ve-nha.png`, `screens/Canh-nha-ta-cong-nam.png`.
+- File: `scene/scene.json`, `scene/nha-ta.json`, hai ảnh trên.
+
 ## 2026-11-14.19 — Bộ ảnh nhiều góc NPC Trận sư 陣師 (đạo sĩ trận pháp trung niên)
 
 - Loại: tài nguyên 3D — ảnh đầu vào (Hunyuan3D-2mv). Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-13-anh-tran-su.md`.
