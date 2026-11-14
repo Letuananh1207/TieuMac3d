@@ -1,6 +1,7 @@
 # Phiếu: Ngồi — nhìn từ mắt nhân vật, hai bàn tay + cuộn sách 3D có mục chạm được
 - Trạng thái: chờ thiết kế
-- Đợi bởi: kế hoạch `docs/tasks/2026-11-14-ngoi-goc-mat.md` (nhiệm vụ 10, 12; một phần chờ Q1–Q4 trong kế hoạch)
+- Đợi bởi: kế hoạch `docs/tasks/2026-11-14-ngoi-goc-mat.md` (nhiệm vụ 12, 13). Quyết định đã duyệt 2026-11-14 (Q1-C,
+  Q2-A, Q3-B, Q4-A, Q5-A, Q6-A).
 
 ## Dán vào canvas
 
@@ -31,24 +32,26 @@ Trạng thái phải vẽ — mỗi trạng thái DỌC 390×844 và NGANG 844×
 2. Ngồi ôn — vừa chạm một mục: mục sáng nhấn, ngón trỏ tay phải chạm vào mục (khung trước khi màn ôn / thẻ mở).
 3. Ngồi ôn — nhịp mở: 0,3 s hai trục chập giữa trong hai tay → 1 s giấy mở hết, mục hiện (mờ → rõ). Nhịp "Đứng dậy":
    chữ mờ → tay chập trục → camera lùi ra.
-4. Xem bộ đã học — [theo quyết định Q4] A: giữ màn Flutter "Bộ đã học" đè lên (chỉ vẽ khung chuyển từ cuộn sang màn) ·
-   B: lưới bộ thủ trên giấy (lật / kéo trang), chạm một bộ → thẻ Flutter.
+4. Xem bộ đã học — giữ màn Flutter "Bộ đã học" (đã có thiết kế) đè lên: chỉ vẽ khung chuyển từ cuộn sang màn và lúc
+   đóng màn quay về cuộn.
 5. Đang học / đang ôn (màn Flutter mở đè): cuộn giữ mở trong tay phía sau; vẽ khung lúc đóng màn → cuộn hiện lại ngay
    (không chạy lại nhịp 1 s), mục vừa dùng cập nhật (vd. "Hôm nay đã ôn xong").
 6. Khu tự học tầng 2 Tàng Thư Các: như 1 nhưng cảnh nội thất, hàng bồ đoàn phía trước, "Học bộ mới" mờ.
 7. Án thư / bàn trà / đôn / sập / ghế lan can: KHÔNG có mục. Hai tay đặt trên bàn (lan can / gối); đề xuất vật cầm trang
-   trí: chén trà (bàn trà, đôn, sập), sách mở trên án (án thư) — chỉ để nhìn. Vẽ: bàn trà trà lâu, án thư Tàng Thư Các,
+   trí (đã chốt): chén trà trong tay phải (bàn trà, đôn, sập), sách mở trên án (án thư) — chỉ để nhìn, không chạm được.
+   Code đã dựng bằng khối — vẽ lại hình / màu nếu muốn. Vẽ: bàn trà trà lâu, án thư Tàng Thư Các,
    ghế lan can trà lâu nhìn ra núi.
-8. Bàn cờ Ngũ Tử Kỳ: [theo Q1 — đề xuất C] "cúi nhìn bàn" ~70°, bàn 13×13 vừa bề ngang màn, hai tay áo ở mép dưới; tay
+8. Bàn cờ Ngũ Tử Kỳ (đã chốt) "cúi nhìn bàn" ~70°, bàn 13×13 vừa bề ngang màn, hai tay áo ở mép dưới; tay
    phải cầm quân đưa tới giao điểm. Vẽ cùng HUD đang có (Rời bàn, tỉ số, viên lượt — thiết kế 2026-11-13.27) để thấy
    tay không đè HUD.
-9. Đấu chữ: [theo Q2 — đề xuất A] hai tay cầm mép thẻ bộ thủ trên bàn; HUD câu hỏi + 4 nghĩa giữ như 2026-11-13.27.
+9. Đấu chữ (đã chốt): hai tay cầm mép thẻ bộ thủ trên bàn; HUD câu hỏi + 4 nghĩa giữ như 2026-11-13.27.
 10. Nhìn quanh: đang kéo lệch 60° sang phải (cuộn trôi ra mép trái màn); gợi ý lần đầu (nếu cần) "Kéo để nhìn quanh".
+    Không có nút quay về nhìn từ ngoài khi ngồi (đã chốt).
 Mỗi khung ghi rõ: vùng chạm của từng mục trên giấy (≥ 44 px trên màn nhỏ nhất 360×640 — mép xa của giấy nghiêng cũng
 phải đạt), cỡ chữ trên giấy tính ra px màn.
 
 Luật phải theo (nguyên văn trong docs/testing/quy_tac.md — đang có): R-DIEU-7, R-ON-8, R-NGOI-1, R-VA-4, R-GIAO-1, R-DAU-2,
-R-CO-3, R-HANH-3, R-ON-5, R-VUNG-1, R-MAN-1. NHÁP sẽ sửa (kế hoạch docs/tasks/2026-11-14-ngoi-goc-mat.md mục "Luật nháp"):
+R-CO-3, R-HANH-3, R-ON-5, R-VUNG-1, R-MAN-1, R-BANDO-1. Đã sửa theo kế hoạch docs/tasks/2026-11-14-ngoi-goc-mat.md (chờ xác nhận):
 - R-DIEU-7: ngồi → camera vào mắt trong ~0,4 s; không thấy đầu / thân mình; kéo nhìn quanh ±60° ngang, ngẩng ≤ 20°, cúi
   ≤ 70°; thả 1 s → nhìn lại tài liệu trong ~0,6 s; ngồi không zoom; đứng dậy → về đúng góc cũ.
 - R-ON-8: mục in trên giấy cuộn (không còn bảng chồng lên cảnh); chạm thẳng chữ → tay trỏ → mở; mục mờ chạm không mở;

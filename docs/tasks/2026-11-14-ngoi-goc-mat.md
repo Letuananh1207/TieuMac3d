@@ -7,7 +7,7 @@
   giở / trỏ) · hai bàn tay **dựng bằng khối trong code** (tay áo cùng màu áo) · **kéo để nhìn quanh có giới hạn**
   (~±60° ngang, ngẩng / cúi giới hạn), thả tay thì từ từ nhìn lại tài liệu · "người bên ngoài thấy như cũ" = thân nhân
   vật vẫn ngồi đúng dáng cũ trong cảnh, chỉ camera của mình đổi, đầu / thân mình ẩn khỏi camera mình.
-- Loại: sửa hành vi + giao diện mới · Cỡ: lớn · Trạng thái: **chờ duyệt** (phần giao diện: chờ thiết kế —
+- Loại: sửa hành vi + giao diện mới · Cỡ: lớn · Trạng thái: **đang làm** (đợt 1; phần chữ trên cuộn + cầu nối: chờ thiết kế —
   phiếu `docs/phieu_thiet_ke/2026-11-14-ngoi-goc-mat.md`)
 
 ## Phạm vi
@@ -132,11 +132,22 @@ tầm mắt không thấy hết bàn, khó bấm trúng giao điểm**.
   nhìn xuống chỗ cắt có thể thấy lỗ rỗng — phải thử.
 - Duyệt A: nhìn xuống không thấy thân mình, chỉ có hai tay áo và đệm.
 
+## Đã duyệt 2026-11-14
+- Q1 = **C** "cúi nhìn bàn" ~70° từ mắt mình, hai tay ở mép dưới, tay đặt quân.
+- Q2 = **A** giữ HUD 4 nghĩa của Đấu chữ; hai tay cầm thẻ bộ thủ.
+- Q3 = **B** vật cầm trang trí (chén trà ở bàn trà / đôn / sập; sách mở ở án thư), không tương tác, không đổi luật.
+- Q4 = **A** chỉ bảng chọn lên cuộn; màn ôn / thẻ bộ thủ / Bộ đã học vẫn Flutter; thêm `openLearned`, bỏ `StudyScreen`.
+- Q5 = **A** không có nút quay về ngôi 3 khi ngồi.
+- Q6 = **A** ẩn cả nhân vật khỏi camera mình bằng lớp render.
+- Làm: NV1 (ghi sổ, Xác nhận `chờ`, **chưa** đồng bộ online) + đợt 1 (NV2–11). NV12, NV13 chờ thiết kế — trong lúc chờ,
+  cuộn trước mắt là **giấy trống**, bảng chọn Ngồi ôn Flutter hiện tại vẫn mở như cũ (người dùng đã được báo).
+- main đã có bản đồ vùng V-20 (R-BANDO-1: ẩn bản đồ nhỏ khi ngồi) — không đụng.
+
 ## Nhiệm vụ
 Ký hiệu: **[trước]** làm được trước thiết kế · **[chờ TK]** chờ thiết kế (phiếu `2026-11-14-ngoi-goc-mat`) ·
 **[chờ Q…]** chờ quyết định.
 
-- [ ] 1. **[chờ Q1–Q4]** Sổ luật: sửa R-DIEU-7, R-NGOI-1, R-ON-8, R-GIAO-1, R-VA-4, R-DIEU-1 theo nháp đã duyệt →
+- [x] 1. **[đã ghi sổ, chưa đồng bộ online]** Sổ luật: sửa R-DIEU-7, R-NGOI-1, R-ON-8, R-GIAO-1, R-VA-4, R-DIEU-1 theo nháp đã duyệt →
   `/dong-bo-quy-tac` (tự chép online, `--mark-synced`). (`docs/testing/quy_tac.md` · xong khi `rule_trace --pending`
   sạch)
 - [ ] 2. **[trước]** Đặc tả: `camera.firstPerson` trong `SceneSpec` + mặc định (mắt cao / trước, góc cúi theo loại chỗ
