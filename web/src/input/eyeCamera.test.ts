@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { aimCamera, blendCamera, BODY_HIDE_AT, eyeAt, eyeFov, eyeSettings, EyeLook, lookDir, stepBlend } from './eyeCamera';
 
 // = `camera.firstPerson` mặc định (scene/spec.ts — lớp input không import scene)
-const S = eyeSettings({ eyeY: 1.35, eyeFwd: 0.08, yawLimit: 60, pitchUp: 20, pitchDown: 70, minHFov: 36, blend: 0.4, returnDelay: 1, returnTime: 0.6 });
+const S = eyeSettings({ eyeY: 1.35, eyeFwd: 0.08, yawLimit: 60, pitchUp: 20, pitchDown: 70, minHFov: 40, blend: 0.4, returnDelay: 1, returnTime: 0.6 });
 const DEG = Math.PI / 180;
 const BASE = -35 * DEG;
 

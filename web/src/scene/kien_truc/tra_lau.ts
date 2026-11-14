@@ -14,7 +14,7 @@ import { addStairs, gapForBridge, stairLayout, type StairLayout } from './cau_th
 import { columnXs } from './dien';
 import { CUSHION_R, FURN, guqinTable, longTeaTable, soloSeat, STOOL_H, TEA_STOOLS, teaBed, teaTable, type LocalSeat } from './do_pho';
 import { box, column } from './hinh';
-import { upperRail } from './lau_sach';
+import { RAIL_H, upperRail } from './lau_sach';
 import { gableHipRoof, skirt } from './mai';
 import type { LocalBox } from './noi_that';
 import { frontRamp, type LocalPad, type Shell } from './vao_trong';
@@ -148,12 +148,12 @@ export function traLau(g: THREE.Group, b: BuildingSpec, style: Style, fade: THRE
   for (const z of SOLO_WEST_Z) {
     const solo = soloSeat(fadeLow, west + SOLO_IN, z, yf, -Math.PI / 2);
     boxes.push({ ...solo.box, minY: up });
-    seats.push(solo.seat);
+    seats.push({ ...solo.seat, hold: 'lan-can', rail: { d: west + SOLO_IN + cx, h: RAIL_H + 0.05 } }); // lan can hồi trái x −cx
   }
   for (const x of SOLO_FRONT_X) {
     const solo = soloSeat(fadeLow, west + x, id / 2 - SOLO_IN, yf, 0);
     boxes.push({ ...solo.box, minY: up });
-    seats.push(solo.seat);
+    seats.push({ ...solo.seat, hold: 'lan-can', rail: { d: cz - (id / 2 - SOLO_IN), h: RAIL_H + 0.05 } }); // lan can mặt tiền z cz
   }
   const long = longTeaTable(fadeLow, LONG_AT.x, LONG_AT.z, yf);
   boxes.push({ ...long.box, minY: up });

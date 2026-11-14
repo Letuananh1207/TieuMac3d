@@ -1,13 +1,15 @@
 /**
  * Hai bàn tay khi nhìn từ mắt lúc ngồi (R-DIEU-7, R-NGOI-1, R-GIAO-1) — dựng bằng khối trong code, low-poly: ống tay áo
- * 6 cạnh loe + viền cổ tay, bàn tay hộp, ngón cái, ba ngón gộp (một khối) + ngón trỏ riêng (để trỏ). Màu theo đỉnh,
- * Lambert, không bóng. Chỉ camera ngôi 1 thấy (lớp `LAYER_MAT`). Vật cầm: chén trà, quân cờ, quyển sách mở.
+ * 6 cạnh thon + viền cổ tay gọn, cổ tay, lòng bàn tay, ba ngón gộp co thành móc (ôm quanh trục cuộn / mép bàn), ngón cái
+ * khép, ngón trỏ riêng (co khi cầm, duỗi khi trỏ). Màu theo đỉnh, Lambert (cảnh "mềm": vật liệu mềm wrap như cảnh),
+ * không bóng. Chỉ camera ngôi 1 thấy (lớp `LAYER_MAT`). Vật cầm: chén trà, quân cờ, quyển sách mở.
  * Draw call: 2 mỗi tay (tay + ngón trỏ) + chén / quân / sách khi hiện → 4–6.
  * Dáng (thuần, có test): `tayNgoiDang.ts`.
  */
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { LAYER_MAT, setLayer } from './layers';
+import { softMaterial } from './materials';
 import { markDynamic } from './merge';
 import { SHOULDER_L, SHOULDER_R, type HandPose, type HandsPose, type V3 } from './tayNgoiDang';
 
@@ -17,10 +19,12 @@ export interface HandPalette {
   skin: string;
 }
 
-// cỡ (m) — tay chibi ngắn, bàn tay to vừa nhìn rõ
-const SLEEVE_LEN = 0.3;
-const SLEEVE_R0 = 0.036; // cổ tay
-const SLEEVE_R1 = 0.055; // phía khuỷu (loe)
+// cỡ (m) — nhìn sát mắt (~0,4–0,6 m) nên thon, gọn; bàn tay ~ bề ngang 5 cm
+const SLEEVE_LEN = 0.24;
+const SLEEVE_R0 = 0.026; // cổ tay
+const SLEEVE_R1 = 0.038; // phía khuỷu (hơi loe)
+/** gốc ngón trỏ (khung tay) */
+const INDEX_AT: readonly [number, number] = [0.06, 0.012]; // [z, y]
 // token (design/tokens/design_tokens.json): scroll-wood · map-paper · lacquer — sách, chén
 const WOOD = '#3A2418';
 const PAPER = '#F2EADA';
@@ -51,18 +55,21 @@ const boxAt = (w: number, h: number, d: number, x: number, y: number, z: number,
  * (ngón cái ở +x — phía giữa thân), −1 = tay trái.
  */
 function handGeometry(side: 1 | -1, pal: HandPalette): { arm: THREE.BufferGeometry; index: THREE.BufferGeometry } {
-  const sleeve = new THREE.CylinderGeometry(SLEEVE_R0, SLEEVE_R1, SLEEVE_LEN, 6).rotateX(Math.PI / 2).translate(0, 0, -SLEEVE_LEN / 2 - 0.02);
-  const cuff = new THREE.CylinderGeometry(SLEEVE_R0 + 0.006, SLEEVE_R0 + 0.006, 0.03, 6).rotateX(Math.PI / 2).translate(0, 0, -0.025);
+  const sleeve = new THREE.CylinderGeometry(SLEEVE_R0, SLEEVE_R1, SLEEVE_LEN, 6).rotateX(Math.PI / 2).translate(0, 0, -SLEEVE_LEN / 2 - 0.03);
+  const cuff = new THREE.CylinderGeometry(SLEEVE_R0 + 0.003, SLEEVE_R0 + 0.003, 0.016, 6).rotateX(Math.PI / 2).translate(0, 0, -0.022);
+  const hook = new THREE.BoxGeometry(0.034, 0.015, 0.028).rotateX(Math.PI / 2); // đốt ngoài gập xuống phía lòng tay
+  const thumb = new THREE.BoxGeometry(0.015, 0.015, 0.034).rotateX(0.5).rotateY(-side * 0.45);
   const parts: [THREE.BufferGeometry, string][] = [
     [sleeve, pal.sleeve],
     [cuff, pal.cuff],
-    [boxAt(0.04, 0.035, 0.04, 0, 0, 0.0), pal.skin], // cổ tay
-    [boxAt(0.075, 0.03, 0.075, 0, 0, 0.045), pal.skin], // lòng bàn tay
-    [boxAt(0.05, 0.024, 0.055, -side * 0.012, -0.012, 0.1, 0.55), pal.skin], // ba ngón gộp, hơi co
-    [boxAt(0.022, 0.022, 0.05, side * 0.045, -0.006, 0.04, 0).rotateY(side * 0.5), pal.skin], // ngón cái
+    [boxAt(0.03, 0.024, 0.028, 0, 0, -0.002), pal.skin], // cổ tay
+    [boxAt(0.05, 0.02, 0.05, 0, 0, 0.034), pal.skin], // lòng bàn tay
+    [boxAt(0.034, 0.016, 0.03, -side * 0.008, -0.002, 0.072), pal.skin], // ba ngón: đốt gần
+    [hook.translate(-side * 0.008, -0.016, 0.092), pal.skin], // ba ngón: đốt ngoài co (ôm trục)
+    [thumb.translate(side * 0.026, -0.014, 0.034), pal.skin], // ngón cái khép vào lòng
   ];
   const arm = mergeGeometries(parts.map(([g, c]) => colored(g, c)))!;
-  const index = colored(boxAt(0.018, 0.02, 0.065, 0, 0, 0.0325), pal.skin);
+  const index = colored(boxAt(0.013, 0.015, 0.05, 0, 0, 0.025), pal.skin);
   return { arm, index };
 }
 
@@ -79,8 +86,8 @@ function bookGeometry(): THREE.BufferGeometry {
 
 /** Chén trà (trong tay phải): thân chén + mặt nước trà. */
 function cupGeometry(): THREE.BufferGeometry {
-  const body = new THREE.CylinderGeometry(0.032, 0.024, 0.045, 8);
-  const tea = new THREE.CylinderGeometry(0.029, 0.029, 0.004, 8).translate(0, 0.018, 0);
+  const body = new THREE.CylinderGeometry(0.021, 0.015, 0.03, 8);
+  const tea = new THREE.CylinderGeometry(0.019, 0.019, 0.003, 8).translate(0, 0.012, 0);
   return mergeGeometries([colored(body, CUP), colored(tea, TEA)])!;
 }
 
@@ -135,15 +142,16 @@ export class TayNgoi {
   private readonly book: THREE.Mesh;
   private readonly mats: THREE.MeshLambertMaterial[] = [];
 
-  constructor(scene: THREE.Scene, pal: HandPalette) {
-    const mat = new THREE.MeshLambertMaterial({ vertexColors: true });
+  /** `wrap` = cảnh "mềm" (`look.style: mem`): vật liệu mềm như cảnh (mặt khuất nắng không đen); không có = Lambert. */
+  constructor(scene: THREE.Scene, pal: HandPalette, wrap?: number) {
+    const mat = wrap === undefined ? new THREE.MeshLambertMaterial({ vertexColors: true }) : softMaterial(wrap);
     this.mats.push(mat);
     const make = (side: 1 | -1, shoulder: V3): HandParts => {
       const g = handGeometry(side, pal);
       const root = new THREE.Group();
       const arm = new THREE.Mesh(g.arm, mat);
       const index = new THREE.Mesh(g.index, mat);
-      index.position.set(side * 0.022, 0.004, 0.08); // gốc ngón trỏ ở mép lòng bàn tay phía ngón cái
+      index.position.set(side * 0.017, INDEX_AT[1] - 0.012, INDEX_AT[0]); // gốc ngón trỏ ở mép lòng bàn tay phía ngón cái
       root.add(arm, index);
       this.root.add(root);
       return { root, index, side, shoulder, pos: new THREE.Vector3(), palm: new THREE.Vector3(0, -1, 0), point: 0, dir: new THREE.Vector3(0, 0, 1), ready: false };
@@ -152,7 +160,7 @@ export class TayNgoi {
     this.cup = new THREE.Mesh(cupGeometry(), mat);
     this.root.add(this.cup); // đặt theo tay phải mỗi khung, luôn dựng đứng (không đổ trà)
     this.stone = new THREE.Mesh(new THREE.SphereGeometry(0.042, 8, 5).scale(1, 0.45, 1), new THREE.MeshLambertMaterial({ color: STONE }));
-    this.stone.position.set(0.02, -0.02, 0.13); // kẹp giữa ngón trỏ và ngón cái
+    this.stone.position.set(0.016, -0.012, 0.105); // kẹp giữa đầu ngón trỏ và ngón cái
     this.hands[1].root.add(this.stone);
     this.book = new THREE.Mesh(bookGeometry(), mat);
     this.root.add(this.book);
@@ -181,7 +189,7 @@ export class TayNgoi {
     if (pose.cup) {
       // chén trong lòng tay phải: trước lòng bàn tay một chút, hơi về phía ngón
       const r = this.hands[1];
-      this.cup.position.copy(r.pos).addScaledVector(r.palm, 0.04).addScaledVector(r.dir, 0.05);
+      this.cup.position.copy(r.pos).addScaledVector(r.palm, 0.028).addScaledVector(r.dir, 0.045);
     }
     this.stone.visible = pose.stone;
     this.book.visible = book !== null;
@@ -215,7 +223,7 @@ export class TayNgoi {
     tmpM.makeBasis(tmpX, tmpY, tmpZ);
     h.root.position.copy(h.pos);
     h.root.quaternion.setFromRotationMatrix(tmpM);
-    // ngón trỏ: co (gập xuống dưới lòng) ↔ duỗi thẳng
-    h.index.rotation.x = (1 - h.point) * 1.25;
+    // ngón trỏ: co (gập xuống ôm theo ba ngón kia) ↔ duỗi thẳng
+    h.index.rotation.x = (1 - h.point) * 1.5;
   }
 }

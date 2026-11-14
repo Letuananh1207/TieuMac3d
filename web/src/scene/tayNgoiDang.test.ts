@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   bookPose,
+  railPose,
   fingertip,
   len,
   MIN_EYE_DIST,
@@ -26,8 +27,10 @@ const dist = (a: V3, b: V3): number => Math.hypot(a[0] - b[0], a[1] - b[1], a[2]
 describe('R-DIEU-7: hai bàn tay khi nhìn từ mắt', () => {
   it('R-DIEU-7: cầm cuộn — tay trái bên trái, tay phải bên phải trục, lòng quay vào cuộn', () => {
     const p = scrollPose([0, -0.33, 0.47], [1, 0, 0], 0.15);
-    expect(p.left.pos[0]).toBeCloseTo(-0.17);
-    expect(p.right.pos[0]).toBeCloseTo(0.17);
+    // cổ tay ngoài trục, lùi sau trục — ba ngón co móc ôm trục (không chĩa lên)
+    expect(p.left.pos[0]).toBeLessThan(-0.15);
+    expect(p.right.pos[0]).toBeGreaterThan(0.15);
+    expect(p.left.pos[2]).toBeLessThan(0.47);
     expect(p.left.palm[0]).toBeGreaterThan(0);
     expect(p.right.palm[0]).toBeLessThan(0);
     far(p);
@@ -67,5 +70,13 @@ describe('R-DIEU-7: hai bàn tay khi nhìn từ mắt', () => {
     const p = reach(restPose(), at, 1, true);
     expect(p.stone).toBe(true);
     expect(dist(fingertip(p.right.pos), at)).toBeLessThan(0.01);
+  });
+
+  it('R-VA-4: ghế lan can — hai tay đặt lên thanh lan can, lòng úp, cách nhau, không sát mắt', () => {
+    const p = railPose(0.58, -0.4);
+    expect(p.left.pos[1]).toBeCloseTo(-0.38);
+    expect(p.right.pos[0] - p.left.pos[0]).toBeGreaterThan(0.3);
+    expect(p.left.palm[1]).toBeLessThan(0);
+    far(p);
   });
 });

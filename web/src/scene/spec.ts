@@ -1015,7 +1015,7 @@ export const DEFAULT_SCENE: SceneSpec = {
       yawLimit: 60,
       pitchUp: 20,
       pitchDown: 70,
-      minHFov: 36,
+      minHFov: 40,
       blend: 0.4,
       returnDelay: 1,
       returnTime: 0.6,

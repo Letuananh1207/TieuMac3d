@@ -10,12 +10,12 @@ const frac = (fov: number, aspect: number, d: number, side = 0): { w: number; h:
 };
 
 describe('R-ON-8: cuộn sách trước mắt vừa khung màn', () => {
-  it('R-ON-8: màn dọc 390×844 (FOV nới 70°) — cuộn gần hết bề ngang, không tràn, trong tầm tay', () => {
+  it('R-ON-8: màn dọc 390×844 (FOV nới ~77°) — cuộn ~3/4 bề ngang, chừa chỗ hai tay, trong tầm tay', () => {
     const a = 390 / 844;
-    const { dist, side } = fitScroll(70.2, a, HALF_W, HALF_H);
-    const f = frac(70.2, a, dist, side);
-    expect(f.w).toBeLessThanOrEqual(0.9);
-    expect(f.w).toBeGreaterThan(0.8);
+    const { dist, side } = fitScroll(77, a, HALF_W, HALF_H);
+    const f = frac(77, a, dist, side);
+    expect(f.w).toBeLessThanOrEqual(0.76);
+    expect(f.w).toBeGreaterThan(0.68);
     expect(side).toBe(0);
     expect(dist).toBeGreaterThanOrEqual(CUON_GAN);
     expect(dist).toBeLessThanOrEqual(CUON_XA);

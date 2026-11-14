@@ -25,10 +25,12 @@ import type { Character } from './player/character';
 import { CUON_NUA_CAO, CUON_NUA_RONG, CuonSach } from './scene/cuonSach';
 import { fitScroll } from './scene/cuonSachNhip';
 import { LAYER_MAT, LAYER_THAN, setLayer, viewLayers } from './scene/layers';
+import { isSoft, type LookSpec } from './scene/look';
 import type { FirstPersonSpec } from './scene/spec';
 import { TayNgoi, worldToBody } from './scene/tayNgoi';
 import {
   bookPose,
+  railPose,
   reach,
   reachPhase,
   REACH_TOTAL,
@@ -45,7 +47,7 @@ export type SitPlace =
   /** Ngồi ôn tại chỗ, bồ đoàn khu tự học: hai tay cầm cuộn sách (R-ON-8) */
   | { kind: 'on' }
   /** án thư, bàn trà, đôn, sập, ghế lan can (R-NGOI-1) */
-  | { kind: 'ngoi'; hold?: 'tra' | 'sach' }
+  | { kind: 'ngoi'; hold?: 'tra' | 'sach' | 'lan-can'; rail?: { d: number; h: number } }
   /** ghế bàn chơi: cúi nhìn bàn (R-GIAO-1) — `center` tâm chỗ chơi, `rotY` hướng nhìn của ghế */
   | { kind: 'ban-choi'; game: 'co' | 'dau-chu'; center: THREE.Vector3; rotY: number };
 
@@ -53,10 +55,13 @@ const DEG = Math.PI / 180;
 /** quyển sách mở trên án (thân — R-NGOI-1) */
 const BOOK: V3 = [0, -0.5, 0.46];
 /** mặt bàn chơi: tay đặt ở mép phía mình cách tâm chỗ chơi (m), cách nhau (m); thẻ Đấu chữ 0,5 m — tay cầm hai góc gần */
-const TABLE_EDGE = 0.72;
-const TABLE_SPREAD = 0.32;
-const CARD_NEAR = 0.2;
+const TABLE_EDGE = 0.86; // bàn cờ 13 × 13 rộng 1,2 m: hàng gần nhất cách tâm 0,6 — tay + ngón không che ô
+const TABLE_SPREAD = 0.3;
+const CARD_NEAR = 0.36; // thẻ 0,5 m: mép gần cách tâm 0,25 — ngón chỉ chạm mép thẻ, không che chữ
 const CARD_SPREAD = 0.2;
+/** Ghế lan can: tay với tới thanh cách mắt chừng này (m); lan can xa hơn → chỉ camera + tay nhoài tới (dáng ngồi ngoài
+ *  cảnh không đổi) */
+const RAIL_REACH = 0.58;
 
 export class NgoiMat {
   private place: SitPlace | null = null;
@@ -84,6 +89,7 @@ export class NgoiMat {
     scene: THREE.Scene,
     private readonly character: Character,
     private readonly cam: { fov: number; firstPerson: FirstPersonSpec },
+    look?: LookSpec,
   ) {
     const fp = cam.firstPerson;
     this.s = eyeSettings(fp);
@@ -91,7 +97,7 @@ export class NgoiMat {
     this.look = new EyeLook(this.s);
     setLayer(character.root, LAYER_THAN); // thân mình: chỉ camera ngôi 3 thấy (dáng ngồi không đổi)
     this.scroll = new CuonSach(scene, { layer: LAYER_MAT });
-    this.hands = new TayNgoi(scene, character.palette ?? { sleeve: fp.sleeve, cuff: fp.cuff, skin: fp.skin });
+    this.hands = new TayNgoi(scene, character.palette ?? { sleeve: fp.sleeve, cuff: fp.cuff, skin: fp.skin }, look && isSoft(look) ? look.wrap : undefined);
     this.ray.layers.set(LAYER_MAT);
   }
 
@@ -153,6 +159,13 @@ export class NgoiMat {
     return { u: hit.u, v: hit.v };
   }
 
+  private readonly tmp = new THREE.Vector3();
+
+  /** Ghế lan can xa quá tầm tay: mắt (camera + tay) nhoài tới trước chừng này (m) — chỉ camera mình, thân ngoài cảnh đứng yên. */
+  private lean(p: SitPlace): number {
+    return p.kind === 'ngoi' && p.hold === 'lan-can' && p.rail ? Math.max(0, p.rail.d - this.s.eyeFwd - RAIL_REACH) : 0;
+  }
+
   private basePitch(p: SitPlace): number {
     return p.kind === 'on' ? this.pitchOf.study : p.kind === 'ngoi' ? this.pitchOf.seat : this.pitchOf.game;
   }
@@ -178,6 +191,8 @@ export class NgoiMat {
       this.sitT += dt;
       this.look.update(dt);
       eyeAt(this.character.root.position, yaw, this.s, this.eye);
+      const lean = this.lean(p);
+      if (lean) this.eye.add(this.tmp.set(Math.sin(yaw) * lean, 0, Math.cos(yaw) * lean));
       if (p.kind === 'ban-choi' && game) {
         game.fov = fov;
         game.aspect = camera.aspect;
@@ -221,7 +236,15 @@ export class NgoiMat {
   private handsPose(p: SitPlace, dt: number, center: V3): HandsPose {
     let pose: HandsPose;
     if (p.kind === 'on') pose = this.scroll.shown ? scrollPose(center, [1, 0, 0], this.scroll.half) : restPose();
-    else if (p.kind === 'ngoi') pose = p.hold === 'tra' ? teaPose(this.sitT) : p.hold === 'sach' ? bookPose(BOOK) : restPose();
+    else if (p.kind === 'ngoi')
+      pose =
+        p.hold === 'tra'
+          ? teaPose(this.sitT)
+          : p.hold === 'sach'
+            ? bookPose(BOOK)
+            : p.hold === 'lan-can' && p.rail
+              ? railPose(p.rail.d - this.s.eyeFwd - this.lean(p), p.rail.h - this.s.eyeY)
+              : restPose();
     else pose = this.tableHands(p);
     if (this.reachK < REACH_TOTAL) {
       this.reachK += dt;

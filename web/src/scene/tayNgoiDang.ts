@@ -25,10 +25,15 @@ export interface HandsPose {
 }
 
 /** Vai trái / phải (thân) — gốc ống tay áo. */
-export const SHOULDER_L: V3 = [-0.2, -0.34, -0.02];
-export const SHOULDER_R: V3 = [0.2, -0.34, -0.02];
-/** Cổ tay → đầu ngón trỏ duỗi (m): bàn tay 0,07 + ngón 0,065. */
-export const FINGER = 0.135;
+export const SHOULDER_L: V3 = [-0.16, -0.36, -0.04];
+export const SHOULDER_R: V3 = [0.16, -0.36, -0.04];
+/** Cổ tay → đầu ngón trỏ duỗi (m): gốc ngón 0,06 + ngón 0,05. */
+export const FINGER = 0.11;
+/** Nắm quanh một thanh (trục cuộn, lan can): cổ tay lùi sau thanh `GRIP_BACK` theo hướng cẳng tay, lệch `GRIP_OUT` khỏi
+ *  thanh theo hướng ngược lòng bàn tay, thấp hơn `GRIP_DOWN` — ba ngón co móc ôm đúng thanh. */
+export const GRIP_BACK = 0.075;
+export const GRIP_OUT = 0.026;
+export const GRIP_DOWN = 0.012;
 /** Không phần nào của tay / vật cầm gần mắt hơn chừng này (near = 0,1 m — vật sát camera bị cắt). */
 export const MIN_EYE_DIST = 0.18;
 
@@ -63,10 +68,11 @@ export function restPose(): HandsPose {
  * vị chiều ngang cuộn (thân), `half` nửa bề ngang giữa hai trục (m, đã nhân độ mở). Lòng bàn tay quay vào trục.
  */
 export function scrollPose(center: V3, right: V3, half: number): HandsPose {
-  const grip = half + 0.02;
+  const rodL = add(center, scale(right, -half));
+  const rodR = add(center, scale(right, half));
   return {
-    left: { pos: add(add(center, scale(right, -grip)), [0, -0.02, -0.01]), palm: IN_L, point: 0 },
-    right: { pos: add(add(center, scale(right, grip)), [0, -0.02, -0.01]), palm: IN_R, point: 0 },
+    left: { pos: add(add(rodL, scale(right, -GRIP_OUT)), [0, -GRIP_DOWN, -GRIP_BACK]), palm: IN_L, point: 0 },
+    right: { pos: add(add(rodR, scale(right, GRIP_OUT)), [0, -GRIP_DOWN, -GRIP_BACK]), palm: IN_R, point: 0 },
     cup: false,
     stone: false,
   };
@@ -81,8 +87,8 @@ export function teaPose(t: number): HandsPose {
   const r = restPose();
   const k = (t % TEA_CYCLE) - (TEA_CYCLE - TEA_SIP);
   const lift = k > 0 ? Math.sin((k / TEA_SIP) * Math.PI) : 0; // 0 → 1 → 0
-  const hold: V3 = [0.12, -0.33, 0.42];
-  const sip: V3 = [0.05, -0.2, 0.33];
+  const hold: V3 = [0.1, -0.34, 0.4];
+  const sip: V3 = [0.05, -0.22, 0.32];
   return { ...r, right: { pos: mix(hold, sip, ease(lift)), palm: IN_R, point: 0 }, cup: true };
 }
 
@@ -94,6 +100,14 @@ export function bookPose(book: V3): HandsPose {
     cup: false,
     stone: false,
   };
+}
+
+/**
+ * Ghế lan can (R-VA-4): hai tay đặt lên thanh lan can ở `z` trước mắt, cao `y` (thân), lòng úp, ngón co ôm mép thanh.
+ */
+export function railPose(z: number, y: number): HandsPose {
+  const at = (x: number): V3 => [x, y + 0.02, z - GRIP_BACK * 0.8];
+  return { left: { pos: at(-0.17), palm: DOWN, point: 0 }, right: { pos: at(0.17), palm: DOWN, point: 0 }, cup: false, stone: false };
 }
 
 /** Bàn chơi (R-GIAO-1): hai tay đặt ở `l`, `r` (thân — mép bàn phía mình / hai góc thẻ bộ thủ), lòng úp. */

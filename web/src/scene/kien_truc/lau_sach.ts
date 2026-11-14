@@ -37,7 +37,8 @@ const RAIL_WOOD = '#5a3a24';
  * (x ≤ 3) và lối từ cầu nối thang (dải đông) —, mặt nhìn vào sàn (+z). `w` = bề ngang biển `gameSign`.
  */
 export const STUDY_SIGN = { x: 5, z: -3.55, rotY: 0, w: 1.8, name: 'Khu tự học' } as const;
-const RAIL_H = 0.9;
+/** lan can tầng 2: thanh trên cao (m) trên sàn, dày 0,1 */
+export const RAIL_H = 0.9;
 
 /** Lan can gỗ thấp tầng 2 từ (xa, za) tới (xb, zb): tay vịn, thanh dưới, song đứng mỗi ~0,5 m. */
 export function upperRail(g: THREE.Group, xa: number, za: number, xb: number, zb: number, y: number): void {

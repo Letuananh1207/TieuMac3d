@@ -276,12 +276,12 @@ async function boot(): Promise<void> {
   };
   let onSeat = false; // ngồi bằng nút nổi "Ngồi" / "Vào bàn" (R-NGOI-1) → không mở cuộn sách (R-ON-8)
   let seatStudy = false; // … trừ bồ đoàn khu tự học Tàng Thư Các: vẫn nhập định + cuộn sách (R-VA-4)
-  let seatHold: 'tra' | 'sach' | undefined; // vật cầm ở chỗ ngồi khi nhìn từ mắt (R-NGOI-1)
+  let seatHold: Pick<SeatSpot, 'hold' | 'rail'> = {}; // vật cầm / lan can ở chỗ ngồi khi nhìn từ mắt (R-NGOI-1, R-VA-4)
   /** Chỗ đang ngồi cho góc nhìn từ mắt (R-DIEU-7): bàn chơi · chỗ ngồi · Ngồi ôn / bồ đoàn khu tự học (cuộn sách). */
   const sitPlace = (): SitPlace => {
     const g = gamePlay.seatedAt;
     if (g) return { kind: 'ban-choi', ...g };
-    if (onSeat && !seatStudy) return { kind: 'ngoi', hold: seatHold };
+    if (onSeat && !seatStudy) return { kind: 'ngoi', ...seatHold };
     return { kind: 'on' };
   };
   /** Mỗi khung: đếm thời gian ngồi ôn tại chỗ, ở bất kỳ đâu; đủ `SIT_TO_LEARN` thì mở cuộn sách Ngồi ôn (R-ON-8). */
@@ -361,7 +361,7 @@ async function boot(): Promise<void> {
   };
   const nhapDinh = new NhapDinh(scene);
   // ngồi → nhìn từ mắt: hai tay + cuộn / chén trà / bàn chơi; thân mình ẩn khỏi camera mình (ngoiMat.ts)
-  const ngoiMat = new NgoiMat(scene, character, spec.camera);
+  const ngoiMat = new NgoiMat(scene, character, spec.camera, spec.look);
   /** camera phụ: OrbitCamera (ngôi 3) và bàn chơi vẽ vào đây, `ngoiMat` trộn ra camera thật */
   const tpCam = new THREE.PerspectiveCamera(spec.camera.fov, 1, 0.1, 10);
   const gameCam = new THREE.PerspectiveCamera(spec.camera.fov, 1, 0.1, 10);
@@ -379,7 +379,7 @@ async function boot(): Promise<void> {
     if (player.isSitting) return;
     onSeat = true;
     seatStudy = !!spot.study;
-    seatHold = 'hold' in spot ? spot.hold : undefined;
+    seatHold = 'table' in spot ? {} : { hold: spot.hold, rail: spot.rail };
     if ('table' in spot) {
       gamePlay.sitAt(spot); // ghế bàn chơi (R-GIAO-1)
       return;

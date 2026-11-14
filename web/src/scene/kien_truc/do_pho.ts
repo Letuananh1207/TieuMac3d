@@ -139,7 +139,9 @@ export interface LocalSeat {
   y: number;
   rotY: number;
   /** vật cầm khi nhìn từ mắt (R-NGOI-1) */
-  hold?: 'tra' | 'sach';
+  hold?: 'tra' | 'sach' | 'lan-can';
+  /** ghế lan can (R-VA-4): lan can cách chỗ ngồi `d` m theo hướng nhìn, mặt trên cao hơn mặt ngồi `h` m — tay đặt lên đó */
+  rail?: { d: number; h: number };
 }
 
 /** Cao mặt sập trà (m) — chỗ ngồi trên sập cao hơn sàn chừng này (R-VA-4: 0,45). */

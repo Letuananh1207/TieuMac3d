@@ -301,8 +301,8 @@ async function boot(): Promise<void> {
   const stateNow = (): CharacterState => (pose ? poseState : { ...poseState, mps: walkSpeed * WALK_SPEED });
   // ?dang=ngoi: cuộn sách Ngồi ôn mở hết như app (R-ON-8) — xem tay cầm cuộn
   const cuon = pose === 'ngoi' ? new CuonSach(scene) : null;
-  // ?dang=ngoi-mat[&cho=on|tu-hoc|tra|co|dau] — nhìn từ mắt khi ngồi như app (R-DIEU-7, ngoiMat.ts): Ngồi ôn tại chỗ
-  // (cuộn mở), bồ đoàn khu tự học, đôn bàn trà trà lâu, bàn cờ, bàn Đấu chữ. Thân mình ẩn, hai tay + cuộn / chén / bàn.
+  // ?dang=ngoi-mat[&cho=on|tu-hoc|tra|lan-can|co|dau] — nhìn từ mắt khi ngồi như app (R-DIEU-7, ngoiMat.ts): Ngồi ôn tại chỗ
+  // (cuộn mở), bồ đoàn khu tự học, đôn bàn trà trà lâu, ghế lan can tầng 2 trà lâu, bàn cờ, bàn Đấu chữ. Thân mình ẩn, hai tay + cuộn / chén / bàn.
   const mat = pose === 'ngoi-mat' ? ngoiMatPreview(params.get('cho') ?? 'on') : null;
   if (pose) character.animate(1, poseState.mps / RUN_SPEED, poseState);
   if (Number.isFinite(phase) && phase > 0) character.animate(phase / 10, WALK_SPEED / RUN_SPEED, { ...poseState, mps: WALK_SPEED });
@@ -314,7 +314,7 @@ async function boot(): Promise<void> {
     placeGame(): void;
   }
   function ngoiMatPreview(cho: string): MatPreview {
-    const ngoi = new NgoiMat(scene, character, spec.camera);
+    const ngoi = new NgoiMat(scene, character, spec.camera, spec.look);
     let place: SitPlace = { kind: 'on' };
     let game: THREE.PerspectiveCamera | null = null;
     let placeGame = (): void => {};
@@ -322,10 +322,10 @@ async function boot(): Promise<void> {
       character.root.position.set(x, y, z);
       character.facing.rotation.y = rotY;
     };
-    if (cho === 'tu-hoc' || cho === 'tra') {
-      const s = world.seats.find((q) => (cho === 'tu-hoc' ? q.study : q.hold === 'tra'));
+    if (cho === 'tu-hoc' || cho === 'tra' || cho === 'lan-can') {
+      const s = world.seats.find((q) => (cho === 'tu-hoc' ? q.study : q.hold === cho));
       if (s) seatAt(s.x, s.y, s.z, s.rotY);
-      place = cho === 'tra' ? { kind: 'ngoi', hold: 'tra' } : { kind: 'on' };
+      place = cho === 'tu-hoc' ? { kind: 'on' } : { kind: 'ngoi', hold: s?.hold, rail: s?.rail };
     } else if (cho === 'co' || cho === 'dau') {
       const t = world.gameTables.find((q) => q.spec.kind === (cho === 'co' ? 'co' : 'dau-chu'));
       if (t) {

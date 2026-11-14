@@ -26,7 +26,9 @@ export interface SeatSpot {
   /** chỗ ngồi khu tự học: ngồi đủ 1 giây mở cuộn sách Ngồi ôn (R-VA-4, R-ON-8) — nút vẫn ghi "Ngồi" */
   study?: boolean;
   /** vật cầm khi nhìn từ mắt (R-NGOI-1) — như `Seat.hold` của cảnh */
-  hold?: 'tra' | 'sach';
+  hold?: 'tra' | 'sach' | 'lan-can';
+  /** ghế lan can (R-VA-4): lan can cách chỗ ngồi `d` m theo hướng nhìn, mặt trên cao hơn mặt ngồi `h` m — tay đặt lên đó */
+  rail?: { d: number; h: number };
 }
 
 /** Chỗ ngồi gần nhất trong tầm của chính nó, cùng tầng với chân nhân vật `y`; không có → `undefined`. */

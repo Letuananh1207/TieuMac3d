@@ -215,6 +215,18 @@ sau quyết định: 1 → 9 → 10 · sau thiết kế: 12 → 13 → 14.
 - NV11: Canvas 3D `?dang=ngoi-mat&cho=on|tu-hoc|tra|co|dau[&ngoai]` (chưa đăng artifact).
 - Trong lúc chờ NV12 / NV13: cuộn trước mắt giấy trơn; bảng chọn Ngồi ôn Flutter vẫn mở như cũ sau 1 giây.
 
+## Chỉnh tay (sau khi người dùng xem ảnh đợt 1 — "chỉnh tay trước rồi gộp")
+- Ống tay áo thon (Ø 5,2 → 7,6 cm, dài 0,24), viền cổ tay gọn; bàn tay ~5 cm; ba ngón co thành móc ôm trục cuộn / mép
+  lan can, ngón cái khép; ngón trỏ riêng co / duỗi. Vai dời vào ±0,16 m → tay áo vào từ đáy màn, không chiếm mép màn dọc.
+- Cuộn trước mắt chiếm ~74 % bề ngang màn dọc (chừa chỗ hai tay); `camera.firstPerson.minHFov` 36 → 40°.
+- Chén trà nhỏ lại (Ø 4,2 cm), dựng đứng trong lòng tay phải.
+- Ghế lan can: chỗ ngồi ghi `rail` (cách lan can ~1,5 m); tay đặt lên thanh lan can — camera + tay nhoài tới (chỉ camera
+  mình), dáng ngồi ngoài cảnh không đổi. R-VA-4 → `ok`.
+- Bàn cờ: tay lùi ra mép bàn (0,86 m từ tâm, ngoài hàng ô gần nhất 0,6); Đấu chữ: ngón chạm mép gần thẻ, không che chữ.
+- Cảnh "mềm" (V-17): tay dùng vật liệu mềm cùng `look.wrap`; tay / cuộn lớp `LAYER_MAT` + `markDynamic` → `mergeSoft`
+  không gộp.
+- Canvas 3D thêm `cho=lan-can`.
+
 ## Hiệu năng (ước tính)
 - Thêm khi ngôi 1: tay 2–4 draw call (mỗi tay: ống tay + bàn tay gộp màu theo đỉnh; ngón trỏ riêng để trỏ) · cuộn trước
   mắt 5 (như cuộn trước ngực) · vật cầm (Q3) +1 · tổng **+7–10**.

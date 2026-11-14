@@ -35,7 +35,7 @@ export interface Shell {
    * chỗ ngồi (bồ đoàn) — bấm Ngồi khi đứng gần thì dời lên đó (R-VA-4); `y` từ chân nhà, `rotY` hướng nhìn (0 = +z);
    * `study` = bồ đoàn khu tự học: ngồi đủ 1 giây mở cuộn sách như Ngồi ôn (R-ON-8)
    */
-  seats?: { x: number; z: number; y: number; rotY: number; study?: boolean; hold?: 'tra' | 'sach' }[];
+  seats?: { x: number; z: number; y: number; rotY: number; study?: boolean; hold?: 'tra' | 'sach' | 'lan-can'; rail?: { d: number; h: number } }[];
   /** biển gỗ "Khu tự học" (chân biển, `y` từ chân nhà) — nút nổi "Hướng dẫn" (R-VA-5) */
   studySign?: { x: number; z: number; y: number };
 }
