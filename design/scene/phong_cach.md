@@ -27,7 +27,33 @@ Tinh thần: 粉牆黛瓦 · 朱柱青檐 — tường vôi, ngói xám đen, c�
    thể một đình nhỏ trên đảo lớn nhất.
 3. **Khe giữa các đoạn tường khu** (`wallSegments`) vẫn là khe thường, chưa thành cổng trăng như khe tường bao.
 
-## Bảng màu cảnh (đã áp vào `scene.json`)
+## Kiểu "hoạt hình mềm, màu ấm" — bảng màu A Xuân ấm 春暖 (2026-11-14.23, đã duyệt)
+
+Khởi Nguyên Trấn (`scene.json`) bật `look.style: "mem"`: quản lý màu đúng chuẩn (hex = sRGB), vật liệu mềm + bóng nướng,
+vòm trời, mây phồng, sương núi, đất mượt, cỏ hoa có gió, nước stylized, quầng đèn, vignette. Hồ sơ:
+`docs/tham_khao/canh-hoat-hinh-mem.md`; quyết định `decisions/0005`. Map khác vẫn bảng cũ dưới đây cho tới GĐ 2 (mỗi map đổi
+trời · sương · đèn · núi xa theo giọng vùng, giữ thứ bậc ngói / cột / tường).
+
+| Vai trò | Màu | Trường |
+|---|---|---|
+| Trời đỉnh · giữa · chân trời · quầng nắng | `#8EC5E8` · `#CFE6F0` · `#FCE6C8` · `#FFF2D0` (rộng 0,35) | `sky`, `look.sunGlow`, `look.glowSize` |
+| Mây thân · bụng | `#FFFDF7` · `#F4D9D0` | `floating.clouds.color`, `look.cloudBelly` |
+| Sương | `#EADFCB` 70–280 m | `fog` |
+| Đèn trời · đất · nắng | `#FFF4E0` · `#8FA36B` × 1,1 · `#FFE7C2` × 0,8 | `light` (sáng hơn bảng khảo cứu — đường màu đúng chuẩn tối hơn) |
+| Bóng nướng | màu `#6B5A70`, sâu 0,4, wrap 0,5 | `look.aoTint`, `look.ao`, `look.wrap` |
+| Núi xa gần → xa · sương chân núi · biển mây | `#7FA58F` · `#9DB7B8` · `#BFCBD6` · `#F1E6D6` 0,55 · `#FBF4EA` | `farMountains.layers[].color`, `look.mist`, `cloudSea.color` |
+| Cỏ (đất) · đất dốc · đá · đá cao | `#8CC160` `#A2CC6C` `#7AB258` · `#C8B392` · `#B9B1A5` · `#D2CCC2` | `terrain.colors` |
+| Búi cỏ · đá rải | `#6F9E48` `#A9CC66` (mật độ 5) · `#A9A196` | `terrain.grass`, `terrain.rocks` |
+| Hoa (khóm) | đào `#F4A7B9` · ngà `#FFF6E5` · mơ `#F6CF5E` · oải `#B9A3E3` (6 / 100 m²) | `look.flowers` |
+| Lá tùng tối · giữa · sáng · thân | `#3F7A55` · `#5E9A62` · `#8CC07A` · `#7A5238` | `trees` |
+| Nước nông · sâu · bọt (gợn 0,6) | `#8FD3D0` · `#3E8FA8` · `#F4FBF8` | `look.water`, `buildingStyle.water` |
+| Tường vôi · nền đá · sân lát | `#F4EAD8` · `#E3D9C6` · `#C9C2B4` | `buildingStyle.wall/base`, `walls.color`, `ground.color` |
+| Cột son · gỗ · sàn | `#C4483B` · `#6E4630` · `#A0704C` | `buildingStyle.pillar/timber/floor` |
+| Ngói xám lam · lưu ly lục · tàng thư (đen ấm) · nóc | `#5B6878` · `#3F7A66` · `#454B55` · `#3E4450` | `roofColor`, `walls.capColor`, `buildingStyle.ridge` |
+| Xà lục · lam · kim · đèn lồng · quầng đèn | `#3D8A84` · `#5274B8` · `#E2B65A` · `#F06A4A` · `#FFC27A` (1,6 m) | `buildingStyle`, `look.lanternGlow` |
+| Vignette | 0,35 (mức Thấp tắt) | `look.vignette` |
+
+## Bảng màu cảnh cũ (đã áp vào `scene.json` các map chưa chuyển)
 
 | Vai trò | Màu | Trường |
 |---|---|---|

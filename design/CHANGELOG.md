@@ -3,6 +3,25 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-14.23 — Khởi Nguyên Trấn kiểu hoạt hình mềm, màu ấm (bảng màu A Xuân ấm)
+
+- Loại: cảnh 3D — **ngoại hình** (không dời gì). Ai làm: phiên code V-20261114-17 làm thay vai thiết kế (`/canh`), người dùng:
+  "giao diện bối cảnh ở các map đang rất xấu, nhiều game cùng thể loại làm rất đẹp mà không lag". **Đã duyệt 2026-11-14**
+  (hướng hoạt hình mềm, bảng màu A, đường màu đúng chuẩn + vật liệu mềm, nhà giữ chỗ thay hình 3A, vignette + quầng đèn 4B).
+- `scene.json`: trường mới `look` (`style: "mem"` + wrap / bóng / quầng nắng / mây / sương núi / hoa / gió / nước / quầng đèn /
+  vignette); trời, sương, đèn, núi xa, biển mây, mây, cây, màu nhà, ngói, đất, cỏ (mật độ 1,5 → 5) theo bảng A — bảng đủ ở
+  `scene/phong_cach.md` mục "Xuân ấm". Map khác không có `look` → giữ y nguyên.
+- Bài trí: `scene/bai_tri/khoi-nguyen-tran.md` (mục đích từng nhà / vật — gộp V-07; không bỏ, không dời).
+- Luật bị chạm: **R-HIEU-1** (mức Thấp: cỏ hoa thưa một nửa, nước không gợn, không sương chân núi, không vignette) — đã sửa sổ,
+  chờ đồng bộ online. Va chạm, toạ độ nhà không đổi (R-VA-*).
+- `scene:check`: 9 cảnh "Không có lỗi". Draw call / tam giác (Canvas 3D): góc chơi `?nv=0,6` 69 / 64,9k → **52 / 78,9k**;
+  trên xuống 155 / 140,1k → **136 / 149,2k** (≤ 150 / ≤ 150k). Bench máy yếu giả lập chậm ~20–30 % — đo Android chờ người dùng.
+- Cần code: không (code làm trong cùng việc — `docs/tasks/2026-11-14-canh-dep.md`, decisions/0005). Còn GĐ 2: khối vát + mái
+  cong mẫu Catalog, các map khác.
+- Canvas 3D: https://claude.ai/artifact/TyJxrgsBcj5ryHakv7c1so (bản 51; `&look=cu` xem đường dựng cũ).
+- Ảnh: `screens/Canh-mem-{tren,quang-truong,cong-tran,thien-bac,hau-son}.png`; trước | sau: `docs/tasks/anh/2026-11-14-canh-dep-truoc-sau-*.jpg`.
+- File: `scene/scene.json`, `scene/phong_cach.md`, `scene/bai_tri/khoi-nguyen-tran.md`, 5 ảnh trên.
+
 ## 2026-11-14.22 — Dời tùng che cầu thang ngoài Tàng Thư Các
 
 - Loại: cảnh 3D — **bố cục**. Ai làm: phiên code V-20261114-22 làm thay vai thiết kế (`/canh`), người dùng: "dịch chuyển

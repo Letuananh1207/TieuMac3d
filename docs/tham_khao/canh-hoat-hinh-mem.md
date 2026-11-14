@@ -1,5 +1,5 @@
 # Cảnh hoạt hình mềm, màu ấm mà không lag (柔和卡通 · 暖色)
-- Ngày: 2026-11-14 · Khu: cả 7 map + Nhà của ta (làm thử Khởi Nguyên Trấn) · Trạng thái: nháp — chờ chọn bảng màu (A / B / C) ·
+- Ngày: 2026-11-14 · Khu: cả 7 map + Nhà của ta (làm thử Khởi Nguyên Trấn) · Trạng thái: đã chọn hướng A Xuân ấm (2026-11-14) · đã áp Khởi Nguyên Trấn (design 2026-11-14.23) ·
   kế hoạch `docs/tasks/2026-11-14-canh-dep.md`
 
 ## Một câu
