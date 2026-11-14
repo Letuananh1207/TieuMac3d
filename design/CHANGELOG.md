@@ -3,6 +3,36 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-14.6 — Ngồi ôn: nút, cuộn sách trên tay, bảng chọn (cuộn treo), màn Bộ đã học
+
+- Loại: giao diện · chuỗi · luồng/luật (đề xuất). Màn: **Ngồi ôn** (HUD web + vật 3D + bảng chọn Flutter) và **Bộ đã
+  học** (Flutter) — đặc tả `docs/screen_specs.md` hai mục cùng tên.
+- Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-13-ngoi-on.md`.
+- Mã mục: lấy `.6` vì trong máy đã có các mục 2026-11-14.1 → .5 (phiên cảnh, chưa đẩy) — tránh trùng.
+- Artboard: `NgoiOn-doc-ton-mon`, `NgoiOn-doc-rung-truc`, `NgoiOn-doc-chua-hoc`, `NgoiOn-doc-du-50`,
+  `NgoiOn-ngang-ton-mon`, `NgoiOn-ngang-chua-hoc`, `NgoiOn-nut-trang-thai`, `NgoiOn-cuon-sach`, `BoDaHoc-doc`,
+  `BoDaHoc-doc-day`, `BoDaHoc-ngang` (+ `canvas.json`).
+- Quyết định:
+  - Bảng chọn là **cuộn treo** (giấy `map-paper` giữa hai trục gỗ, đầu trục ngọc viền vàng, ấn son 溫故) — cùng họ với
+    cuộn sách trên tay và cuộn bản đồ. Đặt **nửa trên** (dọc) / **bên phải** (ngang) để luôn thấy nhân vật ngồi cầm cuộn;
+    cảnh tối 16 %; cần điều khiển, cụm nút, nút Trò chuyện ẩn khi bảng mở.
+  - Mục mờ: viền nét đứt + dòng lý do có biểu tượng (không chỉ giảm độ mờ — chữ vẫn đọc được ≥ 4,5:1).
+  - Cuộn sách trên tay: cuộn tay mở ngang, trục 0,22 m, giấy 0,26 × 0,18, tâm cao 0,30 trước ngực 0,18, ngửa 30°; nhịp mở
+    0,3 → 1 s; bỏ chữ Hán trên đầu lúc nhập định (mục 2026-11-13.19).
+  - Bộ đã học: lưới ô (chữ, tên, 7 chấm bậc nhớ theo R-ON-1, hạn ôn), bộ đến hạn viền son.
+- Token: không thêm (dùng scroll-wood, map-paper, jade, gold, lacquer, frost*). Màu chữ mờ `#5E6A70` đã dùng ở các mục
+  trước — phiên code xem có nên thành token `slate-muted`.
+- Chuỗi (`l10n/vi.arb`): đổi `actionSit` "Ngồi ôn", `actionSitting` "Đang ôn", `actionSitLabel` "Ngồi ôn"; **bỏ**
+  `actionCultivate`, `actionCultivating`, `actionCultivateLabel`; thêm `actionSit*Label`, `reviewScroll*`, `reviewDue*`,
+  `learnNew*`, `learnAt*`, `learnAllDone*`, `viewLearned*`, `hintGoForest`, `standUp`, `learned*`.
+- Luật bị chạm — **đề xuất** (phiên code hỏi người dùng rồi sửa sổ):
+  - **R-ON-8**: chưa học bộ nào → mục Ôn ghi "Chưa có bộ nào để ôn" (thay "Hôm nay đã ôn xong") và bảng có thêm dòng gợi ý
+    "Chưa học bộ nào. Đến Truyền Tống Đài, chọn Rừng trúc rồi Ngồi ôn để học bộ đầu tiên." Ôn khi n = 0 không ghi "(0)".
+    Không mục nào dùng được → không mục nào nổi bật.
+  - **R-ON-8 / R-VUNG-3**: khi bảng mở, ẩn cần điều khiển, cụm nút hành động, nút Trò chuyện.
+  - Người dùng đã duyệt bố cục ("Ổn, chốt").
+- Ảnh: chưa có (nền cảnh là hình vẽ giữ chỗ).
+
 ## 2026-11-14.1 — Trò chuyện kênh chung (nút, ô nhập, khung kênh, bong bóng trên đầu)
 
 - Loại: giao diện · chuỗi. Màn: **Trò chuyện kênh chung** (HUD web) — đặc tả `docs/screen_specs.md` mục cùng tên.

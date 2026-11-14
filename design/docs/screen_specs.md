@@ -493,3 +493,84 @@ Mẫu một mục:
 - Chuỗi: `chat*` trong `l10n/vi.arb`. Luật: `R-CHAT-1/2/3`, `R-DIEU-1`, `R-NPC-2`, `R-HUD-1`, `R-MAN-1`.
 - Ảnh: nền giữ chỗ chụp từ Canvas 3D (`?chup&nv=5.6,14.6&cam=6.8,4.6,5.2&tam=6.6,14.6`, dọc 390×844 / ngang 844×390); bàn
   phím trong artboard chỉ là khối giữ chỗ — cao thật khác nhau Android / iOS, thử máy. Màn ghép chưa có ảnh.
+
+## Ngồi ôn — nút, cuộn sách trên tay, bảng chọn (HUD + Flutter native) · artboard `NgoiOn-doc-ton-mon.dc.html`, `NgoiOn-doc-rung-truc.dc.html`, `NgoiOn-doc-chua-hoc.dc.html`, `NgoiOn-doc-du-50.dc.html`, `NgoiOn-ngang-ton-mon.dc.html`, `NgoiOn-ngang-chua-hoc.dc.html`, `NgoiOn-nut-trang-thai.dc.html`, `NgoiOn-cuon-sach.dc.html` · từ mục 2026-11-14.6
+
+- Mục đích: ngồi xuống ở bất kỳ đâu để ôn / học bộ thủ. Thay nút Thiền / Tu luyện và chữ Hán hiện trên đầu lúc nhập
+  định (mục 2026-11-13.19 — phần đó bỏ). Luật: `R-DIEU-7`, `R-ON-8`, `R-ON-5`, `R-HANH-3`, `R-VUNG-1`, `R-NGOI-1`.
+- **Nút "Ngồi ôn"** (cụm hành động, đúng chỗ + cỡ nút Thiền cũ: tròn 52 kính sương, nhãn 11/700 dưới):
+  - Biểu tượng 24 (nét 2): người ngồi xếp bằng trên bồ đoàn, cuộn sách mở trước ngực — đầu tròn r 2,2; hai trục đứng
+    x = 6 / 18; giấy 9 × 4,6 với một dòng chữ; chân + đệm như biểu tượng cũ. SVG đúng trong `NgoiOn-nut-trang-thai`.
+  - Trạng thái: thường "Ngồi ôn" · chấm son số bộ đến hạn (vd. "4") · không bộ đến hạn mà ở vùng có bài học → số bộ
+    chưa học (vd. "47") · từ 100 → "99+" (chấm giãn ngang, min 22) · đang ngồi "Đang ôn" (nền `jade`, viền `gold` 2 +
+    quầng 4, chữ nhãn `jade`, ẩn chấm) · đang bay mờ (như Chào). Chấm son giữ nguyên thành phần 2026-11-13.19.
+  - Trợ năng: "Ngồi ôn" · "Ngồi ôn, còn {n} bộ đến hạn" · "Ngồi ôn, còn {n} bộ chưa học" · "Đang ôn, bấm để đứng dậy".
+    Máy tính: phím C.
+- **Cuộn sách trên tay** (vật 3D, code dựng — tờ `NgoiOn-cuon-sach`):
+  - Dáng: cuộn tay (手卷) mở ngang — 2 trục đứng + giấy giữa; không bám ngón tay, đặt theo hướng mặt nhân vật.
+  - Cỡ (nhân vật đứng ≈ 1 m, ngồi ≈ 0,62 m): trục dài 0,22 m, Ø 0,03 (trụ 8 cạnh), đầu trục cầu Ø 0,04; giấy mở hết
+    0,26 × 0,18 m (mặt phẳng; cong 6 đoạn nếu rẻ). Gần đúng — chỉnh theo model nhân vật.
+  - Chỗ: tâm cao 0,30 m, trước tâm thân 0,18 m theo hướng mặt; mặt giấy ngửa 30° về phía mặt.
+  - Màu: trục `scroll-wood`, đầu trục `jade` viền `gold` (như cuộn bản đồ); giấy `map-paper`; mặt sau (camera
+    thường thấy) màu giấy × 0,95 + ấn son `lacquer` 0,03 m ở góc. Lambert, không sáng.
+  - Nhịp: 0 s ngồi, nút "Đang ôn", cần điều khiển "kéo để đứng dậy" · 0 → 0,3 s vòng sáng nở dưới đệm (giữ như cũ) ·
+    0,3 s hai trục hiện chập nhau (phóng 0 → 1 trong 0,15 s) · 0,45 → 1 s hai trục trượt ra, giấy giãn ngang (chậm dần)
+    · 1 s bảng chọn hiện (mờ → rõ + trượt xuống 12 px, 0,2 s).
+  - Đứng dậy trước 1 s → vòng sáng + cuộn tắt dần 0,2 s, không có bảng. Bấm "Đứng dậy" trên bảng → bảng mờ 0,15 s →
+    hai trục chập về giữa 0,25 s → tắt → đứng. Mở thẻ học / màn ôn / Bộ đã học → cuộn giữ mở; đóng → bảng hiện lại
+    ngay (không chạy lại nhịp 1 s).
+- **Bảng chọn** (Flutter, đè lên cảnh; cảnh tối 16 % `rgba(36,50,58,.16)`; cần điều khiển + cụm nút + nút Trò chuyện
+  ẩn khi bảng mở — nhân vật đứng yên): **cuộn treo (掛軸)**.
+  - Trục trên + dưới: cao 14 (ngang 12), rộng hơn giấy 10 mỗi bên, bo 7, gỗ `scroll-wood` (dải sáng #5A3A28 → tối
+    #2A190F), bóng 0 2 4; đầu trục tròn 18 (ngang 16) `jade` viền `gold` 2, nhô ra 14 (12).
+  - Giấy `map-paper`, viền trong 5 `jade` 12 % + 1 gỗ 18 % (viền bồi lụa); đệm 16 / 16 / 18 (ngang 10 / 12 / 12); bóng
+    cả cuộn 0 10 24 `slate` 32 %.
+  - Đầu: dòng nơi đang ngồi 12/700 `#5E6A70` (vd. "Quảng trường · Văn Uyên Tông", "Lối Rừng trúc") + "Ngồi ôn" Lora 22
+    (ngang 18); bên phải ấn son 溫故 (chữ dọc Noto Serif SC 15, nền `lacquer`, chữ trắng, bo 4, title "Ôn cũ biết mới").
+    Dưới: vạch chấm vàng (như thẻ bộ thủ).
+  - 3 mục (nút, cao tối thiểu 68 dọc / 52 ngang, bo 12, cách 10 / 6): vòng biểu tượng 36 (30) + tiêu đề 16/700 (14) +
+    dòng phụ 13 (12) + mũi tên ›.
+    - **Nổi bật**: nền `jade`, chữ trắng, dòng phụ trắng 88 %, bóng như nút chính. Còn bộ đến hạn → Ôn; không thì Học bộ
+      mới (nếu dùng được); không mục nào dùng được → không nổi bật.
+    - **Thường**: nền trắng 72 %, viền gỗ 22 %, biểu tượng `jade` trên nền `jade` 10 %.
+    - **Mờ** (`aria-disabled`): nền trắng 30 %, viền **nét đứt** gỗ 30 %, chữ `#5E6A70` (≥ 4,5:1 trên giấy), dòng lý do
+      có biểu tượng 14: ✓ `jade` ("Hôm nay đã ôn xong", "Đã học đủ") · ghim ("Học ở Rừng trúc") · gạch ("Chưa học bộ nào",
+      "Chưa có bộ nào để ôn"). Không có mũi tên.
+    - Dòng phụ khi dùng được: Ôn → các bộ đến hạn "竹 trúc · 木 mộc · mỗi bộ 2 câu" (cắt "…" nếu dài) · Học bộ mới →
+      "Bộ kế tiếp: 山 sơn — núi" · Xem → "5 / 50 bộ · <4 bộ học gần nhất>". Ôn khi n = 0 không ghi "(0)".
+  - Chưa học bộ nào: thêm khung gợi ý (nền `jade` 8 %, viền `jade` 28 %, bo 12, biểu tượng bản đồ) "Chưa học bộ nào. Đến
+    Truyền Tống Đài, chọn **Rừng trúc** rồi Ngồi ôn để học bộ đầu tiên." Học đủ 50 → dòng `jade` 13/700 giữa hai chấm
+    vàng "Đã học đủ 50 bộ thủ Rừng trúc".
+  - Cuối: "Đứng dậy" — nút phụ viền `slate` 45 % 1,5, cao 48 (ngang 40), biểu tượng mũi tên lên + vạch. Máy tính: Esc =
+    Đứng dậy; ↑ ↓ + Enter chọn mục.
+- Bố cục dọc 390×844: cuộn ở **nửa trên** — trái 16, rộng 358, trục trên ở y 57 (dưới safe 47 + 10); cao theo nội dung
+  (≈ 440–500). Nhân vật ngồi ở nửa dưới màn, không bị che.
+- Bố cục ngang 844×390: cuộn **bên phải** — trái 499, rộng 284 (phải = safe 47 + 13), trên 10; nhân vật giữa-trái.
+- Trạng thái đã vẽ: a. tông môn, 2 bộ đến hạn, đã học 5 (Ôn nổi bật, Học mờ "Học ở Rừng trúc") · b. Rừng trúc, không bộ
+  đến hạn, đã học 3 (Học nổi bật, Ôn mờ "Hôm nay đã ôn xong") · c. tông môn, chưa học bộ nào (cả 3 mờ + gợi ý) · d. Rừng
+  trúc, đủ 50, không bộ đến hạn (Ôn + Học mờ, Xem thường). Ngang: a, c.
+- Chuỗi: `actionSit`, `actionSitting`, `actionSitLabel`, `actionSitDueLabel`, `actionSitNewLabel`, `actionSitOnLabel`,
+  `reviewScroll`, `reviewScrollSeal`, `reviewDue`, `reviewDueNone`, `reviewDueDone`, `reviewDueNothing`, `reviewDueSub`,
+  `learnNew`, `learnNewNext`, `learnAtForest`, `learnAllDone`, `learnAllDoneBanner`, `viewLearned`,
+  `viewLearnedSub`, `viewLearnedNone`, `hintGoForest`, `standUp`.
+- Ảnh: chưa có ảnh (nền cảnh trong artboard là hình vẽ giữ chỗ — cuộn sách chưa có trong code).
+
+## Bộ đã học (Flutter native) · artboard `BoDaHoc-doc.dc.html`, `BoDaHoc-doc-day.dc.html`, `BoDaHoc-ngang.dc.html` · từ mục 2026-11-14.6
+
+- Mục đích: xem lại các bộ thủ đã học, mở lại thẻ. Mở khi: chọn "Xem bộ đã học" trên cuộn sách Ngồi ôn. Đóng: nút ‹
+  "Về cuộn sách" (hoặc nút quay lại của máy) → về bảng chọn, vẫn ngồi (R-ON-8).
+- Nền + vùng an toàn như màn ôn câu đố (`#E9EEEC` + hai lớp núi).
+- Đầu: nút tròn 44 kính "Về cuộn sách" · "Bộ đã học" Lora 22 (ngang 19) + dòng 12 `#5E6A70` "Chạm một bộ để mở lại
+  thẻ" (ngang: dòng này đứng cuối hàng đầu) · viên đếm "{n} / 50 bộ" (cao 28, nền `jade` 10 %, chữ `jade` 13/700).
+- Dòng chú thích 12: mẫu chấm "bậc nhớ (1 → 7)" · "{n} bộ đến hạn" (`lacquer` 700, chỉ khi có) · "Xếp theo thứ tự học".
+- Lưới: dọc 3 cột cách 9, ô cao 132; ngang 6 cột cách 8, ô cao 106. Cuộn dọc; có mờ đáy 56 + thanh cuộn 4.
+- **Ô một bộ** (nút, bo 14, kính .9, viền `slate` 16 %; bộ đến hạn viền `lacquer` 45 %): chữ Noto Serif SC 40 (ngang 30)
+  `jade` · tên Hán Việt 14/700 (13) · 7 chấm 6 (cách 3) — chấm thứ k tô `jade` khi bậc ≥ k (bậc 1…7 = 1 · 3 · 7 · 14 ·
+  30 · 60 · 120 ngày, R-ON-1), còn lại `slate` 18 % · đáy: viên "Đến hạn" (cao 20, nền `lacquer` 10 %, chữ `lacquer`
+  11/700) hoặc "Ôn sau {n} ngày" 11 `#5E6A70`. Trợ năng: "<chữ> <tên> — <nghĩa>, bậc k, đến hạn ôn / ôn sau n ngày".
+- Chạm một ô → thẻ học bộ thủ (đã có, 2026-11-13.9) với huy hiệu "Đã học" + nút "Xuất định": đóng thẻ, về cuộn sách
+  (đúng R-HANH-3 — không quay lại lưới).
+- Trạng thái đã vẽ: 3 bộ (dọc) · 50 bộ cuộn (dọc + ngang). Chưa học bộ nào → không mở được (mục mờ trên cuộn sách).
+- Chuỗi: `learnedTitle`, `learnedHint`, `learnedCount`, `learnedLegend`, `learnedDueCount`, `learnedOrder`,
+  `learnedDue`, `learnedNextIn`, `learnedBack`, `learnedItemLabel`.
+- Ảnh: chưa có ảnh.

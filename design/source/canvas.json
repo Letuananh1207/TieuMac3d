@@ -685,6 +685,83 @@
       "w": 1300,
       "h": 820,
       "title": "Trò chuyện · thành phần + trạng thái"
+    },
+    "NgoiOn-doc-ton-mon.dc.html": {
+      "x": 0,
+      "y": 39710,
+      "w": 390,
+      "h": 844,
+      "title": "Ngồi ôn · dọc · a. tông môn, 2 bộ đến hạn (Ôn nổi bật)"
+    },
+    "NgoiOn-doc-rung-truc.dc.html": {
+      "x": 470,
+      "y": 39710,
+      "w": 390,
+      "h": 844,
+      "title": "Ngồi ôn · dọc · b. Rừng trúc, không bộ đến hạn (Học bộ mới nổi bật)"
+    },
+    "NgoiOn-doc-chua-hoc.dc.html": {
+      "x": 940,
+      "y": 39710,
+      "w": 390,
+      "h": 844,
+      "title": "Ngồi ôn · dọc · c. tông môn, chưa học bộ nào (cả 3 mờ + gợi ý)"
+    },
+    "NgoiOn-doc-du-50.dc.html": {
+      "x": 1410,
+      "y": 39710,
+      "w": 390,
+      "h": 844,
+      "title": "Ngồi ôn · dọc · d. học đủ 50, không bộ đến hạn"
+    },
+    "NgoiOn-ngang-ton-mon.dc.html": {
+      "x": 1880,
+      "y": 39710,
+      "w": 844,
+      "h": 390,
+      "title": "Ngồi ôn · ngang · a. tông môn"
+    },
+    "NgoiOn-ngang-chua-hoc.dc.html": {
+      "x": 1880,
+      "y": 40164,
+      "w": 844,
+      "h": 390,
+      "title": "Ngồi ôn · ngang · c. chưa học bộ nào"
+    },
+    "NgoiOn-nut-trang-thai.dc.html": {
+      "x": 0,
+      "y": 40674,
+      "w": 1300,
+      "h": 520,
+      "title": "Nút \"Ngồi ôn\" · mọi trạng thái"
+    },
+    "NgoiOn-cuon-sach.dc.html": {
+      "x": 1380,
+      "y": 40674,
+      "w": 1300,
+      "h": 600,
+      "title": "Cuộn sách trên tay (3D) · dáng, cỡ, nhịp mở"
+    },
+    "BoDaHoc-doc.dc.html": {
+      "x": 0,
+      "y": 41394,
+      "w": 390,
+      "h": 844,
+      "title": "Bộ đã học · dọc · 3 bộ"
+    },
+    "BoDaHoc-doc-day.dc.html": {
+      "x": 470,
+      "y": 41394,
+      "w": 390,
+      "h": 844,
+      "title": "Bộ đã học · dọc · 50 bộ (cuộn)"
+    },
+    "BoDaHoc-ngang.dc.html": {
+      "x": 940,
+      "y": 41394,
+      "w": 844,
+      "h": 390,
+      "title": "Bộ đã học · ngang · 50 bộ (cuộn)"
     }
   },
   "order": [
@@ -791,7 +868,18 @@
     "Chat-doc-go.dc.html",
     "Chat-ngang.dc.html",
     "Chat-ngang-go.dc.html",
-    "Chat-trang-thai.dc.html"
+    "Chat-trang-thai.dc.html",
+    "NgoiOn-doc-ton-mon.dc.html",
+    "NgoiOn-doc-rung-truc.dc.html",
+    "NgoiOn-doc-chua-hoc.dc.html",
+    "NgoiOn-doc-du-50.dc.html",
+    "NgoiOn-ngang-ton-mon.dc.html",
+    "NgoiOn-ngang-chua-hoc.dc.html",
+    "NgoiOn-nut-trang-thai.dc.html",
+    "NgoiOn-cuon-sach.dc.html",
+    "BoDaHoc-doc.dc.html",
+    "BoDaHoc-doc-day.dc.html",
+    "BoDaHoc-ngang.dc.html"
   ],
   "notes": {
     "cach-dung": {
@@ -1107,6 +1195,19 @@
       "size": "m",
       "fill": "teal",
       "text": "Phiếu 2026-11-14-tro-chuyen-kenh-chung. Đề xuất, chưa chốt.\n\n• Nút \"Trò chuyện\" tròn 48 bên phải, ngay trên cụm Nhảy/Chào/Ngồi ôn (ngón cái với tới; góc trên vẫn trống — R-HUD-1).\n• Khung thu gọn trái, trên joystick: 3 tin cuối mờ dần, không bắt chạm (R-DIEU-1).\n• Bấm nút → ô nhập trên bàn phím + khung mở rộng cuộn được. Gửi xong ĐÓNG ô nhập để thấy bong bóng của mình ngay.\n• Đếm chữ chỉ hiện từ 50/60; quá 60 → đỏ, Gửi mờ (không cắt chữ). Gửi dồn < 1,5 s → Gửi mờ + vòng chờ.\n• Bong bóng: mình viền ngọc, người khác kính sương, NPC giấy viền vàng.\n• Tên kênh \"Kênh chung\" + 傳音 (truyền âm)."
+    },
+    "tieu-de-ngoi-on": {
+      "x": 0,
+      "y": 39470,
+      "text": "Ngồi ôn — nút, cuộn sách trên tay, bảng chọn, Bộ đã học (phiếu 2026-11-13-ngoi-on)",
+      "kind": "title1",
+      "maxW": 2720
+    },
+    "ngoi-on-ghi-chu": {
+      "x": 2804,
+      "y": 39710,
+      "w": 420,
+      "text": "Phiếu 2026-11-13-ngoi-on. Đề xuất, chưa chốt.\n\n• Bảng chọn = cuộn treo (掛軸): giấy map-paper giữa hai trục scroll-wood, đầu trục ngọc viền vàng — cùng họ với cuộn trên tay và cuộn bản đồ.\n• Chỗ đặt để còn thấy nhân vật: dọc → nửa trên (nhân vật ở nửa dưới màn); ngang → bên phải (nhân vật giữa-trái). Cảnh tối 16 %. Cần điều khiển + cụm nút ẩn khi bảng mở (nhân vật đứng yên).\n• Mục nổi bật: nền ngọc lục. Mục mờ: viền nét đứt + dòng lý do có biểu tượng.\n• Đề xuất đổi luật: chưa học bộ nào → mục Ôn ghi \"Chưa có bộ nào để ôn\" (thay \"Hôm nay đã ôn xong\"), thêm dòng gợi ý ra Rừng trúc.\n• Bộ đã học: lưới thẻ nhỏ (chữ, tên, 7 chấm bậc nhớ, hạn ôn); bộ đến hạn viền son.\n• Nền cảnh trong artboard là hình vẽ giữ chỗ (cuộn sách chưa có trong code)."
     }
   },
   "designSystems": []
