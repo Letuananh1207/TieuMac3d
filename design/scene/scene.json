@@ -59,9 +59,7 @@
       {
         "side": "dong",
         "at": 0,
-        "width": 9.6,
-        "kind": "lau",
-        "clearHeight": 4,
+        "width": 6.4,
         "signs": {
           "tay": "Đài truyền tống",
           "dong": "Quảng trường"
@@ -70,9 +68,7 @@
       {
         "side": "tay",
         "at": -6,
-        "width": 9.6,
-        "kind": "lau",
-        "clearHeight": 4,
+        "width": 6.4,
         "signs": {
           "dong": "Sân chơi · Thư viện",
           "tay": "Quảng trường"

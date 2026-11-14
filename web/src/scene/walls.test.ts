@@ -4,7 +4,8 @@ import { gateOpening, lauClearHeight, lauTop, plasterWallBoxes } from './kien_tr
 import { DEFAULT_SCENE, type SceneSpec, type WallSegment } from './spec';
 import { ringRuns, segmentRuns, wallGates } from './walls';
 
-/** Tường Quảng Trường như ví dụ R-VA-1: ±17, cao 5,2, dày 0,5; bốn cổng mái ngói rộng 9,6, lối cao 4 (V-20261114-19). */
+/** Tường Quảng Trường như ví dụ R-VA-1: ±17, cao 5,2, dày 0,5; cổng mái ngói nam / bắc rộng 9,6 lối cao 4 (V-20261114-19),
+ *  cổng trăng đông / tây rộng 6,4. */
 const walls: SceneSpec['walls'] = {
   ...DEFAULT_SCENE.walls,
   half: 17,
@@ -14,8 +15,8 @@ const walls: SceneSpec['walls'] = {
   gates: [
     { side: 'nam', at: 0, width: 9.6, kind: 'lau', clearHeight: 4, signs: { nam: '外門', bac: '山門' } },
     { side: 'bac', at: 0, width: 9.6, kind: 'lau', clearHeight: 4 },
-    { side: 'dong', at: 0, width: 9.6, kind: 'lau', clearHeight: 4 },
-    { side: 'tay', at: -6, width: 9.6, kind: 'lau', clearHeight: 4 },
+    { side: 'dong', at: 0, width: 6.4 },
+    { side: 'tay', at: -6, width: 6.4 },
   ],
 };
 /** Đoạn tường thêm giả có cổng trăng (cảnh thật đã bỏ tường chia sân, 2026-11-13): z −11, cao 3, dày 0,35, cổng x −33 rộng 4. */
@@ -51,12 +52,12 @@ describe('R-VA-1: tường mỏng + cổng', () => {
     expect(walk(world(), 5, 0, 0, 1, 25).z).toBeCloseTo(16.1, 2);
   });
 
-  it('R-VA-1: cổng đông (x 17, tâm z 0) và tây (x −17, tâm z −6) lối 9 m → đi qua được ở z ±4 / z −2', () => {
-    expect(walk(world(), 0, 4, 1, 0, 25).x).toBeGreaterThan(20);
-    expect(walk(world(), 0, -4, 1, 0, 25).x).toBeGreaterThan(20);
-    expect(walk(world(), 0, -2, -1, 0, 25).x).toBeLessThan(-20);
-    expect(walk(world(), 0, -10, -1, 0, 25).x).toBeLessThan(-20);
-    expect(walk(world(), 0, 5.5, 1, 0, 25).x).toBeCloseTo(16.1, 2);
+  it('R-VA-1: cổng trăng đông (x 17, tâm z 0) lối 4,6 m: z 0 qua được, z 3 dừng ở x 16,25; cổng trăng tây (tâm z −6): z −6 qua được', () => {
+    const dong = wallGates(walls, [])[2];
+    expect(2 * gateOpening(dong)).toBeCloseTo(4.6, 6);
+    expect(walk(world(), 0, 0, 1, 0, 25).x).toBeGreaterThan(20);
+    expect(walk(world(), 0, 3, 1, 0, 25).x).toBeCloseTo(16.25, 2);
+    expect(walk(world(), 0, -6, -1, 0, 25).x).toBeLessThan(-20);
   });
 
   it('R-VA-1: cổng bắc mái ngói → x 0 đi lên bắc qua cổng ra chân Thiên Bậc', () => {

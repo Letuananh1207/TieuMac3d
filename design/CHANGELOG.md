@@ -3,6 +3,25 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-14.21 — Cổng Quảng Trường nam / bắc rộng + cao: cổng mái ngói lối 9 × 4 m
+
+- Loại: cảnh 3D — **bố cục** + **ngoại hình**. Ai làm: phiên code V-20261114-19 làm thay vai thiết kế (`/canh`), người dùng:
+  "khung lối đi của cổng như này đang rất hẹp" → chọn rộng + cao. **Đã duyệt 2026-11-14**; người dùng chọn **giữ cổng trăng**
+  ở đông / tây (không đổi).
+- `scene.json` `walls.gates` nam + bắc (`lau`): `width` 6,4 → **9,6** (lối 5,8 → **9 m**, x −4,5 … 4,5), `clearHeight`
+  (trường mới) **4** (lối cao 3,2 → 4 m). Đỉnh trụ / mái cổng giữ 5,8 m (tường 5,2 + 0,6), biển gỗ giữa xà lối và mái —
+  tường không phải nâng. Bậc lên Trà lâu (6,4 m) nằm trọn trong lối cổng bắc.
+- Đông + tây: giữ cổng trăng rộng 6,4, lối 4,6 m (cổng trăng không mở được 9 m trên tường 5,2 — đỉnh vòm phải 9 m).
+- Luật bị chạm: R-VA-1 (ví dụ cổng nam: lối 9 m, x 5 dừng z 16,1; thêm ví dụ cổng trăng đông / tây) — đã sửa sổ trong
+  cùng việc.
+- `scene:check`: cả 8 cảnh "Không có lỗi".
+- Draw call: không tăng (đo bản thử 4 cổng mái ngói: góc chơi 89 → 88, nhìn trên 156 → 154).
+- Cần code: không (trường `clearHeight` làm trong cùng việc).
+- Canvas 3D: https://claude.ai/artifact/TyJxrgsBcj5ryHakv7c1so (bản 50 — bản thử 4 cổng mái ngói, trước khi người dùng chọn
+  giữ cổng trăng đông / tây) — `?nv=0,-12.5&cam=0,3.2,-7.5&tam=0,-17` (cổng bắc).
+- Ảnh: `screens/Canh-cong-rong-bac.png`, `screens/Canh-cong-rong-nam.png`.
+- File: `scene/scene.json`, hai ảnh trên.
+
 ## 2026-11-14.20 — Ngõ về nhà: lối cạnh Tạp hoá vào Nhà của ta (cổng đi bộ)
 
 - Loại: cảnh 3D — **bố cục**. Ai làm: phiên code V-20261114-16 làm thay vai thiết kế (`/canh`), người dùng nhờ "vào nhà ở chỗ
