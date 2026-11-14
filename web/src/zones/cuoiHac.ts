@@ -26,8 +26,10 @@ export const CRANE_TIMING = {
   camBack: 1.8,
   /** hạc bay đi sau khi điều khiển được */
   leave: 3,
-  /** mây phủ nhanh trước khi lộ cảnh thật */
+  /** mây phủ nhanh trước khi lộ cảnh thật (hết bay) */
   cover: 0.3,
+  /** mây tan ra cảnh thật (hạ cánh / bỏ qua lúc bay) — như màn tải mờ (R-MAN-2) */
+  uncover: 0.4,
   /** bỏ qua → vẫn mờ như màn tải (R-MAN-2) */
   skipFade: 0.4,
 } as const;
@@ -35,10 +37,10 @@ export const CRANE_TIMING = {
 export type CraneLeg = 'cat' | 'bay' | 'ha';
 
 /**
- * Hoạt cảnh bật trong app chưa? `false` tới khi có thiết kế màn mây + lớp chữ (phiếu
- * docs/phieu_thiet_ke/2026-11-15-cuoi-hac.md) — trong lúc chờ chỉ bật bằng `?hac` (chế độ thử trên trình duyệt / Canvas 3D).
+ * Hoạt cảnh bật trong app (thiết kế màn mây + lớp chữ đã áp — 2026-11-15.9). `?hac` vẫn giữ làm cờ thử (bật cả khi
+ * hằng này tắt để đo / so).
  */
-export const CRANE_IN_APP = false;
+export const CRANE_IN_APP = true;
 
 /** Đi bằng vòng trận (`vong`) hay cổng đi bộ (`cong`) — chỉ vòng trận mới cưỡi hạc. */
 export type TravelHow = 'vong' | 'cong';

@@ -33,7 +33,7 @@ import { mergeStatic } from './scene/merge';
 import { inRect, type Room } from './scene/rooms';
 import { signText } from './scene/signAtlas';
 import { buildWorld, buildWorldStepped, type StepTimes } from './scene/world';
-import { CraneFlight, CraneRide, cameraPose, clearCraneParam, craneArrives, craneDeparts, craneHud } from './cuoiHac';
+import { CraneFlight, CraneRide, cameraPose, clearCraneParam, craneArrives, craneDeparts, craneHud, craneParams, dropCraneVeil, uncoverVeil } from './cuoiHac';
 import { NHAP_DINH_OPEN_AT, NhapDinh } from './scene/nhapDinh';
 import { NgoiMat, type SitPlace } from './ngoiMat';
 import { el } from './ui/dom';
@@ -119,6 +119,7 @@ async function boot(): Promise<void> {
   });
   // tới bằng hạc (`?den=hac`, R-HANH-5): bay trên biển mây trong lúc cảnh thật dựng ngầm — màn tải mờ ngay khi cảnh bay hiện
   const flight = craneArrives(params) ? new CraneFlight(renderer, spec, params, detailOf(tier), isColorManaged(spec.look)) : null;
+  if (!flight) dropCraneVeil(); // màn mây của index.html chỉ khi thật sự bay (cùng điều kiện — phòng lệch)
   if (flight) {
     void flight.started.then(() => loading.done());
     void characterAsk.then((c) => flight.setRider(c));
@@ -776,13 +777,14 @@ async function boot(): Promise<void> {
     for (const k of ['debug', 'nhan-vat', 'muc', 'look', 'gio', 'toc', 'hac']) if (params.has(k)) next.set(k, params.get(k) ?? '');
     // replace: không chất lịch sử trang mỗi lần đi về
     const go = (): void => location.replace(`${location.pathname}?${next.toString()}`);
-    // vòng trận + hoạt cảnh bật (chế độ thử `?hac`) → cưỡi hạc: cất cánh ở đây, bay + hạ ở trang mới (R-HANH-5)
+    // vòng trận + hoạt cảnh bật (giảm chuyển động → không) → cưỡi hạc: cất cánh ở đây, bay + hạ ở trang mới (R-HANH-5)
     if (craneDeparts(params, how)) {
       closeMap();
       loading.hold(true); // đứng yên, HUD ẩn như màn tải
-      next.set('den', 'hac');
+      const hud = craneHud(spec, params, loadScene(to).spec.site.name);
+      craneParams(next, hud);
       const p = player.position;
-      ride = new CraneRide('cat', { scene, character, spec, at: [p.x, p.z], heading: character.facing.rotation.y, groundAt, camera: cameraPose(camera), hud: craneHud(spec, params), onEnd: go });
+      ride = new CraneRide('cat', { scene, character, spec, at: [p.x, p.z], heading: character.facing.rotation.y, groundAt, camera: cameraPose(camera), hud, onEnd: go });
       return;
     }
     loading.show(loadScene(to).spec.site); // loading.active → nhân vật đứng yên
@@ -974,23 +976,11 @@ async function boot(): Promise<void> {
     if (lands) ride = new CraneRide('ha', { scene, character, spec, at: [sx, sz], heading: character.facing.rotation.y, groundAt, camera: home, hud: flight.hud, onEnd });
     else {
       flight.hud.capture(null);
-      fadeVeil(flight.hud);
+      uncoverVeil(flight.hud);
       onEnd();
     }
   }
   requestAnimationFrame(tick);
-}
-
-/** bỏ qua lúc bay: mây tan 0,4 s như màn tải (R-HANH-5) */
-function fadeVeil(hud: { veil(k: number): void; remove(): void }): void {
-  const t0 = performance.now();
-  const step = (now: number): void => {
-    const k = (now - t0) / 400;
-    hud.veil(1 - k);
-    if (k < 1) requestAnimationFrame(step);
-    else hud.remove();
-  };
-  requestAnimationFrame(step);
 }
 
 void boot();

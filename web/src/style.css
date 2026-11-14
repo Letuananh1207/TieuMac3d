@@ -112,6 +112,49 @@ button:focus-visible{outline:2px solid var(--jade);outline-offset:2px}
 #loading .fill{position:absolute;left:0;top:0;height:2px;width:0;background:var(--jade);border-radius:2px;transition:width .3s}
 #loading .fill::after{content:"";position:absolute;right:-4px;top:-3px;width:8px;height:8px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 3px rgba(212,166,74,.25)}
 #loading .status{font-size:13px;font-weight:500}
+/* Cưỡi hạc (R-HANH-5) — màn mây + lớp chữ khi bay, thiết kế 2026-11-15.9 (screen_specs "Cưỡi hạc", artboard CuoiHac-*).
+   `html.hac` (index.html trước khi JS chạy / ui/craneHud.ts): hiện lớp này, thay màn tải, ẩn HUD trò chơi; `html.hac-dem` màu đêm
+   (theo sương đêm scene/ngayDem.ts). Độ mờ từng lớp do JS đặt theo nhịp (ui/craneView.ts). */
+:root{
+  --hc-bg:#f4f7f6;--hc-cloud:#fff;
+  --hc-ink:var(--slate);--hc-muted:var(--slate-muted);
+  --hc-track:rgba(36,50,58,.15);--hc-done:var(--jade);
+  --hc-glow:0 0 14px rgba(244,247,246,.95),0 0 2px rgba(244,247,246,.9);
+}
+html.hac-dem{
+  --hc-bg:linear-gradient(180deg,#2e3866 0%,#3c4676 60%,#4a5486 100%);--hc-cloud:#5a6496;
+  --hc-ink:#f4f7f6;--hc-muted:rgba(244,247,246,.74);
+  --hc-track:rgba(244,247,246,.25);--hc-done:#f4f7f6;
+  --hc-glow:0 0 14px rgba(20,26,62,.85);
+}
+#crane{display:none;position:fixed;inset:0;z-index:21;overflow:hidden;pointer-events:auto;touch-action:none;user-select:none;-webkit-user-select:none}
+html.hac #crane{display:block}
+html.hac #loading{display:none}
+html.hac body > :not(#stage):not(#loading):not(#crane){visibility:hidden !important}
+.hc-veil{position:absolute;inset:0;background:var(--hc-bg)}
+/* 5 mây phồng trôi trái 24 px/s; chỗ theo % màn (artboard CuoiHac-may-doc 390×844 và -ngang 844×390 cùng tỉ lệ) */
+.hc-veil i{position:absolute;border-radius:999px;background:radial-gradient(closest-side,var(--hc-cloud),var(--hc-cloud) 55%,transparent);opacity:.9;filter:blur(2px);animation:hc-troi 30s linear both}
+.hc-veil i:nth-child(1){left:7.9%;top:22%;width:242px;height:77px}
+.hc-veil i:nth-child(2){left:55.1%;top:12%;width:176px;height:56px}
+.hc-veil i:nth-child(3){left:30%;top:62%;width:286px;height:91px}
+.hc-veil i:nth-child(4){left:70%;top:74%;width:220px;height:70px}
+.hc-veil i:nth-child(5){left:-10%;top:84%;width:264px;height:84px}
+@keyframes hc-troi{to{transform:translateX(-720px)}}
+.hc-text{position:absolute;left:0;right:0;top:calc(var(--sa-top) + 58px);display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;text-shadow:var(--hc-glow);pointer-events:none}
+.hc-sub{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--hc-muted)}
+.hc-name{padding:0 24px;font-family:var(--display);font-weight:700;font-size:24px;line-height:1.2;color:var(--hc-ink)}
+.hc-bar{--p:0;position:relative;margin-top:8px;width:120px;height:2px;border-radius:999px;background:var(--hc-track)}
+.hc-fill{position:absolute;left:0;top:0;bottom:0;width:calc(var(--p) * 100%);border-radius:999px;background:var(--hc-done)}
+.hc-head{position:absolute;left:calc(var(--p) * 100% - 3px);top:-2px;width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 3px rgba(212,166,74,.25)}
+.hc-hint{position:absolute;left:0;right:0;bottom:calc(var(--sa-bottom) + 26px);display:grid;justify-items:center;font-size:13px;font-weight:500;color:var(--hc-muted);text-shadow:var(--hc-glow);opacity:0;pointer-events:none}
+.hc-hint > span{grid-area:1/1;display:flex;align-items:center;gap:6px;transition:opacity .2s}
+.hc-wait,.hc-hint.cho .hc-skip{opacity:0}
+.hc-hint.cho .hc-wait{opacity:1}
+.hc-dots{display:inline-flex;gap:3px}
+.hc-dots i{width:4px;height:4px;border-radius:50%;background:currentColor;animation:hc-cham 1.2s linear infinite}
+.hc-dots i:nth-child(2){animation-delay:.4s}
+.hc-dots i:nth-child(3){animation-delay:.8s}
+@keyframes hc-cham{0%,100%{opacity:1}33%{opacity:.6}66%{opacity:.3}}
 
 /* bảng bài học (mốc 3 thay bằng màn Flutter — chưa có thiết kế, giữ kiểu cũ) */
 #lesson{position:fixed;inset:0;z-index:10;background:rgba(14,10,7,.88);display:grid;place-items:center;padding-left:max(16px,var(--sa-left));padding-right:max(16px,var(--sa-right));padding-top:var(--sa-top);padding-bottom:var(--sa-bottom);overflow-y:auto;color:var(--paper)}
@@ -298,6 +341,10 @@ body.map-open #joy,body.map-open #joyGhost,body.map-open .learn{display:none}
   #loading .rule{width:170px}
   #loading h1{font-size:22px}
   #loading .progress{margin-top:22px}
+  .hc-text{top:calc(var(--sa-top) + 22px);gap:4px}
+  .hc-name{font-size:22px}
+  .hc-bar{margin-top:6px}
+  .hc-hint{bottom:calc(var(--sa-bottom) + 14px)}
   .board{padding:12px 16px;border-width:8px}
   .board .big{font-size:min(34vw,140px,24vh)}
   .board .py{margin-top:2px;font-size:20px}

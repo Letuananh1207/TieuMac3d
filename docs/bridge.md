@@ -62,9 +62,11 @@ Dạng chung `{type: string, payload: object}`.
   `index.html?tu=<mã vùng vừa rời>`). Đi bộ qua **cổng sang cảnh** (R-HANH-4) cũng tải lại trang như thế:
   `index.html?vung=nha-ta&qua=tong-mon` (từ trấn vào nhà), `index.html?qua=nha-ta` (từ nhà ra trấn). Flutter thấy một lần tải trang mới → `onLoadStop` gửi lại biến safe area và `debug`
   như lúc mở app; trang gọi lại `getProgress`.
-- **Cưỡi hạc** (R-HANH-5, hiện chỉ ở chế độ thử `?hac` trên trình duyệt — app chưa bật): đổi vùng bằng vòng trận thêm
-  `den=hac` vào URL tải lại (`index.html?vung=rung-truc&hac&den=hac`); trang mới tự bỏ `den` (history.replaceState) sau khi
-  hạ. Không có sự kiện cầu nối mới. `back` trong hoạt cảnh = bỏ qua (trả `true`).
+- **Cưỡi hạc** (R-HANH-5, bật trong app; `?hac` còn là cờ thử): đổi vùng bằng vòng trận thêm `den=hac` (+ `dem=1` ban
+  đêm → màn mây chàm) vào URL tải lại (`index.html?vung=rung-truc&den=hac&dem=1`); trang mới tự bỏ `den`, `dem`
+  (history.replaceState) sau khi hạ. Trang cũ để lại `--inset-*` đang có trong sessionStorage (`hac-inset`) để màn mây
+  trang mới đặt đúng safe area trước khi Flutter đẩy lại. Không có sự kiện cầu nối mới. `back` trong hoạt cảnh = bỏ qua
+  (trả `true`).
 - Trang cũng tự dừng khi `document.hidden` (trình duyệt thường đổi tab). Dừng vì bất kỳ lý do nào → không vẽ, không
   cập nhật; chạy lại thì bước thời gian đầu tiên bỏ qua (nhân vật không "nhảy").
 - `?debug` trên URL vẫn bật bảng gỡ lỗi khi chạy trình duyệt thường.

@@ -1,110 +1,103 @@
 /**
- * TẠM — lớp phủ của hoạt cảnh cưỡi hạc (R-HANH-5) cho **chế độ thử** (`?hac`), chưa có thiết kế: màn mây (mây trắng phủ
- * màn) + lớp chữ khi bay (tên nơi đến, tiến độ, "Chạm để bỏ qua" / "Sắp tới nơi…") + lớp bắt chạm bỏ qua. Thay bằng thiết
- * kế theo phiếu docs/phieu_thiet_ke/2026-11-15-cuoi-hac.md (`/ui-apply`), không đưa vào app trước đó (`CRANE_IN_APP`).
- * Dựng bằng `createElement` + style trực tiếp (không CSS riêng — bỏ cả file khi áp thiết kế). Chữ chỉ tiếng Việt (R-HUD-4).
+ * Lớp phủ cưỡi hạc (R-HANH-5) theo thiết kế 2026-11-15.9 (`design/docs/screen_specs.md` "Cưỡi hạc"): màn mây (nền + 5 mây
+ * phồng), khối chữ trên (dòng phụ "Cưỡi hạc tới", tên nơi đến, vạch tiến độ không số %), gợi ý dưới ("Chạm để bỏ qua" /
+ * "Sắp tới nơi" + 3 chấm), bắt chạm cả màn để bỏ qua. DOM có sẵn trong `index.html` (`#crane`) để trang mới hiện màn mây
+ * trước khi JS chạy; CSS `style.css` (`.hc-*`, biến `--hc-*`). Lớp `html.hac` bật lớp này + ẩn màn tải / HUD trò chơi;
+ * `html.hac-dem` màu đêm. Độ mờ từng lớp theo nhịp thuần `craneView.ts`.
  */
 import type { CraneHint } from '../zones/cuoiHac';
+import { el } from './dom';
+import { hintText, type CraneFrame } from './craneView';
 
-const HIDE_STYLE = 'hac-an-hud';
-const HINT: Record<CraneHint, string> = { boQua: 'Chạm để bỏ qua', sapToi: 'Sắp tới nơi…' };
+/** khoá sessionStorage trang cũ để lại cho màn mây của trang mới (đọc ở `index.html`) */
+const KEY_NAME = 'hac-ten';
+const KEY_INSET = 'hac-inset';
+const INSETS = ['--inset-top', '--inset-right', '--inset-bottom', '--inset-left'] as const;
 
 export class CraneHud {
-  private readonly root = document.createElement('div');
-  private readonly veilEl = document.createElement('div');
-  private readonly text = document.createElement('div');
-  private readonly name = document.createElement('div');
-  private readonly sub = document.createElement('div');
-  private readonly bar = document.createElement('div');
-  private readonly fill = document.createElement('div');
-  private readonly hintEl = document.createElement('div');
+  private readonly root = el('crane');
+  private readonly veilEl = el('craneVeil');
+  private readonly text = el('craneText');
+  private readonly bar = el('craneBar');
+  private readonly hintEl = el('craneHint');
   private onTap: () => void = () => {};
+  private shownHint: CraneHint | null = null;
+  private shownProgress = -1;
 
-  /** `night` → mây xám chàm thay cho trắng */
-  constructor(night = false) {
-    Object.assign(this.root.style, { position: 'fixed', inset: '0', zIndex: '50', pointerEvents: 'none' });
-    Object.assign(this.veilEl.style, { position: 'absolute', inset: '0', background: night ? '#3a4658' : '#f4f7f6', opacity: '0' });
-    Object.assign(this.text.style, {
-      position: 'absolute',
-      left: '0',
-      right: '0',
-      top: 'calc(env(safe-area-inset-top) + 28px)',
-      display: 'none',
-      flexDirection: 'column',
-      alignItems: 'center',
-      gap: '6px',
-      color: night ? '#eef2f4' : '#24323a',
-      textShadow: night ? '0 1px 3px rgba(0,0,0,.5)' : '0 1px 3px rgba(255,255,255,.8)',
-      fontFamily: 'var(--ui, sans-serif)',
-    });
-    Object.assign(this.name.style, { fontFamily: 'var(--display, serif)', fontWeight: '700', fontSize: '22px' });
-    Object.assign(this.sub.style, { fontSize: '13px', opacity: '.8' });
-    this.sub.textContent = 'Đang cưỡi hạc tới…';
-    Object.assign(this.bar.style, { width: '120px', height: '2px', background: 'rgba(36,50,58,.18)', borderRadius: '2px', marginTop: '4px' });
-    Object.assign(this.fill.style, { height: '2px', width: '0', background: 'var(--jade, #3f7d6e)', borderRadius: '2px' });
-    Object.assign(this.hintEl.style, {
-      position: 'absolute',
-      left: '0',
-      right: '0',
-      bottom: 'calc(env(safe-area-inset-bottom) + 26px)',
-      textAlign: 'center',
-      fontSize: '13px',
-      color: night ? '#eef2f4' : '#24323a',
-      opacity: '.75',
-      display: 'none',
-    });
-    this.bar.append(this.fill);
-    this.text.append(this.name, this.sub, this.bar);
-    this.root.append(this.veilEl, this.text, this.hintEl);
-    this.root.addEventListener('pointerdown', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      this.onTap();
-    });
-    this.root.dataset.hac = '';
-    document.body.append(this.root);
+  /** `night` → mây chàm; `place` tên nơi đến (chỉ tiếng Việt — R-HUD-4) */
+  constructor(
+    readonly night: boolean,
+    private readonly place: string,
+  ) {
+    const html = document.documentElement;
+    html.classList.add('hac');
+    html.classList.toggle('hac-dem', night);
+    el('craneName').textContent = place;
+    el('craneSkip').textContent = hintText('boQua');
+    el('craneWait').textContent = hintText('sapToi');
+    this.hint('boQua');
+    this.root.addEventListener('pointerdown', this.tap);
   }
 
-  /** bắt chạm cả màn (chặn điều khiển) trong hoạt cảnh; `null` = thả */
+  private readonly tap = (e: PointerEvent): void => {
+    e.preventDefault();
+    e.stopPropagation();
+    this.onTap();
+  };
+
+  /** bắt chạm cả màn (chặn điều khiển) trong hoạt cảnh; `null` = thả (lớp vẫn hiện nhưng chạm xuyên xuống cảnh) */
   capture(onTap: (() => void) | null): void {
     this.onTap = onTap ?? (() => {});
     this.root.style.pointerEvents = onTap ? 'auto' : 'none';
   }
 
-  /** mây phủ màn 0…1 */
-  veil(k: number): void {
-    this.veilEl.style.opacity = String(Math.min(1, Math.max(0, k)));
+  /** độ mờ màn mây / khối chữ / gợi ý */
+  frame(f: CraneFrame): void {
+    this.veilEl.style.opacity = f.veil.toFixed(3);
+    this.text.style.opacity = f.text.toFixed(3);
+    this.hintEl.style.opacity = f.hint.toFixed(3);
   }
 
-  /** lớp chữ khi bay; `place` null = ẩn */
-  flying(place: string | null, progress = 0, hint: CraneHint = 'boQua'): void {
-    this.text.style.display = place ? 'flex' : 'none';
-    this.hintEl.style.display = place ? 'block' : 'none';
-    if (!place) return;
-    this.name.textContent = place;
-    this.fill.style.width = `${Math.round(Math.min(1, Math.max(0, progress)) * 100)}%`;
-    this.hintEl.textContent = HINT[hint];
+  /** tiến độ dựng cảnh nơi đến 0…1 (vạch, không số %) */
+  progress(k: number): void {
+    const p = Math.round(Math.min(1, Math.max(0, k)) * 100);
+    if (p === this.shownProgress) return;
+    this.shownProgress = p;
+    this.bar.style.setProperty('--p', String(p / 100));
+    this.bar.setAttribute('aria-valuenow', String(p));
   }
 
-  /** gợi ý dưới màn khi cất / hạ cánh (không có lớp chữ) */
-  hint(h: CraneHint | null): void {
-    this.hintEl.style.display = h ? 'block' : 'none';
-    if (h) this.hintEl.textContent = HINT[h];
+  /** đổi gợi ý (chữ chéo mờ 0,2 s trong CSS) */
+  hint(h: CraneHint): void {
+    if (h === this.shownHint) return;
+    this.shownHint = h;
+    this.hintEl.classList.toggle('cho', h === 'sapToi');
   }
 
-  /** ẩn mọi lớp HUD của trò chơi (con trực tiếp của body, trừ cảnh, màn tải, lớp này) trong hoạt cảnh */
-  hideGame(on: boolean): void {
-    if (!document.getElementById(HIDE_STYLE)) {
-      const st = document.createElement('style');
-      st.id = HIDE_STYLE;
-      st.textContent = 'body.hac-bay > :not(#stage):not(#loading):not([data-hac]){visibility:hidden !important}';
-      document.head.append(st);
+  /**
+   * Trang cũ sắp tải lại (hết khúc cất cánh): để lại tên nơi + vùng bị che cho màn mây của trang mới (index.html) —
+   * chữ có ngay, không nhảy. Không ghi được (chế độ riêng tư…) thì trang mới tự điền khi JS chạy.
+   */
+  handOver(): void {
+    try {
+      const style = document.documentElement.style;
+      sessionStorage.setItem(KEY_NAME, this.place);
+      sessionStorage.setItem(KEY_INSET, JSON.stringify(Object.fromEntries(INSETS.map((k) => [k, style.getPropertyValue(k)]).filter(([, v]) => v))));
+    } catch {
+      // không có sessionStorage → bỏ qua
     }
-    document.body.classList.toggle('hac-bay', on);
   }
 
+  /** hết hoạt cảnh: tắt lớp, hiện lại HUD trò chơi */
   remove(): void {
-    this.hideGame(false);
-    this.root.remove();
+    this.capture(null);
+    this.root.removeEventListener('pointerdown', this.tap);
+    document.documentElement.classList.remove('hac', 'hac-dem');
+    try {
+      sessionStorage.removeItem(KEY_NAME);
+      sessionStorage.removeItem(KEY_INSET);
+    } catch {
+      // không có sessionStorage → bỏ qua
+    }
   }
 }

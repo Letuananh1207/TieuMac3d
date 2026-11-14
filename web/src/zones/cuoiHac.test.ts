@@ -44,6 +44,9 @@ describe('cưỡi hạc — dòng thời gian (R-HANH-5)', () => {
   it('R-HANH-5: chạm lúc cất cánh → sang bay ngay; chạm lúc hạ → đứng ngay', () => {
     expect(run('cat', { skipAt: 0.3 }).t).toBeLessThan(0.35);
     expect(run('ha', { skipAt: 0.5 }).t).toBeLessThan(0.55);
+    // bỏ qua lúc cất cánh: mây phủ 0,4 s; bỏ qua lúc bay: mây tan 0,4 s như màn tải
+    expect(CRANE_TIMING.skipFade).toBe(0.4);
+    expect(CRANE_TIMING.uncover).toBe(0.4);
   });
 
   it('R-HANH-5: mây phủ 1,8 → 2,2 s của khúc cất cánh; các mốc dáng', () => {
@@ -56,17 +59,19 @@ describe('cưỡi hạc — dòng thời gian (R-HANH-5)', () => {
     expect([landStage(1), landStage(1.5), landStage(1.9)]).toEqual(['ha', 'nhay', 'veSau']);
   });
 
-  it('R-MAN-2: cổng đi bộ, giảm chuyển động, app (hoạt cảnh chưa bật) → màn tải; trang mở không có den=hac → màn tải', () => {
+  it('R-MAN-2: cổng đi bộ, giảm chuyển động, hoạt cảnh tắt → màn tải; trang mở không có den=hac → màn tải', () => {
     expect(wantsCrane({ how: 'cong', trial: true, reducedMotion: false, inApp: true })).toBe(false);
     expect(wantsCrane({ how: 'vong', trial: false, reducedMotion: true, inApp: true })).toBe(false);
-    expect(wantsCrane({ how: 'vong', trial: false, reducedMotion: false })).toBe(false);
+    expect(wantsCrane({ how: 'vong', trial: false, reducedMotion: false, inApp: false })).toBe(false);
     expect(arrivingByCrane(new URLSearchParams(''), false)).toBe(false);
     expect(arrivingByCrane(new URLSearchParams('qua=nha-ta'), false)).toBe(false);
   });
 
-  it('R-HANH-5: chỉ vòng trận; giảm chuyển động → không hạc; chưa có thiết kế → chỉ bật ở chế độ thử', () => {
-    expect(CRANE_IN_APP).toBe(false);
-    expect(wantsCrane({ how: 'vong', trial: false, reducedMotion: false })).toBe(false);
+  it('R-HANH-5: bật trong app; chỉ vòng trận; giảm chuyển động → không hạc', () => {
+    expect(CRANE_IN_APP).toBe(true);
+    expect(wantsCrane({ how: 'vong', trial: false, reducedMotion: false })).toBe(true);
+    expect(wantsCrane({ how: 'vong', trial: false, reducedMotion: true })).toBe(false);
+    expect(wantsCrane({ how: 'cong', trial: false, reducedMotion: false })).toBe(false);
     expect(wantsCrane({ how: 'vong', trial: true, reducedMotion: false })).toBe(true);
     expect(wantsCrane({ how: 'vong', trial: true, reducedMotion: true })).toBe(false);
     expect(wantsCrane({ how: 'cong', trial: true, reducedMotion: false })).toBe(false);

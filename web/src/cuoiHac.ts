@@ -4,7 +4,7 @@
  * - `CraneFlight` trang mới (`?den=hac`): cảnh bay biển mây riêng (`scene/bayMay.ts`) vẽ trong lúc cảnh thật dựng ngầm.
  * - `CraneRide('ha')` cảnh thật: hạc lượn hạ xuống bãi đáp, nhân vật nhảy xuống đúng chỗ xuất hiện, camera về sau lưng;
  *   rồi hạc bay đi (3 s) và gỡ khỏi cảnh.
- * Hiện chỉ bật ở chế độ thử `?hac` (`CRANE_IN_APP` = false — chờ thiết kế màn mây + lớp chữ); lớp chữ tạm `ui/craneHud.ts`.
+ * Lớp phủ theo thiết kế 2026-11-15.9 (màn mây + lớp chữ khi bay): `ui/craneHud.ts` (DOM) + nhịp `ui/craneView.ts`.
  */
 import * as THREE from 'three';
 import type { Character } from './player/character';
@@ -14,6 +14,7 @@ import { arriveCurve, bezier, curveHeading, departCamera, ease, easeOut, jumpArc
 import { docEpGio, gioLuc, phaNgay } from './scene/ngayDem';
 import type { SceneSpec, XZ } from './scene/spec';
 import { CraneHud } from './ui/craneHud';
+import { departFrame, flightFrame, landFrame } from './ui/craneView';
 import { CRANE_TIMING as T, CraneClock, arrivingByCrane, departStage, landStage, wantsCrane, type TravelHow } from './zones/cuoiHac';
 
 export const prefersReducedMotion = (): boolean => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -28,8 +29,14 @@ function isNight(spec: SceneSpec, params: URLSearchParams): { gio: number; night
   return { gio, night: spec.dayNight.enabled && phaNgay(gio, spec.dayNight.moc).dem > 0.5 };
 }
 
-/** lớp phủ tạm của hoạt cảnh (mây trắng / chàm theo giờ) */
-export const craneHud = (spec: SceneSpec, params: URLSearchParams): CraneHud => new CraneHud(isNight(spec, params).night);
+/** lớp phủ của khúc cất cánh (mây trắng / chàm theo giờ); `place` tên nơi đến */
+export const craneHud = (spec: SceneSpec, params: URLSearchParams, place: string): CraneHud => new CraneHud(isNight(spec, params).night, place);
+
+/** tham số URL của trang mới khi cưỡi hạc: `den=hac` (+ `dem=1` ban đêm → màn mây chàm ngay từ HTML) */
+export function craneParams(next: URLSearchParams, hud: CraneHud): void {
+  next.set('den', 'hac');
+  if (hud.night) next.set('dem', '1');
+}
 
 const pose = (c: Character, dt: number, sit: number, air = false, vy = 0): void => c.animate(dt, 0, { mps: 0, air, vy, sit, bow: 0, idle: 0 });
 const v3 = (v: THREE.Vector3): V3 => [v.x, v.y, v.z];
@@ -79,9 +86,8 @@ export class CraneRide {
         : { a: landCurve(this.pad, this.padY, o.heading), b: leaveCurve(this.pad, this.padY, o.heading) };
     o.scene.add(this.crane.root);
     o.hud.capture(() => this.skip());
-    o.hud.hideGame(true);
-    o.hud.hint('boQua');
-    if (leg === 'ha') o.hud.veil(1);
+    // cảnh thật không chữ, không gợi ý (thiết kế "hạ cánh"); cất cánh: mây + khối chữ phủ dần ở cuối khúc
+    o.hud.frame(leg === 'cat' ? departFrame(0) : landFrame(0));
   }
 
   skip(): void {
@@ -136,9 +142,10 @@ export class CraneRide {
     // bỏ qua → mây phủ trong 0,4 s (như màn tải mờ) rồi sang bay
     if (this.fade >= 0) this.fade += dt;
     const veil = Math.max(this.clock.veil, this.fade >= 0 ? this.fade / T.skipFade : 0);
-    this.o.hud.veil(veil);
+    this.o.hud.frame(departFrame(veil));
     if (!this.ended && veil >= 1) {
       this.ended = true;
+      this.o.hud.handOver();
       this.o.onEnd();
     }
   }
@@ -156,7 +163,7 @@ export class CraneRide {
     const { character: ch, at, heading } = this.o;
     const t = this.clock.t;
     const ground: V3 = [at[0], this.o.groundAt(...at), at[1]];
-    this.o.hud.veil(1 - t / T.cover);
+    this.o.hud.frame(landFrame(t));
     if (this.clock.done) return this.land();
     const st = landStage(t);
     let p: V3;
@@ -184,10 +191,7 @@ export class CraneRide {
     ch.root.position.set(at[0], this.o.groundAt(...at), at[1]);
     ch.facing.rotation.y = heading;
     pose(ch, 0, 0);
-    this.o.hud.veil(0);
-    this.o.hud.hint(null);
-    this.o.hud.capture(null);
-    this.o.hud.hideGame(false);
+    this.o.hud.remove();
     this.owns = false;
     this.leaving = 0;
     this.o.onEnd();
@@ -217,6 +221,8 @@ export class CraneFlight {
   private loaded = false;
   private progressK = 0;
   private covering = -1;
+  /** giây từ khung hình đầu cảnh bay (nhịp mây tan / gợi ý hiện) */
+  private shown = 0;
   private last = performance.now();
   private resolveEnd: (lands: boolean) => void = () => {};
   private readonly ended: Promise<boolean>;
@@ -232,17 +238,15 @@ export class CraneFlight {
     colorManaged: boolean,
   ) {
     const { gio, night } = isNight(spec, params);
-    this.hud = new CraneHud(night);
+    // màn mây đã hiện từ index.html (`html.hac`); nút / cần điều khiển dựng dần trong lúc bay — ẩn tới khi hạ xong
+    this.hud = new CraneHud(night, spec.site.name);
+    this.hud.frame(flightFrame(-1));
     this.flight = buildFlight(spec, detail, gio, colorManaged);
     this.hud.capture(() => this.clock.skip());
-    this.hud.hideGame(true); // nút / cần điều khiển dựng dần trong lúc bay — ẩn tới khi hạ xong
-    this.place = spec.site.name;
     this.ended = new Promise((r) => (this.resolveEnd = r));
     this.started = new Promise((r) => (this.firstFrame = r));
     requestAnimationFrame(this.loop);
   }
-
-  private readonly place: string;
 
   /** nhân vật ngồi trên lưng (khi model đã nạp) */
   setRider(c: Character): void {
@@ -269,20 +273,17 @@ export class CraneFlight {
     this.flight.update(dt, el.clientWidth / Math.max(1, el.clientHeight));
     this.draw(dt);
     this.firstFrame();
-    if (this.clock.done && this.covering < 0) {
-      this.covering = 0;
-      this.hud.flying(null);
+    if (this.clock.done && this.covering < 0) this.covering = 0;
+    else if (this.covering >= 0) this.covering += dt;
+    this.hud.progress(this.progressK);
+    this.hud.hint(this.clock.hint);
+    this.hud.frame(flightFrame(this.shown, this.covering));
+    this.shown += dt;
+    if (this.covering >= T.cover) {
+      this.flight.dispose();
+      this.resolveEnd(this.clock.landsAfter);
+      return;
     }
-    if (this.covering >= 0) {
-      this.covering += dt;
-      this.hud.veil(this.covering / T.cover);
-      if (this.covering >= T.cover) {
-        this.hud.capture(null);
-        this.flight.dispose();
-        this.resolveEnd(this.clock.landsAfter);
-        return;
-      }
-    } else this.hud.flying(this.place, this.progressK, this.clock.hint);
     requestAnimationFrame(this.loop);
   };
 
@@ -305,11 +306,29 @@ export class CraneFlight {
   }
 }
 
-/** Bỏ `den=hac` khỏi URL sau khi hạ (tải lại tay thì không bay lại). */
+/** trang mở không bay (màn tải thường) mà `index.html` lỡ bật màn mây → tắt */
+export function dropCraneVeil(): void {
+  document.documentElement.classList.remove('hac', 'hac-dem');
+}
+
+/** bỏ qua lúc bay (cảnh đã xong): mây tan 0,4 s như màn tải rồi tắt lớp phủ, không hạ cánh (R-HANH-5) */
+export function uncoverVeil(hud: CraneHud): void {
+  const t0 = performance.now();
+  const step = (now: number): void => {
+    const t = (now - t0) / 1000;
+    hud.frame(landFrame(t));
+    if (t < T.uncover) requestAnimationFrame(step);
+    else hud.remove();
+  };
+  requestAnimationFrame(step);
+}
+
+/** Bỏ `den=hac` (+ `dem`) khỏi URL sau khi hạ (tải lại tay thì không bay lại). */
 export function clearCraneParam(): void {
   const p = new URLSearchParams(location.search);
   if (!p.has('den')) return;
   p.delete('den');
+  p.delete('dem');
   history.replaceState(history.state, '', `${location.pathname}?${p.toString()}`);
 }
 

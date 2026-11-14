@@ -4,6 +4,23 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <title>Tiểu Mặc 3D</title>
+  <!-- cưỡi hạc (R-HANH-5, thiết kế 2026-11-15.9): trang mở giữa chuyến bay (`den=hac`) → màn mây thay màn tải ngay từ
+       khung đầu, trước khi JS chạy (ban đêm `dem=1` → mây chàm). Cùng điều kiện với zones/cuoiHac.ts arrivingByCrane;
+       sessionStorage do ui/craneHud.ts ghi ở trang cũ (không có thì thôi). -->
+  <script>
+    (function () {
+      try {
+        var q = new URLSearchParams(location.search);
+        if (q.get('den') !== 'hac' || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        var h = document.documentElement;
+        h.classList.add('hac');
+        if (q.get('dem') === '1') h.classList.add('hac-dem');
+        // vùng bị che của trang cũ (Flutter chỉ đẩy --inset-* sau khi trang tải xong) → khối chữ không nhảy xuống
+        var ins = JSON.parse(sessionStorage.getItem('hac-inset') || '{}');
+        for (var k in ins) if (/^--inset-(top|right|bottom|left)$/.test(k)) h.style.setProperty(k, String(ins[k]));
+      } catch (e) {}
+    })();
+  </script>
 </head>
 <body>
   <canvas id="stage"></canvas>
@@ -147,6 +164,29 @@
       </div>
     </main>
   </div>
+
+  <!-- cưỡi hạc (R-HANH-5): màn mây + lớp chữ khi bay, canvas CuoiHac-*; `html.hac` hiện lớp này + ẩn màn tải / HUD.
+       Khối chữ dùng chung cho màn mây lẫn lúc bay (mây tan mà chữ không nhảy); tên nơi + tiến độ do JS điền -->
+  <div id="crane" aria-live="polite">
+    <div class="hc-veil" id="craneVeil" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="hc-text" id="craneText">
+      <div class="hc-sub">Cưỡi hạc tới</div>
+      <div class="hc-name" id="craneName"></div>
+      <div class="hc-bar" id="craneBar" role="progressbar" aria-label="Đang tới nơi" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="hc-fill"></div><div class="hc-head"></div></div>
+    </div>
+    <div class="hc-hint" id="craneHint">
+      <span class="hc-skip"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="5.5" fill="none" stroke="currentColor" stroke-width="1.2"/><circle cx="7" cy="7" r="2" fill="currentColor"/></svg><span id="craneSkip"></span></span>
+      <span class="hc-wait"><span class="hc-dots" aria-hidden="true"><i></i><i></i><i></i></span><span id="craneWait"></span></span>
+    </div>
+  </div>
+  <!-- tên nơi đến do trang cũ để lại (ui/craneHud.ts) → màn mây có tên ngay, không đợi JS; không có thì JS điền sau -->
+  <script>
+    (function () {
+      try {
+        if (document.documentElement.classList.contains('hac')) document.getElementById('craneName').textContent = sessionStorage.getItem('hac-ten') || '';
+      } catch (e) {}
+    })();
+  </script>
 
   <script type="module" src="/src/main.ts"></script>
 </body>
