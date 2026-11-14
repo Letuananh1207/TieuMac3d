@@ -17,6 +17,15 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
 - Vật mới `bia` / `bia-rua` (`vat_bia.ts`, từ mẫu Catalog). Luật: R-VA-1, R-BANDO-2. `scene:check` không lỗi.
   Nhìn từ trên 131 → 143 draw call, 146 790 → 149 822 tam giác (còn dư < 200 tới trần 150k).
 - Ảnh: `screens/Canh-vuon-bia.png`, `screens/Canh-doi-che.png`. Canvas 3D bản 57.
+## 2026-11-14.33 — Tiểu Mặc + bảng nhiệm vụ đón ở cổng nam Quảng Trường
+
+- Loại: cảnh 3D — **bố cục**. Phiên code V-20261114-33 làm thay `/canh`; người dùng nhờ dời Tiểu Mặc và bảng nhiệm vụ để
+  vào từ cổng Quảng Trường là thấy và dùng được ngay. **Đã duyệt 2026-11-14.**
+- `npcs[tieu-mac]`: (7,6; 13,6) rotY 180 → (−2,4; 8) rotY 15, nhìn về cổng. `props[bang "Nhiệm vụ hằng ngày"]`:
+  (5,5; 15,2) rotY 180 → (2,9; 7) rotY 0, mặt nhìn cổng. Hai vật hai bên lối chính, cách nhau 5,4 m — nút "Nói chuyện"
+  và "Xem bảng" không chồng nhau. Câu thoại Tiểu Mặc "cổng trăng kia" → "cổng trấn kia".
+- Luật: R-NPC-1, R-NPC-2, R-NV-1, R-NV-3. `scene:check` không lỗi; draw call không đổi.
+- Ảnh: `screens/Canh-cong-nam-quang-truong.png`.
 
 ## 2026-11-14.32 — Cổng đầu lối xuống núi hạ còn 6,6 m, biển "Khởi Nguyên Trấn"
 

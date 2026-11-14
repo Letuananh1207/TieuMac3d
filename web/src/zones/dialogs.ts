@@ -53,7 +53,7 @@ export const DIALOGS: Dialog[] = [
       },
       {
         id: 'don-khach',
-        text: 'Trông bảng nhiệm vụ, đón người mới chứ sao! Việc trấn giao mỗi ngày đều dán ở bảng này — đạo hữu nhớ ghé xem nha. Ai bước qua cổng trăng kia là bắt đầu đường tu chữ — học thêm một chữ, thêm một phần tu vi.',
+        text: 'Trông bảng nhiệm vụ, đón người mới chứ sao! Việc trấn giao mỗi ngày đều dán ở bảng này — đạo hữu nhớ ghé xem nha. Ai bước qua cổng trấn kia là bắt đầu đường tu chữ — học thêm một chữ, thêm một phần tu vi.',
         choices: [{ text: 'Tu chữ ở đâu?', next: 'tu-chu' }, OTHER, BYE],
       },
       {
