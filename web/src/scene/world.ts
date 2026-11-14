@@ -68,7 +68,7 @@ export function buildWorld(
   spec: SceneSpec,
   interiors: Record<string, InteriorUse> = {},
   /** mật độ chi tiết trang trí theo mức đồ hoạ (`quality.ts` `detailOf`): 1 đủ, 0,5 = cỏ hoa thưa một nửa, nước không gợn */
-  _detail = 1,
+  detail = 1,
 ): World {
   const style = spec.buildingStyle;
   resetSignAtlas(); // biển của cảnh này vẽ vào một ảnh chung → 1 draw call
@@ -116,7 +116,7 @@ export function buildWorld(
         addGate(scene, colliders, g, style, base(g.x, g.z));
       });
   }
-  addWater(scene, colliders, spec.water, style, groundY);
+  addWater(scene, colliders, spec.water, style, groundY, isSoft(spec.look) ? { look: spec.look, sky: spec.sky.middle, ripple: detail >= 1 } : undefined);
   const bridgePads = addBridges(scene, colliders, spec.bridges, style, groundY);
   const fauna = addFauna(scene, spec, groundY);
   const channels = addChannels(scene, spec.channels, style, groundY);

@@ -3,7 +3,10 @@ import type { GroundY } from './terrainHeight';
 import type { Colliders } from '../collision/colliders';
 import type { Style } from './buildings';
 import { lambert } from './materials';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
+import type { LookSpec } from './look';
 import type { SIDES, WaterSpec } from './spec';
+import { circleEdge, linkWaterClock, rectEdge, setShore, softWaterMaterial } from './waterShader';
 
 /**
  * Ao / hồ: mặt nước phẳng sát mặt sân + bờ đá. Không đi xuống được: ao tròn = vật cản tròn bán kính r,
@@ -55,9 +58,18 @@ export function crescentCircles(R: number): [number, number, number][] {
   return out;
 }
 
-export function addWater(scene: THREE.Scene, colliders: Colliders, list: WaterSpec[], style: Style, groundY: GroundY = () => 0): void {
+/** Nước cảnh mềm (NV4): kiểu nhìn, màu trời cho fresnel, có gợn không (mức Thấp: không — R-HIEU-1). */
+export interface SoftWater {
+  look: LookSpec;
+  sky: string;
+  ripple: boolean;
+}
+
+export function addWater(scene: THREE.Scene, colliders: Colliders, list: WaterSpec[], style: Style, groundY: GroundY = () => 0, soft?: SoftWater): void {
   if (list.length === 0) return;
   const waterMat = new THREE.MeshBasicMaterial({ color: style.water });
+  // cảnh mềm: mọi mặt nước gộp một lưới (1 draw call), shader nông → sâu + fresnel + gợn + viền bọt
+  const softSurfaces: THREE.Mesh[] = [];
   const rimMat = lambert(style.stone);
   for (const p of list) {
     const sunk = p.sunk ?? 0;
@@ -67,9 +79,12 @@ export function addWater(scene: THREE.Scene, colliders: Colliders, list: WaterSp
     g.position.set(p.x, base, p.z);
     if (p.r !== undefined && p.shape === 'trang') {
       g.rotation.y = ((p.rotY ?? 0) * Math.PI) / 180;
-      const surface = new THREE.Mesh(new THREE.ShapeGeometry(crescentShape(p.r), 24).rotateX(-Math.PI / 2), waterMat);
+      const shape = new THREE.ShapeGeometry(crescentShape(p.r), 24);
+      if (soft) setShore(shape, () => 1, 1); // lưỡi liềm: một màu nông, không viền bọt
+      const surface = new THREE.Mesh(shape.rotateX(-Math.PI / 2), waterMat);
       surface.position.y = 0.06;
       g.add(surface);
+      softSurfaces.push(surface);
       for (const [cx, cz, r] of crescentCircles(p.r)) {
         const rot = g.rotation.y;
         const wx = p.x + cx * Math.cos(rot) + cz * Math.sin(rot);
@@ -77,10 +92,13 @@ export function addWater(scene: THREE.Scene, colliders: Colliders, list: WaterSp
         colliders.addCircle(wx, wz, r);
       }
     } else if (p.r !== undefined) {
-      const surface = new THREE.Mesh(new THREE.CircleGeometry(p.r, 32), waterMat);
+      const disc = new THREE.CircleGeometry(p.r, 32);
+      if (soft) setShore(disc, circleEdge(p.r), p.r);
+      const surface = new THREE.Mesh(disc, waterMat);
       surface.rotation.x = -Math.PI / 2;
       surface.position.y = 0.06 - sunk;
       g.add(surface);
+      softSurfaces.push(surface);
       if (sunk > 0) {
         const wall = new THREE.Mesh(new THREE.CylinderGeometry(p.r, p.r, sunk, 32, 1, true), lambert(style.stone, { side: THREE.BackSide }));
         wall.position.y = -sunk / 2;
@@ -94,10 +112,14 @@ export function addWater(scene: THREE.Scene, colliders: Colliders, list: WaterSp
     } else if (p.w !== undefined && p.d !== undefined) {
       const rot = p.rotY ?? 0;
       g.rotation.y = (rot * Math.PI) / 180;
-      const surface = new THREE.Mesh(new THREE.PlaneGeometry(p.w, p.d), waterMat);
+      // cảnh mềm chia ô ≤ 1 m để màu nông → sâu chuyển mượt
+      const plane = soft ? new THREE.PlaneGeometry(p.w, p.d, Math.ceil(p.w), Math.ceil(p.d)) : new THREE.PlaneGeometry(p.w, p.d);
+      if (soft) setShore(plane, rectEdge(p.w, p.d), Math.min(p.w, p.d) / 2);
+      const surface = new THREE.Mesh(plane, waterMat);
       surface.rotation.x = -Math.PI / 2;
       surface.position.y = 0.06 - sunk;
       g.add(surface);
+      softSurfaces.push(surface);
       // bờ dày 0,5 nằm giữa mép; kè (sunk) dày 1,2 lấn vào lòng nước 0,9 — che dải đất dốc của lưới địa hình (ô 1 m)
       const t = sunk > 0 ? 1.2 : 0.5;
       const k = sunk > 0 ? 0.3 : 0; // tâm bờ lùi vào trong bao nhiêu
@@ -119,5 +141,18 @@ export function addWater(scene: THREE.Scene, colliders: Colliders, list: WaterSp
       else colliders.add(p.x, p.z, p.w, p.d);
     }
     scene.add(g);
+  }
+  if (soft && softSurfaces.length) {
+    const geos = softSurfaces.map((m) => {
+      m.updateWorldMatrix(true, false); // cả nhóm cha (vị trí, góc quay ao)
+      const geo = m.geometry.clone().applyMatrix4(m.matrixWorld);
+      geo.deleteAttribute('uv');
+      geo.deleteAttribute('normal');
+      m.removeFromParent();
+      return geo;
+    });
+    const merged = mergeGeometries(geos);
+    for (const geo of geos) geo.dispose();
+    if (merged) scene.add(new THREE.Mesh(merged, linkWaterClock(softWaterMaterial(soft.look, soft.sky, soft.ripple))));
   }
 }
