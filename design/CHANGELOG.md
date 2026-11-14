@@ -22,7 +22,7 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
   `size.minimap-*` (`docs/testing/gui_thiet_ke_2026-11-15.md`).
 - Ảnh: `screens/BanDoVung-nho-vuong-doc.png`.
 
-## 2026-11-15.2 — Tiểu Mặc + bảng nhiệm vụ ra bên phải tiệm Tạp hoá
+## 2026-11-15.5 — Tiểu Mặc + bảng nhiệm vụ ra bên phải tiệm Tạp hoá
 
 - Loại: cảnh 3D — **bố cục**. Phiên code V-20261114-35 làm thay `/canh`; người dùng: "vị trí Tiểu Mặc và bảng nên đặt ở bên
   phải của tiệm Tạp hoá". **Đã duyệt 2026-11-15.**
@@ -285,7 +285,7 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
 - Ảnh: `screens/Canh-tung-cau-thang.png` (chân thang nhìn lên `?nv=-21.4,-12&cam=-21.4,3.2,-8.5&tam=-21.4,-24`).
 - File: `scene/scene.json`.
 
-## 2026-11-14.21 — Cổng Quảng Trường nam / bắc rộng + cao: cổng mái ngói lối 9 × 4 m
+## 2026-11-14.36 — Cổng Quảng Trường nam / bắc rộng + cao: cổng mái ngói lối 9 × 4 m
 
 - Loại: cảnh 3D — **bố cục** + **ngoại hình**. Ai làm: phiên code V-20261114-19 làm thay vai thiết kế (`/canh`), người dùng:
   "khung lối đi của cổng như này đang rất hẹp" → chọn rộng + cao. **Đã duyệt 2026-11-14**; người dùng chọn **giữ cổng trăng**
@@ -304,7 +304,7 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
 - Ảnh: `screens/Canh-cong-rong-bac.png`, `screens/Canh-cong-rong-nam.png`.
 - File: `scene/scene.json`, hai ảnh trên.
 
-## 2026-11-14.20 — Ngõ về nhà: lối cạnh Tạp hoá vào Nhà của ta (cổng đi bộ)
+## 2026-11-14.35 — Ngõ về nhà: lối cạnh Tạp hoá vào Nhà của ta (cổng đi bộ)
 
 - Loại: cảnh 3D — **bố cục**. Ai làm: phiên code V-20261114-16 làm thay vai thiết kế (`/canh`), người dùng nhờ "vào nhà ở chỗ
   lối đi gần tạp hoá". **Đã duyệt 2026-11-14** trên Canvas 3D (giữ nguyên, không dời cây tùng).
@@ -328,6 +328,49 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
 - Canvas 3D: https://claude.ai/artifact/TyJxrgsBcj5ryHakv7c1so (bản 49) — `?cam=-6,20,50&tam=-17,34&nv=-16.5,36`, `?vung=nha-ta`.
 - Ảnh: `screens/Canh-ngo-ve-nha.png`, `screens/Canh-nha-ta-cong-nam.png`.
 - File: `scene/scene.json`, `scene/nha-ta.json`, hai ảnh trên.
+## 2026-11-15.2 — Bộ ảnh nhiều góc NPC Tiểu Khất (đứa trẻ ăn xin — tóc rối bù, bát sứ nứt, chống gậy cành cây)
+
+- Loại: tài nguyên 3D — ảnh đầu vào (Hunyuan3D-2mv). Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-14-anh-khat-nhi.md` (phiếu còn trong máy,
+  chưa lên GitHub — dòng "Đã vẽ" ghi ở bản trong máy). Vẽ trong phiên VS Code theo vai thiết kế; người dùng duyệt "Ổn, chốt".
+- **Đổi hướng so với phiếu / hồ sơ** `docs/tham_khao/khat-nhi-go-mo.md` (hướng A "cậu bé lanh lợi, chỏm tóc dây rơm, cười láu lỉnh, tay
+  không"): người dùng thử ông lão ăn mày (`source/AnMay-huong.dc.html`, bỏ) → quay lại đứa trẻ: **tóc rối bù xoã, không dây**, **mặt hơi
+  buồn** (không khóc), **cầm dụng cụ ăn xin**: bát **sứ trắng có vết nứt** + mẻ miệng, **chống gậy cành cây** (không phải trúc) cắm đất.
+- Nhân vật: ≈ 9 tuổi, da #E9C2A4, má #E39C8C, vệt lấm nhỏ một bên má; áo gai ngắn #9C8664 vạt trái đè phải, mép sờn, dây rơm #D2B06E ở eo;
+  quần nâu #5A4A3A tới gối xắn ống; dép rơm thấy ngón; vá: rêu #6F8A6A ngực trái, chàm #5E6E86 to giữa lưng, vàng đất #C29A5E khuỷu + gối.
+  Bát #EEEBE3 · vết nứt #6E6A64; gậy cành cây #7A5A3C cao tới hông, hai mấu cành cụt.
+- **Ảnh lật trái – phải so với câu lệnh** (khớp ở cả 4 góc → giữ): bát ở **tay PHẢI**, gậy ở **tay TRÁI**, vá vàng ở **khuỷu TRÁI + gối PHẢI**.
+- Ảnh: `models/anh/khat-nhi-{truoc,trai,sau,phai,mat}.png` + `-truoc-trai.png` (chếch ≈ 20°, chỉ 1 ảnh — Gemini vẽ hai góc 45° giống nhau)
+  + `-dao-cu.png` (đối chiếu, không vào Hunyuan). Câu lệnh: ghi chú `khat-nhi-cau-lenh` trong `source/canvas.json`. Chuẩn hoá Pillow hệ số
+  0,839, đỉnh tóc 10 %, đế dép 90 %, trục theo chân. Ảnh duyệt: `screens/KhatNhi-bo-anh.png`.
+- **Cho phiên code** (V-31 đã ghép Tiểu Khất — ngồi, cho 5 văn, tin đồn): bát + gậy nằm **trong model** → bỏ bát / gậy dựng bằng code (nếu có);
+  model đứng chống gậy, phiếu cũ định bé **ngồi** xếp bằng — gậy cắm đất + bát trên tay khi ngồi bằng xương tự gắn dễ rách / xuyên → đề xuất
+  cho Tiểu Khất **đứng** (hoặc ngồi bệt, gậy dựa tường — cần thử với model). Đổi tư thế chạm R-NPC-6 (nháp) — hỏi người dùng rồi sửa sổ.
+  Mặt hơi buồn hợp lời thoại xin ăn; câu "cười láu lỉnh" trong hồ sơ cũ không còn đúng. Tên trong game giữ "Tiểu Khất".
+- Bước kế: `bash .claude/skills/tai-nguyen/scripts/nhan-vat.sh khat-nhi <ra>` → `models/khat-nhi.glb` (người cao ≈ 0,8 nhân vật chính, chỉnh trong code).
+- File: `models/anh/khat-nhi-*.png` (7), `models/LICENSES.md`, `screens/KhatNhi-bo-anh.png`, `source/AnMay-huong.dc.html`,
+  `source/KhatNhi-bo-anh.dc.html`, `source/canvas.json`.
+
+## 2026-11-15.1 — Bộ ảnh nhiều góc NPC Lão Canh (người gõ mõ báo giờ — ông lão béo phúc hậu)
+
+- Loại: tài nguyên 3D — ảnh đầu vào (Hunyuan3D-2mv). Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-14-anh-go-mo.md` (phiếu còn trong máy,
+  chưa lên GitHub — dòng "Đã vẽ" ghi ở bản trong máy). Vẽ trong phiên VS Code theo vai thiết kế; người dùng duyệt "chốt".
+- **Đổi hướng so với phiếu / hồ sơ** `docs/tham_khao/khat-nhi-go-mo.md` (hướng A "ông lão hiền, nón tre, áo chàm bạc"): người dùng chưa
+  hài lòng → trình 3 hướng (`source/GoMo-huong.dc.html`) → chọn **C "ông lão béo phúc hậu"**, và yêu cầu **cầm sẵn đồ gõ canh**.
+- Nhân vật: ≈ 60 tuổi, dáng tròn bụng tròn, má hồng, mắt cười, râu bạc tròn ngắn khối liền #E4E0D8; khăn quấn đầu nâu #6B5A44 (không nón);
+  áo nâu đỏ #7A3B2E **tới giữa bắp chân** (thấy rõ hai ống chân — NPC biết đi), giao lĩnh vạt trái đè phải, cổ trong ngà #F1EBDD; đai vàng đất
+  #C9A35A nút bên trái; xà cạp ngà #E8E1D2, giày đen #2E2C2A. Cao bằng nhân vật chính.
+- **Cầm đồ trong tay model**: mõ tre son nâu #8E3B2A ở **tay PHẢI**, dùi gỗ #C9A26A ở **tay TRÁI** (ngược câu lệnh, nhưng khớp cả 4 góc → giữ).
+  Đèn lồng vẫn dựng bằng code (chưa có ảnh đạo cụ `go-mo-dao-cu.png` — không bắt buộc).
+- Ảnh: `models/anh/go-mo-{truoc,trai,sau,phai,mat}.png` — Google Gemini (người dùng chạy); nguyên văn câu lệnh: ghi chú `go-mo-cau-lenh`
+  trong `source/canvas.json`. Góc phải tạo lại riêng (lần đầu quay nhầm trái). Chuẩn hoá Pillow: nền #DDDDDD, bỏ sao, hệ số thu chung 0,836,
+  đỉnh khăn 10 %, đế giày 90 %. Ảnh duyệt: `screens/GoMo-bo-anh.png`.
+- **Cho phiên code** (V-31 đã ghép Lão Canh — `townNpcs.ts`, thoại, tiếng mõ): hoạt cảnh gõ mõ nên dùng mõ / dùi **trong tay model** (bỏ
+  hoặc ẩn mõ dựng bằng code nếu có); tay gõ = tay trái (dùi), tay cầm mõ = tay phải. Màu, dáng ở hồ sơ khảo cứu hướng A (nón tre, áo chàm)
+  không còn đúng — đề xuất ghi lại trong hồ sơ / kế hoạch. Luật: không đổi.
+- Bước kế: `bash .claude/skills/tai-nguyen/scripts/nhan-vat.sh go-mo <ra>` → `models/go-mo.glb`.
+- File: `models/anh/go-mo-*.png` (5), `models/LICENSES.md`, `screens/GoMo-bo-anh.png`, `source/GoMo-huong.dc.html`,
+  `source/GoMo-bo-anh.dc.html`, `source/canvas.json`.
+
 ## 2026-11-14.21 — Ngồi: nhìn từ mắt nhân vật, hai tay + cuộn sách có mục chạm được
 
 - Loại: giao diện · token · chuỗi · luồng/luật (đề xuất). Màn: **Ngồi — nhìn từ mắt** (cảnh 3D + HUD) — đặc tả `docs/screen_specs.md` mục cùng
