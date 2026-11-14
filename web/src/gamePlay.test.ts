@@ -243,10 +243,22 @@ describe('Khu giao lưu — Đấu chữ', () => {
   });
 });
 
-/** Bàn cờ dài tâm (−34; 4), 3 chỗ ở x −36,5 / −34 / −31,5, không NPC đứng (ví dụ R-GIAO-1). */
+/** Bàn dài quay theo đặc tả: ghế + tâm lấy từ `tableSlots` (ghế 0 phía +z cục bộ, ghế 1 phía −z). */
+function fakeLong(spec: GameTableSpec) {
+  return tableSlots(spec).map((s) => {
+    const f = fakeSlot(spec, s.x, false);
+    const table: GameTable = { ...f.table, seats: s.seats, center: new THREE.Vector3(s.x, 0.42, s.z), angle: ((spec.rotY ?? 0) * Math.PI) / 180 };
+    return { table, state: f.state };
+  });
+}
+
+/** Bàn cờ dài bắc – nam tâm (−30,5; 7,5) quay 270°, 3 chỗ ở z 5 / 7,5 / 10, không NPC đứng (ví dụ R-GIAO-1). */
+const BAN_CO: GameTableSpec = { id: 'ban-co', kind: 'co', x: -30.5, z: 7.5, rotY: 270, npc: 'tieu-mac', boards: 3, npcStand: false };
+const EAST = (3 * Math.PI) / 2; // nhìn tây (−x) — ghế phía đông
+const WEST = Math.PI / 2; // nhìn đông (+x) — ghế phía tây
+
 function setupLong(px: number, pz: number) {
-  const spec: GameTableSpec = { id: 'ban-co', kind: 'co', x: -34, z: 4, npc: 'tieu-mac', boards: 3, npcStand: false };
-  const slots = tableSlots(spec).map((s) => fakeSlot(spec, s.x, false));
+  const slots = fakeLong(BAN_CO);
   const player = fakePlayer(px, pz);
   const said: Said[] = [];
   const faced: number[] = [];
@@ -258,67 +270,68 @@ function setupLong(px: number, pz: number) {
 }
 
 describe('Khu giao lưu — bàn dài nhiều ghế', () => {
-  it('R-GIAO-1: đứng ở (−36,5; 6,5) bấm Ngồi → ngồi (−36,5; 5,4) nhìn bắc, ván ở chỗ x −36,5', () => {
-    const { game, player, slots, faced } = setupLong(-36.5, 6.5);
+  it('R-GIAO-1: đứng ở (−28; 5) bấm Ngồi → ngồi ghế đông (−29,1; 5) nhìn tây, ván ở chỗ z 5', () => {
+    const { game, player, slots, faced } = setupLong(-28, 5);
     expect(game.trySit()).toBe(true);
-    expect(player.position.x).toBeCloseTo(-36.5, 9);
-    expect(player.position.z).toBeCloseTo(5.4, 9);
-    expect(last(faced)).toBe(Math.PI);
+    expect(player.position.x).toBeCloseTo(-29.1, 9);
+    expect(player.position.z).toBeCloseTo(5, 9);
+    expect(last(faced)).toBeCloseTo(EAST, 9);
     game.playAt({ x: 6, y: 6 });
     expect(Array.from(slots[0].state.stones).filter((c) => c !== 0)).toHaveLength(1);
     expect(Array.from(slots[1].state.stones).every((c) => c === 0)).toBe(true);
   });
 
-  it('R-GIAO-1: đứng ở (−34; 1,5) → ngồi ghế phía bắc (−34; 2,6), nhìn nam, camera từ phía bắc', () => {
-    const { game, player, faced } = setupLong(-34, 1.5);
+  it('R-GIAO-1: đứng ở (−33; 7,5) → ngồi ghế tây (−31,9; 7,5), nhìn đông, camera từ phía tây', () => {
+    const { game, player, faced } = setupLong(-33, 7.5);
     expect(game.trySit()).toBe(true);
-    expect(player.position.x).toBeCloseTo(-34, 9);
-    expect(player.position.z).toBeCloseTo(2.6, 9);
-    expect(last(faced)).toBe(0);
+    expect(player.position.x).toBeCloseTo(-31.9, 9);
+    expect(player.position.z).toBeCloseTo(7.5, 9);
+    expect(last(faced)).toBeCloseTo(WEST, 9);
     const cam = new THREE.PerspectiveCamera(55, 0.5);
     expect(game.placeCamera(cam)).toBe(true);
-    expect(cam.position.z).toBeLessThan(4); // sau lưng người ngồi phía bắc
+    expect(cam.position.x).toBeLessThan(-30.5); // sau lưng người ngồi phía tây
+    expect(cam.position.z).toBeCloseTo(7.5, 6); // nhìn dọc trục đông – tây, không lệch
   });
 
   it('R-GIAO-1: cách ghế gần nhất 2,1 m → không phải bàn (ngồi thiền)', () => {
-    const { game, player } = setupLong(-34, 7.5);
+    const { game, player } = setupLong(-27, 7.5);
     expect(game.trySit()).toBe(false);
     expect(player.isSitting).toBe(false);
   });
 
   it('R-GIAO-1: không có NPC đứng cạnh bàn dài', async () => {
-    const { game } = setupLong(-34, 6);
+    const { game } = setupLong(-28, 5);
     expect(await game.placeNpcs()).toEqual([]);
   });
 
-  it('R-GIAO-1: ngồi ghế phía bắc bàn Đấu chữ → thẻ quay về ghế đó', () => {
-    const spec: GameTableSpec = { id: 'ban-dau-chu', kind: 'dau-chu', x: -34, z: 11, npc: 'su-phu', boards: 3, npcStand: false };
-    const slot = fakeSlot(spec, -34, false);
-    const player = fakePlayer(-34, 8.8);
+  it('R-GIAO-1: ngồi ghế phía đông bàn Đấu chữ → thẻ quay về ghế đó', () => {
+    const spec: GameTableSpec = { ...BAN_CO, id: 'ban-dau-chu', kind: 'dau-chu', x: -37.5, npc: 'su-phu' };
+    const [, slot] = fakeLong(spec);
+    const player = fakePlayer(-35, 7.5);
     const game = new GamePlay([slot.table], host(player, [], ['木']));
     expect(game.trySit()).toBe(true);
-    expect(player.position.z).toBeCloseTo(11 - SEAT_Z);
+    expect(player.position.x).toBeCloseTo(-37.5 + SEAT_Z);
     expect(game.seatIndex).toBe(1);
   });
 });
 
 describe('Khu giao lưu — vào bàn bằng nút nổi', () => {
-  it('R-NGOI-1 / R-GIAO-1: bấm "Vào bàn" cho ghế phía bắc chỗ x −34 → ngồi (−34; 2,6), ván bắt đầu ở chỗ đó', () => {
-    const { game, player, slots, faced } = setupLong(-34, 1.5);
+  it('R-NGOI-1 / R-GIAO-1: bấm "Vào bàn" cho ghế tây chỗ giữa → ngồi (−31,9; 7,5), ván bắt đầu ở chỗ đó', () => {
+    const { game, player, slots, faced } = setupLong(-33, 7.5);
     const spots = game.seatSpots();
     expect(spots).toHaveLength(6);
-    const spot = spots.find((s) => Math.abs(s.x + 34) < 1e-9 && Math.abs(s.z - 2.6) < 1e-9)!;
+    const spot = spots.find((s) => Math.abs(s.x + 31.9) < 1e-9 && Math.abs(s.z - 7.5) < 1e-9)!;
     expect(spot.kind).toBe('ban-choi');
     expect(game.sitAt(spot)).toBe(true);
-    expect(player.position.x).toBeCloseTo(-34, 9);
-    expect(player.position.z).toBeCloseTo(2.6, 9);
-    expect(last(faced)).toBe(0);
+    expect(player.position.x).toBeCloseTo(-31.9, 9);
+    expect(player.position.z).toBeCloseTo(7.5, 9);
+    expect(last(faced)).toBeCloseTo(WEST, 9);
     expect(game.playAt({ x: 6, y: 6 })).toBe(true);
     expect(Array.from(slots[1].state.stones).filter((c) => c !== 0)).toHaveLength(1);
   });
 
   it('R-NGOI-1: đang ngồi → không vào bàn khác', () => {
-    const { game } = setupLong(-34, 1.5);
+    const { game } = setupLong(-33, 7.5);
     const [a, b] = game.seatSpots();
     expect(game.sitAt(a)).toBe(true);
     expect(game.sitAt(b)).toBe(false);

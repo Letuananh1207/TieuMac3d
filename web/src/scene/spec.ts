@@ -455,6 +455,8 @@ export interface GameTableSpec {
   kind: (typeof GAME_KINDS)[number];
   x: number;
   z: number;
+  /** độ, bội 90 (mặc định 0): 0 = bàn dài dọc trục x (đông – tây), ghế 0 phía +z (nam); 270 = dọc trục z (bắc – nam),
+   *  chỗ 0 ở bắc, ghế 0 phía tây — Kỳ Văn Uyển V-29 */
   rotY?: number;
   npc: (typeof NPC_IDS)[number];
   /** bàn dài: số chỗ chơi dọc trục x cục bộ (1–4, mặc định 1 = bàn vuông như cũ), mỗi chỗ cách nhau `GAME_SLOT` m;
@@ -503,7 +505,7 @@ export interface GameSignSpec {
 }
 
 /** Khoảng cách tâm hai chỗ chơi liền nhau trên bàn dài (m). L-8: 2,2 → 2,5 — bàn ghế ×1,3 nhưng dọc bàn chỉ ×1,14
- *  vì biển tên ở x −29,5 (scene.json) sẽ chạm đầu bàn. */
+ *  vì biển tên đứng sát đầu bàn (scene.json) sẽ chạm. */
 export const GAME_SLOT = 2.5;
 
 /** Cụm cây rải ngẫu nhiên (theo `trees.seed`) trong hình chữ nhật tâm (x, z). */

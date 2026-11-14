@@ -57,8 +57,8 @@ describe('bản đồ vùng — đủ mọi cảnh (R-BANDO-2)', () => {
     expect(Math.round(gate!.x)).toBe(0);
     expect(Math.round(gate!.z)).toBe(45);
     expect(m.labels.find((l) => l.kind === 'cong')?.text).toBe('Nhà của ta');
-    expect(m.icons.find((i) => i.kind === 'ban-co')).toMatchObject({ x: -34, z: 4 });
-    expect(m.icons.find((i) => i.kind === 'ban-dau-chu')).toMatchObject({ x: -34, z: 11 });
+    expect(m.icons.find((i) => i.kind === 'ban-co')).toMatchObject({ x: -30.5, z: 7.5 });
+    expect(m.icons.find((i) => i.kind === 'ban-dau-chu')).toMatchObject({ x: -37.5, z: 7.5 });
     expect(m.icons.some((i) => i.kind === 'tap-hoa')).toBe(true);
     expect(m.icons.some((i) => i.kind === 'bang-nhiem-vu')).toBe(true);
   });

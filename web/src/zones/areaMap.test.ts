@@ -26,8 +26,8 @@ function town(over: Partial<AreaMapSource> = {}): AreaMapSource {
     teleport: { enabled: true, center: [30, 0], ringRadius: 4 },
     portals: [{ scene: 'nha-ta', area: { from: [-24.6, 32.9], to: [-19.5, 39.1] } }],
     gameTables: [
-      { id: 'ban-co', kind: 'co', x: -34, z: 4 },
-      { id: 'ban-dau-chu', kind: 'dau-chu', x: -34, z: 11, sign: { name: 'Đấu chữ' } },
+      { id: 'ban-co', kind: 'co', x: -30.5, z: 7.5 },
+      { id: 'ban-dau-chu', kind: 'dau-chu', x: -37.5, z: 7.5, sign: { name: 'Đấu chữ' } },
     ],
     player: { start: [21.8, 0] },
     ...over,
@@ -45,8 +45,8 @@ describe('bản đồ vùng — nội dung (R-BANDO-2)', () => {
     expect(gate!.z).toBeCloseTo(36);
     expect(m.labels.find((l) => l.kind === 'cong')?.text).toBe('Nhà của ta');
     expect(m.icons.filter((i) => i.kind === 'ban-co' || i.kind === 'ban-dau-chu').map((i) => [i.x, i.z])).toEqual([
-      [-34, 4],
-      [-34, 11],
+      [-30.5, 7.5],
+      [-37.5, 7.5],
     ]);
     expect(m.labels.filter((l) => l.kind === 'cho').map((l) => l.text)).toEqual(['Ngũ Tử Kỳ', 'Đấu chữ']);
   });

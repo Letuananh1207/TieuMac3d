@@ -122,7 +122,7 @@ function drawCard(canvas: HTMLCanvasElement, text: string | null): void {
 
 const pointLocal = (p: BoardPoint): [number, number] => [-SPAN / 2 + p.x * CELL, -SPAN / 2 + p.y * CELL];
 
-/** Một chỗ chơi: tâm (toạ độ cảnh), `sx` dọc trục x cục bộ, các ghế (bàn dài: nam rồi bắc). */
+/** Một chỗ chơi: tâm (toạ độ cảnh), `sx` dọc trục x cục bộ, các ghế (bàn dài: phía +z cục bộ rồi −z — bàn quay 270°: tây rồi đông). */
 export interface TableSlot {
   sx: number;
   x: number;
@@ -145,7 +145,9 @@ export function tableSlots(t: GameTableSpec, y0 = 0): TableSlot[] {
     const [x, z] = at(sx, 0);
     const seats = (long ? [1, -1] : [1]).map((side): Seat => {
       const [px, pz] = at(sx, side * SEAT_Z);
-      return { x: px, y: y0, z: pz, rotY: side > 0 ? angle + Math.PI : angle };
+      // hướng nhìn vào bàn, gói về [0; 2π) — bàn quay 270° thì ghế +z cục bộ nhìn 90° (không phải 450°)
+      const face = side > 0 ? angle + Math.PI : angle;
+      return { x: px, y: y0, z: pz, rotY: THREE.MathUtils.euclideanModulo(face, Math.PI * 2) };
     });
     return { sx, x, z, seats };
   });
