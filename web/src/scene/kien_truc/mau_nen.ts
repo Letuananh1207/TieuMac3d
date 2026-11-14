@@ -26,7 +26,7 @@ const TU_DI_LUI = [0, 0.08, 0, 0.32, 0, -0.04];
 export const lopTuDi = (h: number): number[] => TU_DI_51.map((p) => (p / 51) * h);
 
 /** Một bệ tu di hình chữ nhật `w` × `d` tâm (x, z), đáy `y`, cao `h`: 6 lớp, hai lớp 梟 là chóp cụt xiên. */
-function tuDi(g: THREE.Group, x: number, z: number, w: number, d: number, y: number, h: number, style: Style): void {
+export function tuDi(g: THREE.Group, x: number, z: number, w: number, d: number, y: number, h: number, style: Style): void {
   const hs = lopTuDi(h);
   const mats = [style.base, style.base, style.stone, style.stone, style.stone, style.base];
   let yy = y;

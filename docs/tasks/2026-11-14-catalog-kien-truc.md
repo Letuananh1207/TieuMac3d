@@ -3,8 +3,8 @@
   đứng cạnh mỗi mẫu, nhãn mã + cỡ + cấp + draw call / tam giác, chọn giọng vùng để mái đổi dốc; dựng các mẫu từ bộ phận
   dùng chung … không đổi cảnh các map lúc này … đăng artifact để người dùng duyệt từng mẫu." (GĐ 2 + đầu GĐ 4 của
   `2026-11-14-kien-truc-chuan-bai-tri.md`; danh mục đã duyệt `design/kien_truc/danh_muc.md`)
-- Loại: thêm (code mới, trang thiết kế) · Cỡ: lớn · Trạng thái: đợt 1 đã duyệt 2026-11-14 · đợt 2 đã duyệt 2026-11-14 (cả 8 mẫu; `leu-chi-huy` tách mẫu riêng — đồng ý) · **đợt 3 đã duyệt 2026-11-14 (cổng trăng: giữ vòm ∅4 / ∅6,4, nâng tường vôi M / L lên 3,8 / 5,8 m — người dùng chọn) — tiếp: đợt 4**
-  (https://claude.ai/artifact/VHdbpqKax8q8Ya5fUxeGXc, nút "Đợt 3" hoặc `?dot=3`)
+- Loại: thêm (code mới, trang thiết kế) · Cỡ: lớn · Trạng thái: đợt 1 đã duyệt 2026-11-14 · đợt 2 đã duyệt 2026-11-14 (cả 8 mẫu; `leu-chi-huy` tách mẫu riêng — đồng ý) · đợt 3 đã duyệt 2026-11-14 (cổng trăng: giữ vòm ∅4 / ∅6,4, nâng tường vôi M / L lên 3,8 / 5,8 m — người dùng chọn) · **đợt 4 đã đăng — chờ duyệt**
+  (https://claude.ai/artifact/VHdbpqKax8q8Ya5fUxeGXc, nút "Đợt 4" hoặc `?dot=4`)
 
 ## Phạm vi
 **Sẽ thêm / sửa**
@@ -51,11 +51,14 @@ Flutter, cầu nối. Map chuyển sang mẫu mới ở GĐ 5.
   Đã đăng 2026-11-14 — **chờ duyệt**. Bảng `danh_muc_dot2.ts`; dựng `mau_nha_2.ts` (vườn / thờ / cổng), `mau_bien.ts`
   (biên ải, tạm); test `danh_muc.test.ts` (ngân sách tam giác, đôn / bò núi / chiều cao, răng cưa, mặt trùng).
 - [x] 7. Đợt 3 — phần nối: `bai-phuong`, `son-mon`, `cong-tuong` (thêm `thuy-hoa`), `tuong` 4 kiểu, `cau` 4 kiểu, `nen`,
-  `lan-can`, `bac`. Đăng → duyệt. Đã đăng 2026-11-14 — **chờ duyệt**. Bảng `danh_muc_dot3.ts` (nhóm `noi`, kiểu tách hàng
+  `lan-can`, `bac`. Đăng → duyệt. **Đã duyệt 2026-11-14** (16 mẫu). Bảng `danh_muc_dot3.ts` (nhóm `noi`, kiểu tách hàng
   `cong-*`, `tuong-*`, `cau-*`); dựng `mau_noi.ts` (cổng, tường), `mau_cau.ts` (cầu), `mau_nen.ts` (nền, lan can, bậc);
   test `danh_muc_dot3.test.ts` (ngân sách, xà ≥ 6 m, ∅ vòm, tường thành 9 + 1,8, nhịp cầu, cửu khúc, tu di 51 phần, Tam
   Đài, bậc 0,15 × 0,32, lan can 0,9 / 1,1) + quét mặt trùng chung ở `danh_muc.test.ts`.
-- [ ] 8. Đợt 4 — 11 vật sân. Đăng → duyệt. Cập nhật `danh_muc.md` (đánh dấu đạt, chỉnh số đo đã sửa khi xem).
+- [x] 8. Đợt 4 — 11 vật sân. Đăng → duyệt. Cập nhật `danh_muc.md` (đánh dấu đạt, chỉnh số đo đã sửa khi xem).
+  Đã đăng 2026-11-14 — **chờ duyệt**. Bảng `danh_muc_dot4.ts` (nhóm `vat`); dựng `mau_vat.ts` (chiếu bích, sư tử, hoa
+  biểu, cột cờ, củi), `mau_vat_2.ts` (nhật quỹ, vạc, đỉnh hương, giếng, đèn đá, bia); test `danh_muc_dot4.test.ts` (ngân
+  sách, chiều cao, cặp đối xứng, đực đông / cái tây, nhật quỹ đông, đỉnh trước lư sau, đèn cách 6 m) + quét mặt trùng chung.
 
 ## Kiểm tra cuối (mỗi đợt)
 dart tool/check.dart --changed · cd web && npx tsc --noEmit && npm test · `npm run build:design` (PowerShell) · chụp Catalog ·
@@ -97,3 +100,13 @@ không đổi `design/scene/*.json` (`git diff --stat design/scene` trống).
   mỏm đá lấn 0,4 m dưới đầu cầu (L-10).
 - Bỏ chữ 栿 (地栿) khỏi chú thích: Noto Serif SC không có, `fonts:han` dừng build.
 - Cách hiểu số đo + chỗ còn thiếu: ghi dưới bảng mục 2 của `danh_muc.md`.
+
+## Ghi chú đợt 4 (2026-11-14)
+- Đợt 3 duyệt: cổng trăng giữ ∅ 4 / 6,4, tường quanh cổng M / L 3,8 / 5,8 (bảng `danh_muc_dot3.ts` đã đúng số này từ lúc
+  đăng; chỉ ghi lại vào `danh_muc.md`). Cảnh game không đổi.
+- Tam giác (gộp như Catalog, giọng Tống) · số màu: chieu-bich 0,2k·5 / 2,5k·9 · su-tu 0,9k·3 · hoa-bieu 1,9k·4 · nhat-quy
+  0,5k·6 / 1,7k·6 · vac-nuoc 1,0k·4 · dinh-huong 0,4k·2 / 0,6k·2 / 0,3k·4 · gieng 0,2k·4 / 0,4k·6 · den-da 0,2k·2 / 0,5k·2 ·
+  bia 0,2k·4 / 0,5k·5 / 1,0k·10 · cot-co 0,3k·5 · cui-bao-hieu 0,5k·2 — tất cả dưới ngân sách (có test).
+- Dựng mới (không gọi vật cũ `props.ts`, `cung_dien.ts` — số đo cũ khác danh mục, cảnh game giữ nguyên). Bệ tu di dùng lại
+  `tuDi` của `mau_nen.ts` (export thêm). Ô sáng đèn đá / cửa lửa lò đan `MeshBasic` như vật cũ.
+- Nhãn Catalog: vật sân in "bày" / "3 vật" thay cho "gian".

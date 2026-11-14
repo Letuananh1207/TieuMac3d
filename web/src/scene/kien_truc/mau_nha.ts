@@ -1,6 +1,7 @@
 /**
  * Mẫu nhà của bộ asset chuẩn (`danh_muc.ts`) — đợt 1 (đợt 2: `mau_nha_2.ts` vườn / thờ / cổng, `mau_bien.ts` biên ải;
- * đợt 3 phần nối: `mau_noi.ts` cổng / tường, `mau_cau.ts` cầu, `mau_nen.ts` nền / lan can / bậc). Mỗi mẫu dựng từ bộ phận chung (`bo_phan.ts`) + mái chuẩn
+ * đợt 3 phần nối: `mau_noi.ts` cổng / tường, `mau_cau.ts` cầu, `mau_nen.ts` nền / lan can / bậc;
+ * đợt 4 vật sân: `mau_vat.ts`, `mau_vat_2.ts`). Mỗi mẫu dựng từ bộ phận chung (`bo_phan.ts`) + mái chuẩn
  * (`mai_giong.ts`) theo cỡ S / M / L và giọng vùng. Mẫu vào được (`lau`, `cua-hang`, `hi-dai`) gọi hàm dựng hiện có ở
  * cỡ chuẩn (ruột, thang, chỗ ngồi giữ nguyên — đã có test). Dùng cho Catalog 3D; map chuyển sang ở GĐ 5.
  */
@@ -20,6 +21,8 @@ import { BUILD_2 } from './mau_nha_2';
 import { BUILD_CAU } from './mau_cau';
 import { BUILD_NEN } from './mau_nen';
 import { BUILD_NOI } from './mau_noi';
+import { BUILD_VAT } from './mau_vat';
+import { BUILD_VAT_2 } from './mau_vat_2';
 import { traLau } from './tra_lau';
 
 /** Điện: nền theo cấp, thân vách kín, mái đơn hoặc kép (thân trên 0,78 × 0,7). */
@@ -225,6 +228,8 @@ const BUILD: Record<string, Build> = {
   ...BUILD_NOI,
   ...BUILD_CAU,
   ...BUILD_NEN,
+  ...BUILD_VAT,
+  ...BUILD_VAT_2,
 };
 
 /** Dựng mẫu `ma` ở cỡ `co`, giọng `giong` vào một nhóm mới. Không có mẫu / cỡ → null. */

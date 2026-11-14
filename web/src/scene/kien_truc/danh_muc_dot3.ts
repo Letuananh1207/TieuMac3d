@@ -46,7 +46,8 @@ export const MAU_DOT_3: readonly Mau[] = [
     cap: [4, 5],
     mai: 'bang',
     co: {
-      // cot = cao tường chứa cổng: vòm ∅ cần tường ≥ 1,6 × r + 0,6 (đỉnh vòm cách đỉnh tường 0,6 — `tuong.ts`)
+      // cot = cao tường chứa cổng: vòm ∅ cần tường ≥ 1,6 × r + 0,6 (đỉnh vòm cách đỉnh tường 0,6 — `tuong.ts`);
+      // đã duyệt 2026-11-14: giữ ∅ 4 / 6,4, tường quanh cổng M / L nâng lên 3,8 / 5,8 (tường vôi đứng riêng 3,5 / 4,5)
       S: { gian: 1, w: 2.5, d: 0.35, cot: 2.6, cap: 5 },
       M: { gian: 1, w: 4, d: 0.5, cot: 3.8, cap: 4 },
       L: { gian: 1, w: 6.4, d: 0.5, cot: 5.8, cap: 4 },

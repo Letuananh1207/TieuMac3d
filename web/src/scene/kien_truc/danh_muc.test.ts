@@ -80,12 +80,12 @@ describe('mái chuẩn — độ dốc theo giọng vùng', () => {
   });
 });
 
-describe('Catalog — mẫu đợt 1–3 dựng được ở mọi cỡ, mọi giọng', () => {
+describe('Catalog — mẫu đợt 1–4 dựng được ở mọi cỡ, mọi giọng', () => {
   const style = { ...DEFAULT_SCENE.buildingStyle, heightScale: 1 };
-  it('mọi mẫu đợt 1–3 có hàm dựng', () => {
-    for (const m of MAU.filter((x) => x.dot <= 3)) expect(MAU_DA_DUNG, m.ma).toContain(m.ma);
+  it('mọi mẫu đợt 1–4 có hàm dựng', () => {
+    for (const m of MAU) expect(MAU_DA_DUNG, m.ma).toContain(m.ma);
   });
-  it('mỗi cỡ × giọng ra một nhóm có khối (nhà cao > 2,5 m; phần nối — lan can, bậc — > 0,5 m)', () => {
+  it('mỗi cỡ × giọng ra một nhóm có khối (nhà cao > 2,5 m; phần nối, vật sân > 0,5 m)', () => {
     for (const m of MAU) for (const c of CO) {
       if (!m.co[c]) continue;
       for (const giong of GIONG) {

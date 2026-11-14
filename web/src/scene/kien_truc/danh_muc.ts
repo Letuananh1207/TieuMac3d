@@ -6,6 +6,7 @@
 
 import { MAU_DOT_2 } from './danh_muc_dot2';
 import { MAU_DOT_3 } from './danh_muc_dot3';
+import { MAU_DOT_4 } from './danh_muc_dot4';
 
 /** Thước đo kiến trúc chung cho mọi map (thay `buildingStyle.heightScale` riêng từng map). */
 export const K = 1.25;
@@ -78,8 +79,8 @@ export interface Mau {
 }
 
 /**
- * Mẫu — đợt 1 (8 nhà dựng mới + 3 vào được dùng hàm hiện có), đợt 2 (8 nhà còn lại), đợt 3 (phần nối). Số theo
- * `danh_muc.md` mục 1–2.
+ * Mẫu — đợt 1 (8 nhà dựng mới + 3 vào được dùng hàm hiện có), đợt 2 (8 nhà còn lại), đợt 3 (phần nối), đợt 4 (vật sân). Số theo
+ * `danh_muc.md` mục 1–3.
  */
 export const MAU: readonly Mau[] = [
   {
@@ -257,6 +258,7 @@ export const MAU: readonly Mau[] = [
   },
   ...MAU_DOT_2,
   ...MAU_DOT_3,
+  ...MAU_DOT_4,
 ];
 
 /** Ngân sách mỗi công trình theo cấp: draw call, tam giác (`danh_muc.md` mục 0). */

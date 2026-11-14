@@ -57,19 +57,22 @@ Riêng `lau-vach` (Cửu Tầng Lâu dựa vách) và các công trình biểu t
 |---|---|---|---|---|---|---|---|
 | `bai-phuong` | Bài phường 牌坊 / bài lâu 牌樓 | cổng biểu trưng — mốc dẫn đường | 1 gian 2 trụ · 4,5 × 6 | 3 gian 4 trụ · 15 × 10 | 5 gian 6 trụ · 25 × 14 | có / không mái; **xà thấp nhất ≥ 6 m** (camera, `phong_cach.md`) | `cong-truc`, cổng `gates` |
 | `son-mon` | Sơn môn 山門 | cổng chính trên trục, 3 cửa | 3 gian · 13 × 6 | — | — | yết sơn đơn | (mới) |
-| `cong-tuong` | Cổng trên tường: `trang` · `lau` (門樓) · `thuy-hoa` (垂花門) | cửa vào sân | trăng ∅ 2,5 (vườn) · thuỳ hoa 3,5 × 4 | trăng ∅ 4 · môn lâu lối 3 | trăng ∅ 6,4 · môn lâu lối 5,8 (tường bao) | đã có `trang`, `lau` (`tuong.ts`) — thêm `thuy-hoa` | `walls.gates[].kind` |
+| `cong-tuong` | Cổng trên tường: `trang` · `lau` (門樓) · `thuy-hoa` (垂花門) | cửa vào sân | trăng ∅ 2,5 (vườn, tường 2,6) · thuỳ hoa 3,5 × 4 | trăng ∅ 4 (tường **3,8**) · môn lâu lối 3 | trăng ∅ 6,4 (tường **5,8**) · môn lâu lối 5,8 (tường bao) | đã có `trang`, `lau` (`tuong.ts`) — thêm `thuy-hoa` | `walls.gates[].kind` |
 | `tuong` | Tường: `voi` (粉牆 / 院牆 / 雲牆) · `cung` (đỏ) · `thanh` (gạch Minh, đoạ khẩu) · `dat` (đất nện) | chia sân, bao khu, phòng thủ | vôi cao 2,5 · dày 0,35 (chia sân) | vôi 3,5 · 0,5 | vôi 4,5 · 0,5 (bao) · cung 7,5–10 · 1,5 · thành 9 + đoạ 1,8, mặt 6 · đất 5 · 1,5 | lậu song đáy 1,6, ô 1 m; đỉnh 饅頭頂 lợp ngói | `walls`, `wallSegments`, `thanh_luy.ts`, `tho-bich` |
 | `cau` | Cầu: `vom` (拱) · `bang` (平 / cửu khúc) · `mai` (廊橋) · `treo` (索) | qua nước / vực — mốc | vòm 1 nhịp 8, rộng 3 · bằng rộng 2,5 · treo ván 1,5 | vòm nhịp 14, rộng 5 · cửu khúc 3 | vòm 3 nhịp 30, rộng 7 · có mái 25 × 6,5 | cầu cung đình rộng theo cấp 10,6 / 7,2 / 5,7; lan can cầu 0,9 | `bridges.ts` |
 | `nen` | Nền 台基 · tu di 須彌座 · đôn đài | nâng cấp bậc | thường (theo cấp) | tu di 1 tầng | tu di 3 tầng hình 土 (Tam Đài) | tu di chia 51 phần: 10 · 8 · 7 · 10 · 7 · 9 | `terrain.plateaus` (khi là nền nhà) |
 | `lan-can` | Lan can đá trắng · gỗ · 美人靠 | chặn mép nền, cầu, ban công | gỗ cao 0,9 | đá cao 1,1, mô-đun 1,9 | đá chạm + 螭首 (C1–C2) | không nhân K | `fences`, `lanCan.ts` |
 | `bac` | Bậc 踏跺 | lên nền | 如意 (3 mặt) | 垂帶 (đá xiên hai bên) | 御路 (phiến rồng giữa) | bậc 0,15 × 0,32, không nhân K | `stairs` |
 
-**Đợt 3 trên Catalog (2026-11-14, chờ duyệt)** — mẫu nhiều kiểu tách mỗi kiểu một hàng: `cong-tuong` → `cong-trang` (S/M/L),
+**Đợt 3 đã duyệt 2026-11-14** (16 mẫu đạt). **Cổng trăng — người dùng chọn:** giữ vòm ∅ 4 / ∅ 6,4; tường vôi quanh cổng
+trăng cỡ M / L nâng lên **3,8 / 5,8 m** (tường vôi đứng riêng vẫn 3,5 / 4,5; đoạn tường chứa cổng trăng cao theo cổng) —
+chỉ trong Catalog / bộ asset, cảnh game chưa đổi (chuyển map ở GĐ 5).
+
+Đợt 3 trên Catalog — mẫu nhiều kiểu tách mỗi kiểu một hàng: `cong-tuong` → `cong-trang` (S/M/L),
 `cong-lau` (M/L), `cong-thuy-hoa` (S); `tuong` → `tuong-voi` (S/M/L), `tuong-cung`, `tuong-thanh`, `tuong-dat` (L);
 `cau` → `cau-vom` (S/M/L), `cau-bang` (S bằng · M cửu khúc), `cau-mai` (L), `cau-treo` (S). Cách hiểu số đo (xem lại khi
 duyệt): `bai-phuong` "cao 6" của S = xà thấp nhất 6 m (trụ xuyên trời lên 9,5); M cao ≈ 10, L ≈ 13 · cổng trăng ∅ 4 / 6,4 cần
-tường ≥ 3,8 / 5,8 m (luật đỉnh vòm cách đỉnh tường 0,6 của `tuong.ts`) — Catalog bày trên tường đủ cao, tường vôi M / L
-3,5 / 4,5 chỉ cho ∅ 3,6 / 4,9 · lậu song đáy 1,6 ở tường ≥ 3,5; tường chia sân 2,5 hạ ô 0,7 xuống đáy 1,4 · đỉnh tường vôi
+tường ≥ 3,8 / 5,8 m (luật đỉnh vòm cách đỉnh tường 0,6 của `tuong.ts`) — **đã chốt: tường quanh cổng 3,8 / 5,8** · lậu song đáy 1,6 ở tường ≥ 3,5; tường chia sân 2,5 hạ ô 0,7 xuống đáy 1,4 · đỉnh tường vôi
 vẫn là mái ngói hai dốc của cảnh (饅頭頂 chưa làm) · `thuy-hoa` chưa là `walls.gates[].kind` (thêm khi chuyển map, GĐ 5) ·
 cầu vòm L (cung đình) 3 nhịp 8 · 10 · 8, rộng 7 (bậc rộng theo cấp 10,6 / 7,2 / 5,7 chưa làm) · Tam Đài chữ 土 38 × 30
 (khối trước 30 × 20, eo 14 × 6, sau 24 × 12), tầng trên lùi trước 4,5 cho bậc 御路 — 11,1k / 12k tam giác (sát ngân sách).
@@ -91,6 +94,17 @@ Chỉ đặt kèm công trình đúng cấp và đúng chỗ như cột "Đặt 
 | `bia` | Bia / đình bia (rùa đội bia ở C1–C2) | C4 | trên trục sau cổng, hoặc cặp đông–tây | cao 2,5–4 | `da-khac` |
 | `cot-co` | Cột cờ / phướn (cặp) | C5 | ngoài cổng, chân kẹp đá | cao 12 | `co` (cờ dọc) |
 | `cui-bao-hieu` | Đống củi báo hiệu 積薪 | C6 | sát phong hoả đài | 3 × 3 × 2 | (mới) |
+
+**Đợt 4 trên Catalog (2026-11-14, chờ duyệt)** — 11 vật, `?dot=4`. Vật đi cặp bày cả cặp (`w` = bề ngang cả cặp), mặt
+trước nhìn +z, đông = +x. Cỡ bày: `chieu-bich` S 8 × 0,8 cao 4 (vôi, khung đá, ô thoi lam) · L Cửu Long Bích 30 × 1,5 cao 5
+(9 rồng nổi, mái vũ điện vàng) · `su-tu` M cặp cách 5,6 m, cao 2,5 (đá; C1 đồng) · `hoa-bieu` L cặp, cao 12, ∅ 1,2 (rồng
+cuốn, mây ngang, mâm, hống; bệ tu di + lan can) · `nhat-quy` S nhật quỹ (đông) + gia lượng (tây) · M + rùa, hạc đồng mỗi thứ
+một cặp · `vac-nuoc` M cặp, thân 1,5 · bụng ∅ 2 trên bệ đá 0,3 (C1 mạ vàng) · `dinh-huong` S đỉnh 3 chân · M đỉnh trước + lư
+hương vuông sau · L lò đan bát giác (Bồng Lai) · `gieng` S ∅ 1,4 có ròng rọc · M trong đình giếng vuông 2,5 mái chóp ·
+`den-da` S một đèn lục giác 1,9 · M hàng 3 đèn cách đều 6 m · `bia` S bia đứng 2,5 · M rùa đội bia 4 · L đình bia vuông
+6,25 (mở, mái yết sơn) · `cot-co` M cặp cao 12, đá kẹp chân, phướn đỏ 5 m · `cui-bao-hieu` S 3 × 3 × 2 (củi xếp chéo 5 lớp +
+búi lau). Tất cả dưới ngân sách tam giác (≤ 2,5k). Cách hiểu cần xem lại khi duyệt: vạc "cao 1,5" là thân (cả bệ 1,8) ·
+đình bia L cao ≈ 10 m · cột "Duyệt" thêm sau khi người dùng xem.
 
 Vật nhỏ khác (bàn trà, sạp, bồ đoàn, kệ sách, chum, ngựa, lạc đà, hạc, thuyền…) **không thuộc kiến trúc**: vẫn dùng nhưng
 chỉ đặt khi gắn một **hoạt động** (chỗ ngồi có việc, sạp có NPC bán, đoàn buôn đang đi) — ghi trong bản mô tả bài trí GĐ 3.
@@ -137,5 +151,5 @@ riêng qua `/lead`. Duyệt xong mỗi mẫu → ảnh `design/screens/KienTruc-
 | Phần | Trạng thái |
 |---|---|
 | Danh mục (bản này) | **đã duyệt** (người dùng 2026-11-14) — số đo có thể chỉnh khi xem Catalog 3D |
-| Catalog 3D | https://claude.ai/artifact/VHdbpqKax8q8Ya5fUxeGXc (`?giong=tong|thanh|giang-nam|duong`, `?dot=1|2|3`, `?ma=<mã>`) · **đợt 1 đạt** (người dùng 2026-11-14 — 8 mẫu dựng mới; `lau`, `cua-hang`, `hi-dai` bày bằng hàm cũ, duyệt lại ở GĐ 4–5) · **đợt 2 đạt** (người dùng 2026-11-14 — 8 mẫu + `leu-chi-huy` tách riêng) · **đợt 3 đã đăng** (phần nối, `?dot=3`) — chờ duyệt |
+| Catalog 3D | https://claude.ai/artifact/VHdbpqKax8q8Ya5fUxeGXc (`?giong=tong|thanh|giang-nam|duong`, `?dot=1|2|3|4`, `?ma=<mã>`) · **đợt 1 đạt** (người dùng 2026-11-14 — 8 mẫu dựng mới; `lau`, `cua-hang`, `hi-dai` bày bằng hàm cũ, duyệt lại ở GĐ 4–5) · **đợt 2 đạt** (người dùng 2026-11-14 — 8 mẫu + `leu-chi-huy` tách riêng) · **đợt 3 đạt** (người dùng 2026-11-14 — 16 mẫu; cổng trăng tường M / L 3,8 / 5,8) · **đợt 4 đã đăng** (vật sân, `?dot=4`) — chờ duyệt |
 | Model AI biểu tượng | tông môn: chưa làm; các vùng: theo mục 6, làm sau khi Catalog duyệt mẫu khối tương ứng |
