@@ -106,7 +106,7 @@ code, sửa lỗi lớn) làm trong **worktree riêng**, không sửa thẳng th
 1. Đầu việc: công cụ `EnterWorktree` (`name` = tên việc không dấu, vd. `tro-chuyen`) → nhánh mới từ `main` của máy
    (`worktree.baseRef: head`), thư mục `.claude/worktrees/<tên>` → chạy `dart tool/viec.dart chuan-bi` (gói npm dùng chung qua
    `.claude/worktrees/node_modules` — ngoài mọi worktree, xoá worktree không đụng tới).
-2. Trong việc: commit trên nhánh việc thoải mái (chỉ trong máy, không push). Lỗi mới ghi mã tạm `L-?1`, `L-?2`…
+2. Trong việc: commit trên nhánh việc thoải mái (chỉ trong máy, không push). Lỗi mới ghi mã tạm `L-12`, `L-13`…
    (không tự lấy số — việc khác có thể đang lấy). Thử trên trình duyệt: `npm run dev` **trong worktree**.
 3. Xong việc (kiểm đạt): commit hết → `dart tool/viec.dart gop` (rebase lên main, cấp số `L-`, build + kiểm, đưa main
    tiến tới) → `ExitWorktree` "remove". Xung đột khi rebase: tự sửa; nhật ký chỉ-thêm
