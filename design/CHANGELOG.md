@@ -3,6 +3,31 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-14.15 — Cảnh: Nhà của ta 我家 (tiểu viện riêng, 12 ô trang trí)
+
+- Loại: cảnh 3D — **bố cục** (cảnh vùng mới `design/scene/nha-ta.json`, mã cảnh `nha-ta`). Đáp ứng kế hoạch
+  `docs/tasks/2026-11-14-nha-nguoi-dung.md` NV4. Phiên VS Code làm thay vai thiết kế (`/canh`); **người dùng duyệt trên
+  Canvas 3D 2026-11-14**.
+- Bố cục: tiểu viện tường vôi 32 × 26 (x −16 … 16, z −14 … 12), cổng mái ngói giữa tường nam (biển "Nhà của ta"), tường
+  thấp 2,2 m x 6,5 có cổng trăng "Vườn" chia **Sân trước** (tây) và **Vườn** (đông). Nhà chính `chinh-phong` kiểu mới
+  **`nha-o`** (nhà ở 3 gian 正房, một tầng, gian giữa mở vào được, trong trống) tâm (0; −8) 10,5 × 6. Lối lát từ cổng lên
+  thềm + nhánh sang cổng trăng và vào vườn. Tùng (−12,5; −10,5), trúc (−13; 8,5) trong sân; trúc mao ba phía ngoài tường.
+  Vòng trận về (0; 7) r 4; người chơi bắt đầu (0; 2). Trời sáng xám xanh, sương 18–75, nền gạch vuông màu rêu.
+- Khu (`site.areas`): Chính phòng 正房, Vườn 園, Sân trước 前院.
+- Ô trang trí (`decorSlots`, R-NHA-2) — 12 ô: **trong** ×3 (−3,2; −9,8) · (0; −10) · (3,2; −9,8) sát tường sau nhà; **san**
+  ×3 (−3,5; −2) · (3,5; −2,6) · (−7; 3,5); **vuon** ×6 (9; −11) · (13; −11) · (11; −7) · (14; −4) · (10,5; 4) · (14; 8).
+  Mã ô là khoá lưu nhà (R-NHA-3) — **không đổi mã**.
+- Luật: R-NHA-1 (vòng trận về, nơi trên bản đồ — mục 2026-11-14.13), R-NHA-2 (ô, loại ô), R-VA-* (tường viện, nhà
+  `nha-o` va chạm tường + cột hiên) — không lệch.
+- `scene:check`: Không có lỗi (mọi cảnh). Hiệu năng Canvas 3D (chưa có vật trang trí): trên xuống 55 draw call ·
+  21,5k tam giác; cả sân 54 draw call. Đặt đủ 12 ô: thêm ≤ 14 draw call · ≤ 5,6k tam giác (vật 1 draw call, đèn lồng /
+  tranh chữ 2) + dấu ô 6 draw call khi trang trí → vẫn < 80.
+- Cần code: kiểu nhà `nha-o` (đã có, `web/src/scene/kien_truc/nha_o.ts`); hình 13 vật + dấu ô (NV6 — `scene/decorItems.ts`,
+  `scene/decorLayer.ts`); ghép chế độ trang trí + HUD (NV8), nơi trên bản đồ (NV9).
+- Canvas 3D: không đăng bản này (theo yêu cầu). Ảnh: `screens/Canh-nha-ta.png` (cả sân), `screens/Canh-nha-ta-tren.png`
+  (trên xuống). Ảnh trong nhà (`?nv=0,-8.5`) chụp headless ra trang trắng — chưa có.
+- File: `scene/nha-ta.json`, `screens/Canh-nha-ta.png`, `screens/Canh-nha-ta-tren.png`, `CHANGELOG.md`.
+
 ## 2026-11-14.14 — Cảnh: tiệm Tạp hoá 雜 bên lối Cổng Trấn (Khởi Nguyên Trấn)
 
 - Loại: cảnh 3D — **bố cục**. Đáp ứng kế hoạch `docs/tasks/2026-11-14-van-tien.md` NV10, quyết định 1 (người dùng đã chọn

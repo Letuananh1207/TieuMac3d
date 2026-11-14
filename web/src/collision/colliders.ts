@@ -41,8 +41,17 @@ export class Colliders {
   readonly circles: Circle[] = [];
 
   /** Thêm hộp tâm (x, z), rộng w theo trục x, sâu d theo trục z. `h` > 0: vật cao che tầm nhìn camera (tường, nhà). */
-  add(x: number, z: number, w: number, d: number, h = 0, range?: YRange): void {
-    this.boxes.push({ minX: x - w / 2, maxX: x + w / 2, minZ: z - d / 2, maxZ: z + d / 2, h, ...range });
+  add(x: number, z: number, w: number, d: number, h = 0, range?: YRange): Box {
+    const b: Box = { minX: x - w / 2, maxX: x + w / 2, minZ: z - d / 2, maxZ: z + d / 2, h, ...range };
+    this.boxes.push(b);
+    return b;
+  }
+
+  /** Bỏ một vật cản đã thêm (vật trang trí bị gỡ / thay — R-NHA-2). Không có thì thôi. */
+  remove(o: Box | Circle): void {
+    const list: (Box | Circle)[] = 'r' in o ? this.circles : this.boxes;
+    const i = list.indexOf(o);
+    if (i >= 0) list.splice(i, 1);
   }
 
   /**
@@ -79,8 +88,10 @@ export class Colliders {
   }
 
   /** Thêm vật cản tròn tâm (x, z), bán kính r. */
-  addCircle(x: number, z: number, r: number): void {
-    this.circles.push({ x, z, r });
+  addCircle(x: number, z: number, r: number): Circle {
+    const c: Circle = { x, z, r };
+    this.circles.push(c);
+    return c;
   }
 
   /**

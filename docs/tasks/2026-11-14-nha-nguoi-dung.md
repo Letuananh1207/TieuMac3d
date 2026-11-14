@@ -48,10 +48,13 @@ người khác (cần multiplayer / backend — ngoài giai đoạn này).
 - [x] 2. `decorSlots` trong `SceneSpec` + mặc định rỗng + `check-scene.mjs` kiểm ô. (scene/spec · xong khi
       `npm run scene:check` qua với cảnh cũ không đổi)
 - [x] 3. Danh mục + luật trang trí thuần `zones/decor.ts` + vitest theo R-NHA-2/4. (zones · `npm test`)
-- [ ] 4. (đã dựng, chờ duyệt — cần thêm kiểu nhà `nha-o`: `scene/kien_truc/nha_o.ts`) **Thiết kế cảnh** `design/scene/nha-ta.json` bằng `/canh` (nhà, sân, vườn, vòng trận về, các ô) — cho
+- [x] 4. (người dùng duyệt trên Canvas 3D 2026-11-14 → chốt `design/CHANGELOG.md` 2026-11-14.15; kiểu nhà `nha-o`: `scene/kien_truc/nha_o.ts`) **Thiết kế cảnh** `design/scene/nha-ta.json` bằng `/canh` (nhà, sân, vườn, vòng trận về, các ô) — cho
       duyệt trên Canvas 3D rồi mới chốt. (design · xong khi chốt mục trong `design/CHANGELOG.md`)
 - [ ] 5. **Thiết kế** nơi mới trên bản đồ + HUD trang trí — chờ thiết kế (`docs/phieu_thiet_ke/2026-11-14-nha-nguoi-dung.md`).
-- [ ] 6. Dựng mesh vật `scene/decorItems.ts` (+ collider vật to) và ô trống hiện mờ trong chế độ trang trí. (scene)
+- [x] 6. Dựng mesh vật `scene/decorItems.ts` (+ collider vật to) và ô trống hiện mờ trong chế độ trang trí. (scene)
+      Xong: hình 13 vật + khung bao / vật cản `scene/decorItems.ts`; đặt theo ô + dấu ô (trống / có vật / đang chọn)
+      `scene/decorLayer.ts` (`DecorLayer.set / setAll / anchor`, `addDecorMarkers`, `slotFloorY`, `slotMark`);
+      `Colliders.add / addCircle` trả vật cản + `remove`. Chưa ghép — NV8 gọi từ `homeDecor.ts`.
 - [x] 7. Cầu nối `getHome` / `setDecor`: `docs/bridge.md` trước → `flutterBridge.ts` + test → `ProgressStore` +
       `scene_event.dart` + test Dart R-NHA-3. (bridge · app · xong khi test hai phía xanh)
 - [ ] 8. Ghép `homeDecor.ts` + `main.ts`; HUD theo thiết kế ở nhiệm vụ 5. (ui · ghép — sau nhiệm vụ 5)

@@ -12,6 +12,8 @@ import type { LocalBox } from './noi_that';
 import { frontRamp, type Shell } from './vao_trong';
 
 const PLAT = 0.3;
+/** Mặt sàn trong nhà (nền + ván sàn) — chân đồ trang trí ô `trong` (R-NHA-2). */
+export const NHA_O_FLOOR = PLAT + 0.04;
 const RAMP = 0.8;
 const WALL = 0.22;
 /** giấy dán song cửa sổ (chi tiết hình dạng, như màu đồ đạc ở `noi_that.ts`) */

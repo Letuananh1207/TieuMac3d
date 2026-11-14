@@ -33,4 +33,19 @@ describe('Colliders theo độ cao', () => {
     c.resolve(low, 0.5, 1);
     expect(low.x).toBeCloseTo(1.5, 5);
   });
+
+  it('R-NHA-2: gỡ vật to khỏi ô → hết chặn (hộp và tròn)', () => {
+    const c = new Colliders();
+    const b = c.add(0, 0, 2, 2);
+    const r = c.addCircle(5, 0, 1);
+    c.remove(b);
+    c.remove(r);
+    c.remove(b); // gỡ lần hai không lỗi
+    const p = { x: 0.5, z: 0 };
+    c.resolve(p, 0.5);
+    expect(p).toEqual({ x: 0.5, z: 0 });
+    const q = { x: 5.5, z: 0 };
+    c.resolve(q, 0.5);
+    expect(q).toEqual({ x: 5.5, z: 0 });
+  });
 });
