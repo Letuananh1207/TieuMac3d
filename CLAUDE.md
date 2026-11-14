@@ -73,7 +73,9 @@ dart tool/rule_trace.dart --pending           # quy tắc chờ đồng bộ onl
    ghép lớp chỉ ở `main.ts`. Máy kiểm (`E-LOP`).
 2. Không nạp gì từ mạng: gói npm và font đóng gói (`@fontsource`), không CDN / Google Fonts.
 3. Phiên bản gói npm ghim cố định (`npm install --save-exact`).
-4. Không shadow realtime; pixelRatio tối đa 1,5; vật liệu Lambert.
+4. Không shadow realtime, không hậu kỳ toàn màn (bóng = nướng sẵn vào màu đỉnh / đĩa mờ); pixelRatio tối đa 1,5; vật liệu
+   Lambert hoặc vật liệu cảnh mềm chung (`softMaterial`); shader riêng chỉ trong `web/src/scene/` cho nước / trời / cỏ — mỗi
+   thay đổi đồ hoạ đo fps trước / sau (Android tầm trung ≥ 30, mục tiêu 60). Quyết định `decisions/0005-canh-hoat-hinh-mem.md`.
 5. Nhân vật qua hợp đồng `Character`; di chuyển ở `PlayerController` — đổi nhân vật không sửa controller.
 6. DOM dựng bằng `textContent` / `createElement`, không `innerHTML`; bám mép dùng `env(safe-area-inset-*)`.
 7. Sửa web xong thì `npm run build` để app nhận bản mới.

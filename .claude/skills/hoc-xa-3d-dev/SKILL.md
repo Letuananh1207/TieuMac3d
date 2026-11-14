@@ -59,6 +59,7 @@ tạm, soạn phiếu (`/ui-apply phieu`).
 | import sai lớp theo bảng ở `decisions/0001-kien-truc.md` | `E-LOP` |
 | nạp mã / CSS / font từ http(s) (CDN, Google Fonts) — app chạy offline | `E-CDN` |
 | bật shadow realtime (`castShadow`, `shadowMap.enabled`) | `E-BONG` |
+| vật liệu PBR (`MeshStandard` / `MeshPhysical`), hậu kỳ toàn màn (`EffectComposer`) — cảnh dùng `lambert()` / `softMaterial` (decisions/0005) | `W-VATLIEU` (cảnh báo) |
 | sửa tay `app/assets/scene/` (bản build, bị ghi đè) hoặc `reference/hoc-xa-3d.html` | — |
 | đổi phiên bản gói npm sang dải `^`/`~` — luôn ghim cố định (`npm install --save-exact`) | — |
 | `any`, gán `innerHTML` | `W-ANY`, `W-HTML` (cảnh báo) |

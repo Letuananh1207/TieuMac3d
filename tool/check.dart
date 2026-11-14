@@ -13,6 +13,7 @@
 //   W-LOPMOI web/src: thư mục mới chưa có trong bảng phụ thuộc
 //   W-ANY    web/src: dùng kiểu any
 //   W-HTML   web/src: gán innerHTML / outerHTML / insertAdjacentHTML (dùng textContent + createElement)
+//   W-VATLIEU web/src: tạo vật liệu PBR (MeshStandard / MeshPhysical) hoặc hậu kỳ toàn màn (EffectComposer) — decisions/0005
 //   W-MAU    app/lib: Color(0x…) viết thẳng ngoài file màu (*color*.dart, theme/)
 //   W-COCHU  app/lib: fontSize: <số> viết thẳng
 //   W-DAI    file quá 400 dòng
@@ -41,6 +42,7 @@ const descriptions = <String, String>{
   'W-LOPMOI': 'thư mục mới chưa có trong bảng phụ thuộc — thêm vào LAYERS + decisions/0001',
   'W-ANY': 'dùng kiểu any',
   'W-HTML': 'gán HTML thô — dùng textContent + createElement',
+  'W-VATLIEU': 'vật liệu PBR / hậu kỳ toàn màn — cảnh dùng Lambert hoặc softMaterial; muốn dùng phải có quyết định + số đo máy thật (decisions/0005)',
   'W-MAU': 'Color(0x…) viết thẳng ngoài file màu',
   'W-COCHU': 'fontSize viết bằng số',
   'W-DAI': 'file quá 400 dòng — cân nhắc tách',
@@ -59,6 +61,7 @@ final _cdnHtmlRe = RegExp(r'''(?:src|href)\s*=\s*["']\s*(?:https?:)?//''', caseS
 final _cdnCssRe = RegExp(r'''@import\s+(?:url\()?\s*['"]?\s*https?://''', caseSensitive: false);
 final _shadowRe = RegExp(r'(?:castShadow|receiveShadow|shadowMap\.enabled)\s*=\s*true');
 final _anyRe = RegExp(r'(?::\s*any\b|\bas\s+any\b|<any>|any\[\])');
+final _vatLieuRe = RegExp(r'(?:new\s+(?:THREE\.)?Mesh(?:Standard|Physical)Material\s*\(|\bEffectComposer\b)');
 final _htmlRe = RegExp(r'(?:\.innerHTML\s*[+]?=|\.outerHTML\s*=|insertAdjacentHTML\s*\()');
 final _colorRe = RegExp(r'\bColor\(\s*0x');
 final _fontSizeRe = RegExp(r'\bfontSize\s*:\s*\d');
@@ -172,6 +175,7 @@ void scanFile(String path, List<Hit> hits) {
       if (_shadowRe.hasMatch(l)) hit('E-BONG', i);
       if (_anyRe.hasMatch(l)) hit('W-ANY', i);
       if (_htmlRe.hasMatch(l)) hit('W-HTML', i);
+      if (_vatLieuRe.hasMatch(l)) hit('W-VATLIEU', i);
     }
     return;
   }

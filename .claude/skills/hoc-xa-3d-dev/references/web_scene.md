@@ -5,9 +5,10 @@
 | Thứ | Giá trị | Ở đâu |
 |---|---|---|
 | pixelRatio tối đa | 1,5 (`MAX_PIXEL_RATIO`) | `scene/renderer.ts` |
-| quản lý màu | `ColorManagement.enabled = false`, đèn × π — giữ màu prototype r128 | `scene/renderer.ts`, `scene/environment.ts` |
-| vật liệu | `MeshLambertMaterial` qua `lambert()`; `MeshBasicMaterial` cho thứ không cần sáng (biển, đèn lồng, nước) | `scene/materials.ts` |
-| bóng | không shadow realtime; bóng giả = đĩa đen mờ dưới chân | `player/blockCharacter.ts` |
+| quản lý màu | cảnh cũ: `ColorManagement.enabled = false`, đèn × π — giữ màu prototype r128; cảnh `look.style: "mem"`: bật (`createStage({ colorManaged })`, hex = sRGB) — decisions/0005 | `scene/renderer.ts`, `scene/environment.ts` |
+| vật liệu | `MeshLambertMaterial` qua `lambert()`; cảnh mềm: `softMaterial(wrap, side, wind?)` (Lambert + wrap + màu đỉnh + gió) và `ShaderMaterial` nước (`waterShader.ts`); `MeshBasicMaterial` cho thứ không cần sáng (biển, đèn lồng, trời, quầng). Không PBR, không hậu kỳ toàn màn (`W-VATLIEU`) — decisions/0005 | `scene/materials.ts` |
+| bóng | không shadow realtime; bóng giả = đĩa đen mờ dưới chân; cảnh mềm: bóng nướng vào màu đỉnh (`scene/bake.ts`, `mergeSoft` / `mergeVertexColors(group, look)`) | `player/blockCharacter.ts` |
+| kiểu nhìn cảnh | `look` trong đặc tả (`scene/look.ts`): `cu` / `mem`; mềm = vòm trời (`skyDome.ts`), mây phồng (`sky.ts`), sương núi (`farMountains.ts`), đất mượt (`terrainMem.ts`), cỏ hoa (`coHoa.ts`), tán tròn (`khoiMem.ts`), nước (`waterShader.ts`), quầng đèn (`quangDen.ts`), vignette (`ui/vignette.ts`); `?look=cu` so cũ, `?muc=` ép mức | `scene/world.ts` |
 | texture | vẽ bằng canvas 2D (`makeCanvasTex`, `drawSign` / `drawBanner` / `drawBoard`), không file ảnh | `scene/textures.ts` |
 | biển, cờ, bảng | **ảnh chung** `signMesh` (`scene/signAtlas.ts`): mọi biển của cảnh một canvas 2048², một vật liệu → 1 draw call; `buildWorld` gọi `resetSignAtlas()`; chữ cần font: `signText(spec)` nạp trước khi dựng | `kien_truc/chi_tiet.ts` `addSign` |
 | số / màu của cảnh | đặc tả `SceneSpec` (`DEFAULT_SCENE` = cảnh gốc: tường ±21, sương 28–70); far 200 | `scene/spec.ts`, đọc `design/scene/scene.json` ở `scene/loadSpec.ts` |
