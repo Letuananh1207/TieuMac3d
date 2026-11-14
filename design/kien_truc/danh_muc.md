@@ -34,18 +34,20 @@ Cột "Duyệt" = kết quả xem trên Catalog 3D (mục 7).
 | `thap` | Tháp 塔 | mốc nhìn xa, thờ | C3–C4 | 5 tầng · đáy 5 · cao 18 | 7 tầng · đáy 7 · cao 26 | 9 tầng · đáy 9 · cao 34 | toản tiêm; mặt bằng vuông (Đường) · lục / bát giác (Tống) | không | `thap` | **đạt** (2026-11-14) |
 | `dinh` | Đình 亭 | nghỉ chân, ngắm, che giếng / bia | C4 | vuông cạnh 3,75 · cột 3 | lục giác ∅ 5 · cột 3,2 | bát giác ∅ 6,25, hiên kép | toản tiêm / quyển bồng yết sơn; ngói hoặc tranh (Rừng trúc) | có (mở) | `dinh` | **đạt** (2026-11-14) |
 | `ta` | Thuỷ tạ 榭 · Hiên 軒 | ngồi bên nước, nghe nhạc | C4 | 1 gian · 5 × 5 | 3 gian · 11 × 6 | — | quyển bồng yết sơn, mặt nước mở, 美人靠 | có | (mới) — thay "Thuỷ các" `nha-nho` | **đạt** (2026-11-14) |
-| `phuong` | Thạch phảng 舫 | ngồi bên nước, biểu tượng vườn | C4 | 1 cỡ · 18 × 5, đuôi lầu 2 tầng | — | — | mỗi đoạn một mái | có | (mới) | đợt 2 — chờ duyệt |
-| `lang` | Hành lang 廊 | nối nhà, che mưa, dẫn đường | C4–C5 | đoạn thẳng 3,75 · lòng 1,9 · cột 3,1 | lang bồng ven kênh (một dốc, lòng 3, ghế 美人靠 phía nước) | bò núi (bậc theo dốc) | quyển bồng | có | (mới) | đợt 2 — chờ duyệt |
+| `phuong` | Thạch phảng 舫 | ngồi bên nước, biểu tượng vườn | C4 | 1 cỡ · 18 × 5, đuôi lầu 2 tầng | — | — | mỗi đoạn một mái | có | (mới) | **đạt** (2026-11-14, đợt 2) |
+| `lang` | Hành lang 廊 | nối nhà, che mưa, dẫn đường | C4–C5 | đoạn thẳng 3,75 · lòng 1,9 · cột 3,1 | lang bồng ven kênh (một dốc, lòng 3, ghế 美人靠 phía nước) | bò núi (bậc theo dốc) | quyển bồng | có | (mới) | **đạt** (2026-11-14, đợt 2) |
 | `nha-giang-nam` | Nhà gối sông · thuỷ các 水閣 | ở, bến nhà, thuyền ghé | C5 | 1 gian · 4,5 × 7 · 2 tầng | 2 gian · 9 × 8 | 3 gian · 12 × 9 + gác chồm nước | ngạnh / huyền sơn, đầu hồi 觀音兜 | không | Nhà ven sông, Thư phòng (`nha-nho`) | **đạt** (2026-11-14) |
 | `nha-day` | Dãy nhà 1 tầng (đạo phòng, sương phòng, doanh trại, kho lương) | ở, trọ, chứa | C5 | 3 gian · 12 × 6 | 5 gian · 20 × 6 | 7 gian · 28 × 6 | ngạnh sơn; kho lương nền 0,8 + lỗ thông gió | không | Trúc Xá, Kho lương (`nha-nho`) | **đạt** (2026-11-14) |
-| `nha-dat` | Nhà đất nện / gạch mộc | ở, chứa (biên ải) | C6 | 1 ô · 5 × 5 | 2 ô · 10 × 5 | 3 ô quanh sân chữ U · 15 × 15 | mái bằng đất | không | `nha-dat` (props) | đợt 2 — chờ duyệt |
+| `nha-dat` | Nhà đất nện / gạch mộc | ở, chứa (biên ải) | C6 | 1 ô · 5 × 5 | 2 ô · 10 × 5 | 3 ô quanh sân chữ U · 15 × 15 | mái bằng đất | không | `nha-dat` (props) | **đạt** (2026-11-14, đợt 2) |
 | `cua-hang` | Cửa hàng 下店上宅 | bán (có NPC / trò) | C5 | 1 gian · 4,5 × 7,5 | 2 gian · 9 × 7,5 | 3 gian · 13,5 × 7,5 | ngạnh sơn, 2 tầng, ván cửa tháo | tầng 1 | `cua-hang` | đợt 1 bày bằng hàm cũ — duyệt lại khi chuyển mẫu (GĐ 4–5) |
-| `tu-mieu` | Từ / miếu 祠廟 (một viện) | thờ, kể chuyện vùng | C3–C4 | cổng + điện S trong sân · 15 × 20 | + hưởng đường · 20 × 30 | — | yết sơn đơn | sân | Khương Nữ Từ (`nha-nho`) | đợt 2 — chờ duyệt |
+| `tu-mieu` | Từ / miếu 祠廟 (một viện) | thờ, kể chuyện vùng | C3–C4 | cổng + điện S trong sân · 15 × 20 | + hưởng đường · 20 × 30 | — | yết sơn đơn | sân | Khương Nữ Từ (`nha-nho`) | **đạt** (2026-11-14, đợt 2) |
 | `hi-dai` | Hí đài 戲臺 | biểu diễn, tụ tập | C3 | 1 cỡ · sân khấu 9 × 9, nền 1,5 | — | — | yết sơn | có | `hi-dai` | đợt 1 bày bằng hàm cũ — duyệt lại khi chuyển mẫu (GĐ 4–5) |
-| `lau-thanh` | Lầu trên đôn đài 城樓 | cổng chính + mốc | C2–C3 | đôn 12 × 8 cao 5 + lầu 3 gian 1 tầng | đôn 20 × 12 cao 7 + lầu 3 gian 2 tầng (lầu cổng ải) | đôn chữ 凹 + lầu 9 gian (Ngọ Môn) | yết sơn kép / vũ điện kép (L) | không | `quan-thanh`, `ngo-mon`, `cong-quan` (props) | đợt 2 — chờ duyệt |
-| `dich-lau` | Địch lâu rỗng 空心敵台 | canh, bắn, trú | C6 (+ chòi C5) | 1 cỡ · 12,5 × 12,5 · cao 14 · chòi 鋪房 trên nóc | — | — | chòi ngạnh sơn | mặt nóc | `dich-lau` (props) | đợt 2 — chờ duyệt |
-| `phong-hoa` | Phong hoả đài 烽燧 + đống củi | báo hiệu | C6 | gạch · đáy 7,5 · cao 10 | đất nện · đáy 9 · cao 12 + sân 13 × 11 | — | không | không | `phong-hoa`, `phong-hoa-dat` (props) | đợt 2 — chờ duyệt |
-| `leu` | Lều · sạp | trọ tạm, buôn bán | C6 | sạp 2,5 × 1,9 (mái vải / ô) | lều quân 4 × 5 | lều tròn ∅ 6,5 · lều chỉ huy 8 × 10 | vải | không | `leu`, `leu-vai`, `lau-say`, `soai-truong`, `sap-o` | đợt 2 — chờ duyệt |
+| `lau-thanh` | Lầu trên đôn đài 城樓 | cổng chính + mốc | C2–C3 | đôn 12 × 8 cao 5 + lầu 3 gian 1 tầng | đôn 20 × 12 cao 7 + lầu 3 gian 2 tầng (lầu cổng ải) | đôn chữ 凹 + lầu 9 gian (Ngọ Môn) | yết sơn kép / vũ điện kép (L) | không | `quan-thanh`, `ngo-mon`, `cong-quan` (props) | **đạt** (2026-11-14, đợt 2) |
+| `dich-lau` | Địch lâu rỗng 空心敵台 | canh, bắn, trú | C6 (+ chòi C5) | 1 cỡ · 12,5 × 12,5 · cao 14 · chòi 鋪房 trên nóc | — | — | chòi ngạnh sơn | mặt nóc | `dich-lau` (props) | **đạt** (2026-11-14, đợt 2) |
+| `phong-hoa` | Phong hoả đài 烽燧 + đống củi | báo hiệu | C6 | gạch · đáy 7,5 · cao 10 | đất nện · đáy 9 · cao 12 + sân 13 × 11 | — | không | không | `phong-hoa`, `phong-hoa-dat` (props) | **đạt** (2026-11-14, đợt 2) |
+| `leu` | Lều · sạp | trọ tạm, buôn bán | C6 | sạp 2,5 × 1,9 (mái vải / ô) | lều quân 4 × 5 | lều tròn ∅ 6,5 · lều chỉ huy 8 × 10 | vải | không | `leu`, `leu-vai`, `lau-say`, `soai-truong`, `sap-o` | **đạt** (2026-11-14, đợt 2 — lều chỉ huy tách mẫu `leu-chi-huy`, người dùng đồng ý) |
+
+Đợt 2 đã duyệt 2026-11-14: 8 mẫu (`lang`, `phuong`, `nha-dat`, `tu-mieu`, `lau-thanh`, `dich-lau`, `phong-hoa`, `leu`) + `leu-chi-huy` đạt.
 
 Riêng `lau-vach` (Cửu Tầng Lâu dựa vách) và các công trình biểu tượng khác → mục 6 (model AI).
 
@@ -61,6 +63,16 @@ Riêng `lau-vach` (Cửu Tầng Lâu dựa vách) và các công trình biểu t
 | `nen` | Nền 台基 · tu di 須彌座 · đôn đài | nâng cấp bậc | thường (theo cấp) | tu di 1 tầng | tu di 3 tầng hình 土 (Tam Đài) | tu di chia 51 phần: 10 · 8 · 7 · 10 · 7 · 9 | `terrain.plateaus` (khi là nền nhà) |
 | `lan-can` | Lan can đá trắng · gỗ · 美人靠 | chặn mép nền, cầu, ban công | gỗ cao 0,9 | đá cao 1,1, mô-đun 1,9 | đá chạm + 螭首 (C1–C2) | không nhân K | `fences`, `lanCan.ts` |
 | `bac` | Bậc 踏跺 | lên nền | 如意 (3 mặt) | 垂帶 (đá xiên hai bên) | 御路 (phiến rồng giữa) | bậc 0,15 × 0,32, không nhân K | `stairs` |
+
+**Đợt 3 trên Catalog (2026-11-14, chờ duyệt)** — mẫu nhiều kiểu tách mỗi kiểu một hàng: `cong-tuong` → `cong-trang` (S/M/L),
+`cong-lau` (M/L), `cong-thuy-hoa` (S); `tuong` → `tuong-voi` (S/M/L), `tuong-cung`, `tuong-thanh`, `tuong-dat` (L);
+`cau` → `cau-vom` (S/M/L), `cau-bang` (S bằng · M cửu khúc), `cau-mai` (L), `cau-treo` (S). Cách hiểu số đo (xem lại khi
+duyệt): `bai-phuong` "cao 6" của S = xà thấp nhất 6 m (trụ xuyên trời lên 9,5); M cao ≈ 10, L ≈ 13 · cổng trăng ∅ 4 / 6,4 cần
+tường ≥ 3,8 / 5,8 m (luật đỉnh vòm cách đỉnh tường 0,6 của `tuong.ts`) — Catalog bày trên tường đủ cao, tường vôi M / L
+3,5 / 4,5 chỉ cho ∅ 3,6 / 4,9 · lậu song đáy 1,6 ở tường ≥ 3,5; tường chia sân 2,5 hạ ô 0,7 xuống đáy 1,4 · đỉnh tường vôi
+vẫn là mái ngói hai dốc của cảnh (饅頭頂 chưa làm) · `thuy-hoa` chưa là `walls.gates[].kind` (thêm khi chuyển map, GĐ 5) ·
+cầu vòm L (cung đình) 3 nhịp 8 · 10 · 8, rộng 7 (bậc rộng theo cấp 10,6 / 7,2 / 5,7 chưa làm) · Tam Đài chữ 土 38 × 30
+(khối trước 30 × 20, eo 14 × 6, sau 24 × 12), tầng trên lùi trước 4,5 cho bậc 御路 — 11,1k / 12k tam giác (sát ngân sách).
 
 ## 3. Vật sân có việc (11 mẫu)
 
@@ -125,5 +137,5 @@ riêng qua `/lead`. Duyệt xong mỗi mẫu → ảnh `design/screens/KienTruc-
 | Phần | Trạng thái |
 |---|---|
 | Danh mục (bản này) | **đã duyệt** (người dùng 2026-11-14) — số đo có thể chỉnh khi xem Catalog 3D |
-| Catalog 3D | https://claude.ai/artifact/VHdbpqKax8q8Ya5fUxeGXc (`?giong=tong|thanh|giang-nam|duong`, `?dot=1|2`, `?ma=<mã>`) · **đợt 1 đạt** (người dùng 2026-11-14 — 8 mẫu dựng mới; `lau`, `cua-hang`, `hi-dai` bày bằng hàm cũ, duyệt lại ở GĐ 4–5) · **đợt 2 đã đăng** (8 mẫu + `leu-chi-huy`) — chờ duyệt |
+| Catalog 3D | https://claude.ai/artifact/VHdbpqKax8q8Ya5fUxeGXc (`?giong=tong|thanh|giang-nam|duong`, `?dot=1|2|3`, `?ma=<mã>`) · **đợt 1 đạt** (người dùng 2026-11-14 — 8 mẫu dựng mới; `lau`, `cua-hang`, `hi-dai` bày bằng hàm cũ, duyệt lại ở GĐ 4–5) · **đợt 2 đạt** (người dùng 2026-11-14 — 8 mẫu + `leu-chi-huy` tách riêng) · **đợt 3 đã đăng** (phần nối, `?dot=3`) — chờ duyệt |
 | Model AI biểu tượng | tông môn: chưa làm; các vùng: theo mục 6, làm sau khi Catalog duyệt mẫu khối tương ứng |

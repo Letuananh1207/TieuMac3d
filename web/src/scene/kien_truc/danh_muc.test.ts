@@ -7,9 +7,9 @@ import { hinhMai } from './mai_giong';
 import { DEFAULT_SCENE } from '../spec';
 import { dungMau, MAU_DA_DUNG } from './mau_nha';
 
-// biển vẽ bằng canvas 2D: Node không có — canvas giả
-const ctx: unknown = new Proxy({}, { get: (_t, key) => (key === 'measureText' ? () => ({ width: 10 }) : () => ctx) });
-vi.stubGlobal('document', { createElement: () => ({ width: 0, height: 0, getContext: () => ctx }) });
+// biển, vôi tường vẽ bằng canvas 2D: Node không có — canvas giả
+const ctx: unknown = new Proxy({}, { get: (_t, key) => (key === 'measureText' ? () => ({ width: 10 }) : key === 'getImageData' ? () => ({ data: new Uint8ClampedArray(4) }) : () => ctx) });
+vi.stubGlobal('document', { createElement: () => ({ width: 0, height: 0, style: {}, getContext: () => ctx }) });
 
 const deg = (r: number): number => (r * 180) / Math.PI;
 
@@ -80,19 +80,19 @@ describe('mái chuẩn — độ dốc theo giọng vùng', () => {
   });
 });
 
-describe('Catalog — mẫu đợt 1–2 dựng được ở mọi cỡ, mọi giọng', () => {
+describe('Catalog — mẫu đợt 1–3 dựng được ở mọi cỡ, mọi giọng', () => {
   const style = { ...DEFAULT_SCENE.buildingStyle, heightScale: 1 };
-  it('mọi mẫu đợt 1, đợt 2 có hàm dựng', () => {
-    for (const m of MAU.filter((x) => x.dot <= 2)) expect(MAU_DA_DUNG, m.ma).toContain(m.ma);
+  it('mọi mẫu đợt 1–3 có hàm dựng', () => {
+    for (const m of MAU.filter((x) => x.dot <= 3)) expect(MAU_DA_DUNG, m.ma).toContain(m.ma);
   });
-  it('mỗi cỡ × giọng ra một nhóm có khối, mái đúng chiều (đỉnh cao hơn chân)', () => {
+  it('mỗi cỡ × giọng ra một nhóm có khối (nhà cao > 2,5 m; phần nối — lan can, bậc — > 0,5 m)', () => {
     for (const m of MAU) for (const c of CO) {
       if (!m.co[c]) continue;
       for (const giong of GIONG) {
         const g = dungMau(m.ma, c, giong, style);
         expect(g, `${m.ma} ${c} ${giong}`).not.toBeNull();
         const b = new THREE.Box3().setFromObject(g!);
-        expect(b.max.y, `${m.ma} ${c} ${giong}`).toBeGreaterThan(2.5);
+        expect(b.max.y, `${m.ma} ${c} ${giong}`).toBeGreaterThan(m.nhom === 'nha' ? 2.5 : 0.5);
         expect(b.max.x - b.min.x, `${m.ma} ${c} rộng`).toBeGreaterThanOrEqual(m.co[c]!.w * 0.9);
       }
     }

@@ -3,8 +3,8 @@
   đứng cạnh mỗi mẫu, nhãn mã + cỡ + cấp + draw call / tam giác, chọn giọng vùng để mái đổi dốc; dựng các mẫu từ bộ phận
   dùng chung … không đổi cảnh các map lúc này … đăng artifact để người dùng duyệt từng mẫu." (GĐ 2 + đầu GĐ 4 của
   `2026-11-14-kien-truc-chuan-bai-tri.md`; danh mục đã duyệt `design/kien_truc/danh_muc.md`)
-- Loại: thêm (code mới, trang thiết kế) · Cỡ: lớn · Trạng thái: đợt 1 đã duyệt 2026-11-14 · **đợt 2 đã duyệt 2026-11-14 (cả 8 mẫu; `leu-chi-huy` tách mẫu riêng — đồng ý) — tiếp: đợt 3**
-  (https://claude.ai/artifact/VHdbpqKax8q8Ya5fUxeGXc, nút "Đợt 2" hoặc `?dot=2`)
+- Loại: thêm (code mới, trang thiết kế) · Cỡ: lớn · Trạng thái: đợt 1 đã duyệt 2026-11-14 · đợt 2 đã duyệt 2026-11-14 (cả 8 mẫu; `leu-chi-huy` tách mẫu riêng — đồng ý) · **đợt 3 đã đăng — chờ duyệt**
+  (https://claude.ai/artifact/VHdbpqKax8q8Ya5fUxeGXc, nút "Đợt 3" hoặc `?dot=3`)
 
 ## Phạm vi
 **Sẽ thêm / sửa**
@@ -50,8 +50,11 @@ Flutter, cầu nối. Map chuyển sang mẫu mới ở GĐ 5.
 - [x] 6. Đợt 2 — `lang`, `phuong`, `nha-dat`, `tu-mieu`, `lau-thanh`, `dich-lau`, `phong-hoa`, `leu`. Đăng → duyệt.
   Đã đăng 2026-11-14 — **chờ duyệt**. Bảng `danh_muc_dot2.ts`; dựng `mau_nha_2.ts` (vườn / thờ / cổng), `mau_bien.ts`
   (biên ải, tạm); test `danh_muc.test.ts` (ngân sách tam giác, đôn / bò núi / chiều cao, răng cưa, mặt trùng).
-- [ ] 7. Đợt 3 — phần nối: `bai-phuong`, `son-mon`, `cong-tuong` (thêm `thuy-hoa`), `tuong` 4 kiểu, `cau` 4 kiểu, `nen`,
-  `lan-can`, `bac`. Đăng → duyệt.
+- [x] 7. Đợt 3 — phần nối: `bai-phuong`, `son-mon`, `cong-tuong` (thêm `thuy-hoa`), `tuong` 4 kiểu, `cau` 4 kiểu, `nen`,
+  `lan-can`, `bac`. Đăng → duyệt. Đã đăng 2026-11-14 — **chờ duyệt**. Bảng `danh_muc_dot3.ts` (nhóm `noi`, kiểu tách hàng
+  `cong-*`, `tuong-*`, `cau-*`); dựng `mau_noi.ts` (cổng, tường), `mau_cau.ts` (cầu), `mau_nen.ts` (nền, lan can, bậc);
+  test `danh_muc_dot3.test.ts` (ngân sách, xà ≥ 6 m, ∅ vòm, tường thành 9 + 1,8, nhịp cầu, cửu khúc, tu di 51 phần, Tam
+  Đài, bậc 0,15 × 0,32, lan can 0,9 / 1,1) + quét mặt trùng chung ở `danh_muc.test.ts`.
 - [ ] 8. Đợt 4 — 11 vật sân. Đăng → duyệt. Cập nhật `danh_muc.md` (đánh dấu đạt, chỉnh số đo đã sửa khi xem).
 
 ## Kiểm tra cuối (mỗi đợt)
@@ -82,3 +85,15 @@ không đổi `design/scene/*.json` (`git diff --stat design/scene` trống).
   `mai_giong.ts` (dùng chung đợt 1–2). Màu gạch / đất / vải trùng vật biên ải cũ để gộp lần vẽ.
 - Tầng trên có cửa (lầu thành M, đuôi thạch phảng) cần sàn khối dưới chân: mặt đáy tấm vách + chân cửa (`addDoors`) trùng
   nhau, ở đất thì bị che, trên cao thì lộ (L-10 quét ra) — đã thêm sàn.
+
+## Ghi chú đợt 3 (2026-11-14)
+- Tam giác (gộp như Catalog, giọng Tống): bai-phuong 0,2k / 0,5k / 0,7k · son-mon 1,2k · cong-trang 0,5k ×3 · cong-lau
+  0,2k ×2 · cong-thuy-hoa 0,6k · tuong-voi 0,1–0,2k · tuong-cung 0,1k · tuong-thanh 0,3k · tuong-dat < 0,1k · cau-vom
+  0,6k / 0,6k / 1,1k · cau-bang 0,1k / 0,9k · cau-mai 0,8k · cau-treo 0,9k · nen 0,5k / 1,5k / **11,1k (C1 ≤ 12k)** ·
+  lan-can 0,6k / 0,4k / 0,6k · bac < 0,1k / 0,1k / 0,4k — tất cả dưới ngân sách (có test).
+- Dùng lại hàm của cảnh: tường vôi + cổng trăng / môn lâu (`addPlasterWalls`, `tuong.ts`), cầu treo (`addBridges`), nền
+  thường (`nen`). Không sửa các hàm đó (cảnh game không đổi); chỉ export màu đất của `mau_bien.ts`.
+- Cầu treo của cảnh: đáy trụ gỗ + ván đầu cầu cùng cao, ở cảnh sát đất nên không lộ; Catalog đặt cầu trên mỏm đá nên cho
+  mỏm đá lấn 0,4 m dưới đầu cầu (L-10).
+- Bỏ chữ 栿 (地栿) khỏi chú thích: Noto Serif SC không có, `fonts:han` dừng build.
+- Cách hiểu số đo + chỗ còn thiếu: ghi dưới bảng mục 2 của `danh_muc.md`.

@@ -4,7 +4,7 @@
  * đứng cạnh để so tỉ lệ, nhãn mã · cỡ · cấp · draw call · tam giác (đỏ khi vượt ngân sách theo cấp), chọn giọng vùng để
  * mái đổi dốc. Không vào app. Kế hoạch: docs/tasks/2026-11-14-catalog-kien-truc.md.
  *
- * Tham số URL: `?giong=tong|thanh|giang-nam|duong` · `?dot=1|2` (một đợt) · `?ma=<mã>` (chỉ một mẫu) · `?chup` (ẩn bảng) ·
+ * Tham số URL: `?giong=tong|thanh|giang-nam|duong` · `?dot=1|2|3` (một đợt; 3 = phần nối) · `?ma=<mã>` (chỉ một mẫu) · `?chup` (ẩn bảng) ·
  * `?cam=x,y,z&tam=x,z` (đặt camera).
  */
 import * as THREE from 'three';

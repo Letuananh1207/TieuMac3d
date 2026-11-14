@@ -11,9 +11,9 @@ import { maiDua, ngoi } from './danh_muc';
 import { box, column, frustum, prism } from './hinh';
 import { dungMai } from './mai_giong';
 
-const EARTH = '#b9946a';
-const EARTH_DARK = '#94714c';
-const REED_LINE = '#8a7a52';
+export const EARTH = '#b9946a';
+export const EARTH_DARK = '#94714c';
+export const REED_LINE = '#8a7a52';
 const TENT = '#d8cfb8';
 const TENT_TRIM = '#7a3a2a';
 
