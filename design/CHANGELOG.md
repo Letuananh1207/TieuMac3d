@@ -12,6 +12,15 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
   ruộng chè mép tây x 8 → 10; khu Thiên Bậc / Truyền Tống Đài / Đồi Chè theo bục mới. Lão Canh quay đầu z −35.
 - Luật: R-VA-2, R-HANH-2, R-BANDO-2, R-BANDO-3, R-NPC-7. `scene:check` không lỗi; 152 draw call / 149 142 tam giác (nhìn từ trên).
 - Ảnh: `screens/Canh-thien-bac-ngan.png`.
+## 2026-11-15.9 — Cuộn Ngồi ôn cầm giữa màn, giấy dài hơn (người dùng đổi 2026-11-14.21)
+
+- Loại: giao diện (cảnh 3D + chữ trên cuộn). Phiên code V-20261114-43; người dùng: "giao diện khi ngồi xuống đang chỉ nhỏ như
+  này tôi muốn dài hơn và đang cầm lệch về bên phải". **Đã duyệt 2026-11-15.**
+- Cuộn cầm **giữa màn** cả dọc lẫn ngang (bỏ lệch phải màn ngang); giấy 0,26 × 0,25 → **0,26 × 0,35 m** (trục 0,37); màn ngang
+  giấy ~84 % chiều cao, màn dọc ~80 % bề ngang. Bố cục dọc 343×462 (mục 70, "Đứng dậy" 53), ngang 250×337 (mục 53, "Đứng dậy" 49).
+  Ô gợi ý trải hết bề ngang, xuống dòng / thu chữ, không bị cắt. Hai tay giữ hai trục đối xứng, không che chữ.
+- Luật: R-ON-8. Canvas cần vẽ lại `NgoiMat-*` (`docs/testing/gui_thiet_ke_2026-11-15.md`).
+- Ảnh: `screens/NgoiMat-cuon-giua-ngang.png`.
 
 ## 2026-11-15.7 — Cổng Trấn dài thêm, cổng xuống núi cao 8 m, đèn hai bên lối, vòng sáng "Về nhà", bỏ mái cổng nam
 
