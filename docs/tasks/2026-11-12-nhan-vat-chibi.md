@@ -46,6 +46,10 @@ bằng canvas), `player/playerCharacter.ts` (lựa chọn `chibi`, `tieu-mac`, `
       Kiểm nhìn: chụp Canvas 3D tại máy `?dang=ngoi|chao|nhay|chay|vuon|nhin` (đệ tử + Tiểu Mặc). Thử máy: ngồi ôn,
       chào, nhảy, đứng chờ 6 s; ngồi bồ đoàn / sập trà (độ cao chỗ ngồi); camera sau lưng gần như không thấy cuộn (đầu
       chibi to che) — nếu cần thấy thì chỉnh camera ngồi ôn (việc riêng).
+- [x] 6. Camera Ngồi ôn (V-20261114-06, người dùng chọn 2026-11-14): Ngồi ôn (nút / phím C) và bồ đoàn khu tự học →
+      camera lùi 5,5 m, chúc ~40°, xoay ra sau vai phải ~46° (`camera.study` trong `scene/spec.ts`, `orbit.sit(true, facing)`);
+      đứng dậy → về khoảng cách / góc / hướng cũ (R-DIEU-7, R-NGOI-1). Kiểm với nhân vật .glb (thấy rõ cuộn) và chibi
+      (tay áo chibi vẫn che phần lớn cuộn — góc nào cũng vậy). Canvas 3D `?dang=ngoi` dùng camera này.
 
 ## Kiểm tra cuối
 cd web && npx tsc --noEmit && npm run build · dart tool/check.dart --changed · chụp Canvas 3D (draw call nhân vật)

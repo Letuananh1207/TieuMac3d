@@ -173,6 +173,55 @@ describe('OrbitCamera — camera khi ngồi (L-8)', () => {
     expect(orbit.pitch).toBe(0.3);
   });
 
+  it('R-DIEU-7: Ngồi ôn → camera lùi 5,5 m, chúc ~40°, sau vai phải ~45° (thấy cuộn sách); đứng dậy → về khoảng cách, góc, hướng cũ', () => {
+    const orbit = new OrbitCamera({ ...DEFAULT_ORBIT, near: { dist: 4.2, pitch: 0.32 } });
+    orbit.dist = 4.6;
+    orbit.pitch = 0.3;
+    orbit.yaw = 0.2;
+    const facing = 1; // hướng mặt nhân vật (rad), như `character.facing.rotation.y`
+    orbit.sit(true, facing);
+    expect(orbit.dist).toBeCloseTo(5.5, 9);
+    expect((orbit.pitch * 180) / Math.PI).toBeCloseTo(40, 0);
+    const cam = new THREE.PerspectiveCamera();
+    orbit.update(cam, new THREE.Vector3(), 0, true);
+    // camera so với nhân vật: phía sau (ngược hướng mặt) và lệch sang phải người ngồi
+    const fwd = new THREE.Vector3(Math.sin(facing), 0, Math.cos(facing));
+    const right = new THREE.Vector3(-Math.cos(facing), 0, Math.sin(facing)); // tay phải khi nhìn theo `fwd`
+    const flat = new THREE.Vector3(cam.position.x, 0, cam.position.z).normalize();
+    expect(flat.dot(fwd)).toBeLessThan(0);
+    expect(flat.dot(right)).toBeGreaterThan(0);
+    expect((Math.acos(-flat.dot(fwd)) * 180) / Math.PI).toBeCloseTo(46, 0);
+    orbit.sit(false);
+    expect(orbit.dist).toBe(4.6);
+    expect(orbit.pitch).toBe(0.3);
+    expect(orbit.yaw).toBe(0.2);
+  });
+
+  it('R-DIEU-7: đang Ngồi ôn vẫn xoay / zoom được; trong nhà camera tối đa 6 m (R-HUD-2); ngồi lặp không mất góc cũ', () => {
+    const orbit = new OrbitCamera();
+    const [d0, p0, y0] = [orbit.dist, orbit.pitch, orbit.yaw];
+    orbit.sit(true, 0);
+    orbit.sit(true, 2); // gọi lại mỗi khung: không đổi gì
+    const yaw = orbit.yaw;
+    orbit.rotate(100, 0);
+    expect(orbit.yaw).not.toBe(yaw);
+    orbit.wheel(1000);
+    expect(orbit.dist).toBeGreaterThan(5.5);
+    const cam = new THREE.PerspectiveCamera();
+    orbit.update(cam, new THREE.Vector3(), 0, true, undefined, { minX: -50, maxX: 50, minZ: -50, maxZ: 50 });
+    expect(cam.position.distanceTo(new THREE.Vector3(0, 0.9, 0))).toBeCloseTo(6, 9); // 6 m từ đầu người ngồi (cao 0,9 m)
+    orbit.sit(false);
+    expect([orbit.dist, orbit.pitch, orbit.yaw]).toEqual([d0, p0, y0]);
+  });
+
+  it('R-NGOI-1: ngồi án thư / bàn trà (không truyền hướng mặt) không xoay camera', () => {
+    const orbit = new OrbitCamera();
+    orbit.yaw = 0.5;
+    orbit.sit(true);
+    expect(orbit.yaw).toBe(0.5);
+    expect(orbit.pitch).toBe(DEFAULT_ORBIT.seated!.pitch);
+  });
+
   it('R-NGOI-1: đang ngồi vẫn zoom / xoay được; ngồi hai lần không mất góc cũ', () => {
     const orbit = new OrbitCamera();
     const d0 = orbit.dist;

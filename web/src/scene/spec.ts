@@ -772,8 +772,17 @@ export interface SceneSpec {
   fences: FenceSpec[];
   /** lan can: cao, khoảng hai trụ (m), màu thân (sơn son), màu chóp trụ */
   fenceStyle: { height: number; postEvery: number; color: string; cap: string };
-  /** `seated`: khi ngồi vào án thư / bàn trà (R-NGOI-1) — camera lùi ra, chúc xuống thấy cả bàn */
-  camera: { fov: number; minDist: number; maxDist: number; near: CameraView; far: CameraView; seated: CameraView };
+  /** `seated`: khi ngồi vào án thư / bàn trà (R-NGOI-1) — camera lùi ra, chúc xuống thấy cả bàn ·
+   *  `study`: khi Ngồi ôn (R-DIEU-7) — lùi ra, nâng cao, lệch `side` rad ra sau vai phải để thấy cuộn sách trên tay */
+  camera: {
+    fov: number;
+    minDist: number;
+    maxDist: number;
+    near: CameraView;
+    far: CameraView;
+    seated: CameraView;
+    study: CameraView & { side: number };
+  };
 }
 
 export const DEFAULT_SCENE: SceneSpec = {
@@ -944,6 +953,7 @@ export const DEFAULT_SCENE: SceneSpec = {
     near: { dist: 9, pitch: 0.42 },
     far: { dist: 17, pitch: 0.75 },
     seated: { dist: 5.5, pitch: 0.44 },
+    study: { dist: 5.5, pitch: 0.7, side: 0.8 },
   },
 };
 

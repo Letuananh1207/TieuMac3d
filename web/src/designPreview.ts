@@ -169,6 +169,8 @@ async function boot(): Promise<void> {
     if (far) orbit.toggleView();
     const focus = character.root.position;
     character.facing.rotation.y = orbit.yaw + Math.PI; // như app: quay lưng về camera
+    // ?dang=ngoi: camera Ngồi ôn như app — lùi ra sau vai thấy cuộn sách (R-DIEU-7)
+    if (!far && new URLSearchParams(location.search).get('dang') === 'ngoi') orbit.sit(true, character.facing.rotation.y);
     orbit.update(camera, focus, 0, true);
     controls.target.copy(orbit.lookTarget); // đúng điểm ngắm của app (nhân vật ở 1/3 dưới màn)
   };

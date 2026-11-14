@@ -266,6 +266,7 @@ async function boot(): Promise<void> {
       orbit.sit(false); // đứng dậy: camera về khoảng cách + góc cũ (R-NGOI-1)
       return;
     }
+    if (!onSeat) orbit.sit(true, character.facing.rotation.y); // Ngồi ôn: lùi ra sau vai thấy cuộn sách (R-DIEU-7)
     if ((onSeat && !seatStudy) || sitOpened || busy) return;
     sitTime += dt;
     if (sitTime < SIT_TO_LEARN) return;
@@ -355,7 +356,7 @@ async function boot(): Promise<void> {
     character.facing.rotation.y = spot.rotY;
     orbit.yaw = spot.rotY - Math.PI; // camera sau lưng, nhìn về án
     player.toggleSit();
-    orbit.sit(true); // lùi ra, chúc xuống thấy cả bàn (R-NGOI-1, L-8)
+    orbit.sit(true, seatStudy ? spot.rotY : undefined); // lùi ra thấy cả bàn (R-NGOI-1, L-8); khu tự học: như Ngồi ôn
   };
   const seatButton = new SeatButton<SeatPick>((spot) => sitAt(spot));
   // nhạc nền trà lâu (R-NHAC-1): đài phát theo giờ thật, âm lượng theo khoảng cách tới sàn trà lâu

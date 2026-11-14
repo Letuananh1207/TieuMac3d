@@ -58,6 +58,9 @@ export interface OrbitSettings {
   far: { dist: number; pitch: number };
   /** khi ngồi vào án thư / bàn trà (R-NGOI-1); không có → `DEFAULT_ORBIT.seated` */
   seated?: { dist: number; pitch: number };
+  /** khi Ngồi ôn (R-DIEU-7): như `seated` + `side` = lệch khỏi thẳng sau lưng (rad, dương = sau vai phải) để thấy
+   *  cuộn sách trên tay qua vai; không có → `DEFAULT_ORBIT.study` */
+  study?: { dist: number; pitch: number; side: number };
 }
 
 export const DEFAULT_ORBIT: OrbitSettings = {
@@ -66,6 +69,7 @@ export const DEFAULT_ORBIT: OrbitSettings = {
   near: { dist: 9, pitch: 0.42 },
   far: { dist: 17, pitch: 0.75 },
   seated: { dist: 5.5, pitch: 0.44 },
+  study: { dist: 5.5, pitch: 0.7, side: 0.8 },
 };
 
 /** đầu nhân vật cao hơn chân (m): camera ngắm / dò vật chắn từ đây */
@@ -90,7 +94,7 @@ export class OrbitCamera {
   /** khoảng cách đang dùng sau khi tránh vật chắn (R-DIEU-4) */
   private shown: number;
   /** đang ngồi: khoảng cách + góc ngẩng trước khi ngồi, để đứng dậy trả lại (R-NGOI-1); null = đang đứng */
-  private beforeSit: { dist: number; pitch: number } | null = null;
+  private beforeSit: { dist: number; pitch: number; yaw?: number } | null = null;
   private readonly want = new THREE.Vector3();
   private readonly target = new THREE.Vector3();
 
@@ -108,19 +112,28 @@ export class OrbitCamera {
   /**
    * Ngồi vào án thư / bàn trà (R-NGOI-1): `true` → lùi ra, chúc xuống (`seated`), ngắm thấp theo người ngồi;
    * `false` → trả khoảng cách + góc ngẩng như trước khi ngồi. Gọi lặp cùng giá trị không sao.
+   * Có `facing` (hướng mặt nhân vật, rad) = Ngồi ôn (R-DIEU-7): góc `study`, xoay ra sau vai thấy cuộn sách; đứng dậy
+   * trả cả hướng camera.
    */
-  sit(on: boolean): void {
+  sit(on: boolean, facing?: number): void {
     if (on === (this.beforeSit !== null)) return;
     if (on) {
       this.beforeSit = { dist: this.dist, pitch: this.pitch };
-      const v = this.settings.seated ?? DEFAULT_ORBIT.seated!;
+      const study = facing === undefined ? null : (this.settings.study ?? DEFAULT_ORBIT.study!);
+      const v = study ?? this.settings.seated ?? DEFAULT_ORBIT.seated!;
       this.dist = this.clampDist(v.dist);
       this.pitch = v.pitch;
+      if (study) {
+        this.beforeSit.yaw = this.yaw;
+        this.yaw = wrap(facing! + Math.PI + study.side);
+        this.yawVel = 0;
+      }
     } else {
       const b = this.beforeSit!;
       this.beforeSit = null;
       this.dist = b.dist;
       this.pitch = b.pitch;
+      if (b.yaw !== undefined) this.yaw = b.yaw;
     }
     this.shown = this.dist;
   }
