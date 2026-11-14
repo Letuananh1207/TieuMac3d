@@ -164,7 +164,8 @@ void don(String name) {
   final branch = git(['branch', '--show-current'], cwd: path);
   final link = Link('$path/web/node_modules');
   final mods = '$path/web/node_modules';
-  if (link.existsSync() || Directory(mods).existsSync()) {
+  // chỉ gỡ khi là đường nối (kiểu cũ); thư mục thật (vd. bộ đệm .vite do build tạo) nằm trong worktree → xoá cùng worktree
+  if (FileSystemEntity.typeSync(mods, followLinks: false) == FileSystemEntityType.link) {
     // junction trên Windows: rmdir không /s chỉ gỡ đường nối; Link.delete cho symlink
     // node_modules là thư mục thật (đã npm install riêng) → rmdir không /s từ chối vì không rỗng → dừng, không xoá gì
     late final ProcessResult r;
