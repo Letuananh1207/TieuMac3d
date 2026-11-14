@@ -98,7 +98,16 @@
       "to": [
         -51,
         17
-      ]
+      ],
+      "gate": {
+        "at": -26.5,
+        "width": 6.4,
+        "kind": "trang",
+        "signs": {
+          "tay": "Sân chơi · Thư viện",
+          "dong": "Ra sườn núi"
+        }
+      }
     },
     {
       "from": [
@@ -228,6 +237,17 @@
         36
       ],
       "width": 2.2
+    },
+    {
+      "from": [
+        -51.5,
+        -26.5
+      ],
+      "to": [
+        -59,
+        -26.5
+      ],
+      "width": 3.6
     }
   ],
   "buildingStyle": {

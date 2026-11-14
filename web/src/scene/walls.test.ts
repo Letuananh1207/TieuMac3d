@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { Colliders } from '../collision/colliders';
 import { gateOpening, lauClearHeight, lauTop, plasterWallBoxes } from './kien_truc/tuong';
 import { DEFAULT_SCENE, type SceneSpec, type WallSegment } from './spec';
+import { HOME_SCENE, loadScene } from './loadSpec';
 import { ringRuns, segmentRuns, wallGates } from './walls';
 
 /** Tường Quảng Trường như ví dụ R-VA-1: ±17, cao 5,2, dày 0,5; cổng mái ngói nam / bắc rộng 9,6 lối cao 4 (V-20261114-19),
@@ -72,6 +73,24 @@ describe('cổng trên đoạn tường thêm', () => {
     expect(2 * gateOpening(gate)).toBeCloseTo(2.4, 6);
     expect(walk(world(), -33, -5, 0, -1, 12).z).toBeLessThan(-14);
     expect(walk(world(), -36, -5, 0, -1, 12).z).toBeCloseTo(-10.325, 2);
+  });
+});
+
+describe('R-VA-1: cổng trăng riêng tường tây Kỳ Văn Uyển – Tàng Thư Các (cảnh thật)', () => {
+  const spec = loadScene(HOME_SCENE).spec;
+  const real = (): Colliders => {
+    const c = new Colliders();
+    for (const b of plasterWallBoxes(spec.walls, spec.wallSegments)) c.add(b.x, b.z, b.w, b.d, b.h);
+    return c;
+  };
+
+  it('R-VA-1: x −51 tâm z −26,5 rộng 6,4, lối 4,6 m; từ (−49; −26,5) đi tây qua được, z −30 / z −23 dừng ở x −50,25', () => {
+    const gate = wallGates(spec.walls, spec.wallSegments).find((g) => g.axis === 'z' && g.fixed === -51);
+    expect(gate && [gate.at, gate.width, gate.kind]).toEqual([-26.5, 6.4, 'trang']);
+    expect(2 * gateOpening(gate!)).toBeCloseTo(4.6, 6);
+    expect(walk(real(), -49, -26.5, -1, 0, 10).x).toBeLessThan(-55);
+    expect(walk(real(), -49, -30, -1, 0, 10).x).toBeCloseTo(-50.25, 2);
+    expect(walk(real(), -49, -23, -1, 0, 10).x).toBeCloseTo(-50.25, 2);
   });
 });
 
