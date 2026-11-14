@@ -1,7 +1,7 @@
 # Nhân vật chibi dựng bằng code (kiểu đồ chơi) — thay model AI
 - Yêu cầu: "mục tiêu của tôi là đẹp nhất có thể và phù hợp triển khai" → người dùng đồng ý (2026-11-12) hướng dựng nhân
   vật bằng code kiểu đồ chơi chibi; giữ Hunyuan cho đồ vật / công trình.
-- Loại: thêm (nhân vật) · Cỡ: lớn · Trạng thái: đang làm (bước 1: bản mẫu trên Canvas 3D chờ duyệt)
+- Loại: thêm (nhân vật) · Cỡ: lớn · Trạng thái: xong (chờ thử máy)
 
 ## Nguồn thiết kế
 - Nhân vật chính: ảnh người dùng tạo bằng Gemini — `design/models/anh/nhan-vat.webp` (đạo bào lam nhạt viền lam, đai
@@ -9,6 +9,7 @@
 - NPC Tiểu Mặc: tờ thiết kế người dùng gửi (2026-11-12) — tóc đuôi ngựa buộc dây đỏ, áo giao lĩnh trắng viền lục bích,
   đai đen ngọc bội, kiếm sau lưng tua đỏ, má hồng, 6 biểu cảm (chào · đọc to · suy nghĩ · vui mừng · dính mực · ngủ gật),
   đồ đội đầu theo cấp tu đạo (Đạo đồng → Thiên sư).
+- **Duyệt**: người dùng duyệt bản mẫu chibi trên Canvas 3D (2026-11-14) → làm nhiệm vụ 4.
 
 ## Thiết kế trước, code sau
 1. Bản mẫu trên Canvas 3D (`?nhan-vat=chibi`, `?nhan-vat=tieu-mac`, `?bieu-cam=…`, `?di=1`, `?pha=`) → người dùng
@@ -27,7 +28,12 @@ bằng canvas), `player/playerCharacter.ts` (lựa chọn `chibi`, `tieu-mac`, `
       khớp (≈ 6–8 draw call). Preset: đệ tử (nhân vật chính), Tiểu Mặc (+ kiếm sau lưng).
 - [x] 2. 7 biểu cảm (bình thường + 6 của tờ thiết kế) vẽ bằng canvas, đổi tức thì.
 - [x] 3. Canvas 3D (bản 17): chụp trước / nghiêng / sau / đi + bảng biểu cảm → người dùng duyệt.
-- [ ] 4. (sau chốt) mặc định chibi, `npm run build`, thử máy.
+- [x] 4. (sau chốt) mặc định chibi, `npm run build`, thử máy.
+      `playerCharacter.ts`: không có / khác `?nhan-vat=` → đệ tử chibi; `glb` = model AI (lỗi / không file → đệ tử
+      khối), `khoi`, `gau`, `tieu-mac` giữ. Canvas 3D bỏ mặc định riêng, theo app. Đo (2026-11-14, đếm mesh trong
+      vitest tạm): đệ tử 21 draw call · 8,4k tam giác; Tiểu Mặc 23 · 8,3k — **vượt** ước ≈ 6–8 draw call và ngân sách
+      5k tam giác (kế hoạch thiết kế 3D); vẫn nhẹ hơn model AI (9,5k). Gộp thêm khối: việc sau nếu máy thật giật.
+      Chibi chưa có dáng nhảy / ngồi thiền / chào (`CharacterState` — chỉ nhân vật `.glb` có): thử máy để xem có cần.
 
 ## Kiểm tra cuối
 cd web && npx tsc --noEmit && npm run build · dart tool/check.dart --changed · chụp Canvas 3D (draw call nhân vật)

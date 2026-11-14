@@ -80,9 +80,8 @@ async function boot(): Promise<void> {
     });
   }
 
-  // ?nhan-vat=gau → gấu khối cũ, =khoi → đệ tử khối; mặc định như app (model .glb nếu có, không thì đệ tử khối)
-  // Canvas 3D mặc định nhân vật chibi (bản mẫu chờ duyệt — docs/tasks/2026-11-12-nhan-vat-chibi.md); nút ở bảng đổi
-  const character = await createPlayerCharacter(new URLSearchParams(location.search).get('nhan-vat') ?? 'chibi');
+  // ?nhan-vat= như app: mặc định đệ tử chibi; =tieu-mac, =glb (model AI), =khoi (đệ tử khối), =gau; nút ở bảng đổi
+  const character = await createPlayerCharacter(new URLSearchParams(location.search).get('nhan-vat'));
   // ?nv=x,z[,y] — đặt nhân vật chỗ khác (vd. trong giảng đường để xem nội thất, mái mờ); y = chân ở độ cao nào (tầng 2)
   const nv = (new URLSearchParams(location.search).get('nv') ?? '').split(',').map(Number);
   const nvOk = (nv.length === 2 || nv.length === 3) && nv.every(Number.isFinite);
