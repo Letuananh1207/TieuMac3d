@@ -59,7 +59,7 @@ export const DIALOGS: Dialog[] = [
       },
       {
         id: 'tu-chu',
-        text: 'Sư phụ Mặc Ông đứng ở Truyền Tống Đài ngoài cổng đông đó! Đạo hữu tới hỏi thầy, thầy chỉ cho cách sang Rừng trúc tu chữ.',
+        text: 'Sư phụ Mặc Ông đứng ở Truyền Tống Đài trên đỉnh Thiên Bậc đó! Đạo hữu tới hỏi thầy, thầy chỉ cho cách sang Rừng trúc tu chữ.',
         choices: [{ text: 'Hôm nay Tiểu Mặc thế nào?', next: 'hom-nay' }, OTHER, BYE],
       },
       {

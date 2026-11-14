@@ -39,22 +39,22 @@ describe('bản đồ vùng — đủ mọi cảnh (R-BANDO-2)', () => {
     });
   }
 
-  it('R-BANDO-2: Khởi Nguyên Trấn — 11 khu, vòng trận (30; −9), lối xuống núi (0; 45) ghi "Nhà của ta", bàn cờ + Đấu chữ, Tạp hoá, bảng nhiệm vụ', () => {
+  it('R-BANDO-2: Khởi Nguyên Trấn — 11 khu, vòng trận (0; −61,5) đầu Thiên Bậc, lối xuống núi (0; 45) ghi "Nhà của ta", bàn cờ + Đấu chữ, Tạp hoá, bảng nhiệm vụ', () => {
     const m = mapOf(HOME_SCENE);
     expect(m.labels.filter((l) => l.kind === 'khu').map((l) => l.text)).toEqual([
-      'Truyền Tống Đài',
+      'Sân Đông',
       'Cổng Trấn',
       'Quảng Trường',
       'Kỳ Văn Uyển',
       'Thiên Bậc',
-      'Thượng Trấn',
+      'Truyền Tống Đài',
       'Hậu Sơn',
       'Tàng Thư Các',
       'Mặc Trì',
       'Vườn Bia',
       'Đồi Chè',
     ]);
-    expect(m.icons.find((i) => i.kind === 'vong-tran')).toMatchObject({ x: 30, z: -9 });
+    expect(m.icons.find((i) => i.kind === 'vong-tran')).toMatchObject({ x: 0, z: -61.5 });
     const gate = m.icons.find((i) => i.kind === 'cong-canh');
     expect(Math.round(gate!.x)).toBe(0);
     expect(Math.round(gate!.z)).toBe(45);

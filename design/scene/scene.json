@@ -52,7 +52,7 @@
         "kind": "lau",
         "clearHeight": 4,
         "signs": {
-          "nam": "Bậc lên Trà lâu",
+          "nam": "Lên Đài truyền tống",
           "bac": "Quảng trường"
         }
       },
@@ -61,7 +61,7 @@
         "at": -9,
         "width": 6.4,
         "signs": {
-          "tay": "Đài truyền tống",
+          "tay": "Sân đông",
           "dong": "Quảng trường"
         }
       },
@@ -169,8 +169,8 @@
         "at": 30,
         "width": 5,
         "signs": {
-          "nam": "Đồi Chè",
-          "bac": "Đài truyền tống"
+          "nam": "Trà lâu · Đồi Chè",
+          "bac": "Sân đông"
         }
       }
     },
@@ -358,6 +358,17 @@
         -39.6
       ],
       "width": 3
+    },
+    {
+      "from": [
+        27.5,
+        -36
+      ],
+      "to": [
+        30.4,
+        -36
+      ],
+      "width": 2.4
     }
   ],
   "buildingStyle": {
@@ -384,12 +395,13 @@
     {
       "id": "pham-minh-cac",
       "kind": "tra-lau",
-      "x": 0,
-      "z": -60,
+      "x": 37,
+      "z": -36,
       "w": 19.2,
       "d": 11.2,
       "title": "Trà lâu",
-      "roofColor": "#2b5446"
+      "roofColor": "#2b5446",
+      "rotY": 270
     },
     {
       "id": "tang-thu-cac",
@@ -465,8 +477,8 @@
   "props": [
     {
       "kind": "co",
-      "x": 11.5,
-      "z": -54.5,
+      "x": 30,
+      "z": -44.5,
       "text": "Trà"
     },
     {
@@ -559,13 +571,13 @@
     },
     {
       "kind": "den-da",
-      "x": 20,
-      "z": -12.6
+      "x": -4.6,
+      "z": -54.2
     },
     {
       "kind": "den-da",
-      "x": 20,
-      "z": -5.4
+      "x": 4.6,
+      "z": -54.2
     },
     {
       "kind": "den-da",
@@ -1021,9 +1033,9 @@
     },
     {
       "id": "su-phu",
-      "x": 21.5,
-      "z": -13.5,
-      "rotY": 270
+      "x": 6.5,
+      "z": -55.5,
+      "rotY": 295
     }
   ],
   "camera": {
@@ -1043,8 +1055,8 @@
     "name": "Khởi Nguyên Trấn",
     "areas": [
       {
-        "name": "Truyền Tống Đài",
-        "han": "傳送台",
+        "name": "Sân Đông",
+        "han": "東院",
         "from": [
           17,
           -22
@@ -1103,11 +1115,11 @@
         ]
       },
       {
-        "name": "Thượng Trấn",
-        "han": "上鎮",
+        "name": "Truyền Tống Đài",
+        "han": "傳送台",
         "from": [
           -14,
-          -67
+          -70
         ],
         "to": [
           14,
@@ -1212,7 +1224,7 @@
       {
         "from": [
           -14,
-          -67
+          -70
         ],
         "to": [
           14,
@@ -1403,6 +1415,19 @@
         "y": 0,
         "pave": false,
         "blend": 3
+      },
+      {
+        "from": [
+          30,
+          -46.5
+        ],
+        "to": [
+          44,
+          -24
+        ],
+        "y": 0,
+        "pave": false,
+        "blend": 1.5
       }
     ],
     "peaks": [
@@ -1846,8 +1871,8 @@
   "teleport": {
     "enabled": true,
     "center": [
-      30,
-      -9
+      0,
+      -61.5
     ],
     "radius": 0,
     "ringRadius": 4,

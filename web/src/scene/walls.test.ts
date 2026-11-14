@@ -6,7 +6,7 @@ import { HOME_SCENE, loadScene } from './loadSpec';
 import { ringRuns, segmentRuns, wallGates } from './walls';
 
 /** Tường Quảng Trường như ví dụ R-VA-1: ±17, cao 5,2, dày 0,5; cổng mái ngói nam / bắc rộng 9,6 lối cao 4 (V-20261114-19),
- *  cổng trăng đông (tâm z −9 — Truyền Tống Đài, V-20261114-26) / tây rộng 6,4. */
+ *  cổng trăng đông (tâm z −9 — Sân Đông, sân Truyền Tống Đài cũ: V-20261114-26, V-38) / tây rộng 6,4. */
 const walls: SceneSpec['walls'] = {
   ...DEFAULT_SCENE.walls,
   half: 17,
@@ -103,7 +103,7 @@ describe('R-VA-1: cổng trăng thứ hai trên tường tây Quảng Trường,
   });
 });
 
-describe('R-VA-1: tường đông Quảng Trường — cổng Truyền Tống Đài + cổng Mặc Trì, hai sân có tường (cảnh thật, V-20261114-26)', () => {
+describe('R-VA-1: tường đông Quảng Trường — cổng Sân Đông + cổng Mặc Trì, hai sân có tường (cảnh thật, V-20261114-26)', () => {
   const spec = loadScene(HOME_SCENE).spec;
   const real = (): Colliders => {
     const c = new Colliders();
@@ -123,8 +123,8 @@ describe('R-VA-1: tường đông Quảng Trường — cổng Truyền Tống �
     expect(walk(real(), 15, 0, 1, 0, 6).x).toBeCloseTo(16.25, 2);
   });
 
-  it('R-VA-1: sân Truyền Tống Đài x 17…42, z −22…3 và sân Mặc Trì z 3…25 có tường bao (Mặc Trì chỉ thông ra Quảng Trường)', () => {
-    // Truyền Tống Đài: đi bắc ở x 40 dừng ở z −21,25; đi nam dừng ở z 2,25 (tường ngăn hai sân); đi đông dừng ở x 41,25
+  it('R-VA-1: Sân Đông x 17…42, z −22…3 và sân Mặc Trì z 3…25 có tường bao (Mặc Trì chỉ thông ra Quảng Trường)', () => {
+    // Sân Đông: đi bắc ở x 40 dừng ở z −21,25; đi nam dừng ở z 2,25 (tường ngăn hai sân); đi đông dừng ở x 41,25
     expect(walk(real(), 40, -5, 0, -1, 25).z).toBeCloseTo(-21.25, 2);
     expect(walk(real(), 40, -5, 0, 1, 15).z).toBeCloseTo(2.25, 2);
     expect(walk(real(), 35, -2, 1, 0, 15).x).toBeCloseTo(41.25, 2);
@@ -138,7 +138,7 @@ describe('R-VA-1: tường đông Quảng Trường — cổng Truyền Tống �
   });
 });
 
-describe('R-VA-1: cổng bắc sân Truyền Tống Đài + cổng hậu Tàng Thư Các (cảnh thật, V-20261114-30)', () => {
+describe('R-VA-1: cổng bắc Sân Đông + cổng hậu Tàng Thư Các (cảnh thật, V-20261114-30)', () => {
   const spec = loadScene(HOME_SCENE).spec;
   const real = (): Colliders => {
     const c = new Colliders();
@@ -147,12 +147,12 @@ describe('R-VA-1: cổng bắc sân Truyền Tống Đài + cổng hậu Tàng T
   };
   const gate = (fixed: number, at: number) => wallGates(spec.walls, spec.wallSegments).find((g) => g.axis === 'x' && g.fixed === fixed && g.at === at);
 
-  it('R-VA-1: tường bắc Truyền Tống Đài z −22 có cổng trăng tâm x 30 rộng 5, lối 4 m; từ (30; −18) đi bắc qua được ra bãi đông, x 40 vẫn dừng ở z −21,25', () => {
+  it('R-VA-1: tường bắc Sân Đông z −22 có cổng trăng tâm x 30 rộng 5, lối 4 m; từ (30; −18) đi bắc qua được ra bãi đông, x 40 vẫn dừng ở z −21,25', () => {
     const g = gate(-22, 30)!;
     expect([g.width, g.kind]).toEqual([5, 'trang']);
     expect(2 * gateOpening(g)).toBeCloseTo(4, 6);
     expect(walk(real(), 30, -18, 0, -1, 10).z).toBeLessThan(-26);
-    expect(walk(real(), 30, -26, 0, 1, 8).z).toBeGreaterThan(-19); // ngược lại: từ bãi đông vào sân đài
+    expect(walk(real(), 30, -26, 0, 1, 8).z).toBeGreaterThan(-19); // ngược lại: từ bãi đông vào Sân Đông
     expect(walk(real(), 40, -5, 0, -1, 25).z).toBeCloseTo(-21.25, 2);
   });
 

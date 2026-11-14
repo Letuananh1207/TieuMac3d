@@ -15,7 +15,7 @@ export const TIN_DON: readonly TinDon[] = [
   { rule: 'R-NV-1', text: 'Đạo hữu xem bảng nhiệm vụ hằng ngày trước cổng nam chưa? Làm xong cả hai việc được 20 văn đó.' },
   { rule: 'R-NV-2', text: 'Nghe nói ai làm nhiệm vụ đủ 7 ngày liền thì được thưởng thêm 50 văn. Tiểu khất mà biết chữ thì đã làm rồi…' },
   { rule: 'R-TIEN-4', text: 'Tạp hoá bên kia bán chậu Mai 60 văn, Ao sen tận 200 văn. Mua về đặt ở nhà đẹp lắm!' },
-  { rule: 'R-NHAC-1', text: 'Trà lâu trên đỉnh Thiên Bậc có tiếng đàn cổ cầm suốt ngày. Vào lúc nào cũng nghe đúng khúc đang dạo.' },
+  { rule: 'R-NHAC-1', text: 'Trà lâu bên Đồi Chè có tiếng đàn cổ cầm suốt ngày. Vào lúc nào cũng nghe đúng khúc đang dạo.' },
   { rule: 'R-CO-1', text: 'Chơi Ngũ Tử Kỳ thì nhớ: ai xếp được 5 quân liền nhau, ngang dọc hay chéo, là thắng.' },
   { rule: 'R-HANH-2', text: 'Đứng vào vòng trận ở Truyền Tống Đài một lúc là đi được tới vùng khác. Tiểu khất chưa dám thử.' },
   { rule: 'R-SACH-1', text: 'Thủ thư ở Tàng Thư Các cho mượn sách HSK, mỗi lần một cuốn thôi đó.' },
