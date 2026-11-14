@@ -26,7 +26,7 @@ import { TELEPORT_TEXT } from './scene/truyenTong';
 import { viewDistance } from './scene/farMountains';
 import { createStage, gpuName, MAX_PIXEL_RATIO, probeGpu } from './scene/renderer';
 import { detailOf, FrameCap, pickTier, ResolutionGovernor, tierParam, TIERS } from './scene/quality';
-import { isSoft, withLookParam } from './scene/look';
+import { isColorManaged, isSoft, withLookParam } from './scene/look';
 import { addVignette } from './ui/vignette';
 import { mergeStatic } from './scene/merge';
 import { inRect, type Room } from './scene/rooms';
@@ -118,7 +118,7 @@ async function boot(): Promise<void> {
   const { renderer, scene, camera } = createStage(canvas, spec.camera.fov, viewDistance(spec), {
     antialias: tierSpec.antialias,
     ratio: maxRatio,
-    colorManaged: isSoft(spec.look),
+    colorManaged: isColorManaged(spec.look),
   });
   const clock = new THREE.Clock();
   const colliders = new Colliders();
@@ -126,7 +126,7 @@ async function boot(): Promise<void> {
   const interiors = Object.fromEntries(ZONE_CONTENT.map((c) => [c.id, { kind: c.interior, han: c.lesson.han }]));
   const world = buildWorld(scene, colliders, spec, interiors, detailOf(tier));
   // tối nhẹ mép màn (CSS); mức Thấp bỏ — trình duyệt vẫn phải ghép thêm một lớp phủ cả màn (R-HIEU-1)
-  if (isSoft(spec.look) && detailOf(tier) >= 1) addVignette(canvas, spec.look.vignette);
+  if (isSoft(spec.look) && detailOf(tier) >= 1) addVignette(canvas, spec.look.vignette, spec.look.vignetteColor);
   const placed = placeZones(ZONE_CONTENT, world.zoneAnchors);
   // bài học chỉ ở tông môn → cảnh vùng không báo thiếu vùng học
   const problems = [...SCENE.problems, ...(isHome ? placed.problems : [])];

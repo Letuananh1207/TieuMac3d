@@ -25,7 +25,7 @@ import { viewDistance } from './scene/farMountains';
 import { mergeStatic } from './scene/merge';
 import { portalRect } from './scene/portals';
 import { createStage } from './scene/renderer';
-import { isSoft, withLookParam } from './scene/look';
+import { isColorManaged, isSoft, withLookParam } from './scene/look';
 import { addVignette } from './ui/vignette';
 import { signText } from './scene/signAtlas';
 import { buildWorld } from './scene/world';
@@ -57,13 +57,13 @@ async function boot(): Promise<void> {
   // nhìn từ trên: đủ cao để thấy cả sân / cả vùng địa hình
   const topHeight = Math.max(spec.walls.half * 3, spec.ground.size * 0.9, spec.terrain.enabled ? spec.terrain.size * 0.9 : 0);
   const { renderer, scene, camera } = createStage(canvas, spec.camera.fov, Math.max(viewDistance(spec), topHeight + 60), {
-    colorManaged: isSoft(spec.look),
+    colorManaged: isColorManaged(spec.look),
   });
   const colliders = new Colliders();
   // nội thất như app: theo nội dung bài (main.ts)
   const interiors = Object.fromEntries(ZONE_CONTENT.map((c) => [c.id, { kind: c.interior, han: c.lesson.han }]));
   const world = buildWorld(scene, colliders, spec, interiors);
-  if (isSoft(spec.look)) addVignette(canvas, spec.look.vignette); // như app (main.ts)
+  if (isSoft(spec.look)) addVignette(canvas, spec.look.vignette, spec.look.vignetteColor); // như app (main.ts)
   for (const room of world.rooms) {
     if (!room.teacher) continue;
     const t = createDiscipleCharacter({ robe: '#3f5fa0', trim: '#2b5446' });

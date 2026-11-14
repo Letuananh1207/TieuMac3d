@@ -27,7 +27,28 @@ Tinh thần: 粉牆黛瓦 · 朱柱青檐 — tường vôi, ngói xám đen, c�
    thể một đình nhỏ trên đảo lớn nhất.
 3. **Khe giữa các đoạn tường khu** (`wallSegments`) vẫn là khe thường, chưa thành cổng trăng như khe tường bao.
 
-## Kiểu "hoạt hình mềm, màu ấm" — bảng màu A Xuân ấm 春暖 (2026-11-14.23, đã duyệt)
+## Khởi Nguyên Trấn: màu cũ + hiệu ứng mềm (2026-11-14, theo người dùng — chờ duyệt)
+
+Người dùng (2026-11-14): "đổi màu sắc về như cũ" — chọn **chỉ màu, giữ hiệu ứng mới**. Bảng A "Xuân ấm" dưới đây **thôi
+dùng** cho Khởi Nguyên Trấn (giữ lại làm tham khảo cho GĐ 2). `scene.json` về **bảng màu cảnh cũ** (mục cuối) — mọi mã hex
+trời, sương (60–260 m), đèn (hemi × 0,8, nắng × 0,95), nền, tường, mái, cột, đất, cỏ, cây, núi xa, biển mây, mây, nước y như
+trước V-17 — và `look.colorPipeline: "cu"` (đường màu cũ: ColorManagement tắt như trước, cùng mã hex ra đúng màu ảnh cũ).
+Vẫn giữ `look.style: "mem"`: vật liệu mềm (wrap 0,5), bóng nướng gầm mái / chân tường, cỏ hoa lay gió, nước nông → sâu +
+gợn + bọt, cây tán tròn, mây phồng, vòm trời, quầng đèn, vignette, gộp khối.
+
+Màu riêng của hiệu ứng, chỉnh cho hợp tông cũ (lạnh, xám):
+
+| Vai trò | Màu | Trường |
+|---|---|---|
+| Bóng nướng | xám lạnh `#5E626A` (thay tím nâu `#6B5A70`), sâu 0,4 | `look.aoTint`, `look.ao` |
+| Vòm trời: màu đỉnh tới sớm (gần ảnh nền gradient cũ khi nhìn ngang) | giữa ở 0,03 · đỉnh ở 0,25 (sin góc ngẩng) | `look.skyBands` |
+| Quầng nắng | `#FFF2D0`, hẹp 0,15 (thay 0,35 — trời không bị phủ kem) | `look.sunGlow`, `look.glowSize` |
+| Sương chân núi | `#F4F1EA` 0,55 (= biển mây cũ, thay kem `#F1E6D6`) | `look.mist` |
+| Nước nông · sâu · bọt | `#6A9AAE` · `#3D6E86` (= nước cũ) · `#F4FBF8` | `look.water` |
+| Vignette | 0,25, mép xám lam `#2E3640` (thay 0,35 nâu tím) | `look.vignette`, `look.vignetteColor` |
+| Giữ nguyên | bụng mây `#F4D9D0`, hoa `#F4A7B9` `#FFF6E5` `#F6CF5E` `#B9A3E3`, quầng đèn `#FFC27A` 1,6 m | `look.*` |
+
+## Kiểu "hoạt hình mềm, màu ấm" — bảng màu A Xuân ấm 春暖 (2026-11-14.23 — **thôi dùng** cho Khởi Nguyên Trấn từ 2026-11-14, theo người dùng)
 
 Khởi Nguyên Trấn (`scene.json`) bật `look.style: "mem"`: quản lý màu đúng chuẩn (hex = sRGB), vật liệu mềm + bóng nướng,
 vòm trời, mây phồng, sương núi, đất mượt, cỏ hoa có gió, nước stylized, quầng đèn, vignette. Hồ sơ:
@@ -53,7 +74,7 @@ trời · sương · đèn · núi xa theo giọng vùng, giữ thứ bậc ngó
 | Xà lục · lam · kim · đèn lồng · quầng đèn | `#3D8A84` · `#5274B8` · `#E2B65A` · `#F06A4A` · `#FFC27A` (1,6 m) | `buildingStyle`, `look.lanternGlow` |
 | Vignette | 0,35 (mức Thấp tắt) | `look.vignette` |
 
-## Bảng màu cảnh cũ (đã áp vào `scene.json` các map chưa chuyển)
+## Bảng màu cảnh cũ (đã áp vào `scene.json` các map chưa chuyển; Khởi Nguyên Trấn dùng lại từ 2026-11-14)
 
 | Vai trò | Màu | Trường |
 |---|---|---|

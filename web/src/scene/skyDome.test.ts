@@ -21,6 +21,13 @@ describe('vòm trời (kế hoạch canh-dep NV7)', () => {
     expect(m.g).toBeCloseTo(1);
   });
 
+  it('skyBands: màu đỉnh tới sớm hơn khi `top` thấp (V-20261114-25)', () => {
+    const c = new THREE.Color();
+    const d = new THREE.Vector3(0, 0.5, -0.866);
+    expect(skyColor(d, sun, top, mid, hor, glow, 0, c, { mid: 0.08, top: 0.5 }).getHex()).toBe(top.getHex());
+    expect(skyColor(d, sun, top, mid, hor, glow, 0, c).getHex()).not.toBe(top.getHex());
+  });
+
   it('quầng nắng chỉ quanh hướng mặt trời; size 0 = không quầng', () => {
     const c = new THREE.Color();
     const toward = skyColor(new THREE.Vector3(1, 0, 0), sun, top, mid, hor, glow, 0.35, c).clone();

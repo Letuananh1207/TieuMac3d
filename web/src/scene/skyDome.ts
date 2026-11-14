@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { isColorManaged } from './look';
 import { markDynamic } from './merge';
 import type { SceneSpec } from './spec';
 
@@ -18,9 +19,13 @@ export function addSkyDome(scene: THREE.Scene, spec: SceneSpec, radius: number):
   const d = new THREE.Vector3();
   const c = new THREE.Color();
   const colors = new Float32Array(pos.count * 3);
+  // đường màu cũ (`look.colorPipeline: "cu"`): Color giữ số sRGB thô, đầu ra lại mã hoá sRGB → đổi về tuyến tính để trời
+  // đúng mã hex như ảnh nền gradient của cảnh cũ (không nhạt đi)
+  const raw = !isColorManaged(spec.look);
   for (let i = 0; i < pos.count; i++) {
     d.fromBufferAttribute(pos, i).normalize();
-    skyColor(d, sun, top, mid, hor, glow, spec.look.glowSize, c);
+    skyColor(d, sun, top, mid, hor, glow, spec.look.glowSize, c, spec.look.skyBands);
+    if (raw) c.convertSRGBToLinear();
     colors.set([c.r, c.g, c.b], i * 3);
   }
   geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
@@ -43,7 +48,8 @@ const smooth = (a: number, b: number, v: number): number => {
 };
 
 /**
- * Màu trời theo hướng nhìn `d` (đơn vị): dưới chân trời giữ màu chân trời; lên 0,3 → màu giữa; lên đỉnh → màu đỉnh;
+ * Màu trời theo hướng nhìn `d` (đơn vị): dưới chân trời giữ màu chân trời; lên `bands.mid` → màu giữa; lên `bands.top` →
+ * màu đỉnh;
  * quầng nắng: gần hướng mặt trời trong khoảng `size` (0…1 theo cos góc) pha về `glow`, đậm nhất 85 %.
  */
 export function skyColor(
@@ -55,10 +61,11 @@ export function skyColor(
   glow: THREE.Color,
   size: number,
   out: THREE.Color,
+  bands: { mid: number; top: number } = { mid: 0.3, top: 1 },
 ): THREE.Color {
   const e = d.y;
-  if (e <= 0.3) out.copy(hor).lerp(mid, smooth(0, 0.3, e));
-  else out.copy(mid).lerp(top, smooth(0.3, 1, e));
+  if (e <= bands.mid) out.copy(hor).lerp(mid, smooth(0, bands.mid, e));
+  else out.copy(mid).lerp(top, smooth(bands.mid, bands.top, e));
   if (size > 0) {
     const s = d.dot(sun);
     out.lerp(glow, 0.85 * smooth(1 - size, 1, s));

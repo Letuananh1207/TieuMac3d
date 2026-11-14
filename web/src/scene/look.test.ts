@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { checkLook, DEFAULT_LOOK, isSoft, withLookParam } from './look';
+import { checkLook, DEFAULT_LOOK, isColorManaged, isSoft, withLookParam } from './look';
 import { resolveSceneSpec } from './specCheck';
 
 describe('look — kiểu nhìn cảnh (kế hoạch canh-dep NV5)', () => {
@@ -23,6 +23,16 @@ describe('look — kiểu nhìn cảnh (kế hoạch canh-dep NV5)', () => {
     expect(checkLook({ ...DEFAULT_LOOK, style: 'la' as 'cu' })).toHaveLength(1);
     expect(checkLook({ ...DEFAULT_LOOK, wrap: 1.5, vignette: -0.1, wind: -1 })).toHaveLength(3);
     expect(checkLook(DEFAULT_LOOK)).toEqual([]);
+  });
+
+  it('đường màu: mặc định chuẩn cho cảnh mềm; `cu` tắt quản lý màu; cảnh cũ luôn tắt; giá trị lạ báo lỗi (V-20261114-25)', () => {
+    expect(DEFAULT_LOOK.colorPipeline).toBe('chuan');
+    expect(isColorManaged(DEFAULT_LOOK)).toBe(false);
+    expect(isColorManaged({ ...DEFAULT_LOOK, style: 'mem' })).toBe(true);
+    expect(isColorManaged({ ...DEFAULT_LOOK, style: 'mem', colorPipeline: 'cu' })).toBe(false);
+    const { spec, problems } = resolveSceneSpec({ look: { style: 'mem', colorPipeline: 'la' } });
+    expect(problems.some((p) => p.startsWith('look.colorPipeline'))).toBe(true);
+    expect(isSoft(spec.look)).toBe(true);
   });
 
   it('?look=cu ép kiểu cũ (không sửa đặc tả gốc); tham số khác giữ nguyên', () => {

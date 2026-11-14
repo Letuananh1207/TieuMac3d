@@ -40,7 +40,8 @@ function readGpu(gl: WebGLRenderingContext | WebGL2RenderingContext): string {
 /** `far` = tầm nhìn xa (m); núi xa / biển mây cần xa hơn 200 (`viewDistance` trong farMountains.ts). */
 /**
  * `opts`: mức đồ hoạ (R-HIEU-1) — `antialias` (mặc định bật), `ratio` pixelRatio ban đầu (mặc định ≤ MAX_PIXEL_RATIO);
- * `colorManaged`: quản lý màu đúng chuẩn (hex hiểu là sRGB) — chỉ cảnh `look.style: "mem"` (decisions/0005). Gọi TRƯỚC khi
+ * `colorManaged`: quản lý màu đúng chuẩn (hex hiểu là sRGB) — chỉ cảnh `look.style: "mem"` có `look.colorPipeline: "chuan"`
+ * (decisions/0005; `isColorManaged` trong look.ts). Gọi TRƯỚC khi
  * dựng cảnh: cờ là toàn cục, áp lúc tạo màu.
  */
 export function createStage(
