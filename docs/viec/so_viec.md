@@ -23,3 +23,4 @@ Trạng thái: `nhận` → `chờ trả lời` / `chờ duyệt` → `đang là
 | V-20261114-13 | Áp thiết kế 2026-11-14.16: chữ vòng trận ở Nhà của ta = 我家 | ui-apply | xong — phiên khác đã làm trên main (ef61868); nhánh trùng của /task bỏ | `docs/tasks/2026-11-14-chu-vong-tran.md` | thử: vào Nhà của ta thấy 我家 trên vòng trận, trấn vẫn 起源 |
 | V-20261114-14 | Chế độ thử Văn tiền trên web | lead | đang làm (duyệt 2026-11-14) — nhánh `viec/tien-web-2` | `docs/tasks/2026-11-14-tien-tren-web.md` | — |
 | V-20261114-15 | Áp thiết kế 2026-11-14.17: nút + bảng Hướng dẫn Khu tự học | ui-apply | đang làm — nhánh `viec/huong-dan-tu-hoc` | phiếu `2026-11-14-huong-dan-tu-hoc` | — |
+| V-20261114-16 | Lối đi cạnh Tạp hoá vào Nhà của ta (ngõ + cổng, bước vào là vào; giữ cả điểm trên bản đồ) | lead + canh | đang lập kế hoạch — nhánh `viec/ngo-ve-nha` | — | duyệt kế hoạch khi xong |
