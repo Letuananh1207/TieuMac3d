@@ -3,6 +3,25 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-14.18 — Bộ ảnh nhiều góc NPC khu trò chơi Kỳ Văn Uyển (thiếu nữ hoạt bát, mặt dịu dàng)
+
+- Loại: tài nguyên 3D — ảnh đầu vào (Hunyuan3D-2mv) · luồng/luật (đề xuất). Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-13-anh-quan-su.md`.
+- Người dùng đổi nhân vật: thay quản sự trung niên bằng **một người trẻ năng động**; trình 3 hướng (`source/QuanSu-huong.dc.html`:
+  A thiếu niên kỳ thủ · B thiếu niên áo bó màu hạnh · C thiếu nữ hoạt bát) → chọn **C**, sau đó yêu cầu **nét mặt dịu dàng**. Hồ sơ:
+  `docs/tham_khao/npc-ky-van-uyen.md`.
+- Nhân vật: thiếu nữ ≈ 16 tuổi, hai búi tóc buộc dải ngọc #3FA58A, áo ngắn giao lĩnh hồng đào #E7A3A8 viền ngọc lục #2B5446 (vạt trái
+  đè phải), đai ngọc lục thắt nút trước, váy tới gối #4F8C7A trên quần bó ngà #F4F0E6, giày nâu #3A2418; mắt hiền, mỉm khép miệng.
+  Thấp hơn nhân vật chính ≈ 5 %.
+- Ảnh: `models/anh/quan-su-{truoc,trai,sau,phai,mat}.png` — Google Gemini (người dùng chạy); nguyên văn 5 câu lệnh: ghi chú
+  `quan-su-cau-lenh` trong `source/canvas.json`. Chuẩn hoá Pillow: nền #DDDDDD, bỏ sao Gemini, hệ số thu chung 1,008, đế giày 90 %,
+  đỉnh búi 10 % (nghiêng) – 12,6 % (trước). Ảnh duyệt: `screens/QuanSu-bo-anh.png`.
+- **Mã NPC giữ `quan-su`** (khớp `npcs` trong đặc tả cảnh); đổi mã là việc phiên code.
+- Luật bị chạm — **đề xuất** (phiên code hỏi người dùng rồi sửa sổ + `web/src/zones/dialogs.ts`): **R-NPC-4** đổi tên "Quản sự Kỳ Văn Uyển
+  管事" → thiếu nữ chủ trò (gợi ý "Kỳ Muội 棋妹"), xưng "muội" thay "tại hạ", vẫn gọi "đạo hữu"; giọng nhẹ nhàng; các lựa chọn giữ nguyên.
+- Bước kế: `bash .claude/skills/tai-nguyen/scripts/nhan-vat.sh quan-su <ra>` → `models/quan-su.glb` (phiên `/tai-nguyen`).
+- File: `models/anh/quan-su-*.png` (5), `models/LICENSES.md`, `screens/QuanSu-bo-anh.png`, `source/QuanSu-huong.dc.html`,
+  `source/QuanSu-bo-anh.dc.html`, `source/canvas.json`; ngoài design: `docs/tham_khao/npc-ky-van-uyen.md` + README.
+
 ## 2026-11-14.17 — Hướng dẫn Khu tự học 自習 (tầng 2 Tàng Thư Các): nút nổi + bảng
 
 - Loại: giao diện · chuỗi. Màn: **Hướng dẫn Khu tự học** (HUD web) — đặc tả `docs/screen_specs.md` mục cùng tên.

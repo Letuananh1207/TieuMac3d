@@ -944,6 +944,20 @@
       "w": 844,
       "h": 390,
       "title": "Khu tự học · ngang · bảng"
+    },
+    "QuanSu-huong.dc.html": {
+      "x": 0,
+      "y": 51120,
+      "w": 1440,
+      "h": 920,
+      "title": "NPC Kỳ Văn Uyển · 3 hướng trẻ năng động — chọn trước khi tạo ảnh"
+    },
+    "QuanSu-bo-anh.dc.html": {
+      "x": 0,
+      "y": 52160,
+      "w": 1440,
+      "h": 800,
+      "title": "NPC Kỳ Văn Uyển · thiếu nữ hoạt bát · bộ ảnh 4 góc + cận mặt"
     }
   },
   "order": [
@@ -1087,7 +1101,9 @@
     "TuHoc-doc.dc.html",
     "TuHoc-doc-chua-hoc.dc.html",
     "TuHoc-ngang-nut.dc.html",
-    "TuHoc-ngang.dc.html"
+    "TuHoc-ngang.dc.html",
+    "QuanSu-huong.dc.html",
+    "QuanSu-bo-anh.dc.html"
   ],
   "notes": {
     "cach-dung": {
@@ -1468,6 +1484,19 @@
       "y": 49916,
       "w": 420,
       "text": "Phiếu 2026-11-14-huong-dan-tu-hoc. Đề xuất, chưa chốt.\n\n• Dùng lại nguyên khung \"Bảng cách chơi\" (2026-11-13.35): kính sương, đầu bảng eyebrow + tên Hán + Việt, vùng cuộn, 4 mục vòng jade, ô mẹo, nút Đóng.\n• Nút nổi trên biển: nhãn \"Hướng dẫn\" (cùng kiểu nút nổi \"Nghe nhạc\" / \"Cách chơi\": viên jade 46 + biểu tượng sách mở, đuôi chỉ xuống, chip tên dưới \"Khu tự học 自習\").\n• Tên Hán 自習 (tự tập). Eyebrow \"Tàng Thư Các · Hướng dẫn\".\n• Minh hoạ: người ngồi bồ đoàn cầm cuộn sách + cuộn treo nhỏ 3 mục (Ôn sáng, Học mờ, Xem).\n• 4 mục: Ngồi vào bồ đoàn · Cuộn sách ôn · Học bộ mới ở Rừng trúc · Đứng dậy.\n• Ô mẹo: lời thủ thư Điển Thư 典書.\n• Chưa học bộ nào: ô báo vàng đầu vùng cuộn (biểu tượng bản đồ).\n• Giữ \"Ngồi\" trên bồ đoàn và tên vùng trên cuộn sách như đã chốt.\n• Nền là hình vẽ giữ chỗ."
+    },
+    "tieu-de-quan-su": {
+      "x": 0,
+      "y": 50880,
+      "text": "NPC khu trò chơi Kỳ Văn Uyển — bộ ảnh nhiều góc (phiếu 2026-11-13-anh-quan-su)",
+      "kind": "title1",
+      "maxW": 1440
+    },
+    "quan-su-cau-lenh": {
+      "x": 1520,
+      "y": 52160,
+      "w": 720,
+      "text": "Câu lệnh Gemini — NPC Kỳ Văn Uyển, hướng C \"thiếu nữ hoạt bát\" — mặt DỊU DÀNG (người dùng 2026-11-14) (hồ sơ docs/tham_khao/npc-ky-van-uyen.md). Mỗi câu một cuộc trò chuyện MỚI.\n\n1 · TRƯỚC — đính kèm design/models/anh/nhan-vat-truoc.png:\nCreate a NEW character in exactly the same 3D vinyl toy style, chibi proportions (head about 1/3 of the height) and rendering as the attached image, about 5% shorter. Character: a lively Song-dynasty girl, about 16 years old, with a GENTLE, soft and kind facial expression: a small warm closed-mouth smile, soft gentle eyes with a slight upward curve, relaxed eyebrows, softly rosy cheeks #E9A99A, skin #F0CDB5. Hair: black #1E1C1E, two round buns on the top left and top right of the head, each tied with a short jade-green ribbon #3FA58A hanging close to the head; hair is one smooth solid mass, no loose strands. Short cross-collar jacket in peach pink #E7A3A8 reaching the hips, LEFT panel over RIGHT panel (seen from the front the collar forms a \"y\"), dark jade-green trim #2B5446 on the collar and cuffs, narrow sleeves. Dark jade-green sash #2B5446 tied in a small knot at the front with two short tails. Knee-length skirt in deep jade #4F8C7A over fitted ivory trousers #F4F0E6, brown cloth shoes #3A2418. Hands empty. A-pose: arms angled down about 35 degrees, arms not touching the body, feet slightly apart, both shoes clearly visible below the skirt. Straight front view, orthographic, no perspective. Soft even studio light with gentle form shading, no outlines, no cel shading. Plain flat light grey background #DDDDDD, no ground shadow, no frame, no text, no logo, no watermark. Square 1024x1024, full body centered, top of the buns at 10% from the top, soles at 90%. Large clear color areas, few small details.\n\n2 · TRÁI — đính kèm ảnh 1:\nThe same character as the attached image, same pose, same size, same colors, same lighting and background. Exact side profile, rotated 90 degrees so she faces the LEFT edge of the image. Orthographic, no perspective. Show one hair bun with its ribbon, the jacket edge, the sash tails, the skirt and the trousers below it. Arms still in A-pose, not touching the body, hands empty. Plain #DDDDDD background, no shadow, no text. Square 1024x1024, top of the buns at 10%, soles at 90%.\n\n3 · SAU — đính kèm ảnh 1:\nThe same character as the attached image, same pose, same size, seen straight from the BACK. Back of the head with the two round buns and short jade ribbons, plain peach jacket back, the dark jade sash going around the waist, knee-length jade skirt, ivory trousers, both shoes visible. A-pose, arms not touching the body, hands empty. Orthographic, plain #DDDDDD background, no shadow, no text. Square 1024x1024, top of the buns at 10%, soles at 90%.\n\n4 · PHẢI — đính kèm ảnh 1:\nThe same character as the attached image, same pose, same size, same colors, same lighting and background. Exact side profile, rotated 90 degrees so she faces the RIGHT edge of the image. Orthographic, no perspective. A-pose, arms not touching the body, hands empty. Plain #DDDDDD background, no shadow, no text. Square 1024x1024, top of the buns at 10%, soles at 90%.\n\n5 · CẬN MẶT — đính kèm ảnh 1:\nClose-up of the same character's head and shoulders, straight front, same 3D vinyl toy style: GENTLE, soft and kind expression, small warm closed-mouth smile, soft gentle eyes, relaxed eyebrows, softly rosy cheeks, two round hair buns with short jade-green ribbons, peach jacket collar with dark jade trim, left panel over right. Sharp clean details. Plain #DDDDDD background, no text. Square 1024x1024.\n\nXong: lưu 5 ảnh vào một thư mục (hoặc dán vào chat) — Claude chuẩn hoá (nền, cỡ, vạch 10 % / 90 %) và đặt lên artboard."
     }
   },
   "designSystems": []
