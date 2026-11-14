@@ -196,7 +196,8 @@ async function boot(): Promise<void> {
   const bridge = new FlutterBridge({
     onResume: (stand) => {
       closeLesson();
-      if (stand && player.isSitting) player.toggleSit(); // "Xuất định" → đứng dậy (R-HANH-3)
+      // "Đứng dậy" / "Xuất định" → cuộn sách cuộn lại 0,25 s rồi đứng dậy (R-HANH-3, thiết kế 2026-11-14.10)
+      if (stand && player.isSitting) nhapDinh.rollUpThen(() => player.isSitting && player.toggleSit());
     },
     onVisible: (visible) => {
       appHidden = !visible;
@@ -615,8 +616,8 @@ async function boot(): Promise<void> {
     nameTag.update(pos, camera, NAME_TAG_HEIGHT);
     const busy = paused || covered || loading.active || mapOpen || talking;
     meditate(dt, busy);
-    // nhập định khi Ngồi ôn (R-ON-8, thiết kế 2026-11-14.10): vòng sáng dưới đệm; đứng dậy / ngồi vào chỗ ngồi → tắt dần
-    nhapDinh.update(dt, pos, player.isSitting && !onSeat ? sitTime : null);
+    // nhập định khi Ngồi ôn (R-ON-8, thiết kế 2026-11-14.10): vòng sáng + cuộn sách trên tay; đứng dậy → tắt / cuộn lại
+    nhapDinh.update(dt, pos, character.facing.rotation.y, player.isSitting && !onSeat ? sitTime : null);
     // ẩn khi bản đồ / màn tải / bài học phủ cảnh (L-11: nhãn HTML luôn đè lên cuộn bản đồ 3D)
     nameTag.setVisible(!mapOpen && !loading.active && !covered);
     // màn Flutter đè cảnh (bảng chọn cuộn sách, thẻ học, màn ôn…) → ẩn cần điều khiển (R-ON-8)

@@ -1,11 +1,13 @@
 /**
- * Nhập định khi Ngồi ôn (R-DIEU-7, R-ON-8 — thiết kế 2026-11-14.10 "Ngồi ôn"): vòng sáng dưới đệm. Chỉ máy người học thấy
+ * Nhập định khi Ngồi ôn (R-DIEU-7, R-ON-8 — thiết kế 2026-11-14.10 "Ngồi ôn"): vòng sáng dưới đệm + cuộn sách trên tay
+ * (`cuonSach.ts`, mở 0,3 → 1 s). Chỉ máy người học thấy
  * (của riêng — R-VUNG-1). Không HUD — vật 3D trong cảnh. Chữ Hán trên đầu (thiết kế 2026-11-13.19) đã bỏ.
  *   0 → 0,3 s  vòng sáng nở (sau đó "thở" co giãn 4 %, chu kỳ 2 s)
  *   1 s        bảng chọn cuộn sách mở (`NHAP_DINH_OPEN_AT`)
  *   đứng dậy   → vòng sáng tắt dần 0,2 s
  */
 import * as THREE from 'three';
+import { CuonSach } from './cuonSach';
 import { markDynamic } from './merge';
 
 /** Bảng chọn cuộn sách mở sau chừng này giây ngồi (R-ON-8). */
@@ -59,6 +61,7 @@ export class NhapDinh {
   private fade = 0;
   private lastT = 0;
   private time = 0;
+  private readonly cuon: CuonSach;
 
   constructor(scene: THREE.Scene) {
     this.ringMat = new THREE.MeshBasicMaterial({ map: ringTexture(), transparent: true, depthWrite: false, opacity: 0 });
@@ -67,11 +70,21 @@ export class NhapDinh {
     this.ring.visible = false;
     markDynamic(this.ring);
     scene.add(this.ring);
+    this.cuon = new CuonSach(scene);
   }
 
-  /** Mỗi khung. `t` = số giây đã ngồi ôn, `null` = không ngồi ôn (đứng dậy / ngồi vào chỗ ngồi) → tắt dần. */
-  update(dt: number, at: THREE.Vector3, t: number | null): void {
+  /** "Đứng dậy" trên bảng chọn: cuộn sách cuộn lại (0,25 s) rồi `done` (nhân vật đứng dậy). */
+  rollUpThen(done: () => void): void {
+    this.cuon.rollUpThen(done);
+  }
+
+  /**
+   * Mỗi khung. `t` = số giây đã ngồi ôn, `null` = không ngồi ôn (đứng dậy / ngồi vào chỗ ngồi) → tắt dần;
+   * `yaw` = hướng mặt nhân vật (cuộn sách đặt trước ngực).
+   */
+  update(dt: number, at: THREE.Vector3, yaw: number, t: number | null): void {
     this.time += dt;
+    this.cuon.update(dt, at, yaw, t);
     if (t !== null) {
       this.fade = 1;
       this.lastT = t;
