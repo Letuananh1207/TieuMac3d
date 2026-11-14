@@ -29,6 +29,7 @@ import {
   type BridgeSpec,
 } from './spec';
 import { checkDecorSlots } from './decorSlots';
+import { checkPortals } from './portals';
 import { daisLayout, ringTrigger } from './teleportLayout';
 import { stairEnds, terrainHeightFn } from './terrainHeight';
 
@@ -347,6 +348,8 @@ const LISTS: Record<string, ItemParser> = {
     all(oneOf('kind', GAME_KINDS), oneOf('npc', NPC_IDS), rot, boardsRange, signRot),
   ),
   decorSlots: item({ id: '', kind: '', x: 0, z: 0 }, { rotY: 0 }, all(oneOf('kind', DECOR_SLOT_KINDS), rot)),
+  // cổng đi bộ (R-HANH-4): kiểm vùng / chỗ đứng / cặp cổng ở `portals.ts` + `scripts/check-scene.mjs`
+  portals: item({ scene: '', area: { from: XZ0, to: XZ0 }, arrive: { at: XZ0, rotY: 0 } }),
   'trees.yard': item({ x: 0, z: 0, scale: 0 }, { kind: '' }, all(oneOf('kind', TREE_KINDS), positive('scale'))),
   'trees.groves': item(
     { kind: '', x: 0, z: 0, w: 0, d: 0, count: 0 },
@@ -431,7 +434,7 @@ function checkConsistency(s: SceneSpec): string[] {
   if (t.enabled && t.edge.radius + t.edge.width > t.size / 2) {
     out.push(`terrain.edge: mép vực (radius + width = ${t.edge.radius + t.edge.width}) vượt nửa vùng lưới (${t.size / 2}) — tăng size`);
   }
-  out.push(...checkTeleport(s), ...checkLanterns(s), ...checkDecorSlots(s));
+  out.push(...checkTeleport(s), ...checkLanterns(s), ...checkDecorSlots(s), ...checkPortals(s));
   if (s.cloudSea.radius < 0) out.push('cloudSea.radius: phải ≥ 0');
   if (t.enabled && t.size > 0 && t.cell > 0) out.push(...checkOnFlatGround(s));
   if (t.enabled) {
@@ -535,5 +538,6 @@ function checkOnFlatGround(s: SceneSpec): string[] {
   }
   s.wallSegments.forEach((w, i) => !w.follow && flat(`wallSegments[${i}]`, [w.from, w.to, [(w.from[0] + w.to[0]) / 2, (w.from[1] + w.to[1]) / 2]]));
   flat('điểm xuất phát (player.start)', box(s.player.start[0], s.player.start[1], 2, 2));
+  s.portals.forEach((p, i) => flat(`portals[${i}] chỗ đứng (arrive)`, box(p.arrive.at[0], p.arrive.at[1], 2, 2)));
   return out;
 }

@@ -21,6 +21,7 @@ import { npcInTalkRange, placeNpcs, showNearNpcs } from './player/npc';
 import { HOME_SCENE, loadScene, REGION_SCENES } from './scene/loadSpec';
 import { createMapScroll } from './scene/banDo';
 import { arrivalSpot, CHARGE_SECONDS, ringTrigger } from './scene/teleportLayout';
+import { arrivalFor } from './scene/portals';
 import { TELEPORT_TEXT } from './scene/truyenTong';
 import { viewDistance } from './scene/farMountains';
 import { createStage, gpuName, MAX_PIXEL_RATIO, probeGpu } from './scene/renderer';
@@ -54,6 +55,7 @@ import { LoadingScreen, nextPaint } from './ui/loadingScreen';
 import { ZoneTracker } from './zones/zoneTracker';
 import { JOURNEY_MAP, placeAt, placeScene, placeStates, type PlaceState } from './zones/journeyMap';
 import { RingCharge } from './zones/ringCharge';
+import { PortalTrigger } from './zones/portal';
 import { DIALOGS, DialogRunner, type Dialog } from './zones/dialogs';
 import { LIBRARIAN, LibraryDesk } from './libraryDesk';
 import { reviewItems } from './zones/review';
@@ -74,7 +76,8 @@ const NAME_TAG_HEIGHT = 2.5;
 const MUSIC_URLS = import.meta.glob('./nhac/*.{ogg,mp3,wav,m4a}', { query: '?url', import: 'default', eager: true }) as Record<string, string>;
 
 async function boot(): Promise<void> {
-  // mỗi vùng một cảnh: ?vung=<mã> (không có = tông môn); về nhà: ?tu=<mã vùng vừa rời> (R-HANH-2)
+  // mỗi vùng một cảnh: ?vung=<mã> (không có = tông môn); về nhà: ?tu=<mã vùng vừa rời> (R-HANH-2);
+  // qua cổng đi bộ: ?qua=<mã cảnh vừa rời> (R-HANH-4)
   const params = new URLSearchParams(location.search);
   const SCENE = loadScene(params.get('vung'));
   const SCENE_FILE = SCENE.file;
@@ -125,12 +128,12 @@ async function boot(): Promise<void> {
   // gấu khối (player/blockCharacter.ts) vẫn giữ làm bản dự phòng, cùng hợp đồng Character
   const character = await createPlayerCharacter(new URLSearchParams(location.search).get('nhan-vat'));
   // về nhà từ một vùng: đứng trước cột của vùng đó, ngoài vòng, nhìn vào cột (R-HANH-2)
-  const back = isHome && params.has('tu') && spec.teleport.enabled ? arrivalSpot(spec.teleport) : undefined;
+  // qua cổng đi bộ: đứng ở chỗ của cổng dẫn về cảnh vừa rời; không có cổng về → chỗ xuất phát (R-HANH-4)
+  const back = arrivalFor(spec.portals, params.get('qua')) ?? (isHome && params.has('tu') && spec.teleport.enabled ? arrivalSpot(spec.teleport) : undefined);
   // ?dung=x,z — thử trên trình duyệt: đứng sẵn ở (x, z) (vd. cạnh bàn cờ ?dung=-22,36.5)
   const dung = (params.get('dung') ?? '').split(',').map(Number);
   const [sx, sz] = back ? back.at : dung.length === 2 && dung.every(Number.isFinite) ? dung : spec.player.start;
   character.root.position.set(sx, 0, sz);
-  if (back) character.facing.rotation.y = back.rotY;
   scene.add(character.root);
   const player = new PlayerController(character, colliders, world.surface);
   player.snapToGround();
@@ -594,11 +597,15 @@ async function boot(): Promise<void> {
     mapHud.show(true);
   };
   let travelling = false;
-  const travel = (to: string): void => {
+  /** `cong`: qua cổng đi bộ → nơi đến đứng ở cổng về (`qua`, R-HANH-4); `vong`: vòng trận (`tu`, R-HANH-2) */
+  const travel = (to: string, how: 'vong' | 'cong' = 'vong'): void => {
     travelling = true;
     player.moveTarget = null;
     loading.show(loadScene(to).spec.site); // loading.active → nhân vật đứng yên
-    const next = new URLSearchParams(to === HOME_SCENE ? { tu: SCENE.id } : { vung: to });
+    const next = new URLSearchParams();
+    if (to !== HOME_SCENE) next.set('vung', to);
+    if (how === 'cong') next.set('qua', SCENE.id);
+    else if (to === HOME_SCENE) next.set('tu', SCENE.id);
     // giữ tham số thử trên trình duyệt
     for (const k of ['debug', 'nhan-vat']) if (params.has(k)) next.set(k, params.get(k) ?? '');
     // replace: không chất lịch sử trang mỗi lần đi về
@@ -619,11 +626,15 @@ async function boot(): Promise<void> {
     // nơi đang ở ('oDay') → không có gì
   };
 
+  // cổng đi bộ sang cảnh (R-HANH-4): bước từ ngoài vào vùng → sang ngay
+  const portals = spec.portals.map((p) => ({ to: p.scene, trigger: new PortalTrigger(p.area, { x: sx, z: sz }) }));
+
   /* ---------- vòng lặp ---------- */
   const nameTag = new NameTag();
   const input: MoveInput = { x: 0, y: 0 };
   // tường / nhà chắn tầm nhìn → camera kéo lại gần (R-DIEU-4)
   const sight = colliders.sightBlock.bind(colliders);
+  if (back) orbit.yaw = back.rotY - Math.PI; // tới qua cổng / về trấn: nhìn theo hướng của chỗ đứng
   character.facing.rotation.y = orbit.yaw + Math.PI; // vào game: nhân vật quay lưng về camera, nhìn về phía trước
   orbit.update(camera, player.position, 0, true, groundAt, undefined, sight);
 
@@ -656,6 +667,8 @@ async function boot(): Promise<void> {
       if (ring.update(pos, dt)) openMap();
       world.teleport?.setCharge(ring.charge);
     }
+    const walking = !(paused || covered || loading.active || mapOpen || talking || travelling || !!decor?.active);
+    for (const p of portals) if (p.trigger.update(pos, walking) && !travelling) travel(p.to, 'cong');
     scroll.update(dt);
     zones.update(pos);
     world.update(dt, pos);

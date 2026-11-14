@@ -36,6 +36,8 @@ const n = (v) => String(v).replace('.', ',');
 const files = existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith('.json')).sort((a, b) => (a === 'scene.json' ? -1 : b === 'scene.json' ? 1 : a.localeCompare(b))) : [];
 if (!files.includes('scene.json')) files.unshift('');
 let errors = 0;
+/** cổng đi bộ mỗi cảnh (mã cảnh → portals) để kiểm chéo cặp cổng sau vòng lặp (R-HANH-4) */
+const portalsOf = new Map();
 for (const f of files) {
   const rel = f ? `design/scene/${f}` : 'design/scene/scene.json';
   let raw;
@@ -55,7 +57,29 @@ Chưa có ${rel} — dùng cảnh mặc định trong code.`);
   }
   errors += checkScene(rel, raw);
 }
+errors += checkPortalPairs();
 if (errors) process.exit(1);
+
+/** Cặp cổng giữa các cảnh: cảnh đích phải có file; cảnh đích không có cổng về → cảnh báo (tới nơi đứng ở player.start). */
+function checkPortalPairs() {
+  let bad = 0;
+  for (const [id, portals] of portalsOf) {
+    for (const p of portals) {
+      if (!portalsOf.has(p.scene)) {
+        console.error(`${sceneRel(id)}: cổng → "${p.scene}": không có file ${sceneRel(p.scene)} — app sẽ đưa về Khởi Nguyên Trấn`);
+        bad++;
+      } else if (!portalsOf.get(p.scene).some((q) => q.scene === id)) {
+        console.warn(`Cảnh báo: ${sceneRel(p.scene)} không có cổng về "${id}" — đi qua cổng tới nơi đứng ở player.start, không về được bằng cổng`);
+      }
+    }
+  }
+  if (!bad && [...portalsOf.values()].some((l) => l.length)) console.log('\nCổng đi bộ giữa các cảnh: ghép cặp đúng.');
+  return bad;
+}
+
+function sceneRel(id) {
+  return `design/scene/${id === 'tong-mon' ? 'scene' : id}.json`;
+}
 
 /** In bố cục một cảnh; trả số lỗi. */
 function checkScene(rel, raw) {
@@ -65,6 +89,7 @@ function checkScene(rel, raw) {
   const placed = placeZones(ZONE_CONTENT, zoneAnchors(spec.buildings, rooms));
   // bài học (快, 書) chỉ ở tông môn; cảnh vùng không có nhà học → không đòi vùng học
   const home = rel.endsWith('/scene.json');
+  portalsOf.set(home ? 'tong-mon' : rel.slice(rel.lastIndexOf('/') + 1, -'.json'.length), spec.portals);
   const all = [...problems, ...(home ? placed.problems : [])];
 
   console.log(`Hệ số chiều cao kiến trúc: ${n(spec.buildingStyle.heightScale)}`);
@@ -141,6 +166,11 @@ function checkScene(rel, raw) {
       const a = arrivalSpot(tp).at;
       console.log(`  về tông môn đứng ở (${n(+a[0].toFixed(2))}; ${n(+a[1].toFixed(2))})`);
     }
+  }
+  // cổng đi bộ (R-HANH-4): vùng chạm, cảnh đích, chỗ đứng khi tới từ cảnh đó
+  for (const p of spec.portals) {
+    const [a, b] = [p.area.from, p.area.to];
+    console.log(`Cổng đi bộ → ${p.scene}: vùng chạm (${n(a[0])}; ${n(a[1])}) … (${n(b[0])}; ${n(b[1])}) · từ ${p.scene} tới đứng ở (${n(p.arrive.at[0])}; ${n(p.arrive.at[1])}) nhìn ${n(p.arrive.rotY)}°`);
   }
   if (all.length) {
     console.error(`${rel}: ${all.length} lỗi:\n- ${all.join('\n- ')}`);

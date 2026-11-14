@@ -433,6 +433,18 @@ export interface GameTableSpec {
 }
 
 /**
+ * Cổng đi bộ sang cảnh khác (R-HANH-4): tâm nhân vật bước từ ngoài vào `area` (chữ nhật thẳng trục, `from` → `to`)
+ * thì sang cảnh `scene` ("tong-mon" = Khởi Nguyên Trấn, còn lại = mã file `design/scene/<mã>.json`). `arrive` = chỗ
+ * đứng + hướng (độ, 0 = nhìn +z, 90 = nhìn +x) **trong cảnh này** khi từ `scene` đi sang qua cổng của bên đó — ngoài
+ * `area`. Mỗi cảnh tối đa một cổng cho một cảnh đích; hai cảnh ghép cặp theo cảnh đích (`scripts/check-scene.mjs`).
+ */
+export interface PortalSpec {
+  scene: string;
+  area: { from: XZ; to: XZ };
+  arrive: { at: XZ; rotY: number };
+}
+
+/**
  * Ô trang trí (R-NHA-2): chỗ đặt sẵn một vật trong danh mục (`zones/decor.ts`), tâm (x, z) trên mặt đất / sàn tầng 1.
  * Ô `trong` phải nằm trong chân một nhà; `vuon` / `san` ở ngoài mọi nhà. Mặt trước vật nhìn về +z khi `rotY` = 0
  * (độ, bội 90). `id` duy nhất trong cảnh — là khoá lưu nhà (R-NHA-3), đổi mã = mất vật đã đặt ở ô đó.
@@ -751,6 +763,8 @@ export interface SceneSpec {
   gameTables: GameTableSpec[];
   /** ô trang trí nhà của ta (R-NHA-2); rỗng = cảnh không trang trí được */
   decorSlots: DecorSlotSpec[];
+  /** cổng đi bộ sang cảnh khác (R-HANH-4); rỗng = chỉ đi bằng vòng trận */
+  portals: PortalSpec[];
   /** dây đèn lồng giăng trên sân (vd. khu giao lưu) — chỉ ngắm, cột hai đầu có va chạm */
   lanternStrings: LanternString[];
   /** dây đèn lồng: `height` đỉnh cột / chỗ buộc dây, `sag` độ võng giữa dây, `spacing` khoảng hai đèn (m);
@@ -931,6 +945,7 @@ export const DEFAULT_SCENE: SceneSpec = {
   npcs: [], // cảnh mặc định chưa có NPC
   gameTables: [],
   decorSlots: [],
+  portals: [], // cảnh cũ không có cổng đi bộ
   lanternStrings: [],
   lanternStyle: {
     height: 4.6,

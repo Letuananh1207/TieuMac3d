@@ -57,7 +57,8 @@ Dạng chung `{type: string, payload: object}`.
 - `openLesson` cũng là lúc Flutter ghi chữ `lesson.han` là **đã học** (lần đầu mở — R-HANH-1, tạm tới khi có nút
   "Đã thuộc"); tiến độ lưu ở Flutter (`app/lib/journey/progress_store.dart`).
 - **Đổi vùng** (R-HANH-2) không qua Flutter: trang tự tải lại `index.html?vung=<mã vùng>` (về nhà:
-  `index.html?tu=<mã vùng vừa rời>`). Flutter thấy một lần tải trang mới → `onLoadStop` gửi lại biến safe area và `debug`
+  `index.html?tu=<mã vùng vừa rời>`). Đi bộ qua **cổng sang cảnh** (R-HANH-4) cũng tải lại trang như thế:
+  `index.html?vung=nha-ta&qua=tong-mon` (từ trấn vào nhà), `index.html?qua=nha-ta` (từ nhà ra trấn). Flutter thấy một lần tải trang mới → `onLoadStop` gửi lại biến safe area và `debug`
   như lúc mở app; trang gọi lại `getProgress`.
 - Trang cũng tự dừng khi `document.hidden` (trình duyệt thường đổi tab). Dừng vì bất kỳ lý do nào → không vẽ, không
   cập nhật; chạy lại thì bước thời gian đầu tiên bỏ qua (nhân vật không "nhảy").

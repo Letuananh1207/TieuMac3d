@@ -20,6 +20,7 @@ import { JOURNEY_MAP, placeStates } from './zones/journeyMap';
 import { RADICALS } from './zones/radicals';
 import { viewDistance } from './scene/farMountains';
 import { mergeStatic } from './scene/merge';
+import { portalRect } from './scene/portals';
 import { createStage } from './scene/renderer';
 import { signText } from './scene/signAtlas';
 import { buildWorld } from './scene/world';
@@ -143,6 +144,16 @@ async function boot(): Promise<void> {
     ring.rotation.x = -Math.PI / 2;
     ring.position.set(z.x, 0.04, z.z);
     zoneLayer.add(ring);
+  }
+  // cổng đi bộ (R-HANH-4): khung vùng chạm (xanh) + mũi tên chỗ đứng khi tới từ cảnh đích
+  const portalMat = new THREE.LineBasicMaterial({ color: 0x4fd1a5 });
+  for (const p of spec.portals) {
+    const r = portalRect(p);
+    const box = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(r.maxX - r.minX, 2.2, r.maxZ - r.minZ)), portalMat);
+    box.position.set((r.minX + r.maxX) / 2, 1.1, (r.minZ + r.maxZ) / 2);
+    const a = (p.arrive.rotY * Math.PI) / 180;
+    const at = new THREE.Vector3(p.arrive.at[0], 0.3, p.arrive.at[1]);
+    zoneLayer.add(box, new THREE.ArrowHelper(new THREE.Vector3(Math.sin(a), 0, Math.cos(a)), at, 1.6, 0x4fd1a5, 0.5, 0.35));
   }
   const gridLayer = new THREE.Group();
   const grid = new THREE.GridHelper(spec.ground.size, spec.ground.size, 0xe0ae4c, 0x5a4a3a);
