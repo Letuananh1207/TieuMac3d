@@ -43,6 +43,13 @@ Never fail(String msg) {
 
 void chuanBi() {
   if (!inWorktree()) fail('Đang ở thư mục chính — lệnh này chạy trong worktree (sau EnterWorktree).');
+  final under = _norm(here()).startsWith('${_norm(mainRoot())}/.claude/worktrees/');
+  if (!under && !Directory('${here()}/web/node_modules').existsSync()) {
+    // worktree nằm ngoài .claude/worktrees → không thấy gói dùng chung; cài riêng (không tạo nối — xoá worktree an toàn)
+    stdout.writeln('Worktree ngoài .claude/worktrees — cài gói npm riêng (npm ci)…');
+    final r = run('npm', ['--prefix', 'web', 'ci', '--no-audit', '--no-fund']);
+    stdout.writeln(r.exitCode == 0 ? '  xong' : '  npm ci hỏng: ${r.stderr}');
+  }
   // Nối gói npm dùng chung ở .claude/worktrees/node_modules — NGOÀI mọi worktree: Node / npm / npx tìm node_modules
   // ở thư mục cha (…/worktrees/<tên>/web → …/worktrees/node_modules), còn xoá worktree (kể cả tự động khi subagent
   // xong) không bao giờ đi xuyên qua nối mà xoá mất web/node_modules của thư mục chính.

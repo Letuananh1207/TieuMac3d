@@ -87,6 +87,8 @@ Sổ: `docs/testing/quy_tac.md` (xác nhận trên tài liệu online — link t
 
 ## Làm việc
 
+- **Cửa nhận việc chung: `/task <một hay nhiều việc>`** — tự tách việc, gọi đúng skill bên dưới, chạy song song (mỗi
+  việc một worktree), gộp về main, theo dõi tới xong; sổ việc `docs/viec/so_viec.md`. `/task` trống = làm tiếp việc dở.
 - Yêu cầu tính năng / mốc mới: `/lead <yêu cầu>`.
 - Báo lỗi: `/loi <mô tả>` ghi vào `docs/loi.md`; `/loi sua [L-…]` để sửa. Người dùng báo lỗi trong chat mà không
   gõ `/loi` thì vẫn ghi vào sổ.

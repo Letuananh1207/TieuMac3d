@@ -6,6 +6,7 @@ tool/git_hooks/* text eol=lf
 docs/loi.md merge=union
 design/CHANGELOG.md merge=union
 docs/thiet_ke_da_ap.md merge=union
+docs/viec/so_viec.md merge=union
 web/src/fonts/** merge=ours
 app/assets/fonts/** merge=ours
 app/lib/theme/app_fonts.g.dart merge=ours
