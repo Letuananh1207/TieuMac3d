@@ -57,3 +57,14 @@ describe('Hội thoại NPC công trình', () => {
     expect(c.next).toBeNull();
   });
 });
+
+describe('Hội thoại Lão Canh', () => {
+  it('R-NPC-7: Lão Canh có "Bây giờ là giờ gì?" (action gio — đọc giờ thật), giải thích gõ mõ + canh giờ', () => {
+    const d = DIALOGS.find((x) => x.npc === 'go-mo')!;
+    expect(d.name).toBe('Lão Canh');
+    expect(checkDialog(d)).toEqual([]);
+    const start = d.lines.find((l) => l.id === d.start)!;
+    expect(start.choices.find((c) => c.text === 'Bây giờ là giờ gì?')?.action).toBe('gio');
+    expect(d.lines.map((l) => l.text).join(' ')).toContain('canh năm là năm tiếng');
+  });
+});

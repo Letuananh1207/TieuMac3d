@@ -21,6 +21,12 @@ export const NPC_LINES: Record<string, readonly string[]> = {
     'Chữ 人 hai nét, làm người cho ngay thẳng.',
     'Ngồi tĩnh một lát, chữ sẽ tự vào lòng.',
   ],
+  // Tiểu Khất (R-NPC-6). Lão Canh không có câu ngẫu nhiên — chỉ rao giờ (R-NPC-8, R-CHAT-3)
+  'khat-nhi': [
+    'Đạo hữu nào đi ngang cho tiểu khất xin vài văn mua bánh với!',
+    'Tiểu khất ngồi đây nghe được đủ thứ chuyện trong trấn đó.',
+    'Bánh bao Tạp hoá thơm quá, ước gì có một cái…',
+  ],
   'thu-thu': [
     'Tàng Thư Các mở cửa, ai mượn sách HSK cứ lên tầng một.',
     'Sách mượn rồi nhớ đọc, đừng để bụi phủ nhé.',

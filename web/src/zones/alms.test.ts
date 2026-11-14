@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { almsGreeting, almsShortChoice, almsState, almsThanks } from './alms';
+import { ALMS_DECLINED, almsGreeting, almsShortChoice, almsState, almsThanks, khatNhiDialog } from './alms';
+import { checkDialog, DialogRunner } from './dialogs';
 import { maNgayVN } from './gioVN';
 import { TIN_DON, tinDonCuaNgay } from './tinDon';
 import { almsLabel, giveAlms, NO_ALMS, parseAlms } from './walletRules';
@@ -72,5 +73,35 @@ describe('Thoại Tiểu Khất (R-NPC-6)', () => {
       expect(book.includes(`| ${t.rule} |`), t.rule).toBe(true);
       expect(/\p{Script=Han}/u.test(t.text), t.text).toBe(false);
     }
+  });
+});
+
+describe('Khung thoại Tiểu Khất (R-NPC-6)', () => {
+  const choices = (d: ReturnType<typeof khatNhiDialog>): string[] => d.lines[0].choices.map((c) => c.text);
+
+  it('R-NPC-6: chưa cho → "Cho 5 văn" (action alms), "Hôm nay ta không có tiền lẻ", "Tạm biệt"', () => {
+    const d = khatNhiDialog(NO_ALMS, day14, 12);
+    expect(checkDialog(d)).toEqual([]);
+    expect(choices(d)).toEqual(['Cho 5 văn', 'Hôm nay ta không có tiền lẻ', 'Tạm biệt']);
+    expect(d.lines[0].choices[0].action).toBe('alms');
+    const r = new DialogRunner(d);
+    r.start();
+    expect(r.choose(1)?.text).toBe(ALMS_DECLINED);
+  });
+
+  it('R-TIEN-8: thiếu tiền → "Ta chỉ còn 3 văn…" thay "Cho 5 văn", không có action', () => {
+    const d = khatNhiDialog(NO_ALMS, day14, 3);
+    expect(checkDialog(d)).toEqual([]);
+    expect(choices(d)[0]).toBe('Ta chỉ còn 3 văn…');
+    expect(d.lines[0].choices.some((c) => c.action === 'alms')).toBe(false);
+  });
+
+  it('R-NPC-6: đã cho hôm nay → "Nhắc lại tin hôm nay" kể đúng tin của ngày', () => {
+    const d = khatNhiDialog({ lastDay: day14, count: 1 }, day14, 7);
+    expect(checkDialog(d)).toEqual([]);
+    expect(choices(d)).toEqual(['Nhắc lại tin hôm nay', 'Tạm biệt']);
+    const r = new DialogRunner(d);
+    r.start();
+    expect(r.choose(0)?.text).toContain(tinDonCuaNgay(day14).text);
   });
 });

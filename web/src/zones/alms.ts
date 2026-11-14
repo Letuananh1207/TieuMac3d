@@ -3,6 +3,7 @@
  * kèm tin đồn của ngày. Luật trừ tiền ở `walletRules.ts` (`giveAlms`; Dart `giveAlms` là nguồn thật khi có Flutter).
  * Thuần (không DOM, không three).
  */
+import type { Dialog, DialogChoice } from './dialogs';
 import { tinDonCuaNgay } from './tinDon';
 import { ALMS_COINS, almsGivenOn, type AlmsRecord } from './walletRules';
 
@@ -48,3 +49,35 @@ export function almsShortChoice(balance: number): string {
 
 /** Tiểu Khất trả lời khi người chơi chỉ còn ít tiền. */
 export const ALMS_SHORT_REPLY = 'Ôi, đạo hữu cũng khó khăn à? Giữ lại mà mua bánh. Đi học chữ kiếm thêm văn nhé!';
+
+/** Mã NPC Tiểu Khất (đặc tả cảnh `npcs[].id`). */
+export const KHAT_NHI = 'khat-nhi';
+export const KHAT_NHI_NAME = 'Tiểu Khất';
+
+const BYE: DialogChoice = { text: 'Tạm biệt', next: null };
+
+/**
+ * Hội thoại Tiểu Khất theo trạng thái (R-NPC-6): chưa cho → "Cho 5 văn" (`action: 'alms'`) / "Hôm nay ta không có tiền
+ * lẻ" / Tạm biệt; thiếu tiền → "Ta chỉ còn n văn…" thay "Cho 5 văn"; đã cho hôm nay → "Nhắc lại tin hôm nay".
+ */
+export function khatNhiDialog(alms: AlmsRecord, today: number, balance: number | null): Dialog {
+  const state = almsState(alms, today, balance);
+  const decline: DialogChoice = { text: 'Hôm nay ta không có tiền lẻ', next: 'khong-cho' };
+  const first: DialogChoice[] =
+    state === 'da-cho'
+      ? [{ text: 'Nhắc lại tin hôm nay', next: 'nhac-tin' }, BYE]
+      : state === 'thieu'
+        ? [{ text: almsShortChoice(balance ?? 0), next: 'thieu' }, decline, BYE]
+        : [{ text: `Cho ${ALMS_COINS} văn`, next: null, action: 'alms' }, decline, BYE];
+  return {
+    npc: KHAT_NHI,
+    name: KHAT_NHI_NAME,
+    start: 'chao',
+    lines: [
+      { id: 'chao', text: almsGreeting(state, alms.count), choices: first },
+      { id: 'khong-cho', text: ALMS_DECLINED, choices: [BYE] },
+      { id: 'thieu', text: ALMS_SHORT_REPLY, choices: [BYE] },
+      { id: 'nhac-tin', text: almsRepeat(today), choices: [BYE] },
+    ],
+  };
+}

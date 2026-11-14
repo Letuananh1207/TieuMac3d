@@ -9,8 +9,9 @@ export interface DialogChoice {
   next: string | null;
   /** đóng khung thoại rồi làm việc này: `daily` = mở bảng nhiệm vụ hằng ngày (R-NV-3); `borrow` = mượn cuốn `book`, hoặc
    *  mở danh mục khi không có `book` (R-SACH-1); `return` = trả sách đang mượn (R-SACH-4); `journey` = trận sư đọc tiến
-   *  độ hành trình (R-NPC-5) */
-  action?: 'daily' | 'borrow' | 'return' | 'journey';
+   *  độ hành trình (R-NPC-5); `alms` = cho Tiểu Khất 5 văn rồi nghe tin đồn (R-NPC-6, R-TIEN-8); `gio` = Lão Canh đọc giờ
+   *  hiện tại (R-NPC-7) */
+  action?: 'daily' | 'borrow' | 'return' | 'journey' | 'alms' | 'gio';
   /** mã sách cho `action: 'borrow'` */
   book?: string;
 }
@@ -198,6 +199,29 @@ export const DIALOGS: Dialog[] = [
         id: 'tran',
         text: 'Bước vào vòng trận giữa đài, đứng yên chốc lát cho trận sáng lên, bản đồ truyền tống sẽ mở. Vùng nào đã sáng thì chạm là đi; vùng còn mờ là sắp mở, chờ thêm ít lâu.',
         choices: [{ text: 'Ta đi được những đâu?', next: null, action: 'journey' }, { text: 'Hỏi chuyện khác', next: 'chao' }, BYE],
+      },
+    ],
+  },
+  // Lão Canh (R-NPC-7, R-NPC-8): người gõ mõ báo giờ, già, chậm rãi, xưng "lão", gọi "đạo hữu". Hỏi giờ → đọc giờ thật.
+  {
+    npc: 'go-mo',
+    name: 'Lão Canh',
+    start: 'chao',
+    lines: [
+      {
+        id: 'chao',
+        text: 'Ồ, đạo hữu đấy à. Lão đi một vòng trấn từ sáng tới đêm, đầu mỗi giờ lại gõ mõ báo cho cả trấn biết.',
+        choices: [{ text: 'Bây giờ là giờ gì?', next: null, action: 'gio' }, { text: 'Lão gõ mõ thế nào?', next: 'go-mo' }, BYE],
+      },
+      {
+        id: 'go-mo',
+        text: 'Ban ngày lão gõ ba tiếng. Đêm xuống thì canh mấy gõ bấy nhiêu tiếng — canh một một tiếng, tới canh năm là năm tiếng. Giờ lẻ là đầu giờ, giờ chẵn là chính giờ.',
+        choices: [{ text: 'Mười hai canh giờ là gì?', next: 'canh-gio' }, OTHER, BYE],
+      },
+      {
+        id: 'canh-gio',
+        text: 'Một ngày chia mười hai giờ, mỗi giờ dài hai tiếng bây giờ: Tý, Sửu, Dần, Mão, Thìn, Tỵ, Ngọ, Mùi, Thân, Dậu, Tuất, Hợi. Giờ Tý bắt đầu lúc 11 giờ đêm.',
+        choices: [{ text: 'Bây giờ là giờ gì?', next: null, action: 'gio' }, OTHER, BYE],
       },
     ],
   },

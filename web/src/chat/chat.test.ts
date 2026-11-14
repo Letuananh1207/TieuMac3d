@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { BubbleTimer, bubbleLook, bubbleVisible } from './bubbleTimer';
 import { LocalChannel, collapsedVisible } from './chatChannel';
 import { checkSend, type ChatMessage, type Speaker } from './chatMessage';
-import { CHATTER_MAX_S, CHATTER_MIN_S, NpcChatter } from './npcChatter';
+import { CHATTER_MAX_S, CHATTER_MIN_S, NPC_LINES, NpcChatter } from './npcChatter';
 
 const ta: Speaker = { id: 'player', name: 'Đạo hữu', kind: 'player' };
 const tm: Speaker = { id: 'tieu-mac', name: 'Tiểu Mặc', kind: 'npc' };
@@ -139,5 +139,19 @@ describe('Kênh chung', () => {
     const chatter = new NpcChatter(ch, [{ id: 'la', name: 'Lạ', kind: 'npc' }], seeded(1), 0);
     for (let t = 0; t <= 600; t += 1) chatter.update(t);
     expect(ch.history()).toHaveLength(0);
+  });
+});
+
+describe('NPC nói trên kênh — Lão Canh, Tiểu Khất', () => {
+  it('R-CHAT-3: Lão Canh không nói câu ngẫu nhiên (chỉ rao giờ — R-NPC-8); Tiểu Khất có câu, không chữ Hán', () => {
+    expect(NPC_LINES['go-mo']).toBeUndefined();
+    const ch = new LocalChannel();
+    const got: ChatMessage[] = [];
+    ch.subscribe((m) => got.push(m));
+    const c = new NpcChatter(ch, [{ id: 'go-mo', name: 'Lão Canh', kind: 'npc' }, { id: 'khat-nhi', name: 'Tiểu Khất', kind: 'npc' }], () => 0.5, 0);
+    for (let t = 0; t <= 600; t += 1) c.update(t);
+    expect(got.length).toBeGreaterThan(0);
+    expect(got.every((m) => m.speaker.id === 'khat-nhi')).toBe(true);
+    for (const l of NPC_LINES['khat-nhi']) expect(/\p{Script=Han}/u.test(l)).toBe(false);
   });
 });
