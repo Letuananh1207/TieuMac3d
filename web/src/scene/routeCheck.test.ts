@@ -79,8 +79,9 @@ describe('Bản thử đường vòng B trên Khởi Nguyên Trấn', () => {
     expect(checkRoute('go-mo', bad, colliders, ground).length).toBeGreaterThan(0);
     const len = routeLength(route, ground);
     console.log(`Vòng B: ${len.toFixed(1)} m, ${(len / 1.1).toFixed(0)} s / vòng`);
-    expect(len).toBeGreaterThan(170);
-    expect(len).toBeLessThan(230); // V-39: lối Cổng Trấn dài thêm 10 m → vòng dài thêm ~20 m
+    // V-39: lối Cổng Trấn dài thêm 10 m → vòng dài thêm ~20 m; V-41: Thiên Bậc ngắn lại 17 m → vòng ngắn ~34 m (≈ 176 m)
+    expect(len).toBeGreaterThan(160);
+    expect(len).toBeLessThan(200);
     expect(Math.abs(DRAFT_KHAT_NHI.x - -2.5)).toBeGreaterThan(3);
   }, 120_000);
 });
