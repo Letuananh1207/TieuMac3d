@@ -1,9 +1,11 @@
+import * as THREE from 'three';
 import { describe, expect, it } from 'vitest';
 import { Colliders } from '../collision/colliders';
 import { gateOpening, lauClearHeight, lauTop, plasterWallBoxes } from './kien_truc/tuong';
 import { DEFAULT_SCENE, type SceneSpec, type WallSegment } from './spec';
 import { HOME_SCENE, loadScene } from './loadSpec';
 import { ringRuns, segmentRuns, wallGates } from './walls';
+import { addFences } from './lanCan';
 
 /** Tường Quảng Trường như ví dụ R-VA-1: ±17, cao 5,2, dày 0,5; cổng mái ngói nam / bắc rộng 9,6 lối cao 4 (V-20261114-19),
  *  cổng trăng đông (tâm z −9 — Sân Đông, sân Truyền Tống Đài cũ: V-20261114-26, V-38) / tây rộng 6,4. */
@@ -76,25 +78,48 @@ describe('cổng trên đoạn tường thêm', () => {
   });
 });
 
-describe('R-VA-1: cổng trăng thứ hai trên tường tây Quảng Trường, ngang bàn chơi Kỳ Văn Uyển (cảnh thật)', () => {
+/** Cảnh thật (V-42 "trấn mở"): tường + lan can như app dựng (`plasterWallBoxes` + `addFences`). */
+function realScene(): { spec: SceneSpec; real: () => Colliders } {
   const spec = loadScene(HOME_SCENE).spec;
-  const real = (): Colliders => {
-    const c = new Colliders();
-    for (const b of plasterWallBoxes(spec.walls, spec.wallSegments)) c.add(b.x, b.z, b.w, b.d, b.h);
-    return c;
+  return {
+    spec,
+    real: () => {
+      const c = new Colliders();
+      for (const b of plasterWallBoxes(spec.walls, spec.wallSegments)) c.add(b.x, b.z, b.w, b.d, b.h);
+      addFences(new THREE.Scene(), c, spec);
+      return c;
+    },
   };
+}
 
-  it('R-VA-1: x −17 tâm z 4 rộng 6,4, lối 4,6 m; từ (−15; 4) đi tây qua được, z 0 / z 7,5 dừng ở x −16,25', () => {
-    const west = wallGates(spec.walls, spec.wallSegments).filter((g) => g.axis === 'z' && g.fixed === -17);
-    expect(west.map((g) => g.at).sort((a, b) => a - b)).toEqual([-6, 4]);
-    const gate = west.find((g) => g.at === 4)!;
-    expect([gate.width, gate.kind]).toEqual([6.4, 'trang']);
-    expect(2 * gateOpening(gate)).toBeCloseTo(4.6, 6);
-    expect(walk(real(), -15, 4, -1, 0, 10).x).toBeLessThan(-24);
-    expect(walk(real(), -15, 0, -1, 0, 10).x).toBeCloseTo(-16.25, 2);
-    expect(walk(real(), -15, 7.5, -1, 0, 10).x).toBeCloseTo(-16.25, 2);
-    // ngược lại: từ sân chơi đi đông qua cổng ra Quảng Trường
-    expect(walk(real(), -24, 4, 1, 0, 10).x).toBeGreaterThan(-15);
+describe('R-VA-1: Quảng Trường mở — bài phường nam / bắc + lan can đá thấp (cảnh thật, V-42)', () => {
+  const { spec, real } = realScene();
+
+  it('R-VA-1: không tường bao; bài phường nam / bắc (z ±17) đứng riêng, rộng 9,6, lối 9 m; x 0 qua được, x 5 (trụ dày 0,8) dừng ở z 16,1', () => {
+    expect(spec.walls.enabled).toBe(false);
+    const lau = wallGates(spec.walls, spec.wallSegments).filter((g) => g.axis === 'x' && Math.abs(g.fixed) === 17);
+    expect(lau.map((g) => [g.fixed, g.at, g.width, g.kind])).toEqual([
+      [17, 0, 9.6, 'lau'],
+      [-17, 0, 9.6, 'lau'],
+    ]);
+    for (const g of lau) expect(2 * gateOpening(g)).toBeCloseTo(9, 6);
+    expect(walk(real(), 0, 0, 0, 1, 25).z).toBeGreaterThan(20);
+    expect(walk(real(), 0, 0, 0, -1, 25).z).toBeLessThan(-20);
+    expect(walk(real(), 5, 0, 0, 1, 25).z).toBeCloseTo(16.1, 2);
+  });
+
+  it('R-VA-1: lan can đá cao 0,8 m quanh Quảng Trường: x 12 đi bắc dừng ở z −16,35; mặt tây hở z −10…10, mặt đông hở z −12…12', () => {
+    expect([spec.fenceStyle.kind, spec.fenceStyle.height]).toEqual(['da', 0.8]);
+    expect(walk(real(), 12, 0, 0, -1, 20).z).toBeCloseTo(-16.35, 2);
+    expect(walk(real(), 12, 0, 0, 1, 20).z).toBeCloseTo(16.35, 2);
+    // tây: z 4 (trục đông – tây) và z −6 (lối Thư viện) qua được; z 13 dừng
+    expect(walk(real(), -10, 4, -1, 0, 20).x).toBeLessThan(-24);
+    expect(walk(real(), -10, -6, -1, 0, 20).x).toBeLessThan(-24);
+    expect(walk(real(), -10, 13, -1, 0, 10).x).toBeCloseTo(-16.35, 2);
+    // đông: z 4 và z −9 qua được; z 14 dừng
+    expect(walk(real(), 10, 4, 1, 0, 20).x).toBeGreaterThan(24);
+    expect(walk(real(), 10, -9, 1, 0, 20).x).toBeGreaterThan(24);
+    expect(walk(real(), 10, 14, 1, 0, 10).x).toBeCloseTo(16.35, 2);
   });
 
   it('tường ngoài x −51 kín (bỏ cổng đặt nhầm 2026-11-14.24)', () => {
@@ -103,61 +128,23 @@ describe('R-VA-1: cổng trăng thứ hai trên tường tây Quảng Trường,
   });
 });
 
-describe('R-VA-1: tường đông Quảng Trường — cổng Sân Đông + cổng Mặc Trì, hai sân có tường (cảnh thật, V-20261114-26)', () => {
-  const spec = loadScene(HOME_SCENE).spec;
-  const real = (): Colliders => {
-    const c = new Colliders();
-    for (const b of plasterWallBoxes(spec.walls, spec.wallSegments)) c.add(b.x, b.z, b.w, b.d, b.h);
-    return c;
-  };
+describe('R-VA-1: phía đông — Sân Cổ Thụ + Mặc Trì không tường ngăn, giữ tường ngoài (cảnh thật, V-42)', () => {
+  const { spec, real } = realScene();
 
-  it('R-VA-1: x 17 có hai cổng trăng rộng 6,4 (lối 4,6 m) tâm z −9 và z 8; z −9 / z 8 qua được, z 0 dừng ở x 16,25', () => {
-    const east = wallGates(spec.walls, spec.wallSegments).filter((g) => g.axis === 'z' && g.fixed === 17);
-    expect(east.map((g) => g.at).sort((a, b) => a - b)).toEqual([-9, 8]);
-    for (const g of east) {
-      expect([g.width, g.kind]).toEqual([6.4, 'trang']);
-      expect(2 * gateOpening(g)).toBeCloseTo(4.6, 6);
-    }
-    expect(walk(real(), 15, -9, 1, 0, 6).x).toBeGreaterThan(20);
-    expect(walk(real(), 15, 8, 1, 0, 6).x).toBeGreaterThan(20);
-    expect(walk(real(), 15, 0, 1, 0, 6).x).toBeCloseTo(16.25, 2);
-  });
-
-  it('R-VA-1: Sân Đông x 17…42, z −22…3 và sân Mặc Trì z 3…25 có tường bao (Mặc Trì chỉ thông ra Quảng Trường)', () => {
-    // Sân Đông: đi bắc ở x 40 dừng ở z −21,25; đi nam dừng ở z 2,25 (tường ngăn hai sân); đi đông dừng ở x 41,25
-    expect(walk(real(), 40, -5, 0, -1, 25).z).toBeCloseTo(-21.25, 2);
-    expect(walk(real(), 40, -5, 0, 1, 15).z).toBeCloseTo(2.25, 2);
-    expect(walk(real(), 35, -2, 1, 0, 15).x).toBeCloseTo(41.25, 2);
-    // Mặc Trì: đi nam dừng ở z 24,25; đi đông dừng ở x 41,25; đi bắc dừng ở z 3,75
-    expect(walk(real(), 30, 22, 0, 1, 10).z).toBeCloseTo(24.25, 2);
-    expect(walk(real(), 35, 23, 1, 0, 15).x).toBeCloseTo(41.25, 2);
-    expect(walk(real(), 40, 10, 0, -1, 15).z).toBeCloseTo(3.75, 2);
-    // tường nối hai đầu tường đông Quảng Trường: x 17 từ z −22 tới −17 và từ 17 tới 25
-    expect(walk(real(), 15, -20, 1, 0, 10).x).toBeCloseTo(16.25, 2);
-    expect(walk(real(), 15, 21, 1, 0, 10).x).toBeCloseTo(16.25, 2);
-  });
-});
-
-describe('R-VA-1: cổng bắc Sân Đông + cổng hậu Tàng Thư Các (cảnh thật, V-20261114-30)', () => {
-  const spec = loadScene(HOME_SCENE).spec;
-  const real = (): Colliders => {
-    const c = new Colliders();
-    for (const b of plasterWallBoxes(spec.walls, spec.wallSegments)) c.add(b.x, b.z, b.w, b.d, b.h);
-    return c;
-  };
-  const gate = (fixed: number, at: number) => wallGates(spec.walls, spec.wallSegments).find((g) => g.axis === 'x' && g.fixed === fixed && g.at === at);
-
-  it('R-VA-1: tường bắc Sân Đông z −22 có cổng trăng tâm x 30 rộng 5, lối 4 m; từ (30; −18) đi bắc qua được ra bãi đông, x 40 vẫn dừng ở z −21,25', () => {
-    const g = gate(-22, 30)!;
-    expect([g.width, g.kind]).toEqual([5, 'trang']);
-    expect(2 * gateOpening(g)).toBeCloseTo(4, 6);
+  it('R-VA-1: Sân Cổ Thụ ↔ Mặc Trì thông nhau (bỏ tường z 3); ra bắc tới Trà lâu không qua cổng (bỏ tường z −22)', () => {
+    expect(walk(real(), 35, -5, 0, 1, 12).z).toBeGreaterThan(5);
     expect(walk(real(), 30, -18, 0, -1, 10).z).toBeLessThan(-26);
-    expect(walk(real(), 30, -26, 0, 1, 8).z).toBeGreaterThan(-19); // ngược lại: từ bãi đông vào Sân Đông
-    expect(walk(real(), 40, -5, 0, -1, 25).z).toBeCloseTo(-21.25, 2);
+    expect(walk(real(), 40, -5, 0, -1, 25).z).toBeLessThan(-26);
+  });
+
+  it('R-VA-1: tường ngoài giữ — đông x 42 dừng ở x 41,25; nam Mặc Trì z 25 dừng ở z 24,25', () => {
+    expect(walk(real(), 35, -2, 1, 0, 15).x).toBeCloseTo(41.25, 2);
+    expect(walk(real(), 35, 23, 1, 0, 15).x).toBeCloseTo(41.25, 2);
+    expect(walk(real(), 30, 22, 0, 1, 10).z).toBeCloseTo(24.25, 2);
   });
 
   it('R-VA-1: tường bắc Tàng Thư Các z −32 có cổng trăng hậu tâm x −33 rộng 5, lối 4 m; từ (−33; −29) đi bắc qua được ra Vườn Bia, x −37 dừng ở z −31,25', () => {
-    const g = gate(-32, -33)!;
+    const g = wallGates(spec.walls, spec.wallSegments).find((q) => q.axis === 'x' && q.fixed === -32 && q.at === -33)!;
     expect([g.width, g.kind]).toEqual([5, 'trang']);
     expect(2 * gateOpening(g)).toBeCloseTo(4, 6);
     expect(walk(real(), -33, -29, 0, -1, 8).z).toBeLessThan(-35);

@@ -42,7 +42,7 @@ describe('bản đồ vùng — đủ mọi cảnh (R-BANDO-2)', () => {
   it('R-BANDO-2: Khởi Nguyên Trấn — 11 khu, vòng trận (0; −44,5) đầu Thiên Bậc, vòng "Về nhà" ngoài cổng xuống núi (0; 54) ghi "Nhà của ta", bàn cờ + Đấu chữ, Tạp hoá, bảng nhiệm vụ', () => {
     const m = mapOf(HOME_SCENE);
     expect(m.labels.filter((l) => l.kind === 'khu').map((l) => l.text)).toEqual([
-      'Sân Đông',
+      'Sân Cổ Thụ',
       'Cổng Trấn',
       'Quảng Trường',
       'Kỳ Văn Uyển',

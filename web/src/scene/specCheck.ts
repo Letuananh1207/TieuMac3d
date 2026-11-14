@@ -14,6 +14,7 @@ import {
   GATE_KINDS,
   BRIDGE_KINDS,
   HANG_KINDS,
+  FENCE_KINDS,
   PAVE_PATTERNS,
   PROP_KINDS,
   FLOWER_POTS,
@@ -421,7 +422,7 @@ const LISTS: Record<string, ItemParser> = {
   'terrain.stairs': item({ from: XZ0, to: XZ0, width: 0 }, {}, positive('width')),
   'terrain.waterfalls': item({ x: 0, z: 0, top: 0, bottom: 0, width: 0 }, { rotY: 0 }, positive('width')),
   'terrain.streams': streamItem,
-  'terrain.floors': item({ from: XZ0, to: XZ0, color: '#000000' }, { y: 0, pattern: '', brickHue: 0 }, oneOf('pattern', PAVE_PATTERNS)),
+  'terrain.floors': item({ from: XZ0, to: XZ0, color: '#000000' }, { y: 0, pattern: '' }, oneOf('pattern', PAVE_PATTERNS)),
   'farMountains.layers': item(
     { radius: 0, height: 0, color: '#000000', peaks: 0 },
     { width: 1, spurs: 0 },
@@ -604,6 +605,7 @@ function checkLanterns(s: SceneSpec): string[] {
   if (st.height - st.sag - low < 2.4) out.push('lanternStyle: vật treo thấp nhất dưới 2,4 m — tăng height hoặc giảm sag / drop');
   if (st.drop <= 0) out.push('lanternStyle.drop: > 0');
   if (s.fences.length && (s.fenceStyle.height <= 0 || s.fenceStyle.postEvery < 0.5)) out.push('fenceStyle: height > 0, postEvery ≥ 0,5');
+  if (!FENCE_KINDS.includes(s.fenceStyle.kind)) out.push(`fenceStyle.kind: chỉ ${FENCE_KINDS.join(' · ')}`);
   s.lanternStrings.forEach((l, i) => {
     if (Math.hypot(l.to[0] - l.from[0], l.to[1] - l.from[1]) < 2) out.push(`lanternStrings[${i}]: dây ngắn hơn 2 m`);
   });

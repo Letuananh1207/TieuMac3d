@@ -257,6 +257,9 @@ export interface LanternString {
 /** Vật treo dọc dây đèn: đèn lồng · dải tua rua. */
 export const HANG_KINDS = ['den', 'tua'] as const;
 
+/** Kiểu lan can `fences`: `go` gỗ sơn son (cũ) · `da` đá trắng đầu sen (Quảng Trường, V-42). */
+export const FENCE_KINDS = ['go', 'da'] as const;
+
 /** Đoạn lan can gỗ thấp, thẳng trục (from / to cùng x hoặc cùng z). */
 export interface FenceSpec {
   from: XZ;
@@ -580,9 +583,9 @@ export interface PlateauSpec {
 
 /**
  * Chất nền một khu (V-42 — "mỗi khu một chất nền", Kevin Lynch: khu nhận ra bằng mặt đất): hình chữ nhật `from`–`to`
- * lát phẳng ở độ cao `y` (đặt trên bục phẳng cùng độ cao), gạch kiểu `pattern` màu `color` (`gach`: tông `brickHue`) —
- * cùng cách vẽ với sân lát `ground`, chỉ khác màu / kiểu. Nằm trên sân lát của bục, dưới lối lát (`paths`), không va chạm.
- * Các nền không nên chồng nhau (chồng → nền khai báo sau nằm trên).
+ * lát phẳng ở độ cao `y` (đặt trên bục phẳng cùng độ cao), gạch kiểu `pattern` màu `color` —
+ * cùng kiểu gạch với sân lát `ground`, chỉ khác màu. Nằm trên sân lát của bục, dưới lối lát (`paths`), không va chạm.
+ * Mọi nền cùng kiểu gạch vẽ chung một draw call (`terrain.ts`). Các nền **không được chồng nhau** (chồng → chớp).
  */
 export interface FloorSpec {
   from: XZ;
@@ -590,10 +593,8 @@ export interface FloorSpec {
   /** thiếu = 0 */
   y?: number;
   color: string;
-  /** thiếu = `vuong` */
+  /** thiếu = `vuong` (`gach`: tông gạch theo `ground.brickHue`, nhuộm theo `color`) */
   pattern?: (typeof PAVE_PATTERNS)[number];
-  /** chỉ `gach`; thiếu = `ground.brickHue` */
-  brickHue?: number;
 }
 
 /** Đỉnh núi / đồi cộng vào địa hình: cao `h` ở tâm, thoải dần tới bán kính `r`. */
@@ -910,8 +911,9 @@ export interface SceneSpec {
   };
   /** lan can gỗ thấp quây sân (thẳng trục như `wallSegments`), có va chạm — kiểu dáng ở `fenceStyle` */
   fences: FenceSpec[];
-  /** lan can: cao, khoảng hai trụ (m), màu thân (sơn son), màu chóp trụ */
-  fenceStyle: { height: number; postEvery: number; color: string; cap: string };
+  /** lan can: cao, khoảng hai trụ (m), màu thân (sơn son), màu chóp trụ. `kind`: `go` lan can gỗ sơn (mặc định, như cũ) ·
+   *  `da` lan can đá (V-42): trụ vuông đầu sen, tay vịn + tấm chắn đá giữa hai trụ — `color` thân đá, `cap` đầu sen / tay vịn */
+  fenceStyle: { kind: (typeof FENCE_KINDS)[number]; height: number; postEvery: number; color: string; cap: string };
   /** `seated`: khi ngồi vào án thư / bàn trà (R-NGOI-1) — camera lùi ra, chúc xuống thấy cả bàn ·
    *  `study`: khi Ngồi ôn (R-DIEU-7) — lùi ra, nâng cao, lệch `side` rad ra sau vai phải để thấy cuộn sách trên tay */
   camera: {
@@ -1093,7 +1095,7 @@ export const DEFAULT_SCENE: SceneSpec = {
     lanternEvery: 0,
   },
   fences: [],
-  fenceStyle: { height: 1.0, postEvery: 1.6, color: '#9e2a20', cap: '#e0ae4c' },
+  fenceStyle: { kind: 'go', height: 1.0, postEvery: 1.6, color: '#9e2a20', cap: '#e0ae4c' },
   camera: {
     fov: 55,
     minDist: 5,

@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import type { GroundY } from './terrainHeight';
 import { lambert } from './materials';
 import { brickTexture, paveTileM } from './environment';
@@ -21,6 +22,9 @@ export function addPaths(
   const base = new Map<string, THREE.CanvasTexture>();
   const paveTex = pave ? brickTexture(pave) : null;
   const paveTile = pave ? paveTileM(pave) : 1;
+  // `pave`: mọi lối cùng một ảnh, UV theo toạ độ cảnh → chỗ hai lối chồng nhau vẽ ra y hệt, không cần vật liệu riêng từng
+  // lối để xếp lớp. Gộp hết vào MỘT khối (V-42: trước đây mỗi lối một draw call — tông môn 16 lối = 16 draw call).
+  const paveGeos: THREE.BufferGeometry[] = [];
   paths.forEach((p, i) => {
     const color = p.color ?? defaultColor;
     let tex = paveTex ?? base.get(color);
@@ -33,7 +37,7 @@ export function addPaths(
     const len = Math.hypot(x2 - x1, z2 - z1);
     if (len < 0.01) return;
     // units −2: nhìn thẳng từ trên (độ dốc sâu ≈ 0) lối vẫn nằm trên sân lát và trên chất nền khu (`terrain.floors`, units −1)
-    const mat = lambert(0xffffff, { map: tex, polygonOffset: true, polygonOffsetFactor: -1 - i * 0.01, polygonOffsetUnits: -2 });
+    const mat = pave ? null : lambert(0xffffff, { map: tex, polygonOffset: true, polygonOffsetFactor: -1 - i * 0.01, polygonOffsetUnits: -2 });
     // lưới bám mặt đất (L-3): chia theo chiều dài ≤ 1 m, 3 điểm theo bề ngang, mỗi điểm lấy độ cao mặt đất. Trước đây một
     // tứ giác nội suy thẳng giữa hai đầu → mặt đất ở giữa cao hơn (bục, gờ, nhiễu) là lối chìm mất. UV theo mét (1 lần lặp = SLAB_TILE_M)
     const lift = 0.03 + i * 0.001;
@@ -75,6 +79,12 @@ export function addPaths(
       geo.setIndex(idx);
       geo.computeVertexNormals();
     }
-    scene.add(new THREE.Mesh(geo, mat));
+    if (pave) paveGeos.push(geo);
+    else scene.add(new THREE.Mesh(geo, mat!));
   });
+  if (paveGeos.length) {
+    const merged = mergeGeometries(paveGeos);
+    for (const g of paveGeos) g.dispose();
+    if (merged) scene.add(new THREE.Mesh(merged, lambert(0xffffff, { map: paveTex!, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -2 })));
+  }
 }

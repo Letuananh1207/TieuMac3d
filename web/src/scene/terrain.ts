@@ -142,25 +142,46 @@ function addPaving(scene: THREE.Scene, spec: SceneSpec): void {
   }
 }
 
+/** Màu gốc của texture chất nền (xám giữa); màu từng khu = màu đỉnh nhân vào (`FLOOR_BASE` × màu đỉnh = `color`). */
+const FLOOR_BASE = '#b4b4b4';
+
 /**
- * Chất nền từng khu (`terrain.floors`, V-42): cùng mặt phẳng với sân lát, vẽ đè nhờ polygonOffset (nền sau đè nền trước,
- * lối lát `paths` — factor −1, units −2 — vẫn nằm trên). Mỗi kiểu nền một vật liệu → một draw call sau khi gộp.
+ * Chất nền từng khu (`terrain.floors`, V-42): cùng mặt phẳng với sân lát, vẽ đè nhờ polygonOffset (lối lát `paths` —
+ * factor −1, units −2 — vẫn nằm trên). Mọi nền cùng kiểu gạch dựng thành **một khối** (một texture xám, màu từng khu nằm ở
+ * màu đỉnh) → 1 draw call cho mọi khu cùng kiểu. Các nền không chồng nhau (chồng → chớp).
  */
 function addFloors(scene: THREE.Scene, spec: SceneSpec): void {
-  spec.terrain.floors.forEach((f, i) => {
-    const gs: SceneSpec['ground'] = { ...spec.ground, color: f.color, pattern: f.pattern ?? 'vuong', brickHue: f.brickHue ?? spec.ground.brickHue };
+  const byPattern = new Map<string, SceneSpec['terrain']['floors']>();
+  for (const f of spec.terrain.floors) {
+    const pat = f.pattern ?? 'vuong';
+    byPattern.set(pat, [...(byPattern.get(pat) ?? []), f]);
+  }
+  const base = new THREE.Color(FLOOR_BASE);
+  for (const [pattern, floors] of byPattern) {
+    const gs: SceneSpec['ground'] = { ...spec.ground, color: FLOOR_BASE, pattern: pattern as SceneSpec['ground']['pattern'] };
     const tile = paveTileM(gs);
-    const mat = lambert(0xffffff, { map: brickTexture(gs), polygonOffset: true, polygonOffsetFactor: -0.5 - i * 0.01, polygonOffsetUnits: -1 });
-    const w = Math.abs(f.to[0] - f.from[0]);
-    const d = Math.abs(f.to[1] - f.from[1]);
-    const cx = (f.from[0] + f.to[0]) / 2;
-    const cz = (f.from[1] + f.to[1]) / 2;
-    const geo = new THREE.PlaneGeometry(w, d);
-    const uv = geo.getAttribute('uv') as THREE.BufferAttribute;
-    for (let k = 0; k < uv.count; k++) uv.setXY(k, (cx + (uv.getX(k) - 0.5) * w) / tile, (-cz + (uv.getY(k) - 0.5) * d) / tile);
-    const m = new THREE.Mesh(geo, mat);
-    m.rotation.x = -Math.PI / 2;
-    m.position.set(cx, (f.y ?? 0) + PAVE_LIFT, cz); // cùng mặt sân lát; thứ tự vẽ nhờ polygonOffset (lối lát units −2 vẫn trên)
-    scene.add(m);
-  });
+    const pos: number[] = [];
+    const uv: number[] = [];
+    const col: number[] = [];
+    for (const f of floors) {
+      const c = new THREE.Color(f.color);
+      const tint = [c.r / base.r, c.g / base.g, c.b / base.b];
+      const [x0, x1] = [Math.min(f.from[0], f.to[0]), Math.max(f.from[0], f.to[0])];
+      const [z0, z1] = [Math.min(f.from[1], f.to[1]), Math.max(f.from[1], f.to[1])];
+      const y = (f.y ?? 0) + PAVE_LIFT; // cùng mặt sân lát; thứ tự vẽ nhờ polygonOffset
+      // hai tam giác hướng lên: (x0,z1) (x1,z1) (x1,z0) · (x0,z1) (x1,z0) (x0,z0); UV theo toạ độ cảnh (x, −z) như sân lát
+      for (const [x, z] of [[x0, z1], [x1, z1], [x1, z0], [x0, z1], [x1, z0], [x0, z0]]) {
+        pos.push(x, y, z);
+        uv.push(x / tile, -z / tile);
+        col.push(...tint);
+      }
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    geo.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+    geo.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+    geo.computeVertexNormals();
+    const mat = lambert(0xffffff, { map: brickTexture(gs), vertexColors: true, polygonOffset: true, polygonOffsetFactor: -0.5, polygonOffsetUnits: -1 });
+    scene.add(new THREE.Mesh(geo, mat));
+  }
 }

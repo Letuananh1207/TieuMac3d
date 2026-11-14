@@ -33,70 +33,11 @@
     "color": "#e8e1d2",
     "brickHue": 28,
     "capColor": "#4f5a63",
-    "gates": [
-      {
-        "side": "nam",
-        "at": 0,
-        "width": 9.6,
-        "kind": "lau",
-        "clearHeight": 4,
-        "roof": false,
-        "signs": {
-          "nam": "Quảng trường",
-          "bac": "Lối ra núi"
-        }
-      },
-      {
-        "side": "bac",
-        "at": 0,
-        "width": 9.6,
-        "kind": "lau",
-        "clearHeight": 4,
-        "signs": {
-          "nam": "Lên Đài truyền tống",
-          "bac": "Quảng trường"
-        }
-      },
-      {
-        "side": "dong",
-        "at": -9,
-        "width": 6.4,
-        "signs": {
-          "tay": "Sân đông",
-          "dong": "Quảng trường"
-        }
-      },
-      {
-        "side": "dong",
-        "at": 8,
-        "width": 6.4,
-        "signs": {
-          "tay": "Mặc Trì",
-          "dong": "Quảng trường"
-        }
-      },
-      {
-        "side": "tay",
-        "at": -6,
-        "width": 6.4,
-        "signs": {
-          "dong": "Thư viện",
-          "tay": "Quảng trường"
-        }
-      },
-      {
-        "side": "tay",
-        "at": 4,
-        "width": 6.4,
-        "signs": {
-          "dong": "Khu vui chơi",
-          "tay": "Quảng trường"
-        }
-      }
-    ],
+    "gates": [],
     "style": "voi",
     "windows": 6,
-    "thickness": 0.5
+    "thickness": 0.5,
+    "enabled": false
   },
   "wallSegments": [
     {
@@ -149,71 +90,66 @@
     },
     {
       "from": [
-        17,
+        42,
         -22
       ],
       "to": [
-        17,
-        -17
+        42,
+        25
       ]
     },
     {
       "from": [
         17,
-        -22
+        25
       ],
       "to": [
         42,
-        -22
+        25
+      ]
+    },
+    {
+      "from": [
+        -5.8,
+        17
       ],
+      "to": [
+        5.8,
+        17
+      ],
+      "height": 0.8,
       "gate": {
-        "at": 30,
-        "width": 5,
+        "at": 0,
+        "width": 9.6,
+        "kind": "lau",
+        "clearHeight": 4,
+        "roof": false,
         "signs": {
-          "nam": "Trà lâu · Đồi Chè",
-          "bac": "Sân đông"
+          "nam": "Quảng trường",
+          "bac": "Lối ra núi"
         }
       }
     },
     {
       "from": [
-        42,
-        -22
+        -5.8,
+        -17
       ],
       "to": [
-        42,
-        25
-      ]
-    },
-    {
-      "from": [
-        17,
-        3
+        5.8,
+        -17
       ],
-      "to": [
-        42,
-        3
-      ]
-    },
-    {
-      "from": [
-        17,
-        17
-      ],
-      "to": [
-        17,
-        25
-      ]
-    },
-    {
-      "from": [
-        17,
-        25
-      ],
-      "to": [
-        42,
-        25
-      ]
+      "height": 0.8,
+      "gate": {
+        "at": 0,
+        "width": 9.6,
+        "kind": "lau",
+        "clearHeight": 4,
+        "signs": {
+          "nam": "Lên Đài truyền tống",
+          "bac": "Quảng trường"
+        }
+      }
     }
   ],
   "paths": [
@@ -260,39 +196,6 @@
         -17
       ],
       "width": 3.6
-    },
-    {
-      "from": [
-        17,
-        8
-      ],
-      "to": [
-        38.5,
-        8
-      ],
-      "width": 3
-    },
-    {
-      "from": [
-        38.5,
-        8
-      ],
-      "to": [
-        38.5,
-        12.5
-      ],
-      "width": 2.4
-    },
-    {
-      "from": [
-        23,
-        8
-      ],
-      "to": [
-        23,
-        21
-      ],
-      "width": 2.4
     },
     {
       "from": [
@@ -370,6 +273,61 @@
         -36
       ],
       "width": 2.4
+    },
+    {
+      "from": [
+        -17,
+        4
+      ],
+      "to": [
+        -27,
+        4
+      ],
+      "width": 5
+    },
+    {
+      "from": [
+        17,
+        4
+      ],
+      "to": [
+        38.5,
+        4
+      ],
+      "width": 5
+    },
+    {
+      "from": [
+        38.5,
+        4
+      ],
+      "to": [
+        38.5,
+        12.5
+      ],
+      "width": 2.4
+    },
+    {
+      "from": [
+        23,
+        4
+      ],
+      "to": [
+        23,
+        21
+      ],
+      "width": 2.4
+    },
+    {
+      "from": [
+        30,
+        -13.5
+      ],
+      "to": [
+        30,
+        -22.3
+      ],
+      "width": 3
     }
   ],
   "buildingStyle": {
@@ -584,16 +542,6 @@
       "z": -37.2
     },
     {
-      "kind": "den-da",
-      "x": 20,
-      "z": 5.4
-    },
-    {
-      "kind": "den-da",
-      "x": 20,
-      "z": 10.6
-    },
-    {
       "kind": "da-khac",
       "x": 25,
       "z": 15,
@@ -698,6 +646,64 @@
       "x": -20.5,
       "z": -45.5,
       "text": "白日依山盡/黃河入海流/欲窮千里目/更上一層樓|bái rì yī shān jìn/huáng hé rù hǎi liú/yù qióng qiān lǐ mù/gèng shàng yī céng lóu|Mặt trời tựa núi lặn, Hoàng Hà chảy ra biển; muốn nhìn xa nghìn dặm, hãy lên thêm một tầng lầu.|Bạch nhật y sơn tận, Hoàng Hà nhập hải lưu, dục cùng thiên lý mục, cánh thượng nhất tầng lâu|Vương Chi Hoán · Đăng Quán Tước lâu"
+    },
+    {
+      "kind": "den-da",
+      "x": 19.5,
+      "z": 0.8
+    },
+    {
+      "kind": "den-da",
+      "x": 19.5,
+      "z": 7.2
+    },
+    {
+      "kind": "bien-go",
+      "x": -19,
+      "z": 9.2,
+      "rotY": 90,
+      "text": "Khu vui chơi"
+    },
+    {
+      "kind": "bien-go",
+      "x": -19,
+      "z": -9.4,
+      "rotY": 90,
+      "text": "Thư viện"
+    },
+    {
+      "kind": "bien-go",
+      "x": 19,
+      "z": 9.2,
+      "rotY": 270,
+      "text": "Mặc Trì"
+    },
+    {
+      "kind": "bien-go",
+      "x": 32.4,
+      "z": -21,
+      "text": "Trà lâu · Đồi Chè"
+    },
+    {
+      "kind": "den-da",
+      "x": 26.5,
+      "z": -3
+    },
+    {
+      "kind": "den-da",
+      "x": 33.5,
+      "z": -3
+    },
+    {
+      "kind": "da-thai-ho",
+      "x": 25.5,
+      "z": -11.5
+    },
+    {
+      "kind": "da-thai-ho",
+      "x": 34.5,
+      "z": -11.5,
+      "rotY": 180
     }
   ],
   "trees": {
@@ -915,6 +921,66 @@
         "x": 24,
         "z": -47.7,
         "scale": 0.8
+      },
+      {
+        "kind": "bui",
+        "x": 23.2,
+        "z": 0.2,
+        "scale": 0.8
+      },
+      {
+        "kind": "bui",
+        "x": 25.4,
+        "z": 0.2,
+        "scale": 0.8
+      },
+      {
+        "kind": "bui",
+        "x": 34.2,
+        "z": 0.2,
+        "scale": 0.8
+      },
+      {
+        "kind": "bui",
+        "x": 36.4,
+        "z": 0.2,
+        "scale": 0.8
+      },
+      {
+        "kind": "bui",
+        "x": 38.6,
+        "z": 0.2,
+        "scale": 0.8
+      },
+      {
+        "kind": "tung",
+        "x": 20,
+        "z": -23.2,
+        "scale": 1.1
+      },
+      {
+        "kind": "tung",
+        "x": 24.5,
+        "z": -23.2,
+        "scale": 1.1
+      },
+      {
+        "kind": "tung",
+        "x": 37,
+        "z": -23.2,
+        "scale": 1.1
+      },
+      {
+        "kind": "tung",
+        "x": 41,
+        "z": -23.2,
+        "scale": 1.1
+      },
+      {
+        "kind": "tung",
+        "x": 30,
+        "z": -7,
+        "scale": 3.2
       }
     ],
     "groves": [
@@ -1060,8 +1126,8 @@
     "name": "Khởi Nguyên Trấn",
     "areas": [
       {
-        "name": "Sân Đông",
-        "han": "東院",
+        "name": "Sân Cổ Thụ",
+        "han": "古樹",
         "from": [
           17,
           -22
@@ -1353,7 +1419,7 @@
           4
         ],
         "y": 0,
-        "pave": true,
+        "pave": false,
         "blend": 5
       },
       {
@@ -1459,6 +1525,19 @@
         "y": 0,
         "pave": false,
         "blend": 1.5
+      },
+      {
+        "from": [
+          23.5,
+          -13.5
+        ],
+        "to": [
+          36.5,
+          -0.5
+        ],
+        "y": 0,
+        "pave": true,
+        "blend": 5
       }
     ],
     "peaks": [
@@ -1863,6 +1942,32 @@
         ],
         "width": 2.6
       }
+    ],
+    "floors": [
+      {
+        "from": [
+          -51,
+          -11
+        ],
+        "to": [
+          -17,
+          17
+        ],
+        "color": "#c48f72",
+        "pattern": "vuong"
+      },
+      {
+        "from": [
+          -8,
+          17
+        ],
+        "to": [
+          8,
+          51
+        ],
+        "color": "#8e8474",
+        "pattern": "vuong"
+      }
     ]
   },
   "farMountains": {
@@ -1998,9 +2103,94 @@
     "drop": 1.4,
     "lanternEvery": 4
   },
-  "fences": [],
+  "fences": [
+    {
+      "from": [
+        -16.6,
+        17
+      ],
+      "to": [
+        -6.1,
+        17
+      ]
+    },
+    {
+      "from": [
+        6.1,
+        17
+      ],
+      "to": [
+        16.6,
+        17
+      ]
+    },
+    {
+      "from": [
+        -16.6,
+        -17
+      ],
+      "to": [
+        -6.1,
+        -17
+      ]
+    },
+    {
+      "from": [
+        6.1,
+        -17
+      ],
+      "to": [
+        16.6,
+        -17
+      ]
+    },
+    {
+      "from": [
+        -17,
+        -16.6
+      ],
+      "to": [
+        -17,
+        -10
+      ]
+    },
+    {
+      "from": [
+        -17,
+        10
+      ],
+      "to": [
+        -17,
+        16.6
+      ]
+    },
+    {
+      "from": [
+        17,
+        -16.6
+      ],
+      "to": [
+        17,
+        -12
+      ]
+    },
+    {
+      "from": [
+        17,
+        12
+      ],
+      "to": [
+        17,
+        16.6
+      ]
+    }
+  ],
   "fenceStyle": {
-    "postEvery": 2.2
+    "kind": "da",
+    "height": 0.8,
+    "postEvery": 2.4,
+    "color": "#c9c3b6",
+    "cap": "#ece8de"
   },
   "portals": [
     {
