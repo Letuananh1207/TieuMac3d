@@ -33,6 +33,7 @@ import { inRect, type Room } from './scene/rooms';
 import { signText } from './scene/signAtlas';
 import { buildWorld } from './scene/world';
 import { NHAP_DINH_OPEN_AT, NhapDinh } from './scene/nhapDinh';
+import { NgoiMat, type SitPlace } from './ngoiMat';
 import { el } from './ui/dom';
 import { LearnButton } from './ui/learnButton';
 import { FpsCounter, NameTag } from './ui/hud';
@@ -215,7 +216,10 @@ async function boot(): Promise<void> {
     onResume: (stand) => {
       closeLesson();
       // "Đứng dậy" / "Xuất định" → cuộn sách cuộn lại 0,25 s rồi đứng dậy (R-HANH-3, thiết kế 2026-11-14.10)
-      if (stand && player.isSitting) nhapDinh.rollUpThen(() => player.isSitting && player.toggleSit());
+      if (stand && player.isSitting) {
+        ngoiMat.rollUp(); // cuộn trước mắt cuộn lại cùng nhịp (R-DIEU-7)
+        nhapDinh.rollUpThen(() => player.isSitting && player.toggleSit());
+      }
     },
     onVisible: (visible) => {
       appHidden = !visible;
@@ -272,6 +276,14 @@ async function boot(): Promise<void> {
   };
   let onSeat = false; // ngồi bằng nút nổi "Ngồi" / "Vào bàn" (R-NGOI-1) → không mở cuộn sách (R-ON-8)
   let seatStudy = false; // … trừ bồ đoàn khu tự học Tàng Thư Các: vẫn nhập định + cuộn sách (R-VA-4)
+  let seatHold: 'tra' | 'sach' | undefined; // vật cầm ở chỗ ngồi khi nhìn từ mắt (R-NGOI-1)
+  /** Chỗ đang ngồi cho góc nhìn từ mắt (R-DIEU-7): bàn chơi · chỗ ngồi · Ngồi ôn / bồ đoàn khu tự học (cuộn sách). */
+  const sitPlace = (): SitPlace => {
+    const g = gamePlay.seatedAt;
+    if (g) return { kind: 'ban-choi', ...g };
+    if (onSeat && !seatStudy) return { kind: 'ngoi', hold: seatHold };
+    return { kind: 'on' };
+  };
   /** Mỗi khung: đếm thời gian ngồi ôn tại chỗ, ở bất kỳ đâu; đủ `SIT_TO_LEARN` thì mở cuộn sách Ngồi ôn (R-ON-8). */
   const meditate = (dt: number, busy: boolean): void => {
     if (!player.isSitting) {
@@ -279,10 +291,10 @@ async function boot(): Promise<void> {
       sitOpened = false;
       onSeat = false;
       seatStudy = false;
-      orbit.sit(false); // đứng dậy: camera về khoảng cách + góc cũ (R-NGOI-1)
+      if (ngoiMat.seated) ngoiMat.stand(); // đứng dậy: camera trượt về ngôi 3 như trước khi ngồi (R-DIEU-7)
       return;
     }
-    if (!onSeat) orbit.sit(true, character.facing.rotation.y); // Ngồi ôn: lùi ra sau vai thấy cuộn sách (R-DIEU-7)
+    if (!ngoiMat.seated) ngoiMat.sit(sitPlace()); // mọi kiểu ngồi: nhìn từ mắt (R-DIEU-7, R-NGOI-1, R-GIAO-1)
     if ((onSeat && !seatStudy) || sitOpened || busy) return;
     sitTime += dt;
     if (sitTime < SIT_TO_LEARN) return;
@@ -348,6 +360,11 @@ async function boot(): Promise<void> {
     })();
   };
   const nhapDinh = new NhapDinh(scene);
+  // ngồi → nhìn từ mắt: hai tay + cuộn / chén trà / bàn chơi; thân mình ẩn khỏi camera mình (ngoiMat.ts)
+  const ngoiMat = new NgoiMat(scene, character, spec.camera);
+  /** camera phụ: OrbitCamera (ngôi 3) và bàn chơi vẽ vào đây, `ngoiMat` trộn ra camera thật */
+  const tpCam = new THREE.PerspectiveCamera(spec.camera.fov, 1, 0.1, 10);
+  const gameCam = new THREE.PerspectiveCamera(spec.camera.fov, 1, 0.1, 10);
   const zones = new ZoneTracker(placed.zones, (z) => learn.setZone(z));
 
   /* ---------- chỗ ngồi (R-NGOI-1): nút nổi "Ngồi" / "Vào bàn"; nút Ngồi ôn ngồi tại chỗ ---------- */
@@ -362,6 +379,7 @@ async function boot(): Promise<void> {
     if (player.isSitting) return;
     onSeat = true;
     seatStudy = !!spot.study;
+    seatHold = 'hold' in spot ? spot.hold : undefined;
     if ('table' in spot) {
       gamePlay.sitAt(spot); // ghế bàn chơi (R-GIAO-1)
       return;
@@ -371,8 +389,7 @@ async function boot(): Promise<void> {
     player.position.set(spot.x, spot.y ?? player.position.y, spot.z);
     character.facing.rotation.y = spot.rotY;
     orbit.yaw = spot.rotY - Math.PI; // camera sau lưng, nhìn về án
-    player.toggleSit();
-    orbit.sit(true, seatStudy ? spot.rotY : undefined); // lùi ra thấy cả bàn (R-NGOI-1, L-8); khu tự học: như Ngồi ôn
+    player.toggleSit(); // nhìn từ mắt: `meditate` gọi ngoiMat.sit (R-NGOI-1)
   };
   const seatButton = new SeatButton<SeatPick>((spot) => sitAt(spot));
   // nhạc nền trà lâu (R-NHAC-1): đài phát theo giờ thật, âm lượng theo khoảng cách tới sàn trà lâu
@@ -427,6 +444,8 @@ async function boot(): Promise<void> {
     orbit,
     onJoystickStart: () => (player.moveTarget = null),
     tapOnly: () => mapOpen || talking || gamePlay.active || chat.typing, // ngồi chơi: chạm là chạm bàn (R-GIAO-1, R-DIEU-1)
+    lookMode: () => ngoiMat.seated, // ngồi: kéo = nhìn quanh từ mắt, chụm không zoom (R-DIEU-7, R-DIEU-1)
+    onLook: (dx, dy) => ngoiMat.drag(dx, dy),
     noJoystick: () => !!decor?.active, // trang trí: đứng yên, kéo đâu cũng xoay camera (R-NHA-2)
     onTap: (x, y) => {
       if (mapOpen) {
@@ -436,7 +455,12 @@ async function boot(): Promise<void> {
       if (chat.close()) return; // đang gõ: chạm cảnh = đóng ô nhập
       if (decor?.tap()) return; // trang trí: chạm cảnh trống = đóng bảng danh mục
       if (paused || talking) return;
-      if (gamePlay.tap(x, y, camera)) return; // đang ngồi chơi: chạm vào bàn, không đi (R-GIAO-1)
+      if (gamePlay.tap(x, y, camera)) {
+        const at = gamePlay.takePlayed();
+        if (at) ngoiMat.playAt(at); // tay phải đưa quân tới giao điểm (R-GIAO-1)
+        return; // đang ngồi chơi: chạm vào bàn, không đi (R-GIAO-1)
+      }
+      if (ngoiMat.tapScroll(x, y, camera)) return; // chạm giấy cuộn trước mắt: tay trỏ (mục trên cuộn — chờ thiết kế)
       // đang trong nhà: chạm trúng vật học của nhà → mở bài (R-VUNG-2)
       const room = roomAt(player.position.x, player.position.z);
       const hit = room ? picker.pickObject(x, y, room.hits) : null;
@@ -645,7 +669,8 @@ async function boot(): Promise<void> {
   // tới qua cổng: nhìn theo hướng của chỗ đứng (R-HANH-4); về trấn bằng vòng trận giữ hướng mặc định (R-HANH-2)
   if (viaGate) orbit.yaw = viaGate.rotY - Math.PI;
   character.facing.rotation.y = orbit.yaw + Math.PI; // vào game: nhân vật quay lưng về camera, nhìn về phía trước
-  orbit.update(camera, player.position, 0, true, groundAt, undefined, sight);
+  orbit.update(tpCam, player.position, 0, true, groundAt, undefined, sight);
+  ngoiMat.update(0, camera, tpCam, null, null);
 
   function tick(): void {
     if (!running) return; // vòng lặp tự tắt; setRunning gọi lại khi hiện
@@ -682,7 +707,10 @@ async function boot(): Promise<void> {
     zones.update(pos);
     world.update(dt, pos);
     const room = roomAt(pos.x, pos.z);
-    if (!gamePlay.placeCamera(camera)) orbit.update(camera, pos, dt, false, groundAt, room?.floor, sight);
+    orbit.update(tpCam, pos, dt, false, groundAt, room?.floor, sight);
+    // ngồi: trượt 0,4 s vào mắt / cúi nhìn bàn chơi, thân mình ẩn (R-DIEU-7, R-GIAO-1); đứng: camera ngôi 3 như cũ
+    const atTable = gamePlay.placeCamera(gameCam);
+    ngoiMat.update(dt, camera, tpCam, atTable ? gameCam : null, player.isSitting && (!onSeat || seatStudy) ? sitTime : null);
     if (!covered) renderer.render(scene, camera);
     nameTag.update(pos, camera, NAME_TAG_HEIGHT);
     const busy = paused || covered || loading.active || mapOpen || talking;
@@ -690,10 +718,10 @@ async function boot(): Promise<void> {
     // nhập định khi Ngồi ôn (R-ON-8, thiết kế 2026-11-14.10): vòng sáng + cuộn sách trên tay; đứng dậy → tắt / cuộn lại
     nhapDinh.update(dt, pos, character.facing.rotation.y, player.isSitting && (!onSeat || seatStudy) ? sitTime : null);
     // ẩn khi bản đồ / màn tải / bài học phủ cảnh (L-11: nhãn HTML luôn đè lên cuộn bản đồ 3D)
-    nameTag.setVisible(!mapOpen && !loading.active && !covered);
+    nameTag.setVisible(!mapOpen && !loading.active && !covered && !ngoiMat.firstPerson); // nhìn từ mắt: không nhãn tên mình
     // màn Flutter đè cảnh (bảng chọn cuộn sách, thẻ học, màn ôn…) → ẩn cần điều khiển (R-ON-8)
     if (document.body.classList.contains('covered') !== covered) document.body.classList.toggle('covered', covered);
-    chat.update({ camera, player: pos, nameTagHeight: NAME_TAG_HEIGHT, npcs: npcSet.npcs, busy: busy || gamePlay.active });
+    chat.update({ camera, player: pos, nameTagHeight: NAME_TAG_HEIGHT, npcs: npcSet.npcs, busy: busy || gamePlay.active, hideMe: ngoiMat.firstPerson });
     learn.follow(zones.current ? anchorOf.get(zones.current.id) : undefined, camera);
     // nút "Nói chuyện": NPC gần nhất trong 2,5 m, không đang học / ngồi / bản đồ / thoại / màn tải (R-NPC-2)
     const near = paused || mapOpen || talking || loading.active || player.isSitting ? null : npcInTalkRange(npcSet.npcs, pos);

@@ -26,6 +26,12 @@ export interface PointerHandlers {
   tapOnly?(): boolean;
   /** `true` = không joystick, mọi ngón xoay / zoom camera (chế độ trang trí — R-NHA-2: đứng yên, vẫn xoay camera) */
   noJoystick?(): boolean;
+  /**
+   * `true` = đang ngồi, nhìn từ mắt (R-DIEU-7, R-DIEU-1): một ngón kéo (ngoài joystick) → `onLook` thay xoay camera;
+   * chụm / lăn chuột không zoom.
+   */
+  lookMode?(): boolean;
+  onLook?(dx: number, dy: number): void;
 }
 
 /**
@@ -71,11 +77,12 @@ export function attachPointerInput(canvas: HTMLCanvasElement, h: PointerHandlers
       p.y = e.clientY;
       const [a, b] = [...looks.values()];
       const d = Math.hypot(a.x - b.x, a.y - b.y);
-      if (pinchDist && d) orbit.pinch(pinchDist / d);
+      if (pinchDist && d && !h.lookMode?.()) orbit.pinch(pinchDist / d);
       pinchDist = d;
       return;
     }
-    orbit.rotate(e.clientX - p.x, e.clientY - p.y);
+    if (h.lookMode?.()) h.onLook?.(e.clientX - p.x, e.clientY - p.y);
+    else orbit.rotate(e.clientX - p.x, e.clientY - p.y);
     p.x = e.clientX;
     p.y = e.clientY;
   });
@@ -99,7 +106,7 @@ export function attachPointerInput(canvas: HTMLCanvasElement, h: PointerHandlers
     'wheel',
     (e) => {
       e.preventDefault();
-      if (!h.tapOnly?.()) orbit.wheel(e.deltaY);
+      if (!h.tapOnly?.() && !h.lookMode?.()) orbit.wheel(e.deltaY);
     },
     { passive: false },
   );

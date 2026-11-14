@@ -27,6 +27,8 @@ export interface ChatFrame {
   npcs: readonly Npc[];
   /** đang bận: bài học, thoại NPC, bàn chơi, bản đồ, màn tải → ẩn nút / khung, không vẽ bong bóng */
   busy: boolean;
+  /** đang nhìn từ mắt khi ngồi (R-DIEU-7): không vẽ bong bóng trên đầu chính mình (nó sẽ nổi giữa màn) */
+  hideMe?: boolean;
 }
 
 export class ChatRoom {
@@ -80,7 +82,8 @@ export class ChatRoom {
     this.chatter?.update(t);
     this.panel.update(t, f.busy);
 
-    this.anchor(this.me, f.player.x, f.player.y + f.nameTagHeight, f.player.z, ABOVE_NAME_TAG);
+    if (f.hideMe) this.anchors.delete(this.me.id);
+    else this.anchor(this.me, f.player.x, f.player.y + f.nameTagHeight, f.player.z, ABOVE_NAME_TAG);
     for (const n of f.npcs) {
       const p = n.root.position;
       this.anchor(this.anchors.get(n.id)?.speaker ?? this.npcSpeaker(n.id), p.x, p.y + NPC_HEAD, p.z, 4);

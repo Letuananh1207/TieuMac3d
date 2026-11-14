@@ -8,6 +8,7 @@
  */
 import * as THREE from 'three';
 import { CuonSach } from './cuonSach';
+import { LAYER_THAN } from './layers';
 import { markDynamic } from './merge';
 
 /** Bảng chọn cuộn sách mở sau chừng này giây ngồi (R-ON-8). */
@@ -70,7 +71,7 @@ export class NhapDinh {
     this.ring.visible = false;
     markDynamic(this.ring);
     scene.add(this.ring);
-    this.cuon = new CuonSach(scene);
+    this.cuon = new CuonSach(scene, { layer: LAYER_THAN }); // cuộn trước ngực: dáng người ngoài nhìn (R-DIEU-7)
   }
 
   /** "Đứng dậy" trên bảng chọn: cuộn sách cuộn lại (0,25 s) rồi `done` (nhân vật đứng dậy). */

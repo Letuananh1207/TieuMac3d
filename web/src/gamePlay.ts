@@ -82,6 +82,8 @@ export class GamePlay {
   private readonly ray = new THREE.Raycaster();
   private readonly ndc = new THREE.Vector2();
   private readonly look = new THREE.Vector3();
+  /** điểm trên mặt bàn vừa đặt quân (cảnh) — tay phải đưa quân tới đó (R-GIAO-1); đọc xong thì xoá */
+  private played: THREE.Vector3 | null = null;
 
   constructor(
     private readonly tables: readonly GameTable[],
@@ -241,8 +243,22 @@ export class GamePlay {
     this.ray.setFromCamera(this.ndc, camera);
     const hit = this.ray.intersectObject(s.table.top)[0];
     const pt = hit ? s.table.pointAt(hit.point) : null;
-    if (pt) this.playAt(pt);
+    if (pt && this.playAt(pt)) this.played = hit!.point.clone();
     return true;
+  }
+
+  /** Điểm vừa đặt quân bằng chạm (một lần — đọc rồi thì `null`). */
+  takePlayed(): THREE.Vector3 | null {
+    const p = this.played;
+    this.played = null;
+    return p;
+  }
+
+  /** Bàn đang ngồi chơi cho góc nhìn từ mắt (R-GIAO-1): loại bàn, tâm chỗ chơi, hướng nhìn của ghế; không ngồi → `null`. */
+  get seatedAt(): { game: 'co' | 'dau-chu'; center: THREE.Vector3; rotY: number } | null {
+    const s = this.seated;
+    if (!s) return null;
+    return { game: s.table.spec.kind === 'co' ? 'co' : 'dau-chu', center: s.table.center, rotY: s.table.seats[s.seat].rotY };
   }
 
   /** Người đặt quân vào giao điểm `pt` (R-CO-1): chỉ lượt người, NPC không đang nghĩ, ván chưa xong; sai → bỏ qua. */
@@ -390,7 +406,7 @@ export class GamePlay {
     const halfH = THREE.MathUtils.degToRad(camera.fov) / 2;
     const halfW = Math.atan(Math.tan(halfH) * camera.aspect);
     const dist = Math.max(2.2, 0.85 / Math.tan(Math.min(halfW, halfH)));
-    const pitch = 1.3; // ~75° nhìn xuống — camera ở trước đầu nhân vật, không bị che
+    const pitch = 1.22; // ~70° cúi nhìn bàn từ phía mình (R-GIAO-1 — nhìn từ mắt: thân mình đã ẩn)
     const back = Math.cos(pitch) * dist;
     const r = s.table.seats[s.seat].rotY; // sau lưng người ngồi: ngược hướng nhìn của ghế
     camera.position.set(c.x - Math.sin(r) * back, c.y + Math.sin(pitch) * dist, c.z - Math.cos(r) * back);

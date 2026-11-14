@@ -115,11 +115,11 @@ export class CuonSach {
     m.needsUpdate = true;
   }
 
-  /** Tia dò trúng mặt giấy phía người cầm → (u, v) (0..1, u từ trái sang phải, v từ dưới lên, như người cầm thấy). */
-  hitUv(ray: THREE.Raycaster): { u: number; v: number } | null {
+  /** Tia dò trúng mặt giấy phía người cầm → (u, v) (0..1, u từ trái sang phải, v từ dưới lên, như người cầm thấy) + điểm trúng. */
+  hitUv(ray: THREE.Raycaster): { u: number; v: number; point: THREE.Vector3 } | null {
     if (!this.root.visible || !this.giay[0].visible) return null;
     const hit = ray.intersectObject(this.giay[0], false)[0];
-    return hit?.uv ? { u: hit.uv.x, v: hit.uv.y } : null;
+    return hit?.uv ? { u: hit.uv.x, v: hit.uv.y, point: hit.point } : null;
   }
 
   /** Nửa khoảng cách hai trục hiện tại (m, đã nhân cỡ) — tay cầm ngoài chỗ này; 0 = chưa hiện. */
