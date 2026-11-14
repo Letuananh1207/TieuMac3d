@@ -40,6 +40,14 @@ export function nearBoard(board: { x: number; z: number }, x: number, z: number)
 }
 
 /**
+ * Cả nút "Xem bảng" lẫn "Nói chuyện" cùng trong tầm (Tiểu Mặc đứng sát bảng) → chỉ hiện nút của vật **gần hơn**:
+ * `true` = "Xem bảng", `false` = "Nói chuyện"; cách đều → "Xem bảng" (R-NV-3, R-NPC-2).
+ */
+export function boardBeforeNpc(board: { x: number; z: number }, npc: { x: number; z: number }, x: number, z: number): boolean {
+  return Math.hypot(x - board.x, z - board.z) <= Math.hypot(x - npc.x, z - npc.z);
+}
+
+/**
  * Số việc còn lại hôm nay (0 · 1 · 2 — R-NV-1): Lĩnh hội chưa đủ mục tiêu (trừ khi đã học hết bộ thủ), Ôn tập còn bộ
  * đến hạn. Không biết tiến độ (không có Flutter) → `null` (nút không có chấm).
  */

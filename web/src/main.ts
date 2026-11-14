@@ -52,7 +52,7 @@ import { GameHud } from './ui/gameHud';
 import { gameSigns, signInRange, type GameSign } from './zones/gameGuides';
 import { guideOf, studySign } from './zones/studyGuide';
 import { DailyPanel } from './ui/dailyPanel';
-import { DAILY_NEW_GOAL, dailyBoardSpot, dailyBoardView, nearBoard, tasksLeft } from './zones/dailyBoard';
+import { DAILY_NEW_GOAL, boardBeforeNpc, dailyBoardSpot, dailyBoardView, nearBoard, tasksLeft } from './zones/dailyBoard';
 import { seatInRange, type SeatSpot } from './zones/seats';
 import { addSeatGlow } from './scene/seatGlow';
 import { LoadingScreen, nextPaint } from './ui/loadingScreen';
@@ -828,11 +828,15 @@ async function boot(): Promise<void> {
     chat.update({ camera, player: pos, nameTagHeight: NAME_TAG_HEIGHT, npcs: npcSet.npcs, busy: busy || gamePlay.active, hideMe: ngoiMat.firstPerson });
     learn.follow(zones.current ? anchorOf.get(zones.current.id) : undefined, camera);
     // nút "Nói chuyện": NPC gần nhất trong 2,5 m, không đang học / ngồi / bản đồ / thoại / màn tải (R-NPC-2)
-    const near = paused || mapOpen || talking || loading.active || player.isSitting ? null : npcInTalkRange(npcSet.npcs, pos);
+    const npcNear = paused || mapOpen || talking || loading.active || player.isSitting ? null : npcInTalkRange(npcSet.npcs, pos);
+    const seatFree = !(paused || covered || loading.active || mapOpen || talking || player.isSitting || player.state.air);
+    // Tiểu Mặc đứng sát bảng nhiệm vụ: "Nói chuyện" và "Xem bảng" cùng trong tầm → chỉ nút của vật gần hơn (R-NPC-2, R-NV-3)
+    let atBoard = !!boardAt && seatFree && nearBoard(boardAt, pos.x, pos.z);
+    if (atBoard && boardAt && npcNear) atBoard = boardBeforeNpc(boardAt, npcNear.root.position, pos.x, pos.z);
+    const near = atBoard ? null : npcNear;
     talk.set(near ? (dialogFor(near.id) ?? null) : null);
     if (near) talk.follow(talkAnchor.copy(near.root.position).setY(near.root.position.y + 2.3), camera);
     // nút nổi "Ngồi": chỗ ngồi gần nhất trong tầm, cùng tầng; không khi đang ngồi / bay / bận (R-NGOI-1)
-    const seatFree = !(paused || covered || loading.active || mapOpen || talking || player.isSitting || player.state.air);
     const spot = seatFree ? (seatInRange(seatSpots(), pos.x, pos.z, pos.y) ?? null) : null;
     seatButton.set(spot);
     seatButton.follow(camera);
@@ -840,7 +844,7 @@ async function boot(): Promise<void> {
     readBook.set(borrowedBook(desk.book) ?? null, !(paused || covered || loading.active || mapOpen || talking || player.isSitting));
     if (boardButton && boardAt) {
       const allLearned = (progress?.radicals.length ?? 0) >= RADICALS.length;
-      boardButton.set(seatFree && nearBoard(boardAt, pos.x, pos.z), tasksLeft(progress?.daily ?? null, allLearned));
+      boardButton.set(atBoard, tasksLeft(progress?.daily ?? null, allLearned));
       boardButton.follow(camera);
     }
     if (guideButton) {

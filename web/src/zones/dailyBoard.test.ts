@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { dailyBoardSpot, dailyBoardView, nearBoard, tasksLeft, type PropLike } from './dailyBoard';
+import { boardBeforeNpc, dailyBoardSpot, dailyBoardView, nearBoard, tasksLeft, type PropLike } from './dailyBoard';
 
 describe('Bảng nhiệm vụ hằng ngày', () => {
   const board: PropLike = { kind: 'bang', x: -7.5, z: 18.8, text: 'Nhiệm vụ hằng ngày' };
@@ -10,6 +10,13 @@ describe('Bảng nhiệm vụ hằng ngày', () => {
     expect(nearBoard(spot!, -7.5, 20.8)).toBe(true);
     expect(nearBoard(spot!, -7.5, 21.3)).toBe(false);
     expect(dailyBoardSpot([{ kind: 'den-da', x: 0, z: 0 }])).toBeNull();
+  });
+
+  it('R-NV-3: cùng tầm nút "Nói chuyện" của Tiểu Mặc (−4,4; 19) → vật gần hơn thắng, cách đều → "Xem bảng"', () => {
+    const tm = { x: -4.4, z: 19 };
+    expect(boardBeforeNpc(board, tm, -6.2, 20.4)).toBe(true);
+    expect(boardBeforeNpc(board, tm, -5.8, 20.2)).toBe(false);
+    expect(boardBeforeNpc({ x: 0, z: 0 }, { x: 2, z: 0 }, 1, 1)).toBe(true);
   });
 
   it('R-NV-1: chấm son = số việc còn lại hôm nay', () => {

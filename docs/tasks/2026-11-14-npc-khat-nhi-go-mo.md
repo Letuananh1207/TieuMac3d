@@ -85,7 +85,7 @@ của Lão Canh 3,7 m.
 > **Đề xuất dời (V-20261114-35, chờ duyệt)**: V-35 đặt Tiểu Mặc ở (−7,5; 24) và bảng nhiệm vụ ở (−7,5; 18,8) — bên phải
 > (phía bắc) Tạp hoá. Chỗ cũ (−6,2; 25,6) chỉ cách Tiểu Mặc 2,1 m (hai nút "Nói chuyện" chồng nhau, hai NPC dính nhau).
 > Đề xuất Tiểu Khất ngồi **bên trái tiệm (phía nam), (−6; 35), `rotY` 90** (nhìn đông ra lối): cách cửa tiệm (−8; 30)
-> 5,4 m (không chồng "Vào tiệm"), cách Tiểu Mặc 11,1 m, cách điểm quay đầu (−2,5; 34) của Lão Canh 3,6 m, cách đèn đá
+> 5,4 m (không chồng "Vào tiệm"), cách Tiểu Mặc 11,1 m (V-36 dời Tiểu Mặc sát bên phải bảng, (−4,4; 19) → cách 16,1 m), cách điểm quay đầu (−2,5; 34) của Lão Canh 3,6 m, cách đèn đá
 > (−4,6; 39,4) 4,6 m, cách tùng (−11; 38) 5,8 m, cách chỗ xuất phát (0; 36) 6,1 m. Người chơi mới vào thấy Tiểu Khất
 > ngay bên trái, đi lên vài bước gặp Tiểu Mặc + bảng. Cần kiểm lại bằng `scene:check` khi `/canh` ghi Tiểu Khất vào
 > `scene.json` (bước 13). Code của V-31 không đổi.

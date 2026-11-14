@@ -41,8 +41,8 @@ Mục đích: **hoạt động** (có việc làm, NPC, ngồi, chơi) · **dẫ
 | Truyền Tống Đài + 6 cột trận | đông sân | đài (code riêng) | hoạt động | Trận sư, đi vùng (R-HANH-2) |
 | Nhật quỹ (đồng hồ mặt trời) | (0; 0) | `nhat-quy` | kể chuyện + dẫn đường | tâm sân, chữ 子丑寅…; mốc giữa trấn |
 | 4 bồn hoa 梅 蘭 菊 竹 | quanh nhật quỹ | (vật cũ) `bon-hoa` | kể chuyện | "tứ quân tử" của văn nhân |
-| Bảng "Nhiệm vụ hằng ngày" | (−7,5; 18,8) Cổng Trấn, bên phải Tạp hoá (phía bắc tiệm, sát tường trấn), mặt nhìn nam | `bang` | hoạt động | việc hằng ngày (R-NV-1); cách cửa tiệm 11,2 m, cách Tiểu Mặc 5,2 m — nút không chồng |
-| Tiểu Mặc | (−7,5; 24) giữa bảng và Tạp hoá, nhìn đông nam ra lối chính | NPC | hoạt động | dẫn nhập; người chơi đi lên từ (0; 36) thấy ngay; cách cửa tiệm (−8; 30) 6,0 m, lệch khỏi đèn đá (−4,5; 27,5) để nhìn từ chỗ xuất phát không bị che |
+| Bảng "Nhiệm vụ hằng ngày" | (−7,5; 18,8) Cổng Trấn, bên phải Tạp hoá (phía bắc tiệm, sát tường trấn), mặt nhìn nam | `bang` | hoạt động | việc hằng ngày (R-NV-1); cách cửa tiệm 11,2 m; Tiểu Mặc đứng ngay bên phải — "Xem bảng" / "Nói chuyện" chỉ hiện nút của vật gần hơn (R-NV-3, R-NPC-2) |
+| Tiểu Mặc | (−4,4; 19) ngay bên phải bảng (phía đông, cách mép bảng 1,4 m), sát mép tây lối chính, nhìn nam cùng hướng bảng | NPC | hoạt động | dẫn nhập, trông bảng; người chơi đi lên từ (0; 36) thấy cả bảng lẫn Tiểu Mặc; cách cửa tiệm (−8; 30) 11,6 m, cách trụ cổng (−4,8; 17) 2 m |
 | Trận sư | (21,5; −4,5) | NPC | hoạt động | truyền tống |
 | Bàn cờ · bàn Đấu chữ | (−34; 4), (−34; 11) | `ban-co` | hoạt động | trò chơi với NPC (R-GIAO) |
 | 4 dây đèn lồng | Kỳ Văn Uyển | dây đèn | kể chuyện | không khí hội chữ; có quầng sáng (NV12) |
