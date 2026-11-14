@@ -45,6 +45,10 @@ abstract final class AppTextSize {
   static const titleCompact = 19.0;
   static const learnedHan = 40.0;
   static const learnedHanLandscape = 30.0;
+
+  /// Tạp hoá (2026-11-14.12): giá chữ Hán trên thẻ · chữ Hán góc ô hình
+  static const priceHan = 10.0;
+  static const itemHan = 16.0;
 }
 
 /// Kích thước cố định theo token `size.*` (design_tokens.json).
@@ -52,4 +56,8 @@ abstract final class AppSize {
   /// chiều cao tối thiểu phương án câu đố (token `option-row` 58; ngang 50) — 2026-11-13.25
   static const optionRow = 58.0;
   static const optionRowLandscape = 50.0;
+
+  /// ví Văn tiền: viên kính cao 36, đồng xu 26 (token `wallet` — 2026-11-14.12)
+  static const wallet = 36.0;
+  static const walletCoin = 26.0;
 }

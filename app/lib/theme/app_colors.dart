@@ -62,9 +62,23 @@ abstract final class AppColors {
   static const scrollWoodLight = Color(0xFF5A3A28);
   static const scrollWoodDark = Color(0xFF2A190F);
 
-  /// Chữ mờ / dòng phụ trên giấy (#5E6A70, ≥ 4,5:1 trên `map-paper`) — thiết kế dùng từ nhiều mục, chưa thành token
-  /// (CHANGELOG 2026-11-14.10 gợi ý `slate-muted`).
+  /// Chữ mờ / dòng phụ trên giấy và kính (token `slate-muted` #5E6A70, ≥ 4,5:1 trên `map-paper` — 2026-11-14.12).
   static const slateMuted = Color(0xFF5E6A70);
+
+  /// Đồng xu Văn tiền 文錢 (2026-11-14.12): vành (token `coin-rim`), mặt = [gold], vòng trong #B88F3A, lỗ vuông viền
+  /// #8A6A2A lòng ngà #F4F0E6, chữ khắc (token `coin-ink`).
+  static const coinRim = Color(0xFFA9802F);
+  static const coinRing = Color(0xFFB88F3A);
+  static const coinHoleRim = Color(0xFF8A6A2A);
+  static const coinHole = Color(0xFFF4F0E6);
+  static const coinInk = Color(0xFF5A3E12);
+
+  /// Viên kính ví / nhãn thưởng (rgba(244,247,246,.94)) và viền trắng .95 (2026-11-14.12).
+  static const frostLabel = Color(0xF0F4F7F6);
+  static const glassEdge = Color(0xF2FFFFFF);
+
+  /// Bóng chip, nút nổi (token `shadow.hud` = 0 4px 14px rgba(36,50,58,.18)).
+  static const hudShadow = Color(0x2E24323A);
 
   /// Lớp tối phủ cảnh khi bảng chọn Ngồi ôn mở (rgba(36,50,58,.16)).
   static const sceneDim = Color(0x2924323A);
