@@ -1,5 +1,6 @@
 # Phiếu: Bảng hướng dẫn Khu tự học (tầng 2 Tàng Thư Các)
 - Trạng thái: chờ thiết kế
+- Đã vẽ: 2026-11-14.17
 - Đợi bởi: kế hoạch `docs/tasks/2026-11-14-khu-tu-hoc.md` (nhiệm vụ 5 — biển đã dựng, chưa có nút "Hướng dẫn")
 
 ## Dán vào canvas

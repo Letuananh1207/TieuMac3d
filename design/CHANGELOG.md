@@ -3,6 +3,56 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-14.19 — Bộ ảnh nhiều góc NPC Trận sư 陣師 (đạo sĩ trận pháp trung niên)
+
+- Loại: tài nguyên 3D — ảnh đầu vào (Hunyuan3D-2mv). Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-13-anh-tran-su.md`.
+- Trình 3 hướng (`source/TranSu-huong.dc.html`: A trung niên xám tro · B thanh niên lam nhạt + sao Bắc Đẩu · C nữ đạo trưởng trắng viền
+  son) → người dùng chọn **A** (đúng mô tả phiếu). Hồ sơ `docs/tham_khao/tran-su.md`.
+- Nhân vật: ≈ 45 tuổi, đạo bào xám tro #6E7378 chấm đất viền đen #26262A, giao lĩnh vạt trái đè phải, cổ lót trắng; liên hoa quán gỗ vàng
+  #B8945A + trâm; râu dê khối liền; đai vàng đất #C9A35A thắt nút + ngọc bội vuông #8CCB9E; **bát quái** vàng đất giữa lưng. Cao hơn
+  nhân vật chính ≈ 8 %.
+- Ảnh: `models/anh/tran-su-{truoc,trai,sau,phai,mat}.png` — Google Gemini (người dùng chạy); nguyên văn câu lệnh: ghi chú
+  `tran-su-cau-lenh` trong `source/canvas.json`. **`-trai` = lật gương `-phai`** (ảnh Gemini góc trái lỗi — người dùng nhờ xử lý).
+  Chuẩn hoá Pillow: nền #DDDDDD, bỏ sao, hệ số thu chung 0,885, đỉnh mão 10 %, đế giày 90 %. Ảnh duyệt: `screens/TranSu-bo-anh.png`.
+- **Lưu ý cho `/tai-nguyen`**: do lật gương, ngọc bội hiện ở cả hai ảnh nghiêng (thật chỉ treo hông phải nhân vật — như ảnh trước) →
+  lúc nướng màu kiểm hai bên hông. Ảnh cận mặt: viền cổ có vạch hoạ tiết (ảnh trước trơn) — chỉ lấy chi tiết mặt.
+- Luật: không đổi (R-NPC-5 — xưng "bần đạo", hợp nhân vật).
+- Bước kế: `bash .claude/skills/tai-nguyen/scripts/nhan-vat.sh tran-su <ra>` → `models/tran-su.glb`.
+- File: `models/anh/tran-su-*.png` (5), `models/LICENSES.md`, `screens/TranSu-bo-anh.png`, `source/TranSu-huong.dc.html`,
+  `source/TranSu-bo-anh.dc.html`, `source/canvas.json`; ngoài design: `docs/tham_khao/tran-su.md` + README.
+
+## 2026-11-14.18 — Bộ ảnh nhiều góc NPC khu trò chơi Kỳ Văn Uyển (thiếu nữ hoạt bát, mặt dịu dàng)
+
+- Loại: tài nguyên 3D — ảnh đầu vào (Hunyuan3D-2mv) · luồng/luật (đề xuất). Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-13-anh-quan-su.md`.
+- Người dùng đổi nhân vật: thay quản sự trung niên bằng **một người trẻ năng động**; trình 3 hướng (`source/QuanSu-huong.dc.html`:
+  A thiếu niên kỳ thủ · B thiếu niên áo bó màu hạnh · C thiếu nữ hoạt bát) → chọn **C**, sau đó yêu cầu **nét mặt dịu dàng**. Hồ sơ:
+  `docs/tham_khao/npc-ky-van-uyen.md`.
+- Nhân vật: thiếu nữ ≈ 16 tuổi, hai búi tóc buộc dải ngọc #3FA58A, áo ngắn giao lĩnh hồng đào #E7A3A8 viền ngọc lục #2B5446 (vạt trái
+  đè phải), đai ngọc lục thắt nút trước, váy tới gối #4F8C7A trên quần bó ngà #F4F0E6, giày nâu #3A2418; mắt hiền, mỉm khép miệng.
+  Thấp hơn nhân vật chính ≈ 5 %.
+- Ảnh: `models/anh/quan-su-{truoc,trai,sau,phai,mat}.png` — Google Gemini (người dùng chạy); nguyên văn 5 câu lệnh: ghi chú
+  `quan-su-cau-lenh` trong `source/canvas.json`. Chuẩn hoá Pillow: nền #DDDDDD, bỏ sao Gemini, hệ số thu chung 1,008, đế giày 90 %,
+  đỉnh búi 10 % (nghiêng) – 12,6 % (trước). Ảnh duyệt: `screens/QuanSu-bo-anh.png`.
+- **Mã NPC giữ `quan-su`** (khớp `npcs` trong đặc tả cảnh); đổi mã là việc phiên code.
+- Luật bị chạm — **đề xuất** (phiên code hỏi người dùng rồi sửa sổ + `web/src/zones/dialogs.ts`): **R-NPC-4** đổi tên "Quản sự Kỳ Văn Uyển
+  管事" → thiếu nữ chủ trò (gợi ý "Kỳ Muội 棋妹"), xưng "muội" thay "tại hạ", vẫn gọi "đạo hữu"; giọng nhẹ nhàng; các lựa chọn giữ nguyên.
+- Bước kế: `bash .claude/skills/tai-nguyen/scripts/nhan-vat.sh quan-su <ra>` → `models/quan-su.glb` (phiên `/tai-nguyen`).
+- File: `models/anh/quan-su-*.png` (5), `models/LICENSES.md`, `screens/QuanSu-bo-anh.png`, `source/QuanSu-huong.dc.html`,
+  `source/QuanSu-bo-anh.dc.html`, `source/canvas.json`; ngoài design: `docs/tham_khao/npc-ky-van-uyen.md` + README.
+
+## 2026-11-14.17 — Hướng dẫn Khu tự học 自習 (tầng 2 Tàng Thư Các): nút nổi + bảng
+
+- Loại: giao diện · chuỗi. Màn: **Hướng dẫn Khu tự học** (HUD web) — đặc tả `docs/screen_specs.md` mục cùng tên.
+- Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-14-huong-dan-tu-hoc.md`. Vẽ trong phiên VS Code theo vai thiết kế; người dùng duyệt
+  "Ổn, chốt".
+- Artboard: `TuHoc-doc-nut`, `TuHoc-doc`, `TuHoc-doc-chua-hoc`, `TuHoc-ngang-nut`, `TuHoc-ngang` (+ `canvas.json`).
+- Quyết định: nhãn nút **"Hướng dẫn"**; tên Hán **自習**; dùng nguyên khung Bảng cách chơi (2026-11-13.35); minh hoạ người ngồi
+  bồ đoàn + cuộn treo mini 3 mục; ô mẹo lời thủ thư Điển Thư (chân dung `models/anh/thu-thu-mat.png`); chưa học bộ nào → ô báo
+  vàng biểu tượng bản đồ. Giữ nhãn "Ngồi" trên bồ đoàn và tên vùng trên cuộn sách (đã chốt).
+- Token: không thêm. Chuỗi mới: `studyGuide*` (17).
+- Luật: không đổi. Gợi ý cho phiên code: R-VA-4 câu "chưa có nút Hướng dẫn trên biển" → cập nhật khi áp.
+- Ảnh: chưa có.
+
 ## 2026-11-14.16 — Nhà của ta: vườn theo cảnh (đặc tả HUD) · chữ vòng trận 我家 (Cần code)
 
 - Loại: cảnh 3D — **ngoại hình** (đề xuất, chưa đổi được bằng đặc tả) + sửa ghi chú đặc tả giao diện. Phiên VS Code (`/canh`),

@@ -707,3 +707,30 @@ Mẫu một mục:
   nhắc giữ nguyên số đo ở trên.
 - Ảnh: `screens/BanDo-trang-thai.png` (bản đồ có Nhà của ta); cảnh nhà: `screens/Canh-nha-ta.png`, `screens/Canh-nha-ta-tren.png`;
   màn HUD trang trí: chưa có ảnh.
+
+## Hướng dẫn Khu tự học 自習 — nút nổi + bảng (HUD) · artboard `TuHoc-doc-nut.dc.html`, `TuHoc-doc.dc.html`, `TuHoc-doc-chua-hoc.dc.html`, `TuHoc-ngang-nut.dc.html`, `TuHoc-ngang.dc.html` · từ mục 2026-11-14.17
+
+- Mục đích: người mới hiểu khu tự học tầng 2 Tàng Thư Các (ngồi bồ đoàn → cuộn sách ôn). Luật: `R-VA-4`, `R-ON-8`,
+  `R-NGOI-1`, `R-VUNG-1`, `R-ON-4/5`, `R-HANH-3`, `R-MAN-1`.
+- **Nút nổi "Hướng dẫn"**: hiện khi đứng cách biển gỗ "Khu tự học" dưới 2,5 m (không ngồi, không thoại / bản đồ / màn phủ), neo
+  trên biển như nút "Cách chơi" (R-GIAO-2). Kiểu nút nổi có sẵn (như "Nghe nhạc"): viên `jade` cao 46, viền trắng, bóng nút chính,
+  biểu tượng sách mở 20 + chữ 15/700 trắng; đuôi tam giác 14 × 8 chỉ xuống; chip tên dưới (cao 24, kính .86) "Khu tự học 自習".
+  Bấm → bảng; mở bảng thì nút ẩn.
+- **Bảng**: **đúng khung "Bảng cách chơi Kỳ Văn Uyển"** (mục 2026-11-13.35 — số đo dọc / ngang, kính, vùng cuộn, mờ đáy, thanh cuộn,
+  nút "Đóng"), khác nội dung:
+  - Đầu: eyebrow "Tàng Thư Các · Hướng dẫn" · tên Hán **自習** 36 `jade` + "Khu tự học" Lora 20 · giới thiệu "Ngồi bồ đoàn, mở cuộn
+    sách ôn bộ thủ đã học."
+  - **Minh hoạ** (giấy `map-paper`): người ngồi xếp bằng trên bồ đoàn son, cuộn sách mở trên tay, vòng sáng nhập định (dọc 92 × 104,
+    ngang 84 × 96) + cuộn treo nhỏ (rộng 104 / 120, trục `scroll-wood` 5) có 3 mục nhỏ 11/700: "Ôn bộ đến hạn (2)" nền `jade` ·
+    "Học bộ mới" nét đứt mờ · "Xem bộ đã học" trắng. Chú thích 13: "Ngồi 1 giây → cuộn sách mở. Ở đây ôn và xem bộ đã học; học bộ mới
+    ở Rừng trúc." Dọc: hình + chú thích một hàng; ngang: chú thích dưới.
+  - **4 mục**: 1 Ngồi vào bồ đoàn · 2 Cuộn sách ôn · 3 Học bộ mới ở Rừng trúc · 4 Đứng dậy (chuỗi `studyGuide*`).
+  - **Ô mẹo**: chân dung thủ thư Điển Thư (`models/anh/thu-thu-mat.png`, cắt tròn 40 / 36, lấy nửa trên) + "Lời thủ thư Điển Thư 典書".
+  - **Chưa học bộ nào**: ô báo đầu vùng cuộn như Đấu chữ chưa học (nền vàng 16 %, viền `gold`), biểu tượng **bản đồ** 22, tiêu đề
+    "Đạo hữu chưa học bộ thủ nào" + đoạn hướng ra Rừng trúc.
+- Ngang: như Bảng cách chơi ngang — đầu một hàng + "Đóng" cao 44 (rộng 120); thân 2 cột 248 | còn lại: trái minh hoạ + ô mẹo,
+  phải 4 mục cuộn.
+- Giữ đã chốt: nút nổi trên bồ đoàn nhãn "Ngồi"; dòng nơi trên cuộn sách là tên vùng.
+- Chuỗi: `studyGuideButton`, `studyGuideEyebrow`, `studyGuideTitle`, `studyGuideIntro`, `studyGuideFigure`, `studyGuideStep1…4`
+  (+ `…Title`), `studyGuideTipName`, `studyGuideTip`, `studyGuideNoneTitle`, `studyGuideNoneBody`.
+- Ảnh: chưa có ảnh (nền là hình vẽ giữ chỗ tầng 2 Tàng Thư Các).

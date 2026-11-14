@@ -1,7 +1,8 @@
 # Phiếu: Bộ ảnh nhiều góc NPC Trận sư 陣師 (đầu vào dựng model 3D bằng Hunyuan3D)
 
 - Trạng thái: chờ thiết kế
-- Hồ sơ khảo cứu: chưa có — nên chạy `/khao-cuu đạo sĩ trận pháp` trước nếu muốn sát cổ trang hơn; mô tả dưới đây là bản đầu.
+- Đã vẽ: 2026-11-14.19 (hướng A theo `docs/tham_khao/tran-su.md`; ảnh trái = lật gương ảnh phải)
+- Hồ sơ khảo cứu: `docs/tham_khao/tran-su.md` (đã chọn hướng A — người dùng 2026-11-14).
 - Đợi bởi: `/tai-nguyen nhan-vat tran-su` (dựng `design/models/tran-su.glb`, 8 000 tam giác) — kế hoạch
   `docs/tasks/2026-11-13-npc-cong-trinh.md`
 
