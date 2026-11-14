@@ -29,6 +29,7 @@ class SceneView extends StatefulWidget {
     this.onOpenLibrary,
     this.onOpenBook,
     this.onEarnGame,
+    this.onGiveAlms,
     this.onOpenShop,
   });
 
@@ -79,6 +80,9 @@ class SceneView extends StatefulWidget {
   /// Hết một ván ở bàn chơi (`earnGame` — R-TIEN-3): Flutter tính + ghi thưởng, trả `earnGameReply`. `null` → trả `null`
   /// (trang không thưởng, ví ẩn).
   final Future<Map<String, Object?>> Function(String game, String outcome)? onEarnGame;
+
+  /// Cho Tiểu Khất (`giveAlms` — R-TIEN-8): Flutter tính + ghi, trả `giveAlmsReply`. `null` → trả `null` (không cho được).
+  final Future<Map<String, Object?>> Function()? onGiveAlms;
 
   /// Mở Tạp hoá (`openShop` — R-TIEN-4, R-TIEN-6); đóng → `resume`. `null` → trả `false`, trang báo "Tiệm chưa mở".
   final Future<void> Function(BuildContext context, OpenShopRequest request)? onOpenShop;
@@ -187,6 +191,10 @@ class _SceneViewState extends State<SceneView> {
       final a = earnGameArgs(args);
       final earn = widget.onEarnGame;
       return earn != null && a != null ? earn(a.game, a.outcome) : null;
+    }
+    if (type == 'giveAlms' && isGiveAlms(args)) {
+      final give = widget.onGiveAlms;
+      return give?.call();
     }
     if (type == 'openShop') {
       final f = widget.onOpenShop;

@@ -1,6 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hoc_xa_3d/journey/progress_store.dart';
+import 'package:hoc_xa_3d/journey/journey.dart';
 import 'package:hoc_xa_3d/journey/wallet.dart';
+import 'package:hoc_xa_3d/scene/scene_event.dart';
+import 'package:hoc_xa_3d/scene/shop_event.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -221,6 +224,48 @@ void main() {
 
     test('R-TIEN-5: nhãn trừ tiền "−5 · Cho Tiểu Khất"', () {
       expect(almsLabel(), '−5 · Cho Tiểu Khất');
+    });
+  });
+
+  group('cho Tiểu Khất — lưu + cầu nối (R-TIEN-8)', () {
+    test('R-TIEN-8: cho trên app → −5, lưu ngày + số lần qua lần mở lại; cùng ngày không cho lần hai', () async {
+      var now = DateTime.utc(2026, 11, 14, 3); // 10 giờ sáng ngày 14 giờ VN
+      SharedPreferences.setMockInitialValues({'tien.so-du': 12});
+      final store = await ProgressStore.open(clock: () => now);
+      final r = await store.giveAlms();
+      expect(r.ok, isTrue);
+      expect(r.balance, 7);
+      final again = await ProgressStore.open(clock: () => now);
+      expect(again.coins, 7);
+      expect(again.alms.count, 1);
+      expect(again.alms.lastDay, vnDay(now));
+      now = DateTime.utc(2026, 11, 14, 16, 59); // 23:59 VN
+      final same = await again.giveAlms();
+      expect((same.ok, same.reason, same.balance), (false, 'given', 7));
+      now = DateTime.utc(2026, 11, 14, 17, 1); // 0:01 ngày 15 VN
+      expect((await again.giveAlms()).balance, 2);
+      expect(again.alms.count, 2);
+    });
+
+    test('R-TIEN-8: ví 3 → không trừ, lý do short; lưu hỏng → chưa cho lần nào', () async {
+      SharedPreferences.setMockInitialValues({'tien.so-du': 3, 'tien.cho-tieu-khat': '{hỏng'});
+      final store = await ProgressStore.open();
+      expect(store.alms, noAlms);
+      final r = await store.giveAlms();
+      expect((r.ok, r.reason, r.balance), (false, 'short', 3));
+      expect(giveAlmsReply(r), {'ok': false, 'reason': 'short', 'balance': 3});
+      expect(store.coins, 3);
+    });
+
+    test('R-TIEN-8: getProgress gửi alms; giveAlms trả {ok, balance, alms}', () {
+      final reply = progressReply(const Progress(), coins: 7, alms: (lastDay: 20771, count: 1));
+      expect(reply['alms'], {'lastDay': 20771, 'count': 1});
+      expect(
+        giveAlmsReply((ok: true, reason: null, balance: 7, alms: (lastDay: 20771, count: 1))),
+        {'ok': true, 'balance': 7, 'alms': {'lastDay': 20771, 'count': 1}},
+      );
+      expect(isGiveAlms([{'type': 'giveAlms', 'payload': {}}]), isTrue);
+      expect(isGiveAlms([{'type': 'earnGame'}]), isFalse);
     });
   });
 }

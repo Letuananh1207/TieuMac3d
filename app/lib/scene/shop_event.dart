@@ -68,6 +68,14 @@ ShopItem? _item(Object? i) {
 Map<String, Object?> earnGameReply(({int amount, int balance, int gameToday, bool capped}) r) =>
     {'amount': r.amount, 'balance': r.balance, 'gameToday': r.gameToday, 'capped': r.capped};
 
+/// Trả lời `giveAlms` (docs/bridge.md, R-TIEN-8): được → số dư + bản ghi mới; không → lý do (`given` / `short`) + số dư.
+Map<String, Object?> giveAlmsReply(({bool ok, String? reason, int balance, ({int lastDay, int count}) alms}) r) => r.ok
+    ? {'ok': true, 'balance': r.balance, 'alms': {'lastDay': r.alms.lastDay, 'count': r.alms.count}}
+    : {'ok': false, 'reason': r.reason, 'balance': r.balance};
+
+/// Sự kiện `giveAlms` (payload rỗng)?
+bool isGiveAlms(List<dynamic> args) => args.isNotEmpty && args.first is Map && (args.first as Map)['type'] == 'giveAlms';
+
 Map<dynamic, dynamic>? _payload(List<dynamic> args, String type) {
   if (args.isEmpty) return null;
   final e = args.first;

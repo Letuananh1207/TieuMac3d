@@ -113,6 +113,7 @@ class HocXaApp extends StatelessWidget {
                   book: store.borrowedBook,
                   coins: store.coins,
                   gameCoinsToday: store.gameCoinsToday,
+                  alms: store.alms,
                 );
               },
               // Tàng Thư Các: cuốn sổ từ đang mượn giữ qua tắt app (R-SACH-1, R-SACH-2, R-SACH-4)
@@ -124,6 +125,8 @@ class HocXaApp extends StatelessWidget {
               onEarnGame: progress == null
                   ? null
                   : (game, outcome) async => earnGameReply(await progress!.earnGame(game, outcome)),
+              // Tiểu Khất: cho 5 văn, mỗi ngày giờ VN một lần (R-TIEN-8)
+              onGiveAlms: progress == null ? null : () async => giveAlmsReply(await progress!.giveAlms()),
               onOpenShop: progress == null
                   ? null
                   : (context, request) => Navigator.of(context).push(ShopScreen.route(

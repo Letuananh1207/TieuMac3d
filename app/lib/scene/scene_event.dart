@@ -153,7 +153,7 @@ String? sceneEventType(List<dynamic> args) {
 /// Trả lời `getProgress` (docs/bridge.md): số chữ, bộ thủ đã học (không khoá vùng — R-HANH-1);
 /// [due] = bộ thủ đến hạn ôn theo thứ tự hỏi (R-ON-4); [daily] + [streak] = bảng nhiệm vụ hôm nay (R-NV-1, R-NV-2);
 /// [book] = sổ từ đang mượn ở Tàng Thư Các (R-SACH-2); [coins] = số dư Văn tiền, [gameCoinsToday] = Văn tiền trò chơi
-/// hôm nay (R-TIEN-1, R-TIEN-3) — [coins] `null` → không gửi (trang ẩn ví).
+/// hôm nay (R-TIEN-1, R-TIEN-3) — [coins] `null` → không gửi (trang ẩn ví); [alms] = đã cho Tiểu Khất (R-TIEN-8).
 Map<String, Object?> progressReply(
   Progress p, {
   List<String> due = const [],
@@ -162,6 +162,7 @@ Map<String, Object?> progressReply(
   ({int current, int best}) streak = (current: 0, best: 0),
   int? coins,
   int gameCoinsToday = 0,
+  ({int lastDay, int count})? alms,
 }) =>
     {
       'chars': p.chars.length,
@@ -176,6 +177,7 @@ Map<String, Object?> progressReply(
       },
       'book': book,
       if (coins != null) ...{'coins': coins, 'gameCoinsToday': gameCoinsToday},
+      if (alms != null) 'alms': {'lastDay': alms.lastDay, 'count': alms.count},
     };
 
 /// `id` của sự kiện `borrowBook` (docs/bridge.md, R-SACH-1); sai dạng → `null`.

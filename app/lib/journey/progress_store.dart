@@ -7,6 +7,7 @@ import 'journey.dart';
 import 'review.dart';
 import 'wallet.dart';
 import 'wallet.dart' as wallet show buyDecor;
+import 'wallet.dart' as rules show giveAlms;
 
 /// Lưu tiến độ học trên máy (R-HANH-1: giữ qua những lần mở app sau). Dùng `shared_preferences` — kho khoá–giá trị
 /// nhỏ của nền tảng (Android SharedPreferences, iOS NSUserDefaults, web localStorage).
@@ -34,6 +35,7 @@ class ProgressStore {
   static const _coinsKey = 'tien.so-du';
   static const _gameDayKey = 'tien.tro-ngay';
   static const _streakPaidKey = 'tien.chuoi-da-thuong';
+  static const _almsKey = 'tien.cho-tieu-khat';
 
   final SharedPreferences _prefs;
   final DateTime Function() _clock;
@@ -201,6 +203,32 @@ class ProgressStore {
       await _prefs.setInt(_coinsKey, coins + r.amount);
     }
     return (amount: r.amount, balance: coins, gameToday: before + r.amount, capped: r.capped);
+  }
+
+  /// Đã cho Tiểu Khất (R-NPC-6, R-TIEN-8): ngày VN lần cho gần nhất + số lần; chưa có / hỏng → chưa cho lần nào.
+  AlmsRecord get alms {
+    final raw = _prefs.getString(_almsKey);
+    if (raw == null) return noAlms;
+    try {
+      final j = jsonDecode(raw);
+      if (j is Map && j['lastDay'] is int && j['count'] is int && (j['count'] as int) >= 0) {
+        return (lastDay: j['lastDay'] as int, count: j['count'] as int);
+      }
+    } on FormatException {
+      return noAlms;
+    }
+    return noAlms;
+  }
+
+  /// Cho Tiểu Khất 5 văn (docs/bridge.md `giveAlms`, R-TIEN-8): mỗi ngày giờ VN một lần, ví ≥ 5 → trừ + ghi ngay.
+  Future<({bool ok, String? reason, int balance, AlmsRecord alms})> giveAlms() async {
+    final day = vnDay(_clock());
+    final err = almsRefusal(coins, alms, day);
+    if (err != null) return (ok: false, reason: err.name, balance: coins, alms: alms);
+    final r = rules.giveAlms(coins, alms, day)!;
+    await _prefs.setInt(_coinsKey, r.balance);
+    await _prefs.setString(_almsKey, jsonEncode({'lastDay': r.alms.lastDay, 'count': r.alms.count}));
+    return (ok: true, reason: null, balance: r.balance, alms: r.alms);
   }
 
   /// Vật trang trí đã sở hữu (R-NHA-4), theo thứ tự có được.
