@@ -15,6 +15,7 @@ import type { CharacterState } from './player/character';
 import { RUN_SPEED, WALK_SPEED } from './player/controller';
 import { HOME_SCENE, loadScene } from './scene/loadSpec';
 import { createMapScroll } from './scene/banDo';
+import { CuonSach } from './scene/cuonSach';
 import { JOURNEY_MAP, placeStates } from './zones/journeyMap';
 import { RADICALS } from './zones/radicals';
 import { viewDistance } from './scene/farMountains';
@@ -275,6 +276,8 @@ async function boot(): Promise<void> {
   else if (pose === 'nhin') poseState.idle = 14.6;
   /** trạng thái mỗi khung: dáng chọn sẵn, hoặc đi bộ tại chỗ (?di / ô Đi tại chỗ — tốc độ 1 = đi bộ hết tốc) */
   const stateNow = (): CharacterState => (pose ? poseState : { ...poseState, mps: walkSpeed * WALK_SPEED });
+  // ?dang=ngoi: cuộn sách Ngồi ôn mở hết như app (R-ON-8) — xem tay cầm cuộn
+  const cuon = pose === 'ngoi' ? new CuonSach(scene) : null;
   if (pose) character.animate(1, poseState.mps / RUN_SPEED, poseState);
   if (Number.isFinite(phase) && phase > 0) character.animate(phase / 10, WALK_SPEED / RUN_SPEED, { ...poseState, mps: WALK_SPEED });
   function tick(): void {
@@ -282,6 +285,7 @@ async function boot(): Promise<void> {
     controls.update();
     world.update(dt, character.root.position);
     character.animate(dt, stateNow().mps / RUN_SPEED, stateNow());
+    cuon?.update(dt, character.root.position, character.facing.rotation.y, 2);
     for (const npc of npcSet.npcs) npc.update(dt);
     renderer.render(scene, camera);
     acc += dt;

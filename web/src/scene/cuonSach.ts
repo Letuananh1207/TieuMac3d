@@ -8,9 +8,9 @@ import * as THREE from 'three';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { lambert } from './materials';
 import { markDynamic } from './merge';
-import { CUON_AN, isOpen, poseOf, stepCuon, type CuonState } from './cuonSachNhip';
+import { CUON_AN, CUON_CAO, CUON_TRUOC, isOpen, poseOf, stepCuon, type CuonState } from './cuonSachNhip';
 
-// cỡ (m) — nhân vật đứng ≈ 1 m, ngồi ≈ 0,62 m
+// cỡ (m) — nhân vật cao 2,1 m
 const TRUC_DAI = 0.22;
 const TRUC_R = 0.015; // Ø 0,03, trụ 8 cạnh
 const DAU_R = 0.02; // đầu trục cầu Ø 0,04
@@ -18,9 +18,7 @@ const VIEN_R = 0.019; // viền vàng giữa trục và đầu trục
 const GIAY_W = 0.26;
 const GIAY_H = 0.18;
 const AN_CO = 0.03; // ấn son mặt sau
-// chỗ: tâm cao 0,30 trước tâm thân 0,18 theo hướng mặt (+Z của `facing`); mặt giấy ngửa 30° về phía mặt
-const TAM_CAO = 0.3;
-const TAM_TRUOC = 0.18;
+// chỗ: `CUON_CAO` / `CUON_TRUOC` (cuonSachNhip.ts — trước ngực người ngồi, tay chibi cầm hai đầu); mặt giấy ngửa 30° về phía mặt
 const NGUA = Math.PI / 6;
 // token (design/tokens/design_tokens.json): scroll-wood · jade · gold · map-paper · lacquer
 const WOOD = '#3A2418';
@@ -79,7 +77,7 @@ export class CuonSach {
     this.an = new THREE.Mesh(new THREE.PlaneGeometry(AN_CO, AN_CO), anMat);
     this.an.position.set(0, -GIAY_H / 2 + AN_CO * 0.9, 0.002);
 
-    this.holder.position.set(0, TAM_CAO, TAM_TRUOC);
+    this.holder.position.set(0, CUON_CAO, CUON_TRUOC);
     this.holder.rotation.x = NGUA; // đỉnh giấy ngả ra trước → mặt giấy ngửa lên về phía mặt
     this.holder.add(...this.trucs, ...this.giay, this.an);
     this.root.add(this.holder);

@@ -34,6 +34,18 @@ bằng canvas), `player/playerCharacter.ts` (lựa chọn `chibi`, `tieu-mac`, `
       vitest tạm): đệ tử 21 draw call · 8,4k tam giác; Tiểu Mặc 23 · 8,3k — **vượt** ước ≈ 6–8 draw call và ngân sách
       5k tam giác (kế hoạch thiết kế 3D); vẫn nhẹ hơn model AI (9,5k). Gộp thêm khối: việc sau nếu máy thật giật.
       Chibi chưa có dáng nhảy / ngồi thiền / chào (`CharacterState` — chỉ nhân vật `.glb` có): thử máy để xem có cần.
+- [x] 5. Dáng chibi (V-20261114-06, người dùng chọn "làm dáng cho chibi" 2026-11-14): chạy (R-DIEU-5 — nhịp bước theo
+      tốc độ thật, đổ người, vung mạnh), nhảy (R-DIEU-6 — tay giang, gối co), ngồi xếp bằng (R-DIEU-7 — thân hạ 0,28 m
+      như nhân vật cũ / camera, ống chân bắt chéo, ủng thò dưới gấu áo, cúi nhìn; hai tay cầm hai đầu cuộn sách Ngồi ôn
+      R-ON-8), chào 拱手 (chắp tay trước ngực, cúi quanh hông), đứng lâu (R-DIEU-8 — vươn vai / nhìn quanh) — qua hợp đồng
+      `Character` (`CharacterState`), không sửa `PlayerController`, không thêm khối (draw call như cũ).
+      Góc khớp: `player/chibiPose.ts` (hàm thuần — độ hoà trạng thái → góc, nội suy tuyến tính trên độ hoà đã mượt, tay /
+      chân nhắm điểm bằng `aimArm`) + `chibiPose.test.ts`. Tay + đầu gắn vào thân (cúi / ngồi kéo theo); chân xoay ZXY.
+      Chỗ cầm cuộn đưa ra `cuonSachNhip.ts` (`CUON_CAO`, `CUON_TRUOC` 0,55 / 0,55 — trước là 0,30 / 0,18, nằm lọt trong
+      thân áo nhân vật cao 2,1 m) để dáng tay tính theo. Canvas 3D: `?dang=ngoi` hiện cả cuộn sách mở hết.
+      Kiểm nhìn: chụp Canvas 3D tại máy `?dang=ngoi|chao|nhay|chay|vuon|nhin` (đệ tử + Tiểu Mặc). Thử máy: ngồi ôn,
+      chào, nhảy, đứng chờ 6 s; ngồi bồ đoàn / sập trà (độ cao chỗ ngồi); camera sau lưng gần như không thấy cuộn (đầu
+      chibi to che) — nếu cần thấy thì chỉnh camera ngồi ôn (việc riêng).
 
 ## Kiểm tra cuối
 cd web && npx tsc --noEmit && npm run build · dart tool/check.dart --changed · chụp Canvas 3D (draw call nhân vật)

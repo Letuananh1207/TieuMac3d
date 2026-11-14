@@ -8,6 +8,15 @@
  *   đứng dậy trước 1 s → tắt dần 0,2 s · đứng dậy khi đã mở (hay "Đứng dậy" trên bảng) → hai trục chập về giữa 0,25 s → tắt
  */
 
+/**
+ * Chỗ cầm cuộn (m, theo `facing` của nhân vật, gốc = chân): tâm cao `CUON_CAO`, trước tâm thân `CUON_TRUOC` — trước ngực
+ * người ngồi xếp bằng (nhân vật cao 2,1 m, ngồi hạ ~0,3 m). Dáng tay chibi tính theo chỗ này (`player/chibiPose.ts`).
+ */
+export const CUON_CAO = 0.55;
+export const CUON_TRUOC = 0.55;
+/** nửa bề ngang cuộn mở hết (tới mép ngoài đầu trục) — tay cầm ngoài mép này */
+export const CUON_NUA_NGANG = 0.15;
+
 export const CUON_HIEN = 0.3;
 export const CUON_PHONG = 0.15;
 export const CUON_MO_XONG = 1;

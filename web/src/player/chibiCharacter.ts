@@ -2,6 +2,8 @@ import * as THREE from 'three';
 import { mergeStatic } from '../scene/merge';
 import type { Character } from './character';
 import { ChibiFace, type Expression, type FaceStyle } from './chibiFace';
+import { ARM_A, chibiPose, ease, HIP_X, HIP_Y, idleAction, SHOULDER_X, SHOULDER_Y } from './chibiPose';
+import { RUN_SPEED, WALK_SPEED } from './controller';
 
 /** Bộ màu + kiểu tóc / phụ kiện của một nhân vật chibi. */
 export interface ChibiLook {
@@ -60,7 +62,6 @@ export const TIEU_MAC: ChibiLook = {
   face: { blush: true, ink: '#1d1b1e', mouth: '#c8372d', blushColor: '#f07c84' },
 };
 
-const HIP_Y = 0.36;
 const NECK_Y = 1.2;
 const HEAD_R = 0.46;
 
@@ -88,8 +89,9 @@ function robeR(y: number): number {
 
 /**
  * Nhân vật chibi kiểu đồ chơi (đầu ≈ ½ chiều cao, khối tròn mịn, mặt vẽ đổi biểu cảm), cùng hợp đồng `Character`.
- * Khớp riêng: thân (nhún, xoay), đầu (nghiêng), tay trái / phải (vung), chân trái / phải (bước). Trong mỗi khớp các
- * khối cùng màu được gộp → ~10 draw call cả nhân vật. Cao ≈ 2,1 m như đệ tử khối cũ (bán kính va chạm 0,5 không đổi).
+ * Khớp riêng: thân (nhún, xoay, cúi; tay + đầu gắn theo thân), đầu (nghiêng), tay trái / phải (dang, vung), chân trái /
+ * phải (bước, gập). Dáng đi / chạy / nhảy / ngồi xếp bằng / chào / đứng lâu: `chibiPose.ts`. Trong mỗi khớp các khối cùng
+ * màu được gộp. Cao ≈ 2,1 m như đệ tử khối cũ (bán kính va chạm 0,5 không đổi).
  */
 export function createChibiCharacter(look: ChibiLook = DE_TU): Character & { setExpression(e: Expression): void } {
   const mats = new Map<string, THREE.MeshLambertMaterial>();
@@ -160,7 +162,7 @@ export function createChibiCharacter(look: ChibiLook = DE_TU): Character & { set
   const legs: THREE.Group[] = [];
   for (const s of [-1, 1]) {
     const leg = new THREE.Group();
-    leg.position.set(0.15 * s, HIP_Y, 0);
+    leg.position.set(HIP_X * s, HIP_Y, 0);
     leg.add(mesh(new THREE.CylinderGeometry(0.085, 0.09, HIP_Y - 0.1, 10), look.boots, 0, -(HIP_Y - 0.1) / 2 - 0.02, 0));
     const boot = mesh(new THREE.SphereGeometry(0.12, 14, 10), look.boots, 0, -HIP_Y + 0.1, 0.04);
     boot.scale.set(0.95, 0.8, 1.35);
@@ -169,16 +171,18 @@ export function createChibiCharacter(look: ChibiLook = DE_TU): Character & { set
     sole.scale.z = 1.4;
     leg.add(sole);
     seal(leg);
+    leg.rotation.order = 'ZXY'; // gập (x) rồi dang (z) — dáng ngồi xếp bằng (chibiPose.ts)
     facing.add(leg);
     legs.push(leg);
   }
 
-  /* ---------- tay áo rộng (tư thế chữ A) ---------- */
+  /* ---------- tay áo rộng (tư thế chữ A) — gắn vào thân: cúi / ngồi thì tay theo thân ---------- */
+  const shoulders: THREE.Group[] = [];
   const arms: THREE.Group[] = [];
   for (const s of [-1, 1]) {
     const shoulder = new THREE.Group();
-    shoulder.position.set(0.25 * s, 1.1, 0);
-    shoulder.rotation.z = 0.62 * s; // dang chéo xuống
+    shoulder.position.set(SHOULDER_X * s, SHOULDER_Y, 0);
+    shoulder.rotation.z = ARM_A * s; // dang chéo xuống
     const arm = new THREE.Group(); // vung trước / sau
     const sleeve = up([
       [0.1, 0.02],
@@ -194,7 +198,8 @@ export function createChibiCharacter(look: ChibiLook = DE_TU): Character & { set
     arm.add(hand);
     seal(arm);
     shoulder.add(arm);
-    facing.add(shoulder);
+    body.add(shoulder);
+    shoulders.push(shoulder);
     arms.push(arm);
   }
 
@@ -276,30 +281,49 @@ export function createChibiCharacter(look: ChibiLook = DE_TU): Character & { set
 
   let walkT = 0;
   let time = 0;
-  let move = 0;
+  let move = 0; // 0..1: cường độ bước (đi bộ hết tốc = 1), mượt
+  let runB = 0; // 0..1: hoà dáng chạy (R-DIEU-5)
+  let airB = 0; // 0..1: dáng nhảy (R-DIEU-6)
   return {
     root,
     facing,
     setExpression: (e) => face.draw(e),
-    animate(dt, speed) {
+    animate(dt, speed, state) {
       time += dt;
-      move += (speed - move) * Math.min(1, dt * 8);
-      if (speed > 0.05) walkT += dt * 10 * speed;
+      // nhân vật cũ không có `state`: suy tốc độ thật từ `speed`
+      const mps = state?.mps ?? speed * RUN_SPEED;
+      const k = Math.min(1, mps / WALK_SPEED);
+      const run = Math.min(1, Math.max(0, (mps - WALK_SPEED) / (RUN_SPEED - WALK_SPEED)));
+      move += (k - move) * Math.min(1, dt * 8);
+      runB += (run - runB) * Math.min(1, dt * 6);
+      airB += ((state?.air ? 1 : 0) - airB) * Math.min(1, dt * 14);
+      // nhịp bước theo tốc độ thật: đi bộ ~7,5 rad/s, chạy ~14 (R-DIEU-5); đang bay thì thôi bước
+      if (mps > 0.05) walkT += dt * 2.4 * Math.max(mps, 2.2) * (1 - airB);
       else walkT *= 0.85;
-      const step = Math.sin(walkT);
-      const still = 1 - move;
-      // đi: chân bước so le, tay vung ngược chân, thân nhún + xoay nhẹ, đầu bù lại
-      legs[0].rotation.x = step * 0.6 * move;
-      legs[1].rotation.x = -step * 0.6 * move;
-      arms[0].rotation.x = -step * 0.55 * move + Math.sin(time * 1.6) * 0.05 * still;
-      arms[1].rotation.x = step * 0.55 * move + Math.sin(time * 1.6 + 1) * 0.05 * still;
-      body.position.y = Math.abs(step) * 0.05 * move + Math.sin(time * 2) * 0.01 * still;
-      body.rotation.y = step * 0.08 * move;
-      body.rotation.x = 0.05 * move;
-      head.rotation.y = -step * 0.06 * move;
-      // đứng: đầu nghiêng chậm qua lại
-      head.rotation.z = Math.sin(time * 1.1) * 0.05 * still;
-      head.rotation.x = Math.sin(time * 0.7) * 0.03 * still;
+      const { stretch, look } = idleAction(state?.idle ?? 0);
+      const p = chibiPose({
+        move,
+        run: runB,
+        air: airB,
+        sit: ease(state?.sit ?? 0),
+        bow: ease(state?.bow ?? 0),
+        stretch,
+        look,
+        walkT,
+        time,
+      });
+      body.position.set(0, p.body.y, p.body.z);
+      body.rotation.x = p.body.rx;
+      body.rotation.y = p.body.ry;
+      head.rotation.set(p.head.x, p.head.y, p.head.z);
+      for (let i = 0; i < 2; i++) {
+        shoulders[i].rotation.z = p.arms[i].z;
+        arms[i].rotation.x = p.arms[i].x;
+        const l = p.legs[i];
+        legs[i].rotation.set(l.x, 0, l.z);
+        legs[i].position.y = l.posY;
+        legs[i].position.z = l.posZ;
+      }
     },
   };
 }
