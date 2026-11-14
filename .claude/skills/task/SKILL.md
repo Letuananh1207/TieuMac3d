@@ -92,6 +92,8 @@ Mỗi việc `chờ duyệt` phải mang đủ ba thứ (ghi vào cột "Cần n
 2. **Xem gì** — 1–3 điểm cụ thể cần nhìn (vd. "tiệm có chắn lối không", "mặt nhân vật có cân không").
 3. **Quyết bằng gì** — hỏi NGAY trong chat bằng `AskUserQuestion` (Duyệt / Sửa …(ghi chú) / Để sau; kế hoạch: tóm tắt
    phạm vi + điểm cần chọn thành các câu hỏi). Không bắt người dùng gõ lệnh hay mở file để duyệt.
+4. **Duyệt xong sẽ đổi gì** — ghi thẳng trong câu hỏi mọi thay đổi người dùng thấy được mà bước sau của kế hoạch sẽ làm
+   (vd. "duyệt → chibi thay model .glb làm nhân vật mặc định"). Không gói thay đổi lớn vào chữ "làm tiếp các bước sau".
 Duyệt xong → ghi vào kế hoạch / CHANGELOG, đổi trạng thái, chạy tiếp.
 
 ## 6. Báo
