@@ -29,22 +29,22 @@ const SRC: AreaMapSource = {
   bridges: [],
   buildings: [{ id: 'tang-thu-cac', x: -34, z: -22, w: 14, d: 10, title: 'Thư viện' }],
   gates: [],
-  teleport: { enabled: true, center: [30, 0], ringRadius: 4 },
+  teleport: { enabled: true, center: [30, -9], ringRadius: 4 },
   portals: [{ scene: 'nha-ta', area: { from: [-24.6, 32.9], to: [-19.5, 39.1] } }],
   gameTables: [],
-  player: { start: [21.8, 0] },
+  player: { start: [21.8, -9] },
 };
 const MAP = buildAreaMap(SRC);
 
 describe('bản đồ vùng — vị trí của mình (R-BANDO-3)', () => {
-  it('R-BANDO-3: đứng (0; 0), camera nhìn về đông → Truyền Tống Đài (30; 0) ở sát mép trên', () => {
-    const p = miniPoint({ x: 0, z: 0 }, EAST, 30, 0);
+  it('R-BANDO-3: đứng (0; −9), camera nhìn về đông → Truyền Tống Đài (30; −9) ở sát mép trên', () => {
+    const p = miniPoint({ x: 0, z: -9 }, EAST, 30, -9);
     near(p.x, 0);
     near(p.y, -1);
   });
 
   it('R-BANDO-3: quay camera nhìn về bắc → bản đồ quay, Truyền Tống Đài sang mép phải; bắc ở trên', () => {
-    const p = miniPoint({ x: 0, z: 0 }, NORTH, 30, 0);
+    const p = miniPoint({ x: 0, z: -9 }, NORTH, 30, -9);
     near(p.x, 1);
     near(p.y, 0);
     near(miniRotation(NORTH), 0);
@@ -59,15 +59,15 @@ describe('bản đồ vùng — vị trí của mình (R-BANDO-3)', () => {
     near(bigArrow(EAST), Math.PI / 2);
   });
 
-  it('R-BANDO-3: vòng trận trong 30 m → không có dấu mép; ở (−20; 0) cách 50 m → dấu ở mép phía đông', () => {
-    expect(edgeMarks(MAP, { x: 10, z: 0 }, NORTH).filter((m) => m.kind === 'vong-tran')).toEqual([]);
-    const mark = edgeMarks(MAP, { x: -20, z: 0 }, NORTH).find((m) => m.kind === 'vong-tran');
+  it('R-BANDO-3: vòng trận trong 30 m → không có dấu mép; ở (−20; −9) cách 50 m → dấu ở mép phía đông', () => {
+    expect(edgeMarks(MAP, { x: 10, z: -9 }, NORTH).filter((m) => m.kind === 'vong-tran')).toEqual([]);
+    const mark = edgeMarks(MAP, { x: -20, z: -9 }, NORTH).find((m) => m.kind === 'vong-tran');
     expect(mark?.dist).toBe(50);
     near(mark!.angle, Math.PI / 2); // bắc ở trên → đông ở bên phải
   });
 
   it('R-BANDO-3: cổng sang cảnh ngoài tầm cũng có dấu mép, mang mã nơi đến', () => {
-    const marks = edgeMarks(MAP, { x: 30, z: 0 }, NORTH);
+    const marks = edgeMarks(MAP, { x: 30, z: -9 }, NORTH);
     expect(marks.find((m) => m.kind === 'cong-canh')?.scene).toBe('nha-ta');
   });
 
