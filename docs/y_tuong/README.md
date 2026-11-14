@@ -7,3 +7,4 @@ Khung so sánh và thang chấm: `.claude/skills/y-tuong/references/`.
 | Phiếu | Ý tưởng | Hệ thống | Điểm | Trạng thái |
 |---|---|---|---|---|
 | [2026-11-14-van-tien.md](2026-11-14-van-tien.md) | Văn tiền 文錢: một đồng tiền kiếm chủ yếu nhờ học / ôn / nhiệm vụ, tiêu ở cửa hàng đồ trang trí; khung sẵn cho Văn khí (học vị) | tiền + cửa hàng | 18/21 | đã chọn (A trước, khung sẵn B) |
+| [2026-11-14-tien-ich-thien-bac.md](2026-11-14-tien-ich-thien-bac.md) | Tiện ích hai bên Thiên Bậc: Vườn Bia sưu tập bộ thủ · Câu cá chữ · Hái chè theo đơn chữ · Trấn báo (GĐ2 của kế hoạch `2026-11-14-tien-ich-thien-bac`) | trò nhỏ + việc vặt + sưu tập + bản tin | 16–19/21 | nháp — chờ chọn |
