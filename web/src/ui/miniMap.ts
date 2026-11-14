@@ -1,11 +1,13 @@
 /**
- * Bản đồ nhỏ tròn góc trên trái (R-BANDO-1, 3, 4; thiết kế 2026-11-14.20 `BanDoVung-HUD-*`, `BanDoVung-nho-trang-thai`):
- * tấm mặt bằng vẽ sẵn (`areaMapPaint`) chỉ dịch + xoay bằng CSS transform; lớp trên (biểu tượng đứng thẳng, dấu mép, mũi
- * tên "mình") vẽ lại khi mình dời > 5 cm / xoay > 0,5°. Dấu bắc trên vành chạy theo góc xoay. Chạm cả vòng → bản đồ lớn
- * (nút DOM nằm trên canvas cảnh → không thành joystick — R-DIEU-1). Dấu bắc ghi "B" (R-BANDO-3, R-HUD-4 — không 北).
+ * Bản đồ nhỏ vuông góc trên trái (R-BANDO-1, 3, 4; thiết kế 2026-11-14.20 `BanDoVung-HUD-*`, `BanDoVung-nho-trang-thai`;
+ * người dùng đổi tròn → vuông + to hơn 2026-11-15): khung vuông đứng yên, tấm mặt bằng vẽ sẵn (`areaMapPaint`, cả cảnh)
+ * chỉ dịch + xoay bằng CSS transform bên trong khung cắt vuông (`overflow:hidden`) — tấm phủ cả cảnh nên góc khung không
+ * lộ khoảng trống khi xoay (ngoài rìa cảnh là màu mây). Lớp trên (biểu tượng đứng thẳng, dấu mép, mũi tên "mình") vẽ
+ * lại khi mình dời > 5 cm / xoay > 0,5°. Dấu bắc + dấu mép chiếu ra cạnh hình vuông (`squareEdge`). Chạm cả khung → bản
+ * đồ lớn (nút DOM nằm trên canvas cảnh → không thành joystick — R-DIEU-1). Dấu bắc ghi "B" (R-BANDO-3, R-HUD-4 — không 北).
  */
 import type { AreaMap } from '../zones/areaMap';
-import { EDGE_KINDS, edgeMarks, MINI_RADIUS, EDGE_MARGIN, miniArrow, miniPoint, miniRotation, toMap } from '../zones/areaMapView';
+import { EDGE_KINDS, edgeMarks, MINI_RADIUS, EDGE_MARGIN, inMiniSquare, miniArrow, miniPoint, miniRotation, squareEdge, toMap } from '../zones/areaMapView';
 import { drawEdgeMark, drawMapIcon, drawMe } from './areaMapIcons';
 import { paintAreaMap } from './areaMapPaint';
 import './areaMap.css';
@@ -16,6 +18,8 @@ const HINT_SECONDS = 4;
 const HINT_KEY = 'hocxa.miniMapHint';
 const MOVE_EPS = 0.05;
 const TURN_EPS = (0.5 * Math.PI) / 180;
+/** cạnh khung khi chưa đo được (token size.minimap-portrait, đổi 2026-11-15) */
+const DEFAULT_SIZE = 148;
 
 function node<K extends keyof HTMLElementTagNameMap>(tag: K, cls: string, text?: string): HTMLElementTagNameMap[K] {
   const e = document.createElement(tag);
@@ -89,10 +93,10 @@ export class MiniMap {
     this.repaint();
   }
 
-  /** Vòng trên màn (px) — cho kiểm chạm / chụp. */
-  get circle(): { cx: number; cy: number; r: number } {
+  /** Khung vuông trên màn (px) — cho kiểm chạm (`hitsMiniMap`) / chụp. */
+  get square(): { cx: number; cy: number; half: number } {
     const r = this.btn.getBoundingClientRect();
-    return { cx: r.left + r.width / 2, cy: r.top + r.height / 2, r: r.width / 2 };
+    return { cx: r.left + r.width / 2, cy: r.top + r.height / 2, half: r.width / 2 };
   }
 
   /** Ẩn / hiện (R-BANDO-1); hiện lại mờ vào 0,2 s (CSS). */
@@ -106,7 +110,7 @@ export class MiniMap {
   update(dt: number, f: MiniFrame): void {
     if (!this.map || !this.shown) return;
     this.tickHint(dt);
-    const size = this.btn.clientWidth || 104;
+    const size = this.btn.clientWidth || DEFAULT_SIZE;
     if (f.building !== this.here) {
       this.here = f.building;
       this.repaint();
@@ -126,7 +130,7 @@ export class MiniMap {
     return size / 2 / MINI_RADIUS;
   }
 
-  private repaint(size = this.btn.clientWidth || 104): void {
+  private repaint(size = this.btn.clientWidth || DEFAULT_SIZE): void {
     if (!this.map) return;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     paintAreaMap(this.base, this.map, { scale: this.scale(size), dpr, big: false, here: this.here });
@@ -141,9 +145,9 @@ export class MiniMap {
     const rot = miniRotation(f.view);
     const p = toMap(map.bounds, s, f.x, f.z);
     this.base.style.transform = `translate(${half}px,${half}px) rotate(${rot}rad) translate(${-p.x}px,${-p.y}px)`;
-    // dấu bắc trên vành, theo góc xoay
-    const rim = half;
-    this.north.style.transform = `translate(${half + rim * Math.sin(rot) - 10}px,${half - rim * Math.cos(rot) - 10}px)`;
+    // dấu bắc trên cạnh khung vuông, theo góc xoay (hướng bắc chiếu ra cạnh)
+    const n = squareEdge(rot);
+    this.north.style.transform = `translate(${half + n.x * half - 10}px,${half + n.y * half - 10}px)`;
     const c = this.over.getContext('2d');
     if (!c) return;
     const dpr = this.over.width / size;
@@ -153,15 +157,14 @@ export class MiniMap {
     const inner = MINI_RADIUS - EDGE_MARGIN;
     for (const i of map.icons) {
       if (i.kind === 'son-mon') continue;
-      const d = Math.hypot(i.x - f.x, i.z - f.z);
-      if (d > inner) continue;
       const q = miniPoint(me, f.view, i.x, i.z);
+      if (!inMiniSquare(q, inner)) continue;
       drawMapIcon(c, i.kind, half + q.x * half, half + q.y * half, 15);
     }
     for (const m of edgeMarks(map, me, f.view, inner)) {
       if (!EDGE_KINDS.includes(m.kind)) continue;
       const r = half - 9;
-      drawEdgeMark(c, m.kind, half + r * Math.sin(m.angle), half - r * Math.cos(m.angle), m.angle);
+      drawEdgeMark(c, m.kind, half + r * m.edge.x, half + r * m.edge.y, m.angle);
     }
     drawMe(c, half, half, miniArrow(f.facing, f.view), 0.9);
   }

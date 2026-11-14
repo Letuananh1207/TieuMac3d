@@ -9,6 +9,7 @@ Thiết kế trái luật đã chốt → code theo luật, không theo artboard
 | 2026-11-14.20 Bản đồ vùng | biểu tượng bàn Đấu chữ: ô giấy viền ngọc chữ 字 | R-HUD-4 (biểu tượng là trang trí, không phải nội dung học) | ô giấy viền ngọc + **dấu hỏi** ngọc (tạm — xin vẽ lại) |
 | 2026-11-14.20 Bản đồ vùng | chữ chỗ "日課榜" (Noto Serif SC) | R-HUD-4 | "Bảng nhiệm vụ" |
 | 2026-11-14.20 Bản đồ vùng | bán kính bản đồ nhỏ 25 m | R-BANDO-3 "thấy quanh mình **30 m**" (người dùng chốt ~30 m) | 30 m; dấu mép khi xa hơn 28 m (tỉ lệ ngưỡng 23/25 của artboard) |
+| 2026-11-14.20 Bản đồ vùng | bản đồ nhỏ **tròn** 104 px dọc / 96 px ngang (`size.minimap-*`), dấu 北 + dấu mép trên vành tròn | **Người dùng đổi (2026-11-15, V-20261114-37)**: bản đồ nhỏ **vuông + to hơn** — R-BANDO-1 (vuông, cạnh 148 / 128), R-BANDO-3 (30 m theo nửa cạnh; dấu "B" + dấu mép trên cạnh vuông) | khung vuông bo 12 px, 148 / 128, giữ giấy + viền vàng + vành kính; mặt bằng xoay trong khung cắt vuông; "B" + dấu mép chiếu ra cạnh — xin vẽ lại `BanDoVung-HUD-*`, `BanDoVung-nho-trang-thai` + token |
 | 2026-11-14.21 Ngồi nhìn từ mắt | ấn son 溫故 bên phải đầu cuộn | R-HUD-4 ("cuộn Ngồi ôn: ấn son 'Ôn'") | ấn son chữ **Ôn** |
 
 Cột App các luật trên không đổi (`ok` / `sửa` như sổ) — code đã theo luật.

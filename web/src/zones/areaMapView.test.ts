@@ -7,11 +7,13 @@ import {
   fitLabels,
   fitScale,
   hitsMiniMap,
+  inMiniSquare,
   miniArrow,
   miniMapShown,
   miniPoint,
   miniRotation,
   placeLabels,
+  squareEdge,
   toMap,
   whereAmI,
 } from './areaMapView';
@@ -119,9 +121,40 @@ describe('bản đồ lớn — luật đặt chữ (R-BANDO-2, thiết kế 202
     expect(placed).toEqual([{ item: 'khu', x: 100, y: 52 }]);
   });
 
-  it('R-BANDO-3: biểu tượng cách mình quá 28 m (vành cắt) → thành dấu mép', () => {
+  it('R-BANDO-3: biểu tượng ra ngoài khung vuông (nửa cạnh 28 m, khung cắt) → thành dấu mép', () => {
     expect(edgeMarks(MAP, { x: 1.5, z: -9 }, NORTH).filter((m) => m.kind === 'vong-tran')).toHaveLength(1);
     expect(edgeMarks(MAP, { x: 2.5, z: -9 }, NORTH).filter((m) => m.kind === 'vong-tran')).toEqual([]);
+  });
+
+  it('R-BANDO-3: tầm 30 m tính theo nửa cạnh — chéo góc 35 m vẫn trong khung, không có dấu mép', () => {
+    // vòng trận (30; −9): đứng (5; 16) → lệch 25 m đông, 25 m bắc (cách ~35 m) — trong hình vuông 28 m
+    const me = { x: 5, z: 16 };
+    expect(edgeMarks(MAP, me, NORTH).filter((m) => m.kind === 'vong-tran')).toEqual([]);
+    expect(inMiniSquare(miniPoint(me, NORTH, 30, -9))).toBe(true);
+    // xoay camera 45° → cùng điểm nằm trên đường giữa, 35 m > 28 → ra khỏi khung → dấu mép
+    expect(inMiniSquare(miniPoint(me, NORTH - Math.PI / 4, 30, -9))).toBe(false);
+  });
+
+  it('R-BANDO-3: dấu mép đặt trên cạnh hình vuông — đông → giữa cạnh phải', () => {
+    const mark = edgeMarks(MAP, { x: -20, z: -9 }, NORTH).find((m) => m.kind === 'vong-tran');
+    near(mark!.edge.x, 1);
+    near(mark!.edge.y, 0);
+  });
+
+  it('R-BANDO-3: squareEdge — hướng chiếu ra cạnh vuông (lên, phải, góc chéo, dốc 30°)', () => {
+    expect(squareEdge(0)).toEqual({ x: 0, y: -1 });
+    expect(squareEdge(Math.PI / 2)).toEqual({ x: 1, y: 0 });
+    expect(squareEdge(Math.PI)).toEqual({ x: 0, y: 1 });
+    const d = squareEdge(Math.PI / 4);
+    near(d.x, 1);
+    near(d.y, -1);
+    const t = squareEdge(Math.PI / 6); // 30° lệch phải từ trên → cạnh trên, x = tan 30°
+    near(t.y, -1);
+    near(t.x, Math.tan(Math.PI / 6));
+    for (let a = 0; a < Math.PI * 2; a += 0.37) {
+      const p = squareEdge(a);
+      near(Math.max(Math.abs(p.x), Math.abs(p.y)), 1);
+    }
   });
 });
 
@@ -140,10 +173,13 @@ describe('bản đồ nhỏ — khi nào hiện (R-BANDO-1)', () => {
 });
 
 describe('chạm bản đồ nhỏ không thành joystick (R-DIEU-1)', () => {
-  it('R-DIEU-1: chạm x = 60, y = 100 trúng bản đồ nhỏ (tâm 68; 105, r 52) → mở bản đồ; chạm ngoài vòng → không', () => {
-    const circle = { cx: 68, cy: 105, r: 52 };
-    expect(hitsMiniMap(60, 100, circle)).toBe(true);
-    expect(hitsMiniMap(60, 400, circle)).toBe(false);
+  it('R-DIEU-1: chạm x = 60, y = 100 trúng bản đồ nhỏ vuông (x 20–168, y 14–162) → mở bản đồ; ngoài khung → không', () => {
+    const square = { cx: 94, cy: 88, half: 74 }; // dọc 148 px, trái 20, trên 14
+    expect(hitsMiniMap(60, 100, square)).toBe(true);
+    expect(hitsMiniMap(60, 400, square)).toBe(false);
+    // góc khung vuông vẫn trúng (khung tròn cũ thì trượt), ra ngoài 1 px thì không
+    expect(hitsMiniMap(166, 160, square)).toBe(true);
+    expect(hitsMiniMap(169, 88, square)).toBe(false);
   });
 });
 

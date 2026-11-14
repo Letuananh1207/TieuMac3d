@@ -1,25 +1,27 @@
-/* Bản đồ vùng — bản đồ nhỏ + bản đồ lớn (thiết kế 2026-11-14.20; token map-ink, map-cloud, map-water, minimap-portrait 104,
-   minimap-landscape 96). DOM dựng trong ui/miniMap.ts, ui/areaMapPanel.ts. */
+/* Bản đồ vùng — bản đồ nhỏ + bản đồ lớn (thiết kế 2026-11-14.20; token map-ink, map-cloud, map-water). Bản đồ nhỏ đổi
+   tròn 104 / 96 → vuông 148 / 128, bo 12 (người dùng 2026-11-15; chờ /ui-design cập nhật artboard + token).
+   DOM dựng trong ui/miniMap.ts, ui/areaMapPanel.ts. */
 :root{
   --map-paper:#f2eada;
   --map-ink:rgba(58,48,36,1);   /* token map-ink (dùng với độ mờ) */
   --map-cloud:#dce3e2;          /* token map-cloud */
   --map-water:#bfd5d1;          /* token map-water */
   --scroll-wood:#3a2418;
-  --minimap:104px;              /* token size.minimap-portrait */
+  --minimap:148px;              /* size.minimap-portrait (104 → 148, 2026-11-15) */
+  --minimap-radius:12px;        /* góc bo khung vuông */
 }
-@media (orientation:landscape){:root{--minimap:96px}} /* token size.minimap-landscape */
+@media (orientation:landscape){:root{--minimap:128px}} /* size.minimap-landscape (96 → 128, 2026-11-15) */
 
 /* ---------- bản đồ nhỏ: dọc trái 20, trên safe + 14; ngang trái safe + 16, trên 16 ---------- */
 .mini-map{position:fixed;z-index:6;left:calc(var(--sa-left) + 20px);top:calc(var(--sa-top) + 14px);width:var(--minimap);height:var(--minimap);animation:mm-in .2s ease-out}
 @media (orientation:landscape){.mini-map{left:max(16px,calc(var(--sa-left) + 16px));top:16px}}
 @keyframes mm-in{from{opacity:0}to{opacity:1}}
-.mm-btn{position:absolute;inset:0;padding:0;border:0;border-radius:50%;background:transparent;box-shadow:0 0 0 4px rgba(244,247,246,.86),0 0 0 5px rgba(36,50,58,.16),0 6px 16px rgba(36,50,58,.28);transition:transform .12s ease-out,box-shadow .12s ease-out;touch-action:manipulation}
+.mm-btn{position:absolute;inset:0;padding:0;border:0;border-radius:var(--minimap-radius);background:transparent;box-shadow:0 0 0 4px rgba(244,247,246,.86),0 0 0 5px rgba(36,50,58,.16),0 6px 16px rgba(36,50,58,.28);transition:transform .12s ease-out,box-shadow .12s ease-out;touch-action:manipulation}
 .mm-btn:active{transform:scale(.94);box-shadow:0 0 0 4px rgba(244,247,246,.86),0 0 0 5px rgba(36,50,58,.16),0 0 0 8px rgba(43,84,70,.35)}
-.mm-clip{position:absolute;inset:0;border-radius:50%;overflow:hidden;background:var(--map-cloud)}
+.mm-clip{position:absolute;inset:0;border-radius:var(--minimap-radius);overflow:hidden;background:var(--map-cloud)}
 .mm-base{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform}
 .mm-over{position:absolute;inset:0;width:100%;height:100%}
-.mm-ring{position:absolute;inset:0;border-radius:50%;box-shadow:inset 0 0 0 2px var(--gold);pointer-events:none}
+.mm-ring{position:absolute;inset:0;border-radius:var(--minimap-radius);box-shadow:inset 0 0 0 2px var(--gold);pointer-events:none}
 .mm-north{position:absolute;left:0;top:0;width:20px;height:20px;box-sizing:border-box;border-radius:50%;background:var(--jade);color:#fff;border:1.5px solid #fff;font-size:11px;font-weight:700;line-height:17px;text-align:center;pointer-events:none}
 .mm-floor{position:absolute;left:50%;bottom:-12px;transform:translateX(-50%);height:20px;box-sizing:border-box;padding:0 8px;border-radius:999px;background:var(--jade);color:#fff;border:1.5px solid #fff;font-size:11px;font-weight:700;line-height:17px;white-space:nowrap;pointer-events:none}
 .mm-hint{position:fixed;z-index:6;left:calc(var(--sa-left) + 20px + var(--minimap) + 12px);top:calc(var(--sa-top) + 14px + var(--minimap) / 2 - 15px);height:30px;box-sizing:border-box;padding:0 10px 0 6px;border-radius:999px;background:rgba(244,247,246,.92);outline:1px solid var(--frost-outline);display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;pointer-events:none;animation:mm-in .2s ease-out}

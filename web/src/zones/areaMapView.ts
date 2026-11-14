@@ -8,13 +8,16 @@
  */
 import { inRect, footprint, type AreaMap, type Bounds, type IconKind, type MapLabel } from './areaMap';
 
-/** Bản đồ nhỏ thấy quanh mình bao nhiêu mét, ở mọi cảnh (R-BANDO-3). */
+/**
+ * Bản đồ nhỏ thấy quanh mình bao nhiêu mét, ở mọi cảnh (R-BANDO-3) — tính theo **nửa cạnh** khung vuông (tâm → giữa
+ * cạnh); góc khung thấy xa hơn (~42 m) vì mặt bằng xoay bên trong khung đứng yên.
+ */
 export const MINI_RADIUS = 30;
 /** Chân cao hơn mặt đất ngoài trời từ mức này (m) = tầng 2 (R-BANDO-4). */
 export const UPPER_FLOOR_MIN = 2;
 /** Biểu tượng ngoài tầm có dấu ở mép bản đồ nhỏ (R-BANDO-3). */
 export const EDGE_KINDS: readonly IconKind[] = ['vong-tran', 'cong-canh'];
-/** Biểu tượng cách mình quá [MINI_RADIUS] − chừng này (m) → dấu mép, không để vành cắt (thiết kế 2026-11-14.20). */
+/** Biểu tượng ra ngoài hình vuông nửa cạnh [MINI_RADIUS] − chừng này (m) → dấu mép, không để khung cắt (thiết kế 2026-11-14.20). */
 export const EDGE_MARGIN = 2;
 
 const TAU = Math.PI * 2;
@@ -35,7 +38,7 @@ export function fitScale(b: Bounds, w: number, h: number): number {
 
 /**
  * Góc xoay tấm bản đồ nhỏ (R-BANDO-3: xoay theo camera — hướng camera nhìn ở phía trên). `view` = hướng camera nhìn
- * (main: `orbit.yaw + π`, cùng hướng nhân vật quay lưng về camera). Dấu 北 trên viền xoay cùng góc này.
+ * (main: `orbit.yaw + π`, cùng hướng nhân vật quay lưng về camera). Dấu bắc "B" trên cạnh khung chạy theo góc này.
  */
 export function miniRotation(view: number): number {
   return norm(view + Math.PI);
@@ -51,7 +54,7 @@ export function bigArrow(facing: number): number {
   return norm(Math.PI - facing);
 }
 
-/** Điểm cảnh (x, z) trên bản đồ nhỏ: tính từ tâm vòng, đơn vị = bán kính vòng (1 = mép). */
+/** Điểm cảnh (x, z) trên bản đồ nhỏ: tính từ tâm khung, đơn vị = nửa cạnh khung vuông (±1 = cạnh). */
 export function miniPoint(player: { x: number; z: number }, view: number, x: number, z: number): { x: number; y: number } {
   const dx = (x - player.x) / MINI_RADIUS;
   const dy = (z - player.z) / MINI_RADIUS;
@@ -62,24 +65,43 @@ export function miniPoint(player: { x: number; z: number }, view: number, x: num
   return { x: r(dx * c - dy * s), y: r(dx * s + dy * c) };
 }
 
+/** Điểm bản đồ nhỏ `q` (đơn vị nửa cạnh) nằm trong hình vuông nửa cạnh `inner` m (R-BANDO-1, 3). */
+export function inMiniSquare(q: { x: number; y: number }, inner = MINI_RADIUS - EDGE_MARGIN): boolean {
+  return Math.max(Math.abs(q.x), Math.abs(q.y)) <= inner / MINI_RADIUS;
+}
+
+/**
+ * Chiếu một hướng trên màn (`angle`: 0 = lên, theo kim đồng hồ) ra cạnh hình vuông tâm 0, nửa cạnh 1 → điểm trên cạnh
+ * (max(|x|, |y|) = 1; y dương = xuống). Dùng cho dấu bắc "B" và dấu mép (R-BANDO-3).
+ */
+export function squareEdge(angle: number): { x: number; y: number } {
+  const sx = Math.sin(angle);
+  const sy = -Math.cos(angle);
+  const m = Math.max(Math.abs(sx), Math.abs(sy));
+  const r = (v: number): number => Math.round(v * 1e9) / 1e9 || 0;
+  return { x: r(sx / m), y: r(sy / m) };
+}
+
 export interface EdgeMark {
   kind: IconKind;
   scene?: string;
-  /** góc trên màn từ tâm vòng (0 = lên, theo kim đồng hồ) */
+  /** góc trên màn từ tâm khung (0 = lên, theo kim đồng hồ) */
   angle: number;
+  /** chỗ trên cạnh khung vuông (đơn vị nửa cạnh, [squareEdge]) */
+  edge: { x: number; y: number };
   /** khoảng cách thật (m) */
   dist: number;
 }
 
-/** Vòng trận / cổng sang cảnh ở ngoài [MINI_RADIUS] → dấu ở mép, chỉ về phía đó (R-BANDO-3). */
+/** Vòng trận / cổng sang cảnh ra ngoài khung vuông (nửa cạnh `inner` m) → dấu trên cạnh khung, chỉ về phía đó (R-BANDO-3). */
 export function edgeMarks(map: AreaMap, player: { x: number; z: number }, view: number, inner = MINI_RADIUS - EDGE_MARGIN): EdgeMark[] {
   const out: EdgeMark[] = [];
   for (const i of map.icons) {
     if (!EDGE_KINDS.includes(i.kind)) continue;
-    const dist = Math.hypot(i.x - player.x, i.z - player.z);
-    if (dist <= inner) continue;
     const p = miniPoint(player, view, i.x, i.z);
-    out.push({ kind: i.kind, ...(i.scene ? { scene: i.scene } : {}), angle: norm(Math.atan2(p.x, -p.y)), dist });
+    if (inMiniSquare(p, inner)) continue;
+    const angle = norm(Math.atan2(p.x, -p.y));
+    out.push({ kind: i.kind, ...(i.scene ? { scene: i.scene } : {}), angle, edge: squareEdge(angle), dist: Math.hypot(i.x - player.x, i.z - player.z) });
   }
   return out;
 }
@@ -174,9 +196,9 @@ export function miniMapShown(s: MapBusy): boolean {
   return !(s.loading || s.travelMap || s.bigMap || s.covered || s.talking || s.gameTable || s.sitting || s.chatTyping || s.decorating);
 }
 
-/** Điểm chạm (px) trúng bản đồ nhỏ tròn tâm (cx, cy) bán kính r → mở bản đồ lớn, không thành joystick (R-DIEU-1). */
-export function hitsMiniMap(px: number, py: number, circle: { cx: number; cy: number; r: number }): boolean {
-  return Math.hypot(px - circle.cx, py - circle.cy) <= circle.r;
+/** Điểm chạm (px) trúng bản đồ nhỏ vuông tâm (cx, cy) nửa cạnh `half` → mở bản đồ lớn, không thành joystick (R-DIEU-1). */
+export function hitsMiniMap(px: number, py: number, square: { cx: number; cy: number; half: number }): boolean {
+  return Math.abs(px - square.cx) <= square.half && Math.abs(py - square.cy) <= square.half;
 }
 
 /** Mở / đóng bản đồ lớn (R-BANDO-5). Đang mở: nhân vật đứng yên (`freezes`). */
