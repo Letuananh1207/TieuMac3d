@@ -93,6 +93,7 @@ function checkScene(rel, raw) {
   const all = [...problems, ...(home ? placed.problems : [])];
 
   console.log(`Hệ số chiều cao kiến trúc: ${n(spec.buildingStyle.heightScale)}`);
+  console.log(`Kiểu nhìn: ${spec.look.style === 'mem' ? `mềm (wrap ${n(spec.look.wrap)}, bóng ${n(spec.look.ao)}, hoa ${n(spec.look.flowers.density)}/100 m², vignette ${n(spec.look.vignette)})` : 'cũ'}`);
   if (!spec.walls.enabled) console.log(`Không tường bao · người chơi bắt đầu (${n(spec.player.start[0])}; ${n(spec.player.start[1])})`);
   else console.log(`Tường: ±${n(spec.walls.half)} cao ${n(spec.walls.height)} dày ${n(spec.walls.thickness)} kiểu ${spec.walls.style} · người chơi bắt đầu (${n(spec.player.start[0])}; ${n(spec.player.start[1])})`);
   console.log(`Nơi: ${spec.site.name}${spec.site.areas.length ? ` · khu: ${spec.site.areas.map((a) => a.name).join(', ')}` : ''}`);

@@ -25,7 +25,8 @@ import { arrivalFor } from './scene/portals';
 import { TELEPORT_TEXT } from './scene/truyenTong';
 import { viewDistance } from './scene/farMountains';
 import { createStage, gpuName, MAX_PIXEL_RATIO, probeGpu } from './scene/renderer';
-import { FrameCap, pickTier, ResolutionGovernor, TIERS } from './scene/quality';
+import { detailOf, FrameCap, pickTier, ResolutionGovernor, tierParam, TIERS } from './scene/quality';
+import { isSoft, withLookParam } from './scene/look';
 import { mergeStatic } from './scene/merge';
 import { inRect, type Room } from './scene/rooms';
 import { signText } from './scene/signAtlas';
@@ -82,7 +83,8 @@ async function boot(): Promise<void> {
   const SCENE = loadScene(params.get('vung'));
   const SCENE_FILE = SCENE.file;
   const isHome = SCENE.id === HOME_SCENE;
-  const { spec } = SCENE;
+  // ?look=cu — ép kiểu nhìn cũ để so trước / sau (Canvas 3D, đo)
+  const spec = withLookParam(SCENE.spec, params.get('look'));
   // tiến độ học: Flutter giữ; không khoá vùng (R-HANH-1). Hỏi song song với nạp font.
   const progressAsk = getProgress();
   const flutterAsk = hasFlutter(); // không có Flutter → Văn tiền chế độ thử trong trình duyệt (R-TIEN-7)
@@ -105,7 +107,8 @@ async function boot(): Promise<void> {
   const canvas = el<HTMLCanvasElement>('stage');
   // mức đồ hoạ theo máy + độ nét động (R-HIEU-1): chọn trước khi tạo WebGL (khử răng cưa chỉ đặt được lúc tạo)
   const gpu = probeGpu();
-  const tier = pickTier(gpu, (navigator as Navigator & { deviceMemory?: number }).deviceMemory);
+  // ?muc=cao|vua|thap — ép mức để đo (kế hoạch 2026-11-14-canh-dep), không có = tự chọn theo máy
+  const tier = tierParam(params.get('muc')) ?? pickTier(gpu, (navigator as Navigator & { deviceMemory?: number }).deviceMemory);
   const tierSpec = TIERS[tier];
   const maxRatio = Math.min(window.devicePixelRatio || 1, tierSpec.maxRatio, MAX_PIXEL_RATIO);
   const governor = new ResolutionGovernor(Math.min(tierSpec.minRatio, maxRatio), maxRatio);
@@ -113,12 +116,13 @@ async function boot(): Promise<void> {
   const { renderer, scene, camera } = createStage(canvas, spec.camera.fov, viewDistance(spec), {
     antialias: tierSpec.antialias,
     ratio: maxRatio,
+    colorManaged: isSoft(spec.look),
   });
   const clock = new THREE.Clock();
   const colliders = new Colliders();
   // nhà nào có nội thất: theo nội dung bài (lớp học / thư viện), chữ phấn trên bảng = chữ của bài
   const interiors = Object.fromEntries(ZONE_CONTENT.map((c) => [c.id, { kind: c.interior, han: c.lesson.han }]));
-  const world = buildWorld(scene, colliders, spec, interiors);
+  const world = buildWorld(scene, colliders, spec, interiors, detailOf(tier));
   const placed = placeZones(ZONE_CONTENT, world.zoneAnchors);
   // bài học chỉ ở tông môn → cảnh vùng không báo thiếu vùng học
   const problems = [...SCENE.problems, ...(isHome ? placed.problems : [])];
@@ -608,7 +612,7 @@ async function boot(): Promise<void> {
     if (how === 'cong') next.set('qua', SCENE.id);
     else if (to === HOME_SCENE) next.set('tu', SCENE.id);
     // giữ tham số thử trên trình duyệt
-    for (const k of ['debug', 'nhan-vat']) if (params.has(k)) next.set(k, params.get(k) ?? '');
+    for (const k of ['debug', 'nhan-vat', 'muc', 'look']) if (params.has(k)) next.set(k, params.get(k) ?? '');
     // replace: không chất lịch sử trang mỗi lần đi về
     void nextPaint().then(() => location.replace(`${location.pathname}?${next.toString()}`));
   };

@@ -22,6 +22,7 @@ import { viewDistance } from './scene/farMountains';
 import { mergeStatic } from './scene/merge';
 import { portalRect } from './scene/portals';
 import { createStage } from './scene/renderer';
+import { isSoft, withLookParam } from './scene/look';
 import { signText } from './scene/signAtlas';
 import { buildWorld } from './scene/world';
 import { el } from './ui/dom';
@@ -38,9 +39,11 @@ function li(text: string, cls?: string): HTMLLIElement {
 
 async function boot(): Promise<void> {
   // ?vung=rung-truc → xem cảnh vùng; không có → tông môn
-  const SCENE = loadScene(new URLSearchParams(location.search).get('vung'));
+  const query = new URLSearchParams(location.search);
+  const SCENE = loadScene(query.get('vung'));
   const SCENE_FILE = SCENE.file;
-  const { spec } = SCENE;
+  // ?look=cu — xem kiểu nhìn cũ để so (kế hoạch 2026-11-14-canh-dep)
+  const spec = withLookParam(SCENE.spec, query.get('look'));
   await Promise.allSettled([
     document.fonts.load('700 72px Lora'),
     document.fonts.load('700 13px "Be Vietnam Pro"'),
@@ -49,7 +52,9 @@ async function boot(): Promise<void> {
   const canvas = el<HTMLCanvasElement>('stage');
   // nhìn từ trên: đủ cao để thấy cả sân / cả vùng địa hình
   const topHeight = Math.max(spec.walls.half * 3, spec.ground.size * 0.9, spec.terrain.enabled ? spec.terrain.size * 0.9 : 0);
-  const { renderer, scene, camera } = createStage(canvas, spec.camera.fov, Math.max(viewDistance(spec), topHeight + 60));
+  const { renderer, scene, camera } = createStage(canvas, spec.camera.fov, Math.max(viewDistance(spec), topHeight + 60), {
+    colorManaged: isSoft(spec.look),
+  });
   const colliders = new Colliders();
   // nội thất như app: theo nội dung bài (main.ts)
   const interiors = Object.fromEntries(ZONE_CONTENT.map((c) => [c.id, { kind: c.interior, han: c.lesson.han }]));

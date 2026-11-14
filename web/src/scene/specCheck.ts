@@ -30,6 +30,7 @@ import {
 } from './spec';
 import { checkDecorSlots } from './decorSlots';
 import { checkPortals } from './portals';
+import { checkLook } from './look';
 import { daisLayout, ringTrigger } from './teleportLayout';
 import { stairEnds, terrainHeightFn } from './terrainHeight';
 
@@ -442,7 +443,7 @@ function checkConsistency(s: SceneSpec): string[] {
   if (t.enabled && t.edge.radius + t.edge.width > t.size / 2) {
     out.push(`terrain.edge: mép vực (radius + width = ${t.edge.radius + t.edge.width}) vượt nửa vùng lưới (${t.size / 2}) — tăng size`);
   }
-  out.push(...checkTeleport(s), ...checkLanterns(s), ...checkDecorSlots(s), ...checkPortals(s));
+  out.push(...checkTeleport(s), ...checkLanterns(s), ...checkDecorSlots(s), ...checkPortals(s), ...checkLook(s.look));
   if (s.cloudSea.radius < 0) out.push('cloudSea.radius: phải ≥ 0');
   if (t.enabled && t.size > 0 && t.cell > 0) out.push(...checkOnFlatGround(s));
   if (t.enabled) {

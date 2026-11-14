@@ -38,16 +38,21 @@ function readGpu(gl: WebGLRenderingContext | WebGL2RenderingContext): string {
 }
 
 /** `far` = tầm nhìn xa (m); núi xa / biển mây cần xa hơn 200 (`viewDistance` trong farMountains.ts). */
-/** `opts`: mức đồ hoạ (R-HIEU-1) — `antialias` (mặc định bật), `ratio` pixelRatio ban đầu (mặc định ≤ MAX_PIXEL_RATIO). */
+/**
+ * `opts`: mức đồ hoạ (R-HIEU-1) — `antialias` (mặc định bật), `ratio` pixelRatio ban đầu (mặc định ≤ MAX_PIXEL_RATIO);
+ * `colorManaged`: quản lý màu đúng chuẩn (hex hiểu là sRGB) — chỉ cảnh `look.style: "mem"` (decisions/0005). Gọi TRƯỚC khi
+ * dựng cảnh: cờ là toàn cục, áp lúc tạo màu.
+ */
 export function createStage(
   canvas: HTMLCanvasElement,
   fov = 55,
   far = 200,
-  opts: { antialias?: boolean; ratio?: number } = {},
+  opts: { antialias?: boolean; ratio?: number; colorManaged?: boolean } = {},
 ): Stage {
   // Prototype viết cho three r128. Từ r152 three tự quản lý màu (ColorManagement) và đổi đơn vị ánh sáng.
-  // Tắt quản lý màu + nhân cường độ đèn với π (xem environment.ts) để giữ đúng màu của prototype.
-  THREE.ColorManagement.enabled = false;
+  // Tắt quản lý màu + nhân cường độ đèn với π (xem environment.ts) để giữ đúng màu của prototype. Cảnh "mềm" bật đúng
+  // chuẩn: không bật thì màu phẳng bị mã hoá sRGB hai lần → nhạt, bệch (ảnh so docs/tasks/anh/*-mau-ab-*.jpg).
+  THREE.ColorManagement.enabled = opts.colorManaged ?? false;
 
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: opts.antialias ?? true, powerPreference: 'high-performance' });
   renderer.setPixelRatio(opts.ratio ?? Math.min(window.devicePixelRatio || 1, MAX_PIXEL_RATIO));

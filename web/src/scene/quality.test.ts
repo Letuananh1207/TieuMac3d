@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { FrameCap, pickTier, ResolutionGovernor, TIERS } from './quality';
+import { detailOf, tierParam, FrameCap, pickTier, ResolutionGovernor, TIERS } from './quality';
 
 describe('Mức chất lượng theo máy (R-HIEU-1)', () => {
   it('GPU giả lập phần mềm / đời cũ → Thấp; tầm trung → Vừa; còn lại → Cao', () => {
@@ -129,5 +129,21 @@ describe('Khung hình đều 60 / 30 fps (R-HIEU-2)', () => {
     }
     expect(waited / 1000).toBeGreaterThan(115);
     expect(waited / 1000).toBeLessThan(121);
+  });
+});
+
+describe('ép mức để đo + mật độ chi tiết (kế hoạch canh-dep; R-HIEU-1)', () => {
+  it('?muc=cao|vua|thap ép mức; giá trị khác → tự chọn', () => {
+    expect(tierParam('thap')).toBe('thap');
+    expect(tierParam('vua')).toBe('vua');
+    expect(tierParam('cao')).toBe('cao');
+    expect(tierParam('max')).toBeNull();
+    expect(tierParam(null)).toBeNull();
+  });
+
+  it('mức Thấp: cỏ hoa thưa một nửa; Vừa / Cao đủ', () => {
+    expect(detailOf('thap')).toBe(0.5);
+    expect(detailOf('vua')).toBe(1);
+    expect(detailOf('cao')).toBe(1);
   });
 });

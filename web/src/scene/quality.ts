@@ -20,6 +20,16 @@ export const TIERS: Record<Tier, TierSpec> = {
   thap: { maxRatio: 1.0, minRatio: 0.7, antialias: false },
 };
 
+/** `?muc=cao|vua|thap` (ép mức để đo — kế hoạch 2026-11-14-canh-dep); giá trị khác → `null` (tự chọn). */
+export function tierParam(v: string | null): Tier | null {
+  return v === 'cao' || v === 'vua' || v === 'thap' ? v : null;
+}
+
+/** Mật độ chi tiết trang trí (cỏ, hoa) theo mức: Thấp một nửa (R-HIEU-1). Gợn nước chỉ khi mật độ đủ (1). */
+export function detailOf(tier: Tier): number {
+  return tier === 'thap' ? 0.5 : 1;
+}
+
 /** GPU giả lập phần mềm hoặc đời cũ / yếu (Adreno ≤ 5xx, Mali-4xx / T / G31–G57, PowerVR). */
 const WEAK = /swiftshader|llvmpipe|software|adreno[^0-9]*[2-5]\d\d\b|mali-(4\d\d|t\d+|g(31|51|52|57))\b|powervr/i;
 /** Tầm trung: Adreno 6xx dưới 640, Mali-G7x. */

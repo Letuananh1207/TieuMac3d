@@ -13,6 +13,16 @@ function isDynamic(o: THREE.Object3D | null): boolean {
   return false;
 }
 
+/** Nhóm tự quản vật liệu (mái / tường trước mờ dần khi vào nhà — rooms.ts): `mergeSoft` không kéo khối ra khỏi nhóm. */
+export function markOwnMaterials(o: THREE.Object3D): void {
+  o.userData.ownMaterials = true;
+}
+
+function ownsMaterials(o: THREE.Object3D | null): boolean {
+  for (let p = o; p; p = p.parent) if (p.userData.ownMaterials) return true;
+  return false;
+}
+
 /** Hai vật liệu "giống nhau" nếu vẽ ra y hệt: cùng loại, màu, texture, trong suốt, mặt, đẩy độ sâu. */
 function materialKey(m: THREE.Material): string | null {
   if (!(m instanceof THREE.MeshLambertMaterial || m instanceof THREE.MeshBasicMaterial)) return null;
@@ -125,7 +135,7 @@ export function mergeSoft(
   const toRoot = root.matrixWorld.clone().invert();
   const bySide = new Map<THREE.Side, THREE.Mesh[]>();
   root.traverse((o) => {
-    if (!(o instanceof THREE.Mesh) || o instanceof THREE.InstancedMesh || keep.has(o) || isDynamic(o)) return;
+    if (!(o instanceof THREE.Mesh) || o instanceof THREE.InstancedMesh || keep.has(o) || isDynamic(o) || ownsMaterials(o)) return;
     const m = o.material;
     if (!(m instanceof THREE.MeshLambertMaterial) || m.map || m.transparent || m.vertexColors || m.userData.soft) return;
     if (m.polygonOffset) return; // mặt dán đẩy độ sâu (chống nhấp nháy) giữ vật liệu riêng

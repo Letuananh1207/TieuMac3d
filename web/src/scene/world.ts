@@ -14,7 +14,8 @@ import { addCloudSea, addFarMountains } from './farMountains';
 import { addGate, addGateModel } from './gate';
 import { staticModelUrl } from './staticModel';
 import { addGrassAndRocks } from './grass';
-import { mergeStatic } from './merge';
+import { mergeSoft, mergeStatic } from './merge';
+import { isSoft } from './look';
 import { resetSignAtlas } from './signAtlas';
 import { addPaths } from './paths';
 import { addProps } from './props';
@@ -65,6 +66,8 @@ export function buildWorld(
   colliders: Colliders,
   spec: SceneSpec,
   interiors: Record<string, InteriorUse> = {},
+  /** mật độ chi tiết trang trí theo mức đồ hoạ (`quality.ts` `detailOf`): 1 đủ, 0,5 = cỏ hoa thưa một nửa, nước không gợn */
+  _detail = 1,
 ): World {
   const style = spec.buildingStyle;
   resetSignAtlas(); // biển của cảnh này vẽ vào một ảnh chung → 1 draw call
@@ -129,6 +132,8 @@ export function buildWorld(
   const floating = addFloating(scene, spec.floating, style, spec.trees.leaves[1], spec.trees.seed);
   // dựng xong mới gộp: khối đứng yên cùng vật liệu → một draw call (scene/merge.ts). Đã thử gộp theo ô (2026-11-14):
   // tam giác gần như không giảm, draw call tăng — phần nặng là địa hình + model người, không phải khối gộp.
+  // cảnh mềm: khối Lambert tĩnh khác màu → một khối vật liệu mềm (bóng nướng vào màu đỉnh) trước khi gộp phần còn lại
+  if (isSoft(spec.look)) mergeSoft(scene, new Set([ground]), spec.look, base);
   mergeStatic(scene, new Set([ground]));
   return {
     ground,

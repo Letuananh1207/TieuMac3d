@@ -16,7 +16,7 @@ import { addInterior, type LocalBox } from './kien_truc/noi_that';
 import { traLau } from './kien_truc/tra_lau';
 import type { LocalPad, WalkInBuilder } from './kien_truc/vao_trong';
 import type { Seat } from './seat';
-import { markDynamic, mergeStatic, mergeVertexColors } from './merge';
+import { markDynamic, markOwnMaterials, mergeStatic, mergeVertexColors } from './merge';
 import { rotateXZ, type BuildingSpec, type InteriorKind } from './spec';
 import { signMesh } from './signAtlas';
 import { drawSign } from './textures';
@@ -82,6 +82,7 @@ function worldRect(b: BuildingSpec, l: LocalBox): Rect {
 
 /** Làm mờ được: gộp các khối trong nhóm (ít draw call), mỗi vật liệu một bản riêng, không cho gộp chung với cảnh. */
 function fadeable(group: THREE.Group): THREE.Material[] {
+  markOwnMaterials(group); // vật liệu nhóm này đổi độ mờ → cảnh mềm không gộp lẫn vào khối chung
   mergeVertexColors(group); // mọi màu Lambert → 1 khối; còn lại (đèn lồng, biển) gộp theo vật liệu
   mergeStatic(group, new Set());
   const mats: THREE.Material[] = [];

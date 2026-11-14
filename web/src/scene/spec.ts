@@ -5,6 +5,8 @@
  * Màu "#rrggbb"; góc `rotY` tính bằng độ (vật có va chạm: bội 90); `pitch` camera radian; toạ độ [x, z] mét.
  */
 
+import { DEFAULT_LOOK, type LookSpec } from './look';
+
 export type XZ = [number, number];
 
 export const BUILDING_KINDS = ['giang-duong', 'dien', 'thap', 'nha-nho', 'dinh', 'hi-dai', 'tra-lau', 'lau-sach', 'cua-hang', 'nha-o'] as const;
@@ -770,6 +772,8 @@ export interface SceneSpec {
   decorSlots: DecorSlotSpec[];
   /** cổng đi bộ sang cảnh khác (R-HANH-4); rỗng = chỉ đi bằng vòng trận */
   portals: PortalSpec[];
+  /** kiểu nhìn: `cu` (mặc định, như trước) · `mem` hoạt hình mềm màu ấm — `scene/look.ts` */
+  look: LookSpec;
   /** dây đèn lồng giăng trên sân (vd. khu giao lưu) — chỉ ngắm, cột hai đầu có va chạm */
   lanternStrings: LanternString[];
   /** dây đèn lồng: `height` đỉnh cột / chỗ buộc dây, `sag` độ võng giữa dây, `spacing` khoảng hai đèn (m);
@@ -951,6 +955,7 @@ export const DEFAULT_SCENE: SceneSpec = {
   gameTables: [],
   decorSlots: [],
   portals: [], // cảnh cũ không có cổng đi bộ
+  look: DEFAULT_LOOK, // kiểu cũ — cảnh không đổi
   lanternStrings: [],
   lanternStyle: {
     height: 4.6,
