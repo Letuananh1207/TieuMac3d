@@ -10,12 +10,13 @@ export const DRAFT_KHAT_NHI: NpcSpec = { id: 'khat-nhi', x: -6.2, z: 25.6, rotY:
 export const DRAFT_GO_MO: NpcSpec = {
   id: 'go-mo',
   x: 2.5,
-  z: 34,
+  z: 44,
   rotY: 180,
   speed: 1.1,
   route: [
-    [2.5, 34],
-    [-2.5, 34],
+    // đầu nam: tới gần cổng xuống núi (z 51, V-39 kéo dài lối Cổng Trấn), quay đầu trước vòng "Về nhà"
+    [2.5, 44],
+    [-2.5, 44],
     [-2.5, 18],
     [-8, 10],
     [-8, -8],

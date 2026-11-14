@@ -228,6 +228,11 @@ export interface WallGateLook {
    * tường − 1 thì trụ + mái cổng tự nâng (đỉnh trụ ≥ lối + 1,6 m) cho đủ chỗ xà + biển.
    */
   clearHeight?: number;
+  /**
+   * Chỉ cổng `lau`: `false` = bỏ mái ngói lớn trên cổng — đỉnh trụ chỉ chụp mái tường nhỏ như thân tường, giữ khung gỗ +
+   * biển (cổng nam Quảng Trường, V-39). Thiếu / `true` = có mái (cảnh cũ).
+   */
+  roof?: boolean;
 }
 
 /** Khe cổng trên vòng tường: cạnh, tâm khe dọc theo cạnh (x với bắc/nam, z với đông/tây), rộng. */
@@ -507,6 +512,11 @@ export interface PortalSpec {
   scene: string;
   area: { from: XZ; to: XZ };
   arrive: { at: XZ; rotY: number };
+  /**
+   * Nhãn cổng (tiếng Việt — R-HUD-4): có → dựng **vòng sáng nhỏ** trên mặt đất ở tâm `area` + chữ nổi lơ lửng phía
+   * trên, luôn quay về camera (`vongCong.ts`, V-39). Thiếu / rỗng = không vẽ gì (cảnh cũ — cổng chỉ là vùng chạm).
+   */
+  label?: string;
 }
 
 /**
@@ -826,7 +836,12 @@ export interface SceneSpec {
     islands: { x: number; y: number; z: number; scale: number }[];
     clouds: { count: number; height: number; radius: number; speed: number; color: string };
   };
-  player: { start: XZ };
+  /**
+   * `start`: chỗ xuất phát (mở app / tải lại). `arriveAtStart`: true = về cảnh này bằng vòng trận (`?tu=`) cũng đứng ở
+   * `start`, nhìn hướng mặc định, thay vì cạnh vòng trận (Khởi Nguyên Trấn: luôn bắt đầu ở cổng trấn — V-39). Mặc định
+   * false = như cũ (đứng phía tây vòng, R-HANH-2).
+   */
+  player: { start: XZ; arriveAtStart: boolean };
   /** nhân vật không điều khiển (R-NPC-1) */
   npcs: NpcSpec[];
   /** bàn chơi khu giao lưu (R-GIAO-1) */
@@ -1018,7 +1033,7 @@ export const DEFAULT_SCENE: SceneSpec = {
     islands: [],
     clouds: { count: 0, height: 26, radius: 60, speed: 0.6, color: '#d9dce8' },
   },
-  player: { start: [0, 6] },
+  player: { start: [0, 6], arriveAtStart: false },
   npcs: [], // cảnh mặc định chưa có NPC
   gameTables: [],
   decorSlots: [],

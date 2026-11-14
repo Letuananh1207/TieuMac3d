@@ -36,6 +36,7 @@ import { addTerrain } from './terrain';
 import { buildHeightfield, type GroundY } from './terrainHeight';
 import { addTrees } from './trees';
 import { addTeleport, type TeleportRing } from './truyenTong';
+import { addPortalMarkers } from './vongCong';
 import { addWaterways } from './waterways';
 import { addWalls } from './walls';
 import { addWater } from './water';
@@ -154,6 +155,8 @@ export function buildWorld(
   addFences(scene, colliders, spec, groundY);
   if (spec.well.enabled) addWell(scene, colliders, spec.well, base(spec.well.x, spec.well.z));
   const teleport = spec.teleport.enabled ? addTeleport(scene, colliders, spec.teleport, groundY) : null;
+  // vòng sáng + nhãn ở cổng đi bộ có `label` (R-HANH-4, V-39)
+  const portalMarks = addPortalMarkers(scene, spec.portals, spec.teleport.colors, groundY);
   const floating = addFloating(scene, spec.floating, style, spec.trees.leaves[1], spec.trees.seed, spec.look);
   // dựng xong mới gộp: khối đứng yên cùng vật liệu → một draw call (scene/merge.ts). Đã thử gộp theo ô (2026-11-14):
   // tam giác gần như không giảm, draw call tăng — phần nặng là địa hình + model người, không phải khối gộp.
@@ -188,6 +191,7 @@ export function buildWorld(
       channels(dt);
       mirages(dt);
       teleport?.update(dt);
+      portalMarks(dt);
       for (const r of rooms) r.update(dt, !!player && inRect(r.floor, player.x, player.z), player?.y);
     },
   };

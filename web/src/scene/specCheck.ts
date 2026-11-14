@@ -186,7 +186,16 @@ const clearOk = (o: Obj, path: string): string[] => {
   return (h as number) < 2 || (h as number) > 8 ? [`${path}.clearHeight: 2–8 m (đang ${h as number})`] : [];
 };
 
-const gateLook = (o: Obj, path: string): string[] => [...oneOf('kind', GATE_KINDS)(o, path), ...signsOk(o.signs, path), ...clearOk(o, path)];
+/** `roof: false` (bỏ mái ngói cổng) chỉ có nghĩa với cổng mái ngói `lau`. */
+const roofOk = (o: Obj, path: string): string[] =>
+  o.roof === false && o.kind !== 'lau' ? [`${path}.roof: chỉ dùng với kind "lau"`] : [];
+
+const gateLook = (o: Obj, path: string): string[] => [
+  ...oneOf('kind', GATE_KINDS)(o, path),
+  ...signsOk(o.signs, path),
+  ...clearOk(o, path),
+  ...roofOk(o, path),
+];
 
 /** Cổng trên đoạn tường: rộng > 0; khe + 1 m mỗi bên (tấm cổng) nằm trong đoạn. */
 const segmentGateOk = (o: Obj, path: string): string[] => {
@@ -358,10 +367,10 @@ const LISTS: Record<string, ItemParser> = {
     { rotY: 0, notice: ['', ''], zone: { id: '', front: 0, r: 0 }, kind: '', roof: '', floors: 0, sides: 0, trim: '#000000', pillarColor: '#000000', sign: '', goods: '' },
     all(rot, oneOf('kind', BUILDING_KINDS), oneOf('goods', GOODS_KINDS), oneOf('roof', ROOF_KINDS), oneOf('sides', [4, 6]), floorsRange, positive('w', 'd')),
   ),
-  'walls.gates': item({ side: '', at: 0, width: 0 }, { kind: '', signs: SIGNS0, clearHeight: 0 }, all(oneOf('side', SIDES), positive('width'), gateLook)),
+  'walls.gates': item({ side: '', at: 0, width: 0 }, { kind: '', signs: SIGNS0, clearHeight: 0, roof: true }, all(oneOf('side', SIDES), positive('width'), gateLook)),
   wallSegments: item(
     { from: XZ0, to: XZ0 },
-    { height: 0, thickness: 0, follow: true, gate: { at: 0, width: 0, kind: 'trang', signs: SIGNS0, clearHeight: 0 } },
+    { height: 0, thickness: 0, follow: true, gate: { at: 0, width: 0, kind: 'trang', signs: SIGNS0, clearHeight: 0, roof: true } },
     all(axisAligned, positive('height', 'thickness'), thicknessOk, segmentGateOk),
   ),
   paths: item({ from: XZ0, to: XZ0, width: 0 }, { color: '#000000' }, positive('width')),
@@ -395,7 +404,9 @@ const LISTS: Record<string, ItemParser> = {
   ),
   decorSlots: item({ id: '', kind: '', x: 0, z: 0 }, { rotY: 0 }, all(oneOf('kind', DECOR_SLOT_KINDS), rot)),
   // cổng đi bộ (R-HANH-4): kiểm vùng / chỗ đứng / cặp cổng ở `portals.ts` + `scripts/check-scene.mjs`
-  portals: item({ scene: '', area: { from: XZ0, to: XZ0 }, arrive: { at: XZ0, rotY: 0 } }),
+  portals: item({ scene: '', area: { from: XZ0, to: XZ0 }, arrive: { at: XZ0, rotY: 0 } }, { label: '' }, (o, path) =>
+    typeof o.label === 'string' && [...o.label].length > 20 ? [`${path}.label: tối đa 20 ký tự (nhãn một dòng)`] : [],
+  ),
   'trees.yard': item({ x: 0, z: 0, scale: 0 }, { kind: '' }, all(oneOf('kind', TREE_KINDS), positive('scale'))),
   'trees.groves': item(
     { kind: '', x: 0, z: 0, w: 0, d: 0, count: 0 },

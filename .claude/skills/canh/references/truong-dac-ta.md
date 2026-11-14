@@ -11,7 +11,7 @@ Ví dụ: đủ 6 khu phẳng `docs/phieu_thiet_ke/2026-11-11-tong-mon-dot-1-mau
 
 | Trường | Ví dụ | Ghi chú |
 |---|---|---|
-| `walls.gates` | `{ "side": "nam", "at": 0, "width": 9.6, "kind": "lau", "clearHeight": 4 }` | khe trên tường bao; `side`: bac · nam · dong · tay; `at` = tâm khe dọc cạnh; `kind` trang (cổng trăng, mặc định) · lau (門樓, lối = `width` − 0,6) · thanh; `clearHeight` (chỉ `lau`, 2–8 m, thiếu = 3,2 ≤ tường − 1): lối cao tới xà khung cửa — cao hơn tường − 1,6 thì trụ + mái cổng tự nâng. Cũng dùng được ở `wallSegments[].gate` |
+| `walls.gates` | `{ "side": "nam", "at": 0, "width": 9.6, "kind": "lau", "clearHeight": 4 }` | khe trên tường bao; `side`: bac · nam · dong · tay; `at` = tâm khe dọc cạnh; `kind` trang (cổng trăng, mặc định) · lau (門樓, lối = `width` − 0,6) · thanh; `clearHeight` (chỉ `lau`, 2–8 m, thiếu = 3,2 ≤ tường − 1): lối cao tới xà khung cửa — cao hơn tường − 1,6 thì trụ + mái cổng tự nâng; `roof: false` (chỉ `lau`) = bỏ mái ngói lớn, giữ khung gỗ + biển (cổng nam Quảng Trường, V-39). Cũng dùng được ở `wallSegments[].gate` |
 | `walls.style` | `"voi"` (+ `"windows": 6`) | tường vôi + chân đá + mái ngói; khe thành **cổng trăng** — vòm thu bán kính theo chiều cao tường (đỉnh vòm dưới mái tường 0,6 m), lối đi hẹp theo; `walls.color` = màu vôi. Mặc định `"gach"` |
 | `wallSegments` | `{ "from": [27, -15], "to": [60, -15] }` | đoạn tường thêm, thẳng trục; `height` tuỳ chọn |
 | `paths` | `{ "from": [0, 21], "to": [0, 55], "width": 5 }` | lối lát đá, góc tự do; `color` tuỳ chọn; nối hai bục khác độ cao thành dốc |
@@ -26,6 +26,8 @@ Ví dụ: đủ 6 khu phẳng `docs/phieu_thiet_ke/2026-11-11-tong-mon-dot-1-mau
 | `props` | `{ "kind": "lo-dan", "x": -41, "z": -27, "scale": 1 }` | luong-thuoc · lo-dan (khói) · da-thai-ho · den-da · dinh-dong (khói hương) · ban-tra (bàn trà + 4 đôn) · sap-o (sạp ô giấy) · co (cột cờ 9 m, `text` một chữ Hán, phấp phới) · bang (bảng vinh danh, `text` = tiêu đề) |
 | `site` | `{ "name": "Văn Uyên Tông", "areas": [{ "name": "Diễn Võ Trường", "from": [27, -15], "to": [60, 15] }] }` | chip HUD (R-HUD-1) + thẻ tên khu (R-HUD-3) + màn tải — chỉ `name` tiếng Việt hiển thị; `han` (nếu còn) là dữ liệu, không hiện (R-HUD-4) |
 | `player.start` | `[0, 80]` | điểm xuất phát (bố cục) |
+| `player.arriveAtStart` | `true` | về cảnh bằng vòng trận (`?tu=`) cũng đứng ở `player.start` thay vì cạnh vòng (Khởi Nguyên Trấn: luôn bắt đầu ở cổng trấn, V-39); thiếu = false |
+| `portals[].label` | `"Về nhà"` | cổng đi bộ (R-HANH-4) có nhãn → vòng sáng nhỏ (∅ ≤ 2,4 m, tâm vùng chạm, màu theo `teleport.colors`) + chữ nổi quay về camera; ≤ 20 ký tự, chỉ tiếng Việt; thiếu = không vẽ |
 | `teleport` | `{ "enabled": true, "center": [44, 0], "radius": 13, "ringRadius": 4 }` | vòng trận truyền tống (R-HANH-2): tông môn = sân đá ∅ `2 × radius` + vòng giữa sân; vùng: `"radius": 0` = vòng trên bệ đá. `player.start` phải ngoài vòng (≥ 0,8 × ringRadius + 1 m). `colors`; `text` rỗng = khắc hoa văn, có thì tên Việt ≤ 14 ký tự (không chữ Hán — R-HUD-4). Canvas 3D `?nap=0..1` xem hiệu ứng nạp |
 | `steles` | `{ "x": -2.9, "z": 31.4, "rotY": 77, "radical": "thuy" }` | bia bộ thủ (R-HANH-3, Rừng trúc): mặt khắc nhìn +z khi `rotY` 0 (độ, tuỳ ý); `radical` = mã trong `web/src/zones/radicals.ts` (50 bộ, không trùng). Màu `stele` (đá, chữ, viền vàng). Canvas 3D `?hoc=n` = n bộ đầu đã học |
 | `trees.groves[].kind: "truc-mao"` | — | trúc mao 12–18 m, 4 thân / khóm, đung đưa; màu `trees.mao` (thân, thân già, lá). ≈ 60 tam giác / thân — giữ ≤ 1 500 thân thấy được |

@@ -145,7 +145,9 @@ async function boot(): Promise<void> {
   // về nhà từ một vùng: đứng trước cột của vùng đó, ngoài vòng, nhìn vào cột (R-HANH-2)
   // qua cổng đi bộ: đứng ở chỗ của cổng dẫn về cảnh vừa rời; không có cổng về → chỗ xuất phát (R-HANH-4)
   const viaGate = arrivalFor(spec.portals, params.get('qua'));
-  const back = viaGate ?? (isHome && params.has('tu') && spec.teleport.enabled ? arrivalSpot(spec.teleport) : undefined);
+  // `player.arriveAtStart` (trấn): về bằng vòng trận cũng đứng ở chỗ xuất phát — cổng trấn (V-39)
+  const ringBack = isHome && params.has('tu') && spec.teleport.enabled && !spec.player.arriveAtStart;
+  const back = viaGate ?? (ringBack ? arrivalSpot(spec.teleport) : undefined);
   // ?dung=x,z — thử trên trình duyệt: đứng sẵn ở (x, z) (vd. cạnh bàn cờ ?dung=-22,36.5)
   const dung = (params.get('dung') ?? '').split(',').map(Number);
   const [sx, sz] = back ? back.at : dung.length === 2 && dung.every(Number.isFinite) ? dung : spec.player.start;

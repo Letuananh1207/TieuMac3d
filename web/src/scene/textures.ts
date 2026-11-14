@@ -19,7 +19,7 @@ export function makeCanvasTex(w: number, h: number, draw: Draw, repeat?: [number
 }
 
 /** Chữ trên biển: Lora cho chữ Việt, "Han Serif" (Noto Serif SC cắt sẵn) cho chữ Hán. */
-const SIGN_FONT = 'Lora, "Han Serif", Georgia, serif';
+export const SIGN_FONT = 'Lora, "Han Serif", Georgia, serif';
 
 /** Vẽ biển hiệu vào khung `w` × `h` của canvas `g` (gốc 0, 0). Dùng chung cho `signTex` và ảnh biển chung. */
 export function drawSign(g: CanvasRenderingContext2D, w: number, h: number, text: string, sub?: string, opts: { paper?: boolean } = {}): void {

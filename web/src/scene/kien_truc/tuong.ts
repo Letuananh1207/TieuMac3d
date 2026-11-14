@@ -7,7 +7,8 @@
  *   mặt đất = dây cung = 1,6 × bán kính. Biển đá khắc (門額) giữa đỉnh vòm và đỉnh tường.
  * - `lau` cổng mái ngói (門樓): cửa chữ nhật khung gỗ, lối đi = rộng − 2 × 0,3; lối cao `clearHeight` (mặc định 3,2,
  *   ≤ tường − 1); trụ tường dày hơn tường 0,3; mái ngói hai mái nhô 0,8 m ra mỗi mặt, chân mái cao hơn tường 0,6 m và
- *   cao hơn lối ≥ 1,6 m (lối cao thì trụ + mái nâng theo); biển gỗ dưới mái.
+ *   cao hơn lối ≥ 1,6 m (lối cao thì trụ + mái nâng theo); biển gỗ dưới mái. `roof: false` → bỏ mái ngói lớn, đỉnh trụ
+ *   chỉ chụp mái tường nhỏ (giữ khung gỗ + biển).
  * - `thanh` cổng thành (城門): cửa vòm (chữ nhật + nửa tròn trên) xuyên tường, lối đi = rộng − 2 × 0,3 như 門樓;
  *   hai cánh cửa son đinh vàng mở áp vào hai bên lòng cửa; trên tường là lầu cổng (城樓) thân son, mái hai tầng.
  * Biển: mỗi mặt cổng một biển theo `signs[<hướng mặt nhìn ra>]`. Va chạm khớp đúng phần tường hai bên lối đi.
@@ -245,7 +246,11 @@ function lauGate(g: THREE.Group, gp: GatePlace, w: Walls, style: Style, mats: Wa
   grp.add(plasterBox(mats, 2 * o, top - clear, t, 0, clear));
   grp.add(box(2 * o + 0.48, 0.26, t + 0.06, style.timber, 0, clear + 0.13 - PROUD, 0)); // xà ngang trên lối, thò xuống
   grp.add(box(2 * hw + 0.2, 0.22, t + 0.3, style.timber, 0, top - 0.11 - PROUD, 0)); // dải xà dưới mái, đỉnh dưới đỉnh trụ
-  const roof = new THREE.Mesh(prism(2 * hw + 0.8, t + 1.6, 0.9), roofMat(w.capColor));
+  // `roof: false` → không mái ngói lớn, chỉ chụp mái tường nhỏ như thân tường (`plasterRun`) cho đỉnh trụ khỏi trơ
+  const roof =
+    gp.roof === false
+      ? new THREE.Mesh(prism(2 * hw + 0.3, t + 0.5, 0.5), roofMat(w.capColor))
+      : new THREE.Mesh(prism(2 * hw + 0.8, t + 1.6, 0.9), roofMat(w.capColor));
   roof.position.y = top;
   grp.add(roof);
   // biển gỗ giữa xà lối và dải xà dưới mái

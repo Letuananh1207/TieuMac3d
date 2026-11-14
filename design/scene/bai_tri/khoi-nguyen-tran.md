@@ -10,7 +10,7 @@ toả ra bốn hướng có việc làm** (Truyền Tống Đài đi vùng, Kỳ
 Bậc lên Phẩm Minh Các uống trà nghe đàn) **→ về nhà qua ngõ Tạp hoá**.
 
 ## Luồng người chơi
-1. Xuất hiện cạnh Cổng Trấn (0; 36) — thấy ngay Tạp hoá bên trái, phía trước bên trái (bên phải tiệm khi nhìn vào mặt tiệm) là Tiểu Mặc và bảng "Nhiệm vụ hằng ngày"; ngõ "Nhà của ta", đèn đá hai bên lối.
+1. Xuất hiện ngay trong cổng xuống núi (0; 48) — mọi lần vào trấn (mở app, về từ vòng trận, về từ Nhà của ta; V-39) — đi lên lối Cổng Trấn thấy ngay Tạp hoá bên trái, phía trước bên trái (bên phải tiệm khi nhìn vào mặt tiệm) là Tiểu Mặc và bảng "Nhiệm vụ hằng ngày"; ngõ "Nhà của ta", đèn đá hai bên lối.
 2. Đi bắc vào Quảng Trường qua cổng mái ngói nam — nhật quỹ giữa sân.
 3. Cổng đông → Truyền Tống Đài (Trận sư) · cổng tây → Kỳ Văn Uyển → Tàng Thư Các · cổng bắc → Thiên Bậc → Thượng Trấn.
 4. Lối phụ Hậu Sơn: ao + thác (ngắm, nghỉ).
@@ -35,7 +35,9 @@ Mục đích: **hoạt động** (có việc làm, NPC, ngồi, chơi) · **dẫ
 | Phẩm Minh Các (trà lâu 2 tầng) | (0; −60) | `lau` M (hàm cũ, 3A) | hoạt động + dẫn đường | Tiểu nhị, 18 chỗ ngồi tầng 2, nghe đàn (R-NHAC); mốc cao nhất nhìn từ Quảng Trường |
 | Tàng Thư Các (lầu sách) | (−33; −22) | `lau` L (hàm cũ, 3A) | hoạt động | Thủ thư Điển Thư, mượn sách, khu tự học 24 bồ đoàn (R-VA-4/5) |
 | Tạp hoá | (−11; 30) | `cua-hang` S (hàm cũ, 3A) | hoạt động | cửa hàng Văn tiền (R-TIEN) |
-| Tường bao Quảng Trường + 4 cổng mái ngói | ±17 | `tuong` vôi L + `cong-tuong` `lau` L | dẫn đường | 4 cổng có biển chỉ hướng (đông Đài truyền tống, tây Sân chơi · Thư viện, bắc Bậc lên Trà lâu, nam Lối ra núi) |
+| Tường bao Quảng Trường + 4 cổng mái ngói | ±17 | `tuong` vôi L + `cong-tuong` `lau` L | dẫn đường | 4 cổng có biển chỉ hướng (đông Đài truyền tống, tây Sân chơi · Thư viện, bắc Bậc lên Trà lâu, nam Lối ra núi); **cổng nam bỏ mái ngói** (`roof: false`, V-39 — người dùng: "không hợp"), giữ khung gỗ + biển "Quảng trường" trên tường |
+| Cổng xuống núi "Khởi Nguyên Trấn" | (0; 51) (V-39: từ z 41, lối dài thêm 10 m) | cổng sơn môn khối, cao 8 m (V-39: từ 6,6) | dẫn đường | cuối lối Cổng Trấn; ngay trong cổng là chỗ xuất phát (0; 48) |
+| Vòng sáng "Về nhà" | (0; 54) chiếu nghỉ ngoài cổng, trước bậc xuống núi (z 56 → 77) | vòng cổng (`portals[].label`, `vongCong.ts`) | hoạt động + dẫn đường | bước vào → Nhà của ta (R-HANH-4); thay biển gỗ "Xuống núi · Về nhà" (bỏ, V-39) |
 | Tường viện Kỳ Văn Uyển – Tàng Thư Các | x −51…−17 | `tuong` vôi M | dẫn đường | khoanh khu chơi + thư viện thành một viện |
 | Khoảnh tường "Nhà của ta" + cổng | (−22; 36) | `tuong` vôi M + `cong-tuong` `lau` M | hoạt động + dẫn đường | cổng đi bộ sang Nhà của ta (R-HANH-4, V-16) |
 | Truyền Tống Đài + 6 cột trận | đông sân | đài (code riêng) | hoạt động | Trận sư, đi vùng (R-HANH-2) |
@@ -46,7 +48,7 @@ Mục đích: **hoạt động** (có việc làm, NPC, ngồi, chơi) · **dẫ
 | Trận sư | (21,5; −4,5) | NPC | hoạt động | truyền tống |
 | Bàn cờ · bàn Đấu chữ | (−34; 4), (−34; 11) | `ban-co` | hoạt động | trò chơi với NPC (R-GIAO) |
 | 4 dây đèn lồng | Kỳ Văn Uyển | dây đèn | kể chuyện | không khí hội chữ; có quầng sáng (NV12) |
-| Đèn đá ×2 lối Cổng Trấn | (±4,5; 27,5) | `den-da` | dẫn đường | đánh dấu lối chính, có quầng sáng |
+| Đèn đá ×6 hai bên lối Cổng Trấn | (±8,6; 35,5 / 41,5 / 47,5) (V-39: từ (±4,5; 27,5) + (±4,6; 39,4) — trước nằm trên nền lát, chắn đường) | `den-da` | dẫn đường | hàng đèn trên cỏ ngoài mép lát, cách đều 6 m, dẫn tới cổng xuống núi; có quầng sáng |
 | Đèn đá ×4 Kỳ Văn Uyển | (−37 / −29; −15 / −3,5) | `den-da` | dẫn đường | lối giữa sân chơi → Tàng Thư Các |
 | Cờ "Trà" | (11,5; −54,5) | `co` | dẫn đường | thấy từ chân Thiên Bậc: trên kia là trà lâu |
 | Thiên Bậc (bậc đá) | x 0, z −52…−19 | `bac` | dẫn đường | lên Thượng Trấn |

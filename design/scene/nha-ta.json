@@ -112,7 +112,7 @@
     { "id": "vuon-6", "kind": "vuon", "x": 14, "z": 8 }
   ],
   "portals": [
-    { "scene": "tong-mon", "area": { "from": [-4, 12.5], "to": [4, 16] }, "arrive": { "at": [0, 10], "rotY": 180 } }
+    { "scene": "tong-mon", "area": { "from": [-4, 12.5], "to": [4, 16] }, "arrive": { "at": [0, 10], "rotY": 180 }, "label": "Khởi Nguyên Trấn" }
   ],
   "dayNight": { "enabled": true }
 }

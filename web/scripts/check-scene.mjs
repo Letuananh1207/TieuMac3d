@@ -166,7 +166,7 @@ function checkScene(rel, raw) {
     let how = '';
     if (spec.walls.style === 'voi') {
       const half = gateOpening(g);
-      const shape = g.kind === 'lau' ? `cổng mái ngói, lối cao ${fix(lauClearHeight(g.height, g.clear))} m, đỉnh trụ ${fix(lauTop(g.height, lauClearHeight(g.height, g.clear)))} m` : `cổng trăng đỉnh ${fix(1.6 * moonRadius(g.width, g.height))} m`;
+      const shape = g.kind === 'lau' ? `cổng ${g.roof === false ? 'khung gỗ (bỏ mái ngói)' : 'mái ngói'}, lối cao ${fix(lauClearHeight(g.height, g.clear))} m, đỉnh trụ ${fix(lauTop(g.height, lauClearHeight(g.height, g.clear)))} m` : `cổng trăng đỉnh ${fix(1.6 * moonRadius(g.width, g.height))} m`;
       how = ` · ${shape}, lối đi ${fix(2 * half)} m (${g.axis} ${fix(g.at - half)} … ${fix(g.at + half)})`;
     }
     const signs = Object.entries(g.signs).filter(([, v]) => v).map(([k, v]) => `${k} ${v}`).join(' · ');

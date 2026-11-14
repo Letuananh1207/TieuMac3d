@@ -33,6 +33,8 @@ export interface GatePlace {
   signs: GateSigns;
   /** lối cao muốn có (cổng `lau`, `clearHeight` trong đặc tả); thiếu = mặc định theo tường */
   clear?: number;
+  /** cổng `lau`: false = bỏ mái ngói trên cổng (đặc tả `roof`); thiếu = có mái */
+  roof?: boolean;
 }
 
 /** Hai mặt của bức tường chạy theo `axis`: mặt nhìn về phía + trục kia, mặt nhìn về phía −. */
@@ -101,12 +103,13 @@ export function wallGates(walls: Walls, segments: WallSegment[]): GatePlace[] {
         kind: g.kind ?? 'trang',
         signs: g.signs ?? {},
         clear: g.clearHeight || undefined, // 0 = mặc định (đặc tả đã chuẩn hoá điền 0)
+        roof: g.roof,
       }))
     : [];
   const extra = segments.flatMap((s): GatePlace[] => {
     if (!s.gate) return [];
     const r = segmentRun(s, walls);
-    return [{ axis: r.axis, fixed: r.fixed, at: s.gate.at, width: s.gate.width, height: r.height, thickness: r.thickness, kind: s.gate.kind ?? 'trang', signs: s.gate.signs ?? {}, clear: s.gate.clearHeight || undefined }];
+    return [{ axis: r.axis, fixed: r.fixed, at: s.gate.at, width: s.gate.width, height: r.height, thickness: r.thickness, kind: s.gate.kind ?? 'trang', signs: s.gate.signs ?? {}, clear: s.gate.clearHeight || undefined, roof: s.gate.roof }];
   });
   return [...ring, ...extra];
 }
