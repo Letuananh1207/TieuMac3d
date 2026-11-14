@@ -37,8 +37,9 @@
       {
         "side": "nam",
         "at": 0,
-        "width": 6.4,
+        "width": 9.6,
         "kind": "lau",
+        "clearHeight": 4,
         "signs": {
           "nam": "Quảng trường",
           "bac": "Lối ra núi"
@@ -47,8 +48,9 @@
       {
         "side": "bac",
         "at": 0,
-        "width": 6.4,
+        "width": 9.6,
         "kind": "lau",
+        "clearHeight": 4,
         "signs": {
           "nam": "Bậc lên Trà lâu",
           "bac": "Quảng trường"
@@ -57,7 +59,9 @@
       {
         "side": "dong",
         "at": 0,
-        "width": 6.4,
+        "width": 9.6,
+        "kind": "lau",
+        "clearHeight": 4,
         "signs": {
           "tay": "Đài truyền tống",
           "dong": "Quảng trường"
@@ -66,7 +70,9 @@
       {
         "side": "tay",
         "at": -6,
-        "width": 6.4,
+        "width": 9.6,
+        "kind": "lau",
+        "clearHeight": 4,
         "signs": {
           "dong": "Sân chơi · Thư viện",
           "tay": "Quảng trường"

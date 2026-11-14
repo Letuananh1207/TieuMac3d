@@ -1,21 +1,21 @@
 import { describe, expect, it } from 'vitest';
 import { Colliders } from '../collision/colliders';
-import { gateOpening, plasterWallBoxes } from './kien_truc/tuong';
+import { gateOpening, lauClearHeight, lauTop, plasterWallBoxes } from './kien_truc/tuong';
 import { DEFAULT_SCENE, type SceneSpec, type WallSegment } from './spec';
 import { ringRuns, segmentRuns, wallGates } from './walls';
 
-/** Tường Quảng Trường như ví dụ R-VA-1: ±17, cao 4,5, dày 0,5; cổng mái ngói nam / bắc, cổng trăng đông / tây. */
+/** Tường Quảng Trường như ví dụ R-VA-1: ±17, cao 5,2, dày 0,5; bốn cổng mái ngói rộng 9,6, lối cao 4 (V-20261114-19). */
 const walls: SceneSpec['walls'] = {
   ...DEFAULT_SCENE.walls,
   half: 17,
-  height: 4.5,
+  height: 5.2,
   thickness: 0.5,
   style: 'voi',
   gates: [
-    { side: 'nam', at: 0, width: 6.4, kind: 'lau', signs: { nam: '外門', bac: '山門' } },
-    { side: 'bac', at: 0, width: 6.4, kind: 'lau' },
-    { side: 'dong', at: 0, width: 6.4 },
-    { side: 'tay', at: -6, width: 6.4 },
+    { side: 'nam', at: 0, width: 9.6, kind: 'lau', clearHeight: 4, signs: { nam: '外門', bac: '山門' } },
+    { side: 'bac', at: 0, width: 9.6, kind: 'lau', clearHeight: 4 },
+    { side: 'dong', at: 0, width: 9.6, kind: 'lau', clearHeight: 4 },
+    { side: 'tay', at: -6, width: 9.6, kind: 'lau', clearHeight: 4 },
   ],
 };
 /** Đoạn tường thêm giả có cổng trăng (cảnh thật đã bỏ tường chia sân, 2026-11-13): z −11, cao 3, dày 0,35, cổng x −33 rộng 4. */
@@ -43,11 +43,20 @@ describe('R-VA-1: tường mỏng + cổng', () => {
     expect(walk(world(), 12, 0, 0, -1, 20).z).toBeCloseTo(-16.25, 2);
   });
 
-  it('R-VA-1: cổng mái ngói nam rộng 6,4 → lối đi 5,8 m; x 0 qua được, x 3 (trụ cổng dày 0,8) dừng ở z 16,1', () => {
+  it('R-VA-1: cổng mái ngói nam rộng 9,6 → lối đi 9 m; x 0 và x 4 qua được, x 5 (trụ cổng dày 0,8) dừng ở z 16,1', () => {
     const nam = wallGates(walls, [])[0];
-    expect(2 * gateOpening(nam)).toBeCloseTo(5.8, 6);
+    expect(2 * gateOpening(nam)).toBeCloseTo(9, 6);
     expect(walk(world(), 0, 0, 0, 1, 25).z).toBeGreaterThan(20);
-    expect(walk(world(), 3, 0, 0, 1, 25).z).toBeCloseTo(16.1, 2);
+    expect(walk(world(), 4, 0, 0, 1, 25).z).toBeGreaterThan(20);
+    expect(walk(world(), 5, 0, 0, 1, 25).z).toBeCloseTo(16.1, 2);
+  });
+
+  it('R-VA-1: cổng đông (x 17, tâm z 0) và tây (x −17, tâm z −6) lối 9 m → đi qua được ở z ±4 / z −2', () => {
+    expect(walk(world(), 0, 4, 1, 0, 25).x).toBeGreaterThan(20);
+    expect(walk(world(), 0, -4, 1, 0, 25).x).toBeGreaterThan(20);
+    expect(walk(world(), 0, -2, -1, 0, 25).x).toBeLessThan(-20);
+    expect(walk(world(), 0, -10, -1, 0, 25).x).toBeLessThan(-20);
+    expect(walk(world(), 0, 5.5, 1, 0, 25).x).toBeCloseTo(16.1, 2);
   });
 
   it('R-VA-1: cổng bắc mái ngói → x 0 đi lên bắc qua cổng ra chân Thiên Bậc', () => {
@@ -70,7 +79,7 @@ describe('đoạn tường theo độ dày', () => {
     const north = ringRuns({ ...walls, gates: [] })[0];
     expect([north.a, north.b, north.thickness]).toEqual([-17.25, 17.25, 0.5]);
     const [run] = segmentRuns({ from: [-51, 17], to: [-17, 17] }, walls);
-    expect([run.a, run.b, run.height, run.thickness]).toEqual([-51.25, -16.75, 4.5, 0.5]);
+    expect([run.a, run.b, run.height, run.thickness]).toEqual([-51.25, -16.75, 5.2, 0.5]);
   });
 
   it('đoạn có cổng bị cắt khe (nới thêm pad mỗi bên)', () => {
@@ -82,8 +91,29 @@ describe('đoạn tường theo độ dày', () => {
   });
 
   it('biển cổng giữ theo hướng mặt nhìn; thiếu kind = cổng trăng', () => {
-    const [nam, , dong] = wallGates(walls, []);
+    const [nam] = wallGates(walls, []);
     expect(nam.signs).toEqual({ nam: '外門', bac: '山門' });
-    expect(dong.kind).toBe('trang');
+    expect(wallGates({ ...walls, enabled: false }, [partition])[0].kind).toBe('trang');
+  });
+});
+
+describe('cổng mái ngói: lối cao (clearHeight)', () => {
+  it('thiếu / 0 = 3,2 nhưng thấp hơn tường ≥ 1; đỉnh trụ = tường + 0,6 (cảnh cũ không đổi)', () => {
+    expect(lauClearHeight(5.2)).toBe(3.2);
+    expect(lauClearHeight(3.6)).toBeCloseTo(2.6, 6);
+    expect(lauTop(5.2, 3.2)).toBeCloseTo(5.8, 6);
+    expect(lauTop(3.6, 2.6)).toBeCloseTo(4.2, 6);
+    const old = wallGates({ ...walls, gates: [{ side: 'nam', at: 0, width: 6.4, kind: 'lau', clearHeight: 0 }] }, [])[0];
+    expect(old.clear).toBeUndefined();
+  });
+
+  it('lối 4 m trên tường 5,2 → đỉnh trụ vẫn 5,8; lối 4,6 → trụ + mái nâng lên 6,2, vật cản cao theo', () => {
+    const [nam] = wallGates(walls, []);
+    expect(lauClearHeight(nam.height, nam.clear)).toBe(4);
+    expect(lauTop(5.2, 4)).toBeCloseTo(5.8, 6);
+    expect(lauTop(5.2, 4.6)).toBeCloseTo(6.2, 6);
+    const tall = { ...walls, gates: [{ side: 'nam' as const, at: 0, width: 9.6, kind: 'lau' as const, clearHeight: 4.6 }] };
+    const pier = plasterWallBoxes(tall, []).find((b) => b.z === 17 && b.x > 4.5 && b.x < 6)!;
+    expect(pier.h).toBeCloseTo(6.7, 6);
   });
 });

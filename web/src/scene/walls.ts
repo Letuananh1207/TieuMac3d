@@ -31,6 +31,8 @@ export interface GatePlace {
   thickness: number;
   kind: (typeof GATE_KINDS)[number];
   signs: GateSigns;
+  /** lối cao muốn có (cổng `lau`, `clearHeight` trong đặc tả); thiếu = mặc định theo tường */
+  clear?: number;
 }
 
 /** Hai mặt của bức tường chạy theo `axis`: mặt nhìn về phía + trục kia, mặt nhìn về phía −. */
@@ -98,12 +100,13 @@ export function wallGates(walls: Walls, segments: WallSegment[]): GatePlace[] {
         thickness: walls.thickness,
         kind: g.kind ?? 'trang',
         signs: g.signs ?? {},
+        clear: g.clearHeight || undefined, // 0 = mặc định (đặc tả đã chuẩn hoá điền 0)
       }))
     : [];
   const extra = segments.flatMap((s): GatePlace[] => {
     if (!s.gate) return [];
     const r = segmentRun(s, walls);
-    return [{ axis: r.axis, fixed: r.fixed, at: s.gate.at, width: s.gate.width, height: r.height, thickness: r.thickness, kind: s.gate.kind ?? 'trang', signs: s.gate.signs ?? {} }];
+    return [{ axis: r.axis, fixed: r.fixed, at: s.gate.at, width: s.gate.width, height: r.height, thickness: r.thickness, kind: s.gate.kind ?? 'trang', signs: s.gate.signs ?? {}, clear: s.gate.clearHeight || undefined }];
   });
   return [...ring, ...extra];
 }

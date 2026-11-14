@@ -5,8 +5,9 @@
  * - `trang` cổng trăng (月洞門): vòm tròn đường kính = bề rộng khe, nhưng không cao quá tường (đỉnh vòm cách đỉnh tường
  *   ≥ 0,6 m — tường thấp thì vòm thu nhỏ, tấm cổng vẫn che kín khe). Tâm vòm ở 0,6 bán kính trên mặt đất, nên lối đi ở
  *   mặt đất = dây cung = 1,6 × bán kính. Biển đá khắc (門額) giữa đỉnh vòm và đỉnh tường.
- * - `lau` cổng mái ngói (門樓): cửa chữ nhật khung gỗ, lối đi = rộng − 2 × 0,3; trụ tường dày hơn tường 0,3; mái ngói
- *   hai mái nhô 0,8 m ra mỗi mặt, cao hơn tường 0,6 m; biển gỗ dưới mái.
+ * - `lau` cổng mái ngói (門樓): cửa chữ nhật khung gỗ, lối đi = rộng − 2 × 0,3; lối cao `clearHeight` (mặc định 3,2,
+ *   ≤ tường − 1); trụ tường dày hơn tường 0,3; mái ngói hai mái nhô 0,8 m ra mỗi mặt, chân mái cao hơn tường 0,6 m và
+ *   cao hơn lối ≥ 1,6 m (lối cao thì trụ + mái nâng theo); biển gỗ dưới mái.
  * - `thanh` cổng thành (城門): cửa vòm (chữ nhật + nửa tròn trên) xuyên tường, lối đi = rộng − 2 × 0,3 như 門樓;
  *   hai cánh cửa son đinh vàng mở áp vào hai bên lòng cửa; trên tường là lầu cổng (城樓) thân son, mái hai tầng.
  * Biển: mỗi mặt cổng một biển theo `signs[<hướng mặt nhìn ra>]`. Va chạm khớp đúng phần tường hai bên lối đi.
@@ -33,6 +34,8 @@ const TOP_GAP = 0.6;
 const LAU_FRAME = 0.3;
 const LAU_CLEAR = 3.2;
 const LAU_RISE = 0.6;
+/** 門樓: đỉnh trụ (chân mái) cao hơn lối ít nhất bấy nhiêu — đủ xà ngang 0,26 + biển 0,8 + dải xà dưới mái 0,22 + hở. */
+const LAU_HEAD = 1.6;
 const LAU_EXTRA = 0.3;
 /** Khung gỗ 門樓 nhô khỏi mặt vôi bấy nhiêu mét: hai mặt khác màu nằm trùng một mặt phẳng thì chớp (L-10). */
 const PROUD = 0.03;
@@ -43,9 +46,11 @@ export const moonRadius = (width: number, wallH: number): number => Math.min(wid
 /** Nửa bề rộng lối đi được ở mặt đất của vòm bán kính `r`. */
 export const moonOpening = (r: number): number => Math.sqrt(1 - ARC_LIFT * ARC_LIFT) * r;
 
-/** 門樓: nửa lối đi, chiều cao lối (thấp hơn tường ≥ 1 m). */
+/** 門樓: nửa lối đi, chiều cao lối (`want` = `clearHeight` đặc tả; thiếu = 3,2 nhưng thấp hơn tường ≥ 1 m). */
 export const lauOpening = (width: number): number => width / 2 - LAU_FRAME;
-export const lauClearHeight = (wallH: number): number => Math.min(LAU_CLEAR, wallH - 1);
+export const lauClearHeight = (wallH: number, want?: number): number => want ?? Math.min(LAU_CLEAR, wallH - 1);
+/** 門樓: đỉnh trụ = chân mái — cao hơn tường `LAU_RISE`, và hơn lối `LAU_HEAD` (mặc định hai điều kiện trùng nhau). */
+export const lauTop = (wallH: number, clear: number): number => Math.max(wallH + LAU_RISE, clear + LAU_HEAD);
 
 /** Bề rộng một dòng chữ tính theo em: chữ Hán ≈ 1 em, chữ Latin (cả chữ Việt có dấu) ≈ 0,56 em, khoảng trắng 0,3 em. */
 export function textEm(text: string): number {
@@ -84,7 +89,7 @@ export function plasterWallBoxes(w: Walls, extra: WallSegment[]): WallBox[] {
     const len = gp.width / 2 + PAD - c;
     const lau = gp.kind !== 'trang';
     const t = lau ? gp.thickness + LAU_EXTRA : gp.thickness;
-    const h = (lau ? gp.height + LAU_RISE : gp.height) + 0.5;
+    const h = (gp.kind === 'lau' ? lauTop(gp.height, lauClearHeight(gp.height, gp.clear)) : lau ? gp.height + LAU_RISE : gp.height) + 0.5;
     for (const s of [-1, 1]) boxes.push(runBox(gp.axis, gp.fixed, gp.at + s * (c + len / 2), len, t, h));
   }
   return boxes;
@@ -226,8 +231,8 @@ function moonGate(g: THREE.Group, gp: GatePlace, w: Walls, style: Style, mats: W
 function lauGate(g: THREE.Group, gp: GatePlace, w: Walls, style: Style, mats: WallMats): void {
   const o = lauOpening(gp.width);
   const hw = gp.width / 2 + PAD;
-  const clear = lauClearHeight(gp.height);
-  const top = gp.height + LAU_RISE;
+  const clear = lauClearHeight(gp.height, gp.clear);
+  const top = lauTop(gp.height, clear);
   const t = gp.thickness + LAU_EXTRA;
   const grp = new THREE.Group();
   const pier = hw - o;

@@ -175,7 +175,15 @@ const signsOk = (signs: unknown, path: string): string[] =>
         .map(([k]) => `${path}.signs.${k}: tối đa ${SIGN_MAX} ký tự`)
     : [];
 
-const gateLook = (o: Obj, path: string): string[] => [...oneOf('kind', GATE_KINDS)(o, path), ...signsOk(o.signs, path)];
+/** `clearHeight` chỉ cho cổng mái ngói `lau`, 2–8 m; thiếu / 0 = mặc định. */
+const clearOk = (o: Obj, path: string): string[] => {
+  const h = o.clearHeight;
+  if (h === undefined || h === 0) return [];
+  if (o.kind !== 'lau') return [`${path}.clearHeight: chỉ dùng với kind "lau"`];
+  return (h as number) < 2 || (h as number) > 8 ? [`${path}.clearHeight: 2–8 m (đang ${h as number})`] : [];
+};
+
+const gateLook = (o: Obj, path: string): string[] => [...oneOf('kind', GATE_KINDS)(o, path), ...signsOk(o.signs, path), ...clearOk(o, path)];
 
 /** Cổng trên đoạn tường: rộng > 0; khe + 1 m mỗi bên (tấm cổng) nằm trong đoạn. */
 const segmentGateOk = (o: Obj, path: string): string[] => {
@@ -316,10 +324,10 @@ const LISTS: Record<string, ItemParser> = {
     { rotY: 0, notice: ['', ''], zone: { id: '', front: 0, r: 0 }, kind: '', roof: '', floors: 0, sides: 0, trim: '#000000', pillarColor: '#000000', sign: '', goods: '' },
     all(rot, oneOf('kind', BUILDING_KINDS), oneOf('goods', GOODS_KINDS), oneOf('roof', ROOF_KINDS), oneOf('sides', [4, 6]), floorsRange, positive('w', 'd')),
   ),
-  'walls.gates': item({ side: '', at: 0, width: 0 }, { kind: '', signs: SIGNS0 }, all(oneOf('side', SIDES), positive('width'), gateLook)),
+  'walls.gates': item({ side: '', at: 0, width: 0 }, { kind: '', signs: SIGNS0, clearHeight: 0 }, all(oneOf('side', SIDES), positive('width'), gateLook)),
   wallSegments: item(
     { from: XZ0, to: XZ0 },
-    { height: 0, thickness: 0, follow: true, gate: { at: 0, width: 0, kind: 'trang', signs: SIGNS0 } },
+    { height: 0, thickness: 0, follow: true, gate: { at: 0, width: 0, kind: 'trang', signs: SIGNS0, clearHeight: 0 } },
     all(axisAligned, positive('height', 'thickness'), thicknessOk, segmentGateOk),
   ),
   paths: item({ from: XZ0, to: XZ0, width: 0 }, { color: '#000000' }, positive('width')),

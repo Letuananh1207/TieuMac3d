@@ -15,7 +15,7 @@ const out = await build({
       "export { roomKinds, zoneAnchors } from './src/scene/spec.ts';\n" +
       "export { resolveSceneSpec } from './src/scene/specCheck.ts';\n" +
       "export { placeZones, ZONE_CONTENT } from './src/zones/zones.ts';\n" +
-      "export { moonRadius, gateOpening, lauClearHeight } from './src/scene/kien_truc/tuong.ts';\n" +
+      "export { moonRadius, gateOpening, lauClearHeight, lauTop } from './src/scene/kien_truc/tuong.ts';\n" +
       "export { wallGates } from './src/scene/walls.ts';\n" +
       "export { ringTrigger, arrivalSpot, daisLayout } from './src/scene/teleportLayout.ts';\n" +
       "export { RADICALS, checkRadicals } from './src/zones/radicals.ts';\n",
@@ -28,7 +28,7 @@ const out = await build({
   write: false,
   logLevel: 'error',
 });
-const { resolveSceneSpec, roomKinds, zoneAnchors, placeZones, ZONE_CONTENT, moonRadius, gateOpening, lauClearHeight, wallGates, ringTrigger, arrivalSpot, daisLayout, RADICALS, checkRadicals } = await import(
+const { resolveSceneSpec, roomKinds, zoneAnchors, placeZones, ZONE_CONTENT, moonRadius, gateOpening, lauClearHeight, lauTop, wallGates, ringTrigger, arrivalSpot, daisLayout, RADICALS, checkRadicals } = await import(
   `data:text/javascript;base64,${Buffer.from(out.outputFiles[0].text).toString('base64')}`
 );
 
@@ -112,7 +112,7 @@ function checkScene(rel, raw) {
     let how = '';
     if (spec.walls.style === 'voi') {
       const half = gateOpening(g);
-      const shape = g.kind === 'lau' ? `cổng mái ngói, lối cao ${fix(lauClearHeight(g.height))} m` : `cổng trăng đỉnh ${fix(1.6 * moonRadius(g.width, g.height))} m`;
+      const shape = g.kind === 'lau' ? `cổng mái ngói, lối cao ${fix(lauClearHeight(g.height, g.clear))} m, đỉnh trụ ${fix(lauTop(g.height, lauClearHeight(g.height, g.clear)))} m` : `cổng trăng đỉnh ${fix(1.6 * moonRadius(g.width, g.height))} m`;
       how = ` · ${shape}, lối đi ${fix(2 * half)} m (${g.axis} ${fix(g.at - half)} … ${fix(g.at + half)})`;
     }
     const signs = Object.entries(g.signs).filter(([, v]) => v).map(([k, v]) => `${k} ${v}`).join(' · ');

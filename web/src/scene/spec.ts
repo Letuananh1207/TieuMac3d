@@ -188,6 +188,11 @@ export interface WallGateLook {
   /** mặc định `trang` */
   kind?: (typeof GATE_KINDS)[number];
   signs?: GateSigns;
+  /**
+   * Chỉ cổng `lau`: lối cao (m, mặt đất → dưới xà ngang khung cửa). Thiếu / 0 = 3,2, không quá tường − 1 (cảnh cũ). Cao hơn
+   * tường − 1 thì trụ + mái cổng tự nâng (đỉnh trụ ≥ lối + 1,6 m) cho đủ chỗ xà + biển.
+   */
+  clearHeight?: number;
 }
 
 /** Khe cổng trên vòng tường: cạnh, tâm khe dọc theo cạnh (x với bắc/nam, z với đông/tây), rộng. */

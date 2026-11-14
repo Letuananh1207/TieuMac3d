@@ -9,7 +9,7 @@ Ví dụ: đủ 6 khu phẳng `docs/phieu_thiet_ke/2026-11-11-tong-mon-dot-1-mau
 
 | Trường | Ví dụ | Ghi chú |
 |---|---|---|
-| `walls.gates` | `{ "side": "nam", "at": 0, "width": 5 }` | khe trên tường bao; `side`: bac · nam · dong · tay; `at` = tâm khe dọc cạnh |
+| `walls.gates` | `{ "side": "nam", "at": 0, "width": 9.6, "kind": "lau", "clearHeight": 4 }` | khe trên tường bao; `side`: bac · nam · dong · tay; `at` = tâm khe dọc cạnh; `kind` trang (cổng trăng, mặc định) · lau (門樓, lối = `width` − 0,6) · thanh; `clearHeight` (chỉ `lau`, 2–8 m, thiếu = 3,2 ≤ tường − 1): lối cao tới xà khung cửa — cao hơn tường − 1,6 thì trụ + mái cổng tự nâng. Cũng dùng được ở `wallSegments[].gate` |
 | `walls.style` | `"voi"` (+ `"windows": 6`) | tường vôi + chân đá + mái ngói; khe thành **cổng trăng** — vòm thu bán kính theo chiều cao tường (đỉnh vòm dưới mái tường 0,6 m), lối đi hẹp theo; `walls.color` = màu vôi. Mặc định `"gach"` |
 | `wallSegments` | `{ "from": [27, -15], "to": [60, -15] }` | đoạn tường thêm, thẳng trục; `height` tuỳ chọn |
 | `paths` | `{ "from": [0, 21], "to": [0, 55], "width": 5 }` | lối lát đá, góc tự do; `color` tuỳ chọn; nối hai bục khác độ cao thành dốc |
