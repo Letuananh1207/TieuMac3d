@@ -42,4 +42,4 @@ Trạng thái: `nhận` → `chờ trả lời` / `chờ duyệt` → `đang là
 | V-20261114-32 | Cổng xuống núi quá cao → hạ thấp; biển cổng ghi "Khởi Nguyên Trấn" | canh | chờ thử máy — đã gộp (CHANGELOG .32): cổng 6,6 m, biển "Khởi Nguyên Trấn" hai mặt; luật đã đồng bộ | — | duyệt ảnh |
 | V-20261114-33 | Dời NPC Tiểu Mặc + bảng nhiệm vụ hằng ngày sang chỗ dễ thấy / dễ thao tác khi đi vào từ cổng Quảng Trường | canh | chờ thử máy — đã gộp (CHANGELOG .34): Tiểu Mặc (−2,4; 8) trái lối, bảng (2,9; 7) phải lối, thoại 'cổng trấn'; luật đã đồng bộ | — | — |
 | V-20261114-34 | ui-apply: áp thiết kế bản đồ vùng (.20) + chữ trên cuộn ngồi (.21) nếu đã vẽ | ui-apply | đang làm — tìm thiết kế + áp, nhánh `viec/ui-apply-ban-do` | phiếu `ban-do-vung`, `ngoi-goc-mat` | — |
-| V-20261114-35 | Đặt Tiểu Mặc + bảng nhiệm vụ bên phải tiệm Tạp hoá | canh | đang làm — nhánh `viec/tieu-mac-tap-hoa` | R-NPC-1/2, R-NV-1/3 | duyệt ảnh |
+| V-20261114-35 | Tiểu Mặc + bảng nhiệm vụ bên phải tiệm Tạp hoá | canh | chờ thử máy — đã gộp (CHANGELOG 2026-11-15.2); luật đã đồng bộ; Tiểu Khất (chưa vào cảnh) sẽ ngồi một góc Quảng Trường | — | thử: từ chỗ xuất phát đi lên thấy Tiểu Mặc + bảng cạnh Tạp hoá |
