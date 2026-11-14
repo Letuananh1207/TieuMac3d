@@ -3,7 +3,7 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
-## 2026-11-14.13 — Cảnh: tiệm Tạp hoá 雜 bên lối Cổng Trấn (Khởi Nguyên Trấn)
+## 2026-11-14.14 — Cảnh: tiệm Tạp hoá 雜 bên lối Cổng Trấn (Khởi Nguyên Trấn)
 
 - Loại: cảnh 3D — **bố cục**. Đáp ứng kế hoạch `docs/tasks/2026-11-14-van-tien.md` NV10, quyết định 1 (người dùng đã chọn
   hướng A: tiệm mới kiểu `cua-hang` biển 雜 trong trấn, mở bằng nút nổi "Vào tiệm"). Phiên VS Code làm thay vai thiết kế
