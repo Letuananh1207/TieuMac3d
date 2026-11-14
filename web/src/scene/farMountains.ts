@@ -9,7 +9,8 @@ import type { MountainLayer, SceneSpec } from './spec';
  * (sương cảnh chỉ tới vài trăm mét — núi xa phải tự pha màu khí quyển: lớp càng xa càng nhạt, chân chìm vào mây).
  * Cả các lớp gộp một lưới, một draw call. Chỉ ngắm, không va chạm.
  */
-export function addFarMountains(scene: THREE.Scene, spec: SceneSpec): void {
+/** `detail` < 1 (mức Thấp — R-HIEU-1): không dải sương (lớp trong suốt rộng, tốn tô điểm ảnh trên máy yếu). */
+export function addFarMountains(scene: THREE.Scene, spec: SceneSpec, detail = 1): void {
   const { layers, base } = spec.farMountains;
   if (!layers.length) return;
   const mist = new THREE.Color(spec.cloudSea.radius > 0 ? spec.cloudSea.color : spec.fog.color);
@@ -21,7 +22,7 @@ export function addFarMountains(scene: THREE.Scene, spec: SceneSpec): void {
   geo.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
   const mat = new THREE.MeshBasicMaterial({ vertexColors: true, fog: false, side: THREE.DoubleSide });
   scene.add(new THREE.Mesh(geo, mat));
-  if (isSoft(spec.look) && spec.look.mist.opacity > 0) addMist(scene, spec);
+  if (isSoft(spec.look) && spec.look.mist.opacity > 0 && detail >= 1) addMist(scene, spec);
 }
 
 /**

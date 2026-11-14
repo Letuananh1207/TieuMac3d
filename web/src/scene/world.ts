@@ -92,7 +92,7 @@ export function buildWorld(
     if (soft) addSoftGrassAndFlowers(scene, spec.terrain, hf, spec.paths, spec.look, detail);
     waterways = addWaterways(scene, spec.terrain, style, groundY);
   }
-  addFarMountains(scene, spec);
+  addFarMountains(scene, spec, detail);
   addCloudSea(scene, spec);
   // độ cao nền của nhà / cổng / ao / giếng: tâm của nó trên mặt đất (nằm trên bục → độ cao bục)
   const base = (x: number, z: number): number => (groundY ? groundY(x, z) : 0);

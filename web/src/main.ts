@@ -124,7 +124,8 @@ async function boot(): Promise<void> {
   // nhà nào có nội thất: theo nội dung bài (lớp học / thư viện), chữ phấn trên bảng = chữ của bài
   const interiors = Object.fromEntries(ZONE_CONTENT.map((c) => [c.id, { kind: c.interior, han: c.lesson.han }]));
   const world = buildWorld(scene, colliders, spec, interiors, detailOf(tier));
-  if (isSoft(spec.look)) addVignette(canvas, spec.look.vignette); // tối nhẹ mép màn (CSS, không tốn GPU)
+  // tối nhẹ mép màn (CSS); mức Thấp bỏ — trình duyệt vẫn phải ghép thêm một lớp phủ cả màn (R-HIEU-1)
+  if (isSoft(spec.look) && detailOf(tier) >= 1) addVignette(canvas, spec.look.vignette);
   const placed = placeZones(ZONE_CONTENT, world.zoneAnchors);
   // bài học chỉ ở tông môn → cảnh vùng không báo thiếu vùng học
   const problems = [...SCENE.problems, ...(isHome ? placed.problems : [])];

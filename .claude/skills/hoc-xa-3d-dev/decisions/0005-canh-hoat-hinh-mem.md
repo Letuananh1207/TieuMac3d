@@ -29,7 +29,8 @@ cho nới luật **miễn đo** (Android tầm trung ≥ 30 fps, mục tiêu 60;
    Vignette làm bằng lớp CSS (`ui/vignette.ts`), không trong WebGL.
 5. **Gộp khối**: cảnh mềm gộp mọi khối Lambert tĩnh khác màu thành một khối mỗi mặt vẽ (`mergeSoft`, trước `mergeStatic`);
    nhóm tự đổi vật liệu (mái mờ R-HUD-2) đánh dấu `markOwnMaterials`, gộp riêng bằng `mergeVertexColors(group, look)`.
-6. **Chi tiết theo mức đồ hoạ** (R-HIEU-1): mức Thấp cỏ, hoa thưa một nửa, nước không gợn (`detailOf(tier)`).
+6. **Chi tiết theo mức đồ hoạ** (R-HIEU-1): mức Thấp cỏ, hoa thưa một nửa, nước không gợn, không dải sương núi, không
+   vignette (`detailOf(tier)`) — bench máy yếu: hai lớp phủ rộng này tốn ~2–4 fps.
 7. **Ngân sách giữ**: ≤ 150 draw call, ≤ 150k tam giác (Canvas 3D, mọi góc). Cỏ chia ô 60 m (cắt ngoài khung nhìn), trần
    1 500 búi / 600 bông; tán cây cầu 48 mặt.
 
