@@ -235,9 +235,14 @@ button:focus-visible{outline:2px solid var(--jade);outline-offset:2px}
 /* khung thoại đáy màn */
 #dialogDim{position:fixed;inset:0;z-index:6;background:rgba(36,50,58,.18);pointer-events:none;display:none}
 body.talking #dialogDim{display:block}
-#dialog{position:fixed;z-index:8;left:12px;right:12px;bottom:calc(var(--sa-bottom) + 12px);box-sizing:border-box;padding:26px 18px 16px;background:rgba(244,247,246,.94);border:1px solid var(--frost-line);outline:1px solid var(--frost-outline);border-radius:16px;box-shadow:0 -6px 28px rgba(36,50,58,.25);display:flex;flex-direction:column;gap:14px;-webkit-backdrop-filter:var(--blur-card);backdrop-filter:var(--blur-card)}
+/* bề ngang giới hạn 640px, căn giữa đáy; màn hẹp chừa lề 16px + safe-area (R-NPC-2, 2026-11-14) */
+#dialog{position:fixed;z-index:8;left:var(--edge-left);right:var(--edge-right);max-width:640px;margin:0 auto;bottom:calc(var(--sa-bottom) + 12px);box-sizing:border-box;padding:26px 18px 16px;background:rgba(244,247,246,.94);border:1px solid var(--frost-line);outline:1px solid var(--frost-outline);border-radius:16px;box-shadow:0 -6px 28px rgba(36,50,58,.25);display:flex;flex-direction:column;gap:14px;-webkit-backdrop-filter:var(--blur-card);backdrop-filter:var(--blur-card)}
 #dialog[hidden]{display:none}
-#dlgFace{position:absolute;left:4px;top:-36px;width:64px;height:64px;border-radius:50%;object-fit:cover;object-position:50% 22%;border:3px solid #fff;background:var(--mist);box-shadow:var(--shadow-hud)}
+/* ảnh mặt NPC: khung tròn; ảnh cận mặt (.mat) phóng 1,8 lần quanh mặt (≈ 21–77% ảnh), chân dung cũ lấy nửa trên */
+#dlgFaceBox{position:absolute;left:4px;top:-36px;width:64px;height:64px;box-sizing:border-box;border-radius:50%;overflow:hidden;border:3px solid #fff;background:var(--mist);box-shadow:var(--shadow-hud)}
+#dlgFaceBox[hidden]{display:none}
+#dlgFace{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 22%}
+#dlgFace.mat{transform:scale(1.8);transform-origin:50% 48%}
 #dialog .name{position:absolute;left:76px;top:-16px;height:32px;box-sizing:border-box;padding:0 14px;display:flex;align-items:center;gap:8px;background:var(--jade);color:#fff;border:1px solid var(--frost-line);border-radius:999px;font-size:14px;font-weight:700}
 #dialog .say{padding-top:8px}
 #dialog .say p{margin:0;font-size:16px;font-weight:500;line-height:1.55;color:var(--slate);min-height:3.1em}
@@ -255,7 +260,7 @@ body.map-open #actions,body.map-open #talk,body.map-open #seat{display:none}
 @media (orientation:landscape){
   #actions{right:calc(var(--sa-right) + 12px);bottom:calc(var(--sa-bottom) + 9px)}
   #readBook{right:calc(var(--sa-right) + 12px);bottom:calc(var(--sa-bottom) + 189px)}
-  #dialog{left:calc(var(--sa-left) + 12px);right:calc(var(--sa-right) + 12px);display:grid;grid-template-columns:1fr 270px;column-gap:18px;align-items:start}
+  #dialog{left:calc(var(--sa-left) + 12px);right:calc(var(--sa-right) + 12px);display:grid;grid-template-columns:1fr 240px;column-gap:18px;align-items:start}
   #dialog .choices{grid-column:2;grid-row:1}
   #dialog .say{grid-column:1;grid-row:1}
 }

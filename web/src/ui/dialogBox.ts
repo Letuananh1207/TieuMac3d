@@ -1,9 +1,7 @@
 import * as THREE from 'three';
 import type { Dialog, DialogLine } from '../zones/dialogs';
 import { el } from './dom';
-
-/** Lời chạy dần ≈ 40 chữ / giây (thiết kế 2026-11-13.9 "Hội thoại NPC"). */
-const CHARS_PER_S = 40;
+import { npcFace } from './npcFace';
 
 // chân dung NPC: design/models/anh/<mã>-chan-dung.png (Vite chép vào bản build, chạy offline)
 const portraits = import.meta.glob('../../../design/models/anh/*-chan-dung.png', { eager: true, query: '?url', import: 'default' });
@@ -49,27 +47,19 @@ export class TalkButton {
 }
 
 /**
- * Khung thoại đáy màn (R-NPC-2): chân dung + bảng tên, lời chạy dần (chạm khung → hiện hết), lựa chọn hiện khi lời đã
- * hiện hết; "Tạm biệt" luôn cuối. Không giữ luồng hội thoại — `onChoose(i)` trả câu tiếp (null = đóng).
+ * Khung thoại đáy màn (R-NPC-2): ảnh cận mặt NPC bên trái + bảng tên, lời thoại hiện hết ngay cùng các lựa chọn;
+ * "Tạm biệt" luôn cuối. Không giữ luồng hội thoại — `onChoose(i)` trả câu tiếp (null = đóng).
  */
 export class DialogBox {
   private readonly root = el('dialog');
   private readonly text = el('dlgText');
   private readonly end = el('dlgEnd');
   private readonly choices = el('dlgChoices');
-  private full = '';
-  private shown = 0;
-  private line: DialogLine | null = null;
 
   constructor(
     private readonly onChoose: (i: number) => DialogLine | null,
     private readonly onClose: () => void,
-  ) {
-    this.root.addEventListener('click', (e) => {
-      if ((e.target as HTMLElement).closest('button')) return;
-      if (this.shown < this.full.length) this.reveal(this.full.length);
-    });
-  }
+  ) {}
 
   get isOpen(): boolean {
     return !this.root.hidden;
@@ -79,9 +69,10 @@ export class DialogBox {
     el('dlgName').textContent = d.name;
     el('dlgHan').textContent = d.han ?? '';
     const img = el<HTMLImageElement>('dlgFace');
-    const url = portraitOf(d.npc);
-    img.hidden = !url;
-    if (url) img.src = url;
+    const face = npcFace(d.npc);
+    el('dlgFaceBox').hidden = !face;
+    img.classList.toggle('mat', face?.kind === 'mat');
+    if (face) img.src = face.url;
     this.root.hidden = false;
     document.body.classList.add('talking');
     this.show(first);
@@ -90,33 +81,16 @@ export class DialogBox {
   close(): void {
     if (this.root.hidden) return;
     this.root.hidden = true;
-    this.line = null;
     document.body.classList.remove('talking');
     this.onClose();
   }
 
-  /** Mỗi khung: chạy chữ. */
-  update(dt: number): void {
-    if (!this.line || this.shown >= this.full.length) return;
-    this.reveal(this.shown + Math.max(1, dt * CHARS_PER_S));
-  }
-
+  /** Lời thoại hiện hết ngay cùng các lựa chọn (R-NPC-2 — không chạy chữ dần). */
   private show(line: DialogLine): void {
-    this.line = line;
-    this.full = line.text;
-    this.shown = 0;
-    this.text.textContent = '';
-    this.end.hidden = true;
-    this.choices.replaceChildren();
-  }
-
-  private reveal(n: number): void {
-    this.shown = Math.min(this.full.length, n);
-    this.text.textContent = this.full.slice(0, Math.floor(this.shown));
-    if (this.shown < this.full.length || !this.line) return;
+    this.text.textContent = line.text;
     this.end.hidden = false;
     this.choices.replaceChildren(
-      ...this.line.choices.map((c, i) => {
+      ...line.choices.map((c, i) => {
         const b = document.createElement('button');
         b.type = 'button';
         const bye = c.next === null;

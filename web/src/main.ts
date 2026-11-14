@@ -700,7 +700,6 @@ async function boot(): Promise<void> {
     seatGlow.update(dt);
     // mở bài học / ôn / bảng, màn tải → nhạc tắt dần; đóng → phát tiếp theo giờ (R-NHAC-1)
     music?.update(dt, paused || covered || loading.active ? 0 : musicVolume(teaFloors, pos.x, pos.z));
-    dialogBox.update(dt);
     actions.update({
       hidden: paused || covered || loading.active || mapOpen || talking,
       air: player.state.air,
