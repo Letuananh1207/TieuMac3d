@@ -5,7 +5,7 @@ import { addMirages } from './vat_bong_lai';
 import { addRamparts } from './thanh_luy';
 import { addPlateauRails } from './cung_dien';
 import { addFauna } from './fauna';
-import type * as THREE from 'three';
+import * as THREE from 'three';
 import type { Colliders } from '../collision/colliders';
 import { LayeredGround, type Ground } from '../collision/ground';
 import { addBuilding } from './buildings';
@@ -20,7 +20,8 @@ import { tickWind } from './materials';
 import { isSoft } from './look';
 import { resetSignAtlas } from './signAtlas';
 import { addPaths } from './paths';
-import { addProps } from './props';
+import { addProps, DEN_DA_LIGHT_Y } from './props';
+import { addLanternGlow } from './quangDen';
 import { addFloating } from './sky';
 import type { Seat } from './seat';
 import { addLanternStrings } from './dayDenLong';
@@ -131,7 +132,12 @@ export function buildWorld(
   if (spec.terrain.enabled) addPlateauRails(scene, colliders, spec.terrain);
   const props = addProps(scene, colliders, spec.props, style, spec.trees, groundY);
   const trees = addTrees(scene, colliders, spec.trees, groundY, spec.look);
-  addLanternStrings(scene, colliders, spec, groundY);
+  const lanternSpots = addLanternStrings(scene, colliders, spec, groundY);
+  if (isSoft(spec.look)) {
+    // quầng sáng giả: đèn lồng trên dây + hộp đèn đèn đá (quangDen.ts)
+    const stone = spec.props.filter((p) => p.kind === 'den-da').map((p) => new THREE.Vector3(p.x, (p.y ?? base(p.x, p.z)) + DEN_DA_LIGHT_Y * (p.scale ?? 1), p.z));
+    addLanternGlow(scene, [...lanternSpots, ...stone], spec.look);
+  }
   addFences(scene, colliders, spec, groundY);
   if (spec.well.enabled) addWell(scene, colliders, spec.well, base(spec.well.x, spec.well.z));
   const teleport = spec.teleport.enabled ? addTeleport(scene, colliders, spec.teleport, groundY) : null;

@@ -27,6 +27,7 @@ import { viewDistance } from './scene/farMountains';
 import { createStage, gpuName, MAX_PIXEL_RATIO, probeGpu } from './scene/renderer';
 import { detailOf, FrameCap, pickTier, ResolutionGovernor, tierParam, TIERS } from './scene/quality';
 import { isSoft, withLookParam } from './scene/look';
+import { addVignette } from './ui/vignette';
 import { mergeStatic } from './scene/merge';
 import { inRect, type Room } from './scene/rooms';
 import { signText } from './scene/signAtlas';
@@ -123,6 +124,7 @@ async function boot(): Promise<void> {
   // nhà nào có nội thất: theo nội dung bài (lớp học / thư viện), chữ phấn trên bảng = chữ của bài
   const interiors = Object.fromEntries(ZONE_CONTENT.map((c) => [c.id, { kind: c.interior, han: c.lesson.han }]));
   const world = buildWorld(scene, colliders, spec, interiors, detailOf(tier));
+  if (isSoft(spec.look)) addVignette(canvas, spec.look.vignette); // tối nhẹ mép màn (CSS, không tốn GPU)
   const placed = placeZones(ZONE_CONTENT, world.zoneAnchors);
   // bài học chỉ ở tông môn → cảnh vùng không báo thiếu vùng học
   const problems = [...SCENE.problems, ...(isHome ? placed.problems : [])];

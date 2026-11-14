@@ -23,6 +23,7 @@ import { mergeStatic } from './scene/merge';
 import { portalRect } from './scene/portals';
 import { createStage } from './scene/renderer';
 import { isSoft, withLookParam } from './scene/look';
+import { addVignette } from './ui/vignette';
 import { signText } from './scene/signAtlas';
 import { buildWorld } from './scene/world';
 import { el } from './ui/dom';
@@ -59,6 +60,7 @@ async function boot(): Promise<void> {
   // nội thất như app: theo nội dung bài (main.ts)
   const interiors = Object.fromEntries(ZONE_CONTENT.map((c) => [c.id, { kind: c.interior, han: c.lesson.han }]));
   const world = buildWorld(scene, colliders, spec, interiors);
+  if (isSoft(spec.look)) addVignette(canvas, spec.look.vignette); // như app (main.ts)
   for (const room of world.rooms) {
     if (!room.teacher) continue;
     const t = createDiscipleCharacter({ robe: '#3f5fa0', trim: '#2b5446' });

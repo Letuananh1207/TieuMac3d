@@ -29,7 +29,9 @@ function ropeAt(from: XZ, to: XZ, y0: number, y1: number, top: number, sag: numb
   return new THREE.Vector3(from[0] + (to[0] - from[0]) * t, y, from[1] + (to[1] - from[1]) * t);
 }
 
-export function addLanternStrings(scene: THREE.Scene, colliders: Colliders, spec: SceneSpec, groundY?: GroundY): void {
+/** Trả về tâm các đèn lồng trên dây (quầng sáng cảnh mềm — `quangDen.ts`). */
+export function addLanternStrings(scene: THREE.Scene, colliders: Colliders, spec: SceneSpec, groundY?: GroundY): THREE.Vector3[] {
+  const lights: THREE.Vector3[] = [];
   const st = spec.lanternStyle;
   const ground = (x: number, z: number): number => (groundY ? groundY(x, z) : 0);
   const g = new THREE.Group();
@@ -67,6 +69,7 @@ export function addLanternStrings(scene: THREE.Scene, colliders: Colliders, spec
         const body = new THREE.Mesh(bodyGeo, lambert(st.lantern));
         body.position.set(p.x, cy, p.z);
         g.add(body);
+        lights.push(body.position.clone());
         g.add(box(0.26, 0.05, 0.26, st.trim, p.x, cy + LANTERN_H / 2 + 0.02, p.z));
         g.add(box(0.05, 0.22, 0.05, st.trim, p.x, cy - LANTERN_H / 2 - 0.11, p.z));
         continue;
@@ -79,4 +82,5 @@ export function addLanternStrings(scene: THREE.Scene, colliders: Colliders, spec
       g.add(ribbon);
     }
   }
+  return lights;
 }
