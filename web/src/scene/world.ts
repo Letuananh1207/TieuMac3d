@@ -98,12 +98,14 @@ export function buildWorld(
   addPaths(scene, spec.paths, style.path, groundY, style.pathLook === 'san' ? spec.ground : undefined);
   addWalls(scene, colliders, spec.walls, spec.wallSegments, style, groundY);
   const kinds = roomKinds(spec.buildings, interiors);
+  // cảnh mềm: mái / tầng trên nhà vào được nướng bóng + vật liệu mềm (phần thân gộp ở mergeSoft cuối hàm)
+  const softLook = isSoft(spec.look) ? spec.look : undefined;
   const rooms: Room[] = [];
   for (const b of spec.buildings) {
     const use = b.zone && kinds[b.zone.id] ? interiors[b.zone.id] : undefined;
     const walkIn = b.kind ? WALK_IN[b.kind] : undefined;
-    if (use) rooms.push(addRoomBuilding(scene, colliders, b, style, use, base(b.x, b.z)));
-    else if (walkIn) rooms.push(addWalkIn(scene, colliders, b, style, walkIn, base(b.x, b.z)));
+    if (use) rooms.push(addRoomBuilding(scene, colliders, b, style, use, base(b.x, b.z), softLook));
+    else if (walkIn) rooms.push(addWalkIn(scene, colliders, b, style, walkIn, base(b.x, b.z), softLook));
     else addBuilding(scene, colliders, b, style, base(b.x, b.z));
   }
   const gameTables = spec.gameTables.flatMap((t) => addGameTable(scene, colliders, t, style, base(t.x, t.z)));

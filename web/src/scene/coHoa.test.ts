@@ -5,10 +5,10 @@ import { groundColor, patch } from './terrainMem';
 import { DEFAULT_SCENE } from './spec';
 
 describe('cỏ hoa cảnh mềm (kế hoạch canh-dep NV9)', () => {
-  it('búi cỏ 4 tam giác, hoa 5 tam giác; trần số lượng giữ ngân sách (≤ 2 500 búi, ≤ 800 bông)', () => {
+  it('búi cỏ 4 tam giác, hoa 5 tam giác; trần số lượng giữ ngân sách (≤ 1 500 búi, ≤ 600 bông)', () => {
     expect(softTuftGeometry().getAttribute('position').count / 3).toBe(4);
     expect(flowerGeometry().getAttribute('position').count / 3).toBe(5);
-    expect(MAX_SOFT_TUFTS * 4 + MAX_FLOWERS * 5).toBeLessThanOrEqual(14000);
+    expect(MAX_SOFT_TUFTS * 4 + MAX_FLOWERS * 5).toBeLessThanOrEqual(9000);
   });
 
   it('búi cỏ: gốc tối hơn ngọn (màu đỉnh); pháp tuyến hướng lên', () => {

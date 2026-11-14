@@ -16,7 +16,8 @@ import { addInterior, type LocalBox } from './kien_truc/noi_that';
 import { traLau } from './kien_truc/tra_lau';
 import type { LocalPad, WalkInBuilder } from './kien_truc/vao_trong';
 import type { Seat } from './seat';
-import { markDynamic, markOwnMaterials, mergeStatic, mergeVertexColors } from './merge';
+import { cloneMaterial, markDynamic, markOwnMaterials, mergeStatic, mergeVertexColors } from './merge';
+import type { SoftLook } from './bake';
 import { rotateXZ, type BuildingSpec, type InteriorKind } from './spec';
 import { signMesh } from './signAtlas';
 import { drawSign } from './textures';
@@ -81,14 +82,15 @@ function worldRect(b: BuildingSpec, l: LocalBox): Rect {
 }
 
 /** Làm mờ được: gộp các khối trong nhóm (ít draw call), mỗi vật liệu một bản riêng, không cho gộp chung với cảnh. */
-function fadeable(group: THREE.Group): THREE.Material[] {
+function fadeable(group: THREE.Group, look?: SoftLook): THREE.Material[] {
   markOwnMaterials(group); // vật liệu nhóm này đổi độ mờ → cảnh mềm không gộp lẫn vào khối chung
-  mergeVertexColors(group); // mọi màu Lambert → 1 khối; còn lại (đèn lồng, biển) gộp theo vật liệu
+  // mọi màu Lambert → 1 khối (cảnh mềm: nướng bóng gầm mái + vật liệu mềm); còn lại (đèn lồng, biển) gộp theo vật liệu
+  mergeVertexColors(group, look);
   mergeStatic(group, new Set());
   const mats: THREE.Material[] = [];
   group.traverse((o) => {
     if (!(o instanceof THREE.Mesh) || Array.isArray(o.material)) return;
-    o.material = o.material.clone();
+    o.material = cloneMaterial(o.material);
     mats.push(o.material);
   });
   markDynamic(group);
@@ -108,7 +110,7 @@ function setOpacity(mats: THREE.Material[], v: number): void {
 }
 
 /** `y0` = độ cao nền (bục khu khi có địa hình; cảnh phẳng = 0). */
-export function addRoomBuilding(scene: THREE.Scene, colliders: Colliders, b: BuildingSpec, style: Style, use: InteriorUse, y0 = 0): Room {
+export function addRoomBuilding(scene: THREE.Scene, colliders: Colliders, b: BuildingSpec, style: Style, use: InteriorUse, y0 = 0, look?: SoftLook): Room {
   const zoneId = b.zone?.id ?? b.id;
   const rot = b.rotY ?? 0;
   const g = new THREE.Group();
@@ -127,7 +129,7 @@ export function addRoomBuilding(scene: THREE.Scene, colliders: Colliders, b: Bui
   const floorY = hallFloor(style);
   const furnished = addInterior(g, b, style, use.kind, floorY, use.han);
   scene.add(g);
-  const mats = [...fadeable(parts.roof), ...fadeable(parts.front)];
+  const mats = [...fadeable(parts.roof, look), ...fadeable(parts.front, look)];
 
   /* ---------- va chạm (R-VA-3) ---------- */
   const pw = b.w + 2;
@@ -221,7 +223,8 @@ function worldPad(b: BuildingSpec, p: LocalPad, y0: number): Pad {
  * Nhà vào được không có bài học (trà lâu, hí đài, Tàng Thư Các, cửa hàng): dựng theo `WALK_IN`, mái / tầng trên mờ
  * khi đứng trong sàn (R-HUD-2), va chạm theo phần (R-VA-3). `zoneId` = mã nhà; không có vật học.
  */
-export function addWalkIn(scene: THREE.Scene, colliders: Colliders, b: BuildingSpec, style: Style, build: WalkInBuilder, y0 = 0): Room {
+/** `look`: cảnh mềm — mái / tầng trên nướng bóng + vật liệu mềm (NV10); không có = như cũ. */
+export function addWalkIn(scene: THREE.Scene, colliders: Colliders, b: BuildingSpec, style: Style, build: WalkInBuilder, y0 = 0, look?: SoftLook): Room {
   const g = new THREE.Group();
   g.position.set(b.x, y0, b.z);
   g.rotation.y = ((b.rotY ?? 0) * Math.PI) / 180;
@@ -230,8 +233,8 @@ export function addWalkIn(scene: THREE.Scene, colliders: Colliders, b: BuildingS
   g.add(fade, fadeLow);
   const shell = build(g, b, style, fade, fadeLow);
   scene.add(g);
-  const mats = fadeable(fade);
-  const lowMats = fadeLow.children.length > 0 ? fadeable(fadeLow) : [];
+  const mats = fadeable(fade, look);
+  const lowMats = fadeLow.children.length > 0 ? fadeable(fadeLow, look) : [];
   for (const l of shell.boxes) {
     const r = worldRect(b, l);
     const range = {

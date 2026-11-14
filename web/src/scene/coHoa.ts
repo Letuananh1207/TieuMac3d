@@ -10,8 +10,8 @@ import { finish } from './trees';
 type Terrain = SceneSpec['terrain'];
 
 /** Tối đa cho điện thoại (kế hoạch 2026-11-14-canh-dep NV9): mỗi loại một InstancedMesh = một draw call. */
-export const MAX_SOFT_TUFTS = 2500;
-export const MAX_FLOWERS = 800;
+export const MAX_SOFT_TUFTS = 1500;
+export const MAX_FLOWERS = 600;
 const GRASS_SLOPE = 25;
 /** chiều cao búi cỏ mềm (m) — gió lay theo tỉ lệ độ cao / số này */
 const TUFT_H = 0.5;

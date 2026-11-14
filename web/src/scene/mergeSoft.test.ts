@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { describe, expect, it } from 'vitest';
 import { SOFT_LOOK_TRY } from './bake';
 import { lambert, softMaterial, wrapLambertChunk } from './materials';
-import { markDynamic, mergeSoft, mergeStatic } from './merge';
+import { cloneMaterial, markDynamic, markOwnMaterials, mergeSoft, mergeStatic, mergeVertexColors } from './merge';
 
 describe('softMaterial — wrap lighting (kế hoạch canh-dep NV3)', () => {
   it('thay dòng sáng nắng của Lambert bằng wrap; wrap 0 giữ dạng saturate(dot)', () => {
@@ -86,5 +86,55 @@ describe('mergeSoft', () => {
     root.add(box('#ff0000', 0), box('#ff0000', 3));
     expect(mergeStatic(root, new Set())).toBe(1);
     expect(((root.children[0] as THREE.Mesh).material as THREE.Material).userData.soft).toBeUndefined();
+  });
+});
+
+describe('nhà vào được cảnh mềm (NV10)', () => {
+  const roofBox = (y: number): THREE.Mesh => {
+    const m = new THREE.Mesh(new THREE.BoxGeometry(4, 1, 4), lambert('#808080'));
+    m.position.y = y;
+    return m;
+  };
+
+  it('mergeVertexColors có look: nướng bóng (mặt dưới mái tối hơn mặt trên) + vật liệu mềm', () => {
+    const g = new THREE.Group();
+    g.add(roofBox(6), roofBox(8));
+    mergeVertexColors(g, SOFT_LOOK_TRY);
+    const mesh = g.children[0] as THREE.Mesh;
+    expect((mesh.material as THREE.Material).userData.soft).toBe(true);
+    const nrm = mesh.geometry.getAttribute('normal');
+    const col = mesh.geometry.getAttribute('color');
+    let up = 0;
+    let down = 1;
+    for (let i = 0; i < col.count; i++) {
+      if (nrm.getY(i) > 0.9) up = Math.max(up, col.getX(i));
+      if (nrm.getY(i) < -0.9) down = Math.min(down, col.getX(i));
+    }
+    expect(down).toBeLessThan(up);
+  });
+
+  it('không look: như cũ (màu phẳng, Lambert thường)', () => {
+    const g = new THREE.Group();
+    g.add(roofBox(6), roofBox(8));
+    mergeVertexColors(g);
+    expect(((g.children[0] as THREE.Mesh).material as THREE.Material).userData.soft).toBeUndefined();
+  });
+
+  it('cloneMaterial giữ móc shader của vật liệu mềm (mờ mái R-HUD-2 vẫn là vật liệu mềm)', () => {
+    const m = softMaterial(0.5);
+    const c = cloneMaterial(m);
+    expect(c).not.toBe(m);
+    expect(c.onBeforeCompile).toBe(m.onBeforeCompile);
+    expect(c.customProgramCacheKey()).toBe(m.customProgramCacheKey());
+  });
+
+  it('nhóm tự quản vật liệu (mờ dần) không bị mergeSoft kéo ra', () => {
+    const root = new THREE.Group();
+    const fade = new THREE.Group();
+    markOwnMaterials(fade);
+    fade.add(roofBox(6));
+    root.add(fade, roofBox(0), roofBox(2));
+    mergeSoft(root, new Set(), SOFT_LOOK_TRY);
+    expect(fade.children).toHaveLength(1);
   });
 });

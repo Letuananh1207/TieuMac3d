@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 /**
- * Khối tròn mềm cho cảnh "mềm" (kế hoạch docs/tasks/2026-11-14-canh-dep.md, NV8): cầu 20 mặt (`detail` 0; 1 = 80 mặt), đáy cắt
+ * Khối tròn mềm cho cảnh "mềm" (kế hoạch docs/tasks/2026-11-14-canh-dep.md, NV8): cầu 48 mặt (`detail` 0; 1 = 80 mặt), đáy cắt
  * phẳng ở `flat` (−1…1), màu theo đỉnh từ `bottom` (đáy, tối) → `mid` → `top` (đỉnh, sáng) — tán cây / đám lá tùng có sáng
  * trên tối dưới như được trời chiếu, không cần đèn thêm. Pháp tuyến giữ hướng ra từ tâm (mẹo tán lá mềm: không lộ mặt cắt).
  */
@@ -12,8 +12,8 @@ export function softBlob(
   flat = -0.45,
   detail = 0,
 ): THREE.BufferGeometry {
-  // 20 mặt vẫn trông tròn nhờ pháp tuyến hướng từ tâm — đủ cho tán cây ở tầm chơi, giữ ngân sách tam giác
-  const g = new THREE.IcosahedronGeometry(1, detail);
+  // detail 0: cầu 8 × 4 đoạn (48 mặt) — viền tròn hơn cầu 20 mặt, vẫn trong ngân sách tam giác; 1 = cầu 80 mặt
+  const g = detail > 0 ? new THREE.IcosahedronGeometry(1, detail) : new THREE.SphereGeometry(1, 8, 4);
   const pos = g.getAttribute('position');
   const nrm = g.getAttribute('normal');
   const lo = new THREE.Color(bottom);
