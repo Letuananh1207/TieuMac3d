@@ -8,8 +8,19 @@ export interface ActionState {
   air: boolean;
   sitting: boolean;
   bowing: boolean;
-  /** vùng có bài học bộ thủ còn bộ chưa học → số bộ còn lại (nút "Tu luyện" + chấm đếm — R-DIEU-7); khác → `null` */
-  cultivate: number | null;
+  /** chấm son nút "Ngồi ôn" (R-DIEU-7): `due` = số bộ đến hạn, `new` = số bộ chưa học (vùng có bài học); `null` = không chấm */
+  badge: { n: number; kind: 'due' | 'new' } | null;
+}
+
+/** Chữ nút "Ngồi ôn" theo trạng thái (R-DIEU-7, thiết kế 2026-11-14.10 — chuỗi `actionSit*`). Thuần. */
+export function sitButtonText(
+  sitting: boolean,
+  badge: ActionState['badge'],
+): { label: string; aria: string; badge: string | null } {
+  if (sitting) return { label: 'Đang ôn', aria: 'Đang ôn, bấm để đứng dậy', badge: null };
+  if (!badge) return { label: 'Ngồi ôn', aria: 'Ngồi ôn', badge: null };
+  const aria = badge.kind === 'due' ? `Ngồi ôn, còn ${badge.n} bộ đến hạn` : `Ngồi ôn, còn ${badge.n} bộ chưa học`;
+  return { label: 'Ngồi ôn', aria, badge: badge.n >= 100 ? '99+' : String(badge.n) };
 }
 
 /**
@@ -40,7 +51,7 @@ export class ActionButtons {
   }
 
   update(s: ActionState): void {
-    const key = `${s.hidden}${s.air}${s.sitting}${s.bowing}${s.cultivate}`;
+    const key = `${s.hidden}${s.air}${s.sitting}${s.bowing}${s.badge?.kind}${s.badge?.n}`;
     if (key === this.last) return; // chỉ đụng DOM khi đổi
     this.last = key;
     this.root.hidden = s.hidden;
@@ -50,12 +61,12 @@ export class ActionButtons {
     this.bow.classList.toggle('on', s.bowing);
     this.sit.classList.toggle('on', s.sitting);
     this.sit.setAttribute('aria-pressed', String(s.sitting));
-    // R-DIEU-7 (thiết kế 2026-11-13.19): vùng còn bộ chưa học → "Tu luyện" + chấm đếm; đang ngồi ẩn chấm
-    const n = s.cultivate;
-    this.sitLabel.textContent = n !== null ? (s.sitting ? 'Đang tu luyện' : 'Tu luyện') : s.sitting ? 'Đang thiền' : 'Thiền';
-    this.sitBadge.hidden = n === null || s.sitting;
-    this.sitBadge.textContent = n === null ? '' : n >= 100 ? '99+' : String(n);
-    this.sit.setAttribute('aria-label', n !== null && !s.sitting ? `Tu luyện, còn ${n} bộ thủ chưa học` : 'Ngồi thiền');
+    // R-DIEU-7 (thiết kế 2026-11-14.10): "Ngồi ôn" / "Đang ôn"; chấm son bộ đến hạn hoặc bộ chưa học; đang ngồi ẩn chấm
+    const t = sitButtonText(s.sitting, s.badge);
+    this.sitLabel.textContent = t.label;
+    this.sitBadge.hidden = t.badge === null;
+    this.sitBadge.textContent = t.badge ?? '';
+    this.sit.setAttribute('aria-label', t.aria);
     if (this.joyHint) this.joyHint.textContent = s.sitting ? 'kéo để đứng dậy' : 'kéo để đi';
   }
 }

@@ -42,10 +42,12 @@ describe('Cuộn sách Ngồi ôn — bảng chọn', () => {
     expect(m.highlight).toBeNull();
   });
 
-  it('R-ON-8: chưa học bộ nào → Xem bộ đã học mờ', () => {
+  it('R-ON-8: chưa học bộ nào → Ôn mờ "Chưa có bộ nào để ôn", Xem bộ đã học mờ, không mục nổi bật', () => {
     const m = studyMenu({ due: [], learned: [], hasLessons: false });
+    expect(m.items[0]).toEqual({ id: 'review', enabled: false, reason: 'noneLearned', count: 0 });
+    expect(m.items[1]).toEqual({ id: 'learn', enabled: false, reason: 'learnInRegion', count: 0 });
     expect(m.items[2]).toEqual({ id: 'learned', enabled: false, reason: 'noneLearned', count: 0 });
-    expect(m.items.every((i) => !i.enabled)).toBe(true);
+    expect(m.highlight).toBeNull();
   });
 
   it('R-ON-8: mã lạ trong tiến độ bị bỏ qua khi đếm', () => {
@@ -64,11 +66,11 @@ describe('Cuộn sách Ngồi ôn — bảng chọn', () => {
 
 describe('Nút Ngồi ôn — chấm son', () => {
   it('R-DIEU-7: còn bộ đến hạn → số bộ đến hạn (tông môn cũng có)', () => {
-    expect(sitBadge({ due: ['truc', 'moc', 'thuy', 'son'], learned: first5, hasLessons: false })).toBe(4);
+    expect(sitBadge({ due: ['truc', 'moc', 'thuy', 'son'], learned: first5, hasLessons: false })).toEqual({ n: 4, kind: 'due' });
   });
 
   it('R-DIEU-7: Rừng trúc, không bộ đến hạn, học 3 bộ → 47', () => {
-    expect(sitBadge({ due: [], learned: ids.slice(0, 3), hasLessons: true })).toBe(47);
+    expect(sitBadge({ due: [], learned: ids.slice(0, 3), hasLessons: true })).toEqual({ n: 47, kind: 'new' });
   });
 
   it('R-DIEU-7: tông môn không bộ đến hạn → không chấm; học đủ ở Rừng trúc → không chấm', () => {

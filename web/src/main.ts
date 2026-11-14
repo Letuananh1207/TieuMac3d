@@ -54,7 +54,7 @@ import { RingCharge } from './zones/ringCharge';
 import { DIALOGS, DialogRunner, type Dialog } from './zones/dialogs';
 import { LIBRARIAN, LibraryDesk } from './libraryDesk';
 import { reviewItems } from './zones/review';
-import { fallbackStudy, studyMenu } from './zones/studyMenu';
+import { fallbackStudy, sitBadge, studyMenu } from './zones/studyMenu';
 import { RADICALS, type Radical } from './zones/radicals';
 import { placeZones, ZONE_CONTENT, type Zone } from './zones/zones';
 import { musicVolume, TRACKS } from './zones/music';
@@ -221,7 +221,7 @@ async function boot(): Promise<void> {
   /* ---------- tu luyện (R-HANH-3): ngồi thiền ≥ 1 giây ở vùng có bộ thủ → thẻ bộ chưa học đầu tiên ---------- */
   // Bài học là lớp riêng của người học (theo tiến độ của họ) — cảnh không đổi theo tiến độ (R-VUNG-1).
   let learnedRadicals = new Set(progress?.radicals ?? []);
-  // ngồi 1 s nhập định + 0,15 s chữ tan rồi thẻ mới mở (thiết kế 2026-11-13.19 — scene/nhapDinh.ts)
+  // ngồi ôn 1 s → bảng chọn cuộn sách (R-ON-8, thiết kế 2026-11-14.10 — scene/nhapDinh.ts)
   const SIT_TO_LEARN = NHAP_DINH_OPEN_AT;
   let sitTime = 0;
   let sitOpened = false; // lần ngồi này đã mở thẻ → đứng dậy rồi ngồi lại mới mở thẻ sau
@@ -324,8 +324,6 @@ async function boot(): Promise<void> {
       );
     })();
   };
-  /** Bộ sắp học khi tu luyện (vùng có bộ thủ, còn bộ chưa học) — `undefined` = không tu luyện được ở đây. */
-  const nextRadical = (): Radical | undefined => (spec.lessons.radicals ? RADICALS.find((r) => !learnedRadicals.has(r.id)) : undefined);
   const nhapDinh = new NhapDinh(scene);
   const zones = new ZoneTracker(placed.zones, (z) => learn.setZone(z));
 
@@ -617,11 +615,12 @@ async function boot(): Promise<void> {
     nameTag.update(pos, camera, NAME_TAG_HEIGHT);
     const busy = paused || covered || loading.active || mapOpen || talking;
     meditate(dt, busy);
-    // nhập định (R-HANH-3): vòng sáng + chữ bộ sắp học; đứng dậy / đã mở thẻ → tắt dần
-    const upcoming = player.isSitting && !onSeat && !sitOpened && !busy ? nextRadical() : undefined;
-    nhapDinh.update(dt, pos, upcoming ? sitTime : null, upcoming?.form ?? '');
-    // ẩn khi chữ nhập định hiện, khi bản đồ / màn tải / bài học phủ cảnh (L-11: nhãn HTML luôn đè lên cuộn bản đồ 3D)
-    nameTag.setVisible(!nhapDinh.charShown && !mapOpen && !loading.active && !covered);
+    // nhập định khi Ngồi ôn (R-ON-8, thiết kế 2026-11-14.10): vòng sáng dưới đệm; đứng dậy / ngồi vào chỗ ngồi → tắt dần
+    nhapDinh.update(dt, pos, player.isSitting && !onSeat ? sitTime : null);
+    // ẩn khi bản đồ / màn tải / bài học phủ cảnh (L-11: nhãn HTML luôn đè lên cuộn bản đồ 3D)
+    nameTag.setVisible(!mapOpen && !loading.active && !covered);
+    // màn Flutter đè cảnh (bảng chọn cuộn sách, thẻ học, màn ôn…) → ẩn cần điều khiển (R-ON-8)
+    if (document.body.classList.contains('covered') !== covered) document.body.classList.toggle('covered', covered);
     chat.update({ camera, player: pos, nameTagHeight: NAME_TAG_HEIGHT, npcs: npcSet.npcs, busy: busy || gamePlay.active });
     learn.follow(zones.current ? anchorOf.get(zones.current.id) : undefined, camera);
     // nút "Nói chuyện": NPC gần nhất trong 2,5 m, không đang học / ngồi / bản đồ / thoại / màn tải (R-NPC-2)
@@ -655,7 +654,7 @@ async function boot(): Promise<void> {
       air: player.state.air,
       sitting: player.isSitting,
       bowing: player.isBowing,
-      cultivate: spec.lessons.radicals ? RADICALS.filter((r) => !learnedRadicals.has(r.id)).length || null : null,
+      badge: sitBadge({ due: progress?.due ?? [], learned: learnedRadicals, hasLessons: !!spec.lessons.radicals }),
     });
     fps.tick(rawDt, renderer.info.render.calls, renderer.info.render.triangles);
     // độ nét động (R-HIEU-1): chậm kéo dài → vẽ thưa đi một bậc; mượt lại → nét lên. HUD là HTML nên vẫn nét.

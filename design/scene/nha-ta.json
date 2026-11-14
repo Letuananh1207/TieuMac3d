@@ -1,0 +1,113 @@
+{
+  "site": {
+    "name": "Nhà của ta",
+    "han": "我家",
+    "areas": [
+      { "name": "Chính phòng", "han": "正房", "from": [-5.25, -11], "to": [5.25, -5] },
+      { "name": "Vườn", "han": "園", "from": [6.5, -14], "to": [16, 12] },
+      { "name": "Sân trước", "han": "前院", "from": [-16, -14], "to": [6.5, 12] }
+    ]
+  },
+  "sky": { "top": "#8fa9b8", "middle": "#c9d5d6", "horizon": "#e9d9c4" },
+  "fog": { "color": "#cfd8d4", "near": 18, "far": 75 },
+  "light": {
+    "skyColor": "#f2f4ee",
+    "groundColor": "#5d6658",
+    "hemiIntensity": 0.78,
+    "sunColor": "#ffe0b8",
+    "sunIntensity": 0.66,
+    "sunPosition": [-24, 22, 10]
+  },
+  "ground": { "size": 90, "color": "#7d8466", "brickHue": 30, "pattern": "vuong" },
+  "farMountains": {
+    "layers": [
+      { "radius": 120, "height": 24, "color": "#a3b2b0", "peaks": 10, "width": 1.8, "spurs": 1 },
+      { "radius": 180, "height": 38, "color": "#c3ccca", "peaks": 8, "width": 2 }
+    ],
+    "base": -20
+  },
+  "cloudSea": { "radius": 0, "y": -10, "color": "#f4f1ea" },
+  "walls": { "enabled": false, "style": "voi", "color": "#eeebe2", "capColor": "#3b3f44", "height": 2.8, "thickness": 0.5, "windows": 0 },
+  "wallSegments": [
+    { "from": [-16, -14], "to": [16, -14] },
+    {
+      "from": [-16, 12],
+      "to": [16, 12],
+      "gate": { "at": 0, "width": 3, "kind": "lau", "signs": { "nam": "Nhà của ta" } }
+    },
+    { "from": [-16, -14], "to": [-16, 12] },
+    { "from": [16, -14], "to": [16, 12] },
+    {
+      "from": [6.5, -14],
+      "to": [6.5, 12],
+      "height": 2.2,
+      "gate": { "at": -1, "width": 2.2, "kind": "trang", "signs": { "tay": "Vườn" } }
+    }
+  ],
+  "paths": [
+    { "from": [0, 11.5], "to": [0, -4.4], "width": 2.4 },
+    { "from": [0, -1], "to": [6.5, -1], "width": 1.6 },
+    { "from": [6.5, -1], "to": [15.5, -1], "width": 1.4 }
+  ],
+  "buildingStyle": {
+    "path": "#8e8b84",
+    "stone": "#8a8780",
+    "water": "#4d7f86",
+    "wall": "#f1eee6",
+    "pillar": "#3a3430",
+    "ridge": "#2f3236",
+    "eave": "#33363a",
+    "base": "#8c8a84",
+    "timber": "#3a3430",
+    "floor": "#8a5a3c",
+    "heightScale": 1
+  },
+  "buildings": [
+    {
+      "id": "chinh-phong",
+      "x": 0,
+      "z": -8,
+      "w": 10.5,
+      "d": 6,
+      "title": "Nhà của ta",
+      "roofColor": "#3b3f44",
+      "kind": "nha-o"
+    }
+  ],
+  "gates": [],
+  "water": [],
+  "props": [],
+  "trees": {
+    "yard": [
+      { "kind": "tung", "x": -12.5, "z": -10.5, "scale": 1 },
+      { "kind": "truc", "x": -13, "z": 8.5, "scale": 1 }
+    ],
+    "groves": [
+      { "kind": "truc-mao", "x": 0, "z": -20, "w": 36, "d": 6, "count": 16, "collide": false },
+      { "kind": "truc-mao", "x": -22, "z": 0, "w": 6, "d": 30, "count": 12, "collide": false },
+      { "kind": "truc-mao", "x": 22, "z": -2, "w": 6, "d": 30, "count": 12, "collide": false }
+    ],
+    "ring": { "count": 0, "radius": 25, "spread": 6, "scaleMin": 1.6, "scaleMax": 2.4 }
+  },
+  "well": { "enabled": false },
+  "floating": { "islands": [], "clouds": { "count": 0, "height": 26, "radius": 60, "speed": 0.6, "color": "#d9dce8" } },
+  "player": { "start": [0, 2] },
+  "npcs": [],
+  "camera": { "fov": 55, "minDist": 3, "maxDist": 20, "near": { "dist": 4.2, "pitch": 0.32 }, "far": { "dist": 16, "pitch": 0.72 } },
+  "teleport": { "enabled": true, "center": [0, 7], "radius": 0, "ringRadius": 4 },
+  "lessons": { "radicals": false },
+  "decorSlots": [
+    { "id": "trong-1", "kind": "trong", "x": -3.2, "z": -9.8 },
+    { "id": "trong-2", "kind": "trong", "x": 0, "z": -10 },
+    { "id": "trong-3", "kind": "trong", "x": 3.2, "z": -9.8 },
+    { "id": "san-1", "kind": "san", "x": -3.5, "z": -2 },
+    { "id": "san-2", "kind": "san", "x": 3.5, "z": -2.6 },
+    { "id": "san-3", "kind": "san", "x": -7, "z": 3.5 },
+    { "id": "vuon-1", "kind": "vuon", "x": 9, "z": -11 },
+    { "id": "vuon-2", "kind": "vuon", "x": 13, "z": -11 },
+    { "id": "vuon-3", "kind": "vuon", "x": 11, "z": -7 },
+    { "id": "vuon-4", "kind": "vuon", "x": 14, "z": -4 },
+    { "id": "vuon-5", "kind": "vuon", "x": 10.5, "z": 4 },
+    { "id": "vuon-6", "kind": "vuon", "x": 14, "z": 8 }
+  ]
+}

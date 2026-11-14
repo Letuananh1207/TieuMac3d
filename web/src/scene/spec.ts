@@ -7,7 +7,7 @@
 
 export type XZ = [number, number];
 
-export const BUILDING_KINDS = ['giang-duong', 'dien', 'thap', 'nha-nho', 'dinh', 'hi-dai', 'tra-lau', 'lau-sach', 'cua-hang'] as const;
+export const BUILDING_KINDS = ['giang-duong', 'dien', 'thap', 'nha-nho', 'dinh', 'hi-dai', 'tra-lau', 'lau-sach', 'cua-hang', 'nha-o'] as const;
 /** Hàng bày trong cửa hàng (`cua-hang`): bút mực · vải · bùa giấy · thuốc · thùng gỗ. */
 export const GOODS_KINDS = ['but', 'vai', 'bua', 'thuoc', 'thung'] as const;
 export const ROOF_KINDS = ['chop', 'cong'] as const;

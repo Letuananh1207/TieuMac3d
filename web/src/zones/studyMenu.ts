@@ -7,7 +7,7 @@ import { RADICALS, type Radical } from './radicals';
 
 export type StudyItemId = 'review' | 'learn' | 'learned';
 
-/** Vì sao một mục mờ: ôn hết hôm nay · tông môn không học bộ mới · học đủ · chưa học bộ nào. */
+/** Vì sao một mục mờ: ôn hết hôm nay · trấn không học bộ mới · học đủ · chưa học bộ nào (Ôn: "Chưa có bộ nào để ôn"). */
 export type StudyReason = 'reviewedToday' | 'learnInRegion' | 'allLearned' | 'noneLearned';
 
 export interface StudyItem {
@@ -48,7 +48,7 @@ export function studyMenu(input: StudyInput, pool: readonly Radical[] = RADICALS
   const c = counts(input, pool);
   const review: StudyItem = c.due
     ? { id: 'review', enabled: true, reason: null, count: c.due }
-    : { id: 'review', enabled: false, reason: 'reviewedToday', count: 0 };
+    : { id: 'review', enabled: false, reason: c.learned ? 'reviewedToday' : 'noneLearned', count: 0 };
   const canLearn = input.hasLessons && c.left.length > 0;
   const learn: StudyItem = canLearn
     ? { id: 'learn', enabled: true, reason: null, count: c.left.length }
@@ -65,10 +65,16 @@ export function fallbackStudy(menu: StudyMenu): 'review' | 'learn' | null {
   return menu.highlight;
 }
 
+/** Chấm son nút "Ngồi ôn" (R-DIEU-7): số + loại — `due` = bộ đến hạn ôn, `new` = bộ chưa học (chỉ vùng có bài học). */
+export interface SitBadge {
+  n: number;
+  kind: 'due' | 'new';
+}
+
 /** Chấm son nút "Ngồi ôn" (R-DIEU-7): số bộ đến hạn; không có thì ở vùng có bài học → số bộ chưa học; không chấm → null. */
-export function sitBadge(input: StudyInput, pool: readonly Radical[] = RADICALS): number | null {
+export function sitBadge(input: StudyInput, pool: readonly Radical[] = RADICALS): SitBadge | null {
   const c = counts(input, pool);
-  if (c.due) return c.due;
-  if (input.hasLessons && c.left.length) return c.left.length;
+  if (c.due) return { n: c.due, kind: 'due' };
+  if (input.hasLessons && c.left.length) return { n: c.left.length, kind: 'new' };
   return null;
 }

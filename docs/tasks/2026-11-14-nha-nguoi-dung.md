@@ -48,7 +48,7 @@ người khác (cần multiplayer / backend — ngoài giai đoạn này).
 - [x] 2. `decorSlots` trong `SceneSpec` + mặc định rỗng + `check-scene.mjs` kiểm ô. (scene/spec · xong khi
       `npm run scene:check` qua với cảnh cũ không đổi)
 - [x] 3. Danh mục + luật trang trí thuần `zones/decor.ts` + vitest theo R-NHA-2/4. (zones · `npm test`)
-- [ ] 4. **Thiết kế cảnh** `design/scene/nha-ta.json` bằng `/canh` (nhà, sân, vườn, vòng trận về, các ô) — cho
+- [ ] 4. (đã dựng, chờ duyệt — cần thêm kiểu nhà `nha-o`: `scene/kien_truc/nha_o.ts`) **Thiết kế cảnh** `design/scene/nha-ta.json` bằng `/canh` (nhà, sân, vườn, vòng trận về, các ô) — cho
       duyệt trên Canvas 3D rồi mới chốt. (design · xong khi chốt mục trong `design/CHANGELOG.md`)
 - [ ] 5. **Thiết kế** nơi mới trên bản đồ + HUD trang trí — chờ thiết kế (`docs/phieu_thiet_ke/2026-11-14-nha-nguoi-dung.md`).
 - [ ] 6. Dựng mesh vật `scene/decorItems.ts` (+ collider vật to) và ô trống hiện mờ trong chế độ trang trí. (scene)

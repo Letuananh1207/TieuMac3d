@@ -246,6 +246,7 @@ body.talking #dialogDim{display:block}
 #dialog .choices button.bye{background:transparent;border-color:rgba(36,50,58,.3);box-shadow:none}
 #dialog .choices .x{font-size:18px;line-height:1;width:16px;text-align:center;flex:none}
 body.talking #joy,body.talking #joyGhost,body.talking .learn,body.talking #actions,body.talking #talk,body.talking #seat{display:none}
+body.covered #joy,body.covered #joyGhost{display:none}
 body.map-open #actions,body.map-open #talk,body.map-open #seat{display:none}
 @media (orientation:landscape){
   #actions{right:calc(var(--sa-right) + 12px);bottom:calc(var(--sa-bottom) + 9px)}

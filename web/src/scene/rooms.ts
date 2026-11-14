@@ -11,6 +11,7 @@ import { columnXs, giangDuong, hallFloor, type RoomParts } from './kien_truc/die
 import { cuaHang } from './kien_truc/cua_hang';
 import { hiDai } from './kien_truc/hi_dai';
 import { lauSach } from './kien_truc/lau_sach';
+import { nhaO } from './kien_truc/nha_o';
 import { addInterior, type LocalBox } from './kien_truc/noi_that';
 import { traLau } from './kien_truc/tra_lau';
 import type { LocalPad, WalkInBuilder } from './kien_truc/vao_trong';
@@ -195,6 +196,7 @@ export const WALK_IN: Partial<Record<NonNullable<BuildingSpec['kind']>, WalkInBu
   'tra-lau': traLau,
   'lau-sach': lauSach,
   'cua-hang': cuaHang,
+  'nha-o': nhaO,
 };
 
 function worldPad(b: BuildingSpec, p: LocalPad, y0: number): Pad {
