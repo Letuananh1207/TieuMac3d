@@ -3,6 +3,21 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-14.33 — Đồi Chè + Vườn Bia + 2 cổng trăng (hai bên Thiên Bậc)
+
+- Loại: cảnh 3D — **bố cục** + vật mới. Ai làm: phiên code V-20261114-30 làm thay vai thiết kế (`/canh`), người dùng nhờ
+  dựng khu tiện ích hai bên cầu thang lên trà lâu; chọn Đồi Chè + Vườn Bia, bia khắc đoạn thơ có ý nghĩa, mở thêm cổng.
+  **Đã duyệt 2026-11-14.**
+- Cổng trăng z −22 tâm x 30 rộng 5 (sân Truyền Tống Đài → bãi đông, biển trong "Đồi Chè" / ngoài "Đài truyền tống");
+  cổng trăng z −32 tâm x −33 rộng 5 (cổng hậu Tàng Thư Các → Vườn Bia, biển trong "Vườn Bia" / ngoài "Thư viện").
+- Đồi Chè: 3 bậc đất y 0,9 / 2,7 / 4,5 (x 8…26,6, z −36,5…−49), bậc đá phụ (27,5; −36,5)→(27,5; −46,8), 18 bụi chè,
+  đèn đá, biển gỗ. Vườn Bia: bục phẳng x −48…−18, z −49…−35; rùa đội bia (−33; −43) + 8 bia — mỗi bia một câu học tập
+  (Luận Ngữ, Đạo Đức Kinh, Hàn Dũ, Nhan Chân Khanh, Trường ca hành, Vương Chi Hoán) chữ Hán + pinyin + nghĩa Việt, mặt sau
+  phiên âm Hán Việt (nội dung học — R-HUD-4). 5 lối lát, 2 khu mới. Rừng tùng (0; −62) 12 → 7 cây (bù ngân sách).
+- Vật mới `bia` / `bia-rua` (`vat_bia.ts`, từ mẫu Catalog). Luật: R-VA-1, R-BANDO-2. `scene:check` không lỗi.
+  Nhìn từ trên 131 → 143 draw call, 146 790 → 149 822 tam giác (còn dư < 200 tới trần 150k).
+- Ảnh: `screens/Canh-vuon-bia.png`, `screens/Canh-doi-che.png`. Canvas 3D bản 57.
+
 ## 2026-11-14.32 — Cổng đầu lối xuống núi hạ còn 6,6 m, biển "Khởi Nguyên Trấn"
 
 - Loại: cảnh 3D — **ngoại hình** (cổng) + chữ biển. Ai làm: phiên code V-20261114-32 làm thay vai thiết kế (`/canh`).
