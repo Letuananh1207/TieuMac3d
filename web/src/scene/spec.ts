@@ -175,6 +175,30 @@ export interface BuildingSpec {
   goods?: (typeof GOODS_KINDS)[number];
 }
 
+/**
+ * Góc nhìn từ mắt khi ngồi (R-DIEU-7). Góc độ (°), thời gian giây, độ dài mét, màu "#rrggbb".
+ * `eyeY` / `eyeFwd`: mắt người ngồi cao hơn chân / trước tâm thân · `pitch`: góc cúi theo chỗ ngồi (âm = cúi) — `study`
+ * Ngồi ôn + bồ đoàn khu tự học, `seat` án thư / bàn trà…, `game` bàn chơi (cúi nhìn bàn) · `yawLimit`, `pitchUp`,
+ * `pitchDown`: giới hạn nhìn quanh · `minHFov`: bề ngang tối thiểu thấy được (màn dọc nới FOV dọc cho đủ) · `blend`:
+ * chuyển ngôi · `returnDelay` / `returnTime`: thả tay bao lâu thì nhìn lại, nhìn lại trong bao lâu · `sleeve`, `cuff`,
+ * `skin`: màu tay áo, viền cổ tay, da — dùng khi nhân vật không tự khai `palette` (model .glb).
+ */
+export interface FirstPersonSpec {
+  eyeY: number;
+  eyeFwd: number;
+  pitch: { study: number; seat: number; game: number };
+  yawLimit: number;
+  pitchUp: number;
+  pitchDown: number;
+  minHFov: number;
+  blend: number;
+  returnDelay: number;
+  returnTime: number;
+  sleeve: string;
+  cuff: string;
+  skin: string;
+}
+
 export interface CameraView {
   dist: number;
   /** góc ngẩng, radian */
@@ -808,6 +832,8 @@ export interface SceneSpec {
     far: CameraView;
     seated: CameraView;
     study: CameraView & { side: number };
+    /** Lúc ngồi: nhìn từ mắt nhân vật (ngôi 1 — R-DIEU-7, R-NGOI-1, R-GIAO-1) */
+    firstPerson: FirstPersonSpec;
   };
 }
 
@@ -982,6 +1008,22 @@ export const DEFAULT_SCENE: SceneSpec = {
     far: { dist: 17, pitch: 0.75 },
     seated: { dist: 5.5, pitch: 0.44 },
     study: { dist: 5.5, pitch: 0.7, side: 0.8 },
+    firstPerson: {
+      eyeY: 1.35,
+      eyeFwd: 0.08,
+      pitch: { study: -35, seat: -25, game: -70 },
+      yawLimit: 60,
+      pitchUp: 20,
+      pitchDown: 70,
+      minHFov: 36,
+      blend: 0.4,
+      returnDelay: 1,
+      returnTime: 0.6,
+      // màu áo đệ tử chibi DE_TU (player/chibiCharacter.ts)
+      sleeve: '#bfcfe0',
+      cuff: '#4d6db2',
+      skin: '#f6d3bd',
+    },
   },
 };
 
