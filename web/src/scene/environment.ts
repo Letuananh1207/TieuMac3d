@@ -1,12 +1,18 @@
 import * as THREE from 'three';
 import { lambert } from './materials';
+import { isSoft } from './look';
+import { addSkyDome } from './skyDome';
 import type { SceneSpec } from './spec';
 import { makeCanvasTex, SQUARE_TILE_M, squareTileTex } from './textures';
 
 /** Trời, sương mù, đèn. Mặt đất dựng riêng: phẳng (`addFlatGround`) hoặc địa hình (`terrain.ts`). */
-export function addEnvironment(scene: THREE.Scene, spec: SceneSpec): void {
+export function addEnvironment(scene: THREE.Scene, spec: SceneSpec, far = 200): void {
   const { sky, fog, light } = spec;
-  scene.background = makeCanvasTex(16, 256, (g, w, h) => {
+  // cảnh mềm: vòm trời màu theo đỉnh + quầng nắng (skyDome.ts) — nền chỉ là màu chân trời cho khe hở
+  if (isSoft(spec.look)) {
+    scene.background = new THREE.Color(sky.horizon);
+    addSkyDome(scene, spec, far * 0.8);
+  } else scene.background = makeCanvasTex(16, 256, (g, w, h) => {
     const gr = g.createLinearGradient(0, 0, 0, h);
     gr.addColorStop(0, sky.top);
     gr.addColorStop(0.55, sky.middle);

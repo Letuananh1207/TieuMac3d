@@ -10,7 +10,7 @@ import type { Colliders } from '../collision/colliders';
 import { LayeredGround, type Ground } from '../collision/ground';
 import { addBuilding } from './buildings';
 import { addEnvironment, addFlatGround } from './environment';
-import { addCloudSea, addFarMountains } from './farMountains';
+import { addCloudSea, addFarMountains, viewDistance } from './farMountains';
 import { addGate, addGateModel } from './gate';
 import { staticModelUrl } from './staticModel';
 import { addGrassAndRocks } from './grass';
@@ -71,7 +71,7 @@ export function buildWorld(
 ): World {
   const style = spec.buildingStyle;
   resetSignAtlas(); // biển của cảnh này vẽ vào một ảnh chung → 1 draw call
-  addEnvironment(scene, spec);
+  addEnvironment(scene, spec, viewDistance(spec));
   const hf = spec.terrain.enabled ? buildHeightfield(spec.terrain, spec.paths) : null;
   // ngoài lưới (vực) → 0; nhà, tường, lối đi nằm trên bục phẳng nên không cần độ cao riêng
   const groundY: GroundY | undefined = hf
@@ -129,7 +129,7 @@ export function buildWorld(
   addFences(scene, colliders, spec, groundY);
   if (spec.well.enabled) addWell(scene, colliders, spec.well, base(spec.well.x, spec.well.z));
   const teleport = spec.teleport.enabled ? addTeleport(scene, colliders, spec.teleport, groundY) : null;
-  const floating = addFloating(scene, spec.floating, style, spec.trees.leaves[1], spec.trees.seed);
+  const floating = addFloating(scene, spec.floating, style, spec.trees.leaves[1], spec.trees.seed, spec.look);
   // dựng xong mới gộp: khối đứng yên cùng vật liệu → một draw call (scene/merge.ts). Đã thử gộp theo ô (2026-11-14):
   // tam giác gần như không giảm, draw call tăng — phần nặng là địa hình + model người, không phải khối gộp.
   // cảnh mềm: khối Lambert tĩnh khác màu → một khối vật liệu mềm (bóng nướng vào màu đỉnh) trước khi gộp phần còn lại

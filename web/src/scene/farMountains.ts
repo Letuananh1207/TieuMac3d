@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import { seededRandom } from './random';
+import { isSoft } from './look';
+import { markDynamic } from './merge';
 import type { MountainLayer, SceneSpec } from './spec';
 
 /**
@@ -19,6 +21,52 @@ export function addFarMountains(scene: THREE.Scene, spec: SceneSpec): void {
   geo.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
   const mat = new THREE.MeshBasicMaterial({ vertexColors: true, fog: false, side: THREE.DoubleSide });
   scene.add(new THREE.Mesh(geo, mat));
+  if (isSoft(spec.look) && spec.look.mist.opacity > 0) addMist(scene, spec);
+}
+
+/**
+ * Dải sương trước chân mỗi lớp núi (cảnh mềm — kế hoạch 2026-11-14-canh-dep NV7): vòng dải đứng, đặc ở chân, mờ dần lên
+ * 45 % chiều cao lớp núi; các lớp gộp một lưới, 1 draw call, trong suốt nhưng thấp (chỉ phủ dải gần chân trời).
+ */
+export function mistBands(spec: SceneSpec): THREE.BufferGeometry {
+  const { layers, base } = spec.farMountains;
+  const [cx, cz] = spec.terrain.center;
+  const c = new THREE.Color(spec.look.mist.color);
+  const a0 = spec.look.mist.opacity;
+  const pos: number[] = [];
+  const col: number[] = [];
+  const SEG = 96;
+  for (const l of layers) {
+    const r = l.radius * 0.97;
+    const y0 = base;
+    const y1 = base + (l.height - base) * 0.45;
+    for (let k = 0; k < SEG; k++) {
+      const a = (k / SEG) * Math.PI * 2;
+      const b = ((k + 1) / SEG) * Math.PI * 2;
+      const p0 = [cx + Math.cos(a) * r, cz + Math.sin(a) * r];
+      const p1 = [cx + Math.cos(b) * r, cz + Math.sin(b) * r];
+      const quad: [number[], number, number][] = [
+        [p0, y0, a0], [p1, y0, a0], [p0, y1, 0],
+        [p1, y0, a0], [p1, y1, 0], [p0, y1, 0],
+      ];
+      for (const [p, y, al] of quad) {
+        pos.push(p[0], y, p[1]);
+        col.push(c.r, c.g, c.b, al);
+      }
+    }
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  geo.setAttribute('color', new THREE.Float32BufferAttribute(col, 4));
+  return geo;
+}
+
+function addMist(scene: THREE.Scene, spec: SceneSpec): void {
+  const mat = new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, depthWrite: false, fog: false, side: THREE.DoubleSide });
+  const mesh = new THREE.Mesh(mistBands(spec), mat);
+  mesh.renderOrder = 1;
+  markDynamic(mesh); // màu theo đỉnh có kênh alpha — không để mergeStatic xoá
+  scene.add(mesh);
 }
 
 /** Góc về khoảng [0, 2π). */
