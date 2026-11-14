@@ -40,7 +40,7 @@
 - Hiệu năng: mỗi vùng thêm ≈ 3–6 draw call (cầu, lan can gộp; thuyền 1–2; đàn hạc 1 InstancedMesh), < 5k tam giác.
 
 ## Nhiệm vụ
-- [ ] 1. (sổ đã sửa; chờ người dùng chép online) Sổ quy tắc R-VA-1 (cầu, lan can, thuyền / hạc) → chép online → `--mark-synced R-VA-1`.
+- [x] 1. (đã đồng bộ online 2026-11-14 — `--mark-synced R-VA-1`) Sổ quy tắc R-VA-1 (cầu, lan can, thuyền / hạc) → chép online → `--mark-synced R-VA-1`.
 - [x] 2. `spec.ts` + `specCheck.ts`: trường mới + mặc định + kiểm (test `specCheck` cho cầu dốc quá / đầu cầu trong nước).
 - [x] 3. `bridges.ts`: cầu vòm (đá, lưng gù, lan can), cầu đá phẳng (Kim Thuỷ, lan can cẩm thạch), cầu treo (ván + dây
       võng); `Pad` + test hàm thuần (độ cao trên cầu tại x, z).
