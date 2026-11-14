@@ -25,6 +25,8 @@ export interface SeatSpot {
   kind: SeatKind;
   /** chỗ ngồi khu tự học: ngồi đủ 1 giây mở cuộn sách Ngồi ôn (R-VA-4, R-ON-8) — nút vẫn ghi "Ngồi" */
   study?: boolean;
+  /** vật cầm khi nhìn từ mắt (R-NGOI-1) — như `Seat.hold` của cảnh */
+  hold?: 'tra' | 'sach';
 }
 
 /** Chỗ ngồi gần nhất trong tầm của chính nó, cùng tầng với chân nhân vật `y`; không có → `undefined`. */

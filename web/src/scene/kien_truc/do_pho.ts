@@ -138,6 +138,8 @@ export interface LocalSeat {
   z: number;
   y: number;
   rotY: number;
+  /** vật cầm khi nhìn từ mắt (R-NGOI-1) */
+  hold?: 'tra' | 'sach';
 }
 
 /** Cao mặt sập trà (m) — chỗ ngồi trên sập cao hơn sàn chừng này (R-VA-4: 0,45). */
@@ -172,7 +174,7 @@ export function teaBed(
   const seats: LocalSeat[] = [];
   for (const s of [-1, 1]) {
     g.add(column(k(0.26), 0.06, CUSHION, x + s * BED_SEAT, top, z));
-    seats.push({ x: x + s * BED_SEAT, z, y: top, rotY: (-s * Math.PI) / 2 }); // quay vào kỷ
+    seats.push({ x: x + s * BED_SEAT, z, y: top, rotY: (-s * Math.PI) / 2, hold: 'tra' }); // quay vào kỷ
   }
   return { box: { x, z, w: BED_W, d: BED_D }, top: { x, z, w: BED_W, d: BED_D, y: top }, seats };
 }
@@ -210,7 +212,7 @@ export function longTeaTable(g: THREE.Group, x: number, z: number, y0: number): 
     for (const s of [-1, 1]) {
       g.add(column(0.05, 0.06, CUP, x + dx, y0 + h, z + s * 0.36, 6));
       g.add(column(CUSHION_R, 0.12, CUSHION, x + dx, y0, z + s * gap));
-      seats.push({ x: x + dx, z: z + s * gap, y: y0, rotY: s < 0 ? 0 : Math.PI });
+      seats.push({ x: x + dx, z: z + s * gap, y: y0, rotY: s < 0 ? 0 : Math.PI, hold: 'tra' });
     }
   }
   return { box: { x, z, w, d }, seats };

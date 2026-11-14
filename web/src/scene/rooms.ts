@@ -256,7 +256,7 @@ export function addWalkIn(scene: THREE.Scene, colliders: Colliders, b: BuildingS
     seats: (shell.seats ?? []).map((s) => {
       const [sx, sz] = toWorld(b, s.x, s.z);
       const rotY = s.rotY + ((b.rotY ?? 0) * Math.PI) / 180;
-      return { x: sx, y: y0 + s.y, z: sz, rotY, ...(s.study ? { study: true } : {}) };
+      return { x: sx, y: y0 + s.y, z: sz, rotY, ...(s.study ? { study: true } : {}), ...(s.hold ? { hold: s.hold } : {}) };
     }),
     ...(shell.studySign ? { studySign: worldPoint(b, shell.studySign, y0) } : {}),
     hits: [],

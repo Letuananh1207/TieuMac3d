@@ -113,7 +113,7 @@ export function traLau(g: THREE.Group, b: BuildingSpec, style: Style, fade: THRE
     const tx = (xs[i] + xs[i + 1]) / 2;
     boxes.push({ ...teaTable(g, tx, TEA_Z, PLAT), maxY: low });
     for (const [dx, dz] of TEA_STOOLS) {
-      seats.push({ x: tx + dx, z: TEA_Z + dz, y: PLAT + STOOL_H, rotY: Math.atan2(-dx, -dz) });
+      seats.push({ x: tx + dx, z: TEA_Z + dz, y: PLAT + STOOL_H, rotY: Math.atan2(-dx, -dz), hold: 'tra' });
       seatPads.push({ x: tx + dx, z: TEA_Z + dz, w: 0.5 * FURN, d: 0.5 * FURN, y: PLAT + STOOL_H, upper: true });
     }
   }
@@ -162,7 +162,7 @@ export function traLau(g: THREE.Group, b: BuildingSpec, style: Style, fade: THRE
     const x = west + dx;
     lowTeaTable(fadeLow, x, DOUBLE_Z, yf, style.timber);
     boxes.push({ x, z: DOUBLE_Z, w: LOW_W, d: LOW_W, minY: up });
-    seats.push({ x, z: DOUBLE_Z - SEAT_GAP, y: yf, rotY: 0 }, { x, z: DOUBLE_Z + SEAT_GAP, y: yf, rotY: Math.PI });
+    seats.push({ x, z: DOUBLE_Z - SEAT_GAP, y: yf, rotY: 0, hold: 'tra' }, { x, z: DOUBLE_Z + SEAT_GAP, y: yf, rotY: Math.PI, hold: 'tra' });
   }
   // lan can mặt tiền tầng 2 (hồi + sau trùng tường tầng 1, đã chặn) — chỉ chặn người ở tầng 2
   boxes.push({ x: 0, z: cz, w, d: 0.3, minY: yf - 0.4 }, ...stairs.boxes);

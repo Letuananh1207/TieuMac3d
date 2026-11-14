@@ -106,3 +106,23 @@ export function poseOf(s: CuonState): CuonPose {
       return HIDDEN;
   }
 }
+
+/**
+ * Cuộn sách trước mắt khi nhìn từ mắt (R-DIEU-7, R-ON-8): đặt vừa khung màn thay vì cố định theo mét — màn dọc hẹp
+ * (~36° ngang sau khi nới FOV), màn ngang rộng. `fovDeg` FOV dọc đang dùng, `aspect` rộng / cao, `halfW` / `halfH` nửa bề
+ * ngang / nửa chiều cao cả cuộn (m). Trả `dist` khoảng cách từ mắt tới tâm cuộn theo hướng nhìn chuẩn, `side` dời ngang
+ * (m, dương = sang phải người cầm — màn ngang: cuộn lệch phải, cảnh bên trái).
+ * Dọc: cuộn rộng ~88 % bề ngang; ngang: cao ~62 % chiều cao, lệch phải ~30 % nửa màn. Khoảng cách giữ trong tầm tay.
+ */
+export const CUON_GAN = 0.3;
+export const CUON_XA = 0.62;
+
+export function fitScroll(fovDeg: number, aspect: number, halfW: number, halfH: number): { dist: number; side: number } {
+  const tv = Math.tan((fovDeg * Math.PI) / 360);
+  const th = tv * aspect;
+  const byW = halfW / (0.88 * th);
+  const byH = halfH / (0.62 * tv);
+  const dist = Math.min(CUON_XA, Math.max(CUON_GAN, byW, byH));
+  const side = aspect > 1 ? 0.3 * th * dist : 0;
+  return { dist, side };
+}

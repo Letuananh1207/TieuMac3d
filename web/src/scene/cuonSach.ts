@@ -3,9 +3,13 @@
  * ngang — 2 trục đứng + giấy giữa; không bám ngón tay, đặt theo hướng mặt nhân vật. Chỉ máy người học thấy.
  * Nhịp mở / thu: `cuonSachNhip.ts` (hàm thuần, có test). 5 draw call khi hiện, 0 khi ẩn.
  * Cỡ, chỗ đặt, màu theo đặc tả màn (không thuộc bố cục cảnh `scene.json`) — "gần đúng, chỉnh theo model nhân vật".
+ * Hai bản: trước ngực (mặc định, lớp thân — người ngoài nhìn thấy) và trước mắt khi nhìn từ mắt (lớp ngôi 1 — R-DIEU-7,
+ * R-ON-8): `update` với gốc = mắt, `setMount` đặt tâm cuộn theo khung màn (`fitScroll`), mặt giấy quay về mắt; giấy trước
+ * có chỗ gắn `CanvasTexture` (`setPaper`) và tia dò ra toạ độ (u, v) trên giấy (`hitUv`).
  */
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
+import { setLayer } from './layers';
 import { lambert } from './materials';
 import { markDynamic } from './merge';
 import { CUON_AN, CUON_CAO, CUON_TRUOC, isOpen, poseOf, stepCuon, type CuonState } from './cuonSachNhip';
@@ -50,6 +54,16 @@ function trucGeometry(): THREE.BufferGeometry {
   return mergeGeometries(geos) ?? geos[0];
 }
 
+export interface CuonOptions {
+  /** lớp vẽ (`layers.ts`); không có = lớp 0 */
+  layer?: number;
+}
+
+/** Mép ngoài đầu trục tới tâm (m) khi mở hết — bề ngang cả cuộn = 2 × chừng này. */
+export const CUON_NUA_RONG = GIAY_W / 2 + TRUC_R + DAU_R;
+/** Nửa chiều cao cả cuộn (trục + đầu trục). */
+export const CUON_NUA_CAO = TRUC_DAI / 2 + DAU_R * 1.6;
+
 export class CuonSach {
   private readonly root = new THREE.Group();
   private readonly holder = new THREE.Group();
@@ -61,7 +75,7 @@ export class CuonSach {
   private rollUp = false;
   private afterRoll: (() => void) | null = null;
 
-  constructor(scene: THREE.Scene) {
+  constructor(scene: THREE.Scene, opts: CuonOptions = {}) {
     const fade = { transparent: true };
     const trucMat = new THREE.MeshLambertMaterial({ vertexColors: true, ...fade });
     const truoc = lambert(PAPER, fade);
@@ -83,7 +97,40 @@ export class CuonSach {
     this.root.add(this.holder);
     this.root.visible = false;
     markDynamic(this.root);
+    if (opts.layer !== undefined) setLayer(this.root, opts.layer);
     scene.add(this.root);
+  }
+
+  /** Bản trước mắt: tâm cuộn (toạ độ gốc-mắt quay theo hướng mặt: x sang trái người ngồi, y lên, z trước), ngửa `tilt` rad. */
+  setMount(x: number, y: number, z: number, tilt: number): void {
+    this.holder.position.set(x, y, z);
+    this.holder.rotation.x = tilt;
+  }
+
+  /** Gắn ảnh lên mặt giấy phía người cầm (chữ / mục trên cuộn — chờ thiết kế); `null` = giấy trơn. */
+  setPaper(map: THREE.Texture | null): void {
+    const m = this.giay[0].material as THREE.MeshLambertMaterial;
+    m.map = map;
+    m.color.set(map ? '#ffffff' : PAPER);
+    m.needsUpdate = true;
+  }
+
+  /** Tia dò trúng mặt giấy phía người cầm → (u, v) (0..1, u từ trái sang phải, v từ dưới lên, như người cầm thấy). */
+  hitUv(ray: THREE.Raycaster): { u: number; v: number } | null {
+    if (!this.root.visible || !this.giay[0].visible) return null;
+    const hit = ray.intersectObject(this.giay[0], false)[0];
+    return hit?.uv ? { u: hit.uv.x, v: hit.uv.y } : null;
+  }
+
+  /** Nửa khoảng cách hai trục hiện tại (m, đã nhân cỡ) — tay cầm ngoài chỗ này; 0 = chưa hiện. */
+  get half(): number {
+    if (!this.root.visible) return 0;
+    return Math.abs(this.trucs[0].position.x) * this.holder.scale.x;
+  }
+
+  /** Đang hiện (đã qua 0,3 s ngồi, chưa tắt). */
+  get shown(): boolean {
+    return this.root.visible;
   }
 
   /**
