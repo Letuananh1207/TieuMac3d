@@ -23,6 +23,20 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
 - Ảnh: `screens/BanDoVung-nho-vuong-doc.png`.
 
 ## 2026-11-15.5 — Tiểu Mặc + bảng nhiệm vụ ra bên phải tiệm Tạp hoá
+## 2026-11-15.6 — Truyền Tống Đài lên đầu Thiên Bậc, Trà lâu sang bãi đông cạnh Đồi Chè
+
+- Loại: cảnh 3D — **bố cục**. Phiên code V-20261114-38 làm thay `/canh`; người dùng: "đài truyền tống nên dời lên vị trí của
+  trà lâu hiện tại"; Trà lâu "cạnh Đồi Chè (bãi đông)"; sân đài cũ "dùng sau" → khu **Sân Đông**. **Đã duyệt 2026-11-15.**
+- `teleport.center` (30; −9) → **(0; −61,5)** đầu Thiên Bậc; bục Thượng Trấn `[-14,-67]` → `[-14,-70]`; khu "Thượng Trấn" →
+  "Truyền Tống Đài". Mặc Ông (6,5; −55,5) nhìn 295°; 2 đèn đá → (±4,6; −54,2).
+- Phẩm Minh Các (0; −60) 0° → **(37; −36) 270°** nhìn ra Đồi Chè; bục mới `[30,-46.5]→[44,-24]` y 0; lối lát (27,5; −36) →
+  (30,4; −36); cờ Trà (30; −44,5).
+- Sân đài cũ giữ tường / cổng, để trống: khu "Sân Đông"; biển cổng: đông Quảng Trường "Sân đông", cổng bắc sân "Sân đông" /
+  "Trà lâu · Đồi Chè", cổng bắc Quảng Trường "Lên Đài truyền tống". Thoại Tiểu Mặc, tin đồn nhạc theo chỗ mới.
+- Luật: R-VA-1/3/4, R-NHAC-2, R-HANH-2, R-BANDO-2/3. `scene:check` không lỗi; 148 draw call / 149 164 tam giác. Canvas 3D bản 58.
+- Ảnh: `screens/Canh-dai-dau-thien-bac.png`, `screens/Canh-tra-lau-doi-che.png`.
+
+## 2026-11-15.2 — Tiểu Mặc + bảng nhiệm vụ ra bên phải tiệm Tạp hoá
 
 - Loại: cảnh 3D — **bố cục**. Phiên code V-20261114-35 làm thay `/canh`; người dùng: "vị trí Tiểu Mặc và bảng nên đặt ở bên
   phải của tiệm Tạp hoá". **Đã duyệt 2026-11-15.**
