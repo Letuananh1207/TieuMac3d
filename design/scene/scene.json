@@ -12,9 +12,9 @@
   "light": {
     "skyColor": "#fff4e0",
     "groundColor": "#8fa36b",
-    "hemiIntensity": 0.9,
+    "hemiIntensity": 1.1,
     "sunColor": "#ffe7c2",
-    "sunIntensity": 0.7,
+    "sunIntensity": 0.8,
     "sunPosition": [
       -24,
       26,
@@ -1183,13 +1183,13 @@
     "blend": 6,
     "colors": {
       "grass": [
-        "#86b55a",
-        "#9cc468",
-        "#74a552"
+        "#8cc160",
+        "#a2cc6c",
+        "#7ab258"
       ],
-      "dirt": "#b39a7a",
-      "rock": "#a39b90",
-      "highRock": "#c4bdb3",
+      "dirt": "#c8b392",
+      "rock": "#b9b1a5",
+      "highRock": "#d2ccc2",
       "highFrom": 20
     },
     "slopeDirt": 20,

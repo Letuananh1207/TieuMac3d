@@ -9,7 +9,7 @@ export function addVignette(stage: HTMLElement, strength: number): HTMLElement |
   v.id = 'vignette';
   v.setAttribute('aria-hidden', 'true');
   // `strength` = độ tối ở mép trái / phải; góc màn tối hơn chút (gradient tới góc xa nhất)
-  const a = Math.min(0.9, strength * 1.6).toFixed(2);
+  const a = Math.min(0.9, strength * 1.2).toFixed(2);
   Object.assign(v.style, {
     position: 'fixed',
     inset: '0',

@@ -44,8 +44,8 @@ cho nới luật **miễn đo** (Android tầm trung ≥ 30 fps, mục tiêu 60;
 
 | Góc | Trước (cũ) | Sau (mềm) |
 |---|---|---|
-| Góc chơi `?nv=0,6` | 69 draw call · 64,9k tam giác | 52–53 · ~79–81k |
-| Trên xuống `?view=tren` | 155 (vượt) · 140,1k | 135 · 149,3k |
+| Góc chơi `?nv=0,6` | 69 draw call · 64,9k tam giác | 54 · 81,3k |
+| Trên xuống `?view=tren` | 155 (vượt) · 140,1k | 136 · 149,4k |
 
 Số bench và máy Android: kế hoạch, mục "Số đo" (Android: chờ người dùng đo).
 
