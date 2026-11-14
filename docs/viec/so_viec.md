@@ -19,6 +19,7 @@ Trạng thái: `nhận` → `chờ trả lời` / `chờ duyệt` → `đang là
 | V-20261114-09 | Thử máy: mốc 3 cầu nối, động tác nhân vật | lead | chờ thử máy | `docs/tasks/2026-11-11-moc-3-cau-noi.md`, `2026-11-12-dong-tac-nhan-vat.md` | thử trên máy |
 | V-20261114-10 | Thử máy lỗi L-6 … L-11 (chớp bề mặt, nhãn tên đè bản đồ, con trỏ, bàn ngồi, camera, cầu thang) | loi | chờ thử máy | `docs/loi.md` | thử, báo `/loi xong` / `/loi mo` |
 | V-20261114-11 | Áp thiết kế 2026-11-14.1 – .8 | ui-apply | xong (30a5ca5 — cả 8 mục đã có trong code, chỉ ghi nhật ký) | `docs/thiet_ke_da_ap.md`; còn ngoài phạm vi: bản đồ kéo / phóng (cần kế hoạch riêng) | thử máy: ghim đầu nhân vật + huy hiệu đồng hồ trên bản đồ, nhãn tên viền mực, tên app trên màn hình chính |
-| V-20261114-12 | Model NPC Tiểu nhị từ bộ ảnh 2026-11-14.11 | tai-nguyen | chờ người dùng | `docs/phieu_thiet_ke/2026-11-13-anh-tieu-nhi.md` | mở Hunyuan3D, gõ `/task` khi sẵn sàng |
+| V-20261114-12 | Model NPC từ bộ ảnh: Tiểu nhị (.11), cô gái Kỳ Văn Uyển (.18), Trận sư (.19) | tai-nguyen | chờ người dùng | `design/CHANGELOG.md` .11 .18 .19 | mở Hunyuan3D trên máy, gõ `/task tai-nguyen` khi sẵn sàng |
 | V-20261114-13 | Áp thiết kế 2026-11-14.16: chữ vòng trận ở Nhà của ta = 我家 | ui-apply | xong — phiên khác đã làm trên main (ef61868); nhánh trùng của /task bỏ | `docs/tasks/2026-11-14-chu-vong-tran.md` | thử: vào Nhà của ta thấy 我家 trên vòng trận, trấn vẫn 起源 |
 | V-20261114-14 | Chế độ thử Văn tiền trên web | lead | đang làm (duyệt 2026-11-14) — nhánh `viec/tien-web-2` | `docs/tasks/2026-11-14-tien-tren-web.md` | — |
+| V-20261114-15 | Áp thiết kế 2026-11-14.17: nút + bảng Hướng dẫn Khu tự học | ui-apply | đang làm — nhánh `viec/huong-dan-tu-hoc` | phiếu `2026-11-14-huong-dan-tu-hoc` | — |
