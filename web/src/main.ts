@@ -98,7 +98,8 @@ async function boot(): Promise<void> {
   // biển / tên nơi chỉ tiếng Việt (R-HUD-4) — chữ Hán chỉ còn ở nội dung học
   const hanText = [...(spec.lessons.radicals ? RADICALS.map((r) => r.form) : []), ...ZONE_CONTENT.map((c) => c.lesson.han), signText(spec)].join('');
   await Promise.allSettled([
-    document.fonts.load('700 72px Lora'),
+    // nạp đủ các mặt chữ Lora (Latin + tiếng Việt) theo chữ thật trên biển
+    document.fonts.load('700 72px Lora', `Aa${signText(spec)}`),
     document.fonts.load('700 13px "Be Vietnam Pro"'),
     document.fonts.load('700 52px "Han Serif"', hanText || '字'),
   ]);

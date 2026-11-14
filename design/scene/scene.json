@@ -126,7 +126,15 @@
       "to": [
         -17,
         -32
-      ]
+      ],
+      "gate": {
+        "at": -33,
+        "width": 5,
+        "signs": {
+          "nam": "Vườn Bia",
+          "bac": "Thư viện"
+        }
+      }
     },
     {
       "from": [
@@ -156,7 +164,15 @@
       "to": [
         42,
         -22
-      ]
+      ],
+      "gate": {
+        "at": 30,
+        "width": 5,
+        "signs": {
+          "nam": "Đồi Chè",
+          "bac": "Đài truyền tống"
+        }
+      }
     },
     {
       "from": [
@@ -287,6 +303,61 @@
         21
       ],
       "width": 2.4
+    },
+    {
+      "from": [
+        5,
+        -21.5
+      ],
+      "to": [
+        28.5,
+        -27
+      ],
+      "width": 2.4
+    },
+    {
+      "from": [
+        30,
+        -22.3
+      ],
+      "to": [
+        27.5,
+        -36
+      ],
+      "width": 2.4
+    },
+    {
+      "from": [
+        -5,
+        -21.5
+      ],
+      "to": [
+        -20,
+        -35.6
+      ],
+      "width": 2.4
+    },
+    {
+      "from": [
+        -47,
+        -36
+      ],
+      "to": [
+        -20,
+        -36
+      ],
+      "width": 2.4
+    },
+    {
+      "from": [
+        -33,
+        -32.3
+      ],
+      "to": [
+        -33,
+        -39.6
+      ],
+      "width": 3
     }
   ],
   "buildingStyle": {
@@ -529,6 +600,88 @@
       "kind": "ngong",
       "x": 31,
       "z": 15
+    },
+    {
+      "kind": "bien-go",
+      "x": 25,
+      "z": -35.4,
+      "text": "Đồi Chè"
+    },
+    {
+      "kind": "den-da",
+      "x": 25.6,
+      "z": -37.4
+    },
+    {
+      "kind": "den-da",
+      "x": -36.5,
+      "z": -34
+    },
+    {
+      "kind": "den-da",
+      "x": -29.5,
+      "z": -34
+    },
+    {
+      "kind": "bien-go",
+      "x": -14.5,
+      "z": -27.5,
+      "rotY": 90,
+      "text": "Vườn Bia"
+    },
+    {
+      "kind": "bia-rua",
+      "x": -33,
+      "z": -43,
+      "text": "學而時習之/不亦說乎|xué ér shí xí zhī/bù yì yuè hū|Học mà thường xuyên ôn luyện, chẳng phải là điều vui sao?|Học nhi thời tập chi, bất diệc duyệt hồ|Luận Ngữ · Học nhi"
+    },
+    {
+      "kind": "bia",
+      "x": -43,
+      "z": -39.5,
+      "text": "千里之行/始於足下|qiān lǐ zhī xíng/shǐ yú zú xià|Đường nghìn dặm bắt đầu từ bước chân đầu tiên.|Thiên lý chi hành, thuỷ ư túc hạ|Đạo Đức Kinh · chương 64"
+    },
+    {
+      "kind": "bia",
+      "x": -38,
+      "z": -39.5,
+      "text": "三人行/必有我師焉|sān rén xíng/bì yǒu wǒ shī yān|Ba người cùng đi, ắt có người là thầy ta.|Tam nhân hành, tất hữu ngã sư yên|Luận Ngữ · Thuật nhi"
+    },
+    {
+      "kind": "bia",
+      "x": -28,
+      "z": -39.5,
+      "text": "溫故而知新/可以為師矣|wēn gù ér zhī xīn/kě yǐ wéi shī yǐ|Ôn điều cũ mà biết thêm điều mới, thì có thể làm thầy người khác.|Ôn cố nhi tri tân, khả dĩ vi sư hĩ|Luận Ngữ · Vi chính"
+    },
+    {
+      "kind": "bia",
+      "x": -23,
+      "z": -39.5,
+      "text": "知之為知之/不知為不知/是知也|zhī zhī wéi zhī zhī/bù zhī wéi bù zhī/shì zhī yě|Biết thì nói là biết, không biết thì nói là không biết, thế mới thật là biết.|Tri chi vi tri chi, bất tri vi bất tri, thị tri dã|Luận Ngữ · Vi chính"
+    },
+    {
+      "kind": "bia",
+      "x": -45.5,
+      "z": -45.5,
+      "text": "書山有路勤為徑/學海無涯苦作舟|shū shān yǒu lù qín wéi jìng/xué hǎi wú yá kǔ zuò zhōu|Núi sách có đường, chăm chỉ là lối; biển học không bờ, chịu khó làm thuyền.|Thư sơn hữu lộ cần vi kính, học hải vô nhai khổ tác chu|Câu đối tương truyền của Hàn Dũ"
+    },
+    {
+      "kind": "bia",
+      "x": -40.5,
+      "z": -45.5,
+      "text": "黑髮不知勤學早/白首方悔讀書遲|hēi fà bù zhī qín xué zǎo/bái shǒu fāng huǐ dú shū chí|Tóc còn xanh không biết sớm chăm học, đầu bạc rồi mới hối đọc sách muộn.|Hắc phát bất tri cần học tảo, bạch thủ phương hối độc thư trì|Nhan Chân Khanh · Khuyến học"
+    },
+    {
+      "kind": "bia",
+      "x": -25.5,
+      "z": -45.5,
+      "text": "少壯不努力/老大徒傷悲|shào zhuàng bù nǔ lì/lǎo dà tú shāng bēi|Lúc trẻ khoẻ không gắng sức, về già chỉ còn buồn thương.|Thiếu tráng bất nỗ lực, lão đại đồ thương bi|Nhạc phủ Hán · Trường ca hành"
+    },
+    {
+      "kind": "bia",
+      "x": -20.5,
+      "z": -45.5,
+      "text": "白日依山盡/黃河入海流/欲窮千里目/更上一層樓|bái rì yī shān jìn/huáng hé rù hǎi liú/yù qióng qiān lǐ mù/gèng shàng yī céng lóu|Mặt trời tựa núi lặn, Hoàng Hà chảy ra biển; muốn nhìn xa nghìn dặm, hãy lên thêm một tầng lầu.|Bạch nhật y sơn tận, Hoàng Hà nhập hải lưu, dục cùng thiên lý mục, cánh thượng nhất tầng lâu|Vương Chi Hoán · Đăng Quán Tước lâu"
     }
   ],
   "trees": {
@@ -638,6 +791,114 @@
         "x": 40,
         "z": 5.5,
         "scale": 1.2
+      },
+      {
+        "kind": "bui",
+        "x": 11,
+        "z": -38.2,
+        "scale": 0.8
+      },
+      {
+        "kind": "bui",
+        "x": 13.6,
+        "z": -38.2,
+        "scale": 0.8
+      },
+      {
+        "kind": "bui",
+        "x": 16.2,
+        "z": -38.2,
+        "scale": 0.8
+      },
+      {
+        "kind": "bui",
+        "x": 18.8,
+        "z": -38.2,
+        "scale": 0.8
+      },
+      {
+        "kind": "bui",
+        "x": 21.4,
+        "z": -38.2,
+        "scale": 0.8
+      },
+      {
+        "kind": "bui",
+        "x": 24,
+        "z": -38.2,
+        "scale": 0.8
+      },
+      {
+        "kind": "bui",
+        "x": 11,
+        "z": -43.2,
+        "scale": 0.8
+      },
+      {
+        "kind": "bui",
+        "x": 13.6,
+        "z": -43.2,
+        "scale": 0.8
+      },
+      {
+        "kind": "bui",
+        "x": 16.2,
+        "z": -43.2,
+        "scale": 0.8
+      },
+      {
+        "kind": "bui",
+        "x": 18.8,
+        "z": -43.2,
+        "scale": 0.8
+      },
+      {
+        "kind": "bui",
+        "x": 21.4,
+        "z": -43.2,
+        "scale": 0.8
+      },
+      {
+        "kind": "bui",
+        "x": 24,
+        "z": -43.2,
+        "scale": 0.8
+      },
+      {
+        "kind": "bui",
+        "x": 11,
+        "z": -47.7,
+        "scale": 0.8
+      },
+      {
+        "kind": "bui",
+        "x": 13.6,
+        "z": -47.7,
+        "scale": 0.8
+      },
+      {
+        "kind": "bui",
+        "x": 16.2,
+        "z": -47.7,
+        "scale": 0.8
+      },
+      {
+        "kind": "bui",
+        "x": 18.8,
+        "z": -47.7,
+        "scale": 0.8
+      },
+      {
+        "kind": "bui",
+        "x": 21.4,
+        "z": -47.7,
+        "scale": 0.8
+      },
+      {
+        "kind": "bui",
+        "x": 24,
+        "z": -47.7,
+        "scale": 0.8
       }
     ],
     "groves": [
@@ -647,7 +908,7 @@
         "z": -62,
         "w": 130,
         "d": 26,
-        "count": 12,
+        "count": 7,
         "collide": false
       },
       {
@@ -703,6 +964,10 @@
       "#3a2418",
       "#e88aa4",
       "#f2b8c6"
+    ],
+    "autumn": [
+      "#4f7d3c",
+      "#6f9a4a"
     ]
   },
   "well": {
@@ -882,6 +1147,28 @@
         "to": [
           42,
           25
+        ]
+      },
+      {
+        "name": "Vườn Bia",
+        "from": [
+          -51,
+          -50
+        ],
+        "to": [
+          -17,
+          -32
+        ]
+      },
+      {
+        "name": "Đồi Chè",
+        "from": [
+          6,
+          -52
+        ],
+        "to": [
+          29,
+          -36
         ]
       }
     ],
@@ -1064,6 +1351,58 @@
         "y": -10,
         "pave": false,
         "blend": 7.5
+      },
+      {
+        "from": [
+          8,
+          -40
+        ],
+        "to": [
+          26.6,
+          -36.5
+        ],
+        "y": 0.9,
+        "pave": false,
+        "blend": 0.5
+      },
+      {
+        "from": [
+          8,
+          -44.5
+        ],
+        "to": [
+          26.6,
+          -42
+        ],
+        "y": 2.7,
+        "pave": false,
+        "blend": 0.5
+      },
+      {
+        "from": [
+          8,
+          -49
+        ],
+        "to": [
+          29,
+          -46.5
+        ],
+        "y": 4.5,
+        "pave": false,
+        "blend": 0.5
+      },
+      {
+        "from": [
+          -48,
+          -49
+        ],
+        "to": [
+          -18,
+          -35
+        ],
+        "y": 0,
+        "pave": false,
+        "blend": 3
       }
     ],
     "peaks": [
@@ -1409,6 +1748,17 @@
           62
         ],
         "width": 3.6
+      },
+      {
+        "from": [
+          27.5,
+          -36.5
+        ],
+        "to": [
+          27.5,
+          -46.8
+        ],
+        "width": 1.8
       }
     ],
     "grass": {

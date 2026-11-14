@@ -123,7 +123,7 @@ describe('R-VA-1: tường đông Quảng Trường — cổng Truyền Tống �
     expect(walk(real(), 15, 0, 1, 0, 6).x).toBeCloseTo(16.25, 2);
   });
 
-  it('R-VA-1: sân Truyền Tống Đài x 17…42, z −22…3 và sân Mặc Trì z 3…25 kín tường, chỉ thông ra Quảng Trường', () => {
+  it('R-VA-1: sân Truyền Tống Đài x 17…42, z −22…3 và sân Mặc Trì z 3…25 có tường bao (Mặc Trì chỉ thông ra Quảng Trường)', () => {
     // Truyền Tống Đài: đi bắc ở x 40 dừng ở z −21,25; đi nam dừng ở z 2,25 (tường ngăn hai sân); đi đông dừng ở x 41,25
     expect(walk(real(), 40, -5, 0, -1, 25).z).toBeCloseTo(-21.25, 2);
     expect(walk(real(), 40, -5, 0, 1, 15).z).toBeCloseTo(2.25, 2);
@@ -135,6 +135,33 @@ describe('R-VA-1: tường đông Quảng Trường — cổng Truyền Tống �
     // tường nối hai đầu tường đông Quảng Trường: x 17 từ z −22 tới −17 và từ 17 tới 25
     expect(walk(real(), 15, -20, 1, 0, 10).x).toBeCloseTo(16.25, 2);
     expect(walk(real(), 15, 21, 1, 0, 10).x).toBeCloseTo(16.25, 2);
+  });
+});
+
+describe('R-VA-1: cổng bắc sân Truyền Tống Đài + cổng hậu Tàng Thư Các (cảnh thật, V-20261114-30)', () => {
+  const spec = loadScene(HOME_SCENE).spec;
+  const real = (): Colliders => {
+    const c = new Colliders();
+    for (const b of plasterWallBoxes(spec.walls, spec.wallSegments)) c.add(b.x, b.z, b.w, b.d, b.h);
+    return c;
+  };
+  const gate = (fixed: number, at: number) => wallGates(spec.walls, spec.wallSegments).find((g) => g.axis === 'x' && g.fixed === fixed && g.at === at);
+
+  it('R-VA-1: tường bắc Truyền Tống Đài z −22 có cổng trăng tâm x 30 rộng 5, lối 4 m; từ (30; −18) đi bắc qua được ra bãi đông, x 40 vẫn dừng ở z −21,25', () => {
+    const g = gate(-22, 30)!;
+    expect([g.width, g.kind]).toEqual([5, 'trang']);
+    expect(2 * gateOpening(g)).toBeCloseTo(4, 6);
+    expect(walk(real(), 30, -18, 0, -1, 10).z).toBeLessThan(-26);
+    expect(walk(real(), 30, -26, 0, 1, 8).z).toBeGreaterThan(-19); // ngược lại: từ bãi đông vào sân đài
+    expect(walk(real(), 40, -5, 0, -1, 25).z).toBeCloseTo(-21.25, 2);
+  });
+
+  it('R-VA-1: tường bắc Tàng Thư Các z −32 có cổng trăng hậu tâm x −33 rộng 5, lối 4 m; từ (−33; −29) đi bắc qua được ra Vườn Bia, x −37 dừng ở z −31,25', () => {
+    const g = gate(-32, -33)!;
+    expect([g.width, g.kind]).toEqual([5, 'trang']);
+    expect(2 * gateOpening(g)).toBeCloseTo(4, 6);
+    expect(walk(real(), -33, -29, 0, -1, 8).z).toBeLessThan(-35);
+    expect(walk(real(), -37, -29, 0, -1, 8).z).toBeCloseTo(-31.25, 2);
   });
 });
 

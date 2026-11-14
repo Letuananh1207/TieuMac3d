@@ -51,7 +51,7 @@ async function boot(): Promise<void> {
   // ?look=cu — xem kiểu nhìn cũ để so (kế hoạch 2026-11-14-canh-dep)
   const spec = withLookParam(SCENE.spec, query.get('look'));
   await Promise.allSettled([
-    document.fonts.load('700 72px Lora'),
+    document.fonts.load('700 72px Lora', `Aa${signText(spec)}`),
     document.fonts.load('700 13px "Be Vietnam Pro"'),
     document.fonts.load('700 52px "Han Serif"', `${RADICALS.map((r) => r.form).join('')}${signText(spec)}` || '字'),
   ]);

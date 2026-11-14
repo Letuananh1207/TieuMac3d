@@ -246,14 +246,23 @@ const denDaBo: Build = (g, _m, c, _giong, style) => {
 
 /* ---------------- bia 碑 · rùa đội bia · đình bia ---------------- */
 
+/** Tên các khối ô chữ khắc giả (ô lõm + vạch mực) — bia có chữ thật (`vat_bia.ts`) bỏ chúng đi vì mặt chữ phủ lên. */
+export const O_CHU_BIA = 'o-chu-bia';
+
 /** Thân bia đá trắng rộng `w` cao `h` (tới chân đầu bia) từ `y0`, đầu bia nửa tròn, ô chữ khắc hai mặt. */
 function thanBia(s: THREE.Group, w: number, h: number, t: number, y0: number): void {
   s.add(box(w, h, t, MARBLE, 0, y0 + h / 2, 0));
   const head = put(s, new THREE.CylinderGeometry(w / 2, w / 2, t, 14).rotateX(Math.PI / 2), MARBLE, 0, y0 + h, 0);
   head.name = 'dau-bia';
   for (const sz of [-1, 1]) {
-    s.add(box(w * 0.66, h * 0.72, 0.02, MARBLE_CARVE, 0, y0 + h * 0.52, sz * (t / 2 + 0.01)));
-    for (let i = 0; i < 4; i++) s.add(box(0.04, h * 0.6, 0.01, INK, (i - 1.5) * w * 0.14, y0 + h * 0.52, sz * (t / 2 + 0.025)));
+    const o = box(w * 0.66, h * 0.72, 0.02, MARBLE_CARVE, 0, y0 + h * 0.52, sz * (t / 2 + 0.01));
+    o.name = O_CHU_BIA;
+    s.add(o);
+    for (let i = 0; i < 4; i++) {
+      const muc = box(0.04, h * 0.6, 0.01, INK, (i - 1.5) * w * 0.14, y0 + h * 0.52, sz * (t / 2 + 0.025));
+      muc.name = O_CHU_BIA;
+      s.add(muc);
+    }
   }
 }
 

@@ -1,8 +1,39 @@
 # Khu tiện ích hai bên Thiên Bậc
 - Yêu cầu: "hãy lên kế hoạch dựng thêm các khu vực tiện ích ở các vùng trống hai bên cầu thang lên trà lâu"
 - Việc: V-20261114-30 · Loại: thêm (cảnh trước, tính năng sau) · Cỡ: GĐ1 vừa (chỉ cảnh) · GĐ2 lớn (mỗi khu một kế hoạch con)
-- Trạng thái: **chờ duyệt** (kế hoạch, chưa sửa gì) · phụ thuộc **V-26** (quây tường Truyền Tống Đài) phải gộp trước khi làm GĐ1
+- Trạng thái: **GĐ1 đã dựng — chờ người dùng duyệt cảnh** (Canvas 3D bản 57, nhãn "main + V-30 chờ duyệt"; CHANGELOG
+  chưa ghi) · V-26 đã gộp vào main trước khi làm
 - Phiếu ý tưởng cho phần tính năng: `docs/y_tuong/2026-11-14-tien-ich-thien-bac.md`
+
+## Quyết định của người dùng (2026-11-14)
+
+- **Q1**: GĐ1 chỉ làm **C. Đồi Chè (đông)** + **A. Vườn Bia (tây)**. B Bến Suối, D Đình Bố Cáo để sau.
+- **Q2**: mở luôn hai cổng: **cổng trăng tường bắc sân Truyền Tống Đài** (z −22, tâm x 30, rộng 5) đi tắt ra bãi đông và
+  Đồi Chè; **cổng trăng hậu Tàng Thư Các** (z −32, tâm x −33, rộng 5) ra Vườn Bia. Chiếu nghỉ Thiên Bậc (Q2-c): không làm.
+- **Q3 / Q4**: vật `bia` mới (mẫu Catalog `bia` S × 1,6, cao 4 m) + `bia-rua` (M × 1,25, rùa đội bia, cao 5 m). Mỗi bia
+  khắc **một đoạn thơ / danh ngôn về việc học**, không phải một chữ. Chữ Hán (phồn thể, như các biển của trấn) là nội
+  dung học. Mặt trước có pinyin dưới từng câu, nghĩa tiếng Việt và nguồn; mặt sau có phiên âm Hán Việt. Vẽ bằng canvas
+  lên tờ ảnh riêng `bia` (`signAtlas.ts`) → cả vườn chỉ thêm 1 draw call. Không có giao diện mới. 9 đoạn, xem mục
+  "Bia đã khắc".
+- **Q5–Q7**: theo đề xuất. Q5 không áp dụng (không làm D). Q6: đo trước / sau, bớt rừng tùng sau Trà lâu. Q7: GĐ1 chỉ
+  Ngồi ôn tại chỗ.
+
+## Bia đã khắc (Vườn Bia, mặt chữ nhìn nam — về cổng hậu Thư viện)
+
+| Vị trí | Hán | Pinyin | Nghĩa | Nguồn |
+|---|---|---|---|---|
+| giữa (rùa) (−33; −43) | 學而時習之，不亦說乎 | xué ér shí xí zhī, bù yì yuè hū | Học mà thường xuyên ôn luyện, chẳng phải là điều vui sao? | Luận Ngữ · Học nhi |
+| hàng trước (−43; −39,5) | 千里之行，始於足下 | qiān lǐ zhī xíng, shǐ yú zú xià | Đường nghìn dặm bắt đầu từ bước chân đầu tiên. | Đạo Đức Kinh · ch. 64 |
+| (−38; −39,5) | 三人行，必有我師焉 | sān rén xíng, bì yǒu wǒ shī yān | Ba người cùng đi, ắt có người là thầy ta. | Luận Ngữ · Thuật nhi |
+| (−28; −39,5) | 溫故而知新，可以為師矣 | wēn gù ér zhī xīn, kě yǐ wéi shī yǐ | Ôn điều cũ mà biết thêm điều mới, thì có thể làm thầy người khác. | Luận Ngữ · Vi chính |
+| (−23; −39,5) | 知之為知之，不知為不知，是知也 | zhī zhī wéi zhī zhī, bù zhī wéi bù zhī, shì zhī yě | Biết thì nói là biết, không biết thì nói là không biết, thế mới thật là biết. | Luận Ngữ · Vi chính |
+| hàng sau (−45,5; −45,5) | 書山有路勤為徑，學海無涯苦作舟 | shū shān yǒu lù qín wéi jìng, xué hǎi wú yá kǔ zuò zhōu | Núi sách có đường, chăm chỉ là lối; biển học không bờ, chịu khó làm thuyền. | câu đối tương truyền của Hàn Dũ |
+| (−40,5; −45,5) | 黑髮不知勤學早，白首方悔讀書遲 | hēi fà bù zhī qín xué zǎo, bái shǒu fāng huǐ dú shū chí | Tóc còn xanh không biết sớm chăm học, đầu bạc rồi mới hối đọc sách muộn. | Nhan Chân Khanh · Khuyến học |
+| (−25,5; −45,5) | 少壯不努力，老大徒傷悲 | shào zhuàng bù nǔ lì, lǎo dà tú shāng bēi | Lúc trẻ khoẻ không gắng sức, về già chỉ còn buồn thương. | Nhạc phủ Hán · Trường ca hành |
+| (−20,5; −45,5) | 白日依山盡，黃河入海流，欲窮千里目，更上一層樓 | bái rì yī shān jìn, huáng hé rù hǎi liú, yù qióng qiān lǐ mù, gèng shàng yī céng lóu | Mặt trời tựa núi lặn, Hoàng Hà chảy ra biển; muốn nhìn xa nghìn dặm, hãy lên thêm một tầng lầu. | Vương Chi Hoán · Đăng Quán Tước lâu |
+
+Pinyin ghi thanh gốc từng chữ (không đổi thanh khi đọc liền: 不 bù, 一 yī). Pinyin vẽ bằng font serif của máy, vì Lora
+không có ǎ ǐ ǒ ǔ.
 
 ## Phạm vi
 
@@ -135,7 +166,29 @@ tùng sau Trà lâu 12 → 8 cây (Q6).
 | Đình Bố Cáo (D) | `bang` (−11,5;−24) mặt nhìn đông (ra ngã ba) · 2 `den-da` · `bien-go` (−8,−21) "Vườn Bia" · `bien-go` (8,−20) "Bến Suối · Đồi Chè" | `bang` = cửa thứ hai mở Nhiệm vụ hằng ngày (Q5) |
 | Khu (`site.areas`) | "Vườn Bia" [−48,−50]→[−24,−33] · "Bến Suối" [28,−52]→[46,−30] · "Đồi Chè" [6,−52]→[27,−36] | không có trường `han` (V-28). Không chồng Thiên Bậc [−6,6] |
 
-## Nhiệm vụ GĐ1 (chỉ cảnh)
+## Đã làm GĐ1 (theo quyết định trên)
+
+- [x] Mốc đo trên main có V-26: nhìn từ trên **131 dc / 146 790 tam giác**; cả sân 87 / 128 780; góc chơi chân Thiên Bậc 46 / 82 226.
+- [x] Cổng trăng tường bắc sân Truyền Tống Đài (z −22, tâm x 30, rộng 5, lối 4 m x 28…32; biển nam "Đồi Chè", bắc "Đài
+  truyền tống") + cổng trăng hậu Tàng Thư Các (z −32, tâm x −33, rộng 5, lối 4 m x −35…−31; biển nam "Vườn Bia", bắc
+  "Thư viện"). Hai cổng có test va chạm (`walls.test.ts`). Sửa ví dụ R-VA-1.
+- [x] Lối lát: chân Thiên Bậc → bãi đông; cổng bắc Truyền Tống Đài → chân bậc chè; chân Thiên Bậc → Vườn Bia; lối ngang
+  vườn; trục cổng hậu → rùa đội bia. Có 5 lối; mỗi lối là 1 draw call (`paths.ts`), nên gộp đoạn cho ít lối.
+- [x] Đồi Chè: 3 bục bậc (y 0,9 / 2,7 / 4,5), bậc đá phụ (27,5; −36,5) → (27,5; −46,8) rộng 1,8 ở mép đông, 18 bụi chè
+  (`bui`, màu `trees.autumn` đổi lục chè), đèn đá + biển gỗ "Đồi Chè" ở chân bậc.
+- [x] Vườn Bia: bục phẳng [−48,−49]→[−18,−35], 1 rùa đội bia + 8 bia đứng, 2 đèn đá hai bên cổng hậu, biển gỗ "Vườn Bia"
+  ở Túi Tây.
+- [x] Vật mới `bia` / `bia-rua` (`web/src/scene/vat_bia.ts` + test). Ô chữ giả của mẫu Catalog bị bỏ dưới mặt chữ thật
+  (`O_CHU_BIA` trong `mau_vat_2.ts`). `signAtlas.ts` có thêm tờ ảnh riêng (`SignSheet`).
+- [x] Khu mới (`site.areas`): "Vườn Bia", "Đồi Chè" (không có `han`). Sửa ví dụ R-BANDO-2 (11 khu).
+- [x] Bù ngân sách: rừng tùng sau Trà lâu từ 12 xuống 7 cây.
+- [x] Đo sau: nhìn từ trên **143 dc / 149 822 tam giác** (trần 150 / 150k, còn rất sát); cả sân 100 / 131 788; chân Thiên Bậc
+  52 / 84 528; trong Vườn Bia 45 / 79 816; bãi đông 50 / 83 166.
+- [ ] Người dùng duyệt cảnh → `/canh chot` (CHANGELOG + ảnh `design/screens/`) → gộp.
+- Còn yếu: bờ giữa các bậc chè chưa rõ, vì lưới địa hình ô 2 m làm mượt mất. Có thể thêm kè đá thấp / lan can gỗ dọc
+  mép bậc (tốn tam giác: phải bớt chỗ khác trước).
+
+## Nhiệm vụ GĐ1 (kế hoạch gốc, trước khi duyệt — giữ để tra)
 
 Làm theo skill `/canh` (vai thiết kế: sửa `design/scene/scene.json`, xem Canvas 3D, chốt, ghi `design/CHANGELOG.md`),
 trong worktree riêng. Bắt đầu **sau khi V-26 đã gộp vào main**.

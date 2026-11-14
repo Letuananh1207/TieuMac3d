@@ -125,6 +125,10 @@ export const PROP_KINDS = [
   'cong-quan',
   /** phong hoả đài đất nện */
   'phong-hoa-dat',
+  /** Vườn Bia: bia đứng (mẫu Catalog `bia` S × 1,6, cao 4 m); `text` "<Hán câu/câu>|<pinyin câu/câu>|<nghĩa Việt>|<Hán Việt>|<nguồn>" — `vat_bia.ts` */
+  'bia',
+  /** rùa đội bia (mẫu Catalog `bia` M × 1,25, cao 5 m); `text` như `bia` */
+  'bia-rua',
 ] as const;
 /** tám pháp bảo Bát Tiên (ám Bát Tiên): hồ lô · quạt · ngọc bản · sáo · sen · giỏ hoa · kiếm · ống phách */
 export const PHAP_BAO: readonly string[] = ['葫', '扇', '板', '笛', '荷', '籃', '劍', '鼓'];
