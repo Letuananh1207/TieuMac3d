@@ -112,3 +112,12 @@ Một chất liệu: kính mờ `frost*` + viền `frost-line` / `frost-outline`
 | Khung gợi ý (nền `jade` 8 %, viền `jade` 28 %, bo 12, biểu tượng 18) | `NgoiOn-doc-chua-hoc`, `NgoiOn-ngang-chua-hoc` | jade, slate |
 | Ô bộ đã học (bo 14 kính .9; chữ Hán 40, tên 14/700, 7 chấm bậc nhớ, viên "Đến hạn" `lacquer` hoặc "Ôn sau n ngày"; đến hạn viền `lacquer` 45 %) | `BoDaHoc-*` | frost, jade, lacquer, slate |
 | Cuộn sách trên tay (vật 3D: trục `scroll-wood` + đầu `jade`/`gold`, giấy `map-paper`, ấn son mặt sau) | `NgoiOn-cuon-sach` | scroll-wood, jade, gold, map-paper, lacquer |
+| Ví Văn tiền (viên kính 36, xu 26 + số 15/700 tabular; vừa cộng viền `jade` + viên "+n", vừa trừ `lacquer`) — góc trên phải | `VanTien-*`, `CuaHang-*` | frost, frost-line, frost-outline, slate, jade, lacquer, size.wallet |
+| Đồng xu Văn tiền 文錢 (lỗ vuông; vành `coin-rim`, mặt `gold`, chữ khắc `coin-ink` khi ≥ 30 px) | `VanTien-*`, `CuaHang-*`, `TrangTri-the-vat` | gold, coin-rim, coin-ink |
+| Nhãn lý do thưởng (viên kính .94 cao 28, viền `jade` 35 %, xu 20 + chữ 13/700; trần ngày: nét đứt, không xu) | `VanTien-HUD-doc`, `VanTien-hieu-ung` | frost, jade, slate-muted |
+| Thẻ "Văn tiền kiếm từ đâu" (kính .96, rộng 250, bo 14) | `VanTien-vi-trang-thai` | frost, jade, slate-muted |
+| Tab lọc viên (cao 34; chọn: nền `slate` chữ trắng) | `CuaHang-*` | slate |
+| Thẻ vật cửa hàng (ô hình `map-paper` + chữ Hán, giá số + số chữ Hán, nút Mua / Đã có / Còn thiếu) | `CuaHang-*` | map-paper, jade, slate-muted, gold |
+| Tấm xác nhận mua (Đang có / Giá / Còn lại, "Thôi" + "Mua · n") — cùng họ tấm xác nhận Danh mục sách | `CuaHang-doc-xac-nhan` | frost, jade, lacquer |
+| Tấm báo "Đã mua" (nền `slate`, chữ trắng, hình 48) | `CuaHang-doc-vua-mua` | slate, map-paper |
+| Thẻ vật trang trí ở nhà: đang đặt (viền `jade` 2 + dấu chọn) · đã có · khoá (nét đứt, hình xám + khoá, giá) | `TrangTri-the-vat` | jade, slate, slate-muted, map-paper |

@@ -695,5 +695,210 @@
         "type": "String"
       }
     }
+  },
+  "coinName": "Văn tiền",
+  "walletLabel": "Văn tiền: {n}",
+  "@walletLabel": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "walletSourcesTitle": "Văn tiền kiếm từ đâu",
+  "walletSourceLearn": "Học 1 bộ thủ mới",
+  "walletSourceReview": "Ôn đúng hạn (2/2 · 1/2)",
+  "walletSourceDaily": "Xong nhiệm vụ ngày",
+  "walletSourceStreak": "Chuỗi 7 ngày",
+  "walletSourceGame": "Trò chữ thắng · hoà · thua",
+  "walletSourceRead": "Đọc xong 1 chương",
+  "walletGameCap": "Trò chơi tối đa 60 Văn tiền mỗi ngày. Hôm nay: {x} / 60.",
+  "@walletGameCap": {
+    "placeholders": {
+      "x": {
+        "type": "int"
+      }
+    }
+  },
+  "walletSpendHint": "Tiêu ở Tạp hoá phố chợ.",
+  "rewardLearn": "+{n} · Học bộ {char}",
+  "@rewardLearn": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "char": {
+        "type": "String"
+      }
+    }
+  },
+  "rewardReview": "+{n} · Ôn đúng {char}",
+  "@rewardReview": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "char": {
+        "type": "String"
+      }
+    }
+  },
+  "rewardReviewHalf": "+{n} · Ôn {char}",
+  "@rewardReviewHalf": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "char": {
+        "type": "String"
+      }
+    }
+  },
+  "rewardDaily": "+{n} · Xong nhiệm vụ ngày",
+  "@rewardDaily": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "rewardStreak": "+{n} · Chuỗi {d} ngày",
+  "@rewardStreak": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "d": {
+        "type": "int"
+      }
+    }
+  },
+  "rewardGameWin": "+{n} · Thắng {game}",
+  "@rewardGameWin": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "game": {
+        "type": "String"
+      }
+    }
+  },
+  "rewardGameDraw": "+{n} · Hoà {game}",
+  "@rewardGameDraw": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "game": {
+        "type": "String"
+      }
+    }
+  },
+  "rewardGameLose": "+{n} · Thua {game}",
+  "@rewardGameLose": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "game": {
+        "type": "String"
+      }
+    }
+  },
+  "rewardRead": "+{n} · Đọc xong chương",
+  "@rewardRead": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "rewardGameCapped": "Hôm nay trò chơi đã đủ thưởng",
+  "shopName": "Tạp hoá",
+  "@shopName": {
+    "description": "Tiệm đồ trang trí phố chợ Khởi Nguyên Trấn; ấn son 雜貨"
+  },
+  "shopSubtitle": "Đồ trang trí Nhà của ta · mua một lần, đặt được nhiều ô",
+  "shopTabAll": "Tất cả",
+  "slotGarden": "Vườn",
+  "slotYard": "Sân",
+  "slotIndoor": "Trong nhà",
+  "shopBuy": "Mua",
+  "shopOwned": "Đã có",
+  "shopShort": "Còn thiếu {n}",
+  "@shopShort": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "shopConfirm": "Mua {item} với {n} Văn tiền?",
+  "@shopConfirm": {
+    "placeholders": {
+      "item": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "shopConfirmSub": "Đặt ở ô {slot} · mua một lần, đặt được nhiều ô",
+  "@shopConfirmSub": {
+    "placeholders": {
+      "slot": {
+        "type": "String"
+      }
+    }
+  },
+  "shopHave": "Đang có",
+  "shopPrice": "Giá",
+  "shopAfter": "Còn lại",
+  "shopCancel": "Thôi",
+  "shopBuyFor": "Mua · {n}",
+  "@shopBuyFor": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "shopBought": "Đã mua {item}",
+  "@shopBought": {
+    "placeholders": {
+      "item": {
+        "type": "String"
+      }
+    }
+  },
+  "shopBoughtSub": "Về nhà để đặt — chạm ô {slot} khi trang trí.",
+  "@shopBoughtSub": {
+    "placeholders": {
+      "slot": {
+        "type": "String"
+      }
+    }
+  },
+  "shopPoorHint": "Học bộ mới +10 · ôn đúng hạn +5 · xong nhiệm vụ ngày +20.",
+  "shopAllBought": "Đã có đủ 13 món. Văn tiền để dành cho đồ mới sắp về (đồ mặc, thức ăn linh thú).",
+  "shopClose": "Đóng",
+  "decorPlacedHere": "Đang đặt ở ô này",
+  "decorOwned": "Đã có",
+  "decorBuyAtShop": "Mua ở Tạp hoá",
+  "decorBuyAtShopDetail": "Mua {item} ở Tạp hoá phố chợ — {n} Văn tiền (đang có {m})",
+  "@decorBuyAtShopDetail": {
+    "placeholders": {
+      "item": {
+        "type": "String"
+      },
+      "n": {
+        "type": "int"
+      },
+      "m": {
+        "type": "int"
+      }
+    }
   }
 }

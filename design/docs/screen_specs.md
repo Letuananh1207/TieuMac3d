@@ -586,3 +586,82 @@ Mẫu một mục:
 - Chuỗi: `learnedTitle`, `learnedHint`, `learnedCount`, `learnedLegend`, `learnedDueCount`, `learnedOrder`,
   `learnedDue`, `learnedNextIn`, `learnedBack`, `learnedItemLabel`.
 - Ảnh: chưa có ảnh.
+
+## Ví Văn tiền + hiệu ứng nhận tiền (HUD + Flutter) · artboard `VanTien-HUD-doc.dc.html`, `VanTien-HUD-ngang.dc.html`, `VanTien-vi-trang-thai.dc.html`, `VanTien-hieu-ung.dc.html` · từ mục 2026-11-14.12
+
+- Mục đích: cho thấy số Văn tiền 文錢 đang có và mỗi lần được thưởng. Luật: nhóm `R-TIEN-*` (đang soạn — ý tưởng
+  `docs/y_tuong/2026-11-14-van-tien.md`), `R-HUD-1`, `R-MAN-1`.
+- **Ví**: viên kính sương .86 (viền trắng + ngoài `slate` 16 %, bóng `shadow.hud`), cao 36 (`size.wallet`), đệm 0 12 0 5;
+  đồng xu 26 + số 15/700 `slate`, số đều (tabular), ngăn nghìn bằng dấu cách ("1 280", "99 999"). Trợ năng "Văn tiền: {n}".
+  - Chỗ: **góc trên phải** — dọc: phải 16, trên safe + 10 (57); ngang: phải safe + 12 (59), trên 12. Lý do: quy ước game,
+    ngoài tầm ngón cái, nửa dưới đã kín. R-HUD-1 chỉ cấm chip tên khu + nút đổi góc nhìn.
+  - Ẩn khi: mở bài / thẻ học / màn ôn / bản đồ / thoại NPC / bàn cờ / bất kỳ màn Flutter (như các nút HUD khác).
+  - Trạng thái: thường · số lớn (viên giãn ngang, không thu chữ) · **vừa cộng**: viền `jade` 2 + quầng 5 `jade` 18 %, số
+    đếm lên 0,6 s, viên "+n" `jade` (cao 22, chữ trắng 12/700) dưới ví 1,5 s rồi mờ · **vừa mua**: viền + viên "−n" `lacquer`,
+    đếm xuống 0,4 s (hiện khi về cảnh sau khi mua) · 0 (vẫn hiện, không âm).
+  - Chạm ví → thẻ "Văn tiền kiếm từ đâu" (rộng 250, kính .96, bo 14): 6 dòng nguồn + mức, dòng "Trò chơi tối đa 60 Văn tiền
+    mỗi ngày. Hôm nay: {x} / 60.", "Tiêu ở Tạp hoá phố chợ." Đóng khi chạm chỗ khác hoặc sau 4 s.
+- **Đồng xu**: tròn, vành `coin-rim`, mặt `gold`, vòng trong #B88F3A, lỗ vuông 24 % (viền #8A6A2A, lòng ngà #F4F0E6).
+  Xu ≥ 30 px khắc chữ `coin-ink` Noto Serif SC: mặt trước 文 (trên) 錢 (dưới); mặt sau một chữ — chữ / bộ thủ của việc vừa
+  làm (học, ôn). Nhiệm vụ / chuỗi / trò → mặt trước. Xu trong ví (26) và nhỏ hơn: không khắc.
+- **Hiệu ứng nhận tiền**:
+  - Số xu bay = 1 xu / 5 Văn tiền, tối đa 5, cách nhau 0,06 s; bay cong từ nguồn tới ví 0,6 s, xoay; mỗi xu chạm ví → ví nảy
+    1,08×. Sau đó viên "+n" + **nhãn lý do** dưới ví (cách 8): viên kính .94 cao 28, viền ngoài `jade` 35 %, xu 20 + chữ
+    13/700, giữ 1,2 s rồi mờ 0,3 s. Nhiều khoản cùng lúc → nhãn xếp hàng nối nhau.
+  - Nguồn trên HUD: điểm màn của vật nguồn (bảng nhiệm vụ, bàn trò). Trên màn Flutter (thẻ học, màn ôn, bảng nhiệm vụ):
+    màn che HUD → một **ví tạm** trượt vào góc trên phải màn Flutter (0,2 s), xu bật ra từ nút vừa bấm; xong mờ cùng nhãn.
+  - Hiệu ứng không chặn bấm; thẻ học vẫn đóng như R-HANH-3. Giảm chuyển động → không bay, chỉ đếm số + nhãn.
+  - Nhãn: "+10 · Học bộ 竹" · "+5 · Ôn đúng 木" (1/2: "+2 · Ôn 木") · "+20 · Xong nhiệm vụ ngày" · "+50 · Chuỗi 7 ngày" ·
+    "+8 · Thắng Đấu chữ" / "+5 · Hoà …" / "+3 · Thua …" · "+10 · Đọc xong chương". Trò chạm trần ngày: nhãn mờ (viền nét đứt,
+    chữ `slate-muted`, không xu) "Hôm nay trò chơi đã đủ thưởng".
+- Chuỗi: `coinName`, `walletLabel`, `walletSourcesTitle`, `walletSource*`, `walletGameCap`, `walletSpendHint`,
+  `reward*`, `rewardGameCapped`.
+- Ảnh: chưa có ảnh.
+
+## Tạp hoá 雜貨 — cửa hàng đồ trang trí (Flutter native) · artboard `CuaHang-doc.dc.html`, `CuaHang-doc-ngheo.dc.html`, `CuaHang-doc-xac-nhan.dc.html`, `CuaHang-doc-vua-mua.dc.html`, `CuaHang-doc-het.dc.html`, `CuaHang-ngang.dc.html` · từ mục 2026-11-14.12
+
+- Mục đích: mua đồ trang trí Nhà của ta bằng Văn tiền. Mở khi: nói chuyện chủ tiệm / nút nổi ở tiệm tạp hoá phố chợ Khởi
+  Nguyên Trấn (`cua-hang`). Đóng: nút "Đóng" / quay lại → về cảnh; màn mở thì nhân vật đứng yên. Luật: `R-TIEN-*` (mua),
+  `R-NHA-4` (sở hữu — sẽ sửa), `R-NHA-2`.
+- Nền + safe area như Danh mục sách (`#E9EEEC` + hai lớp núi).
+- Đầu: ấn son 雜貨 (chữ dọc 15, nền `lacquer`, bo 4) + "Tạp hoá" Lora 22 (ngang 19) + dòng 12 `slate-muted` "Đồ trang trí
+  Nhà của ta · mua một lần, đặt được nhiều ô"; bên phải **ví** (như HUD, có trạng thái vừa trừ).
+- Tab lọc (viên cao 34, ngang 30; đang chọn nền `slate` chữ trắng; còn lại trắng 60 % viền `slate` 20 %): Tất cả · Vườn ·
+  Sân · Trong nhà. "Tất cả" chia nhóm, tiêu đề nhóm 12/700 chữ hoa `slate-muted`.
+- Lưới: dọc 3 cột, ngang 5 cột, cách 8; cuộn dọc, mờ đáy 40.
+- **Thẻ vật** (bo 14, đệm 8 / 6; chưa có: nền trắng, đã có: trắng 55 %; viền `slate` 14 %): ô hình cao 64 (ngang 50) nền
+  `map-paper` bo 10 — hình vật (bản vẽ phẳng giữ chỗ; code có thể thay ảnh chụp vật 3D) + chữ Hán 16 `jade` góc trên phải ·
+  tên 13/700 (cắt "…") · giá: xu 14 + số 12/700 + số chữ Hán 10 `slate-muted` ("160 · 一百六十文") · nút cao 34 bo 10:
+  - **Mua**: nền `jade`, chữ trắng 13/700.
+  - **Đã có**: nền `jade` 10 %, dấu ✓ + "Đã có" `jade`; không bấm được.
+  - **Còn thiếu {n}**: viền nét đứt `slate` 35 %, chữ 12/700 `slate-muted`, `aria-disabled`.
+  - Đang chọn (hộp xác nhận mở): viền ngoài `gold` 3, cách 2.
+- **Xác nhận** (tấm đáy như Danh mục sách, cảnh tối 28 %): hình 76 + "Mua {vật} {chữ} với {n} Văn tiền?" 16/700 + "Đặt ở ô
+  {loại} · mua một lần, đặt được nhiều ô" · bảng Đang có / Giá (−n `lacquer`) / Còn lại · nút "Thôi" (phụ) + "Mua · n"
+  (`jade`, xu 20).
+- **Vừa mua**: tấm báo nền `slate` chữ trắng (hình 48 + "Đã mua {vật}" + "Về nhà để đặt — chạm ô {loại} khi trang trí."),
+  3 s; ví trừ ("−160"); thẻ đổi "Đã có". Không tự đưa về nhà.
+- **Nghèo**: dải gợi ý (nền `gold` 14 %, viền `gold`) "Học bộ mới +10 · ôn đúng hạn +5 · xong nhiệm vụ ngày +20".
+- **Đã mua hết**: dải `jade` 8 % "Đã có đủ 13 món. Văn tiền để dành cho đồ mới sắp về (đồ mặc, thức ăn linh thú)."
+- Ngang 844×390: đầu + ví một hàng; tab + nút "Đóng" (cao 30) một hàng; lưới 5 cột.
+- **Bảng giá đề xuất** (30–200): Trúc cảnh 竹 30 · Đèn lồng 燈 30 · Tranh chữ 書 40 · Chậu lan 蘭 50 · Mai 梅 60 · Lư hương
+  爐 70 · Tùng 松 80 · Án đọc 案 90 · Bàn trà 茶 100 · Kệ sách 架 120 · Bình phong 屏 150 · Đá Thái Hồ 石 160 · Ao sen 蓮 200.
+  Số chữ Hán: 三十, 四十, 五十, 六十, 七十, 八十, 九十, 一百, 一百二十, 一百五十, 一百六十, 二百 + 文.
+- Chuỗi: `shopName`, `shopSubtitle`, `shopTabAll`, `slotGarden`, `slotYard`, `slotIndoor`, `shopBuy`, `shopOwned`,
+  `shopShort`, `shopConfirm`, `shopConfirmSub`, `shopHave`, `shopPrice`, `shopAfter`, `shopCancel`, `shopBuyFor`,
+  `shopBought`, `shopBoughtSub`, `shopPoorHint`, `shopAllBought`, `shopClose`.
+- Ảnh: chưa có ảnh.
+
+## Danh mục trang trí — thẻ vật có / đang đặt / khoá (mở rộng HUD trang trí) · artboard `TrangTri-the-vat.dc.html` · từ mục 2026-11-14.12
+
+- Bổ sung cho bảng danh mục của phiếu `2026-11-14-nha-nguoi-dung` (chưa vẽ bố cục bảng) khi có tiền tệ.
+- Thẻ (rộng theo lưới, bo 14, đệm 8): ô hình 72 nền `map-paper` + chữ Hán 16 góc trên phải · tên 13/700 · dòng trạng thái 12.
+  - **Đang đặt ở ô này**: viền `jade` 2, dấu chọn tròn 20 `jade` góc trên trái, dòng "Đang đặt ở ô này" `jade` 700.
+  - **Đã có**: thẻ trắng, dòng "Đã có" `slate-muted`. Chạm → đặt / thay (R-NHA-2).
+  - **Chưa có**: nền trắng 45 %, viền nét đứt `slate` 35 %, hình xám mờ 45 % + khoá tròn 30 (`slate` 75 %), chữ Hán
+    `slate-muted`, dòng "xu + giá · Mua ở Tạp hoá". Chạm → thẻ nhỏ "Mua {vật} ở Tạp hoá phố chợ — {n} Văn tiền (đang có {m})".
+    **Không mua trong nhà.**
+- Xếp: đã có trước, chưa có sau (rẻ → đắt).
+- Vật khởi đầu (đề xuất, chờ luật): Trúc cảnh 竹 · Đèn lồng 燈 · Tranh chữ 書.
+- Chuỗi: `decorPlacedHere`, `decorOwned`, `decorBuyAtShop`, `decorBuyAtShopDetail`.
+- Ảnh: chưa có ảnh.

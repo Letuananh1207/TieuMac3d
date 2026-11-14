@@ -776,6 +776,83 @@
       "w": 1440,
       "h": 900,
       "title": "Tiểu nhị 小二 · 3 hướng (khảo cứu) — chọn trước khi tạo ảnh"
+    },
+    "VanTien-HUD-doc.dc.html": {
+      "x": 0,
+      "y": 44778,
+      "w": 390,
+      "h": 844,
+      "title": "Văn tiền · HUD dọc · vừa nhận +20 (xu bay vào ví góc trên phải)"
+    },
+    "VanTien-HUD-ngang.dc.html": {
+      "x": 470,
+      "y": 44778,
+      "w": 844,
+      "h": 390,
+      "title": "Văn tiền · HUD ngang · ví thường"
+    },
+    "VanTien-vi-trang-thai.dc.html": {
+      "x": 470,
+      "y": 45248,
+      "w": 1500,
+      "h": 600,
+      "title": "Ví Văn tiền · trạng thái · đồng xu · thẻ \"kiếm từ đâu\""
+    },
+    "VanTien-hieu-ung.dc.html": {
+      "x": 2050,
+      "y": 44778,
+      "w": 1500,
+      "h": 620,
+      "title": "Hiệu ứng nhận tiền · khung hình + nhãn lý do"
+    },
+    "CuaHang-doc.dc.html": {
+      "x": 0,
+      "y": 45968,
+      "w": 390,
+      "h": 844,
+      "title": "Tạp hoá · dọc · vài món đã có, đủ tiền"
+    },
+    "CuaHang-doc-ngheo.dc.html": {
+      "x": 470,
+      "y": 45968,
+      "w": 390,
+      "h": 844,
+      "title": "Tạp hoá · dọc · nghèo (25 Văn tiền)"
+    },
+    "CuaHang-doc-xac-nhan.dc.html": {
+      "x": 940,
+      "y": 45968,
+      "w": 390,
+      "h": 844,
+      "title": "Tạp hoá · dọc · xác nhận mua"
+    },
+    "CuaHang-doc-vua-mua.dc.html": {
+      "x": 1410,
+      "y": 45968,
+      "w": 390,
+      "h": 844,
+      "title": "Tạp hoá · dọc · vừa mua xong"
+    },
+    "CuaHang-doc-het.dc.html": {
+      "x": 1880,
+      "y": 45968,
+      "w": 390,
+      "h": 844,
+      "title": "Tạp hoá · dọc · đã mua hết"
+    },
+    "CuaHang-ngang.dc.html": {
+      "x": 2350,
+      "y": 45968,
+      "w": 844,
+      "h": 390,
+      "title": "Tạp hoá · ngang"
+    },
+    "TrangTri-the-vat.dc.html": {
+      "x": 0,
+      "y": 46932,
+      "w": 1300,
+      "h": 480,
+      "title": "Danh mục trang trí ở nhà · thẻ vật có / đang đặt / khoá"
     }
   },
   "order": [
@@ -895,7 +972,18 @@
     "BoDaHoc-doc-day.dc.html",
     "BoDaHoc-ngang.dc.html",
     "TieuNhi-bo-anh.dc.html",
-    "TieuNhi-huong.dc.html"
+    "TieuNhi-huong.dc.html",
+    "VanTien-HUD-doc.dc.html",
+    "VanTien-HUD-ngang.dc.html",
+    "VanTien-vi-trang-thai.dc.html",
+    "VanTien-hieu-ung.dc.html",
+    "CuaHang-doc.dc.html",
+    "CuaHang-doc-ngheo.dc.html",
+    "CuaHang-doc-xac-nhan.dc.html",
+    "CuaHang-doc-vua-mua.dc.html",
+    "CuaHang-doc-het.dc.html",
+    "CuaHang-ngang.dc.html",
+    "TrangTri-the-vat.dc.html"
   ],
   "notes": {
     "cach-dung": {
@@ -1237,6 +1325,19 @@
       "y": 42598,
       "w": 720,
       "text": "Câu lệnh Gemini — Tiểu nhị 小二, hướng A \"trà bác sĩ trẻ\" (hồ sơ docs/tham_khao/tieu-nhi.md). Mỗi câu một cuộc trò chuyện MỚI.\n\n1 · TRƯỚC — đính kèm design/models/anh/nhan-vat-truoc.png:\nCreate a NEW character in exactly the same 3D vinyl toy style, chibi proportions (head about 1/3 of the height) and rendering as the attached image, about 4% shorter. Character: a young Song-dynasty teahouse server (\"tea master\" boy), about 18 years old, lively, big toothy smile, bushy eyebrows, big round eyes, rosy cheeks #E9A99A, skin #F0CDB5. Head: dark brown cloth head wrap #4A4038 tightly wrapped over a hidden hair bun, tied with a small knot on top, two short cloth tails hanging at the nape; no hat. Short hip-length jacket in warm tea-brown #B07A4A with narrow sleeves and a cross collar, LEFT panel over RIGHT panel (seen from the front the collar forms a \"y\"), ivory inner collar #F4F0E6 visible. A red cloth cord #A8322A ties the sleeves up above the elbows: it loops over both shoulders and crosses in an X on the back. Dark brown waist sash #3A2418. Indigo blue apron #3F5873 from waist to knees, tied behind the back. A small ivory wiping cloth #F4F0E6 tucked into the sash at his RIGHT hip. Brown trousers #5A4636 wrapped at the shins with ivory leg wraps #E8E1D2, black cloth shoes #26262A. Hands empty. A-pose: arms angled down about 35 degrees, arms not touching the body, feet slightly apart, both shoes clearly visible. Straight front view, orthographic, no perspective. Soft even studio light with gentle form shading, no outlines, no cel shading. Plain flat light grey background #DDDDDD, no ground shadow, no frame, no text, no logo, no watermark. Square 1024x1024, full body centered, top of head at 10% from the top, soles at 90%. Large clear color areas, few small details.\n\n2 · TRÁI — đính kèm ảnh 1:\nThe same character as the attached image, same pose, same size, same colors, same lighting and background. Exact side profile, rotated 90 degrees so he faces the LEFT edge of the image. Orthographic, no perspective. Show the head-wrap tails at the nape, the red sleeve cord going over the shoulder, the apron edge and its tie, the leg wraps. Arms still in A-pose, not touching the body, hands empty. Plain #DDDDDD background, no shadow, no text. Square 1024x1024, top of head at 10%, soles at 90%.\n\n3 · SAU — đính kèm ảnh 1:\nThe same character as the attached image, same pose, same size, seen straight from the BACK. Tea-brown jacket back with the red cloth cord crossing in a clear big X from both shoulders down to the waist, the indigo apron strings tied in a bow at the lower back over the dark sash, the head-wrap knot with two short tails at the nape. A-pose, arms not touching the body, hands empty. Orthographic, plain #DDDDDD background, no shadow, no text. Square 1024x1024, top of head at 10%, soles at 90%.\n\n4 · PHẢI — đính kèm ảnh 1:\nThe same character as the attached image, same pose, same size, same colors, same lighting and background. Exact side profile, rotated 90 degrees so he faces the RIGHT edge of the image. Orthographic, no perspective. The ivory wiping cloth tucked at his right hip is visible. A-pose, arms not touching the body, hands empty. Plain #DDDDDD background, no shadow, no text. Square 1024x1024, top of head at 10%, soles at 90%.\n\n5 · CẬN MẶT — đính kèm ảnh 1:\nClose-up of the same character's head and shoulders, straight front, same 3D vinyl toy style: big round eyes, bushy eyebrows, big toothy smile, rosy cheeks, dark brown cloth head wrap with a small knot on top, collar left panel over right, red cord over the shoulders. Sharp clean details. Plain #DDDDDD background, no text. Square 1024x1024.\n\nXong: lưu 5 ảnh vào một thư mục rồi báo đường dẫn — Claude chuẩn hoá (nền, cỡ, vạch 10 % / 90 %) và đặt lên artboard."
+    },
+    "tieu-de-van-tien": {
+      "x": 0,
+      "y": 44538,
+      "text": "Văn tiền 文錢 — ví HUD, hiệu ứng nhận tiền, Tạp hoá 雜貨, thẻ vật khoá (phiếu 2026-11-14-van-tien-cua-hang)",
+      "kind": "title1",
+      "maxW": 3550
+    },
+    "van-tien-ghi-chu": {
+      "x": 3274,
+      "y": 45968,
+      "w": 440,
+      "text": "Phiếu 2026-11-14-van-tien-cua-hang. Đề xuất, chưa chốt.\n\n• Ví: viên kính 36 ở GÓC TRÊN PHẢI (dọc + ngang) — quy ước game, ngoài tầm ngón cái, nửa dưới đã kín. R-HUD-1 không cấm.\n• Đồng xu lỗ vuông vàng đồng; xu bay khắc chữ vừa học (mặt sau), xu trong ví không khắc (quá nhỏ).\n• Màn Flutter che HUD → hiệu ứng mượn một ví tạm trượt vào góc trên phải màn Flutter.\n• Tạp hoá 雜貨 = màn Flutter như Danh mục sách: lọc Vườn / Sân / Trong nhà, thẻ có hình + chữ Hán + giá (số + số chữ Hán).\n• Nút: Mua (jade) · Đã có · Còn thiếu n (nét đứt). Xác nhận: Đang có / Giá / Còn lại.\n• Không mua trong nhà — thẻ khoá chỉ dẫn ra Tạp hoá.\n• Bảng giá đề xuất 30–200; 3 vật khởi đầu: Trúc cảnh, Đèn lồng, Tranh chữ.\n• Hình vật trong thẻ: vẽ phẳng giữ chỗ — phiên code có thể thay bằng ảnh chụp vật 3D."
     }
   },
   "designSystems": []
