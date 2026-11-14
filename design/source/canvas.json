@@ -1154,6 +1154,69 @@
       "w": 1440,
       "h": 920,
       "title": "Người gõ mõ · 3 hướng mới"
+    },
+    "CuoiHac-may-doc.dc.html": {
+      "x": 0,
+      "y": 63576,
+      "w": 390,
+      "h": 844,
+      "title": "CuoiHac-may-doc"
+    },
+    "CuoiHac-may-ngang.dc.html": {
+      "x": 0,
+      "y": 64580,
+      "w": 844,
+      "h": 390,
+      "title": "CuoiHac-may-ngang"
+    },
+    "CuoiHac-may-dem-doc.dc.html": {
+      "x": 470,
+      "y": 63576,
+      "w": 390,
+      "h": 844,
+      "title": "CuoiHac-may-dem-doc"
+    },
+    "CuoiHac-bay-doc.dc.html": {
+      "x": 940,
+      "y": 63576,
+      "w": 390,
+      "h": 844,
+      "title": "CuoiHac-bay-doc"
+    },
+    "CuoiHac-bay-ngang.dc.html": {
+      "x": 924,
+      "y": 64580,
+      "w": 844,
+      "h": 390,
+      "title": "CuoiHac-bay-ngang"
+    },
+    "CuoiHac-bay-dem-doc.dc.html": {
+      "x": 1410,
+      "y": 63576,
+      "w": 390,
+      "h": 844,
+      "title": "CuoiHac-bay-dem-doc"
+    },
+    "CuoiHac-bay-dem-ngang.dc.html": {
+      "x": 1848,
+      "y": 64580,
+      "w": 844,
+      "h": 390,
+      "title": "CuoiHac-bay-dem-ngang"
+    },
+    "CuoiHac-cho-doc.dc.html": {
+      "x": 1880,
+      "y": 63576,
+      "w": 390,
+      "h": 844,
+      "title": "CuoiHac-cho-doc"
+    },
+    "CuoiHac-nhip.dc.html": {
+      "x": 0,
+      "y": 65130,
+      "w": 1240,
+      "h": 560,
+      "title": "Cưỡi hạc — nhịp chuyển, số đo, chuỗi"
     }
   },
   "order": [
@@ -1327,7 +1390,16 @@
     "GoMo-bo-anh.dc.html",
     "KhatNhi-bo-anh.dc.html",
     "AnMay-huong.dc.html",
-    "GoMo-huong.dc.html"
+    "GoMo-huong.dc.html",
+    "CuoiHac-may-doc.dc.html",
+    "CuoiHac-may-ngang.dc.html",
+    "CuoiHac-may-dem-doc.dc.html",
+    "CuoiHac-bay-doc.dc.html",
+    "CuoiHac-bay-ngang.dc.html",
+    "CuoiHac-bay-dem-doc.dc.html",
+    "CuoiHac-bay-dem-ngang.dc.html",
+    "CuoiHac-cho-doc.dc.html",
+    "CuoiHac-nhip.dc.html"
   ],
   "notes": {
     "cach-dung": {
@@ -1779,6 +1851,13 @@
       "y": 62296,
       "w": 720,
       "text": "Câu lệnh Gemini — Khất nhi, đứa trẻ ăn xin (người dùng 2026-11-15: ĐẦU TÓC RỐI BÙ, mặt HƠI BUỒN; tóc KHÔNG buộc dây; CẦM dụng cụ ăn xin: tay trái bưng BÁT SỨ TRẮNG BỊ NỨT, tay phải CHỐNG GẬY CÀNH CÂY (không phải trúc) — người dùng 2026-11-15). Mã khat-nhi. Mỗi câu một cuộc trò chuyện MỚI.\r\n\r\n1 · TRƯỚC — đính kèm design/models/anh/nhan-vat-truoc.png:\r\nCreate a NEW character in exactly the same 3D vinyl toy style, chibi proportions (head about 1/3 of the height) and rendering as the attached image. Character: a poor little Song-dynasty street child who begs for food, about 9 years old, cute but a little SAD: big round eyes looking slightly down, eyebrows tilted up in the middle in a small worried look, a small closed mouth with corners slightly down, rosy cheeks #E39C8C, slightly tanned skin #E9C2A4, one small light smudge on his RIGHT cheek; NOT crying, NOT scary, NOT skinny, NOT dirty all over. Hair: black, very MESSY and UNKEMPT, completely loose and UNTIED — tousled spiky clumps sticking out in different directions on top and sides, like he never combs it, built as chunky solid clumps attached to the head (no thin loose strands). NOTHING in the hair: no cord, no string, no band, no ribbon, no tie, no topknot, no hat. Short hip-length jacket of faded hemp #9C8664 with a cross collar, LEFT panel over RIGHT panel (seen from the front the collar forms a \"y\"), elbow-length sleeves, frayed hem; a straw cord #D2B06E tied around the WAIST only. Big, clear, square PATCHES as flat color blocks: moss green #6F8A6A on his LEFT chest, earth yellow #C29A5E on his RIGHT elbow, silvery indigo #5E6E86 in the middle of his back (the biggest), earth yellow #C29A5E on the LEFT knee of his trousers. Knee-length brown trousers #5A4A3A with rolled, frayed hems. Straw sandals #D2B06E with straps tied around the ankles, toes visible. He has his begging tools: in his LEFT hand he holds out a small round WHITE porcelain begging bowl #EEEBE3, open side up, held a little forward and to the side, with one clear dark grey CRACK #6E6A64 running down from the rim and a small chip in the rim; with his RIGHT hand he LEANS ON a simple walking stick made from a rough TREE BRANCH (NOT bamboo): brown bark #7A5A3C, slightly crooked with one gentle bend, thicker at the bottom, two small cut-off twig stubs, chunky — the stick stands up, its bottom planted on the ground a little outside his right foot, its top reaching his hip, his right hand resting on top of it. Bowl and stick chunky and simple, clearly AWAY from the body, NOT touching the clothes. No bag, no other items. No writing on clothes. A-pose: arms angled down about 35 degrees, arms not touching the body, feet slightly apart, both feet clearly visible. Straight front view, orthographic, no perspective. Soft even studio light with gentle form shading, no outlines, no cel shading. Plain flat light grey background #DDDDDD, no ground shadow, no frame, no text, no logo, no watermark. Square 1024x1024, full body centered, top of the messy hair at 10% from the top, soles at 90%. Large clear color areas, few small details.\r\n\r\n2 · TRÁI — đính kèm ảnh 1:\r\nThe same character as the attached image, same pose, same size, same colors, same lighting and background. Exact side profile, rotated 90 degrees so he faces the LEFT edge of the image. Orthographic, no perspective. Same messy untied spiky hair clumps from the side (nothing tied in the hair), slightly sad face, elbow-length sleeve, straw waist cord, the earth-yellow patch on his LEFT knee, straw sandals. Arms in A-pose not touching the body, still holding out the cracked white porcelain bowl in his LEFT hand (the near hand from this side, open side up) and leaning his RIGHT hand on the upright tree-branch stick planted on the ground, tools away from the body. Plain #DDDDDD background, no shadow, no text. Square 1024x1024, top of the messy hair at 10%, soles at 90%.\r\n\r\n3 · SAU — đính kèm ảnh 1:\r\nThe same character as the attached image, same pose, same size, seen straight from the BACK. The messy untied hair clumps from behind (no cord, no tie), the BIG silvery indigo #5E6E86 square patch in the middle of the back, the straw cord knot at the back of the waist, knee-length trousers, straw sandals. A-pose, arms not touching the body; the white bowl in his left hand (appears on the LEFT side of the image from the back) and his right hand resting on the upright tree-branch stick planted on the ground (RIGHT side of the image), tools away from the body. Orthographic, plain #DDDDDD background, no shadow, no text. Square 1024x1024, top of the messy hair at 10%, soles at 90%.\r\n\r\n4 · PHẢI — đính kèm ảnh 1:\r\nThe same character as the attached image, same pose, same size, same colors, same lighting and background. Exact side profile, rotated 90 degrees so he faces the RIGHT edge of the image (NOT the left). Orthographic, no perspective. The earth-yellow patch on his RIGHT elbow is visible from this side. A-pose, arms not touching the body, his RIGHT hand (the near hand from this side) resting on top of the upright tree-branch stick planted on the ground, the cracked white bowl in his left hand, tools away from the body. Plain #DDDDDD background, no shadow, no text. Square 1024x1024, top of the messy hair at 10%, soles at 90%.\r\n\r\n5 · CẬN MẶT — đính kèm ảnh 1:\r\nClose-up of the same character's head and neck, straight front, same 3D vinyl toy style: big round eyes looking slightly down, small worried eyebrows, small closed mouth with corners slightly down (a little sad, not crying), rosy cheeks, a small light smudge on his right cheek, very messy untied black hair as chunky solid clumps with nothing tied in it, jacket collar left panel over right. Sharp clean details. Plain #DDDDDD background, no text. Square 1024x1024.\r\n\r\n6 · ĐẠO CỤ (tham khảo: bát + gậy đã cầm trong tay model; ảnh này để code đối chiếu màu / dáng) — không cần đính kèm:\r\n3D vinyl toy style props side by side on a plain light grey background #DDDDDD, seen from a 3/4 angle, soft studio light, no text: a small round white porcelain begging bowl #EEEBE3 with one clear dark grey crack #6E6A64 from the rim and a small chip, and a rough tree-branch walking stick #7A5A3C (NOT bamboo; hip-high on a 9-year-old child), slightly crooked, with two small cut-off twig stubs. Square 1024x1024.\r\n\r\n(nên có) 7–8 · CHẾCH 45° — đính kèm ảnh 1: \"The same character as the attached image, same pose, same size, rotated 45 degrees so he faces the front-LEFT (then: front-RIGHT) of the image. White cracked bowl in the left hand, right hand leaning on the upright tree-branch stick, patches in the same places. Orthographic, plain #DDDDDD background, no text. Square 1024x1024, top of the messy hair at 10%, soles at 90%.\"\r\n\r\nXong: dán ảnh vào chat — Claude chuẩn hoá (nền, cỡ, vạch 10 % / 90 %) và đặt lên artboard. Gemini đổi tay bát / gậy thì giữ nếu khớp ở cả 4 góc (như Lão Canh).\r\n"
+    },
+    "tieu-de-cuoi-hac": {
+      "x": 0,
+      "y": 63376,
+      "text": "Cưỡi hạc — màn mây + lớp chữ khi bay (phiếu 2026-11-15-cuoi-hac, V-40)",
+      "kind": "title1",
+      "maxW": 2500
     }
   },
   "designSystems": []

@@ -968,5 +968,17 @@
         "type": "String"
       }
     }
+  },
+  "craneFlyingTo": "Cưỡi hạc tới",
+  "@craneFlyingTo": {
+    "description": "Dòng nhỏ trên tên nơi đến, khi bay hạc (hoạt cảnh cưỡi hạc) — in hoa bằng CSS"
+  },
+  "craneTapToSkip": "Chạm để bỏ qua",
+  "@craneTapToSkip": {
+    "description": "Gợi ý dưới đáy khi bay hạc — chạm bất cứ đâu để bỏ qua (không phải nút)"
+  },
+  "craneAlmostThere": "Sắp tới nơi",
+  "@craneAlmostThere": {
+    "description": "Thay gợi ý sau khi đã chạm bỏ qua mà cảnh nơi đến chưa dựng xong (kèm 3 chấm)"
   }
 }

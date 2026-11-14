@@ -3,6 +3,21 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-15.9 — Cưỡi hạc: màn mây khi tải lại + lớp chữ khi bay
+
+- Loại: giao diện · chuỗi. Màn: **Cưỡi hạc** (HUD web, biến thể Màn tải khi `den=hac`) — đặc tả `docs/screen_specs.md` mục cùng tên.
+- Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-15-cuoi-hac.md` (phiếu còn trong máy / nhánh `viec/cuoi-hac`, chưa lên GitHub — dòng
+  "Đã vẽ" ghi ở bản trong máy). Phiếu đang nháp (kế hoạch V-40 chưa duyệt) — người dùng bảo vẽ trước. Vẽ trong phiên VS Code theo vai
+  thiết kế; người dùng duyệt "Ổn, chốt".
+- **Mã .9**: các mục 2026-11-15.3 → .8 đã có ở `main` trong máy (phiên `/canh` chưa đẩy) — nhảy qua để khỏi trùng.
+- Artboard (9): `CuoiHac-may-{doc,ngang,dem-doc}`, `CuoiHac-bay-{doc,ngang,dem-doc,dem-ngang}`, `CuoiHac-cho-doc`, `CuoiHac-nhip` (+ `canvas.json`).
+- Quyết định: màn mây có sẵn khối chữ (dòng phụ + tên nơi + vạch tiến độ) ở đúng chỗ lớp chữ khi bay → mây tan mà chữ không nhảy;
+  khối chữ ở trên, gợi ý ở đáy, giữa + 1/3 dưới để trống cho hạc; tiến độ là vạch mảnh 120 × 2 không số %; "Chạm để bỏ qua" hiện trễ
+  0,6 s; sau khi chạm mà chưa xong → "Sắp tới nơi" + 3 chấm; hạ cánh không chữ. Đêm theo màu `ngayDem.ts`.
+- Chuỗi mới: `craneFlyingTo`, `craneTapToSkip`, `craneAlmostThere`. Token: không mới (màu đêm ghi thẳng trong đặc tả, lấy từ `ngayDem.ts`).
+- Luật: không đổi; khớp R-HUD-4. Mô tả luật V-40 (đang chờ duyệt) nhắc "tên nơi đến + tiến độ hiện mờ" — khớp.
+- Ảnh: `screens/CuoiHac-*.png` (9; cảnh 3D là hình giữ chỗ).
+
 ## 2026-11-15.2 — Bộ ảnh nhiều góc NPC Tiểu Khất (đứa trẻ ăn xin — tóc rối bù, bát sứ nứt, chống gậy cành cây)
 
 - Loại: tài nguyên 3D — ảnh đầu vào (Hunyuan3D-2mv). Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-14-anh-khat-nhi.md` (phiếu còn trong máy,

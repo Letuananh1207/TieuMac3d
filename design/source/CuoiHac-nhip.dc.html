@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>CuoiHac-nhip</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;700&amp;family=Lora:wght@700&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width:1240px;height:560px;box-sizing:border-box;padding:28px 32px;background:#F4F7F6;color:#24323A;font:500 13px/1.55 'Be Vietnam Pro',sans-serif;display:grid;grid-template-columns:1.25fr 1fr;gap:28px">
+<div><h1 style="margin:0 0 10px;font:700 22px 'Lora',Georgia,serif">Cưỡi hạc — nhịp chuyển, lớp chữ</h1>
+<table style="border-collapse:collapse;width:100%"><tr style="color:#5E6A70;font-size:12px"><td style="padding:4px 10px">Khúc</td><td style="padding:4px 10px">Màn hình</td><td style="padding:4px 10px">Thời gian</td></tr>
+<tr><td style="padding:6px 10px;border-top:1px solid rgba(36,50,58,.12);white-space:nowrap;font-weight:700">Trang mới mở</td><td style="padding:6px 10px;border-top:1px solid rgba(36,50,58,.12)">Màn mây hiện ngay (HTML + CSS trong index.html, trước khi JS chạy): nền mây + mây phồng trôi chậm sang trái + khối chữ trên với tiến độ hiện tại</td><td style="padding:6px 10px;border-top:1px solid rgba(36,50,58,.12)">tức thì; mây trôi 24 px/s</td></tr>
+<tr><td style="padding:6px 10px;border-top:1px solid rgba(36,50,58,.12);white-space:nowrap;font-weight:700">Mây → đang bay</td><td style="padding:6px 10px;border-top:1px solid rgba(36,50,58,.12)">Khung hình đầu cảnh bay vẽ xong → nền mây + mây phồng mờ ra; khối chữ <b>đứng yên đúng chỗ</b> (không mờ, không nhảy)</td><td style="padding:6px 10px;border-top:1px solid rgba(36,50,58,.12)">mờ 0,5 s ease-out</td></tr>
+<tr><td style="padding:6px 10px;border-top:1px solid rgba(36,50,58,.12);white-space:nowrap;font-weight:700">Gợi ý chạm</td><td style="padding:6px 10px;border-top:1px solid rgba(36,50,58,.12)">"Chạm để bỏ qua" hiện sau khi màn mây tan (tránh chạm nhầm lúc chuyển)</td><td style="padding:6px 10px;border-top:1px solid rgba(36,50,58,.12)">trễ 0,6 s, mờ vào 0,3 s</td></tr>
+<tr><td style="padding:6px 10px;border-top:1px solid rgba(36,50,58,.12);white-space:nowrap;font-weight:700">Đã chạm, cảnh chưa xong</td><td style="padding:6px 10px;border-top:1px solid rgba(36,50,58,.12)">Gợi ý đổi thành "Sắp tới nơi" + 3 chấm nhấp nháy lần lượt; tiến độ vẫn chạy</td><td style="padding:6px 10px;border-top:1px solid rgba(36,50,58,.12)">đổi chữ 0,2 s; chấm 1,2 s/vòng</td></tr>
+<tr><td style="padding:6px 10px;border-top:1px solid rgba(36,50,58,.12);white-space:nowrap;font-weight:700">Bay → hạ cánh</td><td style="padding:6px 10px;border-top:1px solid rgba(36,50,58,.12)">Mây phủ nhanh (như màn mây) cùng lúc khối chữ + gợi ý mờ đi; rồi mây tan ra cảnh thật</td><td style="padding:6px 10px;border-top:1px solid rgba(36,50,58,.12)">phủ 0,3 s · tan 0,4 s</td></tr>
+<tr><td style="padding:6px 10px;border-top:1px solid rgba(36,50,58,.12);white-space:nowrap;font-weight:700">Hạ cánh</td><td style="padding:6px 10px;border-top:1px solid rgba(36,50,58,.12)">Không chữ, không gợi ý (cảnh thật sạch); chạm vẫn bỏ qua được</td><td style="padding:6px 10px;border-top:1px solid rgba(36,50,58,.12)">2 s</td></tr>
+<tr><td style="padding:6px 10px;border-top:1px solid rgba(36,50,58,.12);white-space:nowrap;font-weight:700">Bỏ qua lúc cảnh đã xong</td><td style="padding:6px 10px;border-top:1px solid rgba(36,50,58,.12)">Như "bay → hạ cánh" nhưng đứng thẳng tại chỗ xuất hiện</td><td style="padding:6px 10px;border-top:1px solid rgba(36,50,58,.12)">phủ 0,3 s · tan 0,4 s</td></tr>
+</table></div>
+<div style="display:flex;flex-direction:column;gap:14px">
+<div><div style="font-weight:700;margin-bottom:4px">Số đo</div>
+<div>Khối chữ căn giữa ngang. Dọc: đỉnh = vùng an toàn + 58 (≈ 105); ngang: đỉnh 22. Dòng phụ 11/700 giãn .12em in hoa <code>slate-muted</code> · 6 · tên nơi Lora 700 24 (ngang 22) <code>slate</code>, lề hai bên 24, xuống dòng nếu dài · 8 · vạch tiến độ 120 × 2 (nền <code>rgba(36,50,58,.15)</code>, phần đã dựng <code>jade</code>, đầu chấm vàng 6 px quầng .25) — <b>không số %</b>.</div>
+<div>Gợi ý dưới: 13/500 <code>slate-muted</code>, đáy = vùng an toàn + 26 (ngang + 14); biểu tượng chấm tròn 14 (chạm) / 3 chấm 4 px (chờ). Không phải nút — chạm bất cứ đâu.</div>
+<div>Chữ có quầng sáng mờ (ngày: mây trắng · đêm: chàm) để đọc được trên trời / núi.</div>
+<div>Vùng hạc: 1/3 dưới, hơi lệch phải — không đặt chữ ở đó.</div></div>
+<div><div style="font-weight:700;margin-bottom:4px">Đêm</div><div>Nền mây <code>#2E3866 → #4A5486</code> (theo sương đêm <code>ngayDem.ts</code>), mây phồng <code>#5A6496</code>; chữ <code>#F4F7F6</code>, dòng phụ / gợi ý <code>rgba(244,247,246,.74)</code>, phần đã dựng <code>#F4F7F6</code>, nền vạch <code>rgba(244,247,246,.25)</code>. Màn mây ngang đêm = bố cục ngang ngày + màu đêm.</div></div>
+<div><div style="font-weight:700;margin-bottom:4px">Chuỗi mới</div><div><code>craneFlyingTo</code> "Cưỡi hạc tới" · <code>craneTapToSkip</code> "Chạm để bỏ qua" · <code>craneAlmostThere</code> "Sắp tới nơi". Tên nơi: <code>siteName</code> / tên vùng có sẵn.</div></div>
+<div style="padding:10px 12px;border-radius:10px;background:rgba(212,166,74,.14);border:1px solid #D4A64A">Chỉ tiếng Việt (R-HUD-4). Giảm chuyển động → không có hoạt cảnh (màn tải thường), không vẽ. Mây phồng mức Thấp: vẫn có trên màn mây (CSS rẻ).</div>
+</div></div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1240,"height":560}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

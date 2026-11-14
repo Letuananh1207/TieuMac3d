@@ -818,3 +818,28 @@ Mẫu một mục:
 - Trợ năng: mỗi mục trên cuộn có nút ẩn đọc được (`sitScrollItemLabel`).
 - Chuỗi: có sẵn `review*`, `learn*`, `viewLearned*`, `hintGoForest`, `standUp`; mới `lookAroundHint`, `sitScrollItemLabel`.
 - Ảnh: chưa có (nền là ảnh Canvas 3D cũ + hình vẽ giữ chỗ; chưa có `?dang=ngoi-mat`).
+
+## Cưỡi hạc — màn mây + lớp chữ khi bay (HUD) · artboard `CuoiHac-may-doc.dc.html`, `CuoiHac-may-ngang.dc.html`, `CuoiHac-may-dem-doc.dc.html`, `CuoiHac-bay-doc.dc.html`, `CuoiHac-bay-ngang.dc.html`, `CuoiHac-bay-dem-doc.dc.html`, `CuoiHac-bay-dem-ngang.dc.html`, `CuoiHac-cho-doc.dc.html`, `CuoiHac-nhip.dc.html` · từ mục 2026-11-15.9
+
+- Mục đích: hoạt cảnh đi vòng trận bằng hạc (V-40, kế hoạch `docs/tasks/2026-11-15-cuoi-hac.md`). Biến thể của "Màn tải" khi `den=hac`.
+- **Màn mây** (che lúc trang tải lại, ≈ 0,3–1 s): HTML + CSS trong `index.html`, hiện trước khi JS chạy. Kín màn: ngày `#F4F7F6`;
+  đêm dải `#2E3866 → #3C4676 → #4A5486`. 5 đám mây phồng (hình bầu dục, `radial-gradient` trắng / đêm `#5A6496`, mờ 2 px) trôi trái
+  24 px/s. Có khối chữ trên (như dưới) với tiến độ hiện tại — vị trí trùng lớp chữ khi bay để chuyển không giật. Không gợi ý chạm.
+- **Lớp chữ khi bay** (đè cảnh 3D bay biển mây, cảnh chiếm cả màn):
+  - Khối chữ căn giữa ngang; đỉnh: dọc = vùng an toàn trên + 58 (≈ 105 trên 390×844), ngang 22. Dòng phụ `craneFlyingTo` 11/700 giãn
+    .12em in hoa `slate-muted` · 6 (ngang 4) · tên nơi đến Lora 700 24 (ngang 22) `slate`, lề hai bên 24, xuống dòng nếu dài · 8 (ngang 6)
+    · vạch tiến độ 120 × 2 bo tròn: nền `rgba(36,50,58,.15)`, phần đã dựng `jade`, đầu chấm vàng `gold` 6 px quầng 3 px `rgba(212,166,74,.25)`.
+    **Không ghi số %.**
+  - Gợi ý dưới: `craneTapToSkip` 13/500 `slate-muted`, căn giữa, đáy = vùng an toàn dưới + 26 (ngang + 14); trước chữ là biểu tượng
+    vòng tròn 14 (vòng 1,2 px + chấm 2). Không phải nút — chạm bất cứ đâu trên màn.
+  - Chữ có quầng: ngày `0 0 14px rgba(244,247,246,.95), 0 0 2px rgba(244,247,246,.9)`; đêm `0 0 14px rgba(20,26,62,.85)`.
+  - Đêm: chữ `#F4F7F6`, dòng phụ / gợi ý `rgba(244,247,246,.74)`, phần đã dựng `#F4F7F6`, nền vạch `rgba(244,247,246,.25)`.
+  - Vùng hạc: 1/3 dưới màn, hơi lệch phải — không đặt chữ / gợi ý vào đó.
+- **Đã chạm, cảnh chưa xong** (`CuoiHac-cho-doc`): gợi ý đổi thành `craneAlmostThere` + 3 chấm 4 px (cách 3) nhấp nháy lần lượt
+  (độ mờ 1 → .6 → .3, 1,2 s/vòng); tiến độ vẫn chạy.
+- Nhịp (`CuoiHac-nhip`): khung hình đầu cảnh bay vẽ xong → nền mây + mây phồng mờ 0,5 s ease-out, khối chữ đứng yên · gợi ý chạm
+  trễ 0,6 s rồi mờ vào 0,3 s · đổi gợi ý sau khi chạm 0,2 s · bay → hạ cánh: mây phủ 0,3 s (khối chữ + gợi ý mờ cùng lúc) rồi tan 0,4 s ·
+  lúc hạ cánh không chữ, không gợi ý, chạm vẫn bỏ qua được.
+- Ngang đêm của màn mây / chờ: bố cục ngang ngày + màu đêm (không vẽ riêng). Giảm chuyển động bật → không hoạt cảnh (màn tải thường).
+- Chuỗi: `craneFlyingTo`, `craneTapToSkip`, `craneAlmostThere`; tên nơi: `siteName` / tên vùng có sẵn. Chỉ tiếng Việt (R-HUD-4).
+- Ảnh: `screens/CuoiHac-*.png` (chụp artboard; cảnh 3D trên ảnh là hình giữ chỗ, hạc trong khung nét đứt).
