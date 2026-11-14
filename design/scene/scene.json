@@ -208,6 +208,19 @@
       "roofColor": "#2f3236",
       "trim": "#2b5446",
       "pillarColor": "#2f6f73"
+    },
+    {
+      "id": "tap-hoa",
+      "kind": "cua-hang",
+      "x": -11,
+      "z": 30,
+      "w": 8,
+      "d": 6,
+      "rotY": 90,
+      "title": "Tạp hoá",
+      "roofColor": "#3b3f44",
+      "sign": "雜",
+      "goods": "thung"
     }
   ],
   "gates": [],
@@ -532,7 +545,7 @@
       {
         "name": "Cổng Trấn",
         "from": [
-          -8,
+          -15,
           17
         ],
         "to": [

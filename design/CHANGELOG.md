@@ -3,6 +3,29 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-14.13 — Cảnh: tiệm Tạp hoá 雜 bên lối Cổng Trấn (Khởi Nguyên Trấn)
+
+- Loại: cảnh 3D — **bố cục**. Đáp ứng kế hoạch `docs/tasks/2026-11-14-van-tien.md` NV10, quyết định 1 (người dùng đã chọn
+  hướng A: tiệm mới kiểu `cua-hang` biển 雜 trong trấn, mở bằng nút nổi "Vào tiệm"). Phiên VS Code làm thay vai thiết kế
+  (`/canh`); người dùng duyệt hướng, **chưa duyệt trên Canvas 3D** — xem trên app sau khi gộp.
+- `design/scene/scene.json`:
+  - `buildings` thêm `{ "id": "tap-hoa", "kind": "cua-hang", "x": -11, "z": 30, "w": 8, "d": 6, "rotY": 90, "title": "Tạp hoá",
+    "roofColor": "#3b3f44", "sign": "雜", "goods": "thung" }` — 2 gian, mặt tiền mở nhìn +x ra lối lát đá Cổng Trấn
+    (x −4 … 4); chiếm x −14 … −8, z 26 … 34, mặt tiền đúng mép sân lát x −8.
+  - `site.areas` "Cổng Trấn": `from` [−8, 17] → [−15, 17] — đứng trong tiệm chip vẫn ghi Cổng Trấn.
+- Vì sao chỗ này: khảo cứu `docs/tham_khao/tien-ich-giao-luu.md` (hướng A) đặt **phố chợ dọc lối vào** (cửa hàng 2 tầng
+  hai bên lối 8 m, kiểu 廟前街); người chơi bắt đầu ở (0; 36) đi thẳng lên cổng nên thấy tiệm ngay bên trái. Nền đã phẳng
+  (bục x −53 … −8, z 18 … 42), không chắn lối 8 m, cách tùng (−11; 22) / (−11; 38) 4 m, đèn đá (−4,5; 27,5) 3,5 m, tường trấn
+  z 17 cách 9 m. Phía đông lối để trống cho dãy tiệm sau (mép đông chưa san phẳng). Giọng C5: ngói xám, gỗ sẫm, cờ dọc.
+- Nhận biết cho nút "Vào tiệm" (NV11): **mã nhà `tap-hoa`** — `cua-hang` là nhà vào được, `world.rooms` có phòng
+  `zoneId === "tap-hoa"` (sàn `floor`). Không thêm trường đặc tả. **Không đổi mã này** (code NV11 sẽ dựa vào).
+- Luật: `R-VA-*` (va chạm cửa hàng như hai tiệm Giang Nam), `R-HUD-1/3` (khu Cổng Trấn mở rộng) — không lệch.
+- `scene:check`: Không có lỗi (mọi cảnh). Hiệu năng Canvas 3D: trên xuống 146 draw call · 116k tam giác (≤ 150 / 150k, sát
+  trần — thêm tiệm ở trấn nên làm atlas biển trước); góc chơi trước cổng 80 draw call · 55k.
+- Cần code: không (NV11 làm nút "Vào tiệm").
+- Canvas 3D: chưa đăng bản này (theo yêu cầu). Ảnh: `screens/Canh-tap-hoa.png`.
+- File: `scene/scene.json`, `screens/Canh-tap-hoa.png`, `CHANGELOG.md`; file sinh `web/src/fonts/han*` (thêm 雜).
+
 ## 2026-11-14.12 — Văn tiền 文錢: ví HUD, hiệu ứng nhận tiền, Tạp hoá 雜貨, thẻ vật khoá ở nhà
 
 - Loại: giao diện · token · chuỗi · dữ liệu (bảng giá đề xuất) · luồng/luật (đề xuất). Màn: **Ví Văn tiền + hiệu ứng** (HUD
