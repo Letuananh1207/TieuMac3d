@@ -71,7 +71,7 @@ Không xuống lối núi V-23: quay đầu ở z 34, trước cổng "Xuống n
 | 10 | (2,5; −14) | qua cổng bắc vào sân | |
 | 11 | (8; −8) | phía đông trong sân | sư phụ ở (21,5; −4,5) ngoài tường, không vướng |
 | 12 | (8; 8) | | cách tùng (12,5; 10) 4,9 m |
-| 13 | (2,5; 14) | ra cổng nam | cách Tiểu Mặc (−2,4; 8) ≥ 7 m (lượt đi phía tây ≥ 5,7 m), cách mép bảng nhiệm vụ (2,9; 7) ≥ 3 m (V-33) |
+| 13 | (2,5; 14) | ra cổng nam | V-35 dời Tiểu Mặc + bảng ra Cổng Trấn: không còn vật nào trên đoạn này |
 | 14 | (2,5; 18) | | rồi về điểm 0 |
 
 Dài ≈ 192 m (tính cả dốc bậc). Đi 1,1 m/s, một vòng ≈ 175 s (≈ 3 phút), cộng 12 s dừng ở đầu mỗi giờ. Toạ độ chốt lại
@@ -81,6 +81,14 @@ bằng `npm run scene:check` khi `/canh` ghi `route` vào `scene.json`. Nếu V-
 **Tiểu Khất ngồi ở (−6,2; 25,6), mặt nhìn về đông (`rotY` 90)**: ven đường Cổng Trấn, chéo trước cửa Tạp hoá (cửa ở
 x ≈ −8, z 30; cách 4,6 m nên nút "Vào tiệm" và nút "Nói chuyện" không chồng nhau), cạnh đèn đá (−4,5; 27,5). Cách làn tây
 của Lão Canh 3,7 m.
+
+> **Đề xuất dời (V-20261114-35, chờ duyệt)**: V-35 đặt Tiểu Mặc ở (−7,5; 24) và bảng nhiệm vụ ở (−7,5; 18,8) — bên phải
+> (phía bắc) Tạp hoá. Chỗ cũ (−6,2; 25,6) chỉ cách Tiểu Mặc 2,1 m (hai nút "Nói chuyện" chồng nhau, hai NPC dính nhau).
+> Đề xuất Tiểu Khất ngồi **bên trái tiệm (phía nam), (−6; 35), `rotY` 90** (nhìn đông ra lối): cách cửa tiệm (−8; 30)
+> 5,4 m (không chồng "Vào tiệm"), cách Tiểu Mặc 11,1 m, cách điểm quay đầu (−2,5; 34) của Lão Canh 3,6 m, cách đèn đá
+> (−4,6; 39,4) 4,6 m, cách tùng (−11; 38) 5,8 m, cách chỗ xuất phát (0; 36) 6,1 m. Người chơi mới vào thấy Tiểu Khất
+> ngay bên trái, đi lên vài bước gặp Tiểu Mặc + bảng. Cần kiểm lại bằng `scene:check` khi `/canh` ghi Tiểu Khất vào
+> `scene.json` (bước 13). Code của V-31 không đổi.
 
 ## Thiết kế kỹ thuật (tóm tắt)
 - **Đồng hồ chung GMT+7**: `vnNow = Date.now()/1000 + 7·3600`, lấy giờ, phút, mã ngày từ đó. Máy đặt múi giờ nào cũng như

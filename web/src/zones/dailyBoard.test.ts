@@ -2,13 +2,13 @@ import { describe, expect, it } from 'vitest';
 import { dailyBoardSpot, dailyBoardView, nearBoard, tasksLeft, type PropLike } from './dailyBoard';
 
 describe('Bảng nhiệm vụ hằng ngày', () => {
-  const board: PropLike = { kind: 'bang', x: 2.9, z: 7, text: 'Nhiệm vụ hằng ngày' };
+  const board: PropLike = { kind: 'bang', x: -7.5, z: 18.8, text: 'Nhiệm vụ hằng ngày' };
 
   it('R-NV-3: tìm bảng trong đặc tả; đứng cách 2 m → trong tầm, 2,5 m → ngoài tầm', () => {
     const spot = dailyBoardSpot([{ kind: 'den-da', x: 0, z: 0 }, board]);
-    expect(spot).toEqual({ x: 2.9, z: 7 });
-    expect(nearBoard(spot!, 2.9, 9)).toBe(true);
-    expect(nearBoard(spot!, 2.9, 9.5)).toBe(false);
+    expect(spot).toEqual({ x: -7.5, z: 18.8 });
+    expect(nearBoard(spot!, -7.5, 20.8)).toBe(true);
+    expect(nearBoard(spot!, -7.5, 21.3)).toBe(false);
     expect(dailyBoardSpot([{ kind: 'den-da', x: 0, z: 0 }])).toBeNull();
   });
 

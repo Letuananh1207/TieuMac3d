@@ -5,21 +5,21 @@ danh mục mẫu: `design/kien_truc/danh_muc.md` · đặc tả: `design/scene/s
 Phiên code soạn thay vai thiết kế (`/canh`); chưa ghi `design/CHANGELOG.md` — chờ người dùng duyệt cùng Canvas 3D.
 
 ## Một câu mục đích
-Trấn khởi đầu và trạm gốc của hành trình: **xuất hiện ở Cổng Trấn → Quảng Trường (nhận việc hằng ngày, gặp Tiểu Mặc) →
+Trấn khởi đầu và trạm gốc của hành trình: **xuất hiện ở Cổng Trấn (gặp Tiểu Mặc, nhận việc hằng ngày cạnh Tạp hoá) → Quảng Trường →
 toả ra bốn hướng có việc làm** (Truyền Tống Đài đi vùng, Kỳ Văn Uyển chơi cờ chữ, Tàng Thư Các mượn sách / tự học, Thiên
 Bậc lên Phẩm Minh Các uống trà nghe đàn) **→ về nhà qua ngõ Tạp hoá**.
 
 ## Luồng người chơi
-1. Xuất hiện cạnh Cổng Trấn (0; 36) — thấy ngay Tạp hoá bên trái, ngõ "Nhà của ta", đèn đá hai bên lối.
-2. Đi bắc vào Quảng Trường qua cổng mái ngói nam — nhật quỹ giữa sân, bảng "Nhiệm vụ hằng ngày", Tiểu Mặc.
+1. Xuất hiện cạnh Cổng Trấn (0; 36) — thấy ngay Tạp hoá bên trái, phía trước bên trái (bên phải tiệm khi nhìn vào mặt tiệm) là Tiểu Mặc và bảng "Nhiệm vụ hằng ngày"; ngõ "Nhà của ta", đèn đá hai bên lối.
+2. Đi bắc vào Quảng Trường qua cổng mái ngói nam — nhật quỹ giữa sân.
 3. Cổng đông → Truyền Tống Đài (Trận sư) · cổng tây → Kỳ Văn Uyển → Tàng Thư Các · cổng bắc → Thiên Bậc → Thượng Trấn.
 4. Lối phụ Hậu Sơn: ao + thác (ngắm, nghỉ).
 
 ## Khu chức năng
 | Khu | Vai | Trần cấp |
 |---|---|---|
-| Cổng Trấn | đón, mua bán, về nhà | C5 |
-| Quảng Trường | trung tâm, nhận việc, gặp NPC | C4 (tường bao C4) |
+| Cổng Trấn | đón, nhận việc hằng ngày, mua bán, về nhà | C5 |
+| Quảng Trường | trung tâm | C4 (tường bao C4) |
 | Truyền Tống Đài | đi các vùng | — (đài) |
 | Kỳ Văn Uyển | chơi trò chữ với NPC | C5 |
 | Tàng Thư Các | mượn sách, tự học tầng 2 | C3 (`lau` L) |
@@ -41,8 +41,8 @@ Mục đích: **hoạt động** (có việc làm, NPC, ngồi, chơi) · **dẫ
 | Truyền Tống Đài + 6 cột trận | đông sân | đài (code riêng) | hoạt động | Trận sư, đi vùng (R-HANH-2) |
 | Nhật quỹ (đồng hồ mặt trời) | (0; 0) | `nhat-quy` | kể chuyện + dẫn đường | tâm sân, chữ 子丑寅…; mốc giữa trấn |
 | 4 bồn hoa 梅 蘭 菊 竹 | quanh nhật quỹ | (vật cũ) `bon-hoa` | kể chuyện | "tứ quân tử" của văn nhân |
-| Bảng "Nhiệm vụ hằng ngày" | (2,9; 7) mặt nhìn cổng nam | `bang` | hoạt động | việc hằng ngày (R-NV-1) |
-| Tiểu Mặc | (−2,4; 8) nhìn cổng nam | NPC | hoạt động | dẫn nhập |
+| Bảng "Nhiệm vụ hằng ngày" | (−7,5; 18,8) Cổng Trấn, bên phải Tạp hoá (phía bắc tiệm, sát tường trấn), mặt nhìn nam | `bang` | hoạt động | việc hằng ngày (R-NV-1); cách cửa tiệm 11,2 m, cách Tiểu Mặc 5,2 m — nút không chồng |
+| Tiểu Mặc | (−7,5; 24) giữa bảng và Tạp hoá, nhìn đông nam ra lối chính | NPC | hoạt động | dẫn nhập; người chơi đi lên từ (0; 36) thấy ngay; cách cửa tiệm (−8; 30) 6,0 m, lệch khỏi đèn đá (−4,5; 27,5) để nhìn từ chỗ xuất phát không bị che |
 | Trận sư | (21,5; −4,5) | NPC | hoạt động | truyền tống |
 | Bàn cờ · bàn Đấu chữ | (−34; 4), (−34; 11) | `ban-co` | hoạt động | trò chơi với NPC (R-GIAO) |
 | 4 dây đèn lồng | Kỳ Văn Uyển | dây đèn | kể chuyện | không khí hội chữ; có quầng sáng (NV12) |
