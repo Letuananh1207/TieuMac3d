@@ -71,7 +71,7 @@ Không xuống lối núi V-23: quay đầu ở z 34, trước cổng "Xuống n
 | 10 | (2,5; −14) | qua cổng bắc vào sân | |
 | 11 | (8; −8) | phía đông trong sân | sư phụ ở (21,5; −4,5) ngoài tường, không vướng |
 | 12 | (8; 8) | | cách tùng (12,5; 10) 4,9 m |
-| 13 | (2,5; 14) | ra cổng nam | cách Tiểu Mặc (7,6; 13,6) ≥ 3,5 m, cách bảng nhiệm vụ (5,5; 15,2) ≥ 3 m |
+| 13 | (2,5; 14) | ra cổng nam | cách Tiểu Mặc (−2,4; 8) ≥ 7 m (lượt đi phía tây ≥ 5,7 m), cách mép bảng nhiệm vụ (2,9; 7) ≥ 3 m (V-33) |
 | 14 | (2,5; 18) | | rồi về điểm 0 |
 
 Dài ≈ 192 m (tính cả dốc bậc). Đi 1,1 m/s, một vòng ≈ 175 s (≈ 3 phút), cộng 12 s dừng ở đầu mỗi giờ. Toạ độ chốt lại

@@ -78,7 +78,7 @@ describe('bản đồ vùng — nội dung (R-BANDO-2)', () => {
   it('R-BANDO-2: Tạp hoá, bảng nhiệm vụ, khu tự học tầng 2, chỗ ngồi ôn gom một dấu mỗi nhà / tầng', () => {
     const m = buildAreaMap(town(), {
       shopDoor: { x: 10, z: 27.5 },
-      board: { x: 5.5, z: 15.2 },
+      board: { x: 2.9, z: 7 },
       studySign: { x: -30, z: -25, floor: 2 },
       seats: [
         // 3 án thư tầng 1 Tàng Thư Các → 1 dấu
@@ -95,7 +95,7 @@ describe('bản đồ vùng — nội dung (R-BANDO-2)', () => {
       ],
     });
     expect(m.icons.find((i) => i.kind === 'tap-hoa')).toMatchObject({ x: 10, z: 27.5 });
-    expect(m.icons.find((i) => i.kind === 'bang-nhiem-vu')).toMatchObject({ x: 5.5, z: 15.2 });
+    expect(m.icons.find((i) => i.kind === 'bang-nhiem-vu')).toMatchObject({ x: 2.9, z: 7 });
     expect(m.icons.find((i) => i.kind === 'tu-hoc')).toMatchObject({ floor: 2, building: 'tang-thu-cac' });
     expect(m.labels.find((l) => l.text === 'Khu tự học')).toMatchObject({ floor: 2 });
     expect(JSON.stringify(m)).not.toMatch(/\p{Script=Han}/u); // nhãn bản đồ chỉ tiếng Việt (R-HUD-4)

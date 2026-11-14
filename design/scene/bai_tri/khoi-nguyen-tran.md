@@ -41,8 +41,8 @@ Mục đích: **hoạt động** (có việc làm, NPC, ngồi, chơi) · **dẫ
 | Truyền Tống Đài + 6 cột trận | đông sân | đài (code riêng) | hoạt động | Trận sư, đi vùng (R-HANH-2) |
 | Nhật quỹ (đồng hồ mặt trời) | (0; 0) | `nhat-quy` | kể chuyện + dẫn đường | tâm sân, chữ 子丑寅…; mốc giữa trấn |
 | 4 bồn hoa 梅 蘭 菊 竹 | quanh nhật quỹ | (vật cũ) `bon-hoa` | kể chuyện | "tứ quân tử" của văn nhân |
-| Bảng "Nhiệm vụ hằng ngày" | (5,5; 15,2) | `bang` | hoạt động | việc hằng ngày (R-NV-1) |
-| Tiểu Mặc | (7,6; 13,6) | NPC | hoạt động | dẫn nhập |
+| Bảng "Nhiệm vụ hằng ngày" | (2,9; 7) mặt nhìn cổng nam | `bang` | hoạt động | việc hằng ngày (R-NV-1) |
+| Tiểu Mặc | (−2,4; 8) nhìn cổng nam | NPC | hoạt động | dẫn nhập |
 | Trận sư | (21,5; −4,5) | NPC | hoạt động | truyền tống |
 | Bàn cờ · bàn Đấu chữ | (−34; 4), (−34; 11) | `ban-co` | hoạt động | trò chơi với NPC (R-GIAO) |
 | 4 dây đèn lồng | Kỳ Văn Uyển | dây đèn | kể chuyện | không khí hội chữ; có quầng sáng (NV12) |
