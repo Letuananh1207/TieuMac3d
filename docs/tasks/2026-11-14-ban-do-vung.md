@@ -1,7 +1,15 @@
 # Bản đồ vùng — bản đồ nhỏ góc màn + bản đồ lớn cả cảnh
 - Yêu cầu: "bây giờ khi vào các map tôi nghĩ chúng ta cũng nên có 1 cái gì đó để hiển thị bản đồ của map đó và vị trí chúng ta hiện tại"
-- Loại: thêm · Cỡ: vừa · Trạng thái: chờ duyệt (phần HUD: chờ thiết kế — phiếu `docs/phieu_thiet_ke/2026-11-14-ban-do-vung.md`)
+- Loại: thêm · Cỡ: vừa · Trạng thái: đang làm (phần HUD: chờ thiết kế — phiếu `docs/phieu_thiet_ke/2026-11-14-ban-do-vung.md`)
 - Việc: V-20261114-20
+
+## Đã duyệt 2026-11-14
+1. Bản đồ nhỏ **xoay theo camera** (hướng camera nhìn ở phía trên, 北 trên viền chạy theo). Bản đồ lớn bắc lên trên.
+2. Tầm bản đồ nhỏ **cố định ~30 m** quanh mình ở mọi cảnh; bản đồ lớn vừa khung, không chụm / kéo.
+3. **Ẩn cả khi ngồi** (khác đề xuất): ngồi ghế / bàn trà / thiền / Ngồi ôn / bồ đoàn đều ẩn, cùng màn tải, bản đồ
+   truyền tống, bản đồ lớn, màn phủ, thoại NPC, bàn chơi, gõ chat, trang trí.
+4. Chạm lên bản đồ lớn **không** đi tới; trong nhà vẫn mặt bằng ngoài trời, nhà đang ở tô đậm + nhãn "Tầng 2"; sửa
+   R-HUD-1 ("trừ bản đồ lớn") và R-DIEU-1 ("chạm trúng bản đồ nhỏ không thành joystick").
 
 Đã chọn (người dùng, 2026-11-14):
 - **Cả hai**: bản đồ nhỏ tròn ở góc màn luôn hiện (mũi tên = mình, chỉ hướng) → chạm vào mở **bản đồ lớn** cả cảnh, có tên các khu.
@@ -97,13 +105,12 @@
 - Giả định (không cần hỏi): mũi tên chỉ **hướng nhân vật quay mặt**; bản đồ nhỏ không hiện biểu tượng ô trang trí;
   NPC / người chơi khác không hiện; máy tính: phím **M** mở / đóng bản đồ lớn, **Esc** đóng.
 
-## Quy tắc nghiệp vụ đề xuất (NHÁP — chưa ghi vào sổ `docs/testing/quy_tac.md`)
-Nhóm mới **BANDO — bản đồ vùng (bản đồ nhỏ + bản đồ lớn)**. Viết theo phương án đề xuất ở trên; người dùng duyệt → sửa
-theo lựa chọn → ghi vào sổ → `/dong-bo-quy-tac`.
+## Quy tắc nghiệp vụ (đã ghi vào sổ `docs/testing/quy_tac.md` — bản chốt ở sổ; bảng dưới là nháp ban đầu)
+Nhóm mới **BANDO — bản đồ vùng (bản đồ nhỏ + bản đồ lớn)**. Đã sửa theo lựa chọn 2026-11-14 (R-BANDO-1: ẩn cả khi ngồi).
 
 | Mã | Quy tắc | Ví dụ |
 |---|---|---|
-| R-BANDO-1 | **Bản đồ nhỏ**: ở mọi cảnh (Khởi Nguyên Trấn, Nhà của ta, 6 vùng) có một bản đồ nhỏ tròn ở góc trên trái, hiện suốt lúc đi lại. Ẩn khi: màn tải, bản đồ truyền tống mở, bản đồ lớn mở, bài học / màn phủ (thẻ học, màn ôn, bảng), đang thoại NPC, ngồi bàn chơi, đang gõ chat, đang trang trí. Ngồi ghế / thiền / bồ đoàn (chưa mở cuộn sách) vẫn hiện. Chạm trúng bản đồ nhỏ không thành joystick và không xoay camera (ngoại lệ của R-DIEU-1). | Đứng ở Quảng Trường (0; 12) → bản đồ nhỏ ở góc trên trái, ví ở góc trên phải. Bấm "Nói chuyện" với Tiểu Mặc → bản đồ nhỏ ẩn; đóng thoại → hiện lại. Vào bàn cờ (−34; 4) → ẩn. |
+| R-BANDO-1 | **Bản đồ nhỏ**: ở mọi cảnh (Khởi Nguyên Trấn, Nhà của ta, 6 vùng) có một bản đồ nhỏ tròn ở góc trên trái, hiện suốt lúc đi lại. Ẩn khi: màn tải, bản đồ truyền tống mở, bản đồ lớn mở, bài học / màn phủ (thẻ học, màn ôn, bảng), đang thoại NPC, ngồi bàn chơi, **đang ngồi** (ghế, bàn trà, thiền, Ngồi ôn, bồ đoàn), đang gõ chat, đang trang trí. Đứng dậy → hiện lại. Chạm trúng bản đồ nhỏ không thành joystick và không xoay camera (ngoại lệ của R-DIEU-1). | Đứng ở Quảng Trường (0; 12) → bản đồ nhỏ ở góc trên trái, ví ở góc trên phải. Bấm "Nói chuyện" với Tiểu Mặc → bản đồ nhỏ ẩn; đóng thoại → hiện lại. Vào bàn cờ (−34; 4) → ẩn. Ngồi bàn trà Phẩm Minh Các → ẩn; đứng dậy → hiện. |
 | R-BANDO-2 | **Nội dung** (vẽ từ đặc tả cảnh, cả hai bản đồ): mép đất, nước, lối lát, tường (chừa khe cổng), chân các nhà đúng hướng; **vòng trận**; **cổng sang cảnh** (bản đồ lớn ghi tên nơi đến); **chỗ**: bàn chơi (theo loại trò), Tạp hoá, khu tự học, chỗ ngồi ôn (gom một dấu cho mỗi nhà / tầng), bảng nhiệm vụ. Không vẽ NPC, người chơi khác, cây lẻ, ô trang trí. Bản đồ lớn thêm **tên các khu** (`site.areas`) và tên nhà. Sửa đặc tả cảnh → bản đồ đổi theo, không phải vẽ lại tay. | Bản đồ lớn Khởi Nguyên Trấn có 8 tên khu: Truyền Tống Đài, Cổng Trấn, Quảng Trường, Kỳ Văn Uyển, Thiên Bậc, Thượng Trấn, Hậu Sơn, Tàng Thư Các; vòng trận ở (30; 0); cổng ngõ (−22; 36) ghi "Nhà của ta"; hai bàn chơi ở (−34; 4) và (−34; 11). Bản đồ lớn Nhà của ta có 3 khu Chính phòng, Vườn, Sân trước; cổng (0; 14) ghi "Khởi Nguyên Trấn". |
 | R-BANDO-3 | **Vị trí của mình**: một mũi tên ở đúng chỗ nhân vật, chỉ hướng nhân vật quay mặt. Bản đồ nhỏ: tâm luôn là nhân vật, thấy quanh mình khoảng 30 m, **xoay theo camera** (hướng camera nhìn ở phía trên). Vòng trận / cổng sang cảnh ngoài tầm → một dấu nhỏ ở mép bản đồ nhỏ chỉ về phía đó. Bản đồ lớn: **bắc lên trên**, thấy cả cảnh. | Đứng ở (0; 0) nhìn về đông → bản đồ nhỏ: Truyền Tống Đài (30; 0) ở sát mép trên, mũi tên chỉ lên. Quay camera nhìn về bắc → bản đồ nhỏ quay, Truyền Tống Đài sang mép phải. Mở bản đồ lớn → Thượng Trấn ở trên, Cổng Trấn ở dưới. |
 | R-BANDO-4 | **Trong nhà / tầng**: bản đồ luôn là mặt bằng ngoài; đang ở trong một nhà → nhà đó tô đậm; ở tầng 2 → bản đồ nhỏ có nhãn "Tầng 2". Chỗ ở tầng 2 (khu tự học Tàng Thư Các) vẽ trong chân nhà, bản đồ lớn ghi "Khu tự học · tầng 2". | Lên tầng 2 Tàng Thư Các → Tàng Thư Các tô đậm, nhãn "Tầng 2"; xuống tầng 1 → nhãn mất, nhà vẫn tô đậm; ra sân → hết tô. |
@@ -114,19 +121,19 @@ Sửa luật cũ (cùng lúc): **R-HUD-1** "Màn không báo tên khu ở đâu 
 
 ## Nhiệm vụ
 Làm được **trước thiết kế** (1–4):
-- [ ] 1. Sổ quy tắc: nhóm **BANDO** R-BANDO-1…5 theo lựa chọn của người dùng + sửa R-HUD-1, R-DIEU-1 →
+- [x] 1. (2026-11-14: đã ghi vào sổ, Xác nhận `chờ`, App `sửa`; **chưa** đồng bộ online — phiên chính chạy `/dong-bo-quy-tac`) Sổ quy tắc: nhóm **BANDO** R-BANDO-1…5 theo lựa chọn của người dùng + sửa R-HUD-1, R-DIEU-1 →
       `/dong-bo-quy-tac` (tự chép lên tài liệu online) → `--mark-synced`. (`docs/testing/quy_tac.md` · xong khi đồng bộ xong)
-- [ ] 2. `zones/areaMap.ts` — kiểu `AreaMapSource` (tập con cấu trúc của `SceneSpec`: `site.areas`, `buildings`
+- [x] 2. `zones/areaMap.ts` — kiểu `AreaMapSource` (tập con cấu trúc của `SceneSpec`: `site.areas`, `buildings`
       (id, x, z, w, d, rotY, title, kind), `walls` (enabled, half, gates), `wallSegments` (from, to, gate), `gates`,
       `water`, `paths`, `bridges`, `teleport` (enabled, center, ringRadius), `portals`, `gameTables`, `props` (bảng),
       `terrain.edge` / `center`) + `AreaMapSpots` (chỗ ngồi đã gom, biển khu tự học, tên nơi đến theo mã cảnh) →
       `buildAreaMap(src, spots): AreaMap` (bounds + lớp hình + biểu tượng + nhãn có ưu tiên). Gom chỗ ngồi: một dấu
       mỗi nhà / tầng. Test R-BANDO-2, R-BANDO-4 bằng số của trấn + Nhà của ta. (zones · vitest · xong khi `npm test` xanh)
-- [ ] 3. `zones/areaMapView.ts` — `toMap(x, z)`, `miniTransform(player, cameraYaw, radius)` (theo quyết định 1, 2),
+- [x] 3. (thêm `miniMapShown` R-BANDO-1, `hitsMiniMap` R-DIEU-1, `BigMapState` R-BANDO-5; tường chừa khe tính lại trong zones — chép cách `scene/walls.ts` `cutRun`) `zones/areaMapView.ts` — `toMap(x, z)`, `miniTransform(player, cameraYaw, radius)` (theo quyết định 1, 2),
       `arrowAngle(facing, cameraYaw)`, `edgeMarks(...)` (dấu ở mép cho vòng trận / cổng ngoài tầm), `fitLabels(...)`
       (bỏ nhãn chồng — ưu tiên khu > nơi đến cổng > nhà > chỗ), `whereAmI(buildings, pos, floor)` (nhà đang ở + tầng).
       Test R-BANDO-3, R-BANDO-4. (zones · vitest)
-- [ ] 4. `web/src/areaMapScenes.test.ts` — dựng bản đồ cho đủ 8 cảnh `design/scene/*.json` qua `loadSpec`: không lỗi,
+- [x] 4. `web/src/areaMapScenes.test.ts` — dựng bản đồ cho đủ 8 cảnh `design/scene/*.json` qua `loadSpec`: không lỗi,
       bounds hữu hạn, mỗi cảnh có vòng trận, mọi khu có nhãn, cổng sang cảnh có tên nơi đến (trấn ↔ Nhà của ta).
       (gốc · vitest)
 

@@ -18,15 +18,15 @@ mực — cùng họ với bản đồ truyền tống (BanDo-giay), nhưng đâ
   safe + 10 · ngang trái safe + 12, trên 12. Phải để ý: chỗ này trùng viên nhắc chế độ trang trí (Nhà của ta) và khung
   chat ngang lúc gõ — lúc đó bản đồ nhỏ ẩn nên không cần tránh.
 - Trong vòng: mặt bằng quanh mình ~30 m, tâm luôn là nhân vật; MŨI TÊN ở giữa = mình, chỉ hướng nhân vật quay mặt.
-- Bản đồ XOAY THEO CAMERA (hướng camera nhìn luôn ở phía trên) — đề xuất, chờ người dùng chốt; viền có dấu 北 chạy theo
-  để biết bắc ở đâu. Nếu người dùng chọn "luôn bắc lên trên" thì 北 cố định ở đỉnh, mũi tên quay.
+- Bản đồ XOAY THEO CAMERA (hướng camera nhìn luôn ở phía trên — người dùng đã chốt); viền có dấu 北 chạy theo để biết
+  bắc ở đâu.
 - Vòng trận / cổng sang cảnh ở ngoài tầm → dấu nhỏ ở MÉP vòng chỉ về phía đó (thiết kế kiểu dấu).
 - Không ghi tên khu trên bản đồ nhỏ (luật R-HUD-1 / R-HUD-3: màn không báo tên khu — chỉ bản đồ lớn được).
 - Đang ở tầng 2 → nhãn nhỏ "Tầng 2" gắn vào bản đồ nhỏ (thiết kế chọn chỗ).
 - Chạm cả vòng → mở bản đồ lớn; trạng thái đang nhấn. Vùng chạm ≥ 44. Có thể cần một gợi ý nhỏ "chạm để mở" lần đầu
   (thiết kế quyết có hay không).
 - Ẩn khi: màn tải, bản đồ truyền tống, bản đồ lớn mở, bài học / màn phủ, thoại NPC, ngồi bàn chơi, đang gõ chat, chế
-  độ trang trí. Vẫn hiện khi ngồi ghế / thiền.
+  độ trang trí, VÀ KHI ĐANG NGỒI (ghế, bàn trà, thiền, Ngồi ôn, bồ đoàn — người dùng đã chốt). Đứng dậy → hiện lại.
 
 2) Bản đồ lớn (chạm bản đồ nhỏ → mở; phím M trên máy tính)
 - Phủ cảnh (cảnh tối phía sau như bản đồ truyền tống, hoặc kiểu khác — thiết kế chọn). Cả cảnh vừa khung, BẮC LÊN TRÊN,
@@ -56,6 +56,7 @@ Trạng thái phải vẽ (luôn có dọc 390×844 + ngang 844×390):
 - Bản đồ nhỏ khi vòng trận ở ngoài tầm (dấu ở mép).
 - Đang ở TRONG NHÀ: trong Tàng Thư Các tầng 1 (nhà tô đậm) và TẦNG 2 (thêm nhãn "Tầng 2").
 - Bản đồ nhỏ đang nhấn.
+- Đang ngồi (ghế / bàn trà / thiền / bồ đoàn) → bản đồ nhỏ ẩn (chỉ cần ghi chú trên artboard, không cần vẽ riêng).
 - Bản đồ lớn Khởi Nguyên Trấn (dọc + ngang): 8 khu, 3 nhà, vòng trận, cổng ngõ về nhà, 2 bàn chơi, Tạp hoá, khu tự học
   tầng 2, chỗ ngồi ôn, bảng nhiệm vụ 日課榜.
 - Bản đồ lớn Nhà của ta (dọc): 3 khu, 1 nhà, vòng trận, cổng về trấn.
@@ -82,16 +83,16 @@ Biểu tượng cần vẽ (cỡ nhỏ trên bản đồ nhỏ ~14–18, trên b
 Luật phải theo (nguyên văn docs/testing/quy_tac.md):
 - R-HUD-1: Góc trên màn hình không có chip tên nơi / tên khu và không có nút đổi góc nhìn (bỏ 2026-11-13). Camera chỉ có
   một góc chuẩn: sau lưng, sát nhân vật (đặc tả cảnh camera.near); vẫn kéo để xoay, chụm 2 ngón để zoom. Màn không báo
-  tên khu ở đâu cả (R-HUD-3).  → ĐỀ XUẤT SỬA: "… ở đâu cả, trừ bản đồ lớn (R-BANDO-2)".
+  tên khu ở đâu cả (R-HUD-3), trừ bản đồ lớn (R-BANDO-2).  [đã sửa 2026-11-14]
 - R-DIEU-1: Ngón tay chạm vào 45% bên trái màn hình thì thành joystick (mỗi lúc một joystick); chạm chỗ khác thì kéo để
-  xoay camera, hai ngón thì chụm để zoom. Chuột không dùng joystick. → ĐỀ XUẤT THÊM: "Chạm trúng bản đồ nhỏ (R-BANDO-1)
-  không thành joystick." (bản đồ nhỏ nằm trong 45 % trái — không được chiếm chỗ ngón cái kéo joystick, nên đặt ở trên).
+  xoay camera, hai ngón thì chụm để zoom. Chuột không dùng joystick. Chạm trúng bản đồ nhỏ (R-BANDO-1) không thành
+  joystick. [đã thêm 2026-11-14] (bản đồ nhỏ nằm trong 45 % trái — không được chiếm chỗ ngón cái kéo joystick, nên ở trên).
 - R-MAN-1: App xoay tự do theo máy (dọc và ngang). Cảnh 3D phủ kín màn hình, kể cả dưới tai thỏ và thanh hệ thống; chữ
   và nút của HUD luôn nằm ngoài vùng bị che.
 - R-NPC-2: đang thoại NPC thì khung thoại ở đáy màn — bản đồ nhỏ ẩn lúc đó.
-- (mới, NHÁP — chờ người dùng duyệt) R-BANDO-1…5:
+- (mới, đã duyệt 2026-11-14 — sổ quy tắc, Xác nhận "chờ") R-BANDO-1…5:
   1 bản đồ nhỏ tròn góc trên trái ở mọi cảnh, ẩn khi màn tải / bản đồ truyền tống / bản đồ lớn / màn phủ / thoại /
-    bàn chơi / gõ chat / trang trí; ngồi ghế, thiền vẫn hiện; chạm trúng không thành joystick.
+    bàn chơi / gõ chat / trang trí / đang ngồi (ghế, bàn trà, thiền, Ngồi ôn, bồ đoàn); chạm trúng không thành joystick.
   2 nội dung vẽ từ đặc tả: mép đất, nước, lối, tường + khe cổng, chân nhà, vòng trận, cổng sang cảnh (bản đồ lớn ghi nơi
     đến), bàn chơi, Tạp hoá, khu tự học, chỗ ngồi ôn (một dấu mỗi nhà / tầng), bảng nhiệm vụ; KHÔNG NPC, người khác, cây
     lẻ, ô trang trí; bản đồ lớn thêm tên khu + tên nhà.
