@@ -12,7 +12,7 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
   ruộng chè mép tây x 8 → 10; khu Thiên Bậc / Truyền Tống Đài / Đồi Chè theo bục mới. Lão Canh quay đầu z −35.
 - Luật: R-VA-2, R-HANH-2, R-BANDO-2, R-BANDO-3, R-NPC-7. `scene:check` không lỗi; 152 draw call / 149 142 tam giác (nhìn từ trên).
 - Ảnh: `screens/Canh-thien-bac-ngan.png`.
-## 2026-11-15.9 — Cuộn Ngồi ôn cầm giữa màn, giấy dài hơn (người dùng đổi 2026-11-14.21)
+## 2026-11-15.11 — Cuộn Ngồi ôn cầm giữa màn, giấy dài hơn (người dùng đổi 2026-11-14.21)
 
 - Loại: giao diện (cảnh 3D + chữ trên cuộn). Phiên code V-20261114-43; người dùng: "giao diện khi ngồi xuống đang chỉ nhỏ như
   này tôi muốn dài hơn và đang cầm lệch về bên phải". **Đã duyệt 2026-11-15.**
@@ -65,7 +65,6 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
   `size.minimap-*` (`docs/testing/gui_thiet_ke_2026-11-15.md`).
 - Ảnh: `screens/BanDoVung-nho-vuong-doc.png`.
 
-## 2026-11-15.5 — Tiểu Mặc + bảng nhiệm vụ ra bên phải tiệm Tạp hoá
 ## 2026-11-15.6 — Truyền Tống Đài lên đầu Thiên Bậc, Trà lâu sang bãi đông cạnh Đồi Chè
 
 - Loại: cảnh 3D — **bố cục**. Phiên code V-20261114-38 làm thay `/canh`; người dùng: "đài truyền tống nên dời lên vị trí của
@@ -79,7 +78,7 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
 - Luật: R-VA-1/3/4, R-NHAC-2, R-HANH-2, R-BANDO-2/3. `scene:check` không lỗi; 148 draw call / 149 164 tam giác. Canvas 3D bản 58.
 - Ảnh: `screens/Canh-dai-dau-thien-bac.png`, `screens/Canh-tra-lau-doi-che.png`.
 
-## 2026-11-15.2 — Tiểu Mặc + bảng nhiệm vụ ra bên phải tiệm Tạp hoá
+## 2026-11-15.5 — Tiểu Mặc + bảng nhiệm vụ ra bên phải tiệm Tạp hoá
 
 - Loại: cảnh 3D — **bố cục**. Phiên code V-20261114-35 làm thay `/canh`; người dùng: "vị trí Tiểu Mặc và bảng nên đặt ở bên
   phải của tiệm Tạp hoá". **Đã duyệt 2026-11-15.**
