@@ -44,7 +44,8 @@ import { borrowedBook } from './zones/library';
 import { GuideButton } from './ui/guideButton';
 import { GuidePanel } from './ui/guidePanel';
 import { GameHud } from './ui/gameHud';
-import { gameGuide, gameSigns, signInRange, type GameSign } from './zones/gameGuides';
+import { gameSigns, signInRange, type GameSign } from './zones/gameGuides';
+import { guideOf, studySign } from './zones/studyGuide';
 import { DailyPanel } from './ui/dailyPanel';
 import { DAILY_NEW_GOAL, dailyBoardSpot, dailyBoardView, nearBoard, tasksLeft } from './zones/dailyBoard';
 import { seatInRange, type SeatSpot } from './zones/seats';
@@ -475,13 +476,14 @@ async function boot(): Promise<void> {
   const boardAt = isHome ? dailyBoardSpot(spec.props) : null;
   const boardButton = boardAt ? new BoardButton({ ...boardAt, y: groundAt(boardAt.x, boardAt.z) }, openDaily) : null;
   const dialogOf = new Map(DIALOGS.map((d) => [d.npc, d]));
-  // nút "Cách chơi" trên biển tên trò chơi Kỳ Văn Uyển → bảng cách chơi, nhân vật đứng yên tới khi đóng (R-GIAO-2)
-  const signs = gameSigns(spec.gameTables);
+  // nút "Cách chơi" trên biển tên trò chơi Kỳ Văn Uyển → bảng cách chơi, nhân vật đứng yên tới khi đóng (R-GIAO-2);
+  // nút "Hướng dẫn" trên biển "Khu tự học" tầng 2 Tàng Thư Các → bảng hướng dẫn cùng khung (R-VA-5)
+  const signs = [...gameSigns(spec.gameTables), ...(world.studySign ? [studySign(world.studySign)] : [])];
   const guidePanel = new GuidePanel(() => {
     paused = false;
   });
   const openGuide = (sign: GameSign): void => {
-    const g = gameGuide(sign.kind);
+    const g = guideOf(sign.kind);
     if (!g || paused) return;
     paused = true;
     player.moveTarget = null;
@@ -688,8 +690,8 @@ async function boot(): Promise<void> {
       boardButton.follow(camera);
     }
     if (guideButton) {
-      const sign = seatFree ? signInRange(signs, pos.x, pos.z) : null;
-      guideButton.set(sign, sign ? groundAt(sign.x, sign.z) : 0);
+      const sign = seatFree ? signInRange(signs, pos.x, pos.z, pos.y) : null;
+      guideButton.set(sign, sign ? (sign.y ?? groundAt(sign.x, sign.z)) : 0);
       guideButton.follow(camera);
     }
     walletRoom.update({ camera, player: pos, roomId: room?.zoneId, busy: busy || gamePlay.active, free: seatFree });

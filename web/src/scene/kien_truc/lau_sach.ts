@@ -183,5 +183,6 @@ export function lauSach(g: THREE.Group, b: BuildingSpec, style: Style, fade: THR
     floor: { x: 0, z: 0, w: iw - 0.3, d: id - 0.3 },
     upperY: yf - 1,
     seats,
+    studySign: { x: STUDY_SIGN.x, z: STUDY_SIGN.z, y: yf },
   };
 }

@@ -46,6 +46,8 @@ export interface World {
   zoneAnchors: ZoneAnchor[];
   /** chỗ ngồi trong nhà vào được (án thư Tàng Thư Các — R-VA-4), toạ độ cảnh */
   seats: Seat[];
+  /** chân biển "Khu tự học" tầng 2 Tàng Thư Các (R-VA-5), toạ độ cảnh; không có nhà đó → `null` */
+  studySign: { x: number; y: number; z: number } | null;
   /** bàn chơi khu giao lưu (R-GIAO-1) */
   gameTables: GameTable[];
   /** vòng trận truyền tống (`teleport.enabled`) */
@@ -133,6 +135,7 @@ export function buildWorld(
     surface: new LayeredGround(hf, [...(teleport?.pads ?? []), ...bridgePads, ...rampartPads, ...rooms.flatMap((r) => r.pads)]),
     rooms,
     seats: rooms.flatMap((r) => r.seats ?? []),
+    studySign: rooms.find((r) => r.studySign)?.studySign ?? null,
     gameTables,
     zoneAnchors: zoneAnchors(spec.buildings, kinds),
     teleport,

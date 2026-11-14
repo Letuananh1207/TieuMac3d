@@ -49,6 +49,8 @@ export interface Room {
   teacher?: { x: number; y: number; z: number; rotY: number };
   /** chỗ ngồi trong nhà (toạ độ cảnh) — án thư Tàng Thư Các (R-VA-4) */
   seats?: Seat[];
+  /** chân biển "Khu tự học" (toạ độ cảnh) — nút nổi "Hướng dẫn" (R-VA-5) */
+  studySign?: { x: number; y: number; z: number };
   /** gọi mỗi khung: mờ dần mái + tường trước khi `inside`; `y` = chân nhân vật (nhà nhiều tầng: tầng 2 không mờ sàn) */
   update(dt: number, inside: boolean, y?: number): void;
 }
@@ -65,6 +67,11 @@ const DOOR = { 'lop-hoc': 2.4, 'thu-vien': 2 } as const;
 function toWorld(b: BuildingSpec, x: number, z: number): [number, number] {
   const [dx, dz] = rotateXZ(x, z, b.rotY ?? 0);
   return [b.x + dx, b.z + dz];
+}
+
+function worldPoint(b: BuildingSpec, p: { x: number; z: number; y: number }, y0: number): { x: number; y: number; z: number } {
+  const [x, z] = toWorld(b, p.x, p.z);
+  return { x, y: y0 + p.y, z };
 }
 
 function worldRect(b: BuildingSpec, l: LocalBox): Rect {
@@ -247,6 +254,7 @@ export function addWalkIn(scene: THREE.Scene, colliders: Colliders, b: BuildingS
       const rotY = s.rotY + ((b.rotY ?? 0) * Math.PI) / 180;
       return { x: sx, y: y0 + s.y, z: sz, rotY, ...(s.study ? { study: true } : {}) };
     }),
+    ...(shell.studySign ? { studySign: worldPoint(b, shell.studySign, y0) } : {}),
     hits: [],
     anchor: new THREE.Vector3(b.x, y0 + 2, b.z),
     update(dt, inside, y) {

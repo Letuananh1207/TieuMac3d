@@ -1,13 +1,21 @@
 /**
  * Bảng cách chơi Kỳ Văn Uyển (R-GIAO-2) — lớp phủ HUD web, thiết kế 2026-11-13.35 (`CachChoi-doc-co`, `-doc-dau`,
  * `-doc-dau-chua-hoc`, `-ngang`). Một khung cho cả hai trò, nội dung từ `zones/gameGuides.ts`. DOM có sẵn trong
- * index.html (#guidePanel); phần thân dựng bằng createElement / textContent.
+ * index.html (#guidePanel); phần thân dựng bằng createElement / textContent. Cùng khung: hướng dẫn Khu tự học (R-VA-5,
+ * thiết kế 2026-11-14.17 `TuHoc-doc`, `-doc-chua-hoc`, `-ngang`).
  */
 import { boldParts, type GameGuide } from '../zones/gameGuides';
 import { portraitOf } from './dialogBox';
 import { el } from './dom';
 
 const SVG = 'http://www.w3.org/2000/svg';
+// mặt NPC chưa có chân dung riêng (thủ thư Điển Thư — `thu-thu-mat.png`, cắt lấy nửa trên)
+const faces = import.meta.glob('../../../design/models/anh/thu-thu-mat.png', { eager: true, query: '?url', import: 'default' });
+function faceOf(npc: string): string | undefined {
+  const hit = Object.entries(faces).find(([p]) => p.endsWith(`/${npc}-mat.png`));
+  return hit?.[1] as string | undefined;
+}
+
 /** Chữ Hán trong một đoạn (mẹo "木 là cái cây") — tô font Hán màu ngọc. */
 const HAN = /(\p{Script=Han}+)/u;
 
@@ -85,11 +93,51 @@ function duelFigure(): HTMLElement {
   return row;
 }
 
-/** Biểu tượng ngọn lửa của ô "chưa học bộ nào". */
-function flame(): SVGElement {
+/** Người ngồi xếp bằng trên bồ đoàn son, cuộn sách mở trên tay, vòng sáng nhập định + cuộn treo nhỏ 3 mục (R-ON-8). */
+function studyFigure(): HTMLElement {
+  const row = node('div', 'gp-study');
+  row.setAttribute('role', 'img');
+  row.setAttribute('aria-label', 'Hình minh hoạ: người ngồi bồ đoàn mở cuộn sách, cuộn có 3 mục — Ôn bộ đến hạn sáng, Học bộ mới mờ, Xem bộ đã học');
+  const s = svg('svg', { viewBox: '-90 -165 180 175', 'aria-hidden': 'true' });
+  const robe = { fill: '#F4F4EF', stroke: '#2B5446', 'stroke-width': 1.6 };
+  s.append(
+    svg('ellipse', { cx: 0, cy: -6, rx: 78, ry: 18, fill: 'rgba(255,236,190,.55)', stroke: 'rgba(212,166,74,.85)', 'stroke-width': 2 }),
+    svg('rect', { x: -50, y: -22, width: 100, height: 18, rx: 5, fill: '#A8322A' }),
+    svg('rect', { x: -44, y: -26, width: 88, height: 8, rx: 4, fill: '#B8483C' }),
+    svg('ellipse', { cx: 0, cy: -30, rx: 46, ry: 13, ...robe }),
+    svg('path', { d: 'M-24 -32 L-19 -84 Q0 -92 19 -84 L24 -32 Z', ...robe }),
+    svg('path', { d: 'M-8 -86 L0 -72 L8 -86', fill: 'none', stroke: '#2B5446', 'stroke-width': 3 }),
+    svg('circle', { cx: 0, cy: -114, r: 29, fill: '#F6DCC8' }),
+    svg('path', { d: 'M-30 -114 Q-30 -146 0 -146 Q30 -146 30 -114 Q18 -128 0 -126 Q-18 -128 -30 -114 Z', fill: '#1F1A1A' }),
+    svg('circle', { cx: 0, cy: -150, r: 10, fill: '#1F1A1A' }),
+    svg('path', { d: 'M-14 -108 q4.5 3.4 9 0 M5 -108 q4.5 3.4 9 0', fill: 'none', stroke: '#1F1A1A', 'stroke-width': 2.2, 'stroke-linecap': 'round' }),
+    svg('rect', { x: -30, y: -72, width: 60, height: 26, fill: '#E6DAC2', stroke: 'rgba(58,36,24,.35)' }),
+    svg('rect', { x: 18, y: -54, width: 7, height: 7, fill: '#A8322A' }),
+    svg('rect', { x: -36.5, y: -78, width: 7, height: 38, rx: 3.5, fill: '#3A2418' }),
+    svg('rect', { x: 29.5, y: -78, width: 7, height: 38, rx: 3.5, fill: '#3A2418' }),
+  );
+  for (const [x, y] of [[-33, -79], [33, -79], [-33, -39], [33, -39]]) {
+    s.append(svg('circle', { cx: x, cy: y, r: 4.4, fill: '#2B5446', stroke: '#D4A64A', 'stroke-width': 1.6 }));
+  }
+  const menu = node('div', 'gp-mini');
+  menu.setAttribute('aria-hidden', 'true');
+  menu.append(node('span', 'on', 'Ôn bộ đến hạn (2)'), node('span', 'off', 'Học bộ mới'), node('span', '', 'Xem bộ đã học'));
+  row.append(s, menu);
+  return row;
+}
+
+/** Biểu tượng ô "chưa học bộ nào": ngọn lửa (Đấu chữ) / bản đồ (khu tự học — đi Rừng trúc). */
+function noticeIcon(icon: 'lua' | 'ban-do'): SVGElement {
   const s = svg('svg', { width: 22, height: 22, viewBox: '0 0 24 24', fill: 'none', stroke: '#24323A', 'stroke-width': 2.2, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'aria-hidden': 'true' });
-  s.append(svg('path', { d: 'M12 3c-3 4-6 6-6 10a6 6 0 0 0 12 0c0-4-3-6-6-10z' }), svg('path', { d: 'M12 14v4' }));
+  if (icon === 'ban-do') s.append(svg('path', { d: 'M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z' }), svg('path', { d: 'M9 4v14M15 6v14' }));
+  else s.append(svg('path', { d: 'M12 3c-3 4-6 6-6 10a6 6 0 0 0 12 0c0-4-3-6-6-10z' }), svg('path', { d: 'M12 14v4' }));
   return s;
+}
+
+/** Hình minh hoạ theo bảng. */
+function figureOf(kind: GameGuide['figure']): Element {
+  if (kind === 'co') return gomokuFigure();
+  return kind === 'dau-chu' ? duelFigure() : studyFigure();
 }
 
 export class GuidePanel {
@@ -107,13 +155,14 @@ export class GuidePanel {
     return !this.root.hidden;
   }
 
-  /** Mở bảng của trò [g]; [tipName] = tên NPC cho "Mẹo của …"; [noneLearned] = chưa học bộ thủ nào (ô báo của Đấu chữ). */
+  /** Mở bảng [g]; [tipName] = tên NPC cho "Mẹo của …"; [noneLearned] = chưa học bộ thủ nào (ô báo của bảng có `none`). */
   open(g: GameGuide, tipName: string, noneLearned: boolean): void {
+    el('gpEyebrow').textContent = g.eyebrow;
     el('gpHan').textContent = g.han;
     el('gpName').textContent = g.name;
     el('gpIntro').textContent = g.intro;
     el('gpIntroRow').textContent = `· ${g.intro}`;
-    el('guidePanel').querySelector('.gp-card')?.setAttribute('aria-label', `Cách chơi ${g.name}`);
+    el('guidePanel').querySelector('.gp-card')?.setAttribute('aria-label', `${g.label} ${g.name}`);
 
     const side: HTMLElement[] = [];
     const main: HTMLElement[] = [];
@@ -124,14 +173,14 @@ export class GuidePanel {
       const body = node('div', 'b');
       body.append(...rich(g.none.body));
       txt.append(node('div', 't', g.none.title), body);
-      box.append(flame(), txt);
+      box.append(noticeIcon(g.none.icon), txt);
       main.push(box);
     }
 
-    const fig = node('figure', g.figure === 'co' ? 'gp-fig' : 'gp-fig duel');
+    const fig = node('figure', g.figure === 'co' ? 'gp-fig' : g.figure === 'dau-chu' ? 'gp-fig duel' : 'gp-fig study');
     const cap = node('figcaption');
     cap.append(...rich(g.caption));
-    fig.append(g.figure === 'co' ? gomokuFigure() : duelFigure(), cap);
+    fig.append(figureOf(g.figure), cap);
     side.push(fig);
 
     g.sections.forEach((sec, i) => {
@@ -147,17 +196,20 @@ export class GuidePanel {
     });
 
     const tip = node('div', 'gp-tip');
-    const url = portraitOf(g.tipBy);
+    const portrait = portraitOf(g.tipBy);
+    const url = portrait ?? faceOf(g.tipBy);
     if (url) {
-      const img = node('img');
+      const img = node('img', portrait ? undefined : 'face');
       img.src = url;
-      img.alt = tipName;
+      img.alt = g.tipTitle ? '' : tipName; // có đầu ô mẹo ghi tên rồi → ảnh chỉ trang trí
       tip.append(img);
     } else tip.append(node('span', 'ph'));
     const bub = node('div', 'bub');
     const say = node('div', 'say');
     say.append('"', ...rich(g.tip), '"');
-    bub.append(node('div', 'by', `Mẹo của ${tipName}`), say);
+    const by = node('div', 'by');
+    by.append(...rich(g.tipTitle ?? `Mẹo của ${tipName}`));
+    bub.append(by, say);
     tip.append(bub);
     side.push(tip);
 

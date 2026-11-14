@@ -338,6 +338,12 @@ body.map-open #joy,body.map-open #joyGhost,body.map-open .learn{display:none}
 .gp-fig.duel{flex-direction:column;align-items:stretch;gap:10px}
 .gp-fig>svg{flex:none;width:128px;height:128px}
 .gp-fig figcaption{font-size:13px;line-height:1.45}
+.gp-study{flex:none;display:flex;gap:8px;align-items:flex-end}
+.gp-study svg{flex:none;width:92px;height:104px}
+.gp-mini{width:104px;box-sizing:border-box;padding:6px;border-radius:4px;background:#f7f1e4;border-top:5px solid #3a2418;border-bottom:5px solid #3a2418;display:flex;flex-direction:column;gap:4px}
+.gp-mini span{display:block;padding:3px 7px;border-radius:6px;font-size:11px;font-weight:700;background:#fff;border:1px solid rgba(58,36,24,.22)}
+.gp-mini .on{background:var(--jade);border-color:var(--jade);color:#fff}
+.gp-mini .off{background:none;border:1px dashed rgba(58,36,24,.35);color:#5e6a70}
 .gp-duel{display:flex;gap:12px;align-items:center}
 .gp-card-han{flex:0 0 76px;height:76px;box-sizing:border-box;border-radius:6px;background:#f2eada;border:3px solid var(--jade);box-shadow:0 3px 8px rgba(0,0,0,.18),inset 0 0 0 2px #f2eada,inset 0 0 0 3px rgba(212,166,74,.8);display:flex;align-items:center;justify-content:center;font-family:var(--han);font-weight:700;font-size:50px;line-height:1;color:var(--jade)}
 .gp-opts{flex:1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
@@ -357,6 +363,8 @@ body.map-open #joy,body.map-open #joyGhost,body.map-open .learn{display:none}
 .gp-tip .by{font-size:12px;font-weight:700}
 .gp-tip .say{font-size:14px;line-height:1.45}
 .gp-han-inline{font-family:var(--han);font-weight:700;color:var(--jade)}
+.gp-tip .by .gp-han-inline{color:inherit}
+.gp-tip img.face{object-position:50% 20%}
 /* ngang: đầu bảng một hàng + nút Đóng bên phải; thân 2 cột (248 | còn lại), cột phải cuộn */
 @media (orientation:landscape) and (max-height:600px){
   #guidePanel{padding:12px max(12px,calc(var(--sa-right) + 12px)) calc(var(--sa-bottom) + 12px) max(12px,calc(var(--sa-left) + 12px))}
@@ -377,6 +385,9 @@ body.map-open #joy,body.map-open #joyGhost,body.map-open .learn{display:none}
   .gp-main{gap:14px;padding:0 6px 24px 0;scrollbar-width:thin;scrollbar-color:rgba(36,50,58,.25) transparent}
   .gp-fig{padding:10px;gap:10px}
   .gp-fig>svg{width:104px;height:104px}
+  .gp-fig.study{flex-direction:column;align-items:flex-start;gap:8px}
+  .gp-study svg{width:84px;height:96px}
+  .gp-mini{width:120px}
   .gp-sec .n{flex-basis:24px;height:24px}
   .gp-sec h3{font-size:14px}
   .gp-sec p{line-height:1.45}

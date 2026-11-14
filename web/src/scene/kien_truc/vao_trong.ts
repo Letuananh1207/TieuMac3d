@@ -36,6 +36,8 @@ export interface Shell {
    * `study` = bồ đoàn khu tự học: ngồi đủ 1 giây mở cuộn sách như Ngồi ôn (R-ON-8)
    */
   seats?: { x: number; z: number; y: number; rotY: number; study?: boolean }[];
+  /** biển gỗ "Khu tự học" (chân biển, `y` từ chân nhà) — nút nổi "Hướng dẫn" (R-VA-5) */
+  studySign?: { x: number; z: number; y: number };
 }
 
 /**

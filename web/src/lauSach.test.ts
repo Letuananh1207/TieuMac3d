@@ -207,6 +207,11 @@ describe('Tàng Thư Các lên được tầng 2', () => {
     expect(STUDY_SIGN.x + STUDY_SIGN.w / 2).toBeLessThan(L.floorX - 2); // chừa lối từ cầu nối thang
   });
 
+  it('R-VA-5: chân biển "Khu tự học" (nút "Hướng dẫn") ở đúng chỗ biển, cao bằng sàn tầng 2', () => {
+    const { room } = setup();
+    expect(room.studySign).toEqual({ x: STUDY_SIGN.x, y: yf, z: STUDY_SIGN.z });
+  });
+
   it('R-VA-4: biển chặn người ở tầng 2, không chặn tầng 1', () => {
     const { colliders } = setup();
     // điểm sát mép trước biển, bán kính nhỏ: không chạm tường sau

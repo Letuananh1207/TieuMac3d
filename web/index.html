@@ -52,7 +52,7 @@
   </div>
   <!-- nút "Cách chơi" trên biển tên trò chơi Kỳ Văn Uyển (R-GIAO-2) — kiểu nút "Xem bảng" -->
   <div id="guide" hidden>
-    <button id="guideBtn" type="button"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M9.5 9.2a2.6 2.6 0 0 1 5 .9c0 1.7-2.5 2.3-2.5 3.9"></path><path d="M12 17.2h.01"></path></svg>Cách chơi</button>
+    <button id="guideBtn" type="button"><svg id="guideIconPlay" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M9.5 9.2a2.6 2.6 0 0 1 5 .9c0 1.7-2.5 2.3-2.5 3.9"></path><path d="M12 17.2h.01"></path></svg><svg id="guideIconBook" hidden aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6c-2-1.5-5-2-8-1.5v13c3-.5 6 0 8 1.5 2-1.5 5-2 8-1.5v-13c-3-.5-6 0-8 1.5z"></path><path d="M12 6v13"></path></svg><span id="guideLabel">Cách chơi</span></button>
     <div class="tip" aria-hidden="true"></div>
     <div class="who"><span id="guideName"></span> <span class="han" lang="zh" id="guideHan"></span></div>
   </div>
@@ -63,7 +63,7 @@
     <section class="gp-card" role="dialog" aria-labelledby="gpName">
       <header class="gp-head">
         <div class="gp-titles">
-          <div class="gp-eyebrow">Kỳ Văn Uyển · Cách chơi</div>
+          <div class="gp-eyebrow" id="gpEyebrow">Kỳ Văn Uyển · Cách chơi</div>
           <div class="gp-name"><span class="gp-han" lang="zh" id="gpHan"></span><span class="gp-vi" id="gpName"></span><span class="gp-intro gp-intro-row" id="gpIntroRow"></span></div>
           <div class="gp-intro" id="gpIntro"></div>
         </div>

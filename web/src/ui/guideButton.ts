@@ -1,9 +1,11 @@
 /**
  * Nút nổi "Cách chơi" trên biển tên trò chơi ở Kỳ Văn Uyển (R-GIAO-2): dùng lại kiểu nút "Xem bảng" (thiết kế
  * 2026-11-13.25) — viên thuốc ngọc lục, mũi nhọn xuống, nhãn kính sương ghi tên trò. DOM có sẵn trong index.html (#guide).
+ * Cùng nút cho biển "Khu tự học" tầng 2 Tàng Thư Các (R-VA-5, thiết kế 2026-11-14.17): nhãn "Hướng dẫn", biểu tượng sách mở.
  */
 import * as THREE from 'three';
 import type { GameSign } from '../zones/gameGuides';
+import { STUDY_KIND } from '../zones/studyGuide';
 import { el } from './dom';
 
 /** Nút nổi phía trên đỉnh biển (biển cao ≈ 1,85 m — `gameSign`). */
@@ -13,6 +15,7 @@ export class GuideButton {
   private readonly root = el('guide');
   private readonly name = el('guideName');
   private readonly han = el('guideHan');
+  private readonly label = el('guideLabel');
   private readonly at = new THREE.Vector3();
   private readonly v = new THREE.Vector3();
   private sign: GameSign | null = null;
@@ -23,7 +26,7 @@ export class GuideButton {
     });
   }
 
-  /** Biển đang ở gần (`null` = ẩn nút); [y] = độ cao nền chỗ biển. */
+  /** Biển đang ở gần (`null` = ẩn nút); [y] = độ cao chân biển. */
   set(sign: GameSign | null, y = 0): void {
     this.root.hidden = !sign;
     if (sign) this.at.set(sign.x, y + ANCHOR_Y, sign.z);
@@ -32,7 +35,12 @@ export class GuideButton {
     if (!sign) return;
     this.name.textContent = sign.name;
     this.han.textContent = sign.han;
-    el('guideBtn').setAttribute('aria-label', `Cách chơi ${sign.name}`);
+    const study = sign.kind === STUDY_KIND;
+    const label = study ? 'Hướng dẫn' : 'Cách chơi';
+    this.label.textContent = label;
+    el('guideIconPlay').toggleAttribute('hidden', study);
+    el('guideIconBook').toggleAttribute('hidden', !study);
+    el('guideBtn').setAttribute('aria-label', `${label} ${sign.name}`);
   }
 
   /** Mỗi khung: đặt nút phía trên biển theo camera; điểm ra sau camera thì giấu. */

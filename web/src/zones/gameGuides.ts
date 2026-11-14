@@ -1,8 +1,11 @@
 /**
  * Biển tên trò chơi ở Kỳ Văn Uyển + nội dung **bảng cách chơi** (R-GIAO-2, thiết kế 2026-11-13.35): đứng gần biển → nút
  * "Cách chơi" → bảng (`ui/guidePanel.ts`). Chữ theo `design/l10n/vi.arb` `guide*`, nói đúng R-GIAO-1, R-CO-1…3,
- * R-DAU-1…2. `**…**` = chữ đậm. Thuần, không three, không DOM.
+ * R-DAU-1…2. `**…**` = chữ đậm. Thuần, không three, không DOM. Cùng khung bảng: hướng dẫn Khu tự học (`studyGuide.ts`).
  */
+
+/** Hai biển lệch cao hơn khoảng này (m) = khác tầng → không hiện nút (như chỗ ngồi, R-VA-4). */
+const FLOOR_GAP = 1;
 
 /** R-GIAO-2: đứng cách biển dưới khoảng này (m) thì hiện nút "Cách chơi". */
 export const GUIDE_RANGE = 2.5;
@@ -15,6 +18,8 @@ export interface GameSign {
   z: number;
   han: string;
   name: string;
+  /** độ cao chân biển (biển trên lầu — R-VA-5); không có = trên mặt đất, không xét tầng */
+  y?: number;
 }
 
 /** Bàn chơi trong đặc tả cảnh (chỉ phần cần). */
@@ -30,24 +35,37 @@ export interface GuideSection {
   body: string;
 }
 
-/** Nội dung bảng cách chơi một trò. */
+/** Ô báo đầu vùng cuộn khi chưa học bộ thủ nào; `icon` = biểu tượng bên trái (lửa / bản đồ). */
+export interface GuideNotice extends GuideSection {
+  icon: 'lua' | 'ban-do';
+}
+
+/** Nội dung bảng cách chơi một trò (hoặc bảng hướng dẫn một khu — cùng khung). */
 export interface GameGuide {
+  /** tên bảng: "Cách chơi" / "Hướng dẫn" (nhãn trợ năng, "Cách chơi Ngũ Tử Kỳ") */
+  label: string;
+  /** dòng chữ nhỏ trên đầu bảng */
+  eyebrow: string;
   /** tên Hán (đầu bảng) */
   han: string;
   /** tên Việt (Lora, cạnh tên Hán) */
   name: string;
   intro: string;
-  /** hình minh hoạ: lưới cờ hay thẻ bộ thủ + 4 nghĩa */
-  figure: 'co' | 'dau-chu';
+  /** hình minh hoạ: lưới cờ, thẻ bộ thủ + 4 nghĩa, hay người ngồi bồ đoàn + cuộn sách (khu tự học) */
+  figure: 'co' | 'dau-chu' | 'tu-hoc';
   caption: string;
   /** 4 mục: Mục tiêu · Mỗi lượt · Thắng · thua · hoà · Vào bàn · rời bàn */
   sections: GuideSection[];
   /** mã NPC cho mẹo (chân dung + tên) */
   tipBy: string;
+  /** đầu ô mẹo; không có → "Mẹo của <tên NPC>" */
+  tipTitle?: string;
   tip: string;
-  /** ô báo đầu vùng cuộn khi chưa học bộ thủ nào (chỉ Đấu chữ — R-DAU-1) */
-  none?: GuideSection;
+  /** ô báo đầu vùng cuộn khi chưa học bộ thủ nào (Đấu chữ — R-DAU-1; khu tự học — R-VA-5) */
+  none?: GuideNotice;
 }
+
+const EYEBROW = 'Kỳ Văn Uyển · Cách chơi';
 
 /** Mục 4 chung (guideSeatBody). */
 const SEAT: GuideSection = {
@@ -57,6 +75,8 @@ const SEAT: GuideSection = {
 
 const GUIDES: Record<string, GameGuide> = {
   co: {
+    label: 'Cách chơi',
+    eyebrow: EYEBROW,
     han: '五子棋',
     name: 'Ngũ Tử Kỳ',
     intro: 'Cờ năm quân — đấu với Tiểu Mặc.',
@@ -78,6 +98,8 @@ const GUIDES: Record<string, GameGuide> = {
     tip: 'Hàng 4 của đạo hữu, đệ luôn chặn! Muốn thắng phải mở **hai đường** cùng lúc.',
   },
   'dau-chu': {
+    label: 'Cách chơi',
+    eyebrow: EYEBROW,
     han: '鬥字',
     name: 'Đấu chữ',
     intro: 'Ôn bộ thủ đã học — đấu 10 câu với Mặc Ông.',
@@ -98,6 +120,7 @@ const GUIDES: Record<string, GameGuide> = {
     tipBy: 'su-phu',
     tip: 'Nhìn hình mà đoán: 木 là cái cây — trên có cành, dưới có rễ.',
     none: {
+      icon: 'lua',
       title: 'Đạo hữu chưa học bộ thủ nào',
       body: 'Đấu chữ chỉ ôn bộ đã học, nên chưa chơi được. Hãy tới **Rừng trúc** tu luyện trước — đi Truyền Tống Đài, chọn Rừng trúc.',
     },
@@ -122,11 +145,15 @@ export function gameSigns(tables: readonly TableLike[]): GameSign[] {
   return tables.flatMap((t) => (t.sign ? [{ kind: t.kind, npc: t.npc, ...t.sign }] : []));
 }
 
-/** Biển gần nhất trong tầm nút "Cách chơi" (dưới [GUIDE_RANGE] m); không có → `null` (R-GIAO-2). */
-export function signInRange(signs: readonly GameSign[], x: number, z: number): GameSign | null {
+/**
+ * Biển gần nhất trong tầm nút "Cách chơi" / "Hướng dẫn" (dưới [GUIDE_RANGE] m); không có → `null` (R-GIAO-2, R-VA-5).
+ * [y] = chân nhân vật: bỏ biển khác tầng (biển có `y`, lệch cao > 1 m).
+ */
+export function signInRange(signs: readonly GameSign[], x: number, z: number, y?: number): GameSign | null {
   let best: GameSign | null = null;
   let bestD = GUIDE_RANGE;
   for (const s of signs) {
+    if (y !== undefined && s.y !== undefined && Math.abs(s.y - y) > FLOOR_GAP) continue;
     const d = Math.hypot(x - s.x, z - s.z);
     if (d < bestD) {
       best = s;
