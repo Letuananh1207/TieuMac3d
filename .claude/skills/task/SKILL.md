@@ -84,6 +84,16 @@ Mỗi subagent báo xong (thông báo tự đến — không thăm dò, không �
 4. Hỏng / dừng giữa chừng → giao lại **một** lần với lời giao rõ hơn; vẫn hỏng → `dừng (<lý do>)`, đưa vào báo cáo.
 5. Gộp xong việc A làm mở khoá việc B → giao B.
 
+## Duyệt — người dùng KHÔNG phải tự tìm chỗ duyệt
+
+Mỗi việc `chờ duyệt` phải mang đủ ba thứ (ghi vào cột "Cần người dùng" của sổ việc và nói trong báo cáo):
+1. **Ở đâu** — link mở được ngay (artifact Canvas 3D kèm tham số: `?vung=<mã cảnh>`, `?nhan-vat=<mã>`; artifact catalog;
+   file kế hoạch dạng link markdown). Có công cụ `Artifact` → `open` cho người dùng xem luôn.
+2. **Xem gì** — 1–3 điểm cụ thể cần nhìn (vd. "tiệm có chắn lối không", "mặt nhân vật có cân không").
+3. **Quyết bằng gì** — hỏi NGAY trong chat bằng `AskUserQuestion` (Duyệt / Sửa …(ghi chú) / Để sau; kế hoạch: tóm tắt
+   phạm vi + điểm cần chọn thành các câu hỏi). Không bắt người dùng gõ lệnh hay mở file để duyệt.
+Duyệt xong → ghi vào kế hoạch / CHANGELOG, đổi trạng thái, chạy tiếp.
+
 ## 6. Báo
 
 Khi mọi việc hết chạy (xong / chờ người dùng): một bảng `Mã · Việc · Kết quả · Cần bạn làm` — đã gộp gì vào main,
