@@ -3,6 +3,36 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-14.2 — Bản đồ truyền tống: lục địa chia khu + ghim đầu nhân vật chính (bỏ vòng tròn, bỏ triện 此)
+
+- Loại: giao diện (tấm giấy bản đồ) · dữ liệu (toạ độ `ban-do.json`). Phiên VS Code (`/canh`), người dùng: "đổi phong
+  cách bản đồ hiện nay thành 1 bản đồ với các khu chứ không theo thứ tự như hiện tại" → chọn **lục địa địa lý**; mở khoá
+  "tự do" — đã đúng từ trước (R-HANH-1 không khoá theo tiến độ), không đổi luật.
+- Giấy 2048 × 1152 vẽ lại bằng `ve-ban-do.html`: mỗi nơi một vùng đất màu riêng (ranh giới uốn tự nhiên, nét mực nâu,
+  dải đậm 14 px trong mép), đại lục phía tây + biển đông, Bồng Lai là đảo ngoài khơi; bỏ đường chấm nối + dòng sông
+  "rắn"; thêm sông Hoàng Hà / Trường Giang, la bàn 北, trang trí nhỏ theo khu (đồi cát, núi, ruộng, ao). Biểu tượng và cỡ
+  nhãn giữ như .9; font lấy từ `web/node_modules/@fontsource` (vẽ lại không cần mạng); `?xuat` để xuất PNG headless.
+- Toạ độ (tâm biểu tượng, r 150 giữ nguyên): Văn Uyên (260; 730) → **(820; 720)** · Rừng trúc (760; 730) → **(300; 780)** ·
+  Giang Nam (1260; 730) → **(1300; 770)** · Bồng Lai (1760; 730) → **(1850; 700)** · Trường Thành (1760; 270) →
+  **(950; 230)** · Tử Cấm Thành (1160; 270) → **(1450; 280)** · Tơ lụa (560; 270) → **(330; 300)**. `trangThai` giữ (mục
+  `khoa` thừa — code đã bỏ). Ghi chú .11 (chấm vàng Rừng trúc đè chữ "lụa") hết: chấm ở (300; 630), nhãn Tơ lụa dừng 610.
+- **Lớp trạng thái** (người dùng: "không thích biểu tượng khoanh vùng tròn … không dùng chữ đỏ để chỉ vùng đất đang ở mà
+  nên dùng icon đầu nhân vật chính"): bỏ mọi vòng tròn r 150 (vùng chạm vẫn r 150, chỉ không vẽ).
+  - `mo` (đã có cảnh): **không vẽ gì**.
+  - `oDay`: bỏ triện son 此 → **ghim tròn đầu nhân vật chính** — tâm (x − 110; y − 60), r 80, nền #F4F7F6, viền `jade`
+    8 + viền ngoài vàng #D4A64A 4, đuôi nhọn chỉ xuống dài 30 rộng 48, bóng elip 26 × 8. Ảnh mới
+    `scene/ban-do/ban-do-nhan-vat.png` 256 × 256 nền trong suốt (cắt từ `models/anh/nhan-vat-mat.png`; ảnh phủ 2,16 r).
+  - `sapMo`: bỏ vòng nét đứt, **chỉ còn huy hiệu đồng hồ** (x + 100; y − 100) r 40.
+  - `vuaCham` (đổi tên từ `khoaVuaCham`): viền huy hiệu đồng hồ đổi son #A8322A, nhấp nháy 2 lần / 0,6 s (thay vòng son).
+  - Bỏ `khoa`.
+- Luật: R-HANH-2 không nêu hình vòng / triện → không đổi nội dung (chỉ "nơi đó nhấp nháy" = huy hiệu nhấp nháy).
+- Ảnh PNG 1,5 → 2,4 MB (màu khu + vân giấy).
+- **Cần code** (`/lead`): `web/src/scene/banDo.ts` vẽ lớp trạng thái theo `trangThai` mới — bỏ `ring` ở `mo` / `sapMo` /
+  vừa chạm, bỏ triện 此; `oDay` vẽ ghim (nạp `ban-do-nhan-vat.png` như ảnh giấy — `import.meta.glob ?url`, chạy offline);
+  nhấp nháy đọc `vuaCham` thay `khoaVuaCham`. Chưa sửa code thì app vẫn vẽ vòng + 此 (mặc định trong code) trên giấy mới.
+- File: `scene/ban-do/ve-ban-do.html`, `ban-do-goc.png`, `ban-do.json`, `ban-do-nhan-vat.png` (mới) · `screens/BanDo-trang-thai.png` ·
+  `docs/screen_specs.md` (mục Bản đồ truyền tống).
+
 ## 2026-11-14.1 — Tường mỏng, cổng phân cấp, biển chữ Việt, Truyền Tống Đài sang đông
 
 - Loại: cảnh 3D — **bố cục** + **ngoại hình** (đã vào `scene.json`). Phiên VS Code (`/canh` + `/lead`), người dùng:

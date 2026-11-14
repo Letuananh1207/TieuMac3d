@@ -1,5 +1,5 @@
 {
-  "$mo_ta": "Bản đồ truyền tống (design 2026-11-13.9). Ảnh nền ban-do-goc.png 2048×1152, toạ độ px theo ảnh đó (gốc trên trái). Code vẽ lớp trạng thái lên trên theo \"trangThai\". Vẽ lại ảnh: mở ve-ban-do.html trong trình duyệt (cần mạng cho Google Fonts — chỉ lúc thiết kế).",
+  "$mo_ta": "Bản đồ truyền tống — lục địa chia khu (design 2026-11-14.2; bản đầu 2026-11-13.9). Ảnh nền ban-do-goc.png 2048×1152, toạ độ px theo ảnh đó (gốc trên trái), x/y = tâm biểu tượng của khu. Code vẽ lớp trạng thái lên trên theo \"trangThai\" (2026-11-14.2: không vòng tròn quanh nơi nào; \"mo\" không vẽ gì; \"oDay\" = ghim đầu nhân vật chính, ảnh ban-do-nhan-vat.png 256×256 nền trong suốt; \"sapMo\" = chỉ huy hiệu đồng hồ; \"vuaCham\" = viền huy hiệu đổi son nhấp nháy; không còn khoá — R-HANH-1). Vẽ lại ảnh: mở ve-ban-do.html trong trình duyệt (font lấy từ web/node_modules, không cần mạng).",
   "anh": "ban-do-goc.png",
   "rong": 2048,
   "cao": 1152,
@@ -8,128 +8,98 @@
       "id": "van-uyen",
       "han": "文淵",
       "ten": "Văn Uyên Tông",
-      "x": 260,
-      "y": 730,
+      "x": 820,
+      "y": 720,
       "r": 150
     },
     {
       "id": "rung-truc",
       "han": "竹林",
       "ten": "Rừng trúc",
-      "x": 760,
-      "y": 730,
+      "x": 300,
+      "y": 780,
       "r": 150
     },
     {
       "id": "giang-nam",
       "han": "江南",
       "ten": "Giang Nam",
-      "x": 1260,
-      "y": 730,
+      "x": 1300,
+      "y": 770,
       "r": 150
     },
     {
       "id": "bong-lai",
       "han": "蓬萊",
       "ten": "Bồng Lai",
-      "x": 1760,
-      "y": 730,
+      "x": 1850,
+      "y": 700,
       "r": 150
     },
     {
       "id": "truong-thanh",
       "han": "長城",
       "ten": "Trường Thành",
-      "x": 1760,
-      "y": 270,
+      "x": 950,
+      "y": 230,
       "r": 150
     },
     {
       "id": "tu-cam-thanh",
       "han": "紫禁",
       "ten": "Tử Cấm Thành",
-      "x": 1160,
-      "y": 270,
+      "x": 1450,
+      "y": 280,
       "r": 150
     },
     {
       "id": "to-lua",
       "han": "絲路",
       "ten": "Con đường tơ lụa",
-      "x": 560,
-      "y": 270,
+      "x": 330,
+      "y": 300,
       "r": 150
     }
   ],
   "trangThai": {
-    "mo": {
-      "vong": {
-        "r": 150,
-        "net": 10,
-        "mau": "#2B5446"
-      },
-      "cham": {
-        "dx": 0,
-        "dy": -150,
-        "r": 12,
-        "mau": "#D4A64A"
-      }
-    },
+    "mo": {},
     "oDay": {
-      "nhu": "mo",
-      "trien": {
-        "dx": -160,
-        "dy": -175,
-        "canh": 84,
-        "mau": "#A8322A",
-        "chu": "此",
-        "chuMau": "#F4F7F6",
-        "coChu": 58
+      "ghim": {
+        "anh": "ban-do-nhan-vat.png",
+        "dx": -110,
+        "dy": -60,
+        "r": 80,
+        "nen": "#F4F7F6",
+        "vien": "#2B5446",
+        "net": 8,
+        "vienNgoai": "#D4A64A",
+        "netNgoai": 4,
+        "duoi": {
+          "dai": 30,
+          "rong": 48
+        },
+        "bong": {
+          "mau": "rgba(36,50,58,.22)",
+          "rx": 26,
+          "ry": 8
+        }
       }
     },
     "sapMo": {
-      "vongDut": {
-        "r": 150,
-        "net": 8,
-        "mau": "#2B5446",
-        "gach": [
-          26,
-          18
-        ]
-      },
       "huyHieu": {
         "dx": 100,
         "dy": -100,
         "r": 40,
         "nen": "#F4F7F6",
         "vien": "#2B5446",
+        "net": 6,
         "hinh": "dong-ho"
       }
     },
-    "khoa": {
-      "dia": {
-        "r": 150,
-        "mau": "rgba(242,234,218,.72)"
-      },
+    "vuaCham": {
+      "nhu": "sapMo",
       "huyHieu": {
-        "dx": 100,
-        "dy": -100,
-        "r": 40,
-        "nen": "#24323A",
-        "hinh": "khoa"
-      }
-    },
-    "khoaVuaCham": {
-      "nhu": "khoa",
-      "vong": {
-        "r": 150,
-        "net": 10,
-        "mau": "#A8322A"
-      },
-      "vongMo": {
-        "r": 172,
-        "net": 6,
-        "alpha": 0.45
+        "vien": "#A8322A"
       },
       "nhapNhay": {
         "lan": 2,

@@ -136,12 +136,15 @@ Mẫu một mục:
   vùng) → hiệu ứng ~1,2 s → cuộn bản đồ bay lên, mở ra trước mặt nhân vật, quay về camera. Đóng khi: bấm "Đóng bản đồ"
   (hoặc nút quay lại của máy) → cuộn lại, bay xuống; hoặc chạm nơi đã mở → màn tải → vùng.
 - **Tấm giấy**: `design/scene/ban-do/ban-do-goc.png` 2048 × 1152 (vẽ bằng `ve-ban-do.html`); toạ độ 7 nơi + mọi số đo lớp
-  trạng thái: `design/scene/ban-do/ban-do.json`. Đường đi "rắn": hàng dưới trái → phải (Văn Uyên · Rừng trúc · Giang Nam ·
-  Bồng Lai), rẽ lên Trường Thành, hàng trên phải → trái (Tử Cấm Thành · Tơ lụa). Chữ trên giấy: Hán 92 Noto Serif SC
-  `slate`, Việt 62 Be Vietnam Pro 700 `jade`, viền giấy 14.
-- **Lớp trạng thái** (code vẽ chồng lên giấy, theo `ban-do.json`): đã mở (vòng ngọc lục + chấm vàng) · đang ở đây (như mở
-  + triện son 此) · sắp mở (vòng nét đứt + huy hiệu đồng hồ) · khoá (đĩa giấy mờ + huy hiệu khoá) · vừa chạm nơi khoá
-  (vòng son nhấp nháy 2 lần / 0,6 s). Ảnh mẫu: `screens/BanDo-trang-thai.png`. **Chữ yêu cầu không vẽ trên giấy** (dọc
+  trạng thái: `design/scene/ban-do/ban-do.json`. **Lục địa chia khu** (từ 2026-11-14.2, thay đường "rắn" theo thứ tự):
+  mỗi nơi một vùng đất tô màu riêng, ranh giới nét mực nâu, đúng hướng địa lý, không đường nối — Tơ lụa tây bắc,
+  Trường Thành bắc, Tử Cấm Thành đông bắc, Rừng trúc tây nam, Văn Uyên Tông giữa (triện 家), Giang Nam đông nam, Bồng
+  Lai đảo ngoài biển đông. Sông Hoàng Hà / Trường Giang chảy ra biển, la bàn 北 góc trên phải. Chữ trên giấy: Hán 92
+  Noto Serif SC `slate`, Việt 62 Be Vietnam Pro 700 `jade`, viền giấy 16 (đè lên màu khu).
+- **Lớp trạng thái** (code vẽ chồng lên giấy, theo `ban-do.json`; từ 2026-11-14.2 **không vòng tròn**): đã mở (không vẽ
+  gì) · đang ở đây (ghim tròn đầu nhân vật chính `ban-do-nhan-vat.png`, viền ngọc lục + vàng, đuôi chỉ xuống, trên trái
+  biểu tượng) · sắp mở (huy hiệu đồng hồ) · vừa chạm nơi sắp mở (viền huy hiệu đổi son, nhấp nháy 2 lần / 0,6 s). Không
+  còn trạng thái khoá (R-HANH-1). Ảnh mẫu: `screens/BanDo-trang-thai.png`. **Chữ yêu cầu không vẽ trên giấy** (dọc
   giấy chỉ ≈ 17 % → chữ quá nhỏ) — hiện ở thẻ HUD.
 - **Cuộn** (vật 3D, code dựng): hai trục `scroll-wood` dày ≈ 1/25 bề rộng, đầu trục `jade` viền `gold`; giấy giữa.
 - Bố cục dọc: cuộn rộng ≈ 97 % màn (giấy 352 × 198), tâm trên ≈ 40 % chiều cao; trên cuộn dòng gợi ý "Chạm một nơi để

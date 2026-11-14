@@ -3,23 +3,29 @@
 <head>
 <meta charset="utf-8">
 <title>Bản đồ truyền tống</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@700&family=Noto+Serif+SC:wght@700&display=swap">
+<!-- font đóng gói của web/ (cần đã chạy npm install trong web/) — không cần mạng -->
+<link rel="stylesheet" href="../../../web/node_modules/@fontsource/be-vietnam-pro/700.css">
+<link rel="stylesheet" href="../../../web/node_modules/@fontsource/noto-serif-sc/700.css">
 <style>body{margin:0;background:#888} canvas{width:1024px;height:576px;display:block}</style>
 </head>
 <body>
 <canvas id="c" width="2048" height="1152"></canvas>
 <script>
-// Bản đồ hành trình — tấm giấy cuộn truyền tống. Toạ độ theo ảnh 2048 × 1152.
+// Bản đồ truyền tống — lục địa chia khu (design 2026-11-14.2). Mỗi nơi một vùng đất có ranh giới, đúng hướng địa lý;
+// không còn đường chấm nối theo thứ tự. Toạ độ theo ảnh 2048 × 1152 (gốc trên trái).
+// Xuất ảnh: mở trang với ?xuat → dataURL PNG ghi vào <textarea id="out"> (chrome --headless --dump-dom).
 const W = 2048, H = 1152;
 const PAPER = '#F2EADA', INK = '#24323A', JADE = '#2B5446', SON = '#A8322A', GOLD = '#C9A13B';
+const SEA = '#BFD5D1', SEA_DEEP = '#A9C6C2', COAST = '#6F9590', BORDER = '#5B4A3A';
+// x, y = tâm biểu tượng (cũng là tâm vùng chạm); tint = màu đất của khu
 const PLACES = [
-  { id: 'van-uyen', han: '文淵', name: 'Văn Uyên Tông', x: 260, y: 760 },
-  { id: 'rung-truc', han: '竹林', name: 'Rừng trúc', x: 760, y: 760 },
-  { id: 'giang-nam', han: '江南', name: 'Giang Nam', x: 1260, y: 760 },
-  { id: 'bong-lai', han: '蓬萊', name: 'Bồng Lai', x: 1760, y: 760 },
-  { id: 'truong-thanh', han: '長城', name: 'Trường Thành', x: 1760, y: 300 },
-  { id: 'tu-cam-thanh', han: '紫禁', name: 'Tử Cấm Thành', x: 1160, y: 300 },
-  { id: 'to-lua', han: '絲路', name: 'Con đường tơ lụa', x: 560, y: 300 }
+  { id: 'to-lua',       han: '絲路', name: 'Con đường tơ lụa', x: 330,  y: 300, tint: '#E9D4A4' },
+  { id: 'truong-thanh', han: '長城', name: 'Trường Thành',     x: 950,  y: 230, tint: '#D6D0B2' },
+  { id: 'tu-cam-thanh', han: '紫禁', name: 'Tử Cấm Thành',     x: 1450, y: 280, tint: '#EDCDB2' },
+  { id: 'rung-truc',    han: '竹林', name: 'Rừng trúc',        x: 300,  y: 780, tint: '#BCD4A0' },
+  { id: 'van-uyen',     han: '文淵', name: 'Văn Uyên Tông',    x: 820,  y: 720, tint: '#CFE0CB' },
+  { id: 'giang-nam',    han: '江南', name: 'Giang Nam',        x: 1300, y: 770, tint: '#E0E4BC' },
+  { id: 'bong-lai',     han: '蓬萊', name: 'Bồng Lai',         x: 1850, y: 700, tint: '#DCEBC6', island: true }
 ];
 const R = 150;          // vùng chạm quanh biểu tượng
 const LABEL_HAN = 92, LABEL_VI = 62;
@@ -27,31 +33,174 @@ const LABEL_HAN = 92, LABEL_VI = 62;
 function rnd(seed) { let s = seed; return () => (s = (s * 16807) % 2147483647) / 2147483647; }
 const rand = rnd(7);
 
+// nhiễu giá trị mượt (ranh giới khu, bờ biển uốn tự nhiên)
+function hash(i, j, s) { let h = (i * 374761393 + j * 668265263 + s * 2147483647) | 0; h = (h ^ (h >>> 13)) * 1274126177; return ((h ^ (h >>> 16)) >>> 0) / 4294967295; }
+function noise(x, y, s) {
+  const i = Math.floor(x), j = Math.floor(y), fx = x - i, fy = y - j;
+  const u = fx * fx * (3 - 2 * fx), v = fy * fy * (3 - 2 * fy);
+  const a = hash(i, j, s), b = hash(i + 1, j, s), c = hash(i, j + 1, s), d = hash(i + 1, j + 1, s);
+  return a + (b - a) * u + (c - a) * v + (a - b - c + d) * u * v;
+}
+function fbm(x, y, s) { return noise(x, y, s) * 0.6 + noise(x * 2.1, y * 2.1, s + 9) * 0.28 + noise(x * 4.3, y * 4.3, s + 17) * 0.12; }
+
+// bờ đông đại lục: x của bờ theo y
+function coastX(y) { return 1600 + 60 * Math.sin(y / 190) + 26 * Math.sin(y / 61 + 1.3) - 70 * Math.exp(-(((y - 690) / 150) ** 2)) + (fbm(0.5, y / 90, 3) - 0.5) * 70; }
+const BL = PLACES.find(p => p.island);
+function islandR(a) { return 1 + (fbm(Math.cos(a) * 1.6 + 5, Math.sin(a) * 1.6 + 5, 41) - 0.5) * 0.5; }
+function onIsland(x, y) {
+  const dx = (x - BL.x) / 175, dy = (y - (BL.y + 20)) / 150, d = Math.hypot(dx, dy);
+  return d < islandR(Math.atan2(dy, dx));
+}
+function isLand(x, y) { return x < coastX(y) || onIsland(x, y); }
+
+// ---------- khu: mỗi điểm đất thuộc nơi gần nhất (khoảng cách bị nhiễu → ranh giới uốn) ----------
+function regionMap() {
+  const ids = new Int8Array(W * H).fill(-1);
+  const land = PLACES.map((p, i) => [p, i]).filter(([p]) => !p.island);
+  const bi = PLACES.indexOf(BL);
+  for (let y = 0; y < H; y++) {
+    const cx = coastX(y);
+    for (let x = 0; x < W; x++) {
+      const k = y * W + x;
+      if (x < cx) {
+        const wx = x + (fbm(x / 160, y / 160, 5) - 0.5) * 200, wy = y + (fbm(x / 160 + 30, y / 160, 6) - 0.5) * 200;
+        let best = -1, bd = 1e18;
+        for (const [p, i] of land) { const d = (wx - p.x) ** 2 + ((wy - p.y) * 1.15) ** 2; if (d < bd) { bd = d; best = i; } }
+        ids[k] = best;
+      } else if (onIsland(x, y)) ids[k] = bi;
+    }
+  }
+  return ids;
+}
+
+function paintLand(g, ids) {
+  const img = g.getImageData(0, 0, W, H), px = img.data;
+  const tint = PLACES.map(p => [1, 3, 5].map(o => parseInt(p.tint.slice(o, o + 2), 16)));
+  const br = [0x5B, 0x4A, 0x3A];
+  const at = (x, y) => (x < 0 || y < 0 || x >= W || y >= H) ? -2 : ids[y * W + x];
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const k = y * W + x, id = ids[k];
+    if (id < 0) continue;
+    const c = tint[id];
+    // dải đậm trong mép khu (14 px) + nét ranh giới (2 px)
+    let edge = 0, line = false;
+    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+      const n = at(x + dx * 2, y + dy * 2); if (n >= 0 && n !== id) line = true;
+    }
+    if (!line) for (const [dx, dy] of [[14, 0], [-14, 0], [0, 14], [0, -14], [10, 10], [-10, 10], [10, -10], [-10, -10]]) {
+      const n = at(x + dx, y + dy); if (n >= 0 && n !== id) { edge = 1; break; }
+    }
+    const grain = Math.round((noise(x / 5, y / 5, 77) - 0.5) * 2) * 3; // vân giấy, lượng tử hoá cho PNG nhẹ
+    let r = c[0] + grain, gg = c[1] + grain, b = c[2] + grain;
+    if (edge) { r *= 0.93; gg *= 0.93; b *= 0.93; }
+    if (line) { r = r * 0.35 + br[0] * 0.65; gg = gg * 0.35 + br[1] * 0.65; b = b * 0.35 + br[2] * 0.65; }
+    const o = k * 4; px[o] = r; px[o + 1] = gg; px[o + 2] = b; px[o + 3] = 255;
+  }
+  g.putImageData(img, 0, 0);
+}
+
 function paper(g) {
   g.fillStyle = PAPER; g.fillRect(0, 0, W, H);
-  // vân giấy nhẹ
   for (let i = 0; i < 2200; i++) {
     g.fillStyle = `rgba(120,100,70,${0.015 + rand() * 0.02})`;
     g.fillRect(rand() * W, rand() * H, 1 + rand() * 3, 1 + rand() * 2);
   }
-  // viền ố
+}
+function vignette(g) {
   const v = g.createRadialGradient(W / 2, H / 2, H * 0.35, W / 2, H / 2, W * 0.62);
   v.addColorStop(0, 'rgba(160,130,90,0)'); v.addColorStop(1, 'rgba(160,130,90,.22)');
   g.fillStyle = v; g.fillRect(0, 0, W, H);
 }
 
-function mountains(g, baseY, amp, color, alpha, seed, step) {
-  const r = rnd(seed);
-  g.save(); g.globalAlpha = alpha; g.fillStyle = color;
-  g.beginPath(); g.moveTo(0, H);
-  let x = 0; g.lineTo(0, baseY);
-  while (x < W) {
-    const w = step * (0.6 + r() * 0.8), h = amp * (0.4 + r() * 0.9);
-    g.quadraticCurveTo(x + w * 0.35, baseY - h, x + w * 0.5, baseY - h * 0.95);
-    g.quadraticCurveTo(x + w * 0.7, baseY - h * 0.6, x + w, baseY - r() * amp * 0.15);
-    x += w;
+function islandPath(g, off, begin = true) {
+  if (begin) g.beginPath();
+  for (let a = 0; a <= Math.PI * 2 + 0.001; a += 0.02) {
+    const rr = islandR(a), x = BL.x + Math.cos(a) * (175 * rr + off), y = BL.y + 20 + Math.sin(a) * (150 * rr + off);
+    a ? g.lineTo(x, y) : g.moveTo(x, y);
   }
-  g.lineTo(W, H); g.closePath(); g.fill(); g.restore();
+  g.closePath();
+}
+function sea(g) {
+  g.save();
+  g.beginPath(); g.moveTo(W, 0); for (let y = 0; y <= H; y += 4) g.lineTo(coastX(y), y); g.lineTo(W, H); g.closePath();
+  islandPath(g, 0, false);
+  const s = g.createLinearGradient(1500, 0, W, 0); s.addColorStop(0, SEA); s.addColorStop(1, SEA_DEEP);
+  g.fillStyle = s; g.fill('evenodd');
+  // gợn sóng song song bờ
+  g.lineCap = 'round';
+  for (const [off, a] of [[26, 0.55], [58, 0.35], [96, 0.2]]) {
+    g.strokeStyle = `rgba(255,255,255,${a})`; g.lineWidth = 5; g.setLineDash([60, 34]);
+    g.beginPath(); for (let y = 0; y <= H; y += 6) { const x = coastX(y) + off; y ? g.lineTo(x, y) : g.moveTo(x, y); } g.stroke();
+    islandPath(g, off); g.stroke();
+  }
+  g.setLineDash([]);
+  // nét bờ
+  g.strokeStyle = COAST; g.lineWidth = 6;
+  g.beginPath(); for (let y = 0; y <= H; y += 4) { const x = coastX(y); y ? g.lineTo(x, y) : g.moveTo(x, y); } g.stroke();
+  islandPath(g, 0); g.stroke();
+  // sóng nhỏ ngoài khơi
+  g.strokeStyle = 'rgba(255,255,255,.6)'; g.lineWidth = 5;
+  for (const [x, y] of [[1760, 420], [1930, 520], [1700, 1000], [1960, 960], [1880, 1100], [1990, 330]]) {
+    g.beginPath(); g.arc(x - 18, y, 18, Math.PI * 1.1, Math.PI * 1.9); g.arc(x + 18, y, 18, Math.PI * 1.1, Math.PI * 1.9); g.stroke();
+  }
+  g.restore();
+}
+
+// ---------- sông: Hoàng Hà (bắc) và Trường Giang (nam) chảy ra biển đông ----------
+function smooth(g, pts) {
+  g.beginPath(); g.moveTo(...pts[0]);
+  for (let i = 1; i < pts.length - 1; i++) { const m = [(pts[i][0] + pts[i + 1][0]) / 2, (pts[i][1] + pts[i + 1][1]) / 2]; g.quadraticCurveTo(pts[i][0], pts[i][1], m[0], m[1]); }
+  g.lineTo(...pts[pts.length - 1]);
+}
+function rivers(g) {
+  g.save(); g.lineCap = 'round'; g.lineJoin = 'round';
+  const hh = [[560, 600], [640, 520], [760, 560], [880, 480], [1040, 520], [1180, 470], [1300, 560], [1440, 540], [coastX(560) + 4, 560]];
+  const tg = [[20, 1010], [200, 1080], [420, 1020], [600, 1080], [820, 1020], [1060, 1080], [1260, 1040], [1460, 1060], [coastX(1050) + 4, 1050]];
+  for (const pts of [hh, tg]) {
+    g.strokeStyle = COAST; g.globalAlpha = 0.55; g.lineWidth = 26; smooth(g, pts); g.stroke();
+    g.globalAlpha = 1; g.strokeStyle = SEA; g.lineWidth = 18; smooth(g, pts); g.stroke();
+  }
+  // nhánh nhỏ
+  g.lineWidth = 9; g.strokeStyle = SEA;
+  for (const pts of [[[1180, 470], [1220, 400], [1310, 380]], [[600, 1080], [560, 980], [470, 930]], [[1260, 1040], [1200, 960], [1160, 900]]]) { smooth(g, pts); g.stroke(); }
+  g.restore();
+}
+
+// ---------- trang trí từng khu (né biểu tượng + nhãn) ----------
+const placed = [];
+function blocked(x, y, pad) {
+  for (const p of PLACES) if (x > p.x - 250 - pad && x < p.x + 250 + pad && y > p.y - 190 - pad && y - 70 < p.y + 330 + pad) return true;
+  if (x < 210 && y < 230) return true; // dấu triện
+  if (x > 1820 && y < 260) return true; // la bàn
+  return placed.some(([px, py]) => Math.hypot(px - x, py - y) < 95);
+}
+function scatter(g, ids, id, n, seed, drawFn, pad = 10) {
+  const r = rnd(seed), idx = PLACES.findIndex(p => p.id === id); let done = 0;
+  for (let t = 0; t < n * 60 && done < n; t++) {
+    const x = 40 + r() * (W - 80), y = 40 + r() * (H - 80);
+    if (ids[(y | 0) * W + (x | 0)] !== idx || blocked(x, y, pad)) continue;
+    // cách ranh giới ≥ 40 px
+    let ok = true; for (const [dx, dy] of [[40, 0], [-40, 0], [0, 40], [0, -40]]) { const xx = x + dx | 0, yy = y + dy | 0; if (xx < 0 || yy < 0 || xx >= W || yy >= H || ids[yy * W + xx] !== idx) ok = false; }
+    if (!ok) continue;
+    drawFn(g, x, y, r); placed.push([x, y]); done++;
+  }
+}
+function peak(g, x, y, s, c1, c2) {
+  g.fillStyle = c1; g.beginPath(); g.moveTo(x - 46 * s, y); g.lineTo(x, y - 60 * s); g.lineTo(x + 46 * s, y); g.closePath(); g.fill();
+  g.fillStyle = c2; g.beginPath(); g.moveTo(x, y - 60 * s); g.lineTo(x + 46 * s, y); g.lineTo(x + 8 * s, y); g.closePath(); g.fill();
+}
+function pine(g, x, y, s, c) { g.fillStyle = '#6B5A45'; g.fillRect(x - 3 * s, y - 6 * s, 6 * s, 10 * s); g.fillStyle = c; g.beginPath(); g.moveTo(x - 16 * s, y - 4 * s); g.lineTo(x, y - 40 * s); g.lineTo(x + 16 * s, y - 4 * s); g.closePath(); g.fill(); }
+function decorate(g, ids) {
+  g.save();
+  scatter(g, ids, 'to-lua', 14, 11, (g, x, y, r) => { g.strokeStyle = 'rgba(176,138,82,.55)'; g.lineWidth = 6; g.lineCap = 'round'; const w = 50 + r() * 40; g.beginPath(); g.moveTo(x - w, y); g.quadraticCurveTo(x - w * 0.2, y - 28, x + w, y); g.stroke(); });
+  scatter(g, ids, 'truong-thanh', 8, 12, (g, x, y, r) => peak(g, x, y, 0.8 + r() * 0.6, '#A9A58E', '#8F8B76'));
+  scatter(g, ids, 'van-uyen', 9, 13, (g, x, y, r) => peak(g, x, y, 0.9 + r() * 0.7, '#9DB49C', '#7F9A82'));
+  scatter(g, ids, 'van-uyen', 6, 14, (g, x, y, r) => pine(g, x, y, 0.9 + r() * 0.4, '#5E8A5E'));
+  scatter(g, ids, 'tu-cam-thanh', 9, 15, (g, x, y, r) => { g.strokeStyle = 'rgba(170,120,80,.45)'; g.lineWidth = 4; const s = 26 + r() * 10; g.strokeRect(x - s, y - s * 0.6, s * 2, s * 1.2); g.beginPath(); g.moveTo(x, y - s * 0.6); g.lineTo(x, y + s * 0.6); g.stroke(); });
+  scatter(g, ids, 'rung-truc', 10, 16, (g, x, y, r) => { g.lineCap = 'round'; for (const dx of [-10, 0, 10]) { g.strokeStyle = dx ? '#5E8A3E' : '#4F7A35'; g.lineWidth = 6; g.beginPath(); g.moveTo(x + dx, y); g.lineTo(x + dx * 1.3, y - 40 - r() * 14); g.stroke(); } });
+  scatter(g, ids, 'giang-nam', 7, 17, (g, x, y, r) => { g.fillStyle = 'rgba(160,200,196,.95)'; g.beginPath(); g.ellipse(x, y, 34 + r() * 20, 14 + r() * 6, 0, 0, Math.PI * 2); g.fill(); });
+  scatter(g, ids, 'giang-nam', 6, 18, (g, x, y) => { g.fillStyle = '#F4F1EA'; g.fillRect(x - 14, y - 16, 28, 18); g.fillStyle = '#3A3F44'; g.fillRect(x - 18, y - 22, 36, 7); });
+  g.restore();
 }
 
 function cloud(g, x, y, s, a) {
@@ -62,26 +211,18 @@ function cloud(g, x, y, s, a) {
   g.restore();
 }
 
-function river(g) {
-  // sông nối các nơi theo thứ tự (rắn: phải → lên → trái)
-  g.save(); g.lineCap = 'round'; g.lineJoin = 'round';
-  const pts = [[60, 980], [260, 900], [520, 960], [760, 900], [1010, 960], [1260, 900], [1520, 960], [1860, 900], [1960, 640],
-               [1860, 470], [1500, 470], [1160, 440], [860, 470], [560, 440], [240, 470], [80, 380]];
-  const path = () => { g.beginPath(); g.moveTo(...pts[0]); for (let i = 1; i < pts.length - 1; i++) { const m = [(pts[i][0] + pts[i + 1][0]) / 2, (pts[i][1] + pts[i + 1][1]) / 2]; g.quadraticCurveTo(pts[i][0], pts[i][1], m[0], m[1]); } g.lineTo(...pts[pts.length - 1]); };
-  g.strokeStyle = 'rgba(122,160,160,.35)'; g.lineWidth = 64; path(); g.stroke();
-  g.strokeStyle = 'rgba(160,195,190,.6)'; g.lineWidth = 34; path(); g.stroke();
-  // lối đi chấm mực son nối các nơi
-  g.setLineDash([2, 26]); g.strokeStyle = 'rgba(138,91,59,.85)'; g.lineWidth = 12;
-  g.beginPath(); g.moveTo(PLACES[0].x, PLACES[0].y);
-  for (let i = 1; i < PLACES.length; i++) {
-    const a = PLACES[i - 1], b = PLACES[i];
-    const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2 + (a.y === b.y ? -70 : 0) + (a.x === b.x ? 0 : 0);
-    if (a.x === b.x) g.quadraticCurveTo(a.x + 220, (a.y + b.y) / 2, b.x, b.y); else g.quadraticCurveTo(mx, my, b.x, b.y);
-  }
-  g.stroke(); g.restore();
+function compass(g, x, y) {
+  g.save(); g.translate(x, y);
+  g.strokeStyle = INK; g.lineWidth = 4; g.globalAlpha = 0.8;
+  g.beginPath(); g.arc(0, 0, 54, 0, Math.PI * 2); g.stroke();
+  g.fillStyle = SON; g.beginPath(); g.moveTo(0, -70); g.lineTo(14, 0); g.lineTo(-14, 0); g.closePath(); g.fill();
+  g.fillStyle = INK; g.beginPath(); g.moveTo(0, 70); g.lineTo(14, 0); g.lineTo(-14, 0); g.closePath(); g.fill();
+  g.globalAlpha = 1; g.fillStyle = INK; g.font = '700 34px "Noto Serif SC"'; g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.fillText('北', 0, -96);
+  g.restore();
 }
 
-// ---------- biểu tượng ----------
+// ---------- biểu tượng (giữ như bản 2026-11-13.9) ----------
 function roof(g, cx, y, w, h, color) {
   g.fillStyle = color; g.beginPath();
   g.moveTo(cx - w / 2 - 18, y + h); g.quadraticCurveTo(cx - w / 2, y + h * 0.7, cx - w * 0.32, y);
@@ -158,8 +299,8 @@ const ICONS = {
 function label(g, p) {
   g.save(); g.textAlign = 'center'; g.textBaseline = 'alphabetic';
   g.font = `700 ${LABEL_HAN}px "Noto Serif SC"`;
-  const hy = p.y + 120 + LABEL_HAN * 0.85;
-  g.lineWidth = 14; g.strokeStyle = 'rgba(242,234,218,.9)'; g.strokeText(p.han, p.x, hy);
+  const hy = p.y + 150 + LABEL_HAN * 0.85;
+  g.lineJoin = 'round'; g.lineWidth = 16; g.strokeStyle = 'rgba(242,234,218,.95)'; g.strokeText(p.han, p.x, hy);
   g.fillStyle = INK; g.fillText(p.han, p.x, hy);
   g.font = `700 ${LABEL_VI}px "Be Vietnam Pro"`;
   const vy = hy + LABEL_VI + 6;
@@ -169,54 +310,83 @@ function label(g, p) {
 }
 
 async function draw() {
-  await document.fonts.load(`700 ${LABEL_HAN}px "Noto Serif SC"`, '文淵竹林江南蓬萊長城紫禁絲路家');
+  await document.fonts.load(`700 ${LABEL_HAN}px "Noto Serif SC"`, '文淵竹林江南蓬萊長城紫禁絲路家行旅北');
   await document.fonts.load(`700 ${LABEL_VI}px "Be Vietnam Pro"`, 'Văn Uyên Tông Rừng trúc Trường Thành Tử Cấm Thành tơ lụa');
-  const g = document.getElementById('c').getContext('2d');
+  const g = document.getElementById('c').getContext('2d', { willReadFrequently: true });
   paper(g);
-  mountains(g, 230, 160, '#9FB0B0', 0.35, 11, 260);
-  mountains(g, 600, 120, '#7F9594', 0.25, 23, 300);
-  cloud(g, 360, 170, 1.4, 0.7); cloud(g, 1480, 140, 1.2, 0.6); cloud(g, 980, 600, 1.1, 0.55); cloud(g, 1900, 580, 1, 0.5);
-  river(g);
-  for (const p of PLACES) { ICONS[p.id](g, p.x, p.y - 30); label(g, p); }
+  const ids = regionMap();
+  paintLand(g, ids);
+  sea(g);
+  rivers(g);
+  decorate(g, ids);
+  vignette(g);
+  cloud(g, 1990, 260, 0.9, 0.7); cloud(g, 640, 120, 0.9, 0.45); cloud(g, 1700, 890, 0.8, 0.55);
+  compass(g, 1930, 150);
+  for (const p of PLACES) { ICONS[p.id](g, p.x, p.y); label(g, p); }
   // dấu triện góc + tên bản đồ
   g.save(); g.fillStyle = SON; g.fillRect(40, 40, 120, 120);
   g.fillStyle = PAPER; g.font = '700 46px "Noto Serif SC"'; g.textAlign = 'center'; g.textBaseline = 'middle';
   g.fillText('文淵', 100, 72); g.fillText('行旅', 100, 128); g.restore();
-  return PLACES.map(p => ({ id: p.id, han: p.han, name: p.name, x: p.x, y: p.y - 30, r: R, labelTop: p.labelTop, labelBottom: p.labelBottom }));
+  return PLACES.map(p => ({ id: p.id, han: p.han, name: p.name, x: p.x, y: p.y, r: R, labelTop: p.labelTop, labelBottom: p.labelBottom }));
 }
 window.ready = draw();
-// ---------- lớp trạng thái (code vẽ chồng; đây là bản mẫu để duyệt) ----------
-function lockBadge(g, x, y) {
-  g.save(); g.fillStyle = '#24323A'; g.beginPath(); g.arc(x, y, 40, 0, Math.PI * 2); g.fill();
-  g.strokeStyle = '#F4F7F6'; g.lineWidth = 7; g.beginPath(); g.arc(x, y - 10, 14, Math.PI, 0); g.stroke();
-  g.fillStyle = '#F4F7F6'; g.fillRect(x - 20, y - 8, 40, 30); g.restore();
+// ---------- lớp trạng thái (code vẽ chồng; đây là bản mẫu để duyệt) — 2026-11-14.3 ----------
+// Không vòng tròn quanh nơi nào. Đã mở: không vẽ gì. Sắp mở: chỉ huy hiệu đồng hồ. Đang ở đây: ghim tròn có đầu nhân
+// vật chính (ảnh ban-do-nhan-vat.png, cắt từ models/anh/nhan-vat-mat.png) phía trên trái biểu tượng.
+const PIN = { dx: -110, dy: -60, r: 80, vien: '#2B5446', net: 8, vienNgoai: '#D4A64A', netNgoai: 4, nen: '#F4F7F6', duoi: 30 };
+const BADGE = { dx: 100, dy: -100, r: 40, nen: '#F4F7F6', vien: '#2B5446', vienCham: '#A8322A' };
+function loadImg(src) { return new Promise((ok, err) => { const i = new Image(); i.onload = () => ok(i); i.onerror = err; i.src = src; }); }
+// ảnh đầu: vuông 256, nền xám của ảnh gốc → trong suốt
+async function makeAvatar() {
+  const img = await loadImg('../../models/anh/nhan-vat-mat.png');
+  const c = document.createElement('canvas'); c.width = c.height = 256;
+  const g = c.getContext('2d', { willReadFrequently: true });
+  g.drawImage(img, 152, 70, 720, 720, 0, 0, 256, 256);
+  const d = g.getImageData(0, 0, 256, 256), px = d.data;
+  for (let i = 0; i < px.length; i += 4) {
+    const r = px[i], gg = px[i + 1], b = px[i + 2], mx = Math.max(r, gg, b), mn = Math.min(r, gg, b);
+    if (mx - mn < 10 && mn > 200 && mx < 236) px[i + 3] = 0;
+  }
+  g.putImageData(d, 0, 0);
+  return c;
 }
-function drawState(g, p, st) {
+const avatarReady = makeAvatar();
+function clock(g, x, y, ring) {
+  g.save(); g.fillStyle = BADGE.nen; g.strokeStyle = ring; g.lineWidth = 6;
+  g.beginPath(); g.arc(x, y, BADGE.r, 0, Math.PI * 2); g.fill(); g.stroke();
+  g.strokeStyle = BADGE.vien; g.lineCap = 'round'; g.beginPath(); g.moveTo(x, y - 22); g.lineTo(x, y); g.lineTo(x + 16, y + 10); g.stroke(); g.restore();
+}
+function pin(g, x, y, av) {
+  const cx = x + PIN.dx, cy = y + PIN.dy, r = PIN.r;
+  g.save();
+  // bóng + đuôi ghim chỉ xuống
+  g.fillStyle = 'rgba(36,50,58,.22)'; g.beginPath(); g.ellipse(cx, cy + r + PIN.duoi + 6, 26, 8, 0, 0, Math.PI * 2); g.fill();
+  g.fillStyle = PIN.vien; g.beginPath(); g.moveTo(cx - 24, cy + r - 12); g.lineTo(cx, cy + r + PIN.duoi); g.lineTo(cx + 24, cy + r - 12); g.closePath(); g.fill();
+  g.fillStyle = PIN.vienNgoai; g.beginPath(); g.arc(cx, cy, r + PIN.net + PIN.netNgoai, 0, Math.PI * 2); g.fill();
+  g.fillStyle = PIN.vien; g.beginPath(); g.arc(cx, cy, r + PIN.net, 0, Math.PI * 2); g.fill();
+  g.fillStyle = PIN.nen; g.beginPath(); g.arc(cx, cy, r, 0, Math.PI * 2); g.fill();
+  g.clip(); g.drawImage(av, cx - r * 1.08, cy - r * 1.02, r * 2.16, r * 2.16);
+  g.restore();
+}
+function drawState(g, p, st, av) {
   const { x, y } = p;
-  if (st === 'khoa' || st === 'khoa-chon') {
-    g.save(); g.fillStyle = 'rgba(242,234,218,.72)'; g.beginPath(); g.arc(x, y, 150, 0, Math.PI * 2); g.fill(); g.restore();
-    lockBadge(g, x + 100, y - 100);
-  }
-  if (st === 'khoa-chon') {
-    g.save(); g.strokeStyle = '#A8322A'; g.lineWidth = 10; g.beginPath(); g.arc(x, y, 150, 0, Math.PI * 2); g.stroke();
-    g.globalAlpha = .45; g.lineWidth = 6; g.beginPath(); g.arc(x, y, 172, 0, Math.PI * 2); g.stroke(); g.restore();
-  }
-  if (st === 'mo' || st === 'o-day') {
-    g.save(); g.strokeStyle = '#2B5446'; g.lineWidth = 10; g.beginPath(); g.arc(x, y, 150, 0, Math.PI * 2); g.stroke();
-    g.fillStyle = '#D4A64A'; g.beginPath(); g.arc(x, y - 150, 12, 0, Math.PI * 2); g.fill(); g.restore();
-  }
-  if (st === 'sap-mo') {
-    g.save(); g.setLineDash([26, 18]); g.strokeStyle = '#2B5446'; g.lineWidth = 8; g.beginPath(); g.arc(x, y, 150, 0, Math.PI * 2); g.stroke(); g.restore();
-    g.save(); g.fillStyle = '#F4F7F6'; g.strokeStyle = '#2B5446'; g.lineWidth = 6; g.beginPath(); g.arc(x + 100, y - 100, 40, 0, Math.PI * 2); g.fill(); g.stroke();
-    g.strokeStyle = '#2B5446'; g.lineWidth = 6; g.beginPath(); g.moveTo(x + 100, y - 122); g.lineTo(x + 100, y - 100); g.lineTo(x + 116, y - 90); g.stroke(); g.restore();
-  }
-  if (st === 'o-day') {
-    g.save(); g.fillStyle = '#A8322A'; g.fillRect(x - 160, y - 175, 84, 84);
-    g.fillStyle = '#F4F7F6'; g.font = '700 58px "Noto Serif SC"'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('此', x - 118, y - 131); g.restore();
-  }
+  if (st === 'sap-mo' || st === 'sap-mo-cham') clock(g, x + BADGE.dx, y + BADGE.dy, st === 'sap-mo-cham' ? BADGE.vienCham : BADGE.vien);
+  if (st === 'o-day') pin(g, x, y, av);
 }
-window.states = async (map) => { const meta = await window.ready; const g = document.getElementById('c').getContext('2d'); for (const p of meta) if (map[p.id]) drawState(g, p, map[p.id]); return true; };
+window.states = async (map) => { const meta = await window.ready; const av = await avatarReady; const g = document.getElementById('c').getContext('2d'); for (const p of meta) if (map[p.id]) drawState(g, p, map[p.id], av); return true; };
+window.avatarPng = async () => (await avatarReady).toDataURL('image/png');
 
+// ?xuat → ảnh gốc; ?xuat&trangthai → ảnh mẫu có lớp trạng thái
+(async () => {
+  const q = new URLSearchParams(location.search);
+  if (!q.has('xuat')) return;
+  const meta = await window.ready;
+  if (q.has('trangthai')) await window.states({ 'van-uyen': 'o-day', 'rung-truc': 'mo', 'giang-nam': 'sap-mo', 'bong-lai': 'sap-mo', 'truong-thanh': 'sap-mo', 'tu-cam-thanh': 'sap-mo', 'to-lua': 'sap-mo' });
+  const t = document.createElement('textarea'); t.id = 'out';
+  t.value = document.getElementById('c').toDataURL('image/png');
+  document.body.appendChild(t);
+  const m = document.createElement('textarea'); m.id = 'meta'; m.value = JSON.stringify(meta); document.body.appendChild(m);
+})();
 </script>
 </body>
 </html>
