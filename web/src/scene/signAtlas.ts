@@ -84,7 +84,7 @@ export function signText(spec: Pick<SceneSpec, 'buildings' | 'gates' | 'props' |
   return [
     ...gateSigns,
     ...spec.buildings.flatMap((b) => [b.title, b.sign ?? '']),
-    ...spec.gates.flatMap((g) => [g.title, g.hanTitle ?? '']),
+    ...spec.gates.flatMap((g) => [g.title, g.hanTitle ?? '', g.backTitle ?? '']),
     ...spec.props.map((p) => p.text ?? (p.kind === 'nhat-quy' ? SUNDIAL_HOURS : '')),
     ...spec.gameTables.map((t) => t.sign?.han ?? ''),
   ].join('');

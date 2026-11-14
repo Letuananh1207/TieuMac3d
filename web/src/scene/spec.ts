@@ -292,6 +292,14 @@ export interface GateSpec {
   model?: string;
   /** hệ số cỡ model so với bề ngang cổng khối (mặc định 1) — L-5: 0,75 */
   modelScale?: number;
+  /**
+   * cổng khối cỡ người: chiều cao tổng tới nóc mái giữa (m, 6–12), không nhân `buildingStyle.heightScale`; gian bên hẹp
+   * 2,2 m, biển giữ cỡ, lòng cổng = phần dưới xà thấp nhất (6 m → ~3 m, 6,8 m → ~3,6 m). Thiếu → cổng sơn môn cao như cũ
+   * (xà thấp 6,2 m × hệ số chiều cao).
+   */
+  height?: number;
+  /** chữ biển mặt sau (−z trước khi quay); thiếu → mặt sau không biển (như cũ) */
+  backTitle?: string;
 }
 
 /** Một khu có tên (hình chữ nhật từ góc `from` tới góc `to`) (dữ liệu; thẻ tên khu khi bước vào đã bỏ — R-HUD-3). */

@@ -228,6 +228,13 @@ const floorsRange = (o: Obj, path: string): string[] =>
 
 const rot = oneOf('rotY', ROTATIONS);
 
+/** Cổng cỡ người (`gates[].height`): 6–12 m — thấp hơn 6 thì lòng cổng dưới 3 m, camera gần chạm xà. */
+export const GATE_HEIGHT: [number, number] = [6, 12];
+const gateHeightOk = (o: Obj, path: string): string[] =>
+  o.height === undefined || ((o.height as number) >= GATE_HEIGHT[0] && (o.height as number) <= GATE_HEIGHT[1])
+    ? []
+    : [`${path}.height: ${GATE_HEIGHT[0]}–${GATE_HEIGHT[1]} m`];
+
 const boardsRange = (o: Obj, path: string): string[] =>
   o.boards === undefined || ((o.boards as number) >= 1 && (o.boards as number) <= 4 && Number.isInteger(o.boards))
     ? []
@@ -333,7 +340,11 @@ const LISTS: Record<string, ItemParser> = {
     all(axisAligned, positive('height', 'thickness'), thicknessOk, segmentGateOk),
   ),
   paths: item({ from: XZ0, to: XZ0, width: 0 }, { color: '#000000' }, positive('width')),
-  gates: item({ id: '', x: 0, z: 0, width: 0, title: '' }, { rotY: 0, hanTitle: '', roofColor: '#000000', model: '', modelScale: 0 }, all(rot, positive('width', 'modelScale'))),
+  gates: item(
+    { id: '', x: 0, z: 0, width: 0, title: '' },
+    { rotY: 0, hanTitle: '', roofColor: '#000000', model: '', modelScale: 0, height: 0, backTitle: '' },
+    all(rot, positive('width', 'modelScale'), gateHeightOk),
+  ),
   'site.areas': item({ name: '', from: XZ0, to: XZ0 }, { han: '' }),
   water: withSides(item({ x: 0, z: 0 }, { r: 0, w: 0, d: 0, rotY: 0, sunk: 0, shape: 'trang' }, all(waterShape, rot, positive('r', 'w', 'd')))),
   props: item({ kind: '', x: 0, z: 0 }, { rotY: 0, scale: 0, text: '', y: 0 }, all(oneOf('kind', PROP_KINDS), rot, positive('scale'))),

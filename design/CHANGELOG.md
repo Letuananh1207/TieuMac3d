@@ -24,6 +24,26 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
 - Ảnh: `screens/Canh-ky-van-cong.png` (góc ảnh người dùng `?nv=-19.5,4&cam=-19,3.2,4&tam=-34,7.5`),
   `screens/Canh-ky-van-tren.png` (`?cam=-34,38,8.5&tam=-34,7.5`). Canvas 3D chưa đăng lại.
 - File: `scene/scene.json`, ảnh trên.
+## 2026-11-14.31 — Cổng đầu lối xuống núi hạ còn 6,6 m, biển "Khởi Nguyên Trấn"
+
+- Loại: cảnh 3D — **ngoại hình** (cổng) + chữ biển. Ai làm: phiên code V-20261114-32 làm thay vai thiết kế (`/canh`).
+  Người dùng: "cổng xuống núi đang quá cao và tên biển nên là khởi nguyên trấn". **Đã duyệt 2026-11-14 (theo yêu cầu
+  trực tiếp).**
+- `gates[cong-xuong-nui]`: thêm **`height: 6.6`** (trường mới — cổng cỡ người, không nhân `buildingStyle.heightScale`
+  1,6). Nóc mái giữa ~14,6 m (xà thấp 9,9 m) → **6,6 m** (ngang Tạp hoá ~6 m); lòng cổng 5 × **3,5 m** (cao hơn nhân
+  vật và camera góc gần ~2,5 m); gian bên 3,5 → **2 m** (bề ngang tổng 15,3 → 12,3 m, mái không bè); mái giữa 1,1 m,
+  mái bên thấp hơn xà giữa. Vị trí (0; 41), quay 180°, rộng 5, mái #3b3f44, bốn trụ va chạm giữ nguyên chỗ lối.
+- Biển: `title` "Xuống núi" → **"Khởi Nguyên Trấn"** (mặt nhìn về trấn); thêm **`backTitle` "Khởi Nguyên Trấn"** (mặt
+  nhìn xuống bậc — người đi từ nhà lên thấy tên trấn; trước đây mặt này không có biển). Biển gỗ cạnh lối giữ "Xuống
+  núi · Về nhà". Không chữ Hán (R-HUD-4).
+- Cổng khác (không `height`, không `backTitle`) dựng như cũ. Portal sang Nhà của ta không đổi.
+- Luật: R-NHA-1, R-HUD-4 sửa ví dụ (cổng "Xuống núi" → biển "Khởi Nguyên Trấn") — Xác nhận `chờ`, chưa đồng bộ online.
+  `scene:check` không lỗi.
+- Code: `scene/gate.ts` `gateLayout` (bố cục dọc, test `gate.test.ts`), `spec.ts` `GateSpec.height` / `backTitle`,
+  `specCheck.ts` (height 6–12 m).
+- Ảnh trước / sau (trong phiên, không đăng Canvas 3D): góc ảnh người dùng `?nv=0,30&cam=0,4.2,25&tam=0,40`, góc xa
+  `?nv=0,31&cam=0,7,18&tam=0,38`, mặt sau từ bậc `?nv=0,44&cam=0,-1.5,50&tam=0,41`.
+- File: `scene/scene.json`.
 
 ## 2026-11-14.29 — Quây tường Truyền Tống Đài, dời đài + cổng lên bắc, cổng trăng mới vào sân Mặc Trì
 

@@ -26,7 +26,7 @@ describe('biển / tên trong cảnh chỉ tiếng Việt (R-HUD-4)', () => {
 
   it('R-HUD-4: biển có chữ Hán → scene:check báo lỗi; mã hình bồn hoa / pháp bảo và bảng bài học không tính', () => {
     const { problems } = resolveSceneSpec({
-      gates: [{ id: 'g', x: 0, z: 9, width: 5, title: 'Xuống núi', hanTitle: '下山' }],
+      gates: [{ id: 'g', x: 0, z: 9, width: 5, title: 'Khởi Nguyên Trấn', hanTitle: '下山', backTitle: '起源鎮' }],
       props: [
         { kind: 'bien-go', x: 3, z: 3, text: '歸家|Xuống núi · Về nhà' },
         { kind: 'bon-hoa', x: 5, z: 5, text: '梅' },
@@ -34,6 +34,7 @@ describe('biển / tên trong cảnh chỉ tiếng Việt (R-HUD-4)', () => {
     });
     const han = problems.filter((p) => p.includes('R-HUD-4'));
     expect(han.some((p) => p.startsWith('gates[0].hanTitle'))).toBe(true);
+    expect(han.some((p) => p.startsWith('gates[0].backTitle'))).toBe(true);
     expect(han.some((p) => p.startsWith('props[0].text'))).toBe(true);
     expect(han.some((p) => p.startsWith('props[1]'))).toBe(false);
   });

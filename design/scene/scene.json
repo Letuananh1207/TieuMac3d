@@ -365,7 +365,9 @@
       "z": 41,
       "rotY": 180,
       "width": 5,
-      "title": "Xuống núi",
+      "title": "Khởi Nguyên Trấn",
+      "backTitle": "Khởi Nguyên Trấn",
+      "height": 6.6,
       "roofColor": "#3b3f44"
     }
   ],
