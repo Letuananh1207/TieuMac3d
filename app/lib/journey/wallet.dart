@@ -187,3 +187,37 @@ List<String> migrateOwned(Iterable<String> placed) => [
       for (final id in {...placed})
         if (!starterDecor.contains(id)) id,
     ];
+
+/// Cho Tiểu Khất mỗi lần đúng chừng này (R-TIEN-8) — `ALMS_COINS` ở `web/src/zones/walletRules.ts`.
+const almsCoins = 5;
+
+/// Mã ngày giờ Việt Nam (GMT+7): số ngày từ 1970-01-01 theo lịch VN, từ mốc UTC — **không** theo múi giờ máy (R-TIEN-8).
+/// Như `maNgayVN` ở `web/src/zones/gioVN.ts`.
+int vnDay(DateTime now) => (now.toUtc().millisecondsSinceEpoch + 7 * 3600000) ~/ 86400000;
+
+/// Đã cho Tiểu Khất: ngày cho gần nhất ([vnDay], −1 = chưa cho lần nào) + số lần đã cho (R-NPC-6).
+typedef AlmsRecord = ({int lastDay, int count});
+
+const AlmsRecord noAlms = (lastDay: -1, count: 0);
+
+enum AlmsError {
+  /// hôm nay (ngày VN) đã cho rồi
+  given,
+
+  /// ví dưới 5
+  short,
+}
+
+/// Cho 5 văn (R-TIEN-8): mỗi ngày VN tối đa một lần; ví dưới 5 → không trừ. Được → số dư mới + bản ghi mới; không → lỗi.
+({int balance, AlmsRecord alms})? giveAlms(int balance, AlmsRecord alms, int today) =>
+    almsRefusal(balance, alms, today) == null ? (balance: balance - almsCoins, alms: (lastDay: today, count: alms.count + 1)) : null;
+
+/// Vì sao không cho được (`null` = cho được).
+AlmsError? almsRefusal(int balance, AlmsRecord alms, int today) {
+  if (alms.lastDay == today) return AlmsError.given;
+  if (balance < almsCoins) return AlmsError.short;
+  return null;
+}
+
+/// Nhãn trừ tiền (R-TIEN-5): "−5 · Cho Tiểu Khất" (dấu trừ U+2212).
+String almsLabel([int amount = almsCoins]) => '−$amount · Cho Tiểu Khất';

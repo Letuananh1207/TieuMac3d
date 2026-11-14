@@ -129,3 +129,47 @@ export function placeTrial(w: TrialWallet, slot: string, item: string | null): T
   const { [slot]: _gone, ...rest } = w.placed;
   return { ...w, placed: item ? { ...rest, [slot]: item } : rest };
 }
+
+/* ---------- Cho Tiểu Khất (R-TIEN-8) — `almsCoins` / `giveAlms` ở Dart ---------- */
+
+/** Mỗi lần cho đúng chừng này (R-TIEN-8). */
+export const ALMS_COINS = 5;
+
+/** Đã cho Tiểu Khất: ngày cho gần nhất (mã ngày VN `maNgayVN`, −1 = chưa cho lần nào) + số lần đã cho. */
+export interface AlmsRecord {
+  lastDay: number;
+  count: number;
+}
+
+export const NO_ALMS: AlmsRecord = { lastDay: -1, count: 0 };
+
+export type AlmsResult =
+  | { ok: true; balance: number; alms: AlmsRecord }
+  | { ok: false; reason: 'given' | 'short'; /** số dư đang có (cho câu "Ta chỉ còn n văn…") */ balance: number };
+
+/** Hôm nay [today] (mã ngày VN) đã cho chưa. */
+export function almsGivenOn(a: AlmsRecord, today: number): boolean {
+  return a.lastDay === today;
+}
+
+/**
+ * Cho Tiểu Khất 5 văn (R-TIEN-8): mỗi ngày VN tối đa một lần; ví dưới 5 → không trừ. Được → trừ 5, ghi ngày + tăng số lần.
+ */
+export function giveAlms(balance: number, alms: AlmsRecord, today: number): AlmsResult {
+  if (almsGivenOn(alms, today)) return { ok: false, reason: 'given', balance };
+  if (balance < ALMS_COINS) return { ok: false, reason: 'short', balance };
+  return { ok: true, balance: balance - ALMS_COINS, alms: { lastDay: today, count: alms.count + 1 } };
+}
+
+/** Đọc bản ghi đã lưu (ví thử / `getProgress.alms`); hỏng → chưa cho lần nào. */
+export function parseAlms(v: unknown): AlmsRecord {
+  if (!v || typeof v !== 'object') return { ...NO_ALMS };
+  const o = v as Record<string, unknown>;
+  const lastDay = typeof o.lastDay === 'number' && Number.isInteger(o.lastDay) && o.lastDay >= 0 ? o.lastDay : -1;
+  return { lastDay, count: count(o.count) };
+}
+
+/** Nhãn trừ tiền trên ví HUD (R-TIEN-5, R-TIEN-8): "−5 · Cho Tiểu Khất" (dấu trừ U+2212). */
+export function almsLabel(amount = ALMS_COINS): string {
+  return `−${amount} · Cho Tiểu Khất`;
+}

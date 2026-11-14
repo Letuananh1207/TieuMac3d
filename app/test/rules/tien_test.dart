@@ -190,4 +190,37 @@ void main() {
       expect(rewardLabel(gameReward('co', 'thang', 0)), 'Hôm nay trò chơi đã đủ thưởng');
     });
   });
+
+  group('cho Tiểu Khất (R-TIEN-8)', () {
+    DateTime vn(int d, int h, [int mi = 0]) => DateTime.utc(2026, 11, d, h - 7, mi);
+    final day14 = vnDay(vn(14, 10));
+
+    test('R-TIEN-8: có 12, 10 giờ ngày 14 → cho → còn 7; 23:59 cùng ngày → không; 0:01 ngày 15 (GMT+7) → cho lại', () {
+      final r = giveAlms(12, noAlms, day14)!;
+      expect(r.balance, 7);
+      expect(r.alms, (lastDay: day14, count: 1));
+      expect(giveAlms(7, r.alms, vnDay(vn(14, 23, 59))), isNull);
+      expect(almsRefusal(7, r.alms, vnDay(vn(14, 23, 59))), AlmsError.given);
+      final r2 = giveAlms(7, r.alms, vnDay(vn(15, 0, 1)))!;
+      expect(r2.balance, 2);
+      expect(r2.alms, (lastDay: day14 + 1, count: 2));
+    });
+
+    test('R-TIEN-8: có 3 → không trừ được, ví vẫn 3', () {
+      expect(giveAlms(3, noAlms, day14), isNull);
+      expect(almsRefusal(3, noAlms, day14), AlmsError.short);
+    });
+
+    test('R-TIEN-8: máy múi giờ London 18 giờ ngày 14 = 1 giờ sáng ngày 15 VN → đã sang ngày mới', () {
+      final london = DateTime.utc(2026, 11, 14, 18);
+      expect(vnDay(london), vnDay(vn(15, 0, 1)));
+      expect(vnDay(london), vnDay(vn(14, 23, 59)) + 1);
+      // giờ địa phương của máy không đổi kết quả
+      expect(vnDay(london.toLocal()), vnDay(london));
+    });
+
+    test('R-TIEN-5: nhãn trừ tiền "−5 · Cho Tiểu Khất"', () {
+      expect(almsLabel(), '−5 · Cho Tiểu Khất');
+    });
+  });
 }
