@@ -1111,5 +1111,6 @@
       ],
       "waterSide": -1
     }
-  ]
+  ],
+  "dayNight": { "enabled": true }
 }

@@ -10,7 +10,7 @@ import type { BuildingSpec, SceneSpec } from '../spec';
 import { cotTheoGian, nen, than, type Build } from './bo_phan';
 import { addBeamBand, addRailing, type Style } from './chi_tiet';
 import { DOC, K, maiDua, mau, ngoi, type Co, type Giong } from './danh_muc';
-import { box, column, frustum } from './hinh';
+import { box, column, frustum, windowBox } from './hinh';
 import { cuaHang } from './cua_hang';
 import { hiDai } from './hi_dai';
 import { lauSach } from './lau_sach';
@@ -185,7 +185,7 @@ const nhaGiangNam: Build = (g, m, c, giong, style) => {
   const h2 = c.cot * 0.85;
   g.add(box(c.w, h2, c.d, style.timber, 0, y1 + 0.25 + h2 / 2, 0));
   for (const x of cotTheoGian(c.w, Math.max(1, c.gian)).slice(0, -1)) {
-    g.add(box(1.0, 0.9, 0.06, style.wall, x + c.w / Math.max(1, c.gian) / 2, y1 + 0.25 + h2 * 0.55, c.d / 2 + 0.03)); // cửa sổ giấy
+    g.add(windowBox(1.0, 0.9, 0.06, style.wall, x + c.w / Math.max(1, c.gian) / 2, y1 + 0.25 + h2 * 0.55, c.d / 2 + 0.03)); // cửa sổ giấy
   }
   const y = y1 + 0.25 + h2;
   dungMai(g, { kieu: c.mai ?? m.mai, w: c.w, d: c.d, y, over: maiDua(c.cap, c.cot), giong, color: ngoi(c.cap, giong), ridgeColor: style.ridge });

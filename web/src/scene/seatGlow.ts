@@ -2,6 +2,7 @@
  * Vòng sáng mờ dưới chỗ ngồi đang nhắm (R-NGOI-1): một vòng phẳng dời theo chỗ ngồi, 1 draw call, không gộp.
  */
 import * as THREE from 'three';
+import { dayNightTag } from './materials';
 import { markDynamic } from './merge';
 
 export interface SeatGlow {
@@ -12,7 +13,7 @@ export interface SeatGlow {
 }
 
 export function addSeatGlow(scene: THREE.Scene, color: string): SeatGlow {
-  const mat = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.55, depthWrite: false });
+  const mat = dayNightTag(new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.55, depthWrite: false }), 'bo');
   const ring = new THREE.Mesh(new THREE.RingGeometry(0.46, 0.6, 32), mat);
   ring.rotation.x = -Math.PI / 2;
   ring.visible = false;

@@ -1,6 +1,6 @@
 /** Nhà nhỏ đệ tử (`nha-nho`) và tháp bát giác (`thap`) theo bản mẫu kiến trúc. */
 import * as THREE from 'three';
-import { lambert } from '../materials';
+import { lambert, windowMaterial } from '../materials';
 import type { BuildingSpec } from '../spec';
 import { addSign, hk, type Style } from './chi_tiet';
 import { box } from './hinh';
@@ -28,7 +28,7 @@ export function nhaNho(g: THREE.Group, b: BuildingSpec, style: Style): void {
   // cửa + hai cửa sổ tròn
   g.add(box(1.1, 1.9 * k, 0.12, style.timber, 0, plat + 0.95 * k, d / 2 + 0.05));
   const winGeo = new THREE.CylinderGeometry(0.42, 0.42, 0.1, 12).rotateX(Math.PI / 2);
-  const winMat = lambert(style.timber);
+  const winMat = windowMaterial(style.timber); // ô cửa tròn: đêm sáng ấm (R-NGAY-3)
   for (const sx of [-1, 1]) {
     const x = (sx * w) / 4 + sx * 0.2;
     const win = new THREE.Mesh(winGeo, winMat);

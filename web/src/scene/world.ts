@@ -16,8 +16,10 @@ import { staticModelUrl } from './staticModel';
 import { addGrassAndRocks } from './grass';
 import { addSoftGrassAndFlowers } from './coHoa';
 import { mergeSoft, mergeStatic } from './merge';
-import { setLampGlow, tickWind } from './materials';
-import { isSoft } from './look';
+import { setLampGlow, setLampMode, tickWind } from './materials';
+import { isColorManaged, isSoft } from './look';
+import { createDayNight, type DayNight } from './apGio';
+import { addNightSky } from './troiDem';
 import { resetSignAtlas } from './signAtlas';
 import { addPaths } from './paths';
 import { addProps, DEN_DA_LIGHT_Y } from './props';
@@ -39,6 +41,9 @@ import { addWalls } from './walls';
 import { addWater } from './water';
 import { addWell } from './well';
 
+/** Bán kính quầng đèn tối đa ban đêm (m) — quầng cộng màu tốn điểm ảnh trên máy yếu (kế hoạch 2026-11-14-ngay-dem). */
+const NIGHT_GLOW_MAX = 1.1;
+
 export interface World {
   /** mặt đất: đích của tia dò khi chạm để đi (sân phẳng hoặc lưới địa hình) */
   ground: THREE.Object3D;
@@ -56,6 +61,8 @@ export interface World {
   gameTables: GameTable[];
   /** vòng trận truyền tống (`teleport.enabled`) */
   teleport: TeleportRing | null;
+  /** ngày đêm (`dayNight.enabled`): áp giờ lên cảnh — `web/src/ngayDem.ts` gọi; tắt = `null` (luôn ban ngày) */
+  dayNight: DayNight | null;
   /** gọi mỗi khung hình: khói lò đan, mây, đảo nổi, mờ mái nhà khi `player` đứng trong */
   update(dt: number, player?: { x: number; y?: number; z: number }): void;
 }
@@ -74,8 +81,11 @@ export function buildWorld(
 ): World {
   const style = spec.buildingStyle;
   resetSignAtlas(); // biển của cảnh này vẽ vào một ảnh chung → 1 draw call
-  setLampGlow(spec.light.lampGlow); // đèn dựng dưới đây (lampMaterial) sáng theo số này — 0 = ban ngày, không phát sáng
-  addEnvironment(scene, spec, viewDistance(spec));
+  // có ngày đêm: đèn / cửa sổ dựng sẵn phần sáng, độ sáng đổi theo giờ (apGio.ts); không: sáng cố định `light.lampGlow`
+  const dn = spec.dayNight.enabled;
+  setLampMode(dn, spec.dayNight.dem.windowColor);
+  setLampGlow(dn ? 0 : spec.light.lampGlow); // đèn dựng dưới đây (lampMaterial) sáng theo số này — 0 = ban ngày, không phát sáng
+  const env = addEnvironment(scene, spec, viewDistance(spec));
   const hf = spec.terrain.enabled ? buildHeightfield(spec.terrain, spec.paths) : null;
   // ngoài lưới (vực) → 0; nhà, tường, lối đi nằm trên bục phẳng nên không cần độ cao riêng
   const groundY: GroundY | undefined = hf
@@ -134,10 +144,12 @@ export function buildWorld(
   const props = addProps(scene, colliders, spec.props, style, spec.trees, groundY);
   const trees = addTrees(scene, colliders, spec.trees, groundY, spec.look);
   const lanternSpots = addLanternStrings(scene, colliders, spec, groundY);
-  if (isSoft(spec.look) && spec.light.lampGlow > 0) {
+  let glow: THREE.InstancedMesh | null = null;
+  // ngày đêm: quầng dựng sẵn, mờ theo giờ; mức Thấp bỏ quầng (R-NGAY-3)
+  if (isSoft(spec.look) && (dn ? detail >= 1 : spec.light.lampGlow > 0)) {
     // quầng sáng giả: đèn lồng trên dây + hộp đèn đèn đá (quangDen.ts) — chỉ khi đèn đang sáng (`light.lampGlow`)
     const stone = spec.props.filter((p) => p.kind === 'den-da').map((p) => new THREE.Vector3(p.x, (p.y ?? base(p.x, p.z)) + DEN_DA_LIGHT_Y * (p.scale ?? 1), p.z));
-    addLanternGlow(scene, [...lanternSpots, ...stone], spec.look, spec.light.lampGlow);
+    glow = addLanternGlow(scene, [...lanternSpots, ...stone], spec.look, dn ? 1 : spec.light.lampGlow, dn ? NIGHT_GLOW_MAX : Infinity);
   }
   addFences(scene, colliders, spec, groundY);
   if (spec.well.enabled) addWell(scene, colliders, spec.well, base(spec.well.x, spec.well.z));
@@ -148,7 +160,16 @@ export function buildWorld(
   // cảnh mềm: khối Lambert tĩnh khác màu → một khối vật liệu mềm (bóng nướng vào màu đỉnh) trước khi gộp phần còn lại
   if (isSoft(spec.look)) mergeSoft(scene, new Set([ground]), spec.look, base);
   mergeStatic(scene, new Set([ground]));
+  // trăng + sao (mức Thấp: không sao — R-NGAY-4) và bộ áp giờ — dựng sau khi gộp: chỉ đổi số / màu, không dựng lại
+  const dayNight = dn
+    ? createDayNight(scene, spec, env, {
+        glow,
+        sky: addNightSky(scene, spec.dayNight, viewDistance(spec) * 0.72, detail >= 1),
+        colorManaged: isColorManaged(spec.look),
+      })
+    : null;
   return {
+    dayNight,
     ground,
     surface: new LayeredGround(hf, [...(teleport?.pads ?? []), ...bridgePads, ...rampartPads, ...rooms.flatMap((r) => r.pads)]),
     rooms,

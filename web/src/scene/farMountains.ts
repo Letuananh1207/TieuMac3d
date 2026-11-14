@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { seededRandom } from './random';
 import { isSoft } from './look';
 import { markDynamic } from './merge';
+import { dayNightTag } from './materials';
 import type { MountainLayer, SceneSpec } from './spec';
 
 /**
@@ -20,7 +21,7 @@ export function addFarMountains(scene: THREE.Scene, spec: SceneSpec, detail = 1)
   const geo = new THREE.BufferGeometry();
   geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
   geo.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
-  const mat = new THREE.MeshBasicMaterial({ vertexColors: true, fog: false, side: THREE.DoubleSide });
+  const mat = dayNightTag(new THREE.MeshBasicMaterial({ vertexColors: true, fog: false, side: THREE.DoubleSide }), 'xa');
   scene.add(new THREE.Mesh(geo, mat));
   if (isSoft(spec.look) && spec.look.mist.opacity > 0 && detail >= 1) addMist(scene, spec);
 }
@@ -63,7 +64,7 @@ export function mistBands(spec: SceneSpec): THREE.BufferGeometry {
 }
 
 function addMist(scene: THREE.Scene, spec: SceneSpec): void {
-  const mat = new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, depthWrite: false, fog: false, side: THREE.DoubleSide });
+  const mat = dayNightTag(new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, depthWrite: false, fog: false, side: THREE.DoubleSide }), 'xa');
   const mesh = new THREE.Mesh(mistBands(spec), mat);
   mesh.renderOrder = 1;
   markDynamic(mesh); // màu theo đỉnh có kênh alpha — không để mergeStatic xoá
@@ -159,7 +160,7 @@ function ring(
 export function addCloudSea(scene: THREE.Scene, spec: SceneSpec): void {
   const { radius, y, color } = spec.cloudSea;
   if (radius <= 0) return;
-  const sea = new THREE.Mesh(new THREE.CircleGeometry(radius, 64), new THREE.MeshBasicMaterial({ color, fog: false }));
+  const sea = new THREE.Mesh(new THREE.CircleGeometry(radius, 64), dayNightTag(new THREE.MeshBasicMaterial({ color, fog: false }), 'xa'));
   sea.rotation.x = -Math.PI / 2;
   sea.position.set(spec.terrain.center[0], y, spec.terrain.center[1]);
   scene.add(sea);

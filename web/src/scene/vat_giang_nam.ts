@@ -5,7 +5,7 @@
 import * as THREE from 'three';
 import type { Colliders } from '../collision/colliders';
 import type { Style } from './buildings';
-import { currentLampGlow, lambert, lampMaterial } from './materials';
+import { currentLampGlow, isLampDynamic, lambert, lampMaterial } from './materials';
 import type { GallerySpec } from './spec';
 import type { GroundY } from './terrainHeight';
 import type { PropCollide } from './vat_truc';
@@ -29,8 +29,13 @@ function put(g: THREE.Object3D, geo: THREE.BufferGeometry, mat: THREE.Material, 
 function lantern(g: THREE.Object3D, x: number, y: number, z: number, r = 0.28): void {
   put(g, new THREE.SphereGeometry(r, 8, 6).scale(1, 1.15, 1), lampMaterial(LANTERN), x, y, z);
   put(g, new THREE.CylinderGeometry(r * 0.55, r * 0.55, 0.08, 8), lambert('#d4a64a'), x, y + r * 1.15, z);
-  const glow = currentLampGlow();
-  if (glow > 0) put(g, new THREE.CylinderGeometry(r * 0.8, r * 0.8, r * 1.4, 8), new THREE.MeshBasicMaterial({ color: LANTERN_GLOW, transparent: true, opacity: 0.35 * glow }), x, y, z);
+  // ngày đêm: lòng sáng dựng sẵn, `apGio.ts` đổi độ mờ theo giờ (`userData.lampOpacity`)
+  const dynamic = isLampDynamic();
+  const glow = dynamic ? 0 : currentLampGlow();
+  if (glow <= 0 && !dynamic) return;
+  const core = new THREE.MeshBasicMaterial({ color: LANTERN_GLOW, transparent: true, opacity: 0.35 * glow });
+  if (dynamic) core.userData.lampOpacity = 0.35;
+  put(g, new THREE.CylinderGeometry(r * 0.8, r * 0.8, r * 1.4, 8), core, x, y, z);
 }
 
 /**

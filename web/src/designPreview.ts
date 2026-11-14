@@ -29,6 +29,8 @@ import { isColorManaged, isSoft, withLookParam } from './scene/look';
 import { addVignette } from './ui/vignette';
 import { signText } from './scene/signAtlas';
 import { buildWorld } from './scene/world';
+import { hourSlider, NgayDem } from './ngayDem';
+import { inRect } from './scene/rooms';
 import { el } from './ui/dom';
 import { placeZones, ZONE_CONTENT } from './zones/zones';
 
@@ -63,7 +65,12 @@ async function boot(): Promise<void> {
   // nội thất như app: theo nội dung bài (main.ts)
   const interiors = Object.fromEntries(ZONE_CONTENT.map((c) => [c.id, { kind: c.interior, han: c.lesson.han }]));
   const world = buildWorld(scene, colliders, spec, interiors);
-  if (isSoft(spec.look)) addVignette(canvas, spec.look.vignette, spec.look.vignetteColor); // như app (main.ts)
+  const vignette = isSoft(spec.look) ? addVignette(canvas, spec.look.vignette, spec.look.vignetteColor) : null; // như app (main.ts)
+  // ngày đêm như app: ?gio=21 ép giờ, ?gio=17&toc=60 tua nhanh; thanh trượt giờ ở bảng (R-NGAY-1)
+  const ngayDem = new NgayDem(world.dayNight, spec, query, vignette);
+  // `?debug`: công cụ đo / gỡ lỗi đọc cảnh (như main.ts)
+  if (query.has('debug')) Object.assign(window, { __hocXa: { scene, camera } });
+  hourSlider(ngayDem, el<HTMLInputElement>('gio'), el('gioNhan'), query);
   for (const room of world.rooms) {
     if (!room.teacher) continue;
     const t = createDiscipleCharacter({ robe: '#3f5fa0', trim: '#2b5446' });
@@ -368,6 +375,8 @@ async function boot(): Promise<void> {
       mat.ngoi.update(step, camera, mat.third, mat.game, sat + 2); // cuộn mở ngay (như đã ngồi > 1 s)
     } else controls.update();
     world.update(dt, character.root.position);
+    const p = character.root.position;
+    ngayDem.update(dt, world.rooms.some((r) => inRect(r.floor, p.x, p.z)));
     character.animate(dt, stateNow().mps / RUN_SPEED, stateNow());
     cuon?.update(dt, character.root.position, character.facing.rotation.y, 2);
     for (const npc of npcSet.npcs) npc.update(dt);

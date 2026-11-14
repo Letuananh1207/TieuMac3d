@@ -69,7 +69,7 @@ export const DEFAULT_DAY_NIGHT: DayNightSpec = {
   dem: {
     sky: { top: '#141a3e', middle: '#2e3a74', horizon: '#5a5a92' },
     fog: '#2e3866',
-    light: { skyColor: '#8c9ce0', groundColor: '#3a3a5c', hemiScale: 0.62, moonColor: '#b8c6ff', moonScale: 0.4 },
+    light: { skyColor: '#8494d8', groundColor: '#38385a', hemiScale: 0.55, moonColor: '#b0c0ff', moonScale: 0.38 },
     tint: { near: '#b4bce0', far: '#5c6aa0', water: '#6e7cb4' },
     lampGlow: 1,
     windowGlow: 0.7,

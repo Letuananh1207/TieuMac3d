@@ -895,5 +895,6 @@
       "rotY": 270,
       "period": 40
     }
-  ]
+  ],
+  "dayNight": { "enabled": true }
 }

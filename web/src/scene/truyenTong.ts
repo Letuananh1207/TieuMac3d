@@ -8,7 +8,7 @@
 import * as THREE from 'three';
 import type { Colliders } from '../collision/colliders';
 import type { Pad } from '../collision/ground';
-import { lambert } from './materials';
+import { dayNightTag, lambert } from './materials';
 import { markDynamic } from './merge';
 import type { TeleportSpec } from './spec';
 import { makeCanvasTex } from './textures';
@@ -109,10 +109,10 @@ export function addTeleport(scene: THREE.Scene, colliders: Colliders, tp: Telepo
   scene.add(rim, emblem);
 
   // vòng + chấm vàng: màu vòng đổi theo độ nạp
-  const ringMat = new THREE.MeshBasicMaterial({ color: colors.dim, polygonOffset: true, polygonOffsetFactor: -2 });
+  const ringMat = dayNightTag(new THREE.MeshBasicMaterial({ color: colors.dim, polygonOffset: true, polygonOffsetFactor: -2 }), 'bo');
   const ring = new THREE.Mesh(flat(new THREE.RingGeometry(R * 0.88, R, 64)), ringMat);
   ring.position.set(cx, y0 + 0.075, cz);
-  const dotMat = new THREE.MeshBasicMaterial({ color: colors.spark, polygonOffset: true, polygonOffsetFactor: -3 });
+  const dotMat = dayNightTag(new THREE.MeshBasicMaterial({ color: colors.spark, polygonOffset: true, polygonOffsetFactor: -3 }), 'bo');
   const dots = new THREE.InstancedMesh(flat(new THREE.CircleGeometry(0.16, 8)), dotMat, DOTS);
   const m = new THREE.Matrix4();
   for (let i = 0; i < DOTS; i++) {

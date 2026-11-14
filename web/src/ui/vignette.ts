@@ -8,17 +8,18 @@ export function addVignette(stage: HTMLElement, strength: number, color: string)
   const v = document.createElement('div');
   v.id = 'vignette';
   v.setAttribute('aria-hidden', 'true');
+  Object.assign(v.style, { position: 'fixed', inset: '0', pointerEvents: 'none' });
+  setVignette(v, strength, color);
+  stage.after(v); // ngay trên cảnh, dưới mọi lớp HUD (HUD đứng sau trong DOM)
+  return v;
+}
+
+/** Đổi độ tối / màu mép của lớp đã có (ngày đêm — `web/src/ngayDem.ts`): chỉ đổi nền CSS, không thêm lớp. */
+export function setVignette(v: HTMLElement, strength: number, color: string): void {
   // `strength` = độ tối ở mép trái / phải; góc màn tối hơn chút (gradient tới góc xa nhất)
   const a = Math.min(0.9, strength * 1.2).toFixed(2);
   // màu mép "#rrggbb" (đặc tả `look.vignetteColor`) → "r,g,b"
   const n = parseInt(color.slice(1), 16);
   const rgb = `${(n >> 16) & 255},${(n >> 8) & 255},${n & 255}`;
-  Object.assign(v.style, {
-    position: 'fixed',
-    inset: '0',
-    pointerEvents: 'none',
-    background: `radial-gradient(ellipse at 50% 45%, rgba(${rgb},0) 40%, rgba(${rgb},${a}) 100%)`,
-  });
-  stage.after(v); // ngay trên cảnh, dưới mọi lớp HUD (HUD đứng sau trong DOM)
-  return v;
+  v.style.background = `radial-gradient(ellipse at 50% 45%, rgba(${rgb},0) 40%, rgba(${rgb},${a}) 100%)`;
 }

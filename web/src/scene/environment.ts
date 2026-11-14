@@ -5,29 +5,64 @@ import { addSkyDome } from './skyDome';
 import type { SceneSpec } from './spec';
 import { makeCanvasTex, SQUARE_TILE_M, squareTileTex } from './textures';
 
+/** Tay cầm môi trường để đổi theo giờ (ngày đêm — `apGio.ts`) mà không dựng lại. */
+export interface EnvHandles {
+  hemi: THREE.HemisphereLight;
+  sun: THREE.DirectionalLight;
+  fog: THREE.Fog;
+  /** vẽ lại trời 3 màu (cảnh cũ: ảnh nền gradient; cảnh mềm: vòm trời); `night` 0…1 làm mờ quầng nắng */
+  setSky(top: string, middle: string, horizon: string, night?: number): void;
+}
+
 /** Trời, sương mù, đèn. Mặt đất dựng riêng: phẳng (`addFlatGround`) hoặc địa hình (`terrain.ts`). */
-export function addEnvironment(scene: THREE.Scene, spec: SceneSpec, far = 200): void {
+export function addEnvironment(scene: THREE.Scene, spec: SceneSpec, far = 200): EnvHandles {
   const { sky, fog, light } = spec;
+  let setSky: EnvHandles['setSky'];
   // cảnh mềm: vòm trời màu theo đỉnh + quầng nắng (skyDome.ts) — nền chỉ là màu chân trời cho khe hở
   if (isSoft(spec.look)) {
-    scene.background = new THREE.Color(sky.horizon);
-    addSkyDome(scene, spec, far * 0.8);
-  } else scene.background = makeCanvasTex(16, 256, (g, w, h) => {
-    const gr = g.createLinearGradient(0, 0, 0, h);
-    gr.addColorStop(0, sky.top);
-    gr.addColorStop(0.55, sky.middle);
-    gr.addColorStop(1, sky.horizon);
-    g.fillStyle = gr;
-    g.fillRect(0, 0, w, h);
-  });
+    const bg = new THREE.Color(sky.horizon);
+    scene.background = bg;
+    const dome = addSkyDome(scene, spec, far * 0.8);
+    setSky = (t, m, h, night = 0) => {
+      bg.set(h);
+      dome.recolor(t, m, h, night);
+    };
+  } else {
+    const c = { top: sky.top, middle: sky.middle, horizon: sky.horizon };
+    const tex = makeCanvasTex(16, 256, (g, w, h) => {
+      const gr = g.createLinearGradient(0, 0, 0, h);
+      gr.addColorStop(0, c.top);
+      gr.addColorStop(0.55, c.middle);
+      gr.addColorStop(1, c.horizon);
+      g.fillStyle = gr;
+      g.fillRect(0, 0, w, h);
+    });
+    scene.background = tex;
+    // vẽ lại ảnh nền 16 × 256 (< 1 ms) rồi tải lên GPU
+    setSky = (t, m, h) => {
+      Object.assign(c, { top: t, middle: m, horizon: h });
+      const g = (tex.image as HTMLCanvasElement).getContext('2d');
+      if (!g) return;
+      const gr = g.createLinearGradient(0, 0, 0, 256);
+      gr.addColorStop(0, t);
+      gr.addColorStop(0.55, m);
+      gr.addColorStop(1, h);
+      g.fillStyle = gr;
+      g.fillRect(0, 0, 16, 256);
+      tex.needsUpdate = true;
+    };
+  }
   // Sương mù che chỗ cảnh kết thúc, nên không phải dựng gì ở xa (núi xa tự pha màu, không chịu sương).
-  scene.fog = new THREE.Fog(fog.color, fog.near, fog.far);
+  const fogObj = new THREE.Fog(fog.color, fog.near, fog.far);
+  scene.fog = fogObj;
 
   // ×π: đổi đơn vị ánh sáng từ r128 sang three hiện tại (xem renderer.ts).
-  scene.add(new THREE.HemisphereLight(light.skyColor, light.groundColor, light.hemiIntensity * Math.PI));
+  const hemi = new THREE.HemisphereLight(light.skyColor, light.groundColor, light.hemiIntensity * Math.PI);
+  scene.add(hemi);
   const sun = new THREE.DirectionalLight(light.sunColor, light.sunIntensity * Math.PI);
   sun.position.set(...light.sunPosition);
   scene.add(sun);
+  return { hemi, sun, fog: fogObj, setSky };
 }
 
 /** Texture gạch lát sân (một ô ảnh = 8 × 4 viên). `repeat` thiếu = lặp theo UV của lưới. */

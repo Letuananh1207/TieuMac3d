@@ -68,6 +68,7 @@ import { musicVolume, TRACKS } from './zones/music';
 import { journeyLine } from './zones/tranSu';
 import { AmbientMusic } from './ui/ambientMusic';
 import { HomeDecor } from './homeDecor';
+import { NgayDem } from './ngayDem';
 
 // con trỏ hoạt hình nhúng sẵn (L-9) — đặt sớm nhất, trước cả màn tải
 installCursors(cursorArrow, cursorButton);
@@ -126,7 +127,9 @@ async function boot(): Promise<void> {
   const interiors = Object.fromEntries(ZONE_CONTENT.map((c) => [c.id, { kind: c.interior, han: c.lesson.han }]));
   const world = buildWorld(scene, colliders, spec, interiors, detailOf(tier));
   // tối nhẹ mép màn (CSS); mức Thấp bỏ — trình duyệt vẫn phải ghép thêm một lớp phủ cả màn (R-HIEU-1)
-  if (isSoft(spec.look) && detailOf(tier) >= 1) addVignette(canvas, spec.look.vignette, spec.look.vignetteColor);
+  const vignette = isSoft(spec.look) && detailOf(tier) >= 1 ? addVignette(canvas, spec.look.vignette, spec.look.vignetteColor) : null;
+  // ngày đêm theo giờ VN (R-NGAY-1…3); ?gio=21 ép giờ, ?gio=17&toc=60 tua nhanh
+  const ngayDem = new NgayDem(world.dayNight, spec, params, vignette);
   const placed = placeZones(ZONE_CONTENT, world.zoneAnchors);
   // bài học chỉ ở tông môn → cảnh vùng không báo thiếu vùng học
   const problems = [...SCENE.problems, ...(isHome ? placed.problems : [])];
@@ -194,7 +197,7 @@ async function boot(): Promise<void> {
   const TIER_NAME = { cao: 'Cao', vua: 'Vừa', thap: 'Thấp' } as const;
   const showInfo = (): void =>
     fps.setInfo(
-      `${gpuName(renderer)} · ${TIER_NAME[tier]} ${renderer.getPixelRatio()}× · ${frameCap.fps} fps · ${renderer.domElement.width}×${renderer.domElement.height}`,
+      `${gpuName(renderer)} · ${TIER_NAME[tier]} ${renderer.getPixelRatio()}× · ${frameCap.fps} fps · ${renderer.domElement.width}×${renderer.domElement.height}${ngayDem.label ? ` · ${ngayDem.label}` : ''}`,
     );
   showInfo();
   // dừng hẳn vòng lặp khi app xuống nền (Flutter gửi `lifecycle`) hoặc tab bị ẩn — đỡ tốn pin (mốc 4)
@@ -639,7 +642,7 @@ async function boot(): Promise<void> {
     if (how === 'cong') next.set('qua', SCENE.id);
     else if (to === HOME_SCENE) next.set('tu', SCENE.id);
     // giữ tham số thử trên trình duyệt
-    for (const k of ['debug', 'nhan-vat', 'muc', 'look']) if (params.has(k)) next.set(k, params.get(k) ?? '');
+    for (const k of ['debug', 'nhan-vat', 'muc', 'look', 'gio', 'toc']) if (params.has(k)) next.set(k, params.get(k) ?? '');
     // replace: không chất lịch sử trang mỗi lần đi về
     void nextPaint().then(() => location.replace(`${location.pathname}?${next.toString()}`));
   };
@@ -707,6 +710,7 @@ async function boot(): Promise<void> {
     zones.update(pos);
     world.update(dt, pos);
     const room = roomAt(pos.x, pos.z);
+    ngayDem.update(dt, !!room);
     orbit.update(tpCam, pos, dt, false, groundAt, room?.floor, sight);
     // ngồi: trượt 0,4 s vào mắt / cúi nhìn bàn chơi, thân mình ẩn (R-DIEU-7, R-GIAO-1); đứng: camera ngôi 3 như cũ
     const atTable = gamePlay.placeCamera(gameCam);

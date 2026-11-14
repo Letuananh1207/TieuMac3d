@@ -7,6 +7,7 @@
  *   đứng dậy   → vòng sáng tắt dần 0,2 s
  */
 import * as THREE from 'three';
+import { dayNightTag } from './materials';
 import { CuonSach } from './cuonSach';
 import { LAYER_THAN } from './layers';
 import { markDynamic } from './merge';
@@ -65,7 +66,7 @@ export class NhapDinh {
   private readonly cuon: CuonSach;
 
   constructor(scene: THREE.Scene) {
-    this.ringMat = new THREE.MeshBasicMaterial({ map: ringTexture(), transparent: true, depthWrite: false, opacity: 0 });
+    this.ringMat = dayNightTag(new THREE.MeshBasicMaterial({ map: ringTexture(), transparent: true, depthWrite: false, opacity: 0 }), 'bo');
     this.ring = new THREE.Mesh(new THREE.PlaneGeometry(RING_D, RING_D), this.ringMat);
     this.ring.rotation.x = -Math.PI / 2;
     this.ring.visible = false;

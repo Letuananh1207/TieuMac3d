@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import type { Style } from './buildings';
-import { lambert } from './materials';
+import { dayNightTag, lambert } from './materials';
 import { markDynamic } from './merge';
 import type { Updater } from './props';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
@@ -129,7 +129,7 @@ function puffyClouds(scene: THREE.Scene, spec: SceneSpec['floating'], look: Look
   const rand = seededRandom(seed * 31 + 5);
   const mesh = new THREE.InstancedMesh(
     puffGeometry(clouds.color, look.cloudBelly),
-    new THREE.MeshBasicMaterial({ vertexColors: true, fog: false }),
+    dayNightTag(new THREE.MeshBasicMaterial({ vertexColors: true, fog: false }), 'xa'),
     clouds.count,
   );
   const items = Array.from({ length: clouds.count }, (_, i) => ({

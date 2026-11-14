@@ -8,27 +8,42 @@ import type { SceneSpec } from './spec';
  * giữa → đỉnh như `sky`) + quầng sáng quanh hướng mặt trời (`look.sunGlow`). 1 draw call, vẽ trước mọi thứ, không ghi độ
  * sâu, không chịu sương; đi theo camera nên không bao giờ bị cắt bởi tầm nhìn xa. Thay ảnh nền gradient của cảnh cũ.
  */
-export function addSkyDome(scene: THREE.Scene, spec: SceneSpec, radius: number): THREE.Mesh {
+export interface SkyDome {
+  mesh: THREE.Mesh;
+  /** tô lại màu đỉnh (ngày đêm — `apGio.ts`): 3 màu trời; `glowFade` 0…1 = quầng nắng mờ đi (đêm không còn quầng) */
+  recolor(top: string, middle: string, horizon: string, glowFade?: number): void;
+}
+
+export function addSkyDome(scene: THREE.Scene, spec: SceneSpec, radius: number): SkyDome {
   const geo = new THREE.SphereGeometry(radius, 24, 12);
   const pos = geo.getAttribute('position');
-  const top = new THREE.Color(spec.sky.top);
-  const mid = new THREE.Color(spec.sky.middle);
-  const hor = new THREE.Color(spec.sky.horizon);
+  const top = new THREE.Color();
+  const mid = new THREE.Color();
+  const hor = new THREE.Color();
   const glow = new THREE.Color(spec.look.sunGlow);
   const sun = new THREE.Vector3(...spec.light.sunPosition).normalize();
   const d = new THREE.Vector3();
   const c = new THREE.Color();
   const colors = new Float32Array(pos.count * 3);
+  const attr = new THREE.BufferAttribute(colors, 3);
   // đường màu cũ (`look.colorPipeline: "cu"`): Color giữ số sRGB thô, đầu ra lại mã hoá sRGB → đổi về tuyến tính để trời
   // đúng mã hex như ảnh nền gradient của cảnh cũ (không nhạt đi)
   const raw = !isColorManaged(spec.look);
-  for (let i = 0; i < pos.count; i++) {
-    d.fromBufferAttribute(pos, i).normalize();
-    skyColor(d, sun, top, mid, hor, glow, spec.look.glowSize, c, spec.look.skyBands);
-    if (raw) c.convertSRGBToLinear();
-    colors.set([c.r, c.g, c.b], i * 3);
-  }
-  geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+  const recolor = (t: string, m: string, h: string, glowFade = 0): void => {
+    top.set(t);
+    mid.set(m);
+    hor.set(h);
+    const size = spec.look.glowSize * (1 - glowFade);
+    for (let i = 0; i < pos.count; i++) {
+      d.fromBufferAttribute(pos, i).normalize();
+      skyColor(d, sun, top, mid, hor, glow, size, c, spec.look.skyBands);
+      if (raw) c.convertSRGBToLinear();
+      colors.set([c.r, c.g, c.b], i * 3);
+    }
+    attr.needsUpdate = true;
+  };
+  recolor(spec.sky.top, spec.sky.middle, spec.sky.horizon);
+  geo.setAttribute('color', attr);
   const mat = new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.BackSide, fog: false, depthWrite: false });
   const dome = new THREE.Mesh(geo, mat);
   dome.renderOrder = -10;
@@ -37,9 +52,10 @@ export function addSkyDome(scene: THREE.Scene, spec: SceneSpec, radius: number):
     dome.position.copy(camera.position);
     dome.updateMatrixWorld();
   };
+  mat.userData.ngayDem = 'bo'; // màu do `recolor`, không nhân màu đêm
   markDynamic(dome);
   scene.add(dome);
-  return dome;
+  return { mesh: dome, recolor };
 }
 
 const smooth = (a: number, b: number, v: number): number => {

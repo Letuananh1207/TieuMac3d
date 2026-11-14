@@ -1031,5 +1031,6 @@
   },
   "lessons": {
     "radicals": false
-  }
+  },
+  "dayNight": { "enabled": true }
 }

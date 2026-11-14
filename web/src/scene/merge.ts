@@ -35,7 +35,9 @@ function materialKey(m: THREE.Material): string | null {
     m.opacity,
     m.side,
     m.polygonOffset ? m.polygonOffsetFactor : '',
-    m instanceof THREE.MeshLambertMaterial && isGlowing(m) ? `e${m.emissive.getHexString()}-${m.emissiveIntensity}` : '',
+    m instanceof THREE.MeshLambertMaterial && isGlowing(m) ? `e${m.emissive.getHexString()}-${m.emissiveIntensity}-${m.userData.lamp ?? ''}` : '',
+    typeof m.userData.lampOpacity === 'number' ? 'lo' : '',
+    m.userData.ngayDem ?? '',
   ].join('|');
 }
 

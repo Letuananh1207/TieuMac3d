@@ -852,5 +852,6 @@
       "cups": 9,
       "speed": 0.4
     }
-  ]
+  ],
+  "dayNight": { "enabled": true }
 }

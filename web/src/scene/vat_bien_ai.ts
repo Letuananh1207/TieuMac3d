@@ -5,7 +5,7 @@
  */
 import * as THREE from 'three';
 import type { Style } from './buildings';
-import { lambert } from './materials';
+import { dayNightTag, lambert } from './materials';
 import { markDynamic } from './merge';
 import { signMesh } from './signAtlas';
 import { drawStoneSign, textUnits } from './textures';
@@ -182,8 +182,8 @@ function luaTrai(g: THREE.Group, style: Style, updaters: Updater[]): PropCollide
     const m = put(g, new THREE.CylinderGeometry(0.1, 0.1, 1.4, 5), log, 0, 0.15, 0);
     m.rotation.set(Math.PI / 2, 0, (i * Math.PI) / 4);
   }
-  const fire = put(g, new THREE.ConeGeometry(0.5, 1.2, 6), new THREE.MeshBasicMaterial({ color: '#f2a03a' }), 0, 0.8, 0);
-  const core = put(g, new THREE.ConeGeometry(0.28, 0.8, 6), new THREE.MeshBasicMaterial({ color: '#ffe08a' }), 0, 0.6, 0);
+  const fire = put(g, new THREE.ConeGeometry(0.5, 1.2, 6), dayNightTag(new THREE.MeshBasicMaterial({ color: '#f2a03a' }), 'bo'), 0, 0.8, 0);
+  const core = put(g, new THREE.ConeGeometry(0.28, 0.8, 6), dayNightTag(new THREE.MeshBasicMaterial({ color: '#ffe08a' }), 'bo'), 0, 0.6, 0);
   markDynamic(fire);
   markDynamic(core);
   let t = 0;

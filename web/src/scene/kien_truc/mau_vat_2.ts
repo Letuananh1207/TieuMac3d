@@ -5,7 +5,7 @@
  * Toạ độ hệ mẫu, mặt trước nhìn +z; đông = +x, tây = −x. Dùng cho Catalog 3D; map chuyển sang ở GĐ 5.
  */
 import * as THREE from 'three';
-import { lambert, lampMaterial } from '../materials';
+import { dayNightTag, lambert, lampMaterial } from '../materials';
 import { than, type Build } from './bo_phan';
 import { addSteps, type Style } from './chi_tiet';
 import { cotSon, maiDua, ngoi } from './danh_muc';
@@ -165,7 +165,7 @@ function loDan(s: THREE.Group, style: Style): void {
     s.add(column(0.12, 0.65, style.bronze, Math.sin(a) * 0.55, 0.25, Math.cos(a) * 0.55, 6));
   }
   put(s, oct(0.95, 0.85, 1.1), style.bronze, 0, 1.4, 0);
-  const fire = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.4, 0.1), new THREE.MeshBasicMaterial({ color: style.gold }));
+  const fire = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.4, 0.1), dayNightTag(new THREE.MeshBasicMaterial({ color: style.gold }), 'bo'));
   fire.position.set(0, 1.25, 0.84);
   s.add(fire);
   put(s, oct(0.45, 0.98, 0.45), style.bronze, 0, 2.175, 0);

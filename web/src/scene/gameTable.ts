@@ -8,7 +8,7 @@ import type { Colliders } from '../collision/colliders';
 import type { Style } from './kien_truc/chi_tiet';
 import { gameSign } from './kien_truc/do_pho';
 import { box } from './kien_truc/hinh';
-import { lambert } from './materials';
+import { dayNightTag, lambert } from './materials';
 import { markDynamic } from './merge';
 import type { Seat } from './seat';
 import { GAME_SLOT, rotateXZ, type GameSignSpec, type GameTableSpec } from './spec';
@@ -211,7 +211,7 @@ export function addGameTable(scene: THREE.Scene, colliders: Colliders, t: GameTa
 
     // quân + vầng sáng (chỉ bàn cờ)
     const makeSet = (color: string, count: number, geo: THREE.BufferGeometry, basic = false): THREE.InstancedMesh => {
-      const mat = basic ? new THREE.MeshBasicMaterial({ color }) : lambert(color);
+      const mat = basic ? dayNightTag(new THREE.MeshBasicMaterial({ color }), 'bo') : lambert(color);
       const m = new THREE.InstancedMesh(geo, mat, count);
       m.count = 0;
       markDynamic(m);
@@ -231,7 +231,7 @@ export function addGameTable(scene: THREE.Scene, colliders: Colliders, t: GameTa
       drawCard(canvas, null);
       const tex = new THREE.CanvasTexture(canvas);
       tex.colorSpace = THREE.SRGBColorSpace;
-      const mesh = new THREE.Mesh(new THREE.PlaneGeometry(0.5, 0.5), new THREE.MeshBasicMaterial({ map: tex }));
+      const mesh = new THREE.Mesh(new THREE.PlaneGeometry(0.5, 0.5), dayNightTag(new THREE.MeshBasicMaterial({ map: tex }), 'bo'));
       mesh.rotation.x = -Math.PI / 2;
       mesh.position.set(0, TOP_Y + 0.006, 0);
       markDynamic(mesh);

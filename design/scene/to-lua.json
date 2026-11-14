@@ -810,5 +810,6 @@
       "count": 4,
       "speed": 0.8
     }
-  ]
+  ],
+  "dayNight": { "enabled": true }
 }

@@ -22,16 +22,55 @@ export function setLampGlow(v: number): void {
 export const currentLampGlow = (): number => lampGlow;
 
 /**
+ * Đèn đổi theo giờ (`dayNight.enabled` — kế hoạch docs/tasks/2026-11-14-ngay-dem.md, NV6): đèn / cửa sổ dựng với
+ * `emissive` sẵn, `emissiveIntensity` 0 và nhãn `userData.lamp` (`den` · `cua`) để `apGio.ts` đổi độ sáng lúc chạy; các bước
+ * gộp màu đỉnh bỏ qua chúng (giữ được phần sáng). `world.ts` đặt trước khi dựng.
+ */
+let lampDynamic = false;
+let windowGlowColor = '#ffc870';
+
+export function setLampMode(dynamic: boolean, windowColor = '#ffc870'): void {
+  lampDynamic = dynamic;
+  windowGlowColor = windowColor;
+}
+
+export const isLampDynamic = (): boolean => lampDynamic;
+
+/**
+ * Nhãn ngày đêm của vật liệu không chịu sáng (`apGio.ts`): `xa` = núi xa / mây / biển mây (tối theo trời) · `bo` = giữ
+ * nguyên màu (vòm trời, vòng trận, ô ngồi, bàn cờ, lửa — R-NGAY-4: vẫn rõ ban đêm). Không nhãn = nhân màu "gần" nhẹ.
+ */
+export function dayNightTag<M extends THREE.Material>(m: M, tag: 'xa' | 'bo'): M {
+  m.userData.ngayDem = tag;
+  return m;
+}
+
+/**
  * Vật liệu phần "lòng đèn": tắt (`lampGlow` 0) = Lambert thường, gộp chung với khối cùng màu; bật = Lambert tự phát
  * sáng màu của chính nó (`emissive`) — không thêm đèn thật, không thêm draw call.
  */
 export function lampMaterial(color: THREE.ColorRepresentation): THREE.MeshLambertMaterial {
+  if (lampDynamic) {
+    const m = lambert(color, { emissive: color, emissiveIntensity: 0 });
+    m.userData.lamp = 'den';
+    return m;
+  }
   if (lampGlow <= 0) return lambert(color);
   return lambert(color, { emissive: color, emissiveIntensity: lampGlow });
 }
 
-/** Vật liệu có tự phát sáng (đèn đang bật) — các bước gộp màu đỉnh bỏ qua để không mất phần sáng. */
-export const isGlowing = (m: THREE.MeshLambertMaterial): boolean => m.emissiveIntensity > 0 && m.emissive.getHex() !== 0;
+/**
+ * Giấy song cửa sổ nhà: ban ngày như mọi khối; có ngày đêm thì ban đêm sáng ấm (`dayNight.dem.windowColor`) — R-NGAY-3.
+ */
+export function windowMaterial(color: THREE.ColorRepresentation): THREE.MeshLambertMaterial {
+  if (!lampDynamic) return lambert(color);
+  const m = lambert(color, { emissive: windowGlowColor, emissiveIntensity: 0 });
+  m.userData.lamp = 'cua';
+  return m;
+}
+
+/** Vật liệu có tự phát sáng (đèn đang bật, hoặc đèn / cửa sổ đổi theo giờ) — các bước gộp màu đỉnh bỏ qua để không mất phần sáng. */
+export const isGlowing = (m: THREE.MeshLambertMaterial): boolean => !!m.userData.lamp || (m.emissiveIntensity > 0 && m.emissive.getHex() !== 0);
 
 /** Dòng tính độ sáng nắng của Lambert (three 0.170, `lights_lambert_pars_fragment`) — thay bằng wrap lighting. */
 const DOT_NL = 'float dotNL = saturate( dot( geometryNormal, directLight.direction ) );';

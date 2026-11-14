@@ -1,6 +1,6 @@
 /** Hình khối dựng kiến trúc: chóp cụt (mái hiên, mái chái), lăng trụ tam giác (mái hai mái), khối hộp. */
 import * as THREE from 'three';
-import { lambert } from '../materials';
+import { lambert, windowMaterial } from '../materials';
 
 function fromTriangles(points: number[]): THREE.BufferGeometry {
   const g = new THREE.BufferGeometry();
@@ -56,6 +56,13 @@ export function prism(w: number, d: number, h: number): THREE.BufferGeometry {
 /** Khối hộp đặt tâm (x, y, z) — y là tâm theo chiều cao. */
 export function box(w: number, h: number, d: number, color: string, x: number, y: number, z: number): THREE.Mesh {
   const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), lambert(color));
+  m.position.set(x, y, z);
+  return m;
+}
+
+/** Hộp giấy song cửa sổ: như `box` nhưng ban đêm sáng ấm khi cảnh có ngày đêm (`windowMaterial` — R-NGAY-3). */
+export function windowBox(w: number, h: number, d: number, color: string, x: number, y: number, z: number): THREE.Mesh {
+  const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), windowMaterial(color));
   m.position.set(x, y, z);
   return m;
 }

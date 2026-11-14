@@ -1657,5 +1657,6 @@
     },
     "vignette": 0.25,
     "vignetteColor": "#2e3640"
-  }
+  },
+  "dayNight": { "enabled": true }
 }

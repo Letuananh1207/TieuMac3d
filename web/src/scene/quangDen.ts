@@ -9,7 +9,8 @@ import { makeCanvasTex } from './textures';
  * không ghi độ sâu. 1 draw call cho mọi đèn, mỗi quầng chỉ phủ vài nghìn điểm ảnh — thay cho bloom (hậu kỳ toàn màn, đắt
  * trên GPU điện thoại). Không dùng `Points`: cỡ điểm tối đa của GPU điện thoại có máy chỉ 64 px.
  */
-export function addLanternGlow(scene: THREE.Scene, spots: THREE.Vector3[], look: LookSpec, strength = 1): THREE.InstancedMesh | null {
+/** `maxSize`: trần bán kính quầng (ngày đêm: quầng đêm nhỏ ≤ 1,2 m — tốn điểm ảnh, kế hoạch 2026-11-14-ngay-dem). */
+export function addLanternGlow(scene: THREE.Scene, spots: THREE.Vector3[], look: LookSpec, strength = 1, maxSize = Infinity): THREE.InstancedMesh | null {
   if (!spots.length || look.lanternGlow.size <= 0 || strength <= 0) return null;
   const tex = makeCanvasTex(64, 64, (g, w, h) => {
     const gr = g.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, w / 2);
@@ -30,7 +31,7 @@ export function addLanternGlow(scene: THREE.Scene, spots: THREE.Vector3[], look:
   });
   const mesh = new THREE.InstancedMesh(new THREE.PlaneGeometry(1, 1), mat, spots.length);
   const m = new THREE.Matrix4();
-  const size = new THREE.Vector3().setScalar(look.lanternGlow.size * 2);
+  const size = new THREE.Vector3().setScalar(Math.min(look.lanternGlow.size, maxSize) * 2);
   const face = (q: THREE.Quaternion): void => {
     spots.forEach((p, i) => mesh.setMatrixAt(i, m.compose(p, q, size)));
     mesh.instanceMatrix.needsUpdate = true;

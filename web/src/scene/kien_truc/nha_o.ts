@@ -6,7 +6,7 @@
 import type * as THREE from 'three';
 import type { BuildingSpec } from '../spec';
 import { addLanterns, addSign, hk, type Style } from './chi_tiet';
-import { box, column } from './hinh';
+import { box, column, windowBox } from './hinh';
 import { gableRoof } from './mai';
 import type { LocalBox } from './noi_that';
 import { frontRamp, type Shell } from './vao_trong';
@@ -45,7 +45,7 @@ export function nhaO(g: THREE.Group, b: BuildingSpec, style: Style, fade: THREE.
     const cx = s * (door / 2 + side / 2);
     g.add(box(side, 0.9, WALL, style.wall, cx, PLAT + 0.45, zf)); // chân tường
     g.add(box(side, h - 2.1, WALL, style.wall, cx, PLAT + h - (h - 2.1) / 2, zf)); // trên song
-    g.add(box(side - 0.3, 1.2, 0.08, PAPER, cx, PLAT + 1.5, zf)); // giấy dán song
+    g.add(windowBox(side - 0.3, 1.2, 0.08, PAPER, cx, PLAT + 1.5, zf)); // giấy dán song
     for (let i = 1; i < 4; i++) g.add(box(0.05, 1.2, 0.12, style.timber, cx - side / 2 + 0.15 + (i * (side - 0.3)) / 4, PLAT + 1.5, zf + 0.02));
     boxes.push({ x: cx, z: zf, w: side, d: 0.3, h: Infinity });
   }

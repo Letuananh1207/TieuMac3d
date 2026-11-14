@@ -9,7 +9,7 @@ import * as THREE from 'three';
 import type { Colliders } from '../collision/colliders';
 import type { Pad } from '../collision/ground';
 import { box } from './kien_truc/hinh';
-import { lambert } from './materials';
+import { dayNightTag, lambert } from './materials';
 import { markDynamic } from './merge';
 import type { TeleportSpec } from './spec';
 import { daisLayout, daisPads, pillarSpots, railPosts, STAIR_DIRS } from './teleportLayout';
@@ -100,7 +100,7 @@ export function addDais(scene: THREE.Scene, colliders: Colliders, tp: TeleportSp
 
   // trụ phù văn: thân + đế + mũ (đá), dải phù văn chéo hai chiều (1 InstancedMesh, đổi màu theo độ nạp)
   const spots = pillarSpots(tp);
-  const runeMat = new THREE.MeshBasicMaterial({ color: tp.colors.dim });
+  const runeMat = dayNightTag(new THREE.MeshBasicMaterial({ color: tp.colors.dim }), 'bo');
   const runes = new THREE.InstancedMesh(new THREE.BoxGeometry(PILLAR_W + 0.04, RUNE_H, 0.16), runeMat, Math.max(1, spots.length * 2));
   const m = new THREE.Matrix4();
   const q = new THREE.Quaternion();

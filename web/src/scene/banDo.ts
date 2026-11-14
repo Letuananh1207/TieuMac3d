@@ -5,7 +5,7 @@
  * Vẽ đè lên cảnh (không so độ sâu) + một tấm tối 28 % phía sau. Khi mở: +4 draw call (tối, giấy, trục, đầu trục).
  */
 import * as THREE from 'three';
-import { lambert } from './materials';
+import { dayNightTag, lambert } from './materials';
 import { markDynamic } from './merge';
 
 /** Dạng dữ liệu bản đồ (trùng `zones/journeyMap.ts` — scene/ không import zones/). */
@@ -122,14 +122,14 @@ export function createMapScroll(scene: THREE.Scene, camera: THREE.PerspectiveCam
   markDynamic(root);
 
   // tấm tối phía sau cuộn, phủ kín tầm nhìn
-  const dimMat = new THREE.MeshBasicMaterial({ color: '#24323A', opacity: 0, ...over });
+  const dimMat = dayNightTag(new THREE.MeshBasicMaterial({ color: '#24323A', opacity: 0, ...over }), 'bo');
   const dim = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), dimMat);
   dim.renderOrder = 20;
   scene.add(dim);
   dim.visible = false;
   markDynamic(dim);
 
-  const paperMat = new THREE.MeshBasicMaterial({ map: tex, toneMapped: false, ...over });
+  const paperMat = dayNightTag(new THREE.MeshBasicMaterial({ map: tex, toneMapped: false, ...over }), 'bo');
   const paper = new THREE.Mesh(new THREE.PlaneGeometry(PAPER_W, paperH), paperMat);
   paper.renderOrder = 21;
   root.add(paper);

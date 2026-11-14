@@ -7,7 +7,7 @@
 import * as THREE from 'three';
 import type { Colliders } from '../collision/colliders';
 import { box, column } from './kien_truc/hinh';
-import { lambert } from './materials';
+import { lambert, lampMaterial } from './materials';
 import type { SceneSpec, XZ } from './spec';
 import type { GroundY } from './terrainHeight';
 
@@ -66,7 +66,7 @@ export function addLanternStrings(scene: THREE.Scene, colliders: Colliders, spec
       const lantern = st.hang === 'den' || (st.lanternEvery > 0 && k % st.lanternEvery === 0);
       if (lantern) {
         const cy = p.y - HANG - LANTERN_H / 2;
-        const body = new THREE.Mesh(bodyGeo, lambert(st.lantern));
+        const body = new THREE.Mesh(bodyGeo, lampMaterial(st.lantern)); // ngày đêm: đêm sáng đỏ ấm (R-NGAY-3)
         body.position.set(p.x, cy, p.z);
         g.add(body);
         lights.push(body.position.clone());
