@@ -46,7 +46,7 @@
 - [x] 4. `chat/chatChannel.ts` + `bubbleTimer.ts` + test: `LocalChannel` gửi → mọi người nghe nhận; giữ 50 tin; bong bóng
   6 s, tin mới thay tin cũ. (chat · vitest R-CHAT-2 · xong khi `npm test` xanh)
 - [x] 5. (đã duyệt 2026-11-14) NPC nói câu có sẵn trên kênh chung theo nhịp ngẫu nhiên có hạt giống. (`chat/npcChatter.ts`, câu có sẵn `NPC_LINES` · vitest)
-- [x] 6. (thiết kế 2026-11-14.1 — `ui/chatPanel.ts`, `ui/chatBubbles.ts`, `ui/chat.css`) HUD: ô nhập + nút gửi + nút mở khung kênh chung + bong bóng trên đầu. **chờ thiết kế
+- [x] 6. (thiết kế 2026-11-14.9 — `ui/chatPanel.ts`, `ui/chatBubbles.ts`, `ui/chat.css`) HUD: ô nhập + nút gửi + nút mở khung kênh chung + bong bóng trên đầu. **chờ thiết kế
   (`docs/phieu_thiet_ke/2026-11-14-tro-chuyen-kenh-chung.md`)**
 - [x] 7. (`chatRoom.ts` ghép, `main.ts` gọi) Ghép ở `main.ts` + bàn phím (Enter / Esc, đang gõ thì không đi). Sau nhiệm vụ 6.
 - [x] 8. (build xong; chụp headless dọc + ngang đạt — còn thử bàn phím ảo trên máy thật) `npm run build`; thử máy: bàn phím ảo Android / iOS, dọc + ngang.

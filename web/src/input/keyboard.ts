@@ -5,7 +5,7 @@ export type KeyAction = 'jump' | 'bow' | 'sit' | 'seat' | 'back' | 'chat';
 
 const ACTION_KEYS: Record<string, KeyAction> = { ' ': 'jump', f: 'bow', c: 'sit', e: 'seat', escape: 'back', enter: 'chat' };
 
-/** Đang gõ chữ (ô nhập trò chuyện…) → phím không điều khiển nhân vật (R-CHAT, thiết kế 2026-11-14.1). */
+/** Đang gõ chữ (ô nhập trò chuyện…) → phím không điều khiển nhân vật (R-CHAT, thiết kế 2026-11-14.9). */
 function typingIn(t: EventTarget | null): boolean {
   return t instanceof HTMLElement && (t.isContentEditable || t.tagName === 'INPUT' || t.tagName === 'TEXTAREA');
 }

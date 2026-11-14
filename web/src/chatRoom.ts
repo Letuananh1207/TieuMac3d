@@ -1,5 +1,5 @@
 /**
- * Ghép trò chuyện kênh chung (R-CHAT-1..3, thiết kế 2026-11-14.1): kênh trong máy + NPC nói câu có sẵn +
+ * Ghép trò chuyện kênh chung (R-CHAT-1..3, thiết kế 2026-11-14.9): kênh trong máy + NPC nói câu có sẵn +
  * bong bóng trên đầu + khung kênh / ô nhập. Tách khỏi main.ts như gamePlay.ts.
  */
 import * as THREE from 'three';
@@ -11,7 +11,7 @@ import type { Npc } from './player/npc';
 import { ChatBubbles, type BubbleAnchor } from './ui/chatBubbles';
 import { ChatPanel } from './ui/chatPanel';
 
-/** Bong bóng của mình nằm trên nhãn tên (cao 24) + hở 4 (thiết kế 2026-11-14.1). */
+/** Bong bóng của mình nằm trên nhãn tên (cao 24) + hở 4 (thiết kế 2026-11-14.9). */
 const ABOVE_NAME_TAG = 28;
 /** NPC: neo ngay trên đầu (cao như nút "Nói chuyện"). */
 const NPC_HEAD = 2.3;

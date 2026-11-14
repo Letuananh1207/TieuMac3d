@@ -146,7 +146,7 @@ Code: [web/src/zones/music.ts](../../web/src/zones/music.ts), [web/src/ui/ambien
 
 ## CHAT — trò chuyện kênh chung
 
-Code: [web/src/chat/](../../web/src/chat/) (logic), [web/src/chatRoom.ts](../../web/src/chatRoom.ts) (ghép), [web/src/ui/chatPanel.ts](../../web/src/ui/chatPanel.ts), [web/src/ui/chatBubbles.ts](../../web/src/ui/chatBubbles.ts) — thiết kế 2026-11-14.1.
+Code: [web/src/chat/](../../web/src/chat/) (logic), [web/src/chatRoom.ts](../../web/src/chatRoom.ts) (ghép), [web/src/ui/chatPanel.ts](../../web/src/ui/chatPanel.ts), [web/src/ui/chatBubbles.ts](../../web/src/ui/chatBubbles.ts) — thiết kế 2026-11-14.9.
 Chưa có máy chủ: kênh chạy trong máy (`LocalChannel`), NPC nói câu có sẵn để kênh có người.
 
 | Mã | Quy tắc | Ví dụ | Xác nhận | App |

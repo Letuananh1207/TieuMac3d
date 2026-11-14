@@ -11,7 +11,7 @@ export function h<K extends keyof HTMLElementTagNameMap>(tag: K, cls = '', text 
   return e;
 }
 
-/** Ghi câu vào `el`; chữ Hán trong câu bọc `<span lang="zh" class="han">` (Noto Serif SC 700 — thiết kế 2026-11-14.1). */
+/** Ghi câu vào `el`; chữ Hán trong câu bọc `<span lang="zh" class="han">` (Noto Serif SC 700 — thiết kế 2026-11-14.9). */
 export function fillChatText(el: HTMLElement, text: string): void {
   el.replaceChildren();
   let last = 0;

@@ -363,7 +363,7 @@ async function boot(): Promise<void> {
   const orbit = new OrbitCamera(spec.camera);
   const joystick = new Joystick(el('joy'), el('knob'), el('joyGhost'));
   const picker = new GroundPicker(camera, world.ground);
-  // trò chuyện kênh chung (R-CHAT-1..3, thiết kế 2026-11-14.1) — tên NPC lấy từ dữ liệu hội thoại
+  // trò chuyện kênh chung (R-CHAT-1..3, thiết kế 2026-11-14.9) — tên NPC lấy từ dữ liệu hội thoại
   const chat = new ChatRoom((id) => dialogFor(id));
   // Space nhảy, F chào, C ngồi ôn (R-DIEU-6, R-DIEU-7); đang học / màn tải thì bỏ qua
   const keyboard = new Keyboard((a) => {

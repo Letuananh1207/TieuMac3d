@@ -3,6 +3,27 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-14.11 — Bộ ảnh nhiều góc NPC Tiểu nhị 小二 (hướng A trà bác sĩ trẻ 茶博士)
+
+- Loại: tài nguyên 3D — ảnh đầu vào (Hunyuan3D-2mv). Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-13-anh-tieu-nhi.md`.
+- Mã mục: phiên thiết kế ghi `.7`; khi gộp nhánh (2026-11-14) đổi thành `.11` vì máy VS Code đã dùng .7 cho "Bản đồ truyền tống: chỉ chữ Việt…".
+- Người dùng chưa ưng mô tả phiếu cũ (áo lam, khăn trắng vắt vai, kiểu tiểu nhị trên phim) → khảo cứu `docs/tham_khao/tieu-nhi.md`
+  (3 hướng, artboard `TieuNhi-huong`) → người dùng chọn **A "trà bác sĩ trẻ"**: khăn vấn nâu sẫm #4A4038 thắt nút + 2 đuôi sau gáy,
+  áo ngắn màu trà #B07A4A cổ giao lĩnh vạt trái đè phải, **dây tháp tay áo 襻膊 đỏ son #A8322A** buộc tay áo, chéo chữ X sau lưng,
+  đai nâu #3A2418, tạp dề chàm #3F5873, khăn lau ngà gài hông, quần nâu #5A4636 + xà cạp ngà, giày đen. Màu ấm — tách khỏi Mặc
+  Ông (chàm), Tiểu Mặc (trắng), thủ thư (thanh lục).
+- Ảnh: `models/anh/tieu-nhi-{truoc,trai,sau,phai,mat}.png` — Google Gemini (người dùng chạy). Câu lệnh: ảnh trước đính kèm
+  `anh/nhan-vat-truoc.png` ("NEW character in exactly the same 3D vinyl toy style… young Song-dynasty teahouse server… red cloth cord
+  … crosses in an X on the back… A-pose… orthographic… plain #DDDDDD"); trái / sau / phải / cận mặt mỗi ảnh một cuộc trò chuyện mới,
+  đính kèm ảnh trước. Nguyên văn cả 5 câu: ghi chú `tieu-nhi-cau-lenh` trong `source/canvas.json`.
+- Chuẩn hoá (Pillow): tách nền xám nối mép ảnh, nền #DDDDDD, bỏ sao Gemini, 4 góc chung hệ số thu 0,978, đế giày 90 %, đỉnh đầu
+  10 % (sau, búi cao nhất) – 11,6 % (trước), trục thân theo chân giữa ảnh; PNG 1024 × 1024. Ảnh duyệt: `screens/TieuNhi-bo-anh.png`.
+- **Lưu ý cho `/tai-nguyen`**: khăn lau ở hông **trái** nhân vật (câu lệnh ghi phải) nhưng **khớp cả 4 góc** — giữ. Đuôi khăn vấn
+  rủ cạnh má ở ảnh trước: mảnh nhỏ, có thể dính mặt khi dựng.
+- Bước kế: `bash .claude/skills/tai-nguyen/scripts/nhan-vat.sh tieu-nhi <ra>` → `models/tieu-nhi.glb` (phiên `/tai-nguyen`).
+- File: `models/anh/tieu-nhi-*.png` (5), `models/LICENSES.md`, `screens/TieuNhi-bo-anh.png`, `source/TieuNhi-bo-anh.dc.html`,
+  `source/TieuNhi-huong.dc.html`, `source/canvas.json`; ngoài design: `docs/tham_khao/tieu-nhi.md` + README (khảo cứu).
+
 ## 2026-11-14.10 — Ngồi ôn: nút, cuộn sách trên tay, bảng chọn (cuộn treo), màn Bộ đã học
 
 - Loại: giao diện · chuỗi · luồng/luật (đề xuất). Màn: **Ngồi ôn** (HUD web + vật 3D + bảng chọn Flutter) và **Bộ đã

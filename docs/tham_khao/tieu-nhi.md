@@ -1,5 +1,5 @@
 # Tiểu nhị trà lâu Phẩm Minh Các (小二 · 茶博士)
-- Ngày: 2026-11-14 · Khu: Phẩm Minh Các 品茗閣 (trà lâu, quầy trà tầng 1) · Trạng thái: đã chọn hướng A (người dùng, 2026-11-14) · chuyển vào phiếu `docs/phieu_thiet_ke/2026-11-13-anh-tieu-nhi.md`
+- Ngày: 2026-11-14 · Khu: Phẩm Minh Các 品茗閣 (trà lâu, quầy trà tầng 1) · Trạng thái: đã chọn hướng A (người dùng, 2026-11-14) · đã chuyển phiếu ảnh (`docs/phieu_thiet_ke/2026-11-13-anh-tieu-nhi.md`, design 2026-11-14.11)
   (hình phác: canvas artboard `TieuNhi-huong.dc.html`)
 
 ## Một câu

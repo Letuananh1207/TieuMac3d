@@ -1,6 +1,6 @@
 # Phiếu: Trò chuyện kênh chung — ô nhập, khung kênh chung, bong bóng trên đầu nhân vật
-- Trạng thái: đã áp (2026-11-14.1)
-- Đã vẽ: 2026-11-14.1
+- Trạng thái: đã áp (2026-11-14.9)
+- Đã vẽ: 2026-11-14.9
 - Đợi bởi: kế hoạch `docs/tasks/2026-11-14-tro-chuyen-kenh-chung.md` (nhiệm vụ 6, 7)
 
 ## Dán vào canvas

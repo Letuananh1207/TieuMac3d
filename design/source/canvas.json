@@ -762,6 +762,20 @@
       "w": 844,
       "h": 390,
       "title": "Bộ đã học · ngang · 50 bộ (cuộn)"
+    },
+    "TieuNhi-bo-anh.dc.html": {
+      "x": 0,
+      "y": 42598,
+      "w": 1440,
+      "h": 800,
+      "title": "Tiểu nhị 小二 · hướng A trà bác sĩ · bộ ảnh 4 góc + cận mặt"
+    },
+    "TieuNhi-huong.dc.html": {
+      "x": 0,
+      "y": 43518,
+      "w": 1440,
+      "h": 900,
+      "title": "Tiểu nhị 小二 · 3 hướng (khảo cứu) — chọn trước khi tạo ảnh"
     }
   },
   "order": [
@@ -879,7 +893,9 @@
     "NgoiOn-cuon-sach.dc.html",
     "BoDaHoc-doc.dc.html",
     "BoDaHoc-doc-day.dc.html",
-    "BoDaHoc-ngang.dc.html"
+    "BoDaHoc-ngang.dc.html",
+    "TieuNhi-bo-anh.dc.html",
+    "TieuNhi-huong.dc.html"
   ],
   "notes": {
     "cach-dung": {
@@ -1208,6 +1224,19 @@
       "y": 39710,
       "w": 420,
       "text": "Phiếu 2026-11-13-ngoi-on. Đề xuất, chưa chốt.\n\n• Bảng chọn = cuộn treo (掛軸): giấy map-paper giữa hai trục scroll-wood, đầu trục ngọc viền vàng — cùng họ với cuộn trên tay và cuộn bản đồ.\n• Chỗ đặt để còn thấy nhân vật: dọc → nửa trên (nhân vật ở nửa dưới màn); ngang → bên phải (nhân vật giữa-trái). Cảnh tối 16 %. Cần điều khiển + cụm nút ẩn khi bảng mở (nhân vật đứng yên).\n• Mục nổi bật: nền ngọc lục. Mục mờ: viền nét đứt + dòng lý do có biểu tượng.\n• Đề xuất đổi luật: chưa học bộ nào → mục Ôn ghi \"Chưa có bộ nào để ôn\" (thay \"Hôm nay đã ôn xong\"), thêm dòng gợi ý ra Rừng trúc.\n• Bộ đã học: lưới thẻ nhỏ (chữ, tên, 7 chấm bậc nhớ, hạn ôn); bộ đến hạn viền son.\n• Nền cảnh trong artboard là hình vẽ giữ chỗ (cuộn sách chưa có trong code)."
+    },
+    "tieu-de-tieu-nhi": {
+      "x": 0,
+      "y": 42358,
+      "text": "Tiểu nhị 小二 — bộ ảnh nhiều góc cho Hunyuan3D",
+      "kind": "title1",
+      "maxW": 2240
+    },
+    "tieu-nhi-cau-lenh": {
+      "x": 1520,
+      "y": 42598,
+      "w": 720,
+      "text": "Câu lệnh Gemini — Tiểu nhị 小二, hướng A \"trà bác sĩ trẻ\" (hồ sơ docs/tham_khao/tieu-nhi.md). Mỗi câu một cuộc trò chuyện MỚI.\n\n1 · TRƯỚC — đính kèm design/models/anh/nhan-vat-truoc.png:\nCreate a NEW character in exactly the same 3D vinyl toy style, chibi proportions (head about 1/3 of the height) and rendering as the attached image, about 4% shorter. Character: a young Song-dynasty teahouse server (\"tea master\" boy), about 18 years old, lively, big toothy smile, bushy eyebrows, big round eyes, rosy cheeks #E9A99A, skin #F0CDB5. Head: dark brown cloth head wrap #4A4038 tightly wrapped over a hidden hair bun, tied with a small knot on top, two short cloth tails hanging at the nape; no hat. Short hip-length jacket in warm tea-brown #B07A4A with narrow sleeves and a cross collar, LEFT panel over RIGHT panel (seen from the front the collar forms a \"y\"), ivory inner collar #F4F0E6 visible. A red cloth cord #A8322A ties the sleeves up above the elbows: it loops over both shoulders and crosses in an X on the back. Dark brown waist sash #3A2418. Indigo blue apron #3F5873 from waist to knees, tied behind the back. A small ivory wiping cloth #F4F0E6 tucked into the sash at his RIGHT hip. Brown trousers #5A4636 wrapped at the shins with ivory leg wraps #E8E1D2, black cloth shoes #26262A. Hands empty. A-pose: arms angled down about 35 degrees, arms not touching the body, feet slightly apart, both shoes clearly visible. Straight front view, orthographic, no perspective. Soft even studio light with gentle form shading, no outlines, no cel shading. Plain flat light grey background #DDDDDD, no ground shadow, no frame, no text, no logo, no watermark. Square 1024x1024, full body centered, top of head at 10% from the top, soles at 90%. Large clear color areas, few small details.\n\n2 · TRÁI — đính kèm ảnh 1:\nThe same character as the attached image, same pose, same size, same colors, same lighting and background. Exact side profile, rotated 90 degrees so he faces the LEFT edge of the image. Orthographic, no perspective. Show the head-wrap tails at the nape, the red sleeve cord going over the shoulder, the apron edge and its tie, the leg wraps. Arms still in A-pose, not touching the body, hands empty. Plain #DDDDDD background, no shadow, no text. Square 1024x1024, top of head at 10%, soles at 90%.\n\n3 · SAU — đính kèm ảnh 1:\nThe same character as the attached image, same pose, same size, seen straight from the BACK. Tea-brown jacket back with the red cloth cord crossing in a clear big X from both shoulders down to the waist, the indigo apron strings tied in a bow at the lower back over the dark sash, the head-wrap knot with two short tails at the nape. A-pose, arms not touching the body, hands empty. Orthographic, plain #DDDDDD background, no shadow, no text. Square 1024x1024, top of head at 10%, soles at 90%.\n\n4 · PHẢI — đính kèm ảnh 1:\nThe same character as the attached image, same pose, same size, same colors, same lighting and background. Exact side profile, rotated 90 degrees so he faces the RIGHT edge of the image. Orthographic, no perspective. The ivory wiping cloth tucked at his right hip is visible. A-pose, arms not touching the body, hands empty. Plain #DDDDDD background, no shadow, no text. Square 1024x1024, top of head at 10%, soles at 90%.\n\n5 · CẬN MẶT — đính kèm ảnh 1:\nClose-up of the same character's head and shoulders, straight front, same 3D vinyl toy style: big round eyes, bushy eyebrows, big toothy smile, rosy cheeks, dark brown cloth head wrap with a small knot on top, collar left panel over right, red cord over the shoulders. Sharp clean details. Plain #DDDDDD background, no text. Square 1024x1024.\n\nXong: lưu 5 ảnh vào một thư mục rồi báo đường dẫn — Claude chuẩn hoá (nền, cỡ, vạch 10 % / 90 %) và đặt lên artboard."
     }
   },
   "designSystems": []

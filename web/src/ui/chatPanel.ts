@@ -3,7 +3,7 @@ import { collapsedVisible } from '../chat/chatChannel';
 import { fillChatText, h, speakerName } from './chatText';
 import './chat.css';
 
-/** Đếm chữ hiện từ số này (thiết kế 2026-11-14.1). */
+/** Đếm chữ hiện từ số này (thiết kế 2026-11-14.9). */
 const COUNT_FROM = 50;
 const ICON = 'http://www.w3.org/2000/svg';
 
@@ -41,7 +41,7 @@ export interface ChatPanelHost {
 }
 
 /**
- * Trò chuyện kênh chung — thiết kế 2026-11-14.1: nút "Trò chuyện", khung thu gọn (3 tin cuối, không bắt chạm),
+ * Trò chuyện kênh chung — thiết kế 2026-11-14.9: nút "Trò chuyện", khung thu gọn (3 tin cuối, không bắt chạm),
  * khung mở rộng + ô nhập sát bàn phím. Gửi xong đóng ô nhập (R-CHAT-3). DOM dựng bằng createElement.
  */
 export class ChatPanel {

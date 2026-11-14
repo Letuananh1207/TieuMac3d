@@ -17,11 +17,11 @@ interface Slot {
   text: string;
 }
 
-/** Khoảng hở giữa hai bong bóng chồng nhau (thiết kế 2026-11-14.1). */
+/** Khoảng hở giữa hai bong bóng chồng nhau (thiết kế 2026-11-14.9). */
 const GAP = 6;
 
 /**
- * Bong bóng thoại trên đầu (R-CHAT-2) — thiết kế 2026-11-14.1 "Trò chuyện kênh chung".
+ * Bong bóng thoại trên đầu (R-CHAT-2) — thiết kế 2026-11-14.9 "Trò chuyện kênh chung".
  * Neo theo đầu như nút học nổi; ba kiểu: mình (viền ngọc), người khác (kính), NPC (giấy viền vàng).
  * Hai bong bóng chồng nhau → bong bóng cũ hơn đẩy lên, nối xuống điểm neo bằng vạch + chấm.
  */

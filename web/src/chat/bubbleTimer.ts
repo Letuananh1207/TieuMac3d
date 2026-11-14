@@ -7,7 +7,7 @@ import type { ChatMessage } from './chatMessage';
 export const BUBBLE_SECONDS = 6;
 /** Người nói xa camera hơn số này (m) → không vẽ bong bóng. */
 export const BUBBLE_MAX_DIST = 25;
-/** Hiện: phóng 90 → 100 % trong chừng này giây; mờ dần trong giây cuối (thiết kế 2026-11-14.1). */
+/** Hiện: phóng 90 → 100 % trong chừng này giây; mờ dần trong giây cuối (thiết kế 2026-11-14.9). */
 export const BUBBLE_GROW_S = 0.15;
 export const BUBBLE_FADE_S = 1;
 
