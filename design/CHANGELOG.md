@@ -27,7 +27,7 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
 - Canvas 3D: bản 56 (trước khi bỏ chữ Hán — chưa đăng lại). Ảnh: `screens/Canh-truyen-tong-quay.png` (góc ảnh người dùng
   `?nv=10,0&cam=3,3.6,1&tam=30,0`), `screens/Canh-mac-tri.png` (`?nv=23,8&cam=19,7,4&tam=33,16`).
 - File: `scene/scene.json`, ảnh trên.
-## 2026-11-14.29 — Biển, tên nơi, chữ trang trí chỉ tiếng Việt (luật mới R-HUD-4)
+## 2026-11-14.30 — Biển, tên nơi, chữ trang trí chỉ tiếng Việt (luật mới R-HUD-4)
 
 - Loại: cảnh 3D (chuỗi) + giao diện + luồng/luật. Ai làm: phiên code V-20261114-28 làm thay vai thiết kế (`/canh`,
   `/ui-design`). Người dùng: "bắt đầu từ nay các bảng hay tên trong game không được có tiếng Trung, ví dụ bảng '歸家 ·
