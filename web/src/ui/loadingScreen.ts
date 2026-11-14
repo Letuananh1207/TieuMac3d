@@ -42,8 +42,19 @@ export class LoadingScreen {
     this.root.classList.add('done');
     window.setTimeout(() => {
       this.root.hidden = true;
-      this.active = false;
+      this.active = this.held;
     }, FADE_MS);
+  }
+
+  private held = false;
+
+  /**
+   * Giữ "đang tải" mà không hiện màn (hoạt cảnh cưỡi hạc — R-HANH-5): nơi gọi vẫn thấy `active` → nhân vật đứng yên,
+   * HUD ẩn như lúc màn tải. Thả (`false`) khi hoạt cảnh xong.
+   */
+  hold(on: boolean): void {
+    this.held = on;
+    this.active = on || !this.root.hidden;
   }
 }
 

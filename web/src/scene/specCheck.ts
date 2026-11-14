@@ -30,6 +30,7 @@ import {
   type BridgeSpec,
 } from './spec';
 import { checkDecorSlots } from './decorSlots';
+import { landingPad, START_HEADING } from './hacDuong';
 import { checkPortals } from './portals';
 import { checkLook } from './look';
 import { checkDayNight } from './ngayDem';
@@ -494,6 +495,7 @@ function checkConsistency(s: SceneSpec): string[] {
   out.push(...checkTeleport(s), ...checkLanterns(s), ...checkDecorSlots(s), ...checkPortals(s), ...checkLook(s.look), ...checkDayNight(s.dayNight));
   out.push(...hanOnDisplay(s).map((h) => `${h.path}: biển / tên trong game chỉ tiếng Việt, không chữ Hán (R-HUD-4) — đang là "${h.text}"`));
   if (s.cloudSea.radius < 0) out.push('cloudSea.radius: phải ≥ 0');
+  out.push(...checkCrane(s));
   if (!(s.light.lampGlow >= 0 && s.light.lampGlow <= 1)) out.push(`light.lampGlow: 0…1 (đang ${s.light.lampGlow})`);
   if (t.enabled && t.size > 0 && t.cell > 0) out.push(...checkOnFlatGround(s));
   if (t.enabled) {
@@ -535,6 +537,34 @@ export function hanOnDisplay(s: SceneSpec): { path: string; text: string }[] {
     return !(TEXT_IS_KEY.has(kind) || TEXT_IS_LESSON.has(kind));
   });
 }
+
+/** Nửa bề ngang chỗ hạc chiếm khi đáp (m, cánh xếp) — bãi đáp phải cách nhà / ao chừng này. */
+const CRANE_CLEAR = 1.3;
+
+/**
+ * Bãi đáp hạc (R-HANH-5): tới cảnh bằng vòng trận → hạc đáp `crane.padOffset` m bên phải chỗ xuất phát (hướng nhìn mặc
+ * định: bắc). Bãi đáp không nằm trong nhà / ao (độ phẳng: `checkOnFlatGround`).
+ */
+export function craneProblems(s: SceneSpec): string[] {
+  const out: string[] = [];
+  const c = s.crane;
+  if (!(c.scale >= 0.3 && c.scale <= 3)) out.push(`crane.scale: 0,3–3 (đang ${c.scale})`);
+  if (!(c.padOffset >= 0 && c.padOffset <= 10)) out.push(`crane.padOffset: 0–10 m (đang ${c.padOffset})`);
+  if (!s.teleport.enabled) return out;
+  const [px, pz] = landingPad(s.player.start, START_HEADING, c.padOffset);
+  const r = CRANE_CLEAR * c.scale;
+  const where = `crane: bãi đáp (${px.toFixed(1)}; ${pz.toFixed(1)})`;
+  for (const b of s.buildings) {
+    const [w, d] = (b.rotY ?? 0) % 180 !== 0 ? [b.d, b.w] : [b.w, b.d];
+    if (Math.abs(px - b.x) < w / 2 + r && Math.abs(pz - b.z) < d / 2 + r) out.push(`${where} nằm trong nhà "${b.id}" — đổi crane.padOffset hoặc dời player.start`);
+  }
+  for (const w of s.water) {
+    const inside = w.r !== undefined ? Math.hypot(px - w.x, pz - w.z) < w.r + r : Math.abs(px - w.x) < (w.w ?? 0) / 2 + r && Math.abs(pz - w.z) < (w.d ?? 0) / 2 + r;
+    if (inside) out.push(`${where} nằm trong ao (${w.x}; ${w.z})`);
+  }
+  return out;
+}
+const checkCrane = craneProblems;
 
 /** Vòng trận (R-HANH-2): nằm trong sân; chỗ xuất phát của cảnh không nằm trong vòng (phải bước vào mới truyền tống). */
 function checkTeleport(s: SceneSpec): string[] {
@@ -624,6 +654,7 @@ function checkOnFlatGround(s: SceneSpec): string[] {
   }
   s.wallSegments.forEach((w, i) => !w.follow && flat(`wallSegments[${i}]`, [w.from, w.to, [(w.from[0] + w.to[0]) / 2, (w.from[1] + w.to[1]) / 2]]));
   flat('điểm xuất phát (player.start)', box(s.player.start[0], s.player.start[1], 2, 2));
+  if (s.teleport.enabled) flat('bãi đáp hạc (crane)', box(...landingPad(s.player.start, START_HEADING, s.crane.padOffset), 2, 2));
   s.portals.forEach((p, i) => flat(`portals[${i}] chỗ đứng (arrive)`, box(p.arrive.at[0], p.arrive.at[1], 2, 2)));
   return out;
 }

@@ -32,7 +32,8 @@ import { addVignette } from './ui/vignette';
 import { mergeStatic } from './scene/merge';
 import { inRect, type Room } from './scene/rooms';
 import { signText } from './scene/signAtlas';
-import { buildWorld } from './scene/world';
+import { buildWorld, buildWorldStepped, type StepTimes } from './scene/world';
+import { CraneFlight, CraneRide, cameraPose, clearCraneParam, craneArrives, craneDeparts, craneHud } from './cuoiHac';
 import { NHAP_DINH_OPEN_AT, NhapDinh } from './scene/nhapDinh';
 import { NgoiMat, type SitPlace } from './ngoiMat';
 import { el } from './ui/dom';
@@ -96,20 +97,11 @@ async function boot(): Promise<void> {
   // màn tải che tới khung hình đầu (R-MAN-2); tiến độ theo các bước dựng thật
   const loading = new LoadingScreen(spec.site);
   loading.progress(10);
-  // Biển hiệu, bảng phấn vẽ chữ lên canvas, nên phải nạp font trước khi dựng cảnh.
-  // bộ thủ tu luyện ở vùng có bài học bộ thủ (R-HANH-3) — thẻ HTML dự phòng vẽ chữ bằng font này
-  // biển / tên nơi chỉ tiếng Việt (R-HUD-4) — chữ Hán chỉ còn ở nội dung học
-  const hanText = [...(spec.lessons.radicals ? RADICALS.map((r) => r.form) : []), ...ZONE_CONTENT.map((c) => c.lesson.han), signText(spec)].join('');
-  await Promise.allSettled([
-    // nạp đủ các mặt chữ Lora (Latin + tiếng Việt) theo chữ thật trên biển
-    document.fonts.load('700 72px Lora', `Aa${signText(spec)}`),
-    document.fonts.load('700 13px "Be Vietnam Pro"'),
-    document.fonts.load('700 52px "Han Serif"', hanText || '字'),
-  ]);
-  let progress = await progressAsk;
-  const trial = (await flutterAsk) ? null : openTrialStore();
-  loading.progress(30);
-  await nextPaint();
+  // đo thời gian dựng (kế hoạch cưỡi hạc NV1) — `?debug` in bảng ms từng bước
+  const laps: [string, number][] = [['bat-dau', performance.now()]];
+  const lap = (name: string): void => void laps.push([name, performance.now()]);
+  // model nhân vật nạp song song với font (cưỡi hạc: nhân vật ngồi trên hạc ngay khi bay)
+  const characterAsk = createPlayerCharacter(params.get('nhan-vat'));
 
   const canvas = el<HTMLCanvasElement>('stage');
   // mức đồ hoạ theo máy + độ nét động (R-HIEU-1): chọn trước khi tạo WebGL (khử răng cưa chỉ đặt được lúc tạo)
@@ -125,11 +117,38 @@ async function boot(): Promise<void> {
     ratio: maxRatio,
     colorManaged: isColorManaged(spec.look),
   });
+  // tới bằng hạc (`?den=hac`, R-HANH-5): bay trên biển mây trong lúc cảnh thật dựng ngầm — màn tải mờ ngay khi cảnh bay hiện
+  const flight = craneArrives(params) ? new CraneFlight(renderer, spec, params, detailOf(tier), isColorManaged(spec.look)) : null;
+  if (flight) {
+    void flight.started.then(() => loading.done());
+    void characterAsk.then((c) => flight.setRider(c));
+  }
+  // Biển hiệu, bảng phấn vẽ chữ lên canvas, nên phải nạp font trước khi dựng cảnh.
+  // bộ thủ tu luyện ở vùng có bài học bộ thủ (R-HANH-3) — thẻ HTML dự phòng vẽ chữ bằng font này
+  // biển / tên nơi chỉ tiếng Việt (R-HUD-4) — chữ Hán chỉ còn ở nội dung học
+  const hanText = [...(spec.lessons.radicals ? RADICALS.map((r) => r.form) : []), ...ZONE_CONTENT.map((c) => c.lesson.han), signText(spec)].join('');
+  await Promise.allSettled([
+    // nạp đủ các mặt chữ Lora (Latin + tiếng Việt) theo chữ thật trên biển
+    document.fonts.load('700 72px Lora', `Aa${signText(spec)}`),
+    document.fonts.load('700 13px "Be Vietnam Pro"'),
+    document.fonts.load('700 52px "Han Serif"', hanText || '字'),
+  ]);
+  let progress = await progressAsk;
+  const trial = (await flutterAsk) ? null : openTrialStore();
+  loading.progress(30);
+  lap('font');
+  await nextPaint();
+
   const clock = new THREE.Clock();
   const colliders = new Colliders();
   // nhà nào có nội thất: theo nội dung bài (lớp học / thư viện), chữ phấn trên bảng = chữ của bài
   const interiors = Object.fromEntries(ZONE_CONTENT.map((c) => [c.id, { kind: c.interior, han: c.lesson.han }]));
-  const world = buildWorld(scene, colliders, spec, interiors, detailOf(tier));
+  const steps: StepTimes = new Map();
+  // đang bay: dựng chia bước, nhường khung cho cảnh bay (R-HANH-5); thường: một mạch dưới màn tải như cũ
+  const world = flight
+    ? await buildWorldStepped([scene, colliders, spec, interiors, detailOf(tier)], () => new Promise((r) => requestAnimationFrame(() => r())), 10, steps, (k) => flight.progress(k * 0.7))
+    : buildWorld(scene, colliders, spec, interiors, detailOf(tier), steps);
+  lap('canh');
   // tối nhẹ mép màn (CSS); mức Thấp bỏ — trình duyệt vẫn phải ghép thêm một lớp phủ cả màn (R-HIEU-1)
   const vignette = isSoft(spec.look) && detailOf(tier) >= 1 ? addVignette(canvas, spec.look.vignette, spec.look.vignetteColor) : null;
   // ngày đêm theo giờ VN (R-NGAY-1…3); ?gio=21 ép giờ, ?gio=17&toc=60 tua nhanh
@@ -141,7 +160,8 @@ async function boot(): Promise<void> {
   loading.progress(80);
 
   // gấu khối (player/blockCharacter.ts) vẫn giữ làm bản dự phòng, cùng hợp đồng Character
-  const character = await createPlayerCharacter(new URLSearchParams(location.search).get('nhan-vat'));
+  const character = await characterAsk;
+  lap('nhan-vat');
   // về nhà từ một vùng: đứng trước cột của vùng đó, ngoài vòng, nhìn vào cột (R-HANH-2)
   // qua cổng đi bộ: đứng ở chỗ của cổng dẫn về cảnh vừa rời; không có cổng về → chỗ xuất phát (R-HANH-4)
   const viaGate = arrivalFor(spec.portals, params.get('qua'));
@@ -170,6 +190,8 @@ async function boot(): Promise<void> {
   // NPC đứng tại chỗ, giữ hướng đặc tả (R-NPC-1)
   const npcSet = await placeNpcs(scene, colliders, spec.npcs, groundAt);
   if (npcSet.problems.length) console.warn(npcSet.problems.join('\n'));
+  lap('npc');
+  flight?.progress(0.8);
   const roomAt = (x: number, z: number): Room | undefined => world.rooms.find((r) => inRect(r.floor, x, z));
 
   /* ---------- bài học: nút nổi trên vật + chạm vật (R-VUNG-1/2/3) ---------- */
@@ -179,6 +201,7 @@ async function boot(): Promise<void> {
   let onMapTap = (_x: number, _y: number): void => {};
   // nút quay lại của máy: bản đồ đang mở thì đóng (R-HANH-2); gán ở phần bản đồ bên dưới
   let mapBack = (): boolean => false;
+  let ride: CraneRide | null = null; // cưỡi hạc: cất cánh (trang cũ) / hạ cánh (trang mới) — R-HANH-5
   const zoneById = new Map(placed.zones.map((z) => [z.id, z]));
   const anchorOf = new Map(world.rooms.map((r) => [r.zoneId, r.anchor]));
   let covered = false; // màn bài học Flutter đang che cảnh → ngừng vẽ (docs/bridge.md)
@@ -710,6 +733,15 @@ async function boot(): Promise<void> {
   const mapHud = new MapHud(closeMap);
   // nút quay lại: đóng bảng cách chơi / khung thoại trước, rồi bản đồ (docs/bridge.md `back`)
   mapBack = (): boolean => {
+    // đang cưỡi hạc: nút quay lại = bỏ qua (R-HANH-5)
+    if (flight && !flight.clock.done) {
+      flight.clock.skip();
+      return true;
+    }
+    if (ride?.owns) {
+      ride.skip();
+      return true;
+    }
     if (areaMap.back()) return true; // bản đồ lớn (R-BANDO-5)
     if (scrollOpen && !covered) {
       standFromScroll(); // Esc / nút quay lại khi cuộn sách mở = "Đứng dậy" (R-ON-8)
@@ -736,16 +768,28 @@ async function boot(): Promise<void> {
   const travel = (to: string, how: 'vong' | 'cong' = 'vong'): void => {
     travelling = true;
     player.moveTarget = null;
-    loading.show(loadScene(to).spec.site); // loading.active → nhân vật đứng yên
     const next = new URLSearchParams();
     if (to !== HOME_SCENE) next.set('vung', to);
     if (how === 'cong') next.set('qua', SCENE.id);
     else if (to === HOME_SCENE) next.set('tu', SCENE.id);
     // giữ tham số thử trên trình duyệt
-    for (const k of ['debug', 'nhan-vat', 'muc', 'look', 'gio', 'toc']) if (params.has(k)) next.set(k, params.get(k) ?? '');
+    for (const k of ['debug', 'nhan-vat', 'muc', 'look', 'gio', 'toc', 'hac']) if (params.has(k)) next.set(k, params.get(k) ?? '');
     // replace: không chất lịch sử trang mỗi lần đi về
-    void nextPaint().then(() => location.replace(`${location.pathname}?${next.toString()}`));
+    const go = (): void => location.replace(`${location.pathname}?${next.toString()}`);
+    // vòng trận + hoạt cảnh bật (chế độ thử `?hac`) → cưỡi hạc: cất cánh ở đây, bay + hạ ở trang mới (R-HANH-5)
+    if (craneDeparts(params, how)) {
+      closeMap();
+      loading.hold(true); // đứng yên, HUD ẩn như màn tải
+      next.set('den', 'hac');
+      const p = player.position;
+      ride = new CraneRide('cat', { scene, character, spec, at: [p.x, p.z], heading: character.facing.rotation.y, groundAt, camera: cameraPose(camera), hud: craneHud(spec, params), onEnd: go });
+      return;
+    }
+    loading.show(loadScene(to).spec.site); // loading.active → nhân vật đứng yên
+    void nextPaint().then(go);
   };
+  // `?debug`: kịch bản thử / chụp ảnh gọi thẳng truyền tống (`__hocXaTravel('rung-truc')`) — không dùng trong app
+  if (params.has('debug')) Object.assign(window, { __hocXaTravel: travel });
   onMapTap = (x, y) => {
     mapHud.hideCard(); // chạm chỗ khác → ẩn thẻ "sắp mở"
     const hit = scroll.pick(x, y);
@@ -793,10 +837,12 @@ async function boot(): Promise<void> {
     const fromX = player.position.x;
     const fromZ = player.position.z;
     // hướng đi khoá khi giữ joystick cùng hướng → camera tự xoay không làm nhân vật đi vòng (R-DIEU-3)
-    player.update(dt, input, orbit.steerYaw(input.x, input.y), paused || loading.active || mapOpen || areaMap.open || talking || chat.typing || !!decor?.active);
+    // cưỡi hạc: hoạt cảnh giữ nhân vật + camera (không đi, camera không bám)
+    const riding = !!ride?.owns;
+    if (!riding) player.update(dt, input, orbit.steerYaw(input.x, input.y), paused || loading.active || mapOpen || areaMap.open || talking || chat.typing || !!decor?.active);
     const pos = player.position;
     // camera bám êm: dây kéo + tự về sau lưng chậm (R-DIEU-3)
-    orbit.follow(dt, pos.x - fromX, pos.z - fromZ, character.facing.rotation.y, player.state.mps > 0);
+    if (!riding) orbit.follow(dt, pos.x - fromX, pos.z - fromZ, character.facing.rotation.y, player.state.mps > 0);
     town?.update({ dt, player: pos, camera, talkingTo: talking ? (runner?.dialog.npc ?? null) : null, covered: paused || covered || loading.active }); // NPC đi (R-NPC-7)
     for (const npc of showNearNpcs(npcSet.npcs, pos.x, pos.z)) npc.update(dt); // xa từ 35 m → ẩn (R-NPC-1)
     gamePlay.update(dt);
@@ -812,10 +858,12 @@ async function boot(): Promise<void> {
     world.update(dt, pos);
     const room = roomAt(pos.x, pos.z);
     ngayDem.update(dt, !!room);
-    orbit.update(tpCam, pos, dt, false, groundAt, room?.floor, sight);
+    if (!riding) orbit.update(tpCam, pos, dt, false, groundAt, room?.floor, sight);
     // ngồi: trượt 0,4 s vào mắt / cúi nhìn bàn chơi, thân mình ẩn (R-DIEU-7, R-GIAO-1); đứng: camera ngôi 3 như cũ
     const atTable = gamePlay.placeCamera(gameCam);
     ngoiMat.update(dt, camera, tpCam, atTable ? gameCam : null, player.isSitting && (!onSeat || seatStudy) ? sitTime : null);
+    ride?.update(dt, camera); // hạc, nhân vật trên lưng, camera hoạt cảnh (R-HANH-5)
+    if (ride?.finished) ride = null;
     if (!covered) renderer.render(scene, camera);
     nameTag.update(pos, camera, NAME_TAG_HEIGHT);
     const busy = paused || covered || loading.active || mapOpen || talking;
@@ -825,7 +873,9 @@ async function boot(): Promise<void> {
     // ẩn khi bản đồ / màn tải / bài học phủ cảnh (L-11: nhãn HTML luôn đè lên cuộn bản đồ 3D)
     nameTag.setVisible(!mapOpen && !loading.active && !covered && !ngoiMat.firstPerson); // nhìn từ mắt: không nhãn tên mình
     // màn Flutter đè cảnh (bảng chọn cuộn sách, thẻ học, màn ôn…) → ẩn cần điều khiển (R-ON-8)
-    if (document.body.classList.contains('covered') !== covered) document.body.classList.toggle('covered', covered);
+    // cưỡi hạc cũng ẩn cần điều khiển (R-HANH-5)
+    const hideHud = covered || riding;
+    if (document.body.classList.contains('covered') !== hideHud) document.body.classList.toggle('covered', hideHud);
     if (document.body.classList.contains('scroll-open') !== scrollOpen) document.body.classList.toggle('scroll-open', scrollOpen);
     chat.update({ camera, player: pos, nameTagHeight: NAME_TAG_HEIGHT, npcs: npcSet.npcs, busy: busy || gamePlay.active, hideMe: ngoiMat.firstPerson });
     learn.follow(zones.current ? anchorOf.get(zones.current.id) : undefined, camera);
@@ -901,10 +951,46 @@ async function boot(): Promise<void> {
   // biên dịch sẵn shader mọi vật liệu trong cảnh lúc màn tải còn che (như game) → lần đầu vào nhà / thấy vật mới không
   // khựng vì GPU dịch shader giữa chừng. Máy hỗ trợ KHR_parallel_shader_compile thì dịch song song, không treo trang.
   loading.progress(90);
-  const compileStart = performance.now();
+  lap('lap-rap');
+  flight?.progress(0.9);
   await renderer.compileAsync(scene, camera).catch(() => undefined);
-  if (params.has('debug')) console.info(`biên dịch shader: ${Math.round(performance.now() - compileStart)} ms`);
+  lap('shader');
+  if (params.has('debug')) {
+    const ms = (a: number, b: number): number => Math.round(laps[b][1] - laps[a][1]);
+    console.info(`dựng cảnh (ms): ${laps.slice(1).map((l, i) => `${l[0]} ${ms(i, i + 1)}`).join(' · ')} · tổng ${ms(0, laps.length - 1)}`);
+    console.info(`bước dựng (ms): ${[...steps].map(([n, v]) => `${n} ${Math.round(v)}`).join(' · ')}`);
+    Object.assign(window, { __bootTimes: { laps: laps.map(([n, t]) => [n, Math.round(t - laps[0][1])]), steps: Object.fromEntries([...steps].map(([n, v]) => [n, Math.round(v)])) } });
+  }
+  if (flight) {
+    // hết bay (đủ 1,5 s, hoặc đã chạm bỏ qua) → mây phủ → cảnh thật: hạ cánh, hoặc (bỏ qua) đứng ngay ở chỗ xuất hiện
+    const lands = await flight.finish();
+    const home = cameraPose(camera);
+    const onEnd = (): void => {
+      loading.hold(false);
+      player.snapToGround();
+      clearCraneParam();
+    };
+    loading.hold(true);
+    if (lands) ride = new CraneRide('ha', { scene, character, spec, at: [sx, sz], heading: character.facing.rotation.y, groundAt, camera: home, hud: flight.hud, onEnd });
+    else {
+      flight.hud.capture(null);
+      fadeVeil(flight.hud);
+      onEnd();
+    }
+  }
   requestAnimationFrame(tick);
+}
+
+/** bỏ qua lúc bay: mây tan 0,4 s như màn tải (R-HANH-5) */
+function fadeVeil(hud: { veil(k: number): void; remove(): void }): void {
+  const t0 = performance.now();
+  const step = (now: number): void => {
+    const k = (now - t0) / 400;
+    hud.veil(1 - k);
+    if (k < 1) requestAnimationFrame(step);
+    else hud.remove();
+  };
+  requestAnimationFrame(step);
 }
 
 void boot();

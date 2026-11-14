@@ -3,6 +3,7 @@
  * Mỗi đàn hạc 3 InstancedMesh (thân, cánh trái, cánh phải) → 3 draw call bất kể số con; mỗi thuyền 2 draw call.
  */
 import * as THREE from 'three';
+import { flapAngle } from './hac';
 import { lambert } from './materials';
 import { markDynamic, mergeVertexColors } from './merge';
 import type { BoatSpec, CaravanSpec, FlockSpec, SceneSpec, XZ } from './spec';
@@ -77,7 +78,7 @@ function addFlock(scene: THREE.Scene, f: FlockSpec, updaters: Updater[]): void {
       o.rotation.set(0, -a, 0); // bay theo tiếp tuyến (ngược chiều kim đồng hồ nhìn từ trên)
       o.updateMatrix();
       body.setMatrixAt(i, o.matrix);
-      const beat = Math.sin(t * 5 + b.flap) * 0.5;
+      const beat = flapAngle(t, b.flap);
       [-1, 1].forEach((s, k) => {
         w.position.copy(o.position);
         w.rotation.set(0, -a, s * beat);

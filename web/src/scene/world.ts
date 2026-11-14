@@ -68,18 +68,70 @@ export interface World {
   update(dt: number, player?: { x: number; y?: number; z: number }): void;
 }
 
+/** Thời gian từng bước dựng (ms) theo tên bước — bước lặp (mỗi nhà) cộng dồn. `?debug` in ra (kế hoạch cưỡi hạc NV1). */
+export type StepTimes = Map<string, number>;
+
+type BuildArgs = [scene: THREE.Scene, colliders: Colliders, spec: SceneSpec, interiors?: Record<string, InteriorUse>, detail?: number];
+
 /**
  * Dựng toàn bộ cảnh theo đặc tả. Mọi vật cản đăng ký vào `colliders`.
  * `interiors` (mã vùng → kiểu nội thất, do nội dung bài quyết) biến nhà neo vùng đó thành nhà vào được.
+ * `detail`: mật độ chi tiết trang trí theo mức đồ hoạ (`quality.ts` `detailOf`): 1 đủ, 0,5 = cỏ hoa thưa một nửa, nước không gợn.
+ * Chạy một mạch (Canvas 3D, bench, màn tải thường); `times` nhận thời gian từng bước.
  */
 export function buildWorld(
   scene: THREE.Scene,
   colliders: Colliders,
   spec: SceneSpec,
   interiors: Record<string, InteriorUse> = {},
-  /** mật độ chi tiết trang trí theo mức đồ hoạ (`quality.ts` `detailOf`): 1 đủ, 0,5 = cỏ hoa thưa một nửa, nước không gợn */
   detail = 1,
+  times?: StepTimes,
 ): World {
+  const steps = worldSteps(scene, colliders, spec, interiors, detail);
+  let t = performance.now();
+  for (;;) {
+    const r = steps.next();
+    const now = performance.now();
+    times?.set(r.done ? 'ngay-dem' : r.value, (times.get(r.done ? 'ngay-dem' : r.value) ?? 0) + now - t);
+    t = now;
+    if (r.done) return r.value;
+  }
+}
+
+/**
+ * Như `buildWorld` nhưng nhường khung giữa các bước (`pause`) khi một loạt bước đã chạy quá `budgetMs` — hoạt cảnh bay
+ * (R-HANH-5) vẫn vẽ trong lúc cảnh thật dựng ngầm. Bước dài hơn ngân sách vẫn chạy trọn (không cắt giữa một bước).
+ */
+export async function buildWorldStepped(args: BuildArgs, pause: () => Promise<void>, budgetMs = 10, times?: StepTimes, onStep?: (k: number) => void): Promise<World> {
+  const steps = worldSteps(...args);
+  let batch = performance.now();
+  let t = batch;
+  let n = 0;
+  for (;;) {
+    const r = steps.next();
+    const now = performance.now();
+    const name = r.done ? 'ngay-dem' : r.value;
+    times?.set(name, (times.get(name) ?? 0) + now - t);
+    t = now;
+    if (r.done) return r.value;
+    onStep?.(Math.min(1, ++n / STEP_ESTIMATE));
+    if (now - batch > budgetMs) {
+      await pause();
+      batch = t = performance.now();
+    }
+  }
+}
+
+/** Số bước ước chừng của một cảnh (để báo tiến độ 0–1); cảnh nhiều nhà thì nhiều bước hơn — chỉ để hiện, kẹp ở 1. */
+const STEP_ESTIMATE = 40;
+
+function* worldSteps(
+  scene: THREE.Scene,
+  colliders: Colliders,
+  spec: SceneSpec,
+  interiors: Record<string, InteriorUse> = {},
+  detail = 1,
+): Generator<string, World, void> {
   const style = spec.buildingStyle;
   resetSignAtlas(); // biển của cảnh này vẽ vào một ảnh chung → 1 draw call
   // có ngày đêm: đèn / cửa sổ dựng sẵn phần sáng, độ sáng đổi theo giờ (apGio.ts); không: sáng cố định `light.lampGlow`
@@ -96,20 +148,25 @@ export function buildWorld(
       }
     : undefined;
   const ground = hf ? addTerrain(scene, spec, hf) : addFlatGround(scene, spec.ground);
+  yield 'dia-hinh';
   let waterways: (dt: number) => void = () => {};
   if (hf && groundY) {
     addStairs(scene, spec.terrain, style);
     const soft = isSoft(spec.look);
     addGrassAndRocks(scene, spec.terrain, hf, spec.paths, !soft);
+    yield 'co-da';
     if (soft) addSoftGrassAndFlowers(scene, spec.terrain, hf, spec.paths, spec.look, detail);
+    yield 'co-hoa';
     waterways = addWaterways(scene, spec.terrain, style, groundY);
   }
   addFarMountains(scene, spec, detail);
   addCloudSea(scene, spec);
+  yield 'nui-xa';
   // độ cao nền của nhà / cổng / ao / giếng: tâm của nó trên mặt đất (nằm trên bục → độ cao bục)
   const base = (x: number, z: number): number => (groundY ? groundY(x, z) : 0);
   addPaths(scene, spec.paths, style.path, groundY, style.pathLook === 'san' ? spec.ground : undefined);
   addWalls(scene, colliders, spec.walls, spec.wallSegments, style, groundY);
+  yield 'loi-tuong';
   const kinds = roomKinds(spec.buildings, interiors);
   // cảnh mềm: mái / tầng trên nhà vào được nướng bóng + vật liệu mềm (phần thân gộp ở mergeSoft cuối hàm)
   const softLook = isSoft(spec.look) ? spec.look : undefined;
@@ -120,6 +177,7 @@ export function buildWorld(
     if (use) rooms.push(addRoomBuilding(scene, colliders, b, style, use, base(b.x, b.z), softLook));
     else if (walkIn) rooms.push(addWalkIn(scene, colliders, b, style, walkIn, base(b.x, b.z), softLook));
     else addBuilding(scene, colliders, b, style, base(b.x, b.z));
+    yield 'nha';
   }
   const gameTables = spec.gameTables.flatMap((t) => addGameTable(scene, colliders, t, style, base(t.x, t.z)));
   for (const t of spec.gameTables) if (t.sign) addGameSign(scene, colliders, t.sign, style, base(t.sign.x, t.sign.z));
@@ -134,6 +192,7 @@ export function buildWorld(
         addGate(scene, colliders, g, style, base(g.x, g.z));
       });
   }
+  yield 'ban-cong';
   addWater(scene, colliders, spec.water, style, groundY, isSoft(spec.look) ? { look: spec.look, sky: spec.sky.middle, ripple: detail >= 1 } : undefined);
   const bridgePads = addBridges(scene, colliders, spec.bridges, style, groundY);
   const fauna = addFauna(scene, spec, groundY);
@@ -142,8 +201,11 @@ export function buildWorld(
   const mirages = addMirages(scene, spec.mirages);
   const rampartPads = addRamparts(scene, colliders, spec.ramparts, spec.walls, groundY);
   if (spec.terrain.enabled) addPlateauRails(scene, colliders, spec.terrain);
+  yield 'nuoc-cau';
   const props = addProps(scene, colliders, spec.props, style, spec.trees, groundY);
+  yield 'do-vat';
   const trees = addTrees(scene, colliders, spec.trees, groundY, spec.look);
+  yield 'cay';
   const lanternSpots = addLanternStrings(scene, colliders, spec, groundY);
   let glow: THREE.InstancedMesh | null = null;
   // ngày đêm: quầng dựng sẵn, mờ theo giờ; mức Thấp bỏ quầng (R-NGAY-3)
@@ -158,11 +220,16 @@ export function buildWorld(
   // vòng sáng + nhãn ở cổng đi bộ có `label` (R-HANH-4, V-39)
   const portalMarks = addPortalMarkers(scene, spec.portals, spec.teleport.colors, groundY);
   const floating = addFloating(scene, spec.floating, style, spec.trees.leaves[1], spec.trees.seed, spec.look);
+  yield 'den-vong';
   // dựng xong mới gộp: khối đứng yên cùng vật liệu → một draw call (scene/merge.ts). Đã thử gộp theo ô (2026-11-14):
   // tam giác gần như không giảm, draw call tăng — phần nặng là địa hình + model người, không phải khối gộp.
   // cảnh mềm: khối Lambert tĩnh khác màu → một khối vật liệu mềm (bóng nướng vào màu đỉnh) trước khi gộp phần còn lại
-  if (isSoft(spec.look)) mergeSoft(scene, new Set([ground]), spec.look, base);
+  if (isSoft(spec.look)) {
+    mergeSoft(scene, new Set([ground]), spec.look, base);
+    yield 'gop-mem';
+  }
   mergeStatic(scene, new Set([ground]));
+  yield 'gop';
   // trăng + sao (mức Thấp: không sao — R-NGAY-4) và bộ áp giờ — dựng sau khi gộp: chỉ đổi số / màu, không dựng lại
   const dayNight = dn
     ? createDayNight(scene, spec, env, {

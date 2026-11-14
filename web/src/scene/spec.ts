@@ -640,6 +640,21 @@ export interface MountainLayer {
  * Vòng trận truyền tống (R-HANH-2): một vòng bán kính `ringRadius` tâm `center`. Tông môn: nằm giữa sân đá tròn bán
  * kính `radius` (Truyền Tống Đài); cảnh vùng: `radius` 0 = chỉ có vòng (bệ đá nhỏ).
  */
+/**
+ * Hạc truyền tống (R-HANH-5): `padOffset` bãi đáp lệch bao nhiêu mét sang phải hướng nhìn lúc xuất hiện (chỗ nhân vật
+ * nhảy xuống = chỗ xuất hiện); `scale` cỡ hạc (1 = dài ~3 m, sải cánh ~5,6 m); màu thân, mép cánh / cổ / đuôi, đỉnh đầu,
+ * mỏ, chân.
+ */
+export interface CraneSpec {
+  padOffset: number;
+  scale: number;
+  body: string;
+  tip: string;
+  crest: string;
+  beak: string;
+  leg: string;
+}
+
 export interface TeleportSpec {
   enabled: boolean;
   center: XZ;
@@ -842,6 +857,8 @@ export interface SceneSpec {
    * false = như cũ (đứng phía tây vòng, R-HANH-2).
    */
   player: { start: XZ; arriveAtStart: boolean };
+  /** hạc truyền tống khi tới cảnh này bằng vòng trận (R-HANH-5) — `scene/hac.ts`, `scene/hacDuong.ts` */
+  crane: CraneSpec;
   /** nhân vật không điều khiển (R-NPC-1) */
   npcs: NpcSpec[];
   /** bàn chơi khu giao lưu (R-GIAO-1) */
@@ -1034,6 +1051,7 @@ export const DEFAULT_SCENE: SceneSpec = {
     clouds: { count: 0, height: 26, radius: 60, speed: 0.6, color: '#d9dce8' },
   },
   player: { start: [0, 6], arriveAtStart: false },
+  crane: { padOffset: 2.5, scale: 1.25, body: '#f6f4ee', tip: '#25242b', crest: '#c8343a', beak: '#c2b17c', leg: '#3b3a3a' },
   npcs: [], // cảnh mặc định chưa có NPC
   gameTables: [],
   decorSlots: [],
