@@ -152,7 +152,7 @@ void gop({bool thu = false}) {
   stdout.writeln('5/5 build lại ở thư mục chính (app/assets/scene)');
   final b = run('npm', ['--prefix', 'web', 'run', 'build'], cwd: root);
   stdout.writeln(b.exitCode == 0 ? '  xong' : '  build ở thư mục chính hỏng — chạy tay: cd web && npm run build');
-  stdout.writeln('Đã gộp $branch vào main. Tiếp: ExitWorktree "remove" (hoặc ở thư mục chính: dart tool/viec.dart don)${here().split(RegExp(r'[\\/]')).last}');
+  stdout.writeln('Đã gộp $branch vào main. Tiếp: ExitWorktree "remove" (hoặc ở thư mục chính: dart tool/viec.dart don ${here().split(RegExp(r'[\\/]')).last})');
 }
 
 /// Gỡ nối node_modules (chỉ gỡ đường nối, không đụng nội dung) rồi xoá worktree + nhánh (nhánh phải đã gộp).
@@ -161,7 +161,16 @@ void don(String name) {
   final root = mainRoot();
   final path = '$root/.claude/worktrees/$name';
   if (!Directory(path).existsSync()) fail('Không có worktree $path');
-  final branch = git(['branch', '--show-current'], cwd: path);
+  // nhánh lấy từ danh sách worktree (git -C <worktree> có thể leo lên repo chính → nhầm 'main')
+  String? branch;
+  String? cur;
+  for (final line in git(['worktree', 'list', '--porcelain'], cwd: root).split('\n')) {
+    if (line.startsWith('worktree ')) cur = line.substring(9);
+    if (line.startsWith('branch ') && cur != null && _norm(cur) == _norm(path)) {
+      branch = line.substring(7).replaceFirst('refs/heads/', '');
+    }
+  }
+  if (branch == null || branch == 'main') fail('Không xác định được nhánh của worktree $name — dừng, không xoá gì.');
   final link = Link('$path/web/node_modules');
   final mods = '$path/web/node_modules';
   // chỉ gỡ khi là đường nối (kiểu cũ); thư mục thật (vd. bộ đệm .vite do build tạo) nằm trong worktree → xoá cùng worktree
