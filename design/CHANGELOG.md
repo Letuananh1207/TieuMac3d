@@ -3,6 +3,17 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-15.3 — Tiểu Mặc đứng ngay bên phải bảng nhiệm vụ
+
+- Loại: cảnh 3D — **bố cục**. Phiên code V-20261114-36 làm thay `/canh`; người dùng: "ý tôi Tiểu Mặc phải bên phải ngay
+  vị trí nhiệm vụ hằng ngày hiện tại". **Đã duyệt 2026-11-15.**
+- `npcs[tieu-mac]` (−7,5; 24) 45° → **(−4,4; 19) 0°** (nhìn nam, cùng hướng bảng): ngay bên phải `props[bang]`
+  (−7,5; 18,8, giữ nguyên), cách mép bảng 1,4 m, sát mép tây lối chính; cách cửa Tạp hoá 11,6 m.
+- Hai nút gần nhau: "Xem bảng" / "Nói chuyện" cùng trong tầm → chỉ hiện nút của vật gần hơn (cách đều → "Xem bảng").
+  Thoại Tiểu Mặc: "cái bảng ngay bên cạnh Tiểu Mặc đây".
+- Luật: R-NPC-1, R-NPC-2, R-NV-1, R-NV-3. `scene:check` không lỗi; draw call không đổi.
+- Ảnh: `screens/Canh-tieu-mac-canh-bang.png`.
+
 ## 2026-11-15.2 — Tiểu Mặc + bảng nhiệm vụ ra bên phải tiệm Tạp hoá
 
 - Loại: cảnh 3D — **bố cục**. Phiên code V-20261114-35 làm thay `/canh`; người dùng: "vị trí Tiểu Mặc và bảng nên đặt ở bên
