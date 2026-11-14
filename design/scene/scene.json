@@ -70,7 +70,7 @@
         "at": 8,
         "width": 6.4,
         "signs": {
-          "tay": "Mặc Trì · 墨池",
+          "tay": "Mặc Trì",
           "dong": "Quảng trường"
         }
       },
@@ -510,7 +510,7 @@
       "x": 25,
       "z": 15,
       "rotY": 270,
-      "text": "墨池"
+      "text": "Mặc Trì"
     },
     {
       "kind": "bo-doan",
@@ -874,7 +874,6 @@
       },
       {
         "name": "Mặc Trì",
-        "han": "墨池",
         "from": [
           17,
           3

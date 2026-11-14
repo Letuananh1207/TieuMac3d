@@ -3,6 +3,31 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-14.29 — Quây tường Truyền Tống Đài, dời đài + cổng lên bắc, cổng trăng mới vào sân Mặc Trì
+
+- Loại: cảnh 3D — **bố cục**. Ai làm: phiên code V-20261114-26 làm thay vai thiết kế (`/canh`). Người dùng: "khu truyền
+  tống vẫn chưa quây tường … dịch truyền tống vừa cửa của nó sang trái, bên cạnh mở thêm 1 cửa, suy nghĩ xem cửa đó nên
+  đến đâu". **Đã duyệt 2026-11-14** (giữ Mặc Trì; biển / chữ trang trí chỉ tiếng Việt).
+- `walls.gates` tường đông Quảng Trường (x 17): cổng trăng "Đài truyền tống" tâm z 0 → **−9** (lối z −11,3 … −6,7); cổng
+  trăng mới tâm **z 8** rộng 6,4 (lối z 5,7 … 10,3), biển tây (phía Quảng Trường) "Mặc Trì", đông "Quảng trường".
+- `wallSegments` thêm: sân Truyền Tống Đài x 17 … 42, z −22 … 3 ((17;−22)→(17;−17), (17;−22)→(42;−22), (42;−22)→(42;25),
+  tường ngăn (17;3)→(42;3)); sân Mặc Trì x 17 … 42, z 3 … 25 ((17;17)→(17;25), (17;25)→(42;25)). Mỗi sân chỉ thông ra
+  Quảng Trường.
+- `teleport.center` (30; 0) → **(30; −9)** (về trấn đứng (21,8; −9)); NPC `su-phu` (21,5; −4,5) → (21,5; −13,5); 2 đèn đá
+  (20; −12,6), (20; −5,4).
+- Sân mới **Mặc Trì** (ao luyện chữ, điển Vương Hy Chi): ao 10 × 6 tâm (31; 15) + ngỗng; đình `mac-tri-dinh` (38,5; 15)
+  4 × 4 quay 270°; đá khắc "Mặc Trì" (25; 15) quay 270°; 2 bồ đoàn (28,5 / 33,5; 19,4) nhìn ao; liễu (25,2; 10,8),
+  (37,5; 20); mai (20; 22,5), (40; 5,5); 2 đèn đá (20; 5,4), (20; 10,6); lối lát z 8 (cổng → đình), x 23 và z 21 vòng ao.
+  `site.areas`: Truyền Tống Đài [17,−22]→[42,3]; thêm "Mặc Trì" [17,3]→[42,25] (không chữ Hán).
+- `terrain.plateaus`: bục lát [17,−10]→[41,10] → [16,−23]→[43,4]; thêm bục cỏ [16,2]→[43,26]. Cây (12,5; 10) → (12,5; 13)
+  (khỏi chắn cổng mới). `terrain.size` 300 → 272 (bỏ lưới ngoài mép vực dưới biển mây — bù tam giác, hình không đổi).
+- Luật: R-VA-1, R-HANH-2, R-BANDO-2, R-BANDO-3 sửa ví dụ toạ độ — Xác nhận `chờ`. `scene:check` không lỗi. Góc trên cố
+  định (0,270,0): 128 draw call / 148 336 tam giác → 132 / 146 278.
+- Phương án khác (chưa làm): lối sang Hậu Sơn; Dược Viên; Mặc Trì "có ích" (bồ đoàn ngồi ôn, nước màu mực — **cần code**).
+- Canvas 3D: bản 56 (trước khi bỏ chữ Hán — chưa đăng lại). Ảnh: `screens/Canh-truyen-tong-quay.png` (góc ảnh người dùng
+  `?nv=10,0&cam=3,3.6,1&tam=30,0`), `screens/Canh-mac-tri.png` (`?nv=23,8&cam=19,7,4&tam=33,16`).
+- File: `scene/scene.json`, ảnh trên.
+
 ## 2026-11-14.28 — Biển cổng trăng mới phía Quảng Trường: "Khu vui chơi"
 
 - Loại: cảnh 3D — chuỗi. Người dùng: "tên biển nên đổi thành khu vui chơi hay gì đó". `walls.gates` (tay, at 4) `signs.dong`
