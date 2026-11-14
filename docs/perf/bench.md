@@ -82,3 +82,23 @@ So TRƯỚC / SAU trên cùng máy — không thay đo máy thật.
 | Đi thẳng xa (W) | 30 | 33.5 | 58 | 0.2 | 35 | 49k |
 | Zoom ra cả sân | 30 | 33.3 | 35 | 0.0 | 38 | 50k |
 
+## Bench 2026-11-14 09:26
+
+### GPU máy tính — tải 1.6 s · AMD, AMD Radeon(TM) Graphics (0x00001900) Direct · Cao 1.5× · 60 fps · 585×1266
+
+| Chặng | fps | ms tb | 1 % chậm (ms) | khựng / 2 s | draw call | tam giác |
+|---|---|---|---|---|---|---|
+| Đứng giữa sân | 60 | 16.8 | 31 | 0.0 | 65 | 81k |
+| Đi + rẽ (W + D) | 59 | 16.9 | 26 | 0.0 | 49 | 58k |
+| Đi thẳng xa (W) | 59 | 17 | 25 | 0.0 | 39 | 55k |
+| Zoom ra cả sân | 59 | 17 | 25 | 0.0 | 43 | 57k |
+
+### Máy yếu (SwiftShader + CPU ×4) — tải 3.0 s · Google, Vulkan 1.3.0 (SwiftShader Device (Subzer · Thấp 0.7× · 30 fps · 273×590
+
+| Chặng | fps | ms tb | 1 % chậm (ms) | khựng / 2 s | draw call | tam giác |
+|---|---|---|---|---|---|---|
+| Đứng giữa sân | 32 | 32.4 | 110 | 1.0 | 65 | 81k |
+| Đi + rẽ (W + D) | 30 | 33.5 | 163 | 2.1 | 51 | 59k |
+| Đi thẳng xa (W) | 30 | 33.5 | 70 | 0.2 | 39 | 55k |
+| Zoom ra cả sân | 30 | 33.5 | 39 | 0.0 | 43 | 57k |
+
