@@ -130,7 +130,13 @@ void gop({bool thu = false}) {
       fail('Bước `${step.join(' ')}` hỏng — sửa rồi gộp lại.');
     }
   }
-  if (git(['status', '--porcelain']).isNotEmpty) git(['commit', '-am', 'build: file sinh sau khi gộp main']);
+  // file sinh chỉ lệch xuống dòng (LF/CRLF): status báo đổi nhưng không có gì để commit → chỉ commit khi stage có nội dung
+  git(['add', '-u']);
+  if (run('git', ['diff', '--cached', '--quiet']).exitCode != 0) {
+    git(['commit', '-m', 'build: file sinh sau khi gộp main']);
+  } else {
+    run('git', ['checkout', '--', '.']); // trả các file chỉ lệch xuống dòng về như cũ
+  }
   if (thu) {
     stdout.writeln('--thu: dừng trước khi đưa vào main (nhánh $branch đã rebase + build + kiểm xong).');
     return;
