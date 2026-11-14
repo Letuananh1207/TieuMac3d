@@ -14,6 +14,7 @@ import { addCloudSea, addFarMountains, viewDistance } from './farMountains';
 import { addGate, addGateModel } from './gate';
 import { staticModelUrl } from './staticModel';
 import { addGrassAndRocks } from './grass';
+import { addSoftGrassAndFlowers } from './coHoa';
 import { mergeSoft, mergeStatic } from './merge';
 import { tickWind } from './materials';
 import { isSoft } from './look';
@@ -85,7 +86,9 @@ export function buildWorld(
   let waterways: (dt: number) => void = () => {};
   if (hf && groundY) {
     addStairs(scene, spec.terrain, style);
-    addGrassAndRocks(scene, spec.terrain, hf, spec.paths);
+    const soft = isSoft(spec.look);
+    addGrassAndRocks(scene, spec.terrain, hf, spec.paths, !soft);
+    if (soft) addSoftGrassAndFlowers(scene, spec.terrain, hf, spec.paths, spec.look, detail);
     waterways = addWaterways(scene, spec.terrain, style, groundY);
   }
   addFarMountains(scene, spec);

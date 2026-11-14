@@ -1183,13 +1183,13 @@
     "blend": 6,
     "colors": {
       "grass": [
-        "#8dbf5a",
-        "#a6cc66",
-        "#79ad52"
+        "#86b55a",
+        "#9cc468",
+        "#74a552"
       ],
-      "dirt": "#c9a77a",
-      "rock": "#a49a8c",
-      "highRock": "#c2bab0",
+      "dirt": "#b39a7a",
+      "rock": "#a39b90",
+      "highRock": "#c4bdb3",
       "highFrom": 20
     },
     "slopeDirt": 20,
@@ -1208,10 +1208,10 @@
       }
     ],
     "grass": {
-      "density": 1.5,
+      "density": 5,
       "colors": [
         "#6f9e48",
-        "#b5d36e"
+        "#a9cc66"
       ]
     },
     "rocks": {

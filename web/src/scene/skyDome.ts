@@ -3,12 +3,12 @@ import { markDynamic } from './merge';
 import type { SceneSpec } from './spec';
 
 /**
- * Vòm trời cho cảnh "mềm" (kế hoạch docs/tasks/2026-11-14-canh-dep.md, NV7): cầu 32 × 16 đoạn, màu theo đỉnh (chân trời →
+ * Vòm trời cho cảnh "mềm" (kế hoạch docs/tasks/2026-11-14-canh-dep.md, NV7): cầu 24 × 12 đoạn, màu theo đỉnh (chân trời →
  * giữa → đỉnh như `sky`) + quầng sáng quanh hướng mặt trời (`look.sunGlow`). 1 draw call, vẽ trước mọi thứ, không ghi độ
  * sâu, không chịu sương; đi theo camera nên không bao giờ bị cắt bởi tầm nhìn xa. Thay ảnh nền gradient của cảnh cũ.
  */
 export function addSkyDome(scene: THREE.Scene, spec: SceneSpec, radius: number): THREE.Mesh {
-  const geo = new THREE.SphereGeometry(radius, 32, 16);
+  const geo = new THREE.SphereGeometry(radius, 24, 12);
   const pos = geo.getAttribute('position');
   const top = new THREE.Color(spec.sky.top);
   const mid = new THREE.Color(spec.sky.middle);

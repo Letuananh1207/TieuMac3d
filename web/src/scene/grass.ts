@@ -29,7 +29,7 @@ function tuftGeometry(): THREE.BufferGeometry {
 }
 
 /** Điểm có nằm trên bục lát, lối lát hay bậc đá không (không mọc cỏ / đá ở đó). */
-function onBuilt(t: Terrain, paths: PathSpec[], x: number, z: number): boolean {
+export function onBuilt(t: Terrain, paths: PathSpec[], x: number, z: number): boolean {
   for (const p of t.plateaus) {
     if (!p.pave) continue;
     if (x >= Math.min(p.from[0], p.to[0]) - 0.5 && x <= Math.max(p.from[0], p.to[0]) + 0.5 && z >= Math.min(p.from[1], p.to[1]) - 0.5 && z <= Math.max(p.from[1], p.to[1]) + 0.5) {
@@ -50,7 +50,8 @@ function onBuilt(t: Terrain, paths: PathSpec[], x: number, z: number): boolean {
  * Cỏ búi + đá rải trên địa hình (`terrain.grass`, `terrain.rocks`), rải ngẫu nhiên có hạt giống trong mép cao nguyên.
  * Không va chạm. Mỗi loại một InstancedMesh (màu từng búi / tảng khác nhau nhẹ).
  */
-export function addGrassAndRocks(scene: THREE.Scene, t: Terrain, hf: Heightfield, paths: PathSpec[]): void {
+/** `withGrass`: false = chỉ rải đá (cảnh mềm rải cỏ + hoa riêng ở `coHoa.ts`). */
+export function addGrassAndRocks(scene: THREE.Scene, t: Terrain, hf: Heightfield, paths: PathSpec[], withGrass = true): void {
   const [cx, cz] = t.center;
   const R = t.edge.radius - 2;
   const area = Math.PI * R * R;
@@ -66,7 +67,7 @@ export function addGrassAndRocks(scene: THREE.Scene, t: Terrain, hf: Heightfield
     return [cx + Math.cos(a) * r, cz + Math.sin(a) * r];
   };
 
-  if (t.grass.density > 0) {
+  if (withGrass && t.grass.density > 0) {
     const want = Math.min(MAX_TUFTS, Math.round((t.grass.density * area) / 100));
     const rand = seededRandom(t.noise.seed * 31 + 5);
     const mesh = new THREE.InstancedMesh(tuftGeometry(), new THREE.MeshLambertMaterial({ side: THREE.DoubleSide }), want);

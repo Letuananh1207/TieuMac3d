@@ -101,7 +101,7 @@ export function puffGeometry(body: THREE.ColorRepresentation, belly: THREE.Color
     [0.6, 0.55, 0.6, 1.0],
     [-0.7, 0.4, -0.7, 0.95],
   ];
-  const geos = parts.map(([x, y, z, r]) => new THREE.IcosahedronGeometry(r, 1).translate(x, y, z));
+  const geos = parts.map(([x, y, z, r]) => new THREE.IcosahedronGeometry(r, 0).translate(x, y, z));
   const g = mergeGeometries(geos);
   for (const p of geos) p.dispose();
   const pos = g.getAttribute('position');

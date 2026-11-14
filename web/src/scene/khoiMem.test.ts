@@ -10,13 +10,18 @@ describe('khối tròn mềm cho tán cây (kế hoạch canh-dep NV8)', () => {
     const col = g.getAttribute('color');
     const nrm = g.getAttribute('normal');
     let minY = Infinity;
+    let maxY = -Infinity;
     for (let i = 0; i < pos.count; i++) {
       minY = Math.min(minY, pos.getY(i));
+      maxY = Math.max(maxY, pos.getY(i));
       expect(Math.hypot(nrm.getX(i), nrm.getY(i), nrm.getZ(i))).toBeCloseTo(1);
-      if (pos.getY(i) > 0.99) expect(col.getX(i)).toBeGreaterThan(0.95);
-      if (pos.getY(i) === -0.45) expect(col.getX(i)).toBeLessThan(0.05);
+    }
+    for (let i = 0; i < pos.count; i++) {
+      if (pos.getY(i) === maxY) expect(col.getX(i)).toBeGreaterThan(0.8);
+      if (pos.getY(i) === minY) expect(col.getX(i)).toBeLessThan(0.05);
     }
     expect(minY).toBeCloseTo(-0.45);
+    expect(softBlob('#000000', '#808080', '#ffffff', -0.45, 1).getAttribute('position').count).toBe(240);
   });
 });
 

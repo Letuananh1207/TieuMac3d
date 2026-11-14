@@ -1,7 +1,9 @@
 import * as THREE from 'three';
 import type { Heightfield } from '../collision/heightfield';
 import { brickTexture, paveTileM } from './environment';
-import { lambert } from './materials';
+import { lambert, softMaterial } from './materials';
+import { isSoft } from './look';
+import { shadeGround } from './terrainMem';
 import { markDynamic } from './merge';
 import type { SceneSpec } from './spec';
 
@@ -29,6 +31,9 @@ export function addTerrain(scene: THREE.Scene, spec: SceneSpec, hf: Heightfield)
   const { nx, nz, cell, originX, originZ } = hf;
   let pos = new Float32Array(0);
   let col = new Float32Array(0);
+  let nor = new Float32Array(0);
+  // cảnh mềm: màu + pháp tuyến theo đỉnh lưới (chuyển mượt, mảng cỏ lớn) — terrainMem.ts
+  const shade = isSoft(spec.look) ? shadeGround(spec, hf) : null;
   const grass = t.colors.grass.map((c) => new THREE.Color(c));
   const dirt = new THREE.Color(t.colors.dirt);
   const rock = new THREE.Color(t.colors.rock);
@@ -58,20 +63,31 @@ export function addTerrain(scene: THREE.Scene, spec: SceneSpec, hf: Heightfield)
     if (ny >= cosDirt) c = grass[hash(i, j)];
     else if (ny >= cosRock) c = dirt;
     else c = avg > t.colors.highFrom ? high : rock;
-    for (const p of P) {
+    const grid: [number, number][] = [
+      [ax, az],
+      [bx, bz],
+      [cx, cz],
+    ];
+    P.forEach((p, v) => {
       pos[k] = p[0];
       pos[k + 1] = p[1];
       pos[k + 2] = p[2];
-      col[k] = c.r;
-      col[k + 1] = c.g;
-      col[k + 2] = c.b;
+      if (shade) {
+        const s = (grid[v][1] * (nx + 1) + grid[v][0]) * 3;
+        col.set(shade.colors.subarray(s, s + 3), k);
+        nor.set(shade.normals.subarray(s, s + 3), k);
+      } else {
+        col[k] = c.r;
+        col[k + 1] = c.g;
+        col[k + 2] = c.b;
+      }
       k += 3;
-    }
+    });
   };
 
   const group = new THREE.Group();
   markDynamic(group); // mergeStatic không gộp các mảnh lại thành một (mất cắt bỏ)
-  const mat = lambert(0xffffff, { vertexColors: true, flatShading: true });
+  const mat = shade ? softMaterial(spec.look.wrap) : lambert(0xffffff, { vertexColors: true, flatShading: true });
   for (let j0 = 0; j0 < nz; j0 += TERRAIN_TILE) {
     for (let i0 = 0; i0 < nx; i0 += TERRAIN_TILE) {
       const j1 = Math.min(nz, j0 + TERRAIN_TILE);
@@ -79,6 +95,7 @@ export function addTerrain(scene: THREE.Scene, spec: SceneSpec, hf: Heightfield)
       const tris = (j1 - j0) * (i1 - i0) * 2;
       pos = new Float32Array(tris * 9);
       col = new Float32Array(tris * 9);
+      if (shade) nor = new Float32Array(tris * 9);
       k = 0;
       for (let j = j0; j < j1; j++) {
         for (let i = i0; i < i1; i++) {
@@ -90,7 +107,8 @@ export function addTerrain(scene: THREE.Scene, spec: SceneSpec, hf: Heightfield)
       const geo = new THREE.BufferGeometry();
       geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
       geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
-      geo.computeVertexNormals(); // lưới không chia sẻ đỉnh → pháp tuyến từng mặt (flat)
+      if (shade) geo.setAttribute('normal', new THREE.BufferAttribute(nor, 3)); // pháp tuyến mượt theo đỉnh lưới
+      else geo.computeVertexNormals(); // lưới không chia sẻ đỉnh → pháp tuyến từng mặt (flat)
       group.add(new THREE.Mesh(geo, mat));
     }
   }
