@@ -119,4 +119,19 @@ void main() {
     expect(setDecorArgs([{'type': 'borrowBook', 'payload': {'slot': 'vuon-1'}}]), isNull);
     expect(setDecorArgs([]), isNull);
   });
+
+  test('R-TIEN-1: getProgress kèm số dư + Văn tiền trò hôm nay (docs/bridge.md); không có ví → không gửi', () {
+    final r = progressReply(const Progress(), coins: 1280, gameCoinsToday: 24);
+    expect(r['coins'], 1280);
+    expect(r['gameCoinsToday'], 24);
+    expect(progressReply(const Progress()).containsKey('coins'), isFalse);
+  });
+
+  test('R-NHA-4: getHome kèm vật đã sở hữu (docs/bridge.md)', () {
+    expect(homeReply({'vuon-1': 'mai'}, owned: ['truc-canh', 'mai']), {
+      'placed': {'vuon-1': 'mai'},
+      'owned': ['truc-canh', 'mai'],
+    });
+    expect(homeReply(const {}).containsKey('owned'), isFalse);
+  });
 }

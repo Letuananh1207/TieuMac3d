@@ -152,13 +152,16 @@ String? sceneEventType(List<dynamic> args) {
 
 /// Trả lời `getProgress` (docs/bridge.md): số chữ, bộ thủ đã học (không khoá vùng — R-HANH-1);
 /// [due] = bộ thủ đến hạn ôn theo thứ tự hỏi (R-ON-4); [daily] + [streak] = bảng nhiệm vụ hôm nay (R-NV-1, R-NV-2);
-/// [book] = sổ từ đang mượn ở Tàng Thư Các (R-SACH-2).
+/// [book] = sổ từ đang mượn ở Tàng Thư Các (R-SACH-2); [coins] = số dư Văn tiền, [gameCoinsToday] = Văn tiền trò chơi
+/// hôm nay (R-TIEN-1, R-TIEN-3) — [coins] `null` → không gửi (trang ẩn ví).
 Map<String, Object?> progressReply(
   Progress p, {
   List<String> due = const [],
   String? book,
   DailyStatus? daily,
   ({int current, int best}) streak = (current: 0, best: 0),
+  int? coins,
+  int gameCoinsToday = 0,
 }) =>
     {
       'chars': p.chars.length,
@@ -172,6 +175,7 @@ Map<String, Object?> progressReply(
         'best': streak.best,
       },
       'book': book,
+      if (coins != null) ...{'coins': coins, 'gameCoinsToday': gameCoinsToday},
     };
 
 /// `id` của sự kiện `borrowBook` (docs/bridge.md, R-SACH-1); sai dạng → `null`.
@@ -184,8 +188,12 @@ String? borrowBookId(List<dynamic> args) {
   return id is String && id.isNotEmpty ? id : null;
 }
 
-/// Trả lời `getHome` (docs/bridge.md, R-NHA-3): nhà đã lưu, mã ô → mã vật.
-Map<String, Object?> homeReply(Map<String, String> placed) => {'placed': placed};
+/// Trả lời `getHome` (docs/bridge.md, R-NHA-3, R-NHA-4): nhà đã lưu, mã ô → mã vật; [owned] = vật đã sở hữu (`null` →
+/// không gửi, trang coi là vật khởi đầu + vật đang đặt).
+Map<String, Object?> homeReply(Map<String, String> placed, {List<String>? owned}) => {
+      'placed': placed,
+      'owned': ?owned,
+    };
 
 /// Ô + vật của sự kiện `setDecor` (docs/bridge.md, R-NHA-2); `item` `null` = gỡ. Sai dạng → `null`.
 ({String slot, String? item})? setDecorArgs(List<dynamic> args) {

@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hoc_xa_3d/journey/progress_store.dart';
+import 'package:hoc_xa_3d/journey/wallet.dart';
 import 'package:hoc_xa_3d/scene/scene_event.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -38,5 +39,32 @@ void main() {
     expect((await ProgressStore.open()).homePlaced, isEmpty);
     SharedPreferences.setMockInitialValues({'nha.dat': '{"vuon-1": 3, "san-2": "den-long"}'});
     expect((await ProgressStore.open()).homePlaced, {'san-2': 'den-long'});
+  });
+
+  test('R-NHA-4: mới cài app → sở hữu sẵn Trúc cảnh, Đèn lồng, Tranh chữ; trả kèm getHome', () async {
+    final store = await ProgressStore.open();
+    expect(store.ownedDecor, ['truc-canh', 'den-long', 'tranh-chu']);
+    expect(homeReply(store.homePlaced, owned: store.ownedDecor), {
+      'placed': <String, String>{},
+      'owned': ['truc-canh', 'den-long', 'tranh-chu'],
+    });
+  });
+
+  test('R-NHA-4: bản cũ đang đặt Tùng ở ô vườn 1 → lên bản mới sở hữu 3 vật khởi đầu + Tùng', () async {
+    SharedPreferences.setMockInitialValues({'nha.dat': '{"vuon-1": "tung", "vuon-2": "truc-canh", "san-1": "tung"}'});
+    final store = await ProgressStore.open();
+    expect(store.ownedDecor, ['truc-canh', 'den-long', 'tranh-chu', 'tung']);
+    expect(migrateOwned(['mai', 'mai', 'den-long']), [...starterDecor, 'mai']);
+  });
+
+  test('R-NHA-4: gỡ vật khỏi ô không mất sở hữu; sở hữu giữ qua mở lại', () async {
+    SharedPreferences.setMockInitialValues({'tien.so-du': 60});
+    final store = await ProgressStore.open();
+    expect(await store.buyDecor('mai', 60), isA<Bought>());
+    await store.placeDecor('vuon-1', 'mai');
+    await store.placeDecor('vuon-1', null);
+    final reopened = await ProgressStore.open();
+    expect(reopened.ownedDecor, contains('mai'));
+    expect(reopened.homePlaced, isEmpty);
   });
 }
