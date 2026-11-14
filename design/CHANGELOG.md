@@ -3,6 +3,17 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-15.1 — Tiểu Mặc + bảng nhiệm vụ ra bên phải tiệm Tạp hoá
+
+- Loại: cảnh 3D — **bố cục**. Phiên code V-20261114-35 làm thay `/canh`; người dùng: "vị trí Tiểu Mặc và bảng nên đặt ở bên
+  phải của tiệm Tạp hoá". **Đã duyệt 2026-11-15.**
+- `npcs[tieu-mac]` (−2,4; 8) 15° → **(−7,5; 24) 45°**; `props[bang "Nhiệm vụ hằng ngày"]` (2,9; 7) → **(−7,5; 18,8)**, quay 0°.
+  Phía bắc Tạp hoá (bên phải khi đứng trên lối nhìn vào mặt tiệm), người chơi từ (0; 36) đi lên thấy ngay. Nút "Nói
+  chuyện" / "Xem bảng" / "Vào tiệm" cách nhau ≥ 5,2 m. Thoại Tiểu Mặc nhắc bảng cạnh Tạp hoá. Tiểu Khất (chưa vào cảnh)
+  sẽ ngồi ở một góc Quảng Trường (người dùng chọn).
+- Luật: R-NPC-1, R-NPC-2, R-NV-1, R-NV-3. `scene:check` không lỗi; draw call không đổi.
+- Ảnh: `screens/Canh-tieu-mac-tap-hoa.png`.
+
 ## 2026-11-14.34 — Tiểu Mặc + bảng nhiệm vụ đón ở cổng nam Quảng Trường
 
 - Loại: cảnh 3D — **bố cục**. Phiên code V-20261114-33 làm thay `/canh`; người dùng nhờ dời Tiểu Mặc và bảng nhiệm vụ để

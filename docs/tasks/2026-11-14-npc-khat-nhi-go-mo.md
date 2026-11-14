@@ -89,6 +89,7 @@ của Lão Canh 3,7 m.
 > (−4,6; 39,4) 4,6 m, cách tùng (−11; 38) 5,8 m, cách chỗ xuất phát (0; 36) 6,1 m. Người chơi mới vào thấy Tiểu Khất
 > ngay bên trái, đi lên vài bước gặp Tiểu Mặc + bảng. Cần kiểm lại bằng `scene:check` khi `/canh` ghi Tiểu Khất vào
 > `scene.json` (bước 13). Code của V-31 không đổi.
+> **Người dùng quyết 2026-11-15:** KHÔNG dùng (−6; 35) — Tiểu Khất ngồi ở **một góc Quảng Trường** (chọn góc lúc làm NV13: không chắn cổng, nhật quỹ, chậu cây, đường Lão Canh; nút "Nói chuyện" cách NPC khác ≥ 5 m).
 
 ## Thiết kế kỹ thuật (tóm tắt)
 - **Đồng hồ chung GMT+7**: `vnNow = Date.now()/1000 + 7·3600`, lấy giờ, phút, mã ngày từ đó. Máy đặt múi giờ nào cũng như
