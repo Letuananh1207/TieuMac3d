@@ -19,6 +19,20 @@ Mức độ:
 
 ## Đang mở
 
+### L-12 · Tiêu đề "Ngồi ôn" trên cuộn sách 3D bị tách dấu ("Ngô`i ôn")
+
+- Trạng thái: mới · Mức độ: nhỏ (chữ vẫn đọc được, chỉ xấu) · Phần: cuộn sách Ngồi ôn (`web/src/ui/cuonMucPaint.ts`, font Lora vẽ canvas) · Quy tắc: R-ON-8, R-HUD-4
+- Báo: 2026-11-15 — subagent V-20261114-43 thấy trong ảnh chụp (trước và sau khi sửa cuộn), người dùng chưa báo
+- Các bước: 1. Ngồi bồ đoàn tầng 2 Tàng Thư Các (hoặc Ngồi ôn) 2. Nhìn tiêu đề cuộn
+- Mong đợi / thực tế: "Ngồi ôn" dấu huyền nằm trên chữ "ô" / dấu tách ra thành "Ngô`i"
+- Bằng chứng: `C:/Users/admin/AppData/Local/Temp/claude/651327167d39025b/51df7f0c-c8dd-448d-8a23-6df66204bf24/scratchpad/cuon-ngoi-to/sau-tuhoc-ngang_.png` (Chrome headless); chưa kiểm máy thật
+
+**Sửa**
+- Nguyên nhân: chưa xét (nghi chữ tổ hợp NFD / font Lora cắt thiếu glyph "ồ" hoặc nạp font chưa đủ mặt chữ trước khi vẽ canvas)
+
+**Lịch sử**
+- 2026-11-15: ghi từ báo cáo V-43.
+
 ### L-10 · Bề mặt chớp sáng liên tục (sàn tầng 2 trong nhà, cổng mái ngói)
 
 - Trạng thái: chờ thử máy (đợt 2: các vùng) · Mức độ: khó chịu (chớp liên tục trên mặt sàn / cổng khi camera di chuyển, khó chịu mắt) · Phần:
