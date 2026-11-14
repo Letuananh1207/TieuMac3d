@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import type { Colliders } from '../collision/colliders';
-import { lambert } from './materials';
+import { lambert, softMaterial } from './materials';
+import { softBlob } from './khoiMem';
+import { isSoft, type LookSpec } from './look';
 import { addPine, addBush, addPeach, addPlum, addWillow } from './cay_moi';
 import { addTallBamboo } from './trucMao';
 import type { Updater } from './props';
@@ -38,10 +40,15 @@ function groveTrees(g: GroveSpec, seed: number, index: number): Placed[] {
 }
 
 /** Cây tán: 4 InstancedMesh (thân + 3 tầng lá) cho mọi cây — 4 draw call cả rừng. */
-function broadleaf(scene: THREE.Scene, spec: SceneSpec['trees'], all: Placed[], rand: () => number): void {
+function broadleaf(scene: THREE.Scene, spec: SceneSpec['trees'], all: Placed[], rand: () => number, look?: LookSpec): void {
   if (all.length === 0) return;
   const trunks = new THREE.InstancedMesh(trunkGeo, lambert(spec.trunk), all.length);
-  const leaves = spec.leaves.map((c) => new THREE.InstancedMesh(leafGeo, lambert(c), all.length));
+  // cảnh mềm: 3 tầng lá cùng một khối tròn sáng trên tối dưới (1 InstancedMesh thay 3), lay gió
+  const soft = look && isSoft(look);
+  const one = soft
+    ? new THREE.InstancedMesh(softBlob(spec.leaves[0], spec.leaves[1], spec.leaves[2], -0.6), softMaterial(look.wrap, THREE.FrontSide, { amp: look.wind * 0.5 }), all.length * LEAF_TIERS)
+    : null;
+  const leaves = one ? [] : spec.leaves.map((c) => new THREE.InstancedMesh(leafGeo, lambert(c), all.length));
   const tree = new THREE.Matrix4();
   const local = new THREE.Matrix4();
   const part = new THREE.Matrix4();
@@ -56,10 +63,11 @@ function broadleaf(scene: THREE.Scene, spec: SceneSpec['trees'], all: Placed[], 
       pos.set((rand() - 0.5) * 1.4, 2.8 + k * 0.7, (rand() - 0.5) * 1.4);
       quat.setFromEuler(euler.set(rand(), rand(), 0));
       size.setScalar(1 - k * 0.18);
-      leaves[k].setMatrixAt(i, local.copy(tree).multiply(part.compose(pos, quat, size)));
+      if (one) one.setMatrixAt(i * LEAF_TIERS + k, local.copy(tree).multiply(part.compose(pos, quat, size.multiplyScalar(1.75))));
+      else leaves[k].setMatrixAt(i, local.copy(tree).multiply(part.compose(pos, quat, size)));
     }
   });
-  finish(scene, [trunks, ...leaves]);
+  finish(scene, one ? [trunks, one] : [trunks, ...leaves]);
 }
 
 /** Trúc: mỗi khóm 5 thân cao gầy, ngọn có túm lá — 2 InstancedMesh cho mọi khóm. */
@@ -102,7 +110,7 @@ export function finish(scene: THREE.Scene, meshes: THREE.InstancedMesh[]): void 
  * Kiểu `tan` (mặc định) · `truc` · `tung` · `lieu` · `mai` · `truc-mao` (Rừng trúc, cao 12–18 m, đung đưa); mỗi kiểu dãy ngẫu nhiên riêng nên thêm kiểu không xê dịch
  * cây `tan` có sẵn. Trả về hàm cập nhật (liễu đung đưa).
  */
-export function addTrees(scene: THREE.Scene, colliders: Colliders, spec: SceneSpec['trees'], groundY?: GroundY): Updater {
+export function addTrees(scene: THREE.Scene, colliders: Colliders, spec: SceneSpec['trees'], groundY?: GroundY, look?: LookSpec): Updater {
   const rand = seededRandom(spec.seed);
   const { ring } = spec;
   const ringTrees: Placed[] = [];
@@ -120,9 +128,9 @@ export function addTrees(scene: THREE.Scene, colliders: Colliders, spec: SceneSp
   // địa hình: đặt gốc mọi cây lên mặt đất
   if (groundY) for (const list of Object.values(byKind)) for (const p of list) p.y = groundY(p.x, p.z);
 
-  broadleaf(scene, spec, byKind.tan, rand);
+  broadleaf(scene, spec, byKind.tan, rand, look);
   bamboo(scene, spec, byKind.truc, spec.seed);
-  addPine(scene, spec, byKind.tung, spec.seed);
+  addPine(scene, spec, byKind.tung, spec.seed, look);
   addPlum(scene, spec, byKind.mai, spec.seed);
   addPeach(scene, spec, byKind.dao, spec.seed);
   addBush(scene, spec, byKind.bui, spec.seed);

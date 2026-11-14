@@ -15,6 +15,7 @@ import { addGate, addGateModel } from './gate';
 import { staticModelUrl } from './staticModel';
 import { addGrassAndRocks } from './grass';
 import { mergeSoft, mergeStatic } from './merge';
+import { tickWind } from './materials';
 import { isSoft } from './look';
 import { resetSignAtlas } from './signAtlas';
 import { addPaths } from './paths';
@@ -124,7 +125,7 @@ export function buildWorld(
   const rampartPads = addRamparts(scene, colliders, spec.ramparts, spec.walls, groundY);
   if (spec.terrain.enabled) addPlateauRails(scene, colliders, spec.terrain);
   const props = addProps(scene, colliders, spec.props, style, spec.trees, groundY);
-  const trees = addTrees(scene, colliders, spec.trees, groundY);
+  const trees = addTrees(scene, colliders, spec.trees, groundY, spec.look);
   addLanternStrings(scene, colliders, spec, groundY);
   addFences(scene, colliders, spec, groundY);
   if (spec.well.enabled) addWell(scene, colliders, spec.well, base(spec.well.x, spec.well.z));
@@ -145,6 +146,7 @@ export function buildWorld(
     zoneAnchors: zoneAnchors(spec.buildings, kinds),
     teleport,
     update(dt, player) {
+      tickWind(dt);
       props(dt);
       trees(dt);
       floating(dt);

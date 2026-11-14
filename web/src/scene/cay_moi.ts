@@ -3,7 +3,9 @@
  * liễu (tán vòm + dải rủ đung đưa), mai (cành gãy khúc + chùm hoa). Mỗi kiểu vài InstancedMesh cho mọi cây.
  */
 import * as THREE from 'three';
-import { lambert } from './materials';
+import { lambert, softMaterial } from './materials';
+import { softBlob } from './khoiMem';
+import { isSoft, type LookSpec } from './look';
 import type { Updater } from './props';
 import { seededRandom } from './random';
 import type { SceneSpec } from './spec';
@@ -22,13 +24,17 @@ function segment(m: THREE.Matrix4, from: THREE.Vector3, dir: THREE.Vector3, len:
 }
 
 /** Tùng: thân cong hai khúc, 4 đám lá dẹt so le, mặt trên mỗi đám sáng hơn. */
-export function addPine(scene: THREE.Scene, spec: Trees, list: Placed[], seed: number): void {
+export function addPine(scene: THREE.Scene, spec: Trees, list: Placed[], seed: number, look?: LookSpec): void {
   if (!list.length) return;
   const rand = seededRandom(seed * 4099 + 11);
   const CLOUDS = 4;
   const trunk = new THREE.InstancedMesh(unitCyl, lambert(spec.trunk), list.length * 2);
-  const clouds = new THREE.InstancedMesh(discGeo, lambert(spec.leaves[0]), list.length * CLOUDS);
-  const caps = new THREE.InstancedMesh(discGeo, lambert(spec.leaves[2]), list.length * CLOUDS);
+  // cảnh mềm: đám lá = khối tròn dẹt sáng trên tối dưới, lay gió; một InstancedMesh (bỏ lớp mặt sáng `caps`)
+  const soft = look && isSoft(look);
+  const clouds = soft
+    ? new THREE.InstancedMesh(softBlob(spec.leaves[0], spec.leaves[1], spec.leaves[2]), softMaterial(look.wrap, THREE.FrontSide, { amp: look.wind * 0.6 }), list.length * CLOUDS)
+    : new THREE.InstancedMesh(discGeo, lambert(spec.leaves[0]), list.length * CLOUDS);
+  const caps = new THREE.InstancedMesh(discGeo, lambert(spec.leaves[2]), soft ? 0 : list.length * CLOUDS);
   const m = new THREE.Matrix4();
   const q = new THREE.Quaternion();
   list.forEach((t, i) => {
@@ -50,11 +56,15 @@ export function addPine(scene: THREE.Scene, spec: Trees, list: Placed[], seed: n
       const cx = (k === CLOUDS - 1 ? top.x : t.x + Math.cos(a) * off);
       const cz = (k === CLOUDS - 1 ? top.z : t.z + Math.sin(a) * off);
       q.setFromAxisAngle(UP, rand() * Math.PI);
+      if (soft) {
+        clouds.setMatrixAt(i * CLOUDS + k, m.compose(new THREE.Vector3(cx, y + 0.1 * s, cz), q, new THREE.Vector3(r * 1.05, 0.62 * s, r * 1.05)));
+        continue;
+      }
       clouds.setMatrixAt(i * CLOUDS + k, m.compose(new THREE.Vector3(cx, y, cz), q, new THREE.Vector3(r, 0.42 * s, r)));
       caps.setMatrixAt(i * CLOUDS + k, m.compose(new THREE.Vector3(cx, y + 0.22 * s, cz), q, new THREE.Vector3(r * 0.86, 0.1 * s, r * 0.86)));
     }
   });
-  finish(scene, [trunk, clouds, caps]);
+  finish(scene, soft ? [trunk, clouds] : [trunk, clouds, caps]);
 }
 
 /** Mai: thân thấp, 4 cành gãy khúc (2 khúc mỗi cành), không lá; chùm hoa hai màu ở dọc / đầu cành. */

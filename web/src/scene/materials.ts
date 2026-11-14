@@ -25,14 +25,52 @@ export function wrapLambertChunk(wrap: number): string {
  * nướng bóng — `bake.ts`) + wrap lighting (mặt khuất nắng không đen). Mọi khối tĩnh dùng chung nên gộp được một draw call
  * dù khác màu (`mergeSoft`). Chi phí điểm ảnh như Lambert (thêm một phép cộng, một phép chia).
  */
-export function softMaterial(wrap: number, side: THREE.Side = THREE.FrontSide): THREE.MeshLambertMaterial {
+export function softMaterial(wrap: number, side: THREE.Side = THREE.FrontSide, wind?: Wind): THREE.MeshLambertMaterial {
   const m = new THREE.MeshLambertMaterial({ vertexColors: true, side });
   const chunk = wrapLambertChunk(wrap);
+  const sway = wind && wind.amp > 0 ? windChunk(wind) : null;
   m.onBeforeCompile = (shader) => {
     shader.fragmentShader = shader.fragmentShader.replace('#include <lights_lambert_pars_fragment>', chunk);
+    if (sway) {
+      shader.uniforms.uWindTime = WIND_TIME;
+      shader.vertexShader = `uniform float uWindTime;
+${shader.vertexShader.replace('#include <begin_vertex>', sway)}`;
+    }
   };
-  // chương trình shader dùng lại theo `wrap` — hai giá trị wrap khác nhau không dùng nhầm bản đã biên dịch
-  m.customProgramCacheKey = () => `soft-${wrap.toFixed(3)}`;
+  // chương trình shader dùng lại theo `wrap` + gió — cấu hình khác nhau không dùng nhầm bản đã biên dịch
+  m.customProgramCacheKey = () => `soft-${wrap.toFixed(3)}-${sway ? `${wind?.amp.toFixed(3)}-${wind?.tip ?? 0}` : 'yen'}`;
   m.userData.soft = true;
   return m;
+}
+
+/**
+ * Gió (cảnh mềm — cỏ, hoa, tán cây lay nhẹ): lệch đỉnh trong vertex shader bằng 2 sóng sin, pha theo vị trí instance (mỗi
+ * cây / búi lay lệch nhau). `amp` biên độ (m); `tip` > 0 = chỉ ngọn lay, tỉ lệ theo độ cao đỉnh / `tip` (gốc đứng yên);
+ * không có `tip` = cả khối lay đều (tán cây). Chi phí: ~10 phép tính mỗi đỉnh, không thêm draw call.
+ */
+export interface Wind {
+  amp: number;
+  tip?: number;
+}
+
+/** Đồng hồ gió dùng chung mọi vật liệu (giây) — `tickWind` mỗi khung. */
+export const WIND_TIME = { value: 0 };
+
+export function tickWind(dt: number): void {
+  WIND_TIME.value = (WIND_TIME.value + dt) % 10000;
+}
+
+export function windChunk(w: Wind): string {
+  const amp = w.amp.toFixed(4);
+  const k = w.tip ? `clamp(position.y / ${w.tip.toFixed(3)}, 0.0, 1.5)` : '1.0';
+  return `#include <begin_vertex>
+#ifdef USE_INSTANCING
+  vec3 wOrigin = vec3(instanceMatrix[3][0], instanceMatrix[3][1], instanceMatrix[3][2]);
+#else
+  vec3 wOrigin = vec3(modelMatrix[3][0], modelMatrix[3][1], modelMatrix[3][2]);
+#endif
+  float wPh = uWindTime + wOrigin.x * 0.21 + wOrigin.z * 0.17;
+  float wK = ${amp} * ${k};
+  transformed.x += (sin(wPh * 1.7) + 0.4 * sin(wPh * 3.1)) * wK;
+  transformed.z += cos(wPh * 1.3) * wK * 0.6;`;
 }
