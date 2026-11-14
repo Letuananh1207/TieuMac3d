@@ -85,7 +85,7 @@ async function boot(): Promise<void> {
   loading.progress(10);
   // Biển hiệu, bảng phấn vẽ chữ lên canvas, nên phải nạp font trước khi dựng cảnh.
   // bộ thủ tu luyện ở vùng có bài học bộ thủ (R-HANH-3) — thẻ HTML dự phòng vẽ chữ bằng font này
-  const hanText = [spec.site.han, TELEPORT_TEXT, '此', ...(spec.lessons.radicals ? RADICALS.map((r) => r.form) : []), ...JOURNEY_MAP.places.map((p) => p.han), ...spec.site.areas.map((a) => a.han ?? ''), ...ZONE_CONTENT.map((c) => c.lesson.han), signText(spec)].join('');
+  const hanText = [spec.site.han, TELEPORT_TEXT, spec.teleport.text, '此', ...(spec.lessons.radicals ? RADICALS.map((r) => r.form) : []), ...JOURNEY_MAP.places.map((p) => p.han), ...spec.site.areas.map((a) => a.han ?? ''), ...ZONE_CONTENT.map((c) => c.lesson.han), signText(spec)].join('');
   await Promise.allSettled([
     document.fonts.load('700 72px Lora'),
     document.fonts.load('700 13px "Be Vietnam Pro"'),

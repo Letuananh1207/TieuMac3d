@@ -451,6 +451,10 @@ function checkTeleport(s: SceneSpec): string[] {
   const tp = s.teleport;
   if (!tp.enabled) return out;
   if (tp.ringRadius <= 0) out.push('teleport.ringRadius: phải > 0');
+  const chars = [...tp.text];
+  if (chars.length < 1 || chars.length > 3 || !chars.every((c) => /\p{Script=Han}/u.test(c))) {
+    out.push(`teleport.text: 1–3 chữ Hán (đang là "${tp.text}")`);
+  }
   if (tp.radius > 0 && tp.ringRadius + 0.6 > tp.radius) out.push('teleport: vòng trận chạm viền sân (ringRadius + 0,6 > radius)');
   const d = Math.hypot(s.player.start[0] - tp.center[0], s.player.start[1] - tp.center[1]);
   if (d < ringTrigger(tp) + 1) out.push(`teleport: chỗ xuất phát (player.start) cách tâm vòng ${d.toFixed(1)} m — dời ra ngoài vòng (≥ ${ringTrigger(tp) + 1} m)`);

@@ -560,6 +560,8 @@ export interface TeleportSpec {
   ringRadius: number;
   /** sân đá, viền + phù hiệu, vòng khi tắt, vòng sáng (ngọc lục), chấm vàng / hạt sáng */
   colors: { floor: string; rim: string; dim: string; lit: string; spark: string };
+  /** chữ Hán khắc giữa vòng, 1–3 chữ (mặc định 起源 — Khởi Nguyên Trấn; Nhà của ta: 我家 — design 2026-11-14.16) */
+  text: string;
   /** đài tròn nhiều tầng dưới vòng (`tiers` 0 = sân / bệ phẳng như cũ) — xem `DaisSpec` */
   dais: DaisSpec;
 }
@@ -901,6 +903,7 @@ export const DEFAULT_SCENE: SceneSpec = {
     radius: 13,
     ringRadius: 4,
     colors: { floor: '#b9b4a8', rim: '#8d877f', dim: '#7f8a84', lit: '#4fd1a5', spark: '#f2c45a' },
+    text: '起源',
     // 0 tầng = sân / bệ phẳng (cảnh cũ không đổi)
     dais: {
       tiers: 0,

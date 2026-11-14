@@ -15,7 +15,7 @@ import { makeCanvasTex } from './textures';
 import type { GroundY } from './terrainHeight';
 import { addDais } from './truyenTongDai';
 
-/** Chữ Hán vẽ lên canvas (phù hiệu) — `main.ts` nạp font cho các chữ này trước khi dựng cảnh. */
+/** Chữ Hán mặc định của phù hiệu (đặc tả `teleport.text`; Nhà của ta: 我家) — `main.ts` nạp font cho chữ của cảnh trước khi dựng. */
 export const TELEPORT_TEXT = '起源';
 
 const DOTS = 12; // chấm vàng quanh vòng
@@ -30,8 +30,8 @@ function flat<T extends THREE.BufferGeometry>(geo: T): T {
   return geo;
 }
 
-/** Phù hiệu 起源 khắc trong vòng: vòng tròn mảnh + chữ, nền trong suốt. */
-function emblemTex(color: string): THREE.CanvasTexture {
+/** Phù hiệu khắc trong vòng (`text`, mặc định 起源): vòng tròn mảnh + chữ, nền trong suốt; 3 chữ thì thu cỡ cho vừa vòng. */
+function emblemTex(color: string, text: string): THREE.CanvasTexture {
   return makeCanvasTex(512, 512, (g, w, h) => {
     g.clearRect(0, 0, w, h);
     g.strokeStyle = color;
@@ -40,10 +40,10 @@ function emblemTex(color: string): THREE.CanvasTexture {
     g.arc(w / 2, h / 2, 230, 0, Math.PI * 2);
     g.stroke();
     g.fillStyle = color;
-    g.font = '700 150px "Han Serif", serif';
+    g.font = `700 ${[...text].length > 2 ? 110 : 150}px "Han Serif", serif`;
     g.textAlign = 'center';
     g.textBaseline = 'middle';
-    g.fillText(TELEPORT_TEXT, w / 2, h / 2 + 8);
+    g.fillText(text, w / 2, h / 2 + 8);
   });
 }
 
@@ -82,7 +82,7 @@ export function addTeleport(scene: THREE.Scene, colliders: Colliders, tp: Telepo
   rim.position.set(cx, y0 + 0.065, cz);
   const emblem = new THREE.Mesh(
     flat(new THREE.PlaneGeometry(R * 1.5, R * 1.5)),
-    lambert('#ffffff', { map: emblemTex(colors.rim), transparent: true, polygonOffset: true, polygonOffsetFactor: -1 }),
+    lambert('#ffffff', { map: emblemTex(colors.rim, tp.text || TELEPORT_TEXT), transparent: true, polygonOffset: true, polygonOffsetFactor: -1 }),
   );
   emblem.position.set(cx, y0 + 0.07, cz);
   scene.add(rim, emblem);

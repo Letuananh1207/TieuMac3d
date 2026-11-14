@@ -43,7 +43,7 @@ async function boot(): Promise<void> {
   await Promise.allSettled([
     document.fonts.load('700 72px Lora'),
     document.fonts.load('700 13px "Be Vietnam Pro"'),
-    document.fonts.load('700 52px "Han Serif"', `起源此${RADICALS.map((r) => r.form).join('')}${signText(spec)}`),
+    document.fonts.load('700 52px "Han Serif"', `起源此${spec.teleport.text}${RADICALS.map((r) => r.form).join('')}${signText(spec)}`),
   ]);
   const canvas = el<HTMLCanvasElement>('stage');
   // nhìn từ trên: đủ cao để thấy cả sân / cả vùng địa hình
