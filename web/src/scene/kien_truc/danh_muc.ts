@@ -4,6 +4,8 @@
  * Hồ sơ: `docs/tham_khao/kien-truc-chuan.md`. Kế hoạch: `docs/tasks/2026-11-14-catalog-kien-truc.md`.
  */
 
+import { MAU_DOT_2 } from './danh_muc_dot2';
+
 /** Thước đo kiến trúc chung cho mọi map (thay `buildingStyle.heightScale` riêng từng map). */
 export const K = 1.25;
 
@@ -48,6 +50,10 @@ export interface CoMau {
   kep?: boolean;
   /** cấp hiển thị mặc định khi bày trong Catalog */
   cap: Cap;
+  /** biến thể dáng của cỡ này (vd. hành lang `ven-kenh` một dốc, `bo-nui` leo dốc; lều `sap`, `quan`, `tron`) */
+  bien?: string;
+  /** lầu thành: cao đôn đài (m) */
+  don?: number;
 }
 
 export type Nhom = 'nha' | 'noi' | 'vat';
@@ -70,7 +76,7 @@ export interface Mau {
   dot: 1 | 2 | 3 | 4;
 }
 
-/** Mẫu nhà — đợt 1 (8 dựng mới + 3 vào được dùng hàm hiện có). Số theo `danh_muc.md` mục 1. */
+/** Mẫu nhà — đợt 1 (8 dựng mới + 3 vào được dùng hàm hiện có), đợt 2 (8 nhà còn lại). Số theo `danh_muc.md` mục 1. */
 export const MAU: readonly Mau[] = [
   {
     ma: 'dien',
@@ -245,6 +251,7 @@ export const MAU: readonly Mau[] = [
     thay: 'hi-dai',
     dot: 1,
   },
+  ...MAU_DOT_2,
 ];
 
 /** Ngân sách mỗi công trình theo cấp: draw call, tam giác (`danh_muc.md` mục 0). */
@@ -276,4 +283,11 @@ export const maiDua = (cap: Cap, cot: number): number => (cap <= 3 ? 0.4 : 0.3) 
 /** Lấy mẫu theo mã. */
 export function mau(ma: string): Mau | undefined {
   return MAU.find((m) => m.ma === ma);
+}
+
+/** Màu ngói theo cấp + giọng: vàng chỉ C1 (cung), lục C2–C3 cung / tông môn, còn lại xám đen (`danh_muc.md` mục 0). */
+export function ngoi(cap: Cap, giong: Giong): string {
+  if (cap === 1 || (cap === 2 && giong === 'thanh')) return '#C9A13B';
+  if (cap <= 3 && giong !== 'giang-nam' && giong !== 'duong') return '#2B5446';
+  return '#4F5A63';
 }

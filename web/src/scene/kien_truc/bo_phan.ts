@@ -4,9 +4,55 @@
  * Gọi lại `chi_tiet.ts` (bậc, lan can, cửa, dải xà) — không viết lại.
  */
 import * as THREE from 'three';
+import { lambert } from '../materials';
 import { addBeamBand, addDoors, addRailing, type Style } from './chi_tiet';
-import { cotSon, nenCao, type Cap } from './danh_muc';
+import { cotSon, nenCao, type Cap, type CoMau, type Giong, type Mau } from './danh_muc';
 import { box, column } from './hinh';
+
+/** Hàm dựng một mẫu ở một cỡ, một giọng vào nhóm `g` (mẫu đợt 1: `mau_nha.ts`; đợt 2: `mau_nha_2.ts`, `mau_bien.ts`). */
+export type Build = (g: THREE.Group, m: Mau, c: CoMau, giong: Giong, style: Style) => void;
+
+/** Gạch xám Minh (Trường Thành), đá viền, lỗ tối — dùng chung với vật biên ải cũ (`vat_bien_ai.ts`) để gộp cùng màu. */
+export const GACH = { brick: '#6a6e69', brickDark: '#5a5e59', cap: '#8a8a82', dark: '#24282a' };
+
+/**
+ * Cửa vòm tối dán trước một mặt: tâm `x`, đáy `y`, mặt phẳng ở `z` (đã cộng 2 cm ra ngoài mặt tường để không trùng mặt),
+ * rộng `w`, cao `h`; `ry` xoay theo mặt (0 = mặt +z, π = mặt −z, ±π/2 = mặt ±x).
+ */
+export function cuaVom(g: THREE.Object3D, x: number, y: number, z: number, w: number, h: number, ry = 0): void {
+  const s = new THREE.Shape();
+  s.moveTo(-w / 2, 0);
+  s.lineTo(-w / 2, h - w / 2);
+  s.absarc(0, h - w / 2, w / 2, Math.PI, 0, true);
+  s.lineTo(w / 2, 0);
+  s.closePath();
+  const m = new THREE.Mesh(new THREE.ShapeGeometry(s, 5), lambert(GACH.dark));
+  m.position.set(x, y, z);
+  m.rotation.y = ry;
+  g.add(m);
+}
+
+/**
+ * Răng cưa (đoạ khẩu 垛口) quanh mép một mặt bằng `w` × `d` ở độ cao `y`: răng 1 × 1,1 × 0,5 m cách nhau ~2 m, mặt ngoài
+ * lùi `inset` so với mép (để không trùng mặt đá viền / thân).
+ */
+export function rangCua(g: THREE.Object3D, w: number, d: number, y: number, color: string, inset = 0.1): void {
+  const mat = lambert(color);
+  const side = (len: number, fixed: number, alongX: boolean): void => {
+    const n = Math.max(2, Math.round(len / 2));
+    const geo = alongX ? new THREE.BoxGeometry(1, 1.1, 0.5) : new THREE.BoxGeometry(0.5, 1.1, 1);
+    for (let i = 0; i < n; i++) {
+      const t = -len / 2 + 0.5 + (i * (len - 1)) / (n - 1);
+      for (const s of [-1, 1]) {
+        const m = new THREE.Mesh(geo, mat);
+        m.position.set(alongX ? t : s * fixed, y + 0.55, alongX ? s * fixed : t);
+        g.add(m);
+      }
+    }
+  };
+  side(w - 2 * inset, d / 2 - inset - 0.25, true);
+  side(d - 2 * inset - 1, w / 2 - inset - 0.25, false);
+}
 
 /** Tỉ lệ các lớp bệ tu di (《清式營造則例》, chia 51 phần): đế 圭角 + 下枋 · eo 下梟 + 束腰 + 上梟 · mặt 上枋. */
 const TU_DI = { de: 18 / 51, eo: 24 / 51, mat: 9 / 51 };

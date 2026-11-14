@@ -4,7 +4,7 @@
  * đứng cạnh để so tỉ lệ, nhãn mã · cỡ · cấp · draw call · tam giác (đỏ khi vượt ngân sách theo cấp), chọn giọng vùng để
  * mái đổi dốc. Không vào app. Kế hoạch: docs/tasks/2026-11-14-catalog-kien-truc.md.
  *
- * Tham số URL: `?giong=tong|thanh|giang-nam|duong` · `?ma=<mã>` (chỉ một mẫu) · `?chup` (ẩn bảng) ·
+ * Tham số URL: `?giong=tong|thanh|giang-nam|duong` · `?dot=1|2` (một đợt) · `?ma=<mã>` (chỉ một mẫu) · `?chup` (ẩn bảng) ·
  * `?cam=x,y,z&tam=x,z` (đặt camera).
  */
 import * as THREE from 'three';
@@ -55,6 +55,7 @@ async function boot(): Promise<void> {
   await Promise.allSettled([document.fonts.load('700 72px Lora'), document.fonts.load('700 13px "Be Vietnam Pro"')]);
   const giong = (GIONG as readonly string[]).includes(params.get('giong') ?? '') ? (params.get('giong') as Giong) : 'tong';
   const only = params.get('ma');
+  const dot = Number(params.get('dot')) || 0;
   const canvas = el<HTMLCanvasElement>('stage');
   const { renderer, scene, camera } = createStage(canvas, 50, 900);
   addEnvironment(scene, spec);
@@ -63,7 +64,7 @@ async function boot(): Promise<void> {
   ground.rotation.x = -Math.PI / 2;
   scene.add(ground);
 
-  const mauList = MAU.filter((m) => MAU_DA_DUNG.includes(m.ma) && (!only || m.ma === only));
+  const mauList = MAU.filter((m) => MAU_DA_DUNG.includes(m.ma) && (!only || m.ma === only) && (!dot || m.dot === dot));
   const colX = (i: number): number => i * (35 + GAP); // cột S / M / L: rộng nhất (điện L 29 m) + khe
   const labels = el('labels');
   const samples: Sample[] = [];
@@ -126,6 +127,15 @@ async function boot(): Promise<void> {
       location.search = p.toString();
     });
   }
+  for (const b of el('pickDot').querySelectorAll<HTMLButtonElement>('button')) {
+    b.setAttribute('aria-pressed', String(Number(b.dataset.dot) === dot));
+    b.addEventListener('click', () => {
+      const p = new URLSearchParams(location.search);
+      if (b.dataset.dot) p.set('dot', b.dataset.dot);
+      else p.delete('dot');
+      location.search = p.toString();
+    });
+  }
   const controls = new OrbitControls(camera, canvas);
   controls.enableDamping = true;
   controls.maxPolarAngle = Math.PI / 2 - 0.02;
@@ -141,7 +151,7 @@ async function boot(): Promise<void> {
   for (const m of mauList) {
     const tr = document.createElement('tr');
     const name = document.createElement('td');
-    name.textContent = `${m.ma} — ${m.ten}`;
+    name.textContent = `${m.ma} — ${m.ten}${m.dot > 1 ? ` · đợt ${m.dot}` : ''}`;
     tr.append(name);
     for (const co of CO) {
       const td = document.createElement('td');
@@ -159,7 +169,7 @@ async function boot(): Promise<void> {
     list.append(tr);
   }
   const over = samples.filter((s) => s.over).length;
-  el('stats').textContent = `${samples.length} mẫu · ${over} vượt ngân sách tam giác · giọng ${giong}`;
+  el('stats').textContent = `${samples.length} mẫu · ${over} vượt ngân sách tam giác · giọng ${giong}${dot ? ` · đợt ${dot}` : ''}`;
 
   /* ---------- camera ---------- */
   const span = new THREE.Box3();

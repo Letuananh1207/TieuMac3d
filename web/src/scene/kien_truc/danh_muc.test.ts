@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 import { describe, expect, it, vi } from 'vitest';
-import { CO, DOC, GIONG, MAU, MAI, nganSach } from './danh_muc';
-import { cotTheoGian } from './bo_phan';
+import { CO, DOC, GIONG, MAU, MAI, mau, nganSach, ngoi } from './danh_muc';
+import { cotTheoGian, rangCua } from './bo_phan';
+import { mergeStatic } from '../merge';
 import { hinhMai } from './mai_giong';
 import { DEFAULT_SCENE } from '../spec';
 import { dungMau, MAU_DA_DUNG } from './mau_nha';
@@ -24,8 +25,8 @@ describe('bộ asset chuẩn — bảng mẫu (danh_muc.md)', () => {
     }
   });
 
-  it('số gian lẻ (trừ ngoại lệ có chủ đích: tàng thư 6 gian, nhà gối sông 2 gian, cửa hàng 2 gian)', () => {
-    const ok = new Set(['lau L', 'nha-giang-nam M', 'cua-hang M']);
+  it('số gian lẻ (trừ ngoại lệ có chủ đích: tàng thư 6 gian, nhà gối sông / cửa hàng / nhà đất 2 gian)', () => {
+    const ok = new Set(['lau L', 'nha-giang-nam M', 'cua-hang M', 'nha-dat M']);
     for (const m of MAU) for (const c of CO) {
       const s = m.co[c];
       if (s && !ok.has(`${m.ma} ${c}`)) expect(s.gian % 2, `${m.ma} ${c}`).toBe(1);
@@ -79,10 +80,10 @@ describe('mái chuẩn — độ dốc theo giọng vùng', () => {
   });
 });
 
-describe('Catalog — mẫu đợt 1 dựng được ở mọi cỡ, mọi giọng', () => {
+describe('Catalog — mẫu đợt 1–2 dựng được ở mọi cỡ, mọi giọng', () => {
   const style = { ...DEFAULT_SCENE.buildingStyle, heightScale: 1 };
-  it('mọi mẫu đợt 1 có hàm dựng', () => {
-    for (const m of MAU.filter((x) => x.dot === 1)) expect(MAU_DA_DUNG, m.ma).toContain(m.ma);
+  it('mọi mẫu đợt 1, đợt 2 có hàm dựng', () => {
+    for (const m of MAU.filter((x) => x.dot <= 2)) expect(MAU_DA_DUNG, m.ma).toContain(m.ma);
   });
   it('mỗi cỡ × giọng ra một nhóm có khối, mái đúng chiều (đỉnh cao hơn chân)', () => {
     for (const m of MAU) for (const c of CO) {
@@ -111,4 +112,68 @@ describe('(L-10) Catalog — mẫu dựng mới không có mặt trùng nhau gâ
       expect(hits.length).toBe(0);
     });
   }
+});
+
+describe('đợt 2 — số đo, ngân sách, bộ phận', () => {
+  const style = { ...DEFAULT_SCENE.buildingStyle, heightScale: 1 };
+  const dung = (ma: string, co: 'S' | 'M' | 'L'): THREE.Group => dungMau(ma, co, 'tong', style)!;
+  const cao = (g: THREE.Object3D): number => new THREE.Box3().setFromObject(g).max.y;
+
+  it('đủ 8 mẫu đợt 2 của danh mục (+ biến thể lều chỉ huy)', () => {
+    const ma = MAU.filter((m) => m.dot === 2).map((m) => m.ma);
+    for (const x of ['lang', 'phuong', 'nha-dat', 'tu-mieu', 'lau-thanh', 'dich-lau', 'phong-hoa', 'leu']) expect(ma).toContain(x);
+  });
+
+  it('ngân sách tam giác theo cấp (gộp cùng màu như Catalog)', () => {
+    for (const m of MAU.filter((x) => x.dot === 2)) for (const c of CO) {
+      const s = m.co[c];
+      if (!s) continue;
+      const g = dung(m.ma, c);
+      mergeStatic(g, new Set());
+      let tris = 0;
+      g.traverse((o) => {
+        if (!(o instanceof THREE.Mesh)) return;
+        const geo = o.geometry as THREE.BufferGeometry;
+        tris += (geo.index ? geo.index.count : geo.attributes.position.count) / 3;
+      });
+      expect(tris, `${m.ma} ${c}`).toBeLessThanOrEqual(nganSach(s.cap).tris);
+    }
+  });
+
+  it('ngói: vàng chỉ C1 (hoặc C2 giọng Thanh), C4 trở xuống luôn xám', () => {
+    expect(ngoi(1, 'tong')).toBe('#C9A13B');
+    expect(ngoi(2, 'thanh')).toBe('#C9A13B');
+    expect(ngoi(2, 'tong')).not.toBe('#C9A13B');
+    for (const g of GIONG) for (const cap of [4, 5, 6] as const) expect(ngoi(cap, g)).toBe('#4F5A63');
+  });
+
+  it('lầu thành: lầu đứng trên đôn — đỉnh cao hơn đôn + cột, đôn đúng danh mục (5 / 7 m)', () => {
+    const m = mau('lau-thanh')!;
+    expect([m.co.S!.don, m.co.M!.don]).toEqual([5, 7]);
+    for (const c of ['S', 'M', 'L'] as const) expect(cao(dung('lau-thanh', c)), c).toBeGreaterThan(m.co[c]!.don! + m.co[c]!.cot + 2);
+  });
+
+  it('hành lang bò núi: mỗi gian cao hơn gian trước 0,6 m', () => {
+    const tops = dung('lang', 'L').children.filter((o) => o instanceof THREE.Group).map(cao);
+    expect(tops.length).toBe(mau('lang')!.co.L!.gian);
+    for (let i = 1; i < tops.length; i++) expect(tops[i] - tops[i - 1]).toBeCloseTo(0.6, 5);
+  });
+
+  it('địch lâu cao 14 m tới đỉnh răng cưa (+ chòi trên nóc); phong hoả đài cao đúng danh mục', () => {
+    expect(cao(dung('dich-lau', 'M'))).toBeGreaterThan(14 + 2.6);
+    for (const [c, h] of [['S', 10], ['M', 12]] as const) {
+      const y = cao(dung('phong-hoa', c));
+      expect(y, c).toBeGreaterThan(h);
+      expect(y, c).toBeLessThan(h + 2); // chỉ lò khói / gờ trên nóc
+    }
+  });
+
+  it('răng cưa nằm trong mép (lùi `inset`), không chìa ra ngoài thân', () => {
+    const g = new THREE.Group();
+    rangCua(g, 12, 8, 5, '#6a6e69', 0.05);
+    const b = new THREE.Box3().setFromObject(g);
+    expect(b.max.x).toBeCloseTo(6 - 0.05, 5);
+    expect(b.max.z).toBeCloseTo(4 - 0.05, 5);
+    expect(b.min.y).toBeCloseTo(5, 5);
+  });
 });

@@ -158,3 +158,15 @@ export function dungMai(g: THREE.Group, o: MaiInput): number {
     }
   }
 }
+
+/**
+ * Hiên dưới của mái kép: váy bốn mặt từ mép hiên (thân `w` × `d` + `over`) lên chân thân trên `uw` × `ud`, dốc theo
+ * giọng. Trả về độ cao chân thân trên.
+ */
+export function hienDuoi(g: THREE.Group, w: number, d: number, y: number, over: number, uw: number, ud: number, giong: Giong, color: string): number {
+  const h = hinhMai({ kieu: 'vu-dien', w, d, over, giong }).h1 * 0.9;
+  const m = new THREE.Mesh(frustum(w + 2 * over, d + 2 * over, uw + 0.4, ud + 0.4, h), roofMat(color));
+  m.position.y = y;
+  g.add(m);
+  return y + h - 0.3;
+}

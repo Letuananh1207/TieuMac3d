@@ -1,42 +1,22 @@
 /**
- * Mẫu nhà của bộ asset chuẩn (`danh_muc.ts`) — đợt 1. Mỗi mẫu dựng từ bộ phận chung (`bo_phan.ts`) + mái chuẩn
+ * Mẫu nhà của bộ asset chuẩn (`danh_muc.ts`) — đợt 1 (đợt 2: `mau_nha_2.ts` vườn / thờ / cổng, `mau_bien.ts` biên ải). Mỗi mẫu dựng từ bộ phận chung (`bo_phan.ts`) + mái chuẩn
  * (`mai_giong.ts`) theo cỡ S / M / L và giọng vùng. Mẫu vào được (`lau`, `cua-hang`, `hi-dai`) gọi hàm dựng hiện có ở
  * cỡ chuẩn (ruột, thang, chỗ ngồi giữ nguyên — đã có test). Dùng cho Catalog 3D; map chuyển sang ở GĐ 5.
  */
 import * as THREE from 'three';
 import type { BuildingSpec, SceneSpec } from '../spec';
-import { cotTheoGian, nen, than } from './bo_phan';
+import { cotTheoGian, nen, than, type Build } from './bo_phan';
 import { addBeamBand, addRailing, type Style } from './chi_tiet';
-import { DOC, K, maiDua, mau, type Cap, type Co, type CoMau, type Giong, type Mau } from './danh_muc';
+import { DOC, K, maiDua, mau, ngoi, type Co, type Giong } from './danh_muc';
 import { box, column, frustum } from './hinh';
 import { cuaHang } from './cua_hang';
 import { hiDai } from './hi_dai';
 import { lauSach } from './lau_sach';
 import { roofMat } from './mai';
-import { dungMai, hinhMai } from './mai_giong';
+import { dungMai, hienDuoi } from './mai_giong';
+import { BUILD_BIEN } from './mau_bien';
+import { BUILD_2 } from './mau_nha_2';
 import { traLau } from './tra_lau';
-
-type Build = (g: THREE.Group, m: Mau, c: CoMau, giong: Giong, style: Style) => void;
-
-const ROOF_GREY = '#4F5A63';
-const ROOF_GREEN = '#2B5446';
-const ROOF_GOLD = '#C9A13B';
-
-/** Màu ngói theo cấp + giọng: vàng chỉ C1 (cung), lục C2–C3 cung / tông môn, còn lại xám đen. */
-export function ngoi(cap: Cap, giong: Giong): string {
-  if (cap === 1 || (cap === 2 && giong === 'thanh')) return ROOF_GOLD;
-  if (cap <= 3 && giong !== 'giang-nam' && giong !== 'duong') return ROOF_GREEN;
-  return ROOF_GREY;
-}
-
-/** Hiên dưới của mái kép: váy bốn mặt từ mép hiên tới chân thân trên, dốc theo giọng. Trả về độ cao chân thân trên. */
-function hienDuoi(g: THREE.Group, w: number, d: number, y: number, over: number, uw: number, ud: number, giong: Giong, color: string): number {
-  const h = hinhMai({ kieu: 'vu-dien', w, d, over, giong }).h1 * 0.9;
-  const m = new THREE.Mesh(frustum(w + 2 * over, d + 2 * over, uw + 0.4, ud + 0.4, h), roofMat(color));
-  m.position.y = y;
-  g.add(m);
-  return y + h - 0.3;
-}
 
 /** Điện: nền theo cấp, thân vách kín, mái đơn hoặc kép (thân trên 0,78 × 0,7). */
 const dien: Build = (g, m, c, giong, style) => {
@@ -236,6 +216,8 @@ const BUILD: Record<string, Build> = {
   lau: (g, m, c, giong, style) => (c.gian === 6 ? vaoDuoc(lauSach) : vaoDuoc(traLau))(g, m, c, giong, style),
   'cua-hang': vaoDuoc((g, b, s, fade) => cuaHang(g, b, s, fade)),
   'hi-dai': vaoDuoc((g, b, s, fade) => hiDai(g, b, s, fade)),
+  ...BUILD_2,
+  ...BUILD_BIEN,
 };
 
 /** Dựng mẫu `ma` ở cỡ `co`, giọng `giong` vào một nhóm mới. Không có mẫu / cỡ → null. */
