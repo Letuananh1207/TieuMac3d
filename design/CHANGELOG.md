@@ -13,6 +13,14 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
   Thoại Tiểu Mặc: "cái bảng ngay bên cạnh Tiểu Mặc đây".
 - Luật: R-NPC-1, R-NPC-2, R-NV-1, R-NV-3. `scene:check` không lỗi; draw call không đổi.
 - Ảnh: `screens/Canh-tieu-mac-canh-bang.png`.
+## 2026-11-15.4 — Bản đồ nhỏ hình vuông, to hơn
+
+- Loại: giao diện (HUD). Phiên code V-20261114-37; người dùng: "bản đồ nên là hình vuông và to hơn". **Đã duyệt 2026-11-15.**
+- Bản đồ nhỏ tròn 104 / 96 px → **vuông bo góc 12 px, cạnh 148 px (dọc) / 128 px (ngang)**; giữ giấy cổ, viền vàng, vành kính.
+  Mặt bằng xoay trong khung cắt vuông; 30 m theo nửa cạnh; dấu "B" và dấu mép nằm trên cạnh vuông; chạm cả khung mở bản đồ lớn.
+- Luật: R-BANDO-1, R-BANDO-3, R-DIEU-1. Canvas cần vẽ lại `BanDoVung-HUD-*`, `BanDoVung-nho-trang-thai`, token
+  `size.minimap-*` (`docs/testing/gui_thiet_ke_2026-11-15.md`).
+- Ảnh: `screens/BanDoVung-nho-vuong-doc.png`.
 
 ## 2026-11-15.2 — Tiểu Mặc + bảng nhiệm vụ ra bên phải tiệm Tạp hoá
 
