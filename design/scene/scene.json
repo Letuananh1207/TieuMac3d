@@ -1,20 +1,20 @@
 {
   "sky": {
-    "top": "#5d86b5",
-    "middle": "#a8c0d6",
-    "horizon": "#f0d9b0"
+    "top": "#8ec5e8",
+    "middle": "#cfe6f0",
+    "horizon": "#fce6c8"
   },
   "fog": {
-    "color": "#c3cbd4",
-    "near": 60,
-    "far": 260
+    "color": "#eadfcb",
+    "near": 70,
+    "far": 280
   },
   "light": {
-    "skyColor": "#dfe8ff",
-    "groundColor": "#6b5a48",
-    "hemiIntensity": 0.8,
-    "sunColor": "#ffe2b8",
-    "sunIntensity": 0.95,
+    "skyColor": "#fff4e0",
+    "groundColor": "#8fa36b",
+    "hemiIntensity": 0.9,
+    "sunColor": "#ffe7c2",
+    "sunIntensity": 0.7,
     "sunPosition": [
       -24,
       26,
@@ -23,16 +23,16 @@
   },
   "ground": {
     "size": 200,
-    "color": "#727a7e",
+    "color": "#c9c2b4",
     "brickHue": 30,
     "pattern": "vuong"
   },
   "walls": {
     "half": 17,
     "height": 5.2,
-    "color": "#e8e1d2",
+    "color": "#f4ead8",
     "brickHue": 28,
-    "capColor": "#4f5a63",
+    "capColor": "#5b6878",
     "gates": [
       {
         "side": "nam",
@@ -231,23 +231,23 @@
     }
   ],
   "buildingStyle": {
-    "base": "#d9d4c7",
-    "floor": "#8a5a3c",
-    "wall": "#e8e1d2",
-    "pillar": "#a8322a",
-    "ridge": "#2f3236",
-    "eave": "#2f6f73",
-    "lantern": "#e2553a",
-    "stone": "#9a968c",
-    "water": "#3d6e86",
-    "path": "#a39d92",
+    "base": "#e3d9c6",
+    "floor": "#a0704c",
+    "wall": "#f4ead8",
+    "pillar": "#c4483b",
+    "ridge": "#3e4450",
+    "eave": "#3d8a84",
+    "lantern": "#f06a4a",
+    "stone": "#a9a196",
+    "water": "#3e8fa8",
+    "path": "#d8cbb3",
     "pathLook": "san",
-    "bronze": "#8a6a3a",
-    "herb": "#5f9a48",
+    "bronze": "#9a7a48",
+    "herb": "#79ad52",
     "smoke": "#d8d4cc",
-    "beamBlue": "#3f5fa0",
-    "gold": "#d4a64a",
-    "timber": "#3a2418",
+    "beamBlue": "#5274b8",
+    "gold": "#e2b65a",
+    "timber": "#6e4630",
     "heightScale": 1.6
   },
   "buildings": [
@@ -259,7 +259,7 @@
       "w": 19.2,
       "d": 11.2,
       "title": "Trà lâu",
-      "roofColor": "#2b5446"
+      "roofColor": "#3f7a66"
     },
     {
       "id": "tang-thu-cac",
@@ -270,7 +270,7 @@
       "d": 9,
       "rotY": 0,
       "title": "Thư viện",
-      "roofColor": "#2f3236",
+      "roofColor": "#454b55",
       "trim": "#2b5446",
       "pillarColor": "#2f6f73"
     },
@@ -283,7 +283,7 @@
       "d": 6,
       "rotY": 90,
       "title": "Tạp hoá",
-      "roofColor": "#3b3f44",
+      "roofColor": "#5b6878",
       "sign": "雜",
       "goods": "thung"
     }
@@ -383,15 +383,15 @@
     }
   ],
   "trees": {
-    "trunk": "#5a4030",
+    "trunk": "#7a5238",
     "leaves": [
-      "#2f5a3a",
-      "#3f6e45",
-      "#4a7a4a"
+      "#3f7a55",
+      "#5e9a62",
+      "#8cc07a"
     ],
     "bamboo": [
-      "#7d9a4a",
-      "#4f7a35"
+      "#8fb35a",
+      "#5f8f45"
     ],
     "yard": [
       {
@@ -523,13 +523,13 @@
     },
     "seed": 7,
     "willow": [
-      "#5f8a3e",
-      "#7a9f4c"
+      "#7fae55",
+      "#9cc46b"
     ],
     "plum": [
-      "#3a2418",
-      "#e88aa4",
-      "#f2b8c6"
+      "#5a3a28",
+      "#f4a7b9",
+      "#fbd3dc"
     ]
   },
   "well": {
@@ -565,7 +565,7 @@
       "height": 34,
       "radius": 90,
       "speed": 0.6,
-      "color": "#f4f1ea"
+      "color": "#fffdf7"
     }
   },
   "player": {
@@ -1183,13 +1183,13 @@
     "blend": 6,
     "colors": {
       "grass": [
-        "#7d9a5a",
-        "#8aa864",
-        "#6f8c50"
+        "#8dbf5a",
+        "#a6cc66",
+        "#79ad52"
       ],
-      "dirt": "#8a7a5e",
-      "rock": "#6e746c",
-      "highRock": "#858a82",
+      "dirt": "#c9a77a",
+      "rock": "#a49a8c",
+      "highRock": "#c2bab0",
       "highFrom": 20
     },
     "slopeDirt": 20,
@@ -1210,13 +1210,13 @@
     "grass": {
       "density": 1.5,
       "colors": [
-        "#6f8c50",
-        "#93ad66"
+        "#6f9e48",
+        "#b5d36e"
       ]
     },
     "rocks": {
       "density": 4,
-      "color": "#8d8a84"
+      "color": "#a9a196"
     },
     "waterfalls": [
       {
@@ -1261,7 +1261,7 @@
       {
         "radius": 170,
         "height": 38.12,
-        "color": "#4f6b66",
+        "color": "#7fa58f",
         "peaks": 7,
         "width": 1.8,
         "spurs": 1
@@ -1269,7 +1269,7 @@
       {
         "radius": 240,
         "height": 61.88,
-        "color": "#6d8790",
+        "color": "#9db7b8",
         "peaks": 9,
         "width": 2,
         "spurs": 2
@@ -1277,7 +1277,7 @@
       {
         "radius": 330,
         "height": 88.12,
-        "color": "#93a7b2",
+        "color": "#bfcbd6",
         "peaks": 11,
         "width": 2.2,
         "spurs": 2
@@ -1287,7 +1287,7 @@
   "cloudSea": {
     "radius": 420,
     "y": -8,
-    "color": "#f4f1ea"
+    "color": "#fbf4ea"
   },
   "teleport": {
     "enabled": true,
@@ -1413,5 +1413,41 @@
         "rotY": 90
       }
     }
-  ]
+  ],
+  "look": {
+    "style": "mem",
+    "wrap": 0.5,
+    "ao": 0.4,
+    "foot": 0.8,
+    "footShare": 0.55,
+    "aoTint": "#6b5a70",
+    "sunGlow": "#fff2d0",
+    "glowSize": 0.35,
+    "cloudBelly": "#f4d9d0",
+    "mist": {
+      "color": "#f1e6d6",
+      "opacity": 0.55
+    },
+    "flowers": {
+      "density": 6,
+      "colors": [
+        "#f4a7b9",
+        "#fff6e5",
+        "#f6cf5e",
+        "#b9a3e3"
+      ]
+    },
+    "wind": 0.06,
+    "water": {
+      "shallow": "#8fd3d0",
+      "deep": "#3e8fa8",
+      "foam": "#f4fbf8",
+      "ripple": 0.6
+    },
+    "lanternGlow": {
+      "color": "#ffc27a",
+      "size": 1.6
+    },
+    "vignette": 0.35
+  }
 }
