@@ -153,3 +153,5 @@ riêng qua `/lead`. Duyệt xong mỗi mẫu → ảnh `design/screens/KienTruc-
 | Danh mục (bản này) | **đã duyệt** (người dùng 2026-11-14) — số đo có thể chỉnh khi xem Catalog 3D |
 | Catalog 3D | https://claude.ai/artifact/VHdbpqKax8q8Ya5fUxeGXc (`?giong=tong|thanh|giang-nam|duong`, `?dot=1|2|3|4`, `?ma=<mã>`) · **đợt 1 đạt** (người dùng 2026-11-14 — 8 mẫu dựng mới; `lau`, `cua-hang`, `hi-dai` bày bằng hàm cũ, duyệt lại ở GĐ 4–5) · **đợt 2 đạt** (người dùng 2026-11-14 — 8 mẫu + `leu-chi-huy` tách riêng) · **đợt 3 đạt** (người dùng 2026-11-14 — 16 mẫu; cổng trăng tường M / L 3,8 / 5,8) · **đợt 4 đã đăng** (vật sân, `?dot=4`) — chờ duyệt |
 | Model AI biểu tượng | tông môn: chưa làm; các vùng: theo mục 6, làm sau khi Catalog duyệt mẫu khối tương ứng |
+
+> 2026-11-14: **đợt 4 đạt** (11 vật sân, giữ số đo như trang: vạc 1,8 m gồm bệ, giếng M 5 m, đình bia L ~10 m). Catalog đủ 4 đợt.

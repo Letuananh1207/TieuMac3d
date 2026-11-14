@@ -3,7 +3,7 @@
   đứng cạnh mỗi mẫu, nhãn mã + cỡ + cấp + draw call / tam giác, chọn giọng vùng để mái đổi dốc; dựng các mẫu từ bộ phận
   dùng chung … không đổi cảnh các map lúc này … đăng artifact để người dùng duyệt từng mẫu." (GĐ 2 + đầu GĐ 4 của
   `2026-11-14-kien-truc-chuan-bai-tri.md`; danh mục đã duyệt `design/kien_truc/danh_muc.md`)
-- Loại: thêm (code mới, trang thiết kế) · Cỡ: lớn · Trạng thái: đợt 1 đã duyệt 2026-11-14 · đợt 2 đã duyệt 2026-11-14 (cả 8 mẫu; `leu-chi-huy` tách mẫu riêng — đồng ý) · đợt 3 đã duyệt 2026-11-14 (cổng trăng: giữ vòm ∅4 / ∅6,4, nâng tường vôi M / L lên 3,8 / 5,8 m — người dùng chọn) · **đợt 4 đã đăng — chờ duyệt**
+- Loại: thêm (code mới, trang thiết kế) · Cỡ: lớn · Trạng thái: đợt 1 đã duyệt 2026-11-14 · đợt 2 đã duyệt 2026-11-14 (cả 8 mẫu; `leu-chi-huy` tách mẫu riêng — đồng ý) · đợt 3 đã duyệt 2026-11-14 (cổng trăng: giữ vòm ∅4 / ∅6,4, nâng tường vôi M / L lên 3,8 / 5,8 m — người dùng chọn) · **đợt 4 đã duyệt 2026-11-14 — **Catalog hoàn tất 4 đợt** (tiếp: kế hoạch mẹ `2026-11-14-kien-truc-chuan-bai-tri.md` — dựng lại cảnh bằng mẫu)**
   (https://claude.ai/artifact/VHdbpqKax8q8Ya5fUxeGXc, nút "Đợt 4" hoặc `?dot=4`)
 
 ## Phạm vi
