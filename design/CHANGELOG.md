@@ -22,7 +22,8 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
 - **Truyền Tống Đài**: `teleport.center` (0; 0) → **(30; 0)** ngoài cổng đông, nền lát x 17…41, z −10…10 (`terrain.plateaus`
   thêm 1); về tông môn đứng (21,8; 0). Sư phụ Mặc Ông (−3,5; 9) → **(21,5; −4,5)** nhìn tây. Khu "Truyền Tống Đài" x 17…41,
   z −10…10. Giữa sân: phiên này đặt đỉnh đồng + 4 đèn đá + 4 tùng góc; **giữa sân hiện là nhật quỹ + 4 bồn hoa của phiên
-  khác** (chưa có mục nhật ký — bồn hoa ghi 梅 蘭 菊 竹, lệch yêu cầu "biển chữ Việt" nếu tính là biển).
+  khác** (chưa có mục nhật ký). *Đính chính*: 梅 蘭 竹 菊 của bồn hoa chỉ là mã chọn cây trong đặc tả (`props[].text`),
+  không vẽ ra cảnh — không phải biển, không lệch yêu cầu "biển chữ Việt"; tông môn không còn biển chữ Hán.
 - Luật (đã sửa sổ + online, `--mark-synced`): R-VA-1 (tường dày 0,5 → dừng z −16,25; cổng 門樓 lối 5,8, x 3 dừng z 16,1),
   R-DIEU-4 + R-HUD-3 (điểm giữa sân (0; 0) → (0; 6)), R-HANH-2 (về đứng (21,8; 0)), R-GIAO-1, R-GIAO-2, R-NV-1. Test mới
   `web/src/scene/walls.test.ts` (R-VA-1).
