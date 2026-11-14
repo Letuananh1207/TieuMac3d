@@ -3,6 +3,27 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-15.1 — Bộ ảnh nhiều góc NPC Lão Canh (người gõ mõ báo giờ — ông lão béo phúc hậu)
+
+- Loại: tài nguyên 3D — ảnh đầu vào (Hunyuan3D-2mv). Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-14-anh-go-mo.md` (phiếu còn trong máy,
+  chưa lên GitHub — dòng "Đã vẽ" ghi ở bản trong máy). Vẽ trong phiên VS Code theo vai thiết kế; người dùng duyệt "chốt".
+- **Đổi hướng so với phiếu / hồ sơ** `docs/tham_khao/khat-nhi-go-mo.md` (hướng A "ông lão hiền, nón tre, áo chàm bạc"): người dùng chưa
+  hài lòng → trình 3 hướng (`source/GoMo-huong.dc.html`) → chọn **C "ông lão béo phúc hậu"**, và yêu cầu **cầm sẵn đồ gõ canh**.
+- Nhân vật: ≈ 60 tuổi, dáng tròn bụng tròn, má hồng, mắt cười, râu bạc tròn ngắn khối liền #E4E0D8; khăn quấn đầu nâu #6B5A44 (không nón);
+  áo nâu đỏ #7A3B2E **tới giữa bắp chân** (thấy rõ hai ống chân — NPC biết đi), giao lĩnh vạt trái đè phải, cổ trong ngà #F1EBDD; đai vàng đất
+  #C9A35A nút bên trái; xà cạp ngà #E8E1D2, giày đen #2E2C2A. Cao bằng nhân vật chính.
+- **Cầm đồ trong tay model**: mõ tre son nâu #8E3B2A ở **tay PHẢI**, dùi gỗ #C9A26A ở **tay TRÁI** (ngược câu lệnh, nhưng khớp cả 4 góc → giữ).
+  Đèn lồng vẫn dựng bằng code (chưa có ảnh đạo cụ `go-mo-dao-cu.png` — không bắt buộc).
+- Ảnh: `models/anh/go-mo-{truoc,trai,sau,phai,mat}.png` — Google Gemini (người dùng chạy); nguyên văn câu lệnh: ghi chú `go-mo-cau-lenh`
+  trong `source/canvas.json`. Góc phải tạo lại riêng (lần đầu quay nhầm trái). Chuẩn hoá Pillow: nền #DDDDDD, bỏ sao, hệ số thu chung 0,836,
+  đỉnh khăn 10 %, đế giày 90 %. Ảnh duyệt: `screens/GoMo-bo-anh.png`.
+- **Cho phiên code** (V-31 đã ghép Lão Canh — `townNpcs.ts`, thoại, tiếng mõ): hoạt cảnh gõ mõ nên dùng mõ / dùi **trong tay model** (bỏ
+  hoặc ẩn mõ dựng bằng code nếu có); tay gõ = tay trái (dùi), tay cầm mõ = tay phải. Màu, dáng ở hồ sơ khảo cứu hướng A (nón tre, áo chàm)
+  không còn đúng — đề xuất ghi lại trong hồ sơ / kế hoạch. Luật: không đổi.
+- Bước kế: `bash .claude/skills/tai-nguyen/scripts/nhan-vat.sh go-mo <ra>` → `models/go-mo.glb`.
+- File: `models/anh/go-mo-*.png` (5), `models/LICENSES.md`, `screens/GoMo-bo-anh.png`, `source/GoMo-huong.dc.html`,
+  `source/GoMo-bo-anh.dc.html`, `source/canvas.json`.
+
 ## 2026-11-14.21 — Ngồi: nhìn từ mắt nhân vật, hai tay + cuộn sách có mục chạm được
 
 - Loại: giao diện · token · chuỗi · luồng/luật (đề xuất). Màn: **Ngồi — nhìn từ mắt** (cảnh 3D + HUD) — đặc tả `docs/screen_specs.md` mục cùng
