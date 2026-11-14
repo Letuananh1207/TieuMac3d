@@ -30,6 +30,7 @@ import { addVignette } from './ui/vignette';
 import { signText } from './scene/signAtlas';
 import { buildWorld } from './scene/world';
 import { hourSlider, NgayDem } from './ngayDem';
+import { addTownPreview } from './townPreview';
 import { inRect } from './scene/rooms';
 import { el } from './ui/dom';
 import { placeZones, ZONE_CONTENT } from './zones/zones';
@@ -233,6 +234,11 @@ async function boot(): Promise<void> {
     controls.target.set(tx, 1.5, tz);
   }
 
+  // ?dang=go-mo — bản thử Tiểu Khất + Lão Canh (model thế nhan-vat.glb), đường vòng B, &gio=08:59:50, &theo (townPreview.ts)
+  const town = await addTownPreview(scene, colliders, spec, (x, z) => world.surface.heightAt(x, z), params);
+  if (town?.lines.length) el('problems').append(...town.lines.map((t) => li(t)));
+  const follow = params.has('theo') && town?.walker ? town.walker.root.position.clone() : null;
+
   /* ---------- chạm mặt sân → toạ độ ---------- */
   const marker = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 2, 8), new THREE.MeshBasicMaterial({ color: 0x7bc86c }));
   marker.visible = false;
@@ -380,6 +386,13 @@ async function boot(): Promise<void> {
     character.animate(dt, stateNow().mps / RUN_SPEED, stateNow());
     cuon?.update(dt, character.root.position, character.facing.rotation.y, 2);
     for (const npc of npcSet.npcs) npc.update(dt);
+    town?.update(dt, camera, controls.target);
+    if (follow && town?.walker) {
+      const d = town.walker.root.position.clone().sub(follow);
+      camera.position.add(d);
+      controls.target.add(d);
+      follow.copy(town.walker.root.position);
+    }
     renderer.render(scene, camera);
     acc += dt;
     frames++;

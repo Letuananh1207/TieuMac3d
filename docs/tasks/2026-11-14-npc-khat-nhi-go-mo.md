@@ -181,16 +181,16 @@ Người dùng duyệt kế hoạch và chọn đúng mọi đề xuất dưới
 ## Nhiệm vụ
 **Làm được trước khi có model** (logic, luật, âm thanh có test thuần; chỉ xem bằng model cũ `nhan-vat.glb` trong vitest /
 Canvas 3D `?dang=go-mo`, **không** đưa vào cảnh app):
-- [ ] 1. Ghi luật R-NPC-6/7/8, R-TIEN-8, R-AM-1 + sửa R-NPC-1, R-CHAT-3, R-TIEN-5 vào sổ → `/dong-bo-quy-tac` (`docs/testing/quy_tac.md` · xong khi `rule_trace --pending` trống)
-- [ ] 2. Đồng hồ GMT+7 + canh giờ + câu rao + số tiếng gõ (`zones/gioVN.ts` · zones · vitest: 23:00, 0:00, 7:00, 12:00, 4:59, múi giờ máy khác · xong khi test đủ ví dụ sổ; phối hợp V-27 dùng chung)
-- [ ] 3. Đường đi theo đồng hồ (`player/npcRoute.ts` · player · vitest: vị trí theo giờ, dừng 12 s đầu giờ, hướng ở góc, chặn → chờ, nợ quãng → ×1,3, nhảy về khi ẩn · xong khi test xanh)
-- [ ] 4. Đặc tả: `NPC_IDS` thêm 2 mã; `NpcSpec.pose/scale/route/speed`, mặc định giữ cảnh cũ; `check-scene.mjs` kiểm `route` (`scene/spec.ts`, `scripts/check-scene.mjs` · scene · test spec · xong khi `scene:check` báo đường vòng B hợp lệ trên một bản thử, không sửa `design/`)
-- [ ] 5. Luật cho tiền + tin đồn (`zones/alms.ts`, `zones/tinDon.ts`, `zones/walletRules.ts`, `app/lib/journey/wallet.dart` · zones + Flutter · vitest + `flutter test` cùng ví dụ R-TIEN-8 · xong khi hai phía cùng kết quả)
-- [ ] 6. Lưu + cầu nối: `progress_store.dart` lưu `alms`; `giveAlms` + `getProgress.alms` ở `docs/bridge.md`, `web/src/bridge/`, `app/lib/scene/`; ví thử `TrialWallet.alms` (`browserStore.ts`) (bridge + Flutter · test Dart + vitest · xong khi cho tiền trên app và trên `npm run dev` đều lưu qua lần mở lại)
-- [ ] 7. Thoại Tiểu Khất + Lão Canh (`zones/dialogs.ts` thêm `action: 'alms'`, thoại theo trạng thái; `chat/npcChatter.ts` câu Tiểu Khất · zones · vitest · xong khi thoại đủ 3 nhánh: chưa cho / đã cho / thiếu tiền)
-- [ ] 8. Tiếng mõ: `scripts/mo-wav.mjs` → `nhac/mo.wav` (CC0, ghi giấy phép trong `web/src/nhac/` README / LICENSES); `zones/moGo.ts` (âm lượng, lệch tai, nhịp gõ); `ui/moSound.ts` (Web Audio, mở tiếng khi chạm, dừng khi ẩn / che) (zones + ui · vitest cho `moGo` · xong khi `npm run dev` nghe được, tab ẩn thì im)
-- [ ] 9. Ghép `townNpcs.ts` + vài dòng `main.ts`: NPC đi, vật cản di động, chặn / thoại dừng, rao giờ lên kênh, gõ mõ; `CharacterState.strike` (không bắt buộc) (ghép · build · xong khi Canvas 3D `?dang=go-mo` thấy model thế đi đúng vòng, đầu giờ gõ + rao; `?gio=08:59:50` để thử, chỉ có trên Canvas 3D)
-- [ ] 10. Canvas 3D: vẽ đường đi + toạ độ điểm, NPC thế `nhan-vat.glb` (`web/design.html`, `designPreview` · xong khi chụp được ảnh vòng B cho người dùng duyệt)
+- [x] 1. Ghi luật R-NPC-6/7/8, R-TIEN-8, R-AM-1 + sửa R-NPC-1, R-CHAT-3, R-TIEN-5 vào sổ → `/dong-bo-quy-tac` (`docs/testing/quy_tac.md` · xong khi `rule_trace --pending` trống)
+- [x] 2. Đồng hồ GMT+7 + canh giờ + câu rao + số tiếng gõ (`zones/gioVN.ts` · zones · vitest: 23:00, 0:00, 7:00, 12:00, 4:59, múi giờ máy khác · xong khi test đủ ví dụ sổ; phối hợp V-27 dùng chung)
+- [x] 3. Đường đi theo đồng hồ (`player/npcRoute.ts` · player · vitest: vị trí theo giờ, dừng 12 s đầu giờ, hướng ở góc, chặn → chờ, nợ quãng → ×1,3, nhảy về khi ẩn · xong khi test xanh)
+- [x] 4. Đặc tả: `NPC_IDS` thêm 2 mã; `NpcSpec.pose/scale/route/speed`, mặc định giữ cảnh cũ; `check-scene.mjs` kiểm `route` (`scene/spec.ts`, `scripts/check-scene.mjs` · scene · test spec · xong khi `scene:check` báo đường vòng B hợp lệ trên một bản thử, không sửa `design/`)
+- [x] 5. Luật cho tiền + tin đồn (`zones/alms.ts`, `zones/tinDon.ts`, `zones/walletRules.ts`, `app/lib/journey/wallet.dart` · zones + Flutter · vitest + `flutter test` cùng ví dụ R-TIEN-8 · xong khi hai phía cùng kết quả)
+- [x] 6. Lưu + cầu nối: `progress_store.dart` lưu `alms`; `giveAlms` + `getProgress.alms` ở `docs/bridge.md`, `web/src/bridge/`, `app/lib/scene/`; ví thử `TrialWallet.alms` (`browserStore.ts`) (bridge + Flutter · test Dart + vitest · xong khi cho tiền trên app và trên `npm run dev` đều lưu qua lần mở lại)
+- [x] 7. Thoại Tiểu Khất + Lão Canh (`zones/dialogs.ts` thêm `action: 'alms'`, thoại theo trạng thái; `chat/npcChatter.ts` câu Tiểu Khất · zones · vitest · xong khi thoại đủ 3 nhánh: chưa cho / đã cho / thiếu tiền)
+- [x] 8. Tiếng mõ: `scripts/mo-wav.mjs` → `nhac/mo.wav` (CC0, ghi giấy phép trong `web/src/nhac/` README / LICENSES); `zones/moGo.ts` (âm lượng, lệch tai, nhịp gõ); `ui/moSound.ts` (Web Audio, mở tiếng khi chạm, dừng khi ẩn / che) (zones + ui · vitest cho `moGo` · xong khi `npm run dev` nghe được, tab ẩn thì im)
+- [x] 9. Ghép `townNpcs.ts` + vài dòng `main.ts`: NPC đi, vật cản di động, chặn / thoại dừng, rao giờ lên kênh, gõ mõ; `CharacterState.strike` (không bắt buộc) (ghép · build · xong khi Canvas 3D `?dang=go-mo` thấy model thế đi đúng vòng, đầu giờ gõ + rao; `?gio=08:59:50` để thử, chỉ có trên Canvas 3D)
+- [x] 10. Canvas 3D: vẽ đường đi + toạ độ điểm, NPC thế `nhan-vat.glb` (`web/design.html`, `designPreview` · xong khi chụp được ảnh vòng B cho người dùng duyệt)
 
 **Sau khi có model** (`design/models/khat-nhi.glb`, `go-mo.glb` từ `/task tai-nguyen` trên máy người dùng):
 - [ ] 11. Đo dáng hai model → `NPC_RIGS` (xương tự gắn); Tiểu Khất `scale` 0,8 + dáng ngồi; Lão Canh dáng đi + gõ (`player/npc.ts`, `glbCharacter.ts` · chụp headless 6 góc · xong khi không rách tay / vạt áo)
@@ -198,6 +198,18 @@ Canvas 3D `?dang=go-mo`, **không** đưa vào cảnh app):
 - [ ] 13. `/canh`: thêm 2 NPC vào `npcs` của `design/scene/scene.json` (vị trí Tiểu Khất, `route` Lão Canh) → `scene:check` (design · xong khi CHANGELOG có mục mới)
 - [ ] 14. Ảnh mặt cho khung thoại (`-mat.png` của bộ ảnh) (`main.ts` / thoại · xong khi khung thoại có mặt hai NPC)
 - [ ] 15. `npm run build`, thử máy: nghe mõ trên Android (WebView chặn tự phát), app xuống nền thì im, đo fps khi hai NPC cùng hiện
+
+## Ghi chú khi làm (trước model, 2026-11-15)
+- NV1: luật đã ghi sổ (`chờ`), **chưa đồng bộ online** — mã: R-NPC-1, R-NPC-6, R-NPC-7, R-NPC-8, R-CHAT-3, R-AM-1, R-TIEN-5,
+  R-TIEN-8 (`dart tool/rule_trace.dart --pending`).
+- NV2: giờ thập phân dùng `gioVN` của V-27 (`scene/ngayDem.ts`); `zones/gioVN.ts` chỉ thêm giây trong ngày, mã ngày VN, canh
+  giờ, câu rao (lớp `zones/` không import được `scene/`; test `townNpcs.test.ts` kiểm hai bên khớp).
+- NV4: `npm run scene:check -- --thu-npc` (PowerShell: `node scripts/check-scene.mjs --thu-npc`) báo vòng B hợp lệ:
+  191,8 m, 174 s / vòng; kiểm trên vật cản thật (dựng cảnh trong node).
+- NV9: câu rao lên kênh chung tách **hai tin** (tên giờ · câu theo buổi) vì kênh giới hạn 60 ký tự / tin (R-CHAT-1).
+  `?gio=08:59:50` (hoặc số giờ như V-27) chỉ có tác dụng trên Canvas 3D.
+- NV10: ảnh `docs/tasks/2026-11-14-npc-vong-b.png` (trên cao), `docs/tasks/2026-11-14-npc-vong-b-gan.png` (gần; NPC thế
+  `nhan-vat.glb`). Canvas 3D: `design.html?dang=go-mo[&gio=8.99&theo]`.
 
 ## Kiểm tra cuối
 dart tool/check.dart --changed · cd web && npx tsc --noEmit && npm test && npm run scene:check && npm run build ·
