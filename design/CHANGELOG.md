@@ -3,6 +3,17 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-14.22 — Dời tùng che cầu thang ngoài Tàng Thư Các
+
+- Loại: cảnh 3D — **bố cục**. Ai làm: phiên code V-20261114-22 làm thay vai thiết kế (`/canh`), người dùng: "dịch chuyển
+  cây tùng hoặc làm sao đó để không bị che cầu thang lên tầng 2 thư viện". **Đã duyệt 2026-11-14.**
+- `scene.json` `trees.yard[1]` (tung, scale 1,6): (−19,5; −21) → **(−19,5; −37)**. Dải giữa thang ngoài (x −22,3…−20,5) và
+  tường khu (x −17) chỉ 3,5 m, tán vươn ~4,5 m → dời ra sườn đồi sau tường bắc: vẫn là nền xanh sau thang, không chạm
+  chiếu nghỉ / cầu nối, không trên lối đi.
+- Soát 8 cảnh: không còn cây nào gần thang ngoài. Luật: không đổi. `scene:check` không lỗi. Draw call không đổi.
+- Ảnh: `screens/Canh-tung-cau-thang.png` (chân thang nhìn lên `?nv=-21.4,-12&cam=-21.4,3.2,-8.5&tam=-21.4,-24`).
+- File: `scene/scene.json`.
+
 ## 2026-11-14.21 — Cổng Quảng Trường nam / bắc rộng + cao: cổng mái ngói lối 9 × 4 m
 
 - Loại: cảnh 3D — **bố cục** + **ngoại hình**. Ai làm: phiên code V-20261114-19 làm thay vai thiết kế (`/canh`), người dùng:
