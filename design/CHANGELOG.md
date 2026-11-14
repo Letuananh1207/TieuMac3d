@@ -25,6 +25,26 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
 - Cần code: không (NV11 làm nút "Vào tiệm").
 - Canvas 3D: chưa đăng bản này (theo yêu cầu). Ảnh: `screens/Canh-tap-hoa.png`.
 - File: `scene/scene.json`, `screens/Canh-tap-hoa.png`, `CHANGELOG.md`; file sinh `web/src/fonts/han*` (thêm 雜).
+## 2026-11-14.13 — Nhà của ta 我家: nơi trên bản đồ, nút Trang trí, chế độ trang trí
+
+- Loại: giao diện · chuỗi · dữ liệu (bản đồ). Màn: **Nhà của ta** (HUD web) + **bản đồ truyền tống** (nơi mới). Đặc tả:
+  `docs/screen_specs.md` mục cùng tên.
+- Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-14-nha-nguoi-dung.md` (mục 1–3; mục 4 thẻ tên khu bỏ theo R-HUD-3).
+- Vẽ trong phiên VS Code theo vai thiết kế; người dùng duyệt "Ổn, chốt".
+- Artboard: `NhaTa-ban-do`, `NhaTa-doc`, `NhaTa-doc-trang-tri`, `NhaTa-doc-o-trong`, `NhaTa-doc-o-co-vat`, `NhaTa-doc-the-khoa`,
+  `NhaTa-ngang`, `NhaTa-ngang-o` (+ `canvas.json`).
+- Quyết định:
+  - Bản đồ: "Nhà của ta" ở góc trên phải **Trung Nguyên** (1190; 560), gần Khởi Nguyên Trấn; vùng chạm **r 80** riêng (để không chồng
+    r 105 của trấn) → `ban-do.json` `noi` có thể mang `r` riêng; code đọc `r` từng nơi (trước dùng chung 105).
+  - Nút "Trang trí" nằm cạnh nút Trò chuyện (dọc trên, ngang trái); chế độ trang trí ẩn cụm điều khiển, giữ ví, có viên nhắc + "Xong".
+  - Dấu ô = vòng elip trên nền + nút tròn nổi có huy hiệu loại ô; bảng danh mục dọc nửa dưới / ngang cột phải; thẻ vật dùng lại kiểu
+    2026-11-14.12 (khoá → chỉ dẫn Tạp hoá, không mua trong nhà).
+- Dữ liệu: `scene/ban-do/ban-do.json` (+ nơi `nha-ta`, vùng trung-nguyen), `scene/ban-do/ve-ban-do.html` (biểu tượng + `r` riêng),
+  `scene/ban-do/ban-do-goc.png` vẽ lại, `screens/BanDo-trang-thai.png` vẽ lại.
+- Token: không thêm. Chuỗi mới: `homeName`, `decor*` (11).
+- Luật bị chạm: không đổi — R-NHA-1 (đi từ bản đồ, luôn mở), R-NHA-2 (ô / đặt / thay / gỡ, đứng yên, xoay camera) khớp. Ghi chú cho
+  phiên code: ví dụ R-NHA-1 có thể nêu toạ độ chạm (1190; 560) r 80. Thẻ khoá theo đề xuất R-NHA-4 của 2026-11-14.12.
+- Cảnh 3D của nhà (`design/scene/nha-ta.json`, vị trí ô) chưa có — việc của `/canh`; nền artboard là hình vẽ giữ chỗ.
 
 ## 2026-11-14.12 — Văn tiền 文錢: ví HUD, hiệu ứng nhận tiền, Tạp hoá 雜貨, thẻ vật khoá ở nhà
 
