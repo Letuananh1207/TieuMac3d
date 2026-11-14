@@ -1,6 +1,7 @@
 // Kiểm mọi đặc tả cảnh design/scene/*.json (scene.json = tông môn, <mã vùng>.json = vùng) bằng đúng code của app (scene/spec.ts + zones/zones.ts).
 // In lỗi, vùng sự kiện và bố cục; có lỗi → thoát 1 (chặn `npm run build` của app).
 // Dùng: cd web && npm run scene:check   (xem decisions/0002-thiet-ke-3d.md)
+//       npm run scene:check -- --thu-npc   thêm bản thử Tiểu Khất + Lão Canh (scene/npcDraft.ts) vào tông môn để kiểm đường đi
 import { build } from 'esbuild';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
@@ -9,9 +10,21 @@ import { fileURLToPath } from 'node:url';
 const web = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const dir = resolve(web, '..', 'design', 'scene');
 
+// Kiểm đường đi NPC (R-NPC-7) cần vật cản thật → dựng cảnh trong node: canvas 2D giả, không cửa sổ, `import.meta.glob` rỗng
+const ctx2d = new Proxy({}, { get: (_t, key) => (key === 'measureText' ? () => ({ width: 10 }) : key === 'getImageData' ? () => ({ data: new Uint8ClampedArray(4) }) : () => ctx2d) });
+globalThis.document ??= { createElement: () => ({ width: 0, height: 0, style: {}, getContext: () => ctx2d }) };
+globalThis.window ??= { devicePixelRatio: 1, innerWidth: 390, innerHeight: 844, addEventListener: () => {} };
+globalThis.__viteGlob = () => ({});
+const thuNpc = process.argv.includes('--thu-npc');
+
 const out = await build({
   stdin: {
     contents:
+      "export { buildWorld } from './src/scene/world.ts';\n" +
+      "export { Colliders } from './src/collision/colliders.ts';\n" +
+      "export { checkRoute, routeLength } from './src/scene/routeCheck.ts';\n" +
+      "export { DRAFT_TOWN_NPCS } from './src/scene/npcDraft.ts';\n" +
+      "export { Scene } from 'three';\n" +
       "export { roomKinds, zoneAnchors } from './src/scene/spec.ts';\n" +
       "export { resolveSceneSpec } from './src/scene/specCheck.ts';\n" +
       "export { placeZones, ZONE_CONTENT } from './src/zones/zones.ts';\n" +
@@ -27,8 +40,10 @@ const out = await build({
   platform: 'node',
   write: false,
   logLevel: 'error',
+  define: { 'import.meta.glob': 'globalThis.__viteGlob' },
+  loader: { '.png': 'empty', '.jpg': 'empty', '.glb': 'empty', '.css': 'empty', '.woff2': 'empty' },
 });
-const { resolveSceneSpec, roomKinds, zoneAnchors, placeZones, ZONE_CONTENT, moonRadius, gateOpening, lauClearHeight, lauTop, wallGates, ringTrigger, arrivalSpot, daisLayout, RADICALS, checkRadicals } = await import(
+const { buildWorld, Colliders, checkRoute, routeLength, DRAFT_TOWN_NPCS, Scene, resolveSceneSpec, roomKinds, zoneAnchors, placeZones, ZONE_CONTENT, moonRadius, gateOpening, lauClearHeight, lauTop, wallGates, ringTrigger, arrivalSpot, daisLayout, RADICALS, checkRadicals } = await import(
   `data:text/javascript;base64,${Buffer.from(out.outputFiles[0].text).toString('base64')}`
 );
 
@@ -81,9 +96,41 @@ function sceneRel(id) {
   return `design/scene/${id === 'tong-mon' ? 'scene' : id}.json`;
 }
 
+/**
+ * Đường đi NPC (R-NPC-7): dựng cảnh lấy vật cản thật (cả NPC đứng, trừ chính NPC đó), kiểm khép kín, cách vật cản
+ * ≥ 0,6 m, trên nền, dốc ≤ 35° (`scene/routeCheck.ts`). In dài vòng + thời gian một vòng. Trả danh sách lỗi.
+ */
+function checkNpcRoutes(spec) {
+  const walkers = spec.npcs.filter((p) => p.route);
+  if (!walkers.length) return [];
+  const colliders = new Colliders();
+  const world = buildWorld(new Scene(), colliders, spec);
+  const ground = (x, z) => world.surface.heightAt(x, z);
+  for (const p of spec.npcs) if (!p.route) colliders.addCircle(p.x, p.z, 0.45);
+  const out = [];
+  for (const p of walkers) {
+    const problems = checkRoute(`npcs ${p.id}.route`, p.route, colliders, ground);
+    const len = routeLength(p.route, ground);
+    const speed = p.speed ?? 1.1;
+    const verdict = problems.length ? `${problems.length} lỗi` : 'hợp lệ (khép kín, cách vật cản ≥ 0,6 m, trên nền, dốc ≤ 35°)';
+    console.log(`  đường đi ${p.id}: ${p.route.length} điểm, dài ${n(+len.toFixed(1))} m, ${n(speed)} m/s → ${Math.round(len / speed)} s / vòng — ${verdict}`);
+    out.push(...problems);
+  }
+  return out;
+}
+
 /** In bố cục một cảnh; trả số lỗi. */
 function checkScene(rel, raw) {
   const { spec, problems } = resolveSceneSpec(raw);
+  const drafts = new Set();
+  if (thuNpc && rel.endsWith('/scene.json')) {
+    for (const d of DRAFT_TOWN_NPCS) {
+      if (spec.npcs.some((p) => p.id === d.id)) continue;
+      spec.npcs.push(d);
+      drafts.add(d.id);
+    }
+    console.log(`Bản thử NPC (--thu-npc): ${[...drafts].join(', ') || 'đã có trong đặc tả'}`);
+  }
   // nhà vào được (nội thất theo nội dung bài): vùng học nằm trong nhà, như app
   const rooms = roomKinds(spec.buildings, Object.fromEntries(ZONE_CONTENT.map((c) => [c.id, { kind: c.interior }])));
   const placed = placeZones(ZONE_CONTENT, zoneAnchors(spec.buildings, rooms));
@@ -133,9 +180,13 @@ function checkScene(rel, raw) {
   // NPC (R-NPC-1): mã phải có model design/models/<mã>.glb
   for (const p of spec.npcs) {
     const has = existsSync(resolve(web, '..', 'design', 'models', `${p.id}.glb`));
-    if (!has) all.push(`npcs: thiếu design/models/${p.id}.glb — app bỏ NPC "${p.id}"`);
-    console.log(`NPC ${p.id}: (${n(p.x)}; ${n(p.z)}) nhìn ${n(p.rotY ?? 0)}°${has ? '' : ' — THIẾU MODEL'}`);
+    if (!has && !drafts.has(p.id)) all.push(`npcs: thiếu design/models/${p.id}.glb — app bỏ NPC "${p.id}"`);
+    const pose = p.pose === 'ngoi' ? ' · ngồi' : '';
+    const size = p.scale !== undefined && p.scale !== 1 ? ` · cỡ ${n(p.scale)}` : '';
+    const miss = drafts.has(p.id) ? ' — chưa có model (bản thử)' : ' — THIẾU MODEL';
+    console.log(`NPC ${p.id}: (${n(p.x)}; ${n(p.z)}) nhìn ${n(p.rotY ?? 0)}°${pose}${size}${has ? '' : miss}`);
   }
+  all.push(...checkNpcRoutes(spec));
   // bàn chơi khu giao lưu (R-GIAO-1): NPC bàn cũng cần model
   for (const t of spec.gameTables) {
     const has = existsSync(resolve(web, '..', 'design', 'models', `${t.npc}.glb`));

@@ -8,6 +8,7 @@ import {
   GOODS_KINDS,
   DEFAULT_SCENE,
   NPC_IDS,
+  NPC_POSES,
   GAME_KINDS,
   GAME_SLOT,
   GATE_KINDS,
@@ -273,6 +274,30 @@ const withPoints =
     return res ? { ...(res as Obj), [field]: pts } : null;
   };
 
+/**
+ * NPC có đường đi (R-NPC-7): `route` không bắt buộc; có thì ≥ 3 điểm [x, z], không hai điểm liền nhau trùng nhau (kể cả
+ * điểm cuối → điểm đầu, đường khép kín). Cách vật cản / dốc / nền: `scene/routeCheck.ts` (`scene:check`, test cảnh).
+ */
+const withRoute =
+  (rest: ItemParser): ItemParser =>
+  (raw, path, out) => {
+    if (!isObj(raw) || raw.route === undefined) return rest(raw, path, out);
+    const pts = raw.route;
+    const ok =
+      Array.isArray(pts) &&
+      pts.length >= 3 &&
+      pts.every((p) => Array.isArray(p) && p.length === 2 && p.every((v) => typeof v === 'number' && Number.isFinite(v)));
+    const pp = pts as number[][];
+    const dup = ok && pp.some((p, i) => Math.hypot(p[0] - pp[(i + 1) % pp.length][0], p[1] - pp[(i + 1) % pp.length][1]) < 0.05);
+    if (!ok || dup) {
+      out.push(`${path}.route: ${ok ? 'hai điểm liền nhau trùng nhau' : 'cần ít nhất 3 điểm [x, z]'}`, `${path}: bỏ phần tử này`);
+      return null;
+    }
+    const others = Object.fromEntries(Object.entries(raw).filter(([k]) => k !== 'route'));
+    const res = rest(others, path, out);
+    return res ? { ...(res as Obj), route: pts } : null;
+  };
+
 /** Trường `open` (danh sách hướng bac · nam · dong · tay, dài tuỳ ý) — kiểm riêng, phần còn lại kiểm bằng `rest`. */
 const withSides =
   (rest: ItemParser): ItemParser =>
@@ -360,7 +385,7 @@ const LISTS: Record<string, ItemParser> = {
   ramparts: withRamps(item({ from: XZ0, to: XZ0, height: 0, outSide: 0 }, { width: 0 }, all(axisAligned, positive('height', 'width')))),
   caravans: withPoints('path', item({}, { count: 0, spacing: 0, speed: 0 }, positive('count', 'spacing', 'speed'))),
   galleries: item({ from: XZ0, to: XZ0, waterSide: 0 }, { width: 0 }, all(axisAligned, positive('width'))),
-  npcs: item({ id: '', x: 0, z: 0 }, { rotY: 0 }, oneOf('id', NPC_IDS)),
+  npcs: withRoute(item({ id: '', x: 0, z: 0 }, { rotY: 0, pose: '', scale: 0, speed: 0 }, all(oneOf('id', NPC_IDS), oneOf('pose', NPC_POSES), positive('scale', 'speed')))),
   lanternStrings: item({ from: XZ0, to: XZ0 }, {}),
   fences: item({ from: XZ0, to: XZ0 }, {}, axisAligned),
   gameTables: item(

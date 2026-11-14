@@ -16,7 +16,9 @@ export const GOODS_KINDS = ['but', 'vai', 'bua', 'thuoc', 'thung'] as const;
 export const ROOF_KINDS = ['chop', 'cong'] as const;
 export const SIDES = ['bac', 'nam', 'dong', 'tay'] as const;
 /** NPC có model: `design/models/<mã>.glb` (tạo bằng /tai-nguyen). Thêm NPC mới = thêm mã ở đây + đặt file model. */
-export const NPC_IDS = ['tieu-mac', 'su-phu', 'thu-thu', 'tieu-nhi', 'quan-su', 'tran-su'] as const;
+export const NPC_IDS = ['tieu-mac', 'su-phu', 'thu-thu', 'tieu-nhi', 'quan-su', 'tran-su', 'khat-nhi', 'go-mo'] as const;
+/** Dáng NPC (R-NPC-1, R-NPC-6): `dung` đứng (mặc định) · `ngoi` ngồi xếp bằng. */
+export const NPC_POSES = ['dung', 'ngoi'] as const;
 /** Bàn chơi ở khu giao lưu (R-GIAO-1): `co` = Ngũ Tử Kỳ (R-CO-1), `dau-chu` = Đấu chữ (R-DAU-1). */
 export const GAME_KINDS = ['co', 'dau-chu'] as const;
 /** Loại ô trang trí nhà của ta (R-NHA-2): `vuon` vườn · `san` sân · `trong` trong nhà. */
@@ -457,7 +459,21 @@ export interface NpcSpec {
   x: number;
   z: number;
   rotY?: number;
+  /** dáng: thiếu = `dung` (như cũ); `ngoi` = ngồi xếp bằng tại chỗ (R-NPC-6) */
+  pose?: (typeof NPC_POSES)[number];
+  /** cỡ so với chiều cao model chuẩn; thiếu = 1 */
+  scale?: number;
+  /**
+   * Đường đi vòng khép kín [x, z] (≥ 3 điểm, điểm cuối tự nối về điểm đầu) — NPC đi theo đồng hồ GMT+7 (R-NPC-7);
+   * thiếu = đứng tại (x, z). Có `route` thì `x`, `z`, `rotY` chỉ dùng khi không dựng được đường.
+   */
+  route?: XZ[];
+  /** tốc độ đi trên `route` (m/s); thiếu = `NPC_WALK_SPEED` */
+  speed?: number;
 }
+
+/** Tốc độ đi mặc định của NPC có đường đi (R-NPC-7). */
+export const NPC_WALK_SPEED = 1.1;
 
 /**
  * Bàn chơi (R-GIAO-1): bàn đá thấp tâm (x, z); ghế người chơi phía +z (ngồi nhìn về −z khi `rotY` = 0), NPC `npc` đứng
