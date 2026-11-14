@@ -24,6 +24,8 @@ export interface PointerHandlers {
   onJoystickStart(): void;
   /** `true` = chỉ nhận chạm ngắn (bản đồ truyền tống đang mở — R-HANH-2): không joystick, không xoay / zoom camera */
   tapOnly?(): boolean;
+  /** `true` = không joystick, mọi ngón xoay / zoom camera (chế độ trang trí — R-NHA-2: đứng yên, vẫn xoay camera) */
+  noJoystick?(): boolean;
 }
 
 /**
@@ -44,7 +46,7 @@ export function attachPointerInput(canvas: HTMLCanvasElement, h: PointerHandlers
       looks.set(e.pointerId, { x: e.clientX, y: e.clientY, sx: e.clientX, sy: e.clientY, t: performance.now() });
       return;
     }
-    if (e.clientX < window.innerWidth * JOYSTICK_ZONE && joystick.id === null && e.pointerType !== 'mouse') {
+    if (e.clientX < window.innerWidth * JOYSTICK_ZONE && joystick.id === null && e.pointerType !== 'mouse' && !h.noJoystick?.()) {
       joystick.start(e.pointerId, e.clientX, e.clientY);
       h.onJoystickStart();
     } else {

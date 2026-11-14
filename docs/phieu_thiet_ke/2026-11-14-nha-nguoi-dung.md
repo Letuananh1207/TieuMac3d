@@ -1,5 +1,5 @@
 # Phiếu: Nhà người dùng (Nhà của ta) — nơi trên bản đồ, HUD trang trí
-- Trạng thái: chờ vẽ
+- Trạng thái: đã áp (2026-11-14.13)
 - Đã vẽ: 2026-11-14.13 (mục 1–3; mục 4 thẻ tên khu bỏ — R-HUD-3)
 - Đợi bởi: kế hoạch `docs/tasks/2026-11-14-nha-nguoi-dung.md` (nhiệm vụ 5, 8, 9). Cảnh 3D của nhà làm riêng bằng
   `/canh` (`design/scene/nha-ta.json`), không thuộc phiếu này.

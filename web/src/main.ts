@@ -61,6 +61,7 @@ import { placeZones, ZONE_CONTENT, type Zone } from './zones/zones';
 import { musicVolume, TRACKS } from './zones/music';
 import { journeyLine } from './zones/tranSu';
 import { AmbientMusic } from './ui/ambientMusic';
+import { HomeDecor } from './homeDecor';
 
 // con trỏ hoạt hình nhúng sẵn (L-9) — đặt sớm nhất, trước cả màn tải
 installCursors(cursorArrow, cursorButton);
@@ -206,7 +207,7 @@ async function boot(): Promise<void> {
       setRunning();
     },
     onDebug: (on) => fps.setEnabled(on),
-    onBack: () => mapBack() || (gamePlay.active && (gamePlay.stand(), true)), // nút quay lại: đóng lớp phủ, rồi rời bàn
+    onBack: (): boolean => mapBack() || !!decor?.back() || (gamePlay.active && (gamePlay.stand(), true)), // nút quay lại: đóng lớp phủ, rồi rời bàn
   });
   const openLesson = (zone: Zone): void => {
     if (paused) return; // đang mở rồi (chạm hai lần khi chờ Flutter trả lời)
@@ -362,6 +363,22 @@ async function boot(): Promise<void> {
   const teaFloors = world.rooms.filter((r) => teaIds.has(r.zoneId)).map((r) => r.floor);
   music = teaFloors.length > 0 ? new AmbientMusic(TRACKS, (f) => MUSIC_URLS[`./nhac/${f}`]) : null;
   const seatGlow = addSeatGlow(scene, spec.lanternStyle.trim);
+  // Nhà của ta: ô trang trí + nút "Trang trí" (R-NHA-2/3/4, thiết kế 2026-11-14.13) — chỉ cảnh có `decorSlots`
+  const decor: HomeDecor | null = spec.decorSlots.length
+    ? new HomeDecor({
+        scene,
+        colliders,
+        spec,
+        groundY: groundAt,
+        save: (slot, item): Promise<boolean> => bridge.setDecor(slot, item),
+        coins: () => progress?.coins ?? 0,
+        onEnter: () => {
+          player.moveTarget = null;
+          joystick.end();
+        },
+      })
+    : null;
+  await decor?.load();
 
   /* ---------- điều khiển ---------- */
   const orbit = new OrbitCamera(spec.camera);
@@ -372,10 +389,10 @@ async function boot(): Promise<void> {
   // Space nhảy, F chào, C ngồi ôn (R-DIEU-6, R-DIEU-7); đang học / màn tải thì bỏ qua
   const keyboard = new Keyboard((a) => {
     if (a === 'back') {
-      if (!mapBack()) gamePlay.stand(); // Esc: đóng bảng / thoại / bản đồ, không có thì rời bàn (R-GIAO-1)
+      if (!mapBack() && !decor?.back()) gamePlay.stand(); // Esc: đóng bảng / thoại / bản đồ, không có thì rời bàn (R-GIAO-1)
       return;
     }
-    if (paused || loading.active || mapOpen || talking) return;
+    if (paused || loading.active || mapOpen || talking || decor?.active) return;
     if (a === 'chat') {
       if (!gamePlay.active) chat.open(); // Enter: mở ô nhập (gửi do ô nhập tự lo)
       return;
@@ -392,12 +409,14 @@ async function boot(): Promise<void> {
     orbit,
     onJoystickStart: () => (player.moveTarget = null),
     tapOnly: () => mapOpen || talking || gamePlay.active || chat.typing, // ngồi chơi: chạm là chạm bàn (R-GIAO-1, R-DIEU-1)
+    noJoystick: () => !!decor?.active, // trang trí: đứng yên, kéo đâu cũng xoay camera (R-NHA-2)
     onTap: (x, y) => {
       if (mapOpen) {
         onMapTap(x, y);
         return;
       }
       if (chat.close()) return; // đang gõ: chạm cảnh = đóng ô nhập
+      if (decor?.tap()) return; // trang trí: chạm cảnh trống = đóng bảng danh mục
       if (paused || talking) return;
       if (gamePlay.tap(x, y, camera)) return; // đang ngồi chơi: chạm vào bàn, không đi (R-GIAO-1)
       // đang trong nhà: chạm trúng vật học của nhà → mở bài (R-VUNG-2)
@@ -617,7 +636,7 @@ async function boot(): Promise<void> {
     const fromX = player.position.x;
     const fromZ = player.position.z;
     // hướng đi khoá khi giữ joystick cùng hướng → camera tự xoay không làm nhân vật đi vòng (R-DIEU-3)
-    player.update(dt, input, orbit.steerYaw(input.x, input.y), paused || loading.active || mapOpen || talking || chat.typing);
+    player.update(dt, input, orbit.steerYaw(input.x, input.y), paused || loading.active || mapOpen || talking || chat.typing || !!decor?.active);
     const pos = player.position;
     // camera bám êm: dây kéo + tự về sau lưng chậm (R-DIEU-3)
     orbit.follow(dt, pos.x - fromX, pos.z - fromZ, character.facing.rotation.y, player.state.mps > 0);
@@ -668,6 +687,7 @@ async function boot(): Promise<void> {
     }
     walletRoom.update({ camera, player: pos, roomId: room?.zoneId, busy: busy || gamePlay.active, free: seatFree });
     seatGlow.set(spot);
+    decor?.update(dt, camera, seatFree); // nút "Trang trí" ẩn khi bản đồ / thoại / ngồi / màn Flutter
     seatGlow.update(dt);
     // mở bài học / ôn / bảng, màn tải → nhạc tắt dần; đóng → phát tiếp theo giờ (R-NHAC-1)
     music?.update(dt, paused || covered || loading.active ? 0 : musicVolume(teaFloors, pos.x, pos.z));

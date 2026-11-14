@@ -50,15 +50,19 @@ người khác (cần multiplayer / backend — ngoài giai đoạn này).
 - [x] 3. Danh mục + luật trang trí thuần `zones/decor.ts` + vitest theo R-NHA-2/4. (zones · `npm test`)
 - [x] 4. (người dùng duyệt trên Canvas 3D 2026-11-14 → chốt `design/CHANGELOG.md` 2026-11-14.15; kiểu nhà `nha-o`: `scene/kien_truc/nha_o.ts`) **Thiết kế cảnh** `design/scene/nha-ta.json` bằng `/canh` (nhà, sân, vườn, vòng trận về, các ô) — cho
       duyệt trên Canvas 3D rồi mới chốt. (design · xong khi chốt mục trong `design/CHANGELOG.md`)
-- [ ] 5. **Thiết kế** nơi mới trên bản đồ + HUD trang trí — chờ thiết kế (`docs/phieu_thiet_ke/2026-11-14-nha-nguoi-dung.md`).
+- [x] 5. (thiết kế 2026-11-14.13 — phiếu `docs/phieu_thiet_ke/2026-11-14-nha-nguoi-dung.md` đã áp) **Thiết kế** nơi mới trên bản đồ + HUD trang trí.
 - [x] 6. Dựng mesh vật `scene/decorItems.ts` (+ collider vật to) và ô trống hiện mờ trong chế độ trang trí. (scene)
       Xong: hình 13 vật + khung bao / vật cản `scene/decorItems.ts`; đặt theo ô + dấu ô (trống / có vật / đang chọn)
       `scene/decorLayer.ts` (`DecorLayer.set / setAll / anchor`, `addDecorMarkers`, `slotFloorY`, `slotMark`);
       `Colliders.add / addCircle` trả vật cản + `remove`. Chưa ghép — NV8 gọi từ `homeDecor.ts`.
 - [x] 7. Cầu nối `getHome` / `setDecor`: `docs/bridge.md` trước → `flutterBridge.ts` + test → `ProgressStore` +
       `scene_event.dart` + test Dart R-NHA-3. (bridge · app · xong khi test hai phía xanh)
-- [ ] 8. Ghép `homeDecor.ts` + `main.ts`; HUD theo thiết kế ở nhiệm vụ 5. (ui · ghép — sau nhiệm vụ 5)
-- [ ] 9. Bản đồ: thêm nơi `nha-ta` vào `journeyMap` theo `ban-do.json` mới. (zones · ui — sau nhiệm vụ 5)
+- [x] 8. Ghép `homeDecor.ts` + `main.ts`; HUD theo thiết kế ở nhiệm vụ 5. (ui · ghép — sau nhiệm vụ 5)
+      Xong: luật thuần `zones/decorMode.ts` (+ test R-NHA-2/4); HUD `ui/decorHud.ts` (nút Trang trí, viên nhắc, Xong, nút ô),
+      `ui/decorPanel.ts` (bảng danh mục, thẻ đang đặt / đã có / khoá, tấm báo Tạp hoá — Văn tiền NV12), `ui/decorIcons.ts`,
+      `ui/decor.css`; `input/pointers.ts` `noJoystick` (trang trí: kéo đâu cũng xoay camera); Flutter `getHome` gửi `owned`.
+- [x] 9. Bản đồ: thêm nơi `nha-ta` vào `journeyMap` theo `ban-do.json` mới. (zones · ui — sau nhiệm vụ 5)
+      Xong: `ban-do.json` (.13) đã có nơi + `r` 80 riêng, `journeyMap` đọc `r` từng nơi; test R-NHA-1 `journeyMap.test.ts`.
 - [ ] 10. Build + thử máy: vào Nhà của ta, đặt 3 vật, tắt app mở lại → còn nguyên.
 
 Làm được ngay không chờ thiết kế: 1, 2, 3, 7 (và 6 phần dựng mesh). 4 làm bằng `/canh` (phiên này làm thay được, cho
