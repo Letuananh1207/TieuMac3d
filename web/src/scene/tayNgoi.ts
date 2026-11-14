@@ -18,9 +18,9 @@ export interface HandPalette {
 }
 
 // cỡ (m) — tay chibi ngắn, bàn tay to vừa nhìn rõ
-const SLEEVE_LEN = 0.36;
-const SLEEVE_R0 = 0.05; // cổ tay
-const SLEEVE_R1 = 0.075; // phía khuỷu (loe)
+const SLEEVE_LEN = 0.3;
+const SLEEVE_R0 = 0.036; // cổ tay
+const SLEEVE_R1 = 0.055; // phía khuỷu (loe)
 // token (design/tokens/design_tokens.json): scroll-wood · map-paper · lacquer — sách, chén
 const WOOD = '#3A2418';
 const PAPER = '#F2EADA';
@@ -93,6 +93,8 @@ interface HandParts {
   pos: THREE.Vector3;
   palm: THREE.Vector3;
   point: number;
+  /** hướng cẳng tay (vai → cổ tay) */
+  dir: THREE.Vector3;
   ready: boolean;
 }
 
@@ -144,14 +146,11 @@ export class TayNgoi {
       index.position.set(side * 0.022, 0.004, 0.08); // gốc ngón trỏ ở mép lòng bàn tay phía ngón cái
       root.add(arm, index);
       this.root.add(root);
-      return { root, index, side, shoulder, pos: new THREE.Vector3(), palm: new THREE.Vector3(0, -1, 0), point: 0, ready: false };
+      return { root, index, side, shoulder, pos: new THREE.Vector3(), palm: new THREE.Vector3(0, -1, 0), point: 0, dir: new THREE.Vector3(0, 0, 1), ready: false };
     };
     this.hands = [make(-1, SHOULDER_L), make(1, SHOULDER_R)];
     this.cup = new THREE.Mesh(cupGeometry(), mat);
-    // trong lòng tay phải: lòng quay vào giữa thân → trục +x của tay chỉ lên, chén dựng theo trục đó
-    this.cup.rotation.z = -Math.PI / 2;
-    this.cup.position.set(0, -0.045, 0.06);
-    this.hands[1].root.add(this.cup);
+    this.root.add(this.cup); // đặt theo tay phải mỗi khung, luôn dựng đứng (không đổ trà)
     this.stone = new THREE.Mesh(new THREE.SphereGeometry(0.042, 8, 5).scale(1, 0.45, 1), new THREE.MeshLambertMaterial({ color: STONE }));
     this.stone.position.set(0.02, -0.02, 0.13); // kẹp giữa ngón trỏ và ngón cái
     this.hands[1].root.add(this.stone);
@@ -179,6 +178,11 @@ export class TayNgoi {
     this.place(this.hands[0], pose.left, eye, yaw, k);
     this.place(this.hands[1], pose.right, eye, yaw, k);
     this.cup.visible = pose.cup;
+    if (pose.cup) {
+      // chén trong lòng tay phải: trước lòng bàn tay một chút, hơi về phía ngón
+      const r = this.hands[1];
+      this.cup.position.copy(r.pos).addScaledVector(r.palm, 0.04).addScaledVector(r.dir, 0.05);
+    }
     this.stone.visible = pose.stone;
     this.book.visible = book !== null;
     if (book) {
@@ -203,6 +207,7 @@ export class TayNgoi {
     // khung tay: z = hướng cẳng tay (vai → cổ tay), y = mu bàn tay (ngược lòng), x = y × z
     const shoulder = bodyToWorld(h.shoulder, eye, yaw, tmpX);
     tmpZ.subVectors(h.pos, shoulder).normalize();
+    h.dir.copy(tmpZ);
     tmpY.copy(h.palm).addScaledVector(tmpZ, -h.palm.dot(tmpZ));
     if (tmpY.lengthSq() < 1e-6) tmpY.set(0, -1, 0);
     tmpY.normalize().negate();

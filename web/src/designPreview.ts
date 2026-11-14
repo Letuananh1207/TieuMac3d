@@ -8,6 +8,9 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import './style.css';
 import { Colliders } from './collision/colliders';
 import { OrbitCamera } from './input/orbitCamera';
+import { tableCamera } from './gamePlay';
+import { NgoiMat, type SitPlace } from './ngoiMat';
+import { LAYER_THAN } from './scene/layers';
 import { createPlayerCharacter } from './player/playerCharacter';
 import { createDiscipleCharacter } from './player/discipleCharacter';
 import { placeNpcs } from './player/npc';
@@ -290,7 +293,7 @@ async function boot(): Promise<void> {
   const poseState: CharacterState = { mps: 0, air: false, vy: 0, sit: 0, bow: 0, idle: 0 };
   if (pose === 'chay') poseState.mps = RUN_SPEED;
   else if (pose === 'nhay') poseState.air = true;
-  else if (pose === 'ngoi') poseState.sit = 1;
+  else if (pose === 'ngoi' || pose === 'ngoi-mat') poseState.sit = 1;
   else if (pose === 'chao') poseState.bow = 1;
   else if (pose === 'vuon') poseState.idle = 7.25;
   else if (pose === 'nhin') poseState.idle = 14.6;
@@ -298,11 +301,72 @@ async function boot(): Promise<void> {
   const stateNow = (): CharacterState => (pose ? poseState : { ...poseState, mps: walkSpeed * WALK_SPEED });
   // ?dang=ngoi: cuộn sách Ngồi ôn mở hết như app (R-ON-8) — xem tay cầm cuộn
   const cuon = pose === 'ngoi' ? new CuonSach(scene) : null;
+  // ?dang=ngoi-mat[&cho=on|tu-hoc|tra|co|dau] — nhìn từ mắt khi ngồi như app (R-DIEU-7, ngoiMat.ts): Ngồi ôn tại chỗ
+  // (cuộn mở), bồ đoàn khu tự học, đôn bàn trà trà lâu, bàn cờ, bàn Đấu chữ. Thân mình ẩn, hai tay + cuộn / chén / bàn.
+  const mat = pose === 'ngoi-mat' ? ngoiMatPreview(params.get('cho') ?? 'on') : null;
   if (pose) character.animate(1, poseState.mps / RUN_SPEED, poseState);
   if (Number.isFinite(phase) && phase > 0) character.animate(phase / 10, WALK_SPEED / RUN_SPEED, { ...poseState, mps: WALK_SPEED });
+  interface MatPreview {
+    ngoi: NgoiMat;
+    third: THREE.PerspectiveCamera;
+    game: THREE.PerspectiveCamera | null;
+    /** đặt camera bàn chơi (mỗi khung — FOV / tỉ lệ đổi theo màn) */
+    placeGame(): void;
+  }
+  function ngoiMatPreview(cho: string): MatPreview {
+    const ngoi = new NgoiMat(scene, character, spec.camera);
+    let place: SitPlace = { kind: 'on' };
+    let game: THREE.PerspectiveCamera | null = null;
+    let placeGame = (): void => {};
+    const seatAt = (x: number, y: number, z: number, rotY: number): void => {
+      character.root.position.set(x, y, z);
+      character.facing.rotation.y = rotY;
+    };
+    if (cho === 'tu-hoc' || cho === 'tra') {
+      const s = world.seats.find((q) => (cho === 'tu-hoc' ? q.study : q.hold === 'tra'));
+      if (s) seatAt(s.x, s.y, s.z, s.rotY);
+      place = cho === 'tra' ? { kind: 'ngoi', hold: 'tra' } : { kind: 'on' };
+    } else if (cho === 'co' || cho === 'dau') {
+      const t = world.gameTables.find((q) => q.spec.kind === (cho === 'co' ? 'co' : 'dau-chu'));
+      if (t) {
+        const s = t.seats[0];
+        seatAt(s.x, s.y, s.z, s.rotY);
+        place = { kind: 'ban-choi', game: cho === 'co' ? 'co' : 'dau-chu', center: t.center, rotY: s.rotY };
+        if (cho === 'dau') t.showCard(RADICALS[0].form, 0);
+        else t.setStones(Array.from({ length: 169 }, (_, i) => ([84, 85, 71, 98].includes(i) ? 1 : [70, 72, 86].includes(i) ? 2 : 0)));
+        game = new THREE.PerspectiveCamera(spec.camera.fov, 1, 0.1, 10);
+        const g = game;
+        placeGame = () => tableCamera(g, t.center, s.rotY);
+      }
+    } else character.facing.rotation.y = 0;
+    world.update(1, character.root.position); // trong nhà: mái mờ sẵn
+    // camera ngôi 3 lúc trước khi ngồi: sau lưng như app
+    const orbit = new OrbitCamera(spec.camera);
+    orbit.yaw = character.facing.rotation.y + Math.PI;
+    const third = new THREE.PerspectiveCamera(spec.camera.fov, 1, 0.1, 10);
+    orbit.update(third, character.root.position, 0, true, (x, z) => world.surface.heightAt(x, z));
+    controls.enabled = false;
+    // &ngoai — cùng chỗ, cùng dáng ngồi nhưng nhìn từ ngoài (như người khác thấy / trước khi ngồi): so ảnh + draw call
+    if (params.has('ngoai')) {
+      if (place.kind === 'on') new CuonSach(scene, { layer: LAYER_THAN }).update(2, character.root.position, character.facing.rotation.y, 2);
+    } else ngoi.sit(place);
+    // ảnh chụp: vào hẳn mắt ngay (không đợi trượt 0,4 s — thời gian ảo của Chrome headless trôi không đều)
+    for (let i = 0; i < 4; i++) {
+      placeGame();
+      ngoi.update(0.2, camera, third, game, 2);
+    }
+    return { ngoi, third, game, placeGame };
+  }
+  let sat = 0;
   function tick(): void {
     const dt = Math.min(clock.getDelta(), 0.05);
-    controls.update();
+    if (mat) {
+      // chụp headless: thời gian ảo có thể không trôi giữa các khung → mỗi khung ít nhất 1/30 s để chuyển ngôi xong
+      const step = Math.max(dt, 1 / 30);
+      sat += step;
+      mat.placeGame();
+      mat.ngoi.update(step, camera, mat.third, mat.game, sat + 2); // cuộn mở ngay (như đã ngồi > 1 s)
+    } else controls.update();
     world.update(dt, character.root.position);
     character.animate(dt, stateNow().mps / RUN_SPEED, stateNow());
     cuon?.update(dt, character.root.position, character.facing.rotation.y, 2);

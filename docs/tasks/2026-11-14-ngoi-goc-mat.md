@@ -150,43 +150,43 @@ Ký hiệu: **[trước]** làm được trước thiết kế · **[chờ TK]**
 - [x] 1. **[đã ghi sổ, chưa đồng bộ online]** Sổ luật: sửa R-DIEU-7, R-NGOI-1, R-ON-8, R-GIAO-1, R-VA-4, R-DIEU-1 theo nháp đã duyệt →
   `/dong-bo-quy-tac` (tự chép online, `--mark-synced`). (`docs/testing/quy_tac.md` · xong khi `rule_trace --pending`
   sạch)
-- [ ] 2. **[trước]** Đặc tả: `camera.firstPerson` trong `SceneSpec` + mặc định (mắt cao / trước, góc cúi theo loại chỗ
+- [x] 2. **[trước]** Đặc tả: `camera.firstPerson` trong `SceneSpec` + mặc định (mắt cao / trước, góc cúi theo loại chỗ
   `study` 35° · `seat` 25° · `game` 70°, giới hạn nhìn quanh, `blend` 0,4 s, `returnDelay` 1 s, `returnTime` 0,6 s,
   `sleeve`, `skin`). (`scene/spec.ts`, `scripts/check-scene.mjs` · lớp scene · test: `scene:check` qua · xong khi
   `scene.json` không có trường → mặc định, build không đổi cảnh)
-- [ ] 3. **[trước]** `input/eyeCamera.ts` thuần: `pose(root, yaw, sitB, kind)` → vị trí mắt + hướng; `look(dx, dy)` kẹp
+- [x] 3. **[trước]** `input/eyeCamera.ts` thuần: `pose(root, yaw, sitB, kind)` → vị trí mắt + hướng; `look(dx, dy)` kẹp
   giới hạn; `update(dt)` lò xo nhìn lại sau `returnDelay`; `blend(t, from, to)` trộn ngôi 3 ↔ ngôi 1. (lớp input ·
   test `eyeCamera.test.ts`: kẹp ±60° / +20° / −70°, thả 1 s rồi về trong 0,6 s, trộn 0 → 1 đúng đầu-cuối, không xoay
   nhanh hơn 90°/s · xong khi vitest xanh)
-- [ ] 4. **[trước]** `orbitCamera.ts`: đọc tư thế camera hiện tại (để trộn), `sit()` vẫn nhớ / trả góc cũ; đang ngôi 1
+- [x] 4. **[trước]** `orbitCamera.ts`: đọc tư thế camera hiện tại (để trộn), `sit()` vẫn nhớ / trả góc cũ; đang ngôi 1
   thì `pinch` / `wheel` không đổi `dist`. (lớp input · test `orbitCamera.test.ts` sửa theo luật mới · xong khi đứng dậy
   về đúng khoảng cách / ngẩng / hướng cũ)
-- [ ] 5. **[trước]** Lớp render + ẩn thân: `scene/layers.ts`; gán `THAN` cho cây `character.root` và cuộn trước ngực;
+- [x] 5. **[trước]** Lớp render + ẩn thân: `scene/layers.ts`; gán `THAN` cho cây `character.root` và cuộn trước ngực;
   camera bật `THAN` khi ngôi 3, tắt khi ngôi 1 (ở 60 % chuyển), bật `MAT` khi ngôi 1. `Character.palette?` (không bắt
   buộc) cho chibi / khối. Bong bóng thoại của chính mình ẩn khi ngôi 1. (lớp scene + player + ghép · test: ngồi ôn →
   `camera.layers` không có `THAN`; đứng dậy → có lại; dáng ngồi `CharacterState.sit` không đổi · xong khi màn mình không
   thấy đầu, Canvas 3D góc ngoài vẫn thấy nhân vật ngồi cầm cuộn)
-- [ ] 6. **[trước]** `scene/tayNgoi.ts` + `tayNgoiDang.ts`: hai tay low-poly (ống tay áo 6 cạnh loe + viền cổ tay, bàn
+- [x] 6. **[trước]** `scene/tayNgoi.ts` + `tayNgoiDang.ts`: hai tay low-poly (ống tay áo 6 cạnh loe + viền cổ tay, bàn
   tay hộp vát, ngón cái, 3 ngón gộp + ngón trỏ riêng), màu theo đỉnh, Lambert; dáng: `cam-cuon`, `gio` (tay phải xoay
   trục), `tro(u, v)` (ngón trỏ duỗi tới điểm trên giấy, 0,25 s đi + 0,2 s về), `dat-ban`, `dat-goi`, `cam-quan(x, z)`,
   `cam-chen` (Q3). (lớp scene · test `tayNgoiDang.test.ts`: dáng thuần → góc khớp nằm trong giới hạn, `tro` tới đúng
   điểm ±1 cm · xong khi ≤ 4 draw call, < 600 đỉnh, không vật nào gần mắt dưới 0,18 m)
-- [ ] 7. **[trước]** `scene/cuonSachMat.ts`: cuộn lớn trước mắt dùng chung hình với `cuonSach.ts` (tách hàm dựng), giấy
+- [x] 7. **[trước]** `scene/cuonSachMat.ts`: cuộn lớn trước mắt dùng chung hình với `cuonSach.ts` (tách hàm dựng), giấy
   có `CanvasTexture` (tạm: giấy trơn `map-paper`, **không chữ**), đặt vừa khung theo FOV + tỉ lệ màn (dọc: giấy rộng
   ~88 % bề ngang; ngang: cao ~70 % chiều cao, lệch phải), nhịp mở / thu dùng `cuonSachNhip.ts`; `hit(raycaster)` →
   `(u, v)` hoặc null. (lớp scene · test: hàm đặt-vừa-khung thuần cho 390×844 và 844×390 · xong khi cuộn trong khung ở
   cả hai chiều, chạm giấy trả đúng (u, v) trên Canvas 3D)
-- [ ] 8. **[trước]** Ghép `web/src/ngoiMat.ts` + vài dòng `main.ts`: trạng thái `dung | chuyen-vao | mat | chuyen-ra`
+- [x] 8. **[trước]** Ghép `web/src/ngoiMat.ts` + vài dòng `main.ts`: trạng thái `dung | chuyen-vao | mat | chuyen-ra`
   theo loại chỗ (`on` tại chỗ, `ngoi`, `tu-hoc`, `ban-choi`); điều eyeCamera, lớp, tay, cuộn; `pointers.ts`: ngôi 1 kéo
   = nhìn quanh (bên trái 45 % vẫn là joystick "kéo để đứng dậy" khi joystick đang hiện — R-DIEU-1/7), chạm ngắn = chạm
   cuộn / bàn. (lớp ghép + input · test `ngoiMat.test.ts` nếu tách được hàm thuần trạng thái · xong khi mọi kiểu ngồi
   vào / ra mượt 0,4 s, về đúng góc cũ)
-- [ ] 9. **[chờ Q1]** Bàn chơi: `gamePlay.placeCamera` theo phương án chọn; tay đặt quân (`cam-quan`) khi chạm giao điểm;
+- [x] 9. **[chờ Q1]** Bàn chơi: `gamePlay.placeCamera` theo phương án chọn; tay đặt quân (`cam-quan`) khi chạm giao điểm;
   Đấu chữ tay cầm thẻ (Q2-A). (`gamePlay.ts`, `scene/gameTable.ts` chỉ đọc toạ độ · test `gamePlay.test.ts` chạm giao
   điểm vẫn đúng ô · xong khi đặt quân trúng ô ở 390×844)
-- [ ] 10. **[chờ Q3]** Vật cầm ở án thư / bàn trà / lan can (chén trà, sách mở) — nếu B: dựng khối nhỏ trong `tayNgoi`;
+- [x] 10. **[chờ Q3]** Vật cầm ở án thư / bàn trà / lan can (chén trà, sách mở) — nếu B: dựng khối nhỏ trong `tayNgoi`;
   hình dáng theo phiếu. (lớp scene)
-- [ ] 11. **[trước]** Canvas 3D: `designPreview.ts` thêm `?dang=ngoi-mat[&cho=on|tra|an|co|dau|tu-hoc]` hiện khung ngôi
+- [x] 11. **[trước]** Canvas 3D: `designPreview.ts` thêm `?dang=ngoi-mat[&cho=on|tra|an|co|dau|tu-hoc]` hiện khung ngôi
   1 bằng code thật (cuộn trống + tay) — phiên thiết kế chụp nền để vẽ chữ lên. (xong khi `npm run build:design` chạy —
   build từ PowerShell)
 - [ ] 12. **[chờ TK]** Chữ + mục trên cuộn: `ui/cuonMuc.ts` vẽ canvas 2D theo thiết kế (đầu cuộn, 3 mục, nổi bật / thường
@@ -198,11 +198,22 @@ Ký hiệu: **[trước]** làm được trước thiết kế · **[chờ TK]**
   `bridge/flutterBridge.ts`; Flutter `app/lib/scene/` đón `openLearned` → `LearnedScreen`; bỏ `StudyScreen` khỏi luồng.
   (lớp cầu nối + Flutter · test `flutter test` phần scene event · xong khi chạm "Xem bộ đã học" trên cuộn mở màn Bộ đã
   học, đóng → cuộn hiện lại)
-- [ ] 14. **[trước]** Kiểm tra cuối + `npm run build`; ghi bảng "Bản đồ tính năng" của `/lead` dòng mới (ngồi, ngôi 1,
+- [x] 14. (đợt 1) **[trước]** Kiểm tra cuối + `npm run build`; ghi bảng "Bản đồ tính năng" của `/lead` dòng mới (ngồi, ngôi 1,
   tay, cuộn trước mắt → `ngoiMat`, `eyeCamera`, `tayNgoi`, `cuonSachMat`).
 
 Thứ tự làm: 2 → 3 → 4 → 5 → 6 → 7 → 8 → 11 → 14 (đợt 1, thử máy: ngồi đâu cũng nhìn từ mắt, tay cầm cuộn trống) ·
 sau quyết định: 1 → 9 → 10 · sau thiết kế: 12 → 13 → 14.
+
+## Đợt 1 — đã làm (2026-11-14)
+- NV4: không cần sửa `orbitCamera.ts` — OrbitCamera vẽ vào camera phụ (`tpCam`), `ngoiMat` trộn ra camera thật; khi ngồi
+  OrbitCamera đứng yên nên đứng dậy về đúng góc cũ. `orbit.sit()` chỉ còn Canvas 3D `?dang=ngoi` dùng.
+- NV7: không tách file `cuonSachMat.ts` — dùng chung `CuonSach` (lớp vẽ, `setMount`, `setPaper`, `hitUv`); khung vừa màn
+  `fitScroll` ở `cuonSachNhip.ts` (test `cuonSachKhung.test.ts`).
+- NV9: `tableCamera` (gamePlay.ts) ~70°, tay ở mép bàn / hai góc thẻ, chạm đặt quân → tay phải đưa quân (`takePlayed`).
+- NV10: chỗ ngồi ghi `hold` (`tra` ở đôn, sập, bàn dài, bàn trà đôi trà lâu); `sach` dựng sẵn nhưng cảnh chưa có chỗ
+  ngồi án thư; ghế lan can: tay để trước người (R-VA-4 còn `sửa`).
+- NV11: Canvas 3D `?dang=ngoi-mat&cho=on|tu-hoc|tra|co|dau[&ngoai]` (chưa đăng artifact).
+- Trong lúc chờ NV12 / NV13: cuộn trước mắt giấy trơn; bảng chọn Ngồi ôn Flutter vẫn mở như cũ sau 1 giây.
 
 ## Hiệu năng (ước tính)
 - Thêm khi ngôi 1: tay 2–4 draw call (mỗi tay: ống tay + bàn tay gộp màu theo đỉnh; ngón trỏ riêng để trỏ) · cuộn trước
