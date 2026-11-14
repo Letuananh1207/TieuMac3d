@@ -73,6 +73,15 @@
           "dong": "Sân chơi · Thư viện",
           "tay": "Quảng trường"
         }
+      },
+      {
+        "side": "tay",
+        "at": 4,
+        "width": 6.4,
+        "signs": {
+          "dong": "Kỳ Văn Uyển · 棋文苑",
+          "tay": "Quảng trường"
+        }
       }
     ],
     "style": "voi",
@@ -98,16 +107,7 @@
       "to": [
         -51,
         17
-      ],
-      "gate": {
-        "at": -26.5,
-        "width": 6.4,
-        "kind": "trang",
-        "signs": {
-          "tay": "Sân chơi · Thư viện",
-          "dong": "Ra sườn núi"
-        }
-      }
+      ]
     },
     {
       "from": [
@@ -172,17 +172,6 @@
       "to": [
         -33,
         -17
-      ],
-      "width": 3.6
-    },
-    {
-      "from": [
-        -51.5,
-        -26.5
-      ],
-      "to": [
-        -59,
-        -26.5
       ],
       "width": 3.6
     }

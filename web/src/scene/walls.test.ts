@@ -76,7 +76,7 @@ describe('cổng trên đoạn tường thêm', () => {
   });
 });
 
-describe('R-VA-1: cổng trăng riêng tường tây Kỳ Văn Uyển – Tàng Thư Các (cảnh thật)', () => {
+describe('R-VA-1: cổng trăng thứ hai trên tường tây Quảng Trường, ngang bàn chơi Kỳ Văn Uyển (cảnh thật)', () => {
   const spec = loadScene(HOME_SCENE).spec;
   const real = (): Colliders => {
     const c = new Colliders();
@@ -84,13 +84,22 @@ describe('R-VA-1: cổng trăng riêng tường tây Kỳ Văn Uyển – Tàng 
     return c;
   };
 
-  it('R-VA-1: x −51 tâm z −26,5 rộng 6,4, lối 4,6 m; từ (−49; −26,5) đi tây qua được, z −30 / z −23 dừng ở x −50,25', () => {
-    const gate = wallGates(spec.walls, spec.wallSegments).find((g) => g.axis === 'z' && g.fixed === -51);
-    expect(gate && [gate.at, gate.width, gate.kind]).toEqual([-26.5, 6.4, 'trang']);
-    expect(2 * gateOpening(gate!)).toBeCloseTo(4.6, 6);
-    expect(walk(real(), -49, -26.5, -1, 0, 10).x).toBeLessThan(-55);
-    expect(walk(real(), -49, -30, -1, 0, 10).x).toBeCloseTo(-50.25, 2);
-    expect(walk(real(), -49, -23, -1, 0, 10).x).toBeCloseTo(-50.25, 2);
+  it('R-VA-1: x −17 tâm z 4 rộng 6,4, lối 4,6 m; từ (−15; 4) đi tây qua được, z 0 / z 7,5 dừng ở x −16,25', () => {
+    const west = wallGates(spec.walls, spec.wallSegments).filter((g) => g.axis === 'z' && g.fixed === -17);
+    expect(west.map((g) => g.at).sort((a, b) => a - b)).toEqual([-6, 4]);
+    const gate = west.find((g) => g.at === 4)!;
+    expect([gate.width, gate.kind]).toEqual([6.4, 'trang']);
+    expect(2 * gateOpening(gate)).toBeCloseTo(4.6, 6);
+    expect(walk(real(), -15, 4, -1, 0, 10).x).toBeLessThan(-24);
+    expect(walk(real(), -15, 0, -1, 0, 10).x).toBeCloseTo(-16.25, 2);
+    expect(walk(real(), -15, 7.5, -1, 0, 10).x).toBeCloseTo(-16.25, 2);
+    // ngược lại: từ sân chơi đi đông qua cổng ra Quảng Trường
+    expect(walk(real(), -24, 4, 1, 0, 10).x).toBeGreaterThan(-15);
+  });
+
+  it('tường ngoài x −51 kín (bỏ cổng đặt nhầm 2026-11-14.24)', () => {
+    expect(wallGates(spec.walls, spec.wallSegments).some((g) => g.axis === 'z' && g.fixed === -51)).toBe(false);
+    expect(walk(real(), -49, -26.5, -1, 0, 10).x).toBeCloseTo(-50.25, 2);
   });
 });
 

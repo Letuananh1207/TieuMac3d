@@ -3,6 +3,27 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-14.27 — Cổng trăng thứ hai trên tường tây Quảng Trường, ngang bàn chơi (sửa .24 đặt nhầm tường)
+
+- Loại: cảnh 3D — **bố cục**. Ai làm: phiên code V-20261114-24 (làm lại) làm thay vai thiết kế (`/canh`). Người dùng gửi
+  ảnh mới: đứng trong Quảng Trường nhìn về tây — chỗ muốn mở cổng là khúc tường có hai ô cửa sổ bên trái (phía nam) cổng
+  trăng cũ. **Sửa 2026-11-14.24 đặt nhầm tường** (cổng ở tường ngoài x −51). **Đã duyệt 2026-11-14** (người dùng chọn chỗ
+  trong ảnh, cổng trăng, bỏ cổng nhầm).
+- `scene.json`: bỏ `wallSegments[1].gate` (cổng trăng x −51 tâm z −26,5) và lối lát (−51,5; −26,5) → (−59; −26,5) — tường
+  ngoài x −51 kín như trước .24. `walls.gates` thêm cổng `tay` tâm z 4 (giữa hai ô cửa sổ, ngang bàn cờ z 4), rộng 6,4,
+  cổng trăng như cổng tây cũ (lối 4,6 m, z 1,7 … 6,3); biển đông (phía Quảng Trường) "Kỳ Văn Uyển · 棋文苑", tây (phía sân
+  chơi) "Quảng trường". Hai ô cửa sổ khúc đó tự nhường chỗ cho khe cổng (khúc −2,8 … 0,8 giữa hai cổng không còn cửa sổ;
+  khúc 7,2 … 17,25 còn một ô ở z ≈ 12,2). Sân Kỳ Văn Uyển đã lát kín → không thêm `paths`.
+- Sau tường (x −18 … −22): trống. Gần nhất: cột dây đèn lồng (−22,8; 5) (cách lối 5,8 m vào trong, đi thẳng z 4 lách qua
+  được), biển "Cờ caro" (−29,5; 4) — nhìn qua cổng thấy ngay; ghế bàn cờ gần nhất x −31,5 (cách cổng > 14 m, ngoài tầm
+  "Vào bàn" 1,5 m); mai (−24,5; 13,5), đèn đá (−29; −3,5) không chạm. Không NPC.
+- Luật: R-VA-1 (bỏ ví dụ cổng x −51; thêm ví dụ cổng mới), R-GIAO-1 (lối vào thứ hai) — Xác nhận `chờ`. `scene:check`
+  không lỗi. Draw call nhìn trên 137 → 136 (tam giác 150 456 → 150 424); góc ảnh người dùng 58 → 57.
+- Canvas 3D: bản 55 ("main + V-24 sửa cổng"). Góc ảnh người dùng `?nv=-6,3&cam=1,3.5,3&tam=-17,3`; từ sân chơi
+  `?nv=-24,6&cam=-30,3.5,7&tam=-17,4`.
+- Ảnh: `screens/Canh-cong-ky-van.png` (chụp lại, góc ảnh người dùng).
+- File: `scene/scene.json`, ảnh trên.
+
 ## 2026-11-14.26 — Khởi Nguyên Trấn: màu về như cũ, giữ hiệu ứng mềm
 
 - Loại: cảnh 3D — **ngoại hình**. Ai làm: phiên code V-20261114-25 làm thay vai thiết kế (`/canh`). Người dùng: "đổi màu
