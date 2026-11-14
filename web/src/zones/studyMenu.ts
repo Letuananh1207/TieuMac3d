@@ -24,6 +24,8 @@ export interface StudyMenu {
   highlight: 'review' | 'learn' | null;
   /** bộ sẽ mở khi chọn "Học bộ mới" (bộ chưa học đầu tiên theo thứ tự Rừng trúc — R-HANH-3) */
   next: Radical | null;
+  /** các bộ chưa học sau `next`, theo thứ tự Rừng trúc — Flutter học tiếp ngay trên bảng mà không cần trang gửi lại (rỗng khi `next` null) */
+  upcoming: Radical[];
 }
 
 export interface StudyInput {
@@ -57,7 +59,7 @@ export function studyMenu(input: StudyInput, pool: readonly Radical[] = RADICALS
     ? { id: 'learned', enabled: true, reason: null, count: c.learned }
     : { id: 'learned', enabled: false, reason: 'noneLearned', count: 0 };
   const highlight = review.enabled ? 'review' : learn.enabled ? 'learn' : null;
-  return { items: [review, learn, learned], highlight, next: canLearn ? c.left[0] : null };
+  return { items: [review, learn, learned], highlight, next: canLearn ? c.left[0] : null, upcoming: canLearn ? c.left.slice(1) : [] };
 }
 
 /** Không có màn Flutter (trình duyệt): đến hạn → lượt ôn; không thì thẻ bộ mới nếu học được; còn lại không mở (R-ON-8). */

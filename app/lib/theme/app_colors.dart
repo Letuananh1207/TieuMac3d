@@ -56,4 +56,16 @@ abstract final class AppColors {
   /// Tầng kệ gỗ danh mục sách + bóng dưới (token `shelf-wood` #8A5A3A, bóng #6B4429 — 2026-11-13.28).
   static const shelfWood = Color(0xFF8A5A3A);
   static const shelfShadow = Color(0xFF6B4429);
+
+  /// Gỗ trục cuộn (token `scroll-wood` #3A2418) + dải sáng / tối của trục cuộn treo Ngồi ôn (2026-11-14.10).
+  static const scrollWood = Color(0xFF3A2418);
+  static const scrollWoodLight = Color(0xFF5A3A28);
+  static const scrollWoodDark = Color(0xFF2A190F);
+
+  /// Chữ mờ / dòng phụ trên giấy (#5E6A70, ≥ 4,5:1 trên `map-paper`) — thiết kế dùng từ nhiều mục, chưa thành token
+  /// (CHANGELOG 2026-11-14.10 gợi ý `slate-muted`).
+  static const slateMuted = Color(0xFF5E6A70);
+
+  /// Lớp tối phủ cảnh khi bảng chọn Ngồi ôn mở (rgba(36,50,58,.16)).
+  static const sceneDim = Color(0x2924323A);
 }

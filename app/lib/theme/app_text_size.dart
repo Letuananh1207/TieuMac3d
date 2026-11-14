@@ -39,6 +39,12 @@ abstract final class AppTextSize {
   static const pinyinLarge = 26.0;
   static const meaning = 20.0;
   static const exampleHan = 24.0;
+
+  /// Ngồi ôn + Bộ đã học (2026-11-14.10): ấn son 溫故 · tiêu đề ngang "Bộ đã học" · chữ ô bộ đã học (dọc / ngang)
+  static const studySeal = 15.0;
+  static const titleCompact = 19.0;
+  static const learnedHan = 40.0;
+  static const learnedHanLandscape = 30.0;
 }
 
 /// Kích thước cố định theo token `size.*` (design_tokens.json).

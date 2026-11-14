@@ -77,6 +77,7 @@ class OpenStudyRequest {
     this.highlight,
     this.review = const [],
     this.next,
+    this.upcoming = const [],
     this.learned = const [],
     required this.region,
   });
@@ -94,6 +95,9 @@ class OpenStudyRequest {
 
   /// bộ mở khi chọn "Học bộ mới"
   final Radical? next;
+
+  /// các bộ chưa học sau [next], theo thứ tự Rừng trúc — học xong [next] trên bảng thì bộ kế lấy từ đây
+  final List<Radical> upcoming;
 
   /// các bộ đã học, theo thứ tự Rừng trúc
   final List<Radical> learned;
@@ -119,12 +123,13 @@ class OpenStudyRequest {
       ));
     }
     if (items.map((i) => i.id).join(',') != ids.join(',')) return null;
-    final h = p['highlight'], learned = p['learned'];
+    final h = p['highlight'], learned = p['learned'], upcoming = p['upcoming'];
     return OpenStudyRequest(
       items: items,
       highlight: h is String && ids.contains(h) ? h : null,
       review: parseReviewItems(p['review']),
       next: parseRadical(p['next']),
+      upcoming: upcoming is List ? [for (final r in upcoming) ?parseRadical(r)] : const [],
       learned: learned is List ? [for (final r in learned) ?parseRadical(r)] : const [],
       region: p['region'] is String ? p['region'] as String : 'Rừng trúc',
     );

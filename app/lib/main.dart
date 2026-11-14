@@ -11,6 +11,8 @@ import 'lesson/lesson_screen.dart';
 import 'lesson/library_screen.dart';
 import 'lesson/radical_screen.dart';
 import 'lesson/review_screen.dart';
+import 'lesson/study_board.dart';
+import 'lesson/study_screen.dart';
 import 'scene/review_event.dart';
 import 'scene/scene_event.dart';
 import 'scene/scene_server.dart';
@@ -117,6 +119,18 @@ class HocXaApp extends StatelessWidget {
                         request,
                         () => DailyView.of(progress!),
                         (items) => Navigator.of(context).push(_reviewRoute(progress!, items)),
+                      )),
+              // cuộn sách Ngồi ôn (R-ON-8): chọn mục → màn ôn / thẻ bộ mới / Bộ đã học đè lên, đóng → bảng tính lại;
+              // "Đứng dậy" → SceneView gửi resume {stand: true}
+              onOpenStudy: progress == null
+                  ? null
+                  : (context, request) => Navigator.of(context).push(StudyScreen.route(
+                        request,
+                        () => StudyProgress.of(progress!),
+                        (items) => Navigator.of(context).push(_reviewRoute(progress!, items)),
+                        (id) async {
+                          await progress!.learnRadical(id);
+                        },
                       )),
               // Tàng Thư Các: danh mục (chọn → ghi mượn) và sổ từ (mở ở trang đã nhớ, đóng → ghi trang) — R-SACH-1, R-SACH-3
               onOpenLibrary: progress == null

@@ -195,8 +195,8 @@ export class FlutterBridge {
    * `false` = không có Flutter / chưa có màn → trang tự mở lượt ôn hoặc thẻ bộ mới (`fallbackStudy`).
    */
   openStudy({ menu, review, learned, region }: StudyPayload): Promise<boolean> {
-    const { items, highlight, next } = menu;
-    return this.ask({ type: 'openStudy', payload: { items, highlight, review, next, learned, region } });
+    const { items, highlight, next, upcoming } = menu;
+    return this.ask({ type: 'openStudy', payload: { items, highlight, review, next, upcoming, learned, region } });
   }
 
   /**

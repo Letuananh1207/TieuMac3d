@@ -27,6 +27,7 @@ describe('Cuộn sách Ngồi ôn — bảng chọn', () => {
     expect(m.items[1]).toEqual({ id: 'learn', enabled: true, reason: null, count: RADICALS.length - 1 });
     expect(m.highlight).toBe('learn');
     expect(m.next?.id).toBe(ids[1]);
+    expect(m.upcoming.map((r) => r.id)).toEqual(ids.slice(2));
   });
 
   it('R-ON-8: Rừng trúc còn bộ đến hạn → Ôn nổi bật dù học bộ mới được', () => {
@@ -39,6 +40,7 @@ describe('Cuộn sách Ngồi ôn — bảng chọn', () => {
     const m = studyMenu({ due: [], learned: ids, hasLessons: true });
     expect(m.items[1]).toEqual({ id: 'learn', enabled: false, reason: 'allLearned', count: 0 });
     expect(m.next).toBeNull();
+    expect(m.upcoming).toEqual([]);
     expect(m.highlight).toBeNull();
   });
 

@@ -62,7 +62,8 @@ class SceneView extends StatefulWidget {
   final Future<void> Function(BuildContext context, OpenDailyRequest request)? onOpenDaily;
 
   /// Mở bảng chọn cuộn sách Ngồi ôn (`openStudy` — R-ON-8); bảng đóng bằng "Đứng dậy" → `resume {stand: true}`.
-  /// `null` (chưa có màn — chờ thiết kế, phiếu `2026-11-13-ngoi-on`) → trả `false`, trang tự mở lượt ôn / thẻ bộ mới.
+  /// `null` (không có kho tiến độ) → trả `false`, trang tự mở lượt ôn / thẻ bộ mới. Nút quay lại của máy đóng bảng
+  /// như "Đứng dậy".
   final Future<void> Function(BuildContext context, OpenStudyRequest request)? onOpenStudy;
 
   /// Mở danh mục sách Tàng Thư Các (`openLibrary` — R-SACH-1); chọn "Mượn" → Flutter ghi mượn → đóng → `resume`.

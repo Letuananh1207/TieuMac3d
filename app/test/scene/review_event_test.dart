@@ -75,4 +75,12 @@ void main() {
     final withNext = studyPayload()..['next'] = _radical('son', '山');
     expect(OpenStudyRequest.parse([{'type': 'openStudy', 'payload': withNext}])!.next!.form, '山');
   });
+
+  test('R-HANH-3: openStudy đọc `upcoming` — các bộ chưa học sau `next`; thiếu → rỗng', () {
+    final p = studyPayload()
+      ..['next'] = _radical('son', '山')
+      ..['upcoming'] = [_radical('thach', '石'), {'id': 'hong'}];
+    expect(OpenStudyRequest.parse([{'type': 'openStudy', 'payload': p}])!.upcoming.map((r) => r.form), ['石']);
+    expect(OpenStudyRequest.parse([{'type': 'openStudy', 'payload': studyPayload()}])!.upcoming, isEmpty);
+  });
 }
