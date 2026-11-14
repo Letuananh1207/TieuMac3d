@@ -474,10 +474,13 @@ function checkConsistency(s: SceneSpec): string[] {
 /** Prop mà `text` chỉ là mã chọn hình (không vẽ lên cảnh): bồn hoa tứ quân tử, pháp bảo Bát Tiên. */
 const TEXT_IS_KEY = new Set(['bon-hoa', 'phap-bao']);
 
+/** Prop mà `text` là NỘI DUNG HỌC (được có chữ Hán — R-HUD-4): bia khắc thơ ở Vườn Bia (Hán + pinyin + nghĩa Việt). */
+const TEXT_IS_LESSON = new Set(['bia', 'bia-rua']);
+
 /**
  * Chuỗi có chữ Hán ở chỗ hiện trong game (biển, cờ, cổng, tên nơi / khu, vòng trận, tên NPC…) — R-HUD-4: chỉ tiếng Việt.
  * Bỏ qua: `site.han`, `site.areas[].han` (dữ liệu giữ, không hiển thị); `text` của prop là mã hình (`TEXT_IS_KEY`);
- * `buildings[].notice` (bảng bài học — nội dung học).
+ * `buildings[].notice` (bảng bài học — nội dung học); `text` của bia khắc thơ (`TEXT_IS_LESSON`).
  */
 export function hanOnDisplay(s: SceneSpec): { path: string; text: string }[] {
   const out: { path: string; text: string }[] = [];
@@ -491,7 +494,9 @@ export function hanOnDisplay(s: SceneSpec): { path: string; text: string }[] {
   return out.filter(({ path }) => {
     if (/^site(\.areas\[\d+\])?\.han$/.test(path) || /^buildings\[\d+\]\.notice/.test(path)) return false;
     const m = /^props\[(\d+)\]\.text$/.exec(path);
-    return !(m && TEXT_IS_KEY.has(s.props[Number(m[1])].kind));
+    if (!m) return true;
+    const kind = s.props[Number(m[1])].kind;
+    return !(TEXT_IS_KEY.has(kind) || TEXT_IS_LESSON.has(kind));
   });
 }
 
