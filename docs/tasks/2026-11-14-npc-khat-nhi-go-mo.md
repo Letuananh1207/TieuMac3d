@@ -1,8 +1,8 @@
 # NPC khất nhi + người gõ mõ báo giờ
 - Yêu cầu: "tôi cần thêm 2 nhân vật là NPC Ăn mày khất nhi, gõ mõ báo giờ đi quanh map"
 - Việc: V-20261114-31 · nhánh `viec/npc-khat-nhi-mo`
-- Loại: thêm (NPC, luật tiền, âm thanh, cầu nối) · Cỡ: lớn · Trạng thái: chờ duyệt (phần hình chờ thiết kế: phiếu ảnh
-  `2026-11-14-anh-khat-nhi`, `2026-11-14-anh-go-mo`)
+- Loại: thêm (NPC, luật tiền, âm thanh, cầu nối) · Cỡ: lớn · Trạng thái: đang làm (trước model) — phần hình chờ thiết kế: phiếu ảnh
+  `2026-11-14-anh-khat-nhi`, `2026-11-14-anh-go-mo`
 - Người dùng đã chọn: ngoại hình **chờ model AI** (bộ ảnh 4 góc → Hunyuan3D trên máy người dùng), **không dựng khối tạm
   trong cảnh app**. Khất nhi ngồi một chỗ, xin Văn tiền mỗi ngày một lần, cho thì được mẹo / tin đồn. Người gõ mõ đi vòng
   cố định cả ngày, đầu mỗi giờ GMT+7 gõ mõ và rao giờ, nói chuyện được, tiếng mõ nhỏ dần theo khoảng cách.
@@ -126,8 +126,22 @@ của Lão Canh 3,7 m.
 **Sửa luật cũ** (cùng lúc): R-NPC-1 thêm "trừ NPC có đường đi (R-NPC-7) và NPC ngồi (R-NPC-6)"; R-CHAT-3 thêm "Lão Canh chỉ
 rao giờ (R-NPC-8)"; R-TIEN-5 thêm nhãn "−5 · Cho Tiểu Khất" (nhãn trừ tiền như Tạp hoá).
 
+## Đã duyệt 2026-11-14
+Người dùng duyệt kế hoạch và chọn đúng mọi đề xuất dưới đây:
+1. Đường đi B, có lên Thiên Bậc tới trước trà lâu (≈ 192 m, ≈ 3 phút một vòng).
+2. NPC đi theo đồng hồ thật GMT+7 trên đường cố định, chỉ dừng chờ khi bị chặn hoặc đang thoại.
+3. Tiểu Khất ngồi ven đường Cổng Trấn, chéo trước Tạp hoá (−6,2; 25,6).
+4. Mỗi lần cho 5 văn.
+5. Sang ngày lúc 0 giờ GMT+7.
+6. Rao "giờ xưa + giờ nay": canh giờ kèm giờ hiện đại trong ngoặc, ban đêm thêm "canh …".
+7. Tiếng mõ là file WAV tự tổng hợp bằng script trong repo, giấy phép CC0.
+8. Cả trấn nhận dòng rao trên kênh chung; bong bóng chỉ vẽ khi ở gần.
+9. Đạo cụ dựng bằng code, model AI để tay không.
+10. Tên: Tiểu Khất, Lão Canh.
+11. Đếm số lần đã cho, câu chào đổi ở mốc 3 và 10 lần, không có quà.
+
 ## Giả định / cần quyết định
-Mỗi điểm có 2–3 phương án, **in đậm** là đề xuất.
+Đã chốt ở mục "Đã duyệt 2026-11-14". Phần dưới giữ lại các phương án đã cân nhắc, **in đậm** là phương án được chọn.
 
 1. **Đường đi Lão Canh**. A: vòng ngắn Quảng Trường + Cổng Trấn (≈ 110 m, 1 phút 40 s / vòng; người chơi trên Thiên Bậc
    không gặp ông) · **B: vòng trên, có cả Thiên Bậc lên tới trước trà lâu (≈ 192 m, ≈ 3 phút)** · C: vòng cả trấn qua khu
