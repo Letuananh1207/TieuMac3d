@@ -81,7 +81,7 @@ async function boot(): Promise<void> {
     });
   }
 
-  // ?nhan-vat= như app: mặc định đệ tử chibi; =tieu-mac, =glb (model AI), =khoi (đệ tử khối), =gau; nút ở bảng đổi
+  // ?nhan-vat= như app: mặc định model AI .glb; =chibi, =tieu-mac, =khoi (đệ tử khối), =gau; nút ở bảng đổi
   const character = await createPlayerCharacter(new URLSearchParams(location.search).get('nhan-vat'));
   // ?nv=x,z[,y] — đặt nhân vật chỗ khác (vd. trong giảng đường để xem nội thất, mái mờ); y = chân ở độ cao nào (tầng 2)
   const nv = (new URLSearchParams(location.search).get('nv') ?? '').split(',').map(Number);

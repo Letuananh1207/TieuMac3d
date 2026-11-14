@@ -12,16 +12,16 @@ const MODELS = import.meta.glob('../../../design/models/nhan-vat.glb', { query: 
 export const PLAYER_MODEL_URL = Object.values(MODELS)[0] as string | undefined;
 
 /**
- * Nhân vật người chơi. `choice` (tham số URL `?nhan-vat=`): không có / khác = đệ tử chibi dựng bằng code (mặc định —
- * người dùng duyệt 2026-11-14, `docs/tasks/2026-11-12-nhan-vat-chibi.md`), `tieu-mac` = Tiểu Mặc (NPC, xem thử),
- * `glb` = model AI `.glb` (lỗi nạp hoặc không có file → đệ tử khối, quyết định 0003), `khoi` = đệ tử khối,
- * `gau` = gấu khối cũ.
+ * Nhân vật người chơi. `choice` (tham số URL `?nhan-vat=`): không có / khác = model AI `.glb` (mặc định — người dùng
+ * chọn 2026-11-14: "dùng mô hình glb trước"; lỗi nạp hoặc không có file → đệ tử khối, quyết định 0003),
+ * `chibi` = đệ tử chibi dựng bằng code (`docs/tasks/2026-11-12-nhan-vat-chibi.md`), `tieu-mac` = Tiểu Mặc (NPC, xem
+ * thử), `khoi` = đệ tử khối, `gau` = gấu khối cũ.
  */
 export async function createPlayerCharacter(choice: string | null): Promise<Character> {
   if (choice === 'gau') return createBlockCharacter();
   if (choice === 'khoi') return createDiscipleCharacter();
   if (choice === 'tieu-mac') return createChibiCharacter(TIEU_MAC);
-  if (choice !== 'glb') return createChibiCharacter(DE_TU);
+  if (choice === 'chibi') return createChibiCharacter(DE_TU);
   if (!PLAYER_MODEL_URL) return createDiscipleCharacter();
   try {
     return await loadGlbCharacter(PLAYER_MODEL_URL);

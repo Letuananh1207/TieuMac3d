@@ -49,3 +49,6 @@ bằng canvas), `player/playerCharacter.ts` (lựa chọn `chibi`, `tieu-mac`, `
 
 ## Kiểm tra cuối
 cd web && npx tsc --noEmit && npm run build · dart tool/check.dart --changed · chụp Canvas 3D (draw call nhân vật)
+
+> **2026-11-14 — người dùng đổi lại:** "tôi muốn dùng mô hình glb trước" → nhân vật mặc định trở lại model `.glb`
+> (`playerCharacter.ts`); chibi + dáng giữ nguyên, xem bằng `?nhan-vat=chibi`. Việc đặt chibi làm mặc định (NV4) hoàn lại.
