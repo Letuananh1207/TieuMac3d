@@ -779,3 +779,42 @@ Mẫu một mục:
   dọc + ngang, Nhà của ta dọc, Tử Cấm Thành dọc (nhiều chữ nhất).
 - Chuỗi: `miniMapLabel`, `miniMapHint`, `mapTitle`, `mapFloor2`, `mapFloor2Suffix`, `mapGoTo`, `mapLegend*` (+ `mapClose` có sẵn).
 - Ảnh: chưa có ảnh (nền HUD là ảnh Canvas 3D cũ giữ chỗ).
+
+## Ngồi — nhìn từ mắt nhân vật: hai tay + cuộn sách có mục (cảnh 3D + HUD) · artboard `NgoiMat-{on,cham,tuhoc,tra,co,dau,nhin}-{doc,ngang}.dc.html`, `NgoiMat-bien-the.dc.html` · từ mục 2026-11-14.21
+
+- **Thay** bảng chọn cuộn treo Flutter của mục 2026-11-14.10 (phần "Bảng chọn"; nút Ngồi ôn, màn Bộ đã học, nhịp nhập định giữ). Áp mọi
+  kiểu ngồi. Luật: `R-DIEU-7`, `R-ON-8`, `R-NGOI-1`, `R-VA-4`, `R-GIAO-1`, `R-DAU-2`, `R-CO-3`, `R-HANH-3`, `R-ON-5`, `R-VUNG-1`,
+  `R-MAN-1`, `R-BANDO-1` (bản sửa trong `docs/tasks/2026-11-14-ngoi-goc-mat.md`).
+- **Cuộn tay 手卷 (vật 3D, code dựng; chữ vẽ lên giấy bằng canvas)**: hai trục đứng `scroll-wood` (rộng 14 px màn, dài hơn giấy 16 mỗi đầu),
+  đầu trục `jade` viền `gold` 20; giấy `map-paper` viền bồi `jade` 12 % + gỗ 18 %. **Tỉ lệ giấy đổi 0,26 × 0,18 → 0,26 × 0,25 m.**
+  Giấy ngửa **16°** về mắt (mép xa nhỏ hơn mép gần ~9 %). Không tối cảnh.
+  - Dọc 390 × 844: giấy 343 × 330 px (88 % bề ngang), trái 23, mép trên ~420, mép dưới ~750. Ngang 844 × 390: 300 × 286 px, trái 470,
+    trên 46 (lệch phải, cảnh bên trái).
+- **Nội dung giấy** (đệm 12 16 10 / 10 14 8): dòng nơi đang ngồi 11/700 `slate-muted` · "Ngồi ôn" Lora 18 (16) · ấn son 溫故 chữ dọc 13 bên
+  phải · vạch chấm vàng · **3 dòng mục** · (chưa học bộ nào: dòng gợi ý 12 `jade` vạch trái 3, nền `jade` 8 %) · "Đứng dậy" cuối giấy, phải.
+  - **Dòng mục = "dòng mực"**, cả bề ngang giấy, cao **56** (dọc) / **54** (ngang), bo 4, đệm 6 10: biểu tượng 20 (18) · tiêu đề 16/700
+    (15) · dòng phụ 12 (11,5) · "›" khi dùng được.
+    - Thường: chữ `slate`, gạch chân mực nâu 22 % 1,5.
+    - Nổi bật: vệt mực `jade` loang (92 % → 55 % sang phải), chữ trắng, dòng phụ trắng 88 %.
+    - Mờ: chữ `#5E6A70`, gạch chân nét đứt 30 %, dòng phụ = lý do ("Học ở Rừng trúc", "Hôm nay đã ôn xong", "Chưa có bộ nào để ôn",
+      "Đã học đủ", "Chưa học bộ nào"); chạm không mở.
+    - Nhấn: viền `gold` 3 + quầng vàng 18 (vệt ánh vàng dưới ngón trỏ) 0,15 s rồi mở màn.
+  - "Đứng dậy": biểu tượng 16 + 14/700, gạch chân mực 45 %, cao 44.
+  - **Vùng chạm**: mục 56 / 54 → trên màn nhỏ nhất 360 × 640 (× 0,92) ở mép xa (− 9 %) ≈ 47 / 45 px (≥ 44 ✓); chữ mục ≈ 14 px ở mép xa.
+- **Hai tay** (vật 3D low-poly, code dựng): ống tay áo loe `robe-sleeve` viền cổ tay `jade`, bàn tay `skin`. Ngồi ôn: hai tay giữ hai trục.
+  Chạm mục: tay phải thả trục, ngón trỏ chạm đúng dòng (0,15 s) rồi về; tay trái luôn giữ trục.
+- **Nhịp**: ngồi → camera vào mắt 0,4 s · 0,3 s hai trục chập giữa trong hai tay · 0,3 → 1 s trục kéo ra, giấy giãn ngang (chậm dần) · 1 s
+  chữ mờ → rõ 0,2 s, chạm được từ đó. **Đứng dậy**: vệt vàng 0,15 s → chữ mờ 0,15 s → trục chập 0,25 s → camera lùi về góc cũ 0,4 s.
+- **Chuyển màn**: chạm "Xem bộ đã học" / "Ôn" / "Học bộ mới" → màn Flutter trượt lên đè 0,25 s, cuộn giữ mở phía sau; đóng màn → trượt
+  xuống, cuộn hiện lại ngay (không chạy lại nhịp 1 s), mục vừa dùng cập nhật + viền `jade` nhấp 1 lần 0,6 s.
+- **Khu tự học tầng 2**: như Ngồi ôn, cảnh nội thất, hàng bồ đoàn phía trước, "Học bộ mới" mờ.
+- **Án thư / bàn trà / đôn / sập / ghế lan can**: không mục. Hai tay đặt trên bàn / án / lan can; bàn trà, đôn, sập: chén trà sứ trắng viền
+  lam trong tay phải; án thư: sách mở trên án. Chỉ để nhìn.
+- **Bàn cờ Ngũ Tử Kỳ**: cúi nhìn ~70°, bàn 13 × 13 vừa bề ngang (dọc) / chiều cao (ngang); hai tay áo ở mép dưới, tay phải cầm quân (viền
+  `gold` khi đặt). HUD giữ 2026-11-13.27 ("Rời bàn", tỉ số, viên lượt) — tay không đè.
+- **Đấu chữ**: hai tay cầm hai mép thẻ bộ thủ trên bàn (thẻ ngửa 18°); câu hỏi + 4 nghĩa giữ 2026-11-13.27.
+- **Nhìn quanh**: kéo ±60° ngang (ngẩng ≤ 20°, cúi ≤ 70°), cuộn trôi theo; thả 1 s → nhìn lại tài liệu ~0,6 s. Gợi ý lần đầu "Kéo để nhìn
+  quanh" (viên kính .9 cao 36 giữa trên, mũi tên hai chiều `jade`), 3 s, 2 lần đầu. Không nút quay về nhìn từ ngoài.
+- Trợ năng: mỗi mục trên cuộn có nút ẩn đọc được (`sitScrollItemLabel`).
+- Chuỗi: có sẵn `review*`, `learn*`, `viewLearned*`, `hintGoForest`, `standUp`; mới `lookAroundHint`, `sitScrollItemLabel`.
+- Ảnh: chưa có (nền là ảnh Canvas 3D cũ + hình vẽ giữ chỗ; chưa có `?dang=ngoi-mat`).

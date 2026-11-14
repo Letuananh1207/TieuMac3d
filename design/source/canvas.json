@@ -1021,6 +1021,111 @@
       "w": 390,
       "h": 844,
       "title": "Bản đồ lớn · Tử Cấm Thành · dọc (nhiều chữ nhất)"
+    },
+    "NgoiMat-on-doc.dc.html": {
+      "x": 0,
+      "y": 57688,
+      "w": 390,
+      "h": 844,
+      "title": "Ngồi mắt · 1 · Ngồi ôn ở trấn · dọc"
+    },
+    "NgoiMat-on-ngang.dc.html": {
+      "x": 470,
+      "y": 57688,
+      "w": 844,
+      "h": 390,
+      "title": "Ngồi mắt · 1 · Ngồi ôn ở trấn · ngang"
+    },
+    "NgoiMat-cham-doc.dc.html": {
+      "x": 1334,
+      "y": 57688,
+      "w": 390,
+      "h": 844,
+      "title": "Ngồi mắt · 2 · Vừa chạm mục — tay trỏ · dọc"
+    },
+    "NgoiMat-cham-ngang.dc.html": {
+      "x": 1804,
+      "y": 57688,
+      "w": 844,
+      "h": 390,
+      "title": "Ngồi mắt · 2 · Vừa chạm mục — tay trỏ · ngang"
+    },
+    "NgoiMat-tuhoc-doc.dc.html": {
+      "x": 2668,
+      "y": 57688,
+      "w": 390,
+      "h": 844,
+      "title": "Ngồi mắt · 6 · Khu tự học tầng 2 · dọc"
+    },
+    "NgoiMat-tuhoc-ngang.dc.html": {
+      "x": 3138,
+      "y": 57688,
+      "w": 844,
+      "h": 390,
+      "title": "Ngồi mắt · 6 · Khu tự học tầng 2 · ngang"
+    },
+    "NgoiMat-tra-doc.dc.html": {
+      "x": 4002,
+      "y": 57688,
+      "w": 390,
+      "h": 844,
+      "title": "Ngồi mắt · 7 · Bàn trà — chén trà · dọc"
+    },
+    "NgoiMat-tra-ngang.dc.html": {
+      "x": 4472,
+      "y": 57688,
+      "w": 844,
+      "h": 390,
+      "title": "Ngồi mắt · 7 · Bàn trà — chén trà · ngang"
+    },
+    "NgoiMat-co-doc.dc.html": {
+      "x": 0,
+      "y": 58652,
+      "w": 390,
+      "h": 844,
+      "title": "Ngồi mắt · 8 · Bàn cờ — cúi nhìn bàn · dọc"
+    },
+    "NgoiMat-co-ngang.dc.html": {
+      "x": 470,
+      "y": 58652,
+      "w": 844,
+      "h": 390,
+      "title": "Ngồi mắt · 8 · Bàn cờ — cúi nhìn bàn · ngang"
+    },
+    "NgoiMat-dau-doc.dc.html": {
+      "x": 1334,
+      "y": 58652,
+      "w": 390,
+      "h": 844,
+      "title": "Ngồi mắt · 9 · Đấu chữ — cầm thẻ · dọc"
+    },
+    "NgoiMat-dau-ngang.dc.html": {
+      "x": 1804,
+      "y": 58652,
+      "w": 844,
+      "h": 390,
+      "title": "Ngồi mắt · 9 · Đấu chữ — cầm thẻ · ngang"
+    },
+    "NgoiMat-nhin-doc.dc.html": {
+      "x": 2668,
+      "y": 58652,
+      "w": 390,
+      "h": 844,
+      "title": "Ngồi mắt · 10 · Nhìn quanh 60° · dọc"
+    },
+    "NgoiMat-nhin-ngang.dc.html": {
+      "x": 3138,
+      "y": 58652,
+      "w": 844,
+      "h": 390,
+      "title": "Ngồi mắt · 10 · Nhìn quanh 60° · ngang"
+    },
+    "NgoiMat-bien-the.dc.html": {
+      "x": 0,
+      "y": 59616,
+      "w": 1700,
+      "h": 1120,
+      "title": "Ngồi mắt · biến thể, nhịp mở / đứng dậy, chuyển màn, án thư, lan can"
     }
   },
   "order": [
@@ -1175,7 +1280,22 @@
     "BanDoVung-lon-tran-doc.dc.html",
     "BanDoVung-lon-tran-ngang.dc.html",
     "BanDoVung-lon-nha-doc.dc.html",
-    "BanDoVung-lon-tct-doc.dc.html"
+    "BanDoVung-lon-tct-doc.dc.html",
+    "NgoiMat-on-doc.dc.html",
+    "NgoiMat-on-ngang.dc.html",
+    "NgoiMat-cham-doc.dc.html",
+    "NgoiMat-cham-ngang.dc.html",
+    "NgoiMat-tuhoc-doc.dc.html",
+    "NgoiMat-tuhoc-ngang.dc.html",
+    "NgoiMat-tra-doc.dc.html",
+    "NgoiMat-tra-ngang.dc.html",
+    "NgoiMat-co-doc.dc.html",
+    "NgoiMat-co-ngang.dc.html",
+    "NgoiMat-dau-doc.dc.html",
+    "NgoiMat-dau-ngang.dc.html",
+    "NgoiMat-nhin-doc.dc.html",
+    "NgoiMat-nhin-ngang.dc.html",
+    "NgoiMat-bien-the.dc.html"
   ],
   "notes": {
     "cach-dung": {
@@ -1595,6 +1715,19 @@
       "y": 56484,
       "w": 440,
       "text": "Phiếu 2026-11-14-ban-do-vung. Đề xuất, chưa chốt. Mặt bằng trên artboard VẼ TỪ ĐẶC TẢ CẢNH THẬT (scene.json, nha-ta.json, tu-cam-thanh.json) bằng đúng quy tắc nét dưới — code làm y như vậy.\n\n• Bản đồ nhỏ: tròn 104 / 96 góc trên trái, viền vàng mảnh + vành kính; dấu 北 trên vành chạy theo xoay; tâm = mình, bán kính 25 m.\n• Bản đồ lớn: tờ giấy kẹp hai trục gỗ (cùng họ bản đồ truyền tống + cuộn Ngồi ôn); bắc lên trên, la bàn 北 góc trên phải; cảnh tối 32 %; HUD ẩn hết (cả ví). Dọc: chú giải một hàng dưới mặt bằng; ngang: cột phải (tên + chú giải + Đóng).\n• Khu: tô mảng rất nhạt xen kẽ (vàng 6 % / ngọc 5 %) + viền nét đứt; tên khu CHỮ HOA 12/700 (không chữ Hán trên giấy — đồng bộ bản đồ truyền tống; chữ Hán ở tiêu đề).\n• Cấp chữ: khu 12/700 · nơi đến cổng 11/700 jade \"→ Nhà của ta\" · nhà 11/500 · chỗ 10/500 slate-muted. Viền chữ giấy 3–3,5 để đọc trên nét.\n• Ghi chú số liệu: vòng trận trong đặc tả đang ở (30; −9), khu Truyền Tống Đài [17,−22]→[42,3] (phiếu ghi (30; 0) — vẽ theo đặc tả)."
+    },
+    "tieu-de-ngoi-mat": {
+      "x": 0,
+      "y": 57448,
+      "text": "Ngồi — nhìn từ mắt nhân vật: hai tay + cuộn sách có mục (phiếu 2026-11-14-ngoi-goc-mat)",
+      "kind": "title1",
+      "maxW": 5200
+    },
+    "ngoi-mat-ghi-chu": {
+      "x": 1780,
+      "y": 59616,
+      "w": 460,
+      "text": "Phiếu 2026-11-14-ngoi-goc-mat. Đề xuất, chưa chốt. THAY bảng chọn cuộn treo Flutter (2026-11-14.10).\n\n• Mục in trên giấy cuộn tay như \"dòng mực\": thường gạch chân mực, nổi bật = vệt mực ngọc lục, mờ = nét đứt + lý do; nhấn = viền + quầng vàng dưới ngón trỏ.\n• Đổi tỉ lệ giấy 0,26 × 0,18 → 0,26 × 0,25 m để 3 mục + Đứng dậy đủ ≥ 44 px ở mép xa trên màn 360 × 640.\n• Dọc: giấy 88 % bề ngang, giữa-dưới; ngang: lệch phải, cảnh bên trái. Ngửa 16°.\n• Tay áo trắng ngà viền jade (áo đệ tử); tay trái giữ trục, tay phải thả ra trỏ.\n• Không tối cảnh. Gợi ý lần đầu \"Kéo để nhìn quanh\" (viên kính giữa trên, 3 s, 2 lần đầu).\n• Bàn cờ / Đấu chữ giữ HUD 2026-11-13.27; tay ở mép dưới, không đè viên lượt / ô nghĩa.\n• Nền: ảnh Canvas 3D cũ + hình vẽ giữ chỗ (chưa có ?dang=ngoi-mat)."
     }
   },
   "designSystems": []

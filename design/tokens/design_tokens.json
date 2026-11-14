@@ -215,6 +215,16 @@
       "value": "#BFD5D1",
       "note": "nước trên bản đồ vùng, viền #6F9590 (như biển bản đồ truyền tống) — 2026-11-14.20",
       "code": "chưa có"
+    },
+    "robe-sleeve": {
+      "value": "#F4F4EF",
+      "note": "ống tay áo đệ tử nhìn từ mắt khi ngồi (viền cổ tay jade) — 2026-11-14.21",
+      "code": "chưa có"
+    },
+    "skin": {
+      "value": "#F0CDB5",
+      "note": "da bàn tay nhìn từ mắt (như da nhân vật chibi) — 2026-11-14.21",
+      "code": "chưa có"
     }
   },
   "font": {

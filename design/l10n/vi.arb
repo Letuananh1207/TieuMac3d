@@ -958,5 +958,15 @@
   "mapLegendDuel": "Đấu chữ",
   "mapLegendShop": "Tạp hoá",
   "mapLegendStudy": "Tự học",
-  "mapLegendBoard": "Nhiệm vụ"
+  "mapLegendBoard": "Nhiệm vụ",
+  "lookAroundHint": "Kéo để nhìn quanh",
+  "sitScrollItemLabel": "{item}, trên cuộn sách",
+  "@sitScrollItemLabel": {
+    "description": "Nhãn trợ năng nút ẩn cho từng mục in trên cuộn sách (cuộn 3D không có nút DOM)",
+    "placeholders": {
+      "item": {
+        "type": "String"
+      }
+    }
+  }
 }

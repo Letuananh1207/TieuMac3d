@@ -132,3 +132,6 @@ Một chất liệu: kính mờ `frost*` + viền `frost-line` / `frost-outline`
 | Bản đồ nhỏ tròn (104 / 96; viền `gold` 2 + vành kính; dấu 北 `jade` trên vành xoay theo camera; dấu mép; viên "Tầng 2") | `BanDoVung-HUD-*`, `BanDoVung-nho-trang-thai` | map-paper, map-ink, map-cloud, gold, jade, frost |
 | Bản đồ lớn trên tờ giấy kẹp hai trục gỗ (la bàn 北, chú giải, luật đặt chữ theo ưu tiên) | `BanDoVung-lon-*` | map-paper, map-ink, map-cloud, map-water, scroll-wood, jade, gold, lacquer |
 | Bộ biểu tượng bản đồ vùng (vòng trận, cổng, cờ, Đấu chữ, Tạp hoá, tự học, bảng nhiệm vụ; đĩa giấy) + mũi tên "mình" | `BanDoVung-nho-trang-thai` | map-ink, jade, gold, lacquer, map-paper |
+| Cuộn tay có mục (giấy 0,26 × 0,25 m ngửa 16°, hai trục; dòng mực thường / nổi bật / mờ / nhấn; "Đứng dậy" cuối giấy) — thay bảng chọn cuộn treo | `NgoiMat-on-*`, `NgoiMat-cham-*`, `NgoiMat-tuhoc-*`, `NgoiMat-bien-the` | map-paper, scroll-wood, jade, gold, lacquer, slate, slate-muted |
+| Hai tay nhìn từ mắt (ống tay áo `robe-sleeve` viền `jade`, bàn tay `skin`; giữ trục / trỏ / đặt bàn / cầm chén / cầm thẻ) | `NgoiMat-*` | robe-sleeve, skin, jade |
+| Gợi ý "Kéo để nhìn quanh" (viên kính cao 36, mũi tên hai chiều `jade`) | `NgoiMat-nhin-*` | frost, jade |

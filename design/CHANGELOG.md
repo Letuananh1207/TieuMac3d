@@ -3,6 +3,22 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-14.21 — Ngồi: nhìn từ mắt nhân vật, hai tay + cuộn sách có mục chạm được
+
+- Loại: giao diện · token · chuỗi · luồng/luật (đề xuất). Màn: **Ngồi — nhìn từ mắt** (cảnh 3D + HUD) — đặc tả `docs/screen_specs.md` mục cùng
+  tên. **Thay phần "Bảng chọn" (cuộn treo Flutter) của mục 2026-11-14.10**.
+- Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-14-ngoi-goc-mat.md` (phiếu còn trong máy, chưa lên GitHub — dòng "Đã vẽ" ghi ở bản trong máy).
+  Vẽ trong phiên VS Code theo vai thiết kế; người dùng duyệt "Ổn, chốt".
+- Artboard (15): `NgoiMat-on`, `-cham`, `-tuhoc`, `-tra`, `-co`, `-dau`, `-nhin` × `-doc` / `-ngang`, `NgoiMat-bien-the` (+ `canvas.json`).
+- Quyết định: mục in trên giấy như **dòng mực** (thường gạch chân · nổi bật vệt mực jade · mờ nét đứt + lý do · nhấn viền + quầng vàng);
+  **tỉ lệ giấy 0,26 × 0,25 m** (đổi từ 0,26 × 0,18) để mục ≥ 44 px ở mép xa trên 360 × 640; giấy ngửa 16°; dọc giấy 88 % bề ngang giữa-dưới,
+  ngang lệch phải; không tối cảnh; tay áo trắng ngà viền jade (áo đệ tử), tay trái giữ trục, tay phải trỏ; nhịp mở / đứng dậy / chuyển màn
+  Flutter ghi rõ thời lượng; bàn cờ / Đấu chữ giữ HUD 2026-11-13.27.
+- Token mới: `color.robe-sleeve` #F4F4EF, `color.skin` #F0CDB5. Chuỗi mới: `lookAroundHint`, `sitScrollItemLabel`.
+- Luật: khớp các bản sửa đã duyệt trong `docs/tasks/2026-11-14-ngoi-goc-mat.md` (R-DIEU-7, R-ON-8, R-NGOI-1 / R-VA-4, R-GIAO-1). Đề xuất thêm vào
+  R-ON-8: "đóng màn ôn / thẻ / danh sách → cuộn hiện lại ngay, không chạy lại nhịp 1 s"; chạm mục mờ → không mở, không vệt vàng.
+- Ảnh: chưa có (chưa có `?dang=ngoi-mat` ở Canvas 3D; nền artboard là ảnh cũ + hình vẽ giữ chỗ).
+
 ## 2026-11-14.20 — Bản đồ vùng: bản đồ nhỏ góc trên trái + bản đồ lớn cả cảnh
 
 - Loại: giao diện · token · chuỗi. Màn: **Bản đồ vùng** (HUD web) — đặc tả `docs/screen_specs.md` mục cùng tên.
