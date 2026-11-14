@@ -972,6 +972,55 @@
       "w": 1440,
       "h": 800,
       "title": "Trận sư 陣師 · đạo sĩ trung niên · bộ ảnh 4 góc + cận mặt"
+    },
+    "BanDoVung-HUD-doc.dc.html": {
+      "x": 0,
+      "y": 55520,
+      "w": 390,
+      "h": 844,
+      "title": "Bản đồ vùng · HUD dọc · bản đồ nhỏ góc trên trái (Quảng Trường)"
+    },
+    "BanDoVung-HUD-ngang.dc.html": {
+      "x": 470,
+      "y": 55520,
+      "w": 844,
+      "h": 390,
+      "title": "Bản đồ vùng · HUD ngang"
+    },
+    "BanDoVung-nho-trang-thai.dc.html": {
+      "x": 1394,
+      "y": 55520,
+      "w": 1500,
+      "h": 760,
+      "title": "Bản đồ nhỏ · trạng thái · biểu tượng · nét vẽ"
+    },
+    "BanDoVung-lon-tran-doc.dc.html": {
+      "x": 0,
+      "y": 56484,
+      "w": 390,
+      "h": 844,
+      "title": "Bản đồ lớn · Khởi Nguyên Trấn · dọc"
+    },
+    "BanDoVung-lon-tran-ngang.dc.html": {
+      "x": 470,
+      "y": 56484,
+      "w": 844,
+      "h": 390,
+      "title": "Bản đồ lớn · Khởi Nguyên Trấn · ngang"
+    },
+    "BanDoVung-lon-nha-doc.dc.html": {
+      "x": 1394,
+      "y": 56484,
+      "w": 390,
+      "h": 844,
+      "title": "Bản đồ lớn · Nhà của ta · dọc"
+    },
+    "BanDoVung-lon-tct-doc.dc.html": {
+      "x": 1864,
+      "y": 56484,
+      "w": 390,
+      "h": 844,
+      "title": "Bản đồ lớn · Tử Cấm Thành · dọc (nhiều chữ nhất)"
     }
   },
   "order": [
@@ -1119,7 +1168,14 @@
     "QuanSu-huong.dc.html",
     "QuanSu-bo-anh.dc.html",
     "TranSu-huong.dc.html",
-    "TranSu-bo-anh.dc.html"
+    "TranSu-bo-anh.dc.html",
+    "BanDoVung-HUD-doc.dc.html",
+    "BanDoVung-HUD-ngang.dc.html",
+    "BanDoVung-nho-trang-thai.dc.html",
+    "BanDoVung-lon-tran-doc.dc.html",
+    "BanDoVung-lon-tran-ngang.dc.html",
+    "BanDoVung-lon-nha-doc.dc.html",
+    "BanDoVung-lon-tct-doc.dc.html"
   ],
   "notes": {
     "cach-dung": {
@@ -1526,6 +1582,19 @@
       "y": 54360,
       "w": 720,
       "text": "Câu lệnh Gemini — Trận sư 陣師, hướng A \"đạo sĩ trận pháp trung niên\" (hồ sơ docs/tham_khao/tran-su.md). Mỗi câu một cuộc trò chuyện MỚI.\n\n1 · TRƯỚC — đính kèm design/models/anh/nhan-vat-truoc.png:\nCreate a NEW character in exactly the same 3D vinyl toy style, chibi proportions (head about 1/3 of the height) and rendering as the attached image, about 8% taller. Character: a calm Taoist formation master of the Song dynasty, about 45 years old, slim, upright posture, bright calm long eyes, slightly raised eyebrows, a short neat black goatee on the chin (one solid smooth shape, no loose hairs), gentle composed mouth, skin #EBC4A8. Hair: black #1E1C1E topknot with a small golden-wood lotus crown #B8945A pierced by a hairpin. Robe: Taoist robe in ash grey #6E7378 reaching the ground (shoe tips visible), wide sleeves, black trim #26262A on the collar, the front edge, the cuffs and the hem; cross collar with the LEFT panel over the RIGHT panel (seen from the front the collar forms a \"y\"), white inner collar #F4F0E6. Earth-gold cloth sash #C9A35A tied in a knot at the front with two hanging ends; a small square jade pendant #8CCB9E on the left side of the sash. The front of the robe is plain. Black cloth shoes with square toes and white soles. Hands empty. A-pose: arms angled down about 35 degrees, wide sleeves NOT touching the body, feet slightly apart, both shoe tips clearly visible under the robe. Straight front view, orthographic, no perspective. Soft even studio light with gentle form shading, no outlines, no cel shading. Plain flat light grey background #DDDDDD, no ground shadow, no frame, no text, no logo, no watermark. Square 1024x1024, full body centered, top of the crown at 10% from the top, soles at 90%. Large clear color areas, few small details.\n\n2 · TRÁI — đính kèm ảnh 1:\nThe same character as the attached image, same pose, same size, same colors, same lighting and background. Exact side profile, rotated 90 degrees so he faces the LEFT edge of the image. Orthographic, no perspective. Show the lotus crown on the topknot, the goatee, the wide sleeve with black trim, the sash ends, the long robe to the ground. Arms still in A-pose, sleeves not touching the body, hands empty. Plain #DDDDDD background, no shadow, no text. Square 1024x1024, top of the crown at 10%, soles at 90%.\n\n3 · SAU — đính kèm ảnh 1:\nThe same character as the attached image, same pose, same size, seen straight from the BACK. Ash grey robe back with ONE simple earth-gold #C9A35A bagua symbol in the middle of the back (a thin circle with the eight trigram bar marks around it), black trim at the hem and cuffs, the gold sash going around the waist, the topknot with the lotus crown. A-pose, sleeves not touching the body, hands empty. Orthographic, plain #DDDDDD background, no shadow, no text. Square 1024x1024, top of the crown at 10%, soles at 90%.\n\n4 · PHẢI — đính kèm ảnh 1:\nThe same character as the attached image, same pose, same size, same colors, same lighting and background. Exact side profile, rotated 90 degrees so he faces the RIGHT edge of the image. Orthographic, no perspective. A-pose, sleeves not touching the body, hands empty. Plain #DDDDDD background, no shadow, no text. Square 1024x1024, top of the crown at 10%, soles at 90%.\n\n5 · CẬN MẶT — đính kèm ảnh 1:\nClose-up of the same character's head and shoulders, straight front, same 3D vinyl toy style: calm bright long eyes, slightly raised eyebrows, short neat black goatee, composed gentle mouth, black topknot with the small golden-wood lotus crown and hairpin, ash grey robe collar with black trim, left panel over right, white inner collar. Sharp clean details. Plain #DDDDDD background, no text. Square 1024x1024.\n\nXong: dán 5 ảnh vào chat — Claude chuẩn hoá (nền, cỡ, vạch 10 % / 90 %) và đặt lên artboard."
+    },
+    "tieu-de-ban-do-vung": {
+      "x": 0,
+      "y": 55280,
+      "text": "Bản đồ vùng — bản đồ nhỏ góc màn + bản đồ lớn cả cảnh (phiếu 2026-11-14-ban-do-vung)",
+      "kind": "title1",
+      "maxW": 2900
+    },
+    "ban-do-vung-ghi-chu": {
+      "x": 2334,
+      "y": 56484,
+      "w": 440,
+      "text": "Phiếu 2026-11-14-ban-do-vung. Đề xuất, chưa chốt. Mặt bằng trên artboard VẼ TỪ ĐẶC TẢ CẢNH THẬT (scene.json, nha-ta.json, tu-cam-thanh.json) bằng đúng quy tắc nét dưới — code làm y như vậy.\n\n• Bản đồ nhỏ: tròn 104 / 96 góc trên trái, viền vàng mảnh + vành kính; dấu 北 trên vành chạy theo xoay; tâm = mình, bán kính 25 m.\n• Bản đồ lớn: tờ giấy kẹp hai trục gỗ (cùng họ bản đồ truyền tống + cuộn Ngồi ôn); bắc lên trên, la bàn 北 góc trên phải; cảnh tối 32 %; HUD ẩn hết (cả ví). Dọc: chú giải một hàng dưới mặt bằng; ngang: cột phải (tên + chú giải + Đóng).\n• Khu: tô mảng rất nhạt xen kẽ (vàng 6 % / ngọc 5 %) + viền nét đứt; tên khu CHỮ HOA 12/700 (không chữ Hán trên giấy — đồng bộ bản đồ truyền tống; chữ Hán ở tiêu đề).\n• Cấp chữ: khu 12/700 · nơi đến cổng 11/700 jade \"→ Nhà của ta\" · nhà 11/500 · chỗ 10/500 slate-muted. Viền chữ giấy 3–3,5 để đọc trên nét.\n• Ghi chú số liệu: vòng trận trong đặc tả đang ở (30; −9), khu Truyền Tống Đài [17,−22]→[42,3] (phiếu ghi (30; 0) — vẽ theo đặc tả)."
     }
   },
   "designSystems": []

@@ -734,3 +734,48 @@ Mẫu một mục:
 - Chuỗi: `studyGuideButton`, `studyGuideEyebrow`, `studyGuideTitle`, `studyGuideIntro`, `studyGuideFigure`, `studyGuideStep1…4`
   (+ `…Title`), `studyGuideTipName`, `studyGuideTip`, `studyGuideNoneTitle`, `studyGuideNoneBody`.
 - Ảnh: chưa có ảnh (nền là hình vẽ giữ chỗ tầng 2 Tàng Thư Các).
+
+## Bản đồ vùng — bản đồ nhỏ + bản đồ lớn (HUD) · artboard `BanDoVung-HUD-doc.dc.html`, `BanDoVung-HUD-ngang.dc.html`, `BanDoVung-nho-trang-thai.dc.html`, `BanDoVung-lon-tran-doc.dc.html`, `BanDoVung-lon-tran-ngang.dc.html`, `BanDoVung-lon-nha-doc.dc.html`, `BanDoVung-lon-tct-doc.dc.html` · từ mục 2026-11-14.20
+
+- Mục đích: ở mọi cảnh biết mình ở đâu + chỗ quan trọng ở hướng nào. **Code tự vẽ từ đặc tả cảnh** (Canvas 2D); mặt bằng trên
+  artboard được vẽ đúng cách đó từ `design/scene/scene.json`, `nha-ta.json`, `tu-cam-thanh.json`. Luật: `R-BANDO-1…5`, `R-HUD-1/3`,
+  `R-DIEU-1`, `R-MAN-1`, `R-NPC-2`.
+- **Nét vẽ (một bộ cho cả hai bản đồ)** — mực `map-ink` theo độ mờ:
+  - Đất (mặt bằng `terrain.plateaus` có y ≥ −1; không có địa hình → khung các khu nới 3 m) = `map-paper`, mép đất mực .18 dày 1 px;
+    ngoài đất = `map-cloud`.
+  - Khu (`site.areas`, **chỉ bản đồ lớn**): tô xen kẽ vàng 6 % (`rgba(212,166,74,.06)`) / ngọc 5 % (`rgba(43,84,70,.05)`) + viền mực .28,
+    1 px, nét đứt 4 · 3.
+  - Nước: `map-water` bo góc 30 % cạnh ngắn, viền #6F9590 1,2 px. Lối lát: vạch mực .13 đúng bề rộng (m), đầu vuông.
+  - Chân nhà: đa giác theo x, z, w, d, rotY; tô mực .2, viền mực .7 1,4 px. **Nhà đang ở trong**: tô `jade` 55 %, viền `jade` 2.
+  - Tường (vuông `walls.half` + `wallSegments`) chừa khe cổng: mực .8, dày 2 px (nhỏ) / 2,6 px (lớn), đầu tròn.
+  - Độ dày nét tính theo px màn (không phóng theo tỉ lệ).
+- **Biểu tượng** (đĩa giấy #F7F1E4 viền mực .55, ô 24): vòng trận (vòng `jade` + 6 chấm `gold`) · cổng sang cảnh (cổng mái) · bàn cờ
+  Ngũ Tử Kỳ (lưới gỗ + 2 quân) · bàn Đấu chữ (ô giấy viền `jade` chữ 字) · Tạp hoá (mái hiên son) · khu tự học / chỗ ngồi ôn (người
+  ngồi bồ đoàn) · bảng nhiệm vụ 日課榜 (bảng có chân). Cỡ: bản đồ nhỏ 15, dấu mép 13, bản đồ lớn 22. SVG trong `BanDoVung-nho-trang-thai`.
+- **Mình**: mũi tên `jade` viền trắng 2 (cao 20) trong quầng `jade` 18 % r 11, xoay theo hướng mặt; bản đồ lớn thêm vòng `gold` r 16.
+- **Bản đồ nhỏ**: tròn `size.minimap-*` (104 dọc / 96 ngang); chỗ: dọc trái 20, trên 61 (safe + 14); ngang trái 63 (safe + 16), trên 16.
+  Viền trong `gold` 2 + vành kính sương 4 (.86) + ngoài `slate` 16 % + bóng HUD. Tâm = mình, bán kính **25 m**, **xoay theo camera**
+  (hướng camera lên trên). Dấu **北**: tròn 20 `jade` chữ trắng viền trắng 1,5, đặt trên vành theo hướng bắc. Không chữ khu.
+  - Vòng trận / cổng ngoài tầm (> 23 m) → biểu tượng 13 cách mép 9 + mũi tam giác `jade` chỉ ra ngoài.
+  - Tầng 2 → viên "Tầng 2" (cao 20, `jade`, chữ trắng 11/700, viền trắng) đè mép dưới vòng.
+  - Đang nhấn: thu 0,94 + quầng `jade` 35 % dày 8. Vùng chạm cả vòng.
+  - Lần đầu (2 lần mở app đầu): viên "Chạm để mở bản đồ" (kính .92, cao 30, mũi ‹ `jade`) bên phải vòng, 4 s.
+  - Ẩn khi: màn tải, bản đồ truyền tống, bản đồ lớn, màn phủ, thoại NPC, bàn chơi, gõ chat, trang trí, **đang ngồi**; hiện lại mờ vào 0,2 s.
+- **Bản đồ lớn** (chạm bản đồ nhỏ / phím M): cảnh tối 32 %, **ẩn mọi HUD (cả ví)**, nhân vật đứng yên.
+  - Tờ giấy `map-paper` kẹp **hai trục** `scroll-wood` cao 12 (đầu trục `jade` viền `gold` 16), viền bồi `jade` 12 % + gỗ 18 %.
+  - Dọc: trái / phải 16, trên 57; đầu giấy "BẢN ĐỒ" 11/700 `slate-muted` + tên cảnh Lora 20 + chữ Hán 16 `jade`; khung mặt bằng (viền mực
+    .25) rộng 340; **chú giải** một hàng gói dòng dưới (biểu tượng 16 + chữ 11 `slate-muted`). Nút **"Đóng bản đồ"** (viên kính .92 cao
+    48, × 18 + 15/700) giữa đáy, trên safe 18.
+  - Ngang: tờ giấy trái (từ safe + 12, rộng 600, mặt bằng không đầu); cột phải (tới safe phải + 12): thẻ tên cảnh (kính .92 bo 12), thẻ chú
+    giải dọc, nút "Đóng" cao 44.
+  - **Bắc lên trên**, cả cảnh vừa khung (đệm 6 m), la bàn tròn r 17 góc trên phải (kim son chỉ bắc, chữ 北 12).
+  - **Chữ** (viền giấy 3–3,5 px để đọc trên nét): khu CHỮ HOA 12/700 `slate` giãn .5 (khung thấp < 400: 10) — **không chữ Hán khu trên
+    giấy** (đồng bộ bản đồ truyền tống; chữ Hán ở tiêu đề) · nơi đến cổng 11/700 `jade` "→ {nơi}" · nhà 11/500 `slate` · chỗ 10/500
+    `slate-muted` (vd. "Khu tự học · tầng 2", "Đấu chữ", 日課榜 bằng Noto Serif SC).
+  - **Luật đặt chữ**: xét theo ưu tiên khu (1) > nơi đến cổng (2) > nhà (3) > chỗ (4); tên khu thử 3 chỗ trong khu (sát mép trên + 15,
+    giữa, sát mép dưới − 6) — chỗ đầu không đè biểu tượng / chữ đã đặt; các cấp sau đè → bỏ chữ (biểu tượng vẫn vẽ).
+  - Chạm lên bản đồ không đi tới. Đóng: "Đóng bản đồ" / nút quay lại / M / Esc.
+- Trạng thái đã vẽ: bản đồ nhỏ trên HUD dọc + ngang (Quảng Trường, có gợi ý lần đầu); 6 trạng thái bản đồ nhỏ; bản đồ lớn Khởi Nguyên Trấn
+  dọc + ngang, Nhà của ta dọc, Tử Cấm Thành dọc (nhiều chữ nhất).
+- Chuỗi: `miniMapLabel`, `miniMapHint`, `mapTitle`, `mapFloor2`, `mapFloor2Suffix`, `mapGoTo`, `mapLegend*` (+ `mapClose` có sẵn).
+- Ảnh: chưa có ảnh (nền HUD là ảnh Canvas 3D cũ giữ chỗ).

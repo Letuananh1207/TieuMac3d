@@ -3,6 +3,24 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-14.20 — Bản đồ vùng: bản đồ nhỏ góc trên trái + bản đồ lớn cả cảnh
+
+- Loại: giao diện · token · chuỗi. Màn: **Bản đồ vùng** (HUD web) — đặc tả `docs/screen_specs.md` mục cùng tên.
+- Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-14-ban-do-vung.md` (phiếu còn trong máy, chưa lên GitHub — phiên code đang soạn; dòng
+  "Đã vẽ" ghi ở bản trong máy). Vẽ trong phiên VS Code theo vai thiết kế; người dùng duyệt "Ổn, chốt".
+- Artboard: `BanDoVung-HUD-doc`, `BanDoVung-HUD-ngang`, `BanDoVung-nho-trang-thai`, `BanDoVung-lon-tran-doc`, `BanDoVung-lon-tran-ngang`,
+  `BanDoVung-lon-nha-doc`, `BanDoVung-lon-tct-doc` (+ `canvas.json`). **Mặt bằng vẽ bằng script từ đặc tả cảnh thật** theo đúng quy tắc
+  nét trong đặc tả — code làm lại y như vậy.
+- Quyết định: bản đồ nhỏ tròn 104 / 96, viền vàng + vành kính, 北 chạy trên vành, bán kính 25 m, xoay theo camera, dấu mép cho vòng trận /
+  cổng, viên "Tầng 2", gợi ý lần đầu; bản đồ lớn là tờ giấy kẹp hai trục gỗ, bắc lên trên, ẩn mọi HUD kể cả ví, khu tô mảng nhạt + viền
+  nét đứt, tên khu chữ hoa không chữ Hán (đồng bộ bản đồ truyền tống), 4 cấp chữ + luật bỏ chữ theo ưu tiên, chú giải (dọc: hàng dưới;
+  ngang: cột phải).
+- Token mới: `color.map-ink`, `color.map-cloud`, `color.map-water`; `size.minimap-portrait` 104, `size.minimap-landscape` 96.
+- Chuỗi mới: `miniMap*`, `mapTitle`, `mapFloor2*`, `mapGoTo`, `mapLegend*`.
+- Luật: không đổi (R-BANDO-1…5 khớp). **Lệch số liệu**: phiếu ghi vòng trận trấn (30; 0) và Truyền Tống Đài [17,−10]→[41,10]; đặc tả hiện là
+  (30; −9) và [17,−22]→[42,3] — thiết kế vẽ theo đặc tả; phiên code kiểm ví dụ trong sổ (nếu có nêu toạ độ).
+- Ảnh: chưa có.
+
 ## 2026-11-14.19 — Bộ ảnh nhiều góc NPC Trận sư 陣師 (đạo sĩ trận pháp trung niên)
 
 - Loại: tài nguyên 3D — ảnh đầu vào (Hunyuan3D-2mv). Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-13-anh-tran-su.md`.

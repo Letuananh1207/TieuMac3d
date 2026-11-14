@@ -129,3 +129,6 @@ Một chất liệu: kính mờ `frost*` + viền `frost-line` / `frost-outline`
 | Biểu tượng bản đồ "Nhà của ta" (tiểu viện) | `NhaTa-ban-do`, `scene/ban-do/ve-ban-do.html` | map-paper, lacquer |
 | Bảng hướng dẫn khu (khung Bảng cách chơi dùng lại cho nơi không phải trò chơi; minh hoạ người ngồi + cuộn treo mini 3 mục) | `TuHoc-doc`, `TuHoc-doc-chua-hoc`, `TuHoc-ngang` | frost, jade, map-paper, scroll-wood, gold |
 | Nút nổi "Hướng dẫn" trên biển khu (viên `jade` 46 + sách mở, đuôi, chip tên) | `TuHoc-doc-nut`, `TuHoc-ngang-nut` | jade, frost |
+| Bản đồ nhỏ tròn (104 / 96; viền `gold` 2 + vành kính; dấu 北 `jade` trên vành xoay theo camera; dấu mép; viên "Tầng 2") | `BanDoVung-HUD-*`, `BanDoVung-nho-trang-thai` | map-paper, map-ink, map-cloud, gold, jade, frost |
+| Bản đồ lớn trên tờ giấy kẹp hai trục gỗ (la bàn 北, chú giải, luật đặt chữ theo ưu tiên) | `BanDoVung-lon-*` | map-paper, map-ink, map-cloud, map-water, scroll-wood, jade, gold, lacquer |
+| Bộ biểu tượng bản đồ vùng (vòng trận, cổng, cờ, Đấu chữ, Tạp hoá, tự học, bảng nhiệm vụ; đĩa giấy) + mũi tên "mình" | `BanDoVung-nho-trang-thai` | map-ink, jade, gold, lacquer, map-paper |

@@ -934,5 +934,29 @@
   "studyGuideTipName": "Lời thủ thư Điển Thư",
   "studyGuideTip": "Mỗi ngày ôn một ít, chữ sẽ ở lại lâu. Số son trên nút Ngồi ôn là số bộ đến hạn hôm nay.",
   "studyGuideNoneTitle": "Đạo hữu chưa học bộ thủ nào",
-  "studyGuideNoneBody": "Cuộn sách ở đây chỉ để ôn, nên chưa có gì để ôn. Hãy tới Rừng trúc học bộ đầu tiên — đi Truyền Tống Đài, chọn Rừng trúc."
+  "studyGuideNoneBody": "Cuộn sách ở đây chỉ để ôn, nên chưa có gì để ôn. Hãy tới Rừng trúc học bộ đầu tiên — đi Truyền Tống Đài, chọn Rừng trúc.",
+  "miniMapLabel": "Bản đồ — chạm để mở",
+  "miniMapHint": "Chạm để mở bản đồ",
+  "mapTitle": "Bản đồ",
+  "@mapTitle": {
+    "description": "Dòng nhỏ trên đầu giấy bản đồ lớn, trước tên cảnh"
+  },
+  "mapFloor2": "Tầng 2",
+  "mapFloor2Suffix": "· tầng 2",
+  "mapGoTo": "→ {place}",
+  "@mapGoTo": {
+    "description": "Nơi đến của cổng sang cảnh",
+    "placeholders": {
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "mapLegendTeleport": "Vòng trận",
+  "mapLegendGate": "Cổng",
+  "mapLegendChess": "Cờ",
+  "mapLegendDuel": "Đấu chữ",
+  "mapLegendShop": "Tạp hoá",
+  "mapLegendStudy": "Tự học",
+  "mapLegendBoard": "Nhiệm vụ"
 }
