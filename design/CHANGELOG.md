@@ -3,7 +3,7 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
-## 2026-11-15.1 — Tiểu Mặc + bảng nhiệm vụ ra bên phải tiệm Tạp hoá
+## 2026-11-15.2 — Tiểu Mặc + bảng nhiệm vụ ra bên phải tiệm Tạp hoá
 
 - Loại: cảnh 3D — **bố cục**. Phiên code V-20261114-35 làm thay `/canh`; người dùng: "vị trí Tiểu Mặc và bảng nên đặt ở bên
   phải của tiệm Tạp hoá". **Đã duyệt 2026-11-15.**
