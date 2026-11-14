@@ -6,7 +6,7 @@ import { guideOf, STUDY_GUIDE, STUDY_KIND, studySign } from './studyGuide';
 /** Chân biển "Khu tự học" trên sàn tầng 2 (cao 6,1 m) + biển bàn cờ dưới đất. */
 const SIGN = studySign({ x: 10, y: 6.1, z: -3.5 });
 const SIGNS = [
-  ...gameSigns([{ kind: 'co', npc: 'tieu-mac', sign: { x: -29.5, z: 4, han: '五子棋', name: 'Ngũ Tử Kỳ' } }]),
+  ...gameSigns([{ kind: 'co', npc: 'tieu-mac', sign: { x: -30.5, z: 2.6, han: '五子棋', name: 'Ngũ Tử Kỳ' } }]),
   SIGN,
 ];
 
@@ -22,7 +22,7 @@ describe('Hướng dẫn Khu tự học — R-VA-5', () => {
   it('R-VA-5: tầng 1 ngay dưới biển → không có nút; biển dưới đất không xét tầng', () => {
     expect(signInRange(SIGNS, 10, -3, 0.5)).toBeNull();
     expect(signInRange(SIGNS, 10, -3, 5.5)?.kind).toBe(STUDY_KIND); // lệch dưới 1 m (đang bước lên sàn)
-    expect(signInRange(SIGNS, -28, 4, 6.1)?.kind).toBe('co'); // biển bàn chơi không có y
+    expect(signInRange(SIGNS, -29, 2.6, 6.1)?.kind).toBe('co'); // biển bàn chơi không có y
   });
 
   it('R-VA-5: bảng — đầu "Tàng Thư Các · Hướng dẫn", không chữ Hán (R-HUD-4), 4 mục theo thứ tự, lời thủ thư', () => {

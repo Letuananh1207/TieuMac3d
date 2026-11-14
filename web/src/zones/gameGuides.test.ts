@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { boldParts, gameGuide, gameSigns, signInRange } from './gameGuides';
 
 const TABLES = [
-  { kind: 'co', npc: 'tieu-mac', sign: { x: -29.5, z: 4, han: '五子棋', name: 'Ngũ Tử Kỳ' } },
-  { kind: 'dau-chu', npc: 'su-phu', sign: { x: -29.5, z: 11, han: '鬥字', name: 'Đấu chữ' } },
+  { kind: 'co', npc: 'tieu-mac', sign: { x: -30.5, z: 2.6, han: '五子棋', name: 'Ngũ Tử Kỳ' } },
+  { kind: 'dau-chu', npc: 'su-phu', sign: { x: -37.5, z: 12.4, han: '鬥字', name: 'Đấu chữ' } },
   { kind: 'co', npc: 'tieu-mac' },
 ];
 
@@ -11,10 +11,10 @@ describe('Biển tên trò chơi — R-GIAO-2', () => {
   it('R-GIAO-2: chỉ bàn có biển; đứng dưới 2,5 m → biển gần nhất, xa hơn → không có', () => {
     const signs = gameSigns(TABLES);
     expect(signs.map((s) => s.name)).toEqual(['Ngũ Tử Kỳ', 'Đấu chữ']);
-    expect(signInRange(signs, -28, 4)?.name).toBe('Ngũ Tử Kỳ');
-    expect(signInRange(signs, -26, 4)).toBeNull();
-    expect(signInRange(signs, -29.5, 8)).toBeNull(); // cách 4 / 3 m → không
-    expect(signInRange(signs, -29.5, 9)?.name).toBe('Đấu chữ');
+    expect(signInRange(signs, -29, 2.6)?.name).toBe('Ngũ Tử Kỳ');
+    expect(signInRange(signs, -27, 2.6)).toBeNull();
+    expect(signInRange(signs, -34, 7.5)).toBeNull(); // giữa hai bàn: cách 6 / 6 m → không
+    expect(signInRange(signs, -36, 12.4)?.name).toBe('Đấu chữ');
   });
 
   it('R-GIAO-2: bảng cách chơi — đủ 4 mục theo thứ tự, mẹo của NPC bàn, Đấu chữ có ô "chưa học bộ nào"', () => {
