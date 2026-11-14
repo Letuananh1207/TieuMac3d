@@ -665,3 +665,40 @@ Mẫu một mục:
 - Vật khởi đầu (đề xuất, chờ luật): Trúc cảnh 竹 · Đèn lồng 燈 · Tranh chữ 書.
 - Chuỗi: `decorPlacedHere`, `decorOwned`, `decorBuyAtShop`, `decorBuyAtShopDetail`.
 - Ảnh: chưa có ảnh.
+
+## Nhà của ta 我家 — nơi trên bản đồ, nút Trang trí, chế độ trang trí (HUD) · artboard `NhaTa-ban-do.dc.html`, `NhaTa-doc.dc.html`, `NhaTa-doc-trang-tri.dc.html`, `NhaTa-doc-o-trong.dc.html`, `NhaTa-doc-o-co-vat.dc.html`, `NhaTa-doc-the-khoa.dc.html`, `NhaTa-ngang.dc.html`, `NhaTa-ngang-o.dc.html` · từ mục 2026-11-14.13
+
+- Mục đích: tiểu viện riêng của người chơi; đặt / thay / gỡ đồ trang trí vào các ô đặt sẵn. Luật: `R-NHA-1`…`R-NHA-4`,
+  `R-HUD-3` (không thẻ tên khu — mục 4 của phiếu bỏ), `R-MAN-1`; thẻ vật theo mục 2026-11-14.12 (Văn tiền).
+- **Bản đồ truyền tống**: nơi mới `nha-ta` 我家 "Nhà của ta" trong vùng **Trung Nguyên**, toạ độ ảnh **(1190; 560)**, vùng chạm
+  **r 80** (riêng — nhỏ hơn 105 để không chồng vùng chạm Khởi Nguyên Trấn). Biểu tượng tiểu viện (tường viện thấp, nhà mái xám
+  cửa son, khóm trúc trái, đèn lồng đỏ phải) trên đĩa giấy, nhãn Việt như các nơi khác. Luôn mở. Đã vẽ lại
+  `scene/ban-do/ban-do-goc.png` (`ve-ban-do.html` thêm `PLACES` + `ICONS['nha-ta']`, `r` riêng từng nơi) và thêm mục `noi` +
+  vùng `trung-nguyen` trong `ban-do.json`. Ảnh mẫu trạng thái `screens/BanDo-trang-thai.png` vẽ lại.
+- Màn tải: thành phần có sẵn, "Nhà của ta" + 我家.
+- **Nút "Trang trí"** (chỉ ở Nhà của ta; ẩn khi bản đồ / thoại / ngồi / màn Flutter): tròn 52 kính sương, biểu tượng mái nhà +
+  bút 24 (nét 2), nhãn 11/700 dưới. Dọc: phải 20, dưới 310 (trên nút Trò chuyện). Ngang: phải 127, dưới 214 (trái nút Trò chuyện).
+- **Chế độ trang trí** (bấm nút): ẩn cần điều khiển, cụm nút hành động, nút Trò chuyện, khung kênh; **giữ ví** (góc trên phải).
+  Nhân vật đứng yên; kéo màn vẫn xoay camera (R-NHA-2).
+  - Viên nhắc trên trái (dọc: trái 16, trên 57; ngang: trái 59, trên 12): kính .92 cao 36, vòng `jade` 24 biểu tượng bút + chữ
+    13/700 "Chạm một ô để đặt vật" (đang chọn ô: tên loại ô, vd. "Ô vườn").
+  - Nút **"Xong"**: viên `jade` cao 40, viền trắng 2, ✓ + chữ 14/700; dọc: phải 16, trên 103 (dưới ví); ngang: dưới ví (khi bảng
+    mở: sát trái bảng, trên 12).
+  - **Dấu ô trong cảnh** (code vẽ, neo theo ô như nút nổi): vòng elip trên nền (rx 34 ry 11 ở dọc): trống = nền trắng 35 % viền trắng
+    nét đứt 2,5 · có vật = nền `aura-light` 35 % viền `gold` · đang chọn = nền `jade` 22 % viền `jade` 3 + quầng `jade` 45 %.
+    Nút tròn 40 nổi trên ô (trống: cách nền 40; có vật: trên đỉnh vật): kính .9, "+" khi trống / biểu tượng loại ô khi có vật;
+    đang chọn: nền `jade` chữ trắng, viền trắng 2 + quầng `jade` 35 %. Huy hiệu loại ô 18 góc dưới phải: lá (Vườn), đèn (Sân),
+    mái nhà (Trong nhà).
+  - **Chạm ô → bảng danh mục**: dọc = tấm đáy cao 392 (bo trên 20, kính .96, tay nắm 40×4); ngang = cột phải rộng 310 (từ mép
+    safe phải, bo trái 20). Đầu: vòng loại ô 34 + "Ô vườn 園" 16/700 + dòng 12 `slate-muted` ("Chọn vật để đặt vào ô" / "Chạm vật
+    khác để thay"); nút **"Gỡ"** (viền `lacquer` 60 % 1,5, chữ `lacquer` 13/700, cao 36) chỉ khi ô có vật. Lưới 3 cột cách 8
+    thẻ vật hợp loại ô (kiểu thẻ 2026-11-14.12: đang đặt viền `jade` 2 + dấu chọn · đã có · khoá nét đứt + giá "· Tạp hoá"),
+    đã có trước, khoá sau. Chân bảng: xu 14 + "Vật có khoá: mua ở Tạp hoá phố chợ · mua một lần, đặt được nhiều ô".
+  - Chạm thẻ đã có → vật hiện ngay ở ô, bảng vẫn mở để đổi tiếp. Chạm thẻ khoá → tấm báo `slate` "Mua {vật} ở Tạp hoá phố chợ —
+    {n} Văn tiền (đang có {m})", 3 s. Chạm ô khác → bảng đổi theo ô đó. Chạm cảnh trống / kéo tay nắm xuống → đóng bảng (vẫn ở chế
+    độ trang trí). "Xong" → thoát hẳn.
+- Trạng thái đã vẽ: dọc — đi lại (nút Trang trí) · chế độ trang trí chưa chọn ô · ô vườn trống · ô có vật (Gỡ) · chạm thẻ khoá;
+  ngang — đi lại · ô có vật (bảng cột phải).
+- Chuỗi: `homeName`, `decorButton`, `decorHint`, `decorDone`, `decorRemove`, `decorSlotGarden`, `decorSlotYard`,
+  `decorSlotIndoor`, `decorPick`, `decorReplace`, `decorFooter` (+ `decorPlacedHere`, `decorOwned`, `decorBuyAtShop*` của 2026-11-14.12).
+- Ảnh: `screens/BanDo-trang-thai.png` (bản đồ có Nhà của ta); màn HUD: chưa có ảnh — nền là hình vẽ giữ chỗ, cảnh nhà dựng bằng `/canh`.

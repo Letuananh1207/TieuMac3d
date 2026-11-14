@@ -1,5 +1,5 @@
 {
-  "$mo_ta": "Bản đồ truyền tống — thế giới chia VÙNG (design 2026-11-14.6–.7: chỉ chữ Việt trên giấy, không đường toả về nhà; trước: 2026-11-14.2…5, 2026-11-13.9). Ảnh nền ban-do-goc.png 2048×1152 vẽ sẵn các vùng, tên vùng, sông, đường biển, đường cụt vào vùng chưa khám phá; toạ độ px theo ảnh (gốc trên trái). \"noi\" = các cảnh đi được, mỗi nơi là một điểm trong vùng của nó (x/y = tâm biểu tượng = tâm vùng chạm r). \"vung\" = các miền trên nền (chỉ để tra: nơi nào thuộc vùng nào, vùng nào chưa khám phá — code không vẽ). Code vẽ lớp trạng thái theo \"trangThai\": mo không vẽ gì; oDay = ghim đầu nhân vật chính (ban-do-nhan-vat.png); sapMo = huy hiệu đồng hồ; vuaCham = viền huy hiệu son nhấp nháy. Vẽ lại ảnh: mở ve-ban-do.html trong trình duyệt (font từ web/node_modules, không cần mạng).",
+  "$mo_ta": "Bản đồ truyền tống — thế giới chia VÙNG (2026-11-14.13: thêm nơi \"Nhà của ta\" nha-ta, r 80 riêng) (design 2026-11-14.6–.7: chỉ chữ Việt trên giấy, không đường toả về nhà; trước: 2026-11-14.2…5, 2026-11-13.9). Ảnh nền ban-do-goc.png 2048×1152 vẽ sẵn các vùng, tên vùng, sông, đường biển, đường cụt vào vùng chưa khám phá; toạ độ px theo ảnh (gốc trên trái). \"noi\" = các cảnh đi được, mỗi nơi là một điểm trong vùng của nó (x/y = tâm biểu tượng = tâm vùng chạm r). \"vung\" = các miền trên nền (chỉ để tra: nơi nào thuộc vùng nào, vùng nào chưa khám phá — code không vẽ). Code vẽ lớp trạng thái theo \"trangThai\": mo không vẽ gì; oDay = ghim đầu nhân vật chính (ban-do-nhan-vat.png); sapMo = huy hiệu đồng hồ; vuaCham = viền huy hiệu son nhấp nháy. Vẽ lại ảnh: mở ve-ban-do.html trong trình duyệt (font từ web/node_modules, không cần mạng).",
   "anh": "ban-do-goc.png",
   "rong": 2048,
   "cao": 1152,
@@ -33,7 +33,8 @@
       "han": "中原",
       "ten": "Trung Nguyên",
       "noi": [
-        "van-uyen"
+        "van-uyen",
+        "nha-ta"
       ]
     },
     {
@@ -138,6 +139,14 @@
       "x": 380,
       "y": 300,
       "r": 105
+    },
+    {
+      "id": "nha-ta",
+      "han": "我家",
+      "ten": "Nhà của ta",
+      "x": 1190,
+      "y": 560,
+      "r": 80
     }
   ],
   "trangThai": {

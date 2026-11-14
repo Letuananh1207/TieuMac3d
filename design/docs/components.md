@@ -121,3 +121,9 @@ Một chất liệu: kính mờ `frost*` + viền `frost-line` / `frost-outline`
 | Tấm xác nhận mua (Đang có / Giá / Còn lại, "Thôi" + "Mua · n") — cùng họ tấm xác nhận Danh mục sách | `CuaHang-doc-xac-nhan` | frost, jade, lacquer |
 | Tấm báo "Đã mua" (nền `slate`, chữ trắng, hình 48) | `CuaHang-doc-vua-mua` | slate, map-paper |
 | Thẻ vật trang trí ở nhà: đang đặt (viền `jade` 2 + dấu chọn) · đã có · khoá (nét đứt, hình xám + khoá, giá) | `TrangTri-the-vat` | jade, slate, slate-muted, map-paper |
+| Nút "Trang trí" (tròn 52 kính, mái nhà + bút) — chỉ ở Nhà của ta | `NhaTa-doc`, `NhaTa-ngang` | frost, frost-line, frost-outline, slate |
+| Viên nhắc chế độ (kính .92 cao 36, vòng `jade` 24 + chữ 13/700) | `NhaTa-doc-*`, `NhaTa-ngang-o` | frost, jade |
+| Nút "Xong" (viên `jade` cao 40, viền trắng 2, ✓) | `NhaTa-doc-*`, `NhaTa-ngang-o` | jade, on-jade |
+| Dấu ô trang trí trong cảnh (elip trống nét đứt · có vật viền `gold` · chọn `jade` + quầng) + nút tròn 40 nổi trên ô, huy hiệu loại ô 18 | `NhaTa-doc-*`, `NhaTa-ngang-o` | frost, gold, jade, aura-light |
+| Bảng danh mục trang trí (dọc tấm đáy 392 / ngang cột phải 310; đầu loại ô + "Gỡ" son; lưới 3 cột thẻ vật) | `NhaTa-doc-o-*`, `NhaTa-doc-the-khoa`, `NhaTa-ngang-o` | frost, jade, lacquer, slate-muted |
+| Biểu tượng bản đồ "Nhà của ta" (tiểu viện) | `NhaTa-ban-do`, `scene/ban-do/ve-ban-do.html` | map-paper, lacquer |

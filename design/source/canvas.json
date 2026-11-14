@@ -853,6 +853,62 @@
       "w": 1300,
       "h": 480,
       "title": "Danh mục trang trí ở nhà · thẻ vật có / đang đặt / khoá"
+    },
+    "NhaTa-ban-do.dc.html": {
+      "x": 0,
+      "y": 47772,
+      "w": 1440,
+      "h": 820,
+      "title": "Nhà của ta · bản đồ truyền tống — nơi mới (đề xuất vị trí + biểu tượng)"
+    },
+    "NhaTa-doc.dc.html": {
+      "x": 0,
+      "y": 48712,
+      "w": 390,
+      "h": 844,
+      "title": "Nhà của ta · dọc · đi lại — nút Trang trí"
+    },
+    "NhaTa-doc-trang-tri.dc.html": {
+      "x": 470,
+      "y": 48712,
+      "w": 390,
+      "h": 844,
+      "title": "Nhà của ta · dọc · chế độ trang trí (dấu ô)"
+    },
+    "NhaTa-doc-o-trong.dc.html": {
+      "x": 940,
+      "y": 48712,
+      "w": 390,
+      "h": 844,
+      "title": "Nhà của ta · dọc · chạm ô vườn trống → danh mục"
+    },
+    "NhaTa-doc-o-co-vat.dc.html": {
+      "x": 1410,
+      "y": 48712,
+      "w": 390,
+      "h": 844,
+      "title": "Nhà của ta · dọc · ô có vật (thay / Gỡ)"
+    },
+    "NhaTa-doc-the-khoa.dc.html": {
+      "x": 1880,
+      "y": 48712,
+      "w": 390,
+      "h": 844,
+      "title": "Nhà của ta · dọc · chạm thẻ khoá → gợi ý Tạp hoá"
+    },
+    "NhaTa-ngang.dc.html": {
+      "x": 2350,
+      "y": 48712,
+      "w": 844,
+      "h": 390,
+      "title": "Nhà của ta · ngang · đi lại"
+    },
+    "NhaTa-ngang-o.dc.html": {
+      "x": 2350,
+      "y": 49166,
+      "w": 844,
+      "h": 390,
+      "title": "Nhà của ta · ngang · ô có vật, bảng cột phải"
     }
   },
   "order": [
@@ -983,7 +1039,15 @@
     "CuaHang-doc-vua-mua.dc.html",
     "CuaHang-doc-het.dc.html",
     "CuaHang-ngang.dc.html",
-    "TrangTri-the-vat.dc.html"
+    "TrangTri-the-vat.dc.html",
+    "NhaTa-ban-do.dc.html",
+    "NhaTa-doc.dc.html",
+    "NhaTa-doc-trang-tri.dc.html",
+    "NhaTa-doc-o-trong.dc.html",
+    "NhaTa-doc-o-co-vat.dc.html",
+    "NhaTa-doc-the-khoa.dc.html",
+    "NhaTa-ngang.dc.html",
+    "NhaTa-ngang-o.dc.html"
   ],
   "notes": {
     "cach-dung": {
@@ -1338,6 +1402,19 @@
       "y": 45968,
       "w": 440,
       "text": "Phiếu 2026-11-14-van-tien-cua-hang. Đề xuất, chưa chốt.\n\n• Ví: viên kính 36 ở GÓC TRÊN PHẢI (dọc + ngang) — quy ước game, ngoài tầm ngón cái, nửa dưới đã kín. R-HUD-1 không cấm.\n• Đồng xu lỗ vuông vàng đồng; xu bay khắc chữ vừa học (mặt sau), xu trong ví không khắc (quá nhỏ).\n• Màn Flutter che HUD → hiệu ứng mượn một ví tạm trượt vào góc trên phải màn Flutter.\n• Tạp hoá 雜貨 = màn Flutter như Danh mục sách: lọc Vườn / Sân / Trong nhà, thẻ có hình + chữ Hán + giá (số + số chữ Hán).\n• Nút: Mua (jade) · Đã có · Còn thiếu n (nét đứt). Xác nhận: Đang có / Giá / Còn lại.\n• Không mua trong nhà — thẻ khoá chỉ dẫn ra Tạp hoá.\n• Bảng giá đề xuất 30–200; 3 vật khởi đầu: Trúc cảnh, Đèn lồng, Tranh chữ.\n• Hình vật trong thẻ: vẽ phẳng giữ chỗ — phiên code có thể thay bằng ảnh chụp vật 3D."
+    },
+    "tieu-de-nha-ta": {
+      "x": 0,
+      "y": 47532,
+      "text": "Nhà của ta 我家 — bản đồ, nút Trang trí, chế độ trang trí (phiếu 2026-11-14-nha-nguoi-dung)",
+      "kind": "title1",
+      "maxW": 3200
+    },
+    "nha-ta-ghi-chu": {
+      "x": 1520,
+      "y": 47772,
+      "w": 460,
+      "text": "Phiếu 2026-11-14-nha-nguoi-dung. Đề xuất, chưa chốt.\n\n• Bản đồ: nơi \"Nhà của ta\" ở góc trên phải Trung Nguyên (gần Khởi Nguyên Trấn), biểu tượng tiểu viện, vùng chạm r 80.\n• Nút \"Trang trí\": tròn 52 kính, chỉ ở nhà — dọc: trên nút Trò chuyện; ngang: trái nút Trò chuyện.\n• Chế độ trang trí: ẩn joystick, cụm nút, Trò chuyện; giữ ví (tiền); viên trên trái \"Chạm một ô để đặt vật\"; nút \"Xong\" jade dưới ví.\n• Dấu ô trong cảnh: vòng elip nét đứt trắng (trống) · viền vàng (có vật) · jade đậm + quầng (đang chọn). Nút tròn 40 nổi trên ô: \"+\" khi trống, biểu tượng loại ô (lá · đèn · mái nhà) ở góc.\n• Chạm ô → bảng danh mục: dọc nửa dưới (cao 392), ngang cột phải 310. Lưới 3 cột thẻ vật hợp loại ô (thẻ Văn tiền 2026-11-14.12): đã có trước, khoá sau. Chạm thẻ → đặt / thay ngay, bảng vẫn mở. \"Gỡ\" viền son khi ô có vật.\n• Không thẻ tên khu (R-HUD-3) — mục 4 của phiếu bỏ.\n• Nền là hình vẽ giữ chỗ — cảnh nhà làm bằng /canh."
     }
   },
   "designSystems": []

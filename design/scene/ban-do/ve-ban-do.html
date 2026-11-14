@@ -12,7 +12,7 @@
 <canvas id="c" width="2048" height="1152"></canvas>
 <script>
 // Bản đồ truyền tống — thế giới chia VÙNG (design 2026-11-14.6; .7: chỉ chữ Việt, bỏ đường toả về nhà). Nền là bản đồ các miền (Tây Vực, Yên Vân, Kinh Kỳ, Trung
-// Nguyên, Ba Thục, Ngô Việt, Đông Hải; còn Mạc Bắc, Lĩnh Nam, Điền Nam chưa khám phá). Mỗi NƠI đi được (7 cảnh) chỉ là
+// Nguyên, Ba Thục, Ngô Việt, Đông Hải; còn Mạc Bắc, Lĩnh Nam, Điền Nam chưa khám phá). Mỗi NƠI đi được (7 cảnh + Nhà của ta) chỉ là
 // một điểm nhỏ trong vùng của nó; quan đạo toả từ Văn Uyên Tông. Toạ độ theo ảnh 2048 × 1152 (gốc trên trái).
 // Xuất ảnh: ?xuat → dataURL PNG ghi vào <textarea id="out"> (hoặc gọi window.ready qua DevTools).
 const W = 2048, H = 1152;
@@ -40,9 +40,10 @@ const PLACES = [
   { id: 'rung-truc',    han: '竹林', name: 'Rừng trúc',        x: 480,  y: 770 },
   { id: 'van-uyen',     han: '起源', name: 'Khởi Nguyên Trấn',    x: 1000, y: 680 },
   { id: 'giang-nam',    han: '江南', name: 'Giang Nam',        x: 1450, y: 760 },
-  { id: 'bong-lai',     han: '蓬萊', name: 'Bồng Lai',         x: 1880, y: 610, island: true }
+  { id: 'bong-lai',     han: '蓬萊', name: 'Bồng Lai',         x: 1880, y: 610, island: true },
+  { id: 'nha-ta',       han: '我家', name: 'Nhà của ta',       x: 1190, y: 560, r: 80 }
 ];
-const R = 105;          // vùng chạm quanh biểu tượng
+const R = 105;          // vùng chạm quanh biểu tượng (nơi có r riêng thì dùng r riêng — Nhà của ta r 80, design 2026-11-14.13)
 const S = 0.6;          // cỡ biểu tượng
 const LABEL_VI = 46, LABEL_DY = 76;
 
@@ -384,6 +385,25 @@ const ICONS = {
     g.fillStyle = SON; g.beginPath(); g.moveTo(x + 22, y - 140); g.lineTo(x + 66, y - 128); g.lineTo(x + 22, y - 116); g.closePath(); g.fill();
     g.restore();
   },
+  // Nhà của ta 我家 (design 2026-11-14.13): tiểu viện — tường viện thấp, nhà chính mái xám cửa son, khóm trúc trái, đèn lồng đỏ phải
+  'nha-ta'(g, x, y) {
+    g.save();
+    g.fillStyle = '#E3DCCD'; g.fillRect(x - 120, y + 10, 240, 50);
+    g.fillStyle = '#4A4A52'; g.fillRect(x - 128, y, 256, 12);
+    g.fillStyle = '#F1EBDD'; g.fillRect(x - 70, y - 60, 140, 70);
+    g.fillStyle = SON; g.fillRect(x - 16, y - 44, 32, 54);
+    g.fillStyle = 'rgba(36,50,58,.45)'; for (const dx of [-48, 48]) g.fillRect(x + dx - 12, y - 44, 24, 22);
+    roof(g, x, y - 104, 160, 44, '#3E464E');
+    g.lineCap = 'round';
+    for (const [dx, h, c] of [[-104, 120, '#4F7A35'], [-84, 140, '#7D9A4A']]) {
+      g.strokeStyle = c; g.lineWidth = 11; g.beginPath(); g.moveTo(x + dx, y + 50); g.lineTo(x + dx, y + 50 - h); g.stroke();
+      g.fillStyle = '#5E8A3E'; for (let k = 0; k < 3; k++) { const ly = y + 60 - h + k * 24, s = k % 2 ? 1 : -1; g.beginPath(); g.ellipse(x + dx + s * 24, ly, 24, 7, s * -0.5, 0, Math.PI * 2); g.fill(); }
+    }
+    g.strokeStyle = INK; g.lineWidth = 4; g.beginPath(); g.moveTo(x + 104, y - 20); g.lineTo(x + 104, y - 4); g.stroke();
+    g.fillStyle = SON; g.beginPath(); g.ellipse(x + 104, y + 14, 15, 19, 0, 0, Math.PI * 2); g.fill();
+    g.fillStyle = GOLD; g.fillRect(x + 101, y + 32, 6, 12);
+    g.restore();
+  },
   'tu-cam-thanh'(g, x, y) { hall(g, x, y + 10, 1.2, GOLD, SON); g.save(); g.fillStyle = GOLD; roof(g, x, y - 95, 120, 26, GOLD); g.restore(); },
   'to-lua'(g, x, y) {
     g.save(); g.fillStyle = '#D2B98C'; g.beginPath(); g.ellipse(x, y + 80, 150, 40, 0, Math.PI, 0); g.fill();
@@ -431,7 +451,7 @@ async function draw() {
     g.save(); g.translate(p.x, p.y); g.scale(S, S); g.translate(-p.x, -p.y); ICONS[p.id](g, p.x, p.y); g.restore();
     label(g, p);
   }
-  return PLACES.map(p => ({ id: p.id, han: p.han, name: p.name, x: p.x, y: p.y, r: R, labelTop: p.labelTop, labelBottom: p.labelBottom }));
+  return PLACES.map(p => ({ id: p.id, han: p.han, name: p.name, x: p.x, y: p.y, r: p.r || R, labelTop: p.labelTop, labelBottom: p.labelBottom }));
 }
 window.ready = draw();
 

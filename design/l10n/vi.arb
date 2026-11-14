@@ -900,5 +900,19 @@
         "type": "int"
       }
     }
-  }
+  },
+  "homeName": "Nhà của ta",
+  "@homeName": {
+    "description": "Nơi trên bản đồ + màn tải (kèm 我家)"
+  },
+  "decorButton": "Trang trí",
+  "decorHint": "Chạm một ô để đặt vật",
+  "decorDone": "Xong",
+  "decorRemove": "Gỡ",
+  "decorSlotGarden": "Ô vườn",
+  "decorSlotYard": "Ô sân",
+  "decorSlotIndoor": "Ô trong nhà",
+  "decorPick": "Chọn vật để đặt vào ô",
+  "decorReplace": "Chạm vật khác để thay",
+  "decorFooter": "Vật có khoá: mua ở Tạp hoá phố chợ · mua một lần, đặt được nhiều ô"
 }
