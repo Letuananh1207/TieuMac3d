@@ -63,6 +63,12 @@ Trạng thái: `nhận` → `chờ trả lời` / `chờ duyệt` → `đang là
   > không đổi hành vi nghiệp vụ, còn lại dừng và ghi vào báo cáo. Sửa sổ quy tắc thì để lại danh sách mã (phiên chính
   > đồng bộ). Lỗi mới: mã tạm `L-?1`. Xong: chạy kiểm của skill, **commit trên nhánh của mình, không gộp, không push**.
   > Báo cáo: đã làm gì · file · test · việc còn chờ · tên nhánh + đường dẫn worktree.
+- `Agent` báo "Refusing to use …\.claude\worktrees\agent-… as an isolation worktree" (Windows: phiên mở dự án bằng
+  `c:\` thường, git trả `C:/` → công cụ tưởng worktree trỏ ra ngoài) → **dùng lại** worktree nó vừa tạo (sạch, đúng
+  `main`; `git worktree list`) hoặc tự tạo `git worktree add .claude/worktrees/<tên> -b viec/<tên> main`; giao `Agent`
+  **không** `isolation`, lời giao ghi rõ: chỉ làm trong `<đường dẫn tuyệt đối worktree>` (`cd … && …`, Read/Edit đường
+  dẫn tuyệt đối), trước khi commit `git -C <thư mục chính> status --short` phải rỗng. Worktree do công cụ tạo bị khoá
+  (`locked`) → dọn sau khi gộp: `git worktree unlock <đường dẫn>` rồi `git worktree remove <đường dẫn>`.
 - Việc phải ở phiên chính (`tai-nguyen`, `dong-bo-quy-tac`, ghi lỗi mới, việc cần người dùng thao tác) → làm tuần tự
   trong phiên này trong lúc subagent chạy nền.
 - Việc phụ thuộc việc khác (cần code của việc kia) → chờ việc kia gộp xong mới giao.
