@@ -45,3 +45,4 @@ Trạng thái: `nhận` → `chờ trả lời` / `chờ duyệt` → `đang là
 | V-20261114-35 | Tiểu Mặc + bảng nhiệm vụ bên phải tiệm Tạp hoá | canh | chờ thử máy — đã gộp (CHANGELOG 2026-11-15.2); luật đã đồng bộ; Tiểu Khất (chưa vào cảnh) sẽ ngồi một góc Quảng Trường | — | thử: từ chỗ xuất phát đi lên thấy Tiểu Mặc + bảng cạnh Tạp hoá |
 | V-20261114-36 | Tiểu Mặc đứng ngay bên phải bảng nhiệm vụ hằng ngày (vị trí bảng hiện tại cạnh Tạp hoá) | canh | đang làm — nhánh `viec/tieu-mac-canh-bang` | R-NPC-1/2, R-NV-3 | duyệt ảnh |
 | V-20261114-37 | Bản đồ nhỏ đổi sang hình vuông và to hơn | ui-apply / lead | đang làm — nhánh `viec/ban-do-vuong` | R-BANDO-1/3 | duyệt ảnh |
+| V-20261114-38 | Dời Truyền Tống Đài lên chỗ Trà lâu (đầu Thiên Bậc); Trà lâu dời sang bãi đông cạnh Đồi Chè; sân đài cũ để trống (dùng sau) | canh + lead | đang làm — nhánh `viec/doi-dai-tra-lau` | R-HANH-2, R-NHAC-*, R-VA-4, R-NPC-3, R-BANDO-* | duyệt Canvas 3D |
