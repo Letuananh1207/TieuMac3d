@@ -79,6 +79,15 @@ export function cauRao(h: number): string {
   return `${dau} — ${cauBuoi(g)}`;
 }
 
+/**
+ * Câu rao tách hai dòng cho kênh chung (mỗi tin ≤ 60 ký tự — R-CHAT-1): [tên giờ, câu theo buổi]. Ghép lại bằng " — " ra
+ * đúng `cauRao`.
+ */
+export function cauRaoHaiDong(h: number): [string, string] {
+  const [a, b] = cauRao(h).split(' — ');
+  return [a, b];
+}
+
 /** Trả lời "Bây giờ là giờ gì?" (R-NPC-7): giờ phút hiện tại + canh giờ đang ở. */
 export function cauHoiGio(nowMs: number): string {
   const sec = giayTrongNgayVN(nowMs);

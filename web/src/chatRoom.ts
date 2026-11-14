@@ -72,6 +72,11 @@ export class ChatRoom {
     return this.panel.hide();
   }
 
+  /** NPC nói một câu lên kênh chung (Lão Canh rao giờ — R-NPC-8; "nhường lão một bước" — R-NPC-7). */
+  npcSay(id: string, text: string): void {
+    this.channel.send(this.npcSpeaker(id), text, now());
+  }
+
   /** Gọi mỗi khung. */
   update(f: ChatFrame): void {
     const t = now();

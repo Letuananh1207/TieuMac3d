@@ -198,6 +198,14 @@ export async function loadGlbCharacter(url: string): Promise<Character> {
       // vươn vai: hai tay giơ cao
       aLz = mix(aLz, 1.5, stretch);
       aRz = mix(aRz, -1.5, stretch);
+      // gõ mõ (R-NPC-8, có `strike`): tay trái đưa mõ ra trước ngang ngực, tay phải giơ dùi cao theo `strike` (1 = giơ cao)
+      const hit = state?.strike;
+      if (hit !== undefined) {
+        aLx = -1.1;
+        aLz = -(ARM_REST + 0.35);
+        aRx = -0.9 - 0.9 * hit;
+        aRz = ARM_REST + 0.25;
+      }
       rig.armL.rotation.x = aLx;
       rig.armR.rotation.x = aRx;
       rig.armL.rotation.z = aLz;

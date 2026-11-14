@@ -40,6 +40,7 @@ function node<K extends keyof HTMLElementTagNameMap>(tag: K, cls?: string, text?
 
 /** Một khoản thưởng cần chạy hiệu ứng trên HUD. */
 export interface WalletFx {
+  /** số cộng (> 0), 0 = đủ trần (chỉ nhãn), < 0 = khoản trừ (không xu bay) */
   amount: number;
   /** nhãn lý do ("+8 · Thắng Đấu chữ" / "Hôm nay trò chơi đã đủ thưởng") */
   label: string;
@@ -215,8 +216,10 @@ export class WalletHud {
 
   /** Một khoản: xu bay vào ví (ví nảy mỗi xu) → "+n" + nhãn lý do; đủ trần → chỉ nhãn mờ (R-TIEN-5). */
   private async play(fx: WalletFx): Promise<void> {
-    const capped = fx.amount <= 0;
-    if (!capped) {
+    const capped = fx.amount === 0;
+    // khoản trừ ngoài Tạp hoá ("−5 · Cho Tiểu Khất" — R-TIEN-5, R-TIEN-8): không xu bay, viền son + "−n" + nhãn
+    if (fx.amount < 0) this.bump('down', deltaText({ kind: 'down', amount: -fx.amount }), (this.shown ?? 0) + fx.amount, COUNT_DOWN_MS);
+    else if (!capped) {
       const from = this.reduce ? null : (fx.from?.() ?? null);
       if (from) await this.fly(from, coinsToFly(fx.amount));
       this.bump('up', deltaText({ kind: 'up', amount: fx.amount }), (this.shown ?? 0) + fx.amount, COUNT_UP_MS);

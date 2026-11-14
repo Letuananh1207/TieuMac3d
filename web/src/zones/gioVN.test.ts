@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { canhDem, canhGio, cauHoiGio, cauRao, gioNoi, giayTrongNgayVN, lechGioThu, maNgayVN, soTiengMo } from './gioVN';
+import { canhDem, canhGio, cauHoiGio, cauRao, cauRaoHaiDong, gioNoi, giayTrongNgayVN, lechGioThu, maNgayVN, soTiengMo } from './gioVN';
 
 /** Mốc UTC của giờ VN `y-m-d h:mi` (GMT+7). */
 const vn = (y: number, mo: number, d: number, h: number, mi = 0, s = 0): number => Date.UTC(y, mo - 1, d, h - 7, mi, s);
@@ -73,5 +73,14 @@ describe('Báo giờ Lão Canh', () => {
     expect(lechGioThu('abc', now)).toBeNull();
     expect(lechGioThu('25:00', now)).toBeNull();
     expect(lechGioThu(null, now)).toBeNull();
+  });
+
+  it('R-NPC-8: rao trên kênh chung tách hai tin, mỗi tin ≤ 60 ký tự (R-CHAT-1), ghép lại đúng câu rao', () => {
+    for (let h = 0; h < 24; h++) {
+      const [a, b] = cauRaoHaiDong(h);
+      expect(`${a} — ${b}`).toBe(cauRao(h));
+      expect([...a].length).toBeLessThanOrEqual(60);
+      expect([...b].length).toBeLessThanOrEqual(60);
+    }
   });
 });

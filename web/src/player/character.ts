@@ -35,4 +35,7 @@ export interface CharacterState {
   bow: number;
   /** giây đứng yên liên tục (không ngồi, không chào) — động tác khi đứng lâu */
   idle: number;
+  /** đang cầm mõ (NPC Lão Canh — R-NPC-8): có = tay trái đưa mõ ra trước, tay phải giơ dùi cao `strike` (0 chạm mõ … 1 giơ
+   *  cao). Không có = dáng thường. Không bắt buộc — nhân vật người chơi bỏ qua */
+  strike?: number;
 }

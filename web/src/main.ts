@@ -18,6 +18,7 @@ import { createDiscipleCharacter } from './player/discipleCharacter';
 import { createPlayerCharacter } from './player/playerCharacter';
 import { PlayerController, type MoveInput } from './player/controller';
 import { npcInTalkRange, placeNpcs, showNearNpcs } from './player/npc';
+import { TownNpcs } from './townNpcs';
 import { HOME_SCENE, loadScene, REGION_SCENES } from './scene/loadSpec';
 import { createMapScroll } from './scene/banDo';
 import { arrivalSpot, CHARGE_SECONDS, ringTrigger } from './scene/teleportLayout';
@@ -205,11 +206,13 @@ async function boot(): Promise<void> {
   let appHidden = false;
   let running = true;
   let music: AmbientMusic | null = null; // nhạc nền trà lâu — dựng bên dưới (R-NHAC-1)
+  let town: TownNpcs | null = null; // Tiểu Khất + Lão Canh — dựng bên dưới (townNpcs.ts)
   const setRunning = (): void => {
     const want = !appHidden && !document.hidden;
     if (want === running) return;
     running = want;
     if (!want) music?.stopNow(); // app xuống nền / tab ẩn → nhạc dừng (R-NHAC-1)
+    town?.setRunning(want); // tiếng mõ im khi nền / tab ẩn (R-AM-1)
     if (want) {
       clock.getDelta(); // bỏ khoảng thời gian đã dừng
       requestAnimationFrame(tick);
@@ -492,6 +495,7 @@ async function boot(): Promise<void> {
       if (c?.action === 'daily') afterSay = openDaily; // đóng khung rồi mở bảng (R-NV-3)
       if (c?.action === 'journey') afterSay = () => say('tran-su', journeyLine(progress && { chars: progress.chars, radicals: progress.radicals.length }, JOURNEY_MAP.places, REGION_SCENES), () => {}); // R-NPC-5
       if (LibraryDesk.handles(c)) afterSay = () => desk.act(c); // mượn / trả sách (R-SACH-1, R-SACH-4)
+      if (town?.handles(c)) afterSay = () => town?.act(c); // cho Tiểu Khất, hỏi giờ Lão Canh (R-NPC-6, R-NPC-7)
       return runner?.choose(i) ?? null;
     },
     () => {
@@ -540,7 +544,7 @@ async function boot(): Promise<void> {
       learn.suspend(true);
     },
   });
-  const dialogFor = (npcId: string): Dialog | undefined => (npcId === LIBRARIAN ? desk.dialog() : dialogOf.get(npcId));
+  const dialogFor = (npcId: string): Dialog | undefined => (npcId === LIBRARIAN ? desk.dialog() : (town?.dialog(npcId) ?? dialogOf.get(npcId)));
   // thẻ "Đọc sách" khi đang mượn sổ từ, mọi khu mọi vùng → mở sổ từ Flutter (R-SACH-2, R-SACH-3)
   const readBook = new ReadBookButton(() => {
     player.moveTarget = null;
@@ -589,6 +593,19 @@ async function boot(): Promise<void> {
     setReward: (result, line) => gamePlay.setReward(result, line),
   });
   walletRoom.sync(progress);
+  // Tiểu Khất + Lão Canh (R-NPC-6/7/8, R-AM-1) — townNpcs.ts; chỉ khi cảnh có hai NPC này (có model)
+  town = new TownNpcs(npcSet.npcs, {
+    bridge,
+    trial,
+    progress: () => progress,
+    groundAt,
+    say: (id, text) => say(id, text, () => {}),
+    chatSay: (id, text) => chat.npcSay(id, text),
+    spent: (amount, label, balance, gameToday) => walletRoom.spent(amount, label, balance, gameToday),
+    almsSaved: (coins, alms) => {
+      if (progress) progress = { ...progress, coins, alms };
+    },
+  });
   // HUD trò chơi (thiết kế 2026-11-13.27): "Rời bàn", tỉ số, lượt, câu hỏi Đấu chữ, thẻ kết quả
   const gameHud = new GameHud({
     leave: () => gamePlay.stand(),
@@ -698,6 +715,7 @@ async function boot(): Promise<void> {
     const pos = player.position;
     // camera bám êm: dây kéo + tự về sau lưng chậm (R-DIEU-3)
     orbit.follow(dt, pos.x - fromX, pos.z - fromZ, character.facing.rotation.y, player.state.mps > 0);
+    town?.update({ dt, player: pos, camera, talkingTo: talking ? (runner?.dialog.npc ?? null) : null, covered: paused || covered || loading.active }); // NPC đi (R-NPC-7)
     for (const npc of showNearNpcs(npcSet.npcs, pos.x, pos.z)) npc.update(dt); // xa từ 35 m → ẩn (R-NPC-1)
     gamePlay.update(dt);
     gameHud.render(talking ? null : gamePlay.view());

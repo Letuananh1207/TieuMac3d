@@ -152,6 +152,9 @@ describe('NPC nói trên kênh — Lão Canh, Tiểu Khất', () => {
     for (let t = 0; t <= 600; t += 1) c.update(t);
     expect(got.length).toBeGreaterThan(0);
     expect(got.every((m) => m.speaker.id === 'khat-nhi')).toBe(true);
-    for (const l of NPC_LINES['khat-nhi']) expect(/\p{Script=Han}/u.test(l)).toBe(false);
+    for (const l of NPC_LINES['khat-nhi']) {
+      expect(/\p{Script=Han}/u.test(l)).toBe(false);
+      expect([...l].length).toBeLessThanOrEqual(60); // R-CHAT-1
+    }
   });
 });
