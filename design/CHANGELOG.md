@@ -3,6 +3,32 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-14.26 — Khởi Nguyên Trấn: màu về như cũ, giữ hiệu ứng mềm
+
+- Loại: cảnh 3D — **ngoại hình**. Ai làm: phiên code V-20261114-25 làm thay vai thiết kế (`/canh`). Người dùng: "đổi màu
+  sắc về như cũ", chọn **chỉ màu, giữ hiệu ứng mới**. **Đã duyệt 2026-11-14** (ảnh so 3 cột cũ | Xuân ấm | mới, 5 góc).
+- `scene.json` (Khởi Nguyên Trấn):
+  - 53 mã màu về giá trị trước 2026-11-14.23: trời (`#5D86B5` · `#A8C0D6` · `#F0D9B0`), sương `#C3CBD4`, đèn (trời `#DFE8FF`,
+    đất `#6B5A48`, nắng `#FFE2B8`), nền đá `#727A7E`, tường `#E8E1D2` + đỉnh `#4F5A63`, cả `buildingStyle`, mái 3 nhà, cây,
+    mây, đất / cỏ / đá, 3 lớp núi xa, biển mây. `fog` 70–280 → 60–260; `light.hemiIntensity` 1,1 → 0,8, `sunIntensity`
+    0,8 → 0,95. Màu vật mới của .25 (cổng 下山, biển gỗ) giữ nguyên.
+  - Trường mới: `look.colorPipeline: "cu"` (đường màu cũ — ColorManagement tắt như trước, cùng mã hex ra đúng màu ảnh cũ;
+    mặc định `"chuan"`), `look.skyBands {mid 0,03; top 0,25}` (vòm trời: màu đỉnh tới sớm, gần nền gradient cũ khi nhìn
+    ngang; mặc định 0,3 / 1), `look.vignetteColor #2E3640` (mặc định `#3C2834` như trước).
+  - Màu hiệu ứng hợp tông cũ: `look.aoTint #6B5A70 → #5E626A`, `glowSize 0,35 → 0,15`, `mist.color #F1E6D6 → #F4F1EA`,
+    `water.shallow / deep → #6A9AAE / #3D6E86`, `vignette 0,35 → 0,25`. Giữ: bụng mây, hoa, quầng đèn, bọt nước.
+  - Giữ mọi hiệu ứng: vật liệu mềm, bóng nướng, cỏ hoa gió, nước nông–sâu + gợn + bọt, cây tán tròn, mây phồng, vòm trời,
+    quầng đèn, vignette, gộp khối. Bảng A Xuân ấm thôi dùng cho trấn (`phong_cach.md`).
+- Đo so ảnh "trước" (chênh TB 0–255, 600 × 400): Quảng Trường 12 (Xuân ấm 46), Cổng Trấn 19 (43), Thiên Bậc 15 (31), Hậu
+  Sơn 15 (27), trên xuống 19 (36); phần còn lại chủ yếu là hiệu ứng (vignette, tán tròn, đất mượt).
+- Luật: không chạm. `scene:check`: 8 cảnh "Không có lỗi". Draw call / tam giác không đổi vì màu (cùng cách đo trước khi
+  rebase .25: góc chơi 68 / 89k, trên 136 / 149k); sau rebase .25: góc chơi `?nv=0,6` 68 / 90,3k, trên 137 / 150,5k, cả sân
+  87 / 127,1k.
+- Cần code: `look.colorPipeline`, `look.skyBands`, `look.vignetteColor` — làm trong cùng việc.
+- Canvas 3D: https://claude.ai/artifact/TyJxrgsBcj5ryHakv7c1so (bản 54, main + V-25 màu cũ).
+- Ảnh: `screens/Canh-mem-{tren,quang-truong,cong-tran,thien-bac,hau-son}.png` (chụp lại; Cổng Trấn góc chuẩn nay nhìn qua
+  cột cổng 下山 của .25).
+
 ## 2026-11-14.25 — Lối xuống núi: cuối lối Cổng Trấn thay ngõ về nhà
 
 - Loại: cảnh 3D — **bố cục** + **ngoại hình**. Ai làm: phiên code V-20261114-23 làm thay vai thiết kế (`/canh`), người dùng:

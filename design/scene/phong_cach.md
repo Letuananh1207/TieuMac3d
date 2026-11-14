@@ -27,7 +27,7 @@ Tinh thần: 粉牆黛瓦 · 朱柱青檐 — tường vôi, ngói xám đen, c�
    thể một đình nhỏ trên đảo lớn nhất.
 3. **Khe giữa các đoạn tường khu** (`wallSegments`) vẫn là khe thường, chưa thành cổng trăng như khe tường bao.
 
-## Khởi Nguyên Trấn: màu cũ + hiệu ứng mềm (2026-11-14, theo người dùng — chờ duyệt)
+## Khởi Nguyên Trấn: màu cũ + hiệu ứng mềm (2026-11-14.26, theo người dùng — đã duyệt)
 
 Người dùng (2026-11-14): "đổi màu sắc về như cũ" — chọn **chỉ màu, giữ hiệu ứng mới**. Bảng A "Xuân ấm" dưới đây **thôi
 dùng** cho Khởi Nguyên Trấn (giữ lại làm tham khảo cho GĐ 2). `scene.json` về **bảng màu cảnh cũ** (mục cuối) — mọi mã hex
