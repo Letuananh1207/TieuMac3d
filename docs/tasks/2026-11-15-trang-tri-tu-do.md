@@ -9,7 +9,7 @@
 - Quyết định (người dùng 2026-11-15): **1B** — kiểu 摩尔, **mua mỗi lần 1 cái** (muốn 3 cây mai thì mua 3 lần), sở hữu = số lượng
   (đang đặt + trong túi), cất → về túi · **2A** — hai nhóm ngoài trời / trong nhà · **3B** — vùng cấm + kiểm còn đường đi ·
   **4B** — vào trang trí camera nâng nhìn chéo ~55°.
-- Loại: sửa hành vi + dữ liệu (đổi dạng lưu, chuyển dữ liệu cũ, đổi luật mua) + giao diện mới · Cỡ: **lớn** · Trạng thái: **chờ duyệt**
+- Loại: sửa hành vi + dữ liệu (đổi dạng lưu, chuyển dữ liệu cũ, đổi luật mua) + giao diện mới · Cỡ: **lớn** · Trạng thái: **đã duyệt 2026-11-15** (người dùng chọn 1B mua từng cái, 2A hai nhóm, 3B vùng cấm + còn đường đi, 4B camera ~55°)
   (kế hoạch đã theo 4 lựa chọn) — phần HUD + Tạp hoá **chờ thiết kế** (`docs/phieu_thiet_ke/2026-11-15-trang-tri-tu-do.md`)
 
 ## Phạm vi
