@@ -3,6 +3,15 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-15.19 — Mặc Trì bỏ tường thay hàng trúc / tùng; Kỳ Văn Uyển lát đá xám như Quảng Trường
+
+- Loại: cảnh 3D — bố cục + ngoại hình. Phiên code V-20261114-49; người dùng: "Bỏ tường, thay hàng trúc / tùng"; "gạch ở khu vui chơi tôi
+  muốn có màu giống ở Quảng Trường". **Đã duyệt 2026-11-15** (kể cả giảm cỏ).
+- Bỏ tường x 42 (z −26,4…25), z 25 (x 17…42), x 17 (z 17…25); `trees.yard` +31 (trúc 1,5 / tùng 1,8 ở x 42,4 và z 25,2; 6 bụi chè ở x 17),
+  bỏ tùng (41;−23,2), cụm tùng xa (84;0). Bỏ nền gạch đỏ Kỳ Văn Uyển `#c48f72` → nền lát chung đá xám, bó vỉa giữ.
+- Bù ngân sách: `terrain.grass.density` 5 → **2,8** (cỏ thưa hơn cả trấn). Nhìn từ trên 140 draw call / 149 857 tam giác (còn ~140 tam giác tới trần).
+- Luật: R-VA-1, R-GIAO-1. Ảnh: `screens/Canh-mac-tri-hang-cay.png`, `screens/Canh-ky-van-uyen-da-xam.png`.
+
 ## 2026-11-15.18 — Đổi tên 6 vùng theo kiểu 摩尔庄园
 
 - Loại: chuỗi + dữ liệu + bản đồ. Phiên code V-20261114-50 (kế hoạch `docs/tasks/2026-11-15-doi-ten-vung.md`); người dùng: "đổi tên cho
