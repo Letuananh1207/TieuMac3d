@@ -13,7 +13,11 @@
 <script>
 // Bản đồ truyền tống — thế giới chia VÙNG (design 2026-11-14.6; .7: chỉ chữ Việt, bỏ đường toả về nhà). Nền là bản đồ các miền (Tây Vực, Yên Vân, Kinh Kỳ, Trung
 // Nguyên, Ba Thục, Ngô Việt, Đông Hải; còn Mạc Bắc, Lĩnh Nam, Điền Nam chưa khám phá). Mỗi NƠI đi được (7 cảnh + Nhà của ta) chỉ là
-// một điểm nhỏ trong vùng của nó; quan đạo toả từ Văn Uyên Tông. Toạ độ theo ảnh 2048 × 1152 (gốc trên trái).
+// một điểm nhỏ trong vùng của nó. Toạ độ theo ảnh 2048 × 1152 (gốc trên trái).
+// V-54 (2026-11-15): vẽ đúng thế đất từng cảnh (design/scene/<mã>.json) — Khởi Nguyên Trấn trên đỉnh dãy núi Ba Thục góc
+// trái dưới, quanh là biển mây (cloudSea); Nhà của ta đảo nhỏ nổi trên biển mây, góc trái dưới của trấn; Trúc Lâm thung lũng
+// đồng bằng dưới chân núi (đồi thấp, không giữa dãy núi); Nhạn Môn Quan trên sống núi; Tử Cấm Thành đồng bằng kinh thành;
+// Yên Vũ Lâu sông nước; Bồng Lai Đảo đảo giữa biển, mây quanh; Đôn Hoàng Lộ sa mạc. Biểu tượng nhỏ lại 60 % (S 0,6 → 0,36).
 // Xuất ảnh: ?xuat → dataURL PNG ghi vào <textarea id="out"> (hoặc gọi window.ready qua DevTools).
 const W = 2048, H = 1152;
 const PAPER = '#F2EADA', INK = '#24323A', JADE = '#2B5446', SON = '#A8322A', GOLD = '#C9A13B';
@@ -21,31 +25,34 @@ const SEA = '#BFD5D1', SEA_DEEP = '#A9C6C2', COAST = '#6F9590';
 
 // VÙNG: seed = hạt phân vùng (có thể nằm ngoài giấy), lx/ly = chỗ viết tên vùng; wild = chưa khám phá
 const REGIONS = [
-  { id: 'tay-vuc',      han: '西域', name: 'Tây Vực',      seed: [260, 330],   lx: 190,  ly: 538,  tint: '#EAD7A8' },
-  { id: 'yen-van',      han: '燕雲', name: 'Yên Vân',      seed: [930, 270],   lx: 640,  ly: 215,  tint: '#D9D3B6' },
+  { id: 'tay-vuc',      han: '西域', name: 'Tây Vực',      seed: [260, 250],   lx: 230,  ly: 150,  tint: '#EAD7A8' },
+  { id: 'yen-van',      han: '燕雲', name: 'Yên Vân',      seed: [920, 270],   lx: 700,  ly: 400,  tint: '#D9D3B6' },
   { id: 'kinh-ky',      han: '京畿', name: 'Kinh Kỳ',      seed: [1470, 300],  lx: 1560, ly: 140,  tint: '#EDD0B6' },
-  { id: 'trung-nguyen', han: '中原', name: 'Trung Nguyên', seed: [1000, 680],  lx: 990,  ly: 925,  tint: '#D3E2CD' },
-  { id: 'ba-thuc',      han: '巴蜀', name: 'Ba Thục',      seed: [430, 840],   lx: 225,  ly: 770,  tint: '#C3D8A8' },
-  { id: 'ngo-viet',     han: '吳越', name: 'Ngô Việt',     seed: [1430, 790],  lx: 1420, ly: 1050, tint: '#E2E6C2' },
-  { id: 'linh-nam',     han: '嶺南', name: 'Lĩnh Nam',     seed: [980, 1290],  lx: 850,  ly: 1122, wild: true },
-  { id: 'dien-nam',     han: '滇南', name: 'Điền Nam',     seed: [-80, 1180],  lx: 255,  ly: 1122, wild: true },
+  { id: 'trung-nguyen', han: '中原', name: 'Trung Nguyên', seed: [960, 720],   lx: 1130, ly: 905,  tint: '#D3E2CD' },
+  { id: 'ba-thuc',      han: '巴蜀', name: 'Ba Thục',      seed: [280, 760],   lx: 270,  ly: 590,  tint: '#CBD6BD' },
+  { id: 'ngo-viet',     han: '吳越', name: 'Ngô Việt',     seed: [1450, 800],  lx: 1420, ly: 1050, tint: '#E2E6C2' },
+  { id: 'dien-nam',     han: '滇南', name: 'Điền Nam',     seed: [760, 1330],  lx: 860,  ly: 1122, wild: true },
+  { id: 'linh-nam',     han: '嶺南', name: 'Lĩnh Nam',     seed: [1200, 1330], lx: 1290, ly: 1122, wild: true },
   { id: 'mac-bac',      han: '漠北', name: 'Mạc Bắc',      seed: null,         lx: 1260, ly: 44,   wild: true },
   { id: 'dong-hai',     han: '東海', name: 'Đông Hải',     sea: true,          lx: 1850, ly: 1010 }
 ];
-// NƠI (cảnh đi được): x, y = tâm biểu tượng = tâm vùng chạm
+// NƠI (cảnh đi được): x, y = tâm biểu tượng = tâm vùng chạm. de = đế dưới biểu tượng (thế đất của cảnh): không ghi = đế
+// giấy · song (sống núi) · nui (đỉnh núi giữa biển mây) · dao (đảo nhỏ nổi trên biển mây); island = đảo trên biển
 const PLACES = [
-  { id: 'to-lua',       han: '絲路', name: 'Đôn Hoàng Lộ', x: 380,  y: 300 },
-  { id: 'truong-thanh', han: '長城', name: 'Nhạn Môn Quan', x: 960,  y: 225 },
-  { id: 'tu-cam-thanh', han: '紫禁', name: 'Tử Cấm Thành', x: 1450, y: 290 },
-  { id: 'rung-truc',    han: '竹林', name: 'Trúc Lâm', x: 480,  y: 770 },
-  { id: 'van-uyen',     han: '起源', name: 'Khởi Nguyên Trấn',    x: 1000, y: 680 },
-  { id: 'giang-nam',    han: '江南', name: 'Yên Vũ Lâu', x: 1450, y: 760 },
-  { id: 'bong-lai',     han: '蓬萊', name: 'Bồng Lai Đảo', x: 1880, y: 610, island: true },
-  { id: 'nha-ta',       han: '我家', name: 'Nhà của ta',       x: 1190, y: 560, r: 80 }
+  { id: 'to-lua',       han: '絲路', name: 'Đôn Hoàng Lộ',     x: 330,  y: 290 },
+  { id: 'truong-thanh', han: '長城', name: 'Nhạn Môn Quan',    x: 930,  y: 235, de: 'song' },
+  { id: 'tu-cam-thanh', han: '紫禁', name: 'Tử Cấm Thành',     x: 1430, y: 300 },
+  { id: 'rung-truc',    han: '竹林', name: 'Trúc Lâm',         x: 860,  y: 740 },
+  { id: 'van-uyen',     han: '起源', name: 'Khởi Nguyên Trấn', x: 440,  y: 800, de: 'nui' },
+  { id: 'giang-nam',    han: '江南', name: 'Yên Vũ Lâu',       x: 1400, y: 790 },
+  { id: 'bong-lai',     han: '蓬萊', name: 'Bồng Lai Đảo',     x: 1880, y: 610, island: true },
+  { id: 'nha-ta',       han: '我家', name: 'Nhà của ta',       x: 230,  y: 975, r: 95, de: 'dao' }
 ];
-const R = 105;          // vùng chạm quanh biểu tượng (nơi có r riêng thì dùng r riêng — Nhà của ta r 80, design 2026-11-14.13)
-const S = 0.6;          // cỡ biểu tượng
-const LABEL_VI = 46, LABEL_DY = 76;
+// vùng chạm quanh biểu tượng: lớn hơn biểu tượng (≥ cỡ ngón tay ở 360 × 640: r 120 → ∅ ≈ 41 px), phủ cả nhãn tên dưới
+// biểu tượng. Nhà của ta r 95 riêng (sát Khởi Nguyên Trấn, hai vùng chạm không chồng).
+const R = 120;
+const S = 0.36;         // cỡ biểu tượng (V-54: 0,6 → 0,36 = 60 %)
+const LABEL_VI = 46, LABEL_DY = 46;
 
 function rnd(seed) { let s = seed; return () => (s = (s * 16807) % 2147483647) / 2147483647; }
 const rand = rnd(7);
@@ -172,12 +179,95 @@ function smooth(g, pts) {
 function rivers(g) {
   g.save(); g.lineCap = 'round'; g.lineJoin = 'round';
   const hh = [[30, 470], [180, 500], [330, 455], [520, 505], [700, 470], [860, 520], [1040, 470], [1200, 510], [1360, 465], [1530, 505], [coastX(500) + 4, 500]];
-  const tg = [[20, 1000], [190, 960], [380, 1010], [560, 965], [740, 1015], [920, 975], [1100, 1020], [1280, 975], [1460, 1010], [coastX(990) + 4, 990]];
-  for (const pts of [hh, tg]) {
-    g.strokeStyle = COAST; g.globalAlpha = 0.55; g.lineWidth = 26; smooth(g, pts); g.stroke();
-    g.globalAlpha = 1; g.strokeStyle = SEA; g.lineWidth = 18; smooth(g, pts); g.stroke();
+  // Trường Giang chảy ra từ chân dãy núi Ba Thục (dưới biển mây), qua nam đồng bằng ra biển đông
+  const tg = [[560, 1000], [740, 1015], [920, 975], [1100, 1020], [1280, 975], [1460, 1010], [coastX(990) + 4, 990]];
+  // suối thung lũng Trúc Lâm: từ núi xuống đồng bằng, nhập Trường Giang (cảnh có thác + suối)
+  const suoi = [[640, 660], [720, 720], [745, 820], [700, 900], [760, 1000]];
+  for (const [pts, w] of [[hh, 18], [tg, 18], [suoi, 9]]) {
+    g.strokeStyle = COAST; g.globalAlpha = 0.55; g.lineWidth = w + 8; smooth(g, pts); g.stroke();
+    g.globalAlpha = 1; g.strokeStyle = SEA; g.lineWidth = w; smooth(g, pts); g.stroke();
   }
   g.restore();
+}
+
+// ---------- thế đất từng cảnh (V-54, theo design/scene/<mã>.json) ----------
+// núi: chân (x, by), nửa bề ngang hw, cao h, đỉnh bằng rộng top (chỗ đặt biểu tượng); nửa phải đổ bóng
+function mount(g, x, by, hw, h, c1, c2, top = 0) {
+  const ax = x - top / 2, bx = x + top / 2, ay = by - h;
+  g.fillStyle = c1; g.beginPath(); g.moveTo(x - hw, by);
+  g.quadraticCurveTo(x - hw * 0.3, by - h * 0.5, ax, ay); g.lineTo(bx, ay);
+  g.quadraticCurveTo(x + hw * 0.3, by - h * 0.5, x + hw, by); g.closePath(); g.fill();
+  g.fillStyle = c2; g.beginPath(); g.moveTo(bx, ay);
+  g.quadraticCurveTo(x + hw * 0.3, by - h * 0.5, x + hw, by); g.lineTo(x + hw * 0.12, by);
+  g.quadraticCurveTo(x + hw * 0.06, by - h * 0.55, bx, ay); g.closePath(); g.fill();
+  g.strokeStyle = 'rgba(48,64,58,.28)'; g.lineWidth = 3; g.lineCap = 'round';
+  g.beginPath(); g.moveTo(x - hw * 0.8, by - h * 0.08); g.quadraticCurveTo(x - hw * 0.3, by - h * 0.5, ax, ay); g.lineTo(bx, ay); g.stroke();
+}
+// mây: chùm bầu dục trắng, viền dưới xám xanh nhạt (đọc là biển mây khi xếp thành dải)
+function puff(g, x, y, w, a = 0.95) {
+  g.save(); g.globalAlpha = a;
+  g.fillStyle = 'rgba(170,186,190,.55)';
+  g.beginPath(); g.ellipse(x, y + w * 0.12, w, w * 0.3, 0, 0, Math.PI * 2); g.fill();
+  g.fillStyle = '#FBF9F4';
+  for (const [dx, dy, k] of [[0, 0, 1], [-0.55, 0.06, 0.62], [0.55, 0.05, 0.66], [-0.2, -0.16, 0.6], [0.28, -0.14, 0.55]]) {
+    g.beginPath(); g.ellipse(x + dx * w, y + dy * w, w * k * 0.62, w * k * 0.3, 0, 0, Math.PI * 2); g.fill();
+  }
+  g.restore();
+}
+// Khởi Nguyên Trấn (scene.json: trấn trên đỉnh núi, cloudSea r 420, đảo nổi) — dãy núi Ba Thục góc trái dưới, biển mây
+// phủ chân núi; Nhà của ta (nha-ta.json: đảo nhỏ, cloudSea r 220) nổi trên biển mây ở góc trái dưới của trấn
+function massif(g) {
+  const kn = P('van-uyen'), far = ['#B9C6B4', '#A3B2A1'], mid = ['#9DB09E', '#84998A'], near = ['#8CA393', '#728A7C'];
+  g.save();
+  for (const [x, by, hw, h] of [[120, 880, 170, 235], [300, 860, 150, 210], [520, 840, 140, 180]]) mount(g, x, by, hw, h, ...far);
+  for (const [x, by, hw, h] of [[200, 990, 150, 230], [640, 1000, 150, 200], [40, 1000, 110, 170]]) mount(g, x, by, hw, h, ...mid);
+  // đỉnh của trấn: đỉnh bằng, biểu tượng đứng trên
+  mount(g, kn.x, 1030, 240, 1030 - (kn.y + 30), ...near, 110);
+  // mây vắt ngang sườn núi
+  for (const [x, y, w] of [[90, 830, 70], [610, 820, 60], [300, 905, 60]]) puff(g, x, y, w, 0.9);
+  g.restore();
+}
+function cloudSea(g) {
+  // dải biển mây phủ chân dãy núi Ba Thục và góc trái dưới (tan dần về đông)
+  const r = rnd(31);
+  for (let row = 0; row < 4; row++) {
+    const y0 = 945 + row * 58;
+    for (let x = -30; x < 820; x += 70 + r() * 30) {
+      const fade = x < 560 ? 1 : Math.max(0, 1 - (x - 560) / 260);
+      if (fade <= 0.05) continue;
+      puff(g, x, y0 + (r() - 0.5) * 30 + Math.sin(x / 90) * 10, 70 + r() * 30, 0.9 * fade);
+    }
+  }
+}
+// Nhạn Môn Quan (truong-thanh.json: quan ải giữa các đỉnh 22–30 m, biển mây thấp) — sống núi, quan thành ở yên ngựa
+function ridge(g) {
+  const p = P('truong-thanh'), c = ['#C4BFA8', '#ADA891'], c2 = ['#B3AE96', '#9A957E'];
+  g.save();
+  for (const [dx, by, hw, h] of [[-250, 330, 110, 150], [230, 330, 120, 160], [-120, 305, 100, 105], [120, 308, 100, 115]]) mount(g, p.x + dx, by, hw, h, ...c);
+  mount(g, p.x, p.y + 95, 170, 95 - 30, ...c2, 70);
+  g.restore();
+}
+// Trúc Lâm (rung-truc.json: thung lũng phẳng, đồi thấp 7–16 m quanh, thác + suối) — đồi tròn thấp, rừng trúc quanh
+function valley(g) {
+  const p = P('rung-truc');
+  g.save();
+  for (const [dx, dy, rx, ry, c] of [[-150, -40, 110, 46, '#B9CFA6'], [160, -50, 120, 50, '#B4CB9F'], [10, -95, 140, 40, '#C2D6AF']]) {
+    g.fillStyle = c; g.beginPath(); g.ellipse(p.x + dx, p.y + dy, rx, ry, 0, Math.PI, 0); g.fill();
+  }
+  const r = rnd(5);
+  for (const [dx, dy] of [[-170, 10], [-130, -10], [150, 0], [190, -20], [-60, -100], [80, -110]]) bamboo(g, p.x + dx, p.y + dy, r);
+  g.restore();
+}
+// Đôn Hoàng Lộ (to-lua.json: sa mạc, cồn cát + núi cát Minh Sa phía bắc) — núi cát sau biểu tượng
+function desert(g) {
+  const p = P('to-lua');
+  g.save();
+  for (const [dx, by, hw, h] of [[-120, 270, 110, 90], [130, 265, 120, 100]]) mount(g, p.x + dx, p.y + by - 290, hw, h, '#D9BE86', '#C7A66C');
+  g.restore();
+}
+// Bồng Lai Đảo (bong-lai.json: đảo, biển mây + đảo nổi) — mây quanh đảo trên biển
+function islandClouds(g) {
+  for (const [dx, dy, w] of [[-150, -95, 46], [140, -150, 40], [130, 60, 44]]) puff(g, BL.x + dx, BL.y + dy, w, 0.85);
 }
 
 // ---------- trang trí theo vùng (né biểu tượng, nhãn nơi, tên vùng) ----------
@@ -185,7 +275,8 @@ const placed = [];
 function blocked(x, y) {
   for (const p of PLACES) if (Math.abs(x - p.x) < 200 && y > p.y - 120 && y - 60 < p.y + 190) return true;
   for (const r of REGIONS) if (Math.abs(x - r.lx) < 330 && y > r.ly - 40 && y - 60 < r.ly + 40) return true; // tên vùng (chữ Việt dài)
-  if (x < 210 && y < 230) return true;            // dấu triện
+  if (x < 740 && y > 560) return true;            // dãy núi + biển mây Ba Thục (vẽ riêng)
+  if (x > 1000 && x < 1180 && y > 600 && y < 900) return true; // đồi thấp quanh Trúc Lâm
   if (x > 1820 && y < 260) return true;           // la bàn
   return placed.some(([px, py]) => Math.hypot(px - x, py - y) < 85);
 }
@@ -204,18 +295,20 @@ function peak(g, x, y, s, c1, c2) {
   g.fillStyle = c2; g.beginPath(); g.moveTo(x, y - 60 * s); g.lineTo(x + 46 * s, y); g.lineTo(x + 8 * s, y); g.closePath(); g.fill();
 }
 function pine(g, x, y, s, c) { g.fillStyle = '#6B5A45'; g.fillRect(x - 3 * s, y - 6 * s, 6 * s, 10 * s); g.fillStyle = c; g.beginPath(); g.moveTo(x - 16 * s, y - 4 * s); g.lineTo(x, y - 40 * s); g.lineTo(x + 16 * s, y - 4 * s); g.closePath(); g.fill(); }
+function bamboo(g, x, y, r) { g.lineCap = 'round'; for (const dx of [-10, 0, 10]) { g.strokeStyle = dx ? '#5E8A3E' : '#4F7A35'; g.lineWidth = 6; g.beginPath(); g.moveTo(x + dx, y); g.lineTo(x + dx * 1.3, y - 36 - r() * 12); g.stroke(); } }
 function decorate(g, ids) {
   g.save();
   const dune = (g, x, y, r) => { g.strokeStyle = 'rgba(176,138,82,.55)'; g.lineWidth = 6; g.lineCap = 'round'; const w = 46 + r() * 36; g.beginPath(); g.moveTo(x - w, y); g.quadraticCurveTo(x - w * 0.2, y - 26, x + w, y); g.stroke(); };
   const grey = (g, x, y, r) => peak(g, x, y, 0.7 + r() * 0.6, 'rgba(150,145,130,.5)', 'rgba(120,115,100,.5)');
   scatter(g, ids, 'tay-vuc', 12, 11, dune);
   scatter(g, ids, 'mac-bac', 6, 19, dune);
-  scatter(g, ids, 'yen-van', 9, 12, (g, x, y, r) => peak(g, x, y, 0.8 + r() * 0.6, '#A9A58E', '#8F8B76'));
-  scatter(g, ids, 'trung-nguyen', 6, 13, (g, x, y, r) => peak(g, x, y, 0.8 + r() * 0.6, '#9DB49C', '#7F9A82'));
-  scatter(g, ids, 'trung-nguyen', 6, 14, (g, x, y, r) => pine(g, x, y, 0.9 + r() * 0.4, '#5E8A5E'));
+  scatter(g, ids, 'yen-van', 5, 12, (g, x, y, r) => peak(g, x, y, 0.8 + r() * 0.6, '#A9A58E', '#8F8B76'));
+  // Trung Nguyên: đồng bằng — ruộng ô, khóm trúc, thông; không núi
+  scatter(g, ids, 'trung-nguyen', 7, 13, (g, x, y, r) => { g.strokeStyle = 'rgba(110,140,90,.45)'; g.lineWidth = 4; const s = 22 + r() * 10; g.strokeRect(x - s, y - s * 0.55, s * 2, s * 1.1); g.beginPath(); g.moveTo(x - s, y); g.lineTo(x + s, y); g.stroke(); });
+  scatter(g, ids, 'trung-nguyen', 6, 14, (g, x, y, r) => pine(g, x, y, 0.8 + r() * 0.3, '#5E8A5E'));
+  scatter(g, ids, 'trung-nguyen', 6, 21, bamboo);
   scatter(g, ids, 'kinh-ky', 8, 15, (g, x, y, r) => { g.strokeStyle = 'rgba(170,120,80,.45)'; g.lineWidth = 4; const s = 24 + r() * 10; g.strokeRect(x - s, y - s * 0.6, s * 2, s * 1.2); g.beginPath(); g.moveTo(x, y - s * 0.6); g.lineTo(x, y + s * 0.6); g.stroke(); });
-  scatter(g, ids, 'ba-thuc', 8, 16, (g, x, y, r) => peak(g, x, y, 0.8 + r() * 0.5, '#93AE86', '#7C9870'));
-  scatter(g, ids, 'ba-thuc', 8, 22, (g, x, y, r) => { g.lineCap = 'round'; for (const dx of [-10, 0, 10]) { g.strokeStyle = dx ? '#5E8A3E' : '#4F7A35'; g.lineWidth = 6; g.beginPath(); g.moveTo(x + dx, y); g.lineTo(x + dx * 1.3, y - 40 - r() * 14); g.stroke(); } });
+  scatter(g, ids, 'ba-thuc', 3, 22, bamboo);
   scatter(g, ids, 'ngo-viet', 7, 17, (g, x, y, r) => { g.fillStyle = 'rgba(160,200,196,.95)'; g.beginPath(); g.ellipse(x, y, 32 + r() * 18, 13 + r() * 6, 0, 0, Math.PI * 2); g.fill(); });
   scatter(g, ids, 'ngo-viet', 5, 18, (g, x, y) => { g.fillStyle = '#F4F1EA'; g.fillRect(x - 14, y - 16, 28, 18); g.fillStyle = '#3A3F44'; g.fillRect(x - 18, y - 22, 36, 7); });
   scatter(g, ids, 'linh-nam', 8, 23, grey);
@@ -293,7 +386,7 @@ function routes(g) {
   const home = P('van-uyen'), at = p => [p.x, p.y + 10];
   greatWall(g);
   // đường cụt vào vùng chưa khám phá (nơi mới sau này)
-  road(g, trim(curve(at(P('rung-truc')), [40, 1045], -40), 200, 0), 0.4);                     // → Điền Nam
+  road(g, trim(curve(at(P('rung-truc')), [620, 1140], -20), 120, 0), 0.4);                     // → Điền Nam
   road(g, trim(curve(at(P('truong-thanh')), [P('truong-thanh').x + 10, 12], 10), 90, 0), 0.5); // → Mạc Bắc qua cổng
   road(g, trim(curve(at(P('to-lua')), [20, 230], 30), 150, 0), 0.4);                          // → tây
   // Ngô Việt → bến bờ đông → đường biển sang Bồng Lai; một tuyến mờ ra khơi
@@ -419,8 +512,20 @@ const ICONS = {
 
 // nơi: đế tròn giấy dưới biểu tượng (đọc là "một điểm trên bản đồ") + tên
 function placeBase(g, p) {
-  g.save(); g.fillStyle = 'rgba(244,239,226,.85)'; g.strokeStyle = 'rgba(91,74,58,.55)'; g.lineWidth = 4;
-  g.beginPath(); g.ellipse(p.x, p.y + 42, 92, 26, 0, 0, Math.PI * 2); g.fill(); g.stroke(); g.restore();
+  if (p.de === 'nui' || p.de === 'song') return; // đứng trên đỉnh núi / yên ngựa đã vẽ ở massif / ridge
+  if (p.de === 'dao') {
+    // đảo nhỏ nổi trên biển mây: mặt cỏ + chóp đá treo, mây ôm chân
+    const y = p.y + 22;
+    g.save();
+    g.fillStyle = '#8D8478'; g.beginPath(); g.moveTo(p.x - 64, y); g.lineTo(p.x + 64, y); g.lineTo(p.x + 16, y + 66); g.lineTo(p.x - 8, y + 58); g.closePath(); g.fill();
+    g.fillStyle = '#6F675D'; g.beginPath(); g.moveTo(p.x + 10, y); g.lineTo(p.x + 64, y); g.lineTo(p.x + 16, y + 66); g.closePath(); g.fill();
+    g.fillStyle = '#8DBF5A'; g.beginPath(); g.ellipse(p.x, y, 68, 15, 0, 0, Math.PI * 2); g.fill();
+    g.restore();
+    puff(g, p.x - 62, y + 50, 40, 0.95); puff(g, p.x + 70, y + 40, 36, 0.95);
+    return;
+  }
+  g.save(); g.fillStyle = 'rgba(244,239,226,.85)'; g.strokeStyle = 'rgba(91,74,58,.55)'; g.lineWidth = 3;
+  g.beginPath(); g.ellipse(p.x, p.y + 27, 56, 16, 0, 0, Math.PI * 2); g.fill(); g.stroke(); g.restore();
 }
 function label(g, p) {
   g.save(); g.textAlign = 'center'; g.textBaseline = 'alphabetic'; g.lineJoin = 'round';
@@ -443,10 +548,11 @@ async function draw() {
   sea(g);
   rivers(g);
   decorate(g, ids);
+  desert(g); ridge(g); valley(g); massif(g); cloudSea(g); islandClouds(g);
   for (const r of REGIONS) regionLabel(g, r);
   routes(g);
   vignette(g);
-  for (const [x, y, s2] of [[30, 1040, 0.7], [30, 230, 0.8], [975, 14, 0.6], [1990, 260, 0.8]]) cloud(g, x, y, s2, 0.6);
+  for (const [x, y, s2] of [[975, 14, 0.6], [1990, 260, 0.8]]) cloud(g, x, y, s2, 0.6);
   compass(g, 1930, 150);
   for (const p of PLACES) {
     if (!p.island) placeBase(g, p);
@@ -459,8 +565,9 @@ window.ready = draw();
 
 // ---------- lớp trạng thái (code vẽ chồng; đây là bản mẫu để duyệt) ----------
 // Không vòng tròn. Đã mở: không vẽ gì. Sắp mở: huy hiệu đồng hồ. Đang ở đây: ghim tròn đầu nhân vật chính.
-const PIN = { dx: -72, dy: -40, r: 52, vien: '#2B5446', net: 7, vienNgoai: '#D4A64A', netNgoai: 4, nen: '#F4F7F6', duoi: 24 };
-const BADGE = { dx: 62, dy: -62, r: 28, nen: '#F4F7F6', vien: '#2B5446', vienCham: '#A8322A' };
+// V-54: biểu tượng nhỏ lại → ghim / huy hiệu sát biểu tượng hơn (cỡ giữ nguyên)
+const PIN = { dx: -62, dy: -40, r: 52, vien: '#2B5446', net: 7, vienNgoai: '#D4A64A', netNgoai: 4, nen: '#F4F7F6', duoi: 24 };
+const BADGE = { dx: 46, dy: -46, r: 28, nen: '#F4F7F6', vien: '#2B5446', vienCham: '#A8322A' };
 function loadImg(src) { return new Promise((ok, err) => { const i = new Image(); i.onload = () => ok(i); i.onerror = err; i.src = src; }); }
 async function makeAvatar() {
   const img = await loadImg('../../models/anh/nhan-vat-mat.png');

@@ -15,6 +15,15 @@ Thiết kế trái luật đã chốt → code theo luật, không theo artboard
 
 Cột App các luật trên không đổi (`ok` / `sửa` như sổ) — code đã theo luật.
 
+## Vẽ lại bản đồ truyền tống (V-20261114-54: người dùng 2026-11-15 — đúng thế đất, trấn góc trái dưới, icon nhỏ)
+
+Ảnh nền mới `design/scene/ban-do/ban-do-goc.png` + `screens/BanDo-trang-thai.png`, toạ độ / `r` mới ở `ban-do.json`
+(Khởi Nguyên Trấn (440; 800) trên núi Ba Thục giữa biển mây, Nhà của ta (230; 975) đảo mây góc trái dưới của trấn, Trúc
+Lâm (860; 740) đồng bằng Trung Nguyên; biểu tượng × 0,36; vùng chạm r 120 / nhà 95; ghim dx −62; huy hiệu dx 46 dy −46).
+Artboard còn bố cục cũ → phiên `/ui-design` thay ảnh nền + dời ghim / huy hiệu theo toạ độ mới, không đổi kiểu vẽ:
+`BanDo-doc`, `BanDo-ngang`, `BanDo-giay`, `TruyenTongDai`, `NhaTa-ban-do` (nơi Nhà của ta không còn ở Trung Nguyên
+(1190; 560) — nay ở vùng Ba Thục).
+
 ## Đổi tên 6 vùng (V-20261114-50 → V-20261114-53: người dùng chốt bộ tên Hán Việt cổ trang ngày 2026-11-15)
 
 Code + đặc tả cảnh + `design/scene/ban-do/ban-do.json` + ảnh bản đồ (`ban-do-goc.png`, `screens/BanDo-trang-thai.png`) +

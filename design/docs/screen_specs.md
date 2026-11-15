@@ -156,7 +156,14 @@ Mẫu một mục:
   Thành dọc rìa bắc. **Từ 2026-11-14.6**: nền là **các miền** (Tây Vực, Yên Vân, Kinh Kỳ, Trung Nguyên,
   Ba Thục, Ngô Việt, Đông Hải; Mạc Bắc, Lĩnh Nam, Điền Nam chưa khám phá) — mỗi nơi chỉ là một điểm nhỏ trong miền
   (biểu tượng × 0,6 trên đế giấy, tên Hán 56 / Việt 40, vùng chạm r 105); danh sách vùng ở `ban-do.json` `vung`. **Từ 2026-11-14.7**: trên giấy **chỉ chữ Việt** (không chữ Hán, không
-  triện); không còn đường toả về Văn Uyên Tông — chỉ đường biển và đường cụt vào vùng chưa khám phá.
+  triện); không còn đường toả về Văn Uyên Tông — chỉ đường biển và đường cụt vào vùng chưa khám phá. **Từ V-54
+  (2026-11-15, chờ mục CHANGELOG)**: vẽ đúng **thế đất** từng cảnh — Khởi Nguyên Trấn (440; 800) trên đỉnh bằng của dãy
+  núi **Ba Thục góc trái dưới**, biển mây phủ chân núi; Nhà của ta (230; 975) đảo nhỏ nổi trên biển mây, góc trái dưới
+  của trấn; Trúc Lâm (860; 740) thung lũng đồng bằng **Trung Nguyên** (đồi thấp, suối từ núi xuống Trường Giang); Nhạn
+  Môn Quan (930; 235) ở yên ngựa sống núi Yên Vân; Tử Cấm Thành (1430; 300) đồng bằng Kinh Kỳ; Đôn Hoàng Lộ (330; 290) sa
+  mạc + núi cát; Yên Vũ Lâu (1400; 790) sông hồ Ngô Việt; Bồng Lai Đảo (1880; 610) đảo giữa biển, mây quanh. Điền Nam +
+  Lĩnh Nam chưa khám phá ở dải nam. Biểu tượng **× 0,36** (60 % cũ), đế giấy 56 × 16; nhãn Việt 46 cách tâm 46; vùng chạm
+  **r 120** (Nhà của ta **r 95**) — lớn hơn biểu tượng, phủ nhãn tên. Ghim dx −62, huy hiệu dx 46 dy −46.
 - **Lớp trạng thái** (code vẽ chồng lên giấy, theo `ban-do.json`; từ 2026-11-14.2 **không vòng tròn**): đã mở (không vẽ
   gì) · đang ở đây (ghim tròn đầu nhân vật chính `ban-do-nhan-vat.png`, viền ngọc lục + vàng, đuôi chỉ xuống, trên trái
   biểu tượng) · sắp mở (huy hiệu đồng hồ) · vừa chạm nơi sắp mở (viền huy hiệu đổi son, nhấp nháy 2 lần / 0,6 s). Không

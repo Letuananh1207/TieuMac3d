@@ -19,13 +19,13 @@ describe('placeStates (R-HANH-1, R-HANH-2)', () => {
 describe('Nhà của ta trên bản đồ (R-NHA-1, thiết kế 2026-11-14.13)', () => {
   const nha = JOURNEY_MAP.places.find((p) => p.id === 'nha-ta');
 
-  it('R-NHA-1: bản đồ có nơi "Nhà của ta" 我家 ở (1190; 560), vùng chạm r 80 riêng', () => {
-    expect(nha).toMatchObject({ han: '我家', ten: 'Nhà của ta', x: 1190, y: 560, r: 80 });
+  it('R-NHA-1: bản đồ có nơi "Nhà của ta" 我家 ở (230; 975), vùng chạm r 95 riêng (V-54)', () => {
+    expect(nha).toMatchObject({ han: '我家', ten: 'Nhà của ta', x: 230, y: 975, r: 95 });
   });
 
-  it('R-NHA-1: chạm (1190; 560) → Nhà của ta, không phải Khởi Nguyên Trấn; mã cảnh nha-ta', () => {
-    expect(placeAt(JOURNEY_MAP.places, 1190, 560)?.id).toBe('nha-ta');
-    expect(placeAt(JOURNEY_MAP.places, 1000, 680)?.id).toBe('van-uyen');
+  it('R-NHA-1: chạm (230; 975) → Nhà của ta, không phải Khởi Nguyên Trấn; mã cảnh nha-ta', () => {
+    expect(placeAt(JOURNEY_MAP.places, 230, 975)?.id).toBe('nha-ta');
+    expect(placeAt(JOURNEY_MAP.places, 440, 800)?.id).toBe('van-uyen');
     expect(placeScene('nha-ta', 'tong-mon')).toBe('nha-ta');
   });
 
@@ -35,6 +35,37 @@ describe('Nhà của ta trên bản đồ (R-NHA-1, thiết kế 2026-11-14.13)'
     const home = placeStates(JOURNEY_MAP.places, 'nha-ta', 'tong-mon', scenes);
     expect(home['nha-ta']).toBe('oDay');
     expect(home['van-uyen']).toBe('mo');
+  });
+});
+
+describe('bố cục bản đồ (R-HANH-2, V-54)', () => {
+  const by = (id: string): MapPlace => JOURNEY_MAP.places.find((p) => p.id === id)!;
+
+  it('R-HANH-2: Khởi Nguyên Trấn ở góc trái dưới giấy; Nhà của ta sát góc trái dưới của trấn', () => {
+    const tran = by('van-uyen');
+    const nha = by('nha-ta');
+    expect(tran.x).toBeLessThan(JOURNEY_MAP.width / 3);
+    expect(tran.y).toBeGreaterThan(JOURNEY_MAP.height / 2);
+    expect(nha.x).toBeLessThan(tran.x);
+    expect(nha.y).toBeGreaterThan(tran.y);
+    expect(Math.hypot(nha.x - tran.x, nha.y - tran.y)).toBeLessThan(400);
+  });
+
+  it('R-HANH-2: Trúc Lâm là vùng gần trấn nhất', () => {
+    const tran = by('van-uyen');
+    const d = (p: MapPlace): number => Math.hypot(p.x - tran.x, p.y - tran.y);
+    const regions = JOURNEY_MAP.places.filter((p) => p.id !== 'van-uyen' && p.id !== 'nha-ta');
+    const nearest = regions.reduce((a, b) => (d(b) < d(a) ? b : a));
+    expect(nearest.id).toBe('rung-truc');
+  });
+
+  it('R-HANH-2: vùng chạm mỗi nơi ≥ cỡ ngón tay (∅ ≥ 32 px ở màn dọc 360 px, giấy rộng 97 %) và không chồng nhau', () => {
+    const pxPerPaper = (360 * 0.97) / JOURNEY_MAP.width;
+    for (const p of JOURNEY_MAP.places) expect(2 * p.r * pxPerPaper).toBeGreaterThanOrEqual(32);
+    const ps = JOURNEY_MAP.places;
+    for (let i = 0; i < ps.length; i++)
+      for (let j = i + 1; j < ps.length; j++)
+        expect(Math.hypot(ps[i].x - ps[j].x, ps[i].y - ps[j].y)).toBeGreaterThan(ps[i].r + ps[j].r);
   });
 });
 
