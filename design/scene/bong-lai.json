@@ -854,13 +854,15 @@
     ]
   },
   "teleport": {
+    "enabled": false
+  },
+  "stoneYard": {
     "enabled": true,
     "center": [
       0,
       39
     ],
-    "radius": 0,
-    "ringRadius": 4
+    "radius": 4.7
   },
   "lessons": {
     "radicals": false

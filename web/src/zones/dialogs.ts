@@ -96,7 +96,7 @@ export const DIALOGS: Dialog[] = [
       },
       {
         id: 'di',
-        text: 'Bước vào vòng trận giữa đài, đứng yên một lát cho trận sáng lên, bản đồ truyền tống sẽ hiện. Chạm nơi đã mở là đi. Lúc muốn về, cứ vào vòng trận ở vùng đó, chọn Khởi Nguyên Trấn.',
+        text: 'Bước vào vòng trận giữa đài, đứng yên một lát cho trận sáng lên, bản đồ truyền tống sẽ hiện. Chạm nơi đã mở là đi. Các vùng không có vòng trận — lúc muốn về, cứ theo vòng sáng ở mép vùng mà đi bộ, vùng nối vùng, về tới trấn.',
         choices: [{ text: 'Con đi được những đâu ạ?', next: 'vung' }, OTHER, BYE],
       },
       {

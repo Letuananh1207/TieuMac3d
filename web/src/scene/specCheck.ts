@@ -503,7 +503,7 @@ function checkConsistency(s: SceneSpec): string[] {
   if (t.enabled && t.edge.radius + t.edge.width > t.size / 2) {
     out.push(`terrain.edge: mép vực (radius + width = ${t.edge.radius + t.edge.width}) vượt nửa vùng lưới (${t.size / 2}) — tăng size`);
   }
-  out.push(...checkTeleport(s), ...checkLanterns(s), ...checkDecorSlots(s), ...checkPortals(s), ...checkLook(s.look), ...checkDayNight(s.dayNight), ...checkTea(s), ...checkGarden(s));
+  out.push(...checkTeleport(s), ...checkStoneYardEmpty(s),...checkLanterns(s), ...checkDecorSlots(s), ...checkPortals(s), ...checkLook(s.look), ...checkDayNight(s.dayNight), ...checkTea(s), ...checkGarden(s));
   out.push(...hanOnDisplay(s).map((h) => `${h.path}: biển / tên trong game chỉ tiếng Việt, không chữ Hán (R-HUD-4) — đang là "${h.text}"`));
   if (s.cloudSea.radius < 0) out.push('cloudSea.radius: phải ≥ 0');
   out.push(...checkCrane(s));
@@ -581,6 +581,8 @@ const checkCrane = craneProblems;
 function checkTeleport(s: SceneSpec): string[] {
   const out: string[] = [];
   const tp = s.teleport;
+  const yard = s.stoneYard;
+  if (yard.enabled && (yard.radius < 2 || yard.radius > 8)) out.push('stoneYard.radius: 2 … 8 m');
   if (!tp.enabled) return out;
   if (tp.ringRadius <= 0) out.push('teleport.ringRadius: phải > 0');
   // chữ khắc giữa vòng: rỗng = hoa văn; có thì tên Việt ngắn (chữ Hán bị `hanOnDisplay` bắt — R-HUD-4)
@@ -589,6 +591,7 @@ function checkTeleport(s: SceneSpec): string[] {
   const d = Math.hypot(s.player.start[0] - tp.center[0], s.player.start[1] - tp.center[1]);
   if (d < ringTrigger(tp) + 1) out.push(`teleport: chỗ xuất phát (player.start) cách tâm vòng ${d.toFixed(1)} m — dời ra ngoài vòng (≥ ${ringTrigger(tp) + 1} m)`);
   const dz = tp.dais;
+  if (s.stoneYard.enabled) out.push('stoneYard: cảnh có vòng trận thì không cần sân đá trống (V-65: sân đá thay vòng ở vùng)');
   if (dz.tiers > 0) {
     if (!Number.isInteger(dz.tiers) || dz.tiers > 3) out.push('teleport.dais.tiers: số nguyên 0…3');
     if (dz.tierHeight < 0.2 || dz.tierHeight > 0.8) out.push('teleport.dais.tierHeight: 0,2…0,8 m (cỡ bậc người bước)');
@@ -598,6 +601,32 @@ function checkTeleport(s: SceneSpec): string[] {
     if (tp.radius > 0) out.push('teleport: có đài (dais.tiers > 0) thì radius phải 0 — đài thay sân đá');
     const L = daisLayout(tp);
     if (d < L.footprint + 1) out.push(`teleport: chỗ xuất phát (player.start) nằm trên đài — dời ra ngoài (≥ ${(L.footprint + 1).toFixed(1)} m từ tâm)`);
+  }
+  return out;
+}
+
+/** Sân đá trống (V-65) phải trống — bãi hạc đáp: không vật, cây, bàn, NPC, ô trang trí nào đứng trên sân. */
+export function checkStoneYardEmpty(s: SceneSpec): string[] {
+  const y = s.stoneYard;
+  if (!y.enabled) return [];
+  const [cx, cz] = y.center;
+  const on = (x: number, z: number, pad = 0): boolean => Math.hypot(x - cx, z - cz) < y.radius + pad;
+  const out: string[] = [];
+  const hit = (what: string): number => out.push(`stoneYard: ${what} đứng trên sân đá trống — dời ra ngoài (tâm (${cx}; ${cz}), bán kính ${y.radius} m)`);
+  for (const p of s.props) if (on(p.x, p.z, 0.3)) hit(`vật "${p.kind}" (${p.x}; ${p.z})`);
+  for (const t of s.decorSlots) if (on(t.x, t.z, 0.8)) hit(`ô trang trí "${t.id}"`);
+  for (const t of s.gameTables) if (on(t.x, t.z, 1)) hit(`bàn chơi "${t.id}"`);
+  for (const n of s.npcs) if (on(n.x, n.z, 0.3)) hit(`NPC "${n.id}"`);
+  for (const t of s.trees.yard) if (on(t.x, t.z, 0.5)) hit(`cây (${t.x}; ${t.z})`);
+  for (const g of s.trees.groves) {
+    // điểm gần tâm sân nhất trong khóm (hình chữ nhật trục)
+    const nx = Math.max(g.x - g.w / 2, Math.min(cx, g.x + g.w / 2));
+    const nz = Math.max(g.z - g.d / 2, Math.min(cz, g.z + g.d / 2));
+    if (on(nx, nz)) hit(`khóm cây (${g.x}; ${g.z})`);
+  }
+  for (const b of s.buildings) {
+    const half = Math.max(b.w, b.d) / 2 + y.radius; // thô: bỏ qua hướng nhà
+    if (Math.abs(b.x - cx) < half && Math.abs(b.z - cz) < half) hit(`nhà "${b.id}"`);
   }
   return out;
 }
@@ -656,6 +685,8 @@ function checkOnFlatGround(s: SceneSpec): string[] {
   const tp = s.teleport;
   const pad = Math.max(tp.radius, tp.ringRadius + 0.7, tp.dais.tiers > 0 ? daisLayout(tp).footprint : 0) * 2;
   if (tp.enabled) flat('vòng trận (teleport)', box(tp.center[0], tp.center[1], pad, pad));
+  const yard = s.stoneYard;
+  if (yard.enabled) flat('sân đá trống (stoneYard)', box(yard.center[0], yard.center[1], yard.radius * 2, yard.radius * 2));
   s.fences.forEach((w, i) => flat(`fences[${i}]`, [w.from, w.to, [(w.from[0] + w.to[0]) / 2, (w.from[1] + w.to[1]) / 2]]));
   for (const b of s.bridges) {
     const [ex, ez] = rotateXZ(0, b.length / 2, b.rotY ?? 0);

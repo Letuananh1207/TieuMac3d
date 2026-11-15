@@ -76,7 +76,7 @@ describe('cổng mái ngói bỏ mái (`roof: false`, V-39)', () => {
 });
 
 describe('chỗ xuất phát luôn ở cổng trấn (`player.arriveAtStart`, V-39)', () => {
-  it('R-HANH-2: mặc định tắt (cảnh vùng giữ chỗ xuất hiện cạnh vòng trận); Khởi Nguyên Trấn bật, xuất phát (0; 48) ngay trong cổng', () => {
+  it('R-HANH-2: mặc định tắt (cảnh vùng xuất hiện ở chỗ xuất phát của vùng); Khởi Nguyên Trấn bật, xuất phát (0; 48) ngay trong cổng', () => {
     expect(DEFAULT_SCENE.player.arriveAtStart).toBe(false);
     expect(resolveSceneSpec({ player: { start: [1, 2] } }).spec.player.arriveAtStart).toBe(false);
     const town = resolveSceneSpec(townRaw).spec;
@@ -91,7 +91,7 @@ describe('chỗ xuất phát luôn ở cổng trấn (`player.arriveAtStart`, V-
 describe('cặp cổng trấn ↔ Trúc Lâm (V-57)', () => {
   const town = resolveSceneSpec(townRaw).spec;
   const rung = resolveSceneSpec(rungRaw).spec;
-  it('R-HANH-4: vòng "Trúc Lâm" cuối trục đông – tây (41,2; 4) nối cuối lối lát, ↔ vòng "Khởi Nguyên Trấn" phía tây vòng trận Trúc Lâm', () => {
+  it('R-HANH-4: vòng "Trúc Lâm" cuối trục đông – tây (41,2; 4) nối cuối lối lát, ↔ vòng "Khởi Nguyên Trấn" mép tây sân đá trống Trúc Lâm (V-65)', () => {
     const toRung = town.portals.find((p) => p.scene === 'rung-truc')!;
     expect(toRung.label).toBe('Trúc Lâm');
     expect(markerRadius(toRung)).toBeCloseTo(1.2);
@@ -114,7 +114,8 @@ describe('cặp cổng trấn ↔ Trúc Lâm (V-57)', () => {
   it('R-HANH-4: từ Trúc Lâm đi bộ về → đứng (38,6; 4) trước vòng, nhìn tây vào trấn (không phải cổng trấn dù `arriveAtStart`); từ trấn sang → đứng (−5; 38,6) cạnh vòng về, nhìn nam xuống lối rừng', () => {
     expect(arrivalFor(town.portals, 'rung-truc')).toEqual({ at: [38.6, 4], rotY: (3 * Math.PI) / 2 });
     expect(arrivalFor(rung.portals, 'tong-mon')).toEqual({ at: [-5, 38.6], rotY: Math.PI });
-    // chỗ đứng ở Trúc Lâm ngoài vòng trận (tâm (0; 39), chạm khi < 3,2 m)
-    expect(Math.hypot(-5 - rung.teleport.center[0], 38.6 - rung.teleport.center[1])).toBeGreaterThan(3.2);
+    // Trúc Lâm không còn vòng trận (V-65); chỗ đứng ở mép tây sân đá trống (tâm (0; 39), bán kính 4,7)
+    expect(rung.teleport.enabled).toBe(false);
+    expect(Math.hypot(-5 - rung.stoneYard.center[0], 38.6 - rung.stoneYard.center[1])).toBeGreaterThan(rung.stoneYard.radius);
   });
 });

@@ -1,6 +1,7 @@
 /**
  * Vòng trận truyền tống (R-HANH-2; đổi kiểu một vòng — người dùng 2026-11-13). Tông môn: Truyền Tống Đài 傳送台 — sân đá
- * tròn, giữa sân một vòng trận lớn có phù hiệu hoa văn (không chữ Hán — R-HUD-4). Cảnh vùng: chỉ vòng trên bệ đá. Đứng trong vòng → `setCharge` 0 → 1
+ * tròn, giữa sân một vòng trận lớn có phù hiệu hoa văn (không chữ Hán — R-HUD-4). Cảnh vùng không còn vòng (V-65) — chỗ cũ
+ * là sân đá trống `addStoneYard`. Đứng trong vòng → `setCharge` 0 → 1
  * trong 1,2 s: vòng sáng dần, cột sáng bốc lên, hạt xoáy nhanh dần. Cuộn bản đồ chọn vùng chờ thiết kế
  * (docs/phieu_thiet_ke/2026-11-13-hanh-trinh-hud.md).
  * Ngân sách: sân + viền / bệ (gộp) ≈ 2 · phù hiệu 1 · vòng 1 · chấm 1 · cột sáng 1 · hạt 1.
@@ -10,7 +11,7 @@ import type { Colliders } from '../collision/colliders';
 import type { Pad } from '../collision/ground';
 import { dayNightTag, lambert } from './materials';
 import { markDynamic } from './merge';
-import type { TeleportSpec } from './spec';
+import type { StoneYardSpec, TeleportSpec } from './spec';
 import { makeCanvasTex } from './textures';
 import type { GroundY } from './terrainHeight';
 import { addDais } from './truyenTongDai';
@@ -80,6 +81,27 @@ export interface TeleportRing {
   update(dt: number): void;
 }
 
+/** Đĩa đá phẳng + viền (sân Truyền Tống Đài không đài / bệ vòng / sân đá trống). Đứng yên → mergeStatic gộp. */
+function addStoneDisc(scene: THREE.Scene, cx: number, y0: number, cz: number, radius: number, colors: { floor: string; rim: string }, floor = true): void {
+  if (floor) {
+    const disc = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius, 0.06, 56), lambert(colors.floor));
+    disc.position.set(cx, y0 + 0.03, cz);
+    scene.add(disc);
+  }
+  const rim = new THREE.Mesh(flat(new THREE.RingGeometry(radius - 0.5, radius, 56)), lambert(colors.rim));
+  rim.position.set(cx, y0 + 0.065, cz);
+  scene.add(rim);
+}
+
+/**
+ * Sân đá trống (V-65): chỗ vòng trận cũ ở cảnh vùng — chỉ đĩa đá + viền, không vòng / phù hiệu / cột sáng / hạt, không
+ * vật cản (bãi hạc đáp — R-HANH-5). Ngân sách: 2 khối tĩnh (gộp với khối cùng vật liệu).
+ */
+export function addStoneYard(scene: THREE.Scene, yard: StoneYardSpec, groundY: GroundY = () => 0): void {
+  const [cx, cz] = yard.center;
+  addStoneDisc(scene, cx, groundY(cx, cz), cz, yard.radius, yard.colors);
+}
+
 /**
  * Dựng vòng trận theo đặc tả. Không đài: sân / bệ đá phẳng đi qua được, không vật cản. Có đài (`dais.tiers` > 0): đài
  * nhiều tầng (`truyenTongDai.ts`) — lan can + trụ vào `colliders`, mặt tầng + bậc trả về ở `pads`; vòng nằm trên mặt trên.
@@ -94,19 +116,13 @@ export function addTeleport(scene: THREE.Scene, colliders: Colliders, tp: Telepo
 
   // sân đá (tông môn) hoặc bệ đá nhỏ (vùng) — có đài thì mặt tầng trên cùng là sân, chỉ thêm viền: đứng yên → mergeStatic gộp
   const base = dais ? dais.topRadius : tp.radius > 0 ? tp.radius : R + 0.7;
-  if (!dais) {
-    const floor = new THREE.Mesh(new THREE.CylinderGeometry(base, base, 0.06, 56), lambert(colors.floor));
-    floor.position.set(cx, y0 + 0.03, cz);
-    scene.add(floor);
-  }
-  const rim = new THREE.Mesh(flat(new THREE.RingGeometry(base - 0.5, base, 56)), lambert(colors.rim));
-  rim.position.set(cx, y0 + 0.065, cz);
+  addStoneDisc(scene, cx, y0, cz, base, colors, !dais);
   const emblem = new THREE.Mesh(
     flat(new THREE.PlaneGeometry(R * 1.5, R * 1.5)),
     lambert('#ffffff', { map: emblemTex(colors.rim, tp.text), transparent: true, polygonOffset: true, polygonOffsetFactor: -1 }),
   );
   emblem.position.set(cx, y0 + 0.07, cz);
-  scene.add(rim, emblem);
+  scene.add(emblem);
 
   // vòng + chấm vàng: màu vòng đổi theo độ nạp
   const ringMat = dayNightTag(new THREE.MeshBasicMaterial({ color: colors.dim, polygonOffset: true, polygonOffsetFactor: -2 }), 'bo');

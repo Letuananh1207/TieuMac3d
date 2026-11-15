@@ -747,6 +747,18 @@ export interface TeleportSpec {
 }
 
 /**
+ * Sân đá trống (V-65): đĩa đá phẳng + viền, tâm `center`, bán kính `radius` — chỗ vòng trận cũ ở cảnh vùng, làm bãi hạc
+ * đáp (R-HANH-2, R-HANH-5). Không vòng, không chữ, không vật cản, đi qua được. `enabled` false = không có (cảnh cũ).
+ */
+export interface StoneYardSpec {
+  enabled: boolean;
+  center: XZ;
+  radius: number;
+  /** mặt sân, viền */
+  colors: { floor: string; rim: string };
+}
+
+/**
  * Đài tròn kiểu đàn tế: `tiers` tầng trụ tròn, mỗi tầng cao `tierHeight`, rộng ra `tierWidth` so với tầng trên (tầng
  * trên cùng ôm vòng trận: bán kính `ringRadius + 0,9`); lan can đá quanh mép mỗi tầng, chừa 4 lối bậc rộng `stairWidth`
  * theo 4 hướng chính; `pillars` trụ đá khắc phù văn trên tầng dưới cùng, xen giữa các lối bậc, phù văn sáng theo độ nạp.
@@ -947,8 +959,10 @@ export interface SceneSpec {
    * người học — cảnh không đặt vật học theo tiến độ (R-VUNG-1). Mặc định tắt (tông môn: ngồi thiền chỉ là ngồi).
    */
   lessons: { radicals: boolean };
-  /** vòng trận truyền tống (R-HANH-2): tông môn = Truyền Tống Đài; vùng = vòng về / đi tiếp; `player.start` ngoài vòng */
+  /** vòng trận truyền tống (R-HANH-2): chỉ tông môn (Truyền Tống Đài) bật; vùng (V-65) + nhà (V-47) tắt; `player.start` ngoài vòng */
   teleport: TeleportSpec;
+  /** sân đá trống chỗ vòng trận cũ ở vùng (V-65) — bãi hạc đáp; tắt = không có */
+  stoneYard: StoneYardSpec;
   /** đảo đá lơ lửng (chỉ ngắm) + mây trôi quanh tâm cảnh ở độ cao `height` */
   floating: {
     islands: { x: number; y: number; z: number; scale: number }[];
@@ -1160,6 +1174,8 @@ export const DEFAULT_SCENE: SceneSpec = {
       colors: { stone: '#c9c3b6', rail: '#ece8de', pillar: '#8d877f' },
     },
   },
+  // tắt: cảnh cũ không đổi; vùng bật ở tâm vòng trận cũ (V-65) — màu = sân / viền vòng trận cũ
+  stoneYard: { enabled: false, center: [0, 0], radius: 4.7, colors: { floor: '#b9b4a8', rim: '#8d877f' } },
   floating: {
     islands: [],
     clouds: { count: 0, height: 26, radius: 60, speed: 0.6, color: '#d9dce8' },

@@ -35,6 +35,7 @@ export function checkDecorSlots(s: SceneSpec): string[] {
     if (tp.enabled && Math.hypot(t.x - tp.center[0], t.z - tp.center[1]) < tp.ringRadius + 1.5) {
       out.push(`${name(t)}: đè vòng trận — cách tâm vòng ≥ ${tp.ringRadius + 1.5} m`);
     }
+    // ô trên sân đá trống (V-65): `checkStoneYardEmpty` (specCheck.ts) báo
     const [px, pz] = s.player.start;
     if (Math.hypot(t.x - px, t.z - pz) < 1.5) out.push(`${name(t)}: đè điểm xuất phát (player.start) — cách ≥ 1,5 m`);
   });

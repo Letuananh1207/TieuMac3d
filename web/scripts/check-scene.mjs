@@ -282,6 +282,8 @@ function checkScene(rel, raw, opt = {}) {
       console.log(`  về tông môn đứng ở (${n(+a[0].toFixed(2))}; ${n(+a[1].toFixed(2))})`);
     }
   } else console.log('Vòng trận: không có — tới cảnh này bằng bản đồ truyền tống ở nơi khác (R-HANH-2)');
+  const yard = spec.stoneYard;
+  if (yard.enabled) console.log(`Sân đá trống (bãi hạc đáp, V-65): tâm (${n(yard.center[0])}; ${n(yard.center[1])}) · ∅ ${n(yard.radius * 2)}`);
   // tới bằng bản đồ truyền tống: đứng ở chỗ xuất phát, hạc đáp bên phải (R-HANH-5)
   const pad = landingPad(spec.player.start, START_HEADING, spec.crane.padOffset);
   console.log(`Chỗ xuất phát (${n(spec.player.start[0])}; ${n(spec.player.start[1])}) · hạc đáp (${n(+pad[0].toFixed(2))}; ${n(+pad[1].toFixed(2))})`);

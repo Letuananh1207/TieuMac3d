@@ -49,6 +49,12 @@ function closeIcon(size: number): SVGSVGElement {
   return s;
 }
 
+/** Loại dấu có trong chú giải: bản đồ không có vòng trận (vùng — V-65, nhà — V-47) → bỏ mục "Vòng trận" (R-BANDO-2). */
+export function legendKinds(map: Pick<AreaMap, 'icons'>): IconKind[] {
+  const ring = map.icons.some((i) => i.kind === 'vong-tran');
+  return LEGEND.map(([k]) => k).filter((k) => ring || k !== 'vong-tran');
+}
+
 /** Chữ hiển thị của một nhãn (R-BANDO-2, R-BANDO-4). */
 export function labelText(l: MapLabel): string {
   if (l.kind === 'khu') return l.text.toLocaleUpperCase('vi');
@@ -72,6 +78,8 @@ export class AreaMapPanel {
   private readonly cardTitle = node('div', 'bm-card-title');
   private map: AreaMap | null = null;
   private open = false;
+  /** mục chú giải (hai bản: dưới giấy + cột phải) — ẩn loại không có trên bản đồ */
+  private readonly legendItems: { kind: IconKind; el: HTMLElement }[] = [];
 
   constructor(onClose: () => void) {
     this.root.hidden = true;
@@ -88,6 +96,7 @@ export class AreaMapPanel {
       for (const [kind, text] of LEGEND) {
         const it = node('span', 'bm-legend-item');
         it.append(legendIcon(kind, dpr), document.createTextNode(text));
+        this.legendItems.push({ kind, el: it });
         l.append(it);
       }
       return l;
@@ -118,6 +127,8 @@ export class AreaMapPanel {
 
   setMap(map: AreaMap): void {
     this.map = map;
+    const shown = new Set(legendKinds(map));
+    for (const it of this.legendItems) it.el.hidden = !shown.has(it.kind);
     this.title.textContent = map.name;
     this.cardTitle.textContent = map.name;
     this.sheet.setAttribute('aria-label', `Bản đồ ${map.name}`);

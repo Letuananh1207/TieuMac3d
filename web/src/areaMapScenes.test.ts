@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { HOME_SCENE, loadScene, REGION_SCENES } from './scene/loadSpec';
+import { legendKinds } from './ui/areaMapPanel';
 import { buildAreaMap } from './zones/areaMap';
 import { dailyBoardSpot } from './zones/dailyBoard';
 import { shopDoor } from './zones/shop';
@@ -19,15 +20,17 @@ describe('bản đồ vùng — đủ mọi cảnh (R-BANDO-2)', () => {
   });
 
   for (const id of IDS) {
-    it(`R-BANDO-2: ${id} — khung hữu hạn, vòng trận đúng như cảnh (Nhà của ta không có), mọi khu có nhãn, mọi nhà có chân nhà`, () => {
+    it(`R-BANDO-2: ${id} — khung hữu hạn, vòng trận chỉ ở trấn (V-47 nhà, V-65 vùng), mọi khu có nhãn, mọi nhà có chân nhà`, () => {
       const spec = loadScene(id).spec;
       const m = mapOf(id);
       const b = m.bounds;
       for (const v of [b.minX, b.maxX, b.minZ, b.maxZ]) expect(Number.isFinite(v)).toBe(true);
       expect(b.maxX - b.minX).toBeGreaterThan(10);
       expect(b.maxZ - b.minZ).toBeGreaterThan(10);
-      expect(m.icons.some((i) => i.kind === 'vong-tran')).toBe(id !== 'nha-ta');
-      expect(spec.teleport.enabled).toBe(id !== 'nha-ta'); // V-47: nhà bỏ vòng trận (R-HANH-2, R-NHA-1)
+      const ring = id === HOME_SCENE; // V-47: nhà bỏ vòng trận; V-65: vùng bỏ vòng trận (R-HANH-2)
+      expect(m.icons.some((i) => i.kind === 'vong-tran')).toBe(ring);
+      expect(spec.teleport.enabled).toBe(ring);
+      expect(legendKinds(m).includes('vong-tran')).toBe(ring); // chú giải bỏ "Vòng trận" khi không có
       expect(m.labels.filter((l) => l.kind === 'khu').map((l) => l.text)).toEqual(spec.site.areas.map((a) => a.name));
       expect(m.shapes.filter((s) => s.kind === 'nha')).toHaveLength(spec.buildings.length);
       // nhãn + biểu tượng đều nằm trong khung
@@ -92,7 +95,7 @@ describe('bản đồ vùng — đủ mọi cảnh (R-BANDO-2)', () => {
     expect(m.icons.map((i) => i.kind)).toEqual(['cong-canh']);
   });
 
-  it('R-BANDO-2: Trúc Lâm — vòng "Khởi Nguyên Trấn" (−7,4; 39) phía tây vòng trận (V-57), vòng "Yên Vũ Lâu" mép đông (20,6; 43), vòng "Nhạn Môn Quan" mép bắc (−5; −44,2) (V-59)', () => {
+  it('R-BANDO-2: Trúc Lâm — vòng "Khởi Nguyên Trấn" (−7,4; 39) mép tây sân đá trống cửa rừng (V-57, V-65), vòng "Yên Vũ Lâu" mép đông (20,6; 43), vòng "Nhạn Môn Quan" mép bắc (−5; −44,2) (V-59)', () => {
     const m = mapOf('rung-truc');
     const gates = m.icons.filter((i) => i.kind === 'cong-canh');
     expect(gates.find((g) => g.scene === HOME_SCENE)).toMatchObject({ x: -7.4, z: 39 });

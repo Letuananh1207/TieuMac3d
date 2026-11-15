@@ -38,7 +38,7 @@ import { roomKinds, zoneAnchors, type SceneSpec, type ZoneAnchor } from './spec'
 import { addTerrain } from './terrain';
 import { buildHeightfield, type GroundY } from './terrainHeight';
 import { addTrees } from './trees';
-import { addTeleport, type TeleportRing } from './truyenTong';
+import { addStoneYard, addTeleport, type TeleportRing } from './truyenTong';
 import { addPortalMarkers } from './vongCong';
 import { addWaterways } from './waterways';
 import { addWalls } from './walls';
@@ -227,6 +227,8 @@ function* worldSteps(
   addFences(scene, colliders, spec, groundY);
   if (spec.well.enabled) addWell(scene, colliders, spec.well, base(spec.well.x, spec.well.z));
   const teleport = spec.teleport.enabled ? addTeleport(scene, colliders, spec.teleport, groundY) : null;
+  // sân đá trống chỗ vòng trận cũ ở vùng — bãi hạc đáp (V-65)
+  if (spec.stoneYard.enabled) addStoneYard(scene, spec.stoneYard, groundY);
   // vòng sáng + nhãn ở cổng đi bộ có `label` (R-HANH-4, V-39)
   const portalMarks = addPortalMarkers(scene, spec.portals, spec.teleport.colors, groundY);
   const floating = addFloating(scene, spec.floating, style, spec.trees.leaves[1], spec.trees.seed, spec.look);
