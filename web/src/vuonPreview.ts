@@ -19,7 +19,7 @@ export function addGardenPreview(scene: THREE.Scene, spec: SceneSpec, garden: Ga
   garden.beds.setOpen(9);
   garden.crops.show(garden.plots.map((_, i) => (i < 8 ? { crop: CROPS[i].id, stage: 'chin' } : i === 8 ? { crop: 'cai', stage: 'vua-gieo' } : null)));
   const spots = CROP_STAGES.flatMap((_, r) => CROPS.map((_, c) => ({ x: SAMPLE.x0 + c * SAMPLE.dx, z: SAMPLE.z0 + r * SAMPLE.dz })));
-  const sample = new CropLayer(scene, spots.map((p) => ({ ...p, y: groundY(p.x, p.z), size: SAMPLE.size })), spec.look, spec.garden.cropScale);
+  const sample = new CropLayer(scene, spots.map((p) => ({ ...p, y: groundY(p.x, p.z), size: SAMPLE.size })), spec.look, spec.garden.cropScale, spec.trees.crown === 'chum');
   sample.show(CROP_STAGES.flatMap((stage) => CROPS.map((c) => ({ crop: c.id, stage }))));
   return [
     `Vườn rau: o-1 … o-8 chín (${CROPS.map((c) => c.name).join(', ')}), o-9 vừa gieo, o-10 … o-12 hoang`,

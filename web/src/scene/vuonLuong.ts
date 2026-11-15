@@ -153,8 +153,9 @@ export interface Garden3D {
 }
 
 /** Vườn rau đủ phần: đất + rào + thùng + lớp cây (luống trống cả). Gọi từ `world.ts` khi `garden.enabled`. */
-export function addGarden(scene: THREE.Scene, colliders: Colliders, g: GardenSpec, look: LookSpec, groundY: GroundY = () => 0): Garden3D {
+export function addGarden(scene: THREE.Scene, colliders: Colliders, g: GardenSpec, look: LookSpec, groundY: GroundY = () => 0, code = false): Garden3D {
   const beds = addGardenBeds(scene, colliders, g, look, groundY);
-  const crops = new CropLayer(scene, g.plots.map((p, i) => ({ x: p.x, y: beds.topY(i), z: p.z, size: g.size })), look, g.cropScale);
+  // `code` = cây `chum` (V-60): cây dựng bằng code + nảy khi đổi dáng
+  const crops = new CropLayer(scene, g.plots.map((p, i) => ({ x: p.x, y: beds.topY(i), z: p.z, size: g.size })), look, g.cropScale, code);
   return { beds, crops, plots: g.plots, bin: { x: g.bin.x, z: g.bin.z } };
 }

@@ -162,7 +162,7 @@ function* worldSteps(
     const inTea = spec.teaRows.length ? (x: number, z: number): boolean => insideTea(spec.teaRows, spec.teaStyle, x, z, 0.2) : undefined;
     addGrassAndRocks(scene, spec.terrain, hf, spec.paths, !soft, inTea);
     yield 'co-da';
-    if (soft) addSoftGrassAndFlowers(scene, spec.terrain, hf, spec.paths, spec.look, detail, inTea);
+    if (soft) addSoftGrassAndFlowers(scene, spec.terrain, hf, spec.paths, spec.look, detail, inTea, spec.trees.crown === 'chum');
     yield 'co-hoa';
     waterways = addWaterways(scene, spec.terrain, style, groundY);
   }
@@ -214,7 +214,7 @@ function* worldSteps(
   yield 'do-vat';
   const trees = addTrees(scene, colliders, spec.trees, groundY, spec.look);
   const tea = addTeaGarden(scene, colliders, spec, groundY, detail); // Đồi Chè: luống + bướm + sương (V-46)
-  const garden = spec.garden.enabled ? addGarden(scene, colliders, spec.garden, spec.look, groundY) : null; // Vườn rau (V-52)
+  const garden = spec.garden.enabled ? addGarden(scene, colliders, spec.garden, spec.look, groundY, spec.trees.crown === 'chum') : null; // Vườn rau (V-52)
   yield 'cay';
   const lanternSpots = addLanternStrings(scene, colliders, spec, groundY);
   let glow: THREE.InstancedMesh | null = null;

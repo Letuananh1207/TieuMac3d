@@ -5,6 +5,7 @@ import type { LookSpec } from './look';
 import { softMaterial } from './materials';
 import { seededRandom } from './random';
 import type { PathSpec, SceneSpec } from './spec';
+import { groundColor, patch } from './terrainMem';
 import { finish } from './trees';
 
 type Terrain = SceneSpec['terrain'];
@@ -19,11 +20,19 @@ const TUFT_H = 0.5;
 /** Cạnh ô chia cỏ (m): mỗi ô một InstancedMesh → ô ngoài khung nhìn không vẽ (cỏ trải cả cao nguyên). */
 export const GRASS_TILE = 60;
 
-/** Búi cỏ mềm: 4 lá (mỗi lá 1 tam giác hơi ngả), gốc tối → ngọn sáng (màu đỉnh, nhân với màu búi); pháp tuyến hướng lên. */
-export function softTuftGeometry(): THREE.BufferGeometry {
+/**
+ * Búi cỏ mềm: 4 lá (mỗi lá 1 tam giác hơi ngả), gốc tối → ngọn sáng (màu đỉnh, nhân với màu búi); pháp tuyến hướng lên.
+ * `lift` (cây `chum`, V-60): gốc = 1 (màu búi = **màu đất tại chỗ** → búi tan vào mặt đất, không thấy chân), ngọn = `lift`.
+ */
+export function softTuftGeometry(lift?: THREE.Color): THREE.BufferGeometry {
   const pos: number[] = [];
   const col: number[] = [];
   const shadeAt = (y: number): number => 0.55 + 0.6 * (y / TUFT_H);
+  const tint = (y: number): [number, number, number] => {
+    if (!lift) return [shadeAt(y), shadeAt(y), shadeAt(y)];
+    const t = y / TUFT_H;
+    return [1 + (lift.r - 1) * t, 1 + (lift.g - 1) * t, 1 + (lift.b - 1) * t];
+  };
   for (let k = 0; k < 4; k++) {
     const a = (k * Math.PI * 2) / 4 + 0.3;
     const c = Math.cos(a);
@@ -35,8 +44,7 @@ export function softTuftGeometry(): THREE.BufferGeometry {
     const tip = [out * 2.6 * c, TUFT_H * (0.85 + 0.15 * (k % 2)), out * 2.6 * s];
     for (const v of [b0, b1, tip]) {
       pos.push(v[0], v[1], v[2]);
-      const g = shadeAt(v[1]);
-      col.push(g, g, g);
+      col.push(...tint(v[1]));
     }
   }
   return withUpNormals(pos, col);
@@ -54,6 +62,36 @@ export function flowerGeometry(): THREE.BufferGeometry {
     pos.push(0, y + 0.02, 0, Math.cos(a1) * r, y + 0.035, Math.sin(a1) * r, Math.cos(a0) * r, y + 0.035, Math.sin(a0) * r);
     col.push(1, 0.92, 0.55, 1, 1, 1, 1, 1, 1);
   }
+  return withUpNormals(pos, col);
+}
+
+/**
+ * Hoa chén (cây `chum`, V-60): 5 cánh hình thoi nghiêng ~30° quanh nhị (2 tam giác / cánh — nhìn từ trên vẫn thấy chén,
+ * nhìn ngang không thành vệt) + 1 cuống + 1 lá. 12 tam giác. Màu đỉnh: nhị vàng, cánh trắng (nhân màu bông), cuống / lá lục
+ * (nhân màu bông ra lục sẫm). Pháp tuyến hướng lên như cỏ.
+ */
+export function cupFlowerGeometry(): THREE.BufferGeometry {
+  const pos: number[] = [];
+  const col: number[] = [];
+  const y = 0.3;
+  const tilt = Math.tan((30 * Math.PI) / 180);
+  const at = (a: number, r: number): number[] => [Math.cos(a) * r, y + r * tilt, Math.sin(a) * r];
+  const heart = [1, 0.92, 0.55];
+  const white = [1, 1, 1];
+  for (let k = 0; k < 5; k++) {
+    const a = (k / 5) * Math.PI * 2;
+    const c = [0, y, 0];
+    const l = at(a - 0.36, 0.09);
+    const tip = at(a, 0.17);
+    const r = at(a + 0.36, 0.09);
+    pos.push(...c, ...tip, ...l, ...c, ...r, ...tip);
+    col.push(...heart, ...white, ...white, ...heart, ...white, ...white);
+  }
+  const green = [0.36, 0.56, 0.3];
+  // cuống (dải mảnh) + lá (tam giác ngả ra một bên)
+  pos.push(-0.012, 0, 0, 0.012, 0, 0, 0, y, 0);
+  pos.push(0, 0.06, 0, 0.13, 0.15, 0.03, 0.02, 0.15, -0.02);
+  for (let i = 0; i < 6; i++) col.push(...green);
   return withUpNormals(pos, col);
 }
 
@@ -80,6 +118,8 @@ export function addSoftGrassAndFlowers(
   detail: number,
   /** chỗ có vật trồng (luống chè — V-46): búi / bông rơi vào đó bị bỏ (không dời chỗ khác — cỏ nơi khác giữ nguyên) */
   blocked?: (x: number, z: number) => boolean,
+  /** cây `chum` (`trees.crown`, V-60): hoa chén nghiêng, gốc búi theo màu đất tại chỗ */
+  chum = false,
 ): void {
   const [cx, cz] = t.center;
   const R = t.edge.radius - 2;
@@ -105,8 +145,13 @@ export function addSoftGrassAndFlowers(
   if (tufts > 0) {
     const rand = seededRandom(t.noise.seed * 31 + 5);
     const mat = softMaterial(look.wrap, THREE.DoubleSide, { amp: look.wind * 2, tip: TUFT_H });
-    const geo = softTuftGeometry();
     const colors = t.grass.colors.map((c) => new THREE.Color(c));
+    // chum: ngọn ≈ màu búi cũ trung bình (×1,15) chia màu đất cỏ trung bình — gốc tan vào đất, ngọn giữ sắc cỏ cũ
+    const avg = (cs: readonly string[]): THREE.Color => cs.reduce((a, c) => a.add(new THREE.Color(c)), new THREE.Color(0, 0, 0)).multiplyScalar(1 / cs.length);
+    const ga = avg(t.colors.grass);
+    const ta = avg(t.grass.colors).multiplyScalar(1.15);
+    const lift = chum ? new THREE.Color(ta.r / Math.max(ga.r, 0.05), ta.g / Math.max(ga.g, 0.05), ta.b / Math.max(ga.b, 0.05)) : undefined;
+    const geo = softTuftGeometry(lift);
     const tiles = new Map<string, { m: THREE.Matrix4; c: THREE.Color }[]>();
     let n = 0;
     for (let tries = 0; tries < tufts * 6 && n < tufts; tries++) {
@@ -117,7 +162,7 @@ export function addSoftGrassAndFlowers(
       const key = `${Math.floor(x / GRASS_TILE)},${Math.floor(z / GRASS_TILE)}`;
       const it = {
         m: new THREE.Matrix4().compose(p.set(x, y - 0.02, z), q.setFromEuler(e.set(0, rand() * Math.PI * 2, 0)), size.set(s, s * (0.8 + rand() * 0.6), s)),
-        c: tint.copy(colors[0]).lerp(colors[1], rand()).clone(),
+        c: chum ? groundTint(t, hf, x, y, z, 0.95 + rand() * 0.1) : tint.copy(colors[0]).lerp(colors[1], rand()).clone(),
       };
       n++;
       if (blocked?.(x, z)) continue;
@@ -139,7 +184,7 @@ export function addSoftGrassAndFlowers(
   const flowers = Math.min(MAX_FLOWERS, Math.round((look.flowers.density * area * detail) / 100));
   if (flowers > 0) {
     const rand = seededRandom(t.noise.seed * 71 + 13);
-    const mesh = new THREE.InstancedMesh(flowerGeometry(), softMaterial(look.wrap, THREE.DoubleSide, { amp: look.wind }), flowers);
+    const mesh = new THREE.InstancedMesh(chum ? cupFlowerGeometry() : flowerGeometry(), softMaterial(look.wrap, THREE.DoubleSide, { amp: look.wind }), flowers);
     const colors = look.flowers.colors.map((c) => new THREE.Color(c));
     let n = 0;
     let placed = 0;
@@ -168,4 +213,9 @@ export function addSoftGrassAndFlowers(
     mesh.count = placed;
     if (placed) finish(scene, [mesh]);
   }
+}
+
+/** Màu đất tại chỗ (cùng công thức `terrainMem.groundColor`) × độ sáng `k` — màu búi cỏ `chum`. */
+function groundTint(t: Terrain, hf: Heightfield, x: number, y: number, z: number, k: number): THREE.Color {
+  return groundColor(t, hf.slopeAt(x, z), y, patch(x, z), patch(z + 40, x - 25, 1.7), new THREE.Color()).multiplyScalar(k);
 }

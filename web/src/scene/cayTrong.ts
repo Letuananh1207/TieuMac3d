@@ -13,6 +13,7 @@ import type { LookSpec } from './look';
 import { softMaterial } from './materials';
 import { markDynamic } from './merge';
 import { bakeTransforms } from './staticModel';
+import { CODE_LOOKS, CODE_SOWN, codeShape, POP_S, popScale, type CodePart } from './cayTrongHinh';
 
 /** Hình có màu đỉnh một màu (bỏ uv, không chỉ mục — để gộp). */
 export function painted(g0: THREE.BufferGeometry, hex: string | THREE.Color, shadeBottom = 0): THREE.BufferGeometry {
@@ -139,31 +140,40 @@ export interface CropSpot {
 }
 
 /**
- * Lớp cây gộp: `show(list)` — mỗi phần tử một luống (`null` = không cây) cùng thứ tự `spots`; chỉ dựng lại khi có luống đổi
- * dáng. Trả số tam giác đang vẽ (đo ngân sách).
+ * Lớp cây gộp: `show(list)` — mỗi phần tử một luống (`null` = không cây) cùng thứ tự `spots`; chỉ dựng lại luống đổi dáng.
+ * `code` (cây `chum`, V-60): hình dựng bằng code (`cayTrongHinh.ts`) thay mẫu Kenney, luống đổi sang dáng mới thì "nảy"
+ * 0,6 → 1,1 → 1,0 trong `POP_S` (`tick` mỗi khung). Trả số tam giác đang vẽ (đo ngân sách).
  */
 export class CropLayer {
   readonly mesh: THREE.Mesh;
   private shapes = new Map<CropShape, THREE.BufferGeometry>();
   private key = '';
   private last: readonly (PlotShow | null)[] = [];
+  /** dáng đang dựng từng luống + hình luống (gốc toạ độ = tâm luống) */
+  private plotKeys: string[] = [];
+  private plotGeo: (THREE.BufferGeometry | null)[] = [];
+  /** luống đang nảy → giây đã qua */
+  private pops = new Map<number, number>();
 
   constructor(
     scene: THREE.Scene,
     private readonly spots: readonly CropSpot[],
     look: LookSpec,
     private readonly scale: number,
+    private readonly code = false,
   ) {
-    const mat = softMaterial(look.wrap, THREE.DoubleSide, { amp: look.wind * 0.5, tip: 0.5, world: true });
+    // hình code đều kín / hai mặt → FrontSide; mẫu Kenney có mặt hở → DoubleSide
+    const mat = softMaterial(look.wrap, code ? THREE.FrontSide : THREE.DoubleSide, { amp: look.wind * 0.5, tip: 0.5, world: true });
     this.mesh = new THREE.Mesh(new THREE.BufferGeometry(), mat);
     this.mesh.frustumCulled = false; // hình đổi luôn — khỏi tính lại khối bao mỗi lần
     markDynamic(this.mesh);
     scene.add(this.mesh);
-    if (typeof window !== 'undefined' && Object.keys(MODELS).length)
+    if (!code && typeof window !== 'undefined' && Object.keys(MODELS).length)
       loadShapes()
         .then((m) => {
           this.shapes = m;
           this.key = '';
+          this.plotKeys = [];
           this.show(this.last);
         })
         .catch((e: unknown) => console.warn('vườn rau: nạp hình cây design/models/thuc-vat/vuon lỗi — dùng hình dự phòng', e));
@@ -175,28 +185,73 @@ export class CropLayer {
 
   show(list: readonly (PlotShow | null)[]): void {
     this.last = list;
-    const key = list.map((s) => (s ? `${s.crop}:${s.stage}` : '-')).join(',') + `|${this.shapes.size}`;
+    const keys = list.map((s) => (s ? `${s.crop}:${s.stage}` : '-'));
+    const key = keys.join(',') + `|${this.shapes.size}`;
     if (key === this.key) return;
+    const first = this.plotKeys.length === 0;
     this.key = key;
-    const parts: THREE.BufferGeometry[] = [];
+    this.spots.forEach((spot, i) => {
+      const k = keys[i] ?? '-';
+      if (k === this.plotKeys[i]) return;
+      this.plotGeo[i]?.dispose();
+      this.plotGeo[i] = this.buildPlot(list[i] ?? null, spot, i);
+      // đổi sang dáng mới (gieo, lớn lên) thì nảy; nhổ / thu (về trống) và lần dựng đầu thì không
+      if (this.code && !first && k !== '-') this.pops.set(i, 0);
+    });
+    this.plotKeys = this.spots.map((_, i) => keys[i] ?? '-');
+    this.compose();
+  }
+
+  /** Mỗi khung: luống đang nảy thì dựng lại lưới gộp với cỡ nảy (vài lần / giờ, mỗi lần ≤ 15 khung). */
+  tick(dt: number): void {
+    if (!this.pops.size) return;
+    for (const [i, t] of this.pops) {
+      if (t + dt >= POP_S) this.pops.delete(i);
+      else this.pops.set(i, t + dt);
+    }
+    this.compose();
+  }
+
+  private buildPlot(s: PlotShow | null, spot: CropSpot, i: number): THREE.BufferGeometry | null {
+    if (!s) return null;
     const m = new THREE.Matrix4();
     const q = new THREE.Quaternion();
     const up = new THREE.Vector3(0, 1, 0);
-    list.forEach((s, i) => {
+    const parts: THREE.BufferGeometry[] = [];
+    const part = this.code ? codePart(s) : cropPart(s);
+    const src = this.code ? codeShape((part as CodePart).shape) : (this.shapes.get((part as CropPart).shape) ?? fallback((part as CropPart).shape));
+    const k = part.scale * this.scale * (spot.size / 1.6);
+    clumpOffsets(part.count, spot.size).forEach(([dx, dz], j) => {
+      // xoay mỗi khóm khác nhau theo luống + khóm (không lặp đều), không ngẫu nhiên theo lần dựng
+      q.setFromAxisAngle(up, ((i * 7 + j * 3) % 8) * 0.785 + 0.3);
+      m.compose(new THREE.Vector3(dx, -0.02, dz), q, new THREE.Vector3(k, k, k));
+      parts.push(src.clone().applyMatrix4(m));
+    });
+    const g = parts.length > 1 ? mergeGeometries(parts) : parts[0];
+    if (parts.length > 1) for (const x of parts) x.dispose();
+    return g ?? null;
+  }
+
+  private compose(): void {
+    const parts: THREE.BufferGeometry[] = [];
+    const m = new THREE.Matrix4();
+    const sc = new THREE.Matrix4();
+    this.plotGeo.forEach((g, i) => {
       const spot = this.spots[i];
-      if (!s || !spot) return;
-      const part = cropPart(s);
-      const src = this.shapes.get(part.shape) ?? fallback(part.shape);
-      const k = part.scale * this.scale * (spot.size / 1.6);
-      clumpOffsets(part.count, spot.size).forEach(([dx, dz], j) => {
-        // xoay mỗi khóm khác nhau theo luống + khóm (không lặp đều), không ngẫu nhiên theo lần dựng
-        q.setFromAxisAngle(up, ((i * 7 + j * 3) % 8) * 0.785 + 0.3);
-        m.compose(new THREE.Vector3(spot.x + dx, spot.y - 0.02, spot.z + dz), q, new THREE.Vector3(k, k, k));
-        parts.push(src.clone().applyMatrix4(m));
-      });
+      if (!g || !spot) return;
+      const pop = this.pops.has(i) ? popScale(this.pops.get(i) ?? POP_S) : 1;
+      m.makeTranslation(spot.x, spot.y, spot.z).multiply(sc.makeScale(pop, pop, pop));
+      parts.push(g.clone().applyMatrix4(m));
     });
     this.mesh.geometry.dispose();
     this.mesh.geometry = parts.length ? (mergeGeometries(parts) ?? new THREE.BufferGeometry()) : new THREE.BufferGeometry();
     for (const g of parts) g.dispose();
   }
+}
+
+/** Dáng code của một luống (cây `chum`). Cây lạ → cải. */
+export function codePart(show: PlotShow): CodePart {
+  if (show.stage === 'vua-gieo') return CODE_SOWN;
+  const look = CODE_LOOKS[show.crop] ?? CODE_LOOKS.cai;
+  return look[CROP_STAGES.indexOf(show.stage) - 1];
 }

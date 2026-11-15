@@ -106,6 +106,7 @@
   "water": [],
   "props": [],
   "trees": {
+    "crown": "chum",
     "yard": [],
     "groves": [
       { "kind": "truc-mao", "x": 0, "z": -23, "w": 30, "d": 5, "count": 14, "collide": false },

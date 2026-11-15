@@ -105,6 +105,7 @@ export class HomeGarden {
   /** Mỗi khung: vị trí người chơi (tìm luống gần); mỗi giây vẽ lại dáng nếu đổi. */
   update(dt: number, player: { x: number; z: number }): void {
     this.player = player;
+    this.d.garden.crops.tick(dt); // nảy khi luống đổi dáng (cây chum)
     this.acc += dt;
     if (this.acc < TICK_S) return;
     this.acc = 0;
