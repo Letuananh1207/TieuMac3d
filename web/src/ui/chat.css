@@ -21,7 +21,7 @@
 
 /* bận (bài học, thoại, bàn chơi, bản đồ, màn tải) hoặc đang gõ → ẩn nút + khung thu gọn */
 #chat.busy #chatBtn,#chat.busy #chatFeed,#chat.open #chatBtn,#chat.open #chatFeed{display:none}
-body.chatting #joy,body.chatting #joyGhost,body.chatting #actions,body.chatting .learn,body.chatting #talk,body.chatting #seat,body.chatting #board,body.chatting #guide,body.chatting #readBook{display:none}
+body.chatting #joy,body.chatting #joyGhost,body.chatting #actions,body.chatting .learn,body.chatting #talk,body.chatting #seat,body.chatting #exit,body.chatting #board,body.chatting #guide,body.chatting #readBook{display:none}
 
 /* khung mở rộng: kính .93 bo 16, cao 260, đáy cách ô nhập 8 */
 #chatBox{position:fixed;z-index:8;left:12px;right:12px;bottom:calc(var(--kb) + 72px);height:min(260px,calc(100% - var(--kb) - 84px - var(--sa-top)));box-sizing:border-box;background:rgba(244,247,246,.93);border:1px solid rgba(255,255,255,.95);outline:1px solid var(--frost-outline);border-radius:16px;box-shadow:var(--shadow-card);-webkit-backdrop-filter:var(--blur-card);backdrop-filter:var(--blur-card);display:flex;flex-direction:column;overflow:hidden;color:var(--slate)}

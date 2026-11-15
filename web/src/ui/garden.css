@@ -38,7 +38,7 @@
 
 /* bảng mở → ẩn cần điều khiển, cụm nút, Trang trí, Trò chuyện; giữ ví + bản đồ nhỏ */
 body.garden-panel #joy,body.garden-panel #joyGhost,body.garden-panel #actions,body.garden-panel #decorBtn,body.garden-panel #chatBtn,
-body.garden-panel #chat,body.garden-panel #gardenBtn,body.garden-panel #gardenLabel,body.garden-panel #talk,body.garden-panel #seat{display:none !important}
+body.garden-panel #chat,body.garden-panel #gardenBtn,body.garden-panel #gardenLabel,body.garden-panel #talk,body.garden-panel #seat,body.garden-panel #exit{display:none !important}
 /* HUD vườn ẩn khi trang trí / bản đồ / thoại / ngồi / màn Flutter (dấu luống là cảnh — vẫn hiện, trừ màn phủ cảnh) */
 body.decorating #gardenBtn,body.decorating #gardenLabel,body.map-open #gardenBtn,body.map-open #gardenLabel,body.talking #gardenBtn,
 body.talking #gardenLabel,body.covered #gardenBtn,body.covered #gardenLabel,body.covered #gardenToast,body.covered #gardenMarks{display:none !important}

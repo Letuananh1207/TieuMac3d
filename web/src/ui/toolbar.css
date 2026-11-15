@@ -85,7 +85,7 @@
 .bg-foot{flex:none;font-size:11px;color:var(--slate-muted);text-align:center;padding-bottom:6px}
 /* túi mở: nhân vật đứng yên — cất cần điều khiển, cụm hành động, cột phải (R-TUI-1) */
 body.bag-open #joy,body.bag-open #joyGhost,body.bag-open #actions,body.bag-open #chatBtn,body.bag-open #chatFeed,body.bag-open #readBook,
-body.bag-open #decorBtn,body.bag-open .learn,body.bag-open #talk,body.bag-open #seat,body.bag-open #board,body.bag-open #guide,body.bag-open #shop{display:none !important}
+body.bag-open #decorBtn,body.bag-open .learn,body.bag-open #talk,body.bag-open #seat,body.bag-open #exit,body.bag-open #board,body.bag-open #guide,body.bag-open #shop{display:none !important}
 
 /* ngang: thanh giữa đáy rộng 380, cao 56, không nâng HUD; bảng Biểu cảm rộng 420 giữa; tấm báo giữa đáy 95; túi cột phải 340.
    Mọi màn ngang (cả máy tính bảng) — cụm hành động ngang nằm sát đáy (style.css `@media (orientation:landscape)`) */

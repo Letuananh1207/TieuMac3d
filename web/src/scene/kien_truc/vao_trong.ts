@@ -20,7 +20,20 @@ export interface LocalPad {
   upper?: boolean;
 }
 
+/**
+ * Phần trên một bức tường cắt được (nhà búp bê — gian trong, V-71): mặt ngoài tường ở toạ độ nhà `axis` = `side · at`
+ * (pháp tuyến ra ngoài theo `side`). Camera ở phía ngoài mặt đó (trừ lề) → nhóm ẩn, còn chân tường thấp.
+ */
+export interface Cutaway {
+  group: THREE.Object3D;
+  axis: 'x' | 'z';
+  side: 1 | -1;
+  at: number;
+}
+
 export interface Shell {
+  /** tường cắt thấp khi camera ở phía ngoài (gian trong không trần — V-71); không có = tường luôn hiện */
+  cutaway?: Cutaway[];
   /** vật cản hộp (`h` Infinity = tường che camera, R-DIEU-4) */
   boxes: LocalBox[];
   /** vật cản tròn (cột) */

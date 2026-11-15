@@ -15,7 +15,7 @@ import { gianTrong } from './kien_truc/gian_trong';
 import { nhaO } from './kien_truc/nha_o';
 import { addInterior, type LocalBox } from './kien_truc/noi_that';
 import { traLau } from './kien_truc/tra_lau';
-import type { LocalPad, WalkInBuilder } from './kien_truc/vao_trong';
+import type { Cutaway, LocalPad, WalkInBuilder } from './kien_truc/vao_trong';
 import type { Seat } from './seat';
 import { cloneMaterial, markDynamic, markOwnMaterials, mergeStatic, mergeVertexColors } from './merge';
 import type { SoftLook } from './bake';
@@ -53,8 +53,11 @@ export interface Room {
   seats?: Seat[];
   /** chân biển "Khu tự học" (toạ độ cảnh) — nút nổi "Hướng dẫn" (R-VA-5) */
   studySign?: { x: number; y: number; z: number };
-  /** gọi mỗi khung: mờ dần mái + tường trước khi `inside`; `y` = chân nhân vật (nhà nhiều tầng: tầng 2 không mờ sàn) */
-  update(dt: number, inside: boolean, y?: number): void;
+  /**
+   * gọi mỗi khung: mờ dần mái + tường trước khi `inside`; `y` = chân nhân vật (nhà nhiều tầng: tầng 2 không mờ sàn);
+   * `eye` = vị trí camera — tường cắt được (gian trong, V-71) ẩn phần trên khi camera ở phía ngoài
+   */
+  update(dt: number, inside: boolean, y?: number, eye?: { x: number; z: number }): void;
 }
 
 /** Mờ còn bao nhiêu khi ở trong, trong bao lâu (R-HUD-2). */
@@ -249,6 +252,7 @@ export function addWalkIn(scene: THREE.Scene, colliders: Colliders, b: BuildingS
     const [cx, cz] = toWorld(b, c.x, c.z);
     colliders.addCircle(cx, cz, c.r);
   }
+  const cuts = (shell.cutaway ?? []).map((c) => worldCut(b, c));
   let opacity = 1;
   let lowOpacity = 1;
   return {
@@ -263,7 +267,8 @@ export function addWalkIn(scene: THREE.Scene, colliders: Colliders, b: BuildingS
     ...(shell.studySign ? { studySign: worldPoint(b, shell.studySign, y0) } : {}),
     hits: [],
     anchor: new THREE.Vector3(b.x, y0 + 2, b.z),
-    update(dt, inside, y) {
+    update(dt, inside, y, eye) {
+      if (eye) for (const c of cuts) c.group.visible = !wallCut(c, eye.x, eye.z);
       const step = ((1 - FADED) * dt) / FADE_SECONDS;
       const approach = (v: number, target: number): number =>
         v < target ? Math.min(target, v + step) : Math.max(target, v - step);
@@ -282,6 +287,27 @@ export function addWalkIn(scene: THREE.Scene, colliders: Colliders, b: BuildingS
       }
     },
   };
+}
+
+/** Tường cắt được theo toạ độ cảnh: pháp tuyến ra ngoài (nx, nz), mặt ngoài ở n·p = `at`. */
+export interface WorldCut {
+  group: THREE.Object3D;
+  nx: number;
+  nz: number;
+  at: number;
+}
+
+/** Camera vào trong mặt ngoài tường chưa tới bấy nhiêu mét đã cắt (V-71) — camera sát tường nhìn xuống vẫn bị che. */
+const CUT_MARGIN = 1;
+
+export function worldCut(b: Pick<BuildingSpec, 'x' | 'z' | 'rotY'>, c: Cutaway): WorldCut {
+  const [nx, nz] = rotateXZ(c.axis === 'x' ? c.side : 0, c.axis === 'z' ? c.side : 0, b.rotY ?? 0);
+  return { group: c.group, nx, nz, at: nx * b.x + nz * b.z + c.at };
+}
+
+/** Camera ở (x, z) thì tường này cắt thấp (ẩn phần trên) không. Thuần. */
+export function wallCut(c: Omit<WorldCut, 'group'>, x: number, z: number): boolean {
+  return c.nx * x + c.nz * z > c.at - CUT_MARGIN;
 }
 
 /** Điểm (x, z) có nằm trong hình chữ nhật không. */

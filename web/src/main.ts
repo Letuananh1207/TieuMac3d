@@ -26,7 +26,7 @@ import { HOME_SCENE, loadScene, REGION_SCENES } from './scene/loadSpec';
 import { HOME_OF_PLAYER, isHomeScene } from './scene/placeNames';
 import { createMapScroll } from './scene/banDo';
 import { arrivalSpot, CHARGE_SECONDS, ringTrigger } from './scene/teleportLayout';
-import { arrivalFor } from './scene/portals';
+import { arrivalFor, buttonPortalAt } from './scene/portals';
 import { viewDistance } from './scene/farMountains';
 import { createStage, gpuName, MAX_PIXEL_RATIO, probeGpu } from './scene/renderer';
 import { detailOf, FrameCap, pickTier, ResolutionGovernor, tierParam, TIERS } from './scene/quality';
@@ -47,6 +47,7 @@ import { MapHud } from './ui/mapHud';
 import { ActionButtons } from './ui/actionButtons';
 import { DialogBox, TalkButton } from './ui/dialogBox';
 import { SeatButton } from './ui/seatButton';
+import { ExitButton } from './ui/exitButton';
 import { BoardButton } from './ui/boardButton';
 import { ReadBookButton } from './ui/readBookButton';
 import { borrowedBook } from './zones/library';
@@ -209,6 +210,8 @@ async function boot(): Promise<void> {
   let onMapTap = (_x: number, _y: number): void => {};
   // nút quay lại của máy: bản đồ đang mở thì đóng (R-HANH-2); gán ở phần bản đồ bên dưới
   let mapBack = (): boolean => false;
+  // phím E khi không có chỗ ngồi: ra cửa bằng nút (V-71); gán ở phần cổng bên dưới
+  let exitAction = (): boolean => false;
   let ride: CraneRide | null = null; // cưỡi hạc: cất cánh (trang cũ) / hạ cánh (trang mới) — R-HANH-5
   let thanh: ThanhCongCu | null = null; // thanh công cụ (R-THANH-1/2) — thanhCongCu.ts, dựng ở phần truyền tống
   const zoneById = new Map(placed.zones.map((z) => [z.id, z]));
@@ -545,6 +548,7 @@ async function boot(): Promise<void> {
     else if (a === 'seat') {
       const spot = seatButton.current;
       if (spot) sitAt(spot); // phím E = nút nổi Ngồi (R-NGOI-1)
+      else exitAction(); // không có chỗ ngồi: E = nút nổi ra cửa (V-71)
     } else player.toggleSit(); // C: ngồi ôn tại chỗ (R-DIEU-7)
   });
   attachPointerInput(canvas, {
@@ -893,7 +897,18 @@ async function boot(): Promise<void> {
   };
 
   // cổng đi bộ sang cảnh (R-HANH-4): bước từ ngoài vào vùng → sang ngay
-  const portals = spec.portals.map((p) => ({ to: p.scene, trigger: new PortalTrigger(p.area, { x: sx, z: sz }) }));
+  const portals = spec.portals.filter((p) => p.via !== 'nut').map((p) => ({ to: p.scene, trigger: new PortalTrigger(p.area, { x: sx, z: sz }) }));
+  // cổng bấm nút (cửa gian trong "Ra sân" — V-71): đứng trong vùng → nút nổi, bấm (hoặc phím E) mới sang
+  const exitButton = new ExitButton<{ x: number; y: number; z: number; label: string; to: string }>((d) => travel(d.to, 'cong'));
+  const exitSpots = spec.portals.map((p) => {
+    const [x, z] = [(p.area.from[0] + p.area.to[0]) / 2, (p.area.from[1] + p.area.to[1]) / 2];
+    return { x, y: groundAt(x, z), z, label: p.label ?? '', to: p.scene };
+  });
+  exitAction = () => {
+    const d = exitButton.current;
+    if (d) travel(d.to, 'cong');
+    return !!d;
+  };
 
   /* ---------- vòng lặp ---------- */
   const nameTag = new NameTag();
@@ -903,6 +918,7 @@ async function boot(): Promise<void> {
   // tới qua cổng: nhìn theo hướng của chỗ đứng (R-HANH-4); về trấn bằng vòng trận giữ hướng mặc định (R-HANH-2)
   if (viaGate) orbit.yaw = viaGate.rotY - Math.PI;
   character.facing.rotation.y = orbit.yaw + Math.PI; // vào game: nhân vật quay lưng về camera, nhìn về phía trước
+  orbit.viewAspect = camera.aspect; // khung phòng (gian trong — V-71) tính theo màn thật
   orbit.update(tpCam, player.position, 0, true, groundAt, undefined, sight);
   ngoiMat.update(0, camera, tpCam, null, null);
 
@@ -947,6 +963,7 @@ async function boot(): Promise<void> {
     world.update(dt, pos, camera.position);
     const room = roomAt(pos.x, pos.z);
     ngayDem.update(dt, !!room);
+    orbit.viewAspect = camera.aspect;
     if (!riding) orbit.update(tpCam, pos, dt, false, groundAt, room?.floor, sight);
     // ngồi: trượt 0,4 s vào mắt / cúi nhìn bàn chơi, thân mình ẩn (R-DIEU-7, R-GIAO-1); đứng: camera ngôi 3 như cũ
     const atTable = gamePlay.placeCamera(gameCam);
@@ -982,6 +999,9 @@ async function boot(): Promise<void> {
     seatButton.set(spot);
     seatButton.follow(camera);
     seatButton.avoid(el('talk')); // không đè nút "Nói chuyện"
+    const door = seatFree && !travelling && !decor?.active && !garden?.active ? buttonPortalAt(spec.portals, pos.x, pos.z) : undefined;
+    exitButton.set(door ? exitSpots[spec.portals.indexOf(door)] : null);
+    exitButton.follow(camera);
     readBook.set(borrowedBook(desk.book) ?? null, !(paused || covered || loading.active || mapOpen || talking || player.isSitting));
     if (boardButton && boardAt) {
       const allLearned = (progress?.radicals.length ?? 0) >= RADICALS.length;

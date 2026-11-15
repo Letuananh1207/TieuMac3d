@@ -121,7 +121,10 @@ function checkPortalPairs() {
   for (const e of labels) console.error(e);
   bad += labels.length;
   if (!bad && [...portalsOf.values()].some((l) => l.length)) {
-    const pairs = [...portalsOf].flatMap(([id, l]) => l.filter((p) => id < p.scene).map((p) => `${id} ↔ ${p.scene}`));
+    // cặp có một chiều bấm nút (cửa gian trong ra sân — V-71): ghi "(ra bằng nút)" — vẫn là cặp đủ hai chiều
+    const viaButton = (a, b) => portalsOf.get(a).some((q) => q.scene === b && q.via === 'nut');
+    const tag = (a, b) => (viaButton(a, b) ? ` (${a} ra bằng nút)` : viaButton(b, a) ? ` (${b} ra bằng nút)` : '');
+    const pairs = [...portalsOf].flatMap(([id, l]) => l.filter((p) => id < p.scene).map((p) => `${id} ↔ ${p.scene}${tag(id, p.scene)}`));
     console.log(`\nCổng đi bộ giữa các cảnh: ghép cặp đúng, nhãn = tên nơi đến (${pairs.length} cặp: ${pairs.join(' · ')}).`);
   }
   return bad;
@@ -290,7 +293,8 @@ function checkScene(rel, raw, opt = {}) {
   // cổng đi bộ (R-HANH-4): vùng chạm, cảnh đích, chỗ đứng khi tới từ cảnh đó
   for (const p of spec.portals) {
     const [a, b] = [p.area.from, p.area.to];
-    console.log(`Cổng đi bộ → ${p.scene}: vùng chạm (${n(a[0])}; ${n(a[1])}) … (${n(b[0])}; ${n(b[1])}) · từ ${p.scene} tới đứng ở (${n(p.arrive.at[0])}; ${n(p.arrive.at[1])}) nhìn ${n(p.arrive.rotY)}°`);
+    const kind = p.via === 'nut' ? `Cổng bấm nút "${p.label}"` : 'Cổng đi bộ'; // V-71: đứng trong vùng → nút nổi
+    console.log(`${kind} → ${p.scene}: vùng ${p.via === 'nut' ? 'hiện nút' : 'chạm'} (${n(a[0])}; ${n(a[1])}) … (${n(b[0])}; ${n(b[1])}) · từ ${p.scene} tới đứng ở (${n(p.arrive.at[0])}; ${n(p.arrive.at[1])}) nhìn ${n(p.arrive.rotY)}°`);
   }
   if (all.length) {
     console.error(`${rel}: ${all.length} lỗi:\n- ${all.join('\n- ')}`);

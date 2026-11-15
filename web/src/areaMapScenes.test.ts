@@ -102,7 +102,7 @@ describe('bản đồ vùng — đủ mọi cảnh (R-BANDO-2)', () => {
     expect(m.name).toBe('Nhà của ta');
     expect(m.labels.filter((l) => l.kind === 'khu').map((l) => l.text)).toEqual(['Trong nhà']);
     expect(m.shapes.filter((s) => s.kind === 'nha')).toHaveLength(1);
-    expect(m.icons).toEqual([expect.objectContaining({ kind: 'cong-canh', x: 0, z: 5.4, scene: 'nha-ta' })]);
+    expect(m.icons).toEqual([expect.objectContaining({ kind: 'cong-canh', x: -6, z: 2.6, scene: 'nha-ta' })]); // cửa hồi tây (V-71)
     expect(m.labels.filter((l) => l.kind === 'cong').map((l) => l.text)).toEqual(['Ra sân']);
   });
 

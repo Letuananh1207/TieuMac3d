@@ -30,6 +30,7 @@ import {
   bridgeRise,
   rotateXZ,
   type BridgeSpec,
+  PORTAL_VIAS,
 } from './spec';
 import { checkDecorSlots } from './decorSlots';
 import { paveProblem, treesOnPaving } from './cayTrenNen';
@@ -414,9 +415,10 @@ const LISTS: Record<string, ItemParser> = {
   decorSlots: item({ id: '', kind: '', x: 0, z: 0 }, { rotY: 0 }, all(oneOf('kind', DECOR_SLOT_KINDS), rot)),
   'garden.plots': item({ id: '', x: 0, z: 0 }, {}),
   // cổng đi bộ (R-HANH-4): kiểm vùng / chỗ đứng / cặp cổng ở `portals.ts` + `scripts/check-scene.mjs`
-  portals: item({ scene: '', area: { from: XZ0, to: XZ0 }, arrive: { at: XZ0, rotY: 0 } }, { label: '', marker: true }, (o, path) =>
-    typeof o.label === 'string' && [...o.label].length > 20 ? [`${path}.label: tối đa 20 ký tự (nhãn một dòng)`] : [],
-  ),
+  portals: item({ scene: '', area: { from: XZ0, to: XZ0 }, arrive: { at: XZ0, rotY: 0 } }, { label: '', marker: true, via: '' }, (o, path) => [
+    ...(typeof o.label === 'string' && [...o.label].length > 20 ? [`${path}.label: tối đa 20 ký tự (nhãn một dòng)`] : []),
+    ...oneOf('via', PORTAL_VIAS)(o, path),
+  ]),
   'trees.yard': item({ x: 0, z: 0, scale: 0 }, { kind: '', planter: true }, all(oneOf('kind', TREE_KINDS), positive('scale'))),
   'trees.groves': item(
     { kind: '', x: 0, z: 0, w: 0, d: 0, count: 0 },
@@ -478,6 +480,14 @@ function checkConsistency(s: SceneSpec): string[] {
   const k = s.buildingStyle.heightScale;
   if (k < 0.5 || k > 3) out.push(`buildingStyle.heightScale: 0,5–3 (đang ${k}; code kẹp về khoảng này)`);
   if (s.camera.minDist > s.camera.maxDist) out.push('camera: minDist phải ≤ maxDist');
+  const fr = s.camera.frame;
+  if (fr.enabled) {
+    if (fr.pitchMin > fr.pitchMax || fr.pitchMin < 0.12 || fr.pitchMax > 1.4) out.push('camera.frame: 0,12 ≤ pitchMin ≤ pitchMax ≤ 1,4 (radian)');
+    if (s.camera.near.pitch < fr.pitchMin || s.camera.near.pitch > fr.pitchMax) out.push('camera.frame: near.pitch phải nằm trong pitchMin … pitchMax');
+    if (fr.yawLimit < 0 || fr.yawLimit > 90) out.push('camera.frame.yawLimit: 0–90 (độ)');
+    if (fr.follow < 0 || fr.follow > 1) out.push('camera.frame.follow: 0–1');
+    if (fr.half[0] <= 0 || fr.half[1] <= 0) out.push('camera.frame.half: phải > 0');
+  }
   if (s.trees.ring.scaleMin > s.trees.ring.scaleMax) out.push('trees.ring: scaleMin phải ≤ scaleMax');
   if (!['cau', 'chum'].includes(s.trees.crown)) out.push(`trees.crown: "cau" | "chum" (đang "${s.trees.crown}")`);
   if (s.trees.lodDistance <= 0) out.push('trees.lodDistance: phải > 0');

@@ -37,6 +37,7 @@ import { DanTranh } from './danTranh';
 import { PLAYER_MODEL_URL } from './player/playerCharacter';
 import { addGardenPreview } from './vuonPreview';
 import { inRect } from './scene/rooms';
+import { DecorLayer } from './scene/decorLayer';
 import { el } from './ui/dom';
 import { placeZones, ZONE_CONTENT } from './zones/zones';
 import { emotePreview } from './bieuCamPreview';
@@ -208,6 +209,7 @@ async function boot(): Promise<void> {
   const playerView = (far: boolean): void => {
     scene.fog = fog;
     const orbit = new OrbitCamera(spec.camera);
+    orbit.viewAspect = camera.aspect; // khung phòng (gian trong — V-71) tính theo khung hình thật
     if (far) orbit.toggleView();
     const focus = character.root.position;
     character.facing.rotation.y = orbit.yaw + Math.PI; // như app: quay lưng về camera
@@ -256,6 +258,15 @@ async function boot(): Promise<void> {
   const vuon = addGardenPreview(scene, spec, world.garden, params, (x, z) => world.surface.heightAt(x, z));
   if (vuon) el('problems').append(...vuon.map((t) => li(t)));
   const follow = params.has('theo') && town?.walker ? town.walker.root.position.clone() : null;
+  // ?trang-tri=ke-sach,an-doc,… — đặt sẵn vật vào các ô trang trí theo thứ tự ô (chụp gian trong có đồ — V-71); "-" = để trống
+  const decorIds = (params.get('trang-tri') ?? '').split(',').filter(Boolean);
+  if (decorIds.length && spec.decorSlots.length) {
+    const layer = new DecorLayer(scene, colliders, spec, (x, z) => world.surface.heightAt(x, z));
+    spec.decorSlots.forEach((slot, i) => {
+      const id = decorIds[i];
+      if (id && id !== '-') layer.set(slot.id, { id, blocks: false });
+    });
+  }
 
   /* ---------- chạm mặt sân → toạ độ ---------- */
   const marker = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 2, 8), new THREE.MeshBasicMaterial({ color: 0x7bc86c }));

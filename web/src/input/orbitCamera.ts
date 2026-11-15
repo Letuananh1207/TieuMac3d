@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { clampFrameYaw, fitDistance, framePoints, placeFrame, type FrameSettings } from './khungPhong';
 
 const MIN_PITCH = 0.12;
 const MAX_PITCH = 1.2;
@@ -61,6 +62,10 @@ export interface OrbitSettings {
   /** khi Ngồi ôn (R-DIEU-7): như `seated` + `side` = lệch khỏi thẳng sau lưng (rad, dương = sau vai phải) để thấy
    *  cuộn sách trên tay qua vai; không có → `DEFAULT_ORBIT.study` */
   study?: { dist: number; pitch: number; side: number };
+  /** khung phòng — camera nhà búp bê (gian trong, V-71); không có / tắt = camera sau lưng */
+  frame?: FrameSettings;
+  /** FOV dọc (độ) — khung phòng tính khoảng cách vừa lọt phòng */
+  fov?: number;
 }
 
 export const DEFAULT_ORBIT: OrbitSettings = {
@@ -97,6 +102,16 @@ export class OrbitCamera {
   private beforeSit: { dist: number; pitch: number; yaw?: number } | null = null;
   private readonly want = new THREE.Vector3();
   private readonly target = new THREE.Vector3();
+  /** khung phòng: điểm ngắm trượt êm (tâm ngắm theo nhân vật — không giật) */
+  private readonly aim = new THREE.Vector3();
+
+  /** rộng / cao của khung hình đang vẽ (camera ngôi 3 dựng tạm có aspect 1) — `main` gán mỗi khung; khung phòng dùng */
+  viewAspect = 1;
+
+  /** Đang dùng khung phòng (V-71): bật trong đặc tả và không đang ngồi (ngồi dùng camera ngồi như thường). */
+  get framed(): boolean {
+    return !!this.settings.frame?.enabled && this.beforeSit === null;
+  }
 
   /** Điểm camera đang ngắm (đã nâng LOOK_UP) — Canvas 3D dùng cho OrbitControls để ảnh chụp đúng bố cục app. */
   get lookTarget(): THREE.Vector3 {
@@ -107,6 +122,7 @@ export class OrbitCamera {
     this.pitch = settings.near.pitch;
     this.dist = settings.near.dist;
     this.shown = this.dist;
+    if (settings.frame?.enabled) this.yaw = (settings.frame.yaw * Math.PI) / 180;
   }
 
   /**
@@ -145,16 +161,32 @@ export class OrbitCamera {
     this.yaw -= dx * 0.006;
     if (this.steer !== null) this.steer -= dx * 0.006; // kéo tay khi đang đi → hướng đi xoay theo
     this.pitch = Math.min(MAX_PITCH, Math.max(MIN_PITCH, this.pitch + dy * 0.004));
+    this.clampFrame();
+  }
+
+  /** Khung phòng: yaw trong `yaw ± yawLimit`, góc ngẩng trong `pitchMin … pitchMax` (V-71). */
+  private clampFrame(): void {
+    const f = this.settings.frame;
+    if (!f?.enabled || !this.framed) return;
+    const yaw = clampFrameYaw(f, this.yaw);
+    if (this.steer !== null) this.steer += yaw - this.yaw;
+    this.yaw = yaw;
+    this.pitch = Math.min(f.pitchMax, Math.max(f.pitchMin, this.pitch));
   }
 
   /** Chụm 2 ngón: ratio = khoảng cách cũ / khoảng cách mới. */
   pinch(ratio: number): void {
-    this.dist = this.clampDist(this.dist * ratio);
+    this.dist = this.clampDist(this.zoomFrom() * ratio);
   }
 
   /** Lăn chuột (khi thử trên máy tính). */
   wheel(deltaY: number): void {
-    this.dist = this.clampDist(this.dist + deltaY * 0.01);
+    this.dist = this.clampDist(this.zoomFrom() + deltaY * 0.01);
+  }
+
+  /** Zoom bắt đầu từ khoảng cách đang thấy: khung phòng không xa hơn mức lọt phòng → không có khúc zoom "chết" (V-71). */
+  private zoomFrom(): number {
+    return this.framed ? Math.min(this.dist, this.shown) : this.dist;
   }
 
   /**
@@ -183,7 +215,7 @@ export class OrbitCamera {
    */
   follow(dt: number, dx: number, dz: number, facing: number, moving: boolean): void {
     this.idle += dt;
-    if (dt <= 0) return;
+    if (dt <= 0 || this.framed) return; // khung phòng: camera đứng theo khung, không dây kéo / tự về sau lưng (V-71)
     const from = this.yaw;
     // dây kéo: camera đứng yên, nhân vật dịch (dx, dz) → hướng từ nhân vật tới camera lệch đi
     if (moving && (dx || dz)) {
@@ -257,6 +289,7 @@ export class OrbitCamera {
     room?: RoomBounds,
     sight?: SightBlock,
   ): void {
+    if (this.framed) return this.updateFrame(camera, focus, dt, snap);
     // trong nhà (R-HUD-2): kéo gần tối đa ROOM_MAX_DIST, không ra sau tường (giữ camera trong sàn nhà)
     let dist = room ? Math.min(this.dist, ROOM_MAX_DIST) : this.dist;
     // độ cao đầu nhân vật tính từ chân; ngồi thì thấp xuống (R-NGOI-1)
@@ -290,6 +323,32 @@ export class OrbitCamera {
     // ngắm cao hơn đầu nhân vật (LOOK_UP): nhân vật nằm 1/3 dưới màn hình, thấy xa phía trước
     this.target.set(focus.x, focus.y + head + dist * LOOK_UP, focus.z);
     camera.lookAt(this.target);
+  }
+
+  /**
+   * Khung phòng (V-71): khoảng cách = zoom người chơi nhưng không xa hơn mức vừa lọt cả phòng; điểm ngắm ở giữa phòng,
+   * theo nhân vật một phần (`placeFrame`); không dò vật chắn (tường phía camera đã cắt thấp — `rooms.ts`).
+   */
+  private updateFrame(camera: THREE.Camera, focus: THREE.Vector3, dt: number, snap: boolean): void {
+    const f = this.settings.frame!;
+    if (snap) this.yaw = (f.yaw * Math.PI) / 180; // vào cảnh: camera đúng hướng khung (nhân vật vẫn giữ hướng cổng tới)
+    this.clampFrame();
+    const look: [number, number, number] = [f.center[0], f.lookY, f.center[1]];
+    const fit = fitDistance(this.settings.fov ?? 55, this.viewAspect, this.yaw, this.pitch, look, framePoints(f));
+    const at = placeFrame(f, this.dist, fit, focus);
+    this.shown = at.dist;
+    const horiz = at.dist * Math.cos(this.pitch);
+    this.target.set(at.x, focus.y + f.lookY, at.z);
+    this.want.set(at.x + Math.sin(this.yaw) * horiz, this.target.y + at.dist * Math.sin(this.pitch), at.z + Math.cos(this.yaw) * horiz);
+    if (snap) {
+      camera.position.copy(this.want);
+      this.aim.copy(this.target);
+    } else {
+      const k = 1 - Math.exp(-dt * 6);
+      camera.position.lerp(this.want, k);
+      this.aim.lerp(this.target, k);
+    }
+    camera.lookAt(this.aim);
   }
 
   private clampDist(d: number): number {

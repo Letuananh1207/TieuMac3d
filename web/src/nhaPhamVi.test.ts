@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { canStep } from './player/controller';
 import { loadScene } from './scene/loadSpec';
 import { buildHeightfield } from './scene/terrainHeight';
+import { GIAN_TRONG_DOOR_Z } from './scene/kien_truc/gian_trong';
 
 /**
  * Nhà của ta làm lại (V-48): nhà là một đảo nhỏ trên biển mây — đi về mọi hướng đều dừng ở mép vực (R-VA-2), không có
@@ -108,17 +109,21 @@ describe('Nhà của ta — nhà chính sát mép trái, vườn giữa, gian tr
     expect(spec.paths.some((p) => p.from[0] === 0 && p.to[0] === 0 && p.to[1] === f.gate)).toBe(true);
   });
 
-  it('R-NHA-1, R-HANH-4: bước vào ô cửa nhà chính (vùng chạm phủ mép cửa, không vòng sáng) → gian trong; ra đứng (−15; −2,6) quay ra sân; gian trong 14 × 10, ô cửa "Ra sân", vào đứng (0; 1,2) quay vào phòng', () => {
+  it('R-NHA-1, R-HANH-4: bước vào ô cửa nhà chính (vùng chạm phủ mép cửa, không vòng sáng) → gian trong; gian trong 14 × 10, ra bằng nút "Ra sân" trên thảm trước cửa hồi tây (V-71), vào đứng (−3,8; 2,6) quay vào phòng; ra đứng (−15; −2,6) quay ra sân', () => {
     expect(door).toMatchObject({ area: { from: [-16.2, -5.6], to: [-13.8, -4.6] }, arrive: { at: [-15, -2.6], rotY: 0 }, label: 'Vào nhà', marker: false });
+    expect(door.via ?? 'di').toBe('di'); // vào: vẫn bước qua ô cửa
     const front = house.z + house.d / 2;
     expect(door.area.from[1]).toBeLessThan(front); // phủ mép cửa (mặt tiền z −5)
     expect(door.area.to[1]).toBeGreaterThan(front);
     expect([room.kind, room.w, room.d]).toEqual(['gian-trong', 14, 10]);
     const out = inside.portals[0];
-    expect(out).toMatchObject({ scene: 'nha-ta', arrive: { at: [0, 1.2], rotY: 180 }, label: 'Ra sân', marker: false });
-    expect(out.area.from[1]).toBeLessThan(room.d / 2); // vùng chạm phủ ô cửa (tường trước z 5)
-    expect(out.area.to[1]).toBeGreaterThan(room.d / 2);
-    expect(inside.player.start).toEqual([0, 1.2]);
+    expect(out).toMatchObject({ scene: 'nha-ta', arrive: { at: [-3.8, 2.6], rotY: 90 }, label: 'Ra sân', marker: false, via: 'nut' });
+    // vùng hiện nút = thảm trước cửa hồi tây (mặt trong tường x −6,76), phủ tâm cửa
+    expect(out.area.from[0]).toBeLessThan(-room.w / 2 + 0.3);
+    expect(out.area.to[0]).toBeLessThanOrEqual(-5);
+    expect(out.area.from[1]).toBeLessThan(GIAN_TRONG_DOOR_Z);
+    expect(out.area.to[1]).toBeGreaterThan(GIAN_TRONG_DOOR_Z);
+    expect(inside.player.start).toEqual([-3.8, 2.6]);
     expect(inside.site).toMatchObject({ name: 'Nhà của ta', loadName: 'Trong nhà' });
   });
 

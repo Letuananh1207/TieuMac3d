@@ -5,8 +5,8 @@
     "loadName": "Trong nhà",
     "areas": [{ "name": "Trong nhà", "han": "正房", "from": [-7, -5], "to": [7, 5] }]
   },
-  "sky": { "top": "#86afcf", "middle": "#cddde4", "horizon": "#f1e3c8" },
-  "fog": { "color": "#e2e8e6", "near": 30, "far": 110 },
+  "sky": { "top": "#2b2622", "middle": "#3a332d", "horizon": "#463d35" },
+  "fog": { "color": "#3a332d", "near": 32, "far": 90 },
   "light": {
     "skyColor": "#fff3e2",
     "groundColor": "#8a6a50",
@@ -15,7 +15,7 @@
     "sunIntensity": 0.55,
     "sunPosition": [-24, 22, 10]
   },
-  "ground": { "size": 40, "color": "#b9b2a4", "brickHue": 30, "pattern": "vuong" },
+  "ground": { "size": 120, "color": "#5a4d42", "brickHue": 30, "pattern": "vuong" },
   "farMountains": { "layers": [], "base": -20 },
   "cloudSea": { "radius": 0, "y": -12, "color": "#f4f1ea" },
   "walls": { "enabled": false, "style": "voi", "color": "#eeebe2", "capColor": "#3b3f44", "height": 2.8, "thickness": 0.5, "windows": 0 },
@@ -59,9 +59,16 @@
   },
   "well": { "enabled": false },
   "floating": { "islands": [], "clouds": { "count": 0, "height": 26, "radius": 60, "speed": 0.6, "color": "#d9dce8" } },
-  "player": { "start": [0, 1.2] },
+  "player": { "start": [-3.8, 2.6] },
   "npcs": [],
-  "camera": { "fov": 55, "minDist": 2.5, "maxDist": 6, "near": { "dist": 4.2, "pitch": 0.3 }, "far": { "dist": 5.5, "pitch": 0.38 } },
+  "camera": {
+    "fov": 55,
+    "minDist": 8,
+    "maxDist": 26,
+    "near": { "dist": 22, "pitch": 0.92 },
+    "far": { "dist": 26, "pitch": 1.05 },
+    "frame": { "enabled": true, "center": [0, 0.2], "half": [7, 5], "height": 2.6, "yaw": 0, "yawLimit": 35, "pitchMin": 0.75, "pitchMax": 1.15, "follow": 0.2, "lookY": 0.8 }
+  },
   "lessons": { "radicals": false },
   "decorSlots": [
     { "id": "trong-1", "kind": "trong", "x": -4, "z": -3.6 },
@@ -69,7 +76,7 @@
     { "id": "trong-3", "kind": "trong", "x": 4, "z": -3.6 }
   ],
   "portals": [
-    { "scene": "nha-ta", "area": { "from": [-0.9, 4.5], "to": [0.9, 6.3] }, "arrive": { "at": [0, 1.2], "rotY": 180 }, "label": "Ra sân", "marker": false }
+    { "scene": "nha-ta", "area": { "from": [-6.8, 1.4], "to": [-5.2, 3.8] }, "arrive": { "at": [-3.8, 2.6], "rotY": 90 }, "label": "Ra sân", "marker": false, "via": "nut" }
   ],
   "dayNight": { "enabled": true }
 }

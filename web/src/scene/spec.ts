@@ -221,6 +221,28 @@ export interface CameraView {
 }
 
 /**
+ * Khung phòng (gian trong không trần — V-71, kiểu nhà 摩尔庄园): camera cao nhìn chếch xuống cả phòng thay cho camera sau
+ * lưng. `enabled: false` = như cũ. `center` / `half`: tâm + nửa bề ngang, nửa bề sâu sàn phòng (m, thẳng trục) · `height`:
+ * đỉnh tường phía xa (m) phải lọt khung · `yaw` (độ, 0 = camera ở phía +z nhìn về −z) ± `yawLimit` (độ): kéo xoay trong
+ * khoảng này, **không tự về sau lưng** · `pitchMin` / `pitchMax`: góc ngẩng kéo được (radian; góc mặc định = `near.pitch`) ·
+ * `follow` (0…1): phòng lọt trọn khung thì tâm ngắm theo nhân vật chừng này phần; màn hẹp (điện thoại dọc) / zoom gần
+ * thì theo nhiều hơn để nhân vật luôn trong màn · `lookY`: độ cao điểm ngắm (m). Khoảng cách = `near.dist` (zoom trong
+ * `minDist` … `maxDist`) nhưng không xa hơn mức vừa lọt cả phòng. Lúc ngồi dùng `seated` / `study` như thường.
+ */
+export interface CameraFrameSpec {
+  enabled: boolean;
+  center: XZ;
+  half: XZ;
+  height: number;
+  yaw: number;
+  yawLimit: number;
+  pitchMin: number;
+  pitchMax: number;
+  follow: number;
+  lookY: number;
+}
+
+/**
  * Chữ biển trên cổng, theo hướng **mặt cổng nhìn ra** (vd. cổng nam: `nam` = mặt nhìn về phía Sơn Môn). Thường ghi tên
  * khu người đi qua sẽ bước vào. Thiếu / rỗng = mặt đó không có biển.
  */
@@ -583,7 +605,15 @@ export interface PortalSpec {
    * `label` chỉ ghi trên bản đồ lớn). Thiếu = có vòng khi có `label`.
    */
   marker?: boolean;
+  /**
+   * Cách sang: `di` (mặc định, như cũ) = bước vào vùng là sang · `nut` = đứng trong vùng thì hiện **nút nổi** ghi `label`
+   * (cùng kiểu nút "Ngồi" / "Nói chuyện"), bấm mới sang (cửa gian trong ra sân — V-71). Cặp cổng vẫn đủ hai chiều.
+   */
+  via?: (typeof PORTAL_VIAS)[number];
 }
+
+/** Cách sang của cổng (`PortalSpec.via`). */
+export const PORTAL_VIAS = ['di', 'nut'] as const;
 
 /**
  * Ô trang trí (R-NHA-2): chỗ đặt sẵn một vật trong danh mục (`zones/decor.ts`), tâm (x, z) trên mặt đất / sàn tầng 1.
@@ -1065,6 +1095,8 @@ export interface SceneSpec {
     study: CameraView & { side: number };
     /** Lúc ngồi: nhìn từ mắt nhân vật (ngôi 1 — R-DIEU-7, R-NGOI-1, R-GIAO-1) */
     firstPerson: FirstPersonSpec;
+    /** khung phòng — camera nhà búp bê (gian trong, V-71); tắt = camera sau lưng như cũ */
+    frame: CameraFrameSpec;
   };
 }
 
@@ -1287,6 +1319,8 @@ export const DEFAULT_SCENE: SceneSpec = {
       cuff: '#4d6db2',
       skin: '#f6d3bd',
     },
+    // tắt: camera sau lưng như cũ (gian trong bật — V-71)
+    frame: { enabled: false, center: [0, 0], half: [7, 5], height: 0, yaw: 0, yawLimit: 35, pitchMin: 0.75, pitchMax: 1.15, follow: 0.2, lookY: 1 },
   },
 };
 

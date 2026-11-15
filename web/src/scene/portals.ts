@@ -26,7 +26,7 @@ function gapTo(p: Pick<PortalSpec, 'area'>, x: number, z: number): number {
 const PORTAL_GAP = 3;
 
 /**
- * Lỗi cổng trong một cảnh: vùng rỗng, chỗ đứng trong / sát vùng, chỗ đứng quay mặt vào vòng (phải quay vào trong cảnh,
+ * Lỗi cổng trong một cảnh: cổng bấm nút thiếu nhãn, vùng rỗng, chỗ đứng trong / sát vùng, chỗ đứng quay mặt vào vòng (phải quay vào trong cảnh,
  * lưng về vòng — R-HANH-4), trùng cảnh đích, chồng vòng trận, hai cổng sát nhau.
  */
 export function checkPortals(s: Pick<SceneSpec, 'portals' | 'teleport'>): string[] {
@@ -37,6 +37,8 @@ export function checkPortals(s: Pick<SceneSpec, 'portals' | 'teleport'>): string
     if (!p.scene) out.push(`${name}: thiếu cảnh đích (scene)`);
     else if (seen.has(p.scene)) out.push(`${name}: trùng cảnh đích — mỗi cảnh tối đa một cổng tới "${p.scene}"`);
     seen.add(p.scene);
+    // cổng bấm nút (V-71): nhãn là chữ trên nút nổi — bắt buộc
+    if (p.via === 'nut' && !p.label) out.push(`${name}: cổng "nut" cần label (chữ trên nút nổi)`);
     const r = portalRect(p);
     if (r.maxX - r.minX < 0.5 || r.maxZ - r.minZ < 0.5) out.push(`${name}: vùng chạm hẹp dưới 0,5 m — nới area`);
     const [ax, az] = p.arrive.at;
@@ -71,4 +73,13 @@ function rectGap(p: Pick<PortalSpec, 'area'>, q: Pick<PortalSpec, 'area'>): numb
 export function arrivalFor(portals: readonly PortalSpec[], from: string | null): { at: XZ; rotY: number } | undefined {
   const p = from ? portals.find((q) => q.scene === from) : undefined;
   return p ? { at: [p.arrive.at[0], p.arrive.at[1]], rotY: (p.arrive.rotY * Math.PI) / 180 } : undefined;
+}
+
+/** Cổng bấm nút (`via: "nut"`, V-71) mà (x, z) đang đứng trong vùng — nút nổi hiện khi có. Thuần. */
+export function buttonPortalAt<T extends Pick<PortalSpec, 'area' | 'via'>>(portals: readonly T[], x: number, z: number): T | undefined {
+  return portals.find((p) => {
+    if (p.via !== 'nut') return false;
+    const r = portalRect(p);
+    return x >= r.minX && x <= r.maxX && z >= r.minZ && z <= r.maxZ;
+  });
 }

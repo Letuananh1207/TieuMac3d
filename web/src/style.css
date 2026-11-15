@@ -259,11 +259,11 @@ html.hac body > :not(#stage):not(#loading):not(#crane){visibility:hidden !import
 #actions .badge[hidden]{display:none}
 #actions[hidden]{display:none}
 /* nút "Nói chuyện" bám trên NPC — kiểu nút học nổi */
-#talk,#seat,#board,#guide,#shop{position:fixed;z-index:6;transform:translate(-50%,calc(-100% - 10px));display:flex;flex-direction:column;align-items:center}
-#talk[hidden],#seat[hidden],#board[hidden],#guide[hidden],#shop[hidden]{display:none}
-#talkBtn,#seatBtn,#boardBtn,#guideBtn,#shopBtn{height:46px;box-sizing:border-box;padding:0 18px 0 14px;font:inherit;font-size:15px;font-weight:700;color:var(--on-jade);background:var(--jade);border:1px solid var(--frost-line);border-radius:999px;box-shadow:inset 0 -2px 0 rgba(0,0,0,.18),0 6px 16px rgba(36,50,58,.3);display:flex;align-items:center;gap:8px;white-space:nowrap}
-#talkBtn:active,#seatBtn:active,#boardBtn:active,#guideBtn:active,#shopBtn:active{background:var(--jade-press)}
-#talk .tip,#seat .tip,#board .tip,#guide .tip,#shop .tip{width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:8px solid var(--jade)}
+#talk,#seat,#exit,#board,#guide,#shop{position:fixed;z-index:6;transform:translate(-50%,calc(-100% - 10px));display:flex;flex-direction:column;align-items:center}
+#talk[hidden],#seat[hidden],#exit[hidden],#board[hidden],#guide[hidden],#shop[hidden]{display:none}
+#talkBtn,#seatBtn,#exitBtn,#boardBtn,#guideBtn,#shopBtn{height:46px;box-sizing:border-box;padding:0 18px 0 14px;font:inherit;font-size:15px;font-weight:700;color:var(--on-jade);background:var(--jade);border:1px solid var(--frost-line);border-radius:999px;box-shadow:inset 0 -2px 0 rgba(0,0,0,.18),0 6px 16px rgba(36,50,58,.3);display:flex;align-items:center;gap:8px;white-space:nowrap}
+#talkBtn:active,#seatBtn:active,#exitBtn:active,#boardBtn:active,#guideBtn:active,#shopBtn:active{background:var(--jade-press)}
+#talk .tip,#seat .tip,#exit .tip,#board .tip,#guide .tip,#shop .tip{width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:8px solid var(--jade)}
 #talk .who,#board .who,#guide .who,#shop .who{margin-top:4px;height:24px;box-sizing:border-box;padding:0 10px;display:flex;align-items:center;gap:6px;background:rgba(244,247,246,.86);border:1px solid var(--frost-line);outline:1px solid var(--frost-outline);border-radius:999px;font-size:12px;font-weight:700;white-space:nowrap;pointer-events:none}
 #talk .han,#dialog .han{font-family:var(--han);font-weight:700}
 /* thẻ "Đọc sách" (2026-11-13.28) — cột phải dọc xếp Trò chuyện → Đọc sách → Trang trí (2026-11-15.35: đáy 370 = safe + 336) */
@@ -299,9 +299,9 @@ body.talking #dialogDim{display:block}
 #dialog .choices .dot{width:6px;height:6px;border-radius:50%;background:var(--gold);flex:none}
 #dialog .choices button.bye{background:transparent;border-color:rgba(36,50,58,.3);box-shadow:none}
 #dialog .choices .x{font-size:18px;line-height:1;width:16px;text-align:center;flex:none}
-body.talking #joy,body.talking #joyGhost,body.talking .learn,body.talking #actions,body.talking #talk,body.talking #seat{display:none}
+body.talking #joy,body.talking #joyGhost,body.talking .learn,body.talking #actions,body.talking #talk,body.talking #seat,body.talking #exit{display:none}
 body.covered #joy,body.covered #joyGhost{display:none}
-body.map-open #actions,body.map-open #talk,body.map-open #seat{display:none}
+body.map-open #actions,body.map-open #talk,body.map-open #seat,body.map-open #exit{display:none}
 @media (orientation:landscape){
   #actions{right:calc(var(--sa-right) + 12px);bottom:calc(var(--sa-bottom) + 9px)}
   #readBook{right:calc(var(--sa-right) + 12px);bottom:calc(var(--sa-bottom) + 189px)}
@@ -453,7 +453,7 @@ body.map-open #joy,body.map-open #joyGhost,body.map-open .learn{display:none}
 
 /* ---------- HUD trò chơi Kỳ Văn Uyển (R-GIAO-1, R-CO-3, R-DAU-2) — canvas Co-* / Dau-*, 2026-11-13.27 ---------- */
 /* ngồi chơi: ẩn joystick + cụm nút hành động + nút nổi — cả màn là bàn */
-body.at-table #joy,body.at-table #joyGhost,body.at-table #actions,body.at-table .learn,body.at-table #talk,body.at-table #seat,body.at-table #guide,body.at-table #board,body.at-table #shop,body.at-table #readBook{display:none}
+body.at-table #joy,body.at-table #joyGhost,body.at-table #actions,body.at-table .learn,body.at-table #talk,body.at-table #seat,body.at-table #exit,body.at-table #guide,body.at-table #board,body.at-table #shop,body.at-table #readBook{display:none}
 #game{position:fixed;inset:0;z-index:7;pointer-events:none;color:var(--slate);--gx-l:max(16px,calc(var(--sa-left) + 12px));--gx-r:max(16px,calc(var(--sa-right) + 12px));--gy-t:calc(var(--sa-top) + 8px);--gy-b:calc(var(--sa-bottom) + 12px)}
 #game[hidden]{display:none}
 #game>*{pointer-events:auto}

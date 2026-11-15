@@ -29,7 +29,7 @@
 .mm-hint svg{width:14px;height:14px;fill:none;stroke:var(--jade);stroke-width:2.6;stroke-linecap:round}
 
 /* ---------- bản đồ lớn: ẩn mọi HUD (cả ví), cảnh tối 32 % ---------- */
-body.area-map #joy,body.area-map #joyGhost,body.area-map #actions,body.area-map #talk,body.area-map #seat,body.area-map #guide,body.area-map #board,body.area-map #shop,body.area-map #readBook,body.area-map #wallet,body.area-map .learn,body.area-map #chat,body.area-map #chatBtn,body.area-map #chatBubbles,body.area-map #nameTag,body.area-map #decorBtn{display:none !important}
+body.area-map #joy,body.area-map #joyGhost,body.area-map #actions,body.area-map #talk,body.area-map #seat,body.area-map #exit,body.area-map #guide,body.area-map #board,body.area-map #shop,body.area-map #readBook,body.area-map #wallet,body.area-map .learn,body.area-map #chat,body.area-map #chatBtn,body.area-map #chatBubbles,body.area-map #nameTag,body.area-map #decorBtn{display:none !important}
 .big-map{position:fixed;inset:0;z-index:30;touch-action:none}
 .bm-dim{position:absolute;inset:0;background:rgba(36,50,58,.32)}
 .bm-sheet{position:absolute;left:16px;right:16px;top:calc(var(--sa-top) + 10px);bottom:calc(var(--sa-bottom) + 18px + 48px + 14px);display:flex;flex-direction:column;filter:drop-shadow(0 10px 24px rgba(36,50,58,.35))}
