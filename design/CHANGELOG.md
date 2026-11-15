@@ -3,6 +3,15 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-15.34 — Thanh công cụ (phần lõi): đi từ mọi nơi, Về nhà một chạm, 8 biểu cảm nhân vật
+
+- Loại: cảnh 3D — động tác + luồng / luật. Phiên code V-20261115-64 (kế hoạch `docs/tasks/2026-11-15-thanh-cong-cu.md`, người dùng duyệt
+  1A 2A 3A 4A). **Đã duyệt 2026-11-15.** Giao diện thanh 5 nút, bảng biểu cảm, bong bóng hình, túi đồ, thẻ "đang ở nhà" **chờ thiết kế**
+  (phiếu `docs/phieu_thiet_ke/2026-11-15-thanh-cong-cu.md`) — chưa có nút trên điện thoại.
+- Bản đồ truyền tống mở được từ mọi nơi (R-HANH-6); Về nhà một chạm cưỡi hạc (R-HANH-7) — đứng trong nhà / giảm chuyển động → màn tải;
+  đang ở nhà → không đi. 8 biểu cảm (Vẫy tay, Chắp tay, Cúi chào, Vỗ tay, Cười, Nhảy mừng, Suy nghĩ, Ngồi nghỉ) bằng 7 xương tự gắn, draw call +0
+  (R-BIEU-1…3). Máy tính: phím T · H · J · B rồi 1–8. Canvas 3D `?dang=bieu-cam&bc=<mã>`. Ảnh: `screens/NhanVat-bieu-cam.png`.
+
 ## 2026-11-15.32 — Cây không mọc trên nền lát: dời khỏi lối, bồn đá cho cây trên sân lát (mọi cảnh)
 
 - Loại: cảnh 3D — bố cục + Cần code (đã làm). Phiên code V-20261115-63; người dùng báo cây giữa lối lên Trà lâu, rồi nhờ soát mọi cảnh.
