@@ -3,6 +3,15 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-15.39 — Làm lại 6 vùng (B0): xoá hết kiến trúc + vật, giữ địa hình, cổng đi bộ, bãi hạc
+
+- Loại: cảnh 3D — bố cục. Phiên code V-20261115-66 theo yêu cầu người dùng ("xoá hết kiến trúc các vùng, làm lại từ địa hình"), xoá ngay
+  trong app. Lộ trình `docs/tasks/2026-11-15-lam-lai-vung.md`: B0 xoá → B1 nghiên cứu (`docs/tham_khao/lam-lai-vung.md`) → B2 địa hình +
+  phạm vi Trúc Lâm → B3 kiến trúc → B4 mini game → nhân ra 5 vùng.
+- 6 đặc tả vùng xoá nhà, cổng, tường, mặt tường đi được, lối, cầu, thuyền, kênh / hào, hành lang, ảo lâu, đoàn buôn, vật, rào, dây đèn, cây,
+  bậc đá, nền Tam Đài, tên khu; nền lát thành đất. Giữ địa hình, nước tự nhiên, trời / ánh sáng, đảo nổi + đàn hạc (Bồng Lai), cổng đi bộ,
+  bãi hạc. Luật R-VUNG-1/2, R-VA-1, R-HANH-4, R-BANDO-2. Trúc Lâm 31 draw call / 32,7k tam giác.
+
 ## 2026-11-15.38 — Thanh công cụ (phần lõi): đi từ mọi nơi, Về nhà một chạm, 8 biểu cảm nhân vật
 
 - Loại: cảnh 3D — động tác + luồng / luật. Phiên code V-20261115-64 (kế hoạch `docs/tasks/2026-11-15-thanh-cong-cu.md`, người dùng duyệt
