@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { DECOR_ITEMS, decorItem, STARTER_DECOR } from './decor';
-import { boughtView, cardState, confirmView, SHOP_TABS, shopBanner, shopGroups } from './shopView';
+import { boughtView, cardState, confirmView, SEED_ITEMS, seedCrop, SHOP_TABS, shopBanner, shopGroups } from './shopView';
 
 const ALL = DECOR_ITEMS.map((i) => i.id);
 const item = (id: string) => {
@@ -17,7 +17,7 @@ describe('Tạp hoá bản web — thẻ, tab, dải (R-TIEN-4)', () => {
   });
 
   it('R-TIEN-4: tab Tất cả · Vườn · Sân · Trong nhà; "Tất cả" chia nhóm có tiêu đề, theo thứ tự danh mục', () => {
-    expect(SHOP_TABS.map((t) => t.label)).toEqual(['Tất cả', 'Vườn', 'Sân', 'Trong nhà']);
+    expect(SHOP_TABS.map((t) => t.label)).toEqual(['Tất cả', 'Vườn', 'Sân', 'Trong nhà', 'Hạt giống']);
     const all = shopGroups(DECOR_ITEMS, STARTER_DECOR, 300, 'all', null);
     expect(all.map((g) => g.title)).toEqual(['Vườn', 'Sân', 'Trong nhà']);
     expect(all[0].cards.map((c) => c.item.id)).toEqual(['truc-canh', 'mai', 'tung', 'da-thai-ho', 'ao-sen']);
@@ -45,5 +45,21 @@ describe('Tạp hoá bản web — thẻ, tab, dải (R-TIEN-4)', () => {
     });
     expect(confirmView(item('mai'), 100).rows[2]).toEqual(['Còn lại', '40']);
     expect(boughtView(item('ban-tra'))).toEqual({ title: 'Đã mua Bàn trà', sub: 'Về nhà để đặt — chạm ô Sân khi trang trí.' });
+  });
+});
+
+describe('Tạp hoá — hạt giống (R-VUON-9)', () => {
+  it('R-VUON-9: 8 thẻ hạt, mua nhiều lần (không "Đã có"); thiếu → "Còn thiếu 1"; chữ xác nhận + tấm đã mua', () => {
+    expect(SEED_ITEMS.map((i) => `${i.name} ${i.price}`)).toEqual([
+      'Hạt Cải ngọt 4', 'Hạt Củ cải 6', 'Hạt Ngô 8', 'Hạt Lúa 10', 'Hạt Bí đỏ 12', 'Hạt Hoa cúc 14', 'Hạt Dưa hấu 16', 'Hạt Trà 20',
+    ]);
+    const cai = SEED_ITEMS[0];
+    expect(cardState(cai, [cai.id], 10).state).toBe('buy');
+    expect(cardState(SEED_ITEMS[2], [], 7)).toEqual({ state: 'short', text: 'Còn thiếu 1', short: 1 });
+    expect(seedCrop(cai)?.id).toBe('cai');
+    expect(confirmView(cai, 10).sub).toBe('Mỗi lần mua 1 hạt vào túi hạt · gieo ở Vườn rau');
+    expect(boughtView(cai)).toEqual({ title: 'Đã mua Hạt Cải ngọt', sub: 'Về Vườn rau để gieo — hạt ở trong túi hạt.' });
+    // hạt không tính vào dải "đã có đủ 13 món"
+    expect(shopBanner([...DECOR_ITEMS, ...SEED_ITEMS], ALL, 300)).toBe('allBought');
   });
 });

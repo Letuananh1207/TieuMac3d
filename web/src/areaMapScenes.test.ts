@@ -74,15 +74,16 @@ describe('bản đồ vùng — đủ mọi cảnh (R-BANDO-2)', () => {
     expect(nha.filter((s) => s.kind === 'dat')).toEqual([
       { kind: 'dat', x: 0, z: -2.5, w: 34, d: 31 },
       { kind: 'dat', x: 0, z: 18, w: 6, d: 10 },
+      { kind: 'dat', x: 18.25, z: 0, w: 9.5, d: 12 }, // bục Vườn rau (V-52)
     ]);
     // V-48: nhà là đảo nhỏ trên biển mây — bản đồ vẽ mép đảo (như Bồng Lai)
     expect(nha.find((s) => s.kind === 'mep')).toEqual({ kind: 'mep', x: 0, z: -2, r: 27 });
     for (const id of IDS) expect(mapOf(id).shapes.filter((s) => s.kind === 'khu')).toHaveLength(loadScene(id).spec.site.areas.length);
   });
 
-  it('R-BANDO-2: Nhà của ta — 5 khu, vòng "Khởi Nguyên Trấn" (0; 21) cuối Bến mây, không có cổng đứng riêng (V-51), không có vòng trận, không có dấu ô trang trí', () => {
+  it('R-BANDO-2: Nhà của ta — 6 khu (có Vườn rau — V-52), vòng "Khởi Nguyên Trấn" (0; 21) cuối Bến mây, không có cổng đứng riêng (V-51), không có vòng trận, không có dấu ô trang trí', () => {
     const m = mapOf('nha-ta');
-    expect(m.labels.filter((l) => l.kind === 'khu').map((l) => l.text)).toEqual(['Chính phòng', 'Sân trong', 'Bến mây', 'Đồi sau', 'Vườn']);
+    expect(m.labels.filter((l) => l.kind === 'khu').map((l) => l.text)).toEqual(['Chính phòng', 'Sân trong', 'Bến mây', 'Đồi sau', 'Vườn rau', 'Vườn']);
     expect(m.icons.find((i) => i.kind === 'cong-canh')).toMatchObject({ x: 0, z: 21, scene: HOME_SCENE });
     expect(m.labels.filter((l) => l.kind === 'cong').map((l) => l.text)).toEqual(['Khởi Nguyên Trấn']);
     expect(m.icons.map((i) => i.kind)).toEqual(['cong-canh']);

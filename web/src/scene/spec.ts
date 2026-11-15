@@ -292,6 +292,28 @@ export interface TeaStyle {
   mist: { from: number; to: number; opacity: number; color: string };
 }
 
+/**
+ * Vườn rau ở Nhà của ta (R-VUON-1 — `scene/vuonLuong.ts`, cây `scene/cayTrong.ts`, kiểm `scene/vuonLayout.ts`): 12 luống đất
+ * (thứ tự mở `o-1` … `o-12` theo luật `zones/vuon.ts`), rào tre thấp có khe cổng ở cạnh tây, thùng thu mua. Luống không chặn
+ * người; rào + thùng chặn. `enabled: false` = không có vườn (như cũ).
+ */
+export interface GardenSpec {
+  enabled: boolean;
+  /** tâm 12 luống, mã `o-1` … `o-12` */
+  plots: { id: string; x: number; z: number }[];
+  /** cạnh luống vuông, cao mặt luống (m) */
+  size: number;
+  height: number;
+  /** thùng thu mua (R-VUON-7) */
+  bin: { x: number; z: number; rotY: number };
+  /** rào tre: khung chữ nhật from … to (thẳng trục), khe cổng ở cạnh tây (x = min) tâm z `gate`, rộng `gateWidth`; cao `height` */
+  fence: { from: XZ; to: XZ; gate: number; gateWidth: number; height: number };
+  /** màu đất luống, rãnh, đất hoang, cọc gỗ, tre rào, gỗ thùng, nền đất nện trong rào */
+  colors: { soil: string; furrow: string; wild: string; stake: string; fence: string; bin: string; ground: string };
+  /** cỡ cây (nhân) — hình Kenney gốc ~0,4 m */
+  cropScale: number;
+}
+
 /** Đoạn tường thêm, thẳng trục (from / to cùng x hoặc cùng z), màu như tường bao; dày / cao mặc định như tường bao. */
 export interface WallSegment {
   from: XZ;
@@ -956,6 +978,8 @@ export interface SceneSpec {
   /** luống chè (Đồi Chè, V-46) — rỗng = không có (như cũ); kiểu + bướm + sương ở `teaStyle` */
   teaRows: TeaRowSpec[];
   teaStyle: TeaStyle;
+  /** vườn rau (Nhà của ta, R-VUON-1) — tắt = không có (như cũ) */
+  garden: GardenSpec;
   /** `seated`: khi ngồi vào án thư / bàn trà (R-NGOI-1) — camera lùi ra, chúc xuống thấy cả bàn ·
    *  `study`: khi Ngồi ôn (R-DIEU-7) — lùi ra, nâng cao, lệch `side` rad ra sau vai phải để thấy cuộn sách trên tay */
   camera: {
@@ -1140,6 +1164,16 @@ export const DEFAULT_SCENE: SceneSpec = {
   fences: [],
   fenceStyle: { kind: 'go', height: 1.0, postEvery: 1.6, color: '#9e2a20', cap: '#e0ae4c' },
   teaRows: [], // cảnh cũ không có luống chè
+  garden: {
+    enabled: false, // cảnh cũ không có vườn rau
+    plots: [],
+    size: 1.6,
+    height: 0.2,
+    bin: { x: 0, z: 0, rotY: 0 },
+    fence: { from: [0, 0], to: [0, 0], gate: 0, gateWidth: 1.6, height: 0.6 },
+    colors: { soil: '#8a6648', furrow: '#6a4c36', wild: '#8c8a52', stake: '#6b4a30', fence: '#c2a86a', bin: '#8a5a3a', ground: '#b48d68' },
+    cropScale: 1.6,
+  },
   teaStyle: {
     width: 0.85,
     height: 0.85,

@@ -236,6 +236,13 @@ function checkScene(rel, raw, opt = {}) {
   }
   // ô trang trí nhà của ta (R-NHA-2) — lỗi đã kiểm trong resolveSceneSpec (scene/decorSlots.ts)
   for (const t of spec.decorSlots) console.log(`Ô trang trí ${t.id} (${t.kind}): tâm (${n(t.x)}; ${n(t.z)}) quay ${t.rotY ?? 0}°`);
+  // vườn rau (R-VUON-1) — lỗi đã kiểm trong resolveSceneSpec (scene/vuonLayout.ts)
+  const g = spec.garden;
+  if (g.enabled) {
+    const [fa, fb] = [g.fence.from, g.fence.to];
+    console.log(`Vườn rau: rào (${n(fa[0])}; ${n(fa[1])}) … (${n(fb[0])}; ${n(fb[1])}) cao ${n(g.fence.height)}, khe cổng cạnh tây z ${n(g.fence.gate)} rộng ${n(g.fence.gateWidth)} · thùng thu mua (${n(g.bin.x)}; ${n(g.bin.z)})`);
+    console.log(`  luống ${n(g.size)} × ${n(g.size)} m: ${g.plots.map((p) => `${p.id} (${n(p.x)}; ${n(p.z)})`).join(' · ')}`);
+  }
   if (spec.paths.length) console.log(`Lối lát đá: ${spec.paths.length}`);
   const t = spec.terrain;
   if (t.enabled) {

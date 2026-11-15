@@ -14,8 +14,9 @@ import { ShopPanel } from './ui/shopPanel';
 import { WalletHud } from './ui/wallet';
 import { DECOR_ITEMS } from './zones/decor';
 import { SHOP_ID, shopButtonShown, shopDoor, type BuildingLike } from './zones/shop';
+import { SEED_ITEMS, seedCrop } from './zones/shopView';
 import { gameResultLine, gameRewardLabel, type GameEarning, type GameKind, type GameOutcome } from './zones/wallet';
-import { buyTrial, dayKey, earnTrialGame, gameTodayOn, learnOnce, learnRewardLabel } from './zones/walletRules';
+import { buyTrial, dayKey, earnTrialGame, gameTodayOn, gardenTrialAct, learnOnce, learnRewardLabel, type BuyResult } from './zones/walletRules';
 
 /** Xu bay ra từ chỗ bàn: ngang ngực nhân vật vừa đứng dậy cạnh bàn (m). */
 const FROM_HEIGHT = 1;
@@ -62,8 +63,17 @@ export class WalletRoom {
     this.shop = d ? new ShopButton({ ...d, y: host.groundAt(d.x, d.z) }, () => this.openShop()) : null;
     const trial = host.trial;
     this.panel = trial
-      ? new ShopPanel(DECOR_ITEMS, {
-          buy: (item) => {
+      ? new ShopPanel([...DECOR_ITEMS, ...SEED_ITEMS], {
+          buy: (item): BuyResult => {
+            // hạt giống Vườn rau (R-VUON-9): +1 hạt vào túi ở ví thử
+            const c = seedCrop(item);
+            if (c) {
+              const g = gardenTrialAct(trial.wallet, { act: 'buy', crop: c.id }, Date.now());
+              trial.update(() => g.wallet);
+              return g.result.ok
+                ? { ok: true, balance: g.wallet.coins, owned: g.wallet.owned }
+                : { ok: false, reason: g.result.reason === 'short' ? 'short' : 'invalid', short: g.result.short };
+            }
             const r = buyTrial(trial.wallet, item.id);
             trial.update(() => r.wallet);
             return r.result;
@@ -117,6 +127,13 @@ export class WalletRoom {
   spent(amount: number, label: string, balance: number, gameToday: number): void {
     const w = this.host.trial?.wallet;
     this.wallet.push({ amount: -amount, label }, balance, w ? gameTodayOn(w, dayKey(new Date())) : gameToday);
+  }
+
+  /** Tiền đổi ở vườn rau (R-VUON-7/8/9, R-TIEN-5): bán → "+n · Bán nông sản" có xu bay; mở ô / hạt → "−n" không xu. */
+  gardenCoins(amount: number, label: string, balance: number): void {
+    const w = this.host.trial?.wallet;
+    const center = (): { x: number; y: number } => ({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
+    this.wallet.push({ amount, label, ...(amount > 0 ? { from: center } : {}) }, balance, w ? gameTodayOn(w, dayKey(new Date())) : 0);
   }
 
   /** Tạp hoá bản web đang mở (Esc do `ShopPanel` tự bắt). */

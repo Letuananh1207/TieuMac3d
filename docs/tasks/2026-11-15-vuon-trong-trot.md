@@ -2,7 +2,7 @@
 - Yêu cầu: "ở nhà của tôi hãy tạo ra chỗ vườn có thể trồng trọt được, tham khảo 摩尔"
 - Đã chốt với người dùng: **trồng thuần, không gắn học chữ** · **6 ô đất, mở thêm dần tới 12 bằng Văn tiền** · **cây lớn theo
   giờ thật, vài giờ** (30 phút – 8 giờ, tắt app vẫn lớn).
-- Loại: thêm tính năng (luật + dữ liệu + cảnh 3D + HUD + cầu nối + Flutter) · Cỡ: lớn · Trạng thái: đang làm
+- Loại: thêm tính năng (luật + dữ liệu + cảnh 3D + HUD + cầu nối + Flutter) · Cỡ: lớn · Trạng thái: chờ thiết kế (NV1–9 xong trên nhánh `viec/vuon`, NV10 chờ phiếu)
 - Xây trên V-48 (đảo trên biển mây, khung rỗng — CHANGELOG 2026-11-15.15) và V-51 (đã gộp: bỏ cổng đứng (0; 11,5)).
 - Phiếu HUD: `docs/phieu_thiet_ke/2026-11-15-vuon-trong-trot.md` (chờ thiết kế).
 
@@ -233,28 +233,28 @@ vườn), `ui/wallet.ts` + `walletRoom.ts` (nhãn trừ / cộng mới), `zones/
 Phần **làm được trước thiết kế**: NV1–9 (luật, cầu nối, lưu, 3D, ghép không HUD, Canvas 3D `?dang=vuon`). Phần **chờ thiết kế**: NV10.
 Q1–Q4 phải chốt trước NV1.
 
-- [ ] 1. **Sổ quy tắc** (`docs/testing/quy_tac.md` · nghiệp vụ): mục VUON R-VUON-1…8 + luật chạm như §6 (đã sửa theo Q1–Q4) →
+- [x] 1. **Sổ quy tắc** (`docs/testing/quy_tac.md` · nghiệp vụ): mục VUON R-VUON-1…8 + luật chạm như §6 (đã sửa theo Q1–Q4) →
       `/dong-bo-quy-tac` (tự chép online). Xong khi `dart tool/rule_trace.dart --pending` không còn R-VUON chờ.
-- [ ] 2. **Cầu nối** (`docs/bridge.md` · cầu nối): `getGarden`, `gardenAct` đúng dạng §4. Xong khi hai phía đọc chung một bảng.
-- [ ] 3. **Luật Dart** (`app/lib/journey/garden.dart` mới · Flutter thuần): bảng 8 cây, giá mở ô, `stage`, `canWater`, `yieldOf`,
+- [x] 2. **Cầu nối** (`docs/bridge.md` · cầu nối): `getGarden`, `gardenAct` đúng dạng §4. Xong khi hai phía đọc chung một bảng.
+- [x] 3. **Luật Dart** (`app/lib/journey/garden.dart` mới · Flutter thuần): bảng 8 cây, giá mở ô, `stage`, `canWater`, `yieldOf`,
       `remaining`, `sow` / `water` / `harvest` / `sell` (trần 60 theo `vnDay`) / `openPlot`, trả lỗi `short | busy | not-ripe | dry |
       cap | full | locked`. Test `app/test/rules/vuon_test.dart` — mỗi ví dụ sổ một test (gắn mã luật cho `rule_trace`). Xong khi
       `flutter test test/rules/vuon_test.dart` xanh.
-- [ ] 4. **Lưu Flutter + handler** (`progress_store.dart` khoá `vuon.state` JSON, thiếu / hỏng → vườn mới; handler `getGarden` /
+- [x] 4. **Lưu Flutter + handler** (`progress_store.dart` khoá `vuon.state` JSON, thiếu / hỏng → vườn mới; handler `getGarden` /
       `gardenAct` ở chỗ đăng ký cầu nối hiện có `app/lib/scene/`): ghi ngay mỗi thao tác, trả `garden` + `balance`. Test lưu / mở lại
       (R-VUON-6 "3 ngày sau"). Xong khi `flutter analyze && flutter test -r failures-only test/rules test/scene` xanh.
-- [ ] 5. **Luật TS + ví thử** (`web/src/zones/vuon.ts` mới · zones; `walletRules.ts`, `bridge/browserStore.ts`, `bridge/flutterBridge.ts`):
+- [x] 5. **Luật TS + ví thử** (`web/src/zones/vuon.ts` mới · zones; `walletRules.ts`, `bridge/browserStore.ts`, `bridge/flutterBridge.ts`):
       chép luật Dart, chữ hiển thị ("còn 1 giờ 20 phút"), `?vuon=<hệ số>`, vườn trong ví thử + `?tien=xoa`. Test `vuon.test.ts`
       cùng ví dụ sổ như NV3. Xong khi `npm test` xanh.
-- [ ] 6. **Trường đặc tả** (`scene/spec.ts`, `loadSpec.ts`, `specCheck.ts`, `scripts/check-scene.mjs` · scene/spec): `garden: { plots:
+- [x] 6. **Trường đặc tả** (`scene/spec.ts`, `loadSpec.ts`, `specCheck.ts`, `scripts/check-scene.mjs` · scene/spec): `garden: { plots:
       [{id, x, z}], size, bin: {x, z}, seeds: {x, z}, fence: {from, to, gap}, open: 6 } | null` (mặc định `null`). Kiểm: luống trên đất
       phẳng, không chồng `decorSlots` / lối / mép đảo, đủ 12 mã `o-1…o-12`. Xong khi `npm run scene:check` in toạ độ luống, cảnh cũ không đổi.
-- [ ] 7. **3D** (`scene/vuonLuong.ts`, `scene/cayTrong.ts` mới · scene): luống + đất hoang (InstancedMesh), rào + giỏ + thùng (gộp tĩnh,
+- [x] 7. **3D** (`scene/vuonLuong.ts`, `scene/cayTrong.ts` mới · scene): luống + đất hoang (InstancedMesh), rào + giỏ + thùng (gộp tĩnh,
       collider), 8 cây × 4 dáng gộp 1 hình dựng lại khi đổi dáng; `designPreview.ts` `?dang=vuon` bày hết dáng. Đo draw call /
       tam giác trước / sau ở `?vung=nha-ta&view=tren`. Xong khi ≤ +4 draw call, ≤ +6k tam giác, người dùng duyệt ảnh 8 cây.
-- [ ] 8. **Bố cục vườn** (`design/scene/nha-ta.json` · vai thiết kế `/canh`): khối `garden` + bục + nền + lối nhánh + khu "Vườn rau"
+- [x] 8. **Bố cục vườn** (`design/scene/nha-ta.json` · vai thiết kế `/canh`): khối `garden` + bục + nền + lối nhánh + khu "Vườn rau"
       theo §3; `scene:check`, `build:design`, chụp 3 góc (trên xuống, từ chỗ xuất phát, trong vườn), duyệt rồi chốt CHANGELOG.
-- [ ] 9. **Ghép** (`web/src/homeGarden.ts` mới + vài dòng `main.ts` · ghép): nạp `getGarden` / ví thử, dựng, mỗi 5 s kiểm đổi dáng,
+- [x] 9. **Ghép** (`web/src/homeGarden.ts` mới + vài dòng `main.ts` · ghép): nạp `getGarden` / ví thử, dựng, mỗi 5 s kiểm đổi dáng,
       tìm luống gần nhất (R-VUON-2) — **chưa có nút** (chờ NV10); Canvas 3D / `npm run dev` thấy cây lớn bằng `?vuon=60`. Xong khi
       `npx tsc --noEmit && npm test && npm run build` xanh, cảnh trấn / vùng không đổi.
 - [ ] 10. **HUD vườn** — **chờ thiết kế (`docs/phieu_thiet_ke/2026-11-15-vuon-trong-trot.md`)**: nút nổi Gieo / Tưới / Thu / Mở ô + nhãn
@@ -282,3 +282,27 @@ flutter analyze · flutter test -r failures-only test/rules test/scene · dart t
 - Q3/Q4 hình + chỗ: **gói Kenney CC0 (`crops_*`)** cho cây, **bãi đông**; cây thiếu trong gói (bí / dưa / cúc…) thì dựng khối trong code hoặc thay
   cây khác có trong gói — chọn an toàn, ghi lại; ghi `design/models/LICENSES.md`.
 - Thông báo khi tắt app: **không báo**. Sâu / cỏ dại: đợt sau.
+
+## Đã làm (2026-11-15, phiên con V-52 — chưa gộp)
+- NV1: mục VUON R-VUON-1…9 (thêm **R-VUON-9 mua hạt ở Tạp hoá** theo Q1; R-VUON-3 viết lại thành gieo từ túi hạt) + chạm R-NHA-2/5,
+  R-TIEN-1/4/5/7, R-BANDO-2. Xác nhận `chờ`. **Chưa đồng bộ online** (theo lời giao — phiên chính chạy `/dong-bo-quy-tac`).
+  Sửa ví dụ R-VUON-4: "8:17 mầm" sai (10 % của 3 giờ = 18 phút) → "8:15 vừa gieo, 8:20 mầm".
+- NV2: `getGarden` / `gardenAct` (thêm `act: 'buy'`, lý do `no-seed`, `empty`, `bad`) ở `docs/bridge.md`.
+- NV3–4: `app/lib/journey/garden.dart`, `progress_store.dart` (`vuon.state`, `gardenAct`, `buySeed`), `app/lib/scene/garden_event.dart`,
+  handler ở `scene_view.dart` + `main.dart`; Tạp hoá Flutter thêm tab "Hạt giống" (`SlotKind.hat`, thẻ + hộp xác nhận có sẵn).
+  Test `app/test/rules/vuon_test.dart` (18).
+- NV5: `web/src/zones/vuon.ts` + `vuon.test.ts`, ví thử có `garden`, `?vuon=<hệ số>` (chỉ chế độ thử), Tạp hoá web thêm hạt
+  (`shopView.ts` `SEED_ITEMS`).
+- NV6: trường `garden` (`enabled: false` mặc định) + `scene/vuonLayout.ts` (kiểm) + `scene:check` in toạ độ luống.
+- NV7: `scene/vuonLuong.ts` (luống + đất hoang + rào/thùng/nền đất, 3 draw call), `scene/cayTrong.ts` (cây gộp 1 draw call) — hình
+  **Kenney Nature Kit** (13 glb, `design/models/thuc-vat/vuon/`, `LICENSES.md`); `npm run model:thuc-vat` thêm `--mau` (màu vật liệu →
+  màu đỉnh). Canvas 3D `?dang=vuon-rau` (`?dang=vuon` đã là dáng vươn vai). Test `scene/vuonLuong.test.ts`.
+- NV8: `nha-ta.json` khối `garden` + bục (13,5 … 23; −6 … 6) + lối nhánh (1,2; 0) → (15; 0) + khu "Vườn rau". Bỏ `terrain.floors`
+  cho vườn (floor luôn lát gạch) → tấm nền đất nện trong rào dựng ở `vuonLuong.ts` (`colors.ground`).
+- NV9: `web/src/homeGarden.ts` + vài dòng `main.ts`; chưa có nút — tạm `?debug` phím G / B.
+
+Quyết định an toàn (không hỏi):
+- Gói Kenney không có đậu xanh → đổi cây thành **Ngô** (`ngo`, giữ giá / thời gian). Cải ngọt = lá `crops_leafs*`, Trà = bụi
+  `plant_bush*`, Hoa cúc = `flower_yellowB`; `crops_wheatStageA` (720 tam giác) bỏ.
+- Mới cài túi có **3 hạt Cải ngọt** (app thật bắt đầu 0 Văn tiền — để học được vòng chơi ngay).
+- Mua hạt 1 hạt / lần (dùng thẻ Tạp hoá sẵn có); chọn số lượng → phiếu.

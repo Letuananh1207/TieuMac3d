@@ -1,5 +1,8 @@
-// Chuẩn bị model thực vật từ gói low-poly CC0 (Tiny Treats, KayKit — texture "dải màu" dùng chung) cho cảnh mềm:
-//   cd web && npm run model:thuc-vat -- <file.gltf|glb> --ra <file.glb> [--ti-le 0.35] [--sai-so 0.02]
+// Chuẩn bị model thực vật từ gói low-poly CC0 (Tiny Treats, KayKit — texture "dải màu" dùng chung; Kenney — màu vật liệu)
+// cho cảnh mềm:
+//   cd web && npm run model:thuc-vat -- <file.gltf|glb> --ra <file.glb> [--ti-le 0.35] [--sai-so 0.02] [--mau grass=#6f9e4c,corn=#e8c25a]
+// Gói không texture (Kenney Nature Kit): màu vật liệu (`baseColorFactor`) → màu đỉnh; `--mau tên-vật-liệu=#rrggbb` đổi màu một
+// vật liệu cho hợp bảng màu ấm của cảnh (sRGB); mọi phần gộp thành một lưới.
 // Làm: đọc texture dải màu → ghi vào màu đỉnh COLOR_0 (tuyến tính), bỏ UV / texture / vật liệu thừa, hàn đỉnh, giảm tam
 // giác theo tỉ lệ (`--ti-le`, mặc định 0,35), nén meshopt. Cảnh tô lại màu theo độ cao lúc dựng (`scene/luongChe.ts`) —
 // màu đỉnh ở đây chỉ giữ phần sáng / tối của gói. Ngân sách thực vật: ≤ 300 tam giác, ≤ 50 KB, 0 texture.
@@ -8,7 +11,7 @@ import { mkdirSync, statSync } from 'node:fs';
 import { basename, dirname, resolve } from 'node:path';
 import { NodeIO } from '@gltf-transform/core';
 import { ALL_EXTENSIONS } from '@gltf-transform/extensions';
-import { dedup, meshopt, prune, simplify, weld } from '@gltf-transform/functions';
+import { dedup, flatten, join, meshopt, prune, simplify, weld } from '@gltf-transform/functions';
 import { MeshoptDecoder, MeshoptEncoder, MeshoptSimplifier } from 'meshoptimizer';
 import sharp from 'sharp';
 
@@ -24,7 +27,7 @@ const ratio = Number(opt('ti-le', '0.35'));
 /** sai số hình cho phép khi giảm (tỉ lệ cỡ model) — tăng thì giảm được sâu hơn, mặt kém tròn hơn */
 const error = Number(opt('sai-so', '0.02'));
 if (!input || !outArg || !(ratio > 0 && ratio <= 1)) {
-  console.error('Cách dùng: npm run model:thuc-vat -- <file.gltf|glb> --ra <file.glb> [--ti-le 0.35] [--sai-so 0.02]');
+  console.error('Cách dùng: npm run model:thuc-vat -- <file.gltf|glb> --ra <file.glb> [--ti-le 0.35] [--sai-so 0.02] [--mau ten=#rrggbb,…]');
   process.exit(1);
 }
 const out = resolve(outArg);
@@ -74,6 +77,36 @@ for (const mesh of doc.getRoot().listMeshes()) {
   }
 }
 for (const t of doc.getRoot().listTextures()) t.dispose();
+
+// không texture (Kenney): màu vật liệu → màu đỉnh; `--mau` đổi màu theo tên vật liệu (sRGB → tuyến tính)
+const recolor = new Map(
+  String(opt('mau', ''))
+    .split(',')
+    .filter(Boolean)
+    .map((kv) => kv.split('='))
+    .filter(([k, v]) => k && /^#[0-9a-f]{6}$/i.test(v ?? ''))
+    .map(([k, v]) => [k, [1, 3, 5].map((i) => toLinear(parseInt(v.slice(i, i + 2), 16) / 255))]),
+);
+for (const mesh of doc.getRoot().listMeshes()) {
+  for (const prim of mesh.listPrimitives()) {
+    if (prim.getAttribute('COLOR_0')) continue;
+    const mat = prim.getMaterial();
+    const pos = prim.getAttribute('POSITION');
+    const c = recolor.get(mat?.getName() ?? '') ?? (mat?.getBaseColorFactor() ?? [1, 1, 1, 1]).slice(0, 3);
+    const col = new Float32Array(pos.getCount() * 3);
+    for (let i = 0; i < pos.getCount(); i++) col.set(c, i * 3);
+    prim.setAttribute('COLOR_0', doc.createAccessor().setType('VEC3').setArray(col).setBuffer(pos.getBuffer()));
+    prim.setAttribute('TEXCOORD_0', null);
+    if (mat) {
+      mat.setBaseColorFactor([1, 1, 1, 1]).setMetallicFactor(0).setRoughnessFactor(1);
+      for (const ext of mat.listExtensions()) mat.setExtension(ext.extensionName, null);
+    }
+  }
+}
+// mọi phần một vật liệu trắng → gộp được thành một lưới
+const white = doc.getRoot().listMaterials()[0];
+if (white) for (const prim of doc.getRoot().listMeshes().flatMap((m) => m.listPrimitives())) prim.setMaterial(white);
+await doc.transform(flatten(), join({ keepNamed: false }));
 
 await doc.transform(dedup(), weld());
 // mặt đáy (úp xuống, sát chân) nằm trên đất — không ai thấy, bỏ cho đỡ tam giác

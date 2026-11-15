@@ -15,6 +15,7 @@ import { addGate, addGateModel } from './gate';
 import { staticModelUrl } from './staticModel';
 import { addGrassAndRocks } from './grass';
 import { addSoftGrassAndFlowers } from './coHoa';
+import { addGarden, type Garden3D } from './vuonLuong';
 import { addTeaGarden } from './doiChe';
 import { insideTea } from './luongCheLayout';
 import { mergeSoft, mergeStatic } from './merge';
@@ -64,6 +65,8 @@ export interface World {
   gameTables: GameTable[];
   /** vòng trận truyền tống (`teleport.enabled`) */
   teleport: TeleportRing | null;
+  /** vườn rau Nhà của ta (`garden.enabled`, R-VUON-1): đất + rào + thùng + lớp cây — `homeGarden.ts` đổi dáng cây; tắt = `null` */
+  garden: Garden3D | null;
   /** ngày đêm (`dayNight.enabled`): áp giờ lên cảnh — `web/src/ngayDem.ts` gọi; tắt = `null` (luôn ban ngày) */
   dayNight: DayNight | null;
   /** gọi mỗi khung hình: khói lò đan, mây, đảo nổi, mờ mái nhà khi `player` đứng trong */
@@ -211,6 +214,7 @@ function* worldSteps(
   yield 'do-vat';
   const trees = addTrees(scene, colliders, spec.trees, groundY, spec.look);
   const tea = addTeaGarden(scene, colliders, spec, groundY, detail); // Đồi Chè: luống + bướm + sương (V-46)
+  const garden = spec.garden.enabled ? addGarden(scene, colliders, spec.garden, spec.look, groundY) : null; // Vườn rau (V-52)
   yield 'cay';
   const lanternSpots = addLanternStrings(scene, colliders, spec, groundY);
   let glow: THREE.InstancedMesh | null = null;
@@ -247,6 +251,7 @@ function* worldSteps(
     : null;
   return {
     dayNight,
+    garden,
     ground,
     surface: new LayeredGround(hf, [...(teleport?.pads ?? []), ...bridgePads, ...rampartPads, ...rooms.flatMap((r) => r.pads)]),
     rooms,

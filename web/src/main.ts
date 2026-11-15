@@ -72,6 +72,8 @@ import { musicVolume, TRACKS } from './zones/music';
 import { journeyLine } from './zones/tranSu';
 import { AmbientMusic } from './ui/ambientMusic';
 import { HomeDecor } from './homeDecor';
+import { HomeGarden } from './homeGarden';
+import { gardenSpeed } from './zones/vuon';
 import { NgayDem } from './ngayDem';
 
 // con trỏ hoạt hình nhúng sẵn (L-9) — đặt sớm nhất, trước cả màn tải
@@ -219,6 +221,7 @@ async function boot(): Promise<void> {
         desk.sync(p.book); // màn danh mục Flutter có thể vừa ghi mượn (R-SACH-1)
         walletRoom.sync(p); // về từ Tạp hoá: ví "−n" (R-TIEN-4)
       }
+      void garden?.load(); // Tạp hoá có thể vừa bán hạt vào túi (R-VUON-9)
       if (scrollOpen) showScroll(lastPick); // cuộn hiện lại ngay, mục vừa dùng cập nhật (thiết kế 2026-11-14.21)
       lastPick = null;
     });
@@ -683,6 +686,21 @@ async function boot(): Promise<void> {
     setReward: (result, line) => gamePlay.setReward(result, line),
   });
   walletRoom.sync(progress);
+  // vườn rau Nhà của ta (R-VUON-1…9) — homeGarden.ts; HUD chờ thiết kế (tạm: phím G / B khi ?debug)
+  const garden = world.garden
+    ? new HomeGarden({
+        garden: world.garden,
+        bridge,
+        trial,
+        speed: gardenSpeed(location.search),
+        debug: params.has('debug'),
+        coins: (amount, label, balance) => {
+          walletRoom.gardenCoins(amount, label, balance);
+          if (progress) progress = { ...progress, coins: balance };
+        },
+      })
+    : null;
+  await garden?.load();
   // Tiểu Khất + Lão Canh (R-NPC-6/7/8, R-AM-1) — townNpcs.ts; chỉ khi cảnh có hai NPC này (có model)
   town = new TownNpcs(npcSet.npcs, {
     bridge,
@@ -774,7 +792,7 @@ async function boot(): Promise<void> {
     if (how === 'cong') next.set('qua', SCENE.id);
     else if (to === HOME_SCENE) next.set('tu', SCENE.id);
     // giữ tham số thử trên trình duyệt
-    for (const k of ['debug', 'nhan-vat', 'muc', 'look', 'gio', 'toc', 'hac']) if (params.has(k)) next.set(k, params.get(k) ?? '');
+    for (const k of ['debug', 'nhan-vat', 'muc', 'look', 'gio', 'toc', 'hac', 'vuon']) if (params.has(k)) next.set(k, params.get(k) ?? '');
     // replace: không chất lịch sử trang mỗi lần đi về
     const go = (): void => location.replace(`${location.pathname}?${next.toString()}`);
     // vòng trận + hoạt cảnh bật (giảm chuyển động → không) → cưỡi hạc: cất cánh ở đây, bay + hạ ở trang mới (R-HANH-5)
@@ -926,6 +944,7 @@ async function boot(): Promise<void> {
     });
     seatGlow.set(spot);
     decor?.update(dt, camera, seatFree); // nút "Trang trí" ẩn khi bản đồ / thoại / ngồi / màn Flutter
+    garden?.update(dt, pos);
     seatGlow.update(dt);
     // mở bài học / ôn / bảng, màn tải → nhạc tắt dần; đóng → phát tiếp theo giờ (R-NHAC-1)
     music?.update(dt, paused || covered || loading.active ? 0 : musicVolume(teaFloors, pos.x, pos.z));

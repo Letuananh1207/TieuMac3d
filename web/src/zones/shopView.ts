@@ -3,15 +3,34 @@
  * xác nhận + tấm "Đã mua". Bản TS của phần logic `app/lib/lesson/shop_screen.dart` / `shop_parts.dart` / `shop_confirm.dart`;
  * chuỗi `shop*` `slot*` chép đúng `design/l10n/vi.arb`. Thuần — không DOM (dựng: `ui/shopPanel.ts`).
  */
-import type { DecorItem, DecorSlotKind } from './decor';
+import type { DecorSlotKind } from './decor';
+import { CROPS, cropOf, type Crop } from './vuon';
 import { formatCoins } from './wallet';
 
-export type ShopTab = 'all' | DecorSlotKind;
+/** Nhóm hàng: ba loại ô đồ trang trí + hạt giống Vườn rau (R-VUON-9). */
+export type ShopKind = DecorSlotKind | 'hat';
+export type ShopTab = 'all' | ShopKind;
 
-/** Tên loại ô (`slotGarden`, `slotYard`, `slotIndoor`). */
-export const SLOT_NAME: Readonly<Record<DecorSlotKind, string>> = { vuon: 'Vườn', san: 'Sân', trong: 'Trong nhà' };
+/** Một món bày bán (`DecorItem` hoặc hạt giống). */
+export interface ShopEntry {
+  id: string;
+  name: string;
+  slot: ShopKind;
+  price: number;
+}
 
-const KINDS: readonly DecorSlotKind[] = ['vuon', 'san', 'trong'];
+/** Tên loại ô (`slotGarden`, `slotYard`, `slotIndoor`) + nhóm hạt (`slotSeed` — chờ thiết kế). */
+export const SLOT_NAME: Readonly<Record<ShopKind, string>> = { vuon: 'Vườn', san: 'Sân', trong: 'Trong nhà', hat: 'Hạt giống' };
+
+const KINDS: readonly ShopKind[] = ['vuon', 'san', 'trong', 'hat'];
+
+/** Thẻ hạt giống (R-VUON-9): mã `hat-<cây>`, giá 1 hạt — như `seedShopItems` ở Dart. */
+export const SEED_ITEMS: readonly ShopEntry[] = CROPS.map((c) => ({ id: `hat-${c.id}`, name: `Hạt ${c.name}`, slot: 'hat', price: c.seed }));
+
+/** Cây của thẻ hạt; thẻ khác → `undefined`. */
+export function seedCrop(item: ShopEntry): Crop | undefined {
+  return item.slot === 'hat' && item.id.startsWith('hat-') ? cropOf(item.id.slice(4)) : undefined;
+}
 
 /** Tab lọc theo thứ tự (`shopTabAll` + `slot*`). */
 export const SHOP_TABS: readonly { tab: ShopTab; label: string }[] = [
@@ -28,8 +47,8 @@ export interface CardView {
   short: number;
 }
 
-export function cardState(item: DecorItem, owned: readonly string[], balance: number): CardView {
-  if (owned.includes(item.id)) return { state: 'owned', text: 'Đã có', short: 0 };
+export function cardState(item: ShopEntry, owned: readonly string[], balance: number): CardView {
+  if (item.slot !== 'hat' && owned.includes(item.id)) return { state: 'owned', text: 'Đã có', short: 0 };
   if (balance < item.price) {
     const short = item.price - balance;
     return { state: 'short', text: `Còn thiếu ${formatCoins(short)}`, short };
@@ -38,20 +57,20 @@ export function cardState(item: DecorItem, owned: readonly string[], balance: nu
 }
 
 export interface ShopCard extends CardView {
-  item: DecorItem;
+  item: ShopEntry;
   /** đang chọn (hộp xác nhận mở) → viền ngoài `gold` */
   picked: boolean;
 }
 
 export interface ShopGroup {
-  kind: DecorSlotKind;
+  kind: ShopKind;
   /** tiêu đề nhóm (chỉ ở tab "Tất cả"); `null` = tab một loại */
   title: string | null;
   cards: ShopCard[];
 }
 
 /** Lưới theo tab: "Tất cả" → ba nhóm Vườn · Sân · Trong nhà; một loại → một nhóm không tiêu đề. Thứ tự danh mục. */
-export function shopGroups(items: readonly DecorItem[], owned: readonly string[], balance: number, tab: ShopTab, picked: string | null): ShopGroup[] {
+export function shopGroups(items: readonly ShopEntry[], owned: readonly string[], balance: number, tab: ShopTab, picked: string | null): ShopGroup[] {
   const kinds = tab === 'all' ? KINDS : [tab];
   return kinds
     .map((kind) => ({
@@ -63,8 +82,8 @@ export function shopGroups(items: readonly DecorItem[], owned: readonly string[]
 }
 
 /** Dải trên lưới: đã có hết → `allBought`; không đủ tiền cho vật rẻ nhất còn thiếu → `poor`; còn lại không dải. */
-export function shopBanner(items: readonly DecorItem[], owned: readonly string[], balance: number): 'poor' | 'allBought' | null {
-  const missing = items.filter((i) => !owned.includes(i.id));
+export function shopBanner(items: readonly ShopEntry[], owned: readonly string[], balance: number): 'poor' | 'allBought' | null {
+  const missing = items.filter((i) => i.slot !== 'hat' && !owned.includes(i.id));
   if (missing.length === 0) return 'allBought';
   return missing.every((i) => balance < i.price) ? 'poor' : null;
 }
@@ -89,12 +108,12 @@ export interface ConfirmView {
   buy: string;
 }
 
-export function confirmView(item: DecorItem, balance: number): ConfirmView {
+export function confirmView(item: ShopEntry, balance: number): ConfirmView {
   const price = formatCoins(item.price);
   return {
     before: `Mua ${item.name}`,
     after: `với ${price} Văn tiền?`,
-    sub: `Đặt ở ô ${SLOT_NAME[item.slot]} · mua một lần, đặt được nhiều ô`,
+    sub: item.slot === 'hat' ? 'Mỗi lần mua 1 hạt vào túi hạt · gieo ở Vườn rau' : `Đặt ở ô ${SLOT_NAME[item.slot]} · mua một lần, đặt được nhiều ô`,
     rows: [
       ['Đang có', formatCoins(balance)],
       ['Giá', `−${price}`],
@@ -105,6 +124,7 @@ export function confirmView(item: DecorItem, balance: number): ConfirmView {
 }
 
 /** Tấm "Đã mua" 3 s (`shopBought`, `shopBoughtSub`) — không tự đưa về nhà. */
-export function boughtView(item: DecorItem): { title: string; sub: string } {
-  return { title: `Đã mua ${item.name}`, sub: `Về nhà để đặt — chạm ô ${SLOT_NAME[item.slot]} khi trang trí.` };
+export function boughtView(item: ShopEntry): { title: string; sub: string } {
+  const sub = item.slot === 'hat' ? 'Về Vườn rau để gieo — hạt ở trong túi hạt.' : `Về nhà để đặt — chạm ô ${SLOT_NAME[item.slot]} khi trang trí.`;
+  return { title: `Đã mua ${item.name}`, sub };
 }

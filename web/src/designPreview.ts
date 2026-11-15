@@ -33,6 +33,7 @@ import { signText } from './scene/signAtlas';
 import { buildWorld } from './scene/world';
 import { hourSlider, NgayDem } from './ngayDem';
 import { addTownPreview } from './townPreview';
+import { addGardenPreview } from './vuonPreview';
 import { inRect } from './scene/rooms';
 import { el } from './ui/dom';
 import { placeZones, ZONE_CONTENT } from './zones/zones';
@@ -246,6 +247,9 @@ async function boot(): Promise<void> {
   // ?dang=go-mo — bản thử Tiểu Khất + Lão Canh (model thế nhan-vat.glb), đường vòng B, &gio=08:59:50, &theo (townPreview.ts)
   const town = await addTownPreview(scene, colliders, spec, (x, z) => world.surface.heightAt(x, z), params);
   if (town?.lines.length) el('problems').append(...town.lines.map((t) => li(t)));
+  // ?dang=vuon-rau — vườn rau điền sẵn + bảng mẫu 8 cây × 4 dáng (vuonPreview.ts, R-VUON-4)
+  const vuon = addGardenPreview(scene, spec, world.garden, params, (x, z) => world.surface.heightAt(x, z));
+  if (vuon) el('problems').append(...vuon.map((t) => li(t)));
   const follow = params.has('theo') && town?.walker ? town.walker.root.position.clone() : null;
 
   /* ---------- chạm mặt sân → toạ độ ---------- */

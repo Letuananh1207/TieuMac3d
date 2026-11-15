@@ -5,8 +5,7 @@
  * đã mua hết; "Đóng" + Esc. DOM gốc `#shopPanel` ở index.html (`#shop` là nút nổi "Vào tiệm"), phần trong dựng bằng createElement. Không giữ luật: chữ + trạng thái
  * ở `zones/shopView.ts`, mua qua [ShopPanelHost.buy] (`walletRoom.ts` → `zones/walletRules.ts`).
  */
-import type { DecorItem } from '../zones/decor';
-import { ALL_BOUGHT, boughtView, confirmView, POOR_HINT, SHOP_TABS, shopBanner, shopGroups, type ShopCard, type ShopTab } from '../zones/shopView';
+import { ALL_BOUGHT, boughtView, confirmView, POOR_HINT, SHOP_TABS, shopBanner, shopGroups, type ShopCard, type ShopEntry, type ShopTab } from '../zones/shopView';
 import { formatCoins } from '../zones/wallet';
 import type { BuyResult } from '../zones/walletRules';
 import { COIN, DECOR_PICTURES, ICON_CHECK, STROKE, svgIcon, type SvgNode } from './decorIcons';
@@ -36,14 +35,22 @@ function button(cls: string, label: string, icon?: SVGElement): HTMLButtonElemen
   return b;
 }
 
+/** Hình giữ chỗ cho túi hạt (mầm hai lá) — hình hạt chờ thiết kế (phiếu 2026-11-15-vuon-trong-trot). */
+const SEED_PICTURE: readonly SvgNode[] = [
+  ['path', { d: 'M20 50h24l-3 8H23z', fill: '#B98A6A' }],
+  ['path', { d: 'M32 50V30', stroke: '#2B5446', 'stroke-width': '3', 'stroke-linecap': 'round' }],
+  ['path', { d: 'M32 34c-9 0-14-6-14-12 8 0 14 4 14 12z', fill: '#6E9E4A' }],
+  ['path', { d: 'M32 30c0-9 6-14 14-14 0 9-5 14-14 14z', fill: '#8DBA5C' }],
+];
+
 /** Hình phẳng của vật (khung 64) cỡ [size] trên nền giấy. */
-function picture(item: DecorItem, size: number): SVGElement {
-  return svgIcon(DECOR_PICTURES[item.id] ?? [], size, '0 0 64 64', { fill: 'none' });
+function picture(item: ShopEntry, size: number): SVGElement {
+  return svgIcon(item.slot === 'hat' ? SEED_PICTURE : (DECOR_PICTURES[item.id] ?? []), size, '0 0 64 64', { fill: 'none' });
 }
 
 export interface ShopPanelHost {
   /** mua một vật; `ok` → số dư + sở hữu mới (đã ghi kho) */
-  buy(item: DecorItem): BuyResult;
+  buy(item: ShopEntry): BuyResult;
   /** màn vừa đóng ("Đóng" / Esc) */
   closed(): void;
 }
@@ -62,12 +69,12 @@ export class ShopPanel {
   private balance = 0;
   private owned: string[] = [];
   private tab: ShopTab = 'all';
-  private picked: DecorItem | null = null;
+  private picked: ShopEntry | null = null;
   private toastTimer = 0;
   private deltaTimer = 0;
 
   constructor(
-    private readonly items: readonly DecorItem[],
+    private readonly items: readonly ShopEntry[],
     private readonly host: ShopPanelHost,
   ) {
     this.root.replaceChildren(...this.build());
@@ -163,7 +170,7 @@ export class ShopPanel {
     return [hills, wrap, this.dim, this.confirm, this.toast];
   }
 
-  private pick(item: DecorItem | null): void {
+  private pick(item: ShopEntry | null): void {
     this.picked = item;
     this.render();
   }
@@ -265,7 +272,7 @@ export class ShopPanel {
     buy.focus({ preventScroll: true });
   }
 
-  private buy(item: DecorItem): void {
+  private buy(item: ShopEntry): void {
     const r = this.host.buy(item);
     this.picked = null;
     if (r.ok) {
@@ -278,7 +285,7 @@ export class ShopPanel {
   }
 
   /** Tấm "Đã mua {vật}" + "Về nhà để đặt — …" 3 s; không tự đưa về nhà. */
-  private showBought(item: DecorItem): void {
+  private showBought(item: ShopEntry): void {
     const v = boughtView(item);
     const art = h('div', 'art');
     art.append(picture(item, 40));

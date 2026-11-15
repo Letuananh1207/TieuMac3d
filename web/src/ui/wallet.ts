@@ -48,13 +48,14 @@ export interface WalletFx {
   from?: () => { x: number; y: number } | null;
 }
 
-/** Thẻ "kiếm từ đâu": 5 nguồn (bỏ "Đọc xong 1 chương" — quyết định 2, chưa có chương). Chuỗi `walletSource*`. */
+/** Thẻ "kiếm từ đâu": 6 nguồn (bỏ "Đọc xong 1 chương" — quyết định 2, chưa có chương). Chuỗi `walletSource*`. */
 const SOURCES: [string, string][] = [
   ['Học 1 bộ thủ mới', '+10'],
   ['Ôn đúng hạn (2/2 · 1/2)', '+5 · +2'],
   ['Xong nhiệm vụ ngày', '+20'],
   ['Chuỗi 7 ngày', '+50'],
   ['Trò chữ thắng · hoà · thua', '+8 · 5 · 3'],
+  ['Bán nông sản ở Vườn rau', '≤ 60 / ngày'], // walletSourceGarden (R-TIEN-1, R-VUON-7) — chuỗi chờ thiết kế
 ];
 const CARD_SECONDS = 4;
 const COUNT_UP_MS = 600;
