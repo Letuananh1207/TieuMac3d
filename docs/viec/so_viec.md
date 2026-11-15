@@ -53,3 +53,4 @@ Trạng thái: `nhận` → `chờ trả lời` / `chờ duyệt` → `đang là
 | V-20261114-43 | Cuộn sách khi ngồi: dài hơn, cầm giữa (đang nhỏ, lệch phải, chữ gợi ý bị cắt, tay che chữ) | ui-apply (đổi thiết kế 2026-11-14.21 theo người dùng) | chờ thử máy — đã gộp 2026-11-15 | R-ON-8, R-DIEU-7 | duyệt ảnh |
 | V-20261114-44 | Nền gạch / cỏ loang lổ sau V-42: mảng đá xám chen gạch đỏ, cỏ thành ô chữ nhật, viên gạch nhiều màu — làm nền gọn, liền mạch | canh | đang làm — nhánh `viec/nen-gon` | — | duyệt ảnh |
 | V-20261114-45 | Cuộn khi ngồi thành bảng chọn trải ngang dạng lưới ô (Đọc sách, Xem bộ đã học…); bỏ Ôn bộ đến hạn + Học bộ mới khỏi cuộn — học / ôn chuyển chỗ khác | lead + ui-apply phieu | lập kế hoạch | R-ON-8, R-HANH-3, R-NV-* | duyệt kế hoạch + vẽ phiếu |
+| V-20261114-46 | Đồi Chè sơ sài (bụi chè khối 20 mặt), không hiệu ứng → tìm gói assets free hợp phong cách + đề xuất làm lại | khao-cuu → canh | đang làm (nghiên cứu) | — | chọn gói / phương án |
