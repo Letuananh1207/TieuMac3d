@@ -3,6 +3,16 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-15.30 — Cây "tán chùm" nhân ra: cây tán, mai / đào, liễu, trúc, hoa cỏ, rau trong vườn
+
+- Loại: cảnh 3D — ngoại hình. Phiên code V-20261115-60 (tiếp V-58 hướng A). **Đã duyệt 2026-11-15.**
+- `trees.crown: "chum"` nay áp cho: cây tán (7 múi, 396 / bậc xa 150 tam giác), mai (cành `softLimb` gãy khúc + 36 hoa nón 5 cạnh, 496 / 124),
+  đào (640 / 166, chưa bật ở Bồng Lai), liễu (vòm 5 múi + 16 dải thon, gió trong shader, 468 / 164), trúc (ngọn dải lá, 210 / 70); hoa cỏ
+  thành chén 5 cánh nghiêng + cuống + lá (12 tam giác), gốc cỏ theo màu đất; rau trong vườn dựng bằng code thay mẫu Kenney, 4 giai đoạn khác
+  rõ, "nảy" 0,25 s khi đổi giai đoạn. Bật ở Khởi Nguyên Trấn và Nhà của ta (`nha-ta.json` thêm `trees.crown`). `?look=cu` ép về `cau`.
+- Trấn nhìn từ trên 138 / 149,4k (sát trần 150k — thêm vật ở trấn phải bù, vd. bỏ cuống + lá hoa cỏ ≈ −1,2k); nhà 44 / 34,7k. Bench không tụt.
+  Không chạm luật. Ảnh: `screens/Canh-vuon-rau-chum.png`, `screens/Canh-lieu-chum.png`, `screens/Canh-mai-chum.png`.
+
 ## 2026-11-15.27 — Cây "tán chùm" (thử A): tùng tầng mây + bụi mềm, LOD 2 bậc
 
 - Loại: cảnh 3D — ngoại hình. Phiên code V-20261114-58 (khảo cứu `docs/tham_khao/thuc-vat-dep-nhe.md`); người dùng chọn hướng A + D, xem thử
