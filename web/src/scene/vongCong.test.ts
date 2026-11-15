@@ -97,7 +97,7 @@ describe('chỗ xuất phát luôn ở cổng trấn (`player.arriveAtStart`, V-
 describe('cặp cổng trấn ↔ Trúc Lâm (V-57)', () => {
   const town = resolveSceneSpec(townRaw).spec;
   const rung = resolveSceneSpec(rungRaw).spec;
-  it('R-HANH-4: vòng "Trúc Lâm" cuối trục đông – tây (41,2; 4) nối cuối lối lát, ↔ vòng "Khởi Nguyên Trấn" mép tây sân đá trống Trúc Lâm (V-65)', () => {
+  it('R-HANH-4: vòng "Trúc Lâm" cuối trục đông – tây (41,2; 4) nối cuối lối lát, ↔ vòng "Khởi Nguyên Trấn" đầu lối tây Trúc Lâm (V-66)', () => {
     const toRung = town.portals.find((p) => p.scene === 'rung-truc')!;
     expect(toRung.label).toBe('Trúc Lâm');
     expect(markerRadius(toRung)).toBeCloseTo(1.2);
@@ -117,11 +117,11 @@ describe('cặp cổng trấn ↔ Trúc Lâm (V-57)', () => {
     expect(checkPortals(rung)).toEqual([]);
   });
 
-  it('R-HANH-4: từ Trúc Lâm đi bộ về → đứng (38,6; 4) trước vòng, nhìn tây vào trấn (không phải cổng trấn dù `arriveAtStart`); từ trấn sang → đứng (−5; 38,6) cạnh vòng về, nhìn nam xuống lối rừng', () => {
+  it('R-HANH-4: từ Trúc Lâm đi bộ về → đứng (38,6; 4) trước vòng, nhìn tây vào trấn (không phải cổng trấn dù `arriveAtStart`); từ trấn sang → đứng (−44,5; 4) trên lối tây cạnh vòng về, nhìn đông vào lối trúc (V-66)', () => {
     expect(arrivalFor(town.portals, 'rung-truc')).toEqual({ at: [38.6, 4], rotY: (3 * Math.PI) / 2 });
-    expect(arrivalFor(rung.portals, 'tong-mon')).toEqual({ at: [-5, 38.6], rotY: Math.PI });
-    // Trúc Lâm không còn vòng trận (V-65); chỗ đứng ở mép tây sân đá trống (tâm (0; 39), bán kính 4,7)
+    expect(arrivalFor(rung.portals, 'tong-mon')).toEqual({ at: [-44.5, 4], rotY: Math.PI / 2 });
+    // Trúc Lâm không còn vòng trận (V-65); V-66: vòng về trấn ở đầu lối tây (mép tây), xa sân đá trống bãi hạc
     expect(rung.teleport.enabled).toBe(false);
-    expect(Math.hypot(-5 - rung.stoneYard.center[0], 38.6 - rung.stoneYard.center[1])).toBeGreaterThan(rung.stoneYard.radius);
+    expect(Math.hypot(-44.5 - rung.stoneYard.center[0], 4 - rung.stoneYard.center[1])).toBeGreaterThan(rung.stoneYard.radius);
   });
 });

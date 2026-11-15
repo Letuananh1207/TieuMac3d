@@ -2,6 +2,7 @@
  * Kiểm + ghép file đặc tả cảnh lên `DEFAULT_SCENE`. Sai / thiếu một trường → giữ giá trị mặc định của trường đó và
  * ghi vào `problems`; phần tử danh sách sai → bỏ phần tử đó. Không three, không DOM (chạy được trong node).
  */
+import { checkBounds } from './ranhDi';
 import {
   BUILDING_KINDS,
   DECOR_SLOT_KINDS,
@@ -354,12 +355,14 @@ const streamItem: ItemParser = (raw, path, out) => {
     pts.every((p) => Array.isArray(p) && p.length === 2 && p.every((v) => typeof v === 'number' && Number.isFinite(v)));
   if (!okPts) local.push(`${path}.points: cần ít nhất 2 điểm [x, z]`);
   if (typeof raw.width !== 'number' || !(raw.width > 0)) local.push(`${path}.width: cần một số > 0`);
-  for (const k of Object.keys(raw)) if (k !== 'points' && k !== 'width') out.push(`${path}.${k}: trường lạ, bỏ qua`);
+  const depth = raw.depth;
+  if (depth !== undefined && (typeof depth !== 'number' || !(depth >= 0) || depth > 6)) local.push(`${path}.depth: cần một số 0…6 (m)`);
+  for (const k of Object.keys(raw)) if (k !== 'points' && k !== 'width' && k !== 'depth') out.push(`${path}.${k}: trường lạ, bỏ qua`);
   if (local.length) {
     out.push(...local, `${path}: bỏ phần tử này`);
     return null;
   }
-  return { points: pts, width: raw.width };
+  return typeof depth === 'number' ? { points: pts, width: raw.width, depth } : { points: pts, width: raw.width };
 };
 
 /** Danh sách dài ngắn tuỳ ý trong đặc tả: đường dẫn → cách đọc một phần tử. Mảng khác = bộ cố định. */
@@ -417,14 +420,14 @@ const LISTS: Record<string, ItemParser> = {
   'trees.yard': item({ x: 0, z: 0, scale: 0 }, { kind: '', planter: true }, all(oneOf('kind', TREE_KINDS), positive('scale'))),
   'trees.groves': item(
     { kind: '', x: 0, z: 0, w: 0, d: 0, count: 0 },
-    { collide: true, planter: true },
-    all(oneOf('kind', TREE_KINDS), positive('w', 'd', 'count')),
+    { collide: true, planter: true, scale: 0 },
+    all(oneOf('kind', TREE_KINDS), positive('w', 'd', 'count', 'scale')),
   ),
   'floating.islands': item({ x: 0, y: 0, z: 0, scale: 0 }, {}, positive('scale')),
   'terrain.plateaus': item({ from: XZ0, to: XZ0, y: 0 }, { pave: true, blend: 0, rail: true, edge: true }, positive('blend')),
   'terrain.peaks': item({ x: 0, z: 0, r: 0, h: 0 }, {}, positive('r')),
   'terrain.dunes': item({ x: 0, z: 0, len: 0, h: 0 }, { rotY: 0, width: 0 }, positive('len', 'h', 'width')),
-  'terrain.stairs': item({ from: XZ0, to: XZ0, width: 0 }, {}, positive('width')),
+  'terrain.stairs': item({ from: XZ0, to: XZ0, width: 0 }, { cut: true }, positive('width')),
   'terrain.waterfalls': item({ x: 0, z: 0, top: 0, bottom: 0, width: 0 }, { rotY: 0 }, positive('width')),
   'terrain.streams': streamItem,
   'terrain.floors': item({ from: XZ0, to: XZ0, color: '#000000' }, { y: 0, pattern: '' }, oneOf('pattern', PAVE_PATTERNS)),
@@ -507,6 +510,7 @@ function checkConsistency(s: SceneSpec): string[] {
   out.push(...hanOnDisplay(s).map((h) => `${h.path}: biển / tên trong game chỉ tiếng Việt, không chữ Hán (R-HUD-4) — đang là "${h.text}"`));
   if (s.cloudSea.radius < 0) out.push('cloudSea.radius: phải ≥ 0');
   out.push(...checkCrane(s));
+  out.push(...checkBounds(s));
   if (!(s.light.lampGlow >= 0 && s.light.lampGlow <= 1)) out.push(`light.lampGlow: 0…1 (đang ${s.light.lampGlow})`);
   if (t.enabled && t.size > 0 && t.cell > 0) out.push(...checkOnFlatGround(s));
   if (t.enabled) {

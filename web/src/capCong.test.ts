@@ -23,8 +23,8 @@ const PAIRS: [string, string][] = [
 
 /** Cổng V-59: cảnh → cảnh đích → mép cảnh đúng hướng nơi đến trên bản đồ (x đông, z nam), tâm vòng, chỗ đứng khi tới. */
 const NEW: { from: string; to: string; side: 'dong' | 'tay' | 'bac' | 'nam'; at: [number, number]; arrive: [number, number] }[] = [
-  { from: 'rung-truc', to: 'giang-nam', side: 'dong', at: [20.6, 43], arrive: [17, 43] },
-  { from: 'rung-truc', to: 'truong-thanh', side: 'bac', at: [-5, -44.2], arrive: [-3.7, -41.2] },
+  { from: 'rung-truc', to: 'giang-nam', side: 'dong', at: [47.5, 4], arrive: [44.5, 4] },
+  { from: 'rung-truc', to: 'truong-thanh', side: 'bac', at: [0, -47], arrive: [0, -44] },
   { from: 'giang-nam', to: 'rung-truc', side: 'tay', at: [-30.2, -2], arrive: [-26.4, -2.3] },
   { from: 'giang-nam', to: 'tu-cam-thanh', side: 'bac', at: [25, -24.4], arrive: [25, -21] },
   { from: 'giang-nam', to: 'bong-lai', side: 'dong', at: [30.6, -14], arrive: [27.4, -14.6] },

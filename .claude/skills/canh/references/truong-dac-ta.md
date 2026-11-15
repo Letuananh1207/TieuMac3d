@@ -81,6 +81,11 @@ không muốn thứ của khuôn. Canvas 3D: `?vung=<mã>` xem cảnh vùng.
 | `terrain.grass` · `rocks` | `{ "density": 6, "colors": ["#6f8c50", "#93ad66"] }` · `{ "density": 4, "color": "#8d8a84" }` | cỏ búi / 100 m² (dốc < 25°, không trên bục lát / lối / bậc) · đá / 1000 m²; 0 = tắt |
 | `terrain.waterfalls` | `{ "x": 42, "z": -76, "top": 15, "bottom": 4, "width": 3, "rotY": 0 }` | thác đứng (mặt nhìn +z), bọt chân; đặt ở kè giữa hai bục |
 | `terrain.streams` | `{ "points": [[42, -66], [46, -58], [44, -48]], "width": 1.6 }` | suối bám đất; muốn chặn đi thì đặt `water` |
+| `terrain.stairs[].cut` (V-66) | `{ "from": [-18, -30], "to": [-26, -30], "width": 3, "cut": true }` | bậc cắt qua bục: trên dải bậc thì bậc thắng bục (vai 1,6 m hai bên) — bậc chạy từ bục thấp lên bục cao **lồng trong nó** (gò nhiều tầng có kè). Thiếu = bục thắng bậc như cũ |
+| `terrain.streams[].depth` (V-66) | `{ "points": [[-62, 59], [62, 59]], "width": 12, "depth": 1.6 }` | lòng suối / sông trũng `depth` m, bờ thoải thêm 1,5 m; bục / lối lát vẫn ép phẳng đè lên (lối cắt qua = chỗ chừa cầu). Sông lớn mép vùng: suối rộng + `depth` |
+| `terrain.grass.clump` · `rocks.clump` (V-66) | `0.4` | 0…1: cỏ / đá gom thành khóm theo nhiễu (0 = rải đều như cũ). Cảnh mềm: cỏ hoa không đổi |
+| `trees.groves[].scale` (V-66) | `1.8` | hệ số cỡ mọi cây trong cụm (cả va chạm) — tường trúc cao. Thiếu = 1 |
+| `bounds` (V-66) | `{ "enabled": true, "from": [-50, -50], "to": [50, 50] }` | ranh đi được: hộp vô hình dày 2 m ngay ngoài mỗi cạnh — đặt ở chân dải mép thật (tường trúc, đồi, sông). Chỗ xuất phát + cổng đi bộ phải nằm trong (`scene:check`). Thiếu = không ranh |
 | `farMountains` | `{ "base": -40, "layers": [{ "radius": 170, "height": 45, "color": "#5f7a80", "peaks": 9, "width": 2, "spurs": 2 }] }` | núi xa nhiều lớp, không sương, lớp xa nhạt dần; `width` bề ngang đỉnh (1 nhọn, 2 rộng tròn), `spurs` đỉnh phụ mỗi bên 0…3 |
 | `cloudSea` | `{ "radius": 420, "y": -8, "color": "#f4f1ea" }` | biển mây dưới mép; `radius` 0 = tắt |
 

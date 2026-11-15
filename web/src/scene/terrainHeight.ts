@@ -4,7 +4,7 @@
  * Xem docs/tham_khao/dia-hinh-tong-mon.md.
  */
 import { Heightfield } from '../collision/heightfield';
-import type { DuneSpec, PathSpec, PlateauSpec, SceneSpec, StairSpec, XZ } from './spec';
+import type { DuneSpec, PathSpec, PlateauSpec, SceneSpec, StairSpec, StreamSpec, XZ } from './spec';
 
 type Terrain = SceneSpec['terrain'];
 
@@ -124,8 +124,36 @@ export function duneHeight(d: DuneSpec, x: number, z: number): number {
   return d.h * along * across;
 }
 
+/** Bờ suối thoải thêm bao nhiêu m ngoài mép nước (lòng suối trũng `depth`). */
+export const STREAM_BANK = 1.5;
+
+/** Khoảng cách từ (x, z) tới đường gấp khúc. */
+function polylineDist(pts: XZ[], x: number, z: number): number {
+  let best = Infinity;
+  for (let i = 0; i < pts.length - 1; i++) {
+    const [ax, az] = pts[i];
+    const dx = pts[i + 1][0] - ax;
+    const dz = pts[i + 1][1] - az;
+    const k = clamp01(((x - ax) * dx + (z - az) * dz) / (dx * dx + dz * dz || 1));
+    best = Math.min(best, Math.hypot(x - (ax + dx * k), z - (az + dz * k)));
+  }
+  return best;
+}
+
+/** Độ hạ của lòng suối tại (x, z): `depth` trong lòng nước, thoải dần (smoothstep) tới hết bờ. */
+export function streamCut(s: StreamSpec, x: number, z: number): number {
+  const depth = s.depth ?? 0;
+  if (depth <= 0) return 0;
+  const half = s.width / 2;
+  const d = polylineDist(s.points, x, z);
+  if (d >= half + STREAM_BANK) return 0;
+  if (d <= half * 0.6) return depth;
+  return depth * (1 - smooth(clamp01((d - half * 0.6) / (half * 0.4 + STREAM_BANK))));
+}
+
 function naturalFn(t: Terrain): (x: number, z: number) => number {
   const { seed, amp, scale } = t.noise;
+  const beds = (t.streams ?? []).filter((s) => (s.depth ?? 0) > 0);
   return (x, z) => {
     let h = amp * fbm(x / scale, z / scale, seed);
     for (const p of t.peaks) {
@@ -135,7 +163,10 @@ function naturalFn(t: Terrain): (x: number, z: number) => number {
       h += p.h * Math.pow(k, 1.6) + p.h * 0.12 * k * fbm(x / 9, z / 9, seed + 7);
     }
     for (const d of t.dunes ?? []) h += duneHeight(d, x, z);
-    return h;
+    // lòng suối trũng (V-66): suối sâu nhất chỗ đó thắng (hai suối giao nhau không trũng gấp đôi)
+    let cut = 0;
+    for (const s of beds) cut = Math.max(cut, streamCut(s, x, z));
+    return h - cut;
   };
 }
 
@@ -159,6 +190,9 @@ function stairZone(t: Terrain, s: StairSpec): FlatZone {
   } };
 }
 
+/** Bề ngang vai hai bên bậc `cut` (m). */
+export const CUT_SHOULDER = 1.6;
+
 /** Độ cao tại (x, z) theo đặc tả — dùng để lấy mẫu lưới. */
 export function terrainHeightFn(t: Terrain, paths: PathSpec[]): (x: number, z: number) => number {
   const zones = [
@@ -166,6 +200,9 @@ export function terrainHeightFn(t: Terrain, paths: PathSpec[]): (x: number, z: n
     ...paths.map((p) => pathZone(p, t.plateaus, t.blend)),
     ...t.stairs.map((s) => stairZone(t, s)),
   ];
+  // bậc `cut` (V-66): trên dải bậc thì bậc thắng bục (bậc chạy từ bục thấp lên bục cao lồng trong nó); hai bên dải có vai
+  // chuyển `CUT_SHOULDER` m về mặt đất / bục — lưới độ cao (ô 1,5–2,5 m) không cắt hụt dải bậc hẹp thành vách
+  const cuts = t.stairs.filter((s) => s.cut).map((s) => stairZone(t, s));
   const natural = naturalFn(t);
   const { seed } = t.noise;
   const [cx, cz] = t.center;
@@ -184,6 +221,11 @@ export function terrainHeightFn(t: Terrain, paths: PathSpec[]): (x: number, z: n
     }
     if (best && bestD < best.blend) h = best.y(x, z) + (h - best.y(x, z)) * smooth(clamp01(bestD / best.blend));
     else if (best && bestD === 0) h = best.y(x, z);
+    // 2b. bậc `cut` đè lên bục: trong dải bậc = độ cao bậc, vai hai bên chuyển dần về mặt vừa tính
+    for (const c of cuts) {
+      const d = c.dist(x, z);
+      if (d < CUT_SHOULDER) h = c.y(x, z) + (h - c.y(x, z)) * smooth(clamp01(d / CUT_SHOULDER));
+    }
     // 3. mép cao nguyên đổ xuống vực
     const r = Math.hypot(x - cx, z - cz) + t.edge.wobble * fbm((x - cx) / 25, (z - cz) / 25, seed + 13);
     if (r > t.edge.radius) h += (t.edge.y - h) * smooth(clamp01((r - t.edge.radius) / t.edge.width));

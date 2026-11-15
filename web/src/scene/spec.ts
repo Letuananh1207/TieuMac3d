@@ -625,6 +625,8 @@ export interface GroveSpec {
   collide?: boolean;
   /** mỗi cây một bồn cây (`trees.planter`) — cây cố ý trên sân lát (R-VA-6) */
   planter?: boolean;
+  /** hệ số cỡ mọi cây trong cụm (cả va chạm), vd. 1,8 = tường trúc cao (V-66); thiếu = 1 như cũ */
+  scale?: number;
 }
 
 export interface TreePlace {
@@ -692,6 +694,11 @@ export interface StairSpec {
   from: XZ;
   to: XZ;
   width: number;
+  /**
+   * `true` = bậc cắt qua bục (V-66, gò nhiều tầng có kè): trên dải bậc thì bậc thắng bục, nên bậc có thể chạy từ bục thấp
+   * lên bục cao lồng trong nó. Thiếu = như cũ (bục thắng bậc chỗ chồng nhau).
+   */
+  cut?: boolean;
 }
 
 /** Thác: dải nước dựng đứng rộng `width` tại (x, z), đỉnh ở độ cao `top`, chân ở `bottom`; mặt nước quay `rotY` độ (0 = nhìn +z). */
@@ -708,6 +715,11 @@ export interface WaterfallSpec {
 export interface StreamSpec {
   points: XZ[];
   width: number;
+  /**
+   * lòng suối trũng (m, V-66): đất tự nhiên dọc suối hạ `depth` ở giữa, thoải ra tới `width / 2 + 1,5` m — suối / sông
+   * có bờ. Bục, lối lát, bậc đá vẫn ép phẳng đè lên (chỗ lối cắt qua = chỗ chừa cầu). Thiếu = 0, như cũ.
+   */
+  depth?: number;
 }
 
 /** Một lớp núi xa (chỉ ngắm, không sương): vòng răng cưa bán kính `radius` quanh tâm địa hình. */
@@ -834,10 +846,13 @@ export interface SceneSpec {
     slopeRock: number;
     /** bậc đá lên núi (Thiên Bậc…) */
     stairs: StairSpec[];
-    /** cỏ búi trên đất cỏ (dốc < 25°, ngoài bục lát / lối / bậc): `density` búi trên 100 m², 0 = tắt; 2 màu xen kẽ */
-    grass: { density: number; colors: [string, string] };
-    /** đá rải: `density` tảng trên 1000 m², 0 = tắt; nhiều hơn trên sườn dốc */
-    rocks: { density: number; color: string };
+    /**
+     * cỏ búi trên đất cỏ (dốc < 25°, ngoài bục lát / lối / bậc): `density` búi trên 100 m², 0 = tắt; 2 màu xen kẽ.
+     * `clump` 0…1 (V-66): gom thành cụm theo nhiễu — 0 = rải đều như cũ, 0,5 = khoảng một nửa đất có cỏ, chỗ có thì dày.
+     */
+    grass: { density: number; colors: [string, string]; clump: number };
+    /** đá rải: `density` tảng trên 1000 m², 0 = tắt; nhiều hơn trên sườn dốc; `clump` như cỏ (0 = đều, như cũ) */
+    rocks: { density: number; color: string; clump: number };
     /** thác nước (Hậu Sơn…) */
     waterfalls: WaterfallSpec[];
     /** suối chảy theo mặt đất */
@@ -974,6 +989,12 @@ export interface SceneSpec {
   teleport: TeleportSpec;
   /** sân đá trống chỗ vòng trận cũ ở vùng (V-65) — bãi hạc đáp; tắt = không có */
   stoneYard: StoneYardSpec;
+  /**
+   * Ranh đi được của vùng (V-66): nhân vật không ra ngoài hình chữ nhật `from`–`to` — vật cản vô hình dày 2 m ngay ngoài
+   * mỗi cạnh, đặt ở chân dải mép (tường trúc, đồi, sông) để mép trông là thế đất thật. Cổng đi bộ phải nằm trong.
+   * `enabled: false` = không có (như cũ).
+   */
+  bounds: { enabled: boolean; from: XZ; to: XZ };
   /** đảo đá lơ lửng (chỉ ngắm) + mây trôi quanh tâm cảnh ở độ cao `height` */
   floating: {
     islands: { x: number; y: number; z: number; scale: number }[];
@@ -1072,8 +1093,8 @@ export const DEFAULT_SCENE: SceneSpec = {
     slopeDirt: 20,
     slopeRock: 35,
     stairs: [],
-    grass: { density: 0, colors: ['#6f8c50', '#93ad66'] },
-    rocks: { density: 0, color: '#8d8a84' },
+    grass: { density: 0, colors: ['#6f8c50', '#93ad66'], clump: 0 },
+    rocks: { density: 0, color: '#8d8a84', clump: 0 },
     waterfalls: [],
     streams: [],
     floors: [], // không có = sân lát một kiểu `ground` như cũ
@@ -1187,6 +1208,7 @@ export const DEFAULT_SCENE: SceneSpec = {
   },
   // tắt: cảnh cũ không đổi; vùng bật ở tâm vòng trận cũ (V-65) — màu đá xám đậm hơn sân trấn (vẽ ngoài khối mềm nên trông sáng hơn)
   stoneYard: { enabled: false, center: [0, 0], radius: 4.7, colors: { floor: '#9a9488', rim: '#6f6a62' } },
+  bounds: { enabled: false, from: [0, 0], to: [0, 0] },
   floating: {
     islands: [],
     clouds: { count: 0, height: 26, radius: 60, speed: 0.6, color: '#d9dce8' },

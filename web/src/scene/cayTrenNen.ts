@@ -30,7 +30,7 @@ export function groveTrees(g: GroveSpec, seed: number, index: number): Placed[] 
   return Array.from({ length: g.count }, () => ({
     x: g.x + (rand() - 0.5) * g.w,
     z: g.z + (rand() - 0.5) * g.d,
-    scale: 0.8 + rand() * 0.5,
+    scale: (0.8 + rand() * 0.5) * (g.scale ?? 1),
     collide: g.collide ?? true,
     planter: g.planter,
   }));

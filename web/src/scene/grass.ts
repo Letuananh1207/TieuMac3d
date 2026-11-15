@@ -3,6 +3,7 @@ import type { Heightfield } from '../collision/heightfield';
 import { finish } from './trees';
 import { seededRandom } from './random';
 import type { PathSpec, SceneSpec } from './spec';
+import { fbm } from './terrainHeight';
 
 type Terrain = SceneSpec['terrain'];
 
@@ -26,6 +27,15 @@ function tuftGeometry(): THREE.BufferGeometry {
   g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
   g.computeVertexNormals();
   return g;
+}
+
+/**
+ * Gom cụm (`terrain.grass.clump` / `rocks.clump`, V-66): điểm có nằm trong "khóm" theo nhiễu không. `clump` 0 = mọi chỗ
+ * (rải đều như cũ); càng gần 1 khóm càng ít, mỗi khóm vẫn dày (rải thử nhiều lần hơn). Thuần.
+ */
+export function inClump(clump: number, x: number, z: number, seed: number): boolean {
+  if (clump <= 0) return true;
+  return fbm(x / 11, z / 11, seed + 71) > -0.35 + clump * 0.7;
 }
 
 /** Điểm có nằm trên bục lát, lối lát hay bậc đá không (không mọc cỏ / đá ở đó). */
@@ -74,8 +84,10 @@ export function addGrassAndRocks(scene: THREE.Scene, t: Terrain, hf: Heightfield
     const colors = t.grass.colors.map((c) => new THREE.Color(c));
     const tint = new THREE.Color();
     let n = 0;
-    for (let tries = 0; tries < want * 6 && n < want; tries++) {
+    const tries0 = want * (t.grass.clump > 0 ? 14 : 6);
+    for (let tries = 0; tries < tries0 && n < want; tries++) {
       const [x, z] = sample(rand);
+      if (!inClump(t.grass.clump, x, z, t.noise.seed)) continue;
       const y = hf.heightAt(x, z);
       if (!Number.isFinite(y) || y < -1 || hf.slopeAt(x, z) > GRASS_SLOPE || onBuilt(t, paths, x, z)) continue;
       const s = 0.7 + rand() * 0.7;
@@ -96,8 +108,10 @@ export function addGrassAndRocks(scene: THREE.Scene, t: Terrain, hf: Heightfield
     const tint = new THREE.Color();
     let n = 0;
     let placed = 0;
-    for (let tries = 0; tries < want * 8 && n < want; tries++) {
+    const tries0 = want * (t.rocks.clump > 0 ? 16 : 8);
+    for (let tries = 0; tries < tries0 && n < want; tries++) {
       const [x, z] = sample(rand);
+      if (!inClump(t.rocks.clump, x, z, t.noise.seed + 17)) continue;
       const y = hf.heightAt(x, z);
       if (!Number.isFinite(y) || y < -1 || onBuilt(t, paths, x, z)) continue;
       // nhiều đá trên sườn dốc, thưa trên cỏ phẳng
