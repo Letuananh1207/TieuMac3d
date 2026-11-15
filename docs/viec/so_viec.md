@@ -57,3 +57,4 @@ Trạng thái: `nhận` → `chờ trả lời` / `chờ duyệt` → `đang là
 | V-20261114-47 | Nhà của ta: bỏ vòng trận truyền tống | canh | xong — đã gộp 2026-11-15 (bố cục nhà sẽ thay bởi V-48) | R-NHA-1, R-HANH-2/5, R-BANDO-2 | duyệt ảnh |
 | V-20261114-48 | Nhà của ta làm lại: bố cục xấu, chật, tường / cảnh vật phân bố tệ; không cho ra khỏi phạm vi nhà — tham khảo game khác | khao-cuu + lead → canh | đang làm — chốt đảo trên mây + hành lang/lan can, nhà rỗng; nhánh `viec/nha-dao` | R-NHA-*, R-HANH-4 | duyệt kế hoạch |
 | V-20261114-49 | Mặc Trì bỏ tường (đông x 42, nam z 25, góc x 17) thay hàng trúc / tùng | canh | đang làm — nhánh `viec/mac-tri-mo` | R-VA-1 | duyệt ảnh |
+| V-20261114-50 | Đổi tên các vùng cho có chất (vd. Rừng trúc → Rừng Trúc Tân Thủ…) | lead (kế hoạch) | lập kế hoạch | R-HUD-4, R-HANH-*, R-MAN-2 | chọn tên |
