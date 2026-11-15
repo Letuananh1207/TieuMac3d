@@ -1411,5 +1411,165 @@
   "bagDecorCounts": "Trong túi {n} · Đang đặt {m}",
   "@bagDecorCounts": {
     "description": "Túi đồ — ngăn Đồ trang trí"
+  },
+  "toolHand": "Tay",
+  "@toolHand": {
+    "description": "Vòng công cụ vườn — ô giữa (thu hoạch)"
+  },
+  "toolWater": "Bình tưới",
+  "@toolWater": {
+    "description": "Vòng công cụ vườn"
+  },
+  "toolSeed": "Hạt giống",
+  "@toolSeed": {
+    "description": "Vòng công cụ vườn"
+  },
+  "toolBug": "Bắt sâu",
+  "@toolBug": {
+    "description": "Vòng công cụ vườn"
+  },
+  "toolWeed": "Nhổ cỏ",
+  "@toolWeed": {
+    "description": "Vòng công cụ vườn"
+  },
+  "toolFertilizer": "Phân bón",
+  "@toolFertilizer": {
+    "description": "Vòng công cụ vườn; vật tư trong Túi đồ"
+  },
+  "toolUnlock": "Mở ô",
+  "@toolUnlock": {
+    "description": "Vòng công cụ — luống hoang"
+  },
+  "toolUnlockPrice": "Mở ô · {price}",
+  "@toolUnlockPrice": {
+    "description": "Viên tên ô Mở ô kèm giá"
+  },
+  "toolRingKeys": "1–6 chọn · Esc đóng",
+  "@toolRingKeys": {
+    "description": "Máy tính — gợi ý dưới vòng"
+  },
+  "toolRingOpenKey": "Click luống · E mở vòng ở luống gần nhất",
+  "@toolRingOpenKey": {
+    "description": "Máy tính — viên nhắc"
+  },
+  "gardenPickSeedTitle": "Chọn hạt để gieo",
+  "@gardenPickSeedTitle": {
+    "description": "Đầu lưới hạt giống"
+  },
+  "gardenSeedGrown": "Lớn trong {time}",
+  "@gardenSeedGrown": {
+    "description": "Thẻ chi tiết hạt"
+  },
+  "gardenFloatSeed": "−1 hạt",
+  "@gardenFloatSeed": {
+    "description": "Chữ nổi"
+  },
+  "gardenFloatBug": "Bắt được sâu!",
+  "@gardenFloatBug": {
+    "description": "Chữ nổi"
+  },
+  "gardenFloatWeed": "Sạch cỏ!",
+  "@gardenFloatWeed": {
+    "description": "Chữ nổi"
+  },
+  "gardenFloatFert": "Mau lớn!",
+  "@gardenFloatFert": {
+    "description": "Chữ nổi"
+  },
+  "gardenFloatWet": "Đất ẩm rồi",
+  "@gardenFloatWet": {
+    "description": "Chữ nổi"
+  },
+  "gardenFloatHarvest": "+{n} {crop}",
+  "@gardenFloatHarvest": {
+    "description": "Chữ nổi khi thu"
+  },
+  "gardenFloatLessBug": "ít hơn vì sâu",
+  "@gardenFloatLessBug": {
+    "description": "Chữ nổi dòng 2"
+  },
+  "gardenFloatLessWeed": "ít hơn vì cỏ",
+  "@gardenFloatLessWeed": {
+    "description": "Chữ nổi dòng 2"
+  },
+  "gardenFloatNoSeed": "Hết hạt {crop}",
+  "@gardenFloatNoSeed": {
+    "description": "Chữ nổi"
+  },
+  "gardenWhyPlanted": "Luống đã có cây",
+  "@gardenWhyPlanted": {
+    "description": "Lý do ô mờ"
+  },
+  "gardenWhyEmpty": "Luống trống",
+  "@gardenWhyEmpty": {
+    "description": "Lý do ô mờ"
+  },
+  "gardenWhyWet": "Đất còn ẩm",
+  "@gardenWhyWet": {
+    "description": "Lý do ô mờ"
+  },
+  "gardenWhyNoBug": "Không có sâu",
+  "@gardenWhyNoBug": {
+    "description": "Lý do ô mờ"
+  },
+  "gardenWhyNoWeed": "Không có cỏ",
+  "@gardenWhyNoWeed": {
+    "description": "Lý do ô mờ"
+  },
+  "gardenWhyFertDone": "Cây này bón rồi",
+  "@gardenWhyFertDone": {
+    "description": "Lý do ô mờ"
+  },
+  "gardenWhyRipe": "Cây đã chín — dùng Tay để thu",
+  "@gardenWhyRipe": {
+    "description": "Lý do ô mờ"
+  },
+  "gardenWhyEmptyHand": "Luống trống — chọn Hạt giống để gieo",
+  "@gardenWhyEmptyHand": {
+    "description": "Lý do ô Tay mờ"
+  },
+  "gardenWhyNoFert": "Hết phân bón — mua ở Tạp hoá trấn",
+  "@gardenWhyNoFert": {
+    "description": "Lý do ô Phân bón mờ"
+  },
+  "bagTabTools": "Đồ làm vườn",
+  "@bagTabTools": {
+    "description": "Túi đồ — tab"
+  },
+  "bagToolsSection": "Nông cụ",
+  "@bagToolsSection": {
+    "description": "Túi đồ — tiêu đề nhóm"
+  },
+  "bagSuppliesSection": "Vật tư",
+  "@bagSuppliesSection": {
+    "description": "Túi đồ — tiêu đề nhóm"
+  },
+  "bagToolsHint": "Nông cụ không hao, không có số. Phân bón × n — mua ở Tạp hoá trấn (tab Làm vườn).",
+  "@bagToolsHint": {
+    "description": "Túi đồ — chân ngăn Đồ làm vườn"
+  },
+  "shopTabGarden": "Làm vườn",
+  "@shopTabGarden": {
+    "description": "Tạp hoá — tab (thay \"Hạt giống\")"
+  },
+  "shopFertilizerPrice": "Phân bón · 10 Văn tiền / bao",
+  "@shopFertilizerPrice": {
+    "description": "Tạp hoá — dòng giá"
+  },
+  "shopFertilizerDesc": "Bón cây đang lớn → thời gian còn lại giảm một nửa. Mỗi cây một lần.",
+  "@shopFertilizerDesc": {
+    "description": "Tạp hoá — mô tả Phân bón"
+  },
+  "shopFertilizerShort": "chín nhanh gấp đôi",
+  "@shopFertilizerShort": {
+    "description": "Tạp hoá — thẻ Phân bón"
+  },
+  "walletSpendFertilizer": "−{price} · Phân bón",
+  "@walletSpendFertilizer": {
+    "description": "Ví — nhãn trừ tiền"
+  },
+  "shopSubtitleGarden": "Đồ trang trí Nhà của ta · hạt giống, phân bón cho Vườn rau",
+  "@shopSubtitleGarden": {
+    "description": "Tạp hoá — dòng phụ"
   }
 }
