@@ -1015,3 +1015,17 @@ Mẫu một mục:
   `hinh-*` (màu nằm trong ảnh).
 - Nguồn: Google Gemini (người dùng chạy); câu lệnh từng hình: `design/icons/hinh.json`. Gốc 512: `design/icons/nguon/`.
 - Ảnh: `screens/HinhMinhHoa-dot1.png`, `screens/HinhMinhHoa-HUD-doc.png`.
+
+## Hình minh hoạ — đợt 2: nút nổi + HUD trò chơi + biểu cảm · artboard `HinhMinhHoa-dot2.dc.html` · từ mục 2026-11-16.3
+
+- Tiếp đợt 1 (2026-11-16.2), cùng phong cách (đất sét như ảnh đàn cổ tranh, chính diện, Tiểu Mặc). Bố cục các nút / bảng **giữ nguyên** thiết kế
+  đang có; chỉ thay biểu tượng nét bằng hình.
+- **Nút nổi bám vật + HUD trò chơi** (viên kính sương cao 40, hình **28** bên trái nhãn): `ngoi` (Ngồi) · `ra-san` (Ra sân / Rời bàn) · `xem-bang` ·
+  `vao-tiem` · `vao-hoc` · `gieo` · `tuoi` · `thu` · `mo-o` · `ban`. **Chưa có** (giữ biểu tượng nét tới đợt 2b): `noi-chuyen`, `cach-choi`, `van-moi`.
+- **Biểu cảm** (bảng `BieuCam-*` ô 64 + bong bóng trên đầu `BieuCam-bong-bong`): ô và bong bóng dùng **`<mã>-mat.webp`** — cắt sát đầu + tay, mặt
+  lớn gấp ~1,6 lần bản nửa người (người dùng chọn 2026-11-16); hình **32** trong ô, **34** trong bong bóng tròn 44. Bản đầy đủ `<mã>.webp` cho chỗ
+  to (hướng dẫn, xem trước lớn). Có: `vay-tay` · `chap-tay` · `vo-tay` · `cuoi` · `nhay-mung` · `suy-nghi` · `ngoi-nghi`. **Chưa có**: `cui-chao`
+  (bản Gemini không cúi, giống Chắp tay — giữ biểu tượng cũ tới đợt 2b).
+- Cỡ tệp 160 × 160 WebP alpha, vật ≈ 84 % khung (bản `-mat` ≈ 92 %). Bóng CSS chung như đợt 1. Trạng thái (mờ / nhấn / bật) bằng CSS như đợt 1.
+- Dấu thao tác nhỏ (×, tích, mũi tên…): vẫn giữ nét SVG; bảng so sánh vẽ ở đợt 2b.
+- Câu lệnh từng hình: `design/icons/hinh.json` (`dot: 2`). Ảnh: `screens/HinhMinhHoa-dot2.png` (phần C = thử cỡ thật).
