@@ -55,7 +55,7 @@ const SOURCES: [string, string][] = [
   ['Xong nhiệm vụ ngày', '+20'],
   ['Chuỗi 7 ngày', '+50'],
   ['Trò chữ thắng · hoà · thua', '+8 · 5 · 3'],
-  ['Bán nông sản ở Vườn rau', '≤ 60 / ngày'], // walletSourceGarden (R-TIEN-1, R-VUON-7) — chuỗi chờ thiết kế
+  ['Bán nông sản ở Vườn rau', 'tối đa 60 / ngày'], // walletSourceGarden (R-TIEN-1, R-VUON-7)
 ];
 const CARD_SECONDS = 4;
 const COUNT_UP_MS = 600;

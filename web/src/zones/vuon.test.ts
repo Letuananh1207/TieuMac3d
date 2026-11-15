@@ -18,6 +18,7 @@ import {
   remainingMs,
   remainingText,
   ripeCount,
+  seedLabel,
   sell,
   sellCapped,
   sellLabel,
@@ -221,6 +222,18 @@ describe('mua hạt (R-VUON-9)', () => {
     expect(buySeed(freshGarden(), 'ngo', 7)).toEqual({ ok: false, reason: 'short', short: 1 });
     expect(CROPS.map((c) => c.seed)).toEqual([4, 6, 8, 10, 12, 14, 16, 20]);
     for (const c of CROPS) expect(2 * c.sell).toBeGreaterThanOrEqual(c.seed);
+  });
+
+  it('R-VUON-9: có 50, × 5 Hạt Ngô → trả 40, còn 10, túi +5; × 10 (80) → còn thiếu 30; số lạ → bad', () => {
+    let w = { ...newTrial(), coins: 50 };
+    const r = gardenTrialAct(w, { act: 'buy', crop: 'ngo', count: 5 }, 0);
+    expect(r.result).toMatchObject({ ok: true, amount: -40 });
+    w = r.wallet;
+    expect(w.coins).toBe(10);
+    expect(w.garden.seeds.ngo).toBe(5);
+    expect(buySeed(freshGarden(), 'ngo', 50, 10)).toEqual({ ok: false, reason: 'short', short: 30 });
+    expect(buySeed(freshGarden(), 'ngo', 500, 3)).toMatchObject({ ok: false, reason: 'bad' });
+    expect(seedLabel(CROPS[2], 5)).toBe('−40 · Hạt Ngô');
   });
 });
 

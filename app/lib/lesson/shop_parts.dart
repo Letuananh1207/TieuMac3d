@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 
+import '../journey/garden.dart' show cropOf;
 import '../journey/wallet.dart';
+import '../scene/garden_event.dart' show seedCrop;
 import '../scene/shop_event.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text_size.dart';
 import 'coin.dart';
+import 'crop_art.dart';
 import 'reward_overlay.dart' show paintDashedRRect;
 import 'screen_parts.dart';
 
@@ -45,26 +48,60 @@ class ItemArt extends StatelessWidget {
       );
 }
 
-/// Ô hình nền `map-paper` bo 10 (không chữ Hán góc — R-HUD-4).
+/// Ô hình nền `map-paper` bo 10 (không chữ Hán góc — R-HUD-4). Hạt giống (2026-11-15.29): hình cây chín, [pack] → thêm gói
+/// hạt 26 góc dưới phải (thẻ hạt).
 class ItemPicture extends StatelessWidget {
-  const ItemPicture({super.key, required this.item, required this.height, this.radius = 10});
+  const ItemPicture({super.key, required this.item, required this.height, this.radius = 10, this.pack = false});
 
   final ShopItem item;
   final double height;
   final double radius;
+  final bool pack;
 
   @override
-  Widget build(BuildContext context) => Container(
-        height: height,
-        decoration: BoxDecoration(color: AppColors.mapPaper, borderRadius: BorderRadius.circular(radius)),
-        alignment: Alignment.center,
-        child: ItemArt(item: item, size: height * .6),
+  Widget build(BuildContext context) {
+    final crop = seedCrop(item);
+    return Container(
+      height: height,
+      decoration: BoxDecoration(color: AppColors.mapPaper, borderRadius: BorderRadius.circular(radius)),
+      alignment: Alignment.center,
+      child: crop == null
+          ? ItemArt(item: item, size: height * .6)
+          : Stack(
+              alignment: Alignment.center,
+              children: [
+                CropPicture(crop: crop, size: height * .9),
+                if (pack) const Positioned(right: 4, bottom: 4, child: SeedPack()),
+              ],
+            ),
+    );
+  }
+}
+
+/// Dòng thẻ hạt (R-VUON-9): "Trong túi: n" 11/700 (`jade` khi > 0, còn lại `slate-muted`).
+class InBagLine extends StatelessWidget {
+  const InBagLine({super.key, required this.count});
+
+  final int count;
+
+  @override
+  Widget build(BuildContext context) => Text(
+        'Trong túi: $count', // shopInBag
+        maxLines: 1,
+        style: uiText.copyWith(fontSize: AppTextSize.eyebrow, fontWeight: FontWeight.w700, color: count > 0 ? AppColors.jade : AppColors.slateMuted),
       );
+}
+
+/// Thời gian lớn trên thẻ hạt: "30 phút" · "1 giờ" · "2 giờ" (như `growText` ở `web/src/zones/vuonHud.ts`).
+String growText(int minutes) {
+  final h = minutes ~/ 60, m = minutes % 60;
+  if (h == 0) return '$m phút';
+  return m == 0 ? '$h giờ' : '$h giờ $m phút';
 }
 
 /// Thẻ vật (bo 14, đệm 8; chưa có: trắng, đã có: trắng 55 %; viền `slate` 14 %; đang chọn: viền ngoài `gold` 3 cách 2).
 class ShopCard extends StatelessWidget {
-  const ShopCard({super.key, required this.item, required this.state, required this.short, required this.picked, required this.landscape, required this.onBuy});
+  const ShopCard({super.key, required this.item, required this.state, required this.short, required this.picked, required this.landscape, required this.onBuy, this.inBag});
 
   final ShopItem item;
   final ItemState state;
@@ -73,8 +110,13 @@ class ShopCard extends StatelessWidget {
   final bool landscape;
   final VoidCallback onBuy;
 
+  /// hạt giống: số hạt đang có trong túi ("Trong túi: n"); đồ trang trí → `null`
+  final int? inBag;
+
   @override
   Widget build(BuildContext context) {
+    final bag = inBag;
+    final crop = cropOf(seedCrop(item));
     final card = Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
@@ -85,11 +127,12 @@ class ShopCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          ItemPicture(item: item, height: landscape ? 50 : 64),
+          ItemPicture(item: item, height: landscape ? 50 : 64, pack: true),
           const SizedBox(height: 4),
           Text(item.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: uiText.copyWith(fontSize: AppTextSize.small, fontWeight: FontWeight.w700, height: 1.25)),
+          if (bag != null) ...[const SizedBox(height: 2), InBagLine(count: bag)],
           const SizedBox(height: 4),
-          PriceLine(item: item),
+          PriceLine(item: item, time: crop == null ? null : growText(crop.minutes)),
           const SizedBox(height: 4),
           _button(),
         ],
@@ -174,9 +217,12 @@ class _Dashed extends CustomPainter {
 
 /// Giá: xu 14 + số 12/700 (không viết giá bằng chữ Hán — R-HUD-4).
 class PriceLine extends StatelessWidget {
-  const PriceLine({super.key, required this.item});
+  const PriceLine({super.key, required this.item, this.time});
 
   final ShopItem item;
+
+  /// hạt giống: thời gian lớn sau giá ("· 30 phút")
+  final String? time;
 
   @override
   Widget build(BuildContext context) => Row(
@@ -184,6 +230,10 @@ class PriceLine extends StatelessWidget {
           const Coin(size: 14),
           const SizedBox(width: 4),
           Text(formatCoins(item.price), style: uiText.copyWith(fontSize: AppTextSize.caption, fontWeight: FontWeight.w700, fontFeatures: const [FontFeature.tabularFigures()])),
+          if (time != null)
+            Flexible(
+              child: Text(' · $time', maxLines: 1, overflow: TextOverflow.ellipsis, style: uiText.copyWith(fontSize: AppTextSize.caption, color: AppColors.slateMuted)),
+            ),
         ],
       );
 }

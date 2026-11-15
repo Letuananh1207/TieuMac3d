@@ -257,7 +257,7 @@ Q1–Q4 phải chốt trước NV1.
 - [x] 9. **Ghép** (`web/src/homeGarden.ts` mới + vài dòng `main.ts` · ghép): nạp `getGarden` / ví thử, dựng, mỗi 5 s kiểm đổi dáng,
       tìm luống gần nhất (R-VUON-2) — **chưa có nút** (chờ NV10); Canvas 3D / `npm run dev` thấy cây lớn bằng `?vuon=60`. Xong khi
       `npx tsc --noEmit && npm test && npm run build` xanh, cảnh trấn / vùng không đổi.
-- [ ] 10. **HUD vườn** — **chờ thiết kế (`docs/phieu_thiet_ke/2026-11-15-vuon-trong-trot.md`)**: nút nổi Gieo / Tưới / Thu / Mở ô + nhãn
+- [x] 10. **HUD vườn** — thiết kế 2026-11-15.29 đã áp (V-20261115-62, `docs/thiet_ke_da_ap.md`): nút nổi Gieo / Tưới / Thu / Mở ô + nhãn
       thời gian, giọt khát / lấp lánh chín, bảng chọn hạt, nút "Bán" + bảng kho, hộp xác nhận mở ô, tấm báo chín / thu; chuỗi mới
       `design/l10n/vi.arb`. Áp bằng `/ui-apply` khi thiết kế về (`web/src/ui/garden*.ts` + CSS). Test vitest luật chạm nút (gần hơn
       thắng, ẩn khi trang trí). Xong khi thử dọc + ngang + safe area đủ trạng thái phiếu.

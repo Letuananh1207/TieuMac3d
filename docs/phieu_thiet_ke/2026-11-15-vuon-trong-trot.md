@@ -1,5 +1,6 @@
 # Phiếu: Vườn rau ở Nhà của ta — nút nổi luống, bảng chọn hạt (túi hạt), kho + bán, mở ô, tấm báo, mục Hạt giống ở Tạp hoá (HUD)
-- Trạng thái: chờ thiết kế
+- Trạng thái: đã áp (2026-11-15.29)
+- Đã vẽ: 2026-11-15.29 (20 artboard: nút nổi 5 trạng thái, chọn hạt, kho + bán, mở ô, tấm báo, Tạp hoá Hạt giống — đặc tả `design/docs/screen_specs.md` mục "Vườn rau"; đề xuất luật: chọn × 1 · × 5 · × 10 khi mua hạt)
 - Đợi bởi: kế hoạch `docs/tasks/2026-11-15-vuon-trong-trot.md` (nhiệm vụ 10). Luật, cầu nối, lưu, cảnh 3D (luống, rào, thùng thu
   mua, hình cây Kenney) **đã làm** (NV1–9, nhánh `viec/vuon`) — phiếu này chỉ còn phần HUD.
 - Đã sửa theo lựa chọn người dùng 2026-11-15: **Q1 — mua hạt ở Tạp hoá trấn, bán ở vườn** (có **túi hạt**; bảng chọn hạt chỉ hiện

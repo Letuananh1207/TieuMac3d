@@ -202,5 +202,19 @@ void main() {
       }
       expect(seedShopItems().first.name, 'Hạt Cải ngọt');
     });
+
+    test('R-VUON-9: có 50, × 5 Hạt Ngô → trả 40, còn 10, túi +5; × 10 (80) → còn thiếu 30; số lạ → bad', () async {
+      SharedPreferences.setMockInitialValues({'tien.so-du': 50});
+      final store = await ProgressStore.open();
+      expect(await store.buySeed('ngo', count: 5), isA<Bought>());
+      expect(store.coins, 10);
+      expect(store.garden.seeds['ngo'], 5);
+      expect(buySeed(Garden.fresh(), 'ngo', 50, count: 10), const GardenRefused(GardenError.short, short: 30));
+      expect(buySeed(Garden.fresh(), 'ngo', 500, count: 3), const GardenRefused(GardenError.bad));
+      expect(seedLabel(cropOf('ngo')!, 5), '−40 · Hạt Ngô');
+      expect(gardenActArgs([
+        {'type': 'gardenAct', 'payload': {'act': 'buy', 'crop': 'ngo', 'count': 10}},
+      ])?.count, 10);
+    });
   });
 }

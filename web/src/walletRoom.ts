@@ -64,11 +64,12 @@ export class WalletRoom {
     const trial = host.trial;
     this.panel = trial
       ? new ShopPanel([...DECOR_ITEMS, ...SEED_ITEMS], {
-          buy: (item): BuyResult => {
-            // hạt giống Vườn rau (R-VUON-9): +1 hạt vào túi ở ví thử
+          bag: () => trial.wallet.garden.seeds,
+          buy: (item, count): BuyResult => {
+            // hạt giống Vườn rau (R-VUON-9): + [count] hạt (× 1 · × 5 · × 10) vào túi ở ví thử
             const c = seedCrop(item);
             if (c) {
-              const g = gardenTrialAct(trial.wallet, { act: 'buy', crop: c.id }, Date.now());
+              const g = gardenTrialAct(trial.wallet, { act: 'buy', crop: c.id, count }, Date.now());
               trial.update(() => g.wallet);
               return g.result.ok
                 ? { ok: true, balance: g.wallet.coins, owned: g.wallet.owned }
@@ -130,10 +131,11 @@ export class WalletRoom {
   }
 
   /** Tiền đổi ở vườn rau (R-VUON-7/8/9, R-TIEN-5): bán → "+n · Bán nông sản" có xu bay; mở ô / hạt → "−n" không xu. */
-  gardenCoins(amount: number, label: string, balance: number): void {
+  gardenCoins(amount: number, label: string, balance: number, from?: () => { x: number; y: number } | null): void {
     const w = this.host.trial?.wallet;
     const center = (): { x: number; y: number } => ({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
-    this.wallet.push({ amount, label, ...(amount > 0 ? { from: center } : {}) }, balance, w ? gameTodayOn(w, dayKey(new Date())) : 0);
+    // bán: xu bay từ thùng thu mua tới ví (2026-11-15.29 `VuonRau-kho-vua-ban-doc`); không có điểm → giữa màn
+    this.wallet.push({ amount, label, ...(amount > 0 ? { from: from ?? center } : {}) }, balance, w ? gameTodayOn(w, dayKey(new Date())) : 0);
   }
 
   /** Tạp hoá bản web đang mở (Esc do `ShopPanel` tự bắt). */

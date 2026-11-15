@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hoc_xa_3d/journey/garden.dart';
 import 'package:hoc_xa_3d/journey/wallet.dart';
 import 'package:hoc_xa_3d/lesson/shop_screen.dart';
+import 'package:hoc_xa_3d/scene/garden_event.dart';
 import 'package:hoc_xa_3d/scene/shop_event.dart';
 
 /// Danh mục như trang gửi (`DECOR_ITEMS` của web/src/zones/decor.ts).
@@ -116,6 +118,86 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Mai'), findsNothing);
     expect(find.text('Kệ sách'), findsOneWidget);
+  });
+
+  /// Tạp hoá có tab Hạt giống (R-VUON-9): mua qua luật `buySeed` của garden.dart.
+  Future<List<int>> openSeeds(WidgetTester tester, {required int balance, Map<String, int> bag = const {'ngo': 1}, Size size = const Size(390, 844)}) async {
+    tester.view.physicalSize = size * 3;
+    tester.view.devicePixelRatio = 3;
+    addTearDown(tester.view.reset);
+    final counts = <int>[];
+    var g = Garden.fresh().copyWith(seeds: bag);
+    var bal = balance;
+    await tester.pumpWidget(MaterialApp(
+      home: ShopScreen(
+        items: _items,
+        balance: balance,
+        owned: starterDecor,
+        onBuy: (item) async => const BuyRefused(BuyError.invalid),
+        seeds: seedShopItems(),
+        bag: bag,
+        onBuySeed: (item, count) async {
+          final r = buySeed(g, seedCrop(item)!, bal, count: count);
+          if (r is! GardenDone) return const BuyRefused(BuyError.invalid);
+          g = r.garden;
+          bal += r.amount;
+          counts.add(count);
+          return Bought(bal, starterDecor);
+        },
+      ),
+    ));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Hạt giống')); // tab cuối hàng (hàng tab cuộn ngang)
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Hạt giống'));
+    await tester.pumpAndSettle();
+    return counts;
+  }
+
+  testWidgets('R-VUON-9: có 1 280, × 5 Hạt Ngô → "Giá (5 hạt) −40", "Mua · 40" → túi Ngô 6, ví 1 240', (tester) async {
+    final counts = await openSeeds(tester, balance: 1280);
+    expect(find.textContaining('hạt giống cho Vườn rau'), findsOneWidget);
+    expect(inCard('Hạt Ngô', find.text('Trong túi: 1')), findsOneWidget);
+    expect(inCard('Hạt Củ cải', find.text('Trong túi: 0')), findsOneWidget);
+    await tester.tap(inCard('Hạt Ngô', find.text('Mua')));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('8 Văn tiền / hạt'), findsOneWidget);
+    expect(find.text('Mua · 8'), findsOneWidget); // mặc định × 1
+    await tester.tap(find.text('× 5'));
+    await tester.pumpAndSettle();
+    expect(find.text('Giá (5 hạt)'), findsOneWidget);
+    expect(find.text('−40'), findsOneWidget);
+    await tester.tap(find.text('Mua · 40'));
+    await tester.pumpAndSettle();
+    expect(counts, [5]);
+    expect(inCard('Hạt Ngô', find.text('Trong túi: 6')), findsOneWidget);
+    expect(find.bySemanticsLabel(RegExp(r'Văn tiền: 1.240')), findsOneWidget);
+  });
+
+  testWidgets('R-VUON-9: có 50, × 10 Hạt Ngô (80) → "Còn thiếu 30", không mua; × 1 vẫn mua được', (tester) async {
+    final counts = await openSeeds(tester, balance: 50);
+    await tester.tap(inCard('Hạt Ngô', find.text('Mua')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('× 10'));
+    await tester.pumpAndSettle();
+    expect(find.text('Còn thiếu 30'), findsOneWidget);
+    expect(find.text('—'), findsOneWidget);
+    await tester.tap(find.text('Còn thiếu 30'));
+    await tester.pumpAndSettle();
+    expect(counts, isEmpty);
+    await tester.tap(find.text('× 1'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Mua · 8'));
+    await tester.pumpAndSettle();
+    expect(counts, [1]);
+  });
+
+  testWidgets('R-VUON-9: ngang 844×390 — hộp xác nhận hạt không tràn', (tester) async {
+    await openSeeds(tester, balance: 300, size: const Size(844, 390));
+    await tester.tap(inCard('Hạt Ngô', find.text('Mua')));
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
+    expect(find.text('× 5'), findsOneWidget);
   });
 
   testWidgets('R-TIEN-4: ngang 844×390 — lưới 5 cột, nút Đóng cùng hàng tab, không tràn', (tester) async {

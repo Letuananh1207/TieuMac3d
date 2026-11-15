@@ -55,3 +55,16 @@ Tên vùng dài nhất 13 ký tự ("Nhạn Môn Quan"); cả bộ nơi dài nh�
 Cần thiết kế thêm: không còn. (V-50 ghi hai việc — biển cổng vùng tên dài bị nén ngang và nhãn "Đảo Mây Bồng Bềnh" che
 đường ra bến — tên V-53 ngắn: biển cổng `giang-nam` "Yên Vũ Lâu" / `bong-lai` "Bồng Lai Đảo" không còn bị nén, nhãn
 "Bồng Lai Đảo" trên bản đồ truyền tống nằm dưới đầu đường ra bến, không che — ảnh V-53.)
+
+## 2026-11-15.29 Vườn rau + Tạp hoá Hạt giống (/ui-apply V-20261115-62)
+
+Người dùng đã chốt luật thiết kế đề xuất: mua hạt chọn **× 1 · × 5 · × 10** (R-VUON-9 sửa sổ, chờ đồng bộ online). Còn lại:
+
+| Mục thiết kế | Thiết kế vẽ gì | Luật nói gì | Code đang làm |
+|---|---|---|---|
+| `shopSeedSub` (dòng trên lưới tab Hạt giống) + dòng phụ hộp xác nhận hạt | "Mỗi lần mua 1 hạt vào túi hạt · …" | R-VUON-9 (mới): chọn × 1 · × 5 · × 10 mỗi lần mua | lưới: "Hạt vào túi hạt · gieo ở Vườn rau · mua × 1 · × 5 · × 10, mua được nhiều lần"; hộp: "Hạt vào túi hạt · gieo ở Vườn rau. Trong túi: n." — xin `/ui-design` đặt lại chuỗi `shopSeedSub` |
+| `VuonRau-kho-ngang` (vượt trần) | đã bán 40, kho 4 Bí đỏ + 2 Ngô (+3 Cải) → nút "Bán · +20" | R-VUON-7: bán theo giá cao trước, không bán lẻ nửa cái → Bí đỏ 2 (14) + Ngô 1 (5) = **+19** (ví dụ sổ mới) | số thật theo luật ("Bán · +19"); dòng "Hôm nay còn bán được 20 — …" đúng như vẽ |
+| Hình cây 8 loại | artboard chỉ vẽ 6 (Cải ngọt, Củ cải, Ngô, Lúa, Bí đỏ, Hoa cúc) | R-VUON-4 có Dưa hấu, Trà | code tự dựng Dưa hấu (quả xanh sọc + lá) và Trà (bụi tròn + búp non) cùng kiểu — xin vẽ chuẩn hai hình |
+| Tấm báo (dọc) | trái 132 (cạnh bản đồ nhỏ tròn 104) | R-BANDO-1 (người dùng đổi 2026-11-15): bản đồ nhỏ vuông 148 / 128 | trái = bản đồ nhỏ + 12 (dọc ≈ 180, tấm hẹp hơn, chữ xuống dòng); ngang: trên 12, sau bản đồ 128 — xin vẽ lại `VuonRau-tam-bao` với bản đồ vuông |
+| Ấn son Tạp hoá | artboard hạt dùng ấn chữ Việt "Tạp hoá"; đề xuất đổi ấn 雜貨 cũ | R-HUD-4 | đã đổi cả Flutter + web sang ấn "Tạp hoá" (trước đó code bỏ hẳn ấn) — các artboard `CuaHang-*` cũ (2026-11-14.12) còn 雜貨, xin vẽ lại |
+| Thứ tự hàng kho | Bí đỏ · Cải ngọt · Ngô | (không có luật) | theo bảng cây (Cải ngọt · Ngô · Bí đỏ) — cùng thứ tự thẻ hạt / Tạp hoá |

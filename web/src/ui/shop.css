@@ -70,8 +70,25 @@
 .sp-toast .art{flex:0 0 48px;height:48px;border-radius:10px;background:var(--map-paper,#f2eada);display:flex;align-items:center;justify-content:center}
 .sp-toast .txt{flex:1;font-size:14px;line-height:1.4;display:flex;flex-direction:column}
 .sp-toast .sub{opacity:.85}
+/* hạt giống Vườn rau (2026-11-15.29 CuaHang-hat-*): ấn son chữ Việt, dòng trên lưới, thẻ hạt, chọn số hạt */
+.sp-seal{flex:0 0 auto;width:30px;height:32px;border-radius:5px;background:var(--lacquer);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;font-weight:700;line-height:1.05}
+.sp-tab{padding:0 9px} /* dọc: đệm tab 9 để vừa 5 tab (thêm "Hạt giống"); ngang giữ 10 */
+.sp-seedHint{margin:-4px 0 0;font-size:12px;line-height:1.4;color:var(--slate-muted)}
+.sp-seedHint[hidden]{display:none}
+.sp-card .art .pack{position:absolute;right:4px;bottom:4px}
+.sp-card .inbag{font-size:11px;font-weight:700;color:var(--slate-muted)}
+.sp-card .inbag.has{color:var(--jade)}
+.sp-card .price .time{font-weight:500;color:var(--slate-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sp-confirm .qtyBlock{display:flex;flex-direction:column;gap:6px}
+.sp-confirm .qtyLabel{font-size:12px;font-weight:700;color:var(--slate-muted)}
+.sp-confirm .qty{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.sp-confirm .qty button{height:36px;border-radius:10px;border:1px solid rgba(36,50,58,.2);background:#fff;color:var(--slate);font:700 15px var(--ui);touch-action:manipulation}
+.sp-confirm .qty button.on{background:var(--slate);color:#fff;border-color:var(--slate)}
+.sp-confirm .buy.short{background:transparent;color:var(--slate-muted);border:1px dashed rgba(36,50,58,.35);box-shadow:none;cursor:default}
 @media (orientation:landscape){
   .sp-hills{height:140px}
+  .sp-seal{width:26px;height:28px;font-size:9px}
+  .sp-confirm{max-height:calc(100% - var(--sa-bottom) - 20px);overflow-y:auto}
   .sp-wrap{top:calc(var(--sa-top) + 10px);bottom:calc(var(--sa-bottom) + 10px);gap:8px}
   .sp-titles h1{font-size:19px}
   .sp-titles .sub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}

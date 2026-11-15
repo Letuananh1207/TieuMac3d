@@ -4,7 +4,8 @@
  * chuỗi `shop*` `slot*` chép đúng `design/l10n/vi.arb`. Thuần — không DOM (dựng: `ui/shopPanel.ts`).
  */
 import type { DecorSlotKind } from './decor';
-import { CROPS, cropOf, type Crop } from './vuon';
+import { CROPS, cropOf, SEED_COUNTS, type Crop, type CropId } from './vuon';
+import { growText } from './vuonHud';
 import { formatCoins } from './wallet';
 
 /** Nhóm hàng: ba loại ô đồ trang trí + hạt giống Vườn rau (R-VUON-9). */
@@ -97,32 +98,54 @@ export const POOR_HINT: readonly [string, boolean][] = [
 export const ALL_BOUGHT: readonly [string, string] = ['Đã có đủ 13 món.', ' Văn tiền để dành cho đồ mới sắp về (đồ mặc, thức ăn linh thú).'];
 
 export interface ConfirmView {
-  /** "Mua {item} với {n} Văn tiền?" (`shopConfirm`) */
+  /** "Mua {item}" (`shopConfirm`) · hạt: "Mua Hạt {cây}" (`shopSeedConfirm`) */
   before: string;
+  /** "với {n} Văn tiền?" · hạt: "· {giá} Văn tiền / hạt" */
   after: string;
-  /** `shopConfirmSub` */
+  /** `shopConfirmSub` · hạt: túi hạt + số đang có */
   sub: string;
-  /** Đang có / Giá / Còn lại (`shopHave`, `shopPrice`, `shopAfter`) */
+  /** Đang có / Giá (hạt: "Giá ({k} hạt)") / Còn lại (`shopHave`, `shopPrice`, `shopAfter`); thiếu → Còn lại "—" */
   rows: [string, string][];
-  /** `shopBuyFor` */
+  /** `shopBuyFor` · thiếu cho số hạt đã chọn → "Còn thiếu n" */
   buy: string;
+  /** còn thiếu (chỉ hạt × 5 / × 10 mới thiếu được — thẻ thiếu cả 1 hạt không mở hộp) */
+  short: number;
 }
 
-export function confirmView(item: ShopEntry, balance: number): ConfirmView {
-  const price = formatCoins(item.price);
+/** Số hạt chọn được trong hộp xác nhận (R-VUON-9: × 1 · × 5 · × 10; mặc định × 1). */
+export const SEED_QTY: readonly number[] = SEED_COUNTS;
+
+/** Dòng trên lưới tab Hạt giống (`shopSeedSub` — sửa theo luật chọn số hạt, xem gui_thiet_ke_2026-11-15). */
+export const SEED_GRID_HINT = 'Hạt vào túi hạt · gieo ở Vườn rau · mua × 1 · × 5 · × 10, mua được nhiều lần';
+
+/** Thẻ hạt: "Trong túi: n" (`shopInBag`) + thời gian lớn; thẻ đồ trang trí → `null`. */
+export function seedLine(item: ShopEntry, bag: Partial<Record<CropId, number>>): { inBag: number; text: string; time: string } | null {
+  const c = seedCrop(item);
+  if (!c) return null;
+  const inBag = bag[c.id] ?? 0;
+  return { inBag, text: `Trong túi: ${inBag}`, time: growText(c) };
+}
+
+/** Hộp xác nhận; hạt: [seed] = số hạt đang chọn + số đang có trong túi. */
+export function confirmView(item: ShopEntry, balance: number, seed?: { count: number; inBag: number }): ConfirmView {
+  const unit = formatCoins(item.price);
+  const k = seedCrop(item) ? (seed?.count ?? 1) : 1;
+  const total = item.price * k;
+  const short = Math.max(0, total - balance);
+  const isSeed = item.slot === 'hat';
   return {
     before: `Mua ${item.name}`,
-    after: `với ${price} Văn tiền?`,
-    sub: item.slot === 'hat' ? 'Mỗi lần mua 1 hạt vào túi hạt · gieo ở Vườn rau' : `Đặt ở ô ${SLOT_NAME[item.slot]} · mua một lần, đặt được nhiều ô`,
+    after: isSeed ? `· ${unit} Văn tiền / hạt` : `với ${unit} Văn tiền?`,
+    sub: isSeed ? `Hạt vào túi hạt · gieo ở Vườn rau. Trong túi: ${seed?.inBag ?? 0}.` : `Đặt ở ô ${SLOT_NAME[item.slot]} · mua một lần, đặt được nhiều ô`,
     rows: [
       ['Đang có', formatCoins(balance)],
-      ['Giá', `−${price}`],
-      ['Còn lại', formatCoins(balance - item.price)],
+      [isSeed ? `Giá (${k} hạt)` : 'Giá', `−${formatCoins(total)}`],
+      ['Còn lại', short > 0 ? '—' : formatCoins(balance - total)],
     ],
-    buy: `Mua · ${price}`,
+    buy: short > 0 ? `Còn thiếu ${formatCoins(short)}` : `Mua · ${formatCoins(total)}`,
+    short,
   };
 }
-
 /** Tấm "Đã mua" 3 s (`shopBought`, `shopBoughtSub`) — không tự đưa về nhà. */
 export function boughtView(item: ShopEntry): { title: string; sub: string } {
   const sub = item.slot === 'hat' ? 'Về Vườn rau để gieo — hạt ở trong túi hạt.' : `Về nhà để đặt — chạm ô ${SLOT_NAME[item.slot]} khi trang trí.`;

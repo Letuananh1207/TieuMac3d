@@ -248,7 +248,7 @@ class ProgressStore {
 
   /// Một thao tác ở vườn (docs/bridge.md `gardenAct`): tính theo `garden.dart`, làm được → ghi ngay vườn + số dư.
   /// [act] = `sow` | `water` | `harvest` | `sell` | `open` | `buy`; lạ / thiếu tham số → `bad`.
-  Future<GardenResult> gardenAct(String act, {String? plot, String? crop}) async {
+  Future<GardenResult> gardenAct(String act, {String? plot, String? crop, int count = 1}) async {
     final g = garden;
     final now = _clock().millisecondsSinceEpoch;
     final GardenResult r = switch ((act, plot, crop)) {
@@ -257,7 +257,7 @@ class ProgressStore {
       ('harvest', final p?, _) => vuon.harvest(g, p, now),
       ('sell', _, _) => vuon.sell(g, crop, vnDay(_clock())),
       ('open', _, _) => vuon.openPlot(g, coins),
-      ('buy', _, final c?) => vuon.buySeed(g, c, coins),
+      ('buy', _, final c?) => vuon.buySeed(g, c, coins, count: count),
       _ => const GardenRefused(GardenError.bad),
     };
     if (r is GardenDone) {
@@ -267,9 +267,9 @@ class ProgressStore {
     return r;
   }
 
-  /// Mua 1 hạt [crop] ở Tạp hoá (R-VUON-9) — dạng kết quả như mua đồ để màn Tạp hoá dùng chung.
-  Future<BuyResult> buySeed(String crop) async {
-    final r = await gardenAct('buy', crop: crop);
+  /// Mua [count] hạt [crop] (× 1 · × 5 · × 10) ở Tạp hoá (R-VUON-9) — dạng kết quả như mua đồ để màn Tạp hoá dùng chung.
+  Future<BuyResult> buySeed(String crop, {int count = 1}) async {
+    final r = await gardenAct('buy', crop: crop, count: count);
     return switch (r) {
       GardenDone() => Bought(coins, ownedDecor),
       GardenRefused(error: GardenError.short, :final short) => BuyRefused(BuyError.short, short: short),

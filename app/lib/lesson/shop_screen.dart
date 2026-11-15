@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../journey/wallet.dart';
+import '../scene/garden_event.dart' show seedCrop;
 import '../scene/shop_event.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text_size.dart';
@@ -14,17 +15,20 @@ import 'wallet_chip.dart';
 /// Tạp hoá — cửa hàng đồ trang trí Nhà của ta (native) — R-TIEN-4. Thiết kế: design/docs/screen_specs.md "Tạp hoá 雜貨"
 /// (artboard `CuaHang-doc`, `-doc-ngheo`, `-doc-xac-nhan`, `-doc-vua-mua`, `-doc-het`, `-ngang`). Danh mục + giá do trang
 /// gửi (`openShop`); mua qua [onBuy] (kho trừ ví + ghi sở hữu — `ProgressStore.buyDecor`). Đóng: "Đóng" / quay lại → về cảnh.
-/// Hạt giống Vườn rau (R-VUON-9): [seeds] loại `SlotKind.hat`, mua nhiều lần qua [onBuySeed] (dùng thẻ + hộp xác nhận có sẵn;
-/// số hạt đang có trên thẻ chờ thiết kế — phiếu 2026-11-15-vuon-trong-trot).
+/// Hạt giống Vườn rau (R-VUON-9, thiết kế 2026-11-15.29 `CuaHang-hat-*`): [seeds] loại `SlotKind.hat` (tab "Hạt giống" cuối
+/// hàng), thẻ "Trong túi: n" theo [bag], hộp xác nhận chọn × 1 · × 5 · × 10, mua nhiều lần qua [onBuySeed].
 class ShopScreen extends StatefulWidget {
-  const ShopScreen({super.key, required this.items, required this.balance, required this.owned, required this.onBuy, this.seeds = const [], this.onBuySeed});
+  const ShopScreen({super.key, required this.items, required this.balance, required this.owned, required this.onBuy, this.seeds = const [], this.bag = const {}, this.onBuySeed});
 
   final List<ShopItem> items;
   final int balance;
   final List<String> owned;
   final Future<BuyResult> Function(ShopItem item) onBuy;
   final List<ShopItem> seeds;
-  final Future<BuyResult> Function(ShopItem item)? onBuySeed;
+
+  /// túi hạt lúc mở (mã cây → số hạt)
+  final Map<String, int> bag;
+  final Future<BuyResult> Function(ShopItem item, int count)? onBuySeed;
 
   static Route<void> route({
     required List<ShopItem> items,
@@ -32,9 +36,10 @@ class ShopScreen extends StatefulWidget {
     required List<String> owned,
     required Future<BuyResult> Function(ShopItem item) onBuy,
     List<ShopItem> seeds = const [],
-    Future<BuyResult> Function(ShopItem item)? onBuySeed,
+    Map<String, int> bag = const {},
+    Future<BuyResult> Function(ShopItem item, int count)? onBuySeed,
   }) =>
-      fadeRoute(ShopScreen(items: items, balance: balance, owned: owned, onBuy: onBuy, seeds: seeds, onBuySeed: onBuySeed));
+      fadeRoute(ShopScreen(items: items, balance: balance, owned: owned, onBuy: onBuy, seeds: seeds, bag: bag, onBuySeed: onBuySeed));
 
   @override
   State<ShopScreen> createState() => _ShopScreenState();
@@ -43,10 +48,14 @@ class ShopScreen extends StatefulWidget {
 class _ShopScreenState extends State<ShopScreen> {
   late int _balance = widget.balance;
   late final Set<String> _owned = {...widget.owned};
+  late final Map<String, int> _bag = {...widget.bag};
 
   /// tab đang chọn; `null` = Tất cả
   SlotKind? _tab;
   ShopItem? _picked;
+
+  /// số hạt đang chọn trong hộp xác nhận (R-VUON-9)
+  int _count = 1;
   ShopItem? _bought;
   int _delta = 0;
   bool _buying = false;
@@ -77,18 +86,22 @@ class _ShopScreenState extends State<ShopScreen> {
     if (_buying) return;
     setState(() => _buying = true);
     final buySeed = widget.onBuySeed;
-    final r = item.slot == SlotKind.hat && buySeed != null ? await buySeed(item) : await widget.onBuy(item);
+    final crop = seedCrop(item);
+    final count = crop != null ? _count : 1;
+    final r = crop != null && buySeed != null ? await buySeed(item, count) : await widget.onBuy(item);
     if (!mounted) return;
     setState(() {
       _buying = false;
       _picked = null;
+      _count = 1;
       if (r is Bought) {
         _balance = r.balance;
         _owned
           ..clear()
           ..addAll(r.owned);
+        if (crop != null) _bag[crop] = (_bag[crop] ?? 0) + count;
         _bought = item;
-        _delta = -item.price;
+        _delta = -item.price * count;
       }
     });
     if (r is! Bought) return;
@@ -110,8 +123,15 @@ class _ShopScreenState extends State<ShopScreen> {
         children: [
           _header(landscape),
           SizedBox(height: landscape ? 8 : 12),
-          Row(children: [Expanded(child: _tabs()), if (landscape) closeBtn]),
-          if (_allBought || _poor) ...[
+          Row(children: [Expanded(child: _tabs(landscape)), if (landscape) closeBtn]),
+          if (_tab == SlotKind.hat) ...[
+            const SizedBox(height: 8),
+            Text(
+              'Hạt vào túi hạt · gieo ở Vườn rau · mua × 1 · × 5 · × 10, mua được nhiều lần', // shopSeedSub (sửa theo R-VUON-9)
+              style: uiText.copyWith(fontSize: AppTextSize.caption, color: AppColors.slateMuted),
+            ),
+          ],
+          if (_tab != SlotKind.hat && (_allBought || _poor)) ...[
             const SizedBox(height: 12),
             _allBought ? const ShopBanner.allBought() : const ShopBanner.poor(),
           ],
@@ -142,7 +162,15 @@ class _ShopScreenState extends State<ShopScreen> {
               child: Center(
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 520),
-                  child: ShopConfirm(item: picked, balance: _balance, onCancel: () => setState(() => _picked = null), onBuy: () => _buy(picked)),
+                  child: ShopConfirm(
+                    item: picked,
+                    balance: _balance,
+                    count: _count,
+                    inBag: _bag[seedCrop(picked)] ?? 0,
+                    onCount: (k) => setState(() => _count = k),
+                    onCancel: () => setState(() => _picked = null),
+                    onBuy: () => _buy(picked),
+                  ),
                 ),
               ),
             ),
@@ -152,10 +180,23 @@ class _ShopScreenState extends State<ShopScreen> {
     });
   }
 
-  /// "Tạp hoá" Lora 22 (ngang 19) + dòng phụ; ví bên phải. Không ấn son chữ Hán (R-HUD-4).
+  /// Ấn son chữ Việt "Tạp hoá" + "Tạp hoá" Lora 22 (ngang 19) + dòng phụ; ví bên phải. Không chữ Hán (R-HUD-4) — ấn theo
+  /// artboard `CuaHang-hat-*` (2026-11-15.29).
   Widget _header(bool landscape) {
+    final seeds = widget.onBuySeed != null && widget.seeds.isNotEmpty;
+    final sealText = uiText.copyWith(fontSize: AppTextSize.sealCaption, fontWeight: FontWeight.w700, color: AppColors.onJade, height: 1.05);
     return Row(
       children: [
+        ExcludeSemantics(
+          child: Container(
+            width: landscape ? 26 : 30,
+            height: landscape ? 28 : 32,
+            margin: const EdgeInsets.only(right: 10),
+            decoration: BoxDecoration(color: AppColors.lacquer, borderRadius: BorderRadius.circular(5)),
+            alignment: Alignment.center,
+            child: Text('Tạp\nhoá', textAlign: TextAlign.center, style: sealText),
+          ),
+        ),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -165,7 +206,7 @@ class _ShopScreenState extends State<ShopScreen> {
                 child: Text('Tạp hoá', style: displayText.copyWith(color: AppColors.slate, fontSize: landscape ? AppTextSize.titleCompact : AppTextSize.accent)), // shopName
               ),
               Text(
-                'Đồ trang trí Nhà của ta · mua một lần, đặt được nhiều ô', // shopSubtitle
+                seeds ? 'Đồ trang trí Nhà của ta · hạt giống cho Vườn rau' : 'Đồ trang trí Nhà của ta · mua một lần, đặt được nhiều ô', // shopSubtitleSeeds / shopSubtitle
                 maxLines: landscape ? 1 : 2,
                 overflow: TextOverflow.ellipsis,
                 style: uiText.copyWith(fontSize: AppTextSize.caption, color: AppColors.slateMuted),
@@ -180,7 +221,9 @@ class _ShopScreenState extends State<ShopScreen> {
     );
   }
 
-  Widget _tabs() {
+  Widget _tabs(bool landscape) {
+    // dọc: đệm tab 9 để vừa 5 tab (2026-11-15.29); ngang như cũ 12
+    final pad = !landscape && widget.onBuySeed != null && widget.seeds.isNotEmpty ? 9.0 : 12.0;
     Widget tab(String label, SlotKind? kind) {
       final on = _tab == kind;
       return Padding(
@@ -192,7 +235,7 @@ class _ShopScreenState extends State<ShopScreen> {
             onTap: () => setState(() => _tab = kind),
             child: Container(
               height: 34,
-              padding: const EdgeInsets.symmetric(horizontal: 12),
+              padding: EdgeInsets.symmetric(horizontal: pad),
               alignment: Alignment.center,
               decoration: ShapeDecoration(
                 color: on ? AppColors.slate : AppColors.onJade.withValues(alpha: .6),
@@ -246,7 +289,11 @@ class _ShopScreenState extends State<ShopScreen> {
                                 short: i.price - _balance,
                                 picked: _picked?.id == i.id,
                                 landscape: landscape,
-                                onBuy: () => setState(() => _picked = i),
+                                inBag: i.slot == SlotKind.hat ? (_bag[seedCrop(i)] ?? 0) : null,
+                                onBuy: () => setState(() {
+                                  _picked = i;
+                                  _count = 1;
+                                }),
                               ),
                             ),
                         ],

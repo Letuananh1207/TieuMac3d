@@ -5,9 +5,11 @@
  * đã mua hết; "Đóng" + Esc. DOM gốc `#shopPanel` ở index.html (`#shop` là nút nổi "Vào tiệm"), phần trong dựng bằng createElement. Không giữ luật: chữ + trạng thái
  * ở `zones/shopView.ts`, mua qua [ShopPanelHost.buy] (`walletRoom.ts` → `zones/walletRules.ts`).
  */
-import { ALL_BOUGHT, boughtView, confirmView, POOR_HINT, SHOP_TABS, shopBanner, shopGroups, type ShopCard, type ShopEntry, type ShopTab } from '../zones/shopView';
+import { ALL_BOUGHT, boughtView, confirmView, POOR_HINT, SEED_GRID_HINT, SEED_QTY, seedCrop, seedLine, SHOP_TABS, shopBanner, shopGroups, type ShopCard, type ShopEntry, type ShopTab } from '../zones/shopView';
+import type { CropId } from '../zones/vuon';
 import { formatCoins } from '../zones/wallet';
 import type { BuyResult } from '../zones/walletRules';
+import { cropPicture, SEED_PACK } from './cropArt';
 import { COIN, DECOR_PICTURES, ICON_CHECK, STROKE, svgIcon, type SvgNode } from './decorIcons';
 import { el } from './dom';
 import { coinIcon } from './wallet';
@@ -35,22 +37,24 @@ function button(cls: string, label: string, icon?: SVGElement): HTMLButtonElemen
   return b;
 }
 
-/** Hình giữ chỗ cho túi hạt (mầm hai lá) — hình hạt chờ thiết kế (phiếu 2026-11-15-vuon-trong-trot). */
-const SEED_PICTURE: readonly SvgNode[] = [
-  ['path', { d: 'M20 50h24l-3 8H23z', fill: '#B98A6A' }],
-  ['path', { d: 'M32 50V30', stroke: '#2B5446', 'stroke-width': '3', 'stroke-linecap': 'round' }],
-  ['path', { d: 'M32 34c-9 0-14-6-14-12 8 0 14 4 14 12z', fill: '#6E9E4A' }],
-  ['path', { d: 'M32 30c0-9 6-14 14-14 0 9-5 14-14 14z', fill: '#8DBA5C' }],
-];
-
-/** Hình phẳng của vật (khung 64) cỡ [size] trên nền giấy. */
-function picture(item: ShopEntry, size: number): SVGElement {
-  return svgIcon(item.slot === 'hat' ? SEED_PICTURE : (DECOR_PICTURES[item.id] ?? []), size, '0 0 64 64', { fill: 'none' });
+/** Hình phẳng của vật (khung 64) cỡ [size] trên nền giấy; hạt → hình cây chín (+ gói hạt 26 góc dưới phải khi [pack]). */
+function picture(item: ShopEntry, size: number, pack = false): Node[] {
+  const c = seedCrop(item);
+  if (!c) return [svgIcon(DECOR_PICTURES[item.id] ?? [], size, '0 0 64 64', { fill: 'none' })];
+  const out: Node[] = [cropPicture(c.id, size)];
+  if (pack) {
+    const p = svgIcon(SEED_PACK, 26, '0 0 26 26');
+    p.classList.add('pack');
+    out.push(p);
+  }
+  return out;
 }
 
 export interface ShopPanelHost {
-  /** mua một vật; `ok` → số dư + sở hữu mới (đã ghi kho) */
-  buy(item: ShopEntry): BuyResult;
+  /** mua một vật (hạt: [count] hạt — × 1 · × 5 · × 10); `ok` → số dư + sở hữu mới (đã ghi kho) */
+  buy(item: ShopEntry, count: number): BuyResult;
+  /** túi hạt hiện có (thẻ "Trong túi: n" — R-VUON-9) */
+  bag(): Partial<Record<CropId, number>>;
   /** màn vừa đóng ("Đóng" / Esc) */
   closed(): void;
 }
@@ -70,6 +74,9 @@ export class ShopPanel {
   private owned: string[] = [];
   private tab: ShopTab = 'all';
   private picked: ShopEntry | null = null;
+  /** số hạt đang chọn trong hộp xác nhận (R-VUON-9) */
+  private qty = 1;
+  private readonly seedHint = h('p', 'sp-seedHint', SEED_GRID_HINT);
   private toastTimer = 0;
   private deltaTimer = 0;
 
@@ -138,9 +145,14 @@ export class ShopPanel {
 
     const titles = h('div', 'sp-titles');
     const name = h('h1', '', 'Tạp hoá'); // shopName
-    titles.append(name, h('span', 'sub', 'Đồ trang trí Nhà của ta · mua một lần, đặt được nhiều ô')); // shopSubtitle
+    // shopSubtitleSeeds khi có hạt giống (2026-11-15.29), không thì shopSubtitle
+    const seeds = this.items.some((i) => i.slot === 'hat');
+    titles.append(name, h('span', 'sub', seeds ? 'Đồ trang trí Nhà của ta · hạt giống cho Vườn rau' : 'Đồ trang trí Nhà của ta · mua một lần, đặt được nhiều ô'));
     const brand = h('div', 'sp-brand');
-    brand.append(titles); // không ấn son chữ Hán (R-HUD-4)
+    const seal = h('span', 'sp-seal'); // ấn son chữ Việt "Tạp hoá" (2026-11-15.29 — không chữ Hán, R-HUD-4)
+    seal.setAttribute('aria-hidden', 'true');
+    seal.append(h('span', '', 'Tạp'), h('span', '', 'hoá'));
+    brand.append(seal, titles);
     this.walletBtn.setAttribute('role', 'img');
     this.walletBtn.append(coinIcon(26), this.num);
     this.walletWrap.append(this.walletBtn);
@@ -161,7 +173,7 @@ export class ShopPanel {
     close.addEventListener('click', () => this.close());
 
     const wrap = h('div', 'sp-wrap');
-    wrap.append(head, bar, this.banner, listWrap, close);
+    wrap.append(head, bar, this.banner, this.seedHint, listWrap, close);
 
     this.dim.setAttribute('aria-hidden', 'true');
     this.dim.addEventListener('click', () => this.pick(null));
@@ -172,6 +184,7 @@ export class ShopPanel {
 
   private pick(item: ShopEntry | null): void {
     this.picked = item;
+    this.qty = 1;
     this.render();
   }
 
@@ -192,6 +205,7 @@ export class ShopPanel {
       }),
     );
     this.renderBanner();
+    this.seedHint.hidden = this.tab !== 'hat'; // shopSeedSub — chỉ ở tab Hạt giống
     this.list.replaceChildren(
       ...shopGroups(this.items, this.owned, this.balance, this.tab, this.picked?.id ?? null).map((g) => {
         const sec = h('section', 'sp-group');
@@ -224,9 +238,11 @@ export class ShopPanel {
     const { item } = c;
     const li = h('li', `sp-card ${c.state}${c.picked ? ' picked' : ''}`);
     const art = h('div', 'art');
-    art.append(picture(item, 54));
+    art.append(...picture(item, 54, true));
     const price = h('div', 'price');
     price.append(svgIcon(COIN, 14, '0 0 100 100'), h('b', '', formatCoins(item.price)));
+    const seed = seedLine(item, this.host.bag());
+    if (seed) price.append(h('span', 'time', `· ${seed.time}`));
     let act: HTMLElement;
     if (c.state === 'owned') {
       act = h('span', 'act owned');
@@ -237,7 +253,9 @@ export class ShopPanel {
       else b.addEventListener('click', () => this.pick(item));
       act = b;
     }
-    li.append(art, h('div', 'name', item.name), price, act);
+    li.append(art, h('div', 'name', item.name));
+    if (seed) li.append(h('div', seed.inBag > 0 ? 'inbag has' : 'inbag', seed.text)); // shopInBag
+    li.append(price, act);
     return li;
   }
 
@@ -250,36 +268,61 @@ export class ShopPanel {
       this.confirm.replaceChildren();
       return;
     }
-    const v = confirmView(item, this.balance);
+    const c = seedCrop(item);
+    const v = confirmView(item, this.balance, c ? { count: this.qty, inBag: this.host.bag()[c.id] ?? 0 } : undefined);
     this.confirm.setAttribute('aria-label', `Xác nhận mua ${item.name}`);
     const art = h('div', 'art');
-    art.append(picture(item, 64));
+    art.append(...picture(item, 64));
     const q = h('div', 'q');
-    q.textContent = `${v.before} ${v.after}`; // shopConfirm
+    q.textContent = `${v.before} ${v.after}`; // shopConfirm / shopSeedConfirm
     const txt = h('div', 'txt');
     txt.append(q, h('div', 'sub', v.sub)); // shopConfirmSub
     const top = h('div', 'top');
     top.append(art, txt);
+    const parts: HTMLElement[] = [top];
+    if (c) {
+      // chọn số hạt × 1 · × 5 · × 10 (R-VUON-9; viên cao 36, đang chọn nền slate)
+      const qty = h('div', 'qty');
+      qty.setAttribute('role', 'radiogroup');
+      qty.setAttribute('aria-label', 'Số hạt'); // shopQty
+      for (const k of SEED_QTY) {
+        const b = button(k === this.qty ? 'on' : '', `× ${k}`);
+        b.setAttribute('role', 'radio');
+        b.setAttribute('aria-checked', String(k === this.qty));
+        b.addEventListener('click', () => {
+          this.qty = k;
+          this.renderConfirm();
+        });
+        qty.append(b);
+      }
+      const block = h('div', 'qtyBlock');
+      block.append(h('div', 'qtyLabel', 'Số hạt'), qty);
+      parts.push(block);
+    }
     const dl = h('dl');
     for (const [k, val] of v.rows) dl.append(h('dt', '', k), h('dd', '', val)); // shopHave, shopPrice, shopAfter
     const cancel = button('cancel', 'Thôi'); // shopCancel
     cancel.addEventListener('click', () => this.pick(null));
-    const buy = button('buy', v.buy, coinIcon(20)); // shopBuyFor
-    buy.addEventListener('click', () => this.buy(item));
+    // shopBuyFor; thiếu cho số hạt đã chọn → "Còn thiếu n" nét đứt (R-VUON-9)
+    const buy = v.short > 0 ? button('buy short', v.buy) : button('buy', v.buy, coinIcon(20));
+    if (v.short > 0) buy.setAttribute('aria-disabled', 'true');
+    else buy.addEventListener('click', () => this.buy(item));
     const row = h('div', 'row');
     row.append(cancel, buy);
-    this.confirm.replaceChildren(top, dl, row);
-    buy.focus({ preventScroll: true });
+    this.confirm.replaceChildren(...parts, dl, row);
+    if (!v.short) buy.focus({ preventScroll: true });
   }
 
   private buy(item: ShopEntry): void {
-    const r = this.host.buy(item);
+    const count = seedCrop(item) ? this.qty : 1;
+    const r = this.host.buy(item, count);
     this.picked = null;
+    this.qty = 1;
     if (r.ok) {
       this.balance = r.balance;
       this.owned = [...r.owned];
       this.showBought(item);
-      this.showDelta(item.price);
+      this.showDelta(item.price * count);
     }
     this.render();
   }
@@ -288,7 +331,7 @@ export class ShopPanel {
   private showBought(item: ShopEntry): void {
     const v = boughtView(item);
     const art = h('div', 'art');
-    art.append(picture(item, 40));
+    art.append(...picture(item, 40));
     const b = h('b', '', v.title); // shopBought
     const txt = h('div', 'txt');
     txt.append(b, h('span', 'sub', v.sub)); // shopBoughtSub

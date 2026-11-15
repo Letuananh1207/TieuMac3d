@@ -5,7 +5,7 @@ import '../journey/garden.dart';
 import 'shop_event.dart';
 
 /// Thao tác `gardenAct`: `act` + luống / cây (tuỳ thao tác). Sai dạng → `null` (trả `bad`).
-typedef GardenActArgs = ({String act, String? plot, String? crop});
+typedef GardenActArgs = ({String act, String? plot, String? crop, int count});
 
 GardenActArgs? gardenActArgs(List<dynamic> args) {
   if (args.isEmpty) return null;
@@ -13,9 +13,10 @@ GardenActArgs? gardenActArgs(List<dynamic> args) {
   if (e is! Map || e['type'] != 'gardenAct') return null;
   final p = e['payload'];
   if (p is! Map) return null;
-  final act = p['act'], plot = p['plot'], crop = p['crop'];
+  final act = p['act'], plot = p['plot'], crop = p['crop'], count = p['count'];
   if (act is! String) return null;
-  return (act: act, plot: plot is String ? plot : null, crop: crop is String ? crop : null);
+  // `count` (mua hạt × 1 · × 5 · × 10 — R-VUON-9): thiếu → 1; số lạ → luật trả `bad`
+  return (act: act, plot: plot is String ? plot : null, crop: crop is String ? crop : null, count: count is num ? count.toInt() : 1);
 }
 
 /// Sự kiện `getGarden` (payload rỗng)?

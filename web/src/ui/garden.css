@@ -1,0 +1,120 @@
+/* HUD Vườn rau (thiết kế 2026-11-15.29 — design/docs/screen_specs.md "Vườn rau"): nút nổi luống, nhãn đang lớn, dấu luống,
+   tấm báo, bảng hạt / kho / mở ô. Token: jade, gold, slate, slate-muted, frost*, map-paper, lacquer, garden-water. */
+:root{--garden-water:#5b9bc4}
+
+/* nút nổi: viên jade 46 + mũi nhọn 14 × 8 (kiểu "Hướng dẫn") — neo trên mép xa của luống gần nhất */
+#gardenBtn{position:fixed;z-index:6;transform:translate(-50%,calc(-100% - 10px));display:flex;flex-direction:column;align-items:center}
+#gardenBtn button{height:46px;box-sizing:border-box;padding:0 18px 0 14px;font:inherit;font-size:15px;font-weight:700;color:var(--on-jade);background:var(--jade);border:1px solid var(--frost-line);border-radius:999px;box-shadow:inset 0 -2px 0 rgba(0,0,0,.18),0 6px 16px rgba(36,50,58,.3);display:flex;align-items:center;gap:8px;white-space:nowrap;touch-action:manipulation}
+#gardenBtn button:active{background:var(--jade-press)}
+#gardenBtn .tip{width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:8px solid var(--jade)}
+#gardenBtn .price{height:26px;margin-left:2px;padding:0 9px 0 5px;border-radius:999px;background:rgba(255,255,255,.18);display:flex;align-items:center;gap:5px;font-size:13px;font-variant-numeric:tabular-nums}
+/* nhãn luống đang lớn: kính sương bo 12, đệm 5 × 10, "{cây} · còn {thời gian}" 12/700 (thời gian 500 slate-muted), vạch 96 × 3 */
+#gardenLabel{position:fixed;z-index:5;transform:translate(-50%,calc(-100% - 6px));box-sizing:border-box;padding:5px 10px 6px;border-radius:12px;background:rgba(244,247,246,.9);border:1px solid var(--frost-line);outline:1px solid var(--frost-outline);box-shadow:var(--shadow-hud);display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;font-weight:500;color:var(--slate-muted);white-space:nowrap;pointer-events:none}
+#gardenLabel b{font-weight:700;color:var(--slate)}
+#gardenLabel .bar{width:96px;height:3px;border-radius:2px;background:rgba(36,50,58,.12);overflow:hidden}
+#gardenLabel .bar i{display:block;height:100%;background:var(--jade)}
+
+/* dấu luống trong cảnh: giọt nước nảy 6 px 1,6 s/vòng · lấp lánh nhấp nháy 2,4 s/vòng lệch pha */
+#gardenMarks{position:fixed;inset:0;z-index:3;pointer-events:none;overflow:hidden}
+#gardenMarks[hidden]{display:none}
+.gm{position:absolute;left:0;top:0;width:0;height:0}
+.gm[hidden]{display:none}
+.gm svg{position:absolute;left:-10px;top:-24px;display:block}
+.gm.giot svg{left:-7.5px;top:-22px;animation:gm-bob 1.6s ease-in-out infinite}
+.gm.lap-lanh svg{animation:gm-blink 2.4s ease-in-out infinite;animation-delay:var(--phase,0s)}
+@keyframes gm-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes gm-blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.82)}}
+@media (prefers-reduced-motion:reduce){.gm svg{animation:none !important}}
+
+/* tấm báo: nền slate bo 12, chữ trắng 13 (dòng 2: 12 mờ .8), hình 28–36 bên trái; cạnh bản đồ nhỏ, 3 s, không chặn bấm */
+#gardenToast{position:fixed;z-index:7;left:calc(var(--sa-left) + 20px + var(--minimap,148px) + 12px);right:calc(var(--sa-right) + 16px);top:calc(var(--sa-top) + 56px);box-sizing:border-box;padding:10px 12px;border-radius:12px;background:var(--slate);color:#fff;box-shadow:0 8px 22px rgba(36,50,58,.35);display:flex;align-items:center;gap:10px;pointer-events:none;animation:gt-in .2s ease-out}
+#gardenToast[hidden]{display:none}
+#gardenToast .pic{flex:0 0 auto;width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center}
+#gardenToast .pic.thu{background:var(--map-paper,#f2eada)}
+#gardenToast .pic.mo-o{width:30px;height:30px;border-radius:50%;background:var(--jade)}
+#gardenToast .txt{display:flex;flex-direction:column;gap:2px;font-size:13px;line-height:1.35;min-width:0}
+#gardenToast .sub{font-size:12px;opacity:.8}
+@keyframes gt-in{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+
+/* bảng mở → ẩn cần điều khiển, cụm nút, Trang trí, Trò chuyện; giữ ví + bản đồ nhỏ */
+body.garden-panel #joy,body.garden-panel #joyGhost,body.garden-panel #actions,body.garden-panel #decorBtn,body.garden-panel #chatBtn,
+body.garden-panel #chat,body.garden-panel #gardenBtn,body.garden-panel #gardenLabel,body.garden-panel #talk,body.garden-panel #seat{display:none !important}
+/* HUD vườn ẩn khi trang trí / bản đồ / thoại / ngồi / màn Flutter (dấu luống là cảnh — vẫn hiện, trừ màn phủ cảnh) */
+body.decorating #gardenBtn,body.decorating #gardenLabel,body.map-open #gardenBtn,body.map-open #gardenLabel,body.talking #gardenBtn,
+body.talking #gardenLabel,body.covered #gardenBtn,body.covered #gardenLabel,body.covered #gardenToast,body.covered #gardenMarks{display:none !important}
+
+/* tấm đáy (kiểu bảng danh mục trang trí): dọc cao 392 (hạt) / 420 (kho) / 330 (mở ô), bo trên 20, kính .96, tay nắm 40 × 4 */
+#gardenDim{position:fixed;inset:0;z-index:6;background:rgba(36,50,58,.28)}
+#gardenDim[hidden]{display:none}
+#gardenPanel{position:fixed;z-index:7;left:0;right:0;bottom:0;height:calc(392px + var(--sa-bottom));box-sizing:border-box;padding:10px calc(var(--sa-right) + 16px) calc(var(--sa-bottom) + 12px) calc(var(--sa-left) + 16px);border-radius:20px 20px 0 0;background:rgba(244,247,246,.96);border:1px solid var(--frost-line);box-shadow:0 -10px 30px rgba(36,50,58,.22);display:flex;flex-direction:column;gap:12px;color:var(--slate);touch-action:pan-y}
+#gardenPanel[hidden]{display:none}
+#gardenPanel.vr-kho{height:calc(420px + var(--sa-bottom))}
+#gardenPanel.vr-mo-o{height:auto;min-height:calc(330px + var(--sa-bottom));gap:14px}
+#gardenPanel .grip{align-self:center;flex:none;width:40px;height:4px;border-radius:2px;background:rgba(36,50,58,.25)}
+.vr-head{display:flex;align-items:center;gap:10px;flex:none}
+.vr-head .ring{flex:0 0 34px;height:34px;border-radius:50%;background:var(--jade);color:#fff;display:flex;align-items:center;justify-content:center}
+.vr-head .titles{flex:1;min-width:0;display:flex;flex-direction:column}
+.vr-head h2{margin:0;font-size:16px;font-weight:700}
+.vr-head .sub{font-size:12px;line-height:1.4;color:var(--slate-muted)}
+.vr-head .subRow{display:flex;align-items:center;gap:10px}
+.vr-bar{flex:0 1 90px;min-width:40px;height:4px;border-radius:2px;background:rgba(36,50,58,.12);overflow:hidden}
+.vr-bar i{display:block;height:100%;background:var(--jade)}
+.vr-bar.full i{background:var(--slate-muted)}
+/* thẻ hạt: lưới dọc 3 / ngang 2 cột, cách 8; bo 14, đệm 8, viền slate 14 %; ô hình 64 map-paper bo 10 + viên "còn n" */
+.vr-seeds{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;overflow-y:auto;min-height:0;align-content:start}
+.vr-seed{width:100%;box-sizing:border-box;padding:8px 8px 9px;border-radius:14px;background:#fff;border:1px solid rgba(36,50,58,.14);font:inherit;text-align:left;color:var(--slate);display:flex;flex-direction:column;gap:5px;touch-action:manipulation}
+.vr-seed:active{background:rgba(214,222,220,.95)}
+.vr-seed .pic{position:relative;height:64px;border-radius:10px;background:var(--map-paper,#f2eada);display:flex;align-items:center;justify-content:center}
+.vr-seed .left{position:absolute;left:5px;top:5px;height:20px;padding:0 7px;border-radius:999px;background:var(--jade);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center}
+.vr-seed .name{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vr-seed .meta{font-size:11px;line-height:1.35;color:var(--slate-muted)}
+.vr-seed .sell{display:inline-flex;align-items:center;gap:3px}
+.vr-foot{margin-top:auto;flex:none;font-size:12px;color:var(--slate-muted);display:flex;align-items:center;gap:6px}
+/* trống: vòng 56 + biểu tượng 28, chữ 14/700, gợi ý 12 */
+.vr-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:0 8px}
+.vr-empty .ring{width:56px;height:56px;border-radius:50%;background:rgba(36,50,58,.08);color:var(--slate-muted);display:flex;align-items:center;justify-content:center}
+.vr-empty b{font-size:14px}
+.vr-empty .hint{font-size:12px;line-height:1.45;color:var(--slate-muted)}
+/* dòng kho: hình 40 · tên 14/700 + "× n" · xu 12 + "n / cái" · nút "Bán" cao 32 bo 10 */
+.vr-rows{list-style:none;margin:0;padding:0;overflow-y:auto;min-height:0;border-top:1px solid rgba(36,50,58,.1)}
+.vr-rows li{display:flex;align-items:center;gap:10px;padding:5px 0;border-bottom:1px solid rgba(36,50,58,.1)}
+.vr-rows .pic{flex:0 0 40px;height:40px;border-radius:9px;background:var(--map-paper,#f2eada);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.vr-rows .txt{flex:1;min-width:0;display:flex;flex-direction:column}
+.vr-rows .name{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vr-rows .n{color:var(--slate-muted)}
+.vr-rows .price{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--slate-muted)}
+.vr-sell{flex:none;height:32px;padding:0 14px;border-radius:10px;background:rgba(43,84,70,.1);border:1px solid rgba(43,84,70,.35);color:var(--jade);font:700 14px var(--ui);touch-action:manipulation}
+.vr-sell:active{background:rgba(43,84,70,.2)}
+.vr-sell.off{background:transparent;border:1px dashed rgba(36,50,58,.35);color:var(--slate-muted);cursor:default}
+.vr-storeFoot{margin-top:auto;flex:none;display:flex;flex-direction:column;gap:8px}
+.vr-bag{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12px;color:var(--slate-muted)}
+.vr-bag .chip{height:24px;padding:0 9px;border-radius:999px;background:rgba(36,50,58,.07);color:var(--slate);font-weight:700;display:flex;align-items:center}
+.vr-capLeft{font-size:12px;text-align:center;color:var(--slate-muted)}
+.vr-capped{height:44px;border-radius:12px;background:rgba(212,166,74,.14);border:1px solid var(--gold);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 10px}
+.vr-big{flex:1;height:48px;border:0;border-radius:12px;background:var(--jade);color:#fff;font:700 15px var(--ui);display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:inset 0 -2px 0 rgba(0,0,0,.18),0 4px 12px rgba(43,84,70,.3);touch-action:manipulation}
+.vr-big:active{background:var(--jade-press)}
+.vr-big.short{background:transparent;color:var(--slate-muted);border:1px dashed rgba(36,50,58,.35);box-shadow:none;cursor:default}
+.vr-storeFoot .vr-big{flex:none}
+/* hộp mở ô: hình 76 · "Mở luống n / 12" 16/700 · dòng phụ · Đang có / Giá (−n lacquer) / Còn lại · "Thôi" + "Mở · n" */
+.vr-unlockTop{display:flex;gap:14px;align-items:center}
+.vr-unlockTop .pic{flex:0 0 76px;height:76px;border-radius:12px;background:var(--map-paper,#f2eada);display:flex;align-items:center;justify-content:center}
+.vr-unlockTop .txt{display:flex;flex-direction:column;gap:3px;min-width:0}
+.vr-unlockTop h2{margin:0;font-size:16px;font-weight:700}
+.vr-unlockTop .sub{margin:0;font-size:12px;line-height:1.45;color:var(--slate-muted)}
+#gardenPanel dl{margin:0;display:grid;grid-template-columns:1fr auto;row-gap:4px;font-size:14px;font-variant-numeric:tabular-nums}
+#gardenPanel dd{margin:0;font-weight:700;display:flex;align-items:center;justify-content:flex-end;gap:5px}
+#gardenPanel dd:nth-of-type(2){color:var(--lacquer)}
+.vr-row{display:flex;gap:10px}
+.vr-cancel{flex:0 0 38%;height:48px;border-radius:12px;border:1px solid rgba(36,50,58,.25);background:#fff;color:var(--slate);font:700 15px var(--ui);touch-action:manipulation}
+
+@media (orientation:landscape) and (max-height:600px){
+  #gardenToast{left:calc(max(16px,calc(var(--sa-left) + 16px)) + var(--minimap,128px) + 12px);right:auto;top:12px;width:300px}
+  /* ngang: cột phải 310 từ mép safe (bo trái 20, đệm 14 14 21); ví dời sát trái cột */
+  #gardenPanel,#gardenPanel.vr-kho,#gardenPanel.vr-mo-o{left:auto;top:0;right:0;bottom:0;width:calc(310px + var(--sa-right));height:auto;min-height:0;padding:14px calc(var(--sa-right) + 14px) calc(var(--sa-bottom) + 21px) 14px;border-radius:20px 0 0 20px;gap:10px;overflow-y:auto}
+  #gardenPanel .grip{display:none}
+  .vr-seeds{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .vr-seed .pic{height:52px}
+  .vr-seed .pic svg{width:52px;height:52px}
+  body.garden-panel #wallet{right:calc(var(--sa-right) + 322px)}
+  body.garden-panel #gardenToast{width:auto;right:calc(var(--sa-right) + 322px)}
+}

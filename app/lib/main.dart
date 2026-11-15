@@ -137,14 +137,15 @@ class HocXaApp extends StatelessWidget {
                         onBuy: (i) => progress!.buyDecor(i.id, i.price),
                         // hạt giống Vườn rau (R-VUON-9) — bảng cây một nguồn ở garden.dart
                         seeds: seedShopItems(),
-                        onBuySeed: (i) => progress!.buySeed(seedCrop(i) ?? ''),
+                        bag: progress!.garden.seeds,
+                        onBuySeed: (i, count) => progress!.buySeed(seedCrop(i) ?? '', count: count),
                       )),
               // vườn rau: gieo / tưới / thu / bán / mở ô, giữ qua tắt app (R-VUON-1…9)
               onGetGarden: progress == null ? null : () => gardenReply(progress!.garden, progress!.now),
               onGardenAct: progress == null
                   ? null
                   : (a) async {
-                      final r = await progress!.gardenAct(a.act, plot: a.plot, crop: a.crop);
+                      final r = await progress!.gardenAct(a.act, plot: a.plot, crop: a.crop, count: a.count);
                       return gardenActReply(r, progress!.coins);
                     },
               onSetDecor: (slot, item) async => await progress?.placeDecor(slot, item) ?? false,

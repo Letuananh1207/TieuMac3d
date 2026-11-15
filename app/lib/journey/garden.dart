@@ -337,12 +337,16 @@ GardenResult openPlot(Garden g, int balance) {
   return GardenDone(g.copyWith(open: g.open + 1), amount: -price);
 }
 
-/// Mua 1 hạt [crop] ở Tạp hoá với số dư [balance] (R-VUON-9).
-GardenResult buySeed(Garden g, String crop, int balance) {
+/// Số hạt chọn được mỗi lần mua ở Tạp hoá (R-VUON-9: × 1 · × 5 · × 10).
+const seedCounts = [1, 5, 10];
+
+/// Mua [count] hạt [crop] (× 1 · × 5 · × 10) ở Tạp hoá với số dư [balance] (R-VUON-9): giá = giá hạt × số; thiếu → `short`.
+GardenResult buySeed(Garden g, String crop, int balance, {int count = 1}) {
   final c = cropOf(crop);
-  if (c == null) return const GardenRefused(GardenError.bad);
-  if (balance < c.seed) return GardenRefused(GardenError.short, short: c.seed - balance);
-  return GardenDone(g.copyWith(seeds: {...g.seeds, crop: (g.seeds[crop] ?? 0) + 1}), amount: -c.seed);
+  if (c == null || !seedCounts.contains(count)) return const GardenRefused(GardenError.bad);
+  final price = c.seed * count;
+  if (balance < price) return GardenRefused(GardenError.short, short: price - balance);
+  return GardenDone(g.copyWith(seeds: {...g.seeds, crop: (g.seeds[crop] ?? 0) + count}), amount: -price);
 }
 
 /// Số luống đã chín (tấm báo "Vườn rau: n luống đã chín" — R-VUON-6).
@@ -350,5 +354,5 @@ int ripeCount(Garden g, int now) => [for (var i = 1; i <= g.open; i++) if (plotS
 
 /// Nhãn ví (R-TIEN-5): "−50 · Mở ô đất", "−4 · Hạt Cải ngọt", "+39 · Bán nông sản" (dấu trừ U+2212).
 String openPlotLabel(int price) => '−$price · Mở ô đất';
-String seedLabel(Crop c) => '−${c.seed} · Hạt ${c.name}';
+String seedLabel(Crop c, [int count = 1]) => '−${c.seed * count} · Hạt ${c.name}';
 String sellLabel(int amount) => '+$amount · Bán nông sản';

@@ -222,7 +222,7 @@ async function boot(): Promise<void> {
         desk.sync(p.book); // màn danh mục Flutter có thể vừa ghi mượn (R-SACH-1)
         walletRoom.sync(p); // về từ Tạp hoá: ví "−n" (R-TIEN-4)
       }
-      void garden?.load(); // Tạp hoá có thể vừa bán hạt vào túi (R-VUON-9)
+      void garden?.load(false); // Tạp hoá có thể vừa bán hạt vào túi (R-VUON-9); không báo lại luống chín
       if (scrollOpen) showScroll(lastPick); // cuộn hiện lại ngay, mục vừa dùng cập nhật (thiết kế 2026-11-14.21)
       lastPick = null;
     });
@@ -519,14 +519,14 @@ async function boot(): Promise<void> {
   // Space nhảy, F chào, C ngồi ôn (R-DIEU-6, R-DIEU-7); đang học / màn tải thì bỏ qua
   const keyboard = new Keyboard((a) => {
     if (a === 'back') {
-      if (!mapBack() && !decor?.back()) gamePlay.stand(); // Esc: đóng bảng / thoại / bản đồ, không có thì rời bàn (R-GIAO-1)
+      if (!mapBack() && !decor?.back() && !garden?.back()) gamePlay.stand(); // Esc: đóng bảng / thoại / bản đồ, không có thì rời bàn (R-GIAO-1)
       return;
     }
     if (a === 'map') {
       areaMap.toggle(); // M: mở / đóng bản đồ lớn (R-BANDO-5)
       return;
     }
-    if (paused || loading.active || mapOpen || talking || decor?.active) return;
+    if (paused || loading.active || mapOpen || talking || decor?.active || garden?.active) return;
     if (a === 'chat') {
       if (!gamePlay.active) chat.open(); // Enter: mở ô nhập (gửi do ô nhập tự lo)
       return;
@@ -545,7 +545,7 @@ async function boot(): Promise<void> {
     tapOnly: () => mapOpen || areaMap.open || talking || gamePlay.active || chat.typing, // ngồi chơi: chạm là chạm bàn (R-GIAO-1, R-DIEU-1)
     lookMode: () => ngoiMat.seated, // ngồi: kéo = nhìn quanh từ mắt, chụm không zoom (R-DIEU-7, R-DIEU-1)
     onLook: (dx, dy) => ngoiMat.drag(dx, dy),
-    noJoystick: () => !!decor?.active || scrollOpen, // trang trí: kéo đâu cũng xoay camera (R-NHA-2); cuộn mở: kéo = nhìn quanh (R-ON-8)
+    noJoystick: () => !!decor?.active || !!garden?.active || scrollOpen, // trang trí: kéo đâu cũng xoay camera (R-NHA-2); cuộn mở: kéo = nhìn quanh (R-ON-8)
     onTap: (x, y) => {
       if (mapOpen) {
         onMapTap(x, y);
@@ -553,6 +553,7 @@ async function boot(): Promise<void> {
       }
       if (chat.close()) return; // đang gõ: chạm cảnh = đóng ô nhập
       if (decor?.tap()) return; // trang trí: chạm cảnh trống = đóng bảng danh mục
+      if (garden?.tap()) return; // bảng vườn rau mở: chạm cảnh = đóng bảng
       if (scrollOpen && !covered && !talking) {
         ngoiMat.tapScroll(x, y, camera); // cuộn sách mở: chạm thẳng vào mục trên giấy (R-ON-8)
         return;
@@ -689,7 +690,7 @@ async function boot(): Promise<void> {
     setReward: (result, line) => gamePlay.setReward(result, line),
   });
   walletRoom.sync(progress);
-  // vườn rau Nhà của ta (R-VUON-1…9) — homeGarden.ts; HUD chờ thiết kế (tạm: phím G / B khi ?debug)
+  // vườn rau Nhà của ta (R-VUON-1…9, HUD thiết kế 2026-11-15.29) — homeGarden.ts
   const garden = world.garden
     ? new HomeGarden({
         garden: world.garden,
@@ -697,9 +698,14 @@ async function boot(): Promise<void> {
         trial,
         speed: gardenSpeed(location.search),
         debug: params.has('debug'),
-        coins: (amount, label, balance) => {
-          walletRoom.gardenCoins(amount, label, balance);
+        coins: (amount, label, balance, from) => {
+          walletRoom.gardenCoins(amount, label, balance, from);
           if (progress) progress = { ...progress, coins: balance };
+        },
+        balance: () => trial?.wallet.coins ?? progress?.coins ?? 0,
+        onOpen: () => {
+          player.moveTarget = null;
+          joystick.end();
         },
       })
     : null;
@@ -864,7 +870,7 @@ async function boot(): Promise<void> {
     // hướng đi khoá khi giữ joystick cùng hướng → camera tự xoay không làm nhân vật đi vòng (R-DIEU-3)
     // cưỡi hạc: hoạt cảnh giữ nhân vật + camera (không đi, camera không bám)
     const riding = !!ride?.owns;
-    if (!riding) player.update(dt, input, orbit.steerYaw(input.x, input.y), paused || loading.active || mapOpen || areaMap.open || talking || chat.typing || !!decor?.active);
+    if (!riding) player.update(dt, input, orbit.steerYaw(input.x, input.y), paused || loading.active || mapOpen || areaMap.open || talking || chat.typing || !!decor?.active || !!garden?.active);
     const pos = player.position;
     // camera bám êm: dây kéo + tự về sau lưng chậm (R-DIEU-3)
     if (!riding) orbit.follow(dt, pos.x - fromX, pos.z - fromZ, character.facing.rotation.y, player.state.mps > 0);
@@ -877,7 +883,7 @@ async function boot(): Promise<void> {
       if (ring.update(pos, dt)) openMap();
       world.teleport?.setCharge(ring.charge);
     }
-    const walking = !(paused || covered || loading.active || mapOpen || talking || travelling || !!decor?.active);
+    const walking = !(paused || covered || loading.active || mapOpen || talking || travelling || !!decor?.active || !!garden?.active);
     for (const p of portals) if (p.trigger.update(pos, walking) && !travelling) travel(p.to, 'cong');
     scroll.update(dt);
     zones.update(pos);
@@ -951,6 +957,15 @@ async function boot(): Promise<void> {
     seatGlow.set(spot);
     decor?.update(dt, camera, seatFree); // nút "Trang trí" ẩn khi bản đồ / thoại / ngồi / màn Flutter
     garden?.update(dt, pos);
+    // HUD vườn: nút nổi / nhãn / dấu luống; ẩn khi trang trí, bản đồ, thoại, ngồi, màn Flutter, màn tải (2026-11-15.29)
+    garden?.frame(camera, {
+      decorating: !!decor?.active,
+      map: mapOpen || areaMap.open,
+      talking: talking || gamePlay.active || chat.typing,
+      sitting: player.isSitting,
+      covered: paused || covered || !!ride?.owns,
+      loading: loading.active || travelling,
+    });
     seatGlow.update(dt);
     // mở bài học / ôn / bảng, màn tải → nhạc tắt dần; đóng → phát tiếp theo giờ (R-NHAC-1)
     music?.update(dt, paused || covered || loading.active ? 0 : musicVolume(teaFloors, pos.x, pos.z));

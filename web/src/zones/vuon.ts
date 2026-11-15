@@ -235,12 +235,16 @@ export function openPlot(g: Garden, balance: number): GardenResult {
   return done({ ...g, open: g.open + 1 }, -price);
 }
 
-/** Mua 1 hạt (R-VUON-9). */
-export function buySeed(g: Garden, cropId: string, balance: number): GardenResult {
+/** Số hạt chọn được mỗi lần mua ở Tạp hoá (R-VUON-9). */
+export const SEED_COUNTS: readonly number[] = [1, 5, 10];
+
+/** Mua [count] hạt (× 1 · × 5 · × 10 — R-VUON-9): giá = giá hạt × số; thiếu → `short`. Như `buySeed` ở Dart. */
+export function buySeed(g: Garden, cropId: string, balance: number, count = 1): GardenResult {
   const c = cropOf(cropId);
-  if (!c) return no('bad');
-  if (balance < c.seed) return no('short', c.seed - balance);
-  return done({ ...g, seeds: { ...g.seeds, [c.id]: (g.seeds[c.id] ?? 0) + 1 } }, -c.seed);
+  if (!c || !SEED_COUNTS.includes(count)) return no('bad');
+  const price = c.seed * count;
+  if (balance < price) return no('short', price - balance);
+  return done({ ...g, seeds: { ...g.seeds, [c.id]: (g.seeds[c.id] ?? 0) + count } }, -price);
 }
 
 export function ripeCount(g: Garden, now: number, speed = 1): number {
@@ -255,7 +259,7 @@ export type GardenAct =
   | { act: 'water' | 'harvest'; plot: string }
   | { act: 'sell'; crop: CropId | null }
   | { act: 'open' }
-  | { act: 'buy'; crop: CropId };
+  | { act: 'buy'; crop: CropId; /** × 1 · × 5 · × 10 (thiếu = 1) */ count?: number };
 
 /** Chạy một thao tác (chế độ thử — Flutter chạy bản Dart). [today] = ngày VN. */
 export function applyAct(g: Garden, a: GardenAct, balance: number, now: number, speed = 1): GardenResult {
@@ -271,7 +275,7 @@ export function applyAct(g: Garden, a: GardenAct, balance: number, now: number, 
     case 'open':
       return openPlot(g, balance);
     case 'buy':
-      return buySeed(g, a.crop, balance);
+      return buySeed(g, a.crop, balance, a.count ?? 1);
   }
 }
 
@@ -287,7 +291,7 @@ export function parseActReply(v: unknown): (GardenResult & { balance: number }) 
   return null;
 }
 
-/* ---------- chữ hiển thị (chuỗi chờ thiết kế — phiếu 2026-11-15-vuon-trong-trot) ---------- */
+/* ---------- chữ hiển thị (thiết kế 2026-11-15.29; chữ bảng / nút ở `vuonHud.ts`) ---------- */
 
 /** "còn 1 giờ 20 phút" · "còn 20 phút" · "còn 1 giờ" · dưới 1 phút "còn chưa tới 1 phút" · 0 → "đã chín". */
 export function remainingText(ms: number): string {
@@ -301,7 +305,7 @@ export function remainingText(ms: number): string {
 
 export const openPlotLabel = (price: number): string => `−${price} · Mở ô đất`;
 export const sellLabel = (amount: number): string => `+${amount} · Bán nông sản`;
-export const seedLabel = (c: Crop): string => `−${c.seed} · Hạt ${c.name}`;
+export const seedLabel = (c: Crop, count = 1): string => `−${c.seed * count} · Hạt ${c.name}`;
 
 /** Tầm hiện nút ở luống / thùng thu mua (R-VUON-2, R-VUON-7). */
 export const PLOT_RANGE = 1.6;
