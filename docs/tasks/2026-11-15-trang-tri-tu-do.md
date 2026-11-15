@@ -9,7 +9,7 @@
 - Quyết định (người dùng 2026-11-15): **1B** — kiểu 摩尔, **mua mỗi lần 1 cái** (muốn 3 cây mai thì mua 3 lần), sở hữu = số lượng
   (đang đặt + trong túi), cất → về túi · **2A** — hai nhóm ngoài trời / trong nhà · **3B** — vùng cấm + kiểm còn đường đi ·
   **4B** — vào trang trí camera nâng nhìn chéo ~55°.
-- Loại: sửa hành vi + dữ liệu (đổi dạng lưu, chuyển dữ liệu cũ, đổi luật mua) + giao diện mới · Cỡ: **lớn** · Trạng thái: **đã duyệt 2026-11-15** (người dùng chọn 1B mua từng cái, 2A hai nhóm, 3B vùng cấm + còn đường đi, 4B camera ~55°)
+- Loại: sửa hành vi + dữ liệu (đổi dạng lưu, chuyển dữ liệu cũ, đổi luật mua) + giao diện mới · Cỡ: **lớn** · Trạng thái: **đã làm 2026-11-15 (nhánh viec/trang-tri-code, chờ gộp + thử máy)** · đã duyệt 2026-11-15 (người dùng chọn 1B mua từng cái, 2A hai nhóm, 3B vùng cấm + còn đường đi, 4B camera ~55°)
   (kế hoạch đã theo 4 lựa chọn) — phần HUD + Tạp hoá **chờ thiết kế** (`docs/phieu_thiet_ke/2026-11-15-trang-tri-tu-do.md`)
 
 ## Phạm vi
@@ -126,51 +126,51 @@ interface HomeState {
 
 ## Nhiệm vụ
 
-Làm ngay 1…13; chờ thiết kế 14…15; chốt 16.
+Làm ngay 1…13; chờ thiết kế 14…15 (thiết kế 2026-11-15.42 đã có → đã áp cùng việc, bỏ cầu tạm NV 7 / cờ `?trangtri=tudo`: đổi hẳn); chốt 16.
 
-- [ ] 1. **Luật** — sửa sổ `docs/testing/quy_tac.md` theo nháp dưới → `/dong-bo-quy-tac` (tự chép online) → `dart tool/rule_trace.dart`.
+- [x] 1. **Luật** — sửa sổ `docs/testing/quy_tac.md` theo nháp dưới → `/dong-bo-quy-tac` (tự chép online) → `dart tool/rule_trace.dart`.
   (docs · xong khi sổ + online đồng bộ, `--pending` rỗng)
-- [ ] 2. **Cầu nối** — `docs/bridge.md`: `getHome` (`owned` số lượng, `items`, `placed` chỉ khi còn cũ), `setHome` thay `setDecor`, ghi chú
+- [x] 2. **Cầu nối** — `docs/bridge.md`: `getHome` (`owned` số lượng, `items`, `placed` chỉ khi còn cũ), `setHome` thay `setDecor`, ghi chú
   `openShop` (Tạp hoá nhận số lượng + đang đặt). (docs · xong khi bảng có dạng + ví dụ + "khi nào")
-- [ ] 3. **Luật mua + số lượng (Dart gốc)** — `wallet.dart`: `buyDecor` mua lặp × 1 trả `Map<String,int>`, `migrateOwnedCounts`;
+- [x] 3. **Luật mua + số lượng (Dart gốc)** — `wallet.dart`: `buyDecor` mua lặp × 1 trả `Map<String,int>`, `migrateOwnedCounts`;
   `progress_store.dart` khoá `nha.so-luong`, chuyển `nha.so-huu` + `nha.dat`. Test `wallet_test.dart` / `nha_test.dart`: mua Mai 2 lần → 2;
   thiếu tiền; chuyển: sở hữu Mai + Mai ở 3 ô → 3; bản trước Văn tiền → khởi đầu 1 + đang đặt theo số ô. (app · R-TIEN-4, R-NHA-4 xanh)
-- [ ] 4. **Bản TS luật mua** — `walletRules.ts` (`buyTrial`, ví thử `owned` số lượng + chuyển ví thử cũ), `browserStore.ts`, `shopView.ts`
+- [x] 4. **Bản TS luật mua** — `walletRules.ts` (`buyTrial`, ví thử `owned` số lượng + chuyển ví thử cũ), `browserStore.ts`, `shopView.ts`
   (thẻ: mua được / còn thiếu; trong túi / đang đặt). Test vitest cùng ví dụ với Dart. (zones · R-TIEN-7 xanh)
-- [ ] 5. **Toán chỗ đặt** — `zones/decorPlace.ts` + `collision/colliders.ts`: `snap` 0,5; `rotStep` ±45 / 90; OBB khung chân (45° đúng
+- [x] 5. **Toán chỗ đặt** — `zones/decorPlace.ts` + `collision/colliders.ts`: `snap` 0,5; `rotStep` ±45 / 90; OBB khung chân (45° đúng
   hình xoay); `checkSpot → ok | 'ngoaiVung' | 'vungCam'(+ nhãn) | 'deVat' | 'vatCanh' | 'doc' | 'chanLoi' | 'het'(trần) | 'saiNoi'`;
   `nearestValid`; tìm đường còn lối. Test: lưới, 8 hướng, đè ở 45°, mép đa giác, vùng cấm tự sinh, hàng bàn trà chắn cổng vườn, trần.
   (zones + collision · R-NHA-7 xanh)
-- [ ] 6. **Dữ liệu nhà + chuyển chỗ đặt** — `zones/decor.ts` (`HomeState`, `inBag`, danh mục theo nơi, `cleanHome` hai dạng — `owned`
+- [x] 6. **Dữ liệu nhà + chuyển chỗ đặt** — `zones/decor.ts` (`HomeState`, `inBag`, danh mục theo nơi, `cleanHome` hai dạng — `owned`
   mảng → 1 cái mỗi mã), `zones/decorLegacy.ts` (12 ô + `migrateHome`). Test: mỗi ô cũ → đúng toạ độ / góc; `san-3` → chỗ gần nhất hoặc cất
   (túi +1); Mai ở 3 ô + Mai 3 cái → 3 món, túi 0; ô lạ bỏ; đã chuyển không chuyển lại. (zones · R-NHA-3 xanh)
-- [ ] 7. **HUD ô cũ hiểu số lượng (cầu tạm, đến NV 14)** — `zones/decorMode.ts`: thẻ đặt được khi trong túi > 0 (một ô = một cái), gỡ → về
+- [x] 7. ~~**HUD ô cũ hiểu số lượng (cầu tạm, đến NV 14)**~~ — không cần: thiết kế .42 tới trước khi code, đổi hẳn sang HUD mới — `zones/decorMode.ts`: thẻ đặt được khi trong túi > 0 (một ô = một cái), gỡ → về
   túi; Tạp hoá thẻ bỏ "Đã có". Không thêm giao diện mới — chỉ đổi điều kiện khoá trên thẻ có sẵn. (zones · test `decorMode.test.ts`)
-- [ ] 8. **Máy trạng thái trang trí** — `zones/decorEdit.ts`: lấy từ túi (túi 0 → không lấy) / nhấc / đặt / huỷ (món nhấc về chỗ cũ, món mới về
+- [x] 8. **Máy trạng thái trang trí** — `zones/decorEdit.ts`: lấy từ túi (túi 0 → không lấy) / nhấc / đặt / huỷ (món nhấc về chỗ cũ, món mới về
   túi) / cất (về túi +1); Q E R Enter Esc Delete (+ Backspace); Esc không cầm = thoát. Test từng chuyển. (zones · R-NHA-6 xanh)
-- [ ] 9. **Flutter lưu món + Tạp hoá** — `progress_store.dart` (`nha.do`, `homeItems`, `setHomeItems` kiểm ≤ sở hữu, xoá `nha.dat`),
+- [x] 9. **Flutter lưu món + Tạp hoá** — `progress_store.dart` (`nha.do`, `homeItems`, `setHomeItems` kiểm ≤ sở hữu, xoá `nha.dat`),
   `scene_event.dart` (`homeReply` số lượng, `setHomeArgs`), `scene_view.dart`, `main.dart`; `shop_screen.dart` + `shop_event.dart` luật mua lặp
   (thẻ hiện số "Trong túi / Đang đặt" bằng kiểu chữ có sẵn tới khi có thiết kế). Test `nha_test.dart`, `scene_event_test.dart`,
   `shop_screen_test.dart`. (app · `flutter test` xanh)
-- [ ] 10. **Đặc tả cảnh** — `spec.ts` (`DecorAreaSpec`, mặc định `null`), `specCheck.ts` + `scene/decorArea.ts`, `vuonLayout.ts`,
+- [x] 10. **Đặc tả cảnh** — `spec.ts` (`DecorAreaSpec`, mặc định `null`), `specCheck.ts` + `scene/decorArea.ts`, `vuonLayout.ts`,
   `check-scene.mjs`, bỏ `decorSlots` (+ `decorSlots.ts`, test) **khi NV 14 áp** — trước đó hai trường cùng có; `nhaPhamVi.test.ts`.
   (scene · `scene:check` + `npm test` xanh)
-- [ ] 11. **Vùng đặt trong `design/scene/`** — qua `/canh`: `decorArea` cho `nha-ta` (đảo trừ bến; cấm lối trục x −1,6…1,6 từ bến tới z −9,5,
+- [x] 11. **Vùng đặt trong `design/scene/`** (đã ghi `decorArea` + ảnh Canvas 3D `?dang=trang-tri&vungcam` — chờ người dùng duyệt ảnh; CHANGELOG chưa ghi) — qua `/canh`: `decorArea` cho `nha-ta` (đảo trừ bến; cấm lối trục x −1,6…1,6 từ bến tới z −9,5,
   lối nhánh z −1,4 tới cửa, Bến mây) và `nha-ta-trong` (phòng trừ 0,4 m, ô cửa); ảnh Canvas 3D `?dang=trang-tri` tô vùng cho / cấm để người
   dùng duyệt. (design qua /canh · xong khi duyệt + CHANGELOG)
-- [ ] 12. **Lớp 3D** — `scene/decorLayer.ts` viết lại (`setItems`, InstancedMesh theo mã, vật cản theo món, ẩn bản thật món đang nhấc, bắt món
+- [x] 12. **Lớp 3D** — `scene/decorLayer.ts` viết lại (`setItems`, InstancedMesh theo mã, vật cản theo món, ẩn bản thật món đang nhấc, bắt món
   dưới con trỏ bằng khung chân); `decorItems.ts` 45°; bóng ma `jade` / `lacquer` (token tạm — phiếu chốt) + khung chân + lưới 4 × 4 m. Đo
   draw call + fps trước / sau. (scene · 40 món ≤ 15 draw call đồ trang trí)
-- [ ] 13. **Ghép + nhập + camera** — `homeDecor.ts`, `keyboard.ts`, `pointers.ts` (`decorDrag`: bắt đầu trên món cầm → kéo món, nơi khác
+- [x] 13. **Ghép + nhập + camera** — `homeDecor.ts`, `keyboard.ts`, `pointers.ts` (`decorDrag`: bắt đầu trên món cầm → kéo món, nơi khác
   xoay camera; chuột di không giữ = món theo con trỏ; click = đặt; chạm món đặt = nhấc), `orbitCamera.ts` (trượt lên ~55°, Xong → về),
   `main.ts`, Canvas 3D `?dang=trang-tri`, Túi đồ (`tuiDo.ts` "Trong túi n · Đang đặt m"). Chạy sau cờ `?trangtri=tudo` khi chưa có HUD (nhấc /
   dời / xoay / cất món đã có bằng phím + chuột). (gốc + input · thử trình duyệt: nhấc mai, Q 45°, đỏ trên lối trục, Esc về chỗ cũ, Delete → túi +1)
-- [ ] 14. **HUD trang trí mới** — chờ thiết kế (phiếu mục 1–5): danh mục khi không còn ô (thẻ trong túi / hết → Tạp hoá), nút nổi Xoay / Đặt /
+- [x] 14. **HUD trang trí mới** — chờ thiết kế (phiếu mục 1–5): danh mục khi không còn ô (thẻ trong túi / hết → Tạp hoá), nút nổi Xoay / Đặt /
   Cất / Huỷ, gợi ý phím, lý do đỏ, đếm món, Xong. `ui/decorHud.ts`, `ui/decorPanel.ts` (+ CSS); bỏ cờ, bỏ ô (NV 10), bỏ cầu tạm NV 7.
   (ui · `/ui-apply`, kiểm dọc + ngang + máy tính)
-- [ ] 15. **Tạp hoá đồ trang trí theo số cái** — chờ thiết kế (phiếu mục 6): thẻ "Trong túi: n · Đang đặt: m", hộp xác nhận × 1, tấm "Vừa
+- [x] 15. **Tạp hoá đồ trang trí theo số cái** — chờ thiết kế (phiếu mục 6): thẻ "Trong túi: n · Đang đặt: m", hộp xác nhận × 1, tấm "Vừa
   mua", dòng phụ — `shop_screen.dart` + `ui/shopPanel.ts`. (lesson + ui · `/ui-apply`)
-- [ ] 16. **Chốt** — Bản đồ tính năng `lead/SKILL.md`; dọn rác (`decorMode.ts`, `decorSlots.ts`, `addDecorMarkers`, chuỗi `decorSlot*`,
+- [x] 16. **Chốt** — Bản đồ tính năng `lead/SKILL.md`; dọn rác (`decorMode.ts`, `decorSlots.ts`, `addDecorMarkers`, chuỗi `decorSlot*`,
   `BuyError.owned`, `migrateOwned`, trạng thái Tạp hoá "đã mua hết", test cũ); `npm run build`; Kiểm tra cuối.
 
 Ước lượng: 1–2 nhỏ · 3–4 vừa · 5 vừa-lớn (OBB + tìm đường) · 6–9 vừa · 10–11 nhỏ (+ chờ duyệt ảnh) · 12 lớn · 13 vừa-lớn · 14–15 vừa (sau

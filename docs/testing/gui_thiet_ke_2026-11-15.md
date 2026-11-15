@@ -77,3 +77,16 @@ joystick và nên di chuyển phần thanh công cụ sang trái". Code đã the
 |---|---|---|---|
 | 2026-11-15.35 Thanh công cụ | màn ngang: vòng joystick gợi ý góc dưới trái, thanh 380 × 56 giữa đáy | R-DIEU-1 (máy tính dùng chuột, chưa chạm màn: không hiện joystick gợi ý), R-THANH-1 (máy tính màn ngang: thanh sát trái đáy) | máy `(hover: hover) and (pointer: fine)` chưa chạm → `body.ban-may` (`web/src/input/cheDoNhap.ts`): ẩn `#joyGhost`; thanh trái safe + 12, rộng min(380, màn − 218); bảng Biểu cảm trái safe + 12 (mũi nhọn vẫn trỏ ô Biểu cảm); tấm báo "Bạn đang ở Nhà của ta" giữa thanh. Chạm màn cảm ứng → về bố cục điện thoại. Điện thoại / máy tính bảng không đổi |
 | 2026-11-14.9 Trò chuyện (V-20261115-70) | nút "Trò chuyện" tròn bên phải; Enter / nút → khung kênh + ô nhập sát mép dưới (ngang: khung gọn trái trên) | R-CHAT-3 (máy tính dùng chuột: ô nhập luôn hiện trên thanh, Enter / bấm ô để gõ, Esc / Enter khi trống / bấm ra ngoài = thôi gõ), R-THANH-1 (máy tính: đang gõ thanh vẫn hiện) | `body.ban-may` + thanh hiện → `#chat.dock` (`ui/chatPanel.ts`, `chat.css`): ô nhập cao 40 kính, trái safe + 12, rộng bằng thanh, đáy safe + 72 (dọc 76), gợi ý "Nhấn Enter để trò chuyện…"; đang gõ → viền ngọc + nút Gửi, khung kênh cao 240 ngay trên ô; khung thu gọn 3 tin ngay trên ô; nút Trò chuyện tròn ẩn. Bảng Biểu cảm + tấm báo nhà nâng lên trên ô (đáy safe + 126 / 122); Túi đồ mở → thanh ẩn → ô ẩn. Điện thoại / máy tính bảng không đổi |
+
+## V-69 — Trang trí tự do (2026-11-15.42) — lệch / đề xuất khi áp
+
+- Luật theo đề xuất thiết kế đã ghi sổ (R-NHA-6): chế độ trang trí ẩn thanh công cụ + bản đồ nhỏ; cầm món trên điện thoại → khay túi thu
+  thành dải "Đang cầm"; máy tính chọn thẻ khác khi đang cầm → món đang cầm về túi / chỗ cũ rồi cầm món mới. Không lệch luật.
+- Vùng cấm khi cầm: code tô phủ `lacquer` 12 % (không gạch chéo) — gạch chéo cần texture / shader riêng; đề xuất giữ tô phẳng.
+- Viền khung chân "3 px": code vẽ dải 6 cm trên mặt đất (WebGL không vẽ được đường dày); nhìn từ camera trang trí ≈ 2–3 px.
+- Nhãn tên nhân vật ẩn khi trang trí (thiết kế không vẽ nhãn; nhãn đè hàng nút khi món gần nhân vật).
+- Hàng nút cầm món bám **mép chân gần camera** + 24 px, kẹp trong màn (cách đáy ≥ 110 px để không đè dải "Đang cầm").
+- Chuỗi bỏ (`decorSlot*`, `decorPick`, `decorReplace`, `decorRemove`, `decorPlacedHere`, `decorOwned`, `decorHint`, `shopOwned`,
+  `shopAllBought`, `bagPlaced`): code không còn dùng — phiên thiết kế xoá khỏi `design/l10n/vi.arb`.
+- Dòng giải thích dưới "Không đặt được — {lý do}": thiết kế chỉ vẽ cho "Chắn lối"; code thêm một dòng cho từng lý do (chưa có chuỗi
+  trong vi.arb — đề xuất thêm `decorWhy*`).

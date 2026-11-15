@@ -1,5 +1,5 @@
 # Phiếu: Trang trí tự do ở Nhà của ta — danh mục theo túi, món đang cầm, nút nổi xoay / đặt / cất, gợi ý phím (HUD) + Tạp hoá bán đồ trang trí theo cái
-- Trạng thái: chờ thiết kế
+- Trạng thái: đã áp (2026-11-15.42) — V-69 nhánh `viec/trang-tri-code`
 - Đã vẽ: 2026-11-15.42 (20 artboard: túi đồ trang trí dọc / ngang / máy, đủ trần, mới cài, túi trống, gian trong, đang cầm xanh / đỏ + nút Xoay · Đặt · Cất · Huỷ, dải phím máy tính, dấu trong cảnh, Tạp hoá theo cái, Túi đồ — đặc tả `design/docs/screen_specs.md` mục "Trang trí tự do")
 - Đợi bởi: kế hoạch `docs/tasks/2026-11-15-trang-tri-tu-do.md` (nhiệm vụ 14, 15). Luật, lưu, số lượng, chuyển dữ liệu cũ, toán chỗ đặt,
   lớp 3D, phím / chuột làm trước (NV 1–13); phiếu này chỉ phần HUD + hình Tạp hoá.
