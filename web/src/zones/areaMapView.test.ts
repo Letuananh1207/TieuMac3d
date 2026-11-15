@@ -194,7 +194,7 @@ describe('bản đồ lớn — mở / đóng (R-BANDO-5)', () => {
     expect(m.back()).toBe(false);
   });
 
-  it('R-BANDO-5: phím M khi đang mở → đóng; bản đồ nhỏ đang ẩn (đang thoại) → không mở được', () => {
+  it('R-BANDO-5: phím N khi đang mở → đóng; bản đồ nhỏ đang ẩn (đang thoại) → không mở được', () => {
     const m = new BigMapState();
     m.toggle({});
     expect(m.toggle({})).toBe(false);

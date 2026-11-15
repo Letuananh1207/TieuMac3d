@@ -1,50 +1,49 @@
-/* Thanh công cụ BẢN MÁY TÍNH (body.ban-may, màn ngang — V-20261116-74, R-THANH-1, R-CHAT-3; theo người dùng, học bố cục
-   dải đáy kiểu 摩尔 bản web — chưa có trên canvas, ghi lệch docs/testing/gui_thiet_ke_2026-11-16.md). Điện thoại giữ
+/* Thanh công cụ BẢN MÁY TÍNH (body.ban-may, màn ngang — V-20261116-74, V-20261116-76, R-THANH-1, R-CHAT-3; theo người dùng,
+   học bố cục đáy kiểu 摩尔 bản web — chưa có trên canvas, ghi lệch docs/testing/gui_thiet_ke_2026-11-16.md). Điện thoại giữ
    thanh 5 ô (toolbar.css). Cùng DOM ui/toolbar.ts, chỉ khác CSS:
-   - dải gỗ ấm đặc suốt ngang đáy (trong safe area), cao --band-h, chỉ vàng mép trên, bóng nhẹ phía trên (có độ dày);
-   - trái: ô trò chuyện dài --chat-w (chat.css #chat.dock), kính sáng trên nền gỗ;
-   - phải: hàng hình Biểu cảm · Về nhà · Túi đồ · Nhiệm vụ không khung ô, hình 76 nhô khỏi dải, đứng trên ru-băng ngọc
-     viền vàng có chữ (Biểu cảm chỉ ở hàng phải — bỏ nút tròn nhỏ cạnh ô chat cho gọn);
-   - Bản đồ: hình to 100 riêng góc trái ngay trên dải (dưới xa bản đồ nhỏ góc trên trái);
-   - cụm hành động + Đọc sách + Trang trí nâng lên trên hàng hình. Ô phím tắt nhỏ (T H B I J) trên mỗi hình. */
+   - thanh TRONG SUỐT (V-76: "thanh công cụ không nên có màu") — không nền, không dải gỗ; vẫn chiếm dải cao --band-h ở đáy
+     (trong safe area) để các cụm khác tính chỗ;
+   - trái: ô trò chuyện dài --chat-w (chat.css #chat.dock), kính sáng riêng của ô;
+   - phải: một hàng 5 hình Bản đồ · Biểu cảm · Về nhà · Túi đồ · Nhiệm vụ không khung ô, hình 76 đứng thẳng trên cảnh, dưới
+     là ru-băng chữ màu đá đen bán trong suốt (đọc rõ trên cảnh ngày lẫn đêm; đang mở → vàng, mờ → xám);
+   - cụm hành động + Đọc sách + Trang trí nâng lên trên hàng hình. Ô phím tắt nhỏ (M G H B J) trên mỗi hình. */
 .tb-key{display:none}
 @media (orientation:landscape){
   body.ban-may{--band-h:52px;--chat-w:clamp(280px,34vw,460px)}
-  /* dải đáy: gỗ (shelf-wood → shelf-shadow), chỉ vàng 2 + vệt sáng trong, bóng lên trên */
-  body.ban-may #toolbar{left:0;right:0;bottom:0;width:auto;margin:0;height:calc(var(--band-h) + var(--sa-bottom));padding:0 calc(var(--sa-right) + 12px) var(--sa-bottom) calc(var(--sa-left) + 12px);border:0;border-top:2px solid var(--gold);outline:0;border-radius:0;background:linear-gradient(#9a6a46,var(--shelf-wood) 45%,var(--shelf-shadow));box-shadow:inset 0 1px 0 rgba(255,236,190,.35),inset 0 -3px 0 rgba(0,0,0,.18),0 -1px 0 var(--coin-rim),0 -8px 18px rgba(36,50,58,.28);-webkit-backdrop-filter:none;backdrop-filter:none;justify-content:flex-end;align-items:stretch;gap:4px}
+  /* dải đáy trong suốt: không nền / viền / bóng (V-76) — chỉ giữ chỗ, chạm vào chỗ trống không thuộc thanh */
+  body.ban-may #toolbar{left:0;right:0;bottom:0;width:auto;margin:0;height:calc(var(--band-h) + var(--sa-bottom));padding:0 calc(var(--sa-right) + 12px) var(--sa-bottom) calc(var(--sa-left) + 12px);border:0;outline:0;border-radius:0;background:none;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;justify-content:flex-end;align-items:stretch;gap:4px;pointer-events:none}
+  body.ban-may #toolbar .tb-cell{pointer-events:auto}
   body.ban-may #toolbar.tb-hidden{transform:translateY(calc(100% + 140px))}
   /* hàng hình phải: không khung, hình nhô lên khỏi dải, ru-băng ở đáy */
   body.ban-may .tb-cell{flex:none;min-width:88px;height:100%;justify-content:flex-end;gap:0;padding-bottom:6px;box-sizing:border-box;background:transparent;border-radius:0;cursor:pointer}
+  /* thứ tự hàng: Bản đồ · Biểu cảm · Về nhà · Túi đồ · Nhiệm vụ (Biểu cảm cạnh Bản đồ, xa cụm hành động — V-74/76) */
+  body.ban-may .tb-banDo{order:-2}
   body.ban-may .tb-bieuCam{order:-1}
   body.ban-may .tb-disc{width:76px;height:76px;margin:0}
   body.ban-may .tb-disc .hinh{width:76px;height:76px;filter:var(--hinh-shadow)}
-  body.ban-may .tb-lbl{position:relative;z-index:1;margin-top:-12px;height:20px;padding:0 14px;box-sizing:border-box;display:flex;align-items:center;white-space:nowrap;font-size:12px;color:#fff;background:var(--jade);box-shadow:inset 0 1.5px 0 var(--gold),inset 0 -1.5px 0 var(--gold),0 2px 3px rgba(0,0,0,.25);clip-path:polygon(0 0,100% 0,calc(100% - 6px) 50%,100% 100%,0 100%,6px 50%)}
+  body.ban-may .tb-lbl{position:relative;z-index:1;margin-top:-12px;height:20px;padding:0 14px;box-sizing:border-box;display:flex;align-items:center;white-space:nowrap;font-size:12px;color:#fff;text-shadow:0 1px 1px rgba(0,0,0,.35);background:rgba(36,50,58,.72);box-shadow:inset 0 1px 0 rgba(255,255,255,.22);clip-path:polygon(0 0,100% 0,calc(100% - 6px) 50%,100% 100%,0 100%,6px 50%)}
   /* nhấn: thu 94 %, không nền ô */
   body.ban-may .tb-cell:active{transform:scale(.94);background:transparent}
   /* di chuột: hình nhô thêm 3 */
   body.ban-may .tb-cell:not(.off):hover .hinh{transform:translateY(-3px)}
   /* mờ: hình xám (toolbar.css) + ru-băng xám */
-  body.ban-may .tb-cell.off .tb-lbl{opacity:1;color:rgba(255,255,255,.85);background:#8c9599;box-shadow:none}
+  body.ban-may .tb-cell.off .tb-lbl{opacity:1;color:rgba(255,255,255,.8);background:rgba(110,120,124,.72);box-shadow:none}
   body.ban-may .tb-cell.off{cursor:default}
   body.ban-may .tb-cell.off:active{transform:none}
   /* đang mở: ru-băng vàng chữ slate, hình nhô 3 */
   body.ban-may .tb-cell.open{background:transparent}
   body.ban-may .tb-cell.open .hinh{transform:translateY(-3px)}
-  body.ban-may .tb-cell.open .tb-lbl{color:var(--slate);background:var(--gold);box-shadow:inset 0 1.5px 0 var(--coin-rim),inset 0 -1.5px 0 var(--coin-rim)}
+  body.ban-may .tb-cell.open .tb-lbl{color:var(--slate);text-shadow:none;background:var(--gold);box-shadow:inset 0 1.5px 0 var(--coin-rim),inset 0 -1.5px 0 var(--coin-rim)}
   /* ô phím tắt: góc trên trái hình */
   body.ban-may .tb-key{display:block;position:absolute;left:-2px;top:4px;z-index:2;min-width:18px;box-sizing:border-box;padding:0 4px;border-radius:4px;font:700 10px/15px var(--ui);text-align:center;color:var(--slate);background:rgba(244,247,246,.95);border:1px solid var(--frost-outline);box-shadow:inset 0 -1.5px 0 rgba(36,50,58,.18)}
-  /* Bản đồ: hình to riêng góc trái ngay trên dải */
-  body.ban-may .tb-banDo{position:absolute;left:calc(var(--sa-left) + 12px);bottom:calc(100% + 6px);width:114px;height:auto;padding:0}
-  body.ban-may .tb-banDo .tb-disc,body.ban-may .tb-banDo .tb-disc .hinh{width:100px;height:100px}
-  body.ban-may .tb-banDo .tb-lbl{margin-top:-14px;height:22px;font-size:13px;padding:0 14px}
   /* bảng Biểu cảm nổi trên dải, bên trái cụm hành động; mũi nhọn trỏ giữa hình Biểu cảm (emotePanel.ts) */
   body.ban-may #emotePanel{left:auto;right:calc(var(--sa-right) + 190px);margin:0;width:420px;bottom:calc(var(--sa-bottom) + var(--band-h) + 50px)}
   /* tấm báo "Bạn đang ở Nhà của ta": giữa màn, ngay trên dải */
   body.ban-may #homeHere{left:50%;top:auto;bottom:calc(var(--sa-bottom) + var(--band-h) + 18px);transform:translateX(-50%)}
-  /* ô nhập trên nền gỗ: kính sáng hơn, viền vàng mảnh cho rõ */
+  /* ô nhập đứng thẳng trên cảnh: kính sáng đặc hơn, viền vàng mảnh cho rõ */
   body.ban-may #chat.dock:not(.open) .cx-field{background:rgba(250,248,242,.96);outline:1px solid rgba(169,128,47,.6)}
-  /* khung tin gần đây / khung kênh: trên dải, chừa hình Bản đồ bên trái */
-  body.ban-may #chat.dock #chatFeed,body.ban-may #chat.dock #chatBox{left:calc(var(--dock-l) + 124px);width:calc(var(--dock-w) - 76px);bottom:calc(var(--sa-bottom) + var(--band-h) + 10px)}
+  /* khung tin gần đây / khung kênh: ngay trên ô nhập, thẳng mép trái ô (không còn hình Bản đồ riêng — V-76) */
+  body.ban-may #chat.dock #chatFeed,body.ban-may #chat.dock #chatBox{left:var(--dock-l);width:var(--dock-w);bottom:calc(var(--sa-bottom) + var(--band-h) + 10px)}
   /* cụm hành động + cột phải nâng lên trên hàng hình (hình nhô ≈ 42 khỏi dải) */
   body.ban-may #actions{right:calc(var(--sa-right) + 12px);bottom:calc(var(--sa-bottom) + var(--band-h) + 56px)}
   body.ban-may:has(#actions):has(#toolbar) #readBook{right:calc(var(--sa-right) + 12px);bottom:calc(var(--sa-bottom) + var(--band-h) + 238px)}

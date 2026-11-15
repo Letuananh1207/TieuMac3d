@@ -2,7 +2,7 @@
  * Ghép thanh công cụ đáy màn (R-THANH-1/2, R-HANH-6/7, R-BIEU-1…3, R-TUI-1 — kế hoạch docs/tasks/2026-11-15-thanh-cong-cu.md,
  * thiết kế 2026-11-15.35): 5 nút Bản đồ · Về nhà · Biểu cảm · Túi đồ · Nhiệm vụ. Luật nút ở `zones/thanhCongCu.ts`, biểu cảm
  * `zones/bieuCam.ts`, túi đồ `zones/tuiDo.ts`; HUD `ui/toolbar.ts`, `ui/emotePanel.ts`, `ui/bagPanel.ts`. Máy tính: phím
- * T / H / B / I / J; bảng Biểu cảm mở thì phím số 1…8 chọn theo thứ tự ô.
+ * M / H / G / B / J (V-76); bảng Biểu cảm mở thì phím số 1…8 chọn theo thứ tự ô.
  */
 import { BagPanel } from './ui/bagPanel';
 import { EmotePanel } from './ui/emotePanel';
@@ -73,7 +73,7 @@ export class ThanhCongCu {
     return this.panel === 'tuiDo';
   }
 
-  /** Phím của thanh (T / H / B / I / J) — `true` nếu đã dùng. */
+  /** Phím của thanh (M / H / G / B / J) — `true` nếu đã dùng. */
   key(key: string): boolean {
     const id = toolForKey(key);
     if (!id) return false;

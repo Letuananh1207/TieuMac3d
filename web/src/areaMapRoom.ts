@@ -1,6 +1,6 @@
 /**
  * Ghép bản đồ vùng (R-BANDO-1…5; thiết kế 2026-11-14.20; kế hoạch `docs/tasks/2026-11-14-ban-do-vung.md`): dựng `AreaMap`
- * từ đặc tả cảnh lúc vào cảnh, bản đồ nhỏ góc trên trái mỗi khung, bản đồ lớn mở / đóng (chạm bản đồ nhỏ, phím M; đóng:
+ * từ đặc tả cảnh lúc vào cảnh, bản đồ nhỏ góc trên trái mỗi khung, bản đồ lớn mở / đóng (chạm bản đồ nhỏ, phím N; đóng:
  * nút "Đóng", nút quay lại, M, Esc). Tách khỏi main.ts như walletRoom.ts — main chỉ gọi `update`, `toggle`, `back`.
  */
 import type { SceneSpec } from './scene/spec';
@@ -67,7 +67,7 @@ export class AreaMapRoom {
     return this.state.open;
   }
 
-  /** Chạm bản đồ nhỏ / phím M (R-BANDO-5). */
+  /** Chạm bản đồ nhỏ / phím N (R-BANDO-5). */
   toggle(): void {
     const was = this.state.open;
     if (this.state.toggle(this.busy) === was) return;

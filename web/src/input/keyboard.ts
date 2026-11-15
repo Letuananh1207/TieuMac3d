@@ -4,8 +4,8 @@ import type { MoveInput } from '../player/controller';
 export type KeyAction = 'jump' | 'bow' | 'sit' | 'seat' | 'back' | 'chat' | 'map' | 'tool' | 'digit';
 
 /**
- * M: mở / đóng bản đồ lớn (R-BANDO-5). T / H / B / I / J: 5 nút thanh công cụ (R-THANH-1 — nơi gọi tra nút theo phím).
- * 1…9: phím số (B rồi số = chọn biểu cảm tạm, tới khi có bảng — R-BIEU-1).
+ * N: mở / đóng bản đồ lớn (R-BANDO-5). M / H / G / B / J: 5 nút thanh công cụ (R-THANH-1 — nơi gọi tra nút theo phím).
+ * 1…9: phím số (G rồi số = chọn biểu cảm trong bảng Biểu cảm — R-BIEU-1).
  */
 const ACTION_KEYS: Record<string, KeyAction> = {
   ' ': 'jump',
@@ -14,10 +14,15 @@ const ACTION_KEYS: Record<string, KeyAction> = {
   e: 'seat',
   escape: 'back',
   enter: 'chat',
-  m: 'map',
-  ...Object.fromEntries([...'thbij'].map((k) => [k, 'tool' as const])),
+  n: 'map',
+  ...Object.fromEntries([...'mhgbj'].map((k) => [k, 'tool' as const])),
   ...Object.fromEntries([...'123456789'].map((k) => [k, 'digit' as const])),
 };
+
+/** Hành động của một phím (`KeyboardEvent.key` chữ thường); không phải phím hành động → null. */
+export function actionForKey(key: string): KeyAction | null {
+  return ACTION_KEYS[key] ?? null;
+}
 
 /** Đang gõ chữ (ô nhập trò chuyện…) → phím không điều khiển nhân vật (R-CHAT, thiết kế 2026-11-14.9). */
 function typingIn(t: EventTarget | null): boolean {
@@ -45,7 +50,7 @@ export class Keyboard {
       }
       const key = e.key.toLowerCase();
       this.keys[key] = true;
-      const act = ACTION_KEYS[key];
+      const act = actionForKey(key);
       if (act && !e.repeat && onAction) {
         e.preventDefault(); // Space không cuộn trang
         onAction(act, key);

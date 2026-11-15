@@ -1,7 +1,7 @@
 /**
  * Thanh công cụ đáy màn (R-THANH-1/2, R-HANH-6/7 — kế hoạch docs/tasks/2026-11-15-thanh-cong-cu.md): 5 nút, trạng thái
  * từng nút theo ngữ cảnh + việc phải làm khi chạm. Thuần (không three, không DOM) — test `thanhCongCu.test.ts`.
- * HUD: `ui/toolbar.ts` (thiết kế 2026-11-15.35 `ThanhCongCu-*`); máy tính dùng phím T / H / B / I / J.
+ * HUD: `ui/toolbar.ts` (thiết kế 2026-11-15.35 `ThanhCongCu-*`); máy tính dùng phím M / H / G / B / J.
  */
 
 export type ToolId = 'banDo' | 'veNha' | 'bieuCam' | 'tuiDo' | 'nhiemVu';
@@ -18,8 +18,11 @@ export const TOOL_NAMES: Record<ToolId, string> = {
   nhiemVu: 'Nhiệm vụ',
 };
 
-/** Phím máy tính (R-THANH-1). */
-export const TOOL_KEYS: Record<ToolId, string> = { banDo: 't', veNha: 'h', bieuCam: 'b', tuiDo: 'i', nhiemVu: 'j' };
+/**
+ * Phím máy tính (R-THANH-1, V-20261116-76) — theo quy ước game PC tiếng Anh: M = Map, H = Home, G = Gesture (emote),
+ * B = Bag, J = Journal (nhiệm vụ). Bản đồ lớn của cảnh chuyển sang N (R-BANDO-5).
+ */
+export const TOOL_KEYS: Record<ToolId, string> = { banDo: 'm', veNha: 'h', bieuCam: 'g', tuiDo: 'b', nhiemVu: 'j' };
 
 /** Thẻ khi bấm Về nhà lúc đang ở nhà (R-HANH-7), hiện khoảng `HOME_HERE_SECONDS` giây. */
 export const HOME_HERE_TEXT = 'Bạn đang ở Nhà của ta';

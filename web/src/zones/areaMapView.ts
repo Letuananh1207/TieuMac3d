@@ -214,7 +214,7 @@ export class BigMapState {
     return this.on;
   }
 
-  /** Chạm bản đồ nhỏ / phím M khi đang đóng: chỉ mở được khi bản đồ nhỏ đang hiện. Phím M khi đang mở → đóng. */
+  /** Chạm bản đồ nhỏ / phím N khi đang đóng: chỉ mở được khi bản đồ nhỏ đang hiện. Phím N khi đang mở → đóng. */
   toggle(busy: MapBusy): boolean {
     if (this.on) this.on = false;
     else if (miniMapShown({ ...busy, bigMap: false })) this.on = true;

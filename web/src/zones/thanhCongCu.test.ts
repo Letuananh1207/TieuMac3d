@@ -67,9 +67,9 @@ describe('thanh công cụ (R-THANH-1)', () => {
     expect(toolAria('tuiDo', 2)).toBe('Túi đồ');
   });
 
-  it('R-THANH-1: phím T H B I J', () => {
-    expect(['t', 'H', 'b', 'I', 'j'].map(toolForKey)).toEqual(['banDo', 'veNha', 'bieuCam', 'tuiDo', 'nhiemVu']);
-    expect(toolForKey('m')).toBeNull(); // M vẫn là bản đồ lớn (R-BANDO-5)
+  it('R-THANH-1: phím M H G B J (quy ước PC: Map, Home, Gesture, Bag, Journal)', () => {
+    expect(['m', 'H', 'g', 'B', 'j'].map(toolForKey)).toEqual(['banDo', 'veNha', 'bieuCam', 'tuiDo', 'nhiemVu']);
+    expect(['t', 'i', 'n'].map(toolForKey)).toEqual([null, null, null]); // T / I cũ bỏ; N là bản đồ lớn (R-BANDO-5)
   });
 });
 

@@ -563,14 +563,17 @@ async function boot(): Promise<void> {
       if (!mapBack() && !decor?.back() && !garden?.back() && !mini?.back()) gamePlay.stand(); // Esc: đóng bảng / thoại / bản đồ, không có thì rời bàn / tiệc / đàn (R-GIAO-1)
       return;
     }
-    // T / H / B / I / J: thanh công cụ (R-THANH-1; luật ẩn / ngồi / nhảy ở zones/thanhCongCu.ts); B rồi 1…8: biểu cảm tạm
-    if (a === 'tool') return void thanh?.key(key);
+    // M / H / G / B / J: thanh công cụ (R-THANH-1; luật ẩn / ngồi / nhảy ở zones/thanhCongCu.ts); G rồi 1…8: biểu cảm.
+    if (a === 'tool') {
+      if (key === 'm' && closeMap()) return; // M khi bản đồ truyền tống đang mở → đóng (R-HANH-6)
+      return void thanh?.key(key);
+    }
     if (a === 'digit') {
-      if (thanh?.digit(Number(key))) return; // B rồi số: biểu cảm
+      if (thanh?.digit(Number(key))) return; // G rồi số: biểu cảm
       return void garden?.key(Number(key)); // vòng công cụ đang mở: 1…6 chọn ô / loại hạt (V-73, tạm tới khi có HUD)
     }
     if (a === 'map') {
-      areaMap.toggle(); // M: mở / đóng bản đồ lớn (R-BANDO-5)
+      areaMap.toggle(); // N: mở / đóng bản đồ lớn (R-BANDO-5)
       return;
     }
     if (paused || loading.active || mapOpen || talking || decor?.active || garden?.active) return;
