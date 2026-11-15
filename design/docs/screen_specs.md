@@ -981,3 +981,23 @@ Mẫu một mục:
   `shopTabIndoor`, `bagDecorCounts`. Bỏ: `decorSlot*`, `decorPick`, `decorReplace`, `decorRemove`, `decorPlacedHere`, `decorOwned`,
   `decorHint` (cũ), `shopOwned`, `shopAllBought`, `bagPlaced`.
 - Ảnh: `screens/TrangTriTuDo-*.png`, `screens/CuaHang-theo-cai-*.png`, `screens/TuiDo-trang-tri.png` (cảnh là hình giữ chỗ).
+
+## Hình minh hoạ — đợt 1: thanh công cụ + nút hành động (HUD) · artboard `HinhMinhHoa-dot1.dc.html`, `HinhMinhHoa-HUD-doc.dc.html` · từ mục 2026-11-16.2
+
+- Mục đích: thay biểu tượng nét bằng hình minh hoạ (phiếu `2026-11-15-hinh-minh-hoa`, V-72). Bố cục, cỡ nút, nhãn, chấm son **giữ nguyên**
+  `ThanhCongCu-*` (2026-11-15.35) / `HUD-hanh-dong-*`; chỉ thay hình trong nút.
+- **Phong cách** (chốt sau 5 bản — người dùng 2026-11-16): cùng chất ảnh đàn cổ tranh `models/anh/dan-tranh-cheo.png` — đất sét mờ, khối tròn
+  mềm, không viền, màu tự nhiên trầm ấm; **chính diện**; hình có người = **Tiểu Mặc** (không emoji, không hình người trừu tượng); đồ dân dã cổ trang
+  (không cung đình, không hiện đại). Bản đồ = cuộn bản đồ giấy (giống cuộn truyền tống), không dùng công trình.
+- **Hình** (`design/icons/xuat/<mã>.webp`, 160 × 160 alpha, vật ≈ 84 % khung): `ban-do` · `ve-nha` · `bieu-cam` · `tui-do` · `nhiem-vu` (thanh) ·
+  `nhay` · `chao` · `ngoi-on` · `tro-chuyen` · `trang-tri` · `doc-sach` (nút). Nhảy / Chào / Ngồi ôn / Đọc sách dùng **`<mã>-nut.webp`** (cắt nửa
+  trên, mép dưới mờ) trong nút tròn; bản đầy đủ cho chỗ to (bảng, hướng dẫn).
+- **Cỡ hiển thị** (theo `HinhMinhHoa-HUD-doc`): thanh — hình 44 nhô lên 8 khỏi ô (thay vùng 34) · Nhảy (tròn 68 `jade`) hình 60 nhô 10 · Chào /
+  Ngồi ôn (tròn 52) hình 50 nhô 6 · Trò chuyện (tròn 48) hình 40 · Trang trí (tròn 52) hình 50 nhô 8 · Đọc sách (viên `jade` 52) hình 46 bên trái chữ,
+  nhô 12. Bỏ đĩa `jade` của nút Bản đồ (hình tự nổi). Bóng chung CSS `drop-shadow(0 2px 2px rgba(36,50,58,.25))`.
+- **Trạng thái bằng CSS** (không vẽ riêng): mờ = `filter: grayscale(.6)` + `opacity .5`; nhấn = thu 94 %; đang mở / bật = nền ô `jade` 10 % + hình nhô
+  thêm 2 px; chấm son giữ.
+- Dấu thao tác nhỏ (×, tích, mũi tên…) **giữ nét SVG** (đề xuất phiếu — chưa vẽ so sánh, làm ở đợt 2). Bản đồ vùng: quyết ở đợt 3. Không thêm token
+  `hinh-*` (màu nằm trong ảnh).
+- Nguồn: Google Gemini (người dùng chạy); câu lệnh từng hình: `design/icons/hinh.json`. Gốc 512: `design/icons/nguon/`.
+- Ảnh: `screens/HinhMinhHoa-dot1.png`, `screens/HinhMinhHoa-HUD-doc.png`.

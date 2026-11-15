@@ -3,6 +3,25 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-16.2 — Hình minh hoạ đợt 1: thanh công cụ + nút hành động (11 hình + 4 bản cắt nửa trên)
+
+- Loại: giao diện · tài nguyên (ảnh). Màn: HUD — thanh công cụ, cụm nút hành động, cột phải. Đặc tả `docs/screen_specs.md` mục "Hình minh hoạ — đợt 1".
+- Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-15-hinh-minh-hoa.md` (V-72; phiếu còn trong máy — dòng "Đã vẽ" ghi ở bản trong máy). Đợt 1 / 3.
+  Vẽ trong phiên VS Code theo vai thiết kế; người dùng duyệt "Ổn, chốt".
+- **Mã .2**: 2026-11-16.1 đã có ở `main` trong máy.
+- Phong cách qua 5 bản (người dùng 2026-11-16): bản 1 ngọc bích / vàng / gấm → "quá cung đình"; bản 2 pastel làng quê → "quá hiện đại"; bản 3 dân dã
+  cổ trang → ổn nhưng muốn **chính diện**; bản 4 học nét 摩尔 2.5D viền màu kẹo → "quá hiện đại" (+ bánh bao cho Biểu cảm, chùa cho Bản đồ — sai);
+  **bản 5 chốt**: neo vào ảnh đàn cổ tranh đã duyệt (đất sét, màu trầm ấm), chính diện, nhân vật Tiểu Mặc, Nhảy co gối (không giơ tay), Đọc sách có
+  người đọc. Từ 摩尔 chỉ học cách chọn vật (ảnh chụp màn chính bản điện thoại 2021).
+- Hình: `icons/xuat/{ban-do,ve-nha,bieu-cam,tui-do,nhiem-vu,nhay,chao,ngoi-on,tro-chuyen,trang-tri,doc-sach}.webp` + `{nhay,chao,ngoi-on,doc-sach}-nut.webp`
+  (160 WebP alpha, tổng 71 KB); gốc 512 `icons/nguon/`; bảng kê + câu lệnh `icons/hinh.json`. Tách nền, cắt, căn giữa bằng Pillow (khe
+  kín giữa thanh kệ của `trang-tri` cũng làm trong suốt).
+- Lưu ý: `ngoi-on` mặt hơi cau; `doc-sach` bìa có nhãn nhỏ giống nét chữ (không đọc được ở cỡ nút) — có thể tạo lại sau.
+- Còn chờ: dấu thao tác nhỏ giữ nét (vẽ so sánh ở đợt 2) · bản đồ vùng (đợt 3) · không thêm token `hinh-*`.
+- Cho phiên code (`/ui-apply`): chép `design/icons/xuat/` theo quy cách phiếu (`web/scripts/hinh.mjs` → `web/public/hinh/` → `app/assets/scene/hinh/`),
+  thay SVG trong `toolbarIcons.ts`, `index.html` (Nhảy, Chào, Ngồi ôn), `chatPanel.ts`, `decorIcons.ts` (Trang trí), `#readBook`; cỡ theo đặc tả.
+- Ảnh: `screens/HinhMinhHoa-dot1.png`, `screens/HinhMinhHoa-HUD-doc.png`.
+
 ## 2026-11-15.42 — Trang trí tự do ở Nhà của ta + Tạp hoá bán đồ trang trí theo cái
 
 - Loại: giao diện · chuỗi · luồng/luật (khớp nháp, vài đề xuất). Màn: **Trang trí tự do** (HUD web — điện thoại dọc / ngang + máy tính

@@ -1623,6 +1623,20 @@
       "w": 1240,
       "h": 700,
       "title": "TrangTriTuDo-ghi-chu"
+    },
+    "HinhMinhHoa-dot1.dc.html": {
+      "x": 0,
+      "y": 79192,
+      "w": 1500,
+      "h": 900,
+      "title": "Hình minh hoạ · đợt 1 (11 hình)"
+    },
+    "HinhMinhHoa-HUD-doc.dc.html": {
+      "x": 0,
+      "y": 80252,
+      "w": 390,
+      "h": 844,
+      "title": "Hình minh hoạ · HUD thử (dọc)"
     }
   },
   "order": [
@@ -1863,7 +1877,9 @@
     "TrangTriTuDo-may.dc.html",
     "TrangTriTuDo-cam-may.dc.html",
     "TrangTriTuDo-cam-do-may.dc.html",
-    "TrangTriTuDo-ghi-chu.dc.html"
+    "TrangTriTuDo-ghi-chu.dc.html",
+    "HinhMinhHoa-dot1.dc.html",
+    "HinhMinhHoa-HUD-doc.dc.html"
   ],
   "notes": {
     "cach-dung": {
@@ -2362,6 +2378,19 @@
       "text": "Trang trí tự do ở Nhà của ta + Tạp hoá đồ trang trí theo cái (phiếu 2026-11-15-trang-tri-tu-do, V-69)",
       "kind": "title1",
       "maxW": 3000
+    },
+    "tieu-de-hinh-minh-hoa": {
+      "x": 0,
+      "y": 78992,
+      "text": "Hình minh hoạ 3D mềm thay biểu tượng nét (phiếu 2026-11-15-hinh-minh-hoa, V-72)",
+      "kind": "title1",
+      "maxW": 3000
+    },
+    "hinh-dot1-cau-lenh": {
+      "x": 1580,
+      "y": 79192,
+      "w": 760,
+      "text": "Câu lệnh Gemini — Hình minh hoạ, ĐỢT 1 (11 hình) · bản 5 \"cùng chất ảnh đã duyệt của game\" (người dùng 2026-11-16: bản 4 kiểu 摩尔 2.5D viền màu kẹo → \"quá hiện đại\").\r\n\r\nNeo phong cách vào ẢNH ĐÃ DUYỆT CỦA CHÍNH GAME, không mô tả bằng lời nữa:\r\n- Chất liệu / ánh sáng / màu = ảnh đàn cổ tranh `design/models/anh/dan-tranh-cheo.png` (người dùng đã chốt 2026-11-15.33): đất sét mờ mịn, khối tròn mềm, KHÔNG viền, màu tự nhiên trầm ấm (gỗ, ngà, son nhạt) — giống bản 3 mà người dùng đã thấy ổn.\r\n- Nhân vật trong hình (biểu cảm, nhảy, chào, ngồi ôn) = chính nhân vật chính Tiểu Mặc `design/models/anh/nhan-vat-truoc.png` thu nhỏ — đúng người trong game, không phải mặt cười emoji hay hình người bánh gừng.\r\n- Góc nhìn CHÍNH DIỆN (người dùng 2026-11-16).\r\n- Từ 摩尔 chỉ học CÁCH CHỌN VẬT: mỗi nút một vật dễ đoán nhất (nhà = mặt tiền nhà, túi = cái túi / tay nải, nhiệm vụ = cuốn sổ). Không học nét vẽ.\r\n\r\nLàm trong MỘT cuộc trò chuyện Gemini. Câu 1 tạo hình mẫu; từ câu 2 đính kèm ảnh đàn + hình 1 đã duyệt.\r\n\r\n1 · ve-nha (hình mẫu) — đính kèm design/models/anh/dan-tranh-cheo.png:\r\nCreate a single game icon illustration in EXACTLY the same 3D rendering style, material, lighting and colour mood as the attached zither image: soft matte clay toy render, smooth rounded chunky shapes, no outlines, soft studio light, warm natural muted colours. Subject: the front of a small humble village house from ancient Song-dynasty China — grey clay-tile roof gently curving up at the ends, cream plaster walls, a plain wooden plank door in the middle, one small red paper lantern beside the door. FRONT VIEW, straight on, symmetrical, seen from very slightly above. NOT royal, NOT luxurious, NOT modern. NO text, NO letters, NO numbers, NO Chinese characters, NO logos. Object centred, filling about 80% of the square frame, even margin. Background: plain flat light grey #DDDDDD like the attached image, no floor, no cast shadow, no frame, no badge. Square 1:1.\r\n\r\nTừ câu 2: MẪU CHUNG — đính kèm ảnh đàn + hình ve-nha đã duyệt, thay <VẬT>:\r\n\"Create a single game icon illustration of <VẬT>, in EXACTLY the same 3D rendering style, material, lighting and colour mood as the attached images: soft matte clay toy render, smooth rounded chunky shapes, no outlines, soft studio light, warm natural muted colours (wood, ivory, soft vermilion, indigo, moss green). An object from an ordinary ancient Song-dynasty Chinese village or scholar academy — NOT royal, NOT luxurious, NOT modern. FRONT VIEW, straight on, symmetrical, seen from very slightly above. NO text, NO letters, NO numbers, NO Chinese characters, NO logos. Object centred, filling about 80% of the square frame, even margin. Background: plain flat light grey #DDDDDD, no floor, no cast shadow, no frame, no badge. Square 1:1.\"\r\n\r\n2 · ban-do: an old map scroll half unrolled, facing the viewer — rough cream paper with a few rounded ink-wash hills, a winding blue river and a small red dot, one plain wooden roller at each end, tied loosely with a hemp cord (giống cuộn bản đồ truyền tống trong game — người dùng 2026-11-16: không dùng chùa)\r\n3 · bieu-cam (đính kèm thêm design/models/anh/nhan-vat-truoc.png): the head of the attached chibi character (black hair with a small top bun) smiling happily with closed curved eyes and rosy cheeks — head only, facing the viewer\r\n4 · tui-do: a traveller's cloth bundle (tay nải) of indigo cotton tied at the top in a knot, a rolled scroll peeking out\r\n5 · nhiem-vu: a thread-bound book of daily tasks standing upright, plain ochre cover, a short red ribbon bookmark, one round vermilion seal mark on the cover (no writing)\r\n6 · nhay (đính kèm nhan-vat-truoc.png): the attached chibi character, full body, caught in mid-air in a natural little hop — knees bent and tucked up, arms held slightly out to the sides for balance (NOT raised overhead), robe hem fluttering, a small soft puff of dust / cloud on the ground below; facing the viewer\r\n7 · chao (đính kèm nhan-vat-truoc.png): the attached chibi character, full body, bowing slightly with hands joined in a fist-and-palm greeting, facing the viewer\r\n8 · ngoi-on (đính kèm nhan-vat-truoc.png): the attached chibi character sitting cross-legged on a round woven rush cushion, a short paper scroll unrolled across the lap, eyes on it, calm and focused (reviewing), facing the viewer\r\n9 · tro-chuyen: two round soft speech bubbles overlapping, the front one ivory with three small vermilion dots, the back one pale indigo\r\n10 · trang-tri: a small potted pine bonsai in an unglazed terracotta pot on a little wooden stand\r\n11 · doc-sach (đính kèm nhan-vat-truoc.png): the attached chibi character standing and reading — holding an open thread-bound book with both hands in front of the chest (plain indigo cover, ivory pages, small red ribbon), head tilted slightly down towards the pages, gentle happy expression; full body, facing the viewer\r\n\r\nNền xám #DDDDDD như mọi bộ ảnh của game — Claude tự tách nền. Xong: gửi hình 1 trước để duyệt.\r\n"
     }
   },
   "designSystems": []
