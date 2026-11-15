@@ -53,8 +53,9 @@ export interface GameGuide {
   /** tên Việt (Lora, đầu bảng — không kèm chữ Hán, R-HUD-4) */
   name: string;
   intro: string;
-  /** hình minh hoạ: lưới cờ, thẻ bộ thủ + 4 nghĩa, hay người ngồi bồ đoàn + cuộn sách (khu tự học) */
-  figure: 'co' | 'dau-chu' | 'tu-hoc';
+  /** hình minh hoạ: lưới cờ, thẻ bộ thủ + 4 nghĩa, hay người ngồi bồ đoàn + cuộn sách (khu tự học); `none` = chưa có hình
+   *  (trò Trúc Lâm — chờ thiết kế), chỉ dòng chú thích */
+  figure: 'co' | 'dau-chu' | 'tu-hoc' | 'none';
   caption: string;
   /** 4 mục: Mục tiêu · Mỗi lượt · Thắng · thua · hoà · Vào bàn · rời bàn */
   sections: GuideSection[];
@@ -127,9 +128,97 @@ const GUIDES: Record<string, GameGuide> = {
   },
 };
 
+/* ---------- 3 trò Trúc Lâm (V-66 B4 — R-LUU-1…5, R-MANG-1…5, R-CAM-1…4) ---------- */
+
+const TRUC = 'Trúc Lâm · Cách chơi';
+
+const TRUC_LAM_GUIDES: Record<string, GameGuide> = {
+  'luu-thuong': {
+    label: 'Cách chơi',
+    eyebrow: TRUC,
+    name: 'Lưu Thương Lệnh',
+    intro: 'Thả chén theo mương — chén dừng trước ai, người đó ghép chữ.',
+    figure: 'none',
+    caption: 'Phần còn lại của chữ có sẵn — chọn **bộ thủ** cho đúng: 可 + **氵** = 河 (hà — sông).',
+    sections: [
+      {
+        title: 'Vào tiệc',
+        body: 'Nói chuyện với **Thi Ông** → **"Dự tiệc Lưu Thương"**. Cần đã học **ít nhất 3 bộ thủ**. Đạo hữu ngồi vào đệm trống gần nhất, cùng Thi Ông, Tài Nữ, Tú Tài.',
+      },
+      {
+        title: 'Mỗi lượt',
+        body: 'Ván **8 lượt** — đạo hữu 4 lượt. Chén lệnh viền vàng trôi 3–6 giây rồi dừng trước một người. Tới lượt đạo hữu: **chạm 1 trong 4 bộ thủ** trong 20 giây. Đúng **+1 điểm**; sai hay hết giờ thì uống chén phạt.',
+      },
+      {
+        title: 'Thắng · thua · hoà',
+        body: 'Hết 8 lượt, xếp hạng theo điểm. Hạng nhất một mình **thắng (+8 Văn)**, hạng nhất đồng **hoà (+5)**, còn lại **thua (+3)** — chung mức 60 Văn trò chơi mỗi ngày.',
+      },
+      { title: 'Rời tiệc', body: 'Bấm **"Rời tiệc"**, nút quay lại hoặc đi đi — đứng dậy cạnh đệm. Rời giữa ván không được thưởng.' },
+    ],
+    tipBy: 'thi-ong',
+    tipTitle: 'Lời Thi Ông',
+    tip: 'Nhìn phần còn lại mà đoán nghĩa: có nước thì là sông hồ, có cây thì là rừng.',
+    none: {
+      icon: 'lua',
+      title: 'Đạo hữu chưa đủ 3 bộ thủ',
+      body: `Lưu Thương cần ít nhất 3 bộ thủ đã học. Ngồi ôn ngay ở ${FOREST} để học bộ mới rồi lại thả chén.`,
+    },
+  },
+  'hai-mang': {
+    label: 'Cách chơi',
+    eyebrow: TRUC,
+    name: 'Hái măng sau mưa',
+    intro: 'Mỗi ngày măng nhú trong rừng trúc — hái rồi bán cho Trúc Ông.',
+    figure: 'none',
+    caption: 'Hai lứa mỗi ngày: **5 giờ sáng** (8 măng) và **3 giờ chiều** sau cơn mưa phùn (6 măng).',
+    sections: [
+      { title: 'Tìm măng', body: 'Măng mọc giữa các khóm trúc thưa, mỗi ngày một chỗ khác. Mỗi lứa có **một măng to** vỏ vàng sẫm. Sang ngày mới, măng cũ héo hết.' },
+      { title: 'Hái', body: 'Đứng sát măng → nút **"Hái"** (máy tính: phím **E**). Mỗi măng hái một lần.' },
+      { title: 'Măng chữ', body: 'Măng to khắc một **bộ thủ đã học**. Đáp đúng nghĩa bộ đó → được **2 măng to**.' },
+      { title: 'Bán măng', body: 'Mang về **Trúc Lư**, nói chuyện với **Trúc Ông**: Măng **3 Văn**, Măng to **8 Văn** một cái. Măng để trong túi không hỏng.' },
+    ],
+    tipBy: 'truc-ong',
+    tipTitle: 'Lời Trúc Ông',
+    tip: 'Mưa chiều tạnh là măng nhú — ra rừng lúc ba giờ là gặp ngay.',
+  },
+  'dan-cam': {
+    label: 'Cách chơi',
+    eyebrow: TRUC,
+    name: 'Đàn cầm',
+    intro: 'Ngồi sau tảng đá ở bãi giữa, gảy đàn năm âm cho thư thái.',
+    figure: 'none',
+    caption: 'Năm âm **Cung · Thương · Giốc · Chuỷ · Vũ** — gảy nốt nào cũng thuận tai.',
+    sections: [
+      { title: 'Ngồi đàn', body: 'Đứng sau tảng đá đàn → nút **"Ngồi đàn"**. Đi đi hoặc bấm nút quay lại để đứng dậy.' },
+      { title: 'Đàn tự do', body: 'Chạm dây để gảy (máy tính: phím **1–5** quãng thấp, **Q W E R T** quãng cao). Không chấm điểm, đàn bao lâu tuỳ thích.' },
+      { title: 'Theo bài', body: 'Chọn **Suối trúc**, **Mưa măng** hay **Trăng trên gò**: nốt rơi theo 5 làn, gảy khi nốt chạm vạch — **Hay**, **Được** hoặc trượt.' },
+      { title: 'Thưởng', body: 'Hết bài: **Tri âm (+5 Văn)**, **Thanh nhã (+3)**, **Tập đàn (+1)**. Mỗi bài thưởng một lần mỗi ngày.' },
+    ],
+    tipBy: 'thi-ong',
+    tipTitle: 'Lời Thi Ông',
+    tip: 'Đàn chậm mà đều còn hơn nhanh mà vội — nghe nước suối mà theo nhịp.',
+  },
+};
+
 /** Bảng cách chơi của trò [kind]; trò chưa có bảng → `null`. */
 export function gameGuide(kind: string): GameGuide | null {
-  return GUIDES[kind] ?? null;
+  return GUIDES[kind] ?? TRUC_LAM_GUIDES[kind] ?? null;
+}
+
+/** Trò nhỏ Trúc Lâm trong đặc tả cảnh (chỉ phần cần — zones không import scene): chỗ đặt nút "Cách chơi". */
+export interface MiniGameLike {
+  kind: string;
+  guide?: [number, number];
+  host?: string;
+  buyer?: string;
+}
+
+/** Biển "Cách chơi" của các trò Trúc Lâm có `guide` (R-GIAO-2). */
+export function miniGameSigns(list: readonly MiniGameLike[]): GameSign[] {
+  return list.flatMap((m) => {
+    const g = gameGuide(m.kind);
+    return m.guide && g ? [{ kind: m.kind, npc: m.host ?? m.buyer ?? '', x: m.guide[0], z: m.guide[1], han: '', name: g.name }] : [];
+  });
 }
 
 /** Tách "a **b** c" thành phần thường / đậm (dựng DOM bằng textContent, không innerHTML). */

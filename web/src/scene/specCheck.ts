@@ -40,6 +40,7 @@ import { checkPortals } from './portals';
 import { checkLook } from './look';
 import { checkDayNight } from './ngayDem';
 import { checkTea } from './luongCheLayout';
+import { checkMiniGames, parseMiniGame } from './miniGameCheck';
 import { daisLayout, ringTrigger } from './teleportLayout';
 import { stairEnds, terrainHeightFn } from './terrainHeight';
 
@@ -419,6 +420,8 @@ const LISTS: Record<string, ItemParser> = {
   // đài đá thấp (V-66 B3): mặt trên bước lên được (≤ 0,6 m — R-VA-3)
   terraces: item({ x: 0, z: 0, w: 0, d: 0, h: 0 }, { rotY: 0 }, all(rot, positive('w', 'd'), range('h', 0.1, 0.6))),
   seats: item({ x: 0, z: 0 }, { rotY: 0, kind: '' }, oneOf('kind', SEAT_KINDS)),
+  // trò nhỏ Trúc Lâm (V-66 B4) — mỗi loại một dạng: miniGameCheck.ts
+  miniGames: parseMiniGame,
   teaRows: item({ from: XZ0, to: XZ0 }, { width: 0, height: 0 }, all(axisAligned, positive('width', 'height'))),
   gameTables: item(
     { id: '', kind: '', x: 0, z: 0, npc: '' },
@@ -528,7 +531,7 @@ function checkConsistency(s: SceneSpec): string[] {
   if (t.enabled && t.edge.radius + t.edge.width > t.size / 2) {
     out.push(`terrain.edge: mép vực (radius + width = ${t.edge.radius + t.edge.width}) vượt nửa vùng lưới (${t.size / 2}) — tăng size`);
   }
-  out.push(...checkTeleport(s), ...checkStoneYardEmpty(s),...checkLanterns(s), ...checkDecorArea(s), ...checkPortals(s), ...checkLook(s.look), ...checkDayNight(s.dayNight), ...checkTea(s), ...checkGarden(s));
+  out.push(...checkTeleport(s), ...checkStoneYardEmpty(s),...checkLanterns(s), ...checkDecorArea(s), ...checkPortals(s), ...checkLook(s.look), ...checkDayNight(s.dayNight), ...checkTea(s), ...checkGarden(s), ...checkMiniGames(s));
   out.push(...hanOnDisplay(s).map((h) => `${h.path}: biển / tên trong game chỉ tiếng Việt, không chữ Hán (R-HUD-4) — đang là "${h.text}"`));
   if (s.cloudSea.radius < 0) out.push('cloudSea.radius: phải ≥ 0');
   out.push(...checkCrane(s));

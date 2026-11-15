@@ -3,14 +3,14 @@
  * DOM; `main.ts` gom chỗ ngồi từ cảnh + `gamePlay`, mỗi khung hỏi `seatInRange` để hiện / ẩn nút.
  */
 
-/** `ban-choi` = ghế bàn chơi Kỳ Văn Uyển · `ngoi` = án thư, bàn trà … */
-export type SeatKind = 'ban-choi' | 'ngoi';
+/** `ban-choi` = ghế bàn chơi Kỳ Văn Uyển · `ngoi` = án thư, bàn trà … · `dan` = chỗ ngồi đá đàn cầm Trúc Lâm (R-CAM-1) */
+export type SeatKind = 'ban-choi' | 'ngoi' | 'dan';
 
 /** Tầm hiện nút (m) theo loại chỗ (R-NGOI-1). */
-export const SEAT_RANGE: Readonly<Record<SeatKind, number>> = { 'ban-choi': 1.5, ngoi: 1.2 };
+export const SEAT_RANGE: Readonly<Record<SeatKind, number>> = { 'ban-choi': 1.5, ngoi: 1.2, dan: 1.2 };
 
 /** Nhãn nút nổi theo loại chỗ (R-NGOI-1). */
-export const SEAT_LABEL: Readonly<Record<SeatKind, string>> = { 'ban-choi': 'Vào bàn', ngoi: 'Ngồi' };
+export const SEAT_LABEL: Readonly<Record<SeatKind, string>> = { 'ban-choi': 'Vào bàn', ngoi: 'Ngồi', dan: 'Ngồi đàn' };
 
 /** Lệch cao quá mức này (m) = khác tầng — không tính (R-VA-4). */
 const FLOOR_GAP = 1;

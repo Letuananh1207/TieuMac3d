@@ -989,7 +989,35 @@
       39
     ]
   },
-  "npcs": [],
+  "npcs": [
+    {
+      "id": "thi-ong",
+      "x": 20.73,
+      "z": -34.85,
+      "rotY": -153,
+      "pose": "ngoi"
+    },
+    {
+      "id": "tu-tai",
+      "x": 22.15,
+      "z": -31.18,
+      "rotY": 164,
+      "pose": "ngoi"
+    },
+    {
+      "id": "tai-nu",
+      "x": 21.09,
+      "z": -30.28,
+      "rotY": 16,
+      "pose": "ngoi"
+    },
+    {
+      "id": "truc-ong",
+      "x": -32,
+      "z": 27,
+      "rotY": 90
+    }
+  ],
   "camera": {
     "fov": 55,
     "minDist": 3,
@@ -1264,5 +1292,97 @@
     "postEvery": 0.9,
     "color": "#c8b27a",
     "cap": "#6b4a2e"
-  }
+  },
+  "miniGames": [
+    {
+      "kind": "luu-thuong",
+      "channel": 0,
+      "seats": [
+        0,
+        2,
+        3,
+        5,
+        7
+      ],
+      "npcs": [
+        {
+          "id": "thi-ong",
+          "seat": 1
+        },
+        {
+          "id": "tu-tai",
+          "seat": 4
+        },
+        {
+          "id": "tai-nu",
+          "seat": 6
+        }
+      ],
+      "host": "thi-ong",
+      "guide": [
+        15.6,
+        -26.4
+      ]
+    },
+    {
+      "kind": "hai-mang",
+      "areas": [
+        {
+          "from": [
+            24,
+            -24
+          ],
+          "to": [
+            48,
+            -2
+          ]
+        },
+        {
+          "from": [
+            16,
+            12
+          ],
+          "to": [
+            46,
+            44
+          ]
+        },
+        {
+          "from": [
+            -48,
+            -14
+          ],
+          "to": [
+            -20,
+            -7
+          ]
+        },
+        {
+          "from": [
+            -48,
+            36
+          ],
+          "to": [
+            -14,
+            46
+          ]
+        }
+      ],
+      "gap": 3,
+      "buyer": "truc-ong"
+    },
+    {
+      "kind": "dan-cam",
+      "prop": 0,
+      "seat": {
+        "dx": 0,
+        "dz": -1.25,
+        "rotY": 0
+      },
+      "guide": [
+        -7.5,
+        -4.5
+      ]
+    }
+  ]
 }

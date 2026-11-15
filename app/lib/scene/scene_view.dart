@@ -6,6 +6,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 import '../theme/app_colors.dart';
 import 'garden_event.dart';
+import 'mang_event.dart';
 import 'library_event.dart';
 import 'review_event.dart';
 import 'safe_area_script.dart';
@@ -35,6 +36,8 @@ class SceneView extends StatefulWidget {
     this.onOpenShop,
     this.onGetGarden,
     this.onGardenAct,
+    this.onGetMang,
+    this.onMangAct,
   });
 
   final WebUri url;
@@ -88,7 +91,7 @@ class SceneView extends StatefulWidget {
 
   /// Hết một ván ở bàn chơi (`earnGame` — R-TIEN-3): Flutter tính + ghi thưởng, trả `earnGameReply`. `null` → trả `null`
   /// (trang không thưởng, ví ẩn).
-  final Future<Map<String, Object?>> Function(String game, String outcome)? onEarnGame;
+  final Future<Map<String, Object?>> Function(String game, String outcome, String? song)? onEarnGame;
 
   /// Cho Tiểu Khất (`giveAlms` — R-TIEN-8): Flutter tính + ghi, trả `giveAlmsReply`. `null` → trả `null` (không cho được).
   final Future<Map<String, Object?>> Function()? onGiveAlms;
@@ -101,6 +104,12 @@ class SceneView extends StatefulWidget {
 
   /// Một thao tác ở vườn (`gardenAct`): Flutter tính + ghi, trả `gardenActReply`. `null` → trả `null` (không làm gì).
   final Future<Map<String, Object?>> Function(GardenActArgs args)? onGardenAct;
+
+  /// Trả lời `getMang` — măng Trúc Lâm đã lưu (R-MANG-1…5). `null` → trả `null`, trang coi túi trống chỉ xem.
+  final Map<String, Object?> Function()? onGetMang;
+
+  /// Một thao tác măng (`mangAct`): Flutter tính + ghi, trả `mangActReply`. `null` → trả `null` (không làm gì).
+  final Future<Map<String, Object?>> Function(MangActArgs args)? onMangAct;
 
   @override
   State<SceneView> createState() => _SceneViewState();
@@ -205,7 +214,13 @@ class _SceneViewState extends State<SceneView> {
     if (type == 'earnGame') {
       final a = earnGameArgs(args);
       final earn = widget.onEarnGame;
-      return earn != null && a != null ? earn(a.game, a.outcome) : null;
+      return earn != null && a != null ? earn(a.game, a.outcome, earnGameSong(args)) : null;
+    }
+    if (type == 'getMang' && isGetMang(args)) return widget.onGetMang?.call();
+    if (type == 'mangAct') {
+      final a = mangActArgs(args);
+      final act = widget.onMangAct;
+      return act != null && a != null ? act(a) : null;
     }
     if (type == 'giveAlms' && isGiveAlms(args)) {
       final give = widget.onGiveAlms;

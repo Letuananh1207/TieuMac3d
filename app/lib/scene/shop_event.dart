@@ -66,9 +66,15 @@ ShopItem? _item(Object? i) {
   return (game: game, outcome: outcome);
 }
 
-/// Trả lời `earnGame` (docs/bridge.md).
-Map<String, Object?> earnGameReply(({int amount, int balance, int gameToday, bool capped}) r) =>
-    {'amount': r.amount, 'balance': r.balance, 'gameToday': r.gameToday, 'capped': r.capped};
+/// Mã bài của `earnGame` `dan-cam` (R-CAM-4); thiếu / sai dạng → `null`.
+String? earnGameSong(List<dynamic> args) {
+  final s = _payload(args, 'earnGame')?['song'];
+  return s is String && s.isNotEmpty ? s : null;
+}
+
+/// Trả lời `earnGame` (docs/bridge.md); `songDone` chỉ ghi khi đúng (bài đàn đã thưởng hôm nay).
+Map<String, Object?> earnGameReply(({int amount, int balance, int gameToday, bool capped, bool songDone}) r) =>
+    {'amount': r.amount, 'balance': r.balance, 'gameToday': r.gameToday, 'capped': r.capped, if (r.songDone) 'songDone': true};
 
 /// Trả lời `giveAlms` (docs/bridge.md, R-TIEN-8): được → số dư + bản ghi mới; không → lý do (`given` / `short`) + số dư.
 Map<String, Object?> giveAlmsReply(({bool ok, String? reason, int balance, ({int lastDay, int count}) alms}) r) => r.ok

@@ -1,9 +1,11 @@
 /**
  * Túi đồ (R-TUI-1 — thiết kế 2026-11-15.35 `TuiDo-*`): từ số đã lưu (vườn `getGarden`, nhà `getHome`, sách đang mượn
- * `getProgress.book`, số dư) dựng 4 mục **chỉ xem** — Hạt giống, Nông sản, Sách, Đồ trang trí; mục trống → dòng chỉ chỗ lấy.
+ * `getProgress.book`, số dư, măng `getMang`) dựng 5 mục **chỉ xem** — Hạt giống, Nông sản, Sách, Đồ trang trí, Lâm sản
+ * (V-66 B4); mục trống → dòng chỉ chỗ lấy.
  * Thuần (không DOM) — test `tuiDo.test.ts`. Tấm đáy: `ui/bagPanel.ts`.
  */
 import { cleanHome, DECOR_ITEMS, inBag, placedCount } from './decor';
+import type { MangKind } from './mang';
 import { CROPS, type CropId, type Garden } from './vuon';
 
 /** Chuỗi (chỉ tiếng Việt — R-HUD-4), tên khoá như `design/l10n/vi.arb`. */
@@ -17,6 +19,8 @@ export const BAG_TEXT = {
   bagCropsEmpty: 'Kho trống — thu hoạch ở vườn Nhà của ta',
   bagBooksEmpty: 'Chưa mượn sách — mượn ở Tàng Thư Các',
   bagDecorEmpty: 'Chưa có đồ — mua ở Tạp hoá',
+  bagForest: 'Lâm sản',
+  bagForestEmpty: 'Hái măng ở rừng Trúc Lâm',
   bagClose: 'Đóng',
   bagReadOnly: 'Chỉ xem — gieo ở luống, bán ở thùng thu mua, đặt đồ khi trang trí',
   bagRead: 'Đọc',
@@ -31,6 +35,15 @@ export interface BagSource {
   book: { title: string; subtitle: string } | null;
   /** số dư Văn tiền; null = chưa biết (ví ẩn) */
   coins: number | null;
+  /** túi Lâm sản (`getMang.bag` — R-MANG-3/5); thiếu = trống */
+  forest?: Partial<Record<MangKind, number>> | null;
+}
+
+/** Một dòng Lâm sản (Măng / Măng to). */
+export interface BagForest {
+  kind: MangKind;
+  name: string;
+  n: number;
 }
 
 export interface BagCrop {
@@ -54,6 +67,15 @@ export interface BagView {
   crops: { total: number; items: BagCrop[]; empty: string };
   book: { title: string; empty: string; item: { title: string } | null };
   decor: { total: number; items: BagDecor[]; empty: string };
+  /** ngăn Lâm sản (R-TUI-1, R-MANG-3) */
+  forest: { total: number; items: BagForest[]; empty: string };
+}
+
+const FOREST_NAME: Record<MangKind, string> = { mang: 'Măng', 'mang-to': 'Măng to' };
+
+/** Lâm sản có trong túi theo thứ tự Măng → Măng to; số ≤ 0 bỏ. */
+function forestList(bag: BagSource['forest']): BagForest[] {
+  return (Object.keys(FOREST_NAME) as MangKind[]).filter((k) => (bag?.[k] ?? 0) > 0).map((k) => ({ kind: k, name: FOREST_NAME[k], n: Math.floor(bag![k]!) }));
 }
 
 /** Cây có trong túi / kho theo thứ tự bảng cây (R-VUON-3, R-VUON-7); số ≤ 0 hoặc mã lạ bỏ. */
@@ -82,7 +104,9 @@ export function bagView(s: BagSource): BagView {
   const seeds = cropList(s.garden?.seeds);
   const crops = cropList(s.garden?.barn);
   const decor = decorList(s.home);
+  const forest = forestList(s.forest);
   return {
+    forest: { total: forest.reduce((a, x) => a + x.n, 0), items: forest, empty: BAG_TEXT.bagForestEmpty },
     coins: s.coins === null ? null : Math.max(0, Math.floor(s.coins)),
     seeds: { total: sum(seeds), items: seeds, empty: BAG_TEXT.bagSeedsEmpty },
     crops: { total: sum(crops), items: crops, empty: BAG_TEXT.bagCropsEmpty },

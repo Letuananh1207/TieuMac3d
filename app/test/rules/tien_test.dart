@@ -129,14 +129,42 @@ void main() {
       final store = await ProgressStore.open(clock: () => now);
       expect(store.gameCoinsToday, 57);
       final r1 = await store.earnGame('dau-chu', 'thang');
-      expect(r1, (amount: 3, balance: 3, gameToday: 60, capped: true));
+      expect(r1, (amount: 3, balance: 3, gameToday: 60, capped: true, songDone: false));
       final r2 = await store.earnGame('co', 'thua');
-      expect(r2, (amount: 0, balance: 3, gameToday: 60, capped: true));
+      expect(r2, (amount: 0, balance: 3, gameToday: 60, capped: true, songDone: false));
       now = DateTime(2026, 11, 14, 8);
       expect(store.gameCoinsToday, 0);
       final r3 = await store.earnGame('dau-chu', 'hoa');
-      expect(r3, (amount: 5, balance: 8, gameToday: 5, capped: false));
+      expect(r3, (amount: 5, balance: 8, gameToday: 5, capped: false, songDone: false));
       expect((await ProgressStore.open(clock: () => now)).coins, 8);
+    });
+
+    test('R-LUU-5: Lưu Thương thắng / hoà / thua +8 / +5 / +3, chung trần 60 (57 → +3)', () {
+      expect(gameBase('luu-thuong', 'thang'), 8);
+      expect(gameBase('luu-thuong', 'hoa'), 5);
+      expect(gameBase('luu-thuong', 'thua'), 3);
+      expect(gameEarn('luu-thuong', 'thang', 57), (amount: 3, capped: true));
+      expect(rewardLabel(gameReward('luu-thuong', 'thang', 8)), '+8 · Thắng Lưu Thương');
+    });
+
+    test('R-CAM-4: Đàn cầm Tri âm / Thanh nhã / Tập đàn +5 / +3 / +1; nhãn theo hạng bài', () {
+      expect([gameBase('dan-cam', 'thang'), gameBase('dan-cam', 'hoa'), gameBase('dan-cam', 'thua')], [5, 3, 1]);
+      expect(rewardLabel(gameReward('dan-cam', 'thang', 5)), '+5 · Tri âm');
+      expect(rewardLabel(gameReward('dan-cam', 'hoa', 3)), '+3 · Thanh nhã');
+      expect(rewardLabel(gameReward('dan-cam', 'thua', 1)), '+1 · Tập đàn');
+    });
+
+    test('R-CAM-4: mỗi bài thưởng 1 lần / ngày giờ VN; thiếu mã bài → 0; sáng mai lại được', () async {
+      var now = DateTime.utc(2026, 11, 15, 3); // 10:00 giờ VN
+      final store = await ProgressStore.open(clock: () => now);
+      expect((await store.earnGame('dan-cam', 'thang', song: 'suoi-truc')).amount, 5);
+      final again = await store.earnGame('dan-cam', 'thang', song: 'suoi-truc');
+      expect((again.amount, again.songDone), (0, true));
+      expect((await store.earnGame('dan-cam', 'hoa', song: 'mua-mang')).amount, 3);
+      expect((await store.earnGame('dan-cam', 'thang')).amount, 0); // thiếu bài
+      expect(store.coins, 8);
+      now = DateTime.utc(2026, 11, 15, 17, 30); // 0:30 ngày 16 giờ VN
+      expect((await store.earnGame('dan-cam', 'thang', song: 'suoi-truc')).amount, 5);
     });
   });
 

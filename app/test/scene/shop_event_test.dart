@@ -36,11 +36,15 @@ void main() {
     expect(earnGameArgs([{'type': 'earnGame', 'payload': {'game': 'dau-chu', 'outcome': 'thang'}}]), (game: 'dau-chu', outcome: 'thang'));
     expect(earnGameArgs([{'type': 'earnGame', 'payload': {'game': 3}}]), isNull);
     expect(earnGameArgs([{'type': 'openShop', 'payload': {}}]), isNull);
-    expect(earnGameReply((amount: 8, balance: 1288, gameToday: 32, capped: false)), {
+    expect(earnGameReply((amount: 8, balance: 1288, gameToday: 32, capped: false, songDone: false)), {
       'amount': 8,
       'balance': 1288,
       'gameToday': 32,
       'capped': false,
     });
+    // R-CAM-4: bài đàn đã thưởng hôm nay → songDone; đọc mã bài
+    expect(earnGameReply((amount: 0, balance: 10, gameToday: 5, capped: false, songDone: true))['songDone'], true);
+    expect(earnGameSong([{'type': 'earnGame', 'payload': {'game': 'dan-cam', 'outcome': 'thang', 'song': 'suoi-truc'}}]), 'suoi-truc');
+    expect(earnGameSong([{'type': 'earnGame', 'payload': {'game': 'co', 'outcome': 'thang'}}]), isNull);
   });
 }

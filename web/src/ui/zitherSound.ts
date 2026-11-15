@@ -8,6 +8,24 @@ import { midiHz } from '../zones/danTranh';
 
 /** Dài mỗi nốt (s) — dây cổ tranh ngân lâu, tắt dần. */
 const NOTE_SECONDS = 2.2;
+
+/** Âm sắc dây: `bright` = độ sáng nhiễu gảy (0…1), `ring` = giây tới −60 dB, `seconds` = dài mẫu, `octave` = lệch quãng tám. */
+export interface PluckTone {
+  bright: number;
+  ring: number;
+  seconds: number;
+  octave: number;
+}
+
+/**
+ * `tranh` cổ tranh (R-AM-2 — như cũ) · `cam` cổ cầm (R-AM-3): thấp hơn một quãng tám, ngân 4–5 giây, bớt tiếng sáng
+ * (dây tơ gảy bằng đầu ngón, thân đàn dài).
+ */
+export const TIMBRES = {
+  tranh: { bright: 0.6, ring: 2.4, seconds: NOTE_SECONDS, octave: 0 },
+  cam: { bright: 0.32, ring: 5.2, seconds: 4.6, octave: -1 },
+} as const satisfies Record<string, PluckTone>;
+export type Timbre = keyof typeof TIMBRES;
 /** Mỗi nốt vào âm lượng chung nhỏ lại chừng này (nhiều nốt chồng ngân không vỡ tiếng). */
 const NOTE_GAIN = 0.32;
 
@@ -16,7 +34,7 @@ const NOTE_GAIN = 0.32;
  * mỗi vòng lấy trung bình hai mẫu kề nhau rồi nhân hệ số tắt → tiếng dây ngân, cao âm tắt nhanh hơn trầm. Cuối nốt mờ
  * 0,15 s cho khỏi lách cách. Đỉnh ≈ 1.
  */
-export function pluckSamples(freq: number, rate: number, seconds = NOTE_SECONDS, seed = 1): Float32Array<ArrayBuffer> {
+export function pluckSamples(freq: number, rate: number, seconds = NOTE_SECONDS, seed = 1, tone: PluckTone = TIMBRES.tranh): Float32Array<ArrayBuffer> {
   const out = new Float32Array(Math.max(1, Math.round(rate * seconds)));
   const period = Math.max(2, Math.round(rate / freq));
   const ring = new Float32Array(period);
@@ -25,11 +43,11 @@ export function pluckSamples(freq: number, rate: number, seconds = NOTE_SECONDS,
   for (let i = 0; i < period; i++) {
     s = (Math.imul(s, 1664525) + 1013904223) >>> 0;
     const noise = s / 2 ** 31 - 1;
-    prev = 0.6 * noise + 0.4 * prev; // nhiễu hơi trầm: gảy bằng móng giữa dây, không chói
+    prev = tone.bright * noise + (1 - tone.bright) * prev; // nhiễu hơi trầm: gảy bằng móng giữa dây, không chói
     ring[i] = prev;
   }
-  // hệ số tắt mỗi vòng (mỗi chu kỳ dây): riêng nó cho −60 dB sau 2,4 s; bộ lọc trung bình làm nốt cao tắt nhanh hơn
-  const decay = 0.001 ** (1 / (2.4 * freq));
+  // hệ số tắt mỗi vòng (mỗi chu kỳ dây): riêng nó cho −60 dB sau `ring` giây; bộ lọc trung bình làm nốt cao tắt nhanh hơn
+  const decay = 0.001 ** (1 / (tone.ring * freq));
   let idx = 0;
   let peak = 0;
   for (let i = 0; i < out.length; i++) {
@@ -53,7 +71,7 @@ export class ZitherSound {
   private readonly buffers = new Map<number, AudioBuffer>();
   private level = 0;
 
-  constructor() {
+  constructor(private readonly timbre: Timbre = 'tranh') {
     const unlock = (): void => {
       if (!this.ctx) this.open();
       if (this.ctx && this.ctx.state === 'suspended' && !document.hidden) void this.ctx.resume().catch(() => {});
@@ -115,7 +133,8 @@ export class ZitherSound {
   private buffer(ctx: AudioContext, midi: number): AudioBuffer {
     let b = this.buffers.get(midi);
     if (!b) {
-      const data = pluckSamples(midiHz(midi), ctx.sampleRate, NOTE_SECONDS, midi * 7919);
+      const tone = TIMBRES[this.timbre];
+      const data = pluckSamples(midiHz(midi + 12 * tone.octave), ctx.sampleRate, tone.seconds, midi * 7919, tone);
       b = ctx.createBuffer(1, data.length, ctx.sampleRate);
       b.copyToChannel(data, 0);
       this.buffers.set(midi, b);

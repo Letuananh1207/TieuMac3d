@@ -111,6 +111,23 @@ export class WalletRoom {
   }
 
   /**
+   * Hết ván Lưu Thương / một bài Đàn cầm (R-LUU-5, R-CAM-4): ghi thưởng (ví thử hoặc Flutter `earnGame`) rồi ví HUD
+   * "+n · …" (xu bay từ giữa màn khi ví hiện lại). Thẻ kết quả trò chờ thiết kế — trả câu trả lời để nơi gọi ghi.
+   */
+  async miniEarn(game: GameKind, outcome: GameOutcome, song?: string): Promise<GameEarning | null> {
+    const trial = this.host.trial;
+    let e: GameEarning | null;
+    if (trial) {
+      const r = earnTrialGame(trial.wallet, game, outcome, new Date(), song);
+      trial.update(() => r.wallet);
+      e = r.earning;
+    } else e = await this.host.bridge.earnGame(game, outcome, song);
+    const center = (): { x: number; y: number } => ({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
+    if (e) this.wallet.push({ amount: e.amount, label: gameRewardLabel(game, outcome, e.amount, e.songDone), from: center }, e.balance, e.gameToday);
+    return e;
+  }
+
+  /**
    * Thẻ bộ thủ HTML vừa mở (không có Flutter): chế độ thử → lần đầu +10 "Học bộ 竹" (R-TIEN-2, R-TIEN-7), xu bay khi đóng
    * thẻ (ví hiện lại); mở lại → 0. Có Flutter thì Flutter tự thưởng — không làm gì.
    */

@@ -16,9 +16,12 @@ export interface DialogChoice {
    *  mở danh mục khi không có `book` (R-SACH-1); `return` = trả sách đang mượn (R-SACH-4); `journey` = trận sư đọc tiến
    *  độ hành trình (R-NPC-5); `alms` = cho Tiểu Khất 5 văn rồi nghe tin đồn (R-NPC-6, R-TIEN-8); `gio` = Lão Canh đọc giờ
    *  hiện tại (R-NPC-7) */
-  action?: 'daily' | 'borrow' | 'return' | 'journey' | 'alms' | 'gio';
+  action?: 'daily' | 'borrow' | 'return' | 'journey' | 'alms' | 'gio' | 'mini';
   /** mã sách cho `action: 'borrow'` */
   book?: string;
+  /** việc của trò nhỏ Trúc Lâm cho `action: 'mini'` (V-66 B4 — `zones/trucLamThoai.ts`): `luu-du` dự tiệc, `luu-cach` cách
+   *  chơi, `mang-ban` bán hết măng, `mang-cach` cách chơi hái măng */
+  mini?: 'luu-du' | 'luu-cach' | 'mang-ban' | 'mang-cach';
 }
 
 /** Một câu NPC nói, kèm các lựa chọn (1–3; câu nào cũng có "Tạm biệt"). */

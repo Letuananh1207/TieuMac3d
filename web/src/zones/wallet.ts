@@ -4,8 +4,8 @@
  * hiện câu trả lời của Flutter (`earnGame`, `getProgress` — docs/bridge.md), không tính lại.
  */
 
-/** Trò ở bàn chơi Kỳ Văn Uyển (mã như `earnGame`). */
-export type GameKind = 'dau-chu' | 'co';
+/** Trò có thưởng (mã như `earnGame`): bàn chơi Kỳ Văn Uyển + Lưu Thương, Đàn cầm theo bài (Trúc Lâm). */
+export type GameKind = 'dau-chu' | 'co' | 'luu-thuong' | 'dan-cam';
 export type GameOutcome = 'thang' | 'hoa' | 'thua';
 
 /** Câu trả lời `earnGame` (docs/bridge.md). */
@@ -14,6 +14,8 @@ export interface GameEarning {
   balance: number;
   gameToday: number;
   capped: boolean;
+  /** `dan-cam`: bài này hôm nay đã thưởng rồi (R-CAM-4) */
+  songDone?: boolean;
 }
 
 /** Số ngăn nghìn bằng dấu cách: 1280 → "1 280" (R-TIEN-1). Âm / lạ → "0". */
@@ -27,15 +29,21 @@ export function coinsToFly(amount: number): number {
   return amount > 0 ? Math.min(5, Math.ceil(amount / 5)) : 0;
 }
 
-const GAME_NAME: Record<GameKind, string> = { 'dau-chu': 'Đấu chữ', co: 'Cờ caro' };
+const GAME_NAME: Record<GameKind, string> = { 'dau-chu': 'Đấu chữ', co: 'Cờ caro', 'luu-thuong': 'Lưu Thương', 'dan-cam': 'Đàn cầm' };
 const OUTCOME_WORD: Record<GameOutcome, string> = { thang: 'Thắng', hoa: 'Hoà', thua: 'Thua' };
+/** Đàn cầm theo bài: nhãn là hạng bài (R-CAM-4). */
+const CAM_WORD: Record<GameOutcome, string> = { thang: 'Tri âm', hoa: 'Thanh nhã', thua: 'Tập đàn' };
 
 /** Nhãn đủ trần (chuỗi `rewardGameCapped`). */
 export const GAME_CAPPED_LABEL = 'Hôm nay trò chơi đã đủ thưởng';
+/** Nhãn bài đàn đã thưởng hôm nay (R-CAM-4). */
+export const SONG_DONE_LABEL = 'Bài này hôm nay đã được thưởng';
 
-/** Nhãn lý do của một ván (R-TIEN-5): "+8 · Thắng Đấu chữ"; 0 (đủ trần 60 — R-TIEN-3) → nhãn đủ thưởng. */
-export function gameRewardLabel(game: GameKind, outcome: GameOutcome, amount: number): string {
-  return amount > 0 ? `+${amount} · ${OUTCOME_WORD[outcome]} ${GAME_NAME[game]}` : GAME_CAPPED_LABEL;
+/** Nhãn lý do của một ván (R-TIEN-5): "+8 · Thắng Đấu chữ", "+5 · Tri âm"; 0 (đủ trần 60 — R-TIEN-3) → nhãn đủ thưởng. */
+export function gameRewardLabel(game: GameKind, outcome: GameOutcome, amount: number, songDone = false): string {
+  if (songDone) return SONG_DONE_LABEL;
+  if (!(amount > 0)) return GAME_CAPPED_LABEL;
+  return game === 'dan-cam' ? `+${amount} · ${CAM_WORD[outcome]}` : `+${amount} · ${OUTCOME_WORD[outcome]} ${GAME_NAME[game]}`;
 }
 
 /** Dòng nhỏ trên thẻ kết quả ván khi ngồi bàn (quyết định 4): "+8 Văn tiền"; không thưởng → `null`. */
@@ -66,5 +74,5 @@ export function parseGameEarning(v: unknown): GameEarning | null {
   const balance = num(o.balance);
   const gameToday = num(o.gameToday);
   if (amount === null || balance === null || gameToday === null) return null;
-  return { amount, balance, gameToday, capped: o.capped === true };
+  return { amount, balance, gameToday, capped: o.capped === true, ...(o.songDone === true ? { songDone: true } : {}) };
 }

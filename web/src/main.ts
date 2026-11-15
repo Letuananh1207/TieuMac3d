@@ -4,7 +4,7 @@ import cursorArrow from './cursor/tro.svg?raw';
 import cursorButton from './cursor/tro-nut.svg?raw';
 import { installCursors } from './ui/cursor';
 import { openTrialStore } from './bridge/browserStore';
-import { FlutterBridge, getGarden, getHome, getProgress, hasFlutter } from './bridge/flutterBridge';
+import { FlutterBridge, getGarden, getHome, getMang, getProgress, hasFlutter } from './bridge/flutterBridge';
 import { Colliders } from './collision/colliders';
 import { GamePlay, type TableSeat } from './gamePlay';
 import { Joystick } from './input/joystick';
@@ -54,7 +54,7 @@ import { borrowedBook } from './zones/library';
 import { GuideButton } from './ui/guideButton';
 import { GuidePanel } from './ui/guidePanel';
 import { GameHud } from './ui/gameHud';
-import { gameSigns, signInRange, type GameSign } from './zones/gameGuides';
+import { gameSigns, miniGameSigns, signInRange, type GameSign } from './zones/gameGuides';
 import { guideOf, studySign } from './zones/studyGuide';
 import { DailyPanel } from './ui/dailyPanel';
 import { DAILY_NEW_GOAL, boardBeforeNpc, dailyBoardSpot, dailyBoardView, nearBoard, tasksLeft } from './zones/dailyBoard';
@@ -66,6 +66,7 @@ import { JOURNEY_MAP, placeAt, placeScene, placeStates, type PlaceState } from '
 import { RingCharge } from './zones/ringCharge';
 import { travelParams, type TravelHow } from './zones/cuoiHac';
 import { ThanhCongCu } from './thanhCongCu';
+import { MiniGames } from './miniGames';
 import { PortalTrigger } from './zones/portal';
 import { DIALOGS, DialogRunner, type Dialog } from './zones/dialogs';
 import { LIBRARIAN, LibraryDesk } from './libraryDesk';
@@ -253,6 +254,7 @@ async function boot(): Promise<void> {
   let music: AmbientMusic | null = null; // nhạc nền trà lâu — dựng bên dưới (R-NHAC-1)
   let town: TownNpcs | null = null; // Tiểu Khất + Lão Canh — dựng bên dưới (townNpcs.ts)
   let danTranh: DanTranh | null = null; // nhạc công bục đàn Quảng Trường (R-NPC-9, R-AM-2) — danTranh.ts
+  let mini: MiniGames | null = null; // 3 trò nhỏ Trúc Lâm (V-66 B4) — miniGames.ts; chỉ cảnh có `miniGames`
   const setRunning = (): void => {
     const want = !appHidden && !document.hidden;
     if (want === running) return;
@@ -260,6 +262,7 @@ async function boot(): Promise<void> {
     if (!want) music?.stopNow(); // app xuống nền / tab ẩn → nhạc dừng (R-NHAC-1)
     town?.setRunning(want); // tiếng mõ im khi nền / tab ẩn (R-AM-1)
     danTranh?.setRunning(want); // tiếng đàn cũng vậy (R-AM-2)
+    mini?.setRunning(want); // tiếng Trúc Lâm (R-AM-3)
     if (want) {
       clock.getDelta(); // bỏ khoảng thời gian đã dừng
       requestAnimationFrame(tick);
@@ -280,7 +283,7 @@ async function boot(): Promise<void> {
       setRunning();
     },
     onDebug: (on) => fps.setEnabled(on),
-    onBack: (): boolean => mapBack() || !!decor?.back() || (gamePlay.active && (gamePlay.stand(), true)), // nút quay lại: đóng lớp phủ, rồi rời bàn
+    onBack: (): boolean => mapBack() || !!decor?.back() || (gamePlay.active && (gamePlay.stand(), true)) || !!mini?.back(), // nút quay lại: đóng lớp phủ, rồi rời bàn / tiệc / đàn
   });
   const openLesson = (zone: Zone): void => {
     if (paused) return; // đang mở rồi (chạm hai lần khi chờ Flutter trả lời)
@@ -331,6 +334,7 @@ async function boot(): Promise<void> {
   let onSeat = false; // ngồi bằng nút nổi "Ngồi" / "Vào bàn" (R-NGOI-1) → không mở cuộn sách (R-ON-8)
   let seatStudy = false; // … trừ bồ đoàn khu tự học Tàng Thư Các: vẫn nhập định + cuộn sách (R-VA-4)
   let seatHold: Pick<SeatSpot, 'hold' | 'rail'> = {}; // vật cầm / lan can ở chỗ ngồi khi nhìn từ mắt (R-NGOI-1, R-VA-4)
+  let miniSeated = false; // ngồi tiệc Lưu Thương / đàn cầm (V-66 B4): camera ngôi 3 (không từ mắt), không cuộn sách
   /** Chỗ đang ngồi cho góc nhìn từ mắt (R-DIEU-7): bàn chơi · chỗ ngồi · Ngồi ôn / bồ đoàn khu tự học (cuộn sách). */
   const sitPlace = (): SitPlace => {
     const g = gamePlay.seatedAt;
@@ -340,6 +344,10 @@ async function boot(): Promise<void> {
   };
   /** Mỗi khung: đếm thời gian ngồi ôn tại chỗ, ở bất kỳ đâu; đủ `SIT_TO_LEARN` thì mở cuộn sách Ngồi ôn (R-ON-8). */
   const meditate = (dt: number, busy: boolean): void => {
+    if (miniSeated && !player.isSitting) {
+      miniSeated = false; // đứng dậy khỏi tiệc / đàn: camera về như trước (V-66 B4)
+      orbit.sit(false);
+    }
     if (!player.isSitting) {
       if (scrollOpen) {
         scrollOpen = false; // đứng dậy (Xuất định / phím) khi cuộn còn mở
@@ -355,6 +363,7 @@ async function boot(): Promise<void> {
       if (ngoiMat.seated) ngoiMat.stand(); // đứng dậy: camera trượt về ngôi 3 như trước khi ngồi (R-DIEU-7)
       return;
     }
+    if (miniSeated) return; // tiệc Lưu Thương / đàn cầm: camera ngôi 3, không cuộn sách (R-LUU-1, R-CAM-1)
     if (!ngoiMat.seated) ngoiMat.sit(sitPlace()); // mọi kiểu ngồi: nhìn từ mắt (R-DIEU-7, R-NGOI-1, R-GIAO-1)
     if ((onSeat && !seatStudy) || sitOpened || busy) return;
     sitTime += dt;
@@ -476,10 +485,28 @@ async function boot(): Promise<void> {
   const seatSpots = (): SeatPick[] =>
     (seatList ??= [
       ...gamePlay.seatSpots(),
-      ...world.seats.map((s) => ({ ...s, kind: 'ngoi' as const })),
+      ...world.seats.filter((s) => !mini?.seatTaken(s.x, s.z)).map((s) => ({ ...s, kind: 'ngoi' as const })), // đệm có văn nhân: không nút (R-NGOI-1)
+      ...(mini?.seatSpots() ?? []), // "Ngồi đàn" (R-CAM-1)
     ]);
+  /** Ngồi chỗ của trò Trúc Lâm (V-66 B4): camera ngôi 3 lùi / ngẩng theo trò, không góc từ mắt. */
+  const sitMini = (s: { x: number; y: number; z: number; rotY: number }, view: { dist: number; pitch: number; side?: number }): void => {
+    if (player.isSitting) return;
+    onSeat = true;
+    seatStudy = false;
+    seatHold = {};
+    miniSeated = true;
+    player.moveTarget = null;
+    player.position.set(s.x, s.y, s.z);
+    character.facing.rotation.y = s.rotY;
+    player.toggleSit();
+    orbit.sit(true);
+    orbit.yaw = s.rotY - Math.PI + (view.side ?? 0);
+    orbit.dist = view.dist;
+    orbit.pitch = view.pitch;
+  };
   const sitAt = (spot: SeatPick): void => {
     if (player.isSitting) return;
+    if (!('table' in spot) && mini?.sit(spot)) return; // "Ngồi đàn" (R-CAM-1)
     onSeat = true;
     seatStudy = !!spot.study;
     seatHold = 'table' in spot ? {} : { hold: spot.hold, rail: spot.rail };
@@ -531,7 +558,7 @@ async function boot(): Promise<void> {
   // Space nhảy, F chào, C ngồi ôn (R-DIEU-6, R-DIEU-7); đang học / màn tải thì bỏ qua
   const keyboard = new Keyboard((a, key) => {
     if (a === 'back') {
-      if (!mapBack() && !decor?.back() && !garden?.back()) gamePlay.stand(); // Esc: đóng bảng / thoại / bản đồ, không có thì rời bàn (R-GIAO-1)
+      if (!mapBack() && !decor?.back() && !garden?.back() && !mini?.back()) gamePlay.stand(); // Esc: đóng bảng / thoại / bản đồ, không có thì rời bàn / tiệc / đàn (R-GIAO-1)
       return;
     }
     // T / H / B / I / J: thanh công cụ (R-THANH-1; luật ẩn / ngồi / nhảy ở zones/thanhCongCu.ts); B rồi 1…8: biểu cảm tạm
@@ -612,6 +639,7 @@ async function boot(): Promise<void> {
       if (c?.action === 'journey') afterSay = () => say('tran-su', journeyLine(progress && { chars: progress.chars, radicals: progress.radicals.length }, JOURNEY_MAP.places, REGION_SCENES), () => {}); // R-NPC-5
       if (LibraryDesk.handles(c)) afterSay = () => desk.act(c); // mượn / trả sách (R-SACH-1, R-SACH-4)
       if (town?.handles(c)) afterSay = () => town?.act(c); // cho Tiểu Khất, hỏi giờ Lão Canh (R-NPC-6, R-NPC-7)
+      if (mini?.handles(c)) afterSay = () => mini?.act(c); // dự tiệc Lưu Thương, bán măng (R-LUU-1, R-MANG-5)
       return runner?.choose(i) ?? null;
     },
     () => {
@@ -637,7 +665,8 @@ async function boot(): Promise<void> {
   const dialogOf = new Map(DIALOGS.map((d) => [d.npc, d]));
   // nút "Cách chơi" trên biển tên trò chơi Kỳ Văn Uyển → bảng cách chơi, nhân vật đứng yên tới khi đóng (R-GIAO-2);
   // nút "Hướng dẫn" trên biển "Khu tự học" tầng 2 Tàng Thư Các → bảng hướng dẫn cùng khung (R-VA-5)
-  const signs = [...gameSigns(spec.gameTables), ...(world.studySign ? [studySign(world.studySign)] : [])];
+  // + "Cách chơi" 3 trò Trúc Lâm (R-GIAO-2, V-66 B4)
+  const signs = [...gameSigns(spec.gameTables), ...(world.studySign ? [studySign(world.studySign)] : []), ...miniGameSigns(spec.miniGames)];
   const guidePanel = new GuidePanel(() => {
     paused = false;
   });
@@ -660,7 +689,7 @@ async function boot(): Promise<void> {
       learn.suspend(true);
     },
   });
-  const dialogFor = (npcId: string): Dialog | undefined => (npcId === LIBRARIAN ? desk.dialog() : (town?.dialog(npcId) ?? dialogOf.get(npcId)));
+  const dialogFor = (npcId: string): Dialog | undefined => (npcId === LIBRARIAN ? desk.dialog() : (town?.dialog(npcId) ?? mini?.dialog(npcId) ?? dialogOf.get(npcId)));
   // thẻ "Đọc sách" khi đang mượn sổ từ, mọi khu mọi vùng → mở sổ từ Flutter (R-SACH-2, R-SACH-3)
   const readBook = new ReadBookButton(() => {
     player.moveTarget = null;
@@ -742,6 +771,37 @@ async function boot(): Promise<void> {
       if (progress) progress = { ...progress, coins, alms };
     },
   });
+  // 3 trò nhỏ Trúc Lâm (V-66 B4): Lưu Thương, hái măng, đàn cầm — miniGames.ts; chỉ khi đặc tả có `miniGames`
+  if (spec.miniGames.length) {
+    mini = new MiniGames(
+      {
+        spec,
+        world,
+        scene,
+        npcs: npcSet.npcs,
+        colliders,
+        player,
+        character,
+        groundAt,
+        bridge,
+        trial,
+        progress: () => progress,
+        learned: () => learnedRadicals,
+        lowTier: tier === 'thap',
+        say: (id, text, then) => say(id, text, then ?? (() => {})),
+        chatSay: (id, text) => chat.npcSay(id, text),
+        openGuide: (kind) => openGuide({ kind, npc: '', x: 0, z: 0, han: '', name: '' }),
+        sit: sitMini,
+        earn: (game, outcome, song) => walletRoom.miniEarn(game, outcome, song),
+        coins: (amount, label, balance) => {
+          walletRoom.gardenCoins(amount, label, balance);
+          if (progress) progress = { ...progress, coins: balance };
+        },
+      },
+      params,
+    );
+    await mini.load();
+  }
   // nhạc công + tiếng đàn trên bục đàn (R-NPC-9, R-AM-2): chỉ khi cảnh có `buc-dan` và có model `cam-nu`
   void DanTranh.create(scene, spec, groundAt).then((d) => (danTranh = d));
   // bản đồ vùng (R-BANDO-1…5, thiết kế 2026-11-14.20): bản đồ nhỏ góc trên trái + bản đồ lớn — areaMapRoom.ts
@@ -852,7 +912,7 @@ async function boot(): Promise<void> {
       travelMap: mapOpen,
       areaMap: areaMap.open,
       talking,
-      gameTable: gamePlay.active,
+      gameTable: gamePlay.active || !!mini?.active,
       decorating: !!decor?.active,
       garden: !!garden?.active,
       chatTyping: chat.typing,
@@ -876,9 +936,9 @@ async function boot(): Promise<void> {
     // túi đồ ở mọi cảnh: số đã lưu (getGarden / getHome — docs/bridge.md; chế độ thử: ví thử R-TIEN-7)
     bagSource: async () => {
       const w = trial?.wallet;
-      const [garden, home] = w ? [w.garden, { items: w.items, owned: w.owned, placed: w.placed }] : await Promise.all([getGarden(), getHome()]);
+      const [garden, home, mang] = w ? [w.garden, { items: w.items, owned: w.owned, placed: w.placed }, w.mang] : await Promise.all([getGarden(), getHome(), getMang()]);
       const b = borrowedBook(desk.book);
-      return { garden, home, book: b ? { title: b.title, subtitle: b.subtitle } : null, coins: w?.coins ?? progress?.coins ?? null };
+      return { garden, home, book: b ? { title: b.title, subtitle: b.subtitle } : null, coins: w?.coins ?? progress?.coins ?? null, forest: mang?.bag }; // + Lâm sản (getMang — R-TUI-1)
     },
     readBook: () => {
       player.moveTarget = null;
@@ -955,6 +1015,7 @@ async function boot(): Promise<void> {
     town?.update({ dt, player: pos, camera, talkingTo: talking ? (runner?.dialog.npc ?? null) : null, covered: paused || covered || loading.active }); // NPC đi (R-NPC-7)
     for (const npc of showNearNpcs(npcSet.npcs, pos.x, pos.z)) npc.update(dt); // xa từ 35 m → ẩn (R-NPC-1)
     danTranh?.update({ dt, player: pos, camera, covered: paused || covered || loading.active || travelling }); // R-AM-2
+    mini?.update({ dt, player: pos, camera, covered: paused || covered || loading.active || travelling, busy: paused || mapOpen || talking || loading.active || !!thanh?.busy }); // V-66 B4
     gamePlay.update(dt);
     gameHud.render(talking ? null : gamePlay.view());
     if (ring && !travelling && !loading.active && !mapOpen && !thanh?.busy) {
@@ -1019,7 +1080,7 @@ async function boot(): Promise<void> {
       guideButton.set(sign, sign ? (sign.y ?? groundAt(sign.x, sign.z)) : 0);
       guideButton.follow(camera);
     }
-    walletRoom.update({ camera, player: pos, roomId: room?.zoneId, busy: busy || gamePlay.active, free: seatFree });
+    walletRoom.update({ camera, player: pos, roomId: room?.zoneId, busy: busy || gamePlay.active || !!mini?.active, free: seatFree }); // ngồi tiệc / đàn: ví ẩn (R-TIEN-1)
     areaMap.update(dt, {
       x: pos.x,
       y: pos.y,
@@ -1031,7 +1092,7 @@ async function boot(): Promise<void> {
         travelMap: mapOpen,
         covered: paused || covered,
         talking,
-        gameTable: gamePlay.active,
+        gameTable: gamePlay.active || !!mini?.active,
         sitting: player.isSitting,
         chatTyping: chat.typing,
         decorating: !!decor?.active,

@@ -5,7 +5,7 @@
  * trống → khung nét đứt + dòng chỉ chỗ lấy. **Chỉ xem.** Đóng: nút Đóng, kéo tay nắm xuống, chạm cảnh, nút quay lại.
  * Dữ liệu dựng sẵn ở `zones/tuiDo.ts`. DOM dựng bằng createElement.
  */
-import { BAG_TEXT, type BagCrop, type BagView } from '../zones/tuiDo';
+import { BAG_TEXT, type BagCrop, type BagForest, type BagView } from '../zones/tuiDo';
 import { formatCoins } from '../zones/wallet';
 import { h } from './chatText';
 import { cropPicture } from './cropArt';
@@ -89,6 +89,8 @@ export class BagPanel {
       }
     } else decor = this.empty(v.decor.empty);
     out.push(...this.section(BAG_TEXT.bagDecor, v.decor.total, decor));
+    // ngăn Lâm sản (R-TUI-1, V-66 B4): cùng kiểu chip "tên × n" của Nông sản; hình măng chờ thiết kế (phiếu 2026-11-15-truc-lam-mini-game)
+    out.push(...this.section(BAG_TEXT.bagForest, v.forest.total, v.forest.items.length ? this.chips(v.forest.items, 'bg-crops') : this.empty(v.forest.empty)));
     this.list.replaceChildren(...out);
   }
 
@@ -98,12 +100,12 @@ export class BagPanel {
     return [head, body];
   }
 
-  private chips(items: readonly BagCrop[], cls: string): HTMLElement {
+  private chips(items: readonly (BagCrop | BagForest)[], cls: string): HTMLElement {
     const grid = h('div', `bg-chips ${cls}`);
     for (const c of items) {
       const chip = h('div', 'bg-chip');
       const pic = h('span', 'bg-crop');
-      pic.append(cropPicture(c.crop, 30));
+      if ('crop' in c) pic.append(cropPicture(c.crop, 30));
       const txt = h('div', 'bg-txt');
       txt.append(h('div', 'bg-name', c.name), h('div', 'bg-n', `× ${c.n}`));
       chip.append(pic, txt);

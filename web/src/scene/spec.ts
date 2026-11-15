@@ -16,7 +16,16 @@ export const GOODS_KINDS = ['but', 'vai', 'bua', 'thuoc', 'thung'] as const;
 export const ROOF_KINDS = ['chop', 'cong'] as const;
 export const SIDES = ['bac', 'nam', 'dong', 'tay'] as const;
 /** NPC có model: `design/models/<mã>.glb` (tạo bằng /tai-nguyen). Thêm NPC mới = thêm mã ở đây + đặt file model. */
-export const NPC_IDS = ['tieu-mac', 'su-phu', 'thu-thu', 'tieu-nhi', 'quan-su', 'tran-su', 'khat-nhi', 'go-mo', 'cam-nu'] as const;
+export const NPC_IDS = [
+  'tieu-mac', 'su-phu', 'thu-thu', 'tieu-nhi', 'quan-su', 'tran-su', 'khat-nhi', 'go-mo', 'cam-nu',
+  // NPC trò chơi Trúc Lâm (V-66 B4): văn nhân Lưu Thương + Trúc Ông — thiếu model → thế bằng khối (R-NPC-1)
+  'thi-ong', 'tu-tai', 'tai-nu', 'truc-ong',
+] as const;
+/** NPC trò chơi: thiếu model thì dựng bằng khối đệ tử đổi màu áo, không bỏ (R-NPC-1). */
+export const GAME_NPC_IDS: readonly string[] = ['thi-ong', 'tu-tai', 'tai-nu', 'truc-ong'];
+
+/** Trò nhỏ ở Trúc Lâm (`miniGames` — V-66 B4). */
+export const MINI_GAME_KINDS = ['luu-thuong', 'hai-mang', 'dan-cam'] as const;
 /** Dáng NPC (R-NPC-1, R-NPC-6): `dung` đứng (mặc định) · `ngoi` ngồi xếp bằng. */
 export const NPC_POSES = ['dung', 'ngoi'] as const;
 /** Bàn chơi ở khu giao lưu (R-GIAO-1): `co` = Ngũ Tử Kỳ (R-CO-1), `dau-chu` = Đấu chữ (R-DAU-1). */
@@ -598,6 +607,32 @@ export interface NpcSpec {
 export const NPC_WALK_SPEED = 1.1;
 
 /**
+ * Trò nhỏ Trúc Lâm (V-66 B4, kế hoạch `docs/tasks/2026-11-15-truc-lam-mini-game.md`) — chỉ chỗ đặt; luật (số lượt, giờ,
+ * giá, bài) ở `web/src/games/`, `zones/mang.ts`. `guide` = chỗ nút "Cách chơi" (R-GIAO-2), thiếu = không nút.
+ * - `luu-thuong` (R-LUU-1…5): mương `channel` (chỉ số `channels`), đệm người chơi `seats` (chỉ số `seats` của cảnh), văn
+ *   nhân `npcs` ngồi đệm `seat` (NPC đặt sẵn trong `npcs` của cảnh, dáng `ngoi`), chủ tiệc `host`.
+ * - `hai-mang` (R-MANG-1…5): vùng trúc thưa `areas` (măng mọc trong đó, tránh lối / nước / vật cản), cách nhau ≥ `gap` m
+ *   (mặc định 3), người mua `buyer` (NPC trong `npcs`).
+ * - `dan-cam` (R-CAM-1…4): tảng đá `prop` (chỉ số `props`, loại `dan-cam`), chỗ ngồi `seat` lệch so với tâm đá (hệ đá).
+ */
+export type MiniGameSpec =
+  | {
+      kind: 'luu-thuong';
+      channel: number;
+      seats: number[];
+      npcs: { id: (typeof NPC_IDS)[number]; seat: number }[];
+      host: (typeof NPC_IDS)[number];
+      guide?: XZ;
+    }
+  | { kind: 'hai-mang'; areas: { from: XZ; to: XZ }[]; gap?: number; buyer: (typeof NPC_IDS)[number]; guide?: XZ }
+  | { kind: 'dan-cam'; prop: number; seat: { dx: number; dz: number; rotY?: number }; guide?: XZ };
+
+/** Mục trò nhỏ loại [kind] của cảnh (đầu tiên); không có → `undefined`. */
+export function miniGame<K extends MiniGameSpec['kind']>(list: readonly MiniGameSpec[], kind: K): Extract<MiniGameSpec, { kind: K }> | undefined {
+  return list.find((m): m is Extract<MiniGameSpec, { kind: K }> => m.kind === kind);
+}
+
+/**
  * Bàn chơi (R-GIAO-1): bàn đá thấp tâm (x, z); ghế người chơi phía +z (ngồi nhìn về −z khi `rotY` = 0), NPC `npc` đứng
  * phía −z nhìn về người chơi. NPC bàn là bản riêng (không nói chuyện — R-NPC-2 chỉ cho `npcs`). `rotY` độ, bội 90.
  */
@@ -1123,6 +1158,8 @@ export interface SceneSpec {
   teaStyle: TeaStyle;
   /** vườn rau (Nhà của ta, R-VUON-1) — tắt = không có (như cũ) */
   garden: GardenSpec;
+  /** trò nhỏ Trúc Lâm (Lưu Thương, hái măng, đàn cầm — V-66 B4) — rỗng = không có (như cũ) */
+  miniGames: MiniGameSpec[];
   /** `seated`: khi ngồi vào án thư / bàn trà (R-NGOI-1) — camera lùi ra, chúc xuống thấy cả bàn ·
    *  `study`: khi Ngồi ôn (R-DIEU-7) — lùi ra, nâng cao, lệch `side` rad ra sau vai phải để thấy cuộn sách trên tay */
   camera: {
@@ -1315,6 +1352,7 @@ export const DEFAULT_SCENE: SceneSpec = {
   fences: [],
   terraces: [], // cảnh cũ không có đài đá
   seats: [], // cảnh cũ không có chỗ ngồi ngoài trời
+  miniGames: [], // cảnh cũ không có trò nhỏ (V-66 B4)
   fenceStyle: { kind: 'go', height: 1.0, postEvery: 1.6, color: '#9e2a20', cap: '#e0ae4c' },
   teaRows: [], // cảnh cũ không có luống chè
   garden: {

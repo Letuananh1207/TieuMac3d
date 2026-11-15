@@ -17,6 +17,7 @@ import 'lesson/shop_screen.dart';
 import 'lesson/study_board.dart';
 import 'lesson/learned_screen.dart';
 import 'scene/garden_event.dart';
+import 'scene/mang_event.dart';
 import 'scene/review_event.dart';
 import 'scene/scene_event.dart';
 import 'scene/scene_server.dart';
@@ -132,7 +133,7 @@ class HocXaApp extends StatelessWidget {
               // Văn tiền: hết ván ở bàn chơi → thưởng theo trần ngày (R-TIEN-3); Tạp hoá: mua → trừ ví + sở hữu (R-TIEN-4)
               onEarnGame: progress == null
                   ? null
-                  : (game, outcome) async => earnGameReply(await progress!.earnGame(game, outcome)),
+                  : (game, outcome, song) async => earnGameReply(await progress!.earnGame(game, outcome, song: song)),
               // Tiểu Khất: cho 5 văn, mỗi ngày giờ VN một lần (R-TIEN-8)
               onGiveAlms: progress == null ? null : () async => giveAlmsReply(await progress!.giveAlms()),
               onOpenShop: progress == null
@@ -156,6 +157,11 @@ class HocXaApp extends StatelessWidget {
                       final r = await progress!.gardenAct(a.act, plot: a.plot, crop: a.crop, count: a.count);
                       return gardenActReply(r, progress!.coins);
                     },
+              // măng Trúc Lâm: hái / bán cho Trúc Ông, giữ qua tắt app (R-MANG-1…5)
+              onGetMang: progress == null ? null : () => mangReply(progress!.mang, progress!.now),
+              onMangAct: progress == null
+                  ? null
+                  : (a) async => mangActReply(await progress!.mangAct(a.act, id: a.id, kind: a.kind, right: a.right), progress!.coins),
               onSetHome: (items) async => await progress?.setHomeItems(items) ?? false,
               // ôn câu đố + bảng nhiệm vụ 日課榜 (R-ON-5, R-NV-3); không có kho tiến độ → trang tự lo (thẻ bộ mới / Tiểu Mặc)
               onOpenReview: progress == null

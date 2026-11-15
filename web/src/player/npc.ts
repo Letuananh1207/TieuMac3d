@@ -1,8 +1,10 @@
 import * as THREE from 'three';
 import type { Circle, Colliders } from '../collision/colliders';
-import type { NpcSpec } from '../scene/spec';
+import { mergeVertexColors } from '../scene/merge';
+import { GAME_NPC_IDS, type NpcSpec } from '../scene/spec';
 import { autoRig, type RigShape } from './autoRig';
 import type { Character, CharacterState } from './character';
+import { createDiscipleCharacter, type DiscipleColors } from './discipleCharacter';
 import { GLB_HEIGHT, loadGlbCharacter, loadGlbModel } from './glbCharacter';
 
 /** Bán kính vật cản tròn của NPC (R-NPC-1). */
@@ -115,8 +117,48 @@ export async function createNpc(spec: NpcSpec): Promise<Npc | null> {
 }
 
 /**
+ * Màu áo thế khối của NPC trò chơi chưa có model (R-NPC-1, V-66 B4): Thi Ông áo lam râu bạc, Tú Tài trắng ngà, Tài Nữ
+ * lục nhạt, Trúc Ông nâu (lão tiều phu). Dáng đệ tử khối (`discipleCharacter.ts`) — bản đẹp qua `/tai-nguyen`.
+ */
+export const BLOCK_NPC_COLORS: Readonly<Record<string, DiscipleColors>> = {
+  'thi-ong': { robe: '#5b7896', trim: '#2e3f58', hair: '#d9d6cf', jade: '#c9b37a' },
+  'tu-tai': { robe: '#efe6d2', trim: '#7a6a4a', hair: '#1f1a1a' },
+  'tai-nu': { robe: '#bcd5b4', trim: '#5f8a63', hair: '#1f1a1a', jade: '#d98aa0' },
+  'truc-ong': { robe: '#8a6a48', trim: '#4f3b28', hair: '#bdb6aa', jade: '#6f8a4a' },
+};
+
+/** Ngồi xếp bằng (thế khối): hạ thân xuống — vạt áo chìm dưới mặt đệm (m). */
+const BLOCK_SIT_DROP = 0.42;
+
+/**
+ * NPC trò chơi chưa có model (R-NPC-1): đệ tử khối đổi màu áo, **gộp thành 1 khối màu theo đỉnh** (+ đĩa bóng) — 2 draw call
+ * mỗi NPC; dáng ngồi = hạ thân; thở nhẹ. Giữ hướng đặc tả.
+ */
+export function createBlockNpc(spec: NpcSpec): Npc {
+  const c = createDiscipleCharacter(BLOCK_NPC_COLORS[spec.id] ?? {});
+  c.animate(0, 0, { mps: 0, air: false, vy: 0, sit: 0, bow: 0, idle: 0 });
+  const body = c.facing;
+  body.rotation.y = THREE.MathUtils.degToRad(spec.rotY ?? 0);
+  const sit = spec.pose === 'ngoi';
+  if (sit) body.position.y = -BLOCK_SIT_DROP;
+  mergeVertexColors(body);
+  c.root.scale.setScalar(spec.scale ?? 1);
+  let time = spec.x * 0.37 + spec.z * 0.11;
+  const baseY = body.position.y;
+  return {
+    id: spec.id,
+    root: c.root,
+    update(dt) {
+      time += dt;
+      body.scale.y = 1 + Math.sin(time * 2) * 0.012;
+      body.position.y = baseY + Math.sin(time * 2) * 0.004;
+    },
+  };
+}
+
+/**
  * Dựng mọi NPC của đặc tả: đặt lên mặt đất, thêm vào `parent`, thêm vật cản tròn. NPC thiếu model / nạp lỗi → bỏ qua
- * (cảnh vẫn chạy — R-NPC-1), trả về `problems` để in.
+ * (cảnh vẫn chạy — R-NPC-1), trả về `problems` để in — **trừ NPC trò chơi** (`GAME_NPC_IDS`): thế bằng khối.
  */
 export async function placeNpcs(
   parent: THREE.Object3D,
@@ -130,6 +172,8 @@ export async function placeNpcs(
   const made = await Promise.all(
     list.map(async (spec) => {
       try {
+        // NPC trò chơi chưa có model → khối (R-NPC-1, V-66 B4)
+        if (GAME_NPC_IDS.includes(spec.id) && !npcModelUrl(spec.id)) return createBlockNpc(spec);
         const moving = isMovingSpec(spec) ? (npcModelUrl(spec.id) ?? standIn) : undefined;
         const npc = moving ? await createMovingNpc(spec, moving) : isMovingSpec(spec) ? null : await createNpc(spec);
         if (!npc) problems.push(`npcs: thiếu design/models/${spec.id}.glb — bỏ NPC "${spec.id}"`);

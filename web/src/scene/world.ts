@@ -1,5 +1,5 @@
 import { addBridges } from './bridges';
-import { addChannels } from './channels';
+import { addChannels, type ChannelSet } from './channels';
 import { addGalleries } from './vat_giang_nam';
 import { addMirages } from './vat_bong_lai';
 import { addRamparts } from './thanh_luy';
@@ -70,6 +70,8 @@ export interface World {
   teleport: TeleportRing | null;
   /** vườn rau Nhà của ta (`garden.enabled`, R-VUON-1): đất + rào + thùng + lớp cây — `homeGarden.ts` đổi dáng cây; tắt = `null` */
   garden: Garden3D | null;
+  /** mương khúc thuỷ: đường + chén lệnh (Lưu Thương — R-LUU-2) */
+  channels: ChannelSet;
   /** ngày đêm (`dayNight.enabled`): áp giờ lên cảnh — `web/src/ngayDem.ts` gọi; tắt = `null` (luôn ban ngày) */
   dayNight: DayNight | null;
   /** gọi mỗi khung hình: khói lò đan, mây, đảo nổi, mờ mái nhà khi `player` đứng trong; `eye` = vị trí camera (LOD cây chùm) */
@@ -230,7 +232,9 @@ function* worldSteps(
   addWater(scene, colliders, spec.water, style, groundY, isSoft(spec.look) ? { look: spec.look, sky: spec.sky.middle, ripple: detail >= 1 } : undefined);
   const bridgePads = addBridges(scene, colliders, spec.bridges, style, groundY);
   const fauna = addFauna(scene, spec, groundY);
-  const channels = addChannels(scene, spec.channels, style, onTop);
+  // chén lệnh Lưu Thương (V-66 B4): mương của trò luu-thuong thêm 1 chén điều khiển được
+  const commandChannels = new Set(spec.miniGames.flatMap((m) => (m.kind === 'luu-thuong' ? [m.channel] : [])));
+  const channels = addChannels(scene, spec.channels, style, onTop, commandChannels);
   addGalleries(scene, colliders, spec.galleries, groundY);
   const mirages = addMirages(scene, spec.mirages);
   const rampartPads = addRamparts(scene, colliders, spec.ramparts, spec.walls, groundY);
@@ -288,6 +292,7 @@ function* worldSteps(
     seats: [...rooms.flatMap((r) => r.seats ?? []), ...buildingSeats, ...outdoorSeats],
     studySign: rooms.find((r) => r.studySign)?.studySign ?? null,
     gameTables,
+    channels,
     zoneAnchors: zoneAnchors(spec.buildings, kinds),
     teleport,
     update(dt, player, eye) {
@@ -298,7 +303,7 @@ function* worldSteps(
       waterways(dt);
       fauna(dt);
       tea?.update(dt);
-      channels(dt);
+      channels.update(dt);
       mirages(dt);
       teleport?.update(dt);
       portalMarks(dt);

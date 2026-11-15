@@ -69,12 +69,19 @@ List<Reward> dailyRewards(int streak) => [
       if (streak > 0 && streak % streakEvery == 0) Reward(RewardKind.streak, streakCoins, days: streak),
     ];
 
-/// Thưởng gốc của một ván (chưa tính trần): `game` = `dau-chu` | `co`, `outcome` = `thang` | `hoa` | `thua`; lạ → 0.
+/// Thưởng gốc của một ván (chưa tính trần): `game` = `dau-chu` | `co` | `luu-thuong` | `dan-cam`, `outcome` = `thang` | `hoa` |
+/// `thua`; lạ → 0. Lưu Thương như Đấu chữ (R-LUU-5); Đàn cầm theo bài Tri âm / Thanh nhã / Tập đàn 5 / 3 / 1 (R-CAM-4).
 int gameBase(String game, String outcome) => switch ((game, outcome)) {
       ('dau-chu', 'thang') => 8,
       ('dau-chu', 'hoa') => 5,
       ('dau-chu', 'thua') => 3,
       ('co', 'thang' || 'hoa' || 'thua') => 3,
+      ('luu-thuong', 'thang') => 8,
+      ('luu-thuong', 'hoa') => 5,
+      ('luu-thuong', 'thua') => 3,
+      ('dan-cam', 'thang') => 5,
+      ('dan-cam', 'hoa') => 3,
+      ('dan-cam', 'thua') => 1,
       _ => 0,
     };
 
@@ -91,8 +98,27 @@ int gameBase(String game, String outcome) => switch ((game, outcome)) {
 String gameName(String game) => switch (game) {
       'dau-chu' => 'Đấu chữ',
       'co' => 'Cờ caro',
+      'luu-thuong' => 'Lưu Thương',
+      'dan-cam' => camGameName,
       _ => game,
     };
+
+/// Tên trò Đàn cầm trên khoản thưởng — nhãn dùng hạng bài thay cho thắng / hoà / thua (R-CAM-4).
+const camGameName = 'Đàn cầm';
+
+/// Ba bài Đàn cầm theo bài (R-CAM-3) — `SONGS` ở `web/src/games/danCam.ts`.
+const camSongs = ['suoi-truc', 'mua-mang', 'trang-tren-go'];
+
+/// Bài đàn đã thưởng trong ngày giờ VN [day] (R-CAM-4).
+typedef CamRecord = ({int day, List<String> songs});
+
+const CamRecord noCam = (day: -1, songs: []);
+
+/// Bài [song] hôm nay [today] đã thưởng chưa (mỗi bài 1 lần / ngày giờ VN — R-CAM-4).
+bool camSongDone(CamRecord r, int today, String song) => r.day == today && r.songs.contains(song);
+
+/// Ghi bài [song] đã thưởng hôm [today].
+CamRecord camMark(CamRecord r, int today, String song) => (day: today, songs: [if (r.day == today) ...r.songs, song]);
 
 /// Khoản thưởng của một ván; [amount] 0 → nhãn "đủ thưởng".
 Reward gameReward(String game, String outcome, int amount) => Reward(
@@ -117,6 +143,10 @@ String rewardLabel(Reward r) => switch (r.kind) {
       RewardKind.reviewHalf => '+${r.amount} · Ôn ${r.char ?? ''}',
       RewardKind.daily => '+${r.amount} · Xong nhiệm vụ ngày',
       RewardKind.streak => '+${r.amount} · Chuỗi ${r.days ?? streakEvery} ngày',
+      // Đàn cầm theo bài: nhãn là hạng bài (R-CAM-4, R-TIEN-5) — "+5 · Tri âm"
+      RewardKind.gameWin when r.game == camGameName => '+${r.amount} · Tri âm',
+      RewardKind.gameDraw when r.game == camGameName => '+${r.amount} · Thanh nhã',
+      RewardKind.gameLose when r.game == camGameName => '+${r.amount} · Tập đàn',
       RewardKind.gameWin => '+${r.amount} · Thắng ${r.game ?? ''}',
       RewardKind.gameDraw => '+${r.amount} · Hoà ${r.game ?? ''}',
       RewardKind.gameLose => '+${r.amount} · Thua ${r.game ?? ''}',

@@ -7,6 +7,7 @@ import 'garden.dart' show Garden, GardenDone, GardenError, GardenRefused, Garden
 import 'garden.dart' as vuon;
 import 'home.dart';
 import 'journey.dart';
+import 'mang.dart';
 import 'review.dart';
 import 'wallet.dart';
 import 'wallet.dart' as wallet show buyDecor;
@@ -16,7 +17,7 @@ import 'wallet.dart' as rules show giveAlms;
 /// nhỏ của nền tảng (Android SharedPreferences, iOS NSUserDefaults, web localStorage).
 /// Kèm lịch ôn từng bộ thủ (R-ON-1…4), các ngày đã xong nhiệm vụ hằng ngày (R-NV-1, R-NV-2), sổ từ đang mượn ở Tàng
 /// Thư Các và trang đang đọc của từng cuốn (R-SACH-1…4), nhà của ta (R-NHA-3, R-NHA-4), ví Văn tiền (R-TIEN-1…4), vườn rau
-/// (R-VUON-1…9, khoá `vuon.state`).
+/// (R-VUON-1…9, khoá `vuon.state`), măng Trúc Lâm (R-MANG-1…5, khoá `mang.state`), bài đàn cầm đã thưởng (R-CAM-4).
 class ProgressStore {
   /// [clock] = đồng hồ (test truyền giờ giả để đi qua nhiều ngày).
   ProgressStore(this._prefs, {DateTime Function()? clock})
@@ -43,6 +44,8 @@ class ProgressStore {
   static const _streakPaidKey = 'tien.chuoi-da-thuong';
   static const _almsKey = 'tien.cho-tieu-khat';
   static const _gardenKey = 'vuon.state';
+  static const _mangKey = 'mang.state';
+  static const _camKey = 'tien.dan-cam';
 
   final SharedPreferences _prefs;
   final DateTime Function() _clock;
@@ -201,15 +204,71 @@ class ProgressStore {
     return 0;
   }
 
-  /// Hết một ván ở bàn chơi (docs/bridge.md `earnGame`, R-TIEN-3): tính theo bảng thưởng + trần 60 / ngày, ghi ngay.
-  Future<({int amount, int balance, int gameToday, bool capped})> earnGame(String game, String outcome) async {
+  /// Hết một ván ở bàn chơi / Lưu Thương / một bài Đàn cầm (docs/bridge.md `earnGame`, R-TIEN-3): tính theo bảng thưởng +
+  /// trần 60 / ngày, ghi ngay. `dan-cam`: cần [song]; bài đã thưởng hôm nay (ngày giờ VN) → 0 + `songDone` (R-CAM-4).
+  Future<({int amount, int balance, int gameToday, bool capped, bool songDone})> earnGame(String game, String outcome, {String? song}) async {
     final before = gameCoinsToday;
+    final cam = game == 'dan-cam';
+    final vn = vnDay(_clock());
+    if (cam && (song == null || !camSongs.contains(song))) {
+      return (amount: 0, balance: coins, gameToday: before, capped: before >= gameDailyCap, songDone: false);
+    }
+    if (cam && camSongDone(camRecord, vn, song!)) {
+      return (amount: 0, balance: coins, gameToday: before, capped: before >= gameDailyCap, songDone: true);
+    }
     final r = gameEarn(game, outcome, before);
     if (r.amount > 0) {
       await _prefs.setString(_gameDayKey, jsonEncode({'day': today, 'total': before + r.amount}));
       await _prefs.setInt(_coinsKey, coins + r.amount);
+      if (cam) {
+        final m = camMark(camRecord, vn, song!);
+        await _prefs.setString(_camKey, jsonEncode({'day': m.day, 'songs': m.songs}));
+      }
     }
-    return (amount: r.amount, balance: coins, gameToday: before + r.amount, capped: r.capped);
+    return (amount: r.amount, balance: coins, gameToday: before + r.amount, capped: r.capped, songDone: false);
+  }
+
+  /// Bài Đàn cầm đã thưởng (R-CAM-4); chưa có / hỏng → chưa bài nào.
+  CamRecord get camRecord {
+    final raw = _prefs.getString(_camKey);
+    if (raw == null) return noCam;
+    try {
+      final j = jsonDecode(raw);
+      if (j is Map && j['day'] is int && j['songs'] is List) {
+        return (day: j['day'] as int, songs: [for (final s in j['songs'] as List) if (s is String) s]);
+      }
+    } on FormatException {
+      return noCam;
+    }
+    return noCam;
+  }
+
+  /// Măng của người chơi (R-MANG-1…5), đã chuyển sang hôm nay (giờ VN); chưa có / hỏng → túi trống.
+  MangState get mang {
+    final day = vnDay(_clock());
+    final raw = _prefs.getString(_mangKey);
+    if (raw == null) return MangState.fresh(day);
+    try {
+      return MangState.fromJson(jsonDecode(raw)).on(day);
+    } on FormatException {
+      return MangState.fresh(day);
+    }
+  }
+
+  /// Một thao tác măng (docs/bridge.md `mangAct`): `pick` (hái [id], [right] = đúng câu măng chữ) · `sell` ([kind], `null` =
+  /// bán hết). Làm được → ghi ngay măng + số dư.
+  Future<MangResult> mangAct(String act, {String? id, String? kind, bool right = false}) async {
+    final s = mang;
+    final MangResult r = switch ((act, id)) {
+      ('pick', final i?) => pickMang(s, i, _clock(), right: right, learnedAny: _progress.radicals.isNotEmpty),
+      ('sell', _) => sellMang(s, kind),
+      _ => const MangRefused(MangError.bad),
+    };
+    if (r is MangDone) {
+      await _prefs.setString(_mangKey, jsonEncode(r.mang.toJson()));
+      if (r.amount != 0) await _prefs.setInt(_coinsKey, coins + r.amount);
+    }
+    return r;
   }
 
   /// Đã cho Tiểu Khất (R-NPC-6, R-TIEN-8): ngày VN lần cho gần nhất + số lần; chưa có / hỏng → chưa cho lần nào.

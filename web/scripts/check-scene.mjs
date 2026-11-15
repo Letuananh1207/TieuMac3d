@@ -34,6 +34,9 @@ const out = await build({
       "export { landingPad, START_HEADING } from './src/scene/hacDuong.ts';\n" +
       "export { RADICALS, checkRadicals } from './src/zones/radicals.ts';\n" +
       "export { applyVariant } from './src/scene/bienThe.ts';\n" +
+      "export { mangSpotOk } from './src/scene/mangLam.ts';\n" +
+      "export { mangOfDay, MANG_WAVES } from './src/zones/mang.ts';\n" +
+      "export { GAME_NPC_IDS } from './src/scene/spec.ts';\n" +
       "export { checkPlaceNames, checkPortalLabels } from './src/scene/placeNames.ts';\n",
     resolveDir: web,
     loader: 'ts',
@@ -46,11 +49,12 @@ const out = await build({
   define: { 'import.meta.glob': 'globalThis.__viteGlob' },
   loader: { '.png': 'empty', '.jpg': 'empty', '.glb': 'empty', '.css': 'empty', '.woff2': 'empty' },
 });
-const { checkPlaceNames, checkPortalLabels, buildWorld, Colliders, checkRoute, routeLength, DRAFT_TOWN_NPCS, Scene, resolveSceneSpec, roomKinds, zoneAnchors, placeZones, ZONE_CONTENT, moonRadius, gateOpening, lauClearHeight, lauTop, wallGates, ringTrigger, arrivalSpot, daisLayout, landingPad, START_HEADING, RADICALS, checkRadicals, applyVariant } = await import(
+const { checkPlaceNames, checkPortalLabels, buildWorld, Colliders, checkRoute, routeLength, DRAFT_TOWN_NPCS, Scene, resolveSceneSpec, roomKinds, zoneAnchors, placeZones, ZONE_CONTENT, moonRadius, gateOpening, lauClearHeight, lauTop, wallGates, ringTrigger, arrivalSpot, daisLayout, landingPad, START_HEADING, RADICALS, checkRadicals, applyVariant, mangSpotOk, mangOfDay, MANG_WAVES, GAME_NPC_IDS } = await import(
   `data:text/javascript;base64,${Buffer.from(out.outputFiles[0].text).toString('base64')}`
 );
 
 const n = (v) => String(v).replace('.', ',');
+const GAME_NPCS = new Set(GAME_NPC_IDS);
 const files = existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith('.json')).sort((a, b) => (a === 'scene.json' ? -1 : b === 'scene.json' ? 1 : a.localeCompare(b))) : [];
 if (!files.includes('scene.json')) files.unshift('');
 let errors = 0;
@@ -172,6 +176,28 @@ function checkNpcRoutes(spec) {
 }
 
 /** In bố cục một cảnh; trả số lỗi. */
+/**
+ * Hái măng (R-MANG-1, V-66 B4): dựng cảnh lấy vật cản thật, tính chỗ mọc 7 ngày liền — mỗi ngày phải đủ 8 + 6 măng (vùng
+ * reas đủ rộng, tránh lối / nước / vật cản). In số chỗ + một ngày mẫu.
+ */
+function checkMang(spec) {
+  const m = spec.miniGames.find((g) => g.kind === 'hai-mang');
+  if (!m) return [];
+  const colliders = new Colliders();
+  const world = buildWorld(new Scene(), colliders, spec);
+  const ok = mangSpotOk(spec, colliders, (x, z) => world.surface.heightAt(x, z));
+  const want = MANG_WAVES.reduce((a, w) => a + w.count, 0);
+  const out = [];
+  let sample = '';
+  for (let d = 20770; d < 20777; d++) {
+    const s = mangOfDay(d, m.areas, ok, m.gap ?? 3);
+    if (s.length < want) out.push(`miniGames hai-mang: ngày ${d} chỉ đặt được ${s.length}/${want} măng — mở rộng areas`);
+    if (!sample) sample = s.map((q) => `(${n(q.x.toFixed(1))}; ${n(q.z.toFixed(1))})${q.big ? '*' : ''}`).join(' ');
+  }
+  console.log(`Hái măng: ${m.areas.length} vùng, 7 ngày thử ${out.length ? 'THIẾU' : `đủ ${want} măng / ngày`}; ngày 20770: ${sample} (* = măng to)`);
+  return out;
+}
+
 function checkScene(rel, raw, opt = {}) {
   const { spec, problems } = resolveSceneSpec(raw);
   problems.unshift(...(opt.extra ?? []));
@@ -233,13 +259,16 @@ function checkScene(rel, raw, opt = {}) {
   // NPC (R-NPC-1): mã phải có model design/models/<mã>.glb
   for (const p of spec.npcs) {
     const has = existsSync(resolve(web, '..', 'design', 'models', `${p.id}.glb`));
-    if (!has && !drafts.has(p.id)) all.push(`npcs: thiếu design/models/${p.id}.glb — app bỏ NPC "${p.id}"`);
+    // NPC trò chơi (văn nhân, Trúc Ông — V-66 B4): thiếu model → app thế bằng khối (R-NPC-1), chỉ ghi chú, không lỗi
+    if (!has && GAME_NPCS.has(p.id)) console.log(`NPC "${p.id}": chưa có design/models/${p.id}.glb — app dựng thế bằng khối (R-NPC-1); bản đẹp qua /tai-nguyen`);
+    else if (!has && !drafts.has(p.id)) all.push(`npcs: thiếu design/models/${p.id}.glb — app bỏ NPC "${p.id}"`);
     const pose = p.pose === 'ngoi' ? ' · ngồi' : '';
     const size = p.scale !== undefined && p.scale !== 1 ? ` · cỡ ${n(p.scale)}` : '';
     const miss = drafts.has(p.id) ? ' — chưa có model (bản thử)' : ' — THIẾU MODEL';
     console.log(`NPC ${p.id}: (${n(p.x)}; ${n(p.z)}) nhìn ${n(p.rotY ?? 0)}°${pose}${size}${has ? '' : miss}`);
   }
   all.push(...checkNpcRoutes(spec));
+  all.push(...checkMang(spec));
   // bàn chơi khu giao lưu (R-GIAO-1): NPC bàn cũng cần model
   for (const t of spec.gameTables) {
     const has = existsSync(resolve(web, '..', 'design', 'models', `${t.npc}.glb`));

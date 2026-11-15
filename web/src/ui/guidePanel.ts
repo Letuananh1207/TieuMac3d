@@ -135,7 +135,7 @@ function noticeIcon(icon: 'lua' | 'ban-do'): SVGElement {
 }
 
 /** Hình minh hoạ theo bảng. */
-function figureOf(kind: GameGuide['figure']): Element {
+function figureOf(kind: Exclude<GameGuide['figure'], 'none'>): Element {
   if (kind === 'co') return gomokuFigure();
   return kind === 'dau-chu' ? duelFigure() : studyFigure();
 }
@@ -179,7 +179,9 @@ export class GuidePanel {
     const fig = node('figure', g.figure === 'co' ? 'gp-fig' : g.figure === 'dau-chu' ? 'gp-fig duel' : 'gp-fig study');
     const cap = node('figcaption');
     cap.append(...rich(g.caption));
-    fig.append(figureOf(g.figure), cap);
+    // trò Trúc Lâm (V-66 B4): hình minh hoạ chờ thiết kế (phiếu 2026-11-15-truc-lam-mini-game) — chỉ dòng chú thích
+    if (g.figure === 'none') fig.append(cap);
+    else fig.append(figureOf(g.figure), cap);
     side.push(fig);
 
     g.sections.forEach((sec, i) => {

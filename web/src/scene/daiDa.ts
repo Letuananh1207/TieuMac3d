@@ -9,6 +9,7 @@ import * as THREE from 'three';
 import type { Pad } from '../collision/ground';
 import { box } from './kien_truc/hinh';
 import { lambert } from './materials';
+import { mergeVertexColors } from './merge';
 import type { Seat } from './seat';
 import type { OutdoorSeatSpec, TerraceSpec } from './spec';
 import type { GroundY } from './terrainHeight';
@@ -63,6 +64,23 @@ export function addTerraces(scene: THREE.Scene, list: readonly TerraceSpec[], st
     scene.add(box(w + 0.3, 0.14, d + 0.3, stone, t.x, top - t.h + 0.03, t.z));
   });
   return pads;
+}
+
+/**
+ * Một đệm cỏ rời (bồ đoàn rơm trên chiếu) tại (x, y, z) — chỗ ngồi sau đá đàn cầm (R-CAM-1, V-66 B4). Dựng sau khi cảnh đã
+ * gộp → tự gộp chiếu + đệm thành 1 khối màu theo đỉnh (1 draw call).
+ */
+export function addCushion(scene: THREE.Scene, x: number, y: number, z: number): THREE.Object3D {
+  const g = new THREE.Group();
+  g.position.set(x, y, z);
+  const m = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 0.02, 8), lambert(MAT));
+  m.position.y = 0.01;
+  const c = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.35, 0.12, 10), lambert(RUSH));
+  c.position.y = 0.08;
+  g.add(m, c);
+  scene.add(g);
+  mergeVertexColors(g);
+  return g;
 }
 
 /** Dựng chỗ ngồi ngoài trời; trả về chỗ ngồi (toạ độ cảnh) cho nút "Ngồi". `groundY` đã bọc đài (`onTerraces`). */

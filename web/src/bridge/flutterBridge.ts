@@ -5,6 +5,7 @@ import type { ReviewItem } from '../zones/review';
 import type { StudyMenu } from '../zones/studyMenu';
 import { parseGameEarning, type GameEarning, type GameKind, type GameOutcome } from '../zones/wallet';
 import { parseActReply, parseGarden, type Garden, type GardenAct } from '../zones/vuon';
+import { parseMang, parseMangReply, type MangAct, type MangState } from '../zones/mang';
 import { parseAlms, type AlmsRecord, type AlmsResult } from '../zones/walletRules';
 import type { Lesson } from '../zones/zones';
 
@@ -137,6 +138,21 @@ export async function getGarden(): Promise<Garden | null> {
     const r = await host.callHandler(HANDLER, { type: 'getGarden', payload: {} } satisfies SceneEvent);
     if (!r || typeof r !== 'object' || !('garden' in r)) return null;
     return parseGarden((r as { garden: unknown }).garden);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Hỏi Flutter măng Trúc Lâm đã lưu (`getMang` — R-MANG-1…5). `null` = không có Flutter / lỗi / bản cũ → túi trống, chỉ xem.
+ */
+export async function getMang(): Promise<MangState | null> {
+  const host = await hostReady();
+  if (!host) return null;
+  try {
+    const r = await host.callHandler(HANDLER, { type: 'getMang', payload: {} } satisfies SceneEvent);
+    if (!r || typeof r !== 'object' || !('mang' in r)) return null;
+    return parseMang((r as { mang: unknown }).mang);
   } catch {
     return null;
   }
@@ -290,11 +306,26 @@ export class FlutterBridge {
    * Hết một ván ở bàn chơi (R-TIEN-3): Flutter tính thưởng (bảng + trần 60 / ngày) và ghi ngay. `null` = không có
    * Flutter / lỗi → không thưởng, ví ẩn.
    */
-  async earnGame(game: GameKind, outcome: GameOutcome): Promise<GameEarning | null> {
+  async earnGame(game: GameKind, outcome: GameOutcome, song?: string): Promise<GameEarning | null> {
     const host = window.flutter_inappwebview;
     if (!host || typeof host.callHandler !== 'function') return null;
     try {
-      return parseGameEarning(await host.callHandler(HANDLER, { type: 'earnGame', payload: { game, outcome } }));
+      // `song`: mã bài Đàn cầm (R-CAM-4) — chỉ gửi khi có
+      return parseGameEarning(await host.callHandler(HANDLER, { type: 'earnGame', payload: { game, outcome, ...(song ? { song } : {}) } }));
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * Một thao tác măng Trúc Lâm (`mangAct` — R-MANG-3/5): Flutter tính theo `mang.dart` và ghi ngay. `null` = không có Flutter
+   * / lỗi / bản cũ → không làm gì.
+   */
+  async mangAct(a: MangAct): Promise<ReturnType<typeof parseMangReply>> {
+    const host = window.flutter_inappwebview;
+    if (!host || typeof host.callHandler !== 'function') return null;
+    try {
+      return parseMangReply(await host.callHandler(HANDLER, { type: 'mangAct', payload: a }));
     } catch {
       return null;
     }

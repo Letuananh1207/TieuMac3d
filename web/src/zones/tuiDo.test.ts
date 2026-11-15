@@ -21,6 +21,16 @@ describe('túi đồ (R-TUI-1)', () => {
     expect(v.crops.total).toBe(14);
   });
 
+  it('R-TUI-1: ngăn Lâm sản — Măng × n, Măng to × n; trống → "Hái măng ở rừng Trúc Lâm"', () => {
+    const v = bagView({ ...empty, forest: { 'mang-to': 1, mang: 5 } });
+    expect(v.forest.items).toEqual([
+      { kind: 'mang', name: 'Măng', n: 5 },
+      { kind: 'mang-to', name: 'Măng to', n: 1 },
+    ]);
+    expect(v.forest.total).toBe(6);
+    expect(bagView(empty).forest).toEqual({ total: 0, items: [], empty: 'Hái măng ở rừng Trúc Lâm' });
+  });
+
   it('R-TUI-1: mục trống → dòng chỉ chỗ lấy (chưa có hạt → Tạp hoá)', () => {
     const v = bagView(empty);
     expect(v.seeds.items).toEqual([]);

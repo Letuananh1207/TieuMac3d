@@ -56,6 +56,8 @@ const SOURCES: [string, string][] = [
   ['Chuỗi 7 ngày', '+50'],
   ['Trò chữ thắng · hoà · thua', '+8 · 5 · 3'],
   ['Bán nông sản ở Vườn rau', 'tối đa 60 / ngày'], // walletSourceGarden (R-TIEN-1, R-VUON-7)
+  ['Đàn cầm theo bài', '+5 · 3 · 1'], // R-CAM-4 (Trúc Lâm) — "Trò chữ" đã tính cả Lưu Thương (R-LUU-5)
+  ['Bán măng cho Trúc Ông', '3 · 8 / cái'], // R-MANG-5
 ];
 const CARD_SECONDS = 4;
 const COUNT_UP_MS = 600;

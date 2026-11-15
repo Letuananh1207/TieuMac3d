@@ -7,6 +7,7 @@
  */
 import { cleanHome, decorItem, STARTER_COUNTS, type DecorCounts, type PlacedDecor } from './decor';
 import { applyAct, freshGarden, parseGarden, type Garden, type GardenAct, type GardenResult } from './vuon';
+import { freshMang, parseMang, pickMang, sellMang, type MangAct, type MangResult, type MangState } from './mang';
 import type { GameEarning } from './wallet';
 
 /** Học 1 bộ thủ mới (R-TIEN-2) — `learnCoins` ở Dart. */
@@ -18,12 +19,28 @@ export const GAME_DAILY_CAP = 60;
 /** Ví thử mới mở có sẵn chừng này để thử mua (R-TIEN-7, quyết định 2); app thật bắt đầu 0. */
 export const TRIAL_START_COINS = 300;
 
-/** Thưởng gốc của một ván (chưa tính trần): `dau-chu` 8 / 5 / 3, `co` 3; lạ → 0. */
+/** Thưởng gốc của một ván (chưa tính trần): `dau-chu`, `luu-thuong` 8 / 5 / 3 (R-LUU-5), `co` 3, `dan-cam` 5 / 3 / 1
+ *  (R-CAM-4); lạ → 0. */
 export function gameBase(game: string, outcome: string): number {
-  if (game === 'dau-chu') return ({ thang: 8, hoa: 5, thua: 3 } as Record<string, number>)[outcome] ?? 0;
+  if (game === 'dau-chu' || game === 'luu-thuong') return ({ thang: 8, hoa: 5, thua: 3 } as Record<string, number>)[outcome] ?? 0;
+  if (game === 'dan-cam') return ({ thang: 5, hoa: 3, thua: 1 } as Record<string, number>)[outcome] ?? 0;
   if (game === 'co') return outcome === 'thang' || outcome === 'hoa' || outcome === 'thua' ? 3 : 0;
   return 0;
 }
+
+/** Ba bài Đàn cầm theo bài (R-CAM-3) — `camSongs` ở Dart, `SONGS` ở `games/danCam.ts`. */
+export const CAM_SONGS = ['suoi-truc', 'mua-mang', 'trang-tren-go'] as const;
+
+/** Bài đàn đã thưởng trong ngày giờ VN `day` (R-CAM-4). */
+export interface CamRecord {
+  day: number;
+  songs: string[];
+}
+
+export const NO_CAM: CamRecord = { day: -1, songs: [] };
+
+/** Bài [song] hôm [today] (mã ngày VN) đã thưởng chưa (mỗi bài 1 lần / ngày — R-CAM-4). */
+export const camSongDone = (r: CamRecord, today: number, song: string): boolean => r.day === today && r.songs.includes(song);
 
 /** Thưởng một ván khi hôm nay trò đã cho [earnedToday]: cắt cho vừa trần 60; `capped` = sau ván này đã đủ trần. */
 export function gameEarn(game: string, outcome: string, earnedToday: number): { amount: number; capped: boolean } {
@@ -75,11 +92,21 @@ export interface TrialWallet {
   alms: AlmsRecord;
   /** vườn rau (R-VUON-1…9) */
   garden: Garden;
+  /** măng Trúc Lâm: đã hái hôm nay + túi Lâm sản (R-MANG-3/5) */
+  mang: MangState;
+  /** bài đàn cầm đã thưởng hôm nay (R-CAM-4) */
+  cam: CamRecord;
 }
 
-/** Ví thử mới: 300 Văn tiền, 3 vật khởi đầu mỗi vật 1 cái, nhà trống, chưa học bộ nào, vườn mới (6 luống trống, 3 hạt Cải ngọt). */
+/** Ví thử mới: 300 Văn tiền, 3 vật khởi đầu mỗi vật 1 cái, nhà trống, chưa học bộ nào, vườn mới (6 luống trống, 3 hạt Cải ngọt), túi măng trống. */
 export function newTrial(): TrialWallet {
-  return { coins: TRIAL_START_COINS, gameDay: '', gameToday: 0, owned: { ...STARTER_COUNTS }, items: [], placed: {}, learned: [], alms: { ...NO_ALMS }, garden: freshGarden() };
+  return { coins: TRIAL_START_COINS, gameDay: '', gameToday: 0, owned: { ...STARTER_COUNTS }, items: [], placed: {}, learned: [], alms: { ...NO_ALMS }, garden: freshGarden(), mang: freshMang(), cam: { ...NO_CAM, songs: [] } };
+}
+
+function parseCam(v: unknown): CamRecord {
+  if (!v || typeof v !== 'object') return { ...NO_CAM, songs: [] };
+  const o = v as Record<string, unknown>;
+  return { day: typeof o.day === 'number' && Number.isInteger(o.day) ? o.day : -1, songs: strings(o.songs) };
 }
 
 const strings = (v: unknown): string[] => (Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string') : []);
@@ -104,6 +131,8 @@ export function parseTrial(raw: unknown): TrialWallet {
     learned: [...new Set(strings(o.learned))],
     alms: parseAlms(o.alms),
     garden: parseGarden(o.garden),
+    mang: parseMang(o.mang),
+    cam: parseCam(o.cam),
   };
 }
 
@@ -112,13 +141,33 @@ export function gameTodayOn(w: TrialWallet, day: string): number {
   return w.gameDay === day ? w.gameToday : 0;
 }
 
-/** Hết một ván (R-TIEN-3) ở chế độ thử: tính như `earnGame` của Flutter, trả ví mới + câu trả lời cùng dạng. */
-export function earnTrialGame(w: TrialWallet, game: string, outcome: string, now: Date): { wallet: TrialWallet; earning: GameEarning } {
+/**
+ * Hết một ván (R-TIEN-3) ở chế độ thử: tính như `earnGame` của Flutter, trả ví mới + câu trả lời cùng dạng. `dan-cam` cần
+ * [song]; bài đã thưởng hôm nay (ngày giờ VN) → 0 + `songDone` (R-CAM-4).
+ */
+export function earnTrialGame(w: TrialWallet, game: string, outcome: string, now: Date, song?: string): { wallet: TrialWallet; earning: GameEarning } {
   const day = dayKey(now);
   const today = gameTodayOn(w, day);
+  const vn = Math.floor((now.getTime() + 7 * 3_600_000) / 86_400_000);
+  const cam = game === 'dan-cam';
+  const none = (songDone: boolean): { wallet: TrialWallet; earning: GameEarning } => ({
+    wallet: w,
+    earning: { amount: 0, balance: w.coins, gameToday: today, capped: today >= GAME_DAILY_CAP, ...(songDone ? { songDone } : {}) },
+  });
+  if (cam && (!song || !(CAM_SONGS as readonly string[]).includes(song))) return none(false);
+  if (cam && song && camSongDone(w.cam, vn, song)) return none(true);
   const { amount, capped } = gameEarn(game, outcome, today);
-  const wallet = { ...w, coins: w.coins + amount, gameDay: day, gameToday: today + amount };
+  const camNext = cam && song && amount > 0 ? { day: vn, songs: [...(w.cam.day === vn ? w.cam.songs : []), song] } : w.cam;
+  const wallet = { ...w, coins: w.coins + amount, gameDay: day, gameToday: today + amount, cam: camNext };
   return { wallet, earning: { amount, balance: wallet.coins, gameToday: wallet.gameToday, capped } };
+}
+
+/* ---------- Măng Trúc Lâm (R-MANG-3/5) — luật ở `mang.ts` (chép `mang.dart`) ---------- */
+
+/** Một thao tác măng ở chế độ thử: như `mangAct` của Flutter. Không được → ví giữ nguyên. */
+export function mangTrialAct(w: TrialWallet, a: MangAct, nowMs: number): { wallet: TrialWallet; result: MangResult } {
+  const result = a.act === 'pick' ? pickMang(w.mang, a.id, nowMs, !!a.right, w.learned.length > 0) : sellMang(w.mang, a.kind);
+  return { wallet: result.ok ? { ...w, coins: w.coins + result.amount, mang: result.mang } : w, result };
 }
 
 /** Mở thẻ bộ thủ trên bảng HTML: lần đầu +10, đã mở rồi → 0 (R-TIEN-2, R-TIEN-7). */
