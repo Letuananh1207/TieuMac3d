@@ -12,6 +12,12 @@ const PAVE_LIFT = 0.03;
 /** Chất nền khu (`terrain.floors`) nổi trên sân lát (lối lát `paths` nằm trên nữa: `PATH_LIFT` 0,05). */
 const FLOOR_LIFT = 0.04;
 
+/** 0…1 theo ô (lệch sáng tối mặt đá — `colors.rockJitter`). */
+function hash01(i: number, j: number, k: number): number {
+  const h = Math.imul(i, 2654435761) ^ Math.imul(j, 40503) ^ Math.imul(k + 7, 97);
+  return ((h ^ (h >>> 15)) >>> 0) / 4294967296;
+}
+
 function hash(i: number, j: number): number {
   const h = Math.imul(i, 73856093) ^ Math.imul(j, 19349663);
   return ((h ^ (h >>> 13)) >>> 0) % 3;
@@ -40,6 +46,8 @@ export function addTerrain(scene: THREE.Scene, spec: SceneSpec, hf: Heightfield)
   const dirt = new THREE.Color(t.colors.dirt);
   const rock = new THREE.Color(t.colors.rock);
   const high = new THREE.Color(t.colors.highRock);
+  const jitter = t.colors.rockJitter;
+  const stone = new THREE.Color();
   const cosDirt = Math.cos((t.slopeDirt * Math.PI) / 180);
   const cosRock = Math.cos((t.slopeRock * Math.PI) / 180);
   const e1 = new THREE.Vector3();
@@ -64,7 +72,11 @@ export function addTerrain(scene: THREE.Scene, spec: SceneSpec, hf: Heightfield)
     let c: THREE.Color;
     if (ny >= cosDirt) c = grass[hash(i, j)];
     else if (ny >= cosRock) c = dirt;
-    else c = avg > t.colors.highFrom ? high : rock;
+    else {
+      c = avg > t.colors.highFrom ? high : rock;
+      // mặt đá đậm nhạt từng tam giác (V-66): kè / vách bớt phẳng một màu
+      if (jitter > 0) c = stone.copy(c).multiplyScalar(1 + jitter * (hash01(i, j, k) * 2 - 1));
+    }
     const grid: [number, number][] = [
       [ax, az],
       [bx, bz],

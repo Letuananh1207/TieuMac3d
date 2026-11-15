@@ -51,15 +51,21 @@ describe('Trúc Lâm — địa hình + phạm vi (V-66 B2)', () => {
     expect(p.maxSlope).toBeLessThanOrEqual(35);
   });
 
-  it('R-VA-2: gò tây bắc — lối nhánh (z −19) + bậc đá lên bậc dưới +3; bậc đá (z −30) lên bậc trên +6; kè quanh gò chặn', () => {
+  it('R-VA-2: gò tây bắc — lối nhánh (z −19) + bậc đá lên bậc dưới +4; bậc đá (z −30) lên đỉnh gò +8, dốc ≤ 25°; kè quanh gò chặn', () => {
     const low = walk(-1, -19, -1, 0, 16);
     expect(low.x).toBeLessThanOrEqual(-16.5);
-    expect(low.y).toBeCloseTo(3, 1);
+    expect(low.y).toBeCloseTo(4, 1);
     expect(low.maxSlope).toBeLessThanOrEqual(35);
-    const top = walk(-17, -30, -1, 0, 12);
+    const top = walk(-16, -30, -1, 0, 14);
     expect(top.x).toBeLessThanOrEqual(-28);
-    expect(top.y).toBeCloseTo(6, 1);
+    expect(top.y).toBeCloseTo(8, 1);
     expect(top.maxSlope).toBeLessThanOrEqual(35);
+    // bậc đá gò: dốc trung bình ≤ 25°
+    for (const s of spec.terrain.stairs) {
+      const len = Math.hypot(s.to[0] - s.from[0], s.to[1] - s.from[1]);
+      const rise = Math.abs(hf.heightAt(...s.to) - hf.heightAt(...s.from));
+      expect((Math.atan2(rise, len) * 180) / Math.PI).toBeLessThanOrEqual(25);
+    }
     // không theo bậc: đi về tây ở z −27 → dừng ở chân kè bậc dưới
     const wall = walk(-6, -27, -1, 0, 12);
     expect(wall.x).toBeGreaterThan(-14);
@@ -72,7 +78,7 @@ describe('Trúc Lâm — địa hình + phạm vi (V-66 B2)', () => {
       expect(hf.slopeAt(x, z)).toBeLessThan(3);
     };
     for (const [x, z] of [[0, 4], [-10, -6], [10, 14]] as const) flat(x, z, 0);
-    flat(-31, -30, 6); // P1 đỉnh gò
+    flat(-31, -30, 8); // P1 đỉnh gò
     flat(20, -30, 0); // P2 chân thác (tây ao)
     flat(-32, 26, 0); // P3
     const inside = (x: number, z: number, x0: number, z0: number, x1: number, z1: number): boolean => x >= x0 && x <= x1 && z >= z0 && z <= z1;

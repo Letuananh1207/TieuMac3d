@@ -41,6 +41,7 @@ import { addTrees } from './trees';
 import { addStoneYard, addTeleport, type TeleportRing } from './truyenTong';
 import { addPortalMarkers } from './vongCong';
 import { addBounds } from './ranhDi';
+import { addRockyKe } from './keDa';
 import { addWaterways } from './waterways';
 import { addWalls } from './walls';
 import { addWater } from './water';
@@ -158,6 +159,7 @@ function* worldSteps(
   let waterways: (dt: number) => void = () => {};
   if (hf && groundY) {
     addStairs(scene, spec.terrain, style);
+    addRockyKe(scene, spec.terrain, spec.paths, groundY, spec.trees.seed, spec.terrain.colors.rock); // kè đá khối (V-66)
     const soft = isSoft(spec.look);
     // luống chè (V-46): cỏ / hoa / đá không mọc trong luống
     const inTea = spec.teaRows.length ? (x: number, z: number): boolean => insideTea(spec.teaRows, spec.teaStyle, x, z, 0.2) : undefined;

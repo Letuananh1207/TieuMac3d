@@ -1,7 +1,8 @@
-import { describe, expect, it } from 'vitest';
+﻿import { describe, expect, it } from 'vitest';
 import { Colliders } from '../collision/colliders';
 import { groveTrees } from './cayTrenNen';
 import { inClump } from './grass';
+import { rockyStones } from './keDa';
 import { addBounds, boundsBoxes, checkBounds } from './ranhDi';
 import { DEFAULT_SCENE, type SceneSpec } from './spec';
 import { resolveSceneSpec } from './specCheck';
@@ -110,5 +111,20 @@ describe('ranh đi được (bounds)', () => {
     const out = checkBounds(s).join('\n');
     expect(out).toContain('chỗ xuất phát');
     expect(out).toContain('portals[0]');
+  });
+});
+
+describe('kè đá khối (terrain.plateaus[].rocky)', () => {
+  const flatY = (x: number, z: number): number => (Math.abs(x) <= 5 && Math.abs(z) <= 5 ? 4 : 0);
+  const base = terrain({ plateaus: [{ from: [-5, -5], to: [5, 5], y: 4, blend: 2 }] });
+  it('thiếu rocky = không có viên nào (như cũ)', () => {
+    expect(rockyStones(base, [], flatY, 3)).toEqual([]);
+  });
+  it('rocky: đá dọc 4 cạnh chỗ chênh cao, chừa bậc đá / lối lát cắt qua', () => {
+    const t = terrain({ plateaus: [{ from: [-5, -5], to: [5, 5], y: 4, blend: 2, rocky: true }], stairs: [{ from: [0, 10], to: [0, 5], width: 3 }] });
+    const st = rockyStones(t, [], flatY, 3);
+    expect(st.length).toBeGreaterThan(20);
+    expect(st.some((s) => s.z > 5 && Math.abs(s.x) < 2.2)).toBe(false);
+    for (const s of st) expect(Math.max(Math.abs(s.x), Math.abs(s.z))).toBeGreaterThan(5);
   });
 });

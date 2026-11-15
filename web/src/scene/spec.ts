@@ -650,6 +650,11 @@ export interface PlateauSpec {
   rail?: boolean;
   /** bục lát (`pave`): bó vỉa đá `buildingStyle.pathEdge` quanh mép, chừa chỗ lối vào (V-44) */
   edge?: boolean;
+  /**
+   * kè đá khối (V-66): dọc mép bục chỗ chênh cao > 1 m xếp hai hàng đá khối lệch nhiều mặt, màu đậm nhạt (một
+   * InstancedMesh cả cảnh, `keDa.ts`), chừa chỗ bậc đá / lối lát. Thiếu = như cũ.
+   */
+  rocky?: boolean;
 }
 
 /**
@@ -841,7 +846,8 @@ export interface SceneSpec {
     edge: { radius: number; width: number; y: number; wobble: number };
     /** khoảng chuyển mặc định từ mép bục / lối lát ra đất tự nhiên (m) */
     blend: number;
-    colors: { grass: [string, string, string]; dirt: string; rock: string; highRock: string; highFrom: number };
+    /** `rockJitter` 0…0,3 (V-66): mặt đá lệch sáng tối từng tam giác ±; 0 = một màu như cũ */
+    colors: { grass: [string, string, string]; dirt: string; rock: string; highRock: string; highFrom: number; rockJitter: number };
     slopeDirt: number;
     slopeRock: number;
     /** bậc đá lên núi (Thiên Bậc…) */
@@ -1089,7 +1095,7 @@ export const DEFAULT_SCENE: SceneSpec = {
     noise: { seed: 3, amp: 1.2, scale: 30 },
     edge: { radius: 110, width: 18, y: -30, wobble: 8 },
     blend: 6,
-    colors: { grass: ['#7d9a5a', '#8aa864', '#6f8c50'], dirt: '#9c8466', rock: '#8d8a84', highRock: '#b9b6ae', highFrom: 20 },
+    colors: { grass: ['#7d9a5a', '#8aa864', '#6f8c50'], dirt: '#9c8466', rock: '#8d8a84', highRock: '#b9b6ae', highFrom: 20, rockJitter: 0 },
     slopeDirt: 20,
     slopeRock: 35,
     stairs: [],

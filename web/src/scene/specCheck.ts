@@ -424,7 +424,7 @@ const LISTS: Record<string, ItemParser> = {
     all(oneOf('kind', TREE_KINDS), positive('w', 'd', 'count', 'scale')),
   ),
   'floating.islands': item({ x: 0, y: 0, z: 0, scale: 0 }, {}, positive('scale')),
-  'terrain.plateaus': item({ from: XZ0, to: XZ0, y: 0 }, { pave: true, blend: 0, rail: true, edge: true }, positive('blend')),
+  'terrain.plateaus': item({ from: XZ0, to: XZ0, y: 0 }, { pave: true, blend: 0, rail: true, edge: true, rocky: true }, positive('blend')),
   'terrain.peaks': item({ x: 0, z: 0, r: 0, h: 0 }, {}, positive('r')),
   'terrain.dunes': item({ x: 0, z: 0, len: 0, h: 0 }, { rotY: 0, width: 0 }, positive('len', 'h', 'width')),
   'terrain.stairs': item({ from: XZ0, to: XZ0, width: 0 }, { cut: true }, positive('width')),
