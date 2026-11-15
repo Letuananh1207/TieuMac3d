@@ -59,3 +59,4 @@ Trạng thái: `nhận` → `chờ trả lời` / `chờ duyệt` → `đang là
 | V-20261114-49 | Mặc Trì bỏ tường (đông x 42, nam z 25, góc x 17) thay hàng trúc / tùng | canh | đang làm — nhánh `viec/mac-tri-mo` | R-VA-1 | duyệt ảnh |
 | V-20261114-50 | Đổi tên các vùng cho có chất (vd. Rừng trúc → Rừng Trúc Tân Thủ…) | lead (kế hoạch) | đang làm — kiểu A (摩尔), khu trấn giữ, biển cổng đổi; nhánh `viec/doi-ten-vung` | R-HUD-4, R-HANH-*, R-MAN-2 | chọn tên |
 | V-20261114-51 | Nhà của ta: xoá cổng đứng "Nhà của ta / Khởi Nguyên Trấn" (0; 11,5) | canh | đang làm — nhánh `viec/nha-bo-cong` | R-NHA-1, R-BANDO-2 | duyệt ảnh |
+| V-20261114-52 | Vườn trồng trọt ở Nhà của ta (kiểu 摩尔): trồng thuần, 6 ô mở dần tới 12, lớn theo giờ thật | lead (kế hoạch) + ui-apply phieu | lập kế hoạch | R-NHA-*, R-TIEN-* | duyệt kế hoạch + vẽ phiếu |
