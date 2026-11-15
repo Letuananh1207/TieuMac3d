@@ -1,10 +1,13 @@
 import * as THREE from 'three';
 import { describe, expect, it } from 'vitest';
 import { Colliders } from '../collision/colliders';
-import { DecorLayer, slotFloorY, slotMark } from './decorLayer';
-import { DECOR_BUILT_IDS, DECOR_SHAPES, buildDecorItem, decorBlock, decorFootprint } from './decorItems';
+import { DecorLayer, decorFloorY } from './decorLayer';
+import { DECOR_BUILT_IDS, DECOR_SHAPES, buildDecorItem, decorBlocks, decorFootprint } from './decorItems';
 import { NHA_O_FLOOR } from './kien_truc/nha_o';
-import { DECOR_SLOT_GAP, DEFAULT_SCENE, type SceneSpec } from './spec';
+import { DEFAULT_SCENE, type SceneSpec } from './spec';
+
+/** Vật to nhất rộng ≈ 1,8 m (giữ hình gọn như thời ô). */
+const MAX_SIDE = 1.8;
 
 /** Draw call + tam giác của một nhóm (mỗi Mesh một draw call). */
 function stats(g: THREE.Object3D): { calls: number; tris: number } {
@@ -20,12 +23,12 @@ function stats(g: THREE.Object3D): { calls: number; tris: number } {
 }
 
 describe('Hình đồ trang trí', () => {
-  it('13 vật đều có hình và khung bao; khung ≤ khoảng cách hai ô', () => {
+  it('13 vật đều có hình và khung bao; khung ≤ 1,8 m', () => {
     expect(DECOR_BUILT_IDS).toHaveLength(13);
     expect([...DECOR_BUILT_IDS].sort()).toEqual(Object.keys(DECOR_SHAPES).sort());
     for (const s of Object.values(DECOR_SHAPES)) {
-      expect(s.w).toBeLessThanOrEqual(DECOR_SLOT_GAP);
-      expect(s.d).toBeLessThanOrEqual(DECOR_SLOT_GAP);
+      expect(s.w).toBeLessThanOrEqual(MAX_SIDE);
+      expect(s.d).toBeLessThanOrEqual(MAX_SIDE);
     }
   });
 
@@ -51,67 +54,77 @@ describe('Hình đồ trang trí', () => {
   });
 
   it('R-NHA-2: va chạm vật to theo khung, quay 90° đổi rộng ↔ sâu; vật nhỏ không chặn; ao sen tròn', () => {
-    expect(decorBlock({ x: 3, z: -2 }, 'ke-sach', true)).toEqual({ kind: 'box', x: 3, z: -2, w: 1.4, d: 0.45 });
-    expect(decorBlock({ x: 3, z: -2, rotY: 90 }, 'ke-sach', true)).toEqual({ kind: 'box', x: 3, z: -2, w: 0.45, d: 1.4 });
-    expect(decorBlock({ x: 3, z: -2, rotY: 270 }, 'binh-phong', true)).toMatchObject({ w: DECOR_SHAPES['binh-phong'].d });
-    expect(decorBlock({ x: 3, z: -2 }, 'den-long', false)).toBeNull();
-    expect(decorBlock({ x: 1, z: 1 }, 'ao-sen', true)).toEqual({ kind: 'circle', x: 1, z: 1, r: DECOR_SHAPES['ao-sen'].w / 2 });
+    expect(decorBlocks({ x: 3, z: -2 }, 'ke-sach', true)).toEqual([{ kind: 'box', x: 3, z: -2, w: 1.4, d: 0.45 }]);
+    expect(decorBlocks({ x: 3, z: -2, rotY: 90 }, 'ke-sach', true)).toEqual([{ kind: 'box', x: 3, z: -2, w: 0.45, d: 1.4 }]);
+    expect(decorBlocks({ x: 3, z: -2, rotY: 270 }, 'binh-phong', true)[0]).toMatchObject({ w: DECOR_SHAPES['binh-phong'].d });
+    expect(decorBlocks({ x: 3, z: -2 }, 'den-long', false)).toEqual([]);
+    expect(decorBlocks({ x: 1, z: 1, rotY: 45 }, 'ao-sen', true)).toEqual([{ kind: 'circle', x: 1, z: 1, r: DECOR_SHAPES['ao-sen'].w / 2 }]);
+  });
+
+  it('R-NHA-7: khung bao 45° = khung bao của hình xoay; vòng tròn vật cản nằm dọc trục dài', () => {
+    const f = decorFootprint('ban-tra', 45)!;
+    const s = DECOR_SHAPES['ban-tra'];
+    expect(f.w).toBeCloseTo((s.w + s.d) * Math.SQRT1_2, 5);
+    expect(f.d).toBeCloseTo(f.w, 5);
+    const cs = decorBlocks({ x: 0, z: 0, rotY: 45 }, 'ban-tra', true);
+    for (const c of cs) if (c.kind === 'circle') expect(Math.abs(c.x + c.z)).toBeLessThan(1e-9); // trục dài rộng (x riêng) quay 45° → đường x = −z
   });
 });
 
 const HOME: SceneSpec = {
   ...DEFAULT_SCENE,
   buildings: [{ id: 'chinh-phong', kind: 'nha-o', x: 0, z: -8, w: 10.5, d: 6, title: 'Nhà của ta', roofColor: '#3b3f44' }],
-  decorSlots: [
-    { id: 'trong-1', kind: 'trong', x: -3.2, z: -9.8 },
-    { id: 'san-1', kind: 'san', x: -3.5, z: -2 },
-  ],
 };
+const COLORS = { jade: '#2B5446', lacquer: '#A8322A' };
 
-describe('Đặt vật vào ô', () => {
-  it('ô trong nhà đứng trên sàn nhà ở, ô sân trên đất', () => {
-    expect(slotFloorY(HOME, HOME.decorSlots[0])).toBeCloseTo(NHA_O_FLOOR, 9);
-    expect(slotFloorY(HOME, HOME.decorSlots[1])).toBe(0);
-    expect(slotFloorY(HOME, HOME.decorSlots[1], () => 1.5)).toBe(1.5);
+/** Số InstancedMesh đang vẽ (có món) — mỗi cái một draw call. */
+function instanced(layer: DecorLayer): THREE.InstancedMesh[] {
+  return layer.root.children.filter((o): o is THREE.InstancedMesh => o instanceof THREE.InstancedMesh && o.count > 0);
+}
+
+describe('Lớp đồ trang trí đặt tự do (R-NHA-2, R-NHA-7)', () => {
+  it('chân món trong nhà ở đứng trên sàn nhà, ngoài sân trên đất', () => {
+    expect(decorFloorY(HOME, -3.2, -9.8)).toBeCloseTo(NHA_O_FLOOR, 9);
+    expect(decorFloorY(HOME, -3.5, -2)).toBe(0);
+    expect(decorFloorY(HOME, -3.5, -2, () => 1.5)).toBe(1.5);
   });
 
-  it('R-NHA-2: đặt bàn trà → chặn; thay bằng đèn lồng → hết chặn, hình đổi; gỡ → ô trống', () => {
-    const scene = new THREE.Scene();
+  it('R-NHA-2: bàn trà chặn người; đổi sang đèn lồng → hết chặn; bàn trà xoay 45° chặn bằng 2–3 vòng tròn', () => {
     const c = new Colliders();
-    const layer = new DecorLayer(scene, c, HOME);
-    const slot = layer.root.children[1];
-    layer.set('san-1', { id: 'ban-tra', blocks: true });
+    const layer = new DecorLayer(new THREE.Scene(), c, HOME, undefined, COLORS);
+    layer.setItems([{ item: 'ban-tra', x: -3.5, z: -2, rot: 0, blocks: true }]);
     expect(c.boxes).toHaveLength(1);
-    expect(slot.children[0].name).toBe('decor:ban-tra');
     const p = { x: -3.5, z: -2.3 };
     c.resolve(p, 0.5);
-    expect(Math.hypot(p.x + 3.5, p.z + 2)).toBeGreaterThan(0.4); // bị đẩy khỏi chỗ bàn
-
-    layer.set('san-1', { id: 'den-long', blocks: false });
+    expect(Math.hypot(p.x + 3.5, p.z + 2)).toBeGreaterThan(0.4);
+    layer.setItems([{ item: 'den-long', x: -3.5, z: -2, rot: 0, blocks: false }]);
     expect(c.boxes).toHaveLength(0);
-    expect(slot.children.map((o) => o.name)).toEqual(['decor:den-long']);
-    expect(layer.anchor('san-1')!.y).toBeCloseTo(DECOR_SHAPES['den-long'].h + 0.15, 9);
-
-    layer.set('san-1', null);
-    expect(slot.children).toHaveLength(0);
-    expect(layer.anchor('san-1')!.y).toBeCloseTo(0.15, 9);
+    layer.setItems([{ item: 'ban-tra', x: 0, z: 0, rot: 45, blocks: true }]);
+    expect(c.boxes).toHaveLength(0);
+    expect(c.circles.length).toBeGreaterThanOrEqual(2);
+    expect(c.circles.length).toBeLessThanOrEqual(3);
+    expect(layer.ownBlocks().size).toBe(c.circles.length);
   });
 
-  it('R-NHA-2: nạp cả nhà — ô không có trong dữ liệu thành trống, ao sen chặn tròn', () => {
-    const c = new Colliders();
-    const layer = new DecorLayer(new THREE.Scene(), c, HOME);
-    const items: Record<string, { id: string; blocks: boolean }> = { 'ao-sen': { id: 'ao-sen', blocks: true }, 'tranh-chu': { id: 'tranh-chu', blocks: false } };
-    layer.setAll({ 'san-1': 'ao-sen', 'trong-1': 'tranh-chu' }, (id) => items[id]);
-    expect(c.circles).toHaveLength(1);
-    layer.setAll({ 'trong-1': 'tranh-chu' }, (id) => items[id]);
-    expect(c.circles).toHaveLength(0);
-    expect(layer.root.children[0].children).toHaveLength(1);
-    expect(layer.root.children[1].children).toHaveLength(0);
+  it('R-NHA-7: 40 món 13 loại → draw call đồ trang trí ≤ 15 (InstancedMesh theo mã vật)', () => {
+    const layer = new DecorLayer(new THREE.Scene(), new Colliders(), HOME, undefined, COLORS);
+    const ids = Object.keys(DECOR_SHAPES);
+    layer.setItems(Array.from({ length: 40 }, (_, i) => ({ item: ids[i % ids.length], x: (i % 8) * 2.5, z: Math.floor(i / 8) * 2.5, rot: (i % 8) * 45, blocks: false })));
+    expect(instanced(layer).reduce((n, m) => n + m.count, 0)).toBeGreaterThanOrEqual(40);
+    expect(layer.drawCalls()).toBeLessThanOrEqual(15);
+    layer.setGhost({ item: 'mai', x: 1, z: 1, rot: 45, ok: false });
+    expect(layer.drawCalls()).toBeLessThanOrEqual(15 + 1 + 5); // + bóng ma + khung chân / mũi tên / lưới / vùng cấm
   });
 
-  it('dấu ô: đang chọn > có vật > trống', () => {
-    expect(slotMark('a', { a: 'mai' }, 'a')).toBe('chon');
-    expect(slotMark('a', { a: 'mai' }, 'b')).toBe('co-vat');
-    expect(slotMark('b', { a: 'mai' }, null)).toBe('trong');
+  it('R-NHA-6: bắt món dưới con trỏ bằng chân món theo hướng', () => {
+    const layer = new DecorLayer(new THREE.Scene(), new Colliders(), HOME, undefined, COLORS);
+    layer.setItems([
+      { item: 'ke-sach', x: 5, z: 5, rot: 90, blocks: true },
+      { item: 'mai', x: -5, z: 5, rot: 0, blocks: false },
+    ]);
+    expect(layer.pick(5, 5.6)).toBe(0); // kệ quay 90°: dài theo z
+    expect(layer.pick(5.6, 5)).toBe(-1);
+    expect(layer.pick(-5.2, 5.3)).toBe(1);
+    expect(layer.pick(0, 0)).toBe(-1);
   });
 });

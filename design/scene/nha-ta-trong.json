@@ -70,11 +70,13 @@
     "frame": { "enabled": true, "center": [0, 0.2], "half": [7, 5], "height": 2.6, "yaw": 0, "yawLimit": 35, "pitchMin": 0.75, "pitchMax": 1.15, "follow": 0.2, "lookY": 0.8 }
   },
   "lessons": { "radicals": false },
-  "decorSlots": [
-    { "id": "trong-1", "kind": "trong", "x": -4, "z": -3.6 },
-    { "id": "trong-2", "kind": "trong", "x": 0, "z": -3.6 },
-    { "id": "trong-3", "kind": "trong", "x": 4, "z": -3.6 }
-  ],
+  "decorArea": {
+    "where": "trong",
+    "bounds": [[-6.35, -4.35], [6.35, -4.35], [6.35, 4.35], [-6.35, 4.35]],
+    "keepOut": [],
+    "maxItems": 20,
+    "maxSlope": 0.35
+  },
   "portals": [
     { "scene": "nha-ta", "area": { "from": [-6.8, 1.4], "to": [-5.2, 3.8] }, "arrive": { "at": [-3.8, 2.6], "rotY": 90 }, "label": "Ra sân", "marker": false, "via": "nut" }
   ],

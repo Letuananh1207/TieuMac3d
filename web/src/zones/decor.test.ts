@@ -1,128 +1,75 @@
 import { describe, expect, it } from 'vitest';
-import { DECOR_ITEMS, NEW_HOME, STARTER_DECOR, catalogForSlot, cleanHome, decorItem, itemsForSlot, placeDecor, type DecorSlot, type HomeState } from './decor';
+import { bagCards, cleanHome, DECOR_ITEMS, inBag, migrateOwnedCounts, NEW_HOME, normRot, placedCount, STARTER_COUNTS, STARTER_DECOR, type HomeState, type PlacedDecor } from './decor';
 
-const vuon1: DecorSlot = { id: 'vuon-1', kind: 'vuon' };
-const san2: DecorSlot = { id: 'san-2', kind: 'san' };
-const trong1: DecorSlot = { id: 'trong-1', kind: 'trong' };
+const mon = (item: string, x: number, z: number, rot = 0, scene = 'nha-ta'): PlacedDecor => ({ item, scene, x, z, rot });
 
-/** Nhà đã mua đủ 13 vật (để thử luật đặt / thay / gỡ không vướng sở hữu). */
-const RICH: HomeState = { placed: {}, owned: DECOR_ITEMS.map((i) => i.id) };
-
-const put = (home: HomeState, slot: DecorSlot, id: string | null): HomeState => {
-  const r = placeDecor(home, slot, id);
-  if (!r.ok) throw new Error(r.reason);
-  return r.home;
-};
-
-describe('danh mục và sở hữu (R-NHA-4)', () => {
-  it('R-NHA-4: 13 vật — 5 vườn, 4 sân, 4 trong nhà; mã không trùng', () => {
+describe('Danh mục + sở hữu theo cái (R-NHA-4)', () => {
+  it('R-NHA-4: 13 vật — 9 ngoài trời, 4 trong nhà; mới cài 1 Trúc cảnh, 1 Đèn lồng, 1 Tranh chữ trong túi, chưa món nào', () => {
     expect(DECOR_ITEMS).toHaveLength(13);
-    expect(new Set(DECOR_ITEMS.map((i) => i.id)).size).toBe(13);
-    expect(itemsForSlot(RICH, 'vuon').map((i) => i.name)).toEqual(['Trúc cảnh', 'Mai', 'Tùng', 'Đá Thái Hồ', 'Ao sen']);
-    expect(itemsForSlot(RICH, 'san').map((i) => i.name)).toEqual(['Đèn lồng', 'Bàn trà', 'Chậu lan', 'Lư hương']);
-    expect(itemsForSlot(RICH, 'trong').map((i) => i.name)).toEqual(['Tranh chữ', 'Kệ sách', 'Án đọc', 'Bình phong']);
+    expect(DECOR_ITEMS.filter((i) => i.where === 'ngoai').map((i) => i.name)).toEqual(['Trúc cảnh', 'Mai', 'Tùng', 'Đá Thái Hồ', 'Ao sen', 'Đèn lồng', 'Bàn trà', 'Chậu lan', 'Lư hương']);
+    expect(DECOR_ITEMS.filter((i) => i.where === 'trong').map((i) => i.name)).toEqual(['Tranh chữ', 'Kệ sách', 'Án đọc', 'Bình phong']);
+    expect(NEW_HOME.items).toEqual([]);
+    expect(NEW_HOME.owned).toEqual({ 'truc-canh': 1, 'den-long': 1, 'tranh-chu': 1 });
+    for (const id of STARTER_DECOR) expect(inBag(NEW_HOME, id)).toBe(1);
+    expect(inBag(NEW_HOME, 'mai')).toBe(0);
   });
 
-  it('R-NHA-4: mới cài app → sở hữu sẵn Trúc cảnh, Đèn lồng, Tranh chữ; mọi ô trống', () => {
-    expect(STARTER_DECOR).toEqual(['truc-canh', 'den-long', 'tranh-chu']);
-    expect(NEW_HOME.owned).toEqual(STARTER_DECOR);
-    expect(NEW_HOME.placed).toEqual({});
-    expect(itemsForSlot(NEW_HOME, 'vuon').map((i) => i.id)).toEqual(['truc-canh']);
-    expect(placeDecor(NEW_HOME, vuon1, 'mai')).toEqual({ ok: false, reason: 'notOwned' });
+  it('R-NHA-4: trong túi = sở hữu − đang đặt (mọi nơi); Mai 3 cái đặt 2 → túi 1', () => {
+    const home: HomeState = { items: [mon('mai', 8, 4), mon('mai', 10, 4)], owned: { mai: 3 } };
+    expect(placedCount(home.items, 'mai')).toBe(2);
+    expect(inBag(home, 'mai')).toBe(1);
   });
 
-  it('R-NHA-4: danh mục hiện cả vật chưa có — đã có trước, chưa có sau (rẻ → đắt)', () => {
-    const vuon = catalogForSlot({ placed: {}, owned: [...STARTER_DECOR, 'tung'] }, 'vuon');
-    expect(vuon.map((e) => `${e.item.id}:${e.owned}`)).toEqual([
-      'truc-canh:true',
-      'tung:true',
-      'mai:false',
-      'da-thai-ho:false',
-      'ao-sen:false',
+  it('R-NHA-4: thẻ túi — có trong túi trước (thứ tự danh mục), còn lại rẻ → đắt; đặt hết = "Đặt hết", chưa có = khoá', () => {
+    const cards = bagCards(NEW_HOME, 'ngoai');
+    expect(cards.map((c) => `${c.item.id}:${c.state}`)).toEqual([
+      'truc-canh:bag',
+      'den-long:bag',
+      'chau-lan:locked',
+      'mai:locked',
+      'lu-huong:locked',
+      'tung:locked',
+      'ban-tra:locked',
+      'da-thai-ho:locked',
+      'ao-sen:locked',
     ]);
-    expect(catalogForSlot(NEW_HOME, 'trong').map((e) => e.item.price)).toEqual([40, 90, 120, 150]);
+    const placed: HomeState = { items: [mon('truc-canh', 8, 4)], owned: STARTER_COUNTS };
+    const truc = bagCards(placed, 'ngoai').find((c) => c.item.id === 'truc-canh')!;
+    expect(truc).toMatchObject({ state: 'soldOut', inBag: 0, placed: 1 });
+    expect(bagCards(NEW_HOME, 'trong').map((c) => c.item.id)).toEqual(['tranh-chu', 'an-doc', 'ke-sach', 'binh-phong']);
   });
 
-  it('R-NHA-4: vật chưa sở hữu → không đặt được', () => {
-    const poor: HomeState = { placed: {}, owned: ['mai'] };
-    expect(placeDecor(poor, vuon1, 'tung')).toEqual({ ok: false, reason: 'notOwned' });
-    expect(itemsForSlot(poor, 'vuon').map((i) => i.id)).toEqual(['mai']);
-  });
-
-  it('R-NHA-4: gỡ vật khỏi ô không mất quyền sở hữu', () => {
-    const h = put(put(RICH, vuon1, 'mai'), vuon1, null);
-    expect(h.owned).toContain('mai');
-    expect(itemsForSlot(h, 'vuon').some((i) => i.id === 'mai')).toBe(true);
-  });
-});
-
-describe('giá Tạp hoá (R-TIEN-4)', () => {
-  it('R-TIEN-4: bảng giá 13 vật', () => {
-    const price = Object.fromEntries(DECOR_ITEMS.map((i) => [i.name, i.price]));
-    expect(price).toEqual({
-      'Trúc cảnh': 30, 'Đèn lồng': 30, 'Tranh chữ': 40, 'Chậu lan': 50, Mai: 60, 'Lư hương': 70, Tùng: 80,
-      'Án đọc': 90, 'Bàn trà': 100, 'Kệ sách': 120, 'Bình phong': 150, 'Đá Thái Hồ': 160, 'Ao sen': 200,
-    });
-  });
-
-  it('R-HUD-4: vật trang trí chỉ có tên Việt — không chữ Hán trên thẻ, không giá viết chữ Hán', () => {
-    for (const i of DECOR_ITEMS) expect(Object.values(i).join(' '), i.id).not.toMatch(/\p{Script=Han}/u);
-    expect(decorItem('ao-sen')).toEqual({ id: 'ao-sen', name: 'Ao sen', slot: 'vuon', blocks: true, price: 200 });
+  it('R-NHA-2: đang cầm món vừa lấy → túi giảm ngay; món nhấc → vẫn tính đang đặt', () => {
+    const home: HomeState = { items: [], owned: { mai: 2 } };
+    const take = bagCards(home, 'ngoai', { item: 'mai', lifted: false }).find((c) => c.item.id === 'mai')!;
+    expect(take).toMatchObject({ inBag: 1, state: 'bag' });
+    const lift = bagCards({ items: [mon('mai', 1, 1)], owned: { mai: 2 } }, 'ngoai', { item: 'mai', lifted: true }).find((c) => c.item.id === 'mai')!;
+    expect(lift).toMatchObject({ inBag: 0, placed: 2 });
   });
 });
 
-describe('đặt / thay / gỡ (R-NHA-2)', () => {
-  it('R-NHA-2: ô vườn trống → Mai; chọn Tùng → thay; Gỡ → trống', () => {
-    let h = put(RICH, vuon1, 'mai');
-    expect(h.placed['vuon-1']).toBe('mai');
-    h = put(h, vuon1, 'tung');
-    expect(h.placed).toEqual({ 'vuon-1': 'tung' });
-    h = put(h, vuon1, null);
-    expect(h.placed).toEqual({});
+describe('Lưu nhà — đọc dữ liệu (R-NHA-3, R-NHA-4)', () => {
+  it('R-NHA-3: món giữ vật, nơi, chỗ, hướng; vật lạ / sai dạng bỏ; góc về bội 45', () => {
+    const h = cleanHome({ items: [mon('mai', 8, 4, 45), { item: 'rong', scene: 'nha-ta', x: 0, z: 0, rot: 0 }, { item: 'mai' }, mon('den-long', -11, -3, 405)], owned: { mai: 1, 'den-long': 1 } });
+    expect(h.items).toEqual([mon('mai', 8, 4, 45), mon('den-long', -11, -3, 45)]);
+    expect(normRot(-45)).toBe(315);
   });
 
-  it('R-NHA-2: vật sai loại ô → không đặt (Mai vào ô trong nhà)', () => {
-    expect(placeDecor(RICH, trong1, 'mai')).toEqual({ ok: false, reason: 'wrongKind' });
-    expect(placeDecor(RICH, vuon1, 'khong-co')).toEqual({ ok: false, reason: 'unknownItem' });
+  it('R-NHA-4: món vượt số cái → bỏ món thừa (bất biến: đang đặt ≤ sở hữu)', () => {
+    const h = cleanHome({ items: [mon('mai', 1, 1), mon('mai', 3, 1)], owned: { mai: 1 } });
+    expect(h.items).toHaveLength(1);
   });
 
-  it('R-NHA-2: một vật đặt được ở nhiều ô cùng lúc — mua một lần là đủ', () => {
-    const h = put(put(NEW_HOME, san2, 'den-long'), { id: 'san-3', kind: 'san' }, 'den-long');
-    expect(h.placed).toEqual({ 'san-2': 'den-long', 'san-3': 'den-long' });
+  it('R-NHA-4: `owned` mảng (bản cũ) → mỗi mã 1 cái, vật ở nhiều ô → số ô; thiếu → khởi đầu + đang đặt', () => {
+    const old = cleanHome({ placed: { 'vuon-1': 'mai', 'vuon-2': 'mai', 'vuon-3': 'mai', 'san-1': 'rong' }, owned: ['truc-canh', 'mai', 'tung', 3] });
+    expect(old.owned).toEqual({ 'truc-canh': 1, mai: 3, tung: 1 });
+    expect(old.legacy).toEqual({ 'vuon-1': 'mai', 'vuon-2': 'mai', 'vuon-3': 'mai' });
+    expect(cleanHome({ placed: { 'vuon-1': 'tung' } }).owned).toEqual({ ...STARTER_COUNTS, tung: 1 });
+    expect(cleanHome('hỏng')).toEqual({ items: [], owned: STARTER_COUNTS, legacy: {} });
+    expect(migrateOwnedCounts(['mai'], ['mai', 'mai', 'den-long'])).toEqual({ mai: 2, 'den-long': 1 });
   });
 
-  it('R-NHA-2: vật to chặn người đi, vật nhỏ không', () => {
-    const blocking = DECOR_ITEMS.filter((i) => i.blocks).map((i) => i.id).sort();
-    expect(blocking).toEqual(['ao-sen', 'ban-tra', 'binh-phong', 'da-thai-ho', 'ke-sach']);
-  });
-
-  it('R-NHA-2: không sửa nhà cũ (trả nhà mới)', () => {
-    put(NEW_HOME, vuon1, 'truc-canh');
-    expect(NEW_HOME.placed).toEqual({});
-  });
-});
-
-describe('nhà đã lưu (R-NHA-3)', () => {
-  const slots = [vuon1, san2, trong1];
-
-  it('R-NHA-3: nhà lưu đúng → giữ nguyên', () => {
-    expect(cleanHome({ placed: { 'vuon-1': 'mai', 'san-2': 'den-long' } }, slots).placed).toEqual({ 'vuon-1': 'mai', 'san-2': 'den-long' });
-  });
-
-  it('R-NHA-3: bản mới bỏ ô vườn 1 → bỏ qua ô đó, Đèn lồng vẫn ở ô sân 2', () => {
-    expect(cleanHome({ placed: { 'vuon-1': 'mai', 'san-2': 'den-long' } }, [san2, trong1]).placed).toEqual({ 'san-2': 'den-long' });
-  });
-
-  it('R-NHA-3: vật lạ, vật sai loại, dữ liệu hỏng → bỏ qua, không lỗi', () => {
-    expect(cleanHome({ placed: { 'vuon-1': 'rong', 'trong-1': 'mai', 'san-2': 3 } }, slots).placed).toEqual({});
-    expect(cleanHome(null, slots)).toEqual(NEW_HOME);
-    expect(cleanHome('hỏng', slots).placed).toEqual({});
-    expect(cleanHome({ placed: [] }, slots).placed).toEqual({});
-  });
-
-  it('R-NHA-4: đọc owned; thiếu owned (bản cũ) → vật khởi đầu + vật đang đặt; mã lạ bỏ qua', () => {
-    expect(cleanHome({ placed: {}, owned: ['truc-canh', 'mai', 'rong', 3] }, slots).owned).toEqual(['truc-canh', 'mai']);
-    expect(cleanHome({ placed: { 'vuon-1': 'tung' } }, slots).owned).toEqual([...STARTER_DECOR, 'tung']);
-    expect(cleanHome({ placed: { 'vuon-1': 'mai' }, owned: 'hỏng' }, slots).owned).toEqual([...STARTER_DECOR, 'mai']);
+  it('R-NHA-3: đã có `items` → không đọc ô cũ nữa (đã chuyển không chuyển lại)', () => {
+    expect(cleanHome({ items: [], placed: { 'vuon-1': 'mai' }, owned: { mai: 1 } }).legacy).toEqual({});
   });
 });

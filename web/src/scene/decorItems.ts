@@ -1,7 +1,7 @@
 /**
  * Đồ trang trí Nhà của ta (R-NHA-2): hình 13 vật trong danh mục (`zones/decor.ts` — lớp scene không import zones, nên
  * vật nhận theo mã), dựng bằng khối low-poly, gộp màu theo đỉnh → 1 draw call / vật (tranh chữ, đèn lồng đang sáng: 2). Toạ độ
- * vật: tâm ô (0, 0), chân y = 0, mặt trước nhìn +z. Màu cây / đá / nước / đồng lấy từ đặc tả (`trees`, `buildingStyle`);
+ * vật: tâm món (0, 0), chân y = 0, mặt trước nhìn +z. Màu cây / đá / nước / đồng lấy từ đặc tả (`trees`, `buildingStyle`);
  * màu gỗ, giấy, gốm là màu đồ đạc như `kien_truc/noi_that.ts`. Đặt vào cảnh + va chạm: `decorLayer.ts`.
  */
 import * as THREE from 'three';
@@ -20,10 +20,7 @@ export interface DecorShape {
   round?: boolean;
 }
 
-/**
- * Khung bao từng vật — hình dựng nằm gọn trong khung (test kiểm), va chạm vật to lấy đúng khung. Rộng / sâu ≤
- * `DECOR_SLOT_GAP` (1,8 m — hai ô gần nhất không chồng vật).
- */
+/** Khung bao từng vật — hình dựng nằm gọn trong khung (test kiểm); chân món khi đặt tự do (R-NHA-7) + va chạm vật to lấy đúng khung. */
 export const DECOR_SHAPES: Readonly<Record<string, DecorShape>> = {
   'truc-canh': { w: 1.4, d: 1.4, h: 3.15 },
   mai: { w: 1.6, d: 1.4, h: 2.5 },
@@ -40,23 +37,45 @@ export const DECOR_SHAPES: Readonly<Record<string, DecorShape>> = {
   'binh-phong': { w: 1.7, d: 0.46, h: 1.75 },
 };
 
-/** Khung bao trên mặt sân khi quay `rotY` độ (bội 90): 90 / 270 đổi rộng ↔ sâu. Mã lạ → `undefined`. */
+/** Khung bao thẳng trục trên mặt sân khi quay `rotY` độ (bội 45): 90 / 270 đổi rộng ↔ sâu; 45° → khung bao của hình xoay. Mã lạ → `undefined`. */
 export function decorFootprint(itemId: string, rotY = 0): { w: number; d: number } | undefined {
   const s = DECOR_SHAPES[itemId];
   if (!s) return undefined;
-  return (((rotY % 360) + 360) % 180 === 90 ? { w: s.d, d: s.w } : { w: s.w, d: s.d });
+  if (s.round) return { w: s.w, d: s.w };
+  const r = (rotY * Math.PI) / 180;
+  const c = Math.abs(Math.cos(r));
+  const n = Math.abs(Math.sin(r));
+  const round6 = (v: number): number => Math.round(v * 1e6) / 1e6;
+  return { w: round6(s.w * c + s.d * n), d: round6(s.w * n + s.d * c) };
 }
 
-/** Vật cản của một vật đặt ở ô (toạ độ cảnh). */
+/** Vật cản của một món đặt ở (x, z, rotY) (toạ độ cảnh). */
 export type DecorBlock = { kind: 'box'; x: number; z: number; w: number; d: number } | { kind: 'circle'; x: number; z: number; r: number };
 
-/** Vật cản cho vật `itemId` ở ô (x, z, rotY) — chỉ vật to (`blocks` theo danh mục, R-NHA-2); vật nhỏ / mã lạ → `null`. */
-export function decorBlock(slot: { x: number; z: number; rotY?: number }, itemId: string, blocks: boolean): DecorBlock | null {
+/**
+ * Vật cản cho vật `itemId` ở chỗ (x, z, rotY) — chỉ vật to (`blocks` theo danh mục, R-NHA-2); vật nhỏ / mã lạ → rỗng. Quay bội 90° →
+ * một hộp đúng khung; quay chéo (45°) → 2–3 vòng tròn dọc trục dài (hộp thẳng trục sẽ chặn thừa ở bốn góc).
+ */
+export function decorBlocks(at: { x: number; z: number; rotY?: number }, itemId: string, blocks: boolean): DecorBlock[] {
   const s = DECOR_SHAPES[itemId];
-  const f = decorFootprint(itemId, slot.rotY ?? 0);
-  if (!blocks || !s || !f) return null;
-  if (s.round) return { kind: 'circle', x: slot.x, z: slot.z, r: s.w / 2 };
-  return { kind: 'box', x: slot.x, z: slot.z, w: f.w, d: f.d };
+  if (!blocks || !s) return [];
+  if (s.round) return [{ kind: 'circle', x: at.x, z: at.z, r: s.w / 2 }];
+  const rot = (((at.rotY ?? 0) % 360) + 360) % 360;
+  if (rot % 90 === 0) {
+    const f = decorFootprint(itemId, rot)!;
+    return [{ kind: 'box', x: at.x, z: at.z, w: f.w, d: f.d }];
+  }
+  const long = Math.max(s.w, s.d);
+  const short = Math.min(s.w, s.d);
+  const n = Math.max(2, Math.min(3, Math.ceil(long / short)));
+  const r = (rot * Math.PI) / 180;
+  // trục dài theo rộng (x riêng) hay sâu (z riêng); quay như three: x riêng → (cos, −sin), z riêng → (sin, cos)
+  const [ax, az] = s.w >= s.d ? [Math.cos(r), -Math.sin(r)] : [Math.sin(r), Math.cos(r)];
+  const step = n > 1 ? (long - short) / (n - 1) : 0;
+  return Array.from({ length: n }, (_, i) => {
+    const t = -((long - short) / 2) + i * step;
+    return { kind: 'circle' as const, x: at.x + ax * t, z: at.z + az * t, r: short / 2 };
+  });
 }
 
 /* ---------- màu đồ đạc (chi tiết hình dạng, như noi_that.ts) ---------- */

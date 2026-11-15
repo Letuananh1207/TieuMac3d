@@ -3,7 +3,7 @@
  * `getProgress.book`, số dư) dựng 4 mục **chỉ xem** — Hạt giống, Nông sản, Sách, Đồ trang trí; mục trống → dòng chỉ chỗ lấy.
  * Thuần (không DOM) — test `tuiDo.test.ts`. Tấm đáy: `ui/bagPanel.ts`.
  */
-import { DECOR_ITEMS, STARTER_DECOR } from './decor';
+import { cleanHome, DECOR_ITEMS, inBag, placedCount } from './decor';
 import { CROPS, type CropId, type Garden } from './vuon';
 
 /** Chuỗi (chỉ tiếng Việt — R-HUD-4), tên khoá như `design/l10n/vi.arb`. */
@@ -13,7 +13,6 @@ export const BAG_TEXT = {
   bagCrops: 'Nông sản',
   bagBooks: 'Sách',
   bagDecor: 'Đồ trang trí',
-  bagPlaced: 'Đang đặt',
   bagSeedsEmpty: 'Chưa có hạt — mua ở Tạp hoá Khởi Nguyên Trấn',
   bagCropsEmpty: 'Kho trống — thu hoạch ở vườn Nhà của ta',
   bagBooksEmpty: 'Chưa mượn sách — mượn ở Tàng Thư Các',
@@ -26,7 +25,7 @@ export const BAG_TEXT = {
 /** Số đã lưu để dựng túi. `garden` / `home` null = chưa có / lỗi (coi như trống / vật khởi đầu). */
 export interface BagSource {
   garden: Garden | null;
-  /** câu trả lời `getHome` nguyên dạng (`{placed, owned}`) */
+  /** câu trả lời `getHome` nguyên dạng (`{items, owned}`; bản cũ `{placed, owned}`) */
   home: unknown;
   /** cuốn đang mượn (tên + dòng phụ từ `BOOKS`), null = không mượn */
   book: { title: string; subtitle: string } | null;
@@ -43,7 +42,10 @@ export interface BagCrop {
 export interface BagDecor {
   id: string;
   name: string;
-  placed: boolean;
+  inBag: number;
+  placed: number;
+  /** "Trong túi n · Đang đặt m" (`bagDecorCounts`) */
+  text: string;
 }
 
 export interface BagView {
@@ -59,12 +61,18 @@ function cropList(stock: Partial<Record<CropId, number>> | undefined): BagCrop[]
   return CROPS.filter((c) => (stock?.[c.id] ?? 0) > 0).map((c) => ({ crop: c.id, name: c.name, n: Math.floor(stock![c.id]!) }));
 }
 
-/** Đồ đã có (R-NHA-4) theo thứ tự danh mục; vật đang đặt ở một ô → `placed`. Thiếu `owned` (bản cũ) → vật khởi đầu + vật đang đặt. */
+/**
+ * Đồ đã có (R-TUI-1, R-NHA-4) theo thứ tự danh mục, mỗi vật "Trong túi n · Đang đặt m" tính mọi nơi ở nhà; vật trong túi 0 mà đang đặt
+ * vẫn hiện. Dữ liệu cũ (ô) → như `cleanHome` (ô cũ chưa chuyển tính là đang đặt).
+ */
 function decorList(raw: unknown): BagDecor[] {
-  const o = raw && typeof raw === 'object' ? (raw as { placed?: unknown; owned?: unknown }) : {};
-  const placed = new Set(o.placed && typeof o.placed === 'object' ? Object.values(o.placed as Record<string, unknown>).filter((v): v is string => typeof v === 'string') : []);
-  const owned = new Set(Array.isArray(o.owned) ? o.owned.filter((v): v is string => typeof v === 'string') : [...STARTER_DECOR, ...placed]);
-  return DECOR_ITEMS.filter((it) => owned.has(it.id)).map((it) => ({ id: it.id, name: it.name, placed: placed.has(it.id) }));
+  const home = cleanHome(raw);
+  const legacy = Object.values(home.legacy);
+  return DECOR_ITEMS.filter((it) => (home.owned[it.id] ?? 0) > 0).map((it) => {
+    const placed = placedCount(home.items, it.id) + legacy.filter((id) => id === it.id).length;
+    const bag = Math.max(0, inBag(home, it.id) - legacy.filter((id) => id === it.id).length);
+    return { id: it.id, name: it.name, inBag: bag, placed, text: `Trong túi ${bag} · Đang đặt ${placed}` };
+  });
 }
 
 const sum = (xs: readonly BagCrop[]): number => xs.reduce((a, x) => a + x.n, 0);

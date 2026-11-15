@@ -5,7 +5,7 @@
  * `walletRules.test.ts` ↔ `app/test/rules/tien_test.dart`). Có Flutter thì Dart là nguồn thật, file này không chạy.
  * Thuần — không DOM, không lưu (lưu: `bridge/browserStore.ts`). Giá một nguồn ở `decor.ts`.
  */
-import { decorItem, STARTER_DECOR } from './decor';
+import { cleanHome, decorItem, STARTER_COUNTS, type DecorCounts, type PlacedDecor } from './decor';
 import { applyAct, freshGarden, parseGarden, type Garden, type GardenAct, type GardenResult } from './vuon';
 import type { GameEarning } from './wallet';
 
@@ -45,17 +45,16 @@ export function learnRewardLabel(char: string, amount: number): string {
   return `+${amount} · Học bộ ${char}`;
 }
 
-export type BuyRefusal = 'invalid' | 'owned' | 'short';
+export type BuyRefusal = 'invalid' | 'short';
 export type BuyResult =
-  | { ok: true; balance: number; owned: string[] }
+  | { ok: true; balance: number; owned: DecorCounts }
   | { ok: false; reason: BuyRefusal; /** còn thiếu bao nhiêu (chỉ khi `short`) */ short: number };
 
-/** Mua [item] giá [price] (R-TIEN-4): đủ tiền → trừ đúng giá, vật thành đã có; thiếu → không mua; đã có → không mua lại. */
-export function buyDecor(a: { balance: number; owned: readonly string[]; item: string; price: number }): BuyResult {
+/** Mua 1 cái [item] giá [price] (R-TIEN-4, V-69): đủ tiền → trừ đúng giá, số cái + 1 (vào túi); thiếu → không mua. Mua lặp được. */
+export function buyDecor(a: { balance: number; owned: DecorCounts; item: string; price: number }): BuyResult {
   if (!a.item || !(a.price > 0)) return { ok: false, reason: 'invalid', short: 0 };
-  if (a.owned.includes(a.item)) return { ok: false, reason: 'owned', short: 0 };
   if (a.balance < a.price) return { ok: false, reason: 'short', short: a.price - a.balance };
-  return { ok: true, balance: a.balance - a.price, owned: [...a.owned, a.item] };
+  return { ok: true, balance: a.balance - a.price, owned: { ...a.owned, [a.item]: (a.owned[a.item] ?? 0) + 1 } };
 }
 
 /** Ví thử lưu trong trình duyệt (R-TIEN-7): số dư, thưởng trò hôm nay, đồ sở hữu, nhà, bộ đã học trên bảng HTML. */
@@ -64,8 +63,11 @@ export interface TrialWallet {
   /** ngày của `gameToday` (`dayKey`) */
   gameDay: string;
   gameToday: number;
-  owned: string[];
-  /** mã ô → mã vật (như `getHome.placed`) */
+  /** số cái mỗi vật trang trí (đang đặt + trong túi — R-NHA-4) */
+  owned: DecorCounts;
+  /** món đang đặt ở nhà (như `getHome.items`) */
+  items: PlacedDecor[];
+  /** ô cũ chưa chuyển (ví thử của bản có ô: mã ô → mã vật); rỗng sau khi trang chuyển (R-NHA-3) */
   placed: Record<string, string>;
   /** mã bộ thủ đã mở thẻ HTML (R-TIEN-2 — +10 lần đầu) */
   learned: string[];
@@ -75,29 +77,30 @@ export interface TrialWallet {
   garden: Garden;
 }
 
-/** Ví thử mới: 300 Văn tiền, 3 vật khởi đầu, nhà trống, chưa học bộ nào, vườn mới (6 luống trống, 3 hạt Cải ngọt). */
+/** Ví thử mới: 300 Văn tiền, 3 vật khởi đầu mỗi vật 1 cái, nhà trống, chưa học bộ nào, vườn mới (6 luống trống, 3 hạt Cải ngọt). */
 export function newTrial(): TrialWallet {
-  return { coins: TRIAL_START_COINS, gameDay: '', gameToday: 0, owned: [...STARTER_DECOR], placed: {}, learned: [], alms: { ...NO_ALMS }, garden: freshGarden() };
+  return { coins: TRIAL_START_COINS, gameDay: '', gameToday: 0, owned: { ...STARTER_COUNTS }, items: [], placed: {}, learned: [], alms: { ...NO_ALMS }, garden: freshGarden() };
 }
 
 const strings = (v: unknown): string[] => (Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string') : []);
 const count = (v: unknown): number => (typeof v === 'number' && Number.isFinite(v) && v > 0 ? Math.floor(v) : 0);
 
-/** Đọc ví thử đã lưu; hỏng / sai dạng / số dư lạ → ví mới. Bỏ mã vật lạ; thiếu `owned` → vật khởi đầu. */
+/**
+ * Đọc ví thử đã lưu; hỏng / sai dạng / số dư lạ → ví mới. Đồ trang trí như `cleanHome` (R-NHA-3/4): `owned` mảng (ví thử bản cũ) →
+ * số cái như Flutter chuyển (`migrateOwnedCounts`); ô cũ giữ ở `placed` tới khi trang chuyển.
+ */
 export function parseTrial(raw: unknown): TrialWallet {
   if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return newTrial();
   const o = raw as Record<string, unknown>;
   if (typeof o.coins !== 'number' || !Number.isFinite(o.coins) || o.coins < 0) return newTrial();
-  const placed: Record<string, string> = {};
-  if (o.placed && typeof o.placed === 'object') {
-    for (const [slot, item] of Object.entries(o.placed as Record<string, unknown>)) if (typeof item === 'string') placed[slot] = item;
-  }
+  const home = cleanHome({ items: o.items, placed: o.placed, owned: o.owned });
   return {
     coins: Math.floor(o.coins),
     gameDay: typeof o.gameDay === 'string' ? o.gameDay : '',
     gameToday: count(o.gameToday),
-    owned: Array.isArray(o.owned) ? [...new Set(strings(o.owned).filter((id) => decorItem(id)))] : [...STARTER_DECOR],
-    placed,
+    owned: home.owned,
+    items: [...home.items],
+    placed: { ...home.legacy },
     learned: [...new Set(strings(o.learned))],
     alms: parseAlms(o.alms),
     garden: parseGarden(o.garden),
@@ -131,10 +134,9 @@ export function buyTrial(w: TrialWallet, itemId: string): { wallet: TrialWallet;
   return { wallet: result.ok ? { ...w, coins: result.balance, owned: result.owned } : w, result };
 }
 
-/** Đặt / gỡ (`null`) vật ở một ô — luật đặt đã kiểm ở `decor.ts` `placeDecor` trước khi gọi. */
-export function placeTrial(w: TrialWallet, slot: string, item: string | null): TrialWallet {
-  const { [slot]: _gone, ...rest } = w.placed;
-  return { ...w, placed: item ? { ...rest, [slot]: item } : rest };
+/** Ghi cả danh sách món (như `setHome`) — chỗ đặt + trong túi đã kiểm ở trang; ô cũ (nếu còn) coi như đã chuyển. */
+export function setTrialHome(w: TrialWallet, items: readonly PlacedDecor[]): TrialWallet {
+  return { ...w, items: [...items], placed: {} };
 }
 
 /* ---------- Cho Tiểu Khất (R-TIEN-8) — `almsCoins` / `giveAlms` ở Dart ---------- */

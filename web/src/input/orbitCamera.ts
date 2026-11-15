@@ -3,6 +3,9 @@ import { clampFrameYaw, fitDistance, framePoints, placeFrame, type FrameSettings
 
 const MIN_PITCH = 0.12;
 const MAX_PITCH = 1.2;
+/** Góc nhìn khi trang trí (R-NHA-6): ~55° (0,96 rad), lùi ≥ 13 m để thấy rộng chỗ đặt. */
+const DECOR_PITCH = 0.96;
+const DECOR_DIST = 13;
 /** camera cách mặt đất tối thiểu (m) khi có địa hình */
 const CAMERA_CLEARANCE = 0.8;
 /** R-DIEU-3: sau khi kéo xoay camera, chờ bao lâu (s) mới tự xoay theo hướng đi */
@@ -152,6 +155,27 @@ export class OrbitCamera {
       if (b.yaw !== undefined) this.yaw = b.yaw;
     }
     this.shown = this.dist;
+  }
+
+  private beforeDecor: { dist: number; pitch: number } | null = null;
+
+  /**
+   * Vào / ra chế độ trang trí (R-NHA-6, 4B): `true` → camera nâng lên nhìn chéo ~55° (`DECOR_PITCH`), lùi ít nhất `DECOR_DIST` (trong
+   * giới hạn zoom của cảnh); vẫn xoay / zoom được. `false` → trả khoảng cách + góc ngẩng như trước. Gọi lặp cùng giá trị không sao.
+   */
+  decorView(on: boolean): void {
+    if (on === (this.beforeDecor !== null)) return;
+    if (on) {
+      this.beforeDecor = { dist: this.dist, pitch: this.pitch };
+      this.pitch = DECOR_PITCH;
+      this.dist = this.clampDist(Math.max(this.dist, DECOR_DIST));
+      this.clampFrame();
+    } else {
+      const b = this.beforeDecor!;
+      this.beforeDecor = null;
+      this.dist = b.dist;
+      this.pitch = b.pitch;
+    }
   }
 
   /** Kéo ngón tay dx, dy pixel. */

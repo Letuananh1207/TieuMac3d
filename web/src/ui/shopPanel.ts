@@ -5,12 +5,12 @@
  * đã mua hết; "Đóng" + Esc. DOM gốc `#shopPanel` ở index.html (`#shop` là nút nổi "Vào tiệm"), phần trong dựng bằng createElement. Không giữ luật: chữ + trạng thái
  * ở `zones/shopView.ts`, mua qua [ShopPanelHost.buy] (`walletRoom.ts` → `zones/walletRules.ts`).
  */
-import { ALL_BOUGHT, boughtView, confirmView, POOR_HINT, SEED_GRID_HINT, SEED_QTY, seedCrop, seedLine, SHOP_TABS, shopBanner, shopGroups, type ShopCard, type ShopEntry, type ShopTab } from '../zones/shopView';
+import { boughtView, confirmView, POOR_HINT, SEED_GRID_HINT, SEED_QTY, seedCrop, seedLine, SHOP_TABS, shopBanner, shopGroups, stockLine, type DecorStock, type ShopCard, type ShopEntry, type ShopTab } from '../zones/shopView';
 import type { CropId } from '../zones/vuon';
 import { formatCoins } from '../zones/wallet';
 import type { BuyResult } from '../zones/walletRules';
 import { cropPicture, SEED_PACK } from './cropArt';
-import { COIN, DECOR_PICTURES, ICON_CHECK, STROKE, svgIcon, type SvgNode } from './decorIcons';
+import { COIN, DECOR_PICTURES, STROKE, svgIcon, type SvgNode } from './decorIcons';
 import { el } from './dom';
 import { coinIcon } from './wallet';
 import './shop.css';
@@ -71,7 +71,7 @@ export class ShopPanel {
   private readonly confirm = h('section', 'sp-confirm');
   private readonly toast = h('div', 'sp-toast');
   private balance = 0;
-  private owned: string[] = [];
+  private stock: DecorStock = { owned: {}, placed: {} };
   private tab: ShopTab = 'all';
   private picked: ShopEntry | null = null;
   /** số hạt đang chọn trong hộp xác nhận (R-VUON-9) */
@@ -104,10 +104,10 @@ export class ShopPanel {
     return !this.root.hidden;
   }
 
-  /** Mở tiệm với số dư + đồ sở hữu hiện tại; tab về "Tất cả". */
-  open(balance: number, owned: readonly string[]): void {
+  /** Mở tiệm với số dư + số cái đồ trang trí (sở hữu / đang đặt) hiện tại; tab về "Tất cả". */
+  open(balance: number, stock: DecorStock): void {
     this.balance = balance;
-    this.owned = [...owned];
+    this.stock = { owned: { ...stock.owned }, placed: { ...stock.placed } };
     this.tab = 'all';
     this.picked = null;
     this.toast.hidden = true;
@@ -145,9 +145,9 @@ export class ShopPanel {
 
     const titles = h('div', 'sp-titles');
     const name = h('h1', '', 'Tạp hoá'); // shopName
-    // shopSubtitleSeeds khi có hạt giống (2026-11-15.29), không thì shopSubtitle
+    // shopSubtitle (đổi 2026-11-15.42)
     const seeds = this.items.some((i) => i.slot === 'hat');
-    titles.append(name, h('span', 'sub', seeds ? 'Đồ trang trí Nhà của ta · hạt giống cho Vườn rau' : 'Đồ trang trí Nhà của ta · mua một lần, đặt được nhiều ô'));
+    titles.append(name, h('span', 'sub', seeds ? 'Đồ trang trí Nhà của ta · mỗi cái đặt một chỗ · hạt giống cho Vườn rau' : 'Đồ trang trí Nhà của ta · mỗi cái đặt một chỗ'));
     const brand = h('div', 'sp-brand');
     const seal = h('span', 'sp-seal'); // ấn son chữ Việt "Tạp hoá" (2026-11-15.29 — không chữ Hán, R-HUD-4)
     seal.setAttribute('aria-hidden', 'true');
@@ -207,7 +207,7 @@ export class ShopPanel {
     this.renderBanner();
     this.seedHint.hidden = this.tab !== 'hat'; // shopSeedSub — chỉ ở tab Hạt giống
     this.list.replaceChildren(
-      ...shopGroups(this.items, this.owned, this.balance, this.tab, this.picked?.id ?? null).map((g) => {
+      ...shopGroups(this.items, this.balance, this.tab, this.picked?.id ?? null).map((g) => {
         const sec = h('section', 'sp-group');
         if (g.title) sec.append(h('h3', '', g.title));
         const ul = h('ul', 'sp-grid');
@@ -220,20 +220,17 @@ export class ShopPanel {
   }
 
   private renderBanner(): void {
-    const kind = shopBanner(this.items, this.owned, this.balance);
+    const kind = shopBanner(this.items, this.balance);
     this.banner.hidden = kind === null;
     this.banner.className = `sp-banner ${kind ?? ''}`;
     const text = h('span');
     if (kind === 'poor') {
       for (const [part, bold] of POOR_HINT) text.append(bold ? h('b', '', part) : part); // shopPoorHint
       this.banner.replaceChildren(svgIcon(ICON_BOOK, 20, undefined, { ...STROKE, stroke: '#2B5446', 'stroke-width': '2.2' }), text);
-    } else if (kind === 'allBought') {
-      text.append(h('b', '', ALL_BOUGHT[0]), ALL_BOUGHT[1]); // shopAllBought
-      this.banner.replaceChildren(svgIcon(COIN, 20, '0 0 100 100'), text);
     } else this.banner.replaceChildren();
   }
 
-  /** Thẻ vật: ô hình, tên, giá (xu + số), nút Mua / Đã có / Còn thiếu n. */
+  /** Thẻ vật: ô hình, tên, "Trong túi: n · Đang đặt: m" / "Chưa có" (đồ trang trí) hoặc "Trong túi: n" (hạt), giá, nút Mua / Còn thiếu n. */
   private card(c: ShopCard): HTMLLIElement {
     const { item } = c;
     const li = h('li', `sp-card ${c.state}${c.picked ? ' picked' : ''}`);
@@ -243,18 +240,13 @@ export class ShopPanel {
     price.append(svgIcon(COIN, 14, '0 0 100 100'), h('b', '', formatCoins(item.price)));
     const seed = seedLine(item, this.host.bag());
     if (seed) price.append(h('span', 'time', `· ${seed.time}`));
-    let act: HTMLElement;
-    if (c.state === 'owned') {
-      act = h('span', 'act owned');
-      act.append(svgIcon(ICON_CHECK, 14, undefined, { ...STROKE, 'stroke-width': '3' }), c.text); // shopOwned
-    } else {
-      const b = button(`act ${c.state}`, c.text); // shopBuy / shopShort
-      if (c.state === 'short') b.setAttribute('aria-disabled', 'true');
-      else b.addEventListener('click', () => this.pick(item));
-      act = b;
-    }
+    const act = button(`act ${c.state}`, c.text); // shopBuy / shopShort
+    if (c.state === 'short') act.setAttribute('aria-disabled', 'true');
+    else act.addEventListener('click', () => this.pick(item));
     li.append(art, h('div', 'name', item.name));
     if (seed) li.append(h('div', seed.inBag > 0 ? 'inbag has' : 'inbag', seed.text)); // shopInBag
+    const stock = stockLine(item, this.stock);
+    if (stock) li.append(h('div', stock.has ? 'inbag has' : 'inbag', stock.text)); // shopInBagPlaced / shopNotOwned
     li.append(price, act);
     return li;
   }
@@ -269,7 +261,7 @@ export class ShopPanel {
       return;
     }
     const c = seedCrop(item);
-    const v = confirmView(item, this.balance, c ? { count: this.qty, inBag: this.host.bag()[c.id] ?? 0 } : undefined);
+    const v = confirmView(item, this.balance, c ? { count: this.qty, inBag: this.host.bag()[c.id] ?? 0 } : undefined, this.stock);
     this.confirm.setAttribute('aria-label', `Xác nhận mua ${item.name}`);
     const art = h('div', 'art');
     art.append(...picture(item, 64));
@@ -320,7 +312,7 @@ export class ShopPanel {
     this.qty = 1;
     if (r.ok) {
       this.balance = r.balance;
-      this.owned = [...r.owned];
+      this.stock = { ...this.stock, owned: { ...r.owned } };
       this.showBought(item);
       this.showDelta(item.price * count);
     }
@@ -329,7 +321,7 @@ export class ShopPanel {
 
   /** Tấm "Đã mua {vật}" + "Về nhà để đặt — …" 3 s; không tự đưa về nhà. */
   private showBought(item: ShopEntry): void {
-    const v = boughtView(item);
+    const v = boughtView(item, stockLine(item, this.stock)?.inBag ?? 0);
     const art = h('div', 'art');
     art.append(...picture(item, 40));
     const b = h('b', '', v.title); // shopBought

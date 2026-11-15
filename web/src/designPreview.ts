@@ -36,8 +36,8 @@ import { addTownPreview } from './townPreview';
 import { DanTranh } from './danTranh';
 import { PLAYER_MODEL_URL } from './player/playerCharacter';
 import { addGardenPreview } from './vuonPreview';
+import { addDecorPreview } from './decorPreview';
 import { inRect } from './scene/rooms';
-import { DecorLayer } from './scene/decorLayer';
 import { el } from './ui/dom';
 import { placeZones, ZONE_CONTENT } from './zones/zones';
 import { emotePreview } from './bieuCamPreview';
@@ -258,15 +258,9 @@ async function boot(): Promise<void> {
   const vuon = addGardenPreview(scene, spec, world.garden, params, (x, z) => world.surface.heightAt(x, z));
   if (vuon) el('problems').append(...vuon.map((t) => li(t)));
   const follow = params.has('theo') && town?.walker ? town.walker.root.position.clone() : null;
-  // ?trang-tri=ke-sach,an-doc,… — đặt sẵn vật vào các ô trang trí theo thứ tự ô (chụp gian trong có đồ — V-71); "-" = để trống
-  const decorIds = (params.get('trang-tri') ?? '').split(',').filter(Boolean);
-  if (decorIds.length && spec.decorSlots.length) {
-    const layer = new DecorLayer(scene, colliders, spec, (x, z) => world.surface.heightAt(x, z));
-    spec.decorSlots.forEach((slot, i) => {
-      const id = decorIds[i];
-      if (id && id !== '-') layer.set(slot.id, { id, blocks: false });
-    });
-  }
+  // ?dang=trang-tri&so=20&ma=ban-tra:0:0:45&vungcam — đồ trang trí tự do rải sẵn + bóng ma + vùng cấm (decorPreview.ts, R-NHA-7)
+  const decorPv = addDecorPreview(scene, colliders, spec, SCENE.id, (x, z) => world.surface.heightAt(x, z), params);
+  if (decorPv) el('problems').append(...decorPv.lines.map((t) => li(t)));
 
   /* ---------- chạm mặt sân → toạ độ ---------- */
   const marker = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 2, 8), new THREE.MeshBasicMaterial({ color: 0x7bc86c }));

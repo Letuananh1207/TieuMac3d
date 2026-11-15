@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { STARTER_DECOR } from './decor';
+import { STARTER_COUNTS } from './decor';
 import { freshGarden } from './vuon';
 import {
   buyDecor,
@@ -15,7 +15,7 @@ import {
   learnRewardLabel,
   newTrial,
   parseTrial,
-  placeTrial,
+  setTrialHome,
   TRIAL_START_COINS,
 } from './walletRules';
 
@@ -54,19 +54,19 @@ describe('thưởng trò chơi (R-TIEN-3)', () => {
 });
 
 describe('Tạp hoá — mua (R-TIEN-4)', () => {
-  it('R-TIEN-4: có 100, mua Mai 60 → còn 40, Mai đã có', () => {
-    const r = buyDecor({ balance: 100, owned: STARTER_DECOR, item: 'mai', price: 60 });
-    expect(r.ok).toBe(true);
+  it('R-TIEN-4: có 200, mua Mai 60 → còn 140, Mai 1 cái; mua lần nữa → còn 80, Mai 2 cái', () => {
+    const r = buyDecor({ balance: 200, owned: STARTER_COUNTS, item: 'mai', price: 60 });
+    expect(r).toEqual({ ok: true, balance: 140, owned: { ...STARTER_COUNTS, mai: 1 } });
     if (!r.ok) return;
-    expect(r.balance).toBe(40);
-    expect(r.owned).toEqual(expect.arrayContaining(['truc-canh', 'den-long', 'tranh-chu', 'mai']));
+    const r2 = buyDecor({ balance: r.balance, owned: r.owned, item: 'mai', price: 60 });
+    expect(r2).toEqual({ ok: true, balance: 80, owned: { ...STARTER_COUNTS, mai: 2 } });
   });
 
-  it('R-TIEN-4: có 40, Tùng 80 → còn thiếu 40, không mua; đã có → không mua lại', () => {
-    expect(buyDecor({ balance: 40, owned: STARTER_DECOR, item: 'tung', price: 80 })).toEqual({ ok: false, reason: 'short', short: 40 });
-    expect(buyDecor({ balance: 999, owned: STARTER_DECOR, item: 'truc-canh', price: 30 })).toEqual({ ok: false, reason: 'owned', short: 0 });
-    expect(buyDecor({ balance: 999, owned: STARTER_DECOR, item: '', price: 30 })).toEqual({ ok: false, reason: 'invalid', short: 0 });
-    expect(buyDecor({ balance: 999, owned: STARTER_DECOR, item: 'mai', price: 0 })).toEqual({ ok: false, reason: 'invalid', short: 0 });
+  it('R-TIEN-4: có 40, Tùng 80 → còn thiếu 40, không mua; vật đã có vẫn mua thêm được', () => {
+    expect(buyDecor({ balance: 40, owned: STARTER_COUNTS, item: 'tung', price: 80 })).toEqual({ ok: false, reason: 'short', short: 40 });
+    expect(buyDecor({ balance: 999, owned: STARTER_COUNTS, item: 'truc-canh', price: 30 })).toMatchObject({ ok: true, owned: { 'truc-canh': 2 } });
+    expect(buyDecor({ balance: 999, owned: STARTER_COUNTS, item: '', price: 30 })).toEqual({ ok: false, reason: 'invalid', short: 0 });
+    expect(buyDecor({ balance: 999, owned: STARTER_COUNTS, item: 'mai', price: 0 })).toEqual({ ok: false, reason: 'invalid', short: 0 });
   });
 });
 
@@ -77,7 +77,8 @@ describe('chế độ thử trên trình duyệt (R-TIEN-7)', () => {
     expect(TRIAL_START_COINS).toBe(300);
     const w = newTrial();
     expect(w.coins).toBe(300);
-    expect(w.owned).toEqual([...STARTER_DECOR]);
+    expect(w.owned).toEqual(STARTER_COUNTS);
+    expect(w.items).toEqual([]);
     expect(w.placed).toEqual({});
     expect(w.learned).toEqual([]);
     expect(w.gameToday).toBe(0);
@@ -87,10 +88,13 @@ describe('chế độ thử trên trình duyệt (R-TIEN-7)', () => {
     for (const raw of [null, undefined, 'abc', 42, [], { coins: 'nhiều' }, { coins: -5 }]) expect(parseTrial(raw)).toEqual(newTrial());
   });
 
-  it('R-TIEN-7: đọc lại ví đã lưu; bỏ mã vật lạ; thiếu `owned` → vật khởi đầu', () => {
-    const w = parseTrial({ coins: 240, gameDay: '2026-11-14', gameToday: 8, owned: ['truc-canh', 'mai', 'rong-vang', 7], placed: { 'vuon-1': 'mai', 'x': 3 }, learned: ['truc', 9] });
-    expect(w).toEqual({ coins: 240, gameDay: '2026-11-14', gameToday: 8, owned: ['truc-canh', 'mai'], placed: { 'vuon-1': 'mai' }, learned: ['truc'], alms: { lastDay: -1, count: 0 }, garden: freshGarden() });
-    expect(parseTrial({ coins: 10 }).owned).toEqual([...STARTER_DECOR]);
+  it('R-TIEN-7: đọc lại ví đã lưu; ví thử bản có ô (`owned` mảng) → số cái như Flutter (vật ở nhiều ô → số ô); thiếu `owned` → khởi đầu', () => {
+    const w = parseTrial({ coins: 240, gameDay: '2026-11-14', gameToday: 8, owned: ['truc-canh', 'mai', 'rong-vang', 7], placed: { 'vuon-1': 'mai', 'vuon-2': 'mai', 'x': 3 }, learned: ['truc', 9] });
+    expect(w).toEqual({ coins: 240, gameDay: '2026-11-14', gameToday: 8, owned: { 'truc-canh': 1, mai: 2 }, items: [], placed: { 'vuon-1': 'mai', 'vuon-2': 'mai' }, learned: ['truc'], alms: { lastDay: -1, count: 0 }, garden: freshGarden() });
+    expect(parseTrial({ coins: 10 }).owned).toEqual(STARTER_COUNTS);
+    const now = parseTrial({ coins: 10, owned: { mai: 2 }, items: [{ item: 'mai', scene: 'nha-ta', x: 8, z: 4, rot: 45 }] });
+    expect(now.items).toEqual([{ item: 'mai', scene: 'nha-ta', x: 8, z: 4, rot: 45 }]);
+    expect(now.placed).toEqual({});
   });
 
   it('R-TIEN-7: thắng Đấu chữ → +8, ví 308; luật trần 60 như app; sáng mai lại được', () => {
@@ -117,20 +121,22 @@ describe('chế độ thử trên trình duyệt (R-TIEN-7)', () => {
     expect(b.wallet.coins).toBe(310);
   });
 
-  it('R-TIEN-7: có 300, mua Mai 60 → còn 240, Mai đặt được; thiếu tiền không trừ', () => {
+  it('R-TIEN-7: có 300, mua Mai 60 → còn 240, Mai 1 cái; mua Mai 2 lần → 2 cái (đặt được 2 cây); thiếu tiền không trừ', () => {
     const a = buyTrial(newTrial(), 'mai');
-    expect(a.result).toEqual({ ok: true, balance: 240, owned: [...STARTER_DECOR, 'mai'] });
+    expect(a.result).toEqual({ ok: true, balance: 240, owned: { ...STARTER_COUNTS, mai: 1 } });
     expect(a.wallet.coins).toBe(240);
-    expect(a.wallet.owned).toContain('mai');
+    expect(buyTrial(a.wallet, 'mai').wallet.owned.mai).toBe(2);
     const poor = buyTrial({ ...newTrial(), coins: 40 }, 'tung');
     expect(poor.result).toEqual({ ok: false, reason: 'short', short: 40 });
     expect(poor.wallet.coins).toBe(40);
     expect(buyTrial(newTrial(), 'rong-vang').result).toEqual({ ok: false, reason: 'invalid', short: 0 });
   });
 
-  it('R-TIEN-7: đặt / gỡ vật ở ô ghi vào ví thử (nhà lưu trong trình duyệt — R-NHA-3)', () => {
-    const a = placeTrial(newTrial(), 'vuon-1', 'mai');
-    expect(a.placed).toEqual({ 'vuon-1': 'mai' });
-    expect(placeTrial(a, 'vuon-1', null).placed).toEqual({});
+  it('R-TIEN-7: ghi cả danh sách món vào ví thử (nhà lưu trong trình duyệt — R-NHA-3); ô cũ coi như đã chuyển', () => {
+    const items = [{ item: 'truc-canh', scene: 'nha-ta', x: 8, z: 4, rot: 0 }];
+    const a = setTrialHome({ ...newTrial(), placed: { 'vuon-1': 'truc-canh' } }, items);
+    expect(a.items).toEqual(items);
+    expect(a.placed).toEqual({});
+    expect(parseTrial(JSON.parse(JSON.stringify(a))).items).toEqual(items);
   });
 });

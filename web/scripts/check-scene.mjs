@@ -246,8 +246,12 @@ function checkScene(rel, raw, opt = {}) {
     if (!has) all.push(`gameTables: thiếu design/models/${t.npc}.glb — bàn "${t.id}" không có NPC`);
     console.log(`Bàn chơi ${t.id} (${t.kind}): tâm (${n(t.x)}; ${n(t.z)}) quay ${t.rotY ?? 0}° · NPC ${t.npc}${has ? '' : ' — THIẾU MODEL'}`);
   }
-  // ô trang trí nhà của ta (R-NHA-2) — lỗi đã kiểm trong resolveSceneSpec (scene/decorSlots.ts)
-  for (const t of spec.decorSlots) console.log(`Ô trang trí ${t.id} (${t.kind}): tâm (${n(t.x)}; ${n(t.z)}) quay ${t.rotY ?? 0}°`);
+  // vùng đặt đồ trang trí tự do (R-NHA-7) — lỗi đã kiểm trong resolveSceneSpec (scene/decorArea.ts)
+  const da = spec.decorArea;
+  if (da) {
+    console.log(`Vùng trang trí (${da.where}): ${da.bounds.length} đỉnh · trần ${n(da.maxItems)} món · dốc ≤ ${n(da.maxSlope)} m`);
+    for (const k of da.keepOut) console.log(`  cấm "${k.label}": (${n(k.from[0])}; ${n(k.from[1])}) … (${n(k.to[0])}; ${n(k.to[1])})`);
+  }
   // vườn rau (R-VUON-1) — lỗi đã kiểm trong resolveSceneSpec (scene/vuonLayout.ts)
   const g = spec.garden;
   if (g.enabled) {

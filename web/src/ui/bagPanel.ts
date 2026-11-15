@@ -79,12 +79,12 @@ export class BagPanel {
     if (v.decor.items.length) {
       decor = h('div', 'bg-decor');
       for (const d of v.decor.items) {
-        const card = h('div', d.placed ? 'bg-card placed' : 'bg-card');
+        const card = h('div', d.placed > 0 ? 'bg-card placed' : 'bg-card');
         const pic = h('div', 'bg-pic');
         const art = DECOR_PICTURES[d.id];
         if (art) pic.append(svgIcon(art, 34, '0 0 64 64'));
         card.append(pic, h('div', 'bg-name', d.name));
-        if (d.placed) card.append(h('span', 'bg-placed', BAG_TEXT.bagPlaced));
+        card.append(h('span', 'bg-counts', d.text)); // bagDecorCounts (2026-11-15.42)
         decor.append(card);
       }
     } else decor = this.empty(v.decor.empty);

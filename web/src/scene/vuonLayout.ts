@@ -75,7 +75,6 @@ export function checkGarden(s: SceneSpec): string[] {
   const b = g.bin;
   if (b.x > f.x0 - 0.6 && b.x < f.x1 + 0.6 && b.z > f.z0 - 0.6 && b.z < f.z1 + 0.6) out.push('garden.bin: thùng thu mua đặt ngoài rào (cách ≥ 0,6 m)');
   const inFence = (x: number, z: number, m: number): boolean => x > f.x0 - m && x < f.x1 + m && z > f.z0 - m && z < f.z1 + m;
-  for (const t of s.decorSlots) if (inFence(t.x, t.z, 1)) out.push(`garden: ô trang trí "${t.id}" nằm trong / sát rào vườn (cách ≥ 1 m)`);
   const [px, pz] = s.player.start;
   if (inFence(px, pz, 0.5)) out.push('garden: điểm xuất phát (player.start) nằm trong rào vườn');
   for (const bd of s.buildings) {

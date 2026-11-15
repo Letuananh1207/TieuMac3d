@@ -28,11 +28,19 @@ function typingIn(t: EventTarget | null): boolean {
 export class Keyboard {
   private readonly keys: Record<string, boolean> = {};
 
-  /** `onAction(a, key)`: `key` = phím đã bấm (chữ thường) — cho `tool` / `digit`. */
-  constructor(onAction?: (a: KeyAction, key: string) => void) {
+  /**
+   * `onAction(a, key)`: `key` = phím đã bấm (chữ thường) — cho `tool` / `digit`. `intercept(key)` (chế độ trang trí — R-NHA-6) hỏi
+   * trước mọi phím (tên phím gốc `KeyboardEvent.key`, không lặp khi giữ): `true` = đã dùng, không chạy hành động thường (E không ngồi,
+   * Enter không mở trò chuyện, Esc / Q / R / Delete thuộc trang trí).
+   */
+  constructor(onAction?: (a: KeyAction, key: string) => void, intercept?: (key: string) => boolean) {
     window.addEventListener('keydown', (e) => {
       if (typingIn(e.target)) {
         for (const k of Object.keys(this.keys)) this.keys[k] = false; // thả mọi phím đang giữ
+        return;
+      }
+      if (intercept && (e.repeat ? intercept('') : intercept(e.key))) {
+        e.preventDefault();
         return;
       }
       const key = e.key.toLowerCase();

@@ -22,9 +22,8 @@ export const NPC_POSES = ['dung', 'ngoi'] as const;
 /** Bàn chơi ở khu giao lưu (R-GIAO-1): `co` = Ngũ Tử Kỳ (R-CO-1), `dau-chu` = Đấu chữ (R-DAU-1). */
 export const GAME_KINDS = ['co', 'dau-chu'] as const;
 /** Loại ô trang trí nhà của ta (R-NHA-2): `vuon` vườn · `san` sân · `trong` trong nhà. */
-export const DECOR_SLOT_KINDS = ['vuon', 'san', 'trong'] as const;
-/** Khoảng tối thiểu (m) giữa tâm hai ô trang trí — vật to nhất (bình phong, ao sen) rộng ≈ 1,6 m. */
-export const DECOR_SLOT_GAP = 1.8;
+/** Nhóm vật của vùng đặt (`DecorAreaSpec.where`) — cùng chuỗi `DecorWhere` ở `zones/decor.ts`. */
+export const DECOR_WHERES = ['ngoai', 'trong'] as const;
 export const PROP_KINDS = [
   'luong-thuoc',
   'lo-dan',
@@ -651,16 +650,17 @@ export interface PortalSpec {
 export const PORTAL_VIAS = ['di', 'nut'] as const;
 
 /**
- * Ô trang trí (R-NHA-2): chỗ đặt sẵn một vật trong danh mục (`zones/decor.ts`), tâm (x, z) trên mặt đất / sàn tầng 1.
- * Ô `trong` phải nằm trong chân một nhà; `vuon` / `san` ở ngoài mọi nhà. Mặt trước vật nhìn về +z khi `rotY` = 0
- * (độ, bội 90). `id` duy nhất trong cảnh — là khoá lưu nhà (R-NHA-3), đổi mã = mất vật đã đặt ở ô đó.
+ * Vùng đặt đồ trang trí tự do (R-NHA-2, R-NHA-7 — V-69): cảnh có trường này là một nơi ở nhà người chơi trang trí được. `where` =
+ * nhóm vật nhận (`ngoai` sân / vườn · `trong` gian trong); `bounds` = đa giác cho phép (chân món phải nằm trọn trong); `keepOut` =
+ * hộp cấm vẽ tay (lối lát, Bến mây…) kèm lý do hiện khi đỏ; thêm vùng cấm **tự sinh** từ cổng, chỗ tới, chỗ xuất phát, vườn rau, vật
+ * cản (`decorArea.ts`). `maxItems` = trần món trong cảnh; `maxSlope` = chênh cao tối đa trong chân món (m).
  */
-export interface DecorSlotSpec {
-  id: string;
-  kind: (typeof DECOR_SLOT_KINDS)[number];
-  x: number;
-  z: number;
-  rotY?: number;
+export interface DecorAreaSpec {
+  where: (typeof DECOR_WHERES)[number];
+  bounds: XZ[];
+  keepOut: { from: XZ; to: XZ; label: string }[];
+  maxItems: number;
+  maxSlope: number;
 }
 
 /** Biển tên trò chơi (R-GIAO-2): toạ độ cảnh, mặt chữ nhìn về +z khi `rotY` = 0 (độ, bội 90). */
@@ -1083,8 +1083,8 @@ export interface SceneSpec {
   npcs: NpcSpec[];
   /** bàn chơi khu giao lưu (R-GIAO-1) */
   gameTables: GameTableSpec[];
-  /** ô trang trí nhà của ta (R-NHA-2); rỗng = cảnh không trang trí được */
-  decorSlots: DecorSlotSpec[];
+  /** vùng đặt đồ trang trí tự do (R-NHA-2, R-NHA-7); `null` = cảnh không trang trí được */
+  decorArea: DecorAreaSpec | null;
   /** cổng đi bộ sang cảnh khác (R-HANH-4); rỗng = chỉ đi bằng vòng trận */
   portals: PortalSpec[];
   /** kiểu nhìn: `cu` (mặc định, như trước) · `mem` hoạt hình mềm màu ấm — `scene/look.ts` */
@@ -1295,7 +1295,7 @@ export const DEFAULT_SCENE: SceneSpec = {
   crane: { padOffset: 2.5, scale: 1.25, body: '#f6f4ee', tip: '#25242b', crest: '#c8343a', beak: '#c2b17c', leg: '#3b3a3a' },
   npcs: [], // cảnh mặc định chưa có NPC
   gameTables: [],
-  decorSlots: [],
+  decorArea: null, // cảnh cũ không trang trí được
   portals: [], // cảnh cũ không có cổng đi bộ
   look: DEFAULT_LOOK, // kiểu cũ — cảnh không đổi
   dayNight: DEFAULT_DAY_NIGHT, // tắt — cảnh luôn ban ngày như cũ

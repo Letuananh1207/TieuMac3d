@@ -1,5 +1,5 @@
 import type { BookEntry, Word } from '../zones/books';
-import type { DecorItem } from '../zones/decor';
+import type { DecorItem, PlacedDecor } from '../zones/decor';
 import type { Radical } from '../zones/radicals';
 import type { ReviewItem } from '../zones/review';
 import type { StudyMenu } from '../zones/studyMenu';
@@ -143,7 +143,7 @@ export async function getGarden(): Promise<Garden | null> {
 }
 
 /**
- * Hỏi Flutter nhà của ta đã lưu (`getHome` — R-NHA-3). Trả nguyên câu trả lời (`{placed}`) để `zones/decor.ts`
+ * Hỏi Flutter nhà của ta đã lưu (`getHome` — R-NHA-3). Trả nguyên câu trả lời (`{items, owned, placed?}`) để `zones/decor.ts`
  * `cleanHome` làm sạch theo cảnh; `null` = không có Flutter / lỗi → nhà trống.
  */
 export async function getHome(): Promise<unknown> {
@@ -187,7 +187,7 @@ function parseDaily(v: unknown): DailyBoard | null {
 
 /** Vật bày bán gửi Flutter (`openShop`, docs/bridge.md) — bỏ trường chỉ cảnh dùng (`blocks`). */
 export function shopPayload(items: readonly DecorItem[]): Record<string, unknown>[] {
-  return items.map(({ id, name, slot, price }) => ({ id, name, slot, price }));
+  return items.map(({ id, name, where, price }) => ({ id, name, where, price }));
 }
 
 /**
@@ -267,9 +267,12 @@ export class FlutterBridge {
     return this.ask({ type: 'returnBook', payload: {} });
   }
 
-  /** Ghi vật ở một ô nhà của ta (R-NHA-2/3); `item` `null` = gỡ. `false` = không có Flutter → giữ trong bộ nhớ trang. */
-  setDecor(slot: string, item: string | null): Promise<boolean> {
-    return this.ask({ type: 'setDecor', payload: { slot, item } });
+  /**
+   * Ghi cả danh sách món nhà của ta (`setHome` — R-NHA-2/3, V-69). `false` = không có Flutter (giữ trong bộ nhớ trang) hoặc Flutter
+   * không ghi (vượt số cái / sai dạng — trang hỏi lại `getHome`).
+   */
+  setHome(items: readonly PlacedDecor[]): Promise<boolean> {
+    return this.ask({ type: 'setHome', payload: { items: items.map(({ item, scene, x, z, rot }) => ({ item, scene, x, z, rot })) } });
   }
 
   /** Mở danh mục sách (R-SACH-1). `false` = chưa có màn (chờ thiết kế) → chọn cuốn trong khung thoại. */

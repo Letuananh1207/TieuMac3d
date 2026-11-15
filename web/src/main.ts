@@ -500,19 +500,22 @@ async function boot(): Promise<void> {
   const teaFloors = world.rooms.filter((r) => teaIds.has(r.zoneId)).map((r) => r.floor);
   music = teaFloors.length > 0 ? new AmbientMusic(TRACKS, (f) => MUSIC_URLS[`./nhac/${f}`]) : null;
   const seatGlow = addSeatGlow(scene, spec.lanternStyle.trim);
-  // Nhà của ta: ô trang trí + nút "Trang trí" (R-NHA-2/3/4, thiết kế 2026-11-14.13) — chỉ cảnh có `decorSlots`
-  const decor: HomeDecor | null = spec.decorSlots.length
+  // Nhà của ta: trang trí tự do + nút "Trang trí" (R-NHA-2/3/4/6/7 — V-69, thiết kế 2026-11-15.42) — chỉ cảnh có `decorArea`
+  const decor: HomeDecor | null = spec.decorArea
     ? new HomeDecor({
         scene,
+        sceneId: SCENE.id,
         colliders,
         spec,
         groundY: groundAt,
-        save: (slot, item): Promise<boolean> => bridge.setDecor(slot, item),
+        pick: (x, y) => picker.pick(x, y),
+        save: (items): Promise<boolean> => bridge.setHome(items),
         coins: () => progress?.coins ?? 0,
         trial,
-        onEnter: () => {
+        onMode: (on) => {
           player.moveTarget = null;
           joystick.end();
+          orbit.decorView(on); // camera nâng ~55° (R-NHA-6, 4B)
         },
       })
     : null;
@@ -550,7 +553,7 @@ async function boot(): Promise<void> {
       if (spot) sitAt(spot); // phím E = nút nổi Ngồi (R-NGOI-1)
       else exitAction(); // không có chỗ ngồi: E = nút nổi ra cửa (V-71)
     } else player.toggleSit(); // C: ngồi ôn tại chỗ (R-DIEU-7)
-  });
+  }, (key) => !!decor?.key(key)); // trang trí: Q E R Enter Esc Delete thuộc trang trí (R-NHA-6)
   attachPointerInput(canvas, {
     joystick,
     orbit,
@@ -559,13 +562,16 @@ async function boot(): Promise<void> {
     lookMode: () => ngoiMat.seated, // ngồi: kéo = nhìn quanh từ mắt, chụm không zoom (R-DIEU-7, R-DIEU-1)
     onLook: (dx, dy) => ngoiMat.drag(dx, dy),
     noJoystick: () => !!decor?.active || !!garden?.active || scrollOpen, // trang trí: kéo đâu cũng xoay camera (R-NHA-2); cuộn mở: kéo = nhìn quanh (R-ON-8)
+    decorDrag: decor
+      ? { start: (x, y, mouse) => decor.dragStart(x, y, mouse), move: (x, y) => decor.dragMove(x, y), end: () => decor.dragEnd(), hover: (x, y) => decor.hoverAt(x, y) }
+      : undefined, // kéo / di chuột món trang trí (R-NHA-6)
     onTap: (x, y) => {
       if (mapOpen) {
         onMapTap(x, y);
         return;
       }
       if (chat.close()) return; // đang gõ: chạm cảnh = đóng ô nhập
-      if (decor?.tap()) return; // trang trí: chạm cảnh trống = đóng bảng danh mục
+      if (decor?.tap(x, y)) return; // trang trí: chạm món = nhấc, đang cầm = đặt (chuột) / dời tới (chạm) — R-NHA-6
       if (garden?.tap()) return; // bảng vườn rau mở: chạm cảnh = đóng bảng
       if (scrollOpen && !covered && !talking) {
         ngoiMat.tapScroll(x, y, camera); // cuộn sách mở: chạm thẳng vào mục trên giấy (R-ON-8)
@@ -870,7 +876,7 @@ async function boot(): Promise<void> {
     // túi đồ ở mọi cảnh: số đã lưu (getGarden / getHome — docs/bridge.md; chế độ thử: ví thử R-TIEN-7)
     bagSource: async () => {
       const w = trial?.wallet;
-      const [garden, home] = w ? [w.garden, { placed: w.placed, owned: w.owned }] : await Promise.all([getGarden(), getHome()]);
+      const [garden, home] = w ? [w.garden, { items: w.items, owned: w.owned, placed: w.placed }] : await Promise.all([getGarden(), getHome()]);
       const b = borrowedBook(desk.book);
       return { garden, home, book: b ? { title: b.title, subtitle: b.subtitle } : null, coins: w?.coins ?? progress?.coins ?? null };
     },

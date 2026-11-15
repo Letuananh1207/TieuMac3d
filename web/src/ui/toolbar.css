@@ -77,10 +77,10 @@
 .bg-read:active{background:var(--jade-press)}
 .bg-decor{display:grid;gap:6px;grid-template-columns:repeat(5,minmax(0,1fr))}
 .bg-card{position:relative;padding:6px 4px;border-radius:12px;background:#fff;outline:1px solid rgba(36,50,58,.12);display:flex;flex-direction:column;gap:4px;align-items:center;min-width:0}
-.bg-card.placed{outline:2px solid var(--jade)}
+.bg-card.placed{outline:1px solid rgba(36,50,58,.12)}
 .bg-pic{width:100%;height:40px;border-radius:8px;background:var(--map-paper,#f2eada);display:flex;align-items:center;justify-content:center}
 .bg-card .bg-name{font-size:11px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
-.bg-placed{position:absolute;left:4px;top:4px;height:16px;padding:0 6px;border-radius:999px;background:var(--jade);color:#fff;font-size:9px;font-weight:700;display:flex;align-items:center}
+.bg-counts{font-size:10px;font-weight:500;color:#5e6a70;text-align:center;line-height:1.25} /* Trong túi n · Đang đặt m — 2026-11-15.42 */
 .bg-empty{padding:10px 12px;border-radius:12px;border:1.5px dashed rgba(36,50,58,.22);font-size:12px;color:var(--slate-muted)}
 .bg-foot{flex:none;font-size:11px;color:var(--slate-muted);text-align:center;padding-bottom:6px}
 /* túi mở: nhân vật đứng yên — cất cần điều khiển, cụm hành động, cột phải (R-TUI-1) */

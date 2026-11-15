@@ -31,14 +31,18 @@ describe('túi đồ (R-TUI-1)', () => {
     for (const s of Object.values(BAG_TEXT)) expect(s).not.toMatch(/\p{Script=Han}/u); // R-HUD-4
   });
 
-  it('R-TUI-1: đồ trang trí đã có (R-NHA-4), vật đang đặt có dấu; bỏ mã lạ, số 0', () => {
-    const v = bagView({ ...empty, garden: garden({ cai: 0 }, {}), home: { placed: { 'san-1': 'den-long', 'vuon-1': 'la' }, owned: ['den-long', 'truc-canh', 'la'] } });
+  it('R-TUI-1: đồ trang trí đã có, mỗi vật "Trong túi n · Đang đặt m" (mọi nơi); Mai 3 cái đặt 2 → "Trong túi 1 · Đang đặt 2"; bỏ mã lạ', () => {
+    const mai = (x: number, scene = 'nha-ta') => ({ item: 'mai', scene, x, z: 4, rot: 0 });
+    const v = bagView({ ...empty, garden: garden({ cai: 0 }, {}), home: { items: [mai(8), mai(10), { item: 'la', scene: 'nha-ta', x: 0, z: 0, rot: 0 }], owned: { mai: 3, 'truc-canh': 1, la: 2 } } });
     expect(v.decor.items).toEqual([
-      { id: 'truc-canh', name: 'Trúc cảnh', placed: false },
-      { id: 'den-long', name: 'Đèn lồng', placed: true },
+      { id: 'truc-canh', name: 'Trúc cảnh', inBag: 1, placed: 0, text: 'Trong túi 1 · Đang đặt 0' },
+      { id: 'mai', name: 'Mai', inBag: 1, placed: 2, text: 'Trong túi 1 · Đang đặt 2' },
     ]);
     expect(v.decor.total).toBe(2);
     expect(v.seeds.items).toEqual([]);
+    // dữ liệu ô cũ chưa chuyển: vật ở ô tính là đang đặt
+    const old = bagView({ ...empty, home: { placed: { 'san-1': 'den-long' }, owned: ['den-long'] } });
+    expect(old.decor.items).toEqual([{ id: 'den-long', name: 'Đèn lồng', inBag: 0, placed: 1, text: 'Trong túi 0 · Đang đặt 1' }]);
   });
 
   it('R-TUI-1: nhà bản cũ (thiếu owned) / chưa có → vật khởi đầu; ví chưa biết → không số dư', () => {

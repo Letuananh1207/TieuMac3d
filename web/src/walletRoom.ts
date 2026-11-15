@@ -12,9 +12,9 @@ import type { GameResult } from './ui/gameView';
 import { ShopButton } from './ui/shopButton';
 import { ShopPanel } from './ui/shopPanel';
 import { WalletHud } from './ui/wallet';
-import { DECOR_ITEMS } from './zones/decor';
+import { DECOR_ITEMS, placedCount } from './zones/decor';
 import { SHOP_ID, shopButtonShown, shopDoor, type BuildingLike } from './zones/shop';
-import { SEED_ITEMS, seedCrop } from './zones/shopView';
+import { DECOR_ENTRIES, SEED_ITEMS, seedCrop } from './zones/shopView';
 import { gameResultLine, gameRewardLabel, type GameEarning, type GameKind, type GameOutcome } from './zones/wallet';
 import { buyTrial, dayKey, earnTrialGame, gameTodayOn, gardenTrialAct, learnOnce, learnRewardLabel, type BuyResult } from './zones/walletRules';
 
@@ -63,7 +63,7 @@ export class WalletRoom {
     this.shop = d ? new ShopButton({ ...d, y: host.groundAt(d.x, d.z) }, () => this.openShop()) : null;
     const trial = host.trial;
     this.panel = trial
-      ? new ShopPanel([...DECOR_ITEMS, ...SEED_ITEMS], {
+      ? new ShopPanel([...DECOR_ENTRIES, ...SEED_ITEMS], {
           bag: () => trial.wallet.garden.seeds,
           buy: (item, count): BuyResult => {
             // hạt giống Vườn rau (R-VUON-9): + [count] hạt (× 1 · × 5 · × 10) vào túi ở ví thử
@@ -169,7 +169,9 @@ export class WalletRoom {
     if (trial && this.panel) {
       // không có Flutter → Tạp hoá bản web (R-TIEN-6, R-TIEN-7)
       this.host.cover();
-      this.panel.open(trial.wallet.coins, trial.wallet.owned);
+      const w = trial.wallet;
+      const placed = Object.fromEntries(DECOR_ITEMS.map((i) => [i.id, placedCount(w.items, i.id)]));
+      this.panel.open(w.coins, { owned: w.owned, placed });
       return;
     }
     this.opening = true;

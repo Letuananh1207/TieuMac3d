@@ -5,7 +5,6 @@
 import { checkBounds } from './ranhDi';
 import {
   BUILDING_KINDS,
-  DECOR_SLOT_KINDS,
   GOODS_KINDS,
   DEFAULT_SCENE,
   NPC_IDS,
@@ -33,7 +32,7 @@ import {
   type BridgeSpec,
   PORTAL_VIAS,
 } from './spec';
-import { checkDecorSlots } from './decorSlots';
+import { checkDecorArea, parseDecorArea } from './decorArea';
 import { paveProblem, treesOnPaving } from './cayTrenNen';
 import { checkGarden, gardenFootprints } from './vuonLayout';
 import { landingPad, START_HEADING } from './hacDuong';
@@ -57,6 +56,9 @@ const HEX = /^#[0-9a-fA-F]{6}$/;
 const ROTATIONS = [0, 90, 180, 270];
 const XZ0: [number, number] = [0, 0];
 
+/** Trường khuôn `null` (không có = tắt) đọc bằng hàm riêng. */
+const NULLABLE: Record<string, (raw: unknown, path: string, out: string[]) => unknown> = { decorArea: parseDecorArea };
+
 function isObj(v: unknown): v is Obj {
   return typeof v === 'object' && v !== null && !Array.isArray(v);
 }
@@ -64,6 +66,7 @@ function isObj(v: unknown): v is Obj {
 /** Ghép `raw` lên khuôn `def`: đúng kiểu thì lấy, sai / thiếu thì giữ `def` và ghi vấn đề. */
 function merge(def: unknown, raw: unknown, path: string, out: string[]): unknown {
   if (raw === undefined) return def;
+  if (def === null) return NULLABLE[path]?.(raw, path, out) ?? null;
   if (typeof def === 'number') {
     if (typeof raw === 'number' && Number.isFinite(raw)) return raw;
     out.push(`${path}: cần một số`);
@@ -422,7 +425,6 @@ const LISTS: Record<string, ItemParser> = {
     { rotY: 0, boards: 0, npcStand: true, sign: { x: 0, z: 0, rotY: 0, han: '', name: '' } },
     all(oneOf('kind', GAME_KINDS), oneOf('npc', NPC_IDS), rot, boardsRange, signRot),
   ),
-  decorSlots: item({ id: '', kind: '', x: 0, z: 0 }, { rotY: 0 }, all(oneOf('kind', DECOR_SLOT_KINDS), rot)),
   'garden.plots': item({ id: '', x: 0, z: 0 }, {}),
   // cổng đi bộ (R-HANH-4): kiểm vùng / chỗ đứng / cặp cổng ở `portals.ts` + `scripts/check-scene.mjs`
   portals: item({ scene: '', area: { from: XZ0, to: XZ0 }, arrive: { at: XZ0, rotY: 0 } }, { label: '', marker: true, via: '' }, (o, path) => [
@@ -526,7 +528,7 @@ function checkConsistency(s: SceneSpec): string[] {
   if (t.enabled && t.edge.radius + t.edge.width > t.size / 2) {
     out.push(`terrain.edge: mép vực (radius + width = ${t.edge.radius + t.edge.width}) vượt nửa vùng lưới (${t.size / 2}) — tăng size`);
   }
-  out.push(...checkTeleport(s), ...checkStoneYardEmpty(s),...checkLanterns(s), ...checkDecorSlots(s), ...checkPortals(s), ...checkLook(s.look), ...checkDayNight(s.dayNight), ...checkTea(s), ...checkGarden(s));
+  out.push(...checkTeleport(s), ...checkStoneYardEmpty(s),...checkLanterns(s), ...checkDecorArea(s), ...checkPortals(s), ...checkLook(s.look), ...checkDayNight(s.dayNight), ...checkTea(s), ...checkGarden(s));
   out.push(...hanOnDisplay(s).map((h) => `${h.path}: biển / tên trong game chỉ tiếng Việt, không chữ Hán (R-HUD-4) — đang là "${h.text}"`));
   if (s.cloudSea.radius < 0) out.push('cloudSea.radius: phải ≥ 0');
   out.push(...checkCrane(s));
@@ -640,7 +642,6 @@ export function checkStoneYardEmpty(s: SceneSpec): string[] {
   const out: string[] = [];
   const hit = (what: string): number => out.push(`stoneYard: ${what} đứng trên sân đá trống — dời ra ngoài (tâm (${cx}; ${cz}), bán kính ${y.radius} m)`);
   for (const p of s.props) if (on(p.x, p.z, 0.3)) hit(`vật "${p.kind}" (${p.x}; ${p.z})`);
-  for (const t of s.decorSlots) if (on(t.x, t.z, 0.8)) hit(`ô trang trí "${t.id}"`);
   for (const t of s.gameTables) if (on(t.x, t.z, 1)) hit(`bàn chơi "${t.id}"`);
   for (const n of s.npcs) if (on(n.x, n.z, 0.3)) hit(`NPC "${n.id}"`);
   for (const t of s.trees.yard) if (on(t.x, t.z, 0.5)) hit(`cây (${t.x}; ${t.z})`);
@@ -703,7 +704,6 @@ function checkOnFlatGround(s: SceneSpec): string[] {
   for (const w of s.water.filter((w) => !w.sunk)) flat(`ao (${w.x}; ${w.z})`, box(w.x, w.z, w.r !== undefined ? w.r * 2 : (w.w ?? 0), w.r !== undefined ? w.r * 2 : (w.d ?? 0), w.rotY));
   for (const t of s.gameTables) flat(`bàn chơi "${t.id}"`, box(t.x, t.z, (t.boards ?? 1) * GAME_SLOT + 1, 4, t.rotY));
   for (const t of s.gameTables) if (t.sign) flat(`biển bàn "${t.id}"`, box(t.sign.x, t.sign.z, 2, 1, t.sign.rotY));
-  for (const t of s.decorSlots) flat(`decorSlots "${t.id}"`, box(t.x, t.z, 1.6, 1.6));
   for (const g of gardenFootprints(s.garden)) flat(g.what, box(g.x, g.z, g.w, g.d));
   if (s.well.enabled) flat('giếng', box(s.well.x, s.well.z, 2.4, 2.4));
   const hw = s.walls.half;

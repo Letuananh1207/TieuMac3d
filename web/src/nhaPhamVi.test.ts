@@ -3,6 +3,13 @@ import { canStep } from './player/controller';
 import { loadScene } from './scene/loadSpec';
 import { buildHeightfield } from './scene/terrainHeight';
 import { GIAN_TRONG_DOOR_Z } from './scene/kien_truc/gian_trong';
+import type { Box } from './collision/colliders';
+import { buildDecorArea } from './scene/decorArea';
+import { DECOR_SHAPES } from './scene/decorItems';
+import { fenceSegments } from './scene/vuonLayout';
+import { inBag, type PlacedDecor } from './zones/decor';
+import { LEGACY_SLOTS, migrateHome } from './zones/decorLegacy';
+import { checkSpot, settleScene, type PlaceArea } from './zones/decorPlace';
 
 /**
  * Nhà của ta làm lại (V-48): nhà là một đảo nhỏ trên biển mây — đi về mọi hướng đều dừng ở mép vực (R-VA-2), không có
@@ -79,14 +86,78 @@ describe('Nhà của ta — phạm vi nhà (V-48)', () => {
     expect(walk(0, 10, 0, 1, 10).z).toBeGreaterThan(20);
   });
 
-  it('R-NHA-2: 12 ô trang trí giữ mã — 9 ô sân / vườn ngoài sân, 3 ô trong nhà ở gian trong (V-68); ô ngoài sân đứng phẳng trên đất (y 0)', () => {
-    expect(spec.decorSlots.map((s) => s.id)).toEqual(['san-1', 'san-2', 'san-3', 'vuon-1', 'vuon-2', 'vuon-3', 'vuon-4', 'vuon-5', 'vuon-6']);
-    for (const s of spec.decorSlots) {
-      expect(hf.heightAt(s.x, s.z), s.id).toBeCloseTo(0, 2);
-      expect(hf.slopeAt(s.x, s.z), s.id).toBeLessThan(1);
+  it('R-NHA-7: vùng đặt — sân "ngoai" trần 40, gian trong "trong" trần 20; chỗ xuất phát nằm trong vùng', () => {
+    expect(spec.decorArea).toMatchObject({ where: 'ngoai', maxItems: 40, maxSlope: 0.35 });
+    expect(loadScene('nha-ta-trong').spec.decorArea).toMatchObject({ where: 'trong', maxItems: 20 });
+  });
+});
+
+/** Vùng đặt thật của sân (vật cản gần đúng: nhà chính, rào vườn, thùng — đủ cho luật chỗ đặt; cây / lan can bỏ). */
+function homeArea(): PlaceArea {
+  const house = spec.buildings.find((b) => b.id === 'chinh-phong')!;
+  const g = spec.garden;
+  const boxes: Box[] = [{ minX: house.x - house.w / 2, maxX: house.x + house.w / 2, minZ: house.z - house.d / 2, maxZ: house.z + house.d / 2, h: 5 }];
+  for (const f of fenceSegments(g)) {
+    boxes.push({ minX: Math.min(f.from[0], f.to[0]) - 0.1, maxX: Math.max(f.from[0], f.to[0]) + 0.1, minZ: Math.min(f.from[1], f.to[1]) - 0.1, maxZ: Math.max(f.from[1], f.to[1]) + 0.1, h: 0.6 });
+  }
+  boxes.push({ minX: g.bin.x - 0.4, maxX: g.bin.x + 0.4, minZ: g.bin.z - 0.6, maxZ: g.bin.z + 0.6, h: 0.75 });
+  return buildDecorArea('nha-ta', spec, boxes, [], (x, z) => hf.heightAt(x, z))!;
+}
+const shapeOf = (id: string) => DECOR_SHAPES[id];
+const at = (x: number, z: number, rot = 0) => ({ x, z, rot });
+
+describe('Nhà của ta — chỗ đặt đồ trang trí tự do (R-NHA-7, V-69)', () => {
+  const area = homeArea();
+
+  it('R-NHA-7: Ao sen ở (0; 0) → đỏ "Lối đi"; bãi cỏ (8; 4) → được; chỗ xuất phát / bãi hạc → "Lối đi"', () => {
+    expect(checkSpot(area, [], shapeOf, 'ao-sen', at(0, 0))).toMatchObject({ ok: false, label: 'Lối đi' });
+    expect(checkSpot(area, [], shapeOf, 'mai', at(8, 4)).ok).toBe(true);
+    expect(checkSpot(area, [], shapeOf, 'chau-lan', at(0.5, 6.5))).toMatchObject({ ok: false, label: 'Lối đi' });
+    expect(checkSpot(area, [], shapeOf, 'chau-lan', at(3, 6.5))).toMatchObject({ ok: false, label: 'Lối đi' }); // bãi hạc (2,5; 6,5)
+  });
+
+  it('R-NHA-7: trước cửa nhà chính → "Cửa nhà"; sát luống → "Luống rau"; cạnh thùng → "Thùng thu mua"', () => {
+    expect(checkSpot(area, [], shapeOf, 'chau-lan', at(-15, -3.5))).toMatchObject({ ok: false, label: 'Cửa nhà' });
+    expect(checkSpot(area, [], shapeOf, 'chau-lan', at(6.1, -9.5))).toMatchObject({ ok: false, label: 'Luống rau' });
+    expect(checkSpot(area, [], shapeOf, 'chau-lan', at(2.5, -6.5))).toMatchObject({ ok: false, label: 'Thùng thu mua' });
+  });
+
+  it('R-NHA-7: Chậu lan trong rào vườn, cách luống ≥ 0,3 m (khoảng trống phía đông các luống) → được; sát luống → không', () => {
+    expect(checkSpot(area, [], shapeOf, 'chau-lan', at(14.5, -8)).ok).toBe(true);
+    expect(checkSpot(area, [], shapeOf, 'chau-lan', at(12.5, -8.2)).ok).toBe(false);
+  });
+
+  it('R-NHA-7: Mai ngoài đảo / trên Bến mây → không đặt được; 6 bàn trà quây kín khe cổng vườn → bàn cuối "Chắn lối"', () => {
+    expect(checkSpot(area, [], shapeOf, 'mai', at(0, 17)).ok).toBe(false);
+    expect(checkSpot(area, [], shapeOf, 'mai', at(-26, 0)).ok).toBe(false);
+    // khe cổng vườn (cạnh tây x 3,5, z −9,5 rộng 1,6): bàn trà xếp kín phía trong rào, sát hành lang cổng
+    const row: PlacedDecor[] = [];
+    const spots = [at(5.5, -11, 90), at(5.5, -8, 90)];
+    for (const s of spots) {
+      const c = checkSpot(area, row, shapeOf, 'ban-tra', s);
+      if (c.ok) row.push({ item: 'ban-tra', scene: 'nha-ta', ...s });
     }
-    const inside = loadScene('nha-ta-trong').spec;
-    expect(inside.decorSlots.map((s) => [s.id, s.kind])).toEqual([['trong-1', 'trong'], ['trong-2', 'trong'], ['trong-3', 'trong']]);
+    // bàn chắn ngay giữa hành lang cổng (ngoài vùng cấm hành lang) bịt lối vào vườn → đỏ
+    const block = checkSpot(area, row, shapeOf, 'ban-tra', at(6.5, -9.5, 90));
+    expect(block.ok).toBe(false);
+  });
+
+  it('R-NHA-3: 12 ô cũ → món đúng chỗ ô; ô nay không hợp lệ dời ≤ 1,5 m hoặc về túi; không mất cái nào', () => {
+    const placed: Record<string, string> = {};
+    for (const s of LEGACY_SLOTS) placed[s.id] = s.scene === 'nha-ta' ? 'mai' : 'tranh-chu';
+    const owned = { mai: 9, 'tranh-chu': 3 };
+    const moved = migrateHome([], placed, owned);
+    const { items } = settleScene(area, moved, shapeOf);
+    const yard = items.filter((p) => p.scene === 'nha-ta');
+    const home = { items, owned };
+    expect(yard.length + inBag(home, 'mai')).toBe(9);
+    // vuon-1 (−6; −13) — Mai đứng đúng chỗ ô
+    expect(yard).toContainEqual({ item: 'mai', scene: 'nha-ta', x: -6, z: -13, rot: 0 });
+    for (const p of yard) {
+      const slot = LEGACY_SLOTS.filter((s) => s.scene === 'nha-ta').map((s) => Math.hypot(s.x - p.x, s.z - p.z));
+      expect(Math.min(...slot)).toBeLessThanOrEqual(1.5 + 0.3);
+    }
+    expect(items.filter((p) => p.scene === 'nha-ta-trong')).toHaveLength(3);
   });
 });
 

@@ -1,9 +1,7 @@
 /**
- * Hình vẽ của HUD trang trí (thiết kế 2026-11-14.13 / .12): biểu tượng nét 24 × 24 và hình phẳng 64 × 64 của 13 vật
+ * Hình vẽ của HUD trang trí (thiết kế 2026-11-14.13 / .12, 2026-11-15.42): biểu tượng nét 24 × 24 và hình phẳng 64 × 64 của 13 vật
  * (bản vẽ giữ chỗ trên thẻ danh mục — chép từ artboard `CuaHang-*`, `NhaTa-*`). Dựng bằng `createElementNS`, không HTML thô.
  */
-import type { DecorSlotKind } from '../zones/decor';
-
 /** Một nút SVG: thẻ, thuộc tính, con (hoặc chữ). */
 export type SvgNode = readonly [tag: string, attrs: Readonly<Record<string, string>>, kids?: readonly SvgNode[] | string];
 
@@ -38,12 +36,16 @@ export const ICON_PLUS: readonly SvgNode[] = [path('M12 5v14M5 12h14')];
 export const ICON_REMOVE: readonly SvgNode[] = [path('M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13')];
 /** Khoá (thẻ chưa có). */
 export const ICON_LOCK: readonly SvgNode[] = [['rect', { x: '5', y: '11', width: '14', height: '10', rx: '2' }], path('M8 11V8a4 4 0 0 1 8 0v3')];
-/** Huy hiệu loại ô: lá (Vườn), đèn (Sân), mái nhà (Trong nhà). */
-export const ICON_SLOT: Readonly<Record<DecorSlotKind, readonly SvgNode[]>> = {
-  vuon: [path('M12 20V10M12 10c-4 0-6-3-6-6 4 0 6 2 6 6zM12 12c4 0 6-3 6-6-4 0-6 2-6 6z')],
-  san: [path('M12 3v3M8 8h8l-1 9H9z M10 20h4')],
-  trong: [path('M4 11l8-6 8 6M6 10v9h12v-9')],
-};
+/** Mũi tên bốn hướng (viên nhắc khi cầm món — 2026-11-15.42). */
+export const ICON_MOVE: readonly SvgNode[] = [path('M12 3v18M3 12h18M12 3l-3 3M12 3l3 3M12 21l-3-3M12 21l3-3M3 12l3-3M3 12l3 3M21 12l-3-3M21 12l-3 3')];
+/** Xoay (vòng cung + mũi tên). */
+export const ICON_ROTATE: readonly SvgNode[] = [path('M20 12a8 8 0 1 1-2.3-5.6'), path('M20 4v5h-5')];
+/** Túi (Cất, đầu khay túi). */
+export const ICON_BAG: readonly SvgNode[] = [path('M5 8h14l-1 12H6z'), path('M9 8V6a3 3 0 0 1 6 0v2')];
+/** Dấu × (Huỷ). */
+export const ICON_X: readonly SvgNode[] = [path('M6 6l12 12M18 6L6 18')];
+/** Biển cấm (lý do đỏ). */
+export const ICON_BAN: readonly SvgNode[] = [['circle', { cx: '12', cy: '12', r: '8.5' }], path('M6 18L18 6')];
 
 /** Đồng xu Văn tiền (khung 0 0 100 100): vành, mặt, lỗ vuông. */
 export const COIN: readonly SvgNode[] = [

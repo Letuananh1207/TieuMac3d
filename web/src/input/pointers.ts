@@ -32,6 +32,16 @@ export interface PointerHandlers {
    */
   lookMode?(): boolean;
   onLook?(dx: number, dy: number): void;
+  /**
+   * Kéo món trang trí (R-NHA-6): `start` khi một ngón / chuột nhấn xuống — `true` = ngón này kéo món (không xoay camera, không
+   * tính chạm); `move` / `end` theo ngón đó. `hover` = chuột di không nhấn (máy tính: món đang cầm theo con trỏ).
+   */
+  decorDrag?: {
+    start(x: number, y: number, mouse: boolean): boolean;
+    move(x: number, y: number): void;
+    end(): void;
+    hover(x: number, y: number): void;
+  };
 }
 
 /**
@@ -45,9 +55,14 @@ export function attachPointerInput(canvas: HTMLCanvasElement, h: PointerHandlers
   const { joystick, orbit } = h;
   const looks = new Map<number, LookPointer>();
   let pinchDist = 0;
+  let dragId: number | null = null;
 
   canvas.addEventListener('pointerdown', (e) => {
     canvas.setPointerCapture(e.pointerId);
+    if (dragId === null && looks.size === 0 && h.decorDrag?.start(e.clientX, e.clientY, e.pointerType === 'mouse')) {
+      dragId = e.pointerId;
+      return;
+    }
     if (h.tapOnly?.()) {
       looks.set(e.pointerId, { x: e.clientX, y: e.clientY, sx: e.clientX, sy: e.clientY, t: performance.now() });
       return;
@@ -65,6 +80,11 @@ export function attachPointerInput(canvas: HTMLCanvasElement, h: PointerHandlers
   });
 
   canvas.addEventListener('pointermove', (e) => {
+    if (e.pointerId === dragId) {
+      h.decorDrag?.move(e.clientX, e.clientY);
+      return;
+    }
+    if (e.pointerType === 'mouse' && e.buttons === 0) h.decorDrag?.hover(e.clientX, e.clientY);
     if (e.pointerId === joystick.id) {
       joystick.move(e.clientX, e.clientY);
       return;
@@ -88,6 +108,11 @@ export function attachPointerInput(canvas: HTMLCanvasElement, h: PointerHandlers
   });
 
   function endPointer(e: PointerEvent): void {
+    if (e.pointerId === dragId) {
+      dragId = null;
+      h.decorDrag?.end();
+      return;
+    }
     if (e.pointerId === joystick.id) {
       joystick.end();
       return;

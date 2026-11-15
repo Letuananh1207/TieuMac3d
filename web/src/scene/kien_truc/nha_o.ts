@@ -1,7 +1,7 @@
 /**
  * Nhà ở 3 gian 正房 (`nha-o`) — nhà chính của "Nhà của ta" (R-NHA-1): một tầng, nền thấp + dốc trước, tường sau +
  * hồi kín, mặt trước gian giữa để cửa mở (đi vào được), hai gian bên tường thấp + song cửa sổ. Trong trống —
- * đồ trong nhà do người chơi đặt vào ô `decorSlots` loại `trong` (R-NHA-2). Mái hai mái + biển `title` mờ khi ở trong.
+ * đồ trong nhà do người chơi đặt tự do (`decorArea`, R-NHA-2). Mái hai mái + biển `title` mờ khi ở trong.
  * `closed` (V-68): gian giữa là cửa bức bàn đóng, chặn người; mái + biển không mờ — vào trong bằng cổng sang cảnh
  * "Trong nhà" (`gian_trong.ts`, R-NHA-1).
  */
