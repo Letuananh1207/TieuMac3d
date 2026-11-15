@@ -135,6 +135,25 @@ Không đổi: hình minh hoạ trong bảng Cách chơi (`guidePanel.ts:56` bà
 | 8 Đầu bảng / Flutter | 7 | 3 |
 | **Cộng** | **75** (đợt 1: 11 · đợt 2: 21 · đợt 3: 43) | |
 
+### Bổ sung V-73 — Vườn kiểu 摩尔 (phiếu `2026-11-15-vuon-mole.md`) — +7 hình mới, 2 dùng lại
+
+Thanh nông cụ (ô vuông 48–56, hình lấp gần kín ô — cỡ lớn hơn nút nổi), dấu trạng thái luống trong cảnh (16–20, thấy từ xa),
+ngăn "Đồ làm vườn" ở Túi đồ. Gộp vào **đợt 2** (cùng nhóm nút vườn mục 3).
+
+| Mã | Ý nghĩa | Cỡ | Trạng thái | Mô tả hình gợi ý |
+|---|---|---|---|---|
+| `tay-thu` | nông cụ Tay (thu hoạch) — ô thanh + nút "Dùng" | 48–56 · 28 | thường · đang cầm · nhấn | bàn tay đeo găng vải cầm giỏ tre nhỏ (khác `thu` = giỏ đầy) |
+| `binh-tuoi` ↺ `tuoi` | Bình tưới | 48–56 | thường · đang cầm | dùng lại `tuoi` vẽ cỡ to |
+| `hat-giong` ↺ `goi-hat` | ô Hạt giống khi chưa chọn loại | 48–56 | thường · đang cầm · mờ (túi trống) | dùng lại `goi-hat`; đã chọn loại → code chồng hình nông sản |
+| `bat-sau` | Bắt sâu | 48–56 · 28 | thường · đang cầm | ống tre có nắp + con sâu xanh tròn ló đầu (dễ thương, không ghê) |
+| `nho-co` | Nhổ cỏ | 48–56 · 28 | thường · đang cầm | bàn tay nắm bụi cỏ có rễ đất |
+| `phan-bon` | Phân bón (vật tiêu hao) — thanh, Túi đồ, thẻ Tạp hoá | 48–56 · 34 · 64 | thường · đang cầm · mờ (0) | bao vải nâu buộc dây, miệng có hạt nâu + mầm xanh nhỏ |
+| `dau-kho` | dấu "đất khô" trên luống | 16–20 | nhấp nháy nhẹ | giọt nước xanh rỗng + vệt nứt (khác `garden-water` giọt đầy) |
+| `dau-sau` | dấu "có sâu" | 16–20 | nhấp nháy nhẹ | đầu sâu xanh tròn nhỏ |
+| `dau-co` | dấu "có cỏ" | 16–20 | nhấp nháy nhẹ | hai lá cỏ nhọn xanh đậm |
+
+Tổng mới: **75 + 7 = 82** (đợt 2: 21 + 7 = 28).
+
 ## Đặc tả kỹ thuật (đề xuất — phiên thiết kế chỉnh được, ghi lại khi chốt)
 
 - **Ảnh từ AI**: vuông 1:1 (Gemini ra ~1024), **nền trắng trơn** (AI không cho nền trong suốt ổn định) → **tách nền** bằng
