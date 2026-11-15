@@ -37,3 +37,27 @@ export function checkPlaceNames(
   }
   return out;
 }
+
+/** Cảnh nhà riêng: cổng tới đó ghi "Về nhà", không ghi tên nơi (R-HANH-4). */
+const HOME_OF_PLAYER = 'nha-ta';
+
+/**
+ * Nhãn vòng sáng cổng đi bộ (R-HANH-4, V-59): cổng tới một nơi trên bản đồ ghi đúng `ten` của nơi đó (một nguồn tên —
+ * như `placeName`); riêng cổng về Nhà của ta ghi "Về nhà". `portals` = mã cảnh → cổng của cảnh đó. Trả danh sách lỗi.
+ */
+export function checkPortalLabels(
+  portals: ReadonlyMap<string, readonly { scene: string; label?: string }[]>,
+  places: readonly { id: string; ten: string }[],
+): string[] {
+  const out: string[] = [];
+  for (const [from, list] of portals) {
+    for (const p of list) {
+      if (!p.label || p.scene === HOME_OF_PLAYER) continue;
+      const place = places.find((q) => q.id === mapPlaceId(p.scene));
+      if (place && place.ten !== p.label) {
+        out.push(`cổng ở "${from}" → "${p.scene}": nhãn "${p.label}" nhưng ban-do.json gọi nơi đó là "${place.ten}" — nhãn phải là tên nơi đến (R-HANH-4)`);
+      }
+    }
+  }
+  return out;
+}

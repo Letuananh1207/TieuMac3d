@@ -382,7 +382,8 @@
         4
       ],
       "width": 2.6
-    }
+    },
+    { "from": [-2, 41.5], "to": [-7.6, 42.2], "width": 2.6 }
   ],
   "buildingStyle": {
     "path": "#b3ab9c",
@@ -895,6 +896,9 @@
       "rotY": 270,
       "period": 40
     }
+  ],
+  "portals": [
+    { "scene": "giang-nam", "area": { "from": [-10.2, 41], "to": [-7.8, 43.4] }, "arrive": { "at": [-5, 41.8], "rotY": 96 }, "label": "Yên Vũ Lâu" }
   ],
   "dayNight": { "enabled": true }
 }

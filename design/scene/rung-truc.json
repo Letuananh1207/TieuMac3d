@@ -406,7 +406,9 @@
         -10
       ],
       "width": 2.5
-    }
+    },
+    { "from": [4.5, 43], "to": [19.2, 43], "width": 2.5 },
+    { "from": [1.2, -35], "to": [-5, -42.8], "width": 2.5 }
   ],
   "buildingStyle": {
     "path": "#9d9686",
@@ -854,7 +856,9 @@
     }
   ],
   "portals": [
-    { "scene": "tong-mon", "area": { "from": [-8.6, 37.8], "to": [-6.2, 40.2] }, "arrive": { "at": [-5, 38.6], "rotY": 180 }, "label": "Khởi Nguyên Trấn" }
+    { "scene": "tong-mon", "area": { "from": [-8.6, 37.8], "to": [-6.2, 40.2] }, "arrive": { "at": [-5, 38.6], "rotY": 180 }, "label": "Khởi Nguyên Trấn" },
+    { "scene": "giang-nam", "area": { "from": [19.4, 41.8], "to": [21.8, 44.2] }, "arrive": { "at": [17, 43], "rotY": 270 }, "label": "Yên Vũ Lâu" },
+    { "scene": "truong-thanh", "area": { "from": [-6.2, -45.4], "to": [-3.8, -43] }, "arrive": { "at": [-3.7, -41.2], "rotY": 35 }, "label": "Nhạn Môn Quan" }
   ],
   "dayNight": { "enabled": true }
 }

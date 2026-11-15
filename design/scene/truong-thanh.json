@@ -433,7 +433,8 @@
         5
       ],
       "width": 2.5
-    }
+    },
+    { "from": [0, 42], "to": [0, 47.6], "width": 3 }
   ],
   "buildingStyle": {
     "path": "#9c9282",
@@ -806,6 +807,11 @@
         }
       ]
     }
+  ],
+  "portals": [
+    { "scene": "rung-truc", "area": { "from": [-1.2, 47.8], "to": [1.2, 50.2] }, "arrive": { "at": [0, 45.4], "rotY": 180 }, "label": "Trúc Lâm" },
+    { "scene": "to-lua", "area": { "from": [-44.4, -4.2], "to": [-42, -1.8] }, "arrive": { "at": [-39.6, -3], "rotY": 90 }, "label": "Đôn Hoàng Lộ" },
+    { "scene": "tu-cam-thanh", "area": { "from": [42, -4.2], "to": [44.4, -1.8] }, "arrive": { "at": [39.6, -3], "rotY": 270 }, "label": "Tử Cấm Thành" }
   ],
   "dayNight": { "enabled": true }
 }

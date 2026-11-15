@@ -426,7 +426,8 @@
       ],
       "width": 3,
       "color": "#b89566"
-    }
+    },
+    { "from": [12, 27], "to": [45, 19.5], "width": 3, "color": "#b89566" }
   ],
   "buildingStyle": {
     "path": "#b89566",
@@ -810,6 +811,9 @@
       "count": 4,
       "speed": 0.8
     }
+  ],
+  "portals": [
+    { "scene": "truong-thanh", "area": { "from": [45.4, 18.3], "to": [47.8, 20.7] }, "arrive": { "at": [43, 20], "rotY": 270 }, "label": "Nhạn Môn Quan" }
   ],
   "dayNight": { "enabled": true }
 }

@@ -503,7 +503,8 @@
         -14
       ],
       "width": 3
-    }
+    },
+    { "from": [25, -15.5], "to": [25, -23], "width": 2.5 }
   ],
   "buildingStyle": {
     "path": "#8e8b84",
@@ -1111,6 +1112,11 @@
       ],
       "waterSide": -1
     }
+  ],
+  "portals": [
+    { "scene": "rung-truc", "area": { "from": [-31.4, -3.2], "to": [-29, -0.8] }, "arrive": { "at": [-26.4, -2.3], "rotY": 90 }, "label": "Trúc Lâm" },
+    { "scene": "tu-cam-thanh", "area": { "from": [23.8, -25.6], "to": [26.2, -23.2] }, "arrive": { "at": [25, -21], "rotY": 0 }, "label": "Tử Cấm Thành" },
+    { "scene": "bong-lai", "area": { "from": [29.4, -15.2], "to": [31.8, -12.8] }, "arrive": { "at": [27.4, -14.6], "rotY": 270 }, "label": "Bồng Lai Đảo" }
   ],
   "dayNight": { "enabled": true }
 }

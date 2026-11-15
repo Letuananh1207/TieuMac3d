@@ -22,7 +22,13 @@ function gapTo(p: Pick<PortalSpec, 'area'>, x: number, z: number): number {
   return Math.hypot(dx, dz);
 }
 
-/** Lỗi cổng trong một cảnh: vùng rỗng, chỗ đứng trong / sát vùng, trùng cảnh đích, chồng vòng trận. */
+/** Hai cổng trong một cảnh phải cách nhau ít nhất bấy nhiêu mét (mép vùng chạm / chỗ đứng) — không trùng, không lỡ chân. */
+const PORTAL_GAP = 3;
+
+/**
+ * Lỗi cổng trong một cảnh: vùng rỗng, chỗ đứng trong / sát vùng, chỗ đứng quay mặt vào vòng (phải quay vào trong cảnh,
+ * lưng về vòng — R-HANH-4), trùng cảnh đích, chồng vòng trận, hai cổng sát nhau.
+ */
 export function checkPortals(s: Pick<SceneSpec, 'portals' | 'teleport'>): string[] {
   const out: string[] = [];
   const seen = new Set<string>();
@@ -33,12 +39,29 @@ export function checkPortals(s: Pick<SceneSpec, 'portals' | 'teleport'>): string
     seen.add(p.scene);
     const r = portalRect(p);
     if (r.maxX - r.minX < 0.5 || r.maxZ - r.minZ < 0.5) out.push(`${name}: vùng chạm hẹp dưới 0,5 m — nới area`);
-    const gap = gapTo(p, ...p.arrive.at);
+    const [ax, az] = p.arrive.at;
+    const gap = gapTo(p, ax, az);
     if (gap < ARRIVE_GAP) out.push(`${name}: chỗ đứng (arrive) cách vùng chạm ${gap.toFixed(1)} m — dời ra ngoài (≥ ${ARRIVE_GAP} m)`);
+    // hướng nhìn (rotY 0 = +z) phải ra xa tâm vòng: vừa tới thấy cảnh, không thấy ngay vòng vừa bước ra
+    const a = (p.arrive.rotY * Math.PI) / 180;
+    const away = Math.sin(a) * (ax - (r.minX + r.maxX) / 2) + Math.cos(a) * (az - (r.minZ + r.maxZ) / 2);
+    if (gap >= ARRIVE_GAP && away <= 0) out.push(`${name}: chỗ đứng nhìn về phía vòng (arrive.rotY ${p.arrive.rotY}°) — quay vào trong cảnh`);
     const tp = s.teleport;
     if (tp.enabled && gapTo(p, ...tp.center) < ringTrigger(tp)) out.push(`${name}: vùng chạm chồng lên vòng trận — dời cổng hoặc vòng`);
+    s.portals.forEach((q, j) => {
+      if (j === i) return;
+      if (j > i && rectGap(p, q) < PORTAL_GAP) out.push(`${name}: vùng chạm sát cổng portals[${j}] (→ ${q.scene}) dưới ${PORTAL_GAP} m — tách xa`);
+      if (gapTo(p, ...q.arrive.at) < PORTAL_GAP) out.push(`${name}: chỗ đứng của cổng portals[${j}] (→ ${q.scene}) sát vùng chạm này — vừa tới đã lỡ chân sang`);
+    });
   });
   return out;
+}
+
+/** Khoảng cách giữa hai vùng chạm (0 = chồng nhau). */
+function rectGap(p: Pick<PortalSpec, 'area'>, q: Pick<PortalSpec, 'area'>): number {
+  const a = portalRect(p);
+  const b = portalRect(q);
+  return Math.hypot(Math.max(b.minX - a.maxX, 0, a.minX - b.maxX), Math.max(b.minZ - a.maxZ, 0, a.minZ - b.maxZ));
 }
 
 /**

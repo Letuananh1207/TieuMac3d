@@ -34,7 +34,7 @@ const out = await build({
       "export { landingPad, START_HEADING } from './src/scene/hacDuong.ts';\n" +
       "export { RADICALS, checkRadicals } from './src/zones/radicals.ts';\n" +
       "export { applyVariant } from './src/scene/bienThe.ts';\n" +
-      "export { checkPlaceNames } from './src/scene/placeNames.ts';\n",
+      "export { checkPlaceNames, checkPortalLabels } from './src/scene/placeNames.ts';\n",
     resolveDir: web,
     loader: 'ts',
   },
@@ -46,7 +46,7 @@ const out = await build({
   define: { 'import.meta.glob': 'globalThis.__viteGlob' },
   loader: { '.png': 'empty', '.jpg': 'empty', '.glb': 'empty', '.css': 'empty', '.woff2': 'empty' },
 });
-const { checkPlaceNames, buildWorld, Colliders, checkRoute, routeLength, DRAFT_TOWN_NPCS, Scene, resolveSceneSpec, roomKinds, zoneAnchors, placeZones, ZONE_CONTENT, moonRadius, gateOpening, lauClearHeight, lauTop, wallGates, ringTrigger, arrivalSpot, daisLayout, landingPad, START_HEADING, RADICALS, checkRadicals, applyVariant } = await import(
+const { checkPlaceNames, checkPortalLabels, buildWorld, Colliders, checkRoute, routeLength, DRAFT_TOWN_NPCS, Scene, resolveSceneSpec, roomKinds, zoneAnchors, placeZones, ZONE_CONTENT, moonRadius, gateOpening, lauClearHeight, lauTop, wallGates, ringTrigger, arrivalSpot, daisLayout, landingPad, START_HEADING, RADICALS, checkRadicals, applyVariant } = await import(
   `data:text/javascript;base64,${Buffer.from(out.outputFiles[0].text).toString('base64')}`
 );
 
@@ -101,7 +101,7 @@ if (existsSync(vdir) && files.includes('scene.json')) {
 }
 if (errors) process.exit(1);
 
-/** Cặp cổng giữa các cảnh: cảnh đích phải có file; cảnh đích không có cổng về → cảnh báo (tới nơi đứng ở player.start). */
+/** Cặp cổng giữa các cảnh: cảnh đích phải có file và có cổng về (V-59: thiếu → lỗi); nhãn cổng = tên nơi đến trên bản đồ. */
 function checkPortalPairs() {
   let bad = 0;
   for (const [id, portals] of portalsOf) {
@@ -110,11 +110,20 @@ function checkPortalPairs() {
         console.error(`${sceneRel(id)}: cổng → "${p.scene}": không có file ${sceneRel(p.scene)} — app sẽ đưa về Khởi Nguyên Trấn`);
         bad++;
       } else if (!portalsOf.get(p.scene).some((q) => q.scene === id)) {
-        console.warn(`Cảnh báo: ${sceneRel(p.scene)} không có cổng về "${id}" — đi qua cổng tới nơi đứng ở player.start, không về được bằng cổng`);
+        // V-59: cổng đi bộ luôn có cặp — thiếu cổng về thì tới nơi đứng ở player.start, không về được bằng cổng
+        console.error(`${sceneRel(p.scene)}: không có cổng về "${id}" (cặp của cổng ở ${sceneRel(id)}) — thêm cổng về`);
+        bad++;
       }
     }
   }
-  if (!bad && [...portalsOf.values()].some((l) => l.length)) console.log('\nCổng đi bộ giữa các cảnh: ghép cặp đúng.');
+  const mapFile = resolve(dir, 'ban-do', 'ban-do.json');
+  const labels = existsSync(mapFile) ? checkPortalLabels(portalsOf, JSON.parse(readFileSync(mapFile, 'utf8')).noi ?? []) : [];
+  for (const e of labels) console.error(e);
+  bad += labels.length;
+  if (!bad && [...portalsOf.values()].some((l) => l.length)) {
+    const pairs = [...portalsOf].flatMap(([id, l]) => l.filter((p) => id < p.scene).map((p) => `${id} ↔ ${p.scene}`));
+    console.log(`\nCổng đi bộ giữa các cảnh: ghép cặp đúng, nhãn = tên nơi đến (${pairs.length} cặp: ${pairs.join(' · ')}).`);
+  }
   return bad;
 }
 

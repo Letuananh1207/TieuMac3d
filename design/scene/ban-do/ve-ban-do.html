@@ -18,6 +18,8 @@
 // trái dưới, quanh là biển mây (cloudSea); Nhà của ta đảo nhỏ nổi trên biển mây, góc trái dưới của trấn; Trúc Lâm thung lũng
 // đồng bằng dưới chân núi (đồi thấp, không giữa dãy núi); Nhạn Môn Quan trên sống núi; Tử Cấm Thành đồng bằng kinh thành;
 // Yên Vũ Lâu sông nước; Bồng Lai Đảo đảo giữa biển, mây quanh; Đôn Hoàng Lộ sa mạc. Biểu tượng nhỏ lại 60 % (S 0,6 → 0,36).
+// V-59 (2026-11-15): đường bộ nối các cặp cổng đi bộ (LAND_ROUTES — quan đạo / đường mòn / đường cát theo miền), dừng trước
+// khung biểu tượng + nhãn hai đầu (clearOf); Yên Vũ Lâu ↔ Bồng Lai giữ đường thuyền.
 // Xuất ảnh: ?xuat → dataURL PNG ghi vào <textarea id="out"> (hoặc gọi window.ready qua DevTools).
 const W = 2048, H = 1152;
 const PAPER = '#F2EADA', INK = '#24323A', JADE = '#2B5446', SON = '#A8322A', GOLD = '#C9A13B';
@@ -382,9 +384,52 @@ function greatWall(g) {
   for (const q of pts) if ((q[0] - 120) % 200 === 0 || Math.abs(q[0] - gate) === 40) { g.fillRect(q[0] - 11, q[1] - 26, 22, 26); g.fillRect(q[0] - 13, q[1] - 32, 6, 7); g.fillRect(q[0] + 7, q[1] - 32, 6, 7); }
   g.restore();
 }
+// V-59: đường mòn (nét đứt mảnh, không viền) — đường núi / đường cát đoàn buôn; quan đạo lát đá dùng road()
+function trail(g, pts, color = 'rgba(122,88,52,.9)') {
+  if (pts.length < 2) return;
+  g.save(); g.lineCap = 'round'; g.lineJoin = 'round';
+  g.strokeStyle = 'rgba(243,233,210,.75)'; g.lineWidth = 12; g.beginPath(); g.moveTo(...pts[0]); for (const q of pts.slice(1)) g.lineTo(...q); g.stroke();
+  g.setLineDash([16, 11]); g.strokeStyle = color; g.lineWidth = 6; g.beginPath(); g.moveTo(...pts[0]); for (const q of pts.slice(1)) g.lineTo(...q); g.stroke();
+  g.restore();
+}
+// khung biểu tượng + nhãn tên từng nơi (cùng số đo với label()) — đường bộ không đi vào khung nào
+function placeBoxes(g) {
+  g.save(); g.font = `700 ${LABEL_VI}px "Be Vietnam Pro"`;
+  const out = PLACES.flatMap(p => {
+    const half = g.measureText(p.name).width / 2 + 7, lx = Math.min(Math.max(p.x, half + 24), W - half - 24);
+    const vy = p.y + LABEL_DY + LABEL_VI * 0.8;
+    return [{ x0: p.x - 62, x1: p.x + 62, y0: p.y - 72, y1: p.y + 46 }, { x0: lx - half, x1: lx + half, y0: vy - LABEL_VI * 0.8 - 4, y1: vy + 14 }];
+  });
+  g.restore(); return out;
+}
+// giữ đoạn liền dài nhất của đường nằm ngoài mọi khung (cách mép m px) — đường dừng trước biểu tượng / chữ hai đầu
+function clearOf(pts, boxes, m = 16) {
+  const free = q => !boxes.some(b => q[0] > b.x0 - m && q[0] < b.x1 + m && q[1] > b.y0 - m && q[1] < b.y1 + m);
+  let best = [], run = [];
+  for (const q of pts) { if (free(q)) { run.push(q); if (run.length > best.length) best = run; } else run = []; }
+  if (best.length < pts.filter(free).length) console.warn('đường bộ cắt ngang khung một nơi khác — chỉnh độ cong');
+  return best;
+}
+// đường bộ nối các cặp cổng đi bộ trong cảnh (R-HANH-4, V-59): [nơi, nơi, độ cong, kiểu]. Yên Vũ Lâu ↔ Bồng Lai: đường thuyền.
+const LAND_ROUTES = [
+  ['van-uyen', 'rung-truc', -60, 'mon'],        // xuống núi Ba Thục → thung lũng Trúc Lâm
+  ['rung-truc', 'giang-nam', 40, 'lat'],        // quan đạo Trung Nguyên → Ngô Việt
+  ['rung-truc', 'truong-thanh', 60, 'mon'],     // đường núi lên Yên Vân
+  ['truong-thanh', 'to-lua', 50, 'cat'],        // đường cát đoàn buôn ra Tây Vực
+  ['truong-thanh', 'tu-cam-thanh', -50, 'lat'], // quan đạo dọc chân Trường Thành về kinh
+  ['giang-nam', 'tu-cam-thanh', -60, 'lat']     // quan đạo Ngô Việt → Kinh Kỳ
+];
+function landRoutes(g) {
+  const boxes = placeBoxes(g), at = p => [p.x, p.y + 10];
+  for (const [a, b, bend, kind] of LAND_ROUTES) {
+    const pts = clearOf(curve(at(P(a)), at(P(b)), bend, 200), boxes);
+    if (kind === 'lat') road(g, pts); else trail(g, pts, kind === 'cat' ? 'rgba(160,112,52,.9)' : undefined);
+  }
+}
 function routes(g) {
   const home = P('van-uyen'), at = p => [p.x, p.y + 10];
   greatWall(g);
+  landRoutes(g);
   // đường cụt vào vùng chưa khám phá (nơi mới sau này)
   road(g, trim(curve(at(P('rung-truc')), [620, 1140], -20), 120, 0), 0.4);                     // → Điền Nam
   road(g, trim(curve(at(P('truong-thanh')), [P('truong-thanh').x + 10, 12], 10), 90, 0), 0.5); // → Mạc Bắc qua cổng

@@ -669,5 +669,10 @@ function checkOnFlatGround(s: SceneSpec): string[] {
   flat('điểm xuất phát (player.start)', box(s.player.start[0], s.player.start[1], 2, 2));
   flat('bãi đáp hạc (crane)', box(...landingPad(s.player.start, START_HEADING, s.crane.padOffset), 2, 2));
   s.portals.forEach((p, i) => flat(`portals[${i}] chỗ đứng (arrive)`, box(p.arrive.at[0], p.arrive.at[1], 2, 2)));
+  // vòng sáng nằm phẳng trên mặt đất ở giữa vùng chạm (R-HANH-4) — vùng chạm phải phẳng, không vắt sườn / mép vực
+  s.portals.forEach((p, i) => {
+    const [a, b] = [p.area.from, p.area.to];
+    flat(`portals[${i}] vùng chạm (area)`, box((a[0] + b[0]) / 2, (a[1] + b[1]) / 2, Math.abs(b[0] - a[0]), Math.abs(b[1] - a[1])));
+  });
   return out;
 }

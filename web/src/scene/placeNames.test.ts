@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { checkPlaceNames, mapPlaceId } from './placeNames';
+import { checkPlaceNames, checkPortalLabels, mapPlaceId } from './placeNames';
 
 const places = [
   { id: 'van-uyen', ten: 'Khởi Nguyên Trấn' },
@@ -26,5 +26,22 @@ describe('tên nơi: đặc tả cảnh khớp bản đồ (R-HANH-1, V-50)', ()
   it('R-HUD-4: tên nơi quá dài hoặc có chữ Hán → báo lỗi', () => {
     expect(checkPlaceNames(new Map(), [{ id: 'a', ten: 'Một Cái Tên Dài Quá Mức Cho Phép' }])).toHaveLength(1);
     expect(checkPlaceNames(new Map(), [{ id: 'b', ten: 'Rừng 竹' }])).toHaveLength(1);
+  });
+});
+
+describe('nhãn vòng sáng cổng đi bộ = tên nơi đến (R-HANH-4, V-59)', () => {
+  const map = [...places, { id: 'nha-ta', ten: 'Nhà của ta' }];
+  it('R-HANH-4: nhãn trùng ten của nơi đến (trấn đọc là van-uyen); cổng về Nhà của ta ghi "Về nhà"; cổng không nhãn bỏ qua', () => {
+    const portals = new Map([
+      ['tong-mon', [{ scene: 'rung-truc', label: 'Trúc Lâm' }, { scene: 'nha-ta', label: 'Về nhà' }]],
+      ['rung-truc', [{ scene: 'tong-mon', label: 'Khởi Nguyên Trấn' }, { scene: 'thu-nghiem' }]],
+    ]);
+    expect(checkPortalLabels(portals, map)).toEqual([]);
+  });
+
+  it('R-HANH-4: nhãn lệch tên bản đồ → báo lỗi', () => {
+    const errs = checkPortalLabels(new Map([['tong-mon', [{ scene: 'rung-truc', label: 'Rừng trúc' }]]]), map);
+    expect(errs).toHaveLength(1);
+    expect(errs[0]).toContain('Trúc Lâm');
   });
 });

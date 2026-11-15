@@ -92,9 +92,28 @@ describe('bản đồ vùng — đủ mọi cảnh (R-BANDO-2)', () => {
     expect(m.icons.map((i) => i.kind)).toEqual(['cong-canh']);
   });
 
-  it('R-BANDO-2: Trúc Lâm — vòng "Khởi Nguyên Trấn" (−7,4; 39) phía tây vòng trận ghi "Khởi Nguyên Trấn" (V-57)', () => {
+  it('R-BANDO-2: Trúc Lâm — vòng "Khởi Nguyên Trấn" (−7,4; 39) phía tây vòng trận (V-57), vòng "Yên Vũ Lâu" mép đông (20,6; 43), vòng "Nhạn Môn Quan" mép bắc (−5; −44,2) (V-59)', () => {
     const m = mapOf('rung-truc');
-    expect(m.icons.find((i) => i.kind === 'cong-canh')).toMatchObject({ x: -7.4, z: 39, scene: HOME_SCENE });
-    expect(m.labels.filter((l) => l.kind === 'cong').map((l) => l.text)).toEqual(['Khởi Nguyên Trấn']);
+    const gates = m.icons.filter((i) => i.kind === 'cong-canh');
+    expect(gates.find((g) => g.scene === HOME_SCENE)).toMatchObject({ x: -7.4, z: 39 });
+    expect(gates.find((g) => g.scene === 'giang-nam')).toMatchObject({ x: 20.6, z: 43 });
+    expect(gates.find((g) => g.scene === 'truong-thanh')).toMatchObject({ x: -5, z: -44.2 });
+    expect(m.labels.filter((l) => l.kind === 'cong').map((l) => l.text).sort()).toEqual(['Khởi Nguyên Trấn', 'Nhạn Môn Quan', 'Yên Vũ Lâu']);
   });
+
+  // V-59: mỗi cảnh vẽ đủ dấu cổng + ghi tên nơi đến (không bị bỏ vì chồng nhãn khu)
+  const GATE_NAMES: Record<string, string[]> = {
+    'giang-nam': ['Bồng Lai Đảo', 'Trúc Lâm', 'Tử Cấm Thành'],
+    'truong-thanh': ['Trúc Lâm', 'Tử Cấm Thành', 'Đôn Hoàng Lộ'],
+    'to-lua': ['Nhạn Môn Quan'],
+    'tu-cam-thanh': ['Nhạn Môn Quan', 'Yên Vũ Lâu'],
+    'bong-lai': ['Yên Vũ Lâu'],
+  };
+  for (const [id, names] of Object.entries(GATE_NAMES)) {
+    it(`R-BANDO-2: ${NAMES[id]} — dấu cổng đi bộ ghi ${names.join(', ')} (V-59)`, () => {
+      const m = mapOf(id);
+      expect(m.icons.filter((i) => i.kind === 'cong-canh')).toHaveLength(names.length);
+      expect(m.labels.filter((l) => l.kind === 'cong').map((l) => l.text).sort()).toEqual([...names].sort());
+    });
+  }
 });
