@@ -162,3 +162,43 @@ So TRƯỚC / SAU trên cùng máy — không thay đo máy thật.
 | Đi thẳng xa (W) | 30 | 33.3 | 58 | 0.1 | 45 | 78k |
 | Zoom ra cả sân | 30 | 33.4 | 39 | 0.0 | 51 | 81k |
 
+## Bench 2026-11-15 05:27 — V-60 TRƯỚC (main 0a70cc7: tùng + bụi chùm; máy đang bận — GPU máy tính chỉ 27 fps)
+
+### GPU máy tính — tải 1.7 s · AMD, AMD Radeon(TM) Graphics (0x00001900) Direct · Cao 1× · 60 fps · 390×844 · 12:27 ngày
+
+| Chặng | fps | ms tb | 1 % chậm (ms) | khựng / 2 s | draw call | tam giác |
+|---|---|---|---|---|---|---|
+| Đứng giữa sân | 45 | 22.2 | 34 | 0.0 | 61 | 103k |
+| Đi + rẽ (W + D) | 27 | 37.1 | 53 | 0.2 | 66 | 90k |
+| Đi thẳng xa (W) | 27 | 36.6 | 50 | 0.0 | 54 | 80k |
+| Zoom ra cả sân | 27 | 37.2 | 52 | 0.5 | 59 | 84k |
+
+### Máy yếu (SwiftShader + CPU ×4) — tải 4.4 s · Google, Vulkan 1.3.0 (SwiftShader Device (Subzer · Thấp 0.7× · 30 fps · 273×590 · 12:28 ngày
+
+| Chặng | fps | ms tb | 1 % chậm (ms) | khựng / 2 s | draw call | tam giác |
+|---|---|---|---|---|---|---|
+| Đứng giữa sân | 32 | 32.1 | 188 | 2.5 | 58 | 100k |
+| Đi + rẽ (W + D) | 25 | 39.8 | 117 | 5.9 | 59 | 88k |
+| Đi thẳng xa (W) | 29 | 35.2 | 57 | 0.6 | 50 | 78k |
+| Zoom ra cả sân | 30 | 33.9 | 44 | 0.0 | 56 | 82k |
+
+## Bench 2026-11-15 05:29 — V-60 SAU (crown chum mọi kiểu + hoa chén + gốc cỏ theo đất; so với "V-58 SAU" ở trên — cùng mã với V-60 TRƯỚC, đo lúc máy rảnh)
+
+### GPU máy tính — tải 2.3 s · AMD, AMD Radeon(TM) Graphics (0x00001900) Direct · Cao 1.5× · 60 fps · 585×1266 · 12:29 ngày
+
+| Chặng | fps | ms tb | 1 % chậm (ms) | khựng / 2 s | draw call | tam giác |
+|---|---|---|---|---|---|---|
+| Đứng giữa sân | 59 | 17 | 25 | 0.0 | 60 | 105k |
+| Đi + rẽ (W + D) | 60 | 16.8 | 27 | 0.0 | 62 | 93k |
+| Đi thẳng xa (W) | 60 | 16.8 | 27 | 0.0 | 51 | 84k |
+| Zoom ra cả sân | 58 | 17.3 | 25 | 0.0 | 56 | 88k |
+
+### Máy yếu (SwiftShader + CPU ×4) — tải 3.4 s · Google, Vulkan 1.3.0 (SwiftShader Device (Subzer · Thấp 0.7× · 30 fps · 273×590 · 12:29 ngày
+
+| Chặng | fps | ms tb | 1 % chậm (ms) | khựng / 2 s | draw call | tam giác |
+|---|---|---|---|---|---|---|
+| Đứng giữa sân | 33 | 30.8 | 171 | 1.4 | 57 | 102k |
+| Đi + rẽ (W + D) | 30 | 33.5 | 120 | 0.9 | 59 | 91k |
+| Đi thẳng xa (W) | 30 | 33.3 | 63 | 0.3 | 47 | 82k |
+| Zoom ra cả sân | 30 | 33.3 | 47 | 0.0 | 53 | 85k |
+
