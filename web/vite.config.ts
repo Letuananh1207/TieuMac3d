@@ -26,7 +26,8 @@ export default defineConfig(({ mode }) => {
       emptyOutDir: true,
       // Android WebView (Chromium) và iOS WKWebView từ iOS 14 trở lên.
       target: ['es2020', 'chrome87', 'safari14'],
-      assetsInlineLimit: 0,
+      // không nhúng tài sản vào mã; riêng Canvas 3D nhúng model nhỏ (< 16 KB — luống chè V-46): artifact không phục vụ .glb
+      assetsInlineLimit: design ? (file: string, content: { length: number }) => file.endsWith('.glb') && content.length < 16_384 : 0,
       chunkSizeWarningLimit: 1000,
       // Canvas 3D + Catalog kiến trúc (catalog.html — bộ asset chuẩn) cùng ra dist-design/
       rollupOptions: { input: design ? { design: 'design.html', catalog: 'catalog.html' } : 'index.html' },

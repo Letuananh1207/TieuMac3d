@@ -21,7 +21,7 @@ describe('luống chè Đồi Chè (V-46)', () => {
     expect(zs.size).toBe(6);
     const inHill = KNT.trees.yard.filter((t) => t.x > 9 && t.x < 29 && t.z > -52 && t.z < -36);
     expect(inHill).toEqual([]);
-    // mỗi luống ≤ một đoạn mẫu → 12 instance = 12 × 122 tam giác
+    // mỗi luống ≤ một đoạn mẫu → 12 instance = 12 × 90 tam giác
     expect(KNT.teaRows.flatMap((r) => teaSegments(r, KNT.teaStyle))).toHaveLength(12);
   });
 

@@ -25,7 +25,7 @@ export interface Mist {
 /** cao tấm sương trên mặt bậc (m) — là là trên mặt hái (thấp hơn thì cắt ngang luống thành vệt trắng cứng) */
 const LIFT = 1.05;
 /** số ô lưới mỗi chiều: viền alpha 0, trong alpha 1 → mép mềm */
-const COLS = 6;
+const COLS = 4;
 const ROWS = 2;
 
 /** Tấm 1 × 1 nằm ngang, màu đỉnh RGBA: viền trong suốt, giữa đặc (trắng — màu ở vật liệu). */
