@@ -11,6 +11,16 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
   z −2,8…0, trước cửa nhà, Bến mây; trần 40 món, dốc ≤ 0,35. `nha-ta-trong` phòng ±6,35 × ±4,35, trần 20 (thảm cửa là vùng cấm tự sinh).
   Kiểm còn đường đi tới Bến mây / cửa / cổng vườn / thùng thu mua. Đồ vẽ bằng InstancedMesh: 40 món +17 draw call. Luật R-NHA-2…7, R-TIEN-4/7,
   R-TUI-1. `design/l10n/vi.arb` còn các chuỗi ô cũ (`decorSlot*`, `bagPlaced`) — thiết kế dọn. Ảnh: `screens/Canh-nha-ta-trang-tri-tu-do.png`.
+## 2026-11-15.46 — Trúc Lâm (B4): lõi 3 trò nhỏ — Lưu Thương Lệnh, Hái măng sau mưa, Đàn cầm (HUD chờ thiết kế)
+
+- Loại: cảnh 3D — bố cục + Cần code (đã làm). Phiên code V-20261115-66 B4 (kế hoạch `docs/tasks/2026-11-15-truc-lam-mini-game.md`, người dùng
+  chọn: ghép 1 bộ thủ trong 4; măng 2 lứa 5:00 / 15:00 + mưa phùn; bán Trúc Ông không tính trần; đàn tự do + theo bài). **Đã duyệt 2026-11-15.**
+- `rung-truc.json`: `miniGames` — `luu-thuong` (mương 0, văn nhân đệm 1/4/6, Cách chơi ở đá khắc), `hai-mang` (4 vùng măng, người mua
+  `truc-ong`), `dan-cam` (đá đàn, chỗ ngồi sau đá). 4 NPC tạm bằng khối đổi màu áo: Thi Ông, Tú Tài, Tài Nữ (ngồi), Trúc Ông (−32; 27). Chén lệnh
+  viền vàng, măng (2 InstancedMesh), mưa phùn (1 LineSegments; Thấp không hạt). 148 chữ ghép, 3 bài đàn, tiếng tự tổng hợp.
+- Khúc Thuỷ có tiệc 24 → 32 draw call; nhìn trên 65 → 76. Luật R-LUU-1…5, R-MANG-1…5, R-CAM-1…4, R-AM-3 (+ sửa R-TIEN, R-TUI-1, R-NGOI-1,
+  R-NPC-1, R-GIAO-2). HUD 3 trò: phiếu `2026-11-15-truc-lam-mini-game`. Ảnh: `screens/Canh-truc-lam-b4-luu-thuong.png`,
+  `screens/Canh-truc-lam-b4-mang-mua.png`.
 
 ## 2026-11-15.43 — Gian trong kiểu nhà 摩尔: không trần, camera chéo thấy cả phòng, ra bằng nút trên thảm cửa
 
