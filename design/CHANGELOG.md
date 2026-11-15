@@ -3,6 +3,19 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-15.32 — Cây không mọc trên nền lát: dời khỏi lối, bồn đá cho cây trên sân lát (mọi cảnh)
+
+- Loại: cảnh 3D — bố cục + Cần code (đã làm). Phiên code V-20261115-63; người dùng báo cây giữa lối lên Trà lâu, rồi nhờ soát mọi cảnh.
+  **Đã duyệt 2026-11-15.**
+- 63 cây có gốc trên nền lát → 0. Trấn: tùng cổ thụ 3,2 (30; −7) → (21,5; −15,5) góc cỏ Sân Cổ Thụ; tùng (−19,5; −37) → (−18,5; −39,5);
+  tùng Quảng Trường (−12,5; 12) → (−13,5; 11), (12,5; 13) → (13,5; 11); bỏ tùng (−47,5; −21). Yên Vũ Lâu: 2 liễu dời, trúc bờ bắc 10 → 7.
+  Tử Cấm Thành: cụm tùng Ngự Hoa Viên lùi khỏi lối z −76, bớt 2 cây.
+- Cây cố ý trên **sân lát** có **bồn đá lục giác** (cao 0,3 m, chắn người đi): 3 tùng Quảng Trường, 2 mai Kỳ Văn Uyển, bụi (17; 17,6), cây sân
+  Yên Vũ Lâu, mọi cụm Tử Cấm Thành. Trường mới `planter` (cây / cụm), `trees.planter`. `scene:check` báo **lỗi** khi cây trên lối đi, hoặc trên
+  sân lát mà không bồn (R-VA-6).
+- Nhìn từ trên: trấn 139 / 149,9k; Yên Vũ Lâu 140 / 82,2k; Tử Cấm Thành 127 / 96,8k. Ảnh: `screens/Canh-cay-khoi-loi.png`,
+  `screens/Canh-bon-cay-quang-truong.png`.
+
 ## 2026-11-15.30 — Cây "tán chùm" nhân ra: cây tán, mai / đào, liễu, trúc, hoa cỏ, rau trong vườn
 
 - Loại: cảnh 3D — ngoại hình. Phiên code V-20261115-60 (tiếp V-58 hướng A). **Đã duyệt 2026-11-15.**
