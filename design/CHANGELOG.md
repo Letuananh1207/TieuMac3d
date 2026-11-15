@@ -39,6 +39,15 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
 - Tường không đầu cụt: x 42 từ z −26,4; (17;17)→(17;25) gập góc về lan can. Lan can góc đông bắc liền trụ.
 - Bỏ biển gỗ "Mặc Trì" trùng bia đá, sửa chữ bia. Đèn đá Cổng Trấn x 8,6 → 6,6; mai (40;5,5) → (40,6;8,6).
 - Luật: R-VA-1 (ví dụ). 136 draw call / 149 378 tam giác. Ảnh: `screens/Canh-nen-gon-kvu.png`, `screens/Canh-nen-gon-dong.png`.
+## 2026-11-15.17 — Đồi Chè: luống chè liền + bướm + sương sớm
+
+- Loại: cảnh 3D — bố cục + ngoại hình. Phiên code V-20261114-46 (khảo cứu `docs/tham_khao/assets-free-thuc-vat.md`); người dùng:
+  "cây chè vì sao lại sơ sài… không có hiệu ứng gì cả… tìm các gói assets free"; chọn luống Tiny Treats + bướm + sương. **Đã duyệt 2026-11-15.**
+- Bỏ 18 bụi `bui`; thêm `teaRows` (12 luống: bậc 0,9 / 2,7 / 4,5 m, mỗi bậc 2 hàng, lối hai đầu + lối cắt ngang x 17,5…18,7) và
+  `teaStyle` (cao 0,85, màu `#1d3b27` / `#2e5735` / `#5e8e2e`, gió `softMaterial`; 20 bướm 6:30–17:00; sương 5–9 giờ) — trường mới,
+  mặc định rỗng. Model `design/models/thuc-vat/luong-che.glb` (Tiny Treats – Pretty Park, **CC0**, 90 tam giác) — `npm run model:thuc-vat`.
+- Mức đồ hoạ Thấp: không bướm, không sương. Luật: R-VA-1, R-HIEU-1, R-NGAY-6 (mới). Nhìn từ trên 137 → 139 draw call, 149 929 tam giác.
+- Ảnh: `screens/Canh-doi-che-12.png`, `screens/Canh-doi-che-7.png`.
 
 ## 2026-11-15.12 — Trấn mở: Quảng Trường lan can đá, bỏ tường ngăn khu, trục đông – tây, Sân Cổ Thụ
 
