@@ -3,7 +3,7 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
-## 2026-11-15.42 — Gian trong kiểu nhà 摩尔: không trần, camera chéo thấy cả phòng, ra bằng nút trên thảm cửa
+## 2026-11-15.43 — Gian trong kiểu nhà 摩尔: không trần, camera chéo thấy cả phòng, ra bằng nút trên thảm cửa
 
 - Loại: cảnh 3D — bố cục + ngoại hình + Cần code (đã làm). Phiên code V-20261115-71 (người dùng: "không nên có trần, góc nhìn rộng hơn, bỏ lối
   đi ra ngoài, thay bằng cái gì đó tham khảo 摩尔"). **Đã duyệt 2026-11-15.**
