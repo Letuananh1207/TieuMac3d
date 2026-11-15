@@ -26,3 +26,4 @@ Phiên thiết kế đọc hồ sơ ở đây trước khi dựng khu / kiểu v
 
 Gợi ý thứ tự (theo `design/scene/tong_mon.md`): Chưởng Môn Điện · Tàng Kinh Các (tháp / lầu) · Thiên Bậc (bậc đá
 núi) · Hậu Sơn (thác, động bế quan) · trang phục theo bậc đệ tử · không khí tiên hiệp (sương, mây, ánh sáng).
+- [assets-free-thuc-vat.md](assets-free-thuc-vat.md) — gói tài sản thực vật miễn phí (CC0) cho Đồi Chè / cây cỏ; đề xuất luống chè từ Tiny Treats Pretty Park (V-46)
