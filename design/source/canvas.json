@@ -1483,6 +1483,146 @@
       "w": 1240,
       "h": 720,
       "title": "ThanhCongCu-ghi-chu"
+    },
+    "TrangTriTuDo-dau.dc.html": {
+      "x": 0,
+      "y": 74998,
+      "w": 1240,
+      "h": 560,
+      "title": "TrangTriTuDo-dau"
+    },
+    "TuiDo-trang-tri.dc.html": {
+      "x": 1320,
+      "y": 74998,
+      "w": 900,
+      "h": 300,
+      "title": "TuiDo-trang-tri"
+    },
+    "TrangTriTuDo-doc.dc.html": {
+      "x": 0,
+      "y": 75678,
+      "w": 390,
+      "h": 844,
+      "title": "TrangTriTuDo-doc"
+    },
+    "TrangTriTuDo-moi-doc.dc.html": {
+      "x": 470,
+      "y": 75678,
+      "w": 390,
+      "h": 844,
+      "title": "TrangTriTuDo-moi-doc"
+    },
+    "TrangTriTuDo-du-tran-doc.dc.html": {
+      "x": 940,
+      "y": 75678,
+      "w": 390,
+      "h": 844,
+      "title": "TrangTriTuDo-du-tran-doc"
+    },
+    "TrangTriTuDo-tui-trong-doc.dc.html": {
+      "x": 1410,
+      "y": 75678,
+      "w": 390,
+      "h": 844,
+      "title": "TrangTriTuDo-tui-trong-doc"
+    },
+    "TrangTriTuDo-gian-trong-doc.dc.html": {
+      "x": 1880,
+      "y": 75678,
+      "w": 390,
+      "h": 844,
+      "title": "TrangTriTuDo-gian-trong-doc"
+    },
+    "TrangTriTuDo-cam-doc.dc.html": {
+      "x": 2350,
+      "y": 75678,
+      "w": 390,
+      "h": 844,
+      "title": "TrangTriTuDo-cam-doc"
+    },
+    "TrangTriTuDo-cam-do-doc.dc.html": {
+      "x": 2820,
+      "y": 75678,
+      "w": 390,
+      "h": 844,
+      "title": "TrangTriTuDo-cam-do-doc"
+    },
+    "CuaHang-theo-cai-doc.dc.html": {
+      "x": 3290,
+      "y": 75678,
+      "w": 390,
+      "h": 844,
+      "title": "CuaHang-theo-cai-doc"
+    },
+    "CuaHang-theo-cai-xac-nhan-doc.dc.html": {
+      "x": 3760,
+      "y": 75678,
+      "w": 390,
+      "h": 844,
+      "title": "CuaHang-theo-cai-xac-nhan-doc"
+    },
+    "CuaHang-theo-cai-vua-mua-doc.dc.html": {
+      "x": 4230,
+      "y": 75678,
+      "w": 390,
+      "h": 844,
+      "title": "CuaHang-theo-cai-vua-mua-doc"
+    },
+    "CuaHang-theo-cai-ngheo-doc.dc.html": {
+      "x": 4700,
+      "y": 75678,
+      "w": 390,
+      "h": 844,
+      "title": "CuaHang-theo-cai-ngheo-doc"
+    },
+    "TrangTriTuDo-ngang.dc.html": {
+      "x": 0,
+      "y": 76662,
+      "w": 844,
+      "h": 390,
+      "title": "TrangTriTuDo-ngang"
+    },
+    "TrangTriTuDo-cam-ngang.dc.html": {
+      "x": 924,
+      "y": 76662,
+      "w": 844,
+      "h": 390,
+      "title": "TrangTriTuDo-cam-ngang"
+    },
+    "CuaHang-theo-cai-ngang.dc.html": {
+      "x": 1848,
+      "y": 76662,
+      "w": 844,
+      "h": 390,
+      "title": "CuaHang-theo-cai-ngang"
+    },
+    "TrangTriTuDo-may.dc.html": {
+      "x": 0,
+      "y": 77192,
+      "w": 1280,
+      "h": 800,
+      "title": "TrangTriTuDo-may"
+    },
+    "TrangTriTuDo-cam-may.dc.html": {
+      "x": 1360,
+      "y": 77192,
+      "w": 1280,
+      "h": 800,
+      "title": "TrangTriTuDo-cam-may"
+    },
+    "TrangTriTuDo-cam-do-may.dc.html": {
+      "x": 2720,
+      "y": 77192,
+      "w": 1280,
+      "h": 800,
+      "title": "TrangTriTuDo-cam-do-may"
+    },
+    "TrangTriTuDo-ghi-chu.dc.html": {
+      "x": 0,
+      "y": 78132,
+      "w": 1240,
+      "h": 700,
+      "title": "TrangTriTuDo-ghi-chu"
     }
   },
   "order": [
@@ -1703,7 +1843,27 @@
     "BieuCam-ngang.dc.html",
     "TuiDo-ngang.dc.html",
     "BieuCam-bong-bong.dc.html",
-    "ThanhCongCu-ghi-chu.dc.html"
+    "ThanhCongCu-ghi-chu.dc.html",
+    "TrangTriTuDo-dau.dc.html",
+    "TuiDo-trang-tri.dc.html",
+    "TrangTriTuDo-doc.dc.html",
+    "TrangTriTuDo-moi-doc.dc.html",
+    "TrangTriTuDo-du-tran-doc.dc.html",
+    "TrangTriTuDo-tui-trong-doc.dc.html",
+    "TrangTriTuDo-gian-trong-doc.dc.html",
+    "TrangTriTuDo-cam-doc.dc.html",
+    "TrangTriTuDo-cam-do-doc.dc.html",
+    "CuaHang-theo-cai-doc.dc.html",
+    "CuaHang-theo-cai-xac-nhan-doc.dc.html",
+    "CuaHang-theo-cai-vua-mua-doc.dc.html",
+    "CuaHang-theo-cai-ngheo-doc.dc.html",
+    "TrangTriTuDo-ngang.dc.html",
+    "TrangTriTuDo-cam-ngang.dc.html",
+    "CuaHang-theo-cai-ngang.dc.html",
+    "TrangTriTuDo-may.dc.html",
+    "TrangTriTuDo-cam-may.dc.html",
+    "TrangTriTuDo-cam-do-may.dc.html",
+    "TrangTriTuDo-ghi-chu.dc.html"
   ],
   "notes": {
     "cach-dung": {
@@ -2193,6 +2353,13 @@
       "x": 0,
       "y": 71364,
       "text": "Thanh công cụ đáy màn + Biểu cảm + Túi đồ (phiếu 2026-11-15-thanh-cong-cu, V-64)",
+      "kind": "title1",
+      "maxW": 3000
+    },
+    "tieu-de-trang-tri-tu-do": {
+      "x": 0,
+      "y": 74798,
+      "text": "Trang trí tự do ở Nhà của ta + Tạp hoá đồ trang trí theo cái (phiếu 2026-11-15-trang-tri-tu-do, V-69)",
       "kind": "title1",
       "maxW": 3000
     }

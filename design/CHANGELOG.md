@@ -3,6 +3,32 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-15.42 — Trang trí tự do ở Nhà của ta + Tạp hoá bán đồ trang trí theo cái
+
+- Loại: giao diện · chuỗi · luồng/luật (khớp nháp, vài đề xuất). Màn: **Trang trí tự do** (HUD web — điện thoại dọc / ngang + máy tính
+  1280 × 800) + **Tạp hoá** (Flutter + bản web) — đặc tả `docs/screen_specs.md` mục "Trang trí tự do".
+- Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-15-trang-tri-tu-do.md` (phiếu còn trong máy — dòng "Đã vẽ" ghi ở bản trong máy). Vẽ trong
+  phiên VS Code theo vai thiết kế; người dùng duyệt "Ổn, chốt".
+- **Thay** phần ô đặt sẵn của 2026-11-14.13 (bảng danh mục theo ô, viên nhắc "Chạm một ô…", dấu ô, nút Gỡ) và "Đã có" / "đã mua hết"
+  của 2026-11-14.12 (artboard `CuaHang-doc-het` bỏ).
+- **Mã .42**: các mục tới 2026-11-15.41 đã có ở `main` / nhánh việc trong máy — nhảy qua để khỏi trùng.
+- Artboard (20): `TrangTriTuDo-{doc,ngang,may,moi-doc,du-tran-doc,tui-trong-doc,gian-trong-doc,cam-doc,cam-do-doc,cam-ngang,cam-may,
+  cam-do-may,dau,ghi-chu}`, `CuaHang-theo-cai-{doc,ngang,xac-nhan-doc,vua-mua-doc,ngheo-doc}`, `TuiDo-trang-tri` (+ `canvas.json`).
+- Quyết định: danh mục = **túi** — dọc khay đáy một hàng cuộn (kéo lên = tấm đầy), ngang cột phải 310, máy cột phải 360; thẻ "× n" /
+  "Đặt hết · Mua thêm" / khoá; đang cầm (điện thoại) **một hàng nút dưới món** Xoay · Đặt · Cất · Huỷ, Đặt to nhất, khay thu thành dải
+  "Đang cầm"; máy tính dải phím đáy, không nút nổi; lý do đỏ viên `lacquer` trên món; dấu cảnh giữ `jade` / `lacquer`; chế độ trang trí
+  ẩn thanh công cụ + bản đồ nhỏ; Tạp hoá luôn "Mua", × 1, ấn son chữ Việt.
+- Chuỗi mới: `decorHintIdle`, `decorHintHold`, `decorHintIndoor`, `decorHintBagEmpty`, `decorRotate`, `decorPlace`, `decorStore`,
+  `decorCancel`, `decorCount`, `decorCapFull`, `decorCapFullIndoor`, `decorBagEmpty`, `decorBagEmptyHint`, `decorSoldOut`, `decorLocked`,
+  `decorPlacedCount`, `decorNotPlaced`, `decorHolding`, `decorMoving`, `decorStored`, `decorCantPlace`, `decorKeys`, `decorReason*` (9),
+  `shopDecorConfirm`, `shopDecorConfirmSub`, `shopDecorBoughtSub`, `shopInBagPlaced`, `shopNotOwned`, `shopTabOutdoor`, `shopTabIndoor`,
+  `bagDecorCounts`; `shopSubtitle` đổi chữ. Bỏ: `decorSlot*`, `decorPick`, `decorReplace`, `decorRemove`, `decorPlacedHere`, `decorOwned`,
+  `decorHint` (cũ), `shopOwned`, `shopAllBought`, `bagPlaced` (giữ trong `vi.arb` tới khi code bỏ — phiên code xoá).
+- **Luật — đề xuất cho phiên code** (hỏi người dùng rồi sửa sổ): R-NHA-6 ghi rõ chế độ trang trí ẩn thanh công cụ + bản đồ nhỏ, khi cầm
+  khay túi thu thành dải "Đang cầm"; trên máy tính chọn thẻ khác khi đang cầm → món đang cầm về túi rồi cầm món mới. R-THANH-1 đã có "chế
+  độ trang trí" trong danh sách ẩn — khớp.
+- Ảnh: `screens/TrangTriTuDo-*.png` (14), `screens/CuaHang-theo-cai-*.png` (5), `screens/TuiDo-trang-tri.png` — cảnh là hình giữ chỗ.
+
 ## 2026-11-15.35 — Thanh công cụ đáy màn + bảng Biểu cảm + Túi đồ
 
 - Loại: giao diện · chuỗi · luồng/luật (khớp nháp). Màn: **Thanh công cụ** (HUD web) — đặc tả `docs/screen_specs.md` mục cùng tên.

@@ -157,3 +157,16 @@ Một chất liệu: kính mờ `frost*` + viền `frost-line` / `frost-outline`
 | Bảng Biểu cảm nổi trên thanh (4 × 2 ô, mũi nhọn) | `BieuCam-doc`, `BieuCam-ngang` | frost-strong, jade, slate |
 | Bộ hình biểu cảm SVG hai màu (8) + bong bóng hình tròn 52 trên đầu | `BieuCam-bong-bong` | slate, gold, lacquer, jade |
 | Tấm Túi đồ (4 mục cuộn: chip hạt / nông sản, hàng sách + "Đọc", thẻ đồ "Đang đặt", khung trống nét đứt) | `TuiDo-*` | frost-strong, jade, map-paper, slate-muted |
+
+## Thêm ở 2026-11-15.42
+
+| Thành phần | Artboard | Token |
+|---|---|---|
+| Khay túi đồ trang trí (dọc: khay đáy một hàng cuộn; ngang / máy: cột phải lưới 3) + viên đếm "n / 40 món" | `TrangTriTuDo-*` | frost-strong, jade, lacquer |
+| Thẻ đồ trang trí theo số cái (× n · đặt hết · khoá + giá) | `TrangTriTuDo-*` | map-paper, jade, slate-muted, gold |
+| Hàng nút cầm món: Xoay · Đặt (viên `jade` 56) · Cất · Huỷ | `TrangTriTuDo-cam-*` | jade, frost |
+| Viên lý do đỏ (biểu tượng cấm + chữ) | `TrangTriTuDo-cam-do-*`, `TrangTriTuDo-dau` | lacquer |
+| Dải gợi ý phím (phím chữ nổi) — máy tính | `TrangTriTuDo-cam-may`, `TrangTriTuDo-cam-do-may` | frost, slate |
+| Dải "Đang cầm / Đang dời" thay khay túi khi cầm | `TrangTriTuDo-cam-*` | frost |
+| Thẻ Tạp hoá "Trong túi: n · Đang đặt: m" (luôn Mua) | `CuaHang-theo-cai-*` | jade, map-paper |
+| Hình phẳng 13 đồ trang trí (bản vẽ giữ chỗ) | `TrangTriTuDo-*`, `CuaHang-theo-cai-*` | map-paper |

@@ -819,7 +819,7 @@
   "@shopName": {
     "description": "Tiệm đồ trang trí phố chợ Khởi Nguyên Trấn; ấn son 雜貨"
   },
-  "shopSubtitle": "Đồ trang trí Nhà của ta · mua một lần, đặt được nhiều ô",
+  "shopSubtitle": "Đồ trang trí Nhà của ta · mỗi cái đặt một chỗ · hạt giống cho Vườn rau",
   "shopTabAll": "Tất cả",
   "slotGarden": "Vườn",
   "slotYard": "Sân",
@@ -1272,5 +1272,157 @@
   "bagBookProgress": "Đang đọc trang {page} / {total} · trả trước {date}",
   "@bagBookProgress": {
     "description": "Dòng phụ sách đang mượn"
+  },
+  "decorHintIdle": "Chọn đồ trong túi để đặt · chạm đồ trong sân để dời",
+  "@decorHintIdle": {
+    "description": "Viên nhắc chế độ trang trí — chưa cầm (máy: \"click\")"
+  },
+  "decorHintHold": "Kéo món để dời · Xoay, Đặt, Cất, Huỷ",
+  "@decorHintHold": {
+    "description": "Viên nhắc — đang cầm (điện thoại)"
+  },
+  "decorHintHoldDesktop": "Di chuột để dời · Q E xoay · click để đặt",
+  "@decorHintHoldDesktop": {
+    "description": "Viên nhắc — đang cầm (máy tính)"
+  },
+  "decorHintIndoor": "Gian trong · chọn đồ trong nhà để đặt",
+  "@decorHintIndoor": {
+    "description": "Viên nhắc — gian trong"
+  },
+  "decorHintBagEmpty": "Chạm đồ trong sân để dời hoặc cất",
+  "@decorHintBagEmpty": {
+    "description": "Viên nhắc — túi trống"
+  },
+  "decorRotate": "Xoay",
+  "@decorRotate": {
+    "description": "Nút nổi xoay 45°"
+  },
+  "decorPlace": "Đặt",
+  "@decorPlace": {
+    "description": "Nút nổi đặt"
+  },
+  "decorStore": "Cất",
+  "@decorStore": {
+    "description": "Nút nổi cất về túi"
+  },
+  "decorCancel": "Huỷ",
+  "@decorCancel": {
+    "description": "Nút nổi huỷ"
+  },
+  "decorBagTitle": "Túi đồ trang trí",
+  "@decorBagTitle": {
+    "description": "Tiêu đề khay túi"
+  },
+  "decorBagTitleIndoor": "Đồ trong nhà",
+  "@decorBagTitleIndoor": {
+    "description": "Tiêu đề khay túi — gian trong"
+  },
+  "decorCount": "{n} / {max} món",
+  "@decorCount": {
+    "description": "Viên đếm số món đã đặt"
+  },
+  "decorCapFull": "Đã đủ 40 món — cất bớt để đặt thêm",
+  "@decorCapFull": {
+    "description": "Dải đủ trần ở sân"
+  },
+  "decorCapFullIndoor": "Đã đủ 20 món — cất bớt để đặt thêm",
+  "@decorCapFullIndoor": {
+    "description": "Dải đủ trần gian trong"
+  },
+  "decorBagEmpty": "Túi trống — mua thêm ở Tạp hoá phố chợ",
+  "@decorBagEmpty": {
+    "description": "Khay túi trống"
+  },
+  "decorBagEmptyHint": "Mọi món đã đặt. Chạm một món trong sân → Cất để lấy lại vào túi.",
+  "@decorBagEmptyHint": {
+    "description": "Dòng phụ túi trống"
+  },
+  "decorInBagBadge": "× {n}",
+  "@decorInBagBadge": {
+    "description": "Viên số trong túi trên thẻ"
+  },
+  "decorPlacedCount": "Đang đặt {n}",
+  "@decorPlacedCount": {
+    "description": "Dòng thẻ"
+  },
+  "decorNotPlaced": "Chưa đặt",
+  "@decorNotPlaced": {
+    "description": "Dòng thẻ"
+  },
+  "decorSoldOut": "Đặt hết · Mua thêm",
+  "@decorSoldOut": {
+    "description": "Thẻ trong túi 0, đang đặt > 0"
+  },
+  "decorLocked": "Mua ở Tạp hoá",
+  "@decorLocked": {
+    "description": "Thẻ chưa có cái nào"
+  },
+  "decorTrayHint": "Kéo lên để xem hết · có trong túi trước, rẻ → đắt",
+  "@decorTrayHint": {
+    "description": "Dòng dưới khay túi (dọc)"
+  },
+  "decorHolding": "Đang cầm: {item} · trong túi còn {n}",
+  "@decorHolding": {
+    "description": "Dải khi cầm món mới lấy"
+  },
+  "decorMoving": "Đang dời: {item} · Huỷ = về chỗ cũ",
+  "@decorMoving": {
+    "description": "Dải khi nhấc món đã đặt"
+  },
+  "decorStored": "Đã cất {item} vào túi",
+  "@decorStored": {
+    "description": "Tấm báo"
+  },
+  "decorCantPlace": "Không đặt được — {reason}",
+  "@decorCantPlace": {
+    "description": "Tấm báo khi bấm Đặt lúc đỏ"
+  },
+  "decorKeys": "Q E xoay 45° · R 90° · Click đặt · Esc huỷ · Delete cất",
+  "@decorKeys": {
+    "description": "Gợi ý phím máy tính"
+  },
+  "decorReasonOutside": "Ngoài chỗ đặt",
+  "decorReasonPath": "Lối đi",
+  "decorReasonDoor": "Cửa nhà",
+  "decorReasonBed": "Luống rau",
+  "decorReasonCrate": "Thùng thu mua",
+  "decorReasonOverlap": "Đè vật khác",
+  "decorReasonSlope": "Dốc quá",
+  "decorReasonBlock": "Chắn lối",
+  "decorReasonCap": "Đã đủ {max} món",
+  "@shopSubtitle": {
+    "description": "Dòng phụ tiêu đề Tạp hoá (đổi 2026-11-15.42)"
+  },
+  "shopTabOutdoor": "Ngoài trời",
+  "@shopTabOutdoor": {
+    "description": "Tab Tạp hoá"
+  },
+  "shopTabIndoor": "Trong nhà",
+  "@shopTabIndoor": {
+    "description": "Tab Tạp hoá"
+  },
+  "shopInBagPlaced": "Trong túi: {n} · Đang đặt: {m}",
+  "@shopInBagPlaced": {
+    "description": "Thẻ đồ trang trí Tạp hoá"
+  },
+  "shopNotOwned": "Chưa có",
+  "@shopNotOwned": {
+    "description": "Thẻ đồ trang trí chưa có cái nào"
+  },
+  "shopDecorConfirm": "Mua {item} với {price} Văn tiền?",
+  "@shopDecorConfirm": {
+    "description": "Hộp xác nhận đồ trang trí"
+  },
+  "shopDecorConfirmSub": "Mỗi lần mua 1 cái vào túi · đặt ở {place} Nhà của ta. Đang có: {n} trong túi, {m} đang đặt.",
+  "@shopDecorConfirmSub": {
+    "description": "Dòng phụ hộp xác nhận"
+  },
+  "shopDecorBoughtSub": "Trong túi {n} · về nhà để đặt",
+  "@shopDecorBoughtSub": {
+    "description": "Dòng phụ tấm vừa mua"
+  },
+  "bagDecorCounts": "Trong túi {n} · Đang đặt {m}",
+  "@bagDecorCounts": {
+    "description": "Túi đồ — ngăn Đồ trang trí"
   }
 }
