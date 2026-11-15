@@ -28,3 +28,4 @@ Gợi ý thứ tự (theo `design/scene/tong_mon.md`): Chưởng Môn Điện ·
 núi) · Hậu Sơn (thác, động bế quan) · trang phục theo bậc đệ tử · không khí tiên hiệp (sương, mây, ánh sáng).
 - [assets-free-thuc-vat.md](assets-free-thuc-vat.md) — gói tài sản thực vật miễn phí (CC0) cho Đồi Chè / cây cỏ; đề xuất luống chè từ Tiny Treats Pretty Park (V-46)
 - [nha-rieng-game.md](nha-rieng-game.md) — nhà / sân riêng trong game khác (Serenitea Pot, Animal Crossing, Stardew, 摩尔庄园) + tiểu viện; bài học cho Nhà của ta (V-48)
+- [thuc-vat-dep-nhe.md](thuc-vat-dep-nhe.md) — cây / hoa / cỏ / cây trồng đẹp mà nhẹ: game cùng thể loại làm thế nào, "tán chùm nổi" (múi + pháp tuyến pha trộn + màu đỉnh AO lõi), thẻ lá viền, LOD, đánh giá Hunyuan cho cây (V-58) — nháp, chờ chọn hướng (khuyên A + D)
