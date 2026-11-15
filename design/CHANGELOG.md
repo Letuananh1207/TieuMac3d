@@ -3,6 +3,16 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-15.20 — Đổi tên 6 vùng lần 2: bộ Hán Việt cổ trang
+
+- Loại: chuỗi + dữ liệu + bản đồ. Phiên code V-20261114-53; người dùng chưa hài lòng bộ từ láy (2026-11-15.18), thảo luận rồi chốt
+  "Trúc Lâm · Yên Vũ Lâu · Bồng Lai Đảo · Nhạn Môn Quan · Tử Cấm Thành · Đôn Hoàng Lộ". **Đã chốt 2026-11-15.**
+- rung-truc **Trúc Lâm** · giang-nam **Yên Vũ Lâu** · bong-lai **Bồng Lai Đảo** · truong-thanh **Nhạn Môn Quan** · tu-cam-thanh **Tử Cấm Thành** ·
+  to-lua **Đôn Hoàng Lộ**. Mã cảnh / cầu nối / tiến độ, Khởi Nguyên Trấn và khu trong trấn giữ.
+- `site.name` 6 đặc tả; biển cổng giang-nam `cong-pho`, bong-lai `cong-tien`; `ban-do.json` `ten`; vẽ lại `ban-do-goc.png`,
+  `screens/BanDo-trang-thai.png`; `vi.arb`, `hanh_trinh.md`, `screen_specs.md`, `bridge.md`. Giữ "Bồng Lai Các", "Trường Thành" (quan thành).
+- Luật: 22 luật chỉ thay tên. Canvas thay chữ theo bảng `docs/testing/gui_thiet_ke_2026-11-15.md`. Ảnh: `screens/BanDo-ten-vung-v53.png`.
+
 ## 2026-11-15.19 — Mặc Trì bỏ tường thay hàng trúc / tùng; Kỳ Văn Uyển lát đá xám như Quảng Trường
 
 - Loại: cảnh 3D — bố cục + ngoại hình. Phiên code V-20261114-49; người dùng: "Bỏ tường, thay hàng trúc / tùng"; "gạch ở khu vui chơi tôi
