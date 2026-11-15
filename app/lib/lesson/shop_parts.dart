@@ -38,8 +38,6 @@ class ItemArt extends StatelessWidget {
     'ke-sach': Icons.shelves,
     'an-doc': Icons.menu_book,
     'binh-phong': Icons.view_week,
-    // Phân bón (R-VUON-12) — tạm biểu tượng tới khi có hình V-72
-    'phan': Icons.grass,
   };
 
   @override
@@ -68,7 +66,7 @@ class ItemPicture extends StatelessWidget {
       decoration: BoxDecoration(color: AppColors.mapPaper, borderRadius: BorderRadius.circular(radius)),
       alignment: Alignment.center,
       child: crop == null
-          ? ItemArt(item: item, size: height * .6)
+          ? (item.id == fertItem ? FertBag(size: height * .8) : ItemArt(item: item, size: height * .6)) // bao phân (2026-11-16.4)
           : Stack(
               alignment: Alignment.center,
               children: [
@@ -164,6 +162,8 @@ class ShopCard extends StatelessWidget {
             const SizedBox(height: 2),
             if (placed != null) DecorCountLine(inBag: bag, placed: placed!) else InBagLine(count: bag),
           ],
+          if (item.id == fertItem)
+            Text('chín nhanh gấp đôi', maxLines: 1, overflow: TextOverflow.ellipsis, style: uiText.copyWith(fontSize: AppTextSize.eyebrow, color: AppColors.slateMuted)), // shopFertilizerShort
           const SizedBox(height: 4),
           PriceLine(item: item, time: crop == null ? null : growText(crop.minutes)),
           const SizedBox(height: 4),

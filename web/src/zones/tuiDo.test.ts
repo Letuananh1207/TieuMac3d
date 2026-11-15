@@ -1,11 +1,19 @@
 import { describe, expect, it } from 'vitest';
-import { BAG_TEXT, bagView, type BagSource } from './tuiDo';
+import { BAG_TABS, BAG_TEXT, BAG_TOOLS, bagView, type BagSource } from './tuiDo';
 import { freshGarden, type Garden } from './vuon';
 
 const garden = (seeds: Garden['seeds'], barn: Garden['barn']): Garden => ({ ...freshGarden(), seeds, barn });
 const empty: BagSource = { garden: garden({}, {}), home: { placed: {}, owned: [] }, book: null, coins: 0 };
 
 describe('túi đồ (R-TUI-1)', () => {
+  it('R-TUI-1: 5 tab hình Hạt giống · Đồ làm vườn · Nông sản · Sách · Trang trí; Đồ làm vườn = nông cụ Tay · Bình tưới · Bắt sâu · Nhổ cỏ · Mở ô + Phân bón × n', () => {
+    expect(BAG_TABS.map((t) => t.label)).toEqual(['Hạt giống', 'Đồ làm vườn', 'Nông sản', 'Sách', 'Trang trí']);
+    expect(BAG_TOOLS.map((t) => t.name)).toEqual(['Tay', 'Bình tưới', 'Bắt sâu', 'Nhổ cỏ', 'Mở ô']);
+    expect(bagView({ garden: freshGarden(), home: null, book: null, coins: 0 }).fert).toBe(3);
+    expect(bagView({ garden: { ...freshGarden(), fert: 7 }, home: null, book: null, coins: 0 }).fert).toBe(7);
+    expect(bagView({ garden: null, home: null, book: null, coins: 0 }).fert).toBe(0);
+  });
+
   it('R-TUI-1: ở Trúc Lâm, túi 3 hạt Cải ngọt, kho 4 Ngô, đang mượn HSK 1 → Cải ngọt × 3, Ngô × 4, HSK 1', () => {
     const v = bagView({ garden: garden({ cai: 3 }, { ngo: 4 }), home: null, book: { title: 'HSK 1', subtitle: 'Nhập môn' }, coins: 1280 });
     expect(v.seeds.items).toEqual([{ crop: 'cai', name: 'Cải ngọt', n: 3 }]);

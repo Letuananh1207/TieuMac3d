@@ -213,7 +213,7 @@ class _ShopScreenState extends State<ShopScreen> {
                 child: Text('Tạp hoá', style: displayText.copyWith(color: AppColors.slate, fontSize: landscape ? AppTextSize.titleCompact : AppTextSize.accent)), // shopName
               ),
               Text(
-                seeds ? 'Đồ trang trí Nhà của ta · mỗi cái đặt một chỗ · hạt giống cho Vườn rau' : 'Đồ trang trí Nhà của ta · mỗi cái đặt một chỗ', // shopSubtitle
+                seeds ? 'Đồ trang trí Nhà của ta · hạt giống, phân bón cho Vườn rau' : 'Đồ trang trí Nhà của ta · mỗi cái đặt một chỗ', // shopSubtitleGarden / shopSubtitle
                 maxLines: landscape ? 1 : 2,
                 overflow: TextOverflow.ellipsis,
                 style: uiText.copyWith(fontSize: AppTextSize.caption, color: AppColors.slateMuted),

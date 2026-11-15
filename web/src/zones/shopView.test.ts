@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { STARTER_COUNTS } from './decor';
-import { bagKey, boughtView, cardState, isFertEntry, confirmView, DECOR_ENTRIES, SEED_GRID_HINT, SEED_ITEMS, SEED_QTY, seedCrop, seedLine, SHOP_TABS, shopBanner, shopGroups, stockLine } from './shopView';
+import { bagKey, boughtView, cardState, isFertEntry, confirmView, DECOR_ENTRIES, SEED_GRID_HINT, SEED_ITEMS, SEED_QTY, seedCrop, seedLine, SHOP_TABS, shopBanner, shopSubtitle, FERT_SHORT, shopGroups, stockLine } from './shopView';
 
 const DECOR_ITEMS = DECOR_ENTRIES;
 const item = (id: string) => {
@@ -20,11 +20,11 @@ describe('Tạp hoá bản web — thẻ theo cái, tab, dải (R-TIEN-4)', () =
     expect(stockLine(item('mai'), stock)).toEqual({ inBag: 1, placed: 1, has: true, text: 'Trong túi: 1 · Đang đặt: 1' });
     expect(stockLine(item('truc-canh'), stock)?.text).toBe('Trong túi: 1 · Đang đặt: 0');
     expect(stockLine(item('tung'), stock)).toMatchObject({ has: false, text: 'Chưa có' });
-    expect(stockLine(SEED_ITEMS[0], stock)).toBeNull();
+    expect(stockLine(SEED_ITEMS[1], stock)).toBeNull();
   });
 
-  it('R-TIEN-4: tab Tất cả · Ngoài trời · Trong nhà · Hạt giống; "Tất cả" chia nhóm có tiêu đề, theo thứ tự danh mục', () => {
-    expect(SHOP_TABS.map((t) => t.label)).toEqual(['Tất cả', 'Ngoài trời', 'Trong nhà', 'Hạt giống']);
+  it('R-TIEN-4: tab Tất cả · Ngoài trời · Trong nhà · Làm vườn; "Tất cả" chia nhóm có tiêu đề, theo thứ tự danh mục', () => {
+    expect(SHOP_TABS.map((t) => t.label)).toEqual(['Tất cả', 'Ngoài trời', 'Trong nhà', 'Làm vườn']);
     const all = shopGroups(DECOR_ITEMS, 300, 'all', null);
     expect(all.map((g) => g.title)).toEqual(['Ngoài trời', 'Trong nhà']);
     expect(all[0].cards.map((c) => c.item.id)).toEqual(['truc-canh', 'mai', 'tung', 'da-thai-ho', 'ao-sen', 'den-long', 'ban-tra', 'chau-lan', 'lu-huong']);
@@ -61,26 +61,26 @@ describe('Tạp hoá bản web — thẻ theo cái, tab, dải (R-TIEN-4)', () =
 describe('Tạp hoá — hạt giống (R-VUON-9)', () => {
   it('R-VUON-9: 8 thẻ hạt, mua nhiều lần (không "Đã có"); thiếu → "Còn thiếu 1"; chữ xác nhận + tấm đã mua', () => {
     expect(SEED_ITEMS.map((i) => `${i.name} ${i.price}`)).toEqual([
-      'Hạt Cải ngọt 4', 'Hạt Củ cải 6', 'Hạt Ngô 8', 'Hạt Lúa 10', 'Hạt Bí đỏ 12', 'Hạt Hoa cúc 14', 'Hạt Dưa hấu 16', 'Hạt Trà 20', 'Phân bón 10',
+      'Phân bón 10', 'Hạt Cải ngọt 4', 'Hạt Củ cải 6', 'Hạt Ngô 8', 'Hạt Lúa 10', 'Hạt Bí đỏ 12', 'Hạt Hoa cúc 14', 'Hạt Dưa hấu 16', 'Hạt Trà 20',
     ]);
-    const cai = SEED_ITEMS[0];
+    const cai = SEED_ITEMS[1];
     expect(cardState(cai, 10).state).toBe('buy');
-    expect(cardState(SEED_ITEMS[2], 7)).toEqual({ state: 'short', text: 'Còn thiếu 1', short: 1 });
+    expect(cardState(SEED_ITEMS[3], 7)).toEqual({ state: 'short', text: 'Còn thiếu 1', short: 1 });
     expect(seedCrop(cai)?.id).toBe('cai');
     expect(boughtView(cai)).toEqual({ title: 'Đã mua Hạt Cải ngọt', sub: 'Về Vườn rau để gieo — hạt ở trong túi hạt.' });
     // hạt rẻ không làm mất dải nghèo của đồ trang trí
     expect(shopBanner([...DECOR_ITEMS, ...SEED_ITEMS], 20)).toBe('poor');
   });
 
-  it('R-VUON-9: thẻ hạt "Trong túi: n" + thời gian; tab Hạt giống có dòng trên lưới', () => {
-    expect(seedLine(SEED_ITEMS[2], { ngo: 1 })).toEqual({ inBag: 1, text: 'Trong túi: 1', time: '2 giờ' });
-    expect(seedLine(SEED_ITEMS[1], {})).toEqual({ inBag: 0, text: 'Trong túi: 0', time: '1 giờ' });
+  it('R-VUON-9: thẻ hạt "Trong túi: n" + thời gian; tab Làm vườn có dòng trên lưới', () => {
+    expect(seedLine(SEED_ITEMS[3], { ngo: 1 })).toEqual({ inBag: 1, text: 'Trong túi: 1', time: '2 giờ' });
+    expect(seedLine(SEED_ITEMS[2], {})).toEqual({ inBag: 0, text: 'Trong túi: 0', time: '1 giờ' });
     expect(seedLine(item('mai'), {})).toBeNull();
     expect(SEED_GRID_HINT).toContain('× 1 · × 5 · × 10');
   });
 
   it('R-VUON-9: có 1 280, × 5 Hạt Ngô → "Giá (5 hạt) −40", "Mua · 40"; có 50, × 10 → "Còn thiếu 30"', () => {
-    const ngo = SEED_ITEMS[2];
+    const ngo = SEED_ITEMS[3];
     const v = confirmView(ngo, 1280, { count: 5, inBag: 1 });
     expect(`${v.before} ${v.after}`).toBe('Mua Hạt Ngô · 8 Văn tiền / hạt');
     expect(v.sub).toBe('Hạt vào túi hạt · gieo ở Vườn rau. Trong túi: 1.');
@@ -94,8 +94,10 @@ describe('Tạp hoá — hạt giống (R-VUON-9)', () => {
     expect(SEED_QTY).toEqual([1, 5, 10]);
   });
 
-  it('R-VUON-12: thẻ Phân bón 10 Văn / bao cùng mục hạt; có 40, × 5 → "Giá (5 bao) −50", "Còn thiếu 10"; tấm đã mua', () => {
-    const phan = SEED_ITEMS[SEED_ITEMS.length - 1];
+  it('R-VUON-12: thẻ Phân bón 10 Văn / bao đứng đầu tab Làm vườn; có 40, × 5 → "Giá (5 bao) −50", "Còn thiếu 10"; tấm đã mua', () => {
+    const phan = SEED_ITEMS[0];
+    expect(FERT_SHORT).toBe('chín nhanh gấp đôi');
+    expect(shopSubtitle(true)).toBe('Đồ trang trí Nhà của ta · hạt giống, phân bón cho Vườn rau');
     expect(isFertEntry(phan)).toBe(true);
     expect(bagKey(phan)).toBe('phan');
     expect(seedLine(phan, { phan: 3 })).toEqual({ inBag: 3, text: 'Trong túi: 3', time: null });

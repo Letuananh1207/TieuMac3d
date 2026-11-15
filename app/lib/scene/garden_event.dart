@@ -54,10 +54,11 @@ Map<String, Object?> gardenActReply(GardenResult r, int balance) => switch (r) {
 /// Thẻ hạt giống ở Tạp hoá (R-VUON-9) — mã `hat-<cây>`, giá 1 hạt.
 const seedItemPrefix = 'hat-';
 
-/// 8 thẻ hạt rồi thẻ **Phân bón** (mã `phan`, 10 Văn / bao — R-VUON-12) cùng mục, cùng khung thẻ hạt.
+/// Tab Làm vườn: thẻ **Phân bón** đứng đầu (mã `phan`, 10 Văn / bao — R-VUON-12; thiết kế 2026-11-16.4) rồi 8 thẻ hạt, cùng
+/// khung thẻ hạt.
 List<ShopItem> seedShopItems() => [
-      for (final c in crops) ShopItem(id: '$seedItemPrefix${c.id}', name: 'Hạt ${c.name}', slot: SlotKind.hat, price: c.seed),
       const ShopItem(id: fertItem, name: 'Phân bón', slot: SlotKind.hat, price: fertPrice),
+      for (final c in crops) ShopItem(id: '$seedItemPrefix${c.id}', name: 'Hạt ${c.name}', slot: SlotKind.hat, price: c.seed),
     ];
 
 /// Mã cây của thẻ hạt; thẻ khác → `null`.

@@ -11,7 +11,6 @@ import {
   growMs,
   hasBug,
   nextOpenPrice,
-  plotIndex,
   plotOf,
   plotState,
   PLOT_COUNT,
@@ -40,24 +39,23 @@ export function growText(c: Crop): string {
 
 /* ---------- chỗ đứng (R-VUON-2, R-VUON-7) ---------- */
 
-/** Việc ở chỗ đứng: nút ở luống, nhãn đang lớn, hay nút "Bán" ở thùng. */
+/** Việc ở chỗ đứng khi vòng công cụ đóng: nhãn luống đang lớn, hay nút "Bán" ở thùng (luống làm qua vòng — R-VUON-2). */
 export type GardenSpot =
-  | { kind: 'plot'; plot: string; button: PlotButton; dist: number }
   | { kind: 'grow'; plot: string; crop: Crop; /** "còn 1 giờ 20 phút" bỏ chữ "còn" → `gardenGrowing` */ text: string; frac: number; dist: number }
   | { kind: 'bin'; dist: number };
 
 /**
- * Chọn việc (R-VUON-2): luống gần nhất trong tầm [near] và thùng thu mua cách [binDist] — **vật gần hơn thắng**; thùng chỉ
- * trong tầm dưới 2,5 m. Luống đang lớn không tưới được → nhãn, không nút. Không gì → `null`.
+ * Chọn việc (R-VUON-2, R-VUON-7): luống gần nhất trong tầm [near] và thùng thu mua cách [binDist] — **vật gần hơn thắng**;
+ * thùng chỉ trong tầm dưới 2,5 m. Luống có cây chưa chín → nhãn "{cây} · còn {thời gian}"; luống khác không nút (chạm luống →
+ * vòng công cụ). Không gì → `null`.
  */
 export function pickSpot(g: Garden, near: { id: string; dist: number } | null, binDist: number, now: number, speed = 1): GardenSpot | null {
   if (binDist < BIN_RANGE && (!near || binDist < near.dist)) return { kind: 'bin', dist: binDist };
   if (!near) return null;
   const st = plotState(g, near.id, now, speed);
   const p = plotOf(g, near.id);
-  const button = plotButton(st, canWater(p, now, speed));
-  if (button) return { kind: 'plot', plot: near.id, button, dist: near.dist };
-  const c = cropOf(p.crop)!;
+  const c = cropOf(p.crop);
+  if (!c || st === 'hoang' || st === 'trong' || st === 'chin') return null;
   const ms = remainingMs(p, now, speed);
   return { kind: 'grow', plot: near.id, crop: c, text: remainText(ms), frac: Math.min(1, elapsedMs(p, now) / growMs(c, speed)), dist: near.dist };
 }
@@ -75,8 +73,8 @@ export function remainText(ms: number): string {
 /** Nhãn luống đang lớn: "Ngô · còn 1 giờ 20 phút" (`gardenGrowing`). */
 export const growingLabel = (s: { crop: Crop; text: string }): string => `${s.crop.name} · còn ${s.text}`;
 
-/** Chữ nút nổi: "Gieo" · "Tưới" · "Thu" · "Mở ô" (`gardenSow` …); "Bán" ở thùng (`gardenSell`). */
-export const BUTTON_TEXT: Readonly<Record<PlotButton | 'ban', string>> = { gieo: 'Gieo', tuoi: 'Tưới', thu: 'Thu', 'mo-o': 'Mở ô', ban: 'Bán' };
+/** Chữ nút nổi ở thùng thu mua (`gardenSell`). */
+export const SELL_TEXT = 'Bán';
 
 /**
  * HUD vườn hiện khi đi lại bình thường (đặc tả: ẩn khi trang trí, bản đồ, thoại NPC, ngồi, màn Flutter, màn tải); dấu giọt /
@@ -92,16 +90,8 @@ export interface GardenBusy {
 }
 export const gardenHudShown = (b: GardenBusy): boolean => !(b.decorating || b.map || b.talking || b.sitting || b.covered || b.loading);
 
-/** Dấu luống trong cảnh (thấy từ xa ≤ 25 m — đặc tả): luống tưới được → giọt nước; luống chín → lấp lánh. */
-export type PlotMark = 'giot' | 'lap-lanh' | null;
+/** Dấu luống trong cảnh thấy trong tầm này (m) — hàng dấu ở `vuonVongHud.ts` `plotBadges`. */
 export const MARK_RANGE = 25;
-
-export function plotMark(g: Garden, id: string, now: number, speed = 1): PlotMark {
-  const st = plotState(g, id, now, speed);
-  if (st === 'chin') return 'lap-lanh';
-  if (st === 'hoang' || st === 'trong') return null;
-  return canWater(plotOf(g, id), now, speed) ? 'giot' : null;
-}
 
 /* ---------- bảng chọn hạt (R-VUON-3) ---------- */
 
@@ -116,9 +106,6 @@ export interface SeedCard {
 export function seedCards(g: Garden): SeedCard[] {
   return CROPS.filter((c) => (g.seeds[c.id] ?? 0) > 0).map((c) => ({ crop: c, left: g.seeds[c.id]!, time: growText(c) }));
 }
-
-/** "Luống {n} · tưới 2 lượt thì thu được nhiều nhất" (`gardenPickSeedSub`). */
-export const pickSeedSub = (plot: string): string => `Luống ${plotIndex(plot)} · tưới 2 lượt thì thu được nhiều nhất`;
 
 /** Chip túi hạt chân bảng kho: "Cải ngọt 2". */
 export const bagChips = (g: Garden): { name: string; n: number }[] =>
@@ -256,7 +243,7 @@ export interface FloatText {
 }
 
 export const SOW_FLOAT: FloatText = { text: '−1 hạt', sub: null };
-export const WATER_FLOAT: FloatText = { text: 'Đất ẩm rồi!', sub: null };
+export const WATER_FLOAT: FloatText = { text: 'Đất ẩm rồi', sub: null }; // gardenFloatWet
 export const BUG_FLOAT: FloatText = { text: 'Bắt được sâu!', sub: null };
 export const WEED_FLOAT: FloatText = { text: 'Sạch cỏ!', sub: null };
 export const FERT_FLOAT: FloatText = { text: 'Mau lớn!', sub: null };
@@ -303,16 +290,6 @@ export const seedLabel = (c: Crop, count = 1): string => `−${c.seed * count} �
 /** Tầm hiện nút ở luống / thùng thu mua (R-VUON-2, R-VUON-7). */
 export const PLOT_RANGE = 1.6;
 export const BIN_RANGE = 2.5;
-
-export type PlotButton = 'gieo' | 'tuoi' | 'thu' | 'mo-o';
-
-/** Nút ở luống theo trạng thái (R-VUON-2): đang lớn không tưới được → không nút, chỉ nhãn. */
-export function plotButton(state: PlotState, waterable: boolean): PlotButton | null {
-  if (state === 'hoang') return 'mo-o';
-  if (state === 'trong') return 'gieo';
-  if (state === 'chin') return 'thu';
-  return waterable ? 'tuoi' : null;
-}
 
 /** Luống gần nhất trong tầm [PLOT_RANGE] (R-VUON-2); không có → `null`. */
 export function nearestPlot(plots: readonly { id: string; x: number; z: number }[], x: number, z: number): { id: string; dist: number } | null {

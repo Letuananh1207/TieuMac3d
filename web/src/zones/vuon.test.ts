@@ -22,7 +22,7 @@ import {
   type GardenResult,
   type Plot,
 } from './vuon';
-import { gardenSpeed, nearestPlot, openPlotLabel, plotButton, remainingText, seedLabel, sellLabel } from './vuonHud';
+import { gardenSpeed, nearestPlot, openPlotLabel, remainingText, seedLabel, sellLabel } from './vuonHud';
 import { gardenTrialAct, newTrial, parseTrial } from './walletRules';
 
 // Cùng ví dụ sổ với app/test/rules/vuon_test.dart (luật web chép Dart — lệch là đỏ).
@@ -53,8 +53,8 @@ describe('vườn rau (R-VUON-1)', () => {
   });
 });
 
-describe('nút ở luống (R-VUON-2)', () => {
-  it('R-VUON-2: cách luống trống 1,2 m → "Gieo"; lùi 1,7 m → ẩn; luống gần hơn thắng', () => {
+describe('luống gần nhất (R-VUON-2)', () => {
+  it('R-VUON-2: E mở vòng ở luống gần nhất dưới 1,6 m — cách 1,2 m được; lùi 1,7 m → không; luống gần hơn thắng', () => {
     const plots = [
       { id: 'o-1', x: 0, z: 0 },
       { id: 'o-2', x: 2.4, z: 0 },
@@ -62,11 +62,6 @@ describe('nút ở luống (R-VUON-2)', () => {
     expect(nearestPlot(plots, 1.2, 0)).toEqual({ id: 'o-1', dist: 1.2 });
     expect(nearestPlot(plots, -1.7, 0)).toBeNull();
     expect(nearestPlot(plots, 1.5, 0)?.id).toBe('o-2');
-    expect(plotButton('trong', false)).toBe('gieo');
-    expect(plotButton('hoang', false)).toBe('mo-o');
-    expect(plotButton('chin', false)).toBe('thu');
-    expect(plotButton('mam', true)).toBe('tuoi');
-    expect(plotButton('mam', false)).toBeNull();
   });
 
   it('R-VUON-2: Cải ngọt gieo 10 phút trước, đã tưới 1 lượt → nhãn "còn 20 phút"', () => {

@@ -1,12 +1,12 @@
 /**
  * Bảng Vườn rau (thiết kế 2026-11-15.29 `VuonRau-hat-*`, `VuonRau-kho-*`, `VuonRau-mo-o-*`): tấm đáy kiểu bảng danh mục
- * trang trí (dọc: cao 392 / 420 / 330, bo trên 20, tay nắm; ngang: cột phải 310) — chọn hạt để gieo, kho nông sản (bán từng
- * loại / bán hết theo trần), hộp mở ô (cảnh tối 28 %). Kéo tay nắm xuống / chạm cảnh → đóng. Không giữ luật — chữ + số ở
+ * trang trí (dọc: cao 420 / 330, bo trên 20, tay nắm; ngang: cột phải 310) — kho nông sản (bán từng
+ * loại / bán hết theo trần), hộp mở ô (cảnh tối 28 %); chọn hạt chuyển sang lưới hạt trên vòng công cụ (2026-11-16.4). Kéo tay nắm xuống / chạm cảnh → đóng. Không giữ luật — chữ + số ở
  * `zones/vuonHud.ts`, thao tác ở `homeGarden.ts`. DOM dựng bằng `createElement`.
  */
 import type { CropId } from '../zones/vuon';
-import { capLeftText, sellAllText, type SeedCard, type StoreView, type UnlockView, UNLOCK_SUB } from '../zones/vuonHud';
-import { cropPicture, ICON_BAG, ICON_CRATE, ICON_SOW, UNLOCK_PICTURE } from './cropArt';
+import { capLeftText, sellAllText, type StoreView, type UnlockView, UNLOCK_SUB } from '../zones/vuonHud';
+import { cropPicture, ICON_BAG, ICON_CRATE, UNLOCK_PICTURE } from './cropArt';
 import { COIN, STROKE, svgIcon, type SvgNode } from './decorIcons';
 import { coinIcon } from './wallet';
 
@@ -31,13 +31,12 @@ const icon = (nodes: readonly SvgNode[], size: number, width = '2'): SVGElement 
 const coin = (size: number): SVGElement => svgIcon(COIN, size, '0 0 100 100');
 
 export interface GardenPanelHandlers {
-  sow(crop: CropId): void;
   sell(crop: CropId | null): void;
   unlock(): void;
   close(): void;
 }
 
-export type PanelKind = 'hat' | 'kho' | 'mo-o';
+export type PanelKind = 'kho' | 'mo-o';
 
 export class GardenPanel {
   private readonly root = h('section');
@@ -67,34 +66,6 @@ export class GardenPanel {
     this.dim.hidden = true;
     this.kindNow = null;
     document.body.classList.remove('garden-panel');
-  }
-
-  /** Bảng chọn hạt (R-VUON-3): chỉ loại đang có; trống → "Túi hạt trống" (không nút mua). */
-  showSeeds(sub: string, cards: readonly SeedCard[]): void {
-    const head = this.head(ICON_SOW, 'Chọn hạt để gieo', sub); // gardenPickSeed, gardenPickSeedSub
-    if (!cards.length) {
-      this.open('hat', [head, this.empty(ICON_BAG, 'Túi hạt trống — mua hạt ở Tạp hoá trấn', 'Tạp hoá ở phố chợ Khởi Nguyên Trấn, gần Cổng Trấn. Về trấn bằng vòng sáng cuối Bến mây.')]);
-      return;
-    }
-    const grid = h('ul', 'vr-seeds');
-    for (const c of cards) {
-      const b = button('vr-seed');
-      b.setAttribute('aria-label', `Gieo ${c.crop.name}, còn ${c.left} hạt`);
-      const pic = h('span', 'pic');
-      pic.append(cropPicture(c.crop.id, 64), h('span', 'left', `còn ${c.left}`)); // gardenSeedLeft
-      const sellLine = h('span', 'sell');
-      sellLine.append('bán ', coin(11), `${c.crop.sell} / cái`); // gardenSellPrice
-      const meta = h('span', 'meta');
-      meta.append(c.time, h('br'), sellLine);
-      b.append(pic, h('span', 'name', c.crop.name), meta);
-      b.addEventListener('click', () => this.on.sow(c.crop.id));
-      const li = h('li');
-      li.append(b);
-      grid.append(li);
-    }
-    const foot = h('div', 'vr-foot');
-    foot.append(icon(ICON_BAG, 16), 'Chạm một hạt để gieo ngay · hạt mua ở Tạp hoá trấn'); // gardenTapToSow
-    this.open('hat', [head, grid, foot]);
   }
 
   /** Kho nông sản (R-VUON-7): hàng × giá, "Bán" từng loại, chip túi hạt, nút lớn / dải đủ trần. */
@@ -184,7 +155,7 @@ export class GardenPanel {
     grip.setAttribute('aria-hidden', 'true');
     this.swipeToClose(grip);
     this.root.className = `vr-${kind}`;
-    this.root.setAttribute('aria-label', kind === 'hat' ? 'Chọn hạt để gieo' : kind === 'kho' ? 'Kho nông sản' : 'Mở ô đất');
+    this.root.setAttribute('aria-label', kind === 'kho' ? 'Kho nông sản' : 'Mở ô đất');
     this.root.replaceChildren(grip, ...parts);
     this.root.hidden = false;
     this.dim.hidden = kind !== 'mo-o'; // hộp mở ô: cảnh tối 28 %

@@ -21,8 +21,8 @@ export interface ShopEntry {
   price: number;
 }
 
-/** Tên tab / nhóm (`shopTabOutdoor`, `shopTabIndoor`, `shopTabSeeds`). */
-export const SLOT_NAME: Readonly<Record<ShopKind, string>> = { ngoai: 'Ngoài trời', trong: 'Trong nhà', hat: 'Hạt giống' };
+/** Tên tab / nhóm (`shopTabOutdoor`, `shopTabIndoor`, `shopTabGarden` — V-73 2026-11-16.4: "Hạt giống" → "Làm vườn"). */
+export const SLOT_NAME: Readonly<Record<ShopKind, string>> = { ngoai: 'Ngoài trời', trong: 'Trong nhà', hat: 'Làm vườn' };
 
 const KINDS: readonly ShopKind[] = ['ngoai', 'trong', 'hat'];
 
@@ -32,8 +32,15 @@ export const DECOR_ENTRIES: readonly ShopEntry[] = DECOR_ITEMS.map((i) => ({ id:
 /** Thẻ hạt giống (R-VUON-9): mã `hat-<cây>`, giá 1 hạt — như `seedShopItems` ở Dart. */
 export const FERT_ENTRY: ShopEntry = { id: FERT_ITEM, name: 'Phân bón', slot: 'hat', price: FERT_PRICE };
 
-/** 8 thẻ hạt rồi thẻ **Phân bón** (mã `phan`, 10 Văn / bao — R-VUON-12), cùng mục, cùng khung thẻ hạt (như Dart). */
-export const SEED_ITEMS: readonly ShopEntry[] = [...CROPS.map((c): ShopEntry => ({ id: `hat-${c.id}`, name: `Hạt ${c.name}`, slot: 'hat', price: c.seed })), FERT_ENTRY];
+/** Tab Làm vườn: thẻ **Phân bón** đứng đầu (mã `phan`, 10 Văn / bao — R-VUON-12; thiết kế 2026-11-16.4) rồi 8 thẻ hạt (như Dart). */
+export const SEED_ITEMS: readonly ShopEntry[] = [FERT_ENTRY, ...CROPS.map((c): ShopEntry => ({ id: `hat-${c.id}`, name: `Hạt ${c.name}`, slot: 'hat', price: c.seed }))];
+
+/** Dòng phụ đầu Tạp hoá (`shopSubtitle` / `shopSubtitleGarden`). */
+export const shopSubtitle = (garden: boolean): string =>
+  garden ? 'Đồ trang trí Nhà của ta · hạt giống, phân bón cho Vườn rau' : 'Đồ trang trí Nhà của ta · mỗi cái đặt một chỗ';
+
+/** Thẻ Phân bón: dòng ngắn thay thời gian lớn (`shopFertilizerShort`). */
+export const FERT_SHORT = 'chín nhanh gấp đôi';
 
 /** Túi mục vườn: hạt theo mã cây + `phan` = số bao phân. */
 export type GardenBag = Partial<Record<CropId | typeof FERT_ITEM, number>>;

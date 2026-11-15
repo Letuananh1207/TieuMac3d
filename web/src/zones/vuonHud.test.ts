@@ -8,9 +8,8 @@ import {
   growingLabel,
   growText,
   harvestToast,
-  pickSeedSub,
   pickSpot,
-  plotMark,
+  plotLook,
   remainText,
   ripeToast,
   seedCards,
@@ -26,11 +25,11 @@ const MIN = 60000;
 const withPlot = (g: Garden, id: string, p: Plot): Garden => ({ ...g, plots: { ...g.plots, [id]: p } });
 const IDLE = { decorating: false, map: false, talking: false, sitting: false, covered: false, loading: false };
 
-describe('nút nổi ở luống (R-VUON-2)', () => {
-  it('R-VUON-2: luống trống cách 1,2 m → "Gieo"; không trong tầm → không gì', () => {
-    expect(pickSpot(freshGarden(), { id: 'o-1', dist: 1.2 }, 9, 0)).toMatchObject({ kind: 'plot', plot: 'o-1', button: 'gieo' });
+describe('nhãn luống + nút Bán khi vòng đóng (R-VUON-2)', () => {
+  it('R-VUON-2: luống trống / hoang cách 1,2 m → không nút nổi (chạm luống → vòng công cụ); không trong tầm → không gì', () => {
+    expect(pickSpot(freshGarden(), { id: 'o-1', dist: 1.2 }, 9, 0)).toBeNull();
     expect(pickSpot(freshGarden(), null, 9, 0)).toBeNull();
-    expect(pickSpot(freshGarden(), { id: 'o-7', dist: 1 }, 9, 0)).toMatchObject({ button: 'mo-o' });
+    expect(pickSpot(freshGarden(), { id: 'o-7', dist: 1 }, 9, 0)).toBeNull();
   });
 
   it('R-VUON-2: Cải ngọt gieo 10 phút trước, đã tưới 1 lượt → nhãn "Cải ngọt · còn 20 phút", không nút', () => {
@@ -46,7 +45,9 @@ describe('nút nổi ở luống (R-VUON-2)', () => {
   it('R-VUON-2: thùng thu mua và luống cùng trong tầm → vật gần hơn thắng; thùng chỉ dưới 2,5 m', () => {
     const g = freshGarden();
     expect(pickSpot(g, { id: 'o-1', dist: 1.5 }, 1.2, 0)).toMatchObject({ kind: 'bin' });
-    expect(pickSpot(g, { id: 'o-1', dist: 0.8 }, 1.2, 0)).toMatchObject({ kind: 'plot' });
+    const t0 = vn(14, 9);
+    const g2 = withPlot(g, 'o-1', { crop: 'cai', plantedAt: t0, watered: 1, boost: 0, bug: 0, weed: 0 });
+    expect(pickSpot(g2, { id: 'o-1', dist: 0.8 }, 1.2, t0 + MIN)).toMatchObject({ kind: 'grow' });
     expect(pickSpot(g, null, 2.4, 0)).toMatchObject({ kind: 'bin' });
     expect(pickSpot(g, null, 2.6, 0)).toBeNull();
   });
@@ -56,14 +57,14 @@ describe('nút nổi ở luống (R-VUON-2)', () => {
     for (const k of Object.keys(IDLE) as (keyof typeof IDLE)[]) expect(gardenHudShown({ ...IDLE, [k]: true })).toBe(false);
   });
 
-  it('R-VUON-5: luống tưới được hiện giọt nước; chín → lấp lánh; trống / hoang → không dấu', () => {
+  it('R-VUON-5: luống tới mốc tưới mà chưa tưới → đất khô; đã tưới → ẩm; chín / trống / hoang → thường', () => {
     const t0 = vn(14, 9);
     const g = withPlot(freshGarden(), 'o-1', { crop: 'cai', plantedAt: t0, watered: 0, boost: 0, bug: 0, weed: 0 });
-    expect(plotMark(g, 'o-1', t0 + MIN)).toBe('giot');
-    expect(plotMark(withPlot(g, 'o-1', { crop: 'cai', plantedAt: t0, watered: 1, boost: 0, bug: 0, weed: 0 }), 'o-1', t0 + 10 * MIN)).toBeNull();
-    expect(plotMark(g, 'o-1', t0 + 30 * MIN)).toBe('lap-lanh');
-    expect(plotMark(g, 'o-2', t0)).toBeNull();
-    expect(plotMark(g, 'o-9', t0)).toBeNull();
+    expect(plotLook(g, 'o-1', t0 + MIN).soil).toBe('kho');
+    expect(plotLook(withPlot(g, 'o-1', { crop: 'cai', plantedAt: t0, watered: 1, boost: 0, bug: 0, weed: 0 }), 'o-1', t0 + 10 * MIN).soil).toBe('am');
+    expect(plotLook(g, 'o-1', t0 + 30 * MIN).soil).toBe('thuong');
+    expect(plotLook(g, 'o-2', t0).soil).toBe('thuong');
+    expect(plotLook(g, 'o-9', t0).soil).toBe('thuong');
   });
 
   it('R-VUON-4: thời gian còn lại dưới 1 phút / giờ + phút', () => {
@@ -78,7 +79,6 @@ describe('bảng chọn hạt (R-VUON-3)', () => {
     const cards = seedCards(freshGarden());
     expect(cards.map((c) => [c.crop.name, c.left, c.time])).toEqual([['Cải ngọt', 3, '30 phút']]);
     expect(seedCards({ ...freshGarden(), seeds: {} })).toEqual([]);
-    expect(pickSeedSub('o-3')).toBe('Luống 3 · tưới 2 lượt thì thu được nhiều nhất');
     expect(CROPS.map(growText)).toEqual(['30 phút', '1 giờ', '2 giờ', '3 giờ', '4 giờ', '5 giờ', '6 giờ', '8 giờ']);
   });
 });

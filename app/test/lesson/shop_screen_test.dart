@@ -135,7 +135,7 @@ void main() {
     expect(find.text('Kệ sách'), findsOneWidget);
   });
 
-  /// Tạp hoá có tab Hạt giống (R-VUON-9): mua qua luật `buySeed` của garden.dart.
+  /// Tạp hoá có tab Làm vườn (R-VUON-9, trước "Hạt giống"): mua qua luật `buySeed` của garden.dart.
   Future<List<int>> openSeeds(WidgetTester tester, {required int balance, Map<String, int> bag = const {'ngo': 1}, Size size = const Size(390, 844)}) async {
     tester.view.physicalSize = size * 3;
     tester.view.devicePixelRatio = 3;
@@ -162,16 +162,17 @@ void main() {
       ),
     ));
     await tester.pumpAndSettle();
-    await tester.ensureVisible(find.text('Hạt giống')); // tab cuối hàng (hàng tab cuộn ngang)
+    await tester.ensureVisible(find.text('Làm vườn')); // tab cuối hàng (hàng tab cuộn ngang)
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Hạt giống'));
+    await tester.tap(find.text('Làm vườn'));
     await tester.pumpAndSettle();
     return counts;
   }
 
   testWidgets('R-VUON-9: có 1 280, × 5 Hạt Ngô → "Giá (5 hạt) −40", "Mua · 40" → túi Ngô 6, ví 1 240', (tester) async {
     final counts = await openSeeds(tester, balance: 1280);
-    expect(find.textContaining('hạt giống cho Vườn rau'), findsOneWidget);
+    expect(find.textContaining('hạt giống, phân bón cho Vườn rau'), findsOneWidget);
+    expect(inCard('Phân bón', find.text('Trong túi: 0')), findsOneWidget); // thẻ Phân bón đứng đầu (2026-11-16.4)
     expect(inCard('Hạt Ngô', find.text('Trong túi: 1')), findsOneWidget);
     expect(inCard('Hạt Củ cải', find.text('Trong túi: 0')), findsOneWidget);
     await tester.tap(inCard('Hạt Ngô', find.text('Mua')));

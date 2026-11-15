@@ -4,10 +4,10 @@
  * với hạt rơi / tia nước / sâu bay / cỏ bay / lấp lánh (`scene/vuonHat.ts`, `vuonSauCo.ts`, `cayTrong.ts`) + tiếng
  * (`ui/vuonSound.ts`) → diễn xong mới gọi luật (`act` của `homeGarden.ts` → `gardenAct` / ví thử). Mỗi lần một việc.
  *
- * **Tạm khi chưa có HUD vòng** (phiếu `docs/phieu_thiet_ke/2026-11-15-vuon-mole.md`) — không dựng vòng tạm cho người dùng
- * thật: click / chạm luống = mở vòng (vòng in Console; chạm không bị nuốt — vẫn đi như cũ), **E** mở vòng ở luống gần nhất
- * (< 1,6 m), phím **1–6** chọn ô (1 = Tay giữa), lưới hạt mở thì **1–n** chọn loại, **Esc** lưới → vòng → đóng; Console
- * `__hocXaVuon.vong(n) / chon(k) / dong() / xem()`. Điện thoại giữ nút nổi Gieo / Tưới / Thu cũ tới khi có HUD vòng.
+ * HUD vòng (thiết kế 2026-11-16.4): `ui/gardenRing.ts` vẽ `ring()` mỗi khung, bấm ô → `choose` / `chooseSeed`. Chạm / click
+ * luống = mở vòng (chạm bị nuốt — không đi), **E** mở vòng ở luống gần nhất (< 1,6 m), phím **1–6** chọn ô (1 = Tay giữa),
+ * lưới hạt mở thì **1–n** chọn loại, **Esc** lưới → vòng → đóng. Ô mờ → viên lý do (`reason`); làm xong → chữ nổi (`float`).
+ * Console `__hocXaVuon.vong(n) / chon(k) / dong() / ring() / xem()`.
  */
 import type * as THREE from 'three';
 import type { Character } from './player/character';
@@ -18,7 +18,8 @@ import type { Garden3D } from './scene/vuonLuong';
 import type { VuonSound, VuonTieng } from './ui/vuonSound';
 import { cropOf, plotOf, type GardenAct, type Garden, type GardenResult } from './zones/vuon';
 import { BUG_FLOAT, FERT_FLOAT, harvestFloat, PLOT_RANGE, SOW_FLOAT, WATER_FLOAT, WEED_FLOAT, type FloatText } from './zones/vuonHud';
-import { fits, pickSeed, pickSlot, ringView, seedGrid, standSpot, whenChosen, type Pick, type RingView, type ToolId, type WorkKind } from './zones/vuonVong';
+import { fits, pickSeed, pickSlot, ringView, seedGrid, standSpot, whenChosen, type Pick, type RingView, type SlotId, type ToolId, type WorkKind } from './zones/vuonVong';
+import type { CropId } from './zones/vuon';
 
 /** Tiếng theo động tác (R-AM-4). */
 const SOUND: Readonly<Record<WorkKind, VuonTieng>> = { gieo: 'rac', tuoi: 'tuoi', bat: 'tach', nho: 'poc', bon: 'phan', thu: 'bup' };
@@ -43,8 +44,12 @@ export interface GardenWorkDeps {
   speed(): number;
   /** chạy luật (Flutter / ví thử) — kết quả được vẽ lại ở `homeGarden.ts` */
   act(a: GardenAct): Promise<GardenResult | null>;
-  /** thu xong → tấm báo đã thiết kế "+n {cây} vào kho" (R-VUON-6) */
-  harvested(crop: string, got: number): void;
+  /** thu xong ở luống [i] → tấm báo "+n {cây} vào kho" (R-VUON-6) + quả bay vào Túi đồ */
+  harvested(crop: string, got: number, i: number): void;
+  /** chữ nổi trên luống [i] (R-VUON-13) */
+  float(t: FloatText, i: number): void;
+  /** viên lý do khi chạm ô mờ (R-VUON-2); [slot] = ô vừa chạm (`null` = phím / việc chờ) */
+  reason(why: string, slot: SlotId | null): void;
   /** ô "Mở ô" trên vòng luống hoang → hộp xác nhận mở ô (R-VUON-8) */
   unlock(): void;
 }
@@ -87,7 +92,7 @@ export class GardenWork {
     return this.inside;
   }
 
-  /** Vòng đang mở (cho Console / HUD sau thiết kế); `null` = đóng. */
+  /** Vòng đang mở (HUD `gardenRing.ts` + Console); `null` = đóng. */
   ring(): (RingView & { grid: ReturnType<typeof seedGrid> | null }) | null {
     const id = this.ringPlot;
     if (!id) return null;
@@ -111,7 +116,6 @@ export class GardenWork {
     const pos = this.d.player.position;
     this.ringFrom.x = pos.x;
     this.ringFrom.z = pos.z;
-    this.log();
     return true;
   }
 
@@ -132,19 +136,30 @@ export class GardenWork {
     const speed = this.d.speed();
     if (this.grid) {
       const s = seedGrid(g)[n - 1];
-      if (s) this.apply(pickSeed(g, id, s.crop, now, speed));
+      if (s) this.apply(pickSeed(g, id, s.crop, now, speed), 'hat');
       return true;
     }
     const slot = ringView(g, id, now, speed).slots.find((s) => s.key === n);
-    if (slot) this.apply(pickSlot(g, id, slot.id, now, speed));
+    if (slot) this.apply(pickSlot(g, id, slot.id, now, speed), slot.id);
     return true;
+  }
+
+  /** Bấm ô [slot] trên vòng (HUD). */
+  choose(slot: SlotId): void {
+    const id = this.ringPlot;
+    if (id) this.apply(pickSlot(this.d.state(), id, slot, this.d.now(), this.d.speed()), slot);
+  }
+
+  /** Bấm loại [crop] trong lưới hạt (HUD). */
+  chooseSeed(crop: CropId): void {
+    const id = this.ringPlot;
+    if (id && this.grid) this.apply(pickSeed(this.d.state(), id, crop, this.d.now(), this.d.speed()), 'hat');
   }
 
   /** Esc: lưới hạt → về vòng; vòng → đóng. `true` = đã xử lý. */
   back(): boolean {
     if (this.grid) {
       this.grid = false;
-      this.log();
       return true;
     }
     return this.closeRing();
@@ -157,15 +172,14 @@ export class GardenWork {
   }
 
   /**
-   * Chạm / click điểm sân [p]: trúng luống → mở vòng luống đó; chỗ khác → đóng vòng. Chưa có HUD vòng → luôn `false` (chạm
-   * không bị nuốt — nhân vật vẫn đi như cũ).
+   * Chạm / click điểm sân [p]: trúng luống → mở vòng luống đó (chạm bị nuốt — không đi); chỗ khác khi vòng mở → đóng vòng
+   * (cũng nuốt chạm); vòng đóng → `false` (đi như thường).
    */
   tapAt(p: { x: number; z: number } | null): boolean {
     const half = this.d.plotSize / 2 + 0.25;
     const hit = p && this.d.garden.plots.find((q) => Math.abs(q.x - p.x) <= half && Math.abs(q.z - p.z) <= half);
-    if (hit) this.openRing(hit.id);
-    else this.closeRing();
-    return false;
+    if (hit) return this.openRing(hit.id);
+    return this.closeRing();
   }
 
   /**
@@ -203,11 +217,10 @@ export class GardenWork {
 
   /* ---------- chọn ô ---------- */
 
-  private apply(p: Pick): void {
-    if (p.kind === 'no') return this.say(p.why);
+  private apply(p: Pick, slot: SlotId | null): void {
+    if (p.kind === 'no') return this.d.reason(p.why, slot);
     if (p.kind === 'grid') {
       this.grid = true;
-      this.log();
       return;
     }
     this.closeRing();
@@ -254,23 +267,23 @@ export class GardenWork {
         const pos = this.d.player.position;
         garden.crops.flyHarvest(job.i, { x: pos.x, y: pos.y + 2.4, z: pos.z });
         garden.hats.emit('gold', { x: p.x, y: top + 0.4, z: p.z }, { count: 8, radius: 0.5 });
-        this.say(harvestFloat(before, job.plot, crop, r.got));
-        this.d.harvested(crop.id, r.got);
+        this.d.float(harvestFloat(before, job.plot, crop, r.got), job.i);
+        this.d.harvested(crop.id, r.got, job.i);
       } else if (job.work !== 'thu') {
         if (job.work === 'bon') {
           garden.hats.emit('sparkle', { x: p.x, y: top + 0.2, z: p.z }, { radius: 0.5 });
           garden.crops.bounce(job.i);
         }
-        this.say(FLOAT[job.work]);
+        this.d.float(FLOAT[job.work], job.i);
       }
-    } else if (r) this.say(`Không làm được (${r.reason})`);
+    } else if (r) this.d.reason(`Không làm được (${r.reason})`, null);
     const next = this.pending;
     this.pending = null;
     if (!next || this.job) return;
     const a = next.act;
     const f = fits(this.d.state(), next.plot, TOOL_OF[next.work], this.d.now(), this.d.speed(), a.act === 'sow' ? a.crop : undefined);
     if (f.ok) this.start({ plot: next.plot, act: f.act, work: f.work });
-    else this.say(f.why);
+    else this.d.reason(f.why, null);
   }
 
   /** Tự đi bị huỷ (joystick / chạm đi chỗ khác / kẹt): bỏ việc. */
@@ -321,21 +334,5 @@ export class GardenWork {
       if (dist < range && (!best || dist < best.d)) best = { id: p.id, d: dist };
     }
     return best?.id ?? null;
-  }
-
-  /** Vòng / lưới hạt in Console (chưa có HUD vòng). */
-  private log(): void {
-    const r = this.ring();
-    if (!r) return;
-    const line = r.grid
-      ? (r.grid.length ? r.grid.map((s, k) => `${k + 1} ${s.name} × ${s.count}`).join(' · ') : 'Túi hạt trống')
-      : r.slots.map((s) => `${s.key} ${s.name}${s.count !== null ? ` ${s.count}` : ''}${s.lit ? '' : ` (mờ: ${s.why})`}`).join(' · ');
-    console.info(`[Vườn] ${r.grid ? 'Lưới hạt' : 'Vòng'} ${r.plot}: ${line}`);
-  }
-
-  /** Chữ nổi / câu báo — chưa có thiết kế HUD (R-VUON-13): in Console. */
-  private say(t: string | FloatText): void {
-    const f = typeof t === 'string' ? { text: t, sub: null } : t;
-    console.info(`[Vườn] ${f.text}${f.sub ? ` · ${f.sub}` : ''}`);
   }
 }

@@ -7,8 +7,8 @@ enum SlotKind {
   ngoai('Ngoài trời'), // shopTabOutdoor
   trong('Trong nhà'), // shopTabIndoor
 
-  /// hạt giống Vườn rau (R-VUON-9) — trang không gửi loại này, Flutter tự thêm từ `garden.dart`
-  hat('Hạt giống'); // shopTabSeeds
+  /// hạt giống + phân bón Vườn rau (R-VUON-9/12) — trang không gửi loại này, Flutter tự thêm từ `garden.dart`
+  hat('Làm vườn'); // shopTabGarden (2026-11-16.4 — trước "Hạt giống")
 
   const SlotKind(this.label);
 

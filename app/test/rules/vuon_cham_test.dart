@@ -131,7 +131,7 @@ void main() {
       expect(await store.buyFert(), isA<Bought>());
       expect(store.coins, 15);
       expect(store.garden.fert, 4);
-      expect(seedShopItems().last.name, 'Phân bón');
+      expect(seedShopItems().first.name, 'Phân bón'); // đứng đầu tab Làm vườn (2026-11-16.4)
       expect(gardenActArgs([
         {'type': 'gardenAct', 'payload': {'act': 'buy', 'item': 'phan', 'count': 5}},
       ])?.item, 'phan');

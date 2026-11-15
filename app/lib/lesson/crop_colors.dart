@@ -29,4 +29,10 @@ abstract final class CropColors {
   static const packPaper = Color(0xFFE8D8A8);
   static const packEdge = Color(0xFFB89A5A);
   static const packSeed = Color(0xFF8A6A48);
+  // bao Phân bón (hình giữ chỗ 2026-11-16.4 — `web/src/ui/vuonIcons.ts` FERT_BAG)
+  static const fertBag = Color(0xFFC9A26E);
+  static const fertEdge = Color(0xFF9A7448);
+  static const fertLeaf = Color(0xFF6FA34E);
+  static const fertLeafLight = Color(0xFF82B85A);
+  static const fertStem = Color(0xFF5E8C3E);
 }

@@ -5,12 +5,13 @@
  * đã mua hết; "Đóng" + Esc. DOM gốc `#shopPanel` ở index.html (`#shop` là nút nổi "Vào tiệm"), phần trong dựng bằng createElement. Không giữ luật: chữ + trạng thái
  * ở `zones/shopView.ts`, mua qua [ShopPanelHost.buy] (`walletRoom.ts` → `zones/walletRules.ts`).
  */
-import { bagKey, boughtView, confirmView, isFertEntry, POOR_HINT, SEED_GRID_HINT, SEED_QTY, seedCrop, seedLine, type GardenBag, SHOP_TABS, shopBanner, shopGroups, stockLine, type DecorStock, type ShopCard, type ShopEntry, type ShopTab } from '../zones/shopView';
+import { bagKey, boughtView, confirmView, FERT_SHORT, isFertEntry, POOR_HINT, shopSubtitle, SEED_GRID_HINT, SEED_QTY, seedCrop, seedLine, type GardenBag, SHOP_TABS, shopBanner, shopGroups, stockLine, type DecorStock, type ShopCard, type ShopEntry, type ShopTab } from '../zones/shopView';
 import { formatCoins } from '../zones/wallet';
 import type { BuyResult } from '../zones/walletRules';
 import { cropPicture, SEED_PACK } from './cropArt';
 import { COIN, DECOR_PICTURES, STROKE, svgIcon, type SvgNode } from './decorIcons';
 import { el } from './dom';
+import { FERT_BAG } from './vuonIcons';
 import { coinIcon } from './wallet';
 import './shop.css';
 
@@ -39,8 +40,8 @@ function button(cls: string, label: string, icon?: SVGElement): HTMLButtonElemen
 /** Hình phẳng của vật (khung 64) cỡ [size] trên nền giấy; hạt → hình cây chín (+ gói hạt 26 góc dưới phải khi [pack]). */
 function picture(item: ShopEntry, size: number, pack = false): Node[] {
   const c = seedCrop(item);
-  // Phân bón (R-VUON-12): tạm gói hạt tới khi có hình V-72
-  if (isFertEntry(item)) return [svgIcon(SEED_PACK, Math.round(size * 0.7), '0 0 26 26')];
+  // Phân bón (R-VUON-12): bao phân (hình giữ chỗ 2026-11-16.4 tới khi có hình `phan-bon`)
+  if (isFertEntry(item)) return [svgIcon(FERT_BAG, size, '4 6 40 40')];
   if (!c) return [svgIcon(DECOR_PICTURES[item.id] ?? [], size, '0 0 64 64', { fill: 'none' })];
   const out: Node[] = [cropPicture(c.id, size)];
   if (pack) {
@@ -148,7 +149,7 @@ export class ShopPanel {
     const name = h('h1', '', 'Tạp hoá'); // shopName
     // shopSubtitle (đổi 2026-11-15.42)
     const seeds = this.items.some((i) => i.slot === 'hat');
-    titles.append(name, h('span', 'sub', seeds ? 'Đồ trang trí Nhà của ta · mỗi cái đặt một chỗ · hạt giống cho Vườn rau' : 'Đồ trang trí Nhà của ta · mỗi cái đặt một chỗ'));
+    titles.append(name, h('span', 'sub', shopSubtitle(seeds))); // shopSubtitleGarden (2026-11-16.4)
     const brand = h('div', 'sp-brand');
     const seal = h('span', 'sp-seal'); // ấn son chữ Việt "Tạp hoá" (2026-11-15.29 — không chữ Hán, R-HUD-4)
     seal.setAttribute('aria-hidden', 'true');
@@ -206,7 +207,7 @@ export class ShopPanel {
       }),
     );
     this.renderBanner();
-    this.seedHint.hidden = this.tab !== 'hat'; // shopSeedSub — chỉ ở tab Hạt giống
+    this.seedHint.hidden = this.tab !== 'hat'; // shopSeedSub — chỉ ở tab Làm vườn
     this.list.replaceChildren(
       ...shopGroups(this.items, this.balance, this.tab, this.picked?.id ?? null).map((g) => {
         const sec = h('section', 'sp-group');
@@ -246,6 +247,7 @@ export class ShopPanel {
     else act.addEventListener('click', () => this.pick(item));
     li.append(art, h('div', 'name', item.name));
     if (seed) li.append(h('div', seed.inBag > 0 ? 'inbag has' : 'inbag', seed.text)); // shopInBag
+    if (isFertEntry(item)) li.append(h('div', 'fertShort', FERT_SHORT)); // shopFertilizerShort (2026-11-16.4)
     const stock = stockLine(item, this.stock);
     if (stock) li.append(h('div', stock.has ? 'inbag has' : 'inbag', stock.text)); // shopInBagPlaced / shopNotOwned
     li.append(price, act);
@@ -289,7 +291,7 @@ export class ShopPanel {
         qty.append(b);
       }
       const block = h('div', 'qtyBlock');
-      block.append(h('div', 'qtyLabel', 'Số hạt'), qty);
+      block.append(h('div', 'qtyLabel', isFertEntry(item) ? 'Số bao' : 'Số hạt'), qty);
       parts.push(block);
     }
     const dl = h('dl');

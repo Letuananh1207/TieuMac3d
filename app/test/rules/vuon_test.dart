@@ -200,7 +200,7 @@ void main() {
       for (final c in crops) {
         expect(2 * c.sell >= c.seed, isTrue, reason: c.name);
       }
-      expect(seedShopItems().first.name, 'Hạt Cải ngọt');
+      expect(seedShopItems()[1].name, 'Hạt Cải ngọt'); // sau thẻ Phân bón
     });
 
     test('R-VUON-9: có 50, × 5 Hạt Ngô → trả 40, còn 10, túi +5; × 10 (80) → còn thiếu 30; số lạ → bad', () async {

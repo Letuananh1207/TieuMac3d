@@ -1,0 +1,88 @@
+/* Vòng công cụ quanh luống (thiết kế 2026-11-16.4 — design/docs/screen_specs.md "Vườn rau kiểu Mole"): ô giữa 58, ô quanh 48
+   bán kính 64, vành kính sương 42 % dày 26 + viền trắng 70 %, ô nền kem #FBF7EE viền trắng 2; mờ = sương 92 % hình xám 42 %;
+   nên làm = viền gold 3 cách 1 + quầng 7 px gold 22 %; số = viên slate 20. Token: slate, slate-muted, gold, frost*. */
+#gardenSafe{position:fixed;top:var(--sa-top);right:var(--sa-right);bottom:var(--sa-bottom);left:var(--sa-left);visibility:hidden;pointer-events:none;z-index:-1}
+#gardenRingSvg{position:fixed;inset:0;width:100%;height:100%;z-index:4;pointer-events:none;overflow:visible}
+#gardenRingSvg polygon{fill:none;stroke-linejoin:round}
+#gardenRingSvg .gr-glow{stroke:rgba(212,166,74,.25);stroke-width:12}
+#gardenRingSvg .gr-edge{stroke:#F7D774;stroke-width:3}
+#gardenRingSvg .gr-line{stroke:#fff;stroke-width:3;stroke-dasharray:6 4;stroke-linecap:round;filter:drop-shadow(0 1px 2px rgba(36,50,58,.35))}
+#gardenRingSvg .gr-head{fill:#fff;stroke:none;filter:drop-shadow(0 1px 2px rgba(36,50,58,.35))}
+
+#gardenRing{position:fixed;left:0;top:0;width:0;height:0;z-index:6;touch-action:manipulation}
+#gardenRing[hidden]{display:none}
+.gr-band{position:absolute;left:-77px;top:-77px;width:154px;height:154px;box-sizing:border-box;border-radius:50%;border:26px solid rgba(244,247,246,.42);box-shadow:0 0 0 1px rgba(255,255,255,.7),inset 0 0 0 1px rgba(255,255,255,.7);pointer-events:none}
+#gardenRing.gr-wild .gr-band,#gardenRing.gr-wild .gr-keys{display:none}
+.gr-ring{position:absolute;left:0;top:0;width:0;height:0}
+.gr-slot{position:absolute;width:48px;height:48px;box-sizing:border-box;padding:0;border-radius:50%;background:#FBF7EE;border:2px solid rgba(255,255,255,.98);box-shadow:0 3px 8px rgba(36,50,58,.28);display:flex;align-items:center;justify-content:center;font:inherit;color:var(--slate);transition:transform .08s ease-out;touch-action:manipulation;-webkit-tap-highlight-color:transparent;cursor:pointer}
+.gr-slot.mid{width:58px;height:58px}
+.gr-slot:active{transform:scale(.92)}
+.gr-art{display:flex;align-items:center;justify-content:center;pointer-events:none}
+.gr-art .hinh,.gr-art svg{display:block}
+.gr-slot.off{background:rgba(226,231,229,.92);border-color:rgba(255,255,255,.7);box-shadow:0 3px 8px rgba(36,50,58,.14);cursor:default}
+.gr-slot.off .gr-art{filter:grayscale(1);opacity:.42}
+.gr-slot.best{outline:3px solid var(--gold);outline-offset:1px;box-shadow:0 0 0 7px rgba(212,166,74,.22),0 3px 8px rgba(36,50,58,.28)}
+.gr-n{position:absolute;right:-5px;bottom:-5px;min-width:20px;height:20px;padding:0 5px;box-sizing:border-box;border-radius:999px;background:var(--slate);border:2px solid #fff;color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.gr-n.zero{background:var(--slate-muted)}
+.gr-key{display:none;position:absolute;left:-4px;top:-4px;width:17px;height:17px;box-sizing:border-box;border-radius:5px;background:#fff;border:1px solid rgba(36,50,58,.35);color:var(--slate);font-size:10px;font-weight:800;align-items:center;justify-content:center;pointer-events:none}
+body.ban-may .gr-key{display:flex}
+/* tên ô: giữ 0,4 s (điện thoại) / rê chuột (máy) → viên kính .96 cao 24 trên ô */
+.gr-name{display:none;position:absolute;left:50%;bottom:calc(100% + 6px);transform:translateX(-50%);height:24px;padding:0 9px;border-radius:999px;background:rgba(244,247,246,.96);outline:1px solid var(--frost-outline);box-shadow:var(--shadow-hud);font-size:12px;font-weight:700;color:var(--slate);white-space:nowrap;align-items:center;gap:4px;pointer-events:none}
+.gr-slot.named .gr-name,body.ban-may .gr-slot:hover .gr-name{display:flex}
+body.ban-may .gr-name{background:var(--slate);color:#fff;outline:0}
+/* luống hoang: viên "Mở ô · xu 50" luôn hiện phía trên ô giữa */
+.gr-name.price{display:flex}
+/* máy tính: viên slate 85 % dưới vòng */
+.gr-keys{display:none;position:absolute;left:0;top:104px;transform:translateX(-50%);height:26px;padding:0 10px;border-radius:999px;background:rgba(36,50,58,.85);color:#fff;font-size:12px;font-weight:700;white-space:nowrap;align-items:center;gap:4px;pointer-events:none}
+body.ban-may .gr-keys{display:flex}
+#gardenRing kbd,#gardenRingHint kbd{font:inherit;font-size:11px;font-weight:800;padding:0 5px;border-radius:4px;background:#fff;color:var(--slate);border:1px solid rgba(36,50,58,.35)}
+/* viên nhắc máy tính: trên trái, cạnh bản đồ nhỏ (thẳng mép dưới bản đồ — không đè viên "Chạm để mở bản đồ") */
+#gardenRingHint{position:fixed;z-index:5;left:calc(max(16px,calc(var(--sa-left) + 16px)) + var(--minimap,128px) + 12px);top:calc(16px + var(--minimap,128px) - 38px);height:38px;padding:0 16px;border-radius:999px;background:rgba(244,247,246,.96);outline:1px solid var(--frost-outline);box-shadow:var(--shadow-hud);display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--slate);pointer-events:none}
+#gardenRingHint[hidden]{display:none}
+
+/* nhịp: bung từ tâm 0,15 s (ô trượt ra + 60 → 100 %); chọn → nảy 100 → 112 → 100 % 0,12 s rồi thu về tâm 0,12 s */
+#gardenRing.gr-bloom .gr-slot{animation:gr-bloom .15s ease-out}
+#gardenRing.gr-bloom .gr-band{animation:gr-fade .15s ease-out}
+@keyframes gr-bloom{from{transform:translate(calc(-1 * var(--dx)),calc(-1 * var(--dy))) scale(.6);opacity:0}to{transform:none;opacity:1}}
+@keyframes gr-fade{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+.gr-slot.pop{animation:gr-pop .12s ease-out}
+@keyframes gr-pop{50%{transform:scale(1.12)}}
+#gardenRing.gr-out .gr-slot{animation:gr-in .12s ease-in .12s forwards}
+#gardenRing.gr-out .gr-band{animation:gr-fade .12s ease-in .12s reverse forwards}
+@keyframes gr-in{to{transform:translate(calc(-1 * var(--dx)),calc(-1 * var(--dy))) scale(.6);opacity:0}}
+/* lưới hạt mở: vòng sau mờ 50 % (giữ ô Hạt giống) */
+#gardenRing.gr-dim .gr-slot:not([data-slot="hat"]),#gardenRing.gr-dim .gr-band{opacity:.5}
+
+/* lưới hạt: tấm kính .97 bo 16, đệm 8 10 12; ô 60 (ngang 56) bo 12 nền kem viền trắng 2, ≤ 3 cột cách 10 */
+.gr-grid{position:absolute;left:0;top:0;box-sizing:border-box;padding:8px 10px 12px;border-radius:16px;background:rgba(244,247,246,.97);box-shadow:0 8px 24px rgba(36,50,58,.28);display:flex;flex-direction:column;gap:8px;width:max-content;color:var(--slate)}
+.gr-grid[hidden]{display:none}
+.gr-gridHead{display:flex;align-items:center;gap:8px;font-size:13px}
+.gr-gridHead b{font-weight:700;white-space:nowrap}
+.gr-gridKeys{display:none;margin-left:auto;padding-left:10px;font-size:11px;font-weight:700;color:var(--slate-muted);white-space:nowrap}
+body.ban-may .gr-gridKeys{display:block}
+.gr-back{flex:none;width:28px;height:28px;padding:0;border-radius:50%;border:0;background:rgba(36,50,58,.08);color:var(--slate);display:flex;align-items:center;justify-content:center;touch-action:manipulation}
+.gr-cells{display:grid;grid-template-columns:repeat(var(--cols,3),60px);gap:10px}
+.gr-cell{position:relative;width:60px;height:60px;box-sizing:border-box;padding:0;border-radius:12px;background:#FBF7EE;border:2px solid #fff;box-shadow:0 2px 6px rgba(36,50,58,.16);display:flex;align-items:center;justify-content:center;touch-action:manipulation}
+.gr-cell:active{transform:scale(.94)}
+.gr-cell svg{pointer-events:none}
+.gr-tip{position:absolute;left:var(--tip,50%);top:100%;width:0;height:0;margin-left:-9px;border-left:9px solid transparent;border-right:9px solid transparent;border-top:10px solid rgba(244,247,246,.97)}
+.gr-grid.side .gr-tip{left:-10px;top:var(--tip,50%);margin:-9px 0 0;border:0;border-top:9px solid transparent;border-bottom:9px solid transparent;border-right:10px solid rgba(244,247,246,.97)}
+.gr-card{position:absolute;left:50%;top:calc(100% + 8px);transform:translateX(-50%);width:176px;box-sizing:border-box;padding:9px 12px;border-radius:12px;background:var(--slate);color:#fff;display:flex;flex-direction:column;gap:2px;font-size:12px;font-weight:600;pointer-events:none}
+.gr-card[hidden]{display:none}
+.gr-card b{font-size:14px;font-weight:700}
+.gr-sell{display:flex;align-items:center;gap:3px}
+@media (orientation:landscape) and (max-height:600px){
+  .gr-cells{grid-template-columns:repeat(var(--cols,3),56px)}
+  .gr-cell{width:56px;height:56px}
+}
+
+/* viên lý do (ô mờ): slate 92 % cao 28 bo tròn, 13/700 trắng, trên ô vừa chạm, 1,6 s, không bay */
+#gardenWhy{position:fixed;left:0;top:0;z-index:8;height:28px;padding:0 12px;border-radius:999px;background:rgba(36,50,58,.92);color:#fff;font-size:13px;font-weight:700;white-space:nowrap;display:flex;align-items:center;pointer-events:none}
+#gardenWhy[hidden]{display:none}
+
+@media (prefers-reduced-motion:reduce){
+  #gardenRing .gr-slot,#gardenRing .gr-band{animation:none !important}
+}
+/* vòng đóng khi bận (bảng vườn / trang trí / bản đồ / thoại / màn phủ) — homeGarden đóng vòng; đây chặn khung lỡ vẽ */
+body.garden-panel #gardenRing,body.decorating #gardenRing,body.map-open #gardenRing,body.covered #gardenRing,
+body.garden-panel #gardenRingSvg,body.decorating #gardenRingSvg,body.covered #gardenRingSvg,body.covered #gardenRingHint,body.decorating #gardenRingHint{display:none !important}

@@ -1,16 +1,24 @@
 /**
- * Tấm Túi đồ (R-TUI-1 — thiết kế 2026-11-15.35 `TuiDo-*`): dọc tấm đáy cao 600 (tay nắm, kính .97, cảnh tối 12 %, che
- * thanh công cụ); ngang cột phải 340 từ mép safe. Đầu: vòng ngọc + "Túi đồ" + viên số dư + nút Đóng. 4 mục cuộn (không
- * tab): Hạt giống, Nông sản (chip hình cây + "× n"), Sách (bìa + tên + "Đọc"), Đồ trang trí (thẻ nhỏ, "Đang đặt"); mục
- * trống → khung nét đứt + dòng chỉ chỗ lấy. **Chỉ xem.** Đóng: nút Đóng, kéo tay nắm xuống, chạm cảnh, nút quay lại.
- * Dữ liệu dựng sẵn ở `zones/tuiDo.ts`. DOM dựng bằng createElement.
+ * Tấm Túi đồ (R-TUI-1 — thiết kế 2026-11-15.35 `TuiDo-*`, sửa 2026-11-16.4 `TuiDo-vuon-{doc,ngang}`): dọc tấm đáy cao 600
+ * (tay nắm, kính .97, cảnh tối 12 %, che thanh công cụ); ngang cột phải 340 từ mép safe. Đầu: hình túi + "Túi đồ" + viên số
+ * dư + nút Đóng. **5 tab hình** dưới đầu tấm: Hạt giống · Đồ làm vườn · Nông sản · Sách · Trang trí (ô tab bo 12, hình 34 +
+ * nhãn 10/700; tab mở nền trắng viền `jade` 2). Hạt giống / Nông sản = lưới ô vuông 72 (ngang 52) 4 cột (ngang 5), số góc
+ * dưới phải; chạm → ô viền `jade` + thẻ chi tiết `slate` dưới lưới. Đồ làm vườn = "Nông cụ" (5 ô, không số) + "Vật tư"
+ * (Phân bón × n) + chân. Nông sản kèm ngăn Lâm sản (R-TUI-1, V-66). **Chỉ xem.** Đóng: nút Đóng, kéo tay nắm xuống, chạm
+ * cảnh, nút quay lại. Dữ liệu dựng sẵn ở `zones/tuiDo.ts`. DOM dựng bằng createElement.
  */
-import { BAG_TEXT, type BagCrop, type BagForest, type BagView } from '../zones/tuiDo';
+import './bag.css';
+import { BAG_TABS, BAG_TEXT, BAG_TOOLS, type BagCrop, type BagForest, type BagTab, type BagView } from '../zones/tuiDo';
+import { cropOf } from '../zones/vuon';
+import { growText } from '../zones/vuonHud';
+import type { SlotId } from '../zones/vuonVong';
 import { formatCoins } from '../zones/wallet';
 import { h } from './chatText';
 import { cropPicture } from './cropArt';
-import { DECOR_PICTURES, STROKE, svgIcon } from './decorIcons';
-import { ICON_BOOK, ICON_CLOSE, TOOL_ICONS } from './toolbarIcons';
+import { COIN, DECOR_PICTURES, STROKE, svgIcon } from './decorIcons';
+import { hinhImg, type HinhId } from './hinh';
+import { ICON_BOOK, ICON_CLOSE } from './toolbarIcons';
+import { BUG_NET, FERT_BAG, HAND, WEED } from './vuonIcons';
 import { coinIcon } from './wallet';
 
 /** Kéo tay nắm xuống quá chừng này (px) → đóng. */
@@ -18,12 +26,29 @@ const DRAG_CLOSE_PX = 60;
 
 const stroke = { ...STROKE, 'stroke-width': '2' };
 
+/** Hình tab (hình minh hoạ đợt 1–2); Sách chưa có hình cuốn sách riêng → biểu tượng nét. */
+const TAB_HINH: Readonly<Record<Exclude<BagTab, 'sach'>, HinhId>> = { hat: 'gieo', vuon: 'tuoi', nong: 'thu', trang: 'trang-tri' };
+
+/** Hình nông cụ (hình đợt 2 hoặc hình giữ chỗ — `vuonIcons.ts`). */
+function toolArt(id: SlotId, size: number): Element {
+  if (id === 'binh') return hinhImg('tuoi', size);
+  if (id === 'mo') return hinhImg('mo-o', size);
+  if (id === 'hat') return hinhImg('gieo', size);
+  return svgIcon({ tay: HAND, sau: BUG_NET, co: WEED, phan: FERT_BAG }[id], size, '0 0 48 48');
+}
+
 export class BagPanel {
   private readonly dim = h('div');
   private readonly root = h('section');
   private readonly coins = h('div', 'bg-coins');
+  private readonly tabs = h('div', 'bg-tabs');
   private readonly list = h('div', 'bg-list');
+  private readonly foot = h('div', 'bg-foot', BAG_TEXT.bagReadOnly);
   private open = false;
+  private tab: BagTab = 'hat';
+  private view: BagView | null = null;
+  /** ô đang chọn (thẻ chi tiết) trong tab Hạt giống / Nông sản */
+  private picked: string | null = null;
 
   constructor(
     private readonly close: () => void,
@@ -40,15 +65,16 @@ export class BagPanel {
     const grip = h('div', 'bg-grip');
     grip.setAttribute('aria-hidden', 'true');
     const head = h('div', 'bg-head');
-    const ring = h('span', 'bg-ring');
-    ring.append(svgIcon(TOOL_ICONS.tuiDo, 20, undefined, stroke));
+    const ring = h('span', 'bg-ring hinhRing');
+    ring.append(hinhImg('tui-do', 34));
     const shut = h('button', 'bg-close');
     shut.type = 'button';
     shut.setAttribute('aria-label', BAG_TEXT.bagClose);
     shut.append(svgIcon(ICON_CLOSE, 18, undefined, stroke));
     shut.addEventListener('click', () => this.close());
     head.append(ring, h('h2', 'bg-title', BAG_TEXT.bagTitle), this.coins, shut);
-    this.root.append(grip, head, this.list, h('div', 'bg-foot', BAG_TEXT.bagReadOnly));
+    this.tabs.setAttribute('role', 'tablist');
+    this.root.append(grip, head, this.tabs, this.list, this.foot);
     document.body.append(this.dim, this.root);
     this.dragToClose(grip, head);
   }
@@ -62,56 +88,146 @@ export class BagPanel {
     this.root.hidden = !on;
     this.dim.hidden = !on;
     this.root.style.transform = '';
+    this.picked = null;
     document.body.classList.toggle('bag-open', on);
     if (on) this.list.scrollTop = 0;
   }
 
   /** Vẽ lại theo số đã lưu. */
   render(v: BagView): void {
+    this.view = v;
     this.coins.hidden = v.coins === null;
     this.coins.replaceChildren(coinIcon(22), h('span', '', formatCoins(v.coins ?? 0)));
     this.coins.setAttribute('aria-label', `Văn tiền: ${v.coins ?? 0}`);
-    const out: HTMLElement[] = [];
-    out.push(...this.section(BAG_TEXT.bagSeeds, v.seeds.total, v.seeds.items.length ? this.chips(v.seeds.items, 'bg-seeds') : this.empty(v.seeds.empty)));
-    out.push(...this.section(BAG_TEXT.bagCrops, v.crops.total, v.crops.items.length ? this.chips(v.crops.items, 'bg-crops') : this.empty(v.crops.empty)));
-    out.push(...this.section(v.book.title, v.book.item ? 1 : 0, v.book.item ? this.bookRow(v.book.item.title) : this.empty(v.book.empty)));
-    let decor: HTMLElement;
-    if (v.decor.items.length) {
-      decor = h('div', 'bg-decor');
-      for (const d of v.decor.items) {
-        const card = h('div', d.placed > 0 ? 'bg-card placed' : 'bg-card');
-        const pic = h('div', 'bg-pic');
-        const art = DECOR_PICTURES[d.id];
-        if (art) pic.append(svgIcon(art, 34, '0 0 64 64'));
-        card.append(pic, h('div', 'bg-name', d.name));
-        card.append(h('span', 'bg-counts', d.text)); // bagDecorCounts (2026-11-15.42)
-        decor.append(card);
+    this.draw();
+  }
+
+  private draw(): void {
+    const v = this.view;
+    if (!v) return;
+    this.tabs.replaceChildren(
+      ...BAG_TABS.map(({ tab, label }) => {
+        const b = h('button', tab === this.tab ? 'bg-tab on' : 'bg-tab');
+        b.type = 'button';
+        b.setAttribute('role', 'tab');
+        b.setAttribute('aria-selected', String(tab === this.tab));
+        b.append(tab === 'sach' ? svgIcon(ICON_BOOK, 30, undefined, stroke) : hinhImg(TAB_HINH[tab], 34), h('span', '', label));
+        b.addEventListener('click', () => {
+          this.tab = tab;
+          this.picked = null;
+          this.draw();
+          this.list.scrollTop = 0;
+        });
+        return b;
+      }),
+    );
+    this.foot.textContent = this.tab === 'vuon' ? BAG_TEXT.bagToolsHint : BAG_TEXT.bagReadOnly;
+    this.list.replaceChildren(...this.body(v));
+  }
+
+  private body(v: BagView): HTMLElement[] {
+    switch (this.tab) {
+      case 'hat':
+        return v.seeds.items.length ? this.cells(v.seeds.items, true) : [this.empty(v.seeds.empty)];
+      case 'nong': {
+        const out = v.crops.items.length ? this.cells(v.crops.items, false) : [this.empty(v.crops.empty)];
+        // ngăn Lâm sản (R-TUI-1, V-66 B4): chip "tên × n"; hình măng chờ thiết kế (phiếu 2026-11-15-truc-lam-mini-game)
+        out.push(this.section(BAG_TEXT.bagForest), v.forest.items.length ? this.chips(v.forest.items) : this.empty(v.forest.empty));
+        return out;
       }
-    } else decor = this.empty(v.decor.empty);
-    out.push(...this.section(BAG_TEXT.bagDecor, v.decor.total, decor));
-    // ngăn Lâm sản (R-TUI-1, V-66 B4): cùng kiểu chip "tên × n" của Nông sản; hình măng chờ thiết kế (phiếu 2026-11-15-truc-lam-mini-game)
-    out.push(...this.section(BAG_TEXT.bagForest, v.forest.total, v.forest.items.length ? this.chips(v.forest.items, 'bg-crops') : this.empty(v.forest.empty)));
-    this.list.replaceChildren(...out);
+      case 'vuon':
+        return [this.section(BAG_TEXT.bagToolsSection), this.tools(), this.section(BAG_TEXT.bagSuppliesSection), this.supplies(v.fert)];
+      case 'sach':
+        return [v.book.item ? this.bookRow(v.book.item.title) : this.empty(v.book.empty)];
+      case 'trang':
+        return [this.decor(v)];
+    }
   }
 
-  private section(title: string, n: number, body: HTMLElement): HTMLElement[] {
-    const head = h('h3', 'bg-sec', title);
-    head.append(h('span', 'bg-count', String(n)));
-    return [head, body];
+  private section(title: string): HTMLElement {
+    return h('h3', 'bg-sec', title);
   }
 
-  private chips(items: readonly (BagCrop | BagForest)[], cls: string): HTMLElement {
-    const grid = h('div', `bg-chips ${cls}`);
+  /** Lưới ô vuông hạt / nông sản: số góc dưới phải; chạm → viền `jade` + thẻ chi tiết dưới lưới. */
+  private cells(items: readonly BagCrop[], seed: boolean): HTMLElement[] {
+    const grid = h('div', 'bg-cells');
+    for (const c of items) {
+      const b = h('button', c.crop === this.picked ? 'bg-cell on' : 'bg-cell');
+      b.type = 'button';
+      b.setAttribute('aria-label', `${c.name} × ${c.n}`);
+      b.setAttribute('aria-pressed', String(c.crop === this.picked));
+      b.append(cropPicture(c.crop, 52), h('span', 'bg-num', String(c.n)));
+      b.addEventListener('click', () => {
+        this.picked = this.picked === c.crop ? null : c.crop;
+        this.draw();
+      });
+      grid.append(b);
+    }
+    const out: HTMLElement[] = [grid];
+    const pick = items.find((c) => c.crop === this.picked);
+    const crop = pick ? cropOf(pick.crop) : undefined;
+    if (crop) {
+      const card = h('div', 'bg-detail');
+      const sell = h('span', 'bg-sell');
+      sell.append('bán ', svgIcon(COIN, 13, '0 0 100 100'), ` ${crop.sell} / cái`); // gardenSellPrice
+      card.append(h('b', '', crop.name));
+      if (seed) card.append(h('span', '', `Lớn trong ${growText(crop)}`)); // gardenSeedGrown
+      card.append(sell);
+      out.push(card);
+    }
+    return out;
+  }
+
+  /** Nông cụ: ô vuông + tên 11/700, không số. */
+  private tools(): HTMLElement {
+    const grid = h('div', 'bg-cells tools');
+    for (const t of BAG_TOOLS) {
+      const cell = h('div', 'bg-tool');
+      const sq = h('span', 'bg-cell');
+      sq.append(toolArt(t.id, 46));
+      cell.append(sq, h('span', 'bg-toolName', t.name));
+      grid.append(cell);
+    }
+    return grid;
+  }
+
+  /** Vật tư: Phân bón × n (R-VUON-12). */
+  private supplies(fert: number): HTMLElement {
+    const grid = h('div', 'bg-cells tools');
+    const cell = h('div', 'bg-tool');
+    const sq = h('span', 'bg-cell');
+    sq.setAttribute('aria-label', `${BAG_TEXT.bagFert} × ${fert}`);
+    sq.append(svgIcon(FERT_BAG, 46, '0 0 48 48'), h('span', fert > 0 ? 'bg-num' : 'bg-num zero', String(fert)));
+    cell.append(sq, h('span', 'bg-toolName', BAG_TEXT.bagFert));
+    grid.append(cell);
+    return grid;
+  }
+
+  private chips(items: readonly BagForest[]): HTMLElement {
+    const grid = h('div', 'bg-chips bg-crops');
     for (const c of items) {
       const chip = h('div', 'bg-chip');
-      const pic = h('span', 'bg-crop');
-      if ('crop' in c) pic.append(cropPicture(c.crop, 30));
       const txt = h('div', 'bg-txt');
       txt.append(h('div', 'bg-name', c.name), h('div', 'bg-n', `× ${c.n}`));
-      chip.append(pic, txt);
+      chip.append(h('span', 'bg-crop'), txt);
       grid.append(chip);
     }
     return grid;
+  }
+
+  private decor(v: BagView): HTMLElement {
+    if (!v.decor.items.length) return this.empty(v.decor.empty);
+    const decor = h('div', 'bg-decor');
+    for (const d of v.decor.items) {
+      const card = h('div', d.placed > 0 ? 'bg-card placed' : 'bg-card');
+      const pic = h('div', 'bg-pic');
+      const art = DECOR_PICTURES[d.id];
+      if (art) pic.append(svgIcon(art, 34, '0 0 64 64'));
+      card.append(pic, h('div', 'bg-name', d.name));
+      card.append(h('span', 'bg-counts', d.text)); // bagDecorCounts (2026-11-15.42)
+      decor.append(card);
+    }
+    return decor;
   }
 
   private bookRow(title: string): HTMLElement {

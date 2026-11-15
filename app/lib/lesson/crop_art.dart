@@ -213,3 +213,49 @@ class _PackPainter extends CustomPainter {
   @override
   bool shouldRepaint(_PackPainter old) => false;
 }
+
+/// Bao Phân bón có mầm (R-VUON-12; hình giữ chỗ thiết kế 2026-11-16.4 tới khi có hình `phan-bon`) — khung 40 × 40 lấy từ
+/// `web/src/ui/vuonIcons.ts` `FERT_BAG` (khung gốc 48, cắt `4 6 40 40`).
+class FertBag extends StatelessWidget {
+  const FertBag({super.key, this.size = 40});
+
+  final double size;
+
+  @override
+  Widget build(BuildContext context) => SizedBox.square(dimension: size, child: CustomPaint(painter: _FertPainter()));
+}
+
+class _FertPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas
+      ..save()
+      ..scale(size.width / 40)
+      ..translate(-4, -6);
+    final bag = Path()
+      ..moveTo(12, 16)
+      ..relativeCubicTo(0, -3, 3, -4, 5, -4)
+      ..relativeLineTo(14, 0)
+      ..relativeCubicTo(2, 0, 5, 1, 5, 4)
+      ..relativeLineTo(2, 22)
+      ..relativeCubicTo(0, 3, -2, 4, -4, 4)
+      ..lineTo(14, 42)
+      ..relativeCubicTo(-2, 0, -4, -1, -4, -4)
+      ..close();
+    final edge = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.6
+      ..color = CropColors.fertEdge;
+    canvas
+      ..drawPath(bag, Paint()..color = CropColors.fertBag)
+      ..drawPath(bag, edge)
+      ..drawPath(Path()..moveTo(16, 12)..relativeCubicTo(2, 3, 14, 3, 16, 0), edge)
+      ..drawPath(Path()..moveTo(24, 34)..relativeCubicTo(0, -6, 3, -9, 8, -10)..relativeCubicTo(-1, 5, -4, 8, -8, 10)..close(), Paint()..color = CropColors.fertLeaf)
+      ..drawPath(Path()..moveTo(24, 34)..relativeCubicTo(0, -5, -3, -8, -7, -9)..relativeCubicTo(1, 5, 3, 7, 7, 9)..close(), Paint()..color = CropColors.fertLeafLight)
+      ..drawLine(const Offset(24, 34), const Offset(24, 38), Paint()..color = CropColors.fertStem..strokeWidth = 1.6)
+      ..restore();
+  }
+
+  @override
+  bool shouldRepaint(_FertPainter old) => false;
+}

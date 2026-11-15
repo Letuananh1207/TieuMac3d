@@ -1,12 +1,13 @@
 /**
- * Túi đồ (R-TUI-1 — thiết kế 2026-11-15.35 `TuiDo-*`): từ số đã lưu (vườn `getGarden`, nhà `getHome`, sách đang mượn
- * `getProgress.book`, số dư, măng `getMang`) dựng 5 mục **chỉ xem** — Hạt giống, Nông sản, Sách, Đồ trang trí, Lâm sản
- * (V-66 B4); mục trống → dòng chỉ chỗ lấy.
+ * Túi đồ (R-TUI-1 — thiết kế 2026-11-15.35 `TuiDo-*`, 2026-11-16.4 `TuiDo-vuon-*`): từ số đã lưu (vườn `getGarden`, nhà
+ * `getHome`, sách đang mượn `getProgress.book`, số dư, măng `getMang`) dựng các ngăn **chỉ xem** — 5 tab hình Hạt giống · Đồ
+ * làm vườn (nông cụ + Phân bón × n) · Nông sản (+ Lâm sản — V-66 B4) · Sách · Trang trí; ngăn trống → dòng chỉ chỗ lấy.
  * Thuần (không DOM) — test `tuiDo.test.ts`. Tấm đáy: `ui/bagPanel.ts`.
  */
 import { cleanHome, DECOR_ITEMS, inBag, placedCount } from './decor';
 import type { MangKind } from './mang';
 import { CROPS, type CropId, type Garden } from './vuon';
+import { OPEN_SLOT_NAME, RING, type SlotId } from './vuonVong';
 
 /** Chuỗi (chỉ tiếng Việt — R-HUD-4), tên khoá như `design/l10n/vi.arb`. */
 export const BAG_TEXT = {
@@ -24,7 +25,29 @@ export const BAG_TEXT = {
   bagClose: 'Đóng',
   bagReadOnly: 'Chỉ xem — gieo ở luống, bán ở thùng thu mua, đặt đồ khi trang trí',
   bagRead: 'Đọc',
+  bagTabTools: 'Đồ làm vườn',
+  bagTabDecor: 'Trang trí',
+  bagToolsSection: 'Nông cụ',
+  bagSuppliesSection: 'Vật tư',
+  bagToolsHint: 'Nông cụ không hao, không có số. Phân bón × n — mua ở Tạp hoá trấn (tab Làm vườn).',
+  bagFert: 'Phân bón',
 } as const;
+
+/** 5 tab hình (thiết kế 2026-11-16.4): mã, nhãn, hình minh hoạ. */
+export type BagTab = 'hat' | 'vuon' | 'nong' | 'sach' | 'trang';
+export const BAG_TABS: readonly { tab: BagTab; label: string }[] = [
+  { tab: 'hat', label: BAG_TEXT.bagSeeds },
+  { tab: 'vuon', label: BAG_TEXT.bagTabTools },
+  { tab: 'nong', label: BAG_TEXT.bagCrops },
+  { tab: 'sach', label: BAG_TEXT.bagBooks },
+  { tab: 'trang', label: BAG_TEXT.bagTabDecor },
+];
+
+/** Nông cụ (không hao, không số): 5 ô của vòng công cụ trừ Hạt giống / Phân bón + Mở ô — theo thứ tự đặc tả. */
+export const BAG_TOOLS: readonly { id: SlotId; name: string }[] = [
+  ...RING.filter((t) => t.id !== 'hat' && t.id !== 'phan').map((t) => ({ id: t.id, name: t.name })),
+  { id: 'mo', name: OPEN_SLOT_NAME },
+];
 
 /** Số đã lưu để dựng túi. `garden` / `home` null = chưa có / lỗi (coi như trống / vật khởi đầu). */
 export interface BagSource {
@@ -69,6 +92,8 @@ export interface BagView {
   decor: { total: number; items: BagDecor[]; empty: string };
   /** ngăn Lâm sản (R-TUI-1, R-MANG-3) */
   forest: { total: number; items: BagForest[]; empty: string };
+  /** ngăn Đồ làm vườn: số bao phân (vật tư) — nông cụ cố định `BAG_TOOLS` */
+  fert: number;
 }
 
 const FOREST_NAME: Record<MangKind, string> = { mang: 'Măng', 'mang-to': 'Măng to' };
@@ -112,5 +137,6 @@ export function bagView(s: BagSource): BagView {
     crops: { total: sum(crops), items: crops, empty: BAG_TEXT.bagCropsEmpty },
     book: { title: BAG_TEXT.bagBooks, empty: BAG_TEXT.bagBooksEmpty, item: s.book ? { title: `${s.book.title} · ${s.book.subtitle}` } : null },
     decor: { total: decor.length, items: decor, empty: BAG_TEXT.bagDecorEmpty },
+    fert: Math.max(0, Math.floor(s.garden?.fert ?? 0)),
   };
 }

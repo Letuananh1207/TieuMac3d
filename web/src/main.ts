@@ -570,7 +570,7 @@ async function boot(): Promise<void> {
     }
     if (a === 'digit') {
       if (thanh?.digit(Number(key))) return; // G rồi số: biểu cảm
-      return void garden?.key(Number(key)); // vòng công cụ đang mở: 1…6 chọn ô / loại hạt (V-73, tạm tới khi có HUD)
+      return void garden?.key(Number(key)); // vòng công cụ đang mở: 1…6 chọn ô / loại hạt (V-73)
     }
     if (a === 'map') {
       areaMap.toggle(); // N: mở / đóng bản đồ lớn (R-BANDO-5)
@@ -1115,7 +1115,7 @@ async function boot(): Promise<void> {
     seatGlow.set(spot);
     decor?.update(dt, camera, seatFree); // nút "Trang trí" ẩn khi bản đồ / thoại / ngồi / màn Flutter
     garden?.update(dt, pos);
-    // HUD vườn: nút nổi / nhãn / dấu luống; ẩn khi trang trí, bản đồ, thoại, ngồi, màn Flutter, màn tải (2026-11-15.29)
+    // HUD vườn: vòng công cụ / nhãn / dấu luống / chữ nổi (2026-11-16.4); ẩn khi trang trí, bản đồ, thoại, ngồi, màn Flutter, màn tải (2026-11-15.29)
     garden?.frame(camera, {
       decorating: !!decor?.active,
       map: mapOpen || areaMap.open,
@@ -1123,7 +1123,7 @@ async function boot(): Promise<void> {
       sitting: player.isSitting,
       covered: paused || covered || !!ride?.owns,
       loading: loading.active || travelling,
-    });
+    }, dt);
     seatGlow.update(dt);
     // mở bài học / ôn / bảng, màn tải → nhạc tắt dần; đóng → phát tiếp theo giờ (R-NHAC-1)
     music?.update(dt, paused || covered || loading.active ? 0 : musicVolume(teaFloors, pos.x, pos.z));
