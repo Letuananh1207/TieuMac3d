@@ -56,7 +56,6 @@ import {
   type GardenSpot,
 } from './zones/vuonHud';
 import { fertLabel } from './zones/vuonCham';
-import type { Holding } from './zones/vuonThanh';
 import { gardenTrialAct } from './zones/walletRules';
 
 /** Nút nổi trên mép xa luống (m trên mặt luống / ra mép) và trên thùng thu mua. */
@@ -142,16 +141,16 @@ export class HomeGarden {
         const c = cropOf(crop);
         if (c) this.hud.toast(harvestToast(c, got)); // R-VUON-6
       },
+      unlock: () => this.openUnlock(), // ô "Mở ô" trên vòng luống hoang (R-VUON-8)
     });
-    // thử làm vườn khi chưa có HUD (V-73): luôn có trong Console; `?debug` thêm state / act / spot như cũ
+    // thử vòng công cụ khi chưa có HUD (V-73): luôn có trong Console; `?debug` thêm state / act / spot như cũ
     const w = this.work;
     Object.assign(window, {
       __hocXaVuon: {
-        cam: (n: number) => w.key(n),
-        dung: () => w.use(),
-        bo: () => w.drop(),
-        luot: (ids: string[]) => w.sweep(ids),
-        thanh: () => w.slots(),
+        vong: (n: number) => w.openRing(`o-${n}`),
+        chon: (k: number) => w.key(k),
+        dong: () => w.closeRing(),
+        ring: () => w.ring(),
         xem: () => this.d.garden.plots.map((p) => lookText(this.g, p.id, this.now, this.speed)),
         ...(d.debug
           ? {
@@ -175,7 +174,7 @@ export class HomeGarden {
     return this.panel.isOpen;
   }
 
-  /** Chạm cảnh khi bảng mở → đóng bảng; `true` = đã nhận chạm. */
+  /** Chạm cảnh khi bảng mở → đóng bảng; `true` = đã nhận chạm. Bảng đóng: chạm luống → vòng công cụ (V-73). */
   tap(point?: { x: number; z: number } | null): boolean {
     if (!this.panel.isOpen) return this.work.tapAt(point ?? null);
     this.closePanel();
@@ -184,22 +183,22 @@ export class HomeGarden {
 
   /** Nút quay lại / Esc: đóng bảng; `true` = đã xử lý. */
   back(): boolean {
-    return this.panel.isOpen ? this.tap() : this.work.drop();
+    return this.panel.isOpen ? this.tap() : this.work.back();
   }
 
-  /** Phím 1…6 (cầm nông cụ, V-73); ngoài rào → `false`. */
+  /** Phím 1…6: ô vòng công cụ / loại hạt trong lưới (V-73); vòng đóng → `false`. */
   key(n: number): boolean {
     return !this.panel.isOpen && this.work.key(n);
   }
 
-  /** Phím E (nút "Dùng"): đang cầm + gần luống → làm; không → `false` (E về việc khác). */
+  /** Phím E: gần luống (< 1,6 m) → mở vòng công cụ luống đó; không → `false` (E về việc khác). */
   use(): boolean {
     return !this.panel.isOpen && this.work.use();
   }
 
-  /** Đang cầm nông cụ (thanh nông cụ — HUD chờ thiết kế). */
-  get holding(): Holding | null {
-    return this.work.holding;
+  /** Đứng trong rào vườn → chạm cảnh cần dò luống (vòng công cụ — HUD chờ thiết kế). */
+  get picks(): boolean {
+    return this.work.inFence;
   }
 
   /** Vườn đang có (sau `load`). */
@@ -243,9 +242,8 @@ export class HomeGarden {
     if (!gardenHudShown(busy) && this.panel.isOpen) this.closePanel();
     this.busyNow = !gardenHudShown(busy) || this.panel.isOpen;
     this.sound?.setMuted(busy.covered || busy.loading);
-    // đang cầm nông cụ → nút nổi cũ ẩn, E / chạm làm bằng công cụ (R-VUON-2 mới); vẫn giữ "Mở ô" / "Bán"
-    const s0 = free ? this.spot() : null;
-    const s = this.work.holding && s0?.kind !== 'bin' && !(s0?.kind === 'plot' && s0.button === 'mo-o') ? null : s0;
+    // nút nổi cũ (Gieo / Tưới / Thu / Mở ô / Bán) giữ tới khi có HUD vòng công cụ (R-VUON-2 — phiếu 2026-11-15-vuon-mole)
+    const s = free ? this.spot() : null;
     this.here = s;
     this.hud.set(s, s ? this.anchorOf(s, camera) : null, nextOpenPrice(this.g));
     this.hud.follow(camera);

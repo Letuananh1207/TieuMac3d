@@ -567,7 +567,7 @@ async function boot(): Promise<void> {
     if (a === 'tool') return void thanh?.key(key);
     if (a === 'digit') {
       if (thanh?.digit(Number(key))) return; // B rồi số: biểu cảm
-      return void garden?.key(Number(key)); // trong rào Vườn rau: 1…6 cầm nông cụ (V-73, tạm tới khi có HUD)
+      return void garden?.key(Number(key)); // vòng công cụ đang mở: 1…6 chọn ô / loại hạt (V-73, tạm tới khi có HUD)
     }
     if (a === 'map') {
       areaMap.toggle(); // M: mở / đóng bản đồ lớn (R-BANDO-5)
@@ -581,7 +581,7 @@ async function boot(): Promise<void> {
     if (a === 'jump') player.jump();
     else if (a === 'bow') player.bow();
     else if (a === 'seat') {
-      if (garden?.use()) return; // đang cầm nông cụ, gần luống: E = "Dùng" (R-VUON-2, V-73)
+      if (garden?.use()) return; // gần luống: E = mở vòng công cụ (R-VUON-2, V-73)
       const spot = seatButton.current;
       if (spot) sitAt(spot); // phím E = nút nổi Ngồi (R-NGOI-1)
       else exitAction(); // không có chỗ ngồi: E = nút nổi ra cửa (V-71)
@@ -605,7 +605,7 @@ async function boot(): Promise<void> {
       }
       if (chat.close()) return; // đang gõ: chạm cảnh = đóng ô nhập
       if (decor?.tap(x, y)) return; // trang trí: chạm món = nhấc, đang cầm = đặt (chuột) / dời tới (chạm) — R-NHA-6
-      if (garden?.tap(garden.holding ? picker.pick(x, y) : null)) return; // bảng vườn rau mở: chạm cảnh = đóng bảng; đang cầm nông cụ: chạm luống = làm (V-73)
+      if (garden?.tap(garden.picks ? picker.pick(x, y) : null)) return; // bảng vườn rau mở: chạm cảnh = đóng bảng; trong rào: chạm luống = vòng công cụ (V-73)
       if (scrollOpen && !covered && !talking) {
         ngoiMat.tapScroll(x, y, camera); // cuộn sách mở: chạm thẳng vào mục trên giấy (R-ON-8)
         return;

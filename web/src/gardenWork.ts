@@ -1,12 +1,13 @@
 /**
- * Ghép làm vườn kiểu 摩尔 (V-73, R-VUON-2/3/10…13, R-AM-4): cầm nông cụ, chạm / lướt luống → hàng đợi → nhân vật **tự đi
- * tới** mép luống (`PlayerController.walkTo`) → **diễn** (`work`, dáng `player/lamVuonDang.ts`) với hạt rơi / tia nước / sâu bay /
- * cỏ bay / lấp lánh (`scene/vuonHat.ts`, `vuonSauCo.ts`, `cayTrong.ts`) + tiếng (`ui/vuonSound.ts`) → diễn xong mới gọi luật
- * (`act` của `homeGarden.ts` → `gardenAct` / ví thử). Luật thanh nông cụ thuần ở `zones/vuonThanh.ts`.
+ * Ghép làm vườn kiểu 摩尔 (V-73, R-VUON-2/3/10…13, R-AM-4): chạm luống → **vòng công cụ** quanh luống (`zones/vuonVong.ts`)
+ * → chọn ô → nhân vật **tự đi tới** mép luống (`PlayerController.walkTo`) → **diễn** (`work`, dáng `player/lamVuonDang.ts`)
+ * với hạt rơi / tia nước / sâu bay / cỏ bay / lấp lánh (`scene/vuonHat.ts`, `vuonSauCo.ts`, `cayTrong.ts`) + tiếng
+ * (`ui/vuonSound.ts`) → diễn xong mới gọi luật (`act` của `homeGarden.ts` → `gardenAct` / ví thử). Mỗi lần một việc.
  *
- * **Tạm khi chưa có HUD** (phiếu `docs/phieu_thiet_ke/2026-11-15-vuon-mole.md`): phím **1–6** chọn ô (bấm 3 lần nữa = đổi
- * loại hạt), **E** dùng lên luống gần nhất (< 1,6 m), **Esc** bỏ cầm, click / chạm luống khi đang cầm = làm luống đó; Console
- * `__hocXaVuon.cam(n) / dung() / luot([...]) / thanh() / xem()`. Chữ nổi in Console (`console.info`) tới khi có thiết kế.
+ * **Tạm khi chưa có HUD vòng** (phiếu `docs/phieu_thiet_ke/2026-11-15-vuon-mole.md`) — không dựng vòng tạm cho người dùng
+ * thật: click / chạm luống = mở vòng (vòng in Console; chạm không bị nuốt — vẫn đi như cũ), **E** mở vòng ở luống gần nhất
+ * (< 1,6 m), phím **1–6** chọn ô (1 = Tay giữa), lưới hạt mở thì **1–n** chọn loại, **Esc** lưới → vòng → đóng; Console
+ * `__hocXaVuon.vong(n) / chon(k) / dong() / xem()`. Điện thoại giữ nút nổi Gieo / Tưới / Thu cũ tới khi có HUD vòng.
  */
 import type * as THREE from 'three';
 import type { Character } from './player/character';
@@ -15,32 +16,24 @@ import type { PlayerController } from './player/controller';
 import { WORK_FX, WORK_LEN } from './player/lamVuonDang';
 import type { Garden3D } from './scene/vuonLuong';
 import type { VuonSound, VuonTieng } from './ui/vuonSound';
-import { cropOf, plotOf, type Garden, type GardenAct, type GardenResult } from './zones/vuon';
+import { cropOf, plotOf, type GardenAct, type Garden, type GardenResult } from './zones/vuon';
 import { BUG_FLOAT, FERT_FLOAT, harvestFloat, PLOT_RANGE, SOW_FLOAT, WATER_FLOAT, WEED_FLOAT, type FloatText } from './zones/vuonHud';
-import {
-  fits,
-  holdAfter,
-  nextSeed,
-  queueAdd,
-  queueNext,
-  standSpot,
-  TOOLS,
-  toolOf,
-  toolSlots,
-  type Holding,
-  type WorkKind,
-} from './zones/vuonThanh';
+import { fits, pickSeed, pickSlot, ringView, seedGrid, standSpot, whenChosen, type Pick, type RingView, type ToolId, type WorkKind } from './zones/vuonVong';
 
 /** Tiếng theo động tác (R-AM-4). */
 const SOUND: Readonly<Record<WorkKind, VuonTieng>> = { gieo: 'rac', tuoi: 'tuoi', bat: 'tach', nho: 'poc', bon: 'phan', thu: 'bup' };
 /** Chữ nổi khi làm xong (thu tính riêng — `harvestFloat`). */
 const FLOAT: Readonly<Record<Exclude<WorkKind, 'thu'>, FloatText>> = { gieo: SOW_FLOAT, tuoi: WATER_FLOAT, bat: BUG_FLOAT, nho: WEED_FLOAT, bon: FERT_FLOAT };
+/** Động tác → ô vòng (kiểm lại việc chờ lúc bắt đầu). */
+const TOOL_OF: Readonly<Record<WorkKind, ToolId>> = { gieo: 'hat', tuoi: 'binh', bat: 'sau', nho: 'co', bon: 'phan', thu: 'tay' };
+/** Đứng yên mà nhân vật dời quá chừng này (m) khi vòng mở, không phải tự đi / chạm để đi → joystick / phím → đóng vòng. */
+const MOVE_CLOSE = 0.15;
 
 export interface GardenWorkDeps {
   garden: Garden3D;
   player: PlayerController;
   character: Character;
-  /** rào vườn (đặc tả `garden.fence`): ra khỏi → ẩn thanh, bỏ cầm (R-VUON-2) */
+  /** rào vườn (đặc tả `garden.fence`): vòng chỉ mở khi đứng trong rào; ra khỏi → đóng (R-VUON-2) */
   fence: { from: { x: number; z: number }; to: { x: number; z: number } };
   /** cạnh luống vuông (m — đặc tả `garden.size`): chạm trong luống = chọn luống */
   plotSize: number;
@@ -52,9 +45,11 @@ export interface GardenWorkDeps {
   act(a: GardenAct): Promise<GardenResult | null>;
   /** thu xong → tấm báo đã thiết kế "+n {cây} vào kho" (R-VUON-6) */
   harvested(crop: string, got: number): void;
+  /** ô "Mở ô" trên vòng luống hoang → hộp xác nhận mở ô (R-VUON-8) */
+  unlock(): void;
 }
 
-/** Việc đang làm: luống, thao tác, động tác, giây đã diễn (hiệu ứng theo mốc `WORK_FX`). */
+/** Việc: luống, thao tác, động tác, giây đã diễn (hiệu ứng theo mốc `WORK_FX`). */
 interface Job {
   plot: string;
   i: number;
@@ -67,9 +62,15 @@ interface Job {
 const reducedMotion = (): boolean => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 export class GardenWork {
-  private hold: Holding | null = null;
-  private queue: string[] = [];
+  /** luống đang mở vòng (`null` = đóng) */
+  private ringPlot: string | null = null;
+  /** lưới hạt đang mở trên vòng */
+  private grid = false;
+  /** chỗ đứng lúc mở vòng (dời bằng joystick → đóng) */
+  private readonly ringFrom = { x: 0, z: 0 };
   private job: Job | null = null;
+  /** việc chọn trong lúc đang diễn — diễn xong mới làm (R-VUON-13) */
+  private pending: { plot: string; act: GardenAct; work: WorkKind } | null = null;
   private inside = false;
   private readonly tip: THREE.Vector3;
   private readonly dir: THREE.Vector3;
@@ -81,9 +82,17 @@ export class GardenWork {
     d.garden.crops.reduced = reducedMotion();
   }
 
-  /** Đang cầm gì (`null` = đi lại thường — nút nổi cũ của vườn hiện như trước). */
-  get holding(): Holding | null {
-    return this.hold;
+  /** Đứng trong rào vườn — chạm cảnh mới cần dò luống. */
+  get inFence(): boolean {
+    return this.inside;
+  }
+
+  /** Vòng đang mở (cho Console / HUD sau thiết kế); `null` = đóng. */
+  ring(): (RingView & { grid: ReturnType<typeof seedGrid> | null }) | null {
+    const id = this.ringPlot;
+    if (!id) return null;
+    const g = this.d.state();
+    return { ...ringView(g, id, this.d.now(), this.d.speed()), grid: this.grid ? seedGrid(g) : null };
   }
 
   /** Đang đi tới / diễn ở luống [i] (homeGarden giữ sâu / cỏ đã bay khỏi luống tới khi luật ghi xong). */
@@ -94,87 +103,89 @@ export class GardenWork {
     return { i: j.i, work: j.work, popped: j.phase === 'work' && j.t >= at };
   }
 
-  /** Thanh 6 ô (cho Console / HUD sau thiết kế). */
-  slots(): ReturnType<typeof toolSlots> {
-    return toolSlots(this.d.state(), this.hold, this.d.now(), this.d.speed());
+  /** Mở vòng ở luống [id] (chạm / click / E). Ngoài rào → `false`. */
+  openRing(id: string): boolean {
+    if (!this.inside || !this.d.garden.plots.some((p) => p.id === id)) return false;
+    this.ringPlot = id;
+    this.grid = false;
+    const pos = this.d.player.position;
+    this.ringFrom.x = pos.x;
+    this.ringFrom.z = pos.z;
+    this.log();
+    return true;
   }
 
-  /** Phím 1…6 (R-VUON-2, máy tính): chọn ô; bấm lại ô Hạt giống → loại hạt kế; ngoài rào → `false` (phím về việc khác). */
+  /** Đóng vòng (+ lưới hạt). `true` = vòng đang mở. */
+  closeRing(): boolean {
+    if (!this.ringPlot) return false;
+    this.ringPlot = null;
+    this.grid = false;
+    return true;
+  }
+
+  /** Phím 1…n: lưới hạt mở → loại thứ n; vòng mở → ô thứ n (1 = Tay giữa). Không có vòng → `false`. */
   key(n: number): boolean {
-    if (!this.inside || n < 1 || n > TOOLS.length) return false;
-    const tool = TOOLS[n - 1].id;
+    const id = this.ringPlot;
+    if (!id) return false;
     const g = this.d.state();
-    if (tool === 'hat') {
-      const crop = nextSeed(g, this.hold?.tool === 'hat' ? this.hold.crop : undefined);
-      this.hold = { tool, crop };
-      this.say(crop ? `Cầm hạt ${cropOf(crop)?.name}` : 'Túi hạt trống — mua hạt ở Tạp hoá trấn');
-      if (!crop) this.hold = null;
-    } else {
-      this.hold = { tool };
-      this.say(`Cầm ${toolOf(tool).name}${tool === 'phan' ? ` × ${g.fert}` : ''}`);
+    const now = this.d.now();
+    const speed = this.d.speed();
+    if (this.grid) {
+      const s = seedGrid(g)[n - 1];
+      if (s) this.apply(pickSeed(g, id, s.crop, now, speed));
+      return true;
     }
+    const slot = ringView(g, id, now, speed).slots.find((s) => s.key === n);
+    if (slot) this.apply(pickSlot(g, id, slot.id, now, speed));
     return true;
   }
 
-  /** Esc: bỏ cầm + bỏ hàng đợi (động tác đang diễn làm nốt). `true` = đã xử lý. */
-  drop(): boolean {
-    if (!this.hold) return false;
-    this.hold = null;
-    this.queue = [];
-    if (this.job?.phase === 'walk') this.stop();
-    this.say('Bỏ cầm');
-    return true;
+  /** Esc: lưới hạt → về vòng; vòng → đóng. `true` = đã xử lý. */
+  back(): boolean {
+    if (this.grid) {
+      this.grid = false;
+      this.log();
+      return true;
+    }
+    return this.closeRing();
   }
 
-  /** E (nút "Dùng"): luống gần nhất trong 1,6 m. Không cầm / không gần → `false`. */
+  /** E: mở vòng ở luống gần nhất trong 1,6 m. Không gần → `false` (E về việc khác). */
   use(): boolean {
-    if (!this.hold) return false;
     const near = this.nearest(PLOT_RANGE);
-    if (!near) return false;
-    this.sweep([near]);
-    return true;
-  }
-
-  /** Chạm / click điểm sân [p] khi đang cầm: trúng luống → làm luống đó. `true` = đã nhận chạm. */
-  tapAt(p: { x: number; z: number } | null): boolean {
-    if (!this.hold || !p) return false;
-    const half = this.d.plotSize / 2 + 0.25;
-    const hit = this.d.garden.plots.find((q) => Math.abs(q.x - p.x) <= half && Math.abs(q.z - p.z) <= half);
-    if (!hit) return false;
-    this.sweep([hit.id]);
-    return true;
-  }
-
-  /** Lướt qua nhiều luống (R-VUON-2/13): xếp hàng làm lần lượt; luống không hợp → câu báo (chỉ khi chạm một luống). */
-  sweep(ids: readonly string[]): void {
-    if (!this.hold) return;
-    const one = ids.length === 1;
-    for (const id of ids) {
-      if (one) {
-        const f = fits(this.d.state(), id, this.hold, this.d.now(), this.d.speed());
-        if (!f.ok) {
-          this.say(f.why);
-          continue;
-        }
-      }
-      this.queue = queueAdd(this.queue, id, this.job?.plot ?? null);
-    }
-    if (!this.job) this.next();
+    return near ? this.openRing(near) : false;
   }
 
   /**
-   * Mỗi khung: rào (ra → bỏ cầm), bận (trang trí / bản đồ / thoại / màn che → bỏ cầm + dừng), hiệu ứng theo giây động tác,
-   * tick sâu / bể hạt, lấp lánh vàng quanh cây chín.
+   * Chạm / click điểm sân [p]: trúng luống → mở vòng luống đó; chỗ khác → đóng vòng. Chưa có HUD vòng → luôn `false` (chạm
+   * không bị nuốt — nhân vật vẫn đi như cũ).
+   */
+  tapAt(p: { x: number; z: number } | null): boolean {
+    const half = this.d.plotSize / 2 + 0.25;
+    const hit = p && this.d.garden.plots.find((q) => Math.abs(q.x - p.x) <= half && Math.abs(q.z - p.z) <= half);
+    if (hit) this.openRing(hit.id);
+    else this.closeRing();
+    return false;
+  }
+
+  /**
+   * Mỗi khung: rào (ra → đóng vòng, bỏ việc đang đi tới), bận (trang trí / bản đồ / thoại / màn che → như trên), joystick khi
+   * vòng mở → đóng, hiệu ứng theo giây động tác, tick sâu / bể hạt, lấp lánh vàng quanh cây chín.
    */
   update(dt: number, pos: { x: number; z: number }, busy: boolean, ripe: readonly number[]): void {
     const f = this.d.fence;
     this.inside = pos.x > Math.min(f.from.x, f.to.x) && pos.x < Math.max(f.from.x, f.to.x) && pos.z > Math.min(f.from.z, f.to.z) && pos.z < Math.max(f.from.z, f.to.z);
-    if ((!this.inside || busy) && (this.hold || this.queue.length)) {
-      this.hold = null;
-      this.queue = [];
+    if (!this.inside || busy) {
+      this.closeRing();
+      this.pending = null;
       if (this.job?.phase === 'walk') this.stop();
+    } else if (this.ringPlot && !this.job && !this.d.player.moveTarget && Math.hypot(pos.x - this.ringFrom.x, pos.z - this.ringFrom.z) > MOVE_CLOSE) {
+      this.closeRing(); // kéo joystick / phím đi (chạm để đi có `moveTarget` — vòng giữ)
+    } else if (this.ringPlot && this.d.player.moveTarget) {
+      this.ringFrom.x = pos.x;
+      this.ringFrom.z = pos.z;
     }
-    this.d.player.state.hold = this.hold ? toolOf(this.hold.tool).work : undefined;
+    this.d.player.state.hold = this.job?.work;
     const j = this.job;
     if (j?.phase === 'work') {
       const t0 = j.t;
@@ -190,40 +201,51 @@ export class GardenWork {
     garden.hats.tick(dt);
   }
 
-  /* ---------- hàng đợi ---------- */
+  /* ---------- chọn ô ---------- */
 
-  private next(): void {
-    if (!this.hold) return;
-    const r = queueNext(this.queue, this.d.state(), this.hold, this.d.now(), this.d.speed());
-    this.queue = r.rest;
-    if (r.stop) {
-      this.say(r.stop);
-      this.hold = null;
+  private apply(p: Pick): void {
+    if (p.kind === 'no') return this.say(p.why);
+    if (p.kind === 'grid') {
+      this.grid = true;
+      this.log();
+      return;
     }
-    if (!r.job) return;
-    const i = this.d.garden.plots.findIndex((p) => p.id === r.job!.plot);
-    const job: Job = { ...r.job, i, t: 0, phase: 'walk' };
+    this.closeRing();
+    if (p.kind === 'open') return this.d.unlock();
+    const job = { plot: p.plot, act: p.act, work: p.work };
+    const when = whenChosen(this.job?.phase ?? null);
+    if (when === 'cho') {
+      this.pending = job;
+      return;
+    }
+    if (when === 'doi') this.stop();
+    this.start(job);
+  }
+
+  /** Bắt đầu đi tới luống. */
+  private start(r: { plot: string; act: GardenAct; work: WorkKind }): void {
+    const i = this.d.garden.plots.findIndex((p) => p.id === r.plot);
+    const job: Job = { ...r, i, t: 0, phase: 'walk' };
     this.job = job;
-    const pos = this.d.player.position;
-    const at = standSpot(this.d.garden.plots[i], pos);
-    const ok = this.d.player.walkTo(at.x, at.z, at.faceX, at.faceZ, () => this.begin(job), () => this.cancel());
+    const at = standSpot(this.d.garden.plots[i], this.d.player.position);
+    const ok = this.d.player.walkTo(at.x, at.z, at.faceX, at.faceZ, () => this.begin(job), () => this.cancel(job));
     if (!ok) this.stop();
   }
 
-  /** Tới mép luống: diễn [WORK_LEN] giây; joystick trong lúc diễn → làm nốt, bỏ phần còn lại. */
+  /** Tới mép luống: diễn [WORK_LEN] giây; joystick trong lúc diễn → làm nốt, bỏ việc chờ. */
   private begin(job: Job): void {
     job.phase = 'work';
     job.t = 0;
-    const ok = this.d.player.work(job.work, WORK_LEN[job.work], () => void this.finish(job), () => (this.queue = []));
+    const ok = this.d.player.work(job.work, WORK_LEN[job.work], () => void this.finish(job), () => (this.pending = null));
     if (!ok) this.stop();
   }
 
-  /** Diễn xong: ghi luật (giờ gieo = lúc này — R-VUON-3/13), hiệu ứng kết quả, việc kế. */
+  /** Diễn xong: ghi luật (giờ gieo = lúc này — R-VUON-3/13), hiệu ứng kết quả, rồi việc chờ (kiểm lại). */
   private async finish(job: Job): Promise<void> {
     const before = this.d.state();
     const crop = cropOf(plotOf(before, job.plot).crop);
     const r = await this.d.act(job.act);
-    this.job = null;
+    if (this.job === job) this.job = null;
     const { garden } = this.d;
     if (r?.ok) {
       const top = garden.beds.topY(job.i);
@@ -241,22 +263,19 @@ export class GardenWork {
         }
         this.say(FLOAT[job.work]);
       }
-      if (this.hold) {
-        const h = holdAfter(r.garden, this.hold);
-        this.hold = h.holding;
-        if (h.why) {
-          this.say(h.why);
-          this.queue = [];
-        }
-      }
     } else if (r) this.say(`Không làm được (${r.reason})`);
-    this.next();
+    const next = this.pending;
+    this.pending = null;
+    if (!next || this.job) return;
+    const a = next.act;
+    const f = fits(this.d.state(), next.plot, TOOL_OF[next.work], this.d.now(), this.d.speed(), a.act === 'sow' ? a.crop : undefined);
+    if (f.ok) this.start({ plot: next.plot, act: f.act, work: f.work });
+    else this.say(f.why);
   }
 
-  /** Tự đi bị huỷ (joystick / chạm đi chỗ khác / kẹt): bỏ việc + hàng đợi, vẫn cầm. */
-  private cancel(): void {
-    this.job = null;
-    this.queue = [];
+  /** Tự đi bị huỷ (joystick / chạm đi chỗ khác / kẹt): bỏ việc. */
+  private cancel(job: Job): void {
+    if (this.job === job) this.job = null;
   }
 
   private stop(): void {
@@ -302,6 +321,16 @@ export class GardenWork {
       if (dist < range && (!best || dist < best.d)) best = { id: p.id, d: dist };
     }
     return best?.id ?? null;
+  }
+
+  /** Vòng / lưới hạt in Console (chưa có HUD vòng). */
+  private log(): void {
+    const r = this.ring();
+    if (!r) return;
+    const line = r.grid
+      ? (r.grid.length ? r.grid.map((s, k) => `${k + 1} ${s.name} × ${s.count}`).join(' · ') : 'Túi hạt trống')
+      : r.slots.map((s) => `${s.key} ${s.name}${s.count !== null ? ` ${s.count}` : ''}${s.lit ? '' : ` (mờ: ${s.why})`}`).join(' · ');
+    console.info(`[Vườn] ${r.grid ? 'Lưới hạt' : 'Vòng'} ${r.plot}: ${line}`);
   }
 
   /** Chữ nổi / câu báo — chưa có thiết kế HUD (R-VUON-13): in Console. */
