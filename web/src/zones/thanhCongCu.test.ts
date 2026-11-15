@@ -43,6 +43,9 @@ describe('thanh công cụ (R-THANH-1)', () => {
     // nói chuyện với Tiểu Mặc → ẩn; đóng khung → hiện lại
     expect(toolbarView(at({ talking: true })).visible).toBe(false);
     expect(toolbarView(at({ talking: false })).visible).toBe(true);
+    // bản máy tính: ô nhập nằm trên thanh → đang gõ thanh vẫn hiện
+    expect(toolbarView(at({ chatTyping: true, chatDocked: true })).visible).toBe(true);
+    expect(toolbarView(at({ chatTyping: false, chatDocked: true })).visible).toBe(true);
     // đang ngồi / đang nhảy → thanh vẫn hiện
     expect(toolbarView(at({ sitting: true })).visible).toBe(true);
     expect(toolbarView(at({ air: true })).visible).toBe(true);

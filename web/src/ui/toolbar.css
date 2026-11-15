@@ -108,8 +108,10 @@ body.bag-open #decorBtn,body.bag-open .learn,body.bag-open #talk,body.bag-open #
   body.ban-may{--tb-w:min(380px,calc(100vw - var(--sa-left) - var(--sa-right) - 218px))}
   body.ban-may #toolbar{left:calc(var(--sa-left) + 12px);right:auto;margin:0;width:var(--tb-w)}
   body.ban-may #emotePanel{left:calc(var(--sa-left) + 12px);right:auto;margin:0;width:min(420px,calc(100vw - var(--sa-left) - var(--sa-right) - 218px))}
-  body.ban-may #homeHere{left:calc(var(--sa-left) + 12px + var(--tb-w) / 2)}
+  body.ban-may #homeHere{left:calc(var(--sa-left) + 12px + var(--tb-w) / 2);bottom:calc(var(--sa-bottom) + 122px)}
 }
+/* bản máy tính: ô trò chuyện luôn hiện ngay trên thanh (chat.css `#chat.dock`, R-CHAT-3) → bảng Biểu cảm nổi trên ô nhập */
+body.ban-may #emotePanel{bottom:calc(var(--sa-bottom) + 126px)}
 @media (prefers-reduced-motion:reduce){
   #toolbar{transition:opacity .2s ease,visibility 0s}
   #toolbar.tb-hidden{transform:none;transition:opacity .2s ease,visibility 0s .2s}

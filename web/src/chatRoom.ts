@@ -31,6 +31,8 @@ export interface ChatFrame {
   busy: boolean;
   /** đang nhìn từ mắt khi ngồi (R-DIEU-7): không vẽ bong bóng trên đầu chính mình (nó sẽ nổi giữa màn) */
   hideMe?: boolean;
+  /** bản máy tính, thanh công cụ đang hiện → ô nhập luôn hiện ngay trên thanh (R-CHAT-3) */
+  docked?: boolean;
 }
 
 export class ChatRoom {
@@ -94,7 +96,7 @@ export class ChatRoom {
       this.chatter = new NpcChatter(this.channel, f.npcs.map((n) => this.npcSpeaker(n.id)), Math.random, t);
     }
     this.chatter?.update(t);
-    this.panel.update(t, f.busy);
+    this.panel.update(t, f.busy, !!f.docked);
 
     if (f.hideMe) this.anchors.delete(this.me.id);
     else this.anchor(this.me, f.player.x, f.player.y + f.nameTagHeight, f.player.z, ABOVE_NAME_TAG);

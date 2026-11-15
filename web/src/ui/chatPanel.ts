@@ -5,6 +5,9 @@ import './chat.css';
 
 /** Đếm chữ hiện từ số này (thiết kế 2026-11-14.9). */
 const COUNT_FROM = 50;
+/** Chữ gợi ý ô nhập: đang gõ / bản máy tính chưa chọn ô (ô luôn hiện trên thanh công cụ — R-CHAT-3). */
+const HINT_TYPING = 'Nói gì đó với đồng môn…';
+const HINT_DOCKED = 'Nhấn Enter để trò chuyện…';
 const ICON = 'http://www.w3.org/2000/svg';
 
 function icon(size: number, paths: string[], width = 2): SVGSVGElement {
@@ -65,6 +68,8 @@ export class ChatPanel {
   private open = false;
   private feedShown = false;
   private hiddenNow = false;
+  /** bản máy tính: ô nhập luôn hiện ngay trên thanh công cụ, chọn ô = mở (R-CHAT-3) */
+  private docked = false;
 
   constructor(private readonly host: ChatPanelHost) {
     this.root.id = 'chat';
@@ -113,19 +118,29 @@ export class ChatPanel {
     this.form.id = 'chatForm';
     this.form.setAttribute('aria-label', 'Gửi tin lên kênh chung');
     this.input.type = 'text';
-    this.input.placeholder = 'Nói gì đó với đồng môn…';
+    this.input.placeholder = HINT_TYPING;
     this.input.setAttribute('aria-label', 'Tin nhắn');
     this.input.autocomplete = 'off';
     this.input.enterKeyHint = 'send';
     this.input.addEventListener('input', () => this.refreshInput());
     this.input.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
+      // bản máy tính: Enter khi ô trống = thôi gõ, về điều khiển nhân vật
+      const quit = e.key === 'Escape' || (this.docked && e.key === 'Enter' && chatLength(normalizeChat(this.input.value)) === 0);
+      if (quit) {
         e.preventDefault();
         this.hide();
       }
     });
+    // bản máy tính: bấm vào ô = mở; bỏ chọn ô (bấm ra ngoài) = đóng, ô vẫn nằm đó
+    this.input.addEventListener('focus', () => {
+      if (this.docked) this.show();
+    });
+    this.input.addEventListener('blur', () => {
+      if (this.docked) this.hide();
+    });
     this.field.append(this.input, this.count);
     this.sendBtn.type = 'submit';
+    this.sendBtn.addEventListener('mousedown', (e) => e.preventDefault()); // bấm Gửi bằng chuột không làm ô mất chọn
     this.spinner.classList.add('spin');
     this.sendBtn.append(icon(18, ['M4 12l16-8-6 16-2-6-8-2z'], 2.2), this.spinner, document.createTextNode('Gửi'));
     const row = h('div', 'cx-row');
@@ -153,6 +168,7 @@ export class ChatPanel {
     this.box.hidden = false;
     this.form.hidden = false;
     this.root.classList.add('open');
+    this.input.placeholder = HINT_TYPING;
     this.host.onOpenChange(true);
     this.refreshInput();
     this.toBottom();
@@ -165,8 +181,9 @@ export class ChatPanel {
     this.open = false;
     this.input.blur();
     this.box.hidden = true;
-    this.form.hidden = true;
+    this.form.hidden = !this.docked;
     this.root.classList.remove('open');
+    if (this.docked) this.input.placeholder = HINT_DOCKED;
     this.host.onOpenChange(false);
     return true;
   }
@@ -196,13 +213,18 @@ export class ChatPanel {
     while (this.feed.children.length > 3) this.feed.firstElementChild?.remove();
   }
 
-  /** Mỗi khung: `hidden` = bận (bài học, thoại, bàn chơi, bản đồ, màn tải) → ẩn nút + khung, đóng ô nhập. */
-  update(now: number, hidden: boolean): void {
+  /**
+   * Mỗi khung: `hidden` = bận (bài học, thoại, bàn chơi, bản đồ, màn tải) → ẩn nút + khung, đóng ô nhập.
+   * `docked` = bản máy tính và thanh công cụ đang hiện → ô nhập luôn hiện ngay trên thanh (R-CHAT-3).
+   */
+  update(now: number, hidden: boolean, docked = false): void {
     if (hidden !== this.hiddenNow) {
       this.hiddenNow = hidden;
       this.root.classList.toggle('busy', hidden);
       if (hidden) this.hide();
     }
+    const dock = docked && !hidden;
+    if (dock !== this.docked) this.setDocked(dock);
     const feed = !hidden && collapsedVisible(this.lastAt, now);
     if (feed !== this.feedShown) {
       this.feedShown = feed;
@@ -216,6 +238,17 @@ export class ChatPanel {
       this.root.style.setProperty('--kb', `${kb}px`);
       // bàn phím hạ (máy tính, bàn phím rời) → thanh nhập chừa vùng bị che dưới đáy
       this.root.style.setProperty('--form-sa', kb > 0 ? '0px' : 'var(--sa-bottom)');
+    }
+  }
+
+  private setDocked(dock: boolean): void {
+    if (!dock) this.hide(); // thanh ẩn (Túi đồ, màn phủ…) → ô nhập ẩn theo
+    this.docked = dock;
+    this.root.classList.toggle('dock', dock);
+    if (!this.open) {
+      this.form.hidden = !dock;
+      this.input.placeholder = dock ? HINT_DOCKED : HINT_TYPING;
+      if (dock) this.refreshInput();
     }
   }
 

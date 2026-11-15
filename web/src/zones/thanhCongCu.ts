@@ -50,6 +50,8 @@ export interface ToolContext {
   garden: boolean;
   /** ô nhập trò chuyện mở */
   chatTyping: boolean;
+  /** bản máy tính: ô nhập nằm ngay trên thanh → đang gõ thanh vẫn hiện (R-THANH-1, R-CHAT-3) */
+  chatDocked?: boolean;
   /** bảng đang mở từ thanh (Túi đồ mở → thanh ẩn — R-THANH-1, R-TUI-1) */
   panel: ToolPanel | null;
   /** đang ngồi (Ngồi ôn kể cả cuộn sách mở, chỗ ngồi, bồ đoàn, đôn trà) — không tính bàn chơi (đã ẩn) */
@@ -75,7 +77,7 @@ export interface ToolbarView {
 
 /** Thanh có bị ẩn không (R-THANH-1) — mọi lý do ẩn đều là tạm: đóng / xong là hiện lại. */
 export function toolbarHidden(c: ToolContext): boolean {
-  return c.loading || c.crane || c.covered || c.travelMap || c.areaMap || c.talking || c.gameTable || c.decorating || c.garden || c.chatTyping || c.panel === 'tuiDo';
+  return c.loading || c.crane || c.covered || c.travelMap || c.areaMap || c.talking || c.gameTable || c.decorating || c.garden || (c.chatTyping && !c.chatDocked) || c.panel === 'tuiDo';
 }
 
 /** Trạng thái các nút (R-THANH-1/2, R-HANH-7, R-BIEU-1). */

@@ -85,6 +85,26 @@ body.chatting #joy,body.chatting #joyGhost,body.chatting #actions,body.chatting 
   .cx-time{display:none}
 }
 
+/* bản máy tính (body.ban-may, thanh đang hiện → #chat.dock — V-20261115-70, R-CHAT-3): ô nhập luôn hiện ở cột trái ngay trên
+   thanh công cụ, rộng bằng thanh; khung thu gọn / khung kênh ngay trên ô nhập; nút Trò chuyện tròn ẩn (Enter / bấm ô) */
+body.ban-may #chatBtn{display:none}
+#chat.dock{--dock-l:calc(var(--sa-left) + 12px);--dock-w:calc(100% - var(--sa-left) - var(--sa-right) - 24px);--dock-b:calc(var(--sa-bottom) + 76px)}
+@media (orientation:landscape){#chat.dock{--dock-w:var(--tb-w,380px);--dock-b:calc(var(--sa-bottom) + 72px)}}
+#chat.dock #chatForm{left:var(--dock-l);right:auto;bottom:var(--dock-b);width:var(--dock-w);padding:0;background:transparent;border:0;gap:4px;flex-direction:column-reverse}
+#chat.dock .cx-field{height:40px;border:1px solid var(--frost-line);outline:1px solid var(--frost-outline);background:rgba(244,247,246,.9);box-shadow:0 6px 18px rgba(36,50,58,.2);-webkit-backdrop-filter:var(--blur-hud);backdrop-filter:var(--blur-hud);cursor:text}
+#chat.dock .cx-field input{font-size:14px;cursor:text}
+#chat.dock .cx-field input::placeholder{color:rgba(36,50,58,.62)}
+#chat.dock.open .cx-field{background:#fff;border:2px solid var(--jade);outline:0}
+#chat.dock .cx-send{height:40px;padding:0 12px;font-size:14px}
+#chat.dock:not(.open) .cx-send{display:none}
+#chat.dock .cx-note{align-self:flex-start;padding:2px 8px;border-radius:8px;background:rgba(244,247,246,.92)}
+#chat.dock #chatFeed{left:var(--dock-l);bottom:calc(var(--dock-b) + 48px);width:var(--dock-w)}
+#chat.dock #chatBox{left:var(--dock-l);right:auto;top:auto;bottom:calc(var(--dock-b) + 48px);width:var(--dock-w);height:min(240px,calc(100% - var(--dock-b) - 60px - var(--sa-top)))}
+@media (orientation:landscape) and (max-height:600px){#chat.dock #chatBox{height:max(56px,min(104px,calc(100% - var(--dock-b) - 60px - var(--sa-top))))}}
+/* không chồng bảng Biểu cảm / tấm báo (đã nâng lên trên ô nhập — toolbar.css), Túi đồ (thanh ẩn → ô ẩn theo) */
+body.ban-may:has(#emotePanel:not([hidden])) #chatFeed,body.ban-may:has(#homeHere:not([hidden])) #chatFeed{display:none}
+body.bag-open #chatForm,body.bag-open #chatBox{display:none !important}
+
 /* bong bóng trên đầu (R-CHAT-2): đáy đuôi ở điểm neo; bo 12, chữ 14, rộng ≤ 168 (ngang 200) */
 #chatBubbles{position:fixed;inset:0;z-index:4;pointer-events:none;overflow:hidden}
 .cb{position:absolute;transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;--bg:rgba(244,247,246,.94);--line:1px solid var(--frost-outline)}

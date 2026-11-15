@@ -26,3 +26,8 @@ export function attachCheDoNhap(body: HTMLElement = document.body): void {
   };
   window.addEventListener('pointerdown', khiCham, true);
 }
+
+/** Đang ở bản máy tính (`body.ban-may`) — ô trò chuyện nằm trên thanh công cụ (R-CHAT-3, R-THANH-1). */
+export function dangBanMay(body: HTMLElement = document.body): boolean {
+  return body.classList.contains('ban-may');
+}

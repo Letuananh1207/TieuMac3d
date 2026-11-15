@@ -8,7 +8,7 @@ import { FlutterBridge, getGarden, getHome, getProgress, hasFlutter } from './br
 import { Colliders } from './collision/colliders';
 import { GamePlay, type TableSeat } from './gamePlay';
 import { Joystick } from './input/joystick';
-import { attachCheDoNhap } from './input/cheDoNhap';
+import { attachCheDoNhap, dangBanMay } from './input/cheDoNhap';
 import { Keyboard } from './input/keyboard';
 import { ChatRoom } from './chatRoom';
 import { WalletRoom } from './walletRoom';
@@ -845,6 +845,7 @@ async function boot(): Promise<void> {
       decorating: !!decor?.active,
       garden: !!garden?.active,
       chatTyping: chat.typing,
+      chatDocked: dangBanMay(), // bản máy tính: ô nhập trên thanh, gõ không ẩn thanh (R-THANH-1)
       sitting: player.isSitting,
       air: player.state.air,
       atHome: SCENE.id === HOME_OF_PLAYER,
@@ -964,7 +965,7 @@ async function boot(): Promise<void> {
     const hideHud = covered || riding;
     if (document.body.classList.contains('covered') !== hideHud) document.body.classList.toggle('covered', hideHud);
     if (document.body.classList.contains('scroll-open') !== scrollOpen) document.body.classList.toggle('scroll-open', scrollOpen);
-    chat.update({ camera, player: pos, nameTagHeight: NAME_TAG_HEIGHT, npcs: npcSet.npcs, busy: busy || gamePlay.active, hideMe: ngoiMat.firstPerson });
+    chat.update({ camera, player: pos, nameTagHeight: NAME_TAG_HEIGHT, npcs: npcSet.npcs, busy: busy || gamePlay.active, hideMe: ngoiMat.firstPerson, docked: dangBanMay() && !!thanh?.view?.visible });
     learn.follow(zones.current ? anchorOf.get(zones.current.id) : undefined, camera);
     // nút "Nói chuyện": NPC gần nhất trong 2,5 m, không đang học / ngồi / bản đồ / thoại / màn tải (R-NPC-2)
     const npcNear = paused || mapOpen || talking || loading.active || player.isSitting ? null : npcInTalkRange(npcSet.npcs, pos);
