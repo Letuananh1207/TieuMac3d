@@ -3,6 +3,14 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-15.13 — Nhà của ta bỏ vòng trận truyền tống
+
+- Loại: cảnh 3D — **bố cục**. Phiên code V-20261114-47; người dùng: "ở nhà hãy loại bỏ truyền tống trận ở nhà".
+- `nha-ta.json`: bỏ `teleport` (vòng tâm (−10; −1,5)); `player.start` (−5; 0,5) → **(0; 6,5)** trong cổng nam nhìn nhà chính,
+  hạc đáp (2,5; 6,5); chỗ vòng cũ: mai (−11,5; −2,5) + đá Thái Hồ (−9; −0,5). Rời nhà chỉ qua cổng nam về trấn.
+- Code: kiểm bãi đáp hạc ở mọi cảnh (kể cả không vòng trận). Luật: R-HANH-2, R-HANH-5, R-NHA-1, R-BANDO-2.
+- Sẽ được thay bằng bố cục mới V-48 (đảo trên biển mây).
+
 ## 2026-11-15.12 — Trấn mở: Quảng Trường lan can đá, bỏ tường ngăn khu, trục đông – tây, Sân Cổ Thụ
 
 - Loại: cảnh 3D — **bố cục**. Phiên code V-20261114-42 làm thay `/canh`; người dùng: "cảm giác bất tiện khi di chuyển trong trấn,
