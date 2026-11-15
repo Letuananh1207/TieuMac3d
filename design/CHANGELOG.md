@@ -3,6 +3,11 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-15.24 — Bỏ 4 bồn hoa quanh nhật quỹ ở Quảng Trường
+
+- Loại: cảnh 3D — bố cục. Người dùng: "loại bỏ 4 chậu cây quanh đồng hồ". Bỏ `props` bồn hoa 梅 / 蘭 / 菊 / 竹 (V-55 vừa dời ra hai góc bắc).
+  Không đổi luật; bớt tam giác.
+
 ## 2026-11-15.23 — Dời nhật quỹ ra góc đông bắc Quảng Trường, giữa sân thoáng
 
 - Loại: cảnh 3D — bố cục. Phiên code V-20261114-55; người dùng: "di chuyển đồng hồ sang vị trí góc khác để trung tâm thoáng". **Đã duyệt 2026-11-15.**
