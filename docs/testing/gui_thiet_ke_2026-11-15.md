@@ -68,3 +68,11 @@ Người dùng đã chốt luật thiết kế đề xuất: mua hạt chọn **
 | Tấm báo (dọc) | trái 132 (cạnh bản đồ nhỏ tròn 104) | R-BANDO-1 (người dùng đổi 2026-11-15): bản đồ nhỏ vuông 148 / 128 | trái = bản đồ nhỏ + 12 (dọc ≈ 180, tấm hẹp hơn, chữ xuống dòng); ngang: trên 12, sau bản đồ 128 — xin vẽ lại `VuonRau-tam-bao` với bản đồ vuông |
 | Ấn son Tạp hoá | artboard hạt dùng ấn chữ Việt "Tạp hoá"; đề xuất đổi ấn 雜貨 cũ | R-HUD-4 | đã đổi cả Flutter + web sang ấn "Tạp hoá" (trước đó code bỏ hẳn ấn) — các artboard `CuaHang-*` cũ (2026-11-14.12) còn 雜貨, xin vẽ lại |
 | Thứ tự hàng kho | Bí đỏ · Cải ngọt · Ngô | (không có luật) | theo bảng cây (Cải ngọt · Ngô · Bí đỏ) — cùng thứ tự thẻ hạt / Tạp hoá |
+## Bản máy tính: theo yêu cầu người dùng (V-20261115-67, 2026-11-15)
+
+Thiết kế .35 (`ThanhCongCu-*`) chỉ vẽ điện thoại (dọc + ngang). Người dùng xem bản web trên máy tính: "không cần hiện nút
+joystick và nên di chuyển phần thanh công cụ sang trái". Code đã theo luật mới; xin `/ui-design` vẽ thêm artboard máy tính.
+
+| Mục thiết kế | Thiết kế vẽ gì | Luật nói gì | Code đang làm |
+|---|---|---|---|
+| 2026-11-15.35 Thanh công cụ | màn ngang: vòng joystick gợi ý góc dưới trái, thanh 380 × 56 giữa đáy | R-DIEU-1 (máy tính dùng chuột, chưa chạm màn: không hiện joystick gợi ý), R-THANH-1 (máy tính màn ngang: thanh sát trái đáy) | máy `(hover: hover) and (pointer: fine)` chưa chạm → `body.ban-may` (`web/src/input/cheDoNhap.ts`): ẩn `#joyGhost`; thanh trái safe + 12, rộng min(380, màn − 218); bảng Biểu cảm trái safe + 12 (mũi nhọn vẫn trỏ ô Biểu cảm); tấm báo "Bạn đang ở Nhà của ta" giữa thanh. Chạm màn cảm ứng → về bố cục điện thoại. Điện thoại / máy tính bảng không đổi |

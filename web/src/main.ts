@@ -8,6 +8,7 @@ import { FlutterBridge, getGarden, getHome, getProgress, hasFlutter } from './br
 import { Colliders } from './collision/colliders';
 import { GamePlay, type TableSeat } from './gamePlay';
 import { Joystick } from './input/joystick';
+import { attachCheDoNhap } from './input/cheDoNhap';
 import { Keyboard } from './input/keyboard';
 import { ChatRoom } from './chatRoom';
 import { WalletRoom } from './walletRoom';
@@ -517,6 +518,7 @@ async function boot(): Promise<void> {
   /* ---------- điều khiển ---------- */
   const orbit = new OrbitCamera(spec.camera);
   const joystick = new Joystick(el('joy'), el('knob'), el('joyGhost'));
+  attachCheDoNhap(); // máy tính chuột: ẩn joystick gợi ý, thanh công cụ sang trái (R-DIEU-1, R-THANH-1)
   const picker = new GroundPicker(camera, world.ground);
   // trò chuyện kênh chung (R-CHAT-1..3, thiết kế 2026-11-14.9) — tên NPC lấy từ dữ liệu hội thoại
   const chat = new ChatRoom((id) => dialogFor(id));
