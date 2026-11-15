@@ -95,7 +95,7 @@
     {
       "id": "rung-truc",
       "han": "竹林",
-      "ten": "Rừng Trúc Rì Rào",
+      "ten": "Trúc Lâm",
       "x": 480,
       "y": 770,
       "r": 105
@@ -103,7 +103,7 @@
     {
       "id": "giang-nam",
       "han": "江南",
-      "ten": "Phố Nước Lung Linh",
+      "ten": "Yên Vũ Lâu",
       "x": 1450,
       "y": 760,
       "r": 105
@@ -111,7 +111,7 @@
     {
       "id": "bong-lai",
       "han": "蓬萊",
-      "ten": "Đảo Mây Bồng Bềnh",
+      "ten": "Bồng Lai Đảo",
       "x": 1880,
       "y": 610,
       "r": 105
@@ -119,7 +119,7 @@
     {
       "id": "truong-thanh",
       "han": "長城",
-      "ten": "Ải Gió Lồng Lộng",
+      "ten": "Nhạn Môn Quan",
       "x": 960,
       "y": 225,
       "r": 105
@@ -127,7 +127,7 @@
     {
       "id": "tu-cam-thanh",
       "han": "紫禁",
-      "ten": "Cung Vàng Rực Rỡ",
+      "ten": "Tử Cấm Thành",
       "x": 1450,
       "y": 290,
       "r": 105
@@ -135,7 +135,7 @@
     {
       "id": "to-lua",
       "han": "絲路",
-      "ten": "Đường Cát Leng Keng",
+      "ten": "Đôn Hoàng Lộ",
       "x": 380,
       "y": 300,
       "r": 105

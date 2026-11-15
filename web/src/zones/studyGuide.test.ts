@@ -33,7 +33,7 @@ describe('Hướng dẫn Khu tự học — R-VA-5', () => {
     expect(JSON.stringify(g)).not.toMatch(/\p{Script=Han}/u);
     expect(g.name).toBe('Khu tự học');
     expect(g.figure).toBe('tu-hoc');
-    expect(g.sections.map((s) => s.title)).toEqual(['Ngồi vào bồ đoàn', 'Cuộn sách ôn', 'Học bộ mới ở Rừng Trúc Rì Rào', 'Đứng dậy']);
+    expect(g.sections.map((s) => s.title)).toEqual(['Ngồi vào bồ đoàn', 'Cuộn sách ôn', 'Học bộ mới ở Trúc Lâm', 'Đứng dậy']);
     expect(g.tipBy).toBe(LIBRARIAN);
     expect(g.tipTitle).toBe('Lời thủ thư Điển Thư');
   });
@@ -46,13 +46,13 @@ describe('Hướng dẫn Khu tự học — R-VA-5', () => {
     expect(all).toContain('1 giây');
     expect(all).toContain('"Ôn bộ đến hạn"');
     expect(all).toContain('"Xem bộ đã học"');
-    expect(all).toContain('"Học bộ mới" mờ, ghi "Học ở Rừng Trúc Rì Rào"');
+    expect(all).toContain('"Học bộ mới" mờ, ghi "Học ở Trúc Lâm"');
     expect(all).toContain('"Đứng dậy"');
   });
 
-  it('R-VA-5: chưa học bộ nào → ô báo vàng biểu tượng bản đồ, hướng ra Rừng Trúc Rì Rào', () => {
+  it('R-VA-5: chưa học bộ nào → ô báo vàng biểu tượng bản đồ, hướng ra Trúc Lâm', () => {
     expect(STUDY_GUIDE.none).toMatchObject({ icon: 'ban-do', title: 'Đạo hữu chưa học bộ thủ nào' });
-    expect(plain(STUDY_GUIDE.none!.body)).toContain('Rừng Trúc Rì Rào');
+    expect(plain(STUDY_GUIDE.none!.body)).toContain('Trúc Lâm');
   });
 
   it('R-GIAO-2: biển bàn chơi vẫn mở bảng cách chơi của trò', () => {

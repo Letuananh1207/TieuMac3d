@@ -15,34 +15,34 @@ Thiết kế trái luật đã chốt → code theo luật, không theo artboard
 
 Cột App các luật trên không đổi (`ok` / `sửa` như sổ) — code đã theo luật.
 
-## Đổi tên 6 vùng (V-20261114-50, người dùng chốt kiểu A ngày 2026-11-15)
+## Đổi tên 6 vùng (V-20261114-50 → V-20261114-53: người dùng chốt bộ tên Hán Việt cổ trang ngày 2026-11-15)
 
 Code + đặc tả cảnh + `design/scene/ban-do/ban-do.json` + ảnh bản đồ (`ban-do-goc.png`, `screens/BanDo-trang-thai.png`) +
-`design/l10n/vi.arb` đã theo tên mới (R-HANH-1: nguồn tên là `ban-do.json` `ten`; mã cảnh không đổi). Artboard trên canvas
-còn tên cũ → phiên `/ui-design` thay chữ, không đổi bố cục.
+`design/l10n/vi.arb` đã theo tên mới (R-HANH-1: nguồn tên là `ban-do.json` `ten`; mã cảnh không đổi). Bộ tên từ láy của
+V-50 (cột giữa) đã bỏ — artboard nào lỡ thay theo V-50 thì thay tiếp sang cột phải. Artboard trên canvas còn tên cũ →
+phiên `/ui-design` thay chữ, không đổi bố cục.
 
-| Tên cũ | Tên mới (mã cảnh) |
-|---|---|
-| Rừng trúc | **Rừng Trúc Rì Rào** (`rung-truc`) |
-| Giang Nam | **Phố Nước Lung Linh** (`giang-nam`) |
-| Bồng Lai | **Đảo Mây Bồng Bềnh** (`bong-lai`) — "Bồng Lai Các" (tên lầu) giữ |
-| Trường Thành | **Ải Gió Lồng Lộng** (`truong-thanh`) — biển "Trường Thành" trên quan thành (tên công trình) giữ |
-| Tử Cấm Thành | **Cung Vàng Rực Rỡ** (`tu-cam-thanh`) |
-| Con đường tơ lụa / Tơ lụa | **Đường Cát Leng Keng** (`to-lua`) — dài nhất, 19 ký tự |
+| Tên gốc | V-50 (bỏ) | Tên mới (mã cảnh) |
+|---|---|---|
+| Rừng trúc | Rừng Trúc Rì Rào | **Trúc Lâm** (`rung-truc`) |
+| Giang Nam | Phố Nước Lung Linh | **Yên Vũ Lâu** (`giang-nam`) |
+| Bồng Lai | Đảo Mây Bồng Bềnh | **Bồng Lai Đảo** (`bong-lai`) — "Bồng Lai Các" (tên lầu) giữ |
+| Trường Thành | Ải Gió Lồng Lộng | **Nhạn Môn Quan** (`truong-thanh`) — biển "Trường Thành" trên quan thành (tên công trình) giữ |
+| Tử Cấm Thành | Cung Vàng Rực Rỡ | **Tử Cấm Thành** (`tu-cam-thanh`) — như tên gốc |
+| Con đường tơ lụa / Tơ lụa | Đường Cát Leng Keng | **Đôn Hoàng Lộ** (`to-lua`) |
+
+Tên vùng dài nhất 13 ký tự ("Nhạn Môn Quan"); cả bộ nơi dài nhất vẫn là "Khởi Nguyên Trấn" 16.
 
 | Artboard (`design/source/`) | Chỗ có tên cũ |
 |---|---|
 | `BanDo-doc`, `BanDo-ngang`, `TruyenTongDai`, `HanhTrinh-so-do`, `canvas.json` | nhãn nơi, thẻ "— sắp mở", sơ đồ 7 chặng (ảnh nền mới đã ở `design/scene/ban-do/ban-do-goc.png`) |
-| `BanDoVung-lon-tct-doc` | tên cảnh đầu giấy / cổng (Tử Cấm Thành → Cung Vàng Rực Rỡ) |
-| `CuoiHac-bay-*`, `CuoiHac-may-*` (7 bản) | dòng tên nơi đến dưới "Cưỡi hạc tới" — soát tên 19 ký tự ở 360 px (code đã chụp: vừa một dòng) |
+| `BanDoVung-lon-tct-doc` | tên cảnh đầu giấy / cổng (nếu đã đổi theo V-50 "Cung Vàng Rực Rỡ" → trả về "Tử Cấm Thành") |
+| `CuoiHac-bay-*`, `CuoiHac-may-*` (7 bản) | dòng tên nơi đến dưới "Cưỡi hạc tới" — tên vùng ≤ 13 ký tự, vừa một dòng ở 360 px |
 | `NgoiOn-*` (7 bản), `NgoiMat-*` (10 bản, nhiều nhất `NgoiMat-bien-the`) | "Học ở Rừng trúc", gợi ý "chọn Rừng trúc", dải "Đã học đủ 50 bộ thủ Rừng trúc", đầu cuộn "… · Rừng trúc" (code cắt "…" khi dài) |
 | `TuHoc-*` (3), `CachChoi-doc-dau*` (2), `Dau-doc-chua-hoc` | "Học bộ mới ở Rừng trúc", "tới Rừng trúc tu luyện" |
 | `TheBoThu-*` (3), `OnTap-doc-tong-ket`, `NhiemVu-*` (3), `TuLuyen-*` (5) | dòng vùng (`region`), "Ngồi thiền ở Rừng trúc" |
 | `Chat-*` (5) | ví dụ tin nhắn nêu tên vùng (tuỳ — chỉ là chữ mẫu) |
 
-Cần thiết kế thêm (code chưa tự làm):
-- **Biển cổng vùng** tên dài: biển cổng `giang-nam` "Phố Nước Lung Linh" và `bong-lai` "Đảo Mây Bồng Bềnh" (cổng 5 m, biển 2,8 × 0,9 m)
-  bị nén ngang ~70 % cho vừa (`drawSign` maxWidth) — đọc khó từ xa. Đề xuất `/canh`: biển hai dòng, hoặc biển rộng hơn cho
-  cổng vùng. Ảnh: phiếu V-50 (bản chụp `bien-cong-giang-nam-844x390.png`).
-- **Nhãn "Đảo Mây Bồng Bềnh" trên bản đồ truyền tống**: sát mép phải nên dời vào trong (vẽ lại tự kẹp), che đầu đường
-  bộ ra bến của Phố Nước Lung Linh — `/canh` xem có muốn đặt nhãn trên đảo không.
+Cần thiết kế thêm: không còn. (V-50 ghi hai việc — biển cổng vùng tên dài bị nén ngang và nhãn "Đảo Mây Bồng Bềnh" che
+đường ra bến — tên V-53 ngắn: biển cổng `giang-nam` "Yên Vũ Lâu" / `bong-lai` "Bồng Lai Đảo" không còn bị nén, nhãn
+"Bồng Lai Đảo" trên bản đồ truyền tống nằm dưới đầu đường ra bến, không che — ảnh V-53.)

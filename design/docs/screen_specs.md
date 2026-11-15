@@ -169,7 +169,7 @@ Mẫu một mục:
 - Bố cục ngang: cuộn cao ≈ 76 % màn (giấy 484 × 272), giữa trên; thẻ HUD góc dưới trái (trái safe + 12); nút đóng góc
   dưới phải (phải safe + 12), cao 44.
 - **Thẻ HUD nơi chưa đi được**: kính sương .92, viền ngoài son 35 %, bo 14, đệm 12 × 16; huy hiệu khoá 28 + dòng 15/700
-  "<Hán> <tên> — cần N chữ" (hoặc "… — cần học xong bộ thủ Rừng Trúc Rì Rào", "… — sắp mở") + dòng 13 "Bạn đã học M chữ.". Tự ẩn
+  "<Hán> <tên> — cần N chữ" (hoặc "… — cần học xong bộ thủ Trúc Lâm", "… — sắp mở") + dòng 13 "Bạn đã học M chữ.". Tự ẩn
   sau 3 s hoặc khi chạm chỗ khác.
 - **Nút "Đóng bản đồ"**: viên thuốc kính sương .92, viền ngoài `slate` 22 %, dấu × 18 + chữ 15/700.
 - Trong lúc bản đồ mở: nhân vật đứng yên, joystick + cụm nút hành động ẩn (như `R-VUNG-3`).
@@ -180,7 +180,7 @@ Mẫu một mục:
 
 ## Thẻ học bộ thủ (Flutter native) · artboard `TheBoThu-doc.dc.html`, `TheBoThu-doc-on.dc.html`, `TheBoThu-ngang.dc.html` · từ mục 2026-11-13.9
 
-- Mục đích: học một bộ thủ ở Rừng Trúc Rì Rào. Mở khi: chạm bia bộ thủ hoặc vật "sống" (suối → 氵/水, đá → 石, trúc → ⺮/竹…),
+- Mục đích: học một bộ thủ ở Trúc Lâm. Mở khi: chạm bia bộ thủ hoặc vật "sống" (suối → 氵/水, đá → 石, trúc → ⺮/竹…),
   hoặc nút học nổi cạnh bia. Đóng khi: nút chính / nút quay lại của máy. Nhân vật đứng yên khi thẻ mở (như `R-VUNG-3`).
 - Khung: dùng lại **màn bài học** (nền `mist` + núi, eyebrow, thẻ lụa, nút chính đáy) — cùng số đo lề / thẻ / nút.
 - Nội dung thẻ (dọc, từ trên): bộ thủ 120/700 Noto Serif SC `jade` + (nếu hai dạng) cột "dạng đủ" 12/700 + chữ 56 ·
@@ -255,7 +255,7 @@ Mẫu một mục:
 - **Đốm linh tự** (đợt 2, chốt hướng — `TuLuyen-dom-linh-tu-doc`): đốm sáng ≈ 0,25 m (`aura-light`) ở vật hợp nghĩa,
   chữ bộ thủ mờ 55 % phía trên; đứng trong ≈ 2 m → nút nổi "Lĩnh hội 木" (kiểu nút "Nói chuyện"). Không mở bằng chạm vào
   cảnh (`R-VUNG-2`). Chỉ người đó thấy.
-- **Linh địa** gợi ý cho `/canh` (3–5 chỗ ở Rừng Trúc Rì Rào): đình trúc, bờ suối (氵), chân thác, gốc trúc già (竹 / 木), mỏm đá
+- **Linh địa** gợi ý cho `/canh` (3–5 chỗ ở Trúc Lâm): đình trúc, bờ suối (氵), chân thác, gốc trúc già (竹 / 木), mỏm đá
   ngắm núi (山 / 石).
 - Chuỗi: `actionCultivate`, `actionCultivating`, `actionCultivateLabel`, `radicalLeft`, `radicalLearn`, `radicalBack`,
   `spiritTap`.
@@ -288,7 +288,7 @@ Mẫu một mục:
 
 ## Màn ôn câu đố (Flutter native) · artboard `OnTap-doc-chua-chon.dc.html`, `OnTap-doc.dc.html`, `OnTap-doc-dung.dc.html`, `OnTap-doc-sai.dc.html`, `OnTap-doc-ket-qua-bo.dc.html`, `OnTap-doc-tong-ket.dc.html`, `OnTap-ngang.dc.html`, `OnTap-muc-ket-qua.dc.html` · từ mục 2026-11-13.25
 
-- Mục đích: ôn các bộ đến hạn (`R-ON-1…5`, dữ liệu `openReview`). Mở khi: ngồi thiền ở Rừng Trúc Rì Rào còn bộ đến hạn, hoặc
+- Mục đích: ôn các bộ đến hạn (`R-ON-1…5`, dữ liệu `openReview`). Mở khi: ngồi thiền ở Trúc Lâm còn bộ đến hạn, hoặc
   "Ôn ngay" trên bảng nhiệm vụ. Nhân vật đứng yên khi mở.
 - Khung: màn bài học (như trên) nhưng **không eyebrow** — thay bằng thanh trên: nút tròn × 44 (kính sương, "Thoát lượt
   ôn") + cột: dòng "ÔN TẬP" 12/700 hoa · "Bộ i / n" phải, dưới là thanh tiến độ chia n đoạn cao 6 cách 4 (đã xong
@@ -544,7 +544,7 @@ Mẫu một mục:
     #2A190F), bóng 0 2 4; đầu trục tròn 18 (ngang 16) `jade` viền `gold` 2, nhô ra 14 (12).
   - Giấy `map-paper`, viền trong 5 `jade` 12 % + 1 gỗ 18 % (viền bồi lụa); đệm 16 / 16 / 18 (ngang 10 / 12 / 12); bóng
     cả cuộn 0 10 24 `slate` 32 %.
-  - Đầu: dòng nơi đang ngồi 12/700 `#5E6A70` (vd. "Quảng trường · Văn Uyên Tông", "Lối Rừng Trúc Rì Rào") + "Ngồi ôn" Lora 22
+  - Đầu: dòng nơi đang ngồi 12/700 `#5E6A70` (vd. "Quảng trường · Văn Uyên Tông", "Lối Trúc Lâm") + "Ngồi ôn" Lora 22
     (ngang 18); bên phải ấn son 溫故 (chữ dọc Noto Serif SC 15, nền `lacquer`, chữ trắng, bo 4, title "Ôn cũ biết mới").
     Dưới: vạch chấm vàng (như thẻ bộ thủ).
   - 3 mục (nút, cao tối thiểu 68 dọc / 52 ngang, bo 12, cách 10 / 6): vòng biểu tượng 36 (30) + tiêu đề 16/700 (14) +
@@ -553,19 +553,19 @@ Mẫu một mục:
       mới (nếu dùng được); không mục nào dùng được → không nổi bật.
     - **Thường**: nền trắng 72 %, viền gỗ 22 %, biểu tượng `jade` trên nền `jade` 10 %.
     - **Mờ** (`aria-disabled`): nền trắng 30 %, viền **nét đứt** gỗ 30 %, chữ `#5E6A70` (≥ 4,5:1 trên giấy), dòng lý do
-      có biểu tượng 14: ✓ `jade` ("Hôm nay đã ôn xong", "Đã học đủ") · ghim ("Học ở Rừng Trúc Rì Rào") · gạch ("Chưa học bộ nào",
+      có biểu tượng 14: ✓ `jade` ("Hôm nay đã ôn xong", "Đã học đủ") · ghim ("Học ở Trúc Lâm") · gạch ("Chưa học bộ nào",
       "Chưa có bộ nào để ôn"). Không có mũi tên.
     - Dòng phụ khi dùng được: Ôn → các bộ đến hạn "竹 trúc · 木 mộc · mỗi bộ 2 câu" (cắt "…" nếu dài) · Học bộ mới →
       "Bộ kế tiếp: 山 sơn — núi" · Xem → "5 / 50 bộ · <4 bộ học gần nhất>". Ôn khi n = 0 không ghi "(0)".
   - Chưa học bộ nào: thêm khung gợi ý (nền `jade` 8 %, viền `jade` 28 %, bo 12, biểu tượng bản đồ) "Chưa học bộ nào. Đến
-    Truyền Tống Đài, chọn **Rừng Trúc Rì Rào** rồi Ngồi ôn để học bộ đầu tiên." Học đủ 50 → dòng `jade` 13/700 giữa hai chấm
-    vàng "Đã học đủ 50 bộ thủ Rừng Trúc Rì Rào".
+    Truyền Tống Đài, chọn **Trúc Lâm** rồi Ngồi ôn để học bộ đầu tiên." Học đủ 50 → dòng `jade` 13/700 giữa hai chấm
+    vàng "Đã học đủ 50 bộ thủ Trúc Lâm".
   - Cuối: "Đứng dậy" — nút phụ viền `slate` 45 % 1,5, cao 48 (ngang 40), biểu tượng mũi tên lên + vạch. Máy tính: Esc =
     Đứng dậy; ↑ ↓ + Enter chọn mục.
 - Bố cục dọc 390×844: cuộn ở **nửa trên** — trái 16, rộng 358, trục trên ở y 57 (dưới safe 47 + 10); cao theo nội dung
   (≈ 440–500). Nhân vật ngồi ở nửa dưới màn, không bị che.
 - Bố cục ngang 844×390: cuộn **bên phải** — trái 499, rộng 284 (phải = safe 47 + 13), trên 10; nhân vật giữa-trái.
-- Trạng thái đã vẽ: a. tông môn, 2 bộ đến hạn, đã học 5 (Ôn nổi bật, Học mờ "Học ở Rừng Trúc Rì Rào") · b. Rừng Trúc Rì Rào, không bộ
+- Trạng thái đã vẽ: a. tông môn, 2 bộ đến hạn, đã học 5 (Ôn nổi bật, Học mờ "Học ở Trúc Lâm") · b. Trúc Lâm, không bộ
   đến hạn, đã học 3 (Học nổi bật, Ôn mờ "Hôm nay đã ôn xong") · c. tông môn, chưa học bộ nào (cả 3 mờ + gợi ý) · d. Rừng
   trúc, đủ 50, không bộ đến hạn (Ôn + Học mờ, Xem thường). Ngang: a, c.
 - Chuỗi: `actionSit`, `actionSitting`, `actionSitLabel`, `actionSitDueLabel`, `actionSitNewLabel`, `actionSitOnLabel`,
@@ -730,11 +730,11 @@ Mẫu một mục:
   - **Minh hoạ** (giấy `map-paper`): người ngồi xếp bằng trên bồ đoàn son, cuộn sách mở trên tay, vòng sáng nhập định (dọc 92 × 104,
     ngang 84 × 96) + cuộn treo nhỏ (rộng 104 / 120, trục `scroll-wood` 5) có 3 mục nhỏ 11/700: "Ôn bộ đến hạn (2)" nền `jade` ·
     "Học bộ mới" nét đứt mờ · "Xem bộ đã học" trắng. Chú thích 13: "Ngồi 1 giây → cuộn sách mở. Ở đây ôn và xem bộ đã học; học bộ mới
-    ở Rừng Trúc Rì Rào." Dọc: hình + chú thích một hàng; ngang: chú thích dưới.
-  - **4 mục**: 1 Ngồi vào bồ đoàn · 2 Cuộn sách ôn · 3 Học bộ mới ở Rừng Trúc Rì Rào · 4 Đứng dậy (chuỗi `studyGuide*`).
+    ở Trúc Lâm." Dọc: hình + chú thích một hàng; ngang: chú thích dưới.
+  - **4 mục**: 1 Ngồi vào bồ đoàn · 2 Cuộn sách ôn · 3 Học bộ mới ở Trúc Lâm · 4 Đứng dậy (chuỗi `studyGuide*`).
   - **Ô mẹo**: chân dung thủ thư Điển Thư (`models/anh/thu-thu-mat.png`, cắt tròn 40 / 36, lấy nửa trên) + "Lời thủ thư Điển Thư 典書".
   - **Chưa học bộ nào**: ô báo đầu vùng cuộn như Đấu chữ chưa học (nền vàng 16 %, viền `gold`), biểu tượng **bản đồ** 22, tiêu đề
-    "Đạo hữu chưa học bộ thủ nào" + đoạn hướng ra Rừng Trúc Rì Rào.
+    "Đạo hữu chưa học bộ thủ nào" + đoạn hướng ra Trúc Lâm.
 - Ngang: như Bảng cách chơi ngang — đầu một hàng + "Đóng" cao 44 (rộng 120); thân 2 cột 248 | còn lại: trái minh hoạ + ô mẹo,
   phải 4 mục cuộn.
 - Giữ đã chốt: nút nổi trên bồ đoàn nhãn "Ngồi"; dòng nơi trên cuộn sách là tên vùng.
@@ -783,7 +783,7 @@ Mẫu một mục:
     giữa, sát mép dưới − 6) — chỗ đầu không đè biểu tượng / chữ đã đặt; các cấp sau đè → bỏ chữ (biểu tượng vẫn vẽ).
   - Chạm lên bản đồ không đi tới. Đóng: "Đóng bản đồ" / nút quay lại / M / Esc.
 - Trạng thái đã vẽ: bản đồ nhỏ trên HUD dọc + ngang (Quảng Trường, có gợi ý lần đầu); 6 trạng thái bản đồ nhỏ; bản đồ lớn Khởi Nguyên Trấn
-  dọc + ngang, Nhà của ta dọc, Cung Vàng Rực Rỡ dọc (nhiều chữ nhất).
+  dọc + ngang, Nhà của ta dọc, Tử Cấm Thành dọc (nhiều chữ nhất).
 - Chuỗi: `miniMapLabel`, `miniMapHint`, `mapTitle`, `mapFloor2`, `mapFloor2Suffix`, `mapGoTo`, `mapLegend*` (+ `mapClose` có sẵn).
 - Ảnh: chưa có ảnh (nền HUD là ảnh Canvas 3D cũ giữ chỗ).
 
@@ -803,7 +803,7 @@ Mẫu một mục:
     (15) · dòng phụ 12 (11,5) · "›" khi dùng được.
     - Thường: chữ `slate`, gạch chân mực nâu 22 % 1,5.
     - Nổi bật: vệt mực `jade` loang (92 % → 55 % sang phải), chữ trắng, dòng phụ trắng 88 %.
-    - Mờ: chữ `#5E6A70`, gạch chân nét đứt 30 %, dòng phụ = lý do ("Học ở Rừng Trúc Rì Rào", "Hôm nay đã ôn xong", "Chưa có bộ nào để ôn",
+    - Mờ: chữ `#5E6A70`, gạch chân nét đứt 30 %, dòng phụ = lý do ("Học ở Trúc Lâm", "Hôm nay đã ôn xong", "Chưa có bộ nào để ôn",
       "Đã học đủ", "Chưa học bộ nào"); chạm không mở.
     - Nhấn: viền `gold` 3 + quầng vàng 18 (vệt ánh vàng dưới ngón trỏ) 0,15 s rồi mở màn.
   - "Đứng dậy": biểu tượng 16 + 14/700, gạch chân mực 45 %, cao 44.

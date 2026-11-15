@@ -78,11 +78,11 @@ void main() {
 
   for (final size in const [Size(390, 844), Size(844, 390), Size(320, 568)]) {
     final tag = '${size.width.toInt()}×${size.height.toInt()}';
-    testWidgets('R-ON-8 ($tag): tông môn 2 bộ đến hạn — Ôn (2), "Học ở Rừng Trúc Rì Rào", 4 bộ gần nhất; Đứng dậy đóng bảng', (tester) async {
+    testWidgets('R-ON-8 ($tag): tông môn 2 bộ đến hạn — Ôn (2), "Học ở Trúc Lâm", 4 bộ gần nhất; Đứng dậy đóng bảng', (tester) async {
       final fake = _Fake(['truc', 'moc', 'thuy', 'son', 'thach'], ['truc', 'moc']);
       await _open(tester, size, tonMon, fake);
       expect(find.text('Ôn bộ đến hạn (2)'), findsOneWidget);
-      expect(find.text('Học ở Rừng Trúc Rì Rào'), findsOneWidget);
+      expect(find.text('Học ở Trúc Lâm'), findsOneWidget);
       expect(find.text('Xem bộ đã học'), findsOneWidget);
       expect(find.textContaining('5 / 50 bộ', findRichText: true), findsOneWidget);
       expect(find.textContaining('木 氵 山 石', findRichText: true), findsOneWidget);
@@ -93,7 +93,7 @@ void main() {
       expect(find.byType(StudyScreen), findsNothing);
     });
 
-    testWidgets('R-ON-8 ($tag): chưa học bộ nào — cả 3 mục mờ, không "(0)", có gợi ý đi Rừng Trúc Rì Rào', (tester) async {
+    testWidgets('R-ON-8 ($tag): chưa học bộ nào — cả 3 mục mờ, không "(0)", có gợi ý đi Trúc Lâm', (tester) async {
       await _open(tester, size, chuaHoc, _Fake([]));
       expect(find.text('Ôn bộ đến hạn'), findsOneWidget);
       expect(find.textContaining('(0)'), findsNothing);
@@ -118,7 +118,7 @@ void main() {
     expect(find.byType(StudyScreen), findsOneWidget);
   });
 
-  testWidgets('R-HANH-3: Rừng Trúc Rì Rào — Học bộ mới → thẻ 木; "Đã lĩnh hội" → về bảng, bộ kế 氵; xem bộ đã học → chạm 竹 → "Xuất định" → về bảng', (tester) async {
+  testWidgets('R-HANH-3: Trúc Lâm — Học bộ mới → thẻ 木; "Đã lĩnh hội" → về bảng, bộ kế 氵; xem bộ đã học → chạm 竹 → "Xuất định" → về bảng', (tester) async {
     final fake = _Fake(['truc']);
     final req = _req(
       items: const [

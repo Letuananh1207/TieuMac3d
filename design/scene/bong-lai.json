@@ -1,6 +1,6 @@
 {
   "site": {
-    "name": "Đảo Mây Bồng Bềnh",
+    "name": "Bồng Lai Đảo",
     "han": "蓬萊",
     "areas": [
       {
@@ -457,7 +457,7 @@
       "x": 0,
       "z": 15,
       "width": 5,
-      "title": "Đảo Mây Bồng Bềnh",
+      "title": "Bồng Lai Đảo",
       "roofColor": "#2f6f6a"
     }
   ],

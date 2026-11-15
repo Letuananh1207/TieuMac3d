@@ -9,22 +9,22 @@ Hồ sơ: `docs/tham_khao/rung-truc.md` (vùng 1), `docs/tham_khao/cong-trinh-no
   cấp ở Chưởng Môn Điện. Mỗi vùng là một chuyến "du học" theo cấp, xong thì về.
 - **Đi lại**: trận truyền tống **trong tông môn** (không có màn bản đồ) — **Truyền Tống Đài** thay Diễn Võ Trường.
 - **Mở khoá theo số chữ / cấp HSK.**
-- **Vùng đầu**: Rừng Trúc Rì Rào (bộ thủ) — hướng A Giang Nam thư hương + thác / ngọn trúc; bia bộ thủ dọc lối + vật "sống".
+- **Vùng đầu**: Trúc Lâm (bộ thủ) — hướng A Giang Nam thư hương + thác / ngọn trúc; bia bộ thủ dọc lối + vật "sống".
 - Mỗi vùng là **một cảnh 3D nhỏ riêng** (một đặc tả riêng), nhẹ cho điện thoại.
 
 ## 7 chặng
 
-Tên hiển thị của 6 vùng đổi ngày 2026-11-15 (V-50, kiểu 摩尔: danh từ nơi + từ láy), nguồn `ban-do/ban-do.json` `ten`; trong ngoặc là bối cảnh, mã cảnh giữ nguyên.
+Tên hiển thị của 6 vùng đổi ngày 2026-11-15 (V-50), đổi lần 2 sang tên Hán Việt cổ trang (V-53), nguồn `ban-do/ban-do.json` `ten`; trong ngoặc là bối cảnh, mã cảnh giữ nguyên.
 
 | Chặng | Chữ Hán | Cấp | Mở khi (đề xuất) | Nhận diện | Dựng |
 |---|---|---|---|---|---|
 | Văn Uyên Tông | 文淵 | nhà | luôn | cổng, giảng đường, thư viện, Chưởng Môn Điện, Truyền Tống Đài | đã có + đài |
-| Rừng Trúc Rì Rào (rừng trúc) | 竹 | bộ thủ | từ đầu | trúc mao dày, lối đá, suối, đình trúc, bia bộ thủ, thác cuối lối | vùng đầu tiên |
-| Phố Nước Lung Linh (Giang Nam) | 江南 | HSK 1 | xong bộ thủ | phố nước tường trắng ngói đen, cầu vòm, thuyền ô bồng, liễu | cần nước có bờ, cầu, thuyền |
-| Đảo Mây Bồng Bềnh (Bồng Lai) | 蓬萊 | HSK 2–3 | ≥ 300 chữ | đảo nổi, biển mây, hạc, cầu treo | dùng lại đảo nổi, biển mây |
-| Ải Gió Lồng Lộng (Trường Thành) | 長城 | HSK 4–6 | ≥ 900 chữ | tường thành trên sống núi, tháp canh, cờ | tường bám địa hình |
-| Cung Vàng Rực Rỡ (Tử Cấm Thành) | 紫禁 | HSK 7–9 | ≥ 1 800 chữ | mái vàng nối tiếp, sân đá, cửa son đinh vàng | lặp model điện ngói vàng |
-| Đường Cát Leng Keng (Con đường tơ lụa) | 絲路 | mở rộng | ≥ 3 000 chữ | đồi cát, ốc đảo, lạc đà, hang bích hoạ | để sau |
+| Trúc Lâm (rừng trúc) | 竹 | bộ thủ | từ đầu | trúc mao dày, lối đá, suối, đình trúc, bia bộ thủ, thác cuối lối | vùng đầu tiên |
+| Yên Vũ Lâu (Giang Nam) | 江南 | HSK 1 | xong bộ thủ | phố nước tường trắng ngói đen, cầu vòm, thuyền ô bồng, liễu | cần nước có bờ, cầu, thuyền |
+| Bồng Lai Đảo (Bồng Lai) | 蓬萊 | HSK 2–3 | ≥ 300 chữ | đảo nổi, biển mây, hạc, cầu treo | dùng lại đảo nổi, biển mây |
+| Nhạn Môn Quan (Trường Thành) | 長城 | HSK 4–6 | ≥ 900 chữ | tường thành trên sống núi, tháp canh, cờ | tường bám địa hình |
+| Tử Cấm Thành (Tử Cấm Thành) | 紫禁 | HSK 7–9 | ≥ 1 800 chữ | mái vàng nối tiếp, sân đá, cửa son đinh vàng | lặp model điện ngói vàng |
+| Đôn Hoàng Lộ (Con đường tơ lụa) | 絲路 | mở rộng | ≥ 3 000 chữ | đồi cát, ốc đảo, lạc đà, hang bích hoạ | để sau |
 
 Mốc theo số chữ HSK 3.0 (HSK1 300 · HSK3 900 · HSK6 1 800 · HSK9 3 000); khớp cấp tu đạo của Tiểu Mặc (Thiên sư
 3 000 chữ). Mốc là **đề xuất** — duyệt ở sổ quy tắc. Dáng Tiểu Mặc mỗi vùng theo tờ thiết kế (`models/anh/tieu-mac-thiet-ke.webp`).

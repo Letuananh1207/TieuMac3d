@@ -216,3 +216,12 @@ dart tool/rule_trace.dart · dart tool/rule_trace.dart --pending
   360 × 640 / 390 × 844 / 844 × 390 — không tràn.
 - Flutter: hằng `regionNames`, `firstRegion` (`journey/journey.dart`, kiểu tên của dự án, không tiền tố `k`).
 - Còn: 9 (thử máy), biển cổng tên dài + nhãn Đảo Mây trên bản đồ chờ `/canh` / `/ui-design` (`docs/testing/gui_thiet_ke_2026-11-15.md`).
+
+## Đổi lần 2 (V-20261114-53, 2026-11-15) — bộ tên Hán Việt cổ trang
+
+Người dùng chưa hài lòng bộ từ láy, chốt: rung-truc **Trúc Lâm** · giang-nam **Yên Vũ Lâu** · bong-lai **Bồng Lai Đảo** ·
+truong-thanh **Nhạn Môn Quan** · tu-cam-thanh **Tử Cấm Thành** · to-lua **Đôn Hoàng Lộ**. Thay ở mọi chỗ V-50 đã đổi (các mục
+trên giữ làm lịch sử, tên trong đó là bộ cũ). Biển cổng `cong-pho` / `cong-tien` theo tên mới; giữ "Bồng Lai Các", "Trường
+Thành" (quan thành), cờ "Tử"/"Cấm". Vẽ lại `ban-do-goc.png` + `screens/BanDo-trang-thai.png`: nhãn không đè nhãn miền, nhãn
+"Bồng Lai Đảo" dưới đầu đường ra bến. Hai việc thiết kế V-50 để lại (biển cổng tên dài, nhãn đảo) hết cần. Sổ quy tắc: 22
+luật chỉ thay tên, Xác nhận `chờ`.

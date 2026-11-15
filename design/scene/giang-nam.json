@@ -1,6 +1,6 @@
 {
   "site": {
-    "name": "Phố Nước Lung Linh",
+    "name": "Yên Vũ Lâu",
     "han": "江南",
     "areas": [
       {
@@ -616,7 +616,7 @@
       "x": 0,
       "z": 18,
       "width": 5,
-      "title": "Phố Nước Lung Linh",
+      "title": "Yên Vũ Lâu",
       "roofColor": "#3b3f44"
     }
   ],

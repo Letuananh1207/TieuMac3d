@@ -41,7 +41,7 @@ OpenStudyRequest _req({
     next: lessons && left.isNotEmpty ? left.first : null,
     upcoming: lessons && left.length > 1 ? left.sublist(1) : const [],
     learned: learned,
-    region: lessons ? 'Rừng Trúc Rì Rào' : 'Văn Uyên Tông',
+    region: lessons ? 'Trúc Lâm' : 'Văn Uyên Tông',
   );
 }
 
@@ -49,7 +49,7 @@ StudyProgress _p(List<Radical> learned, [List<Radical> due = const []]) =>
     StudyProgress(learned: {for (final r in learned) r.id}, due: [for (final r in due) r.id]);
 
 void main() {
-  test('R-ON-8: tông môn, 2 bộ đến hạn → Ôn (2) nổi bật, Học bộ mới mờ "Học ở Rừng Trúc Rì Rào", Xem dùng được', () {
+  test('R-ON-8: tông môn, 2 bộ đến hạn → Ôn (2) nổi bật, Học bộ mới mờ "Học ở Trúc Lâm", Xem dùng được', () {
     final learned = [_truc, _moc, _thuy, _son];
     final b = StudyBoard.of(_req(lessons: false, learned: learned, due: [_truc, _moc]), _p(learned, [_truc, _moc]));
     expect(b.review.enabled, isTrue);
@@ -73,7 +73,7 @@ void main() {
     expect(done.highlight, isNull);
   });
 
-  test('R-ON-8 / R-HANH-3: Rừng Trúc Rì Rào, không bộ đến hạn → Học bộ mới nổi bật; học xong → bộ kế tiếp, Xem thêm bộ vừa học', () {
+  test('R-ON-8 / R-HANH-3: Trúc Lâm, không bộ đến hạn → Học bộ mới nổi bật; học xong → bộ kế tiếp, Xem thêm bộ vừa học', () {
     final req = _req(lessons: true, learned: [_truc], left: [_moc, _thuy, _son]);
     final b = StudyBoard.of(req, _p([_truc]));
     expect(b.highlight, 'learn');
@@ -96,7 +96,7 @@ void main() {
     expect(b.highlight, isNull);
   });
 
-  test('R-ON-8: chưa học bộ nào ở tông môn → cả 3 mục mờ, không mục nổi bật, có gợi ý đi Rừng Trúc Rì Rào', () {
+  test('R-ON-8: chưa học bộ nào ở tông môn → cả 3 mục mờ, không mục nổi bật, có gợi ý đi Trúc Lâm', () {
     final b = StudyBoard.of(_req(lessons: false), _p(const []));
     expect(b.items.every((i) => !i.enabled), isTrue);
     expect(b.review.reason, 'noneLearned');

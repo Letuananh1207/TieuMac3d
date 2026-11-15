@@ -40,12 +40,12 @@ describe('Nhà của ta trên bản đồ (R-NHA-1, thiết kế 2026-11-14.13)'
 
 describe('tên vùng một nguồn (R-HANH-1, V-50)', () => {
   it('R-HANH-1: placeName đọc ten của ban-do.json; mã cảnh tong-mon = Khởi Nguyên Trấn; mã lạ trả lại mã', () => {
-    expect(placeName('rung-truc')).toBe('Rừng Trúc Rì Rào');
-    expect(placeName('giang-nam')).toBe('Phố Nước Lung Linh');
-    expect(placeName('bong-lai')).toBe('Đảo Mây Bồng Bềnh');
-    expect(placeName('truong-thanh')).toBe('Ải Gió Lồng Lộng');
-    expect(placeName('tu-cam-thanh')).toBe('Cung Vàng Rực Rỡ');
-    expect(placeName('to-lua')).toBe('Đường Cát Leng Keng');
+    expect(placeName('rung-truc')).toBe('Trúc Lâm');
+    expect(placeName('giang-nam')).toBe('Yên Vũ Lâu');
+    expect(placeName('bong-lai')).toBe('Bồng Lai Đảo');
+    expect(placeName('truong-thanh')).toBe('Nhạn Môn Quan');
+    expect(placeName('tu-cam-thanh')).toBe('Tử Cấm Thành');
+    expect(placeName('to-lua')).toBe('Đôn Hoàng Lộ');
     expect(placeName('tong-mon')).toBe('Khởi Nguyên Trấn');
     expect(placeName('khong-co')).toBe('khong-co');
   });
@@ -56,6 +56,6 @@ describe('tên vùng một nguồn (R-HANH-1, V-50)', () => {
     const { DIALOGS } = await import('./dialogs');
     const all = JSON.stringify([STUDY_GUIDE, gameGuide('dau-chu'), DIALOGS]);
     for (const old of ['Rừng trúc', 'Giang Nam', 'Con đường tơ lụa']) expect(all).not.toContain(old);
-    expect(all).toContain('Rừng Trúc Rì Rào');
+    expect(all).toContain('Trúc Lâm');
   });
 });
