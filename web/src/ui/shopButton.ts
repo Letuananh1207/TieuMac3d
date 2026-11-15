@@ -4,6 +4,7 @@
  */
 import * as THREE from 'three';
 import { el } from './dom';
+import { hinhImg } from './hinh';
 
 /** Nút nổi trên cửa tiệm (mái hiên tiệm ~3 m). */
 const ANCHOR_Y = 2.8;
@@ -16,7 +17,9 @@ export class ShopButton {
     private readonly at: { x: number; z: number; y: number },
     onOpen: () => void,
   ) {
-    el('shopBtn').addEventListener('click', onOpen);
+    const btn = el('shopBtn');
+    btn.prepend(hinhImg('vao-tiem', 28)); // hình minh hoạ 28 bên trái nhãn (2026-11-16.3)
+    btn.addEventListener('click', onOpen);
   }
 
   set(show: boolean): void {

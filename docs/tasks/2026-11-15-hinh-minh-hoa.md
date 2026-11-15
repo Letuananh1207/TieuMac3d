@@ -2,7 +2,7 @@
 - Yêu cầu: "các hình tượng trưng cho chức năng ở thanh chức năng và những chỗ khác đang dùng icon và tôi cảm thấy không chuyên
   nghiệp; ở 摩尔 họ làm rất đẹp, có lẽ là hình ảnh nên tôi cũng muốn".
 - Đã chốt với người dùng: hình 3D mềm cute kiểu 摩尔 · tất cả mọi chỗ · phiên thiết kế vẽ bằng AI tạo ảnh, xuất ảnh nén đóng gói.
-- Loại: giao diện (HUD web + màn Flutter) + công cụ build · Cỡ: vừa–lớn (làm theo 3 đợt hình) · Trạng thái: **NV1–3 + NV6 phần widget `Hinh` xong (đợt 1, 2026-11-16.2)** · NV4–7 chờ thiết kế đợt 2–3
+- Loại: giao diện (HUD web + màn Flutter) + công cụ build · Cỡ: vừa–lớn (làm theo 3 đợt hình) · Trạng thái: **NV1–3 + NV6 phần widget `Hinh` xong (đợt 1, 2026-11-16.2)** · **NV4 xong phần có hình (đợt 2, 2026-11-16.3)** — còn "Nói chuyện", "Cách chơi" / "Hướng dẫn", "Ván mới", Cúi chào chờ đợt 2b · NV5–7 chờ thiết kế đợt 3
 - Phiếu: `docs/phieu_thiet_ke/2026-11-15-hinh-minh-hoa.md` (kiểm kê 75 hình + đặc tả + khối "Dán vào canvas").
 - Không đổi luật nghiệp vụ (chỉ hình); luật chạm: R-HUD-4 (không chữ / chữ Hán trong hình). Không đụng cảnh 3D → fps chỉ kiểm.
 

@@ -5,6 +5,7 @@
  */
 import { portraitOf } from './dialogBox';
 import { el } from './dom';
+import { hinhImg } from './hinh';
 import type { DuelView, GameNpc, GameResult, GameView, GomokuView } from './gameView';
 import { coinIcon } from './wallet';
 
@@ -36,7 +37,6 @@ function icon(size: number, paths: string[], stroke = 2.2): SVGSVGElement {
   }
   return s;
 }
-const EXIT = ['M10 4H5v16h5', 'M14 8l4 4-4 4', 'M18 12H9'];
 const TICK = ['M5 12l5 5 9-10'];
 const CROSS = ['M6 6l12 12M18 6L6 18'];
 const AGAIN = ['M4 12a8 8 0 1 0 2.4-5.7', 'M4 4v4h4'];
@@ -106,7 +106,7 @@ export class GameHud {
   private leaveButton(): HTMLElement {
     const b = node('button', 'gh-pill gh-leave');
     b.type = 'button';
-    b.append(icon(18, EXIT), 'Rời bàn');
+    b.append(hinhImg('ra-san', 28), 'Rời bàn'); // hình minh hoạ (2026-11-16.3)
     b.addEventListener('click', () => this.on.leave());
     return b;
   }
@@ -222,7 +222,7 @@ export class GameHud {
     again.addEventListener('click', () => this.on.newRound());
     const leave = node('button', 'leave');
     leave.type = 'button';
-    leave.append(icon(18, EXIT), 'Rời bàn');
+    leave.append(hinhImg('ra-san', 28), 'Rời bàn');
     leave.addEventListener('click', () => this.on.leave());
     row.append(again, leave);
     c.append(avatar(npc.id, 56, 'big'), tag, head);

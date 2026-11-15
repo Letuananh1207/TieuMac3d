@@ -5,6 +5,7 @@
 import * as THREE from 'three';
 import { SEAT_LABEL, type SeatSpot } from '../zones/seats';
 import { el } from './dom';
+import { hinhImg } from './hinh';
 
 export class SeatButton<T extends SeatSpot> {
   private readonly root = el('seat');
@@ -13,7 +14,9 @@ export class SeatButton<T extends SeatSpot> {
   private spot: T | null = null;
 
   constructor(onSit: (spot: T) => void) {
-    el('seatBtn').addEventListener('click', () => {
+    const btn = el('seatBtn');
+    btn.prepend(hinhImg('ngoi', 28)); // hình minh hoạ 28 bên trái nhãn (2026-11-16.3)
+    btn.addEventListener('click', () => {
       if (this.spot) onSit(this.spot);
     });
   }

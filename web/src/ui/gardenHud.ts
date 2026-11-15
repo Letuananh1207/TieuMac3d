@@ -10,13 +10,12 @@ import './garden.css';
 import { BUTTON_TEXT, growingLabel, type GardenSpot, type GardenToast, type PlotMark } from '../zones/vuonHud';
 import type { CropId } from '../zones/vuon';
 import { formatCoins } from '../zones/wallet';
-import { cropPicture, DROP, ICON_BASKET, ICON_CRATE, ICON_HOE, ICON_SOW, ICON_TICK, ICON_WATER, SPARKLE } from './cropArt';
-import { COIN, STROKE, svgIcon, type SvgNode } from './decorIcons';
+import { cropPicture, DROP, ICON_TICK, SPARKLE } from './cropArt';
+import { COIN, STROKE, svgIcon } from './decorIcons';
+import { hinhImg } from './hinh';
 
 /** Tấm báo hiện 3 s rồi tấm kế. */
 const TOAST_MS = 3000;
-
-const ICONS: Readonly<Record<string, readonly SvgNode[]>> = { gieo: ICON_SOW, tuoi: ICON_WATER, thu: ICON_BASKET, 'mo-o': ICON_HOE, ban: ICON_CRATE };
 
 function h<K extends keyof HTMLElementTagNameMap>(tag: K, cls = '', text = ''): HTMLElementTagNameMap[K] {
   const e = document.createElement(tag);
@@ -100,7 +99,7 @@ export class GardenHud {
     if (!button || face === this.face) return;
     this.face = face;
     const text = BUTTON_TEXT[button];
-    this.btn.replaceChildren(svgIcon(ICONS[button], 20, undefined, { ...STROKE, 'stroke-width': '2' }), text);
+    this.btn.replaceChildren(hinhImg(button, 28), text); // hình minh hoạ 28 (2026-11-16.3) — mã hình = mã nút
     if (button === 'mo-o' && unlockPrice !== null) {
       const pill = h('span', 'price');
       pill.append(svgIcon(COIN, 14, '0 0 100 100'), formatCoins(unlockPrice));

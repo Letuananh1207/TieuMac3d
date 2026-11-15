@@ -8,8 +8,7 @@ import * as THREE from 'three';
 import { bubbleVisible } from '../chat/bubbleTimer';
 import { emoteBubbleLook, type EmoteId } from '../zones/bieuCam';
 import { h } from './chatText';
-import { svgIcon } from './decorIcons';
-import { EMOTE_ICONS } from './toolbarIcons';
+import { emoteIcon } from './toolbarIcons';
 
 /** Cách bong bóng tin của mình (thiết kế). */
 const GAP = 6;
@@ -35,7 +34,7 @@ export class EmoteBubble {
   /** Bắt đầu bong bóng hình [id] lúc [now] (giây); chọn biểu cảm khác → thay. */
   show(id: EmoteId, now: number): void {
     if (this.id !== id) {
-      this.disc.replaceChildren(svgIcon(EMOTE_ICONS[id], 34, '0 0 48 48'));
+      this.disc.replaceChildren(emoteIcon(id, 34));
       this.id = id;
     }
     this.startedAt = now;

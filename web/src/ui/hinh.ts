@@ -3,7 +3,7 @@
  * sinh bởi `scripts/hinh.mjs`) — không mạng. Trạng thái (mờ / nhấn / đang mở) bằng CSS `.hinh` ở style.css, một ảnh cho mọi
  * trạng thái. Dựng bằng createElement (quy tắc 6).
  */
-import { hinhUrl, type HinhId } from './hinh.g';
+import { HINH, hinhUrl, type HinhId } from './hinh.g';
 
 export type { HinhId } from './hinh.g';
 
@@ -12,6 +12,11 @@ export const HINH_HUD: readonly HinhId[] = [
   'ban-do', 've-nha', 'bieu-cam', 'tui-do', 'nhiem-vu',
   'nhay-nut', 'chao-nut', 'ngoi-on-nut', 'tro-chuyen', 'trang-tri', 'doc-sach-nut',
 ];
+
+/** Mã [id] có hình minh hoạ (bảng `hinh.json`) — chỗ chưa vẽ giữ biểu tượng nét. */
+export function isHinh(id: string): id is HinhId {
+  return Object.prototype.hasOwnProperty.call(HINH, id);
+}
 
 /** `<img class="hinh …">` cỡ `size` px (trang trí — `alt=""`, nút mang nhãn riêng). */
 export function hinhImg(id: HinhId, size: number, cls = ''): HTMLImageElement {

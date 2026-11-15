@@ -5,6 +5,7 @@
  */
 import * as THREE from 'three';
 import { el } from './dom';
+import { hinhImg } from './hinh';
 
 /** treo nút cao hơn chân chỗ đứng (m) — trên nhãn tên nhân vật (2,5 m) để không đè */
 const ABOVE = 3.2;
@@ -24,7 +25,9 @@ export class ExitButton<T extends ExitSpot> {
   private spot: T | null = null;
 
   constructor(onExit: (spot: T) => void) {
-    el('exitBtn').addEventListener('click', () => {
+    const btn = el('exitBtn');
+    btn.prepend(hinhImg('ra-san', 28)); // hình minh hoạ 28 bên trái nhãn (2026-11-16.3)
+    btn.addEventListener('click', () => {
       if (this.spot) onExit(this.spot);
     });
   }

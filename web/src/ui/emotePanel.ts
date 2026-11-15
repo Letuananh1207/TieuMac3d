@@ -5,8 +5,7 @@
  */
 import { EMOTES, type Emote } from '../zones/bieuCam';
 import { h } from './chatText';
-import { svgIcon } from './decorIcons';
-import { EMOTE_ICONS } from './toolbarIcons';
+import { emoteIcon } from './toolbarIcons';
 
 export class EmotePanel {
   private readonly root = h('div');
@@ -30,7 +29,7 @@ export class EmotePanel {
     for (const e of EMOTES) {
       const b = h('button', 'ep-cell');
       b.type = 'button';
-      b.append(svgIcon(EMOTE_ICONS[e.id], 32, '0 0 48 48'), h('span', 'ep-name', e.name));
+      b.append(emoteIcon(e.id, 32), h('span', 'ep-name', e.name));
       b.addEventListener('click', () => pick(e));
       grid.append(b);
     }

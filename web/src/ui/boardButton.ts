@@ -5,6 +5,7 @@
  */
 import * as THREE from 'three';
 import { el } from './dom';
+import { hinhImg } from './hinh';
 
 /** Nút nổi phía trên mái bảng (bảng cao ≈ 3,45 m — `honorBoard`). */
 const ANCHOR_Y = 3.6;
@@ -20,6 +21,7 @@ export class BoardButton {
     private readonly at: { x: number; z: number; y: number },
     onOpen: () => void,
   ) {
+    this.btn.prepend(hinhImg('xem-bang', 28)); // hình minh hoạ 28 bên trái nhãn (2026-11-16.3)
     this.btn.addEventListener('click', onOpen);
   }
 

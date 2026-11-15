@@ -35,7 +35,7 @@
 .ep-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
 .ep-cell{height:72px;border:0;margin:0;padding:0;border-radius:12px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:#fff;outline:1px solid rgba(36,50,58,.12);color:var(--slate);font:inherit;transition:transform .08s}
 .ep-cell:active{transform:scale(.94);background:rgba(43,84,70,.1)}
-.ep-cell svg{display:block;flex:0 0 auto}
+.ep-cell svg,.ep-cell .hinh{display:block;flex:0 0 auto;width:32px;height:32px}
 .ep-name{font-size:11px;font-weight:700;white-space:nowrap}
 .ep-tip{position:absolute;bottom:-8px;width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:8px solid rgba(244,247,246,.96)}
 
@@ -94,7 +94,7 @@ body.bag-open #decorBtn,body.bag-open .learn,body.bag-open #talk,body.bag-open #
   #toolbar{left:0;right:0;margin:0 auto;width:min(380px,calc(100vw - 2 * max(calc(var(--sa-left) + 136px),calc(var(--sa-right) + 156px))));height:56px}
   #emotePanel{left:0;right:0;margin:0 auto;width:min(420px,calc(100vw - 2 * max(calc(var(--sa-left) + 136px),calc(var(--sa-right) + 156px))));bottom:calc(var(--sa-bottom) + 74px)}
   .ep-cell{height:64px}
-  .ep-cell svg{width:28px;height:28px}
+  .ep-cell svg,.ep-cell .hinh{width:28px;height:28px}
   #homeHere{left:50%;top:auto;bottom:calc(var(--sa-bottom) + 74px);transform:translateX(-50%)}
   #bagDim{background:transparent}
   #bagPanel{left:auto;top:0;right:var(--sa-right);width:340px;height:auto;padding:12px 14px max(12px,var(--sa-bottom));border-radius:20px 0 0 20px;box-shadow:-10px 0 30px rgba(36,50,58,.22);gap:10px}

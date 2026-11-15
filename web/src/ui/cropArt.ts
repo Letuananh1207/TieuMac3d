@@ -134,22 +134,11 @@ export const SEED_PACK: readonly SvgNode[] = [
 const path = (d: string): SvgNode => ['path', { d }];
 const dot = (cx: number, cy: number): SvgNode => ['circle', { cx: String(cx), cy: String(cy), r: '1' }];
 
-/** Tay rắc hạt (Gieo). */
+/** Tay rắc hạt (đầu bảng chọn hạt; nút nổi "Gieo" dùng hình minh hoạ từ 2026-11-16.3). */
 export const ICON_SOW: readonly SvgNode[] = [path('M7 13c0-2 1.5-3 3-3h3l3-3'), path('M5 20l3-6h7l1.5 3'), dot(17, 11), dot(19.5, 14), dot(16.5, 16)];
-/** Bình tưới (Tưới). */
-export const ICON_WATER: readonly SvgNode[] = [
-  path('M4 10h10v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z'),
-  path('M14 12l6-4'),
-  path('M7 10V7a3 3 0 0 1 6 0'),
-  path('M20 12v1M18.5 14.5v1M21 15.5v1'),
-];
-/** Giỏ (Thu). */
-export const ICON_BASKET: readonly SvgNode[] = [path('M4 10h16l-1.6 9a2 2 0 0 1-2 1.7H7.6a2 2 0 0 1-2-1.7z'), path('M8 10l3-6M16 10l-3-6'), path('M9 14v3M12 14v3M15 14v3')];
-/** Cuốc (Mở ô). */
-export const ICON_HOE: readonly SvgNode[] = [path('M5 20l7-7'), path('M11 6c2-2 5-2 7 0l-4 4c-1-1-2-1-3 0z'), path('M3 21h6')];
 /** Túi hạt. */
 export const ICON_BAG: readonly SvgNode[] = [path('M8 6h8l-1 2c3 1.5 5 4.5 5 8a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4c0-3.5 2-6.5 5-8z'), path('M8 4l1 2M16 4l-1 2')];
-/** Thùng thu mua (Bán, đầu bảng kho). */
+/** Thùng thu mua (đầu bảng kho; nút nổi "Bán" dùng hình minh hoạ). */
 export const ICON_CRATE: readonly SvgNode[] = [path('M3 9h18v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z'), path('M3 9l2-4h14l2 4'), path('M3 14h18M9 9v11M15 9v11')];
 /** Dấu ✓ (tấm báo mở ô). */
 export const ICON_TICK: readonly SvgNode[] = [path('M5 12.5l4.5 4.5L19 7.5')];

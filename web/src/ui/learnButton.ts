@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import type { Zone } from '../zones/zones';
 import { el } from './dom';
+import { hinhImg } from './hinh';
 
 /**
  * Nút học nổi trên vật học trong nhà ("Học chữ 快"): hiện khi đứng trong vùng học (R-VUNG-1), bấm thì mở bài;
@@ -15,6 +16,7 @@ export class LearnButton {
   private suspended = false;
 
   constructor(onOpen: (zone: Zone) => void) {
+    this.btn.prepend(hinhImg('vao-hoc', 28)); // hình minh hoạ 28 thay chấm vàng (2026-11-16.3)
     this.btn.addEventListener('click', () => {
       if (this.zone) onOpen(this.zone);
     });

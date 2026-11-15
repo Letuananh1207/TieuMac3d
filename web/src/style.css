@@ -96,9 +96,11 @@ body.ban-may #joyGhost{display:none}
 
 /* nút học nổi trên vật trong nhà (mục "Trong nhà"): ngọc lục, chấm vàng, mũi nhọn chỉ xuống vật;
    JS đặt left/top = điểm treo chiếu lên màn */
-.learn{position:fixed;z-index:6;transform:translate(-50%,calc(-100% - 10px));height:48px;box-sizing:border-box;padding:0 20px 0 16px;display:flex;align-items:center;gap:8px;white-space:nowrap;font-size:15px;color:var(--on-jade);background:var(--jade);border:1px solid var(--frost-line);border-radius:999px;box-shadow:var(--shadow-primary),0 6px 16px rgba(36,50,58,.3)}
+.learn{position:fixed;z-index:6;transform:translate(-50%,calc(-100% - 10px));height:48px;box-sizing:border-box;padding:0 20px 0 10px;display:flex;align-items:center;gap:6px;white-space:nowrap;font-size:15px;color:var(--on-jade);background:var(--jade);border:1px solid var(--frost-line);border-radius:999px;box-shadow:var(--shadow-primary),0 6px 16px rgba(36,50,58,.3)}
 .learn::after{content:"";position:absolute;left:50%;bottom:-9px;margin-left:-8px;border-left:8px solid transparent;border-right:8px solid transparent;border-top:9px solid var(--jade)}
 .learn .han{font-family:var(--han);font-size:20px;font-weight:700}
+/* hình minh hoạ "vao-hoc" 28 bên trái nhãn thay chấm vàng (2026-11-16.3) */
+.learn .hinh{width:28px;height:28px;flex:none}
 
 /* hai chấm vàng giữa hai vạch — dùng ở thẻ tên khu và màn tải */
 .rule{display:flex;align-items:center;gap:8px}
@@ -272,6 +274,10 @@ html.hac body > :not(#stage):not(#loading):not(#crane){visibility:hidden !import
 #talk[hidden],#seat[hidden],#exit[hidden],#board[hidden],#guide[hidden],#shop[hidden]{display:none}
 #talkBtn,#seatBtn,#exitBtn,#boardBtn,#guideBtn,#shopBtn{height:46px;box-sizing:border-box;padding:0 18px 0 14px;font:inherit;font-size:15px;font-weight:700;color:var(--on-jade);background:var(--jade);border:1px solid var(--frost-line);border-radius:999px;box-shadow:inset 0 -2px 0 rgba(0,0,0,.18),0 6px 16px rgba(36,50,58,.3);display:flex;align-items:center;gap:8px;white-space:nowrap}
 #talkBtn:active,#seatBtn:active,#exitBtn:active,#boardBtn:active,#guideBtn:active,#shopBtn:active{background:var(--jade-press)}
+/* hình minh hoạ đợt 2 (2026-11-16.3): hình 28 bên trái nhãn thay biểu tượng nét 20 — lề trái gọn để viên không dài thêm.
+   "Nói chuyện", "Cách chơi" / "Hướng dẫn" còn nét (hình đợt 2b) */
+#seatBtn,#exitBtn,#boardBtn,#shopBtn{padding-left:9px;gap:6px}
+#seatBtn .hinh,#exitBtn .hinh,#boardBtn .hinh,#shopBtn .hinh{width:28px;height:28px;flex:none}
 #talk .tip,#seat .tip,#exit .tip,#board .tip,#guide .tip,#shop .tip{width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:8px solid var(--jade)}
 #talk .who,#board .who,#guide .who,#shop .who{margin-top:4px;height:24px;box-sizing:border-box;padding:0 10px;display:flex;align-items:center;gap:6px;background:rgba(244,247,246,.86);border:1px solid var(--frost-line);outline:1px solid var(--frost-outline);border-radius:999px;font-size:12px;font-weight:700;white-space:nowrap;pointer-events:none}
 #talk .han,#dialog .han{font-family:var(--han);font-weight:700}
@@ -349,7 +355,7 @@ body.map-open #joy,body.map-open #joyGhost,body.map-open .learn{display:none}
 @media (max-height:520px){
   #joyGhost{left:calc(var(--sa-left) + 28px);bottom:calc(var(--sa-bottom) + 12px);width:100px;height:100px}
   #joyGhost .knob{width:36px;height:36px}
-  .learn{height:44px;padding:0 18px 0 14px}
+  .learn{height:44px;padding:0 18px 0 8px}
   #loading svg{height:170px}
   #loading .mt-doc{display:none}
   #loading .mt-ngang{display:block}
@@ -466,7 +472,7 @@ body.at-table #joy,body.at-table #joyGhost,body.at-table #actions,body.at-table 
 #game[hidden]{display:none}
 #game>*{pointer-events:auto}
 .gh-pill{position:absolute;height:44px;box-sizing:border-box;border-radius:999px;background:rgba(244,247,246,.88);-webkit-backdrop-filter:var(--blur-hud);backdrop-filter:var(--blur-hud);border:1px solid var(--frost-line);outline:1px solid var(--frost-outline);box-shadow:var(--shadow-hud);display:flex;align-items:center;font-weight:700;white-space:nowrap}
-.gh-leave{left:var(--gx-l);top:var(--gy-t);padding:0 16px 0 12px;gap:6px;font:inherit;font-size:14px;font-weight:700;color:var(--slate)}
+.gh-leave{left:var(--gx-l);top:var(--gy-t);padding:0 16px 0 8px;gap:6px;font:inherit;font-size:14px;font-weight:700;color:var(--slate)}
 .gh-ava{flex:none;border-radius:50%;border:2px solid #fff;object-fit:cover;box-sizing:border-box}
 .gh-ava.ph{display:inline-block;background:var(--mist-far)}
 .gh-stone{flex:none;width:14px;height:14px;border-radius:50%;background:#1e2226;border:1px solid #1e2226;box-sizing:border-box;display:inline-block}
@@ -536,7 +542,9 @@ body.at-table #joy,body.at-table #joyGhost,body.at-table #actions,body.at-table 
 .gh-result button{height:48px;font:inherit;font-weight:700;font-size:15px;border-radius:12px;display:flex;align-items:center;justify-content:center;gap:8px}
 .gh-result .again{flex:1;border:0;background:var(--jade);color:#fff;box-shadow:var(--shadow-primary)}
 .gh-result .again:active{background:var(--jade-press)}
-.gh-result .leave{flex:none;padding:0 16px;border:1px solid rgba(36,50,58,.3);background:rgba(255,255,255,.6);color:var(--slate)}
+.gh-result .leave{flex:none;padding:0 16px 0 10px;gap:6px;border:1px solid rgba(36,50,58,.3);background:rgba(255,255,255,.6);color:var(--slate)}
+/* "Rời bàn": hình ra-san 28 thay mũi tên nét (2026-11-16.3); "Ván mới" còn nét (đợt 2b) */
+.gh-leave .hinh,.gh-result .leave .hinh{width:28px;height:28px;flex:none}
 /* ngang: cờ — "Rời bàn" trên trái, tỉ số trên phải, viên lượt dưới phải (bỏ vế chữ); Đấu chữ — cột trái 200, cột phải 236 */
 @media (orientation:landscape) and (max-height:600px){
   #game{--gx-l:max(12px,calc(var(--sa-left) + 12px));--gx-r:max(12px,calc(var(--sa-right) + 12px));--gy-t:12px}

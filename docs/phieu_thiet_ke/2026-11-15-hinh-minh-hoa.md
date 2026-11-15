@@ -1,5 +1,5 @@
 # Phiếu: Hình minh hoạ 3D mềm thay biểu tượng nét (mọi chỗ — HUD web + màn Flutter)
-- Trạng thái: đợt 1 đã áp (2026-11-16.2) · đợt 2, 3 chờ thiết kế
+- Trạng thái: đợt 1 đã áp (2026-11-16.2) · đợt 2 đã áp một phần (2026-11-16.3 — còn chờ đợt 2b: noi-chuyen, cach-choi, van-moi, cui-chao) · đợt 3 chờ thiết kế
 - Đã vẽ: 2026-11-16.2 — **đợt 1** (11 hình thanh công cụ + nút hành động, + 4 bản cắt nửa trên `-nut`; phong cách bản 5: cùng chất ảnh đàn cổ tranh, chính diện, nhân vật Tiểu Mặc — `design/icons/`). Đợt 2, 3 chưa vẽ.
 - Đã vẽ: 2026-11-16.3 (đợt 2 một phần — còn noi-chuyen, cach-choi, van-moi, cui-chao)
 - Đợi bởi: kế hoạch `docs/tasks/2026-11-15-hinh-minh-hoa.md` (V-20261115-72)
