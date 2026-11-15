@@ -25,7 +25,7 @@ export interface AreaMapSource {
   buildings: readonly { id: string; x: number; z: number; w: number; d: number; rotY?: number; title: string; kind?: string }[];
   gates: readonly { id: string; x: number; z: number; rotY?: number; width: number; title: string }[];
   teleport: { enabled: boolean; center: XZ; ringRadius: number };
-  portals: readonly { scene: string; area: { from: XZ; to: XZ } }[];
+  portals: readonly { scene: string; area: { from: XZ; to: XZ }; label?: string }[];
   gameTables: readonly { id: string; kind: string; x: number; z: number; sign?: { name: string } }[];
   player: { start: XZ };
 }
@@ -243,7 +243,9 @@ export function buildAreaMap(src: AreaMapSource, spots: AreaMapSpots = {}): Area
     const x = round((p.area.from[0] + p.area.to[0]) / 2);
     const z = round((p.area.from[1] + p.area.to[1]) / 2);
     icons.push({ kind: 'cong-canh', x, z, floor: 1, scene: p.scene });
-    labels.push({ kind: 'cong', text: spots.sceneNames?.[p.scene] ?? p.scene, x, z, floor: 1 });
+    // cửa giữa hai phần của cùng một nơi (Nhà của ta ↔ gian trong — V-68): ghi nhãn cửa ("Vào nhà" / "Ra sân")
+    const dest = spots.sceneNames?.[p.scene];
+    labels.push({ kind: 'cong', text: dest === src.site.name && p.label ? p.label : (dest ?? p.scene), x, z, floor: 1 });
   }
   for (const g of src.gates) icons.push({ kind: 'son-mon', x: g.x, z: g.z, floor: 1 });
   for (const t of src.gameTables) {

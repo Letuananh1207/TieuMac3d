@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { checkPlaceNames, checkPortalLabels, mapPlaceId } from './placeNames';
+import { checkPlaceNames, checkPortalLabels, HOME_INSIDE, isHomeScene, mapPlaceId } from './placeNames';
 
 const places = [
   { id: 'van-uyen', ten: 'Khởi Nguyên Trấn' },
@@ -43,5 +43,19 @@ describe('nhãn vòng sáng cổng đi bộ = tên nơi đến (R-HANH-4, V-59)'
     const errs = checkPortalLabels(new Map([['tong-mon', [{ scene: 'rung-truc', label: 'Rừng trúc' }]]]), map);
     expect(errs).toHaveLength(1);
     expect(errs[0]).toContain('Trúc Lâm');
+  });
+});
+
+describe('Nhà của ta: sân + gian trong là một nơi (V-68)', () => {
+  it('R-HANH-7: sân (nha-ta) và gian trong (nha-ta-trong) đều là "đang ở Nhà của ta"; nơi khác không', () => {
+    expect([isHomeScene('nha-ta'), isHomeScene(HOME_INSIDE), isHomeScene('tong-mon'), isHomeScene(null)]).toEqual([true, true, false, false]);
+  });
+
+  it('R-HANH-4: cửa nhà chính ↔ gian trong ghi nhãn cửa ("Vào nhà" / "Ra sân") — không bắt bằng tên nơi', () => {
+    const portals = new Map([
+      ['nha-ta', [{ scene: HOME_INSIDE, label: 'Vào nhà' }]],
+      [HOME_INSIDE, [{ scene: 'nha-ta', label: 'Ra sân' }]],
+    ]);
+    expect(checkPortalLabels(portals, [{ id: 'nha-ta', ten: 'Nhà của ta' }])).toEqual([]);
   });
 });

@@ -48,7 +48,7 @@ describe('Nhà của ta — phạm vi nhà (V-48)', () => {
     const west = walk(0, 0, -1, 0, 60);
     expect(west.x).toBeGreaterThan(-28);
     expect(west.x).toBeLessThan(-24);
-    const north = walk(-6, -12, 0, -1, 60); // lối hông giữa nhà (x ≥ −5,25) và hành lang tây (x ≤ −6,9)
+    const north = walk(-6, -12, 0, -1, 60); // bãi cỏ giữa nhà chính (x ≤ −9,75) và lối trục (V-68)
     expect(north.z).toBeGreaterThan(-30);
     expect(north.z).toBeLessThan(-18);
   });
@@ -78,13 +78,54 @@ describe('Nhà của ta — phạm vi nhà (V-48)', () => {
     expect(walk(0, 10, 0, 1, 10).z).toBeGreaterThan(20);
   });
 
-  it('R-NHA-2: 12 ô trang trí giữ mã, đứng phẳng trên đất (y 0)', () => {
-    expect(spec.decorSlots.map((s) => s.id)).toEqual([
-      'trong-1', 'trong-2', 'trong-3', 'san-1', 'san-2', 'san-3', 'vuon-1', 'vuon-2', 'vuon-3', 'vuon-4', 'vuon-5', 'vuon-6',
-    ]);
+  it('R-NHA-2: 12 ô trang trí giữ mã — 9 ô sân / vườn ngoài sân, 3 ô trong nhà ở gian trong (V-68); ô ngoài sân đứng phẳng trên đất (y 0)', () => {
+    expect(spec.decorSlots.map((s) => s.id)).toEqual(['san-1', 'san-2', 'san-3', 'vuon-1', 'vuon-2', 'vuon-3', 'vuon-4', 'vuon-5', 'vuon-6']);
     for (const s of spec.decorSlots) {
       expect(hf.heightAt(s.x, s.z), s.id).toBeCloseTo(0, 2);
       expect(hf.slopeAt(s.x, s.z), s.id).toBeLessThan(1);
+    }
+    const inside = loadScene('nha-ta-trong').spec;
+    expect(inside.decorSlots.map((s) => [s.id, s.kind])).toEqual([['trong-1', 'trong'], ['trong-2', 'trong'], ['trong-3', 'trong']]);
+  });
+});
+
+describe('Nhà của ta — nhà chính sát mép trái, vườn giữa, gian trong riêng (V-68)', () => {
+  const house = spec.buildings.find((b) => b.id === 'chinh-phong')!;
+  const door = spec.portals.find((p) => p.scene === 'nha-ta-trong')!;
+  const inside = loadScene('nha-ta-trong').spec;
+  const room = inside.buildings[0];
+
+  it('R-NHA-5: nhà chính (−15; −8) kín, không hành lang mái; cả nhà trong đảo (cách mép ≥ 4 m), phía tây lối trục; vườn rau giữa đảo cạnh lối trục', () => {
+    expect([house.x, house.z, house.kind, house.closed]).toEqual([-15, -8, 'nha-o', true]);
+    expect(spec.galleries).toEqual([]);
+    for (const [sx, sz] of [[-1, -1], [-1, 1], [1, -1], [1, 1]]) {
+      expect(Math.hypot(house.x + (sx * house.w) / 2 - cx, house.z + (sz * house.d) / 2 - cz)).toBeLessThan(R - 4);
+    }
+    expect(house.x + house.w / 2).toBeLessThan(-1.2 - 5); // xa lối trục x 0
+    const f = spec.garden.fence;
+    expect([f.from, f.to, f.gate]).toEqual([[3.5, -16], [16.5, -3], -9.5]);
+    // lối trục chạy tới ngang cổng vườn, lối nhánh vào khe cổng
+    expect(spec.paths.some((p) => p.from[0] === 0 && p.to[0] === 0 && p.to[1] === f.gate)).toBe(true);
+  });
+
+  it('R-NHA-1, R-HANH-4: bước vào ô cửa nhà chính (vùng chạm phủ mép cửa, không vòng sáng) → gian trong; ra đứng (−15; −2,6) quay ra sân; gian trong 14 × 10, ô cửa "Ra sân", vào đứng (0; 1,2) quay vào phòng', () => {
+    expect(door).toMatchObject({ area: { from: [-16.2, -5.6], to: [-13.8, -4.6] }, arrive: { at: [-15, -2.6], rotY: 0 }, label: 'Vào nhà', marker: false });
+    const front = house.z + house.d / 2;
+    expect(door.area.from[1]).toBeLessThan(front); // phủ mép cửa (mặt tiền z −5)
+    expect(door.area.to[1]).toBeGreaterThan(front);
+    expect([room.kind, room.w, room.d]).toEqual(['gian-trong', 14, 10]);
+    const out = inside.portals[0];
+    expect(out).toMatchObject({ scene: 'nha-ta', arrive: { at: [0, 1.2], rotY: 180 }, label: 'Ra sân', marker: false });
+    expect(out.area.from[1]).toBeLessThan(room.d / 2); // vùng chạm phủ ô cửa (tường trước z 5)
+    expect(out.area.to[1]).toBeGreaterThan(room.d / 2);
+    expect(inside.player.start).toEqual([0, 1.2]);
+    expect(inside.site).toMatchObject({ name: 'Nhà của ta', loadName: 'Trong nhà' });
+  });
+
+  it('R-HANH-4: đứng ở chỗ ra (−15; −2,6) và đường tới cửa đều phẳng (y 0)', () => {
+    for (const [x, z] of [[-15, -2.6], [-15, -1.4], [-8, -1.4]] as [number, number][]) {
+      expect(hf.heightAt(x, z)).toBeCloseTo(0, 2);
+      expect(hf.slopeAt(x, z)).toBeLessThan(1);
     }
   });
 });

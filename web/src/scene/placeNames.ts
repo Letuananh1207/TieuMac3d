@@ -42,6 +42,17 @@ export function checkPlaceNames(
 export const HOME_OF_PLAYER = 'nha-ta';
 
 /**
+ * Gian trong của Nhà của ta (V-68): cảnh riêng, tới bằng cổng đi bộ ở cửa nhà chính (R-NHA-1, R-HANH-4). Không có nơi
+ * riêng trên bản đồ truyền tống — vẫn là "Nhà của ta" (nút Về nhà mờ R-HANH-7, bản đồ "Bạn đang ở đây").
+ */
+export const HOME_INSIDE = 'nha-ta-trong';
+
+/** Cảnh thuộc Nhà của ta (sân + gian trong). */
+export function isHomeScene(sceneId: string | null | undefined): boolean {
+  return sceneId === HOME_OF_PLAYER || sceneId === HOME_INSIDE;
+}
+
+/**
  * Nhãn vòng sáng cổng đi bộ (R-HANH-4, V-59): cổng tới một nơi trên bản đồ ghi đúng `ten` của nơi đó (một nguồn tên —
  * như `placeName`); riêng cổng về Nhà của ta ghi "Về nhà". `portals` = mã cảnh → cổng của cảnh đó. Trả danh sách lỗi.
  */
@@ -52,7 +63,8 @@ export function checkPortalLabels(
   const out: string[] = [];
   for (const [from, list] of portals) {
     for (const p of list) {
-      if (!p.label || p.scene === HOME_OF_PLAYER) continue;
+      // về nhà: "Về nhà"; cửa nhà chính ↔ gian trong (cùng một nơi): nhãn cửa "Vào nhà" / "Ra sân" (V-68)
+      if (!p.label || isHomeScene(p.scene)) continue;
       const place = places.find((q) => q.id === mapPlaceId(p.scene));
       if (place && place.ten !== p.label) {
         out.push(`cổng ở "${from}" → "${p.scene}": nhãn "${p.label}" nhưng ban-do.json gọi nơi đó là "${place.ten}" — nhãn phải là tên nơi đến (R-HANH-4)`);

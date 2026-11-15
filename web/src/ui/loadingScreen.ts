@@ -3,6 +3,10 @@ import { el } from './dom';
 /** Bằng `transition` của `#loading` trong style.css. */
 const FADE_MS = 400;
 
+/** Tên nơi trên màn tải: `loadName` khi có (gian trong Nhà của ta: "Trong nhà" — V-68), không thì tên nơi. */
+type LoadSite = { name: string; loadName?: string };
+const loadName = (site: LoadSite): string => site.loadName || site.name;
+
 /**
  * Màn tải (R-MAN-2): che và chặn chạm từ lúc mở trang tới khung hình đầu của cảnh, rồi mờ 0,4 s.
  * Tiến độ theo các bước dựng thật (`progress`), `done` khi đã vẽ khung đầu; `active` = còn đang hiện
@@ -15,8 +19,8 @@ export class LoadingScreen {
   private readonly status = el('loadStatus');
   active = true;
 
-  constructor(site: { name: string }) {
-    el('loadName').textContent = site.name;
+  constructor(site: LoadSite) {
+    el('loadName').textContent = loadName(site);
     this.progress(0);
   }
 
@@ -29,8 +33,8 @@ export class LoadingScreen {
   }
 
   /** Hiện lại (đổi vùng — R-MAN-2, R-HANH-2): tên Việt nơi đến (R-HUD-4); trang sắp tải lại nên không cần `done`. */
-  show(site: { name: string }): void {
-    el('loadName').textContent = site.name;
+  show(site: LoadSite): void {
+    el('loadName').textContent = loadName(site);
     this.root.hidden = false;
     this.root.classList.remove('done');
     this.active = true;

@@ -7,7 +7,7 @@ import { addPlateauRails } from './cung_dien';
 import { addFauna } from './fauna';
 import * as THREE from 'three';
 import type { Colliders } from '../collision/colliders';
-import { LayeredGround, type Ground } from '../collision/ground';
+import { LayeredGround, type Ground, type Pad } from '../collision/ground';
 import { addBuilding } from './buildings';
 import { addEnvironment, addFlatGround } from './environment';
 import { addCloudSea, addFarMountains, viewDistance } from './farMountains';
@@ -179,10 +179,13 @@ function* worldSteps(
   // cảnh mềm: mái / tầng trên nhà vào được nướng bóng + vật liệu mềm (phần thân gộp ở mergeSoft cuối hàm)
   const softLook = isSoft(spec.look) ? spec.look : undefined;
   const rooms: Room[] = [];
+  /** nền + dốc của nhà kín (`closed` — V-68): đứng lên hiên được, không có "trong nhà" */
+  const closedPads: Pad[] = [];
   for (const b of spec.buildings) {
     const use = b.zone && kinds[b.zone.id] ? interiors[b.zone.id] : undefined;
     const walkIn = b.kind ? WALK_IN[b.kind] : undefined;
     if (use) rooms.push(addRoomBuilding(scene, colliders, b, style, use, base(b.x, b.z), softLook));
+    else if (walkIn && b.closed) closedPads.push(...addWalkIn(scene, colliders, b, style, walkIn, base(b.x, b.z), softLook).pads);
     else if (walkIn) rooms.push(addWalkIn(scene, colliders, b, style, walkIn, base(b.x, b.z), softLook));
     else addBuilding(scene, colliders, b, style, base(b.x, b.z));
     yield 'nha';
@@ -255,7 +258,7 @@ function* worldSteps(
     dayNight,
     garden,
     ground,
-    surface: new LayeredGround(hf, [...(teleport?.pads ?? []), ...bridgePads, ...rampartPads, ...rooms.flatMap((r) => r.pads)]),
+    surface: new LayeredGround(hf, [...(teleport?.pads ?? []), ...bridgePads, ...rampartPads, ...rooms.flatMap((r) => r.pads), ...closedPads]),
     rooms,
     seats: rooms.flatMap((r) => r.seats ?? []),
     studySign: rooms.find((r) => r.studySign)?.studySign ?? null,

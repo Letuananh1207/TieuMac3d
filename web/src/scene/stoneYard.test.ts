@@ -29,7 +29,7 @@ describe('vòng trận chỉ ở Truyền Tống Đài, vùng có sân đá tr�
   });
 
   it('R-HANH-2: đủ 6 vùng', () => {
-    expect([...REGION_SCENES].filter((id) => id !== 'nha-ta').sort()).toEqual(Object.keys(YARDS).sort());
+    expect([...REGION_SCENES].filter((id) => id !== 'nha-ta' && id !== 'nha-ta-trong').sort()).toEqual(Object.keys(YARDS).sort());
   });
 
   for (const [id, center] of Object.entries(YARDS)) {

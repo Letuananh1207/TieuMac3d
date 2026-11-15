@@ -19,31 +19,31 @@ describe('vườn rau — bố cục (R-VUON-1)', () => {
     expect(g.plots.map((p) => p.id)).toEqual(GARDEN_PLOT_IDS);
     expect(new Set(g.plots.map((p) => p.x)).size).toBe(3);
     expect(new Set(g.plots.map((p) => p.z)).size).toBe(4);
-    // 6 luống mở sẵn ở hai hàng giữa (gần cổng vườn nhất)
-    expect(new Set(g.plots.slice(0, 6).map((p) => Math.abs(p.z)))).toEqual(new Set([1.2]));
+    // 6 luống mở sẵn ở hai hàng giữa (gần cổng vườn nhất — cổng ở giữa cạnh tây, V-68: vườn giữa đảo z −16 … −3)
+    expect(new Set(g.plots.slice(0, 6).map((p) => Math.round(Math.abs(p.z - g.fence.gate) * 10) / 10))).toEqual(new Set([1.3]));
   });
 
   it('R-VUON-1: rào chặn, chừa khe cổng cạnh tây; luống không chặn người; thùng thu mua chặn', () => {
     const c = new Colliders();
     addGarden(new THREE.Scene(), c, g, NHA.spec.look);
     expect(c.boxes).toHaveLength(fenceSegments(g).length + 1);
-    // đi qua khe cổng (15; 0) và đứng trên luống (16,2; −1,2) → không bị đẩy
-    for (const [x, z] of [[15, 0], [16.2, -1.2], [18.6, 3.6]]) {
+    // đi qua khe cổng (3,5; −9,5) và đứng trên luống (6,1; −10,8) → không bị đẩy
+    for (const [x, z] of [[3.5, -9.5], [6.1, -10.8], [8.7, -5.6]]) {
       const q = { x, z };
       c.resolve(q, 0.4);
       expect(q).toEqual({ x, z });
     }
-    // sát rào nam (z 5) từ trong → bị đẩy lùi
-    const s = { x: 18.6, z: 4.9 };
+    // sát rào nam (z −3) từ trong → bị đẩy lùi
+    const s = { x: 8.7, z: -3.1 };
     c.resolve(s, 0.4);
-    expect(s.z).toBeLessThan(4.9);
+    expect(s.z).toBeLessThan(-3.1);
     const b = { x: g.bin.x, z: g.bin.z };
     c.resolve(b, 0.4);
     expect(b).not.toEqual({ x: g.bin.x, z: g.bin.z });
   });
 
   it('R-VUON-1: kiểm đặc tả — thiếu luống, luống ra ngoài rào, thùng trong rào → báo lỗi', () => {
-    const bad = { ...NHA.spec, garden: { ...g, plots: g.plots.slice(1).concat({ id: 'o-2', x: 30, z: 0 }), bin: { x: 18, z: 0, rotY: 0 } } };
+    const bad = { ...NHA.spec, garden: { ...g, plots: g.plots.slice(1).concat({ id: 'o-2', x: 30, z: 0 }), bin: { x: 8, z: -9, rotY: 0 } } };
     const out = checkGarden(bad);
     expect(out.some((m) => m.includes('cần đủ 12 luống'))).toBe(true);
     expect(out.some((m) => m.includes('nằm trong rào'))).toBe(true);

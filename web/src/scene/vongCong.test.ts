@@ -37,6 +37,12 @@ describe('vòng cổng "Về nhà" (V-39)', () => {
     expect(scene.children).toEqual([]);
   });
 
+  it('R-HANH-4: cửa nhà chính ↔ gian trong (`marker: false`, V-68) → không vòng sáng, không chữ nổi; bước vào ô cửa là sang', () => {
+    const scene = new THREE.Scene();
+    addPortalMarkers(scene, [{ ...HOME, scene: 'nha-ta-trong', label: 'Vào nhà', marker: false }], DEFAULT_SCENE.teleport.colors);
+    expect(scene.children).toEqual([]);
+  });
+
   it('R-HUD-4: nhãn cổng dài quá 20 ký tự → scene:check báo; nhãn có chữ Hán → báo', () => {
     const long = resolveSceneSpec({ portals: [{ ...HOME, label: 'Về nhà của ta ở dưới chân núi' }] }).problems.join('\n');
     expect(long).toContain('portals[0].label');

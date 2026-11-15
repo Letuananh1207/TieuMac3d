@@ -9,17 +9,19 @@ import type { Box, Circle, Colliders } from '../collision/colliders';
 import { DECOR_SHAPES, buildDecorItem, decorBlock, disposeDecorItem } from './decorItems';
 import { insideBuilding } from './decorSlots';
 import { hallFloor } from './kien_truc/dien';
+import { GIAN_TRONG_FLOOR } from './kien_truc/gian_trong';
 import { NHA_O_FLOOR } from './kien_truc/nha_o';
 import { markDynamic } from './merge';
 import type { DecorSlotSpec, SceneSpec } from './spec';
 import type { GroundY } from './terrainHeight';
 
 /**
- * Độ cao chân vật ở ô: ô trong nhà = mặt sàn nhà chứa ô (`nha-o`: sàn nền thấp; kiểu khác: sàn điện); ngoài nhà = mặt
+ * Độ cao chân vật ở ô: ô trong nhà = mặt sàn nhà chứa ô (`nha-o`: sàn nền thấp; `gian-trong`: sàn ván; kiểu khác: sàn điện); ngoài nhà = mặt
  * đất (`groundY`, không địa hình = 0).
  */
 export function slotFloorY(spec: Pick<SceneSpec, 'buildings' | 'buildingStyle'>, slot: DecorSlotSpec, groundY?: GroundY): number {
   const home = spec.buildings.find((b) => insideBuilding(b, slot.x, slot.z));
+  if (home?.kind === 'gian-trong') return GIAN_TRONG_FLOOR;
   if (home) return home.kind === 'nha-o' ? NHA_O_FLOOR : hallFloor(spec.buildingStyle);
   return groundY ? groundY(slot.x, slot.z) : 0;
 }

@@ -8,9 +8,10 @@ import { placeName } from './zones/journeyMap';
 const IDS = [HOME_SCENE, ...REGION_SCENES];
 const SPECS = Object.fromEntries(IDS.map((id) => [id, loadScene(id).spec]));
 
-/** 8 cặp: Nhà của ta ↔ trấn, trấn ↔ Trúc Lâm (V-57) + 6 cặp vùng V-59 (đã duyệt). */
+/** 9 cặp: Nhà của ta ↔ trấn, Nhà của ta ↔ gian trong (cửa nhà chính — V-68), trấn ↔ Trúc Lâm (V-57) + 6 cặp vùng V-59. */
 const PAIRS: [string, string][] = [
   ['nha-ta', HOME_SCENE],
+  ['nha-ta', 'nha-ta-trong'],
   [HOME_SCENE, 'rung-truc'],
   ['rung-truc', 'giang-nam'],
   ['rung-truc', 'truong-thanh'],
@@ -50,7 +51,7 @@ const toPath = (x: number, z: number, p: PathSpec): number => {
 };
 
 describe('cổng đi bộ nối vùng lân cận (R-HANH-4, V-59)', () => {
-  it('R-HANH-4: đúng 8 cặp cổng, cặp nào cũng hai chiều; ngoài các cặp đó không có cổng nào', () => {
+  it('R-HANH-4: đúng 9 cặp cổng, cặp nào cũng hai chiều; ngoài các cặp đó không có cổng nào', () => {
     const all = IDS.flatMap((id) => SPECS[id].portals.map((p) => [id, p.scene].sort().join(' ↔ ')));
     const pairs = PAIRS.map((p) => [...p].sort().join(' ↔ '));
     expect([...new Set(all)].sort()).toEqual([...pairs].sort());
@@ -58,13 +59,18 @@ describe('cổng đi bộ nối vùng lân cận (R-HANH-4, V-59)', () => {
       expect(portalOf(a, b), `${a} → ${b}`).toBeDefined();
       expect(portalOf(b, a), `${b} → ${a}`).toBeDefined();
     }
-    // Nhà của ta chỉ nối với trấn
-    expect(SPECS['nha-ta'].portals.map((p) => p.scene)).toEqual([HOME_SCENE]);
+    // Nhà của ta chỉ nối với trấn + gian trong; gian trong chỉ nối ra sân
+    expect(SPECS['nha-ta'].portals.map((p) => p.scene)).toEqual([HOME_SCENE, 'nha-ta-trong']);
+    expect(SPECS['nha-ta-trong'].portals.map((p) => p.scene)).toEqual(['nha-ta']);
   });
 
-  it('R-HANH-4: nhãn vòng = tên nơi đến (một nguồn — placeName / ban-do.json), riêng cổng về Nhà của ta ghi "Về nhà"; mọi cảnh không lỗi cổng', () => {
+  it('R-HANH-4: nhãn vòng = tên nơi đến (một nguồn — placeName / ban-do.json), riêng cổng về Nhà của ta ghi "Về nhà", cửa nhà chính ↔ gian trong ghi "Vào nhà" / "Ra sân" (V-68); mọi cảnh không lỗi cổng', () => {
+    const door: Record<string, string> = { 'nha-ta>nha-ta-trong': 'Vào nhà', 'nha-ta-trong>nha-ta': 'Ra sân' };
     for (const id of IDS) {
-      for (const p of SPECS[id].portals) expect(p.label, `${id} → ${p.scene}`).toBe(p.scene === 'nha-ta' ? 'Về nhà' : placeName(p.scene));
+      for (const p of SPECS[id].portals) {
+        const want = door[`${id}>${p.scene}`] ?? (p.scene === 'nha-ta' ? 'Về nhà' : placeName(p.scene));
+        expect(p.label, `${id} → ${p.scene}`).toBe(want);
+      }
       expect(checkPortals(SPECS[id]), id).toEqual([]);
     }
   });

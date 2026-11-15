@@ -102,7 +102,7 @@ function fadeTex(): THREE.CanvasTexture {
 }
 
 /**
- * Dựng vòng cổng cho mọi cổng có `label` trong `portals`. Trả hàm gọi mỗi khung (thở sáng, hạt bay). Không cổng nào có
+ * Dựng vòng cổng cho mọi cổng có `label` trong `portals` (trừ `marker: false` — cửa nhà, V-68). Trả hàm gọi mỗi khung (thở sáng, hạt bay). Không cổng nào có
  * nhãn → không dựng gì (cảnh cũ).
  */
 export function addPortalMarkers(
@@ -111,7 +111,7 @@ export function addPortalMarkers(
   colors: TeleportSpec['colors'],
   groundY: GroundY = () => 0,
 ): (dt: number) => void {
-  const marked = portals.filter((p) => p.label);
+  const marked = portals.filter((p) => p.label && p.marker !== false);
   if (!marked.length) return () => {};
   const disc = discTex();
   const fade = fadeTex();

@@ -78,7 +78,7 @@ describe('bản đồ vùng — đủ mọi cảnh (R-BANDO-2)', () => {
     expect(land).toHaveLength(tran.terrain.plateaus.filter((p) => p.y >= -1).length);
     const nha = mapOf('nha-ta').shapes;
     expect(nha.filter((s) => s.kind === 'dat')).toEqual([
-      { kind: 'dat', x: 0, z: -2.5, w: 34, d: 31 },
+      { kind: 'dat', x: -3, z: -2.5, w: 40, d: 31 }, // V-68: nới về tây cho nhà chính sát mép trái
       { kind: 'dat', x: 0, z: 18, w: 6, d: 10 },
       { kind: 'dat', x: 18.25, z: 0, w: 9.5, d: 12 }, // bục Vườn rau (V-52)
     ]);
@@ -87,12 +87,23 @@ describe('bản đồ vùng — đủ mọi cảnh (R-BANDO-2)', () => {
     for (const id of IDS) expect(mapOf(id).shapes.filter((s) => s.kind === 'khu')).toHaveLength(loadScene(id).spec.site.areas.length);
   });
 
-  it('R-BANDO-2: Nhà của ta — 6 khu (có Vườn rau — V-52), vòng "Khởi Nguyên Trấn" (0; 21) cuối Bến mây, không có cổng đứng riêng (V-51), không có vòng trận, không có dấu ô trang trí', () => {
+  it('R-BANDO-2: Nhà của ta — 6 khu (có Vườn rau — V-52), vòng "Khởi Nguyên Trấn" (0; 21) cuối Bến mây, cửa "Vào nhà" ở nhà chính (−15; −5,1) (V-68), không có cổng đứng riêng (V-51), không có vòng trận, không có dấu ô trang trí', () => {
     const m = mapOf('nha-ta');
-    expect(m.labels.filter((l) => l.kind === 'khu').map((l) => l.text)).toEqual(['Chính phòng', 'Sân trong', 'Bến mây', 'Đồi sau', 'Vườn rau', 'Vườn']);
-    expect(m.icons.find((i) => i.kind === 'cong-canh')).toMatchObject({ x: 0, z: 21, scene: HOME_SCENE });
-    expect(m.labels.filter((l) => l.kind === 'cong').map((l) => l.text)).toEqual(['Khởi Nguyên Trấn']);
-    expect(m.icons.map((i) => i.kind)).toEqual(['cong-canh']);
+    expect(m.labels.filter((l) => l.kind === 'khu').map((l) => l.text)).toEqual(['Chính phòng', 'Sân trước', 'Bến mây', 'Đồi sau', 'Vườn rau', 'Vườn']);
+    expect(m.icons.find((i) => i.scene === HOME_SCENE)).toMatchObject({ kind: 'cong-canh', x: 0, z: 21 });
+    expect(m.icons.find((i) => i.scene === 'nha-ta-trong')).toMatchObject({ kind: 'cong-canh', x: -15, z: -5.1 });
+    // cửa nhà chính sang gian trong (cùng nơi "Nhà của ta") ghi nhãn cửa, không ghi tên nơi
+    expect(m.labels.filter((l) => l.kind === 'cong').map((l) => l.text).sort()).toEqual(['Khởi Nguyên Trấn', 'Vào nhà']);
+    expect(m.icons.map((i) => i.kind)).toEqual(['cong-canh', 'cong-canh']);
+  });
+
+  it('R-BANDO-2: Trong nhà (gian trong Nhà của ta — V-68) — khu "Trong nhà", chân gian phòng, cửa "Ra sân", không vòng trận', () => {
+    const m = mapOf('nha-ta-trong');
+    expect(m.name).toBe('Nhà của ta');
+    expect(m.labels.filter((l) => l.kind === 'khu').map((l) => l.text)).toEqual(['Trong nhà']);
+    expect(m.shapes.filter((s) => s.kind === 'nha')).toHaveLength(1);
+    expect(m.icons).toEqual([expect.objectContaining({ kind: 'cong-canh', x: 0, z: 5.4, scene: 'nha-ta' })]);
+    expect(m.labels.filter((l) => l.kind === 'cong').map((l) => l.text)).toEqual(['Ra sân']);
   });
 
   it('R-BANDO-2: Trúc Lâm — vòng "Khởi Nguyên Trấn" (−7,4; 39) mép tây sân đá trống cửa rừng (V-57, V-65), vòng "Yên Vũ Lâu" mép đông (20,6; 43), vòng "Nhạn Môn Quan" mép bắc (−5; −44,2) (V-59)', () => {

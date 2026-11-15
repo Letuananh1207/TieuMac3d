@@ -23,7 +23,7 @@ import { npcInTalkRange, placeNpcs, showNearNpcs } from './player/npc';
 import { TownNpcs } from './townNpcs';
 import { DanTranh } from './danTranh';
 import { HOME_SCENE, loadScene, REGION_SCENES } from './scene/loadSpec';
-import { HOME_OF_PLAYER } from './scene/placeNames';
+import { HOME_OF_PLAYER, isHomeScene } from './scene/placeNames';
 import { createMapScroll } from './scene/banDo';
 import { arrivalSpot, CHARGE_SECONDS, ringTrigger } from './scene/teleportLayout';
 import { arrivalFor } from './scene/portals';
@@ -718,7 +718,7 @@ async function boot(): Promise<void> {
         },
       })
     : null;
-  await garden?.load();
+  await garden?.load(!isHomeScene(params.get('qua'))); // ra sân từ gian trong: không báo lại luống chín (V-68)
   // Tiểu Khất + Lão Canh (R-NPC-6/7/8, R-AM-1) — townNpcs.ts; chỉ khi cảnh có hai NPC này (có model)
   town = new TownNpcs(npcSet.npcs, {
     bridge,
@@ -802,7 +802,8 @@ async function boot(): Promise<void> {
     player.moveTarget = null;
     joystick.end();
     ring?.rearm(); // mở bằng thanh khi đang nạp vòng → huỷ nạp; đóng bản đồ phải ra khỏi vòng rồi vào (R-THANH-2)
-    states = placeStates(JOURNEY_MAP.places, SCENE.id, HOME_SCENE, REGION_SCENES);
+    // gian trong Nhà của ta (V-68) không có nơi riêng: bản đồ coi như đang ở Nhà của ta
+    states = placeStates(JOURNEY_MAP.places, isHomeScene(SCENE.id) ? HOME_OF_PLAYER : SCENE.id, HOME_SCENE, REGION_SCENES);
     scroll.open(from === 'vong' ? (world.teleport?.center ?? player.position) : player.position, states);
     mapHud.show(true);
   };
@@ -848,7 +849,7 @@ async function boot(): Promise<void> {
       chatDocked: dangBanMay(), // bản máy tính: ô nhập trên thanh, gõ không ẩn thanh (R-THANH-1)
       sitting: player.isSitting,
       air: player.state.air,
-      atHome: SCENE.id === HOME_OF_PLAYER,
+      atHome: isHomeScene(SCENE.id), // sân + gian trong (V-68)
       tasksLeft: tasksLeft(progress?.daily ?? null, (progress?.radicals.length ?? 0) >= RADICALS.length),
     }),
     standUp: () => (scrollOpen && !covered ? standFromScroll() : player.isSitting && player.toggleSit()),

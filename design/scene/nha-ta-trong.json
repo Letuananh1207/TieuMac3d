@@ -1,0 +1,75 @@
+{
+  "site": {
+    "name": "Nhà của ta",
+    "han": "我家",
+    "loadName": "Trong nhà",
+    "areas": [{ "name": "Trong nhà", "han": "正房", "from": [-7, -5], "to": [7, 5] }]
+  },
+  "sky": { "top": "#86afcf", "middle": "#cddde4", "horizon": "#f1e3c8" },
+  "fog": { "color": "#e2e8e6", "near": 30, "far": 110 },
+  "light": {
+    "skyColor": "#fff3e2",
+    "groundColor": "#8a6a50",
+    "hemiIntensity": 0.85,
+    "sunColor": "#ffe2b8",
+    "sunIntensity": 0.55,
+    "sunPosition": [-24, 22, 10]
+  },
+  "ground": { "size": 40, "color": "#b9b2a4", "brickHue": 30, "pattern": "vuong" },
+  "farMountains": { "layers": [], "base": -20 },
+  "cloudSea": { "radius": 0, "y": -12, "color": "#f4f1ea" },
+  "walls": { "enabled": false, "style": "voi", "color": "#eeebe2", "capColor": "#3b3f44", "height": 2.8, "thickness": 0.5, "windows": 0 },
+  "wallSegments": [],
+  "fences": [],
+  "galleries": [],
+  "paths": [],
+  "buildingStyle": {
+    "path": "#a8a194",
+    "stone": "#8a8780",
+    "water": "#4d7f86",
+    "wall": "#f1eee6",
+    "pillar": "#3a3430",
+    "ridge": "#2f3236",
+    "eave": "#33363a",
+    "base": "#8c8a84",
+    "timber": "#5a4030",
+    "floor": "#a87a54",
+    "heightScale": 1
+  },
+  "buildings": [
+    {
+      "id": "gian-trong",
+      "x": 0,
+      "z": 0,
+      "w": 14,
+      "d": 10,
+      "title": "Chính phòng",
+      "roofColor": "#8a6a4c",
+      "kind": "gian-trong"
+    }
+  ],
+  "gates": [],
+  "water": [],
+  "props": [],
+  "trees": {
+    "crown": "chum",
+    "yard": [],
+    "groves": [],
+    "ring": { "count": 0, "radius": 25, "spread": 6, "scaleMin": 1.6, "scaleMax": 2.4 }
+  },
+  "well": { "enabled": false },
+  "floating": { "islands": [], "clouds": { "count": 0, "height": 26, "radius": 60, "speed": 0.6, "color": "#d9dce8" } },
+  "player": { "start": [0, 1.2] },
+  "npcs": [],
+  "camera": { "fov": 55, "minDist": 2.5, "maxDist": 6, "near": { "dist": 4.2, "pitch": 0.3 }, "far": { "dist": 5.5, "pitch": 0.38 } },
+  "lessons": { "radicals": false },
+  "decorSlots": [
+    { "id": "trong-1", "kind": "trong", "x": -4, "z": -3.6 },
+    { "id": "trong-2", "kind": "trong", "x": 0, "z": -3.6 },
+    { "id": "trong-3", "kind": "trong", "x": 4, "z": -3.6 }
+  ],
+  "portals": [
+    { "scene": "nha-ta", "area": { "from": [-0.9, 4.5], "to": [0.9, 6.3] }, "arrive": { "at": [0, 1.2], "rotY": 180 }, "label": "Ra sân", "marker": false }
+  ],
+  "dayNight": { "enabled": true }
+}

@@ -369,7 +369,7 @@ const SIGNS0 = { bac: '', nam: '', dong: '', tay: '' };
 const LISTS: Record<string, ItemParser> = {
   buildings: item(
     { id: '', x: 0, z: 0, w: 0, d: 0, title: '', roofColor: '#000000' },
-    { rotY: 0, notice: ['', ''], zone: { id: '', front: 0, r: 0 }, kind: '', roof: '', floors: 0, sides: 0, trim: '#000000', pillarColor: '#000000', sign: '', goods: '' },
+    { rotY: 0, notice: ['', ''], zone: { id: '', front: 0, r: 0 }, kind: '', roof: '', floors: 0, sides: 0, trim: '#000000', pillarColor: '#000000', sign: '', goods: '', closed: false },
     all(rot, oneOf('kind', BUILDING_KINDS), oneOf('goods', GOODS_KINDS), oneOf('roof', ROOF_KINDS), oneOf('sides', [4, 6]), floorsRange, positive('w', 'd')),
   ),
   'walls.gates': item({ side: '', at: 0, width: 0 }, { kind: '', signs: SIGNS0, clearHeight: 0, roof: true }, all(oneOf('side', SIDES), positive('width'), gateLook)),
@@ -411,7 +411,7 @@ const LISTS: Record<string, ItemParser> = {
   decorSlots: item({ id: '', kind: '', x: 0, z: 0 }, { rotY: 0 }, all(oneOf('kind', DECOR_SLOT_KINDS), rot)),
   'garden.plots': item({ id: '', x: 0, z: 0 }, {}),
   // cổng đi bộ (R-HANH-4): kiểm vùng / chỗ đứng / cặp cổng ở `portals.ts` + `scripts/check-scene.mjs`
-  portals: item({ scene: '', area: { from: XZ0, to: XZ0 }, arrive: { at: XZ0, rotY: 0 } }, { label: '' }, (o, path) =>
+  portals: item({ scene: '', area: { from: XZ0, to: XZ0 }, arrive: { at: XZ0, rotY: 0 } }, { label: '', marker: true }, (o, path) =>
     typeof o.label === 'string' && [...o.label].length > 20 ? [`${path}.label: tối đa 20 ký tự (nhãn một dòng)`] : [],
   ),
   'trees.yard': item({ x: 0, z: 0, scale: 0 }, { kind: '', planter: true }, all(oneOf('kind', TREE_KINDS), positive('scale'))),
@@ -566,6 +566,8 @@ export function craneProblems(s: SceneSpec): string[] {
   const r = CRANE_CLEAR * c.scale;
   const where = `crane: bãi đáp (${px.toFixed(1)}; ${pz.toFixed(1)})`;
   for (const b of s.buildings) {
+    // gian trong (cảnh "Trong nhà" — V-68): không có trên bản đồ truyền tống, hạc không bao giờ đáp ở đây
+    if (b.kind === 'gian-trong') continue;
     const [w, d] = (b.rotY ?? 0) % 180 !== 0 ? [b.d, b.w] : [b.w, b.d];
     if (Math.abs(px - b.x) < w / 2 + r && Math.abs(pz - b.z) < d / 2 + r) out.push(`${where} nằm trong nhà "${b.id}" — đổi crane.padOffset hoặc dời player.start`);
   }

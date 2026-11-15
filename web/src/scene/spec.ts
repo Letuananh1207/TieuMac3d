@@ -10,7 +10,7 @@ import { DEFAULT_DAY_NIGHT, type DayNightSpec } from './ngayDem';
 
 export type XZ = [number, number];
 
-export const BUILDING_KINDS = ['giang-duong', 'dien', 'thap', 'nha-nho', 'dinh', 'hi-dai', 'tra-lau', 'lau-sach', 'cua-hang', 'nha-o'] as const;
+export const BUILDING_KINDS = ['giang-duong', 'dien', 'thap', 'nha-nho', 'dinh', 'hi-dai', 'tra-lau', 'lau-sach', 'cua-hang', 'nha-o', 'gian-trong'] as const;
 /** Hàng bày trong cửa hàng (`cua-hang`): bút mực · vải · bùa giấy · thuốc · thùng gỗ. */
 export const GOODS_KINDS = ['but', 'vai', 'bua', 'thuoc', 'thung'] as const;
 export const ROOF_KINDS = ['chop', 'cong'] as const;
@@ -183,6 +183,11 @@ export interface BuildingSpec {
   sign?: string;
   /** cửa hàng: hàng bày trên quầy, kệ */
   goods?: (typeof GOODS_KINDS)[number];
+  /**
+   * Nhà kín (`nha-o`, V-68): cửa gian giữa đóng (cửa bức bàn), không đi vào được, mái không mờ — vào trong bằng cổng sang
+   * cảnh gian trong (`portals`, R-HANH-4). Thiếu / `false` = nhà vào được như cũ.
+   */
+  closed?: boolean;
 }
 
 /**
@@ -573,6 +578,11 @@ export interface PortalSpec {
    * trên, luôn quay về camera (`vongCong.ts`, V-39). Thiếu / rỗng = không vẽ gì (cảnh cũ — cổng chỉ là vùng chạm).
    */
   label?: string;
+  /**
+   * `false` = không dựng vòng sáng + chữ nổi dù có `label` (cửa nhà chính ↔ gian trong — V-68: bước qua ô cửa là sang;
+   * `label` chỉ ghi trên bản đồ lớn). Thiếu = có vòng khi có `label`.
+   */
+  marker?: boolean;
 }
 
 /**
@@ -776,7 +786,8 @@ export interface DaisSpec {
 export interface SceneSpec {
   /** tên nơi + các khu (màn tải; thẻ tên khu đã bỏ — R-HUD-3); khu khai báo trước thắng khi chồng nhau */
   /** `han`: chữ Hán tên nơi trên màn tải (R-MAN-2), rỗng = chỉ tên Việt */
-  site: { name: string; han: string; areas: AreaSpec[] };
+  /** `loadName`: tên trên màn tải khi khác tên nơi (gian trong Nhà của ta: "Trong nhà" — V-68), rỗng = `name` */
+  site: { name: string; han: string; areas: AreaSpec[]; loadName: string };
   /** trời: dải màu từ đỉnh xuống chân trời (điểm giữa ở 55%) */
   sky: { top: string; middle: string; horizon: string };
   fog: { color: string; near: number; far: number };
@@ -1032,7 +1043,7 @@ export interface SceneSpec {
 
 export const DEFAULT_SCENE: SceneSpec = {
   // chưa đặt khu nào
-  site: { name: 'Học xá · Sân chính', han: '', areas: [] },
+  site: { name: 'Học xá · Sân chính', han: '', areas: [], loadName: '' },
   sky: { top: '#0f1730', middle: '#33476e', horizon: '#8a7a86' },
   fog: { color: '#2c3a58', near: 28, far: 70 },
   light: {
