@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>VuonMole-ghi-chu</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;700&amp;family=Lora:wght@700&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="position:relative;width:1500px;height:760px;overflow:hidden;font-family:'Be Vietnam Pro',system-ui,sans-serif;color:#24323A"><div style="position:absolute;inset:0;background:#F4F7F6;padding:28px 32px;box-sizing:border-box;display:grid;grid-template-columns:1fr 1fr 1fr;gap:28px;font-size:13px;line-height:1.5">
+<div><div style="font:700 22px Lora,Georgia,serif;margin-bottom:8px">Số đo · nhịp</div>
+<div style="padding:3px 0">• <b>Vòng</b>: ô giữa Tay 58, 5 ô quanh 48, bán kính tâm–tâm 64 (chiều kim đồng hồ từ 12 giờ, cách 72°): Hạt giống · Bình tưới · Bắt sâu · Nhổ cỏ · Phân bón. Vành mờ sau vòng: vòng kính sương 42 % dày 26 (thấy cây ở giữa / giữa các ô) — không đĩa đặc.</div>
+<div style="padding:3px 0">• <b>Ô</b>: tròn, nền kem <code>#FBF7EE</code> (gần <code>map-paper</code>), viền trắng 2, bóng 0 3 8 slate 28 %; hình lấp 86 %. Mờ: nền sương 92 %, hình xám 42 %. Nên làm: viền <code>gold</code> 3 + quầng 7 px gold 22 % — tối đa 1 ô (ưu tiên: Tay khi chín › Bình tưới khi khô › Bắt sâu › Nhổ cỏ › Hạt giống khi trống). Số: viên <code>slate</code> 20 viền trắng 2, 11/800, góc dưới phải; 0 → nền <code>slate-muted</code>.</div>
+<div style="padding:3px 0">• <b>Tên ô</b>: không chữ dưới ô. Giữ 0,4 s (điện thoại) / rê chuột (máy) → viên tên cao 24 trên ô. Máy: nhãn phím 17 góc trên trái (1 = Tay, 2–6 quanh), viên "1–6 chọn · Esc đóng" dưới vòng.</div>
+<div style="padding:3px 0">• <b>Luống đang mở</b>: viền <code>gold</code>-sáng 3 quanh mặt luống + quầng aura 25 %.</div>
+<div style="padding:3px 0">• <b>Lưới hạt</b>: tấm kính .97 bo 16, đệm 8 10 12, đầu = nút về 28 + "Chọn hạt để gieo" 13/700; ô vuông 60 (ngang 56) bo 12 nền kem, cây chín lấp ô, số góc dưới phải; ≤ 3 cột. Bung từ ô Hạt giống: dọc ở <b>trên</b> vòng (mũi 18 × 10 trỏ ô Hạt giống), ngang ở <b>bên phải</b> vòng. Vòng phía sau mờ 50 % (giữ ô Hạt giống). Giữ ô → thẻ chi tiết <code>slate</code> (tên, "Lớn trong …", "bán xu n / cái").</div>
+<div style="padding:3px 0">• <b>Nhịp</b>: mở 0,15 s bung từ tâm; chọn → nảy 0,12 s + thu 0,12 s; lưới bung 0,15 s; chữ nổi 1 s (+0,3 s mờ), nối nhau 0,25 s; viên lý do 1,6 s. Giảm chuyển động: hiện ngay, chữ không bay. Quả thu bay vòng lên rồi vào ô Túi đồ (0,6 s, 3 quả lệch 0,08 s).</div>
+</div>
+<div><div style="font:700 22px Lora,Georgia,serif;margin-bottom:8px">Hành vi · luật</div>
+<div style="padding:3px 0">• Mở: chạm / click luống (máy: E — luống gần nhất). Đóng: chạm ngoài vòng, kéo joystick / phím đi, Esc, chọn ô sáng, ra khỏi rào; mở trang trí / bản đồ / thoại / ngồi / màn Flutter / màn tải. Chạm luống khác → vòng chuyển ngay (không đóng–mở).</div>
+<div style="padding:3px 0">• Vòng mở: HUD giữ nguyên (thanh, joystick, cụm nút) — vòng tự dịch tránh. Đang diễn động tác vẫn mở được vòng; chọn việc khác → làm sau khi xong (R-VUON-13).</div>
+<div style="padding:3px 0">• Chạm ô mờ → viên lý do trên ô đó, vòng vẫn mở. Tay khi chưa chín → "{cây} · còn {thời gian}".</div>
+<div style="padding:3px 0">• Vòng đóng, đứng &lt; 1,6 m → nhãn kính "{cây} · còn {thời gian}" (có sẵn) — hàng dấu nhỏ vấn đề ở trên luống thay cho dấu trong nhãn.</div>
+<div style="padding:3px 0">• <b>Túi đồ</b>: đổi 4 mục cuộn → <b>5 tab hình</b> ở cạnh trên (Hạt giống · Đồ làm vườn · Nông sản · Sách · Trang trí), tab mở nổi 2 px viền <code>jade</code> 2. Hạt giống / Nông sản = lưới ô vuông 72 (ngang 52) số góc dưới phải; chạm → thẻ chi tiết dưới lưới. Đồ làm vườn = 5 nông cụ (không số, có tên 11) + Vật tư: Phân bón × n. Vẫn chỉ xem.</div>
+<div style="padding:3px 0">• <b>Tạp hoá</b>: tab "Hạt giống" → "Làm vườn"; Phân bón đứng đầu tab, thẻ như thẻ hạt; xác nhận × 1 · × 5 · × 10, ví "−50 · Phân bón".</div>
+<div style="padding:3px 0">• Bỏ: nút nổi Gieo / Tưới / Thu, tấm đáy chọn hạt thẻ to (2026-11-15.29). Giữ: kho + bán, hộp mở ô, tấm báo.</div>
+<div style="padding:3px 0">• R-HUD-4: không chữ Hán.</div>
+</div>
+<div><div style="font:700 22px Lora,Georgia,serif;margin-bottom:8px">Hình còn thiếu (V-73)</div>
+<div style="font-size:12px;color:#5E6A70;margin-bottom:6px">Bản vẽ này dùng <b>hình giữ chỗ</b> cho Tay, Bắt sâu, Nhổ cỏ, Phân bón và 3 dấu luống. Dùng lại: Hạt giống = <code>gieo</code>, Bình tưới = <code>tuoi</code>, Mở ô = <code>mo-o</code> (đợt 2). Câu lệnh Gemini — mẫu chung đợt 2 (đính kèm ảnh đàn tranh + ve-nha + tui-do), thay &lt;VẬT&gt;; hình đặt trong ô tròn nên vật gọn, tròn trịa:</div>
+<div style="padding:3px 0;font-size:12px"><b>1 · <code>tay-thu</code></b>: an open friendly cartoon hand (palm facing the viewer, fingers slightly apart), soft peach skin tone, with a tiny woven bamboo harvest basket hanging from the wrist</div><div style="padding:3px 0;font-size:12px"><b>2 · <code>bat-sau</code></b>: a small bamboo bug-catching net with a fat friendly green caterpillar sitting on its rim</div><div style="padding:3px 0;font-size:12px"><b>3 · <code>nho-co</code></b>: a small tuft of green weeds freshly pulled out of the ground, with brown roots and a few crumbs of soil hanging below</div><div style="padding:3px 0;font-size:12px"><b>4 · <code>phan-bon</code></b>: a small tied hemp sack of plant fertiliser with a green leaf sprout drawn by shape (not printed) on the front and a little pile of dark brown compost at its foot</div><div style="padding:3px 0;font-size:12px"><b>5 · <code>dau-kho</code></b>: a single fat clear-blue water drop, very simple</div><div style="padding:3px 0;font-size:12px"><b>6 · <code>dau-sau</code></b>: a single fat friendly green caterpillar, very simple</div><div style="padding:3px 0;font-size:12px"><b>7 · <code>dau-co</code></b>: a single small tuft of three green weed blades, very simple</div>
+<div style="font-size:12px;color:#5E6A70;margin-top:8px">Dấu luống 5–7 vẽ đơn giản (nhìn ở 18–22 px). Chuỗi mới: xem phiếu mục 5 (khoá <code>garden*</code> / <code>tool*</code>).</div>
+</div></div></div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1500,"height":760}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

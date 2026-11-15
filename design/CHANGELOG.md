@@ -3,6 +3,26 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-16.4 — Vườn rau kiểu Mole: vòng công cụ quanh luống, lưới hạt, dấu luống, chữ nổi, Túi đồ tab hình, Tạp hoá Làm vườn
+
+- Loại: giao diện · chuỗi · luồng (theo luật đã chốt). Màn: HUD vườn (Nhà của ta), Túi đồ, Tạp hoá. Đặc tả `docs/screen_specs.md` mục
+  "Vườn rau kiểu Mole".
+- Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-15-vuon-mole.md` (V-73; phiếu chưa có trên `origin/main` — dòng "Đã vẽ" ghi ở bản trong máy).
+  Vẽ trong phiên VS Code theo vai thiết kế; người dùng duyệt "Ổn, chốt".
+- **Thay** phần của 2026-11-15.29: nút nổi luống Gieo / Tưới / Thu + tấm đáy chọn hạt thẻ to. **Giữ**: kho + bán, hộp mở ô, tấm báo, nhãn đang
+  lớn, lấp lánh. **Sửa** Túi đồ (2026-11-15.35): 4 mục cuộn → 5 tab hình (thiết kế chọn theo gợi ý phiếu, kiểu Mole).
+- Thiết kế tự chọn (phiếu để ngỏ): vành kính mờ thay đĩa đặc · tối đa 1 ô "nên làm" viền vàng · tên ô chỉ khi giữ / rê · lưới hạt trên vòng (dọc)
+  / bên phải (ngang), vòng sau mờ 50 % · dấu luống xếp ≤ 3 (sâu · cỏ · khô) · vòng tự đẩy lên tránh HUD + mũi chỉ.
+- Luật: không đổi luật đã chốt. Chi tiết hiển thị mới (thứ tự ưu tiên "nên làm", thứ tự dấu, quy tắc đặt vòng) — phiên code xem có cần ghi vào
+  R-VUON-2 không.
+- Chuỗi mới: 40 khoá trong `l10n/vi.arb` (`tool*`, `gardenFloat*`, `gardenWhy*`, `bagTab*`, `shopTabGarden`, `shopFertilizer*`…).
+- Còn chờ: 7 hình (`tay-thu`, `bat-sau`, `nho-co`, `phan-bon`, `dau-kho`, `dau-sau`, `dau-co`) — artboard dùng hình giữ chỗ; câu lệnh trong
+  `VuonMole-ghi-chu`. Hình Mở ô hiện là cái cuốc (`mo-o`), phiếu ghi xẻng — chấp nhận.
+- Cho phiên code (`/ui-apply`): dựng HUD vòng trong `web/src/ui/` thay nút nổi `gardenHud.ts` + tấm `gardenPanel.ts` (luật đã ở
+  `zones/vuonVong.ts`, `gardenWork.ts`); dấu luống + chữ nổi; Túi đồ tab hình (`bagPanel.ts`); Tạp hoá tab Làm vườn + Phân bón (`shopPanel.ts`,
+  `shop_screen.dart`).
+- File: `source/` + `screens/` 17 artboard; `docs/screen_specs.md`, `docs/components.md`, `l10n/vi.arb`.
+
 ## 2026-11-16.3 — Hình minh hoạ đợt 2: nút nổi + HUD trò chơi (10) · biểu cảm (7 + 7 bản cắt sát mặt)
 
 - Loại: giao diện · tài nguyên (ảnh). Màn: nút nổi bám vật, HUD trò chơi / vườn, bảng Biểu cảm + bong bóng trên đầu. Đặc tả `docs/screen_specs.md`

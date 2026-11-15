@@ -182,3 +182,13 @@ Một chất liệu: kính mờ `frost*` + viền `frost-line` / `frost-outline`
 | Thành phần | Artboard | Token |
 |---|---|---|
 | Hình minh hoạ đợt 2 — nút nổi bám vật / HUD trò chơi (hình 28 trong viên kính sương) và biểu cảm Tiểu Mặc (bản `-mat` cắt sát mặt cho ô 32 + bong bóng 34) | `HinhMinhHoa-dot2` | (ảnh — không token) |
+
+## Thêm ở 2026-11-16.4
+
+| Thành phần | Artboard | Token |
+|---|---|---|
+| Vòng công cụ quanh luống — ô giữa 58 + 5 ô tròn 48 bán kính 64, vành kính mờ, ô sáng / mờ / nên làm / nhấn / có số, mũi chỉ khi dịch | `VuonMole-*` | `gold`, `slate`, `slate-muted`, `map-paper` |
+| Lưới hạt nổi (ô vuông 60 số góc dưới phải, bung từ ô Hạt giống) | `VuonMole-luoi-hat-*` | `slate` |
+| Dấu trạng thái luống (đĩa trắng 22: khô · sâu · cỏ · bón được · chín) | `VuonMole-trang-thai` | `garden-water`, `aura-light` |
+| Chữ nổi (trắng viền `slate`) + viên lý do (`slate` 92 %) | `VuonMole-trang-thai`, `VuonMole-chu-noi-doc` | `slate` |
+| Túi đồ tab hình (5 tab, tab mở viền `jade`) — thay 4 mục cuộn | `TuiDo-vuon-*` | `jade` |

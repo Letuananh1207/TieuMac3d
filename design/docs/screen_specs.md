@@ -1015,3 +1015,52 @@ Mẫu một mục:
 - Cỡ tệp 160 × 160 WebP alpha, vật ≈ 84 % khung (bản `-mat` ≈ 92 %). Bóng CSS chung như đợt 1. Trạng thái (mờ / nhấn / bật) bằng CSS như đợt 1.
 - Dấu thao tác nhỏ (×, tích, mũi tên…): vẫn giữ nét SVG; bảng so sánh vẽ ở đợt 2b.
 - Câu lệnh từng hình: `design/icons/hinh.json` (`dot: 2`). Ảnh: `screens/HinhMinhHoa-dot2.png` (phần C = thử cỡ thật).
+
+## Vườn rau kiểu Mole — vòng công cụ quanh luống, lưới hạt, dấu luống, chữ nổi, Túi đồ tab hình, Tạp hoá Làm vườn (HUD) · artboard `VuonMole-{trang-thai,doc,trong-doc,luoi-hat-doc,tui-trong-doc,kho-sau-doc,chin-doc,hoang-doc,chu-noi-doc,ngang,luoi-hat-ngang,may,ghi-chu}.dc.html`, `TuiDo-vuon-{doc,ngang}.dc.html`, `CuaHang-{lam-vuon-doc,phan-bon-xac-nhan-doc}.dc.html` · từ mục 2026-11-16.4
+
+- Mục đích: phiếu `2026-11-15-vuon-mole` (V-73, kế hoạch `docs/tasks/2026-11-15-vuon-mole.md` NV11–13). **Thay** nút nổi Gieo / Tưới / Thu
+  và tấm đáy chọn hạt thẻ to của mục Vườn rau (2026-11-15.29); **giữ** kho + bán, hộp mở ô, tấm báo, nhãn "đang lớn", lấp lánh chín.
+  Luật R-VUON-2/3/5/6/10–13, R-TUI-1, R-VUON-9 / R-TIEN-4, R-HUD-4.
+- **Vòng** (neo theo tâm mặt luống trong cảnh, bám theo camera mỗi khung hình): ô giữa **Tay 58**; 5 ô quanh **48**, bán kính tâm–tâm **64**,
+  chiều kim đồng hồ từ 12 giờ cách 72°: Hạt giống · Bình tưới · Bắt sâu · Nhổ cỏ · Phân bón. Sau vòng: vành kính sương 42 % dày 26 + viền trắng
+  70 % (không đĩa đặc — thấy cây ở giữa). Luống đang mở vòng: viền vàng sáng `#F7D774` 3 quanh mặt luống + quầng aura 25 %.
+  - Ô: tròn, nền kem `#FBF7EE`, viền trắng 2, bóng `0 3px 8px` slate 28 %; hình lấp 86 %; không chữ dưới ô.
+  - **Sáng** = làm được ngay · **Mờ** = nền sương 92 %, hình xám 42 %, bóng 14 % (chạm → viên lý do, vòng vẫn mở) · **Nhấn** = 92 % 0,08 s ·
+    **Nên làm** = viền `gold` 3 cách 1 + quầng 7 px gold 22 %, tối đa 1 ô — ưu tiên Tay (chín) › Bình tưới (khô) › Bắt sâu › Nhổ cỏ › Hạt giống
+    (trống) · **Có số** (Hạt giống = tổng hạt, Phân bón = số bao) = viên `slate` 20 viền trắng 2, 11/800, góc dưới phải lệch −5; 0 → nền
+    `slate-muted`, ô mờ.
+  - Tên ô: giữ 0,4 s (điện thoại) / rê chuột (máy) → viên tên kính .96 cao 24, 12/700 trên ô (máy: nền `slate` chữ trắng).
+  - **Luống hoang**: chỉ ô giữa "Mở ô" 58 (hình cuốc `mo-o`) + viên "Mở ô · xu 50" phía trên → hộp xác nhận mở ô (2026-11-15.29).
+  - **Đặt vòng**: bán kính ngoài 90 (luống hoang 33); kẹp trong safe area (dọc cách mép 16, ngang 55); không đè bản đồ nhỏ, ví, thanh công cụ,
+    joystick, Nhảy / Chào / Ngồi ôn (cách 8) — đẩy tâm vòng lên tới khi hết đè. Tâm lệch luống quá bán kính ngoài + 14 → **mũi chỉ**: nét đứt
+    trắng 3 (6/4) từ mép vòng tới luống + đầu tam giác 10 × 12.
+  - Nhịp: mở bung từ tâm 0,15 s (ô trượt ra + 60 → 100 %); chọn ô sáng → nảy 100 → 112 → 100 % 0,12 s rồi thu về tâm 0,12 s. Giảm chuyển
+    động: hiện / ẩn ngay. Chạm luống khác → vòng chuyển ngay.
+  - HUD giữ nguyên khi vòng mở (thanh công cụ, joystick, cụm nút).
+  - Máy tính: nhãn phím 17 (nền trắng viền slate 35 %, 10/800) góc trên trái mỗi ô — 1 Tay, 2–6 quanh; viên `slate` 85 % "1–6 chọn · Esc đóng"
+    dưới vòng cách 40; viên nhắc trên trái "Click luống · E mở vòng ở luống gần nhất".
+- **Lưới hạt** (chạm Hạt giống sáng): tấm kính .97 bo 16, đệm 8 10 12, bóng `0 8px 24px` slate 28 %; đầu = nút về tròn 28 + "Chọn hạt để gieo"
+  13/700 (máy: "1–n chọn · Esc về" bên phải); ô vuông **60** (ngang 56) bo 12 nền kem viền trắng 2, cây chín lấp ô, số góc dưới phải; ≤ 3 cột,
+  cách 10; chỉ loại đang có. **Dọc**: trên vòng, mũi 18 × 10 trỏ ô Hạt giống; **ngang**: bên phải vòng cách 40, mũi trỏ trái. Vòng sau lưới mờ 50 %
+  (giữ ô Hạt giống). Giữ ô → thẻ chi tiết `slate` bo 12 rộng 176: tên 14/700 · "Lớn trong {thời gian}" · "bán xu n / cái". Chạm ô → gieo, lưới +
+  vòng đóng.
+- **Dấu luống** (cảnh, ≤ 25 m): đĩa trắng 92 % 22 (ngang 18) bóng nhẹ, hình bên trong — khô (giọt `garden-water`) · sâu · cỏ · bón được (chỉ khi
+  vòng có Phân bón sáng) · chín (lấp lánh). Nhiều vấn đề: hàng tối đa 3 cách 2, thứ tự **sâu · cỏ · khô**; chín đứng một mình; xa / đông → chỉ dấu
+  đầu. Đất khô: phủ kem 62 % + 3 vết nứt; đất ẩm: sẫm 35 %.
+- **Chữ nổi**: 15/800 trắng viền `slate` 2 (dấu "+n {cây}" 18), dòng 2 12/700 kem `#FFF3D6`; bay lên 40 px 1 s, mờ 0,3 s cuối, nối nhau cách
+  0,25 s; giảm chuyển động → đứng yên 1 s. Thu: 3 quả trong đĩa trắng 28 bay cung lên rồi vào ô Túi đồ (0,6 s, lệch 0,08 s).
+  **Viên lý do** (ô mờ): `slate` 92 % cao 28 bo tròn, 13/700 trắng, trên ô vừa chạm (kẹp trong màn), 1,6 s, không bay.
+- **Vòng đóng**, đứng < 1,6 m: nhãn kính "{cây} · còn {thời gian}" (có sẵn); hàng dấu vấn đề nằm trên luống.
+- **Túi đồ** (sửa mục Thanh công cụ 2026-11-15.35): bỏ 4 mục cuộn → **5 tab hình** dưới đầu tấm: Hạt giống · Đồ làm vườn · Nông sản · Sách · Trang
+  trí (ô tab bo 12 nền slate 5 %, hình 34 + nhãn 10/700 `slate-muted`; tab mở: nền trắng viền `jade` 2, nhô 2, nhãn `jade`). Hạt giống / Nông sản =
+  lưới ô vuông 72 (ngang 52) 4 cột (ngang 5), số góc dưới phải; chạm → ô viền `jade` + thẻ chi tiết `slate` dưới lưới. Đồ làm vườn = nhóm "Nông
+  cụ" (Tay, Bình tưới, Bắt sâu, Nhổ cỏ, Mở ô — ô vuông + tên 11/700, không số) + nhóm "Vật tư" (Phân bón × n) + chân 12. Vẫn chỉ xem.
+- **Tạp hoá**: tab "Hạt giống" → "Làm vườn"; thẻ Phân bón đứng đầu (hình bao phân, "Trong túi: n", "chín nhanh gấp đôi", giá 10); dòng phụ
+  "Đồ trang trí Nhà của ta · hạt giống, phân bón cho Vườn rau". Xác nhận như hạt: × 1 · × 5 · × 10, bảng Đang có / Giá × n / Còn lại, "Mua · n".
+- **Hình**: Hạt giống = `icons/xuat/gieo.webp`, Bình tưới = `tuoi.webp`, Mở ô = `mo-o.webp` (đợt 2). **Chưa có** (artboard dùng hình giữ chỗ vẽ
+  khối): `tay-thu`, `bat-sau`, `nho-co`, `phan-bon`, `dau-kho`, `dau-sau`, `dau-co` — câu lệnh trong `VuonMole-ghi-chu`; phiên code dùng tạm SVG
+  tương đương tới khi có hình.
+- Chuỗi: `tool*`, `garden{PickSeedTitle,SeedGrown,Float*,Why*}`, `bagTabTools`, `bagToolsSection`, `bagSuppliesSection`, `bagToolsHint`,
+  `shopTabGarden`, `shopFertilizer*`, `shopSubtitleGarden`, `walletSpendFertilizer`.
+- Ảnh: `screens/VuonMole-*.png`, `screens/TuiDo-vuon-*.png`, `screens/CuaHang-lam-vuon-doc.png`, `screens/CuaHang-phan-bon-xac-nhan-doc.png`
+  (cảnh là hình giữ chỗ).
