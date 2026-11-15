@@ -5,7 +5,7 @@ import { softBlob } from './khoiMem';
 import { isSoft, type LookSpec } from './look';
 import { addPine, addBush, addPeach, addPlum, addWillow } from './cay_moi';
 import { addTallBamboo } from './trucMao';
-import type { Updater } from './props';
+import { addChumTrees, type ChumUpdate } from './cayChum';
 import { seededRandom } from './random';
 import type { GroveSpec, SceneSpec, TreePlace } from './spec';
 import type { GroundY } from './terrainHeight';
@@ -108,9 +108,10 @@ export function finish(scene: THREE.Scene, meshes: THREE.InstancedMesh[]): void 
 /**
  * Cây lẻ (`yard`, có va chạm), cụm cây (`groves`), vòng cây ngoài tường (`ring`, chỉ trang trí).
  * Kiểu `tan` (mặc định) · `truc` · `tung` · `lieu` · `mai` · `truc-mao` (Rừng trúc, cao 12–18 m, đung đưa); mỗi kiểu dãy ngẫu nhiên riêng nên thêm kiểu không xê dịch
- * cây `tan` có sẵn. Trả về hàm cập nhật (liễu đung đưa).
+ * cây `tan` có sẵn. `trees.crown: "chum"` (cảnh mềm): tùng + bụi dựng bằng tán chùm nổi, LOD 2 bậc (cayChum.ts). Trả về
+ * hàm cập nhật (liễu đung đưa; LOD theo nhân vật `focus` + camera `eye`).
  */
-export function addTrees(scene: THREE.Scene, colliders: Colliders, spec: SceneSpec['trees'], groundY?: GroundY, look?: LookSpec): Updater {
+export function addTrees(scene: THREE.Scene, colliders: Colliders, spec: SceneSpec['trees'], groundY?: GroundY, look?: LookSpec): ChumUpdate {
   const rand = seededRandom(spec.seed);
   const { ring } = spec;
   const ringTrees: Placed[] = [];
@@ -130,15 +131,17 @@ export function addTrees(scene: THREE.Scene, colliders: Colliders, spec: SceneSp
 
   broadleaf(scene, spec, byKind.tan, rand, look);
   bamboo(scene, spec, byKind.truc, spec.seed);
-  addPine(scene, spec, byKind.tung, spec.seed, look);
+  const chum = spec.crown === 'chum' && look && isSoft(look) ? addChumTrees(scene, spec, byKind.tung, byKind.bui, look) : null;
+  if (!chum) addPine(scene, spec, byKind.tung, spec.seed, look);
   addPlum(scene, spec, byKind.mai, spec.seed);
   addPeach(scene, spec, byKind.dao, spec.seed);
-  addBush(scene, spec, byKind.bui, spec.seed);
+  if (!chum) addBush(scene, spec, byKind.bui, spec.seed);
   const willow = addWillow(scene, spec, byKind.lieu, spec.seed);
   const mao = addTallBamboo(scene, spec, byKind['truc-mao'], spec.seed);
-  const sway: Updater = (dt) => {
+  const sway: ChumUpdate = (dt, focus, eye) => {
     willow(dt);
     mao(dt);
+    chum?.update(dt, focus, eye);
   };
   // va chạm: thân cây, to nhỏ theo kiểu
   const trunkSize = { tan: 0.8, truc: 1.2, tung: 0.9, lieu: 0.8, mai: 0.5, 'truc-mao': 1.1, dao: 0.6, bui: 0.9 } as const;

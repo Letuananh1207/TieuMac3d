@@ -399,7 +399,7 @@ async function boot(): Promise<void> {
       mat.placeGame();
       mat.ngoi.update(step, camera, mat.third, mat.game, sat + 2); // cuộn mở ngay (như đã ngồi > 1 s)
     } else controls.update();
-    world.update(dt, character.root.position);
+    world.update(dt, character.root.position, camera.position);
     const p = character.root.position;
     ngayDem.update(dt, world.rooms.some((r) => inRect(r.floor, p.x, p.z)));
     character.animate(dt, stateNow().mps / RUN_SPEED, stateNow());

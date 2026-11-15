@@ -122,3 +122,43 @@ So TRƯỚC / SAU trên cùng máy — không thay đo máy thật.
 | Đi thẳng xa (W) | 27 | 37 | 50 | 0.0 | 37 | 68k |
 | Zoom ra cả sân | 28 | 35.2 | 43 | 0.0 | 40 | 70k |
 
+## Bench 2026-11-15 04:55 — V-58 TRƯỚC (`trees.crown: "cau"`, tùng / bụi cầu cũ)
+
+### GPU máy tính — tải 1.8 s · AMD, AMD Radeon(TM) Graphics (0x00001900) Direct · Cao 1.5× · 60 fps · 585×1266 · 11:55 ngày
+
+| Chặng | fps | ms tb | 1 % chậm (ms) | khựng / 2 s | draw call | tam giác |
+|---|---|---|---|---|---|---|
+| Đứng giữa sân | 60 | 16.8 | 25 | 0.0 | 60 | 102k |
+| Đi + rẽ (W + D) | 59 | 17.1 | 25 | 0.0 | 59 | 87k |
+| Đi thẳng xa (W) | 59 | 16.9 | 26 | 0.0 | 49 | 78k |
+| Zoom ra cả sân | 59 | 17.1 | 25 | 0.0 | 54 | 81k |
+
+### Máy yếu (SwiftShader + CPU ×4) — tải 4.4 s · Google, Vulkan 1.3.0 (SwiftShader Device (Subzer · Thấp 0.7× · 30 fps · 273×590 · 11:55 ngày
+
+| Chặng | fps | ms tb | 1 % chậm (ms) | khựng / 2 s | draw call | tam giác |
+|---|---|---|---|---|---|---|
+| Đứng giữa sân | 32 | 33.2 | 198 | 3.2 | 57 | 100k |
+| Đi + rẽ (W + D) | 29 | 35.5 | 114 | 1.8 | 56 | 84k |
+| Đi thẳng xa (W) | 30 | 33.3 | 60 | 0.1 | 45 | 75k |
+| Zoom ra cả sân | 30 | 33.3 | 44 | 0.0 | 51 | 79k |
+
+## Bench 2026-11-15 04:56 — V-58 SAU (`trees.crown: "chum"`, tán chùm + LOD 2 bậc)
+
+### GPU máy tính — tải 1.8 s · AMD, AMD Radeon(TM) Graphics (0x00001900) Direct · Cao 1.5× · 60 fps · 585×1266 · 11:56 ngày
+
+| Chặng | fps | ms tb | 1 % chậm (ms) | khựng / 2 s | draw call | tam giác |
+|---|---|---|---|---|---|---|
+| Đứng giữa sân | 59 | 17 | 25 | 0.0 | 60 | 103k |
+| Đi + rẽ (W + D) | 59 | 17.1 | 26 | 0.0 | 58 | 90k |
+| Đi thẳng xa (W) | 59 | 17.2 | 26 | 0.0 | 49 | 80k |
+| Zoom ra cả sân | 60 | 16.9 | 25 | 0.0 | 54 | 84k |
+
+### Máy yếu (SwiftShader + CPU ×4) — tải 4.4 s · Google, Vulkan 1.3.0 (SwiftShader Device (Subzer · Thấp 0.7× · 30 fps · 273×590 · 11:57 ngày
+
+| Chặng | fps | ms tb | 1 % chậm (ms) | khựng / 2 s | draw call | tam giác |
+|---|---|---|---|---|---|---|
+| Đứng giữa sân | 32 | 33.6 | 211 | 1.9 | 57 | 100k |
+| Đi + rẽ (W + D) | 29 | 35 | 142 | 2.3 | 57 | 88k |
+| Đi thẳng xa (W) | 30 | 33.3 | 58 | 0.1 | 45 | 78k |
+| Zoom ra cả sân | 30 | 33.4 | 39 | 0.0 | 51 | 81k |
+

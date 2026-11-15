@@ -918,6 +918,13 @@ export interface SceneSpec {
     ring: { count: number; radius: number; spread: number; scaleMin: number; scaleMax: number };
     /** hạt giống ngẫu nhiên: cùng số → cây giống hệt nhau trên Canvas 3D và trong app */
     seed: number;
+    /**
+     * Dáng tán (cảnh mềm `look.style: "mem"`): `cau` = mỗi đám lá một khối cầu (cũ) · `chum` = "tán chùm nổi" nhiều múi,
+     * thân + tán một hình, LOD 2 bậc (V-58 — hồ sơ `docs/tham_khao/thuc-vat-dep-nhe.md`). Đang áp: tùng, bụi `bui`.
+     */
+    crown: 'cau' | 'chum';
+    /** tán `chum`: cây cách nhân vật quá bao nhiêu m (hoặc camera cao hơn nhân vật quá số này — nhìn từ trên) thì dùng bậc xa */
+    lodDistance: number;
   };
   /** `enabled: false` = không có giếng (cảnh vùng) */
   well: { enabled: boolean; x: number; z: number; stone: string; water: string };
@@ -1115,6 +1122,8 @@ export const DEFAULT_SCENE: SceneSpec = {
     groves: [],
     ring: { count: 26, radius: 25, spread: 6, scaleMin: 1.6, scaleMax: 2.4 },
     seed: 7,
+    crown: 'cau',
+    lodDistance: 35,
   },
   well: { enabled: true, x: 6, z: 2, stone: '#6c6660', water: '#2b4a6a' },
   lessons: { radicals: false },

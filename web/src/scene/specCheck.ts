@@ -475,6 +475,8 @@ function checkConsistency(s: SceneSpec): string[] {
   if (k < 0.5 || k > 3) out.push(`buildingStyle.heightScale: 0,5–3 (đang ${k}; code kẹp về khoảng này)`);
   if (s.camera.minDist > s.camera.maxDist) out.push('camera: minDist phải ≤ maxDist');
   if (s.trees.ring.scaleMin > s.trees.ring.scaleMax) out.push('trees.ring: scaleMin phải ≤ scaleMax');
+  if (!['cau', 'chum'].includes(s.trees.crown)) out.push(`trees.crown: "cau" | "chum" (đang "${s.trees.crown}")`);
+  if (s.trees.lodDistance <= 0) out.push('trees.lodDistance: phải > 0');
   for (const p of s.props) {
     if (p.kind === 'phap-bao' && !PHAP_BAO.includes(p.text ?? '')) out.push(`props phap-bao (${p.x}; ${p.z}): text là một trong ${PHAP_BAO.join(' ')}`);
     if (p.kind === 'bon-hoa' && !FLOWER_POTS.includes(p.text ?? '')) out.push(`props bon-hoa (${p.x}; ${p.z}): text là một trong ${FLOWER_POTS.join(' ')} (đang "${p.text ?? ''}")`);

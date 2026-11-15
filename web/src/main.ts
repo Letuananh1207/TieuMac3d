@@ -875,7 +875,7 @@ async function boot(): Promise<void> {
     for (const p of portals) if (p.trigger.update(pos, walking) && !travelling) travel(p.to, 'cong');
     scroll.update(dt);
     zones.update(pos);
-    world.update(dt, pos);
+    world.update(dt, pos, camera.position);
     const room = roomAt(pos.x, pos.z);
     ngayDem.update(dt, !!room);
     if (!riding) orbit.update(tpCam, pos, dt, false, groundAt, room?.floor, sight);

@@ -69,8 +69,8 @@ export interface World {
   garden: Garden3D | null;
   /** ngày đêm (`dayNight.enabled`): áp giờ lên cảnh — `web/src/ngayDem.ts` gọi; tắt = `null` (luôn ban ngày) */
   dayNight: DayNight | null;
-  /** gọi mỗi khung hình: khói lò đan, mây, đảo nổi, mờ mái nhà khi `player` đứng trong */
-  update(dt: number, player?: { x: number; y?: number; z: number }): void;
+  /** gọi mỗi khung hình: khói lò đan, mây, đảo nổi, mờ mái nhà khi `player` đứng trong; `eye` = vị trí camera (LOD cây chùm) */
+  update(dt: number, player?: { x: number; y?: number; z: number }, eye?: { x: number; y: number; z: number }): void;
 }
 
 /** Thời gian từng bước dựng (ms) theo tên bước — bước lặp (mỗi nhà) cộng dồn. `?debug` in ra (kế hoạch cưỡi hạc NV1). */
@@ -260,10 +260,10 @@ function* worldSteps(
     gameTables,
     zoneAnchors: zoneAnchors(spec.buildings, kinds),
     teleport,
-    update(dt, player) {
+    update(dt, player, eye) {
       tickWind(dt);
       props(dt);
-      trees(dt);
+      trees(dt, player, eye);
       floating(dt);
       waterways(dt);
       fauna(dt);

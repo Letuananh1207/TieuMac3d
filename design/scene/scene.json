@@ -1028,6 +1028,8 @@
       "scaleMax": 2.4
     },
     "seed": 7,
+    "crown": "chum",
+    "lodDistance": 35,
     "willow": [
       "#5f8a3e",
       "#7a9f4c"
