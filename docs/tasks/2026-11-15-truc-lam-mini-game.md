@@ -247,63 +247,63 @@ Ký hiệu: **[ngay]** làm được ngay sau duyệt · **[chờ TK]** chờ th
 thiết kế (`/canh`, `/tai-nguyen`).
 
 **Luật trước**
-- [ ] 1. [ngay] Ghi luật R-LUU-1…5, R-MANG-1…5, R-CAM-1…4, R-AM-3 + sửa R-TIEN-1/3/5/7, R-TUI-1, R-NGOI-1, R-NPC-1, R-GIAO-2 vào
+- [x] 1. [ngay] Ghi luật R-LUU-1…5, R-MANG-1…5, R-CAM-1…4, R-AM-3 + sửa R-TIEN-1/3/5/7, R-TUI-1, R-NGOI-1, R-NPC-1, R-GIAO-2 vào
   `docs/testing/quy_tac.md` theo QĐ đã chọn → `/dong-bo-quy-tac` (subagent, ops JSON + ifRev). Xong khi `rule_trace --pending` rỗng.
-- [ ] 2. [ngay] `docs/bridge.md`: `earnGame.game` + `luu-thuong`, `dan-cam`; `getMang` / `mangAct` (dạng ở mục 2). Xong khi hai phía có tên.
+- [x] 2. [ngay] `docs/bridge.md`: `earnGame.game` + `luu-thuong`, `dan-cam`; `getMang` / `mangAct` (dạng ở mục 2). Xong khi hai phía có tên.
 
 **Dữ liệu + luật thuần** (`web/src/games/`, `zones/` — vitest)
-- [ ] 3. [ngay] `games/ghepChu.ts`: ≥ 2 chữ / bộ cho 50 bộ (≈ 100–120 chữ phồn thể, tách sạch), mỗi chữ `{han, radical, rest, layout:
+- [x] 3. [ngay] `games/ghepChu.ts`: ≥ 2 chữ / bộ cho 50 bộ (≈ 100–120 chữ phồn thể, tách sạch), mỗi chữ `{han, radical, rest, layout:
   'trai-phai' | 'tren-duoi' | 'bao', hv, pinyin, meaning}`; test: mã bộ tồn tại, không trùng chữ, `rest` ≠ rỗng, mọi chữ lọt bộ font
   (`fonts:han` quét được). Xong khi test xanh + bảng soát tay 20 chữ đầu.
-- [ ] 4. [ngay] `games/luuThuong.ts` (thứ tự lượt, chọn chữ theo bộ đã học, 4 phương án, NPC theo xác suất, xếp hạng → outcome) +
+- [x] 4. [ngay] `games/luuThuong.ts` (thứ tự lượt, chọn chữ theo bộ đã học, 4 phương án, NPC theo xác suất, xếp hạng → outcome) +
   `games/luuThuongRound.ts` (vòng thời gian: `tha → troi → hoi|nghi → cham → … → het`, hết giờ 20 s); test theo ví dụ luật R-LUU-2…5.
-- [ ] 5. [ngay] `app/lib/journey/mang.dart` (gốc: lứa theo giờ VN, mã măng, hái / bán, ví) + chép `web/src/zones/mang.ts` (sinh vị trí
+- [x] 5. [ngay] `app/lib/journey/mang.dart` (gốc: lứa theo giờ VN, mã măng, hái / bán, ví) + chép `web/src/zones/mang.ts` (sinh vị trí
   theo hạt ngày + vùng + vật cản — phần vị trí **chỉ ở TS** vì cần cảnh; Dart chỉ kiểm mã hợp lệ của ngày) ; test Dart + vitest cùng ví dụ.
-- [ ] 6. [ngay] `games/danCam.ts`: thang ngũ cung (dùng chung `zones/danTranh.ts`), 3 bài (mảng `[nhịp, làn]`), chấm ±0,12 / ±0,25, %
+- [x] 6. [ngay] `games/danCam.ts`: thang ngũ cung (dùng chung `zones/danTranh.ts`), 3 bài (mảng `[nhịp, làn]`), chấm ±0,12 / ±0,25, %
   → hạng, 1 lần thưởng / bài / ngày; test.
-- [ ] 7. [ngay] `zones/walletRules.ts` + `wallet.dart`: `gameBase('luu-thuong'|'dan-cam')`, nhãn thưởng; ví thử giữ `mang` + bài đã thưởng
+- [x] 7. [ngay] `zones/walletRules.ts` + `wallet.dart`: `gameBase('luu-thuong'|'dan-cam')`, nhãn thưởng; ví thử giữ `mang` + bài đã thưởng
   hôm nay; test hai phía cùng ví dụ (57 + 8 → 3).
 
 **Cảnh 3D** (`web/src/scene/` — đo fps trước / sau trên Trúc Lâm)
-- [ ] 8. [thiết kế] `/canh`: thêm `miniGames` vào `design/scene/rung-truc.json` (3 mục như mục 2; vùng măng = các khóm trúc thưa trong
+- [x] 8. (phiên code làm thay, chưa ghi CHANGELOG) [thiết kế] `/canh`: thêm `miniGames` vào `design/scene/rung-truc.json` (3 mục như mục 2; vùng măng = các khóm trúc thưa trong
   rừng, tránh lối), NPC `thi-ong` `tu-tai` `tai-nu` (dáng `ngoi` trên đệm 1/4/6) + `truc-ong` (sân Trúc Lư (−32; 27)), chỗ ngồi đá đàn;
   `scene:check` xanh. (Phiên code chỉ thêm kiểu `MiniGameSpec` + mặc định `[]` + kiểm ở NV 9 trước.)
-- [ ] 9. [ngay] `scene/spec.ts` + `loadSpec.ts`: `MiniGameSpec` (ba dạng), `miniGames: []` mặc định; `NPC_IDS` + 4 mã;
+- [x] 9. [ngay] `scene/spec.ts` + `loadSpec.ts`: `MiniGameSpec` (ba dạng), `miniGames: []` mặc định; `NPC_IDS` + 4 mã;
   `check-scene.mjs` kiểm (đệm / mương / vật tồn tại, vùng trong `bounds`, không chữ Hán). Xong khi cảnh cũ build y nguyên.
-- [ ] 10. [ngay] `scene/channels.ts`: xuất đường cong mương + `stopPoint(seat)`; **chén lệnh** = thêm 1 instance vào InstancedMesh chén
+- [x] 10. [ngay] `scene/channels.ts`: xuất đường cong mương + `stopPoint(seat)`; **chén lệnh** = thêm 1 instance vào InstancedMesh chén
   (draw call +0), vị trí do ghép đặt; viền vàng = màu instance. Test `stopPoint` gần đệm < 0,8 m.
-- [ ] 11. [ngay] `scene/mangLam.ts`: măng (nón 3 lớp vỏ, 2 cỡ) InstancedMesh **2 draw call**, ẩn / hiện từng cái, nhú 0,6 s;
+- [x] 11. [ngay] `scene/mangLam.ts`: măng (nón 3 lớp vỏ, 2 cỡ) InstancedMesh **2 draw call**, ẩn / hiện từng cái, nhú 0,6 s;
   `scene/muaPhun.ts`: hạt mưa `Points` 1 draw call quanh camera (~800 hạt), mức Thấp tắt. Đo fps.
-- [ ] 12. [ngay] `player/npc.ts`: NPC có cờ trò chơi thiếu model → `discipleCharacter` đổi màu (bảng màu 4 mã), dáng ngồi / đứng;
+- [x] 12. [ngay] `player/npc.ts`: NPC có cờ trò chơi thiếu model → `discipleCharacter` đổi màu (bảng màu 4 mã), dáng ngồi / đứng;
   ước +8–12 draw call / NPC khi gần (ẩn ≥ 35 m — R-NPC-1). Đo fps ở Khúc Thuỷ Đài (3 NPC + chén).
 - [ ] 13. [thiết kế · không chặn] `/tai-nguyen` 4 model `thi-ong`, `tu-tai`, `tai-nu`, `truc-ong` (bộ ảnh 4 góc `/ui-design` trước) —
   việc riêng trong sổ việc.
 
 **Âm thanh**
-- [ ] 14. [ngay] `ui/zitherSound.ts`: tham số âm sắc (`timbre: 'tranh' | 'cam'` — quãng, tắt dần, lọc); `ui/lamSound.ts` (mới): róc rách,
+- [x] 14. [ngay] `ui/zitherSound.ts`: tham số âm sắc (`timbre: 'tranh' | 'cam'` — quãng, tắt dần, lọc); `ui/lamSound.ts` (mới): róc rách,
   gỗ, rắc, mưa — tự tổng hợp `AudioBuffer`, phần thuần (dựng mẫu, âm lượng theo khoảng cách) có test như `pluckSamples`.
 
 **HUD** (chờ thiết kế — không dựng tạm)
 - [ ] 15. [chờ TK] `ui/luuThuongHud.ts` + CSS: thẻ câu ghép, bảng điểm 4 người, viên lượt, thẻ kết quả, "Rời tiệc".
 - [ ] 16. [chờ TK] `ui/mangHud.ts`: nút "Hái", nhãn "+1 Măng", chip lứa / đếm, thẻ măng chữ, bảng bán Trúc Ông; ngăn Lâm sản `ui/bagPanel.ts`.
 - [ ] 17. [chờ TK] `ui/danCamHud.ts`: tấm chọn chế độ / bài, dây ngũ cung, làn nốt rơi + chấm Hay / Được, thẻ kết quả bài.
-- [ ] 18. [ngay] `zones/gameGuides.ts`: nội dung 3 bảng "Cách chơi" (khung bảng đã có — R-GIAO-2), nút trên đá khắc / đá đàn / Trúc Lư.
+- [x] 18. [ngay] `zones/gameGuides.ts`: nội dung 3 bảng "Cách chơi" (khung bảng đã có — R-GIAO-2), nút trên đá khắc / đá đàn / Trúc Lư.
 
 **Ghép** (file riêng ở gốc `web/src/`, `main.ts` chỉ vài dòng)
-- [ ] 19. [ngay phần logic · chờ TK phần HUD] `web/src/luuThuong.ts`: thoại Thi Ông → ngồi đệm → vòng `LuuThuongRound` ↔ chén lệnh ↔ bong
+- [~] 19. (logic xong 2026-11-15 — điều khiển phím / Console; HUD chờ TK) [ngay phần logic · chờ TK phần HUD] `web/src/luuThuong.ts`: thoại Thi Ông → ngồi đệm → vòng `LuuThuongRound` ↔ chén lệnh ↔ bong
   bóng NPC (`chatRoom`) → `earnGame` → xu bay khi rời; ẩn thanh công cụ / ví; Canvas 3D `?dang=luu-thuong`.
-- [ ] 20. [ngay phần logic · chờ TK phần HUD] `web/src/haiMang.ts`: lứa theo giờ VN (`?gio=` `?toc=` thử), dựng măng, mưa, nút Hái
+- [~] 20. (logic xong 2026-11-15 — điều khiển phím / Console; HUD chờ TK) [ngay phần logic · chờ TK phần HUD] `web/src/haiMang.ts`: lứa theo giờ VN (`?gio=` `?toc=` thử), dựng măng, mưa, nút Hái
   → `mangAct`, thoại Trúc Ông → bảng bán; Canvas 3D `?dang=hai-mang&gio=14.8`.
-- [ ] 21. [ngay phần logic · chờ TK phần HUD] `web/src/danCam.ts`: chỗ ngồi đá, camera sau vai, tự do / theo bài, `earnGame`.
-- [ ] 22. [ngay] `main.ts`: gọi 3 file ghép (chỉ khi cảnh có `miniGames` loại tương ứng); Bản đồ tính năng trong `lead/SKILL.md`.
+- [~] 21. (logic xong 2026-11-15 — điều khiển phím / Console; HUD chờ TK) [ngay phần logic · chờ TK phần HUD] `web/src/danCam.ts`: chỗ ngồi đá, camera sau vai, tự do / theo bài, `earnGame`.
+- [x] 22. [ngay] `main.ts`: gọi 3 file ghép (chỉ khi cảnh có `miniGames` loại tương ứng); Bản đồ tính năng trong `lead/SKILL.md`.
 
 **Flutter + cầu nối**
-- [ ] 23. [ngay] `progress_store.dart` khoá `mang.state`; `app/lib/scene/mang_event.dart` + nhận `getMang` / `mangAct`; `earnGame` nhận
+- [x] 23. [ngay] `progress_store.dart` khoá `mang.state`; `app/lib/scene/mang_event.dart` + nhận `getMang` / `mangAct`; `earnGame` nhận
   mã mới; `web/src/bridge/flutterBridge.ts` + `browserStore.ts` (ví thử). Test `app/test/journey/mang_test.dart`, `wallet_test.dart`.
   (Túi đồ là HTML — `ui/bagPanel.ts` — ngăn Lâm sản nằm ở NV 16, không có màn Flutter mới.)
 
 **Kiểm + build**
-- [ ] 24. [ngay] `npm test` · `npx tsc --noEmit` · `npm run scene:check` · `npm run build` · `flutter analyze` · `flutter test -r failures-only
+- [x] 24. [ngay] `npm test` · `npx tsc --noEmit` · `npm run scene:check` · `npm run build` · `flutter analyze` · `flutter test -r failures-only
   test/journey` · `dart tool/rule_trace.dart` · fps Trúc Lâm (Khúc Thuỷ Đài có tiệc, rừng trúc lúc mưa) Android tầm trung ≥ 30.
 
 Đếm: **24 nhiệm vụ** — **làm ngay 16** (1–7, 9–12, 14, 18, 22–24) + **3 nửa-nửa** (19–21: logic làm ngay, HUD chờ thiết kế) ·
