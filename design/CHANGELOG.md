@@ -3,6 +3,23 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-15.33 — Bộ ảnh đàn cổ tranh (đầu vào model AI, kiểu công trình nhỏ)
+
+- Loại: tài nguyên 3D — ảnh đầu vào (Hunyuan3D). Gắn với phiếu `docs/phieu_thiet_ke/2026-11-15-anh-cam-nu.md` / kế hoạch V-61 (phiếu còn trong
+  máy). Người dùng 2026-11-15: **đàn dựng bằng mô hình** thay khối code. Vẽ trong phiên VS Code theo vai thiết kế; người dùng duyệt "Ổn, chốt".
+- Ảnh: `models/anh/dan-tranh-{cheo,tren,truoc,dau,duoi}.png` — chếch 3/4 (ảnh chính) · thẳng từ trên (đầu đàn bên TRÁI) · ngang trước ngang
+  mặt người ngồi · từ đầu đàn · mặt dưới (2 lỗ thoát âm). Google Gemini (người dùng chạy); câu lệnh: ghi chú `dan-tranh-cau-lenh` trong
+  `source/canvas.json`. Chuẩn hoá: ba góc ngang chung hệ số 0,934 (dài thân 85 %), góc đầu đàn khớp cao theo góc trước. Ảnh duyệt:
+  `screens/DanTranh-bo-anh.png`.
+- Hình: thân gỗ ngô đồng #8A5A3A cong vồng, đầu đàn cao + rộng hơn, mép gỗ sẫm #5A3A28 hai đầu, đường cong chữ S ở đuôi; nhạn ngà #F1EBDD
+  xếp chéo; tua lụa đỏ #B5584A ở đầu đàn; hai chân gỗ thấp.
+- **Lệch / lưu ý cho `/tai-nguyen` + code**: chỉ **10 nhạn** (thật 21) — giữ 10 trên model, **21 dây do code** trải theo hàng nhạn; tua ở ảnh
+  đầu đàn dài tới dưới chân (các ảnh khác ngắn) — lấy tua ngắn; ảnh chếch có vạch dây mờ — bỏ khi nướng màu.
+- **Cho phiên code (V-61, `/lead`)**: model `models/dan-tranh.glb` (loại công trình, ≈ 1 500–2 500 tam giác) thay khối đàn dựng bằng code;
+  dây: 21 đường thẳng 1 draw call, rung nhẹ khi gảy; dài thật ≈ 1,6 m. Luật: không đổi.
+- Bước kế: `/tai-nguyen` (loại công trình) từ bộ ảnh này → `models/dan-tranh.glb`.
+- File: `models/anh/dan-tranh-*.png` (5), `models/LICENSES.md`, `screens/DanTranh-bo-anh.png`, `source/DanTranh-bo-anh.dc.html`, `source/canvas.json`.
+
 ## 2026-11-15.32 — Bộ ảnh nhiều góc NPC Cầm Nương (nữ nhạc công đàn cổ tranh — thiếu nữ tươi cười)
 
 - Loại: tài nguyên 3D — ảnh đầu vào (Hunyuan3D-2mv). Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-15-anh-cam-nu.md` (phiếu còn trong máy,
