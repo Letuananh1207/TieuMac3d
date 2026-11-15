@@ -3,6 +3,16 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-15.42 — Gian trong kiểu nhà 摩尔: không trần, camera chéo thấy cả phòng, ra bằng nút trên thảm cửa
+
+- Loại: cảnh 3D — bố cục + ngoại hình + Cần code (đã làm). Phiên code V-20261115-71 (người dùng: "không nên có trần, góc nhìn rộng hơn, bỏ lối
+  đi ra ngoài, thay bằng cái gì đó tham khảo 摩尔"). **Đã duyệt 2026-11-15.**
+- Bỏ trần + xà; tường trước / hai hồi cắt còn 0,75 m khi camera ở phía ngoài; đèn lồng treo cần gỗ tường sau. Camera khung (`camera.frame`):
+  chéo ~53°, lùi vừa lọt phòng (dọc: lọt bề sâu, ngang / máy tính: trọn phòng), xoay ±35°, theo nhân vật 20 %; ngồi vẫn camera ngồi cũ.
+- Cửa dời sang hồi tây, đóng + thảm đỏ mũi tên; đứng trên thảm → nút nổi "Ra sân" (phím E; `portals[].via: "nut"`) → màn tải → đứng trước hiên.
+  Vào gian trong đứng (−3,8; 2,6). Nền quanh phòng tối. 27 draw call / 18,3k tam giác. Luật R-NHA-1, R-HANH-4, R-HUD-2, R-DIEU-3, R-MAN-2.
+  Ảnh: `screens/Canh-gian-trong-mo.png`.
+
 ## 2026-11-15.40 — Nhà của ta: bỏ hành lang mái, nhà chính sát trái, vườn rau ra giữa, gian trong riêng
 
 - Loại: cảnh 3D — bố cục + Cần code (đã làm). Phiên code V-20261115-68 (ảnh + yêu cầu người dùng; chọn: một gian phòng rộng trống, vườn ra giữa
