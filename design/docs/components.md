@@ -173,3 +173,9 @@ Một chất liệu: kính mờ `frost*` + viền `frost-line` / `frost-outline`
 | Dải "Đang cầm / Đang dời" thay khay túi khi cầm | `TrangTriTuDo-cam-*` | frost |
 | Thẻ Tạp hoá "Trong túi: n · Đang đặt: m" (luôn Mua) | `CuaHang-theo-cai-*` | jade, map-paper |
 | Hình phẳng 13 đồ trang trí (bản vẽ giữ chỗ) | `TrangTriTuDo-*`, `CuaHang-theo-cai-*` | map-paper |
+
+## Thêm ở 2026-11-16.2
+
+| Thành phần | Artboard | Token |
+|---|---|---|
+| Hình minh hoạ đất sét (ảnh WebP alpha, `design/icons/xuat/<mã>.webp`) thay biểu tượng nét — thanh công cụ, nút hành động, cột phải; hình người có bản `-nut` cắt nửa trên cho nút tròn | `HinhMinhHoa-dot1`, `HinhMinhHoa-HUD-doc` | (ảnh — không token) |
