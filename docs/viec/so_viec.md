@@ -61,3 +61,4 @@ Trạng thái: `nhận` → `chờ trả lời` / `chờ duyệt` → `đang là
 | V-20261114-51 | Nhà của ta: xoá cổng đứng "Nhà của ta / Khởi Nguyên Trấn" (0; 11,5) | canh | xong — đã gộp 2026-11-15 | R-NHA-1, R-BANDO-2 | duyệt ảnh |
 | V-20261114-52 | Vườn trồng trọt ở Nhà của ta (kiểu 摩尔): trồng thuần, 6 ô mở dần tới 12, lớn theo giờ thật | lead (kế hoạch) + ui-apply phieu | đang làm — NV1–9 (HUD chờ thiết kế); nhánh `viec/vuon` | R-NHA-*, R-TIEN-* | duyệt kế hoạch + vẽ phiếu |
 | V-20261114-53 | Đổi tên 6 vùng lần 2 (người dùng chốt): Trúc Lâm · Yên Vũ Lâu · Bồng Lai Đảo · Nhạn Môn Quan · Tử Cấm Thành · Đôn Hoàng Lộ | lead | đang làm — nhánh `viec/ten-vung-2` | 22 luật đổi tên | duyệt ảnh bản đồ |
+| V-20261114-54 | Bản đồ truyền tống vẽ lại: đúng địa hình từng vùng (Trúc Lâm đồng bằng, Khởi Nguyên Trấn trên núi…), Khởi Nguyên Trấn sang góc trái dưới, Nhà của ta ở góc trái dưới của trấn, icon vùng nhỏ lại | canh | đang làm — nhánh `viec/ban-do-lai` | R-HANH-2 (bản đồ) | duyệt ảnh |
