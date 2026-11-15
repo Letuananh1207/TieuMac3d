@@ -16,7 +16,8 @@ import type { SceneSpec } from './scene/spec';
 import type { GroundY } from './scene/terrainHeight';
 import { DecorHud, isDesktop } from './ui/decorHud';
 import { DecorTray } from './ui/decorPanel';
-import { bagCards, cleanHome, decorItem, NEW_HOME, type HomeState, type PlacedDecor } from './zones/decor';
+import { cleanHome, decorItem, NEW_HOME, type HomeState, type PlacedDecor } from './zones/decor';
+import { bagStock } from './zones/decorStock';
 import { bagLeft, editStep, keyVerb, VERB_ROT, type EditAction, type EditState } from './zones/decorEdit';
 import { migrateHome } from './zones/decorLegacy';
 import { checkSpot, nearestValid, settleScene, snap, type DecorShape, type PlaceArea, type Spot, type SpotCheck } from './zones/decorPlace';
@@ -77,13 +78,12 @@ export class HomeDecor {
     this.layer = new DecorLayer(d.scene, d.colliders, d.spec, d.groundY, GHOST_COLORS);
     this.hud = new DecorHud({
       open: () => this.enter(),
-      done: () => this.exit(),
       rotate: () => this.act({ kind: 'rotate', delta: 45 }),
       place: () => this.place(),
       store: () => this.act({ kind: 'store' }),
       cancel: () => this.act({ kind: 'cancel' }),
     });
-    this.tray = new DecorTray({ card: (id) => this.card(id) });
+    this.tray = new DecorTray({ card: (id) => this.card(id), done: () => this.exit() });
   }
 
   /** Đang ở chế độ trang trí → nhân vật đứng yên, không joystick (R-NHA-2). */
@@ -330,7 +330,7 @@ export class HomeDecor {
     if (!this.on) return;
     const area = this.area;
     const indoor = area?.where === 'trong';
-    const cards = bagCards(this.s.home, area?.where ?? 'ngoai', h ? { item: h.item, lifted: !!h.from } : null);
+    const cards = bagStock(this.s.home, area?.where ?? 'ngoai', h ? { item: h.item, lifted: !!h.from } : null);
     const desk = isDesktop();
     this.tray.render({ indoor, count: this.others().length + (h?.from ? 1 : 0), max: area?.maxItems ?? 40, cards });
     this.tray.hold(h ? { item: h.item, name: decorItem(h.item)?.name ?? '', lifted: !!h.from, left: bagLeft(this.s, h.item) } : null);
@@ -338,7 +338,7 @@ export class HomeDecor {
     let hint: string;
     if (h) hint = desk ? 'Di chuột để dời · Q E xoay · click để đặt' : 'Kéo món để dời · Xoay, Đặt, Cất, Huỷ'; // decorHintHoldDesktop / decorHintHold
     else if (indoor) hint = 'Gian trong · chọn đồ trong nhà để đặt'; // decorHintIndoor
-    else if (!cards.some((k) => k.state === 'bag')) hint = 'Chạm đồ trong sân để dời hoặc cất'; // decorHintBagEmpty
+    else if (!cards.length) hint = 'Chạm đồ trong sân để dời hoặc cất'; // decorHintBagEmpty
     else hint = desk ? 'Chọn đồ trong túi để đặt · click đồ trong sân để dời' : 'Chọn đồ trong túi để đặt · chạm đồ trong sân để dời'; // decorHintIdle
     this.hud.setHint(hint, !!h);
   }

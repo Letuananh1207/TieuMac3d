@@ -1,14 +1,19 @@
 /**
- * Túi đồ trang trí khi trang trí tự do (thiết kế 2026-11-15.42 `TrangTriTuDo-*`): dọc = khay đáy một hàng thẻ cuộn ngang (kéo tay
- * nắm lên → tấm 60 % màn lưới 3 cột), ngang / máy tính = cột phải lưới 3 cột; đầu khay "Túi đồ trang trí" / "Đồ trong nhà" + viên
- * đếm "n / 40 món"; thẻ "× n" · "Đặt hết · Mua thêm" · khoá "Mua ở Tạp hoá"; dải đủ trần; túi trống; khi cầm (điện thoại) khay thu
- * thành dải "Đang cầm: {vật} · trong túi còn n". Không giữ luật — `zones/decor.ts` `bagCards` tính thẻ, `homeDecor.ts` xử lý chạm.
+ * Dải kho đồ trang trí khi trang trí tự do (V-75 — theo người dùng, học bố cục dải kho 摩尔 bản web; chưa có trên canvas, ghi lệch
+ * `docs/testing/gui_thiet_ke_2026-11-16.md`): dải gỗ đáy màn ở **mọi màn** — hàng tab trên (viên đếm "n / 40 món" · Tất cả · nhóm có
+ * món), khung giấy một hàng **ô vuông** (hình món + số trong túi góc dưới phải + tên), mũi tên lật trang trái / phải (+ vuốt ngang,
+ * cuộn chuột), nút tròn "Xong" góc phải. **Chỉ đồ còn trong túi**; túi trống → một dòng nhắc. Khi cầm (điện thoại) dải thu thành dải
+ * "Đang cầm: {vật} · trong túi còn n" (V-69). Không giữ luật — `zones/decorStock.ts` lọc / tab / trang, `homeDecor.ts` xử lý chạm.
  */
-import type { BagCard } from '../zones/decor';
-import { COIN, DECOR_PICTURES, ICON_BAG, ICON_LOCK, STROKE, svgIcon } from './decorIcons';
+import { pageSlice, perPage, stockTabs, tabCards, type StockCard, type StockTab } from '../zones/decorStock';
+import { DECOR_PICTURES, ICON_BAG, ICON_CHECK, STROKE, svgIcon } from './decorIcons';
 
-/** Kéo tay nắm quá ngần này (px) → mở / thu tấm đầy (dọc). */
+/** Vuốt ngang quá ngần này (px) → lật trang. */
 const SWIPE_PX = 40;
+/** Khe giữa hai ô (px) — trùng `gap` của `.dt-list` ở decor.css. */
+const GAP = 8;
+/** Cuộn chuột: tối đa một trang mỗi ngần này (ms). */
+const WHEEL_MS = 260;
 
 function h<K extends keyof HTMLElementTagNameMap>(tag: K, cls = '', text = ''): HTMLElementTagNameMap[K] {
   const e = document.createElement(tag);
@@ -17,18 +22,25 @@ function h<K extends keyof HTMLElementTagNameMap>(tag: K, cls = '', text = ''): 
   return e;
 }
 
-/** Hình phẳng một vật trên thẻ (bản vẽ giữ chỗ `DECOR_PICTURES`). */
+/** Hình phẳng một vật trên ô (bản vẽ giữ chỗ `DECOR_PICTURES`). */
 export function decorPicture(id: string, size: number): SVGElement {
   return svgIcon(DECOR_PICTURES[id] ?? [], size, '0 0 64 64', { fill: 'none' });
 }
 
+/** Mũi tên tam giác lật trang. */
+function arrow(dir: 'prev' | 'next'): SVGElement {
+  const d = dir === 'prev' ? 'M15 5L7 12l8 7z' : 'M9 5l8 7-8 7z';
+  return svgIcon([['path', { d }]], 20, undefined, { fill: 'currentColor' });
+}
+
 export interface TrayView {
-  /** gian trong → "Đồ trong nhà", dòng "Gian trong · …" */
+  /** gian trong → nhãn "Đồ trong nhà" */
   indoor: boolean;
   /** số món đang đặt ở nơi này / trần */
   count: number;
   max: number;
-  cards: readonly BagCard[];
+  /** đồ còn trong túi hợp nơi (`bagStock`) */
+  cards: readonly StockCard[];
 }
 
 export interface TrayHold {
@@ -42,81 +54,126 @@ export interface TrayHold {
 
 export interface TrayHandlers {
   card(itemId: string): void;
+  /** nút tròn "Xong" — thoát chế độ trang trí */
+  done(): void;
 }
 
 export class DecorTray {
   private readonly root = h('section');
-  private readonly title = h('h2');
   private readonly count = h('span', 'dt-count');
-  private readonly banner = h('div', 'dt-cap');
+  private readonly tabsEl = h('div', 'dk-tabs');
+  private readonly prev = h('button', 'dk-arrow prev');
+  private readonly next = h('button', 'dk-arrow next');
+  private readonly port = h('div', 'dk-port');
   private readonly list = h('ul', 'dt-list');
   private readonly empty = h('div', 'dt-empty');
-  private readonly foot = h('p', 'dt-foot', 'Kéo lên để xem hết · có trong túi trước, rẻ → đắt'); // decorTrayHint
+  private readonly banner = h('div', 'dt-cap');
   private readonly strip = h('div');
+  private tab: StockTab = 'tat-ca';
+  private page = 0;
+  private pages = 1;
   private flashId: string | null = null;
   private flashTimer = 0;
+  private wheelAt = 0;
+  private swiped = false;
   private view: TrayView | null = null;
 
   constructor(private readonly on: TrayHandlers) {
     this.root.id = 'decorTray';
     this.root.hidden = true;
     this.root.setAttribute('aria-label', 'Túi đồ trang trí');
-    const grip = h('div', 'grip');
-    grip.setAttribute('aria-hidden', 'true');
-    const head = h('header', 'dt-head');
-    const ring = h('span', 'dt-ring');
-    ring.append(svgIcon(ICON_BAG, 16, undefined, { ...STROKE, 'stroke-width': '2.2' }));
-    head.append(ring, this.title, this.count);
-    this.banner.setAttribute('role', 'note');
+    const top = h('div', 'dk-top');
+    this.tabsEl.setAttribute('role', 'tablist');
+    top.append(this.count, this.tabsEl);
+    const box = h('div', 'dk-box');
+    for (const [b, dir, label] of [[this.prev, -1, 'Trang trước'], [this.next, 1, 'Trang sau']] as const) {
+      b.type = 'button';
+      b.setAttribute('aria-label', label);
+      b.append(arrow(dir < 0 ? 'prev' : 'next'));
+      b.addEventListener('click', () => this.turn(dir));
+    }
     this.empty.hidden = true;
-    this.root.append(grip, head, this.banner, this.list, this.empty, this.foot);
-    this.swipe(grip, head);
+    this.port.append(this.list, this.empty);
+    box.append(this.prev, this.port, this.next);
+    const close = h('button', 'dk-close');
+    close.type = 'button';
+    close.setAttribute('aria-label', 'Xong'); // decorDone
+    close.append(svgIcon(ICON_CHECK, 22, undefined, { ...STROKE, 'stroke-width': '3' }), h('span', 'lbl', 'Xong'));
+    close.addEventListener('click', () => on.done());
+    this.banner.setAttribute('role', 'note');
+    this.banner.hidden = true;
+    this.root.append(this.banner, top, box, close);
+    this.gestures();
     this.strip.id = 'decorStrip';
     this.strip.hidden = true;
     this.strip.setAttribute('role', 'status');
     document.body.append(this.root, this.strip);
+    window.addEventListener('resize', () => {
+      if (!this.root.hidden && this.view) this.render(this.view);
+    });
   }
 
-  /** Bật / tắt khay (chế độ trang trí). */
+  /** Bật / tắt dải (chế độ trang trí); bật → về tab Tất cả, trang đầu. */
   show(on: boolean): void {
     this.root.hidden = !on;
-    if (!on) {
+    if (on) {
+      this.tab = 'tat-ca';
+      this.page = 0;
+    } else {
       this.strip.hidden = true;
-      this.root.classList.remove('full');
       document.body.classList.remove('decor-holding');
     }
   }
 
-  /** Vẽ lại thẻ + đầu khay. */
+  /** Vẽ lại tab + một trang ô. */
   render(v: TrayView): void {
     this.view = v;
-    this.title.textContent = v.indoor ? 'Đồ trong nhà' : 'Túi đồ trang trí'; // decorBagTitleIndoor / decorBagTitle
-    this.count.textContent = `${v.count} / ${v.max} món`; // decorCount
+    this.count.textContent = `${v.indoor ? 'Trong nhà · ' : ''}${v.count} / ${v.max} món`; // decorCount
     const full = v.count >= v.max;
     this.count.classList.toggle('full', full);
     this.banner.hidden = !full;
     this.banner.textContent = `Đã đủ ${v.max} món — cất bớt để đặt thêm`; // decorCapFull / decorCapFullIndoor
-    this.root.classList.toggle('capped', full);
-    const any = v.cards.some((c) => c.state === 'bag');
-    const owned = v.cards.some((c) => c.state !== 'locked');
-    // túi trống: mọi món đã đặt (có đồ nhưng trong túi 0) — vẫn hiện thẻ "Đặt hết" / khoá bên dưới
-    this.empty.hidden = any || !owned;
-    if (!this.empty.hidden) {
-      const ic = h('span', 'dt-emptyIc');
-      ic.append(svgIcon(ICON_BAG, 26, undefined, { ...STROKE, 'stroke-width': '2' }));
-      const txt = h('span');
-      txt.append(h('b', '', 'Túi trống — mua thêm ở Tạp hoá phố chợ'), h('span', '', 'Mọi món đã đặt. Chạm một món trong sân → Cất để lấy lại vào túi.')); // decorBagEmpty / decorBagEmptyHint
-      this.empty.replaceChildren(ic, txt);
+    const tabs = stockTabs(v.cards);
+    if (!tabs.some((t) => t.id === this.tab)) this.tab = 'tat-ca';
+    this.tabsEl.replaceChildren(
+      ...tabs.map((t) => {
+        const b = h('button', `dk-tab${t.id === this.tab ? ' on' : ''}`, t.name);
+        b.type = 'button';
+        b.setAttribute('role', 'tab');
+        b.setAttribute('aria-selected', String(t.id === this.tab));
+        b.addEventListener('click', () => {
+          this.tab = t.id;
+          this.page = 0;
+          if (this.view) this.render(this.view);
+        });
+        return b;
+      }),
+    );
+    const empty = !v.cards.length;
+    this.empty.hidden = !empty;
+    this.list.hidden = empty;
+    this.root.classList.toggle('empty', empty);
+    if (empty) {
+      this.empty.replaceChildren(svgIcon(ICON_BAG, 20, undefined, { ...STROKE, 'stroke-width': '2.2' }), h('span', '', 'Túi trống — mua đồ ở Tạp hoá')); // decorBagEmpty
+      this.list.replaceChildren();
+      this.pages = 1;
+    } else {
+      const cell = parseFloat(getComputedStyle(this.root).getPropertyValue('--dk-cell')) || 64;
+      const s = pageSlice(tabCards(v.cards, this.tab), perPage(this.port.clientWidth, cell, GAP), this.page);
+      this.page = s.page;
+      this.pages = s.pages;
+      this.list.replaceChildren(...s.items.map((c) => this.card(c, full)));
     }
-    this.list.replaceChildren(...v.cards.map((c) => this.card(c, full)));
+    this.prev.disabled = this.page <= 0;
+    this.next.disabled = this.page >= this.pages - 1;
+    this.root.classList.toggle('one-page', this.pages <= 1);
   }
 
-  /** Đang cầm (điện thoại): khay thu thành dải "Đang cầm / Đang dời"; `null` = mở lại khay. Máy tính giữ cột túi (CSS). */
+  /** Đang cầm (điện thoại): dải thu thành dải "Đang cầm / Đang dời"; `null` = mở lại dải. Máy tính giữ dải (CSS). */
   hold(v: TrayHold | null): void {
     document.body.classList.toggle('decor-holding', !!v);
     this.strip.hidden = !v;
     if (!v) return;
-    this.root.classList.remove('full');
     const pic = h('span', 'ds-pic');
     pic.append(decorPicture(v.item, 28));
     const main = h('b', '', v.lifted ? `Đang dời: ${v.name}` : `Đang cầm: ${v.name}`); // decorMoving / decorHolding
@@ -124,7 +181,7 @@ export class DecorTray {
     this.strip.replaceChildren(pic, main, sub);
   }
 
-  /** Viền `gold` 3 trên thẻ vừa chạm (thẻ khoá / đặt hết). */
+  /** Viền `gold` 3 s trên ô vừa chạm mà không lấy được (đủ trần). */
   flash(id: string): void {
     this.flashId = id;
     window.clearTimeout(this.flashTimer);
@@ -135,57 +192,62 @@ export class DecorTray {
     if (this.view) this.render(this.view);
   }
 
-  private card(c: BagCard, full: boolean): HTMLLIElement {
+  private turn(d: number): void {
+    const p = Math.min(this.pages - 1, Math.max(0, this.page + d));
+    if (p === this.page || !this.view) return;
+    this.page = p;
+    this.render(this.view);
+  }
+
+  private card(c: StockCard, full: boolean): HTMLLIElement {
     const { item } = c;
-    const btn = h('button', `dt-card ${c.state}${full && c.state === 'bag' ? ' capped' : ''}${this.flashId === item.id ? ' flash' : ''}`);
+    const btn = h('button', `dt-card${full ? ' capped' : ''}${this.flashId === item.id ? ' flash' : ''}`);
     btn.type = 'button';
+    btn.title = item.name;
+    btn.setAttribute('aria-label', `${item.name}, trong túi ${c.inBag}, đang đặt ${c.placed}`);
     const pic = h('span', 'dt-pic');
-    const art = h('span', 'art');
-    art.append(decorPicture(item.id, 44));
-    pic.append(art);
-    const line = h('span', 'dt-line');
-    if (c.state === 'bag') {
-      const badge = h('span', 'dt-badge', `× ${c.inBag}`); // decorInBagBadge
-      pic.append(badge);
-      line.textContent = c.placed > 0 ? `Đang đặt ${c.placed}` : 'Chưa đặt'; // decorPlacedCount / decorNotPlaced
-      btn.setAttribute('aria-label', `${item.name}, trong túi ${c.inBag}, đang đặt ${c.placed}`);
-    } else {
-      if (c.state === 'locked') {
-        const lock = h('span', 'dt-lock');
-        lock.setAttribute('aria-hidden', 'true');
-        lock.append(svgIcon(ICON_LOCK, 13, undefined, { ...STROKE, 'stroke-width': '2.6' }));
-        pic.append(lock);
-      }
-      line.textContent = c.state === 'locked' ? 'Mua ở Tạp hoá' : 'Đặt hết · Mua thêm'; // decorLocked / decorSoldOut
-      btn.setAttribute('aria-label', `${item.name}, ${line.textContent}, ${item.price} Văn tiền`);
-    }
-    btn.append(pic, h('span', 'dt-name', item.name), line);
-    if (c.state !== 'bag') {
-      const price = h('span', 'dt-price');
-      price.append(svgIcon(COIN, 12, '0 0 100 100'), h('b', '', String(item.price)));
-      btn.append(price);
-    }
-    btn.addEventListener('click', () => this.on.card(item.id));
+    pic.append(decorPicture(item.id, 44), h('span', 'dt-badge', String(c.inBag))); // decorInBagBadge
+    btn.append(pic, h('span', 'dt-name', item.name));
+    btn.addEventListener('click', () => {
+      if (!this.swiped) this.on.card(item.id);
+    });
     const li = h('li');
     li.append(btn);
     return li;
   }
 
-  /** Dọc: kéo tay nắm / đầu khay lên → tấm đầy 60 %; xuống → về một hàng. */
-  private swipe(...grips: HTMLElement[]): void {
-    let y0: number | null = null;
-    for (const g of grips) {
-      g.addEventListener('pointerdown', (e) => {
-        y0 = e.clientY;
-        g.setPointerCapture(e.pointerId);
-      });
-      g.addEventListener('pointerup', (e) => {
-        if (y0 === null) return;
-        const dy = e.clientY - y0;
-        if (dy < -SWIPE_PX) this.root.classList.add('full');
-        else if (dy > SWIPE_PX) this.root.classList.remove('full');
-        y0 = null;
-      });
-    }
+  /** Vuốt ngang trên hàng ô (điện thoại) / cuộn chuột trên dải (máy tính) → lật trang. */
+  private gestures(): void {
+    let x0: number | null = null;
+    this.port.addEventListener('pointerdown', (e) => {
+      x0 = e.clientX;
+      this.swiped = false;
+    });
+    this.port.addEventListener('pointermove', (e) => {
+      if (x0 !== null && Math.abs(e.clientX - x0) > 12) this.swiped = true;
+    });
+    const end = (e: PointerEvent): void => {
+      if (x0 === null) return;
+      const dx = e.clientX - x0;
+      x0 = null;
+      if (dx < -SWIPE_PX) this.turn(1);
+      else if (dx > SWIPE_PX) this.turn(-1);
+      window.setTimeout(() => (this.swiped = false), 0);
+    };
+    this.port.addEventListener('pointerup', end);
+    this.port.addEventListener('pointercancel', () => (x0 = null));
+    this.root.addEventListener(
+      'wheel',
+      (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+        const now = performance.now();
+        if (Math.abs(d) < 4 || now - this.wheelAt < WHEEL_MS) return;
+        this.wheelAt = now;
+        this.turn(d > 0 ? 1 : -1);
+      },
+      { passive: false },
+    );
   }
 }

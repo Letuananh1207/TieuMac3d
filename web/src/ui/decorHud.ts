@@ -1,6 +1,6 @@
 /**
  * HUD trang trí tự do Nhà của ta (thiết kế 2026-11-15.42 `TrangTriTuDo-*`; nút "Trang trí" từ 2026-11-14.13): nút "Trang trí", chế
- * độ trang trí — viên nhắc trên trái, "Xong" dưới ví, hàng nút cầm món **dưới món** (điện thoại: Xoay · Đặt · Cất · Huỷ), dải phím
+ * độ trang trí — viên nhắc trên trái, hàng nút cầm món **dưới món** (điện thoại: Xoay · Đặt · Cất · Huỷ), dải phím
  * (máy tính), viên lý do đỏ trên món, tấm báo. Túi đồ trang trí ở `decorPanel.ts`. DOM dựng bằng `createElement`; luật ở
  * `zones/decorEdit.ts` + `zones/decorPlace.ts`, ghép ở `homeDecor.ts`.
  */
@@ -11,7 +11,6 @@ import { hinhImg } from './hinh';
 
 export interface DecorHudHandlers {
   open(): void;
-  done(): void;
   rotate(): void;
   place(): void;
   store(): void;
@@ -43,7 +42,6 @@ export class DecorHud {
   private readonly hint = h('div');
   private readonly hintRing = h('span', 'ring');
   private readonly hintText = h('span');
-  private readonly doneBtn = h('button');
   private readonly row = h('div');
   private readonly placeBtn = h('button', 'dc-place');
   private readonly keys = h('div');
@@ -66,16 +64,11 @@ export class DecorHud {
     btn.addEventListener('click', () => on.open());
     this.btnWrap.append(btn, h('span', 'lbl', 'Trang trí'));
 
-    // viên nhắc + "Xong"
+    // viên nhắc ("Xong" = nút tròn trên dải kho — decorPanel.ts, V-75)
     this.hint.id = 'decorHint';
     this.hint.setAttribute('role', 'status');
     this.hint.hidden = true;
     this.hint.append(this.hintRing, this.hintText);
-    this.doneBtn.id = 'decorDone';
-    this.doneBtn.type = 'button';
-    this.doneBtn.hidden = true;
-    this.doneBtn.append(svgIcon(ICON_CHECK, 16, undefined, { ...STROKE, 'stroke-width': '3' }), 'Xong'); // decorDone
-    this.doneBtn.addEventListener('click', () => on.done());
 
     // hàng nút cầm món (điện thoại): Xoay · Đặt · Cất · Huỷ
     this.row.id = 'decorCarry';
@@ -122,7 +115,7 @@ export class DecorHud {
     this.toastEl.id = 'decorToast';
     this.toastEl.setAttribute('role', 'status');
     this.toastEl.hidden = true;
-    document.body.append(this.btnWrap, this.hint, this.doneBtn, this.row, this.keys, this.reason, this.toastEl);
+    document.body.append(this.btnWrap, this.hint, this.row, this.keys, this.reason, this.toastEl);
   }
 
   /** Nút "Trang trí": chỉ khi đi lại ở nhà (ẩn khi bản đồ / thoại / ngồi / màn Flutter). */
@@ -134,7 +127,6 @@ export class DecorHud {
   setMode(on: boolean): void {
     document.body.classList.toggle('decorating', on);
     this.hint.hidden = !on;
-    this.doneBtn.hidden = !on;
     if (!on) {
       this.setHolding(null);
       this.toastEl.hidden = true;
@@ -149,14 +141,13 @@ export class DecorHud {
 
   /**
    * Đang cầm: `{ok, reason}` (đỏ → viên lý do + nút Đặt kính nét đứt / "Click đặt" mờ) · `null` = không cầm. Điện thoại: hàng nút; máy
-   * tính: dải phím. "Xong" ẩn khi cầm trên điện thoại (thiết kế `TrangTriTuDo-cam-*`).
+   * tính: dải phím (thiết kế `TrangTriTuDo-cam-*`).
    */
   setHolding(v: { ok: boolean; reason: string | null } | null): void {
     this.holding = !!v;
     const desk = isDesktop();
     this.row.hidden = !v || desk;
     this.keys.hidden = !v || !desk;
-    this.doneBtn.classList.toggle('carrying', !!v && !desk);
     this.reason.hidden = !v || v.ok;
     if (!v) return;
     this.placeBtn.classList.toggle('bad', !v.ok);
