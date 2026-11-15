@@ -31,7 +31,7 @@ export interface ChatFrame {
   busy: boolean;
   /** đang nhìn từ mắt khi ngồi (R-DIEU-7): không vẽ bong bóng trên đầu chính mình (nó sẽ nổi giữa màn) */
   hideMe?: boolean;
-  /** bản máy tính, thanh công cụ đang hiện → ô nhập luôn hiện ngay trên thanh (R-CHAT-3) */
+  /** bản máy tính màn ngang, thanh công cụ đang hiện → Trò chuyện là hình trên thanh, ô nhập nổi trên hàng hình (R-CHAT-3) */
   docked?: boolean;
 }
 

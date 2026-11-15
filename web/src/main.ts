@@ -8,7 +8,7 @@ import { FlutterBridge, getGarden, getHome, getMang, getProgress, hasFlutter } f
 import { Colliders } from './collision/colliders';
 import { GamePlay, type TableSeat } from './gamePlay';
 import { Joystick } from './input/joystick';
-import { attachCheDoNhap, dangBanMay } from './input/cheDoNhap';
+import { attachCheDoNhap, troChuyenTrenThanh } from './input/cheDoNhap';
 import { Keyboard } from './input/keyboard';
 import { ChatRoom } from './chatRoom';
 import { WalletRoom } from './walletRoom';
@@ -929,7 +929,7 @@ async function boot(): Promise<void> {
       decorating: !!decor?.active,
       garden: !!garden?.active,
       chatTyping: chat.typing,
-      chatDocked: dangBanMay(), // bản máy tính: ô nhập trên thanh, gõ không ẩn thanh (R-THANH-1)
+      chatDocked: troChuyenTrenThanh(), // máy tính màn ngang: Trò chuyện trên thanh, gõ không ẩn thanh (R-THANH-1)
       sitting: player.isSitting,
       air: player.state.air,
       atHome: isHomeScene(SCENE.id), // sân + gian trong (V-68)
@@ -957,6 +957,7 @@ async function boot(): Promise<void> {
       player.moveTarget = null;
       void desk.read();
     },
+    toggleChat: () => void (chat.typing ? chat.close() : chat.open()), // hình Trò chuyện = phím Enter (R-CHAT-3)
   });
   // `?debug`: kịch bản thử / chụp ảnh gọi thẳng truyền tống (`__hocXaTravel('rung-truc')`), thanh (`__hocXaThanh.press('veNha')`)
   if (params.has('debug')) Object.assign(window, { __hocXaTravel: travel, __hocXaThanh: thanh });
@@ -1063,7 +1064,7 @@ async function boot(): Promise<void> {
     const hideHud = covered || riding;
     if (document.body.classList.contains('covered') !== hideHud) document.body.classList.toggle('covered', hideHud);
     if (document.body.classList.contains('scroll-open') !== scrollOpen) document.body.classList.toggle('scroll-open', scrollOpen);
-    chat.update({ camera, player: pos, nameTagHeight: NAME_TAG_HEIGHT, npcs: npcSet.npcs, busy: busy || gamePlay.active, hideMe: ngoiMat.firstPerson, docked: dangBanMay() && !!thanh?.view?.visible });
+    chat.update({ camera, player: pos, nameTagHeight: NAME_TAG_HEIGHT, npcs: npcSet.npcs, busy: busy || gamePlay.active, hideMe: ngoiMat.firstPerson, docked: troChuyenTrenThanh() && !!thanh?.view?.visible });
     learn.follow(zones.current ? anchorOf.get(zones.current.id) : undefined, camera);
     // nút "Nói chuyện": NPC gần nhất trong 2,5 m, không đang học / ngồi / bản đồ / thoại / màn tải (R-NPC-2)
     const npcNear = paused || mapOpen || talking || loading.active || player.isSitting ? null : npcInTalkRange(npcSet.npcs, pos);

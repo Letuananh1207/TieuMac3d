@@ -2,7 +2,8 @@
  * Ghép thanh công cụ đáy màn (R-THANH-1/2, R-HANH-6/7, R-BIEU-1…3, R-TUI-1 — kế hoạch docs/tasks/2026-11-15-thanh-cong-cu.md,
  * thiết kế 2026-11-15.35): 5 nút Bản đồ · Về nhà · Biểu cảm · Túi đồ · Nhiệm vụ. Luật nút ở `zones/thanhCongCu.ts`, biểu cảm
  * `zones/bieuCam.ts`, túi đồ `zones/tuiDo.ts`; HUD `ui/toolbar.ts`, `ui/emotePanel.ts`, `ui/bagPanel.ts`. Máy tính: phím
- * M / H / G / B / J (V-76); bảng Biểu cảm mở thì phím số 1…8 chọn theo thứ tự ô.
+ * M / H / G / B / J (V-76); bảng Biểu cảm mở thì phím số 1…8 chọn theo thứ tự ô. Bản máy tính màn ngang: thêm hình Trò chuyện
+ * đầu hàng (Enter — V-20261116-77, R-CHAT-3).
  */
 import { BagPanel } from './ui/bagPanel';
 import { EmotePanel } from './ui/emotePanel';
@@ -35,6 +36,8 @@ export interface ThanhDeps {
   bagSource(): Promise<BagSource>;
   /** "Đọc" ở mục Sách = nút Đọc sách (R-SACH-2) */
   readBook(): void;
+  /** hình Trò chuyện (bản máy tính): mở / đóng ô nhập (R-CHAT-3) */
+  toggleChat(): void;
 }
 
 export class ThanhCongCu {
@@ -48,7 +51,13 @@ export class ThanhCongCu {
   private readonly bag: BagPanel;
 
   constructor(private readonly deps: ThanhDeps) {
-    this.bar = new Toolbar((id) => this.press(id));
+    this.bar = new Toolbar(
+      (id) => this.press(id),
+      () => {
+        this.closePanel();
+        this.deps.toggleChat();
+      },
+    );
     this.emotes = new EmotePanel(
       (e) => this.pickEmote(e),
       () => this.closePanel(),
@@ -128,7 +137,7 @@ export class ThanhCongCu {
     if (this.panel === 'bieuCam' && !toolbarView(c).on.bieuCam) this.closePanel();
     if (this.panel === 'tuiDo' && toolbarHidden({ ...c, panel: null })) this.closePanel();
     this.last = toolbarView(this.context());
-    this.bar.render(this.last, dt);
+    this.bar.render(this.last, dt, c.chatTyping);
     const p = this.pending;
     if (!p) return;
     p.t += dt;

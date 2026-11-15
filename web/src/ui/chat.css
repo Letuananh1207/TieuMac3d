@@ -86,24 +86,20 @@ body.chatting #joy,body.chatting #joyGhost,body.chatting #actions,body.chatting 
   .cx-time{display:none}
 }
 
-/* bản máy tính (body.ban-may, thanh đang hiện → #chat.dock — V-20261115-70, R-CHAT-3): ô nhập luôn hiện — màn dọc ngay trên
-   thanh công cụ, rộng bằng thanh; màn ngang trong dải đáy bên trái (toolbarMay.css, V-74); khung thu gọn / khung kênh ngay trên ô nhập; nút Trò chuyện tròn ẩn (Enter / bấm ô) */
-body.ban-may #chatBtn{display:none}
-#chat.dock{--dock-l:calc(var(--sa-left) + 12px);--dock-w:calc(100% - var(--sa-left) - var(--sa-right) - 24px);--dock-b:calc(var(--sa-bottom) + 76px)}
-/* màn ngang: ô nhập nằm TRONG dải đáy, bên trái, dài --chat-w (toolbarMay.css, V-20261116-74) */
-@media (orientation:landscape){#chat.dock{--dock-w:var(--chat-w,380px);--dock-b:calc(var(--sa-bottom) + 6px)}}
-#chat.dock #chatForm{left:var(--dock-l);right:auto;bottom:var(--dock-b);width:var(--dock-w);padding:0;background:transparent;border:0;gap:4px;flex-direction:column-reverse}
-#chat.dock .cx-field{height:40px;border:1px solid var(--frost-line);outline:1px solid var(--frost-outline);background:rgba(244,247,246,.9);box-shadow:0 6px 18px rgba(36,50,58,.2);-webkit-backdrop-filter:var(--blur-hud);backdrop-filter:var(--blur-hud);cursor:text}
-#chat.dock .cx-field input{font-size:14px;cursor:text}
-#chat.dock .cx-field input::placeholder{color:rgba(36,50,58,.62)}
-#chat.dock.open .cx-field{background:#fff;border:2px solid var(--jade);outline:0}
-#chat.dock .cx-send{height:40px;padding:0 12px;font-size:14px}
-#chat.dock:not(.open) .cx-send{display:none}
-#chat.dock .cx-note{align-self:flex-start;padding:2px 8px;border-radius:8px;background:rgba(244,247,246,.92)}
-#chat.dock #chatFeed{left:var(--dock-l);bottom:calc(var(--dock-b) + 48px);width:var(--dock-w)}
-#chat.dock #chatBox{left:var(--dock-l);right:auto;top:auto;bottom:calc(var(--dock-b) + 48px);width:var(--dock-w);height:min(240px,calc(100% - var(--dock-b) - 60px - var(--sa-top)))}
-@media (orientation:landscape) and (max-height:600px){#chat.dock #chatBox{height:max(56px,min(104px,calc(100% - var(--dock-b) - 60px - var(--sa-top))))}}
-/* không chồng bảng Biểu cảm / tấm báo (đã nâng lên trên ô nhập — toolbar.css), Túi đồ (thanh ẩn → ô ẩn theo) */
+/* bản máy tính màn ngang (body.ban-may, thanh đang hiện → #chat.bar — V-20261116-77, R-CHAT-3): không còn ô chat luôn hiện;
+   Trò chuyện là hình đầu hàng thanh công cụ (toolbarMay.css), bấm / Enter → ô nhập + khung kênh nổi ngay trên hàng hình, mép
+   trái thẳng hình Trò chuyện; 3 tin mới hiện ở đó vài giây rồi mờ (im lặng 10 s). Màn dọc: nút Trò chuyện tròn như điện thoại */
+@media (orientation:landscape){body.ban-may #chatBtn{display:none}}
+#chat.bar{--bar-l:calc(var(--sa-left) + 12px);--bar-w:min(440px,calc(100% - var(--sa-left) - var(--sa-right) - 24px));--bar-b:calc(var(--sa-bottom) + 102px)}
+#chat.bar #chatForm{left:var(--bar-l);right:auto;bottom:var(--bar-b);width:var(--bar-w);padding:0;background:transparent;border:0;gap:4px;flex-direction:column-reverse}
+#chat.bar .cx-field{height:40px;box-shadow:0 6px 18px rgba(36,50,58,.2)}
+#chat.bar .cx-field input{font-size:14px}
+#chat.bar .cx-send{height:40px;padding:0 12px;font-size:14px}
+#chat.bar .cx-note{align-self:flex-start;padding:2px 8px;border-radius:8px;background:rgba(244,247,246,.92)}
+#chat.bar #chatFeed{left:var(--bar-l);bottom:var(--bar-b);width:var(--bar-w)}
+#chat.bar #chatBox{left:var(--bar-l);right:auto;top:auto;bottom:calc(var(--bar-b) + 48px);width:var(--bar-w);height:min(240px,calc(100% - var(--bar-b) - 60px - var(--sa-top)))}
+@media (orientation:landscape) and (max-height:600px){#chat.bar #chatBox{height:max(56px,min(104px,calc(100% - var(--bar-b) - 60px - var(--sa-top))))}}
+/* không chồng bảng Biểu cảm / tấm báo nhà (cùng nổi trên hàng hình bên trái — toolbarMay.css), Túi đồ (thanh ẩn → ô đóng) */
 body.ban-may:has(#emotePanel:not([hidden])) #chatFeed,body.ban-may:has(#homeHere:not([hidden])) #chatFeed{display:none}
 body.bag-open #chatForm,body.bag-open #chatBox{display:none !important}
 

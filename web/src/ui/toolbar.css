@@ -102,9 +102,7 @@ body.bag-open #decorBtn,body.bag-open .learn,body.bag-open #talk,body.bag-open #
   .bg-seeds{grid-template-columns:repeat(2,minmax(0,1fr))}
   .bg-decor{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
-/* bản máy tính màn ngang: dải đáy kiểu 摩尔 bản web — toolbarMay.css (V-20261116-74).
-   Bản máy tính màn dọc (hiếm): thanh 5 ô như điện thoại, ô trò chuyện ngay trên thanh (chat.css `#chat.dock`) → bảng Biểu cảm nổi trên ô nhập */
-@media (orientation:portrait){body.ban-may #emotePanel{bottom:calc(var(--sa-bottom) + 126px)}}
+/* bản máy tính màn ngang: dải đáy kiểu 摩尔 bản web — toolbarMay.css (V-20261116-74, V-77). Màn dọc (hiếm): như điện thoại */
 @media (prefers-reduced-motion:reduce){
   #toolbar{transition:opacity .2s ease,visibility 0s}
   #toolbar.tb-hidden{transform:none;transition:opacity .2s ease,visibility 0s .2s}

@@ -19,6 +19,15 @@ Thay hàng V-74 ở trên (phần còn lại giữ nguyên):
 | Mục thiết kế | Thiết kế vẽ gì | Luật nói gì | Code đang làm |
 |---|---|---|---|
 | 2026-11-15.35 Thanh công cụ (máy tính) | như trên | R-THANH-1, R-HANH-6, R-BANDO-5, R-CHAT-3, R-BIEU-1 (sửa V-76) | **thanh trong suốt**: bỏ dải gỗ (không nền, viền, bóng; chỗ trống của dải không bắt chạm — chạm xuống cảnh); **một hàng 5 hình 76 Bản đồ · Biểu cảm · Về nhà · Túi đồ · Nhiệm vụ** sát phải (bỏ hình Bản đồ 100 riêng góc trái); ru-băng chữ **đá đen bán trong suốt** `rgba(36,50,58,.72)` chữ trắng có bóng chữ (đọc rõ trên cảnh ngày + đêm; đang mở: vàng chữ slate; mờ: xám bán trong suốt); ô trò chuyện giữ kính sáng riêng; khung tin / khung kênh thẳng mép trái ô nhập (bỏ dịch phải); ô phím **M / G / H / B / J** (Map · Gesture · Home · Bag · Journal), bản đồ lớn chuyển phím **N** — `web/src/ui/toolbarMay.css`, `zones/thanhCongCu.ts`, `input/keyboard.ts`. Xin vẽ `ThanhCongCu-may` theo bản này |
+
+### Sửa V-20261116-77 (người dùng 2026-11-16): bỏ ô chat, hình Trò chuyện, thanh sang trái
+
+Thay hàng V-76 ở trên (phần còn lại giữ nguyên):
+
+| Mục thiết kế | Thiết kế vẽ gì | Luật nói gì | Code đang làm |
+|---|---|---|---|
+| 2026-11-15.35 Thanh công cụ (máy tính) + 2026-11-14.9 Trò chuyện | như trên | R-THANH-1, R-CHAT-3 (sửa V-77) | **bỏ ô chat luôn hiện**; **một hàng 6 hình 76 sát TRÁI đáy** (cách mép trái safe + 12): **Trò chuyện** (hình `tro-chuyen`, ô phím **Enter**) · Bản đồ · Biểu cảm · Về nhà · Túi đồ · Nhiệm vụ — Trò chuyện đầu hàng, đúng chỗ ô chat cũ; bấm hình / Enter → ô nhập 440 × 40 + Gửi nổi ngay trên hàng hình (đáy safe + 102, mép trái thẳng hàng), khung kênh 240 ngay trên ô; ru-băng Trò chuyện vàng khi đang mở; bấm lại hình / Esc / Enter khi ô trống / bấm ra ngoài → đóng (chữ gõ dở giữ). **3 tin gần nhất** hiện cùng chỗ (trên hình Trò chuyện) khi có tin mới, im lặng 10 s thì mờ (như game; nhường chỗ khi bảng Biểu cảm / tấm báo nhà mở). Bảng Biểu cảm 420 nổi trên hàng, mép trái thẳng hàng (đáy + 102), mũi trỏ hình Biểu cảm; tấm báo nhà cùng chỗ. Phải trống → cụm Nhảy · Chào · Ngồi về sát đáy (+ 9), Đọc sách + 189, Trang trí + 253. Màn dọc máy tính (hiếm) và điện thoại: như cũ, nút Trò chuyện tròn — `web/src/ui/toolbarMay.css`, `toolbar.ts`, `chat.css`, `chatPanel.ts`. Xin vẽ `ThanhCongCu-may` theo bản này (thường / ô chat mở / có tin mới / Biểu cảm mở / ở nhà) |
+
 ## Dải kho trang trí kiểu 摩尔 bản web (V-20261116-75)
 
 Người dùng gửi ảnh 摩尔 bản web (dải kho đáy khi trang trí nhà), muốn trang trí ngoài sân / trong nhà hiển thị như vậy ở

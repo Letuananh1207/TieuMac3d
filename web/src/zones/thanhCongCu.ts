@@ -53,7 +53,7 @@ export interface ToolContext {
   garden: boolean;
   /** ô nhập trò chuyện mở */
   chatTyping: boolean;
-  /** bản máy tính: ô nhập nằm ngay trên thanh → đang gõ thanh vẫn hiện (R-THANH-1, R-CHAT-3) */
+  /** bản máy tính màn ngang: Trò chuyện là hình trên thanh, ô nhập nổi ngay trên → đang gõ thanh vẫn hiện (R-THANH-1, R-CHAT-3) */
   chatDocked?: boolean;
   /** bảng đang mở từ thanh (Túi đồ mở → thanh ẩn — R-THANH-1, R-TUI-1) */
   panel: ToolPanel | null;
