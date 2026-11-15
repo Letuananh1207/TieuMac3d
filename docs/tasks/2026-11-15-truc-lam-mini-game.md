@@ -4,7 +4,7 @@
   trò thuần chơi hằng ngày, măng mọc ngẫu nhiên trong rừng trúc (theo giờ thật / sau mưa), nhặt → đổi Văn tiền / đồ trang trí;
   (3) Đàn cầm ở bãi giữa — ngồi tảng đá, đánh đàn theo nốt ngũ cung, thư giãn; nhịp rơi nốt đơn giản hoặc tự do."
 - Loại: thêm (3 trò + dữ liệu + cầu nối) · Cỡ: **lớn** (≈ 3 kế hoạch vừa gộp; làm theo 3 đợt, mỗi trò một nhánh được) ·
-  Trạng thái: **chờ duyệt** (4 điểm cần quyết định bên dưới; HUD cả 3 trò **chờ thiết kế** — phiếu
+  Trạng thái: **đã duyệt 2026-11-15** (người dùng chọn đề xuất cả 4 điểm: 1A chọn 1 bộ thủ trong 4, 2B hai lứa + mưa phùn, 3A bán Trúc Ông không tính trần, 4A tự do + theo bài) (4 điểm cần quyết định bên dưới; HUD cả 3 trò **chờ thiết kế** — phiếu
   `docs/phieu_thiet_ke/2026-11-15-truc-lam-mini-game.md`)
 - Lộ trình mẹ: `docs/tasks/2026-11-15-lam-lai-vung.md` (B4). Cảnh đã có (CHANGELOG 2026-11-15.41, .44): Khúc Thuỷ Đài (21; −32,5)
   mương chữ S 18 m, 3 chén trôi (`channels[0].cups`), 8 đệm cỏ (`seats`, loại `dem`); Trúc Lư (−35; 24,5) nhà tranh + sân đất + rào
