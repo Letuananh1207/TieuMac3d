@@ -98,7 +98,7 @@ void main() {
             'evolution': {'hinh': ['M50 10 L50 90'], 'trien': ['M30 10 L30 90']},
           },
           'learned': true,
-          'region': 'Rừng trúc',
+          'region': 'Rừng Trúc Rì Rào',
         },
       }
     ])!;

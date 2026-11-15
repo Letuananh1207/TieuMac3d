@@ -1,3 +1,4 @@
+import '../journey/journey.dart';
 import 'package:flutter/material.dart';
 
 import '../theme/app_colors.dart';
@@ -279,7 +280,7 @@ class ForestHint extends StatelessWidget {
             child: Text.rich(
               TextSpan(children: [
                 const TextSpan(text: 'Chưa học bộ nào. Đến Truyền Tống Đài, chọn '),
-                TextSpan(text: 'Rừng trúc', style: style.copyWith(fontWeight: FontWeight.w700)),
+                TextSpan(text: firstRegion, style: style.copyWith(fontWeight: FontWeight.w700)),
                 const TextSpan(text: ' rồi Ngồi ôn để học bộ đầu tiên.'),
               ]),
               style: style,
@@ -303,7 +304,7 @@ class AllLearnedBanner extends StatelessWidget {
           const SizedBox(width: 8),
           Flexible(
             child: Text(
-              'Đã học đủ 50 bộ thủ Rừng trúc', // learnAllDoneBanner
+              'Đã học đủ 50 bộ thủ $firstRegion', // learnAllDoneBanner
               textAlign: TextAlign.center,
               style: uiText.copyWith(fontSize: AppTextSize.small, fontWeight: FontWeight.w700, color: AppColors.jade),
             ),

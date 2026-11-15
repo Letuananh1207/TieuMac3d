@@ -102,7 +102,7 @@ class OpenRadicalRequest {
     return OpenRadicalRequest(
       radical: radical,
       learned: p['learned'] == true,
-      region: p['region'] is String ? p['region'] as String : 'Rừng trúc',
+      region: p['region'] is String ? p['region'] as String : firstRegion,
     );
   }
 }

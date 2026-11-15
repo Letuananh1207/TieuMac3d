@@ -21,7 +21,7 @@ Future<List<bool?>> _open(WidgetTester tester, {required bool learned, required 
   tester.view.devicePixelRatio = 1;
   addTearDown(tester.view.reset);
   final results = <bool?>[];
-  final req = OpenRadicalRequest(radical: _truc, learned: learned, region: 'Rừng trúc');
+  final req = OpenRadicalRequest(radical: _truc, learned: learned, region: 'Rừng Trúc Rì Rào');
   await tester.pumpWidget(MaterialApp(
     home: Builder(
       builder: (context) => Scaffold(

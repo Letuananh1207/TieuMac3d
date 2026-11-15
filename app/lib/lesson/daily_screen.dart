@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../journey/daily.dart';
+import '../journey/journey.dart';
 import '../journey/progress_store.dart';
 import '../scene/review_event.dart';
 import '../theme/app_colors.dart';
@@ -208,8 +209,8 @@ class _DailyScreenState extends State<DailyScreen> {
         : s.learnDone
             ? 'Đã học $dailyNewGoal bộ mới hôm nay${_v.learnedToday.isEmpty ? '' : ': ${_v.learnedToday.map(_form).join(' ')}'}.' // dailyLearnDone
             : _v.learnedTotal == 0
-                ? 'Học $dailyNewGoal bộ thủ mới. Tới Truyền Tống Đài → Rừng trúc, ngồi thiền để lĩnh hội bộ đầu tiên.' // dailyLearnFirst
-                : 'Học $dailyNewGoal bộ thủ mới. Ngồi thiền ở Rừng trúc để lĩnh hội bộ kế tiếp.'; // dailyLearnSub
+                ? 'Học $dailyNewGoal bộ thủ mới. Tới Truyền Tống Đài → $firstRegion, ngồi thiền để lĩnh hội bộ đầu tiên.' // dailyLearnFirst
+                : 'Học $dailyNewGoal bộ thủ mới. Ngồi thiền ở $firstRegion để lĩnh hội bộ kế tiếp.'; // dailyLearnSub
     final items = _items;
     return [
       DailyTask(

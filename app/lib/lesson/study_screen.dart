@@ -266,7 +266,7 @@ class _StudyScreenState extends State<StudyScreen> {
   (String, IconData, Color) _reason(StudyItem item) => switch (item.reason) {
         'reviewedToday' => ('Hôm nay đã ôn xong', Icons.check, AppColors.jade), // reviewDueDone
         'allLearned' => ('Đã học đủ', Icons.check, AppColors.jade), // learnAllDone
-        'learnInRegion' => ('Học ở Rừng trúc', Icons.place_outlined, AppColors.slateMuted), // learnAtForest
+        'learnInRegion' => ('Học ở $firstRegion', Icons.place_outlined, AppColors.slateMuted), // learnAtForest
         // noneLearned: Ôn → reviewDueNothing · Xem → viewLearnedNone
         _ => (item.id == 'review' ? 'Chưa có bộ nào để ôn' : 'Chưa học bộ nào', Icons.remove, AppColors.slateMuted),
       };

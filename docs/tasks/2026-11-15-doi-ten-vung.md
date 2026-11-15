@@ -164,29 +164,29 @@ liệu, không hiển thị), tên khu trong 6 vùng, biển "Trường Thành" 
 
 ## Nhiệm vụ
 
-- [ ] 0. **Người dùng chọn tên** (bảng "Cần quyết định", 8 câu + câu biển cổng). Xong khi: có bảng mã → tên chốt.
-- [ ] 1. **Sổ quy tắc** (`docs/testing/quy_tac.md`, lớp nghiệp vụ): thay tên trong mọi luật / ví dụ; R-HANH-1 thêm câu
+- [x] 0. **Người dùng chọn tên** (bảng "Cần quyết định", 8 câu + câu biển cổng). Xong khi: có bảng mã → tên chốt.
+- [x] 1. **Sổ quy tắc** (`docs/testing/quy_tac.md`, lớp nghiệp vụ): thay tên trong mọi luật / ví dụ; R-HANH-1 thêm câu
   "Tên hiển thị 6 vùng: …; nguồn `ban-do.json` `ten`; mã cảnh không đổi" → `/dong-bo-quy-tac` (tự chép online).
   Xong khi: `grep "Rừng trúc"` trong sổ = 0 (trừ câu "trước đây gọi là" nếu có), `rule_trace --pending` sạch.
-- [ ] 2. **Thiết kế: đặc tả + bản đồ** (`/canh`, cho người dùng xem ảnh bản đồ rồi chốt): `site.name` 6 file (+ khu mục 8,
+- [x] 2. **Thiết kế: đặc tả + bản đồ** (`/canh`, cho người dùng xem ảnh bản đồ rồi chốt): `site.name` 6 file (+ khu mục 8,
   biển cổng nếu chọn), `ban-do.json` `ten`, `ve-ban-do.html` → vẽ lại `ban-do-goc.png` + `screens/BanDo-trang-thai.png`,
   `hanh_trinh.md`, `l10n/vi.arb`, `screen_specs.md`, mục mới `design/CHANGELOG.md`. Test: `npm run scene:check`.
   Xong khi: scene:check sạch, ảnh bản đồ mới nhãn không đè nhau, người dùng duyệt ảnh.
-- [ ] 3. **Phiếu gửi `/ui-design`**: thêm vào `docs/testing/gui_thiet_ke_2026-11-15.md` (hoặc phiếu riêng) danh sách
+- [x] 3. **Phiếu gửi `/ui-design`**: thêm vào `docs/testing/gui_thiet_ke_2026-11-15.md` (hoặc phiếu riêng) danh sách
   artboard còn tên cũ, cột "tên mới". Không chặn code (code theo luật). Xong khi: phiếu có đủ artboard ở mục Phạm vi.
-- [ ] 4. **Web dữ liệu: một nguồn tên** (`zones/journeyMap.ts` `placeName`; thay chuỗi cứng ở `zones/*`, `gamePlay.ts`;
+- [x] 4. **Web dữ liệu: một nguồn tên** (`zones/journeyMap.ts` `placeName`; thay chuỗi cứng ở `zones/*`, `gamePlay.ts`;
   lớp zones / ghép). Test vitest: `placeName('rung-truc')` = tên chốt; `placeName('khong-co')` = mã; `cuonMuc`,
   `studyGuide`, `dailyBoard`, `dialogs` không còn chữ "Rừng trúc" cứng (test dò chuỗi). Xong khi: `npm test` xanh,
   `grep -rn "Rừng trúc" web/src --include=*.ts` chỉ còn trong comment.
-- [ ] 5. **Web kiểm đặc tả** (`scene/specCheck.ts` hoặc `scripts/check-scene.mjs`, lớp scene / công cụ): `site.name`
+- [x] 5. **Web kiểm đặc tả** (`scene/specCheck.ts` hoặc `scripts/check-scene.mjs`, lớp scene / công cụ): `site.name`
   trùng `ban-do.json` `ten` cùng mã; `ten` ≤ 18 ký tự, chỉ chữ Việt. Test: đặc tả lệch tên → báo lỗi. Xong khi:
   `scene:check` báo lệch khi cố tình sửa sai một bên.
-- [ ] 6. **HUD tên dài** (lớp ui; chỉ sửa CSS nếu tràn: co chữ / xuống dòng / chấm lửng ở chip khu và đầu cuộn): soát
+- [x] 6. **HUD tên dài** (lớp ui; chỉ sửa CSS nếu tràn: co chữ / xuống dòng / chấm lửng ở chip khu và đầu cuộn): soát
   màn tải, cưỡi hạc, thẻ sắp mở, chip khu, đầu cuộn, nhãn cổng bản đồ vùng với tên dài nhất, dọc 360 × 640 và ngang.
   Không thêm giao diện mới. Xong khi: chụp đủ 6 chỗ, không cắt chữ.
-- [ ] 7. **Cầu nối / tài liệu** (`docs/bridge.md`): đổi ví dụ `region`, ghi rõ "`region` là tên hiển thị (lấy `site.name`),
+- [x] 7. **Cầu nối / tài liệu** (`docs/bridge.md`): đổi ví dụ `region`, ghi rõ "`region` là tên hiển thị (lấy `site.name`),
   không phải mã". Dạng không đổi → không cần sửa hai phía. Xong khi: ví dụ dùng tên mới.
-- [ ] 8. **Flutter** (`app/lib/journey/journey.dart` hằng tên; thay chuỗi cứng ở `lesson/`, `scene/`): test
+- [x] 8. **Flutter** (`app/lib/journey/journey.dart` hằng tên; thay chuỗi cứng ở `lesson/`, `scene/`): test
   `region_names_test.dart` đọc `ban-do.json` so hằng; sửa test có chuỗi cũ. Xong khi: `flutter analyze` sạch, `flutter
   test` xanh.
 - [ ] 9. **Build + soát chữ Hán**: `npm run build` (chép sang app), `vietOnly.test.ts` xanh, thử máy: mở app → màn tải
@@ -207,3 +207,12 @@ dart tool/rule_trace.dart · dart tool/rule_trace.dart --pending
 - Khu trong trấn: **giữ nguyên**.
 - Biển cổng trong vùng: **đổi theo tên mới** (biển "Giang Nam", "Bồng Lai"… → tên mới; xét từng biển: biển là tên vùng thì đổi,
   biển là tên công trình riêng như "Bồng Lai Các" thì giữ trừ khi rõ là tên vùng).
+
+## Đã làm (2026-11-15, nhánh `viec/doi-ten-vung`)
+- Sổ quy tắc: 22 luật đổi tên → Xác nhận `chờ`; **chưa** `/dong-bo-quy-tac` (phiên điều phối đồng bộ sau khi gộp).
+- Biển cổng đổi: `giang-nam` `cong-pho`, `bong-lai` `cong-tien`. Giữ: "Bồng Lai Các" (lầu), "Trường Thành" (quan thành), cờ "Tử"/"Cấm".
+- Tên dài nhất "Đường Cát Leng Keng" 19 ký tự (kế hoạch ghi ≤ 18) → `scene:check` cho tối đa 20 (`scene/placeNames.ts`).
+- Không còn chip khu (đã bỏ từ R-HUD-1); đầu cuộn Ngồi ôn tự cắt "…". Soát chụp: màn tải, cưỡi hạc, thẻ sắp mở, bản đồ vùng ở
+  360 × 640 / 390 × 844 / 844 × 390 — không tràn.
+- Flutter: hằng `regionNames`, `firstRegion` (`journey/journey.dart`, kiểu tên của dự án, không tiền tố `k`).
+- Còn: 9 (thử máy), biển cổng tên dài + nhãn Đảo Mây trên bản đồ chờ `/canh` / `/ui-design` (`docs/testing/gui_thiet_ke_2026-11-15.md`).

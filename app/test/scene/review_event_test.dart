@@ -25,7 +25,7 @@ void main() {
 
   test('openReview: đọc bộ + 2 câu (docs/bridge.md)', () {
     final r = OpenReviewRequest.parse([
-      {'type': 'openReview', 'payload': {'items': [_item('truc', '竹')], 'region': 'Rừng trúc'}},
+      {'type': 'openReview', 'payload': {'items': [_item('truc', '竹')], 'region': 'Rừng Trúc Rì Rào'}},
     ]);
     expect(r, isNotNull);
     expect(r!.items.single.radical.form, '竹');

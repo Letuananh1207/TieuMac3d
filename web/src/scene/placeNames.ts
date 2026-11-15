@@ -12,7 +12,7 @@ export function mapPlaceId(sceneId: string): string {
   return sceneId === 'tong-mon' ? 'van-uyen' : sceneId;
 }
 
-const HAN = /[⺀-⿟㐀-䶿一-鿿豈-﫿]/u;
+const HAN = /\p{Script=Han}/u;
 
 /**
  * Lỗi tên nơi. `scenes` = mã cảnh → `site.name` (cảnh không có nơi trên bản đồ thì bỏ qua); `places` = `noi` của

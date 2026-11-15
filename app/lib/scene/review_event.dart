@@ -1,3 +1,4 @@
+import '../journey/journey.dart';
 import 'scene_event.dart';
 
 /// Sự kiện ôn tập + bảng nhiệm vụ qua cầu nối (docs/bridge.md `openReview`, `openDaily`). Câu đố do trang dựng
@@ -36,7 +37,7 @@ class OpenReviewRequest {
     if (p == null) return null;
     final items = parseReviewItems(p['items']);
     if (items.isEmpty) return null;
-    return OpenReviewRequest(items: items, region: p['region'] is String ? p['region'] as String : 'Rừng trúc');
+    return OpenReviewRequest(items: items, region: p['region'] is String ? p['region'] as String : firstRegion);
   }
 }
 
@@ -131,7 +132,7 @@ class OpenStudyRequest {
       next: parseRadical(p['next']),
       upcoming: upcoming is List ? [for (final r in upcoming) ?parseRadical(r)] : const [],
       learned: learned is List ? [for (final r in learned) ?parseRadical(r)] : const [],
-      region: p['region'] is String ? p['region'] as String : 'Rừng trúc',
+      region: p['region'] is String ? p['region'] as String : firstRegion,
     );
   }
 }
@@ -151,7 +152,7 @@ class OpenLearnedRequest {
     if (p == null || learned is! List) return null;
     return OpenLearnedRequest(
       learned: [for (final r in learned) ?parseRadical(r)],
-      region: p['region'] is String ? p['region'] as String : 'Rừng trúc',
+      region: p['region'] is String ? p['region'] as String : firstRegion,
     );
   }
 }
