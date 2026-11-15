@@ -15,6 +15,8 @@ import { addGate, addGateModel } from './gate';
 import { staticModelUrl } from './staticModel';
 import { addGrassAndRocks } from './grass';
 import { addSoftGrassAndFlowers } from './coHoa';
+import { addTeaGarden } from './doiChe';
+import { insideTea } from './luongCheLayout';
 import { mergeSoft, mergeStatic } from './merge';
 import { setLampGlow, setLampMode, tickWind } from './materials';
 import { isColorManaged, isSoft } from './look';
@@ -153,9 +155,11 @@ function* worldSteps(
   if (hf && groundY) {
     addStairs(scene, spec.terrain, style);
     const soft = isSoft(spec.look);
-    addGrassAndRocks(scene, spec.terrain, hf, spec.paths, !soft);
+    // luống chè (V-46): cỏ / hoa / đá không mọc trong luống
+    const inTea = spec.teaRows.length ? (x: number, z: number): boolean => insideTea(spec.teaRows, spec.teaStyle, x, z, 0.2) : undefined;
+    addGrassAndRocks(scene, spec.terrain, hf, spec.paths, !soft, inTea);
     yield 'co-da';
-    if (soft) addSoftGrassAndFlowers(scene, spec.terrain, hf, spec.paths, spec.look, detail);
+    if (soft) addSoftGrassAndFlowers(scene, spec.terrain, hf, spec.paths, spec.look, detail, inTea);
     yield 'co-hoa';
     waterways = addWaterways(scene, spec.terrain, style, groundY);
   }
@@ -206,6 +210,7 @@ function* worldSteps(
   const props = addProps(scene, colliders, spec.props, style, spec.trees, groundY);
   yield 'do-vat';
   const trees = addTrees(scene, colliders, spec.trees, groundY, spec.look);
+  const tea = addTeaGarden(scene, colliders, spec, groundY, detail); // Đồi Chè: luống + bướm + sương (V-46)
   yield 'cay';
   const lanternSpots = addLanternStrings(scene, colliders, spec, groundY);
   let glow: THREE.InstancedMesh | null = null;
@@ -237,6 +242,7 @@ function* worldSteps(
         glow,
         sky: addNightSky(scene, spec.dayNight, viewDistance(spec) * 0.72, detail >= 1),
         colorManaged: isColorManaged(spec.look),
+        hourly: tea?.hour,
       })
     : null;
   return {
@@ -256,6 +262,7 @@ function* worldSteps(
       floating(dt);
       waterways(dt);
       fauna(dt);
+      tea?.update(dt);
       channels(dt);
       mirages(dt);
       teleport?.update(dt);

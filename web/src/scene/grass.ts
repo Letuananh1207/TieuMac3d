@@ -51,7 +51,7 @@ export function onBuilt(t: Terrain, paths: PathSpec[], x: number, z: number): bo
  * Không va chạm. Mỗi loại một InstancedMesh (màu từng búi / tảng khác nhau nhẹ).
  */
 /** `withGrass`: false = chỉ rải đá (cảnh mềm rải cỏ + hoa riêng ở `coHoa.ts`). */
-export function addGrassAndRocks(scene: THREE.Scene, t: Terrain, hf: Heightfield, paths: PathSpec[], withGrass = true): void {
+export function addGrassAndRocks(scene: THREE.Scene, t: Terrain, hf: Heightfield, paths: PathSpec[], withGrass = true, blocked?: (x: number, z: number) => boolean): void {
   const [cx, cz] = t.center;
   const R = t.edge.radius - 2;
   const area = Math.PI * R * R;
@@ -95,6 +95,7 @@ export function addGrassAndRocks(scene: THREE.Scene, t: Terrain, hf: Heightfield
     const base = new THREE.Color(t.rocks.color);
     const tint = new THREE.Color();
     let n = 0;
+    let placed = 0;
     for (let tries = 0; tries < want * 8 && n < want; tries++) {
       const [x, z] = sample(rand);
       const y = hf.heightAt(x, z);
@@ -107,11 +108,13 @@ export function addGrassAndRocks(scene: THREE.Scene, t: Terrain, hf: Heightfield
         q.setFromEuler(e.set(rand() * 0.5, rand() * Math.PI * 2, rand() * 0.5)),
         size.set(s * (0.8 + rand() * 0.6), s * (0.5 + rand() * 0.4), s * (0.8 + rand() * 0.6)),
       );
-      mesh.setMatrixAt(n, m);
-      mesh.setColorAt(n, tint.copy(base).multiplyScalar(0.85 + rand() * 0.3));
+      const k = 0.85 + rand() * 0.3;
       n++;
+      if (blocked?.(x, z)) continue; // trong luống chè (V-46): bỏ, không dời — đá nơi khác giữ nguyên
+      mesh.setMatrixAt(placed, m);
+      mesh.setColorAt(placed++, tint.copy(base).multiplyScalar(k));
     }
-    mesh.count = n;
-    if (n) finish(scene, [mesh]);
+    mesh.count = placed;
+    if (placed) finish(scene, [mesh]);
   }
 }

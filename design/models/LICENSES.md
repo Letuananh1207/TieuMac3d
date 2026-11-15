@@ -10,6 +10,15 @@ Community License — **không dùng ở EU / UK / Hàn Quốc**; đọc `LICENS
 | `su-phu.glb` (NPC Sư phụ Mặc Ông 墨翁) | **Hunyuan3D-2mv bản đầy đủ** (đa góc, WinPortable cu129, seed 1234, 50 bước, octree 512) → `smooth.py --min 2` → `bake.py --jpg` (đầu theo vùng) → `npm run model:clean --khong-sang` (16 000 tam giác, 221 KB) — luồng `tai-nguyen/scripts/nhan-vat.sh` | `anh/su-phu-{truoc,trai,sau,phai}.png` (bộ ảnh 2026-11-13.1, Google Gemini) | 2026-11-13 | Tencent Hunyuan Community License (model); ảnh: theo điều khoản Google Gemini của người dùng |
 | `cong-son-mon.glb` (Cổng Sơn Môn 山門) | **Hunyuan3D-2mv bản đầy đủ** (đa góc, WinPortable cu129, seed 7, 50 bước, octree 512) → `smooth.py --min 1 --tam-giac 20000` → `bake.py --cong-trinh --jpg` → `npm run model:clean --loai cong-trinh --khong-sang` (20 000 tam giác, 267 KB) — luồng `tai-nguyen/scripts/cong-trinh.sh` | `anh/cong-son-mon-{truoc,trai,sau,phai}.png` (bộ ảnh 2026-11-13.3, Google Gemini) | 2026-11-13 | Tencent Hunyuan Community License (model); ảnh: theo điều khoản Google Gemini của người dùng |
 
+## Gói tài sản miễn phí (`design/models/thuc-vat/`)
+
+Không phải model AI — gói low-poly có sẵn, giấy phép CC0 (khảo cứu `docs/tham_khao/assets-free-thuc-vat.md`). CC0 không bắt
+ghi công; vẫn nên ghi "Isa Lousberg" ở màn giới thiệu nếu sau này có. Không lấy logo / ảnh xem trước của gói vào app.
+
+| File | Nguồn | Xử lý | Ngày | Giấy phép |
+|---|---|---|---|---|
+| `thuc-vat/luong-che.glb` (luống chè, V-46) | **Tiny Treats – Pretty Park 1.0** — tác giả **Isa Lousberg** (www.isalousberg.com), tải từ https://tinytreats.itch.io/pretty-park (cũng ở OpenGameArt, Poly Pizza "Hedge Straight Long"); mẫu `Assets/gltf/hedge_straight_long.gltf` (372 tam giác, 4 × 1,5 × 1,5 m, texture dải màu 1024² dùng chung). `License.txt` gốc chép thành `thuc-vat/LICENSE-tiny-treats.txt` | `npm run model:thuc-vat -- hedge_straight_long.gltf --ra ../design/models/thuc-vat/luong-che.glb --ti-le 0.35` (`web/scripts/model-thuc-vat.mjs`): texture dải màu → màu đỉnh `COLOR_0`, bỏ UV / texture / phần mở rộng vật liệu, hàn đỉnh, bỏ 22 tam giác mặt đáy, giảm tam giác (meshoptimizer), nén meshopt → **122 tam giác, 3,4 KB, 0 texture**. Cảnh tô lại màu theo độ cao lúc dựng (`teaStyle.colors`, `scene/luongChe.ts`) | 2026-11-15 | **CC0 1.0** (Creative Commons Zero) |
+
 ## Ảnh đầu vào (`design/models/anh/`)
 
 | File | Công cụ tạo ảnh | Xử lý | Ngày | Giấy phép |

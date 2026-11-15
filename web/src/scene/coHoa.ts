@@ -71,7 +71,16 @@ function withUpNormals(pos: number[], col: number[]): THREE.BufferGeometry {
  * Gió lay ngọn (`look.wind`). Mức Thấp `detail` 0,5 → thưa một nửa (R-HIEU-1). Hoa 1 draw call; cỏ mỗi ô `GRASS_TILE` một
  * draw call, chỉ ô trong khung nhìn được vẽ.
  */
-export function addSoftGrassAndFlowers(scene: THREE.Scene, t: Terrain, hf: Heightfield, paths: PathSpec[], look: LookSpec, detail: number): void {
+export function addSoftGrassAndFlowers(
+  scene: THREE.Scene,
+  t: Terrain,
+  hf: Heightfield,
+  paths: PathSpec[],
+  look: LookSpec,
+  detail: number,
+  /** chỗ có vật trồng (luống chè — V-46): búi / bông rơi vào đó bị bỏ (không dời chỗ khác — cỏ nơi khác giữ nguyên) */
+  blocked?: (x: number, z: number) => boolean,
+): void {
   const [cx, cz] = t.center;
   const R = t.edge.radius - 2;
   const area = Math.PI * R * R;
@@ -106,13 +115,15 @@ export function addSoftGrassAndFlowers(scene: THREE.Scene, t: Terrain, hf: Heigh
       if (y === null) continue;
       const s = 0.7 + rand() * 0.8;
       const key = `${Math.floor(x / GRASS_TILE)},${Math.floor(z / GRASS_TILE)}`;
-      const list = tiles.get(key) ?? [];
-      list.push({
+      const it = {
         m: new THREE.Matrix4().compose(p.set(x, y - 0.02, z), q.setFromEuler(e.set(0, rand() * Math.PI * 2, 0)), size.set(s, s * (0.8 + rand() * 0.6), s)),
         c: tint.copy(colors[0]).lerp(colors[1], rand()).clone(),
-      });
-      tiles.set(key, list);
+      };
       n++;
+      if (blocked?.(x, z)) continue;
+      const list = tiles.get(key) ?? [];
+      list.push(it);
+      tiles.set(key, list);
     }
     const meshes = [...tiles.values()].map((list) => {
       const mesh = new THREE.InstancedMesh(geo, mat, list.length);
@@ -131,6 +142,7 @@ export function addSoftGrassAndFlowers(scene: THREE.Scene, t: Terrain, hf: Heigh
     const mesh = new THREE.InstancedMesh(flowerGeometry(), softMaterial(look.wrap, THREE.DoubleSide, { amp: look.wind }), flowers);
     const colors = look.flowers.colors.map((c) => new THREE.Color(c));
     let n = 0;
+    let placed = 0;
     for (let tries = 0; tries < flowers * 4 && n < flowers; tries++) {
       const [x0, z0] = sample(rand);
       if (ok(x0, z0) === null) continue;
@@ -145,12 +157,15 @@ export function addSoftGrassAndFlowers(scene: THREE.Scene, t: Terrain, hf: Heigh
         if (y === null) continue;
         const s = 0.8 + rand() * 0.5;
         const tilt = q.setFromEuler(e.set((rand() - 0.5) * 0.4, rand() * Math.PI * 2, (rand() - 0.5) * 0.4));
-        mesh.setMatrixAt(n, m.compose(p.set(x, y, z), tilt, size.set(s, s * (0.7 + rand() * 0.6), s)));
-        mesh.setColorAt(n, colors[rand() < 0.8 ? kind : Math.floor(rand() * colors.length)]);
+        m.compose(p.set(x, y, z), tilt, size.set(s, s * (0.7 + rand() * 0.6), s));
+        const c = colors[rand() < 0.8 ? kind : Math.floor(rand() * colors.length)];
         n++;
+        if (blocked?.(x, z)) continue;
+        mesh.setMatrixAt(placed, m);
+        mesh.setColorAt(placed++, c);
       }
     }
-    mesh.count = n;
-    if (n) finish(scene, [mesh]);
+    mesh.count = placed;
+    if (placed) finish(scene, [mesh]);
   }
 }

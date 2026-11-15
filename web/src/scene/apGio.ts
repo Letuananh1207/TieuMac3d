@@ -10,6 +10,8 @@ export interface DayNight {
   apply(p: PhaNgay, trongNha: number): void;
   /** tìm vật liệu mới thêm vào cảnh (model `.glb` nạp sau, NPC…) và áp ngay trạng thái hiện tại */
   scan(): void;
+  /** giờ VN 0…24 hiện tại — thứ theo giờ chứ không theo pha (bướm, sương sớm Đồi Chè — V-46) */
+  hour(gio: number): void;
 }
 
 interface Opts {
@@ -18,6 +20,8 @@ interface Opts {
   sky: NightSky | null;
   /** quản lý màu bật (đường màu `chuan`) — màu đích ban đêm đổi về tuyến tính theo đường màu */
   colorManaged: boolean;
+  /** nhận giờ VN mỗi lần đồng hồ đọc lại (`doiChe.ts`) */
+  hourly?: (gio: number) => void;
 }
 
 type Tinted = THREE.MeshBasicMaterial | THREE.PointsMaterial;
@@ -103,6 +107,7 @@ export function createDayNight(scene: THREE.Scene, spec: SceneSpec, env: EnvHand
 
   return {
     scan,
+    hour: (gio) => opts.hourly?.(gio),
     apply(p, trongNha) {
       const k = p.dem;
       const h = p.hoang;

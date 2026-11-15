@@ -266,6 +266,32 @@ export interface FenceSpec {
   to: XZ;
 }
 
+/** Luống chè (V-46, `scene/luongChe.ts`): dải bụi xén liền, thẳng trục, chặn người như hàng rào thấp. Thiếu số → `teaStyle`. */
+export interface TeaRowSpec {
+  from: XZ;
+  to: XZ;
+  width?: number;
+  height?: number;
+}
+
+/** Kiểu luống chè + hiệu ứng quanh luống (bướm, sương sớm) — chỉ dùng khi có `teaRows`. */
+export interface TeaStyle {
+  /** bề ngang, cao mặt hái (m) */
+  width: number;
+  height: number;
+  /** màu chân (bóng nướng) · sườn · mặt hái (búp non) — tô theo độ cao */
+  colors: [string, string, string];
+  /** đoạn mẫu dài tối đa (m): luống dài hơn chia nhiều đoạn chồng mép */
+  segment: number;
+  /** gió lay mặt hái = `look.wind` × số này (chè cứng, lay ít) */
+  wind: number;
+  /** số bướm lượn quanh luống ban ngày (0 = không; mức đồ hoạ Thấp: không) */
+  butterflies: number;
+  butterflyColors: [string, string, string];
+  /** sương sớm trôi trên các bậc chè: giờ VN từ … đến …, độ đặc nhất, màu (mức Thấp: không) */
+  mist: { from: number; to: number; opacity: number; color: string };
+}
+
 /** Đoạn tường thêm, thẳng trục (from / to cùng x hoặc cùng z), màu như tường bao; dày / cao mặc định như tường bao. */
 export interface WallSegment {
   from: XZ;
@@ -927,6 +953,9 @@ export interface SceneSpec {
   /** lan can: cao, khoảng hai trụ (m), màu thân (sơn son), màu chóp trụ. `kind`: `go` lan can gỗ sơn (mặc định, như cũ) ·
    *  `da` lan can đá (V-42): trụ vuông đầu sen, tay vịn + tấm chắn đá giữa hai trụ — `color` thân đá, `cap` đầu sen / tay vịn */
   fenceStyle: { kind: (typeof FENCE_KINDS)[number]; height: number; postEvery: number; color: string; cap: string };
+  /** luống chè (Đồi Chè, V-46) — rỗng = không có (như cũ); kiểu + bướm + sương ở `teaStyle` */
+  teaRows: TeaRowSpec[];
+  teaStyle: TeaStyle;
   /** `seated`: khi ngồi vào án thư / bàn trà (R-NGOI-1) — camera lùi ra, chúc xuống thấy cả bàn ·
    *  `study`: khi Ngồi ôn (R-DIEU-7) — lùi ra, nâng cao, lệch `side` rad ra sau vai phải để thấy cuộn sách trên tay */
   camera: {
@@ -1110,6 +1139,17 @@ export const DEFAULT_SCENE: SceneSpec = {
   },
   fences: [],
   fenceStyle: { kind: 'go', height: 1.0, postEvery: 1.6, color: '#9e2a20', cap: '#e0ae4c' },
+  teaRows: [], // cảnh cũ không có luống chè
+  teaStyle: {
+    width: 0.85,
+    height: 0.85,
+    colors: ['#3f7a55', '#5e9a62', '#a9cc66'],
+    segment: 6.5,
+    wind: 0.4,
+    butterflies: 24,
+    butterflyColors: ['#fff6e5', '#f6cf5e', '#f4a7b9'],
+    mist: { from: 5, to: 9, opacity: 0.5, color: '#f4f1ea' },
+  },
   camera: {
     fov: 55,
     minDist: 5,

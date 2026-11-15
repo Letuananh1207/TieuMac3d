@@ -61,6 +61,7 @@ export class NgayDem {
       this.lastCheck = now;
       this.gio = this.manual ?? gioLuc(this.ep, this.start, Date.now());
       p = phaNgay(this.gio, this.spec.dayNight.moc);
+      this.dn.hour(this.gio); // bướm, sương sớm theo giờ (V-46)
     }
     // trong nhà / ngoài sân: chuyển mượt 0,5 s
     const target = indoor ? 1 : 0;

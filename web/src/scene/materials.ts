@@ -102,7 +102,7 @@ ${shader.vertexShader.replace('#include <begin_vertex>', sway)}`;
     }
   };
   // chương trình shader dùng lại theo `wrap` + gió — cấu hình khác nhau không dùng nhầm bản đã biên dịch
-  m.customProgramCacheKey = () => `soft-${wrap.toFixed(3)}-${sway ? `${wind?.amp.toFixed(3)}-${wind?.tip ?? 0}` : 'yen'}`;
+  m.customProgramCacheKey = () => `soft-${wrap.toFixed(3)}-${sway ? `${wind?.amp.toFixed(3)}-${wind?.tip ?? 0}${wind?.world ? '-tg' : ''}` : 'yen'}`;
   m.userData.soft = true;
   return m;
 }
@@ -115,6 +115,11 @@ ${shader.vertexShader.replace('#include <begin_vertex>', sway)}`;
 export interface Wind {
   amp: number;
   tip?: number;
+  /**
+   * Pha theo toạ độ thế giới của **từng đỉnh** (thay vì gốc instance): vật dài ghép nhiều đoạn (luống chè) lay liền một
+   * sóng — hai đoạn chồng mép không lệch pha nên không hở khe ở chỗ nối (V-46).
+   */
+  world?: boolean;
 }
 
 /** Đồng hồ gió dùng chung mọi vật liệu (giây) — `tickWind` mỗi khung. */
@@ -127,12 +132,19 @@ export function tickWind(dt: number): void {
 export function windChunk(w: Wind): string {
   const amp = w.amp.toFixed(4);
   const k = w.tip ? `clamp(position.y / ${w.tip.toFixed(3)}, 0.0, 1.5)` : '1.0';
-  return `#include <begin_vertex>
-#ifdef USE_INSTANCING
+  const origin = w.world
+    ? `#ifdef USE_INSTANCING
+  vec3 wOrigin = (modelMatrix * instanceMatrix * vec4(position, 1.0)).xyz;
+#else
+  vec3 wOrigin = (modelMatrix * vec4(position, 1.0)).xyz;
+#endif`
+    : `#ifdef USE_INSTANCING
   vec3 wOrigin = vec3(instanceMatrix[3][0], instanceMatrix[3][1], instanceMatrix[3][2]);
 #else
   vec3 wOrigin = vec3(modelMatrix[3][0], modelMatrix[3][1], modelMatrix[3][2]);
-#endif
+#endif`;
+  return `#include <begin_vertex>
+${origin}
   float wPh = uWindTime + wOrigin.x * 0.21 + wOrigin.z * 0.17;
   float wK = ${amp} * ${k};
   transformed.x += (sin(wPh * 1.7) + 0.4 * sin(wPh * 3.1)) * wK;

@@ -35,6 +35,7 @@ import { landingPad, START_HEADING } from './hacDuong';
 import { checkPortals } from './portals';
 import { checkLook } from './look';
 import { checkDayNight } from './ngayDem';
+import { checkTea } from './luongCheLayout';
 import { daisLayout, ringTrigger } from './teleportLayout';
 import { stairEnds, terrainHeightFn } from './terrainHeight';
 
@@ -399,6 +400,7 @@ const LISTS: Record<string, ItemParser> = {
   npcs: withRoute(item({ id: '', x: 0, z: 0 }, { rotY: 0, pose: '', scale: 0, speed: 0 }, all(oneOf('id', NPC_IDS), oneOf('pose', NPC_POSES), positive('scale', 'speed')))),
   lanternStrings: item({ from: XZ0, to: XZ0 }, {}),
   fences: item({ from: XZ0, to: XZ0 }, {}, axisAligned),
+  teaRows: item({ from: XZ0, to: XZ0 }, { width: 0, height: 0 }, all(axisAligned, positive('width', 'height'))),
   gameTables: item(
     { id: '', kind: '', x: 0, z: 0, npc: '' },
     { rotY: 0, boards: 0, npcStand: true, sign: { x: 0, z: 0, rotY: 0, han: '', name: '' } },
@@ -494,7 +496,7 @@ function checkConsistency(s: SceneSpec): string[] {
   if (t.enabled && t.edge.radius + t.edge.width > t.size / 2) {
     out.push(`terrain.edge: mép vực (radius + width = ${t.edge.radius + t.edge.width}) vượt nửa vùng lưới (${t.size / 2}) — tăng size`);
   }
-  out.push(...checkTeleport(s), ...checkLanterns(s), ...checkDecorSlots(s), ...checkPortals(s), ...checkLook(s.look), ...checkDayNight(s.dayNight));
+  out.push(...checkTeleport(s), ...checkLanterns(s), ...checkDecorSlots(s), ...checkPortals(s), ...checkLook(s.look), ...checkDayNight(s.dayNight), ...checkTea(s));
   out.push(...hanOnDisplay(s).map((h) => `${h.path}: biển / tên trong game chỉ tiếng Việt, không chữ Hán (R-HUD-4) — đang là "${h.text}"`));
   if (s.cloudSea.radius < 0) out.push('cloudSea.radius: phải ≥ 0');
   out.push(...checkCrane(s));
