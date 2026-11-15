@@ -20,6 +20,7 @@ import { createPlayerCharacter } from './player/playerCharacter';
 import { PlayerController, type MoveInput } from './player/controller';
 import { npcInTalkRange, placeNpcs, showNearNpcs } from './player/npc';
 import { TownNpcs } from './townNpcs';
+import { DanTranh } from './danTranh';
 import { HOME_SCENE, loadScene, REGION_SCENES } from './scene/loadSpec';
 import { createMapScroll } from './scene/banDo';
 import { arrivalSpot, CHARGE_SECONDS, ringTrigger } from './scene/teleportLayout';
@@ -243,12 +244,14 @@ async function boot(): Promise<void> {
   let running = true;
   let music: AmbientMusic | null = null; // nhạc nền trà lâu — dựng bên dưới (R-NHAC-1)
   let town: TownNpcs | null = null; // Tiểu Khất + Lão Canh — dựng bên dưới (townNpcs.ts)
+  let danTranh: DanTranh | null = null; // nhạc công bục đàn Quảng Trường (R-NPC-9, R-AM-2) — danTranh.ts
   const setRunning = (): void => {
     const want = !appHidden && !document.hidden;
     if (want === running) return;
     running = want;
     if (!want) music?.stopNow(); // app xuống nền / tab ẩn → nhạc dừng (R-NHAC-1)
     town?.setRunning(want); // tiếng mõ im khi nền / tab ẩn (R-AM-1)
+    danTranh?.setRunning(want); // tiếng đàn cũng vậy (R-AM-2)
     if (want) {
       clock.getDelta(); // bỏ khoảng thời gian đã dừng
       requestAnimationFrame(tick);
@@ -714,6 +717,8 @@ async function boot(): Promise<void> {
       if (progress) progress = { ...progress, coins, alms };
     },
   });
+  // nhạc công + tiếng đàn trên bục đàn (R-NPC-9, R-AM-2): chỉ khi cảnh có `buc-dan` và có model `cam-nu`
+  void DanTranh.create(scene, spec, groundAt).then((d) => (danTranh = d));
   // bản đồ vùng (R-BANDO-1…5, thiết kế 2026-11-14.20): bản đồ nhỏ góc trên trái + bản đồ lớn — areaMapRoom.ts
   const areaMap = new AreaMapRoom({
     spec,
@@ -865,6 +870,7 @@ async function boot(): Promise<void> {
     if (!riding) orbit.follow(dt, pos.x - fromX, pos.z - fromZ, character.facing.rotation.y, player.state.mps > 0);
     town?.update({ dt, player: pos, camera, talkingTo: talking ? (runner?.dialog.npc ?? null) : null, covered: paused || covered || loading.active }); // NPC đi (R-NPC-7)
     for (const npc of showNearNpcs(npcSet.npcs, pos.x, pos.z)) npc.update(dt); // xa từ 35 m → ẩn (R-NPC-1)
+    danTranh?.update({ dt, player: pos, camera, covered: paused || covered || loading.active || travelling }); // R-AM-2
     gamePlay.update(dt);
     gameHud.render(talking ? null : gamePlay.view());
     if (ring && !travelling && !loading.active && !mapOpen) {

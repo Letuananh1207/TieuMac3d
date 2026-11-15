@@ -16,6 +16,7 @@ import { bienAiProp } from './vat_bien_ai';
 import { cungDienProp } from './cung_dien';
 import { saMacProp } from './vat_sa_mac';
 import { biaProp } from './vat_bia';
+import { danTranhProp } from './vat_dan_tranh';
 
 /** Cột cờ đứng lẻ (cờ 茶 bên trà lâu): cao bằng hai tầng nhà. */
 const BANNER_POLE = 9;
@@ -390,7 +391,8 @@ export function addProps(
           bienAiProp(p.kind, g, style, p.text, p.x + p.z, updaters) ??
           cungDienProp(p.kind, g, style, TAM_DAI) ??
           saMacProp(p.kind, g, style, p.x * 3 + p.z) ??
-          biaProp(p.kind, g, style, p.text);
+          biaProp(p.kind, g, style, p.text) ??
+          danTranhProp(p.kind, g, style);
         if (c?.box) box(...c.box);
         if (c?.circle) colliders.addCircle(p.x, p.z, c.circle * s);
         for (const [bx, bz, bw, bd] of c?.boxes ?? []) {

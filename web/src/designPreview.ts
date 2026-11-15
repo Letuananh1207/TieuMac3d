@@ -33,6 +33,8 @@ import { signText } from './scene/signAtlas';
 import { buildWorld } from './scene/world';
 import { hourSlider, NgayDem } from './ngayDem';
 import { addTownPreview } from './townPreview';
+import { DanTranh } from './danTranh';
+import { PLAYER_MODEL_URL } from './player/playerCharacter';
 import { addGardenPreview } from './vuonPreview';
 import { inRect } from './scene/rooms';
 import { el } from './ui/dom';
@@ -248,6 +250,8 @@ async function boot(): Promise<void> {
   const town = await addTownPreview(scene, colliders, spec, (x, z) => world.surface.heightAt(x, z), params);
   if (town?.lines.length) el('problems').append(...town.lines.map((t) => li(t)));
   // ?dang=vuon-rau — vườn rau điền sẵn + bảng mẫu 8 cây × 4 dáng (vuonPreview.ts, R-VUON-4)
+  // ?dang=dan-tranh — nhạc công thế (nhan-vat.glb; artifact không có .glb → đệ tử khối đứng) ngồi gảy trên bục đàn + tiếng đàn, để duyệt chỗ (R-NPC-9, R-AM-2)
+  const dan = params.get('dang') === 'dan-tranh' ? await DanTranh.create(scene, spec, (x, z) => world.surface.heightAt(x, z), { url: PLAYER_MODEL_URL, block: () => createDiscipleCharacter() }) : null;
   const vuon = addGardenPreview(scene, spec, world.garden, params, (x, z) => world.surface.heightAt(x, z));
   if (vuon) el('problems').append(...vuon.map((t) => li(t)));
   const follow = params.has('theo') && town?.walker ? town.walker.root.position.clone() : null;
@@ -406,6 +410,7 @@ async function boot(): Promise<void> {
     cuon?.update(dt, character.root.position, character.facing.rotation.y, 2);
     for (const npc of npcSet.npcs) npc.update(dt);
     town?.update(dt, camera, controls.target);
+    dan?.update({ dt, player: controls.target, camera, covered: false });
     if (follow && town?.walker) {
       const d = town.walker.root.position.clone().sub(follow);
       camera.position.add(d);

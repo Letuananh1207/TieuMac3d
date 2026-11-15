@@ -16,7 +16,7 @@ export const GOODS_KINDS = ['but', 'vai', 'bua', 'thuoc', 'thung'] as const;
 export const ROOF_KINDS = ['chop', 'cong'] as const;
 export const SIDES = ['bac', 'nam', 'dong', 'tay'] as const;
 /** NPC có model: `design/models/<mã>.glb` (tạo bằng /tai-nguyen). Thêm NPC mới = thêm mã ở đây + đặt file model. */
-export const NPC_IDS = ['tieu-mac', 'su-phu', 'thu-thu', 'tieu-nhi', 'quan-su', 'tran-su', 'khat-nhi', 'go-mo'] as const;
+export const NPC_IDS = ['tieu-mac', 'su-phu', 'thu-thu', 'tieu-nhi', 'quan-su', 'tran-su', 'khat-nhi', 'go-mo', 'cam-nu'] as const;
 /** Dáng NPC (R-NPC-1, R-NPC-6): `dung` đứng (mặc định) · `ngoi` ngồi xếp bằng. */
 export const NPC_POSES = ['dung', 'ngoi'] as const;
 /** Bàn chơi ở khu giao lưu (R-GIAO-1): `co` = Ngũ Tử Kỳ (R-CO-1), `dau-chu` = Đấu chữ (R-DAU-1). */
@@ -131,6 +131,9 @@ export const PROP_KINDS = [
   'bia',
   /** rùa đội bia (mẫu Catalog `bia` M × 1,25, cao 5 m); `text` như `bia` */
   'bia-rua',
+  /** bục đàn 3,4 × 2,6 m cao 0,4 (sân diễn nhỏ, viền son) + đàn cổ tranh 21 dây; nhạc công `cam-nu` ngồi sau đàn khi có
+   *  model (R-NPC-9, tiếng đàn R-AM-2); mặt trước (khán giả) +z — `bucDan.ts`, `vat_dan_tranh.ts`, ghép `danTranh.ts` */
+  'buc-dan',
 ] as const;
 /** tám pháp bảo Bát Tiên (ám Bát Tiên): hồ lô · quạt · ngọc bản · sáo · sen · giỏ hoa · kiếm · ống phách */
 export const PHAP_BAO: readonly string[] = ['葫', '扇', '板', '笛', '荷', '籃', '劍', '鼓'];

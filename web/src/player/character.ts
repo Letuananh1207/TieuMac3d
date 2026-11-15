@@ -38,4 +38,7 @@ export interface CharacterState {
   /** đang cầm mõ (NPC Lão Canh — R-NPC-8): có = tay trái đưa mõ ra trước, tay phải giơ dùi cao `strike` (0 chạm mõ … 1 giơ
    *  cao). Không có = dáng thường. Không bắt buộc — nhân vật người chơi bỏ qua */
   strike?: number;
+  /** đang gảy đàn (nhạc công `cam-nu` — R-NPC-9): có = ngồi, hai tay đưa ra trước đặt trên dây đàn; số 0…1 = tay phải
+   *  nhấc lên (0 vừa gảy, 1 nhấc cao). Không có = dáng thường. Không bắt buộc — nhân vật người chơi bỏ qua */
+  pluck?: number;
 }

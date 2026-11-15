@@ -206,6 +206,15 @@ export async function loadGlbCharacter(url: string): Promise<Character> {
         aRx = -0.9 - 0.9 * hit;
         aRz = ARM_REST + 0.25;
       }
+      // gảy đàn (R-NPC-9, có `pluck`): hai tay đưa ra trước, hạ xuống mặt đàn; tay trái nhấn dây đung đưa chậm (rung
+      // tiếng), tay phải nhấc theo `pluck` (0 = vừa gảy)
+      const pl = state?.pluck;
+      if (pl !== undefined) {
+        aLx = -0.95 + Math.sin(time * 2.3) * 0.05;
+        aLz = -(ARM_REST + 0.28) + Math.sin(time * 1.7) * 0.03;
+        aRx = -0.95 - 0.18 * pl;
+        aRz = ARM_REST + 0.28;
+      }
       rig.armL.rotation.x = aLx;
       rig.armR.rotation.x = aRx;
       rig.armL.rotation.z = aLz;
