@@ -3,6 +3,13 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-15.23 — Dời nhật quỹ ra góc đông bắc Quảng Trường, giữa sân thoáng
+
+- Loại: cảnh 3D — bố cục. Phiên code V-20261114-55; người dùng: "di chuyển đồng hồ sang vị trí góc khác để trung tâm thoáng". **Đã duyệt 2026-11-15.**
+- Nhật quỹ (0; 0) scale 2,2 → **(10,5; −10,5) scale 1,8** trước tùng góc đông bắc. Bồn hoa: 梅 → (8,1; −12,9), 蘭 → (12,9; −8,1) kẹp nhật quỹ;
+  菊 → (−12,9; −8,1), 竹 → (−8,1; −12,9) kẹp tùng tây bắc. Tâm Quảng Trường trống. Góc tây nam chừa cho Tiểu Khất (V-31).
+- Không đổi luật; ngân sách không đổi (140 draw call / 149 857 tam giác). Ảnh: `screens/Canh-quang-truong-thoang.png`.
+
 ## 2026-11-15.22 — Bản đồ truyền tống vẽ lại theo đúng thế đất; trấn sang góc trái dưới, icon nhỏ
 
 - Loại: bản đồ (bố cục + ngoại hình). Phiên code V-20261114-54; người dùng: "bản đồ chưa đúng địa hình… di chuyển Khởi Nguyên Trấn sang
