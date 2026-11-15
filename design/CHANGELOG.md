@@ -13,6 +13,17 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
   Vào cửa nhà → màn tải "Trong nhà" (`site.loadName`) → đứng (0; 1,2); ra → đứng (−15; −2,6). Cửa không vòng sáng (`portals[].marker:
   false`). Sân 46 / 34,1k; gian trong 13 / 17,9k. Luật R-NHA-1/2/5, R-VUON-1, R-HANH-4/6/7, R-BANDO-2, R-THANH-1, R-MAN-2. Ảnh:
   `screens/Canh-nha-ta-tren-v68.png`, `screens/Canh-nha-ta-trong.png`.
+## 2026-11-15.41 — Trúc Lâm (B2): địa hình + phạm vi mới — thung suối, bãi giữa, gò 2 bậc, thác, sông mép nam
+
+- Loại: cảnh 3D — bố cục + Cần code (đã làm). Phiên code V-20261115-66 B2 theo lựa chọn người dùng (phương án A + nét B, 100 × 100 m, mốc thiên
+  nhiên gò + thác; hồ sơ `docs/tham_khao/lam-lai-vung.md`). **Đã duyệt 2026-11-15** (kèm sửa: gò +8, trúc dày hơn, kè đá).
+- Ranh đi được 100 × 100 m (`bounds`); bãi giữa Ø 26 (0; 4) trống; gò tây bắc bậc +4 / đỉnh +8 (nền chừa đình) có 2 bậc đá ≤ 23°; đèo bắc +8
+  bậc đá 21°; thác 12 m (31; −39) → ao P2 → suối → sông lớn mép nam; lối tây nén 20 m giữa tường trúc rồi mở ra bãi; quan đạo đông 4 m chừa cầu
+  (27; 4); P1–P3 trống chờ kiến trúc; 283 khóm trúc theo cụm (tường mép + trúc thưa), hành lang nhìn bãi hạc → gò + thác. 3 cổng ra mép:
+  tây (−47,5; 4), đông (47,5; 4), bắc (0; −47) trên đèo. Kè đá nhiều mặt quanh gò / gờ thác.
+- Trường mới: `bounds`, `terrain.stairs[].cut`, `streams[].depth`, `grass/rocks.clump`, `groves[].scale`, `plateaus[].rocky`,
+  `colors.rockJitter`. Từ trên 69 / 78,9k; góc chơi 52 / 67k. Luật R-VA-2, R-HANH-4, R-BANDO-2. Chưa có: cầu đá, đình (B3); cỏ mọc trong ao
+  (lỗi cũ). Ảnh: `screens/Canh-truc-lam-b2-tren.png`, `screens/Canh-truc-lam-b2-bai-hac.png`.
 
 ## 2026-11-15.39 — Làm lại 6 vùng (B0): xoá hết kiến trúc + vật, giữ địa hình, cổng đi bộ, bãi hạc
 
