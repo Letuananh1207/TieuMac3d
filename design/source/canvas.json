@@ -1217,6 +1217,146 @@
       "w": 1240,
       "h": 560,
       "title": "Cưỡi hạc — nhịp chuyển, số đo, chuỗi"
+    },
+    "VuonRau-nut-trang-thai.dc.html": {
+      "x": 0,
+      "y": 66050,
+      "w": 1240,
+      "h": 640,
+      "title": "VuonRau-nut-trang-thai"
+    },
+    "VuonRau-doc.dc.html": {
+      "x": 0,
+      "y": 66810,
+      "w": 390,
+      "h": 844,
+      "title": "VuonRau-doc"
+    },
+    "VuonRau-hat-doc.dc.html": {
+      "x": 470,
+      "y": 66810,
+      "w": 390,
+      "h": 844,
+      "title": "VuonRau-hat-doc"
+    },
+    "VuonRau-hat-moi-doc.dc.html": {
+      "x": 940,
+      "y": 66810,
+      "w": 390,
+      "h": 844,
+      "title": "VuonRau-hat-moi-doc"
+    },
+    "VuonRau-hat-trong-doc.dc.html": {
+      "x": 1410,
+      "y": 66810,
+      "w": 390,
+      "h": 844,
+      "title": "VuonRau-hat-trong-doc"
+    },
+    "VuonRau-kho-doc.dc.html": {
+      "x": 1880,
+      "y": 66810,
+      "w": 390,
+      "h": 844,
+      "title": "VuonRau-kho-doc"
+    },
+    "VuonRau-kho-trong-doc.dc.html": {
+      "x": 2350,
+      "y": 66810,
+      "w": 390,
+      "h": 844,
+      "title": "VuonRau-kho-trong-doc"
+    },
+    "VuonRau-kho-du-doc.dc.html": {
+      "x": 2820,
+      "y": 66810,
+      "w": 390,
+      "h": 844,
+      "title": "VuonRau-kho-du-doc"
+    },
+    "VuonRau-kho-vua-ban-doc.dc.html": {
+      "x": 3290,
+      "y": 66810,
+      "w": 390,
+      "h": 844,
+      "title": "VuonRau-kho-vua-ban-doc"
+    },
+    "VuonRau-mo-o-doc.dc.html": {
+      "x": 3760,
+      "y": 66810,
+      "w": 390,
+      "h": 844,
+      "title": "VuonRau-mo-o-doc"
+    },
+    "VuonRau-mo-o-thieu-doc.dc.html": {
+      "x": 4230,
+      "y": 66810,
+      "w": 390,
+      "h": 844,
+      "title": "VuonRau-mo-o-thieu-doc"
+    },
+    "CuaHang-hat-doc.dc.html": {
+      "x": 4700,
+      "y": 66810,
+      "w": 390,
+      "h": 844,
+      "title": "CuaHang-hat-doc"
+    },
+    "CuaHang-hat-xac-nhan-doc.dc.html": {
+      "x": 5170,
+      "y": 66810,
+      "w": 390,
+      "h": 844,
+      "title": "CuaHang-hat-xac-nhan-doc"
+    },
+    "VuonRau-ngang.dc.html": {
+      "x": 0,
+      "y": 67794,
+      "w": 844,
+      "h": 390,
+      "title": "VuonRau-ngang"
+    },
+    "VuonRau-hat-ngang.dc.html": {
+      "x": 924,
+      "y": 67794,
+      "w": 844,
+      "h": 390,
+      "title": "VuonRau-hat-ngang"
+    },
+    "VuonRau-kho-ngang.dc.html": {
+      "x": 1848,
+      "y": 67794,
+      "w": 844,
+      "h": 390,
+      "title": "VuonRau-kho-ngang"
+    },
+    "VuonRau-mo-o-ngang.dc.html": {
+      "x": 2772,
+      "y": 67794,
+      "w": 844,
+      "h": 390,
+      "title": "VuonRau-mo-o-ngang"
+    },
+    "VuonRau-tam-bao.dc.html": {
+      "x": 3696,
+      "y": 67794,
+      "w": 844,
+      "h": 390,
+      "title": "VuonRau-tam-bao"
+    },
+    "CuaHang-hat-ngang.dc.html": {
+      "x": 4620,
+      "y": 67794,
+      "w": 844,
+      "h": 390,
+      "title": "CuaHang-hat-ngang"
+    },
+    "VuonRau-ghi-chu.dc.html": {
+      "x": 0,
+      "y": 68324,
+      "w": 1240,
+      "h": 700,
+      "title": "VuonRau-ghi-chu"
     }
   },
   "order": [
@@ -1399,7 +1539,27 @@
     "CuoiHac-bay-dem-doc.dc.html",
     "CuoiHac-bay-dem-ngang.dc.html",
     "CuoiHac-cho-doc.dc.html",
-    "CuoiHac-nhip.dc.html"
+    "CuoiHac-nhip.dc.html",
+    "VuonRau-nut-trang-thai.dc.html",
+    "VuonRau-doc.dc.html",
+    "VuonRau-hat-doc.dc.html",
+    "VuonRau-hat-moi-doc.dc.html",
+    "VuonRau-hat-trong-doc.dc.html",
+    "VuonRau-kho-doc.dc.html",
+    "VuonRau-kho-trong-doc.dc.html",
+    "VuonRau-kho-du-doc.dc.html",
+    "VuonRau-kho-vua-ban-doc.dc.html",
+    "VuonRau-mo-o-doc.dc.html",
+    "VuonRau-mo-o-thieu-doc.dc.html",
+    "CuaHang-hat-doc.dc.html",
+    "CuaHang-hat-xac-nhan-doc.dc.html",
+    "VuonRau-ngang.dc.html",
+    "VuonRau-hat-ngang.dc.html",
+    "VuonRau-kho-ngang.dc.html",
+    "VuonRau-mo-o-ngang.dc.html",
+    "VuonRau-tam-bao.dc.html",
+    "CuaHang-hat-ngang.dc.html",
+    "VuonRau-ghi-chu.dc.html"
   ],
   "notes": {
     "cach-dung": {
@@ -1858,6 +2018,13 @@
       "text": "Cưỡi hạc — màn mây + lớp chữ khi bay (phiếu 2026-11-15-cuoi-hac, V-40)",
       "kind": "title1",
       "maxW": 2500
+    },
+    "tieu-de-vuon-rau": {
+      "x": 0,
+      "y": 65850,
+      "text": "Vườn rau ở Nhà của ta — nút nổi luống, chọn hạt, kho + bán, mở ô, tấm báo, Hạt giống ở Tạp hoá (phiếu 2026-11-15-vuon-trong-trot)",
+      "kind": "title1",
+      "maxW": 3000
     }
   },
   "designSystems": []

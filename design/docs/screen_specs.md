@@ -857,3 +857,45 @@ Mẫu một mục:
 - Ngang đêm của màn mây / chờ: bố cục ngang ngày + màu đêm (không vẽ riêng). Giảm chuyển động bật → không hoạt cảnh (màn tải thường).
 - Chuỗi: `craneFlyingTo`, `craneTapToSkip`, `craneAlmostThere`; tên nơi: `siteName` / tên vùng có sẵn. Chỉ tiếng Việt (R-HUD-4).
 - Ảnh: `screens/CuoiHac-*.png` (chụp artboard; cảnh 3D trên ảnh là hình giữ chỗ, hạc trong khung nét đứt).
+
+## Vườn rau — nút nổi luống, chọn hạt, kho + bán, mở ô, tấm báo (HUD) + Tạp hoá mục Hạt giống · artboard `VuonRau-nut-trang-thai.dc.html`, `VuonRau-doc.dc.html`, `VuonRau-ngang.dc.html`, `VuonRau-hat-{doc,ngang,moi-doc,trong-doc}.dc.html`, `VuonRau-kho-{doc,ngang,trong-doc,du-doc,vua-ban-doc}.dc.html`, `VuonRau-mo-o-{doc,ngang,thieu-doc}.dc.html`, `VuonRau-tam-bao.dc.html`, `CuaHang-hat-{doc,ngang,xac-nhan-doc}.dc.html`, `VuonRau-ghi-chu.dc.html` · từ mục 2026-11-15.29
+
+- Mục đích: trồng rau ở Nhà của ta (kế hoạch `docs/tasks/2026-11-15-vuon-trong-trot.md`, NV10). Luật `R-VUON-1…9`, `R-TIEN-5`,
+  `R-HUD-4`, `R-MAN-1`. Không chữ Hán ở đâu.
+- **Nút nổi luống** (R-VUON-2): viên `jade` cao 46, đệm 0 18 0 14, chữ 15/700 trắng, biểu tượng 20 (nét 2), mũi nhọn 14 × 8 — như nút
+  "Hướng dẫn" (2026-11-14.17); neo trên mép xa của luống gần nhất (đứng < 1,6 m). Gieo (tay rắc hạt) · Tưới (bình tưới) · Thu (giỏ) ·
+  Mở ô (cuốc) + viên giá (nền trắng 18 %, xu 14 + số 13). Đang lớn chưa tưới được → **không nút**: nhãn kính sương bo 12, đệm 5 × 10,
+  "{cây} · còn {thời gian}" 12/700 (thời gian 500 `slate-muted`) + vạch 96 × 3 `jade`.
+- **Dấu trong cảnh** (code vẽ, thấy từ xa ≤ 25 m, cả khi không đứng gần): giọt nước `garden-water` 14 px viền trắng 1,4, nảy 6 px 1,6 s/vòng
+  (luống tưới được); lấp lánh sao 4 cánh vàng `#F7D774` viền `gold` 16 px trên quầng `aura-light`, nhấp nháy 2,4 s/vòng, lệch pha từng
+  luống (luống chín). Nhiều luống cùng lúc chỉ dấu, không nút.
+- **Bảng chọn hạt** (R-VUON-3): dọc = tấm đáy cao 392 (bo trên 20, kính .96, tay nắm 40 × 4, đệm 10 16 34); ngang = cột phải 310 từ mép
+  safe (bo trái 20, đệm 14 14 21). Đầu: vòng `jade` 34 + "Chọn hạt để gieo" 16/700 + "Luống {n} · tưới 2 lượt thì thu được nhiều nhất" 12
+  `slate-muted`. Lưới dọc 3 / ngang 2 cột, cách 8; **chỉ loại đang có**. Thẻ: bo 14, đệm 8, viền `slate` 14 %; ô hình 64 (ngang 52)
+  `map-paper` bo 10 + viên "còn n" (`jade`, cao 20, chữ 11/700) góc trên trái; tên 13/700; 11 `slate-muted` thời gian + "bán xu n / cái".
+  Chạm thẻ → gieo ngay 1 hạt, bảng đóng. Chân: túi 16 + "Chạm một hạt để gieo ngay · hạt mua ở Tạp hoá trấn".
+  Túi trống: vòng 56 + túi 28 · "Túi hạt trống — mua hạt ở Tạp hoá trấn" 14/700 · chỉ đường 12 — **không nút mua**.
+- **Kho nông sản** (R-VUON-7): tấm đáy cao 420 / cột phải. Đầu: vòng `jade` + "Kho nông sản" + "Hôm nay đã bán {n} / 60 Văn tiền" + vạch
+  ≤ 90 × 4 (`jade`; đủ trần `slate-muted`). Dòng: hình 40 · tên 14/700 + "× n" · xu 12 + "n / cái" · nút "Bán" cao 32 bo 10 (nền `jade` 10 %,
+  viền `jade` 35 %, chữ `jade`). Chân: chip túi hạt ("Túi hạt:" + viên tên số) · nút lớn 48 `jade` "Bán hết · +n" (xu 20).
+  Vượt trần: dòng 12 "Hôm nay còn bán được {n} — phần còn lại giữ trong kho" + nút "Bán · +{n}". Đủ trần: nút "Bán" nét đứt, dải vàng
+  (nền `gold` 14 %, viền `gold`) "Hôm nay thu mua đã đủ — mai bán tiếp", hàng vẫn hiện. Kho trống: chữ + gợi ý. Vừa bán: xu bay từ thùng
+  tới ví (hiệu ứng nhận tiền 2026-11-14.12), ví "+n" + nhãn "+n · Bán nông sản"; bảng còn mở, về trạng thái kho trống / còn lại.
+- **Mở ô** (R-VUON-8): cảnh tối 28 % + tấm đáy cao 330 (ngang cột phải): hình 76 (đất hoang + khoá mở) · "Mở luống {n} / 12" 16/700 ·
+  dòng phụ giá tăng dần · Đang có / Giá (−n `lacquer`) / Còn lại · "Thôi" (trắng, viền 25 %) + "Mở · n" (`jade`, xu 20). Thiếu: "Còn thiếu n"
+  nét đứt, Còn lại "—".
+- Bảng mở (hạt / kho / mở ô) → nhân vật đứng yên; ẩn cần điều khiển, cụm nút, Trang trí, Trò chuyện; giữ ví + bản đồ nhỏ. Ngang: ví dời
+  sát trái cột phải (phải 369). Chạm cảnh / kéo tay nắm xuống → đóng.
+- **Tấm báo** (R-VUON-6, 8): nền `slate` bo 12, chữ trắng 13 (dòng 2: 12, mờ .8), hình 28–36 bên trái; dọc: trái 132 (cạnh bản đồ nhỏ),
+  phải 16, trên 103; ngang: trên 12, giữa bản đồ nhỏ và ví (rộng 300). 3 s, không chặn bấm, nối nhau. "Vườn rau: {n} luống đã chín" ·
+  "+{n} {cây} vào kho" · "Đã mở luống {n}".
+- Ẩn toàn bộ HUD vườn khi trang trí, bản đồ, thoại NPC, ngồi, màn Flutter, màn tải (dấu giọt / lấp lánh là cảnh, vẫn hiện).
+- **Tạp hoá — Hạt giống** (R-VUON-9; màn Flutter + bản web, theo 2026-11-14.12): tab "Hạt giống" cuối hàng (dọc đệm tab 9 để vừa 5 tab).
+  Dòng trên lưới 12 `slate-muted` "Mỗi lần mua 1 hạt vào túi hạt · gieo ở Vườn rau · mua được nhiều lần". Thẻ hạt: hình cây chín +
+  gói hạt 26 góc dưới phải · "Hạt {cây}" 13/700 · "Trong túi: n" 11/700 (`jade` khi > 0, còn lại `slate-muted`) · xu + giá 12/700 ·
+  thời gian · nút "Mua" (không bao giờ "Đã có"; thiếu → "Còn thiếu n"). Hộp xác nhận: hình 76 + "Mua Hạt {cây} · {giá} Văn tiền / hạt" +
+  dòng phụ + **chọn số hạt × 1 · × 5 · × 10** (viên cao 36; đang chọn nền `slate`) + Đang có / Giá ({k} hạt) / Còn lại + "Thôi" /
+  "Mua · n". Dòng phụ tiêu đề: "Đồ trang trí Nhà của ta · hạt giống cho Vườn rau". Ví trừ "−n · Hạt {cây}" (không xu bay).
+- Chuỗi: `garden*`, `wallet{Seed,Sell,Unlock}`, `shop{TabSeeds,SeedName,InBag,SeedSub,SeedConfirm,Qty,SeedBought,SubtitleSeeds}`,
+  `walletSourceGarden`, `crop*` (8 tên cây).
+- Ảnh: `screens/VuonRau-*.png`, `screens/CuaHang-hat-*.png` (cảnh vườn là hình giữ chỗ — vị trí luống / thùng theo cảnh thật).
