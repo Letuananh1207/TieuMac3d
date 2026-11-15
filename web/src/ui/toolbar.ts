@@ -2,14 +2,16 @@
  * Thanh công cụ đáy màn (R-THANH-1, R-HANH-7 — thiết kế 2026-11-15.35 `ThanhCongCu-*`): viên kính 5 ô bằng nhau Bản đồ ·
  * Về nhà · Biểu cảm · Túi đồ · Nhiệm vụ — hình minh hoạ đất sét (2026-11-16.2, bỏ đĩa ngọc của Bản đồ); chấm son số việc
  * còn lại trên Nhiệm vụ; trạng thái thường / nhấn / mờ / đang mở (CSS filter, toolbar.css). Ẩn → trượt xuống + mờ 0,2 s. Kèm tấm báo "Bạn đang ở Nhà của ta" (R-HANH-7).
+ * Bản máy tính màn ngang: cùng DOM, CSS `toolbarMay.css` dựng thành dải đáy kiểu 摩尔 bản web (V-20261116-74).
  * Chạm thanh không tới canvas → không thành joystick, không xoay camera (R-DIEU-1). DOM dựng bằng createElement.
  */
-import { HOME_HERE_SECONDS, HOME_HERE_TEXT, TOOL_NAMES, TOOL_ORDER, toolAria, type ToolId, type ToolbarView } from '../zones/thanhCongCu';
+import { HOME_HERE_SECONDS, HOME_HERE_TEXT, TOOL_KEYS, TOOL_NAMES, TOOL_ORDER, toolAria, type ToolId, type ToolbarView } from '../zones/thanhCongCu';
 import { h } from './chatText';
 import { STROKE, svgIcon } from './decorIcons';
 import { hinhImg, type HinhId } from './hinh';
 import { TOOL_ICONS } from './toolbarIcons';
 import './toolbar.css';
+import './toolbarMay.css';
 
 /** Hình minh hoạ của 5 ô (thiết kế 2026-11-16.2 `HinhMinhHoa-HUD-doc`). */
 const TOOL_HINH: Readonly<Record<ToolId, HinhId>> = { banDo: 'ban-do', veNha: 've-nha', bieuCam: 'bieu-cam', tuiDo: 'tui-do', nhiemVu: 'nhiem-vu' };
@@ -41,6 +43,10 @@ export class Toolbar {
         badge.setAttribute('aria-hidden', 'true');
         disc.append(badge);
       }
+      // ô phím tắt nhỏ — chỉ hiện ở bản máy tính (toolbarMay.css)
+      const key = h('span', 'tb-key', TOOL_KEYS[id].toUpperCase());
+      key.setAttribute('aria-hidden', 'true');
+      disc.append(key);
       btn.append(disc, h('span', 'tb-lbl', TOOL_NAMES[id]));
       // chạm nhả mới làm (như nút HTML); pointerdown không lan xuống canvas (R-DIEU-1)
       btn.addEventListener('click', () => onPress(id));

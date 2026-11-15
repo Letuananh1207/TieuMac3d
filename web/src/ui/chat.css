@@ -86,11 +86,12 @@ body.chatting #joy,body.chatting #joyGhost,body.chatting #actions,body.chatting 
   .cx-time{display:none}
 }
 
-/* bản máy tính (body.ban-may, thanh đang hiện → #chat.dock — V-20261115-70, R-CHAT-3): ô nhập luôn hiện ở cột trái ngay trên
-   thanh công cụ, rộng bằng thanh; khung thu gọn / khung kênh ngay trên ô nhập; nút Trò chuyện tròn ẩn (Enter / bấm ô) */
+/* bản máy tính (body.ban-may, thanh đang hiện → #chat.dock — V-20261115-70, R-CHAT-3): ô nhập luôn hiện — màn dọc ngay trên
+   thanh công cụ, rộng bằng thanh; màn ngang trong dải đáy bên trái (toolbarMay.css, V-74); khung thu gọn / khung kênh ngay trên ô nhập; nút Trò chuyện tròn ẩn (Enter / bấm ô) */
 body.ban-may #chatBtn{display:none}
 #chat.dock{--dock-l:calc(var(--sa-left) + 12px);--dock-w:calc(100% - var(--sa-left) - var(--sa-right) - 24px);--dock-b:calc(var(--sa-bottom) + 76px)}
-@media (orientation:landscape){#chat.dock{--dock-w:var(--tb-w,380px);--dock-b:calc(var(--sa-bottom) + 72px)}}
+/* màn ngang: ô nhập nằm TRONG dải đáy, bên trái, dài --chat-w (toolbarMay.css, V-20261116-74) */
+@media (orientation:landscape){#chat.dock{--dock-w:var(--chat-w,380px);--dock-b:calc(var(--sa-bottom) + 6px)}}
 #chat.dock #chatForm{left:var(--dock-l);right:auto;bottom:var(--dock-b);width:var(--dock-w);padding:0;background:transparent;border:0;gap:4px;flex-direction:column-reverse}
 #chat.dock .cx-field{height:40px;border:1px solid var(--frost-line);outline:1px solid var(--frost-outline);background:rgba(244,247,246,.9);box-shadow:0 6px 18px rgba(36,50,58,.2);-webkit-backdrop-filter:var(--blur-hud);backdrop-filter:var(--blur-hud);cursor:text}
 #chat.dock .cx-field input{font-size:14px;cursor:text}
