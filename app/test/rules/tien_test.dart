@@ -141,22 +141,26 @@ void main() {
   });
 
   group('Tạp hoá — mua (R-TIEN-4)', () {
-    test('R-TIEN-4: có 100, mua Mai 60 → còn 40, Mai đã có', () {
-      final r = buyDecor(balance: 100, owned: starterDecor, item: 'mai', price: 60);
+    test('R-TIEN-4: có 200, mua Mai 60 → còn 140, Mai 1 cái; mua lần nữa → còn 80, Mai 2 cái', () {
+      final r = buyDecor(balance: 200, owned: starterCounts, item: 'mai', price: 60);
       expect(r, isA<Bought>());
       r as Bought;
-      expect(r.balance, 40);
-      expect(r.owned, containsAll(['truc-canh', 'den-long', 'tranh-chu', 'mai']));
+      expect(r.balance, 140);
+      expect(r.owned, {'truc-canh': 1, 'den-long': 1, 'tranh-chu': 1, 'mai': 1});
+      final r2 = buyDecor(balance: r.balance, owned: r.owned, item: 'mai', price: 60) as Bought;
+      expect(r2.balance, 80);
+      expect(r2.owned['mai'], 2);
     });
 
-    test('R-TIEN-4: có 40, Tùng 80 → còn thiếu 40, không mua; đã có → không mua lại', () {
-      expect(buyDecor(balance: 40, owned: starterDecor, item: 'tung', price: 80), const BuyRefused(BuyError.short, short: 40));
-      expect(buyDecor(balance: 999, owned: starterDecor, item: 'truc-canh', price: 30), const BuyRefused(BuyError.owned));
-      expect(buyDecor(balance: 999, owned: starterDecor, item: '', price: 30), const BuyRefused(BuyError.invalid));
-      expect(buyDecor(balance: 999, owned: starterDecor, item: 'mai', price: 0), const BuyRefused(BuyError.invalid));
+    test('R-TIEN-4: có 40, Tùng 80 → còn thiếu 40, không mua; vật đã có vẫn mua thêm được', () {
+      expect(buyDecor(balance: 40, owned: starterCounts, item: 'tung', price: 80), const BuyRefused(BuyError.short, short: 40));
+      final again = buyDecor(balance: 999, owned: starterCounts, item: 'truc-canh', price: 30) as Bought;
+      expect(again.owned['truc-canh'], 2);
+      expect(buyDecor(balance: 999, owned: starterCounts, item: '', price: 30), const BuyRefused(BuyError.invalid));
+      expect(buyDecor(balance: 999, owned: starterCounts, item: 'mai', price: 0), const BuyRefused(BuyError.invalid));
     });
 
-    test('R-TIEN-4: kho — mua trừ đúng giá, sở hữu giữ qua mở lại; thiếu tiền không trừ', () async {
+    test('R-TIEN-4: kho — mua trừ đúng giá, số cái giữ qua mở lại; thiếu tiền không trừ', () async {
       SharedPreferences.setMockInitialValues({'tien.so-du': 100});
       final store = await ProgressStore.open();
       expect(await store.buyDecor('tung', 80), isA<Bought>());
@@ -165,8 +169,7 @@ void main() {
       expect(store.coins, 20);
       final reopened = await ProgressStore.open();
       expect(reopened.coins, 20);
-      expect(reopened.ownedDecor, containsAll(['truc-canh', 'den-long', 'tranh-chu', 'tung']));
-      expect(reopened.ownedDecor, isNot(contains('mai')));
+      expect(reopened.ownedDecor, {'truc-canh': 1, 'den-long': 1, 'tranh-chu': 1, 'tung': 1});
     });
   });
 

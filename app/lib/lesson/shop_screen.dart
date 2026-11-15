@@ -12,17 +12,22 @@ import 'shop_confirm.dart';
 import 'shop_parts.dart';
 import 'wallet_chip.dart';
 
-/// Tạp hoá — cửa hàng đồ trang trí Nhà của ta (native) — R-TIEN-4. Thiết kế: design/docs/screen_specs.md "Tạp hoá 雜貨"
-/// (artboard `CuaHang-doc`, `-doc-ngheo`, `-doc-xac-nhan`, `-doc-vua-mua`, `-doc-het`, `-ngang`). Danh mục + giá do trang
-/// gửi (`openShop`); mua qua [onBuy] (kho trừ ví + ghi sở hữu — `ProgressStore.buyDecor`). Đóng: "Đóng" / quay lại → về cảnh.
+/// Tạp hoá — cửa hàng đồ trang trí Nhà của ta (native) — R-TIEN-4. Thiết kế: design/docs/screen_specs.md "Tạp hoá 雜貨" +
+/// "Trang trí tự do" (2026-11-15.42, artboard `CuaHang-theo-cai-*`): đồ trang trí **theo cái** — thẻ "Trong túi: n · Đang đặt: m"
+/// ([owned] số cái, [placed] số đang đặt), nút luôn "Mua", mỗi lần 1 cái. Danh mục + giá do trang gửi (`openShop`); mua qua
+/// [onBuy] (kho trừ ví + số cái + 1 — `ProgressStore.buyDecor`). Đóng: "Đóng" / quay lại → về cảnh.
 /// Hạt giống Vườn rau (R-VUON-9, thiết kế 2026-11-15.29 `CuaHang-hat-*`): [seeds] loại `SlotKind.hat` (tab "Hạt giống" cuối
 /// hàng), thẻ "Trong túi: n" theo [bag], hộp xác nhận chọn × 1 · × 5 · × 10, mua nhiều lần qua [onBuySeed].
 class ShopScreen extends StatefulWidget {
-  const ShopScreen({super.key, required this.items, required this.balance, required this.owned, required this.onBuy, this.seeds = const [], this.bag = const {}, this.onBuySeed});
+  const ShopScreen({super.key, required this.items, required this.balance, required this.owned, this.placed = const {}, required this.onBuy, this.seeds = const [], this.bag = const {}, this.onBuySeed});
 
   final List<ShopItem> items;
   final int balance;
-  final List<String> owned;
+  /// số cái sở hữu mỗi vật (đang đặt + trong túi — R-NHA-4)
+  final Map<String, int> owned;
+
+  /// số cái đang đặt ở nhà mỗi vật
+  final Map<String, int> placed;
   final Future<BuyResult> Function(ShopItem item) onBuy;
   final List<ShopItem> seeds;
 
@@ -33,13 +38,14 @@ class ShopScreen extends StatefulWidget {
   static Route<void> route({
     required List<ShopItem> items,
     required int balance,
-    required List<String> owned,
+    required Map<String, int> owned,
+    Map<String, int> placed = const {},
     required Future<BuyResult> Function(ShopItem item) onBuy,
     List<ShopItem> seeds = const [],
     Map<String, int> bag = const {},
     Future<BuyResult> Function(ShopItem item, int count)? onBuySeed,
   }) =>
-      fadeRoute(ShopScreen(items: items, balance: balance, owned: owned, onBuy: onBuy, seeds: seeds, bag: bag, onBuySeed: onBuySeed));
+      fadeRoute(ShopScreen(items: items, balance: balance, owned: owned, placed: placed, onBuy: onBuy, seeds: seeds, bag: bag, onBuySeed: onBuySeed));
 
   @override
   State<ShopScreen> createState() => _ShopScreenState();
@@ -47,7 +53,7 @@ class ShopScreen extends StatefulWidget {
 
 class _ShopScreenState extends State<ShopScreen> {
   late int _balance = widget.balance;
-  late final Set<String> _owned = {...widget.owned};
+  late final Map<String, int> _owned = {...widget.owned};
   late final Map<String, int> _bag = {...widget.bag};
 
   /// tab đang chọn; `null` = Tất cả
@@ -71,16 +77,14 @@ class _ShopScreenState extends State<ShopScreen> {
   /// hạt chỉ hiện khi có cách mua
   List<ShopItem> get _all => [...widget.items, if (widget.onBuySeed != null) ...widget.seeds];
 
-  ItemState _state(ShopItem i) => i.slot != SlotKind.hat && _owned.contains(i.id)
-      ? ItemState.owned
-      : (_balance < i.price ? ItemState.short : ItemState.buy);
+  ItemState _state(ShopItem i) => _balance < i.price ? ItemState.short : ItemState.buy;
 
-  List<ShopItem> get _unowned => [for (final i in widget.items) if (!_owned.contains(i.id)) i];
+  /// số cái đang đặt / trong túi của vật trang trí (trong túi = sở hữu − đang đặt, không âm)
+  int _placedOf(ShopItem i) => widget.placed[i.id] ?? 0;
+  int _inBagOf(ShopItem i) => ((_owned[i.id] ?? 0) - _placedOf(i)).clamp(0, 1 << 30);
 
-  bool get _allBought => _unowned.isEmpty;
-
-  /// không đủ tiền cho vật rẻ nhất còn thiếu → dải gợi ý cách kiếm
-  bool get _poor => !_allBought && _unowned.every((i) => _balance < i.price);
+  /// không đủ tiền cho vật trang trí rẻ nhất → dải gợi ý cách kiếm
+  bool get _poor => widget.items.isNotEmpty && widget.items.every((i) => _balance < i.price);
 
   Future<void> _buy(ShopItem item) async {
     if (_buying) return;
@@ -96,9 +100,11 @@ class _ShopScreenState extends State<ShopScreen> {
       _count = 1;
       if (r is Bought) {
         _balance = r.balance;
-        _owned
-          ..clear()
-          ..addAll(r.owned);
+        if (crop == null) {
+          _owned
+            ..clear()
+            ..addAll(r.owned);
+        }
         if (crop != null) _bag[crop] = (_bag[crop] ?? 0) + count;
         _bought = item;
         _delta = -item.price * count;
@@ -131,9 +137,9 @@ class _ShopScreenState extends State<ShopScreen> {
               style: uiText.copyWith(fontSize: AppTextSize.caption, color: AppColors.slateMuted),
             ),
           ],
-          if (_tab != SlotKind.hat && (_allBought || _poor)) ...[
+          if (_tab != SlotKind.hat && _poor) ...[
             const SizedBox(height: 12),
-            _allBought ? const ShopBanner.allBought() : const ShopBanner.poor(),
+            const ShopBanner.poor(),
           ],
           SizedBox(height: landscape ? 8 : 12),
           Expanded(child: _grid(landscape)),
@@ -145,7 +151,7 @@ class _ShopScreenState extends State<ShopScreen> {
         children: [
           Positioned.fill(child: body),
           if (bought != null)
-            Positioned(left: 0, right: 0, bottom: landscape ? 0 : 66, child: Center(child: ConstrainedBox(constraints: const BoxConstraints(maxWidth: 520), child: BoughtToast(item: bought)))),
+            Positioned(left: 0, right: 0, bottom: landscape ? 0 : 66, child: Center(child: ConstrainedBox(constraints: const BoxConstraints(maxWidth: 520), child: BoughtToast(item: bought, inBag: seedCrop(bought) == null ? _inBagOf(bought) : 0)))),
           if (picked != null) ...[
             // cảnh tối 28 % phủ cả màn (thoát lề an toàn của khung)
             Positioned(
@@ -166,7 +172,8 @@ class _ShopScreenState extends State<ShopScreen> {
                     item: picked,
                     balance: _balance,
                     count: _count,
-                    inBag: _bag[seedCrop(picked)] ?? 0,
+                    inBag: seedCrop(picked) != null ? _bag[seedCrop(picked)] ?? 0 : _inBagOf(picked),
+                    placed: _placedOf(picked),
                     onCount: (k) => setState(() => _count = k),
                     onCancel: () => setState(() => _picked = null),
                     onBuy: () => _buy(picked),
@@ -206,7 +213,7 @@ class _ShopScreenState extends State<ShopScreen> {
                 child: Text('Tạp hoá', style: displayText.copyWith(color: AppColors.slate, fontSize: landscape ? AppTextSize.titleCompact : AppTextSize.accent)), // shopName
               ),
               Text(
-                seeds ? 'Đồ trang trí Nhà của ta · hạt giống cho Vườn rau' : 'Đồ trang trí Nhà của ta · mua một lần, đặt được nhiều ô', // shopSubtitleSeeds / shopSubtitle
+                seeds ? 'Đồ trang trí Nhà của ta · mỗi cái đặt một chỗ · hạt giống cho Vườn rau' : 'Đồ trang trí Nhà của ta · mỗi cái đặt một chỗ', // shopSubtitle
                 maxLines: landscape ? 1 : 2,
                 overflow: TextOverflow.ellipsis,
                 style: uiText.copyWith(fontSize: AppTextSize.caption, color: AppColors.slateMuted),
@@ -289,7 +296,8 @@ class _ShopScreenState extends State<ShopScreen> {
                                 short: i.price - _balance,
                                 picked: _picked?.id == i.id,
                                 landscape: landscape,
-                                inBag: i.slot == SlotKind.hat ? (_bag[seedCrop(i)] ?? 0) : null,
+                                inBag: i.slot == SlotKind.hat ? (_bag[seedCrop(i)] ?? 0) : _inBagOf(i),
+                                placed: i.slot == SlotKind.hat ? null : _placedOf(i),
                                 onBuy: () => setState(() {
                                   _picked = i;
                                   _count = 1;

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import '../journey/daily.dart';
+import '../journey/home.dart';
 import '../journey/journey.dart';
 
 /// Sự kiện qua cầu nối Flutter ↔ scene web. Hợp đồng (tên, dạng): docs/bridge.md.
@@ -190,25 +191,23 @@ String? borrowBookId(List<dynamic> args) {
   return id is String && id.isNotEmpty ? id : null;
 }
 
-/// Trả lời `getHome` (docs/bridge.md, R-NHA-3, R-NHA-4): nhà đã lưu, mã ô → mã vật; [owned] = vật đã sở hữu (`null` →
-/// không gửi, trang coi là vật khởi đầu + vật đang đặt).
-Map<String, Object?> homeReply(Map<String, String> placed, {List<String>? owned}) => {
-      'placed': placed,
-      'owned': ?owned,
+/// Trả lời `getHome` (docs/bridge.md, R-NHA-3, R-NHA-4, V-69): [items] = món đang đặt; [owned] = số cái mỗi vật; [placed] =
+/// ô cũ (chỉ gửi khi chưa có danh sách món — trang chuyển ô → món rồi `setHome`).
+Map<String, Object?> homeReply({required List<PlacedDecor> items, required Map<String, int> owned, Map<String, String>? placed}) => {
+      'items': [for (final i in items) i.toJson()],
+      'owned': owned,
+      if (placed != null && placed.isNotEmpty) 'placed': placed,
     };
 
-/// Ô + vật của sự kiện `setDecor` (docs/bridge.md, R-NHA-2); `item` `null` = gỡ. Sai dạng → `null`.
-({String slot, String? item})? setDecorArgs(List<dynamic> args) {
+/// Danh sách món thô của sự kiện `setHome` (docs/bridge.md, R-NHA-2) — kiểm dạng + số cái ở `ProgressStore.setHomeItems`.
+/// Không phải `setHome` / thiếu `items` → `null`.
+List<Object?>? setHomeArgs(List<dynamic> args) {
   if (args.isEmpty) return null;
   final e = args.first;
-  if (e is! Map || e['type'] != 'setDecor') return null;
+  if (e is! Map || e['type'] != 'setHome') return null;
   final p = e['payload'];
-  if (p is! Map) return null;
-  final slot = p['slot'];
-  final item = p['item'];
-  if (slot is! String || slot.isEmpty) return null;
-  if (item != null && (item is! String || item.isEmpty)) return null;
-  return (slot: slot, item: item as String?);
+  final items = p is Map ? p['items'] : null;
+  return items is List ? [...items] : null;
 }
 
 /// Đoạn JS gửi một sự kiện sang trang: `window.scene.handle({type, payload})`.

@@ -15,7 +15,7 @@ import 'screen_parts.dart';
 /// dải gợi ý.
 
 /// Trạng thái nút của một thẻ (R-TIEN-4).
-enum ItemState { buy, owned, short }
+enum ItemState { buy, short }
 
 /// Hình vật trên thẻ — **bản vẽ giữ chỗ** (biểu tượng Material theo vật, `slate-muted`); sau thay bằng ảnh chụp vật 3D.
 class ItemArt extends StatelessWidget {
@@ -42,7 +42,7 @@ class ItemArt extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Icon(
-        _icons[item.id] ?? switch (item.slot) { SlotKind.vuon => Icons.park, SlotKind.san => Icons.deck, SlotKind.trong => Icons.chair, SlotKind.hat => Icons.eco },
+        _icons[item.id] ?? switch (item.slot) { SlotKind.ngoai => Icons.park, SlotKind.trong => Icons.chair, SlotKind.hat => Icons.eco },
         size: size,
         color: AppColors.slateMuted.withValues(alpha: .75),
       );
@@ -99,9 +99,34 @@ String growText(int minutes) {
   return m == 0 ? '$h giờ' : '$h giờ $m phút';
 }
 
-/// Thẻ vật (bo 14, đệm 8; chưa có: trắng, đã có: trắng 55 %; viền `slate` 14 %; đang chọn: viền ngoài `gold` 3 cách 2).
+/// Dòng thẻ đồ trang trí (R-TIEN-4, thiết kế 2026-11-15.42): "Trong túi: n · Đang đặt: m" 11/700 `jade`; chưa có cái nào →
+/// "Chưa có" `slate-muted`.
+class DecorCountLine extends StatelessWidget {
+  const DecorCountLine({super.key, required this.inBag, required this.placed});
+
+  final int inBag;
+  final int placed;
+
+  @override
+  Widget build(BuildContext context) {
+    final none = inBag + placed == 0;
+    return Text(
+      none ? 'Chưa có' : 'Trong túi: $inBag · Đang đặt: $placed', // shopNotOwned / shopInBagPlaced
+      maxLines: 2,
+      style: uiText.copyWith(
+        fontSize: AppTextSize.eyebrow,
+        fontWeight: none ? FontWeight.w400 : FontWeight.w700,
+        color: none ? AppColors.slateMuted : AppColors.jade,
+        height: 1.3,
+      ),
+    );
+  }
+}
+
+/// Thẻ vật (bo 14, đệm 8, trắng, viền `slate` 14 %; đang chọn: viền ngoài `gold` 3 cách 2). Nút luôn "Mua" — thiếu tiền
+/// "Còn thiếu n" (R-TIEN-4, V-69: không còn "Đã có").
 class ShopCard extends StatelessWidget {
-  const ShopCard({super.key, required this.item, required this.state, required this.short, required this.picked, required this.landscape, required this.onBuy, this.inBag});
+  const ShopCard({super.key, required this.item, required this.state, required this.short, required this.picked, required this.landscape, required this.onBuy, this.inBag, this.placed});
 
   final ShopItem item;
   final ItemState state;
@@ -110,8 +135,11 @@ class ShopCard extends StatelessWidget {
   final bool landscape;
   final VoidCallback onBuy;
 
-  /// hạt giống: số hạt đang có trong túi ("Trong túi: n"); đồ trang trí → `null`
+  /// hạt: số hạt trong túi ("Trong túi: n") · đồ trang trí: số cái trong túi (cùng [placed] → "Trong túi: n · Đang đặt: m")
   final int? inBag;
+
+  /// đồ trang trí: số cái đang đặt ở nhà; hạt → `null`
+  final int? placed;
 
   @override
   Widget build(BuildContext context) {
@@ -120,7 +148,7 @@ class ShopCard extends StatelessWidget {
     final card = Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: state == ItemState.owned ? AppColors.onJade.withValues(alpha: .55) : AppColors.onJade,
+        color: AppColors.onJade,
         border: Border.all(color: AppColors.slate.withValues(alpha: .14)),
         borderRadius: BorderRadius.circular(14),
       ),
@@ -130,7 +158,10 @@ class ShopCard extends StatelessWidget {
           ItemPicture(item: item, height: landscape ? 50 : 64, pack: true),
           const SizedBox(height: 4),
           Text(item.name, maxLines: 1, overflow: TextOverflow.ellipsis, style: uiText.copyWith(fontSize: AppTextSize.small, fontWeight: FontWeight.w700, height: 1.25)),
-          if (bag != null) ...[const SizedBox(height: 2), InBagLine(count: bag)],
+          if (bag != null) ...[
+            const SizedBox(height: 2),
+            if (placed != null) DecorCountLine(inBag: bag, placed: placed!) else InBagLine(count: bag),
+          ],
           const SizedBox(height: 4),
           PriceLine(item: item, time: crop == null ? null : growText(crop.minutes)),
           const SizedBox(height: 4),
@@ -169,19 +200,6 @@ class ShopCard extends StatelessWidget {
               textStyle: label,
             ),
             child: const Text('Mua'), // shopBuy
-          ),
-        );
-      case ItemState.owned:
-        return Container(
-          height: 34,
-          decoration: BoxDecoration(color: AppColors.answerRightBg, borderRadius: BorderRadius.circular(10)),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.check, size: 16, color: AppColors.jade),
-              const SizedBox(width: 5),
-              Text('Đã có', style: label.copyWith(color: AppColors.jade)), // shopOwned
-            ],
           ),
         );
       case ItemState.short:
@@ -238,40 +256,34 @@ class PriceLine extends StatelessWidget {
       );
 }
 
-/// Dải gợi ý: nghèo (nền `gold` 14 %, viền `gold`) · đã mua hết (nền `jade` 8 %, viền `jade` 28 %).
+/// Dải gợi ý nghèo (nền `gold` 14 %, viền `gold`) — V-69 bỏ dải "đã mua hết" (mua lặp được).
 class ShopBanner extends StatelessWidget {
-  const ShopBanner.poor({super.key}) : allBought = false;
-  const ShopBanner.allBought({super.key}) : allBought = true;
-
-  final bool allBought;
+  const ShopBanner.poor({super.key});
 
   @override
   Widget build(BuildContext context) {
     final base = uiText.copyWith(fontSize: AppTextSize.small, height: 1.45);
     const b = TextStyle(fontWeight: FontWeight.w700);
-    final text = allBought
-        // shopAllBought
-        ? const TextSpan(children: [TextSpan(text: 'Đã có đủ 13 món.', style: b), TextSpan(text: ' Văn tiền để dành cho đồ mới sắp về (đồ mặc, thức ăn linh thú).')])
-        // shopPoorHint
-        : const TextSpan(children: [
-            TextSpan(text: 'Học bộ mới '),
-            TextSpan(text: '+10', style: b),
-            TextSpan(text: ' · ôn đúng hạn '),
-            TextSpan(text: '+5', style: b),
-            TextSpan(text: ' · xong nhiệm vụ ngày '),
-            TextSpan(text: '+20', style: b),
-            TextSpan(text: '.'),
-          ]);
+    // shopPoorHint
+    const text = TextSpan(children: [
+      TextSpan(text: 'Học bộ mới '),
+      TextSpan(text: '+10', style: b),
+      TextSpan(text: ' · ôn đúng hạn '),
+      TextSpan(text: '+5', style: b),
+      TextSpan(text: ' · xong nhiệm vụ ngày '),
+      TextSpan(text: '+20', style: b),
+      TextSpan(text: '.'),
+    ]);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        color: allBought ? AppColors.jade.withValues(alpha: .08) : AppColors.gold.withValues(alpha: .14),
-        border: Border.all(color: allBought ? AppColors.jade.withValues(alpha: .28) : AppColors.gold),
+        color: AppColors.gold.withValues(alpha: .14),
+        border: Border.all(color: AppColors.gold),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
         children: [
-          allBought ? const Icon(Icons.check_circle_outline, size: 20, color: AppColors.jade) : const Coin(size: 20),
+          const Coin(size: 20),
           const SizedBox(width: 10),
           Expanded(child: Text.rich(text, style: base)),
         ],
@@ -280,11 +292,14 @@ class ShopBanner extends StatelessWidget {
   }
 }
 
-/// Tấm "vừa mua" nền `slate` chữ trắng: hình 48 + "Đã mua {vật}" + "Về nhà để đặt — chạm ô {loại} khi trang trí." (3 s).
+/// Tấm "vừa mua" nền `slate` chữ trắng: hình 48 + "Đã mua {vật}" + "Trong túi {k} · về nhà để đặt" (3 s — thiết kế 2026-11-15.42).
 class BoughtToast extends StatelessWidget {
-  const BoughtToast({super.key, required this.item});
+  const BoughtToast({super.key, required this.item, this.inBag = 1});
 
   final ShopItem item;
+
+  /// đồ trang trí: số cái trong túi sau khi mua
+  final int inBag;
 
   @override
   Widget build(BuildContext context) {
@@ -310,7 +325,7 @@ class BoughtToast extends StatelessWidget {
                   TextSpan(
                     text: item.slot == SlotKind.hat
                         ? 'Về Vườn rau để gieo — hạt ở trong túi hạt.' // shopSeedBoughtSub (R-VUON-9)
-                        : 'Về nhà để đặt — chạm ô ${item.slot.label} khi trang trí.', // shopBoughtSub
+                        : 'Trong túi $inBag · về nhà để đặt', // shopDecorBoughtSub
                     style: TextStyle(color: AppColors.onJade.withValues(alpha: .85)),
                   ),
                 ]),

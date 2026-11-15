@@ -138,9 +138,6 @@ enum BuyError {
   /// mã vật rỗng / giá ≤ 0
   invalid,
 
-  /// đã có — không mua lại
-  owned,
-
   /// thiếu tiền ([BuyRefused.short] = còn thiếu bao nhiêu)
   short,
 }
@@ -149,12 +146,12 @@ sealed class BuyResult {
   const BuyResult();
 }
 
-/// Mua được: số dư mới + vật sở hữu mới.
+/// Mua được: số dư mới + số cái sở hữu mỗi vật (R-NHA-4 — đang đặt + trong túi).
 class Bought extends BuyResult {
   const Bought(this.balance, this.owned);
 
   final int balance;
-  final List<String> owned;
+  final Map<String, int> owned;
 }
 
 class BuyRefused extends BuyResult {
@@ -173,20 +170,16 @@ class BuyRefused extends BuyResult {
   String toString() => 'BuyRefused($error, $short)';
 }
 
-/// Mua [item] giá [price] (R-TIEN-4): đủ tiền → trừ đúng giá, vật thành đã có; thiếu → không mua; đã có → không mua lại.
-BuyResult buyDecor({required int balance, required List<String> owned, required String item, required int price}) {
+/// Mua 1 cái [item] giá [price] (R-TIEN-4, V-69): đủ tiền → trừ đúng giá, `owned[item]` + 1 (cái mới vào túi); thiếu → không
+/// mua. Mua lặp không giới hạn.
+BuyResult buyDecor({required int balance, required Map<String, int> owned, required String item, required int price}) {
   if (item.isEmpty || price <= 0) return const BuyRefused(BuyError.invalid);
-  if (owned.contains(item)) return const BuyRefused(BuyError.owned);
   if (balance < price) return BuyRefused(BuyError.short, short: price - balance);
-  return Bought(balance - price, [...owned, item]);
+  return Bought(balance - price, {...owned, item: (owned[item] ?? 0) + 1});
 }
 
-/// Sở hữu khi lên bản có Văn tiền (quyết định 3, R-NHA-4): vật khởi đầu + vật đang đặt ở ô.
-List<String> migrateOwned(Iterable<String> placed) => [
-      ...starterDecor,
-      for (final id in {...placed})
-        if (!starterDecor.contains(id)) id,
-    ];
+/// Số cái khi mới cài app (R-NHA-4): mỗi vật khởi đầu 1 cái, trong túi.
+Map<String, int> get starterCounts => {for (final id in starterDecor) id: 1};
 
 /// Cho Tiểu Khất mỗi lần đúng chừng này (R-TIEN-8) — `ALMS_COINS` ở `web/src/zones/walletRules.ts`.
 const almsCoins = 5;

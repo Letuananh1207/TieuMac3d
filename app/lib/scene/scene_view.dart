@@ -23,7 +23,7 @@ class SceneView extends StatefulWidget {
     this.onBorrowBook,
     this.onReturnBook,
     this.onGetHome,
-    this.onSetDecor,
+    this.onSetHome,
     this.onOpenReview,
     this.onOpenDaily,
     this.onOpenStudy,
@@ -59,8 +59,9 @@ class SceneView extends StatefulWidget {
   /// Trả lời `getHome` — nhà của ta đã lưu (R-NHA-3). `null` → trang coi như nhà trống.
   final Map<String, Object?> Function()? onGetHome;
 
-  /// Ghi vật ở một ô nhà (`setDecor` — R-NHA-2); `item` `null` = gỡ. `null` → trả `false`, trang giữ trong bộ nhớ trang.
-  final Future<bool> Function(String slot, String? item)? onSetDecor;
+  /// Ghi cả danh sách món của nhà (`setHome` — R-NHA-2, R-NHA-3; dạng thô, kho kiểm). `null` → trả `false`, trang giữ trong bộ
+  /// nhớ trang.
+  final Future<bool> Function(List<Object?> items)? onSetHome;
 
   /// Mở màn ôn câu đố (`openReview` — R-ON-5); Future xong khi đóng → gửi `resume`. `null` → trả `false`, trang mở thẻ
   /// bộ mới như cũ.
@@ -182,10 +183,10 @@ class _SceneViewState extends State<SceneView> {
     }
     if (type == 'returnBook') return widget.onReturnBook?.call() ?? false;
     if (type == 'getHome') return widget.onGetHome?.call();
-    if (type == 'setDecor') {
-      final a = setDecorArgs(args);
-      final set = widget.onSetDecor;
-      return set != null && a != null ? set(a.slot, a.item) : false;
+    if (type == 'setHome') {
+      final a = setHomeArgs(args);
+      final set = widget.onSetHome;
+      return set != null && a != null ? set(a) : false;
     }
     if (type == 'openLibrary' || type == 'openBook') {
       final Future<void>? opened = type == 'openLibrary'

@@ -2,23 +2,21 @@
 /// (`DECOR_ITEMS` ở `web/src/zones/decor.ts` — một nguồn giá); luật tiền ở `journey/wallet.dart`.
 library;
 
-/// Loại ô của vật — cùng chuỗi `DecorSlotKind` của web.
+/// Nơi đặt của vật (tab Tạp hoá) — cùng chuỗi `DecorWhere` của web (`where` trong `openShop`, V-69).
 enum SlotKind {
-  vuon('Vườn'), // slotGarden
-  san('Sân'), // slotYard
-  trong('Trong nhà'), // slotIndoor
+  ngoai('Ngoài trời'), // shopTabOutdoor
+  trong('Trong nhà'), // shopTabIndoor
 
-  /// hạt giống Vườn rau (R-VUON-9) — không phải loại ô; trang không gửi loại này, Flutter tự thêm từ `garden.dart`
-  hat('Hạt giống'); // slotSeed (chờ thiết kế — phiếu 2026-11-15-vuon-trong-trot)
+  /// hạt giống Vườn rau (R-VUON-9) — trang không gửi loại này, Flutter tự thêm từ `garden.dart`
+  hat('Hạt giống'); // shopTabSeeds
 
   const SlotKind(this.label);
 
   final String label;
 
-  /// chỉ nhận ba loại ô của trang (`hat` không qua cầu nối)
+  /// `where` của trang (`ngoai` / `trong`); bản trang cũ gửi `slot` (`vuon` / `san` → ngoài trời). `hat` không qua cầu nối.
   static SlotKind? parse(Object? v) => switch (v) {
-        'vuon' => vuon,
-        'san' => san,
+        'ngoai' || 'vuon' || 'san' => ngoai,
         'trong' => trong,
         _ => null,
       };
@@ -55,7 +53,7 @@ class OpenShopRequest {
 ShopItem? _item(Object? i) {
   if (i is! Map) return null;
   final id = i['id'], name = i['name'], price = i['price'];
-  final slot = SlotKind.parse(i['slot']);
+  final slot = SlotKind.parse(i['where'] ?? i['slot']);
   if (id is! String || id.isEmpty || name is! String || price is! num || price <= 0 || slot == null) return null;
   return ShopItem(id: id, name: name, slot: slot, price: price.toInt());
 }

@@ -14,14 +14,18 @@ import 'shop_parts.dart';
 /// Hạt giống (R-VUON-9, thiết kế 2026-11-15.29 `CuaHang-hat-xac-nhan-doc`): hàng chọn số hạt × 1 · × 5 · × 10 ([count],
 /// [onCount]), giá nhân theo; thiếu cho số đã chọn → nút "Còn thiếu n" nét đứt, Còn lại "—".
 class ShopConfirm extends StatelessWidget {
-  const ShopConfirm({super.key, required this.item, required this.balance, required this.onCancel, required this.onBuy, this.count = 1, this.inBag = 0, this.onCount});
+  const ShopConfirm({super.key, required this.item, required this.balance, required this.onCancel, required this.onBuy, this.count = 1, this.inBag = 0, this.placed = 0, this.onCount});
 
   final ShopItem item;
   final int balance;
   final VoidCallback onCancel;
   final VoidCallback onBuy;
   final int count;
+  /// hạt: số hạt trong túi · đồ trang trí: số cái trong túi
   final int inBag;
+
+  /// đồ trang trí: số cái đang đặt
+  final int placed;
   final ValueChanged<int>? onCount;
 
   @override
@@ -75,7 +79,8 @@ class ShopConfirm extends StatelessWidget {
                       Text(
                         seed
                             ? 'Hạt vào túi hạt · gieo ở Vườn rau. Trong túi: $inBag.' // shopSeedSub — bỏ "Mỗi lần mua 1 hạt" (chọn số hạt, R-VUON-9)
-                            : 'Đặt ở ô ${item.slot.label} · mua một lần, đặt được nhiều ô', // shopConfirmSub
+                            : 'Mỗi lần mua 1 cái vào túi · đặt ở ${item.slot == SlotKind.trong ? 'gian trong' : 'sân'} Nhà của ta. '
+                                'Đang có: $inBag trong túi, $placed đang đặt.', // shopDecorConfirmSub
                         style: uiText.copyWith(fontSize: AppTextSize.small, color: AppColors.slateMuted),
                       ),
                     ],

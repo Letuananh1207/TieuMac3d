@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
+import 'journey/home.dart' show placedCounts;
 import 'journey/journey.dart';
 import 'journey/progress_store.dart';
 import 'lesson/book_screen.dart';
@@ -120,8 +121,14 @@ class HocXaApp extends StatelessWidget {
               // Tàng Thư Các: cuốn sổ từ đang mượn giữ qua tắt app (R-SACH-1, R-SACH-2, R-SACH-4)
               onBorrowBook: (id) async => await progress?.borrowBook(id) ?? false,
               onReturnBook: () async => await progress?.returnBook() ?? false,
-              // nhà của ta: vật ở từng ô + vật đã sở hữu, giữ qua tắt app (R-NHA-2, R-NHA-3, R-NHA-4)
-              onGetHome: progress == null ? null : () => homeReply(progress!.homePlaced, owned: progress!.ownedDecor),
+              // nhà của ta: món đang đặt + số cái mỗi vật, giữ qua tắt app (R-NHA-2…4); ô cũ chỉ gửi khi chưa chuyển (V-69)
+              onGetHome: progress == null
+                  ? null
+                  : () => homeReply(
+                        items: progress!.homeItems,
+                        owned: progress!.ownedDecor,
+                        placed: progress!.hasHomeItems ? null : progress!.homePlaced,
+                      ),
               // Văn tiền: hết ván ở bàn chơi → thưởng theo trần ngày (R-TIEN-3); Tạp hoá: mua → trừ ví + sở hữu (R-TIEN-4)
               onEarnGame: progress == null
                   ? null
@@ -134,6 +141,7 @@ class HocXaApp extends StatelessWidget {
                         items: request.items,
                         balance: progress!.coins,
                         owned: progress!.ownedDecor,
+                        placed: placedCounts(progress!.homeItems),
                         onBuy: (i) => progress!.buyDecor(i.id, i.price),
                         // hạt giống Vườn rau (R-VUON-9) — bảng cây một nguồn ở garden.dart
                         seeds: seedShopItems(),
@@ -148,7 +156,7 @@ class HocXaApp extends StatelessWidget {
                       final r = await progress!.gardenAct(a.act, plot: a.plot, crop: a.crop, count: a.count);
                       return gardenActReply(r, progress!.coins);
                     },
-              onSetDecor: (slot, item) async => await progress?.placeDecor(slot, item) ?? false,
+              onSetHome: (items) async => await progress?.setHomeItems(items) ?? false,
               // ôn câu đố + bảng nhiệm vụ 日課榜 (R-ON-5, R-NV-3); không có kho tiến độ → trang tự lo (thẻ bộ mới / Tiểu Mặc)
               onOpenReview: progress == null
                   ? null

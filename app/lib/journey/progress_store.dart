@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'daily.dart';
 import 'garden.dart' show Garden, GardenDone, GardenError, GardenRefused, GardenResult;
 import 'garden.dart' as vuon;
+import 'home.dart';
 import 'journey.dart';
 import 'review.dart';
 import 'wallet.dart';
@@ -35,6 +36,8 @@ class ProgressStore {
   static const _pagesKey = 'tang-thu.trang';
   static const _homeKey = 'nha.dat';
   static const _ownedKey = 'nha.so-huu';
+  static const _countKey = 'nha.so-luong';
+  static const _itemsKey = 'nha.do';
   static const _coinsKey = 'tien.so-du';
   static const _gameDayKey = 'tien.tro-ngay';
   static const _streakPaidKey = 'tien.chuoi-da-thuong';
@@ -277,23 +280,29 @@ class ProgressStore {
     };
   }
 
-  /// Vật trang trí đã sở hữu (R-NHA-4), theo thứ tự có được.
-  List<String> get ownedDecor => [...?_prefs.getStringList(_ownedKey)];
+  /// Số cái sở hữu mỗi vật trang trí (R-NHA-4 — đang đặt + trong túi).
+  Map<String, int> get ownedDecor {
+    final j = _json(_countKey);
+    if (j is! Map) return {};
+    return {for (final e in j.entries) if (e.key is String && e.value is int && (e.value as int) > 0) e.key as String: e.value as int};
+  }
 
-  /// Mua vật [item] giá [price] ở Tạp hoá (R-TIEN-4): đủ tiền → trừ ví + ghi sở hữu (giữ qua tắt app).
+  /// Mua 1 cái [item] giá [price] ở Tạp hoá (R-TIEN-4): đủ tiền → trừ ví + số cái + 1 (giữ qua tắt app).
   Future<BuyResult> buyDecor(String item, int price) async {
     final r = wallet.buyDecor(balance: coins, owned: ownedDecor, item: item, price: price);
     if (r is Bought) {
       await _prefs.setInt(_coinsKey, r.balance);
-      await _prefs.setStringList(_ownedKey, r.owned);
+      await _prefs.setString(_countKey, jsonEncode(r.owned));
     }
     return r;
   }
 
-  /// Chưa có khoá sở hữu (mới cài, hoặc bản trước khi có Văn tiền — R-NHA-4, quyết định 3): vật khởi đầu + vật đang đặt.
+  /// Chưa có khoá số cái (mới cài, bản có ô, bản trước Văn tiền — R-NHA-4, V-69): chuyển từ `nha.so-huu` + ô cũ rồi xoá
+  /// `nha.so-huu`. Chỗ đặt ô cũ (`nha.dat`) giữ tới khi trang gửi `setHome` (trang chuyển ô → món — R-NHA-3).
   void _adoptOwned() {
-    if (_prefs.getStringList(_ownedKey) != null) return;
-    _prefs.setStringList(_ownedKey, migrateOwned(homePlaced.values));
+    if (_prefs.getString(_countKey) != null) return;
+    _prefs.setString(_countKey, jsonEncode(migrateOwnedCounts(_prefs.getStringList(_ownedKey), homePlaced.values)));
+    _prefs.remove(_ownedKey);
   }
 
   /// Mã sổ từ đang mượn (R-SACH-2); `null` = không mượn.
@@ -334,31 +343,40 @@ class ProgressStore {
     }
   }
 
-  /// Nhà của ta: mã ô → mã vật đang đặt (R-NHA-3). Không kiểm mã — trang bỏ ô / vật không còn (`cleanHome`).
-  /// Sở hữu lưu riêng ([ownedDecor], R-NHA-4).
+  /// Dữ liệu ô cũ (trước V-69): mã ô → mã vật; chỉ còn khi trang chưa gửi `setHome` lần nào (R-NHA-3 — trang chuyển).
   Map<String, String> get homePlaced {
-    final raw = _prefs.getString(_homeKey);
-    if (raw == null) return {};
-    try {
-      final j = jsonDecode(raw);
-      if (j is! Map) return {};
-      return {for (final e in j.entries) if (e.key is String && e.value is String) e.key as String: e.value as String};
-    } on FormatException {
-      return {};
-    }
+    final j = _json(_homeKey);
+    if (j is! Map) return {};
+    return {for (final e in j.entries) if (e.key is String && e.value is String) e.key as String: e.value as String};
   }
 
-  /// Đặt / thay vật [item] ở ô [slot]; [item] `null` = gỡ (R-NHA-2). Mã ô rỗng → không đổi, `false`.
-  Future<bool> placeDecor(String slot, String? item) async {
-    if (slot.isEmpty || item == '') return false;
-    final placed = homePlaced;
-    if (item == null) {
-      placed.remove(slot);
-    } else {
-      placed[slot] = item;
-    }
-    await _prefs.setString(_homeKey, jsonEncode(placed));
+  /// Món đang đặt ở mọi nơi trong nhà (R-NHA-3); món hỏng bỏ qua.
+  List<PlacedDecor> get homeItems {
+    final j = _json(_itemsKey);
+    return j is List ? [for (final e in j) ?PlacedDecor.fromJson(e)] : [];
+  }
+
+  /// Đã có danh sách món (đã lên bản trang trí tự do) chưa.
+  bool get hasHomeItems => _prefs.getString(_itemsKey) != null;
+
+  /// Ghi cả danh sách món (`setHome` — R-NHA-2, R-NHA-3): hợp lệ + mỗi vật ≤ số cái sở hữu → ghi, xoá dữ liệu ô cũ, `true`;
+  /// sai → không ghi, `false`.
+  Future<bool> setHomeItems(Object? raw) async {
+    final items = checkHomeItems(raw, ownedDecor);
+    if (items == null) return false;
+    await _prefs.setString(_itemsKey, jsonEncode([for (final i in items) i.toJson()]));
+    await _prefs.remove(_homeKey);
     return true;
+  }
+
+  Object? _json(String key) {
+    final raw = _prefs.getString(key);
+    if (raw == null) return null;
+    try {
+      return jsonDecode(raw);
+    } on FormatException {
+      return null;
+    }
   }
 
   Future<void> _saveCards() =>

@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hoc_xa_3d/journey/daily.dart';
+import 'package:hoc_xa_3d/journey/home.dart';
 import 'package:hoc_xa_3d/journey/journey.dart';
 import 'package:hoc_xa_3d/scene/scene_event.dart';
 
@@ -111,13 +112,13 @@ void main() {
     expect(OpenRadicalRequest.parse([{'type': 'openRadical', 'payload': {'radical': {'id': 'x'}}}]), isNull);
   });
 
-  test('setDecor: đọc ô + vật (docs/bridge.md); item null = gỡ; sai dạng → null', () {
-    expect(setDecorArgs([{'type': 'setDecor', 'payload': {'slot': 'vuon-1', 'item': 'mai'}}]), (slot: 'vuon-1', item: 'mai'));
-    expect(setDecorArgs([{'type': 'setDecor', 'payload': {'slot': 'vuon-1', 'item': null}}]), (slot: 'vuon-1', item: null));
-    expect(setDecorArgs([{'type': 'setDecor', 'payload': {'slot': '', 'item': 'mai'}}]), isNull);
-    expect(setDecorArgs([{'type': 'setDecor', 'payload': {'slot': 'vuon-1', 'item': 3}}]), isNull);
-    expect(setDecorArgs([{'type': 'borrowBook', 'payload': {'slot': 'vuon-1'}}]), isNull);
-    expect(setDecorArgs([]), isNull);
+  test('setHome: đọc danh sách món thô (docs/bridge.md); không phải setHome / thiếu items → null', () {
+    final mon = {'item': 'mai', 'scene': 'nha-ta', 'x': 8, 'z': 4, 'rot': 45};
+    expect(setHomeArgs([{'type': 'setHome', 'payload': {'items': [mon]}}]), [mon]);
+    expect(setHomeArgs([{'type': 'setHome', 'payload': {'items': []}}]), isEmpty);
+    expect(setHomeArgs([{'type': 'setHome', 'payload': {}}]), isNull);
+    expect(setHomeArgs([{'type': 'setDecor', 'payload': {'items': [mon]}}]), isNull);
+    expect(setHomeArgs([]), isNull);
   });
 
   test('R-TIEN-1: getProgress kèm số dư + Văn tiền trò hôm nay (docs/bridge.md); không có ví → không gửi', () {
@@ -127,11 +128,15 @@ void main() {
     expect(progressReply(const Progress()).containsKey('coins'), isFalse);
   });
 
-  test('R-NHA-4: getHome kèm vật đã sở hữu (docs/bridge.md)', () {
-    expect(homeReply({'vuon-1': 'mai'}, owned: ['truc-canh', 'mai']), {
-      'placed': {'vuon-1': 'mai'},
-      'owned': ['truc-canh', 'mai'],
+  test('R-NHA-4: getHome kèm số cái mỗi vật + món; ô cũ chỉ khi còn (docs/bridge.md)', () {
+    const mai = PlacedDecor(item: 'mai', scene: 'nha-ta', x: 8, z: 4.5, rot: 45);
+    expect(homeReply(items: const [mai], owned: {'mai': 3}), {
+      'items': [
+        {'item': 'mai', 'scene': 'nha-ta', 'x': 8, 'z': 4.5, 'rot': 45},
+      ],
+      'owned': {'mai': 3},
     });
-    expect(homeReply(const {}).containsKey('owned'), isFalse);
+    expect(homeReply(items: const [], owned: const {}, placed: {'vuon-1': 'mai'})['placed'], {'vuon-1': 'mai'});
+    expect(homeReply(items: const [], owned: const {}, placed: const {}).containsKey('placed'), isFalse);
   });
 }

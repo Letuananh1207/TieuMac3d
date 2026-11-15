@@ -13,9 +13,9 @@ void main() {
       ]),
     ])!;
     expect(r.items.map((i) => i.id), ['mai', 'den-long']);
-    expect(r.items.first.slot, SlotKind.vuon);
-    expect(r.items.first.slot.label, 'Vườn');
-    expect(r.items.first.price, 60);
+    expect(r.items.first.slot, SlotKind.ngoai);
+    expect(r.items.first.slot.label, 'Ngoài trời');
+    expect(r.items.first.price, 60);
   });
 
   test('R-TIEN-4: openShop — vật sai dạng / giá 0 bỏ qua; không còn vật nào → null', () {
