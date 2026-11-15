@@ -6,7 +6,7 @@
   sắp lại HUD nếu cần, safe area).
 - Việc: V-20261115-64 · nhánh `viec/thanh-cong-cu`
 - Loại: thêm (HUD mới + luồng đi lại + động tác nhân vật) · sửa hành vi (R-HANH-2/5, R-NHA-1, R-NV-3) · Cỡ: **lớn**
-- Trạng thái: **chờ duyệt** (phần HUD: chờ thiết kế — phiếu `docs/phieu_thiet_ke/2026-11-15-thanh-cong-cu.md`)
+- Trạng thái: **đã duyệt 2026-11-15** — người dùng chọn 1A (thanh sát đáy, nâng HUD ~60 px), 2A (ở nhà: nút mờ + thẻ), 3A (hai nút Túi đồ / Nhiệm vụ, thanh 5 nút), 4A (túi đồ tấm đáy web); NV1 chờ V-65 gộp (phần HUD: chờ thiết kế — phiếu `docs/phieu_thiet_ke/2026-11-15-thanh-cong-cu.md`)
 
 ## Liên quan việc song song V-65 (xoá vòng trận ở 6 vùng)
 
