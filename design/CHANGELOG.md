@@ -3,6 +3,15 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-15.27 — Cây "tán chùm" (thử A): tùng tầng mây + bụi mềm, LOD 2 bậc
+
+- Loại: cảnh 3D — ngoại hình. Phiên code V-20261114-58 (khảo cứu `docs/tham_khao/thuc-vat-dep-nhe.md`); người dùng chọn hướng A + D, xem thử
+  "đẹp hơn, gộp + làm tiếp". **Đã duyệt 2026-11-15.**
+- `trees.crown` (mới, `"cau"` mặc định / `"chum"`), `trees.lodDistance` 35 — bật ở Khởi Nguyên Trấn. Tùng tầng mây 13 múi + thân vặn gộp một hình
+  (240 → 696 tam giác, bậc xa 192); bụi 4 múi (60 → 256, bậc xa 72); pháp tuyến pha theo tán, màu đỉnh: lõi tối, mép trên ấm. `softCrown`, `softLimb`
+  (`khoiMem.ts`), `cayChum.ts`.
+- Nhìn từ trên 140 / 149,9k → 138 / 148,2k. Không chạm luật. Ảnh: `screens/Canh-tan-chum-tung.png`.
+
 ## 2026-11-15.25 — Bồn hoa dọc lối khu công viên phía đông; bỏ tùng cạnh nhật quỹ
 
 - Loại: cảnh 3D — bố cục. Phiên code V-20261114-56; người dùng: "tận dụng chậu cây ở nhiều nơi quanh đường đi ở công viên", "bỏ cây tùng
