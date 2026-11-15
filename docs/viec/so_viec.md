@@ -65,4 +65,4 @@ Trạng thái: `nhận` → `chờ trả lời` / `chờ duyệt` → `đang là
 | V-20261114-55 | Dời đồng hồ (nhật quỹ) khỏi giữa Quảng Trường sang một góc cho trung tâm thoáng | canh | chờ thử máy — đã gộp 2026-11-15 | R-VA-*, R-NGAY-* nếu nhắc | duyệt ảnh |
 | V-20261114-56 | Dùng bồn hoa (mai / lan / cúc / trúc) trang trí nhiều chỗ dọc đường đi khu công viên (Sân Cổ Thụ – Mặc Trì) | canh | chờ thử máy — đã gộp 2026-11-15 (+ bỏ tùng cạnh nhật quỹ, bỏ 4 bồn giữa Quảng Trường) | — | duyệt ảnh |
 | V-20261114-57 | Vòng sáng đi bộ sang Trúc Lâm (như vòng "Về nhà") ở cuối lối phía đông trấn (ảnh người dùng) + vòng về trấn ở Trúc Lâm | canh | đang làm — nhánh `viec/vong-truc-lam` | R-HANH-4, R-BANDO-2 | duyệt ảnh |
-| V-20261114-58 | Nghiên cứu: game cùng thể loại làm cây cối / hoa cỏ / trồng trọt vừa đẹp vừa chạy ổn trên điện thoại | khao-cuu | đang làm | — | đọc hồ sơ, chọn hướng |
+| V-20261114-58 | Nghiên cứu: game cùng thể loại làm cây cối / hoa cỏ / trồng trọt vừa đẹp vừa chạy ổn trên điện thoại | khao-cuu | chờ người dùng — hồ sơ docs/tham_khao/thuc-vat-dep-nhe.md; chọn hướng A/B/C/D | — | đọc hồ sơ, chọn hướng |
