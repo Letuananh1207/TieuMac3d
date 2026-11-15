@@ -10,6 +10,16 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
   hạc đáp (2,5; 6,5); chỗ vòng cũ: mai (−11,5; −2,5) + đá Thái Hồ (−9; −0,5). Rời nhà chỉ qua cổng nam về trấn.
 - Code: kiểm bãi đáp hạc ở mọi cảnh (kể cả không vòng trận). Luật: R-HANH-2, R-HANH-5, R-NHA-1, R-BANDO-2.
 - Sẽ được thay bằng bố cục mới V-48 (đảo trên biển mây).
+## 2026-11-15.14 — Nền gọn: mỗi khu một nền liền, bó vỉa lối, gạch đồng màu, không tường cụt
+
+- Loại: cảnh 3D — ngoại hình + bố cục nhỏ. Phiên code V-20261114-44; người dùng: "gạch lộn xộn màu loang lổ… cỏ cũng vậy";
+  "những chỗ tường lại bơ vơ". **Đã duyệt 2026-11-15.**
+- Kỳ Văn Uyển toàn gạch đỏ (bỏ 4 lối xám + 2 bục lát trùng); bó vỉa đá thấp `buildingStyle.pathEdge` 0,3 × 0,08 `#c9c3b6`
+  (mới; `paths[].edge`, `plateaus[].edge`), mặc định không viền; viên gạch đồng màu `ground.variation` 0,18 → 0,05 (mới).
+- Sân Cổ Thụ: sân lát 11 × 11 bó vỉa quanh gốc + lối nối trục; bỏ hàng bụi z 0,2. Góc lối kín; trục bắc – nam tới z 51.
+- Tường không đầu cụt: x 42 từ z −26,4; (17;17)→(17;25) gập góc về lan can. Lan can góc đông bắc liền trụ.
+- Bỏ biển gỗ "Mặc Trì" trùng bia đá, sửa chữ bia. Đèn đá Cổng Trấn x 8,6 → 6,6; mai (40;5,5) → (40,6;8,6).
+- Luật: R-VA-1 (ví dụ). 136 draw call / 149 378 tam giác. Ảnh: `screens/Canh-nen-gon-kvu.png`, `screens/Canh-nen-gon-dong.png`.
 
 ## 2026-11-15.12 — Trấn mở: Quảng Trường lan can đá, bỏ tường ngăn khu, trục đông – tây, Sân Cổ Thụ
 
