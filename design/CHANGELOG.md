@@ -597,6 +597,66 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
 - Canvas 3D: https://claude.ai/artifact/TyJxrgsBcj5ryHakv7c1so (bản 49) — `?cam=-6,20,50&tam=-17,34&nv=-16.5,36`, `?vung=nha-ta`.
 - Ảnh: `screens/Canh-ngo-ve-nha.png`, `screens/Canh-nha-ta-cong-nam.png`.
 - File: `scene/scene.json`, `scene/nha-ta.json`, hai ảnh trên.
+## 2026-11-15.35 — Thanh công cụ đáy màn + bảng Biểu cảm + Túi đồ
+
+- Loại: giao diện · chuỗi · luồng/luật (khớp nháp). Màn: **Thanh công cụ** (HUD web) — đặc tả `docs/screen_specs.md` mục cùng tên.
+- Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-15-thanh-cong-cu.md` (phiếu còn trong máy — dòng "Đã vẽ" ghi ở bản trong máy). Vẽ trong
+  phiên VS Code theo vai thiết kế; người dùng duyệt "Ổn, chốt".
+- **Mã .35**: các mục tới 2026-11-15.34 đã có ở `main` / nhánh việc trong máy — nhảy qua để khỏi trùng.
+- Artboard (15): `ThanhCongCu-{doc,ngang,nha-doc,nha-ngang,ngoi-doc,ngoi-ngang,trang-thai,ghi-chu}`, `BieuCam-{doc,ngang,bong-bong}`,
+  `TuiDo-{doc,ngang,trong-doc,sach-trong-doc}` (+ `canvas.json`).
+- Quyết định (theo phương án đề xuất của kế hoạch): dọc thanh sát đáy cao 60, nâng joystick / cụm / khung kênh / cột phải ≈ 60; ngang
+  thanh giữa đáy 380 không nâng; nhãn luôn hiện; Bản đồ nổi bật (đĩa `jade`); cột phải dọc xếp Trò chuyện → Đọc sách → Trang trí; tấm báo
+  "Bạn đang ở Nhà của ta" cạnh bản đồ nhỏ; bảng Biểu cảm 4 × 2 nổi trên thanh; bong bóng hình chỉ cho 5 biểu cảm (Chắp tay, Cúi chào,
+  Ngồi nghỉ không bóng); Túi đồ 4 mục cuộn (không tab), chỉ xem; thanh trượt xuống + mờ 0,2 s khi ẩn.
+- Chuỗi mới: `toolbarMap`, `toolbarHome`, `toolbarEmote`, `toolbarBag`, `toolbarDaily`, `toolbarDailyAria`, `homeHere`, `emote*` (8),
+  `bagTitle`, `bagSeeds`, `bagCrops`, `bagBooks`, `bagDecor`, `bagPlaced`, `bag*Empty` (4), `bagClose`, `bagReadOnly`, `bagBookProgress`.
+- Luật: khớp nháp `R-THANH-1/2`, `R-HANH-6/7`, `R-BIEU-1…3`, `R-TUI-1` trong phiếu. Đề xuất thêm vào R-BIEU-3: "Chắp tay, Cúi chào, Ngồi
+  nghỉ không có bong bóng"; R-THANH-1: thanh cũng ẩn khi Túi đồ mở ở màn dọc (tấm che); R-HANH-7: tấm báo đặt cạnh bản đồ nhỏ (dọc).
+- Ảnh: `screens/ThanhCongCu-*.png` (8), `screens/BieuCam-*.png` (3), `screens/TuiDo-*.png` (4) — cảnh là hình giữ chỗ.
+
+## 2026-11-15.33 — Bộ ảnh đàn cổ tranh (đầu vào model AI, kiểu công trình nhỏ)
+
+- Loại: tài nguyên 3D — ảnh đầu vào (Hunyuan3D). Gắn với phiếu `docs/phieu_thiet_ke/2026-11-15-anh-cam-nu.md` / kế hoạch V-61 (phiếu còn trong
+  máy). Người dùng 2026-11-15: **đàn dựng bằng mô hình** thay khối code. Vẽ trong phiên VS Code theo vai thiết kế; người dùng duyệt "Ổn, chốt".
+- Ảnh: `models/anh/dan-tranh-{cheo,tren,truoc,dau,duoi}.png` — chếch 3/4 (ảnh chính) · thẳng từ trên (đầu đàn bên TRÁI) · ngang trước ngang
+  mặt người ngồi · từ đầu đàn · mặt dưới (2 lỗ thoát âm). Google Gemini (người dùng chạy); câu lệnh: ghi chú `dan-tranh-cau-lenh` trong
+  `source/canvas.json`. Chuẩn hoá: ba góc ngang chung hệ số 0,934 (dài thân 85 %), góc đầu đàn khớp cao theo góc trước. Ảnh duyệt:
+  `screens/DanTranh-bo-anh.png`.
+- Hình: thân gỗ ngô đồng #8A5A3A cong vồng, đầu đàn cao + rộng hơn, mép gỗ sẫm #5A3A28 hai đầu, đường cong chữ S ở đuôi; nhạn ngà #F1EBDD
+  xếp chéo; tua lụa đỏ #B5584A ở đầu đàn; hai chân gỗ thấp.
+- **Lệch / lưu ý cho `/tai-nguyen` + code**: chỉ **10 nhạn** (thật 21) — giữ 10 trên model, **21 dây do code** trải theo hàng nhạn; tua ở ảnh
+  đầu đàn dài tới dưới chân (các ảnh khác ngắn) — lấy tua ngắn; ảnh chếch có vạch dây mờ — bỏ khi nướng màu.
+- **Cho phiên code (V-61, `/lead`)**: model `models/dan-tranh.glb` (loại công trình, ≈ 1 500–2 500 tam giác) thay khối đàn dựng bằng code;
+  dây: 21 đường thẳng 1 draw call, rung nhẹ khi gảy; dài thật ≈ 1,6 m. Luật: không đổi.
+- Bước kế: `/tai-nguyen` (loại công trình) từ bộ ảnh này → `models/dan-tranh.glb`.
+- File: `models/anh/dan-tranh-*.png` (5), `models/LICENSES.md`, `screens/DanTranh-bo-anh.png`, `source/DanTranh-bo-anh.dc.html`, `source/canvas.json`.
+
+## 2026-11-15.32 — Bộ ảnh nhiều góc NPC Cầm Nương (nữ nhạc công đàn cổ tranh — thiếu nữ tươi cười)
+
+- Loại: tài nguyên 3D — ảnh đầu vào (Hunyuan3D-2mv). Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-15-anh-cam-nu.md` (phiếu còn trong máy,
+  chưa lên GitHub — dòng "Đã vẽ" ghi ở bản trong máy). Vẽ trong phiên VS Code theo vai thiết kế; người dùng duyệt "Ổn, chốt".
+- **Mã .32**: các mục 2026-11-15.10 → .31 đã có ở `main` / nhánh việc trong máy (chưa đẩy) — nhảy qua để khỏi trùng.
+- **Đổi hướng so với phiếu** (thiếu nữ ≈ 18 tuổi, mắt khép như nghe đàn, một búi cao + trâm ngọc, bối tử xanh ngọc dài, váy hồng phấn):
+  người dùng thấy "chưa có thiện cảm" → trình 3 hướng (`source/CamNu-huong.dc.html`: A thiếu nữ tươi cười · B chị gảy đàn hiền hậu ·
+  C cô bé học đàn) → chọn **A**.
+- Nhân vật: ≈ 16 tuổi, mắt to mở sáng, cười tươi hé miệng, má hồng rõ, da #F0CFB8; tóc #2B2421 mái thưa + **hai búi nhỏ** quấn dây lụa
+  đỏ #C8463A ngắn sát búi; **bối tử hồng đào #E6B4A6 tới hông**, hai vạt song song nẹp ngà #F1EBDD, áo trong ngà; váy **vàng mơ #EED9A4**
+  xếp ly thẳng tới mắt cá; đai **xanh ngọc #6E9C8A** dưới ngực, nút giữa, đuôi ngắn; giày #7A4A3A. Cao ≈ 95 % nhân vật chính. Tay không,
+  đứng chữ A — dáng ngồi xếp bằng gảy đàn do xương tự gắn trong code.
+- Ảnh: `models/anh/cam-nu-{truoc,trai,sau,phai,mat}.png` + `-truoc-trai.png` (chếch ≈ 20°; Gemini vẽ hai góc 45° giống nhau). **`-trai` =
+  lật gương `-phai`** (hai góc nghiêng Gemini giống nhau; nhân vật gần đối xứng). Chuẩn hoá Pillow hệ số 0,859, đỉnh búi 10 %, đế giày 90 %.
+  Ảnh duyệt: `screens/CamNu-bo-anh.png`.
+- **Lưu ý cho `/tai-nguyen`**: ảnh sau có nút đai sau lưng (ảnh trước cũng có nút giữa) — nướng màu theo từng mặt; ảnh cận mặt thiếu áo
+  ngoài (chỉ dây yếm) — chỉ lấy chi tiết mặt.
+- **Đàn cổ tranh bằng mô hình** (người dùng 2026-11-15): canvas có khung `DanTranh-bo-anh` + câu lệnh Gemini (ghi chú `dan-tranh-cau-lenh`)
+  — **chưa có ảnh, chưa chốt**. Đề xuất cho phiên code (V-61, `/lead`): model chỉ thân + nhạn + chân (≈ 1 500–2 500 tam giác), 21 dây vẽ bằng
+  code (1 draw call, rung khi gảy); thay khối đàn dựng bằng code khi có `models/dan-tranh.glb`.
+- Luật: không đổi (R-NPC-9, R-AM-2 nháp). Tên "Cầm Nương" giữ (không hiện trong game).
+- Bước kế: `bash .claude/skills/tai-nguyen/scripts/nhan-vat.sh cam-nu <ra>` → `models/cam-nu.glb`.
+- File: `models/anh/cam-nu-*.png` (6), `models/LICENSES.md`, `screens/CamNu-bo-anh.png`, `source/CamNu-huong.dc.html`,
+  `source/CamNu-bo-anh.dc.html`, `source/canvas.json`.
+
 ## 2026-11-15.29 — Vườn rau: nút nổi luống, chọn hạt, kho + bán, mở ô, tấm báo; Tạp hoá mục Hạt giống
 
 - Loại: giao diện · token · chuỗi · luồng/luật (đề xuất). Màn: **Vườn rau** (HUD web, Nhà của ta) + **Tạp hoá — Hạt giống** (Flutter + bản

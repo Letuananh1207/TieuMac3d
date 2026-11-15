@@ -1171,5 +1171,93 @@
   "cropBiDo": "Bí đỏ",
   "cropHoaCuc": "Hoa cúc",
   "cropDuaHau": "Dưa hấu",
-  "cropTra": "Trà"
+  "cropTra": "Trà",
+  "toolbarMap": "Bản đồ",
+  "@toolbarMap": {
+    "description": "Thanh công cụ — mở bản đồ truyền tống"
+  },
+  "toolbarHome": "Về nhà",
+  "@toolbarHome": {
+    "description": "Thanh công cụ — cưỡi hạc về Nhà của ta"
+  },
+  "toolbarEmote": "Biểu cảm",
+  "@toolbarEmote": {
+    "description": "Thanh công cụ — bảng 8 biểu cảm"
+  },
+  "toolbarBag": "Túi đồ",
+  "@toolbarBag": {
+    "description": "Thanh công cụ — tấm túi đồ"
+  },
+  "toolbarDaily": "Nhiệm vụ",
+  "@toolbarDaily": {
+    "description": "Thanh công cụ — bảng nhiệm vụ hằng ngày"
+  },
+  "toolbarDailyAria": "Nhiệm vụ, còn {n} việc",
+  "@toolbarDailyAria": {
+    "description": "Trợ năng nút Nhiệm vụ có chấm son"
+  },
+  "homeHere": "Bạn đang ở Nhà của ta",
+  "@homeHere": {
+    "description": "Tấm báo khi chạm Về nhà lúc đang ở nhà"
+  },
+  "emoteWave": "Vẫy tay",
+  "emoteBow": "Chắp tay",
+  "emoteDeepBow": "Cúi chào",
+  "emoteClap": "Vỗ tay",
+  "emoteLaugh": "Cười",
+  "emoteCheer": "Nhảy mừng",
+  "emoteThink": "Suy nghĩ",
+  "emoteRest": "Ngồi nghỉ",
+  "bagTitle": "Túi đồ",
+  "@bagTitle": {
+    "description": "Tiêu đề tấm túi đồ"
+  },
+  "bagSeeds": "Hạt giống",
+  "@bagSeeds": {
+    "description": "Mục túi đồ"
+  },
+  "bagCrops": "Nông sản",
+  "@bagCrops": {
+    "description": "Mục túi đồ"
+  },
+  "bagBooks": "Sách",
+  "@bagBooks": {
+    "description": "Mục túi đồ"
+  },
+  "bagDecor": "Đồ trang trí",
+  "@bagDecor": {
+    "description": "Mục túi đồ"
+  },
+  "bagPlaced": "Đang đặt",
+  "@bagPlaced": {
+    "description": "Nhãn đồ trang trí đang đặt"
+  },
+  "bagSeedsEmpty": "Chưa có hạt — mua ở Tạp hoá Khởi Nguyên Trấn",
+  "@bagSeedsEmpty": {
+    "description": "Mục hạt trống"
+  },
+  "bagCropsEmpty": "Kho trống — thu hoạch ở vườn Nhà của ta",
+  "@bagCropsEmpty": {
+    "description": "Mục nông sản trống"
+  },
+  "bagBooksEmpty": "Chưa mượn sách — mượn ở Tàng Thư Các",
+  "@bagBooksEmpty": {
+    "description": "Mục sách trống"
+  },
+  "bagDecorEmpty": "Chưa có đồ — mua ở Tạp hoá",
+  "@bagDecorEmpty": {
+    "description": "Mục đồ trang trí trống"
+  },
+  "bagClose": "Đóng",
+  "@bagClose": {
+    "description": "Nút đóng túi đồ"
+  },
+  "bagReadOnly": "Chỉ xem — gieo ở luống, bán ở thùng thu mua, đặt đồ khi trang trí",
+  "@bagReadOnly": {
+    "description": "Chân tấm túi đồ"
+  },
+  "bagBookProgress": "Đang đọc trang {page} / {total} · trả trước {date}",
+  "@bagBookProgress": {
+    "description": "Dòng phụ sách đang mượn"
+  }
 }

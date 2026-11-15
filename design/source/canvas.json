@@ -1357,6 +1357,132 @@
       "w": 1240,
       "h": 700,
       "title": "VuonRau-ghi-chu"
+    },
+    "CamNu-bo-anh.dc.html": {
+      "x": 0,
+      "y": 69384,
+      "w": 1700,
+      "h": 800,
+      "title": "Cầm Nương — nữ nhạc công đàn cổ tranh (hướng A · thiếu nữ tươi cười) · bộ ảnh 4 góc + cận mặt"
+    },
+    "CamNu-huong.dc.html": {
+      "x": 2600,
+      "y": 69384,
+      "w": 1500,
+      "h": 940,
+      "title": "Cầm Nương · 3 hướng dễ mến hơn"
+    },
+    "DanTranh-bo-anh.dc.html": {
+      "x": 0,
+      "y": 70444,
+      "w": 1500,
+      "h": 760,
+      "title": "Đàn cổ tranh · bộ ảnh mô hình AI"
+    },
+    "ThanhCongCu-trang-thai.dc.html": {
+      "x": 0,
+      "y": 71564,
+      "w": 900,
+      "h": 720,
+      "title": "ThanhCongCu-trang-thai"
+    },
+    "ThanhCongCu-doc.dc.html": {
+      "x": 0,
+      "y": 72404,
+      "w": 390,
+      "h": 844,
+      "title": "ThanhCongCu-doc"
+    },
+    "ThanhCongCu-nha-doc.dc.html": {
+      "x": 470,
+      "y": 72404,
+      "w": 390,
+      "h": 844,
+      "title": "ThanhCongCu-nha-doc"
+    },
+    "ThanhCongCu-ngoi-doc.dc.html": {
+      "x": 940,
+      "y": 72404,
+      "w": 390,
+      "h": 844,
+      "title": "ThanhCongCu-ngoi-doc"
+    },
+    "BieuCam-doc.dc.html": {
+      "x": 1410,
+      "y": 72404,
+      "w": 390,
+      "h": 844,
+      "title": "BieuCam-doc"
+    },
+    "TuiDo-doc.dc.html": {
+      "x": 1880,
+      "y": 72404,
+      "w": 390,
+      "h": 844,
+      "title": "TuiDo-doc"
+    },
+    "TuiDo-trong-doc.dc.html": {
+      "x": 2350,
+      "y": 72404,
+      "w": 390,
+      "h": 844,
+      "title": "TuiDo-trong-doc"
+    },
+    "TuiDo-sach-trong-doc.dc.html": {
+      "x": 2820,
+      "y": 72404,
+      "w": 390,
+      "h": 844,
+      "title": "TuiDo-sach-trong-doc"
+    },
+    "ThanhCongCu-ngang.dc.html": {
+      "x": 0,
+      "y": 73388,
+      "w": 844,
+      "h": 390,
+      "title": "ThanhCongCu-ngang"
+    },
+    "ThanhCongCu-nha-ngang.dc.html": {
+      "x": 924,
+      "y": 73388,
+      "w": 844,
+      "h": 390,
+      "title": "ThanhCongCu-nha-ngang"
+    },
+    "ThanhCongCu-ngoi-ngang.dc.html": {
+      "x": 1848,
+      "y": 73388,
+      "w": 844,
+      "h": 390,
+      "title": "ThanhCongCu-ngoi-ngang"
+    },
+    "BieuCam-ngang.dc.html": {
+      "x": 2772,
+      "y": 73388,
+      "w": 844,
+      "h": 390,
+      "title": "BieuCam-ngang"
+    },
+    "TuiDo-ngang.dc.html": {
+      "x": 3696,
+      "y": 73388,
+      "w": 844,
+      "h": 390,
+      "title": "TuiDo-ngang"
+    },
+    "BieuCam-bong-bong.dc.html": {
+      "x": 980,
+      "y": 71564,
+      "w": 1240,
+      "h": 520,
+      "title": "BieuCam-bong-bong"
+    },
+    "ThanhCongCu-ghi-chu.dc.html": {
+      "x": 0,
+      "y": 73918,
+      "w": 1240,
+      "h": 720,
+      "title": "ThanhCongCu-ghi-chu"
     }
   },
   "order": [
@@ -1559,7 +1685,25 @@
     "VuonRau-mo-o-ngang.dc.html",
     "VuonRau-tam-bao.dc.html",
     "CuaHang-hat-ngang.dc.html",
-    "VuonRau-ghi-chu.dc.html"
+    "VuonRau-ghi-chu.dc.html",
+    "CamNu-bo-anh.dc.html",
+    "CamNu-huong.dc.html",
+    "DanTranh-bo-anh.dc.html",
+    "ThanhCongCu-trang-thai.dc.html",
+    "ThanhCongCu-doc.dc.html",
+    "ThanhCongCu-nha-doc.dc.html",
+    "ThanhCongCu-ngoi-doc.dc.html",
+    "BieuCam-doc.dc.html",
+    "TuiDo-doc.dc.html",
+    "TuiDo-trong-doc.dc.html",
+    "TuiDo-sach-trong-doc.dc.html",
+    "ThanhCongCu-ngang.dc.html",
+    "ThanhCongCu-nha-ngang.dc.html",
+    "ThanhCongCu-ngoi-ngang.dc.html",
+    "BieuCam-ngang.dc.html",
+    "TuiDo-ngang.dc.html",
+    "BieuCam-bong-bong.dc.html",
+    "ThanhCongCu-ghi-chu.dc.html"
   ],
   "notes": {
     "cach-dung": {
@@ -2023,6 +2167,32 @@
       "x": 0,
       "y": 65850,
       "text": "Vườn rau ở Nhà của ta — nút nổi luống, chọn hạt, kho + bán, mở ô, tấm báo, Hạt giống ở Tạp hoá (phiếu 2026-11-15-vuon-trong-trot)",
+      "kind": "title1",
+      "maxW": 3000
+    },
+    "tieu-de-cam-nu": {
+      "x": 0,
+      "y": 69144,
+      "text": "NPC Quảng Trường — Cầm Nương, nữ nhạc công đàn cổ tranh (bộ ảnh nhiều góc)",
+      "kind": "title1",
+      "maxW": 2500
+    },
+    "cam-nu-cau-lenh": {
+      "x": 1780,
+      "y": 69384,
+      "w": 720,
+      "text": "Câu lệnh Gemini — Cầm Nương, hướng A \"Thiếu nữ tươi cười\" (người dùng chọn 2026-11-15; bản cũ mắt khép bị chê \"chưa có thiện cảm\"). Mã cam-nu. Mỗi câu một cuộc trò chuyện MỚI. Ảnh ĐỨNG chữ A, tay không, không đàn (dáng ngồi + gảy đàn do code).\n\n1 · TRƯỚC — đính kèm design/models/anh/nhan-vat-truoc.png:\nCreate a NEW character in exactly the same 3D vinyl toy style, chibi proportions (head including the hair buns about 1/3 of the height) and rendering as the attached image, about 95% of its height. Character: a cheerful, sweet young girl musician of the Song dynasty, about 16 years old, very friendly and likable: BIG round bright eyes wide OPEN with shiny highlights, a warm happy smile with the mouth slightly open, clearly rosy cheeks, thin soft eyebrows, skin #F0CFB8. Hair: black #2B2421 with light see-through BANGS across the forehead (chunky solid shapes, not thin strands), and TWO small round buns on the top-left and top-right of the head (shuangya buns), each wrapped once with a short red silk cord #C8463A tight to the bun (no long hanging ribbons); side hair pressed flat; NO loose strands, NO flowers. Clothes: a Song-dynasty beizi — an open front-opening outer jacket with two STRAIGHT PARALLEL front edges meeting at the center (NOT crossed, NOT wrapped), soft peach-pink #E6B4A6, HIP length, with a wide ivory #F1EBDD trim band along both front edges and the neckline; sleeves of MEDIUM-NARROW width (fitted, not wide, not trailing). Underneath, an ivory #F1EBDD inner top visible between the two front edges. A long apricot-yellow #EED9A4 skirt with straight vertical pleats reaching the ankles, NOT flared. A thin silk sash in jade green #6E9C8A tied just under the chest with a small knot at the center and two SHORT ends (hanging no lower than the waist), not flying. Below the skirt, the toes of TWO cloth shoes #7A4A3A clearly visible, feet slightly apart. Hands EMPTY: no zither, no fan, no finger picks, nothing held. No writing anywhere. A-pose: arms angled down about 35 degrees, sleeves NOT touching the body, feet slightly apart. Straight front view, orthographic, no perspective. Soft even studio light with gentle form shading, no outlines, no cel shading. Plain flat light grey background #DDDDDD, no ground shadow, no frame, no text, no logo, no watermark. Square 1024x1024, full body centered, top of the hair buns at 10% from the top, soles at 90%. Large clear color areas, few small details.\n\n2 · TRÁI — đính kèm ảnh 1:\nThe same character as the attached image, same pose, same size, same colors, same lighting and background. Exact side profile, rotated 90 degrees so she faces the LEFT edge of the image. Orthographic, no perspective. Show one of the two round buns with its red cord from the side, the bangs, the happy smiling face in profile, the hip-length open jacket with ivory front trim, the medium-narrow sleeve, the short jade sash knot under the chest, the straight pleated skirt to the ankles and the shoe toes. Arms in A-pose, sleeves not touching the body, hands empty. Plain #DDDDDD background, no shadow, no text. Square 1024x1024, top of the buns at 10%, soles at 90%.\n\n3 · SAU — đính kèm ảnh 1:\nThe same character as the attached image, same pose, same size, seen straight from the BACK. Both round buns with their red cords, the smooth back of the hair, the plain peach-pink back of the jacket (no pattern), the jade sash around the chest, the pleated apricot skirt, both shoe heels visible. A-pose, sleeves not touching the body, hands empty. Orthographic, plain #DDDDDD background, no shadow, no text. Square 1024x1024, top of the buns at 10%, soles at 90%.\n\n4 · PHẢI — đính kèm ảnh 1:\nThe same character as the attached image, same pose, same size, same colors, same lighting and background. Exact side profile, rotated 90 degrees so she faces the RIGHT edge of the image (NOT the left). Orthographic, no perspective. Round bun with red cord, bangs, smiling face in profile, open jacket with ivory trim, short jade sash knot, straight pleated skirt, shoe toes. A-pose, sleeves not touching the body, hands empty. Plain #DDDDDD background, no shadow, no text. Square 1024x1024, top of the buns at 10%, soles at 90%.\n\n5 · CẬN MẶT — đính kèm ảnh 1:\nClose-up of the same character's head, two buns and neck, straight front, same 3D vinyl toy style: big round bright open eyes with shiny highlights, a warm happy smile with the mouth slightly open, clearly rosy cheeks, light bangs, the two round buns with short red cords, ivory trim of the jacket at the neckline. Sharp clean details. Plain #DDDDDD background, no text. Square 1024x1024.\n\n(nên có) 6–7 · CHẾCH 45° — đính kèm ảnh 1: \"The same character as the attached image, same pose, same size, rotated 45 degrees so she faces the front-LEFT (then, in another new chat: front-RIGHT) of the image. Hands empty, sleeves not touching the body. Orthographic, plain #DDDDDD background, no text. Square 1024x1024, top of the buns at 10%, soles at 90%.\"\n\nXong: dán ảnh vào chat — Claude chuẩn hoá (nền, cỡ, vạch 10 % / 90 %) và đặt lên artboard. Gemini hay vẽ áo cài chéo thay vì hai vạt song song, tay áo thụng, dải lụa dài bay từ búi, mái thành sợi mảnh, hoặc váy xoè che kín giày — góc nào sai thì tạo lại riêng góc đó.\n"
+    },
+    "dan-tranh-cau-lenh": {
+      "x": 1580,
+      "y": 70444,
+      "w": 720,
+      "text": "Câu lệnh Gemini — Đàn cổ tranh (mô hình AI, kiểu công trình nhỏ). Mã dan-tranh. Ảnh 1 trước, các ảnh sau đính kèm ảnh 1. Mỗi câu một cuộc trò chuyện MỚI. Không cần đính kèm nhân vật.\n\n1 · CHẾCH 3/4 — không đính kèm (hoặc đính kèm design/models/anh/nhan-vat-truoc.png chỉ để giữ kiểu render):\nA single object in a cute 3D vinyl toy / clay style with soft rounded edges (same rendering style as a Pop Mart figure): a Chinese guzheng zither lying flat on two short wooden legs, about 1.6 m long, seen from a 3/4 high angle. Long narrow wooden body in warm paulownia brown #8A5A3A with a gently ARCHED top surface, the head end slightly higher and wider than the tail end, darker wood trim #5A3A28 at both ends. A row of small ivory #F1EBDD bridges (movable bridges) standing on the top, arranged in a clear DIAGONAL line across the body. NO strings, or only very faint thin lines — strings will be added separately. A short soft red silk tassel #B5584A at the head end (hanging no lower than the body). Chunky simple shapes, large clear color areas, few small details. No person, no hands, no text, no characters, no patterns with writing. Soft even studio light with gentle form shading, no outlines, no cel shading. Plain flat light grey background #DDDDDD, no ground shadow, no frame, no logo, no watermark. Square 1024x1024, the zither centered and filling about 85% of the width.\n\n2 · TỪ TRÊN — đính kèm ảnh 1:\nThe same object as the attached image, same style, colors and lighting, seen STRAIGHT FROM ABOVE (top orthographic view), the zither lying horizontally across the image, head end on the LEFT. The diagonal row of ivory bridges clearly visible. No strings. Plain #DDDDDD background, no shadow, no text. Square 1024x1024, filling about 85% of the width.\n\n3 · NGANG TRƯỚC — đính kèm ảnh 1:\nThe same object as the attached image, same style, colors and lighting, seen from the FRONT at the eye level of a person sitting behind it (straight side elevation, orthographic, no perspective), head end on the LEFT: show the thickness of the body, the arched top, the bridges as small bumps, and the two short wooden legs. Plain #DDDDDD background, no shadow, no text. Square 1024x1024, filling about 85% of the width.\n\n4 · TỪ ĐẦU ĐÀN — đính kèm ảnh 1:\nThe same object as the attached image, same style, colors and lighting, seen straight from the HEAD END (end view, orthographic): the arched cross-section of the body, the red tassel, the front legs. Plain #DDDDDD background, no shadow, no text. Square 1024x1024, object centered.\n\n5 · MẶT DƯỚI — đính kèm ảnh 1:\nThe same object as the attached image, same style, colors and lighting, turned over and seen from BELOW: the flat underside of warm brown wood with two simple oval sound holes, the legs. Plain #DDDDDD background, no shadow, no text. Square 1024x1024, filling about 85% of the width.\n\nXong: dán ảnh vào chat — Claude chuẩn hoá và đặt lên artboard. Dựng model: /tai-nguyen (loại công trình), ≈ 1 500–2 500 tam giác; 21 dây do code vẽ.\n"
+    },
+    "tieu-de-thanh-cong-cu": {
+      "x": 0,
+      "y": 71364,
+      "text": "Thanh công cụ đáy màn + Biểu cảm + Túi đồ (phiếu 2026-11-15-thanh-cong-cu, V-64)",
       "kind": "title1",
       "maxW": 3000
     }

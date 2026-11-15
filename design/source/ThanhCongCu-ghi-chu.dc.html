@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>ThanhCongCu-ghi-chu</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;700&amp;family=Lora:wght@700&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="position:relative;width:1240px;height:720px;overflow:hidden;font-family:'Be Vietnam Pro',system-ui,sans-serif;color:#24323A"><div style="position:absolute;inset:0;background:#F4F7F6;padding:28px 32px;box-sizing:border-box;display:grid;grid-template-columns:1fr 1fr 1fr;gap:28px;font-size:13px;line-height:1.5">
+<div><div style="font:700 22px Lora,Georgia,serif;margin-bottom:8px">Thanh — số đo</div>
+<div style="padding:3px 0">• <b>Dọc</b>: viên kính sát đáy — trái / phải 12, đáy safe + 8 (42), cao 60, bo 20, đệm 4; nền kính .9, viền trắng + ngoài <code>slate</code> 16 %, bóng 0 6 18 .2. 5 ô bằng nhau (≈ 73 × 52, chạm ≥ 44): biểu tượng 24 nét 2 + nhãn 11/700.</div>
+<div style="padding:3px 0">• <b>Ngang</b>: giữa đáy — trái 232, rộng 380, đáy safe + 8 (29), cao 56. Không nâng gì (khe 175…647).</div>
+<div style="padding:3px 0">• <b>Bản đồ nổi bật</b>: biểu tượng trong đĩa <code>jade</code> 34, nét trắng — cách đi chính ở vùng.</div>
+<div style="padding:3px 0">• Chấm son Nhiệm vụ: 18, viền trắng 1,5, số 11/700 — góc trên phải biểu tượng.</div>
+<div style="padding:3px 0">• Trạng thái ô: nhấn thu 94 % + nền <code>slate</code> 8 % · mờ: biểu tượng + chữ 45 % · đang mở: đĩa <code>jade</code> chữ trắng, nhãn <code>jade</code>, nền ô <code>jade</code> 10 %.</div>
+<div style="padding:3px 0">• <b>HUD dọc nâng 60</b>: joystick dưới 114 (cũ 62 — nâng 52 vì joystick thật ở chỗ chạm), cụm hành động dưới 110, khung kênh dưới 244, Trò chuyện phải 22 dưới 298, Đọc sách (viên <code>jade</code> 52) phải 16 dưới 370, Trang trí phải 20 dưới 434 (khi có Đọc sách; không có → 370).</div>
+<div style="padding:3px 0">• <b>Ngang</b>: Trò chuyện phải 63 / Trang trí phải 127 / Đọc sách phải 191 (khi có Trang trí), cùng dưới 214 — một hàng trên cụm.</div>
+<div style="padding:3px 0">• Vùng thanh không nhận joystick (R-DIEU-1).</div>
+</div>
+<div><div style="font:700 22px Lora,Georgia,serif;margin-bottom:8px">Bảng · tấm</div>
+<div style="padding:3px 0">• <b>Biểu cảm</b>: tấm kính .96 bo 18 nổi trên thanh (dọc: trái / phải 12, đáy 112; ngang: rộng 420 giữa, đáy 95), mũi nhọn trỏ ô Biểu cảm; lưới 4 × 2, ô 72 (ngang 64) bo 12 trắng: hình 32 + tên 11/700. Chạm ô → đóng + diễn. Chạm ngoài / kéo joystick / bấm lại → đóng.</div>
+<div style="padding:3px 0">• <b>Túi đồ</b>: dọc tấm đáy cao 600 (tay nắm, cảnh tối 12 %; che thanh), ngang cột phải 340. Đầu: vòng <code>jade</code> + "Túi đồ" 16/700 + viên số dư (xu 22) + nút Đóng 36. <b>4 mục cuộn</b> (không tab — thấy hết một lần): tiêu đề 12/700 hoa + viên số; hạt / nông sản = chip (hình 36 + tên + × n), lưới dọc 3 / 2 cột; sách = hàng có "Đọc" (<code>jade</code>, cao 34); đồ trang trí = thẻ nhỏ, đang đặt viền <code>jade</code> 2 + nhãn "Đang đặt". Ngăn trống: khung nét đứt + dòng chỉ chỗ lấy. Chân: "Chỉ xem — …".</div>
+<div style="padding:3px 0">• <b>Tấm báo "Bạn đang ở Nhà của ta"</b>: <code>slate</code> bo 12, 2 s; dọc: cạnh phải bản đồ nhỏ (trái 172, trên 103); ngang: giữa, ngay trên thanh (đáy 95).</div>
+</div>
+<div><div style="font:700 22px Lora,Georgia,serif;margin-bottom:8px">Ẩn · chuỗi</div>
+<div style="padding:3px 0">• Thanh <b>trượt xuống + mờ 0,2 s</b> khi: màn tải, cưỡi hạc, bài học / màn Flutter, bản đồ truyền tống, bản đồ lớn, thoại NPC, ngồi bàn chơi, chế độ trang trí, bảng vườn, ô nhập trò chuyện, Túi đồ (dọc). Hiện lại: trượt lên 0,2 s.</div>
+<div style="padding:3px 0">• Đang ngồi (Ngồi ôn / bồ đoàn / đôn trà): thanh <b>vẫn hiện</b> (cuộn sách / bảng ngồi giữ nguyên chỗ cũ), Biểu cảm mờ.</div>
+<div style="padding:3px 0">• Giảm chuyển động: hiện / ẩn không trượt.</div>
+<div style="margin-top:6px;font-size:12px;color:#5E6A70">Chuỗi mới: toolbarMap, toolbarHome, toolbarEmote, toolbarBag, toolbarDaily, toolbarDailyAria, homeHere, emoteWave, emoteBow, emoteDeepBow, emoteClap, emoteLaugh, emoteCheer, emoteThink, emoteRest, bagTitle, bagSeeds, bagCrops, bagBooks, bagDecor, bagPlaced, bagSeedsEmpty, bagCropsEmpty, bagBooksEmpty, bagDecorEmpty, bagClose, bagReadOnly, bagBookProgress.</div>
+</div></div></div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1240,"height":720}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>
