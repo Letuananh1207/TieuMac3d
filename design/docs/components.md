@@ -176,3 +176,9 @@ Một chất liệu: kính mờ `frost*` + viền `frost-line` / `frost-outline`
 | Thành phần | Artboard | Token |
 |---|---|---|
 | Hình minh hoạ đất sét (ảnh WebP alpha, `design/icons/xuat/<mã>.webp`) thay biểu tượng nét — thanh công cụ, nút hành động, cột phải; hình người có bản `-nut` cắt nửa trên cho nút tròn | `HinhMinhHoa-dot1`, `HinhMinhHoa-HUD-doc` | (ảnh — không token) |
+
+## Thêm ở 2026-11-16.3
+
+| Thành phần | Artboard | Token |
+|---|---|---|
+| Hình minh hoạ đợt 2 — nút nổi bám vật / HUD trò chơi (hình 28 trong viên kính sương) và biểu cảm Tiểu Mặc (bản `-mat` cắt sát mặt cho ô 32 + bong bóng 34) | `HinhMinhHoa-dot2` | (ảnh — không token) |

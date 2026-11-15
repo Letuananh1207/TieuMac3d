@@ -3,6 +3,22 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-16.3 — Hình minh hoạ đợt 2: nút nổi + HUD trò chơi (10) · biểu cảm (7 + 7 bản cắt sát mặt)
+
+- Loại: giao diện · tài nguyên (ảnh). Màn: nút nổi bám vật, HUD trò chơi / vườn, bảng Biểu cảm + bong bóng trên đầu. Đặc tả `docs/screen_specs.md`
+  mục "Hình minh hoạ — đợt 2".
+- Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-15-hinh-minh-hoa.md` (V-72; phiếu còn trong máy). Đợt 2 / 3 — **chốt một phần** (người dùng "chốt"
+  khi còn thiếu 4 hình). Vẽ trong phiên VS Code theo vai thiết kế.
+- Có: `icons/xuat/{ngoi,ra-san,xem-bang,vao-tiem,vao-hoc,gieo,tuoi,thu,mo-o,ban}.webp` · `{vay-tay,chap-tay,vo-tay,cuoi,nhay-mung,suy-nghi,ngoi-nghi}.webp`
+  + bản `-mat` của 7 biểu cảm (tổng 120 KB); gốc 512 `icons/nguon/`; câu lệnh `icons/hinh.json`.
+- **Quyết định** (người dùng 2026-11-16): ô biểu cảm + bong bóng dùng bản cắt sát mặt `-mat` (ở 32–34 px bản nửa người làm mặt chỉ ~12 px).
+- `gieo`, `ban` hơi chéo — dùng tạm. Tách nền thêm bước khoét lỗ nền kín (trong quai xô `tuoi`).
+- **Còn chờ (đợt 2b)**: `noi-chuyen` (chưa tạo) · `cach-choi`, `van-moi` (chéo 3/4 → tạo lại chính diện) · `cui-chao` (không cúi). Bốn chỗ đó giữ biểu
+  tượng nét. Bảng so sánh dấu thao tác nhỏ. Bản đồ vùng: đợt 3.
+- Cho phiên code (`/ui-apply`): chép hình mới qua `web/scripts/hinh.mjs` như đợt 1; thay biểu tượng nút nổi (`Ngồi`, `Rời bàn`, `Xem bảng`, `Vào tiệm`,
+  `Vào học`, vườn `Gieo/Tưới/Thu/Mở ô/Bán`) và ô / bong bóng biểu cảm (dùng `-mat`); cỡ theo đặc tả.
+- Ảnh: `screens/HinhMinhHoa-dot2.png`.
+
 ## 2026-11-16.2 — Hình minh hoạ đợt 1: thanh công cụ + nút hành động (11 hình + 4 bản cắt nửa trên)
 
 - Loại: giao diện · tài nguyên (ảnh). Màn: HUD — thanh công cụ, cụm nút hành động, cột phải. Đặc tả `docs/screen_specs.md` mục "Hình minh hoạ — đợt 1".
