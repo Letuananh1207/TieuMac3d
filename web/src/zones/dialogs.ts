@@ -2,6 +2,11 @@
  * Hội thoại với NPC (R-NPC-2): dữ liệu lời thoại + bộ chạy hội thoại. Không three, không DOM — khung thoại (giao diện)
  * chờ thiết kế (phiếu `docs/phieu_thiet_ke/2026-11-13-hoi-thoai-npc.md`), nối ở `main.ts`.
  */
+import { placeName } from './journeyMap';
+
+/** vùng học bộ thủ: tên lấy từ bản đồ (R-HANH-1), không viết cứng */
+const FOREST = placeName('rung-truc');
+const SECOND = placeName('giang-nam');
 
 /** Một lựa chọn của người chơi. `next` = mã câu tiếp theo; `null` = đóng khung thoại (Tạm biệt). */
 export interface DialogChoice {
@@ -59,7 +64,7 @@ export const DIALOGS: Dialog[] = [
       },
       {
         id: 'tu-chu',
-        text: 'Sư phụ Mặc Ông đứng ở Truyền Tống Đài trên đỉnh Thiên Bậc đó! Đạo hữu tới hỏi thầy, thầy chỉ cho cách sang Rừng trúc tu chữ.',
+        text: `Sư phụ Mặc Ông đứng ở Truyền Tống Đài trên đỉnh Thiên Bậc đó! Đạo hữu tới hỏi thầy, thầy chỉ cho cách sang ${FOREST} tu chữ.`,
         choices: [{ text: 'Hôm nay Tiểu Mặc thế nào?', next: 'hom-nay' }, OTHER, BYE],
       },
       {
@@ -96,12 +101,12 @@ export const DIALOGS: Dialog[] = [
       },
       {
         id: 'vung',
-        text: 'Rừng trúc mở sẵn cho người mới. Học đủ bộ thủ ở Rừng trúc thì Giang Nam mở; học càng nhiều chữ, càng nhiều vùng mở ra.',
+        text: `${FOREST} mở sẵn cho người mới. Học đủ bộ thủ ở ${FOREST} thì ${SECOND} mở; học càng nhiều chữ, càng nhiều vùng mở ra.`,
         choices: [{ text: 'Sang đó học thế nào ạ?', next: 'hoc' }, OTHER, BYE],
       },
       {
         id: 'hoc',
-        text: 'Sang Rừng trúc, tìm chỗ yên tĩnh mà ngồi thiền. Tâm tĩnh thì chữ tự hiện: nét, âm, nghĩa. Mỗi lần ngồi lĩnh hội một chữ — chậm mà chắc, chớ vội.',
+        text: `Sang ${FOREST}, tìm chỗ yên tĩnh mà ngồi thiền. Tâm tĩnh thì chữ tự hiện: nét, âm, nghĩa. Mỗi lần ngồi lĩnh hội một chữ — chậm mà chắc, chớ vội.`,
         choices: [{ text: 'Con nhớ rồi ạ', next: 'nho' }, OTHER, BYE],
       },
       {

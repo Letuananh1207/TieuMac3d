@@ -12,6 +12,10 @@ import type { GameNpc, GameResult, GameView } from './ui/gameView';
 import { NPC_RADIUS, createNpc, type Npc } from './player/npc';
 import type { BoardPoint, GameTable } from './scene/gameTable';
 import type { SeatSpot } from './zones/seats';
+import { placeName } from './zones/journeyMap';
+
+/** vùng học bộ thủ: tên lấy từ bản đồ (R-HANH-1), không viết cứng */
+const FOREST = placeName('rung-truc');
 
 /** R-GIAO-1: đứng cách ghế dưới khoảng này (m) thì Ngồi = ngồi vào bàn. */
 export const TABLE_SIT_DIST = 1.5;
@@ -27,7 +31,7 @@ export const GAME_LINES = {
   coThua: 'Đạo hữu cao tay quá!',
   coThang: 'Ha, lần này đệ thắng rồi!',
   coHoa: 'Ngang tài ngang sức!',
-  dauChuaHoc: 'Con hãy tới Rừng trúc tu luyện trước, học vài bộ thủ rồi lại đây đấu với lão.',
+  dauChuaHoc: `Con hãy tới ${FOREST} tu luyện trước, học vài bộ thủ rồi lại đây đấu với lão.`,
   dauChuaHocRoi: 'Vâng, con đi đây (rời bàn)',
   dauThua: 'Khá lắm! Con nhớ bộ thủ chắc hơn lão tưởng.',
   dauThang: 'Lần này lão hơn một chút. Ôn thêm rồi lại đấu nhé con.',

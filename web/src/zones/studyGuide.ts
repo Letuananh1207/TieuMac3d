@@ -5,6 +5,10 @@
  */
 import { gameGuide, type GameGuide, type GameSign } from './gameGuides';
 import { LIBRARIAN } from './library';
+import { placeName } from './journeyMap';
+
+/** vùng học bộ thủ: tên lấy từ bản đồ (R-HANH-1), không viết cứng */
+const FOREST = placeName('rung-truc');
 
 /** Mã biển khu tự học trong danh sách biển có nút nổi (cạnh `kind` của bàn chơi). */
 export const STUDY_KIND = 'tu-hoc';
@@ -15,7 +19,7 @@ export const STUDY_GUIDE: GameGuide = {
   name: 'Khu tự học',
   intro: 'Ngồi bồ đoàn, mở cuộn sách ôn bộ thủ đã học.',
   figure: 'tu-hoc',
-  caption: 'Ngồi **1 giây** → cuộn sách mở. Ở đây **ôn** và **xem bộ đã học**; học bộ mới ở Rừng trúc.',
+  caption: `Ngồi **1 giây** → cuộn sách mở. Ở đây **ôn** và **xem bộ đã học**; học bộ mới ở ${FOREST}.`,
   sections: [
     {
       title: 'Ngồi vào bồ đoàn',
@@ -26,8 +30,8 @@ export const STUDY_GUIDE: GameGuide = {
       body: 'Ngồi đủ **1 giây** → nhập định, cuộn sách mở trên tay. Chọn **"Ôn bộ đến hạn"** để ôn (ôn đúng được Văn tiền) hoặc **"Xem bộ đã học"** để mở lại thẻ cũ. Đóng thẻ / màn ôn → vẫn ngồi, cuộn sách hiện lại.',
     },
     {
-      title: 'Học bộ mới ở Rừng trúc',
-      body: 'Trong trấn, **"Học bộ mới"** mờ, ghi "Học ở Rừng trúc". Muốn học bộ mới: ra **Truyền Tống Đài**, chọn Rừng trúc rồi Ngồi ôn ở đó.',
+      title: `Học bộ mới ở ${FOREST}`,
+      body: `Trong trấn, **"Học bộ mới"** mờ, ghi "Học ở ${FOREST}". Muốn học bộ mới: ra **Truyền Tống Đài**, chọn ${FOREST} rồi Ngồi ôn ở đó.`,
     },
     {
       title: 'Đứng dậy',
@@ -40,7 +44,7 @@ export const STUDY_GUIDE: GameGuide = {
   none: {
     icon: 'ban-do',
     title: 'Đạo hữu chưa học bộ thủ nào',
-    body: 'Cuộn sách ở đây chỉ để ôn, nên chưa có gì để ôn. Hãy tới **Rừng trúc** học bộ đầu tiên — đi Truyền Tống Đài, chọn Rừng trúc.',
+    body: `Cuộn sách ở đây chỉ để ôn, nên chưa có gì để ôn. Hãy tới **${FOREST}** học bộ đầu tiên — đi Truyền Tống Đài, chọn ${FOREST}.`,
   },
 };
 

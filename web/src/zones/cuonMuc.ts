@@ -6,6 +6,10 @@
  */
 import { RADICALS, type Radical } from './radicals';
 import type { StudyItemId, StudyMenu } from './studyMenu';
+import { placeName } from './journeyMap';
+
+/** vùng học bộ thủ: tên lấy từ bản đồ (R-HANH-1), không viết cứng */
+const FOREST = placeName('rung-truc');
 
 export type CuonRowId = StudyItemId | 'stand';
 /** thường · nổi bật (vệt mực ngọc) · mờ (lý do) */
@@ -30,10 +34,10 @@ export interface CuonView {
 export const CUON_TITLE = 'Ngồi ôn';
 export const CUON_SEAL = 'Ôn';
 export const STAND_UP = 'Đứng dậy';
-const HINT = 'Chưa học bộ nào. Đến Truyền Tống Đài, chọn Rừng trúc rồi Ngồi ôn để học bộ đầu tiên.';
+const HINT = `Chưa học bộ nào. Đến Truyền Tống Đài, chọn ${FOREST} rồi Ngồi ôn để học bộ đầu tiên.`;
 const REASON: Record<string, string> = {
   reviewedToday: 'Hôm nay đã ôn xong',
-  learnInRegion: 'Học ở Rừng trúc',
+  learnInRegion: `Học ở ${FOREST}`,
   allLearned: 'Đã học đủ',
 };
 

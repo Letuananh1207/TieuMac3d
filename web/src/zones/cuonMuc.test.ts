@@ -12,7 +12,7 @@ const uvOf = (l: ReturnType<typeof cuonLayout>, b: { x: number; y: number; w: nu
 ];
 
 describe('cuộn sách Ngồi ôn — mục in trên giấy (R-ON-8, thiết kế 2026-11-14.21)', () => {
-  it('R-ON-8: quảng trường, 2 bộ đến hạn, học 5 bộ → "Ôn bộ đến hạn (2)" nổi bật, "Học bộ mới" mờ "Học ở Rừng trúc", "5 / 50 bộ"', () => {
+  it('R-ON-8: quảng trường, 2 bộ đến hạn, học 5 bộ → "Ôn bộ đến hạn (2)" nổi bật, "Học bộ mới" mờ "Học ở Rừng Trúc Rì Rào", "5 / 50 bộ"', () => {
     const learned = ids.slice(0, 5);
     const due = learned.slice(0, 2);
     const v = cuonView(studyMenu({ due, learned, hasLessons: false }), due, 'Khởi Nguyên Trấn · Quảng Trường');
@@ -23,21 +23,21 @@ describe('cuộn sách Ngồi ôn — mục in trên giấy (R-ON-8, thiết k�
     ]);
     expect(text(v.rows[0]!.sub)).toContain('mỗi bộ 2 câu');
     expect(v.rows[0]!.sub.filter((s) => s.han).map((s) => s.text)).toEqual(due.map((id) => RADICALS.find((r) => r.id === id)!.form));
-    expect(text(v.rows[1]!.sub)).toBe('Học ở Rừng trúc');
+    expect(text(v.rows[1]!.sub)).toBe('Học ở Rừng Trúc Rì Rào');
     expect(text(v.rows[2]!.sub)).toBe(`5 / ${RADICALS.length} bộ`);
     expect(v.hint).toBeNull();
   });
 
-  it('R-ON-8: chưa học bộ nào → 3 mục mờ, không nổi bật, có dòng gợi ý đi Rừng trúc', () => {
+  it('R-ON-8: chưa học bộ nào → 3 mục mờ, không nổi bật, có dòng gợi ý đi Rừng Trúc Rì Rào', () => {
     const v = cuonView(studyMenu({ due: [], learned: [], hasLessons: false }), [], 'Khởi Nguyên Trấn');
     expect(v.rows.map((r) => r.look)).toEqual(['mo', 'mo', 'mo']);
     expect(text(v.rows[0]!.sub)).toBe('Chưa có bộ nào để ôn');
     expect(text(v.rows[2]!.sub)).toBe('Chưa học bộ nào');
-    expect(v.hint).toContain('Rừng trúc');
+    expect(v.hint).toContain('Rừng Trúc Rì Rào');
   });
 
-  it('R-ON-8: Rừng trúc, không bộ đến hạn → "Học bộ mới" nổi bật ghi bộ kế tiếp; Ôn mờ "Hôm nay đã ôn xong"', () => {
-    const v = cuonView(studyMenu({ due: [], learned: ids.slice(0, 3), hasLessons: true }), [], 'Rừng trúc');
+  it('R-ON-8: Rừng Trúc Rì Rào, không bộ đến hạn → "Học bộ mới" nổi bật ghi bộ kế tiếp; Ôn mờ "Hôm nay đã ôn xong"', () => {
+    const v = cuonView(studyMenu({ due: [], learned: ids.slice(0, 3), hasLessons: true }), [], 'Rừng Trúc Rì Rào');
     expect(v.rows[1]!.look).toBe('noi');
     expect(text(v.rows[1]!.sub)).toContain('Bộ kế tiếp: ');
     expect(text(v.rows[0]!.sub)).toBe('Hôm nay đã ôn xong');

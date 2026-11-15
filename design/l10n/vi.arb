@@ -66,7 +66,7 @@
       }
     }
   },
-  "mapNeedRadicals": "{name} — cần học xong bộ thủ Rừng trúc",
+  "mapNeedRadicals": "{name} — cần học xong bộ thủ Rừng Trúc Rì Rào",
   "@mapNeedRadicals": {
     "placeholders": {
       "name": {
@@ -92,12 +92,12 @@
   },
   "mapHere": "Đang ở đây",
   "placeVanUyen": "Khởi Nguyên Trấn",
-  "placeRungTruc": "Rừng trúc",
-  "placeGiangNam": "Giang Nam",
-  "placeBongLai": "Bồng Lai",
-  "placeTruongThanh": "Trường Thành",
-  "placeTuCamThanh": "Tử Cấm Thành",
-  "placeToLua": "Con đường tơ lụa",
+  "placeRungTruc": "Rừng Trúc Rì Rào",
+  "placeGiangNam": "Phố Nước Lung Linh",
+  "placeBongLai": "Đảo Mây Bồng Bềnh",
+  "placeTruongThanh": "Ải Gió Lồng Lộng",
+  "placeTuCamThanh": "Cung Vàng Rực Rỡ",
+  "placeToLua": "Đường Cát Leng Keng",
   "radicalEyebrow": "Bộ thủ · {region}",
   "@radicalEyebrow": {
     "placeholders": {
@@ -151,7 +151,7 @@
   "dailyEyebrow": "Khởi Nguyên Trấn · cổng nam",
   "dailyClose": "Đóng bảng",
   "dailyLearn": "Lĩnh hội",
-  "dailyLearnSub": "Học {goal} bộ thủ mới. Ngồi thiền ở Rừng trúc để lĩnh hội bộ kế tiếp.",
+  "dailyLearnSub": "Học {goal} bộ thủ mới. Ngồi thiền ở Rừng Trúc Rì Rào để lĩnh hội bộ kế tiếp.",
   "@dailyLearnSub": {
     "placeholders": {
       "goal": {
@@ -159,7 +159,7 @@
       }
     }
   },
-  "dailyLearnFirst": "Học {goal} bộ thủ mới. Tới Truyền Tống Đài → Rừng trúc, ngồi thiền để lĩnh hội bộ đầu tiên.",
+  "dailyLearnFirst": "Học {goal} bộ thủ mới. Tới Truyền Tống Đài → Rừng Trúc Rì Rào, ngồi thiền để lĩnh hội bộ đầu tiên.",
   "@dailyLearnFirst": {
     "placeholders": {
       "goal": {
@@ -510,13 +510,13 @@
   "guideGomokuFigure": "5 quân đen liền chéo sáng lên — đen thắng. Ngang, dọc hay chéo đều được.",
   "guideGomokuTip": "Hàng 4 của đạo hữu, đệ luôn chặn! Muốn thắng phải mở hai đường cùng lúc.",
   "guideDuelIntro": "Ôn bộ thủ đã học — đấu 10 câu với Mặc Ông.",
-  "guideDuelGoal": "Đoán đúng nghĩa bộ thủ nhiều hơn Mặc Ông. Chỉ ôn bộ đã học ở Rừng trúc — không mở bài mới, không tính tiến độ.",
+  "guideDuelGoal": "Đoán đúng nghĩa bộ thủ nhiều hơn Mặc Ông. Chỉ ôn bộ đã học ở Rừng Trúc Rì Rào — không mở bài mới, không tính tiến độ.",
   "guideDuelTurn": "Ván 10 câu, hai bên thay phiên: câu 1, 3, 5, 7, 9 đạo hữu chạm một nghĩa; câu 2, 4, 6, 8, 10 Mặc Ông nghĩ 1–2 giây rồi chọn. Sau mỗi câu, nghĩa đúng hiện ra một chút.",
   "guideDuelResult": "Hết 10 câu: nhiều điểm hơn thì thắng, bằng điểm thì hoà.",
   "guideDuelFigure": "Mỗi câu một bộ thủ + 4 nghĩa, đúng một. Chọn đúng → +1 điểm.",
   "guideDuelTip": "Nhìn hình mà đoán: 木 là cái cây — trên có cành, dưới có rễ.",
   "guideDuelNoneTitle": "Đạo hữu chưa học bộ thủ nào",
-  "guideDuelNoneBody": "Đấu chữ chỉ ôn bộ đã học, nên chưa chơi được. Hãy tới Rừng trúc tu luyện trước — đi Truyền Tống Đài, chọn Rừng trúc.",
+  "guideDuelNoneBody": "Đấu chữ chỉ ôn bộ đã học, nên chưa chơi được. Hãy tới Rừng Trúc Rì Rào tu luyện trước — đi Truyền Tống Đài, chọn Rừng Trúc Rì Rào.",
   "guideSeatBody": "Đứng gần một bồ đoàn → nút \"Vào bàn\". Muốn đứng dậy: kéo cần điều khiển hoặc bấm Ngồi ôn — ván đang chơi bỏ, không tính.",
   "@guideSeatBody": {
     "description": "Theo R-GIAO-1 hiện tại. Nếu áp nút \"Rời bàn\" (đề xuất 2026-11-13.27) → \"…Muốn đứng dậy: bấm Rời bàn — …\""
@@ -623,9 +623,9 @@
       }
     }
   },
-  "learnAtForest": "Học ở Rừng trúc",
+  "learnAtForest": "Học ở Rừng Trúc Rì Rào",
   "learnAllDone": "Đã học đủ",
-  "learnAllDoneBanner": "Đã học đủ 50 bộ thủ Rừng trúc",
+  "learnAllDoneBanner": "Đã học đủ 50 bộ thủ Rừng Trúc Rì Rào",
   "viewLearned": "Xem bộ đã học",
   "viewLearnedSub": "{n} / 50 bộ",
   "@viewLearnedSub": {
@@ -636,7 +636,7 @@
     }
   },
   "viewLearnedNone": "Chưa học bộ nào",
-  "hintGoForest": "Chưa học bộ nào. Đến Truyền Tống Đài, chọn Rừng trúc rồi Ngồi ôn để học bộ đầu tiên.",
+  "hintGoForest": "Chưa học bộ nào. Đến Truyền Tống Đài, chọn Rừng Trúc Rì Rào rồi Ngồi ôn để học bộ đầu tiên.",
   "standUp": "Đứng dậy",
   "learnedTitle": "Bộ đã học",
   "learnedHint": "Chạm một bộ để mở lại thẻ",
@@ -909,19 +909,19 @@
     "description": "Chỉ tiếng Việt (R-HUD-4)"
   },
   "studyGuideIntro": "Ngồi bồ đoàn, mở cuộn sách ôn bộ thủ đã học.",
-  "studyGuideFigure": "Ngồi 1 giây → cuộn sách mở. Ở đây ôn và xem bộ đã học; học bộ mới ở Rừng trúc.",
+  "studyGuideFigure": "Ngồi 1 giây → cuộn sách mở. Ở đây ôn và xem bộ đã học; học bộ mới ở Rừng Trúc Rì Rào.",
   "studyGuideStep1Title": "Ngồi vào bồ đoàn",
   "studyGuideStep1": "Đứng gần một bồ đoàn đỏ → nút nổi \"Ngồi\". Bấm → ngồi xếp bằng, quay mặt về phía nam. Bồ đoàn nào cũng được — 24 chỗ.",
   "studyGuideStep2Title": "Cuộn sách ôn",
   "studyGuideStep2": "Ngồi đủ 1 giây → nhập định, cuộn sách mở trên tay. Chọn \"Ôn bộ đến hạn\" để ôn (ôn đúng được Văn tiền) hoặc \"Xem bộ đã học\" để mở lại thẻ cũ. Đóng thẻ / màn ôn → vẫn ngồi, cuộn sách hiện lại.",
-  "studyGuideStep3Title": "Học bộ mới ở Rừng trúc",
-  "studyGuideStep3": "Trong trấn, \"Học bộ mới\" mờ, ghi \"Học ở Rừng trúc\". Muốn học bộ mới: ra Truyền Tống Đài, chọn Rừng trúc rồi Ngồi ôn ở đó.",
+  "studyGuideStep3Title": "Học bộ mới ở Rừng Trúc Rì Rào",
+  "studyGuideStep3": "Trong trấn, \"Học bộ mới\" mờ, ghi \"Học ở Rừng Trúc Rì Rào\". Muốn học bộ mới: ra Truyền Tống Đài, chọn Rừng Trúc Rì Rào rồi Ngồi ôn ở đó.",
   "studyGuideStep4Title": "Đứng dậy",
   "studyGuideStep4": "Bấm \"Đứng dậy\" trên cuộn sách → đứng khỏi bồ đoàn. Lúc cuộn sách mở, nhân vật ngồi yên.",
   "studyGuideTipName": "Lời thủ thư Điển Thư",
   "studyGuideTip": "Mỗi ngày ôn một ít, chữ sẽ ở lại lâu. Số son trên nút Ngồi ôn là số bộ đến hạn hôm nay.",
   "studyGuideNoneTitle": "Đạo hữu chưa học bộ thủ nào",
-  "studyGuideNoneBody": "Cuộn sách ở đây chỉ để ôn, nên chưa có gì để ôn. Hãy tới Rừng trúc học bộ đầu tiên — đi Truyền Tống Đài, chọn Rừng trúc.",
+  "studyGuideNoneBody": "Cuộn sách ở đây chỉ để ôn, nên chưa có gì để ôn. Hãy tới Rừng Trúc Rì Rào học bộ đầu tiên — đi Truyền Tống Đài, chọn Rừng Trúc Rì Rào.",
   "miniMapLabel": "Bản đồ — chạm để mở",
   "miniMapHint": "Chạm để mở bản đồ",
   "mapTitle": "Bản đồ",

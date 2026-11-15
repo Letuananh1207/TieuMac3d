@@ -1,6 +1,6 @@
 {
   "site": {
-    "name": "Giang Nam",
+    "name": "Phố Nước Lung Linh",
     "han": "江南",
     "areas": [
       {
@@ -616,7 +616,7 @@
       "x": 0,
       "z": 18,
       "width": 5,
-      "title": "Giang Nam",
+      "title": "Phố Nước Lung Linh",
       "roofColor": "#3b3f44"
     }
   ],

@@ -2,6 +2,10 @@
  * Bảng nhiệm vụ hằng ngày 日課榜 trong sân (R-NV-3): chỗ đứng bảng, tầm hiện nút "Xem bảng", số việc còn lại hôm nay
  * (chấm son trên nút — thiết kế 2026-11-13.25). Thuần, không three, không DOM.
  */
+import { placeName } from './journeyMap';
+
+/** vùng học bộ thủ: tên lấy từ bản đồ (R-HANH-1), không viết cứng */
+const FOREST = placeName('rung-truc');
 
 /** R-NV-3: đứng cách bảng dưới khoảng này (m) thì hiện nút "Xem bảng". */
 export const BOARD_RANGE = 2.5;
@@ -82,8 +86,8 @@ export function dailyBoardView(d: DailyFull, allLearned: boolean, learnedTotal: 
     : learnDone
       ? `Đã học ${d.goal} bộ mới hôm nay.`
       : learnedTotal === 0
-        ? `Học ${d.goal} bộ thủ mới. Tới Truyền Tống Đài → Rừng trúc, ngồi thiền để lĩnh hội bộ đầu tiên.`
-        : `Học ${d.goal} bộ thủ mới. Ngồi thiền ở Rừng trúc để lĩnh hội bộ kế tiếp.`;
+        ? `Học ${d.goal} bộ thủ mới. Tới Truyền Tống Đài → ${FOREST}, ngồi thiền để lĩnh hội bộ đầu tiên.`
+        : `Học ${d.goal} bộ thủ mới. Ngồi thiền ở ${FOREST} để lĩnh hội bộ kế tiếp.`;
   const dots = Math.min(d.learned, d.goal);
   return {
     learn: { done: learnDone, dots, count: allLearned ? null : `${dots}/${d.goal}`, sub: learnSub },

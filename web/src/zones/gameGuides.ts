@@ -3,6 +3,10 @@
  * "Cách chơi" → bảng (`ui/guidePanel.ts`). Chữ theo `design/l10n/vi.arb` `guide*`, nói đúng R-GIAO-1, R-CO-1…3,
  * R-DAU-1…2. `**…**` = chữ đậm. Thuần, không three, không DOM. Cùng khung bảng: hướng dẫn Khu tự học (`studyGuide.ts`).
  */
+import { placeName } from './journeyMap';
+
+/** vùng học bộ thủ: tên lấy từ bản đồ (R-HANH-1), không viết cứng */
+const FOREST = placeName('rung-truc');
 
 /** Hai biển lệch cao hơn khoảng này (m) = khác tầng → không hiện nút (như chỗ ngồi, R-VA-4). */
 const FLOOR_GAP = 1;
@@ -104,7 +108,7 @@ const GUIDES: Record<string, GameGuide> = {
     sections: [
       {
         title: 'Mục tiêu',
-        body: 'Đoán đúng nghĩa bộ thủ **nhiều hơn Mặc Ông**. Chỉ ôn bộ đã học ở Rừng trúc — không mở bài mới, không tính tiến độ.',
+        body: `Đoán đúng nghĩa bộ thủ **nhiều hơn Mặc Ông**. Chỉ ôn bộ đã học ở ${FOREST} — không mở bài mới, không tính tiến độ.`,
       },
       {
         title: 'Mỗi lượt',
@@ -118,7 +122,7 @@ const GUIDES: Record<string, GameGuide> = {
     none: {
       icon: 'lua',
       title: 'Đạo hữu chưa học bộ thủ nào',
-      body: 'Đấu chữ chỉ ôn bộ đã học, nên chưa chơi được. Hãy tới **Rừng trúc** tu luyện trước — đi Truyền Tống Đài, chọn Rừng trúc.',
+      body: `Đấu chữ chỉ ôn bộ đã học, nên chưa chơi được. Hãy tới **${FOREST}** tu luyện trước — đi Truyền Tống Đài, chọn ${FOREST}.`,
     },
   },
 };

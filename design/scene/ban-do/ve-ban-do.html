@@ -34,13 +34,13 @@ const REGIONS = [
 ];
 // NƠI (cảnh đi được): x, y = tâm biểu tượng = tâm vùng chạm
 const PLACES = [
-  { id: 'to-lua',       han: '絲路', name: 'Con đường tơ lụa', x: 380,  y: 300 },
-  { id: 'truong-thanh', han: '長城', name: 'Trường Thành',     x: 960,  y: 225 },
-  { id: 'tu-cam-thanh', han: '紫禁', name: 'Tử Cấm Thành',     x: 1450, y: 290 },
-  { id: 'rung-truc',    han: '竹林', name: 'Rừng trúc',        x: 480,  y: 770 },
+  { id: 'to-lua',       han: '絲路', name: 'Đường Cát Leng Keng', x: 380,  y: 300 },
+  { id: 'truong-thanh', han: '長城', name: 'Ải Gió Lồng Lộng', x: 960,  y: 225 },
+  { id: 'tu-cam-thanh', han: '紫禁', name: 'Cung Vàng Rực Rỡ', x: 1450, y: 290 },
+  { id: 'rung-truc',    han: '竹林', name: 'Rừng Trúc Rì Rào', x: 480,  y: 770 },
   { id: 'van-uyen',     han: '起源', name: 'Khởi Nguyên Trấn',    x: 1000, y: 680 },
-  { id: 'giang-nam',    han: '江南', name: 'Giang Nam',        x: 1450, y: 760 },
-  { id: 'bong-lai',     han: '蓬萊', name: 'Bồng Lai',         x: 1880, y: 610, island: true },
+  { id: 'giang-nam',    han: '江南', name: 'Phố Nước Lung Linh', x: 1450, y: 760 },
+  { id: 'bong-lai',     han: '蓬萊', name: 'Đảo Mây Bồng Bềnh', x: 1880, y: 610, island: true },
   { id: 'nha-ta',       han: '我家', name: 'Nhà của ta',       x: 1190, y: 560, r: 80 }
 ];
 const R = 105;          // vùng chạm quanh biểu tượng (nơi có r riêng thì dùng r riêng — Nhà của ta r 80, design 2026-11-14.13)
@@ -426,14 +426,16 @@ function label(g, p) {
   g.save(); g.textAlign = 'center'; g.textBaseline = 'alphabetic'; g.lineJoin = 'round';
   g.font = `700 ${LABEL_VI}px "Be Vietnam Pro"`;
   const vy = p.y + LABEL_DY + LABEL_VI * 0.8;
-  g.lineWidth = 14; g.strokeStyle = 'rgba(242,234,218,.95)'; g.strokeText(p.name, p.x, vy);
-  g.fillStyle = INK; g.fillText(p.name, p.x, vy);
+  // tên dài (V-50, tới 19 ký tự): giữ cả nhãn trong giấy — nơi sát mép (Đảo Mây Bồng Bềnh) dời nhãn vào trong
+  const half = g.measureText(p.name).width / 2 + 7, lx = Math.min(Math.max(p.x, half + 24), W - half - 24);
+  g.lineWidth = 14; g.strokeStyle = 'rgba(242,234,218,.95)'; g.strokeText(p.name, lx, vy);
+  g.fillStyle = INK; g.fillText(p.name, lx, vy);
   p.labelTop = Math.round(vy - LABEL_VI * 0.8); p.labelBottom = Math.round(vy + 12);
   g.restore();
 }
 
 async function draw() {
-  await document.fonts.load(`700 ${LABEL_VI}px "Be Vietnam Pro"`, 'Văn Uyên Tông Rừng trúc Trường Thành Tử Cấm Thành tơ lụa TÂY VỰC YÊN VÂN KINH KỲ TRUNG NGUYÊN BA THỤC NGÔ VIỆT LĨNH NAM ĐIỀN NAM MẠC BẮC ĐÔNG HẢI chưa khám phá');
+  await document.fonts.load(`700 ${LABEL_VI}px "Be Vietnam Pro"`, 'Khởi Nguyên Trấn Nhà của ta Rừng Trúc Rì Rào Phố Nước Lung Linh Đảo Mây Bồng Bềnh Ải Gió Lồng Lộng Cung Vàng Rực Rỡ Đường Cát Leng Keng TÂY VỰC YÊN VÂN KINH KỲ TRUNG NGUYÊN BA THỤC NGÔ VIỆT LĨNH NAM ĐIỀN NAM MẠC BẮC ĐÔNG HẢI chưa khám phá');
   const g = document.getElementById('c').getContext('2d', { willReadFrequently: true });
   paper(g);
   const ids = regionMap();

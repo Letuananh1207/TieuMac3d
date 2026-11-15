@@ -11,7 +11,7 @@ describe('Nút Ngồi ôn — chữ', () => {
     expect(sitButtonText(false, { n: 4, kind: 'due' })).toEqual({ label: 'Ngồi ôn', aria: 'Ngồi ôn, còn 4 bộ đến hạn', badge: '4' });
   });
 
-  it('R-DIEU-7: Rừng trúc 47 bộ chưa học → chấm "47"; từ 100 → "99+"', () => {
+  it('R-DIEU-7: Rừng Trúc Rì Rào 47 bộ chưa học → chấm "47"; từ 100 → "99+"', () => {
     expect(sitButtonText(false, { n: 47, kind: 'new' })).toEqual({ label: 'Ngồi ôn', aria: 'Ngồi ôn, còn 47 bộ chưa học', badge: '47' });
     expect(sitButtonText(false, { n: 120, kind: 'due' }).badge).toBe('99+');
   });

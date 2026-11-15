@@ -40,6 +40,16 @@ export const JOURNEY_MAP: JourneyMapData = {
   style: raw?.trangThai ?? {},
 };
 
+/**
+ * Tên hiển thị của một nơi (R-HANH-1, V-50): nguồn duy nhất là `ten` trong `ban-do.json` — chuỗi giao diện ghép tên
+ * vùng thì gọi hàm này, không viết cứng. Nhận mã nơi trên bản đồ hoặc mã cảnh (`tong-mon` = `van-uyen`); không có thì
+ * trả lại mã.
+ */
+export function placeName(id: string, places: readonly MapPlace[] = JOURNEY_MAP.places): string {
+  const key = id === 'tong-mon' ? HOME_PLACE : id;
+  return places.find((p) => p.id === key)?.ten ?? id;
+}
+
 /** Mã cảnh của một nơi trên bản đồ. */
 export function placeScene(placeId: string, home: string): string {
   return placeId === HOME_PLACE ? home : placeId;

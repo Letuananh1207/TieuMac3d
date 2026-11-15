@@ -33,7 +33,8 @@ const out = await build({
       "export { ringTrigger, arrivalSpot, daisLayout } from './src/scene/teleportLayout.ts';\n" +
       "export { landingPad, START_HEADING } from './src/scene/hacDuong.ts';\n" +
       "export { RADICALS, checkRadicals } from './src/zones/radicals.ts';\n" +
-      "export { applyVariant } from './src/scene/bienThe.ts';\n",
+      "export { applyVariant } from './src/scene/bienThe.ts';\n" +
+      "export { checkPlaceNames } from './src/scene/placeNames.ts';\n",
     resolveDir: web,
     loader: 'ts',
   },
@@ -45,7 +46,7 @@ const out = await build({
   define: { 'import.meta.glob': 'globalThis.__viteGlob' },
   loader: { '.png': 'empty', '.jpg': 'empty', '.glb': 'empty', '.css': 'empty', '.woff2': 'empty' },
 });
-const { buildWorld, Colliders, checkRoute, routeLength, DRAFT_TOWN_NPCS, Scene, resolveSceneSpec, roomKinds, zoneAnchors, placeZones, ZONE_CONTENT, moonRadius, gateOpening, lauClearHeight, lauTop, wallGates, ringTrigger, arrivalSpot, daisLayout, landingPad, START_HEADING, RADICALS, checkRadicals, applyVariant } = await import(
+const { checkPlaceNames, buildWorld, Colliders, checkRoute, routeLength, DRAFT_TOWN_NPCS, Scene, resolveSceneSpec, roomKinds, zoneAnchors, placeZones, ZONE_CONTENT, moonRadius, gateOpening, lauClearHeight, lauTop, wallGates, ringTrigger, arrivalSpot, daisLayout, landingPad, START_HEADING, RADICALS, checkRadicals, applyVariant } = await import(
   `data:text/javascript;base64,${Buffer.from(out.outputFiles[0].text).toString('base64')}`
 );
 
@@ -55,6 +56,8 @@ if (!files.includes('scene.json')) files.unshift('');
 let errors = 0;
 /** cổng đi bộ mỗi cảnh (mã cảnh → portals) để kiểm chéo cặp cổng sau vòng lặp (R-HANH-4) */
 const portalsOf = new Map();
+/** mã cảnh → site.name, để so với tên nơi trên bản đồ truyền tống (R-HANH-1) */
+const siteNames = new Map();
 for (const f of files) {
   const rel = f ? `design/scene/${f}` : 'design/scene/scene.json';
   let raw;
@@ -73,8 +76,10 @@ for (const f of files) {
 Chưa có ${rel} — dùng cảnh mặc định trong code.`);
   }
   errors += checkScene(rel, raw);
+  if (typeof raw?.site?.name === 'string') siteNames.set(f === 'scene.json' ? 'tong-mon' : f.slice(0, -5), raw.site.name);
 }
 errors += checkPortalPairs();
+errors += checkMapNames();
 // biến thể bố cục (design/scene/bien_the/*.json — chỉ Canvas 3D `?bocuc=`, scene/bienThe.ts): ghép lên scene.json rồi kiểm như tông môn
 const vdir = resolve(dir, 'bien_the');
 if (existsSync(vdir) && files.includes('scene.json')) {
@@ -111,6 +116,20 @@ function checkPortalPairs() {
   }
   if (!bad && [...portalsOf.values()].some((l) => l.length)) console.log('\nCổng đi bộ giữa các cảnh: ghép cặp đúng.');
   return bad;
+}
+
+/** Tên nơi: site.name từng đặc tả trùng `ten` của ban-do.json cùng mã; tên ngắn, chỉ chữ Việt (R-HANH-1, R-HUD-4). */
+function checkMapNames() {
+  const mapFile = resolve(dir, 'ban-do', 'ban-do.json');
+  if (!existsSync(mapFile)) return 0;
+  const places = JSON.parse(readFileSync(mapFile, 'utf8')).noi ?? [];
+  const bad = checkPlaceNames(siteNames, places);
+  if (bad.length) {
+    console.error(`\nTên nơi (design/scene/ban-do/ban-do.json ↔ site.name): ${bad.length} lỗi:\n- ${bad.join('\n- ')}`);
+    return bad.length;
+  }
+  console.log(`\nTên nơi: ${places.map((p) => p.ten).join(' · ')} — đặc tả cảnh và bản đồ cùng tên.`);
+  return 0;
 }
 
 function sceneRel(id) {

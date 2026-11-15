@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { JOURNEY_MAP, placeAt, placeScene, placeStates, type MapPlace } from './journeyMap';
+import { JOURNEY_MAP, placeAt, placeName, placeScene, placeStates, type MapPlace } from './journeyMap';
 
 const at = (id: string): MapPlace => ({ id, han: '', ten: id, x: 0, y: 0, r: 1 });
 const places = ['van-uyen', 'rung-truc', 'giang-nam', 'bong-lai'].map(at);
@@ -35,5 +35,27 @@ describe('Nhà của ta trên bản đồ (R-NHA-1, thiết kế 2026-11-14.13)'
     const home = placeStates(JOURNEY_MAP.places, 'nha-ta', 'tong-mon', scenes);
     expect(home['nha-ta']).toBe('oDay');
     expect(home['van-uyen']).toBe('mo');
+  });
+});
+
+describe('tên vùng một nguồn (R-HANH-1, V-50)', () => {
+  it('R-HANH-1: placeName đọc ten của ban-do.json; mã cảnh tong-mon = Khởi Nguyên Trấn; mã lạ trả lại mã', () => {
+    expect(placeName('rung-truc')).toBe('Rừng Trúc Rì Rào');
+    expect(placeName('giang-nam')).toBe('Phố Nước Lung Linh');
+    expect(placeName('bong-lai')).toBe('Đảo Mây Bồng Bềnh');
+    expect(placeName('truong-thanh')).toBe('Ải Gió Lồng Lộng');
+    expect(placeName('tu-cam-thanh')).toBe('Cung Vàng Rực Rỡ');
+    expect(placeName('to-lua')).toBe('Đường Cát Leng Keng');
+    expect(placeName('tong-mon')).toBe('Khởi Nguyên Trấn');
+    expect(placeName('khong-co')).toBe('khong-co');
+  });
+
+  it('R-HANH-1: chuỗi giao diện không còn tên vùng cũ viết cứng', async () => {
+    const { STUDY_GUIDE } = await import('./studyGuide');
+    const { gameGuide } = await import('./gameGuides');
+    const { DIALOGS } = await import('./dialogs');
+    const all = JSON.stringify([STUDY_GUIDE, gameGuide('dau-chu'), DIALOGS]);
+    for (const old of ['Rừng trúc', 'Giang Nam', 'Con đường tơ lụa']) expect(all).not.toContain(old);
+    expect(all).toContain('Rừng Trúc Rì Rào');
   });
 });
