@@ -4,7 +4,7 @@ import cursorArrow from './cursor/tro.svg?raw';
 import cursorButton from './cursor/tro-nut.svg?raw';
 import { installCursors } from './ui/cursor';
 import { openTrialStore } from './bridge/browserStore';
-import { FlutterBridge, getProgress, hasFlutter } from './bridge/flutterBridge';
+import { FlutterBridge, getGarden, getHome, getProgress, hasFlutter } from './bridge/flutterBridge';
 import { Colliders } from './collision/colliders';
 import { GamePlay, type TableSeat } from './gamePlay';
 import { Joystick } from './input/joystick';
@@ -830,7 +830,7 @@ async function boot(): Promise<void> {
     loading.show(loadScene(to).spec.site); // loading.active → nhân vật đứng yên
     void nextPaint().then(go);
   };
-  // thanh công cụ (R-THANH-1/2, R-HANH-6/7, R-BIEU-1/2) — thanhCongCu.ts; HUD chờ thiết kế, máy tính dùng phím
+  // thanh công cụ (R-THANH-1/2, R-HANH-6/7, R-BIEU-1…3, R-TUI-1) — thanhCongCu.ts (HUD thiết kế 2026-11-15.35)
   thanh = new ThanhCongCu({
     context: () => ({
       loading: loading.active || travelling,
@@ -858,6 +858,18 @@ async function boot(): Promise<void> {
     goHome: () => travel(HOME_OF_PLAYER, 'thanh'),
     openDaily,
     emote: (e) => (e.asBow ? player.bow() : void player.emote(e.id, e.seconds, e.sits)),
+    bubble: (e) => chat.emote(e.id),
+    // túi đồ ở mọi cảnh: số đã lưu (getGarden / getHome — docs/bridge.md; chế độ thử: ví thử R-TIEN-7)
+    bagSource: async () => {
+      const w = trial?.wallet;
+      const [garden, home] = w ? [w.garden, { placed: w.placed, owned: w.owned }] : await Promise.all([getGarden(), getHome()]);
+      const b = borrowedBook(desk.book);
+      return { garden, home, book: b ? { title: b.title, subtitle: b.subtitle } : null, coins: w?.coins ?? progress?.coins ?? null };
+    },
+    readBook: () => {
+      player.moveTarget = null;
+      void desk.read();
+    },
   });
   // `?debug`: kịch bản thử / chụp ảnh gọi thẳng truyền tống (`__hocXaTravel('rung-truc')`), thanh (`__hocXaThanh.press('veNha')`)
   if (params.has('debug')) Object.assign(window, { __hocXaTravel: travel, __hocXaThanh: thanh });
@@ -910,7 +922,7 @@ async function boot(): Promise<void> {
     // hướng đi khoá khi giữ joystick cùng hướng → camera tự xoay không làm nhân vật đi vòng (R-DIEU-3)
     // cưỡi hạc: hoạt cảnh giữ nhân vật + camera (không đi, camera không bám)
     const riding = !!ride?.owns;
-    if (!riding) player.update(dt, input, orbit.steerYaw(input.x, input.y), paused || loading.active || mapOpen || areaMap.open || talking || chat.typing || !!decor?.active || !!garden?.active);
+    if (!riding) player.update(dt, input, orbit.steerYaw(input.x, input.y), paused || loading.active || mapOpen || areaMap.open || talking || chat.typing || !!decor?.active || !!garden?.active || !!thanh?.busy);
     const pos = player.position;
     // camera bám êm: dây kéo + tự về sau lưng chậm (R-DIEU-3)
     if (!riding) orbit.follow(dt, pos.x - fromX, pos.z - fromZ, character.facing.rotation.y, player.state.mps > 0);
@@ -919,7 +931,7 @@ async function boot(): Promise<void> {
     danTranh?.update({ dt, player: pos, camera, covered: paused || covered || loading.active || travelling }); // R-AM-2
     gamePlay.update(dt);
     gameHud.render(talking ? null : gamePlay.view());
-    if (ring && !travelling && !loading.active && !mapOpen) {
+    if (ring && !travelling && !loading.active && !mapOpen && !thanh?.busy) {
       if (ring.update(pos, dt)) openMap();
       world.teleport?.setCharge(ring.charge);
     }

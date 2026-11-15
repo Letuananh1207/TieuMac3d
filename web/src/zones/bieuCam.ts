@@ -1,7 +1,7 @@
 /**
  * Biểu cảm nhân vật (R-BIEU-1/2 — kế hoạch docs/tasks/2026-11-15-thanh-cong-cu.md): 8 biểu cảm, tên Việt, thời lượng,
  * kiểu diễn. Thuần — test `bieuCam.test.ts`. Dáng 3D ở `player/bieuCamDang.ts` (theo mã), đồng hồ ở
- * `player/controller.ts` `emote()`; bảng chọn + bong bóng hình chờ thiết kế (phiếu `2026-11-15-thanh-cong-cu`).
+ * `player/controller.ts` `emote()`; bảng chọn `ui/emotePanel.ts`, bong bóng hình `ui/emoteBubble.ts` (thiết kế 2026-11-15.35).
  */
 
 export type EmoteId = 'vay-tay' | 'chap-tay' | 'cui-chao' | 'vo-tay' | 'cuoi' | 'nhay-mung' | 'suy-nghi' | 'ngoi-nghi';
@@ -16,7 +16,7 @@ export interface Emote {
   sits: boolean;
   /** gọi đúng động tác Chào có sẵn (`PlayerController.bow` — R-DIEU-7) thay vì dáng riêng */
   asBow: boolean;
-  /** có bong bóng hình trên đầu (R-BIEU-1; hình chờ thiết kế) */
+  /** có bong bóng hình trên đầu (R-BIEU-1/3 — Chắp tay, Cúi chào, Ngồi nghỉ: không) */
   bubble: boolean;
 }
 
@@ -43,6 +43,20 @@ export const EMOTES: readonly Emote[] = [
 
 /** Bong bóng hình trên đầu hiện khoảng bấy nhiêu giây (R-BIEU-1). */
 export const EMOTE_BUBBLE_SECONDS = 2.5;
+/** Bong bóng hình: phóng 90 → 100 % trong 0,15 s, giữ, mờ 0,4 s (thiết kế 2026-11-15.35 `BieuCam-bong-bong`). */
+export const EMOTE_BUBBLE_GROW_S = 0.15;
+export const EMOTE_BUBBLE_FADE_S = 0.4;
+
+/**
+ * Bong bóng hình [age] giây sau khi chọn (R-BIEU-1/3): độ đậm + cỡ; hết (sau 2,5 s + 0,4 s mờ) → null. Giảm chuyển động →
+ * hiện / tắt không phóng to (cỡ luôn 1).
+ */
+export function emoteBubbleLook(age: number, reducedMotion: boolean): { opacity: number; scale: number } | null {
+  if (age < 0 || age >= EMOTE_BUBBLE_SECONDS + EMOTE_BUBBLE_FADE_S) return null;
+  const opacity = age <= EMOTE_BUBBLE_SECONDS ? 1 : 1 - (age - EMOTE_BUBBLE_SECONDS) / EMOTE_BUBBLE_FADE_S;
+  const scale = reducedMotion ? 1 : 0.9 + 0.1 * Math.min(1, age / EMOTE_BUBBLE_GROW_S);
+  return { opacity, scale };
+}
 
 export function emoteById(id: string): Emote | undefined {
   return EMOTES.find((x) => x.id === id);

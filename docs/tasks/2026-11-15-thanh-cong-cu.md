@@ -6,7 +6,7 @@
   sắp lại HUD nếu cần, safe area).
 - Việc: V-20261115-64 · nhánh `viec/thanh-cong-cu`
 - Loại: thêm (HUD mới + luồng đi lại + động tác nhân vật) · sửa hành vi (R-HANH-2/5, R-NHA-1, R-NV-3) · Cỡ: **lớn**
-- Trạng thái: **chờ thiết kế** — phần lõi (1–6, 11) xong trên nhánh `viec/thanh-cong-cu-2`; 7–10 chờ phiếu; 12 bỏ qua. Trước đó: **đã duyệt 2026-11-15** — người dùng chọn 1A (thanh sát đáy, nâng HUD ~60 px), 2A (ở nhà: nút mờ + thẻ), 3A (hai nút Túi đồ / Nhiệm vụ, thanh 5 nút), 4A (túi đồ tấm đáy web); NV1 chờ V-65 gộp (phần HUD: chờ thiết kế — phiếu `docs/phieu_thiet_ke/2026-11-15-thanh-cong-cu.md`)
+- Trạng thái: **xong** (2026-11-15) — 1–11 xong (7–10 áp thiết kế 2026-11-15.35, nhánh `viec/thanh-hud`); 12 bỏ qua (tuỳ chọn). Chờ: đo fps Android, xem máy dọc + ngang. Trước đó: **đã duyệt 2026-11-15** — người dùng chọn 1A (thanh sát đáy, nâng HUD ~60 px), 2A (ở nhà: nút mờ + thẻ), 3A (hai nút Túi đồ / Nhiệm vụ, thanh 5 nút), 4A (túi đồ tấm đáy web); NV1 chờ V-65 gộp (phần HUD: chờ thiết kế — phiếu `docs/phieu_thiet_ke/2026-11-15-thanh-cong-cu.md`)
 
 ## Liên quan việc song song V-65 (xoá vòng trận ở 6 vùng)
 
@@ -187,14 +187,14 @@ Làm được ngay (sau khi duyệt) — 1…6, 11; chờ thiết kế (phiếu 
 - [x] 6. **Ghép** (I = Túi đồ chỉ ghi Console tới NV9; B rồi 1…8 trong 4 s) `web/src/thanhCongCu.ts`: nối 2–5 + `openDaily` từ mọi nơi + hỏi `getGarden` / `getHome` ngoài nhà khi
   mở túi; phím T / H / B / I / J (`input/keyboard.ts`); B chọn biểu cảm tạm bằng phím số 1–8 tới khi có bảng; `mapBack`
   đóng bảng biểu cảm / túi trước. `main.ts` thêm vài dòng. (ghép · xong khi trên máy tính dùng được hết bằng phím)
-- [ ] 7. **HUD thanh đáy + sắp lại HUD** — chờ thiết kế (`2026-11-15-thanh-cong-cu`): `ui/toolbar.ts` + `ui/toolbar.css`,
+- [x] 7. **HUD thanh đáy + sắp lại HUD** (2026-11-15.35 đã áp: `ui/toolbar.ts` + `ui/toolbar.css`; nâng HUD dọc trong `style.css` / `chat.css` / `decor.css`) — chờ thiết kế (`2026-11-15-thanh-cong-cu`): `ui/toolbar.ts` + `ui/toolbar.css`,
   `index.html`; dời `#joyGhost`, `#actions`, `#chatBtn`, `#chatFeed`, `#readBook`, `#decorBtn` theo thiết kế (dọc + ngang,
   safe area); lớp `body.*` ẩn thanh. (ui · `actionButtons.test.ts` vẫn xanh · xem máy dọc + ngang)
-- [ ] 8. **Bảng biểu cảm + bong bóng hình** — chờ thiết kế: `ui/emotePanel.ts`, `ui/chatBubbles.ts` kiểu hình, 8 biểu
+- [x] 8. **Bảng biểu cảm + bong bóng hình** (đã áp: `ui/emotePanel.ts`, `ui/emoteBubble.ts` ghép ở `chatRoom.ts`, hình `ui/toolbarIcons.ts`) — chờ thiết kế: `ui/emotePanel.ts`, `ui/chatBubbles.ts` kiểu hình, 8 biểu
   tượng SVG (`ui/emoteIcons.ts`). (ui)
-- [ ] 9. **Túi đồ** — chờ thiết kế: `zones/tuiDo.ts` (view thuần: ngăn, dòng trống — test R-TUI-1), `ui/bagPanel.ts` (tấm đáy
+- [x] 9. **Túi đồ** (đã áp: `zones/tuiDo.ts` + test, `ui/bagPanel.ts`; mục Sách chưa có dòng trang / hạn trả — cầu nối chưa có số) — chờ thiết kế: `zones/tuiDo.ts` (view thuần: ngăn, dòng trống — test R-TUI-1), `ui/bagPanel.ts` (tấm đáy
   kiểu `gardenPanel`). (zones + ui)
-- [ ] 10. **Thẻ "Bạn đang ở Nhà của ta"** + nút Về nhà mờ — chờ thiết kế (dùng lại tấm báo nếu thiết kế cho). (ui)
+- [x] 10. **Thẻ "Bạn đang ở Nhà của ta"** + nút Về nhà mờ (đã áp: `ui/toolbar.ts` `homeHere`) — chờ thiết kế (dùng lại tấm báo nếu thiết kế cho). (ui)
 - [x] 11. **Tài liệu** (`getGarden` / `getHome` chưa đổi lúc hỏi — làm cùng NV9; `bridge.md` ghi đổi vùng bằng thanh): `docs/bridge.md` cột "khi" của `getGarden` / `getHome` (thêm: mở túi đồ ở mọi cảnh); bảng tính năng
   `.claude/skills/lead/SKILL.md`. (docs)
 - [ ] 12. *(tuỳ chọn)* **NPC đáp lại** R-BIEU-4 — `townNpcs.ts` / `player/npc.ts` quay mặt + chào, `chat.npcSay`. (player + ghép)

@@ -10,6 +10,8 @@ import { NpcChatter } from './chat/npcChatter';
 import type { Npc } from './player/npc';
 import { ChatBubbles, type BubbleAnchor } from './ui/chatBubbles';
 import { ChatPanel } from './ui/chatPanel';
+import { EmoteBubble } from './ui/emoteBubble';
+import type { EmoteId } from './zones/bieuCam';
 
 /** Bong bóng của mình nằm trên nhãn tên (cao 24) + hở 4 (thiết kế 2026-11-14.9). */
 const ABOVE_NAME_TAG = 28;
@@ -35,6 +37,8 @@ export class ChatRoom {
   private readonly channel: ChatChannel = new LocalChannel();
   private readonly timer = new BubbleTimer();
   private readonly bubbles = new ChatBubbles(document.body);
+  /** bong bóng hình khi diễn biểu cảm — chỉ trên máy mình, không gửi lên kênh (R-BIEU-3) */
+  private readonly emoteBubble = new EmoteBubble();
   private readonly panel: ChatPanel;
   private readonly me: Speaker = { id: 'player', name: 'Ta', kind: 'player' };
   private readonly anchors = new Map<string, BubbleAnchor>();
@@ -77,6 +81,11 @@ export class ChatRoom {
     this.channel.send(this.npcSpeaker(id), text, now());
   }
 
+  /** Bong bóng hình trên đầu mình khi diễn biểu cảm (R-BIEU-1/3) — không thay bong bóng tin đang hiện. */
+  emote(id: EmoteId): void {
+    this.emoteBubble.show(id, now());
+  }
+
   /** Gọi mỗi khung. */
   update(f: ChatFrame): void {
     const t = now();
@@ -94,6 +103,8 @@ export class ChatRoom {
       this.anchor(this.anchors.get(n.id)?.speaker ?? this.npcSpeaker(n.id), p.x, p.y + NPC_HEAD, p.z, 4);
     }
     this.bubbles.update(this.timer.active(t), this.anchors, f.camera, t, f.busy);
+    const me = this.anchors.get(this.me.id);
+    this.emoteBubble.update(me?.at ?? f.player, ABOVE_NAME_TAG, f.camera, t, f.busy || !me);
   }
 
   private npcSpeaker(id: string): Speaker {

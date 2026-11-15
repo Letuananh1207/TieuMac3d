@@ -1,7 +1,7 @@
 /**
  * Thanh công cụ đáy màn (R-THANH-1/2, R-HANH-6/7 — kế hoạch docs/tasks/2026-11-15-thanh-cong-cu.md): 5 nút, trạng thái
  * từng nút theo ngữ cảnh + việc phải làm khi chạm. Thuần (không three, không DOM) — test `thanhCongCu.test.ts`.
- * HUD (hình nút, chỗ đặt) chờ thiết kế (phiếu `2026-11-15-thanh-cong-cu`); máy tính dùng phím T / H / B / I / J.
+ * HUD: `ui/toolbar.ts` (thiết kế 2026-11-15.35 `ThanhCongCu-*`); máy tính dùng phím T / H / B / I / J.
  */
 
 export type ToolId = 'banDo' | 'veNha' | 'bieuCam' | 'tuiDo' | 'nhiemVu';
@@ -25,6 +25,9 @@ export const TOOL_KEYS: Record<ToolId, string> = { banDo: 't', veNha: 'h', bieuC
 export const HOME_HERE_TEXT = 'Bạn đang ở Nhà của ta';
 export const HOME_HERE_SECONDS = 2;
 
+/** Bảng đang mở từ thanh: bảng Biểu cảm (nổi trên thanh) hay tấm Túi đồ (che thanh — R-THANH-1). */
+export type ToolPanel = 'bieuCam' | 'tuiDo';
+
 /** Ngữ cảnh cho thanh — mỗi khung `main.ts` / `thanhCongCu.ts` gom từ các cờ đang có. */
 export interface ToolContext {
   /** màn tải, hoặc đang đổi cảnh */
@@ -47,6 +50,8 @@ export interface ToolContext {
   garden: boolean;
   /** ô nhập trò chuyện mở */
   chatTyping: boolean;
+  /** bảng đang mở từ thanh (Túi đồ mở → thanh ẩn — R-THANH-1, R-TUI-1) */
+  panel: ToolPanel | null;
   /** đang ngồi (Ngồi ôn kể cả cuộn sách mở, chỗ ngồi, bồ đoàn, đôn trà) — không tính bàn chơi (đã ẩn) */
   sitting: boolean;
   /** đang nhảy (trên không) */
@@ -64,11 +69,13 @@ export interface ToolbarView {
   on: Record<ToolId, boolean>;
   /** chấm son trên nút Nhiệm vụ: số việc còn lại, 0 = không chấm */
   badge: number;
+  /** nút "đang mở" (bảng Biểu cảm mở → đĩa ngọc, nhãn ngọc) */
+  active: ToolId | null;
 }
 
 /** Thanh có bị ẩn không (R-THANH-1) — mọi lý do ẩn đều là tạm: đóng / xong là hiện lại. */
 export function toolbarHidden(c: ToolContext): boolean {
-  return c.loading || c.crane || c.covered || c.travelMap || c.areaMap || c.talking || c.gameTable || c.decorating || c.garden || c.chatTyping;
+  return c.loading || c.crane || c.covered || c.travelMap || c.areaMap || c.talking || c.gameTable || c.decorating || c.garden || c.chatTyping || c.panel === 'tuiDo';
 }
 
 /** Trạng thái các nút (R-THANH-1/2, R-HANH-7, R-BIEU-1). */
@@ -84,7 +91,13 @@ export function toolbarView(c: ToolContext): ToolbarView {
       nhiemVu: visible,
     },
     badge: Math.max(0, c.tasksLeft ?? 0),
+    active: visible ? c.panel : null,
   };
+}
+
+/** Tên đọc cho trợ năng: Nhiệm vụ còn việc → "Nhiệm vụ, còn n việc" (chuỗi `toolbarDailyAria`). */
+export function toolAria(id: ToolId, badge: number): string {
+  return id === 'nhiemVu' && badge > 0 ? `${TOOL_NAMES.nhiemVu}, còn ${badge} việc` : TOOL_NAMES[id];
 }
 
 /**

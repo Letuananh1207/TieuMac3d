@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { HOME_HERE_TEXT, TOOL_NAMES, TOOL_ORDER, toolForKey, toolStep, toolbarView, type ToolContext } from './thanhCongCu';
+import { HOME_HERE_TEXT, TOOL_NAMES, TOOL_ORDER, toolAria, toolForKey, toolStep, toolbarView, type ToolContext } from './thanhCongCu';
 
 const base: ToolContext = {
   loading: false,
@@ -12,6 +12,7 @@ const base: ToolContext = {
   decorating: false,
   garden: false,
   chatTyping: false,
+  panel: null,
   sitting: false,
   air: false,
   atHome: false,
@@ -45,6 +46,22 @@ describe('thanh công cụ (R-THANH-1)', () => {
     // đang ngồi / đang nhảy → thanh vẫn hiện
     expect(toolbarView(at({ sitting: true })).visible).toBe(true);
     expect(toolbarView(at({ air: true })).visible).toBe(true);
+  });
+
+  it('R-THANH-1: Túi đồ mở → thanh ẩn (tấm che); bảng Biểu cảm mở → thanh hiện, nút Biểu cảm "đang mở"', () => {
+    expect(toolbarView(at({ panel: 'tuiDo' })).visible).toBe(false);
+    const emo = toolbarView(at({ panel: 'bieuCam' }));
+    expect(emo.visible).toBe(true);
+    expect(emo.active).toBe('bieuCam');
+    expect(toolbarView(base).active).toBeNull();
+    // bị ẩn vì việc khác → không nút nào "đang mở"
+    expect(toolbarView(at({ panel: 'bieuCam', talking: true })).active).toBeNull();
+  });
+
+  it('R-THANH-1: trợ năng Nhiệm vụ "còn n việc"; xong hết → chỉ tên', () => {
+    expect(toolAria('nhiemVu', 2)).toBe('Nhiệm vụ, còn 2 việc');
+    expect(toolAria('nhiemVu', 0)).toBe('Nhiệm vụ');
+    expect(toolAria('tuiDo', 2)).toBe('Túi đồ');
   });
 
   it('R-THANH-1: phím T H B I J', () => {

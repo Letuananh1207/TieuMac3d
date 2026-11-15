@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { describe, expect, it } from 'vitest';
 import { Colliders } from './collision/colliders';
-import { EMOTES, emoteByDigit, emoteById } from './zones/bieuCam';
+import { EMOTES, emoteBubbleLook, emoteByDigit, emoteById } from './zones/bieuCam';
 import { emotePose, emoteWeight } from './player/bieuCamDang';
 import type { Character, CharacterState } from './player/character';
 import { BOW_TIME, PlayerController } from './player/controller';
@@ -125,5 +125,25 @@ describe('biểu cảm (R-BIEU-2)', () => {
     expect(last()?.idle).toBe(0);
     run(player, 1.5);
     expect(last()?.idle).toBeLessThan(1);
+  });
+});
+
+describe('bong bóng hình (R-BIEU-1/3)', () => {
+  it('R-BIEU-3: chỉ 5 biểu cảm có bóng — Chắp tay, Cúi chào, Ngồi nghỉ chỉ diễn', () => {
+    expect(EMOTES.filter((e) => e.bubble).map((e) => e.id)).toEqual(['vay-tay', 'vo-tay', 'cuoi', 'nhay-mung', 'suy-nghi']);
+  });
+
+  it('R-BIEU-1: phóng 90 → 100 % trong 0,15 s, giữ tới 2,5 s, mờ 0,4 s rồi tắt', () => {
+    expect(emoteBubbleLook(0, false)).toEqual({ opacity: 1, scale: 0.9 });
+    expect(emoteBubbleLook(0.15, false)?.scale).toBeCloseTo(1);
+    expect(emoteBubbleLook(2.5, false)?.opacity).toBe(1);
+    expect(emoteBubbleLook(2.7, false)?.opacity).toBeCloseTo(0.5);
+    expect(emoteBubbleLook(2.9, false)).toBeNull();
+    expect(emoteBubbleLook(-1, false)).toBeNull();
+  });
+
+  it('R-BIEU-3: giảm chuyển động → hiện / tắt không phóng to', () => {
+    expect(emoteBubbleLook(0, true)?.scale).toBe(1);
+    expect(emoteBubbleLook(2.7, true)?.scale).toBe(1);
   });
 });

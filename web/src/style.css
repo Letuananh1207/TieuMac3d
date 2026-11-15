@@ -81,7 +81,7 @@ button:focus-visible{outline:2px solid var(--jade);outline-offset:2px}
 .label{position:fixed;z-index:4;pointer-events:none;transform:translate(-50%,-100%);height:20px;display:flex;align-items:center;font-size:13px;font-weight:700;letter-spacing:.02em;line-height:1;white-space:nowrap;color:#F4F1EA;-webkit-text-stroke:.6px rgba(36,50,58,.9);paint-order:stroke fill;text-shadow:0 1px 2px rgba(36,50,58,.85),0 0 6px rgba(36,50,58,.45)}
 
 /* joystick: gợi ý (chưa chạm) và vòng đang giữ (hiện ở chỗ ngón chạm, R-DIEU-1) */
-#joyGhost{position:fixed;z-index:3;pointer-events:none;left:calc(var(--sa-left) + 36px);bottom:calc(var(--sa-bottom) + 28px);width:110px;height:110px;box-sizing:border-box;border-radius:50%;border:1px solid var(--frost-line);outline:1px solid rgba(36,50,58,.2);background:var(--frost-weak);-webkit-backdrop-filter:var(--blur-joy);backdrop-filter:var(--blur-joy);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;font-weight:700}
+#joyGhost{position:fixed;z-index:3;pointer-events:none;left:calc(var(--sa-left) + 36px);bottom:calc(var(--sa-bottom) + 80px);width:110px;height:110px;box-sizing:border-box;border-radius:50%;border:1px solid var(--frost-line);outline:1px solid rgba(36,50,58,.2);background:var(--frost-weak);-webkit-backdrop-filter:var(--blur-joy);backdrop-filter:var(--blur-joy);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;font-weight:700}
 #joyGhost .knob{width:40px;height:40px;border-radius:50%;background:rgba(43,84,70,.85);border:1px solid rgba(255,255,255,.9)}
 #joy{position:fixed;z-index:6;pointer-events:none;width:120px;height:120px;margin:-60px 0 0 -60px;box-sizing:border-box;border-radius:50%;border:1px solid var(--frost-line);outline:1px solid rgba(36,50,58,.22);background:rgba(244,247,246,.38);-webkit-backdrop-filter:var(--blur-joy);backdrop-filter:var(--blur-joy)}
 #joy::before{content:"";position:absolute;left:50%;top:50%;width:6px;height:6px;margin:-3px 0 0 -3px;border-radius:50%;background:rgba(36,50,58,.35)}
@@ -229,8 +229,9 @@ html.hac body > :not(#stage):not(#loading):not(#crane){visibility:hidden !import
   #dailyClose{width:120px;height:48px;align-self:flex-end}
 }
 
-/* cụm nút hành động (R-DIEU-6/7) — canvas HUD-hanh-dong-doc / -ngang, NutHanhDong-trang-thai, mục 2026-11-13.9 */
-#actions{position:fixed;z-index:5;right:16px;bottom:calc(var(--sa-bottom) + 16px);width:170px;height:170px;pointer-events:none}
+/* cụm nút hành động (R-DIEU-6/7) — canvas HUD-hanh-dong-doc / -ngang, NutHanhDong-trang-thai, mục 2026-11-13.9; dọc nâng lên
+   trên thanh công cụ (2026-11-15.35: đáy 110 = safe + 76) */
+#actions{position:fixed;z-index:5;right:16px;bottom:calc(var(--sa-bottom) + 76px);width:170px;height:170px;pointer-events:none}
 #actions .act{position:absolute;display:flex;flex-direction:column;align-items:center;gap:3px}
 #actions .act-jump{right:0;bottom:0}
 #actions .act-bow{right:86px;bottom:6px}
@@ -263,8 +264,8 @@ html.hac body > :not(#stage):not(#loading):not(#crane){visibility:hidden !import
 #talk .tip,#seat .tip,#board .tip,#guide .tip,#shop .tip{width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:8px solid var(--jade)}
 #talk .who,#board .who,#guide .who,#shop .who{margin-top:4px;height:24px;box-sizing:border-box;padding:0 10px;display:flex;align-items:center;gap:6px;background:rgba(244,247,246,.86);border:1px solid var(--frost-line);outline:1px solid var(--frost-outline);border-radius:999px;font-size:12px;font-weight:700;white-space:nowrap;pointer-events:none}
 #talk .han,#dialog .han{font-family:var(--han);font-weight:700}
-/* thẻ "Đọc sách": ngay trên cụm nút hành động (cao 170 + cách 12) — 2026-11-13.28 */
-#readBook{position:fixed;z-index:5;right:16px;bottom:calc(var(--sa-bottom) + 198px);height:52px;box-sizing:border-box;padding:0 14px 0 8px;font:inherit;color:var(--slate);border-radius:14px;background:rgba(244,247,246,.88);border:1px solid var(--frost-line);outline:1px solid var(--frost-outline);box-shadow:0 4px 14px rgba(36,50,58,.18);display:flex;align-items:center;gap:10px}
+/* thẻ "Đọc sách" (2026-11-13.28) — cột phải dọc xếp Trò chuyện → Đọc sách → Trang trí (2026-11-15.35: đáy 370 = safe + 336) */
+#readBook{position:fixed;z-index:5;right:16px;bottom:calc(var(--sa-bottom) + 336px);height:52px;box-sizing:border-box;padding:0 14px 0 8px;font:inherit;color:var(--slate);border-radius:14px;background:rgba(244,247,246,.88);border:1px solid var(--frost-line);outline:1px solid var(--frost-outline);box-shadow:0 4px 14px rgba(36,50,58,.18);display:flex;align-items:center;gap:10px}
 #readBook[hidden]{display:none}
 #readBook .cover{width:28px;height:36px;box-sizing:border-box;border-radius:2px 5px 5px 2px;color:#fff;box-shadow:inset 3px 0 0 rgba(0,0,0,.2);display:flex;align-items:center;justify-content:center;font-family:var(--han);font-weight:700;font-size:15px}
 #readBook .txt{display:flex;flex-direction:column;align-items:flex-start;line-height:1.2}
@@ -305,6 +306,11 @@ body.map-open #actions,body.map-open #talk,body.map-open #seat{display:none}
   #dialog{left:calc(var(--sa-left) + 12px);right:calc(var(--sa-right) + 12px);display:grid;grid-template-columns:1fr 240px;column-gap:18px;align-items:start}
   #dialog .choices{grid-column:2;grid-row:1}
   #dialog .say{grid-column:1;grid-row:1}
+}
+/* ngang thấp (2026-11-15.35): cùng hàng trên cụm — Trò chuyện · Trang trí · Đọc sách (không có Trang trí → chỗ Trang trí) */
+@media (orientation:landscape) and (max-height:600px){
+  #readBook{right:calc(var(--sa-right) + 144px);bottom:220px}
+  body:has(#decorBtn[hidden]) #readBook,body:not(:has(#decorBtn)) #readBook{right:calc(var(--sa-right) + 80px)}
 }
 /* bản đồ truyền tống (R-HANH-2) — canvas BanDo-doc / BanDo-ngang, mục 2026-11-13.9. Cuộn 3D ở dọc: rộng 97 % màn
    (cao ≈ 57,2vw), tâm ở 40 % chiều cao → gợi ý ở trên mép cuộn 46 px, thẻ dưới mép cuộn 21 px */

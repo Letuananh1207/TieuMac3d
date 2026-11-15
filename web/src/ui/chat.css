@@ -3,8 +3,8 @@
 #chat .han,#chatBubbles .han{font-family:var(--han);font-weight:700}
 #chat .jade{color:var(--jade)}
 
-/* nút "Trò chuyện": tròn 48 kính, bên phải ngay trên cụm hành động */
-#chatBtn{position:fixed;z-index:5;right:20px;bottom:calc(var(--sa-bottom) + 204px);display:flex;flex-direction:column;align-items:center;gap:3px}
+/* nút "Trò chuyện": tròn 48 kính, bên phải ngay trên cụm hành động (dọc nâng trên thanh công cụ — 2026-11-15.35: phải 22, đáy 298) */
+#chatBtn{position:fixed;z-index:5;right:22px;bottom:calc(var(--sa-bottom) + 264px);display:flex;flex-direction:column;align-items:center;gap:3px}
 #chatBtn button{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-sizing:border-box;padding:0;color:var(--slate);background:rgba(244,247,246,.86);border:1px solid var(--frost-line);outline:1px solid var(--frost-outline);box-shadow:var(--shadow-hud);-webkit-backdrop-filter:var(--blur-hud);backdrop-filter:var(--blur-hud);transition:transform .08s;touch-action:manipulation}
 #chatBtn button:active{transform:scale(.94);background:rgba(214,222,220,.95);outline-color:rgba(36,50,58,.22);box-shadow:none}
 #chatBtn .lbl{font-size:11px;font-weight:700;color:var(--slate);background:rgba(244,247,246,.82);border-radius:999px;padding:1px 7px;white-space:nowrap}
@@ -12,7 +12,7 @@
 @media (hover:hover) and (pointer:fine){#chatBtn .lbl{display:none}#chatBtn .key{display:block}}
 
 /* khung thu gọn: 3 tin cuối trên joystick, không bắt chạm (R-DIEU-1); im lặng 10 s → mờ hết (R-CHAT-3) */
-#chatFeed{position:fixed;z-index:3;left:16px;bottom:calc(var(--sa-bottom) + 184px);width:min(250px,calc(100% - 120px));display:flex;flex-direction:column;align-items:flex-start;gap:4px;pointer-events:none;opacity:0;transition:opacity .6s}
+#chatFeed{position:fixed;z-index:3;left:16px;bottom:calc(var(--sa-bottom) + 210px);width:min(250px,calc(100% - 120px));display:flex;flex-direction:column;align-items:flex-start;gap:4px;pointer-events:none;opacity:0;transition:opacity .6s}
 #chatFeed.show{opacity:1;transition-duration:.2s}
 .cf-line{max-width:100%;box-sizing:border-box;padding:3px 9px;border-radius:8px;background:rgba(244,247,246,.78);font-size:13px;line-height:1.35;color:var(--slate);overflow-wrap:anywhere}
 .cf-line:nth-last-child(3){opacity:.55}

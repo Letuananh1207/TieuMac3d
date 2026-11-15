@@ -1,5 +1,5 @@
 # Phiếu: Thanh công cụ đáy màn + bảng Biểu cảm + Túi đồ (HUD)
-- Trạng thái: chờ thiết kế
+- Trạng thái: đã áp (2026-11-15.35)
 - Đã vẽ: 2026-11-15.35 (15 artboard: thanh 5 nút + HUD dọc nâng 60, ở nhà, đang ngồi, trạng thái nút, bảng Biểu cảm + bong bóng hình, Túi đồ 4 mục cuộn — đặc tả `design/docs/screen_specs.md` mục "Thanh công cụ")
 - Đợi bởi: kế hoạch `docs/tasks/2026-11-15-thanh-cong-cu.md` (V-20261115-64, nhiệm vụ 7–10)
 - Ghi chú: viết theo phương án đề xuất của kế hoạch (dọc: thanh sát đáy, nâng joystick + cụm ≈ 60 px · ở nhà: Về nhà mờ ·

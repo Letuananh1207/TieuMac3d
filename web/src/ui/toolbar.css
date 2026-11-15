@@ -1,0 +1,109 @@
+/* Thanh công cụ đáy màn + bảng Biểu cảm + bong bóng hình + Túi đồ (thiết kế 2026-11-15.35 — design/docs/screen_specs.md
+   "Thanh công cụ đáy màn…", artboard ThanhCongCu-*, BieuCam-*, TuiDo-*). DOM: ui/toolbar.ts, emotePanel.ts, emoteBubble.ts,
+   bagPanel.ts. Chỗ joystick / cụm hành động / cột phải / khung kênh sau khi nâng: style.css, chat.css, decor.css. */
+
+/* thanh: viên kính .9, bo 20, đệm 4, 5 ô bằng nhau cách 2. Dọc: trái / phải 12, đáy safe + 8, cao 60 */
+#toolbar{position:fixed;z-index:5;left:calc(var(--sa-left) + 12px);right:calc(var(--sa-right) + 12px);bottom:calc(var(--sa-bottom) + 8px);height:60px;box-sizing:border-box;padding:4px;border-radius:20px;background:rgba(244,247,246,.9);border:1px solid var(--frost-line);outline:1px solid var(--frost-outline);box-shadow:0 6px 18px rgba(36,50,58,.2);-webkit-backdrop-filter:var(--blur-hud);backdrop-filter:var(--blur-hud);display:flex;gap:2px;transition:transform .2s ease,opacity .2s ease,visibility 0s;touch-action:manipulation}
+/* ẩn (R-THANH-1): trượt xuống + mờ 0,2 s; không bắt chạm */
+#toolbar.tb-hidden{transform:translateY(calc(100% + var(--sa-bottom) + 12px));opacity:0;visibility:hidden;pointer-events:none;transition:transform .2s ease,opacity .2s ease,visibility 0s .2s}
+.tb-cell{flex:1;min-width:0;height:100%;border:0;margin:0;padding:0;border-radius:14px;background:transparent;color:var(--slate);font:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transition:transform .08s,background-color .08s;-webkit-tap-highlight-color:transparent}
+.tb-disc{position:relative;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.tb-disc svg{display:block}
+.tb-lbl{font-size:11px;font-weight:700;white-space:nowrap;line-height:1.2}
+/* Bản đồ nổi bật: đĩa ngọc 34, biểu tượng 20 trắng */
+.tb-banDo .tb-disc{background:var(--jade);color:#fff;box-shadow:inset 0 -2px 0 rgba(0,0,0,.18)}
+/* nhấn: thu 94 %, nền slate 8 % */
+.tb-cell:active{transform:scale(.94);background:rgba(36,50,58,.08)}
+/* mờ: biểu tượng + chữ 45 % (Về nhà ở nhà vẫn chạm được → tấm báo) */
+.tb-cell.off .tb-disc svg,.tb-cell.off .tb-lbl{opacity:.45}
+.tb-cell.off:active{transform:none;background:transparent}
+/* đang mở (Biểu cảm / Túi đồ): đĩa ngọc biểu tượng trắng, nhãn ngọc, nền ô ngọc 10 % */
+.tb-cell.open{background:rgba(43,84,70,.1)}
+.tb-cell.open .tb-disc{background:var(--jade);color:#fff}
+.tb-cell.open .tb-lbl{color:var(--jade)}
+/* chấm son Nhiệm vụ: lacquer 18, viền trắng 1,5, số 11/700 */
+.tb-badge{position:absolute;right:-8px;top:-6px;min-width:18px;height:18px;padding:0 5px;box-sizing:border-box;border-radius:999px;background:var(--lacquer);border:1.5px solid #fff;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.tb-badge[hidden]{display:none}
+
+/* tấm báo "Bạn đang ở Nhà của ta" (R-HANH-7): slate bo 12, nhà 18 + chữ 13/700. Dọc: cạnh bản đồ nhỏ */
+#homeHere{position:fixed;z-index:7;left:calc(var(--sa-left) + 16px + var(--minimap,148px) + 8px);top:calc(var(--sa-top) + 56px);padding:10px 12px;border-radius:12px;background:var(--slate);color:#fff;font-size:13px;font-weight:700;line-height:1.45;box-shadow:0 8px 22px rgba(36,50,58,.35);display:flex;gap:10px;align-items:center;white-space:nowrap;pointer-events:none}
+#homeHere[hidden]{display:none}
+
+/* bảng Biểu cảm (R-BIEU-1): kính .96 bo 18 nổi trên thanh, lưới 4 × 2 cách 8, mũi nhọn 16 × 8 */
+#emotePanel{position:fixed;z-index:6;left:calc(var(--sa-left) + 12px);right:calc(var(--sa-right) + 12px);bottom:calc(var(--sa-bottom) + 78px);box-sizing:border-box;padding:10px;border-radius:18px;background:rgba(244,247,246,.96);border:1px solid var(--frost-line);outline:1px solid var(--frost-outline);box-shadow:0 10px 26px rgba(36,50,58,.24)}
+#emotePanel[hidden]{display:none}
+.ep-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.ep-cell{height:72px;border:0;margin:0;padding:0;border-radius:12px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:#fff;outline:1px solid rgba(36,50,58,.12);color:var(--slate);font:inherit;transition:transform .08s}
+.ep-cell:active{transform:scale(.94);background:rgba(43,84,70,.1)}
+.ep-cell svg{display:block;flex:0 0 auto}
+.ep-name{font-size:11px;font-weight:700;white-space:nowrap}
+.ep-tip{position:absolute;bottom:-8px;width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:8px solid rgba(244,247,246,.96)}
+
+/* bong bóng hình (R-BIEU-3): tròn 52 kính .95 viền ngọc 1,5, đuôi vuông 10 xoay 45°, hình 34; đáy đuôi ở điểm neo */
+.eb{position:fixed;z-index:4;transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;pointer-events:none}
+.eb.beside{transform:translate(-100%,-100%)}
+.eb[hidden]{display:none}
+.eb-disc{width:52px;height:52px;box-sizing:border-box;border-radius:50%;background:rgba(244,247,246,.95);outline:1.5px solid var(--jade);box-shadow:0 4px 12px rgba(36,50,58,.18);display:flex;align-items:center;justify-content:center;transform-origin:50% 100%}
+.eb-tail{width:10px;height:10px;margin-top:-6px;background:rgba(244,247,246,.95);transform:rotate(45deg);border-right:1.5px solid var(--jade);border-bottom:1.5px solid var(--jade)}
+
+/* Túi đồ (R-TUI-1). Dọc: tấm đáy cao 600, kính .97, bo trên 20, cảnh tối 12 %, che thanh */
+#bagDim{position:fixed;inset:0;z-index:8;background:rgba(36,50,58,.12)}
+#bagDim[hidden]{display:none}
+#bagPanel{position:fixed;z-index:9;left:0;right:0;bottom:0;height:min(calc(600px + var(--sa-bottom) - 34px),calc(100% - var(--sa-top) - 12px));box-sizing:border-box;padding:10px calc(var(--sa-right) + 16px) max(12px,var(--sa-bottom)) calc(var(--sa-left) + 16px);border-radius:20px 20px 0 0;background:rgba(244,247,246,.97);box-shadow:0 -10px 30px rgba(36,50,58,.22);display:flex;flex-direction:column;gap:12px;color:var(--slate);transition:transform .15s}
+#bagPanel[hidden]{display:none}
+.bg-grip{align-self:center;width:40px;height:4px;border-radius:999px;background:rgba(36,50,58,.25);touch-action:none;padding:6px 20px;background-clip:content-box;margin:-6px 0}
+.bg-head{display:flex;align-items:center;gap:10px;touch-action:none}
+.bg-ring{width:34px;height:34px;flex:none;border-radius:50%;background:var(--jade);color:#fff;display:flex;align-items:center;justify-content:center}
+.bg-title{flex:1;margin:0;font-size:16px;font-weight:700}
+.bg-coins{height:30px;padding:0 10px 0 4px;border-radius:999px;background:rgba(36,50,58,.06);display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700}
+.bg-coins[hidden]{display:none}
+.bg-close{width:36px;height:36px;flex:none;border:0;padding:0;border-radius:50%;background:rgba(36,50,58,.06);color:var(--slate);display:flex;align-items:center;justify-content:center}
+.bg-close:active{transform:scale(.94);background:rgba(36,50,58,.12)}
+/* 4 mục cuộn; mép dưới mờ dần */
+.bg-list{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;display:flex;flex-direction:column;gap:10px;padding-bottom:24px;-webkit-mask-image:linear-gradient(#000 calc(100% - 28px),transparent);mask-image:linear-gradient(#000 calc(100% - 28px),transparent)}
+.bg-sec{margin:0;display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--slate-muted)}
+.bg-count{height:18px;padding:0 6px;border-radius:999px;background:rgba(36,50,58,.08);color:var(--slate);letter-spacing:0;display:flex;align-items:center}
+.bg-chips{display:grid;gap:6px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.bg-seeds{grid-template-columns:repeat(3,minmax(0,1fr))}
+.bg-chip{display:flex;align-items:center;gap:6px;padding:6px;border-radius:12px;background:#fff;outline:1px solid rgba(36,50,58,.12);min-width:0}
+.bg-crop{width:36px;height:36px;flex:none;border-radius:9px;background:var(--map-paper,#f2eada);display:flex;align-items:center;justify-content:center}
+.bg-txt{min-width:0}
+.bg-chip .bg-name{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bg-n{font-size:12px;color:var(--slate-muted)}
+.bg-book{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;background:#fff;outline:1px solid rgba(36,50,58,.12)}
+.bg-cover{width:32px;height:40px;flex:none;border-radius:4px;background:var(--jade);box-shadow:inset 4px 0 0 rgba(0,0,0,.2)}
+.bg-book .bg-name{flex:1;min-width:0;font-size:14px;font-weight:700}
+.bg-read{height:34px;flex:none;padding:0 14px;border:0;border-radius:10px;background:var(--jade);color:#fff;font:inherit;font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px}
+.bg-read:active{background:var(--jade-press)}
+.bg-decor{display:grid;gap:6px;grid-template-columns:repeat(5,minmax(0,1fr))}
+.bg-card{position:relative;padding:6px 4px;border-radius:12px;background:#fff;outline:1px solid rgba(36,50,58,.12);display:flex;flex-direction:column;gap:4px;align-items:center;min-width:0}
+.bg-card.placed{outline:2px solid var(--jade)}
+.bg-pic{width:100%;height:40px;border-radius:8px;background:var(--map-paper,#f2eada);display:flex;align-items:center;justify-content:center}
+.bg-card .bg-name{font-size:11px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.bg-placed{position:absolute;left:4px;top:4px;height:16px;padding:0 6px;border-radius:999px;background:var(--jade);color:#fff;font-size:9px;font-weight:700;display:flex;align-items:center}
+.bg-empty{padding:10px 12px;border-radius:12px;border:1.5px dashed rgba(36,50,58,.22);font-size:12px;color:var(--slate-muted)}
+.bg-foot{flex:none;font-size:11px;color:var(--slate-muted);text-align:center;padding-bottom:6px}
+/* túi mở: nhân vật đứng yên — cất cần điều khiển, cụm hành động, cột phải (R-TUI-1) */
+body.bag-open #joy,body.bag-open #joyGhost,body.bag-open #actions,body.bag-open #chatBtn,body.bag-open #chatFeed,body.bag-open #readBook,
+body.bag-open #decorBtn,body.bag-open .learn,body.bag-open #talk,body.bag-open #seat,body.bag-open #board,body.bag-open #guide,body.bag-open #shop{display:none !important}
+
+/* ngang: thanh giữa đáy rộng 380, cao 56, không nâng HUD; bảng Biểu cảm rộng 420 giữa; tấm báo giữa đáy 95; túi cột phải 340.
+   Mọi màn ngang (cả máy tính bảng) — cụm hành động ngang nằm sát đáy (style.css `@media (orientation:landscape)`) */
+@media (orientation:landscape){
+  /* giữa đáy 380; màn ngang hẹp: co lại để không chạm vòng joystick gợi ý (trái safe + 128) và nút Chào (phải safe + 150) */
+  #toolbar{left:0;right:0;margin:0 auto;width:min(380px,calc(100vw - 2 * max(calc(var(--sa-left) + 136px),calc(var(--sa-right) + 156px))));height:56px}
+  #emotePanel{left:0;right:0;margin:0 auto;width:min(420px,calc(100vw - 2 * max(calc(var(--sa-left) + 136px),calc(var(--sa-right) + 156px))));bottom:calc(var(--sa-bottom) + 74px)}
+  .ep-cell{height:64px}
+  .ep-cell svg{width:28px;height:28px}
+  #homeHere{left:50%;top:auto;bottom:calc(var(--sa-bottom) + 74px);transform:translateX(-50%)}
+  #bagDim{background:transparent}
+  #bagPanel{left:auto;top:0;right:var(--sa-right);width:340px;height:auto;padding:12px 14px max(12px,var(--sa-bottom));border-radius:20px 0 0 20px;box-shadow:-10px 0 30px rgba(36,50,58,.22);gap:10px}
+  .bg-grip{display:none}
+  .bg-seeds{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .bg-decor{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media (prefers-reduced-motion:reduce){
+  #toolbar{transition:opacity .2s ease,visibility 0s}
+  #toolbar.tb-hidden{transform:none;transition:opacity .2s ease,visibility 0s .2s}
+  #bagPanel{transition:none}
+}
