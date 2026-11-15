@@ -3,6 +3,17 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-15.40 — Nhà của ta: bỏ hành lang mái, nhà chính sát trái, vườn rau ra giữa, gian trong riêng
+
+- Loại: cảnh 3D — bố cục + Cần code (đã làm). Phiên code V-20261115-68 (ảnh + yêu cầu người dùng; chọn: một gian phòng rộng trống, vườn ra giữa
+  rộng hơn, bước qua cửa → màn tải). **Đã duyệt 2026-11-15.**
+- Sân: bỏ 2 hành lang mái + lan can; nhà chính (0; −11) → (−15; −8), nhà kín (`buildings[].closed`), sân trước lát đá; vườn rau → giữa đảo
+  (3,5…16,5 × −16…−3, 169 m², 12 luống 3 × 4 giữ mã, cổng tây); 9 ô sân / vườn dời.
+- Cảnh mới `nha-ta-trong`: gian phòng 14 × 10 m (kiểu `gian-trong`: sàn gỗ, tường vôi, 6 cửa sổ giấy, 2 đèn lồng, trần xà), 3 ô `trong`.
+  Vào cửa nhà → màn tải "Trong nhà" (`site.loadName`) → đứng (0; 1,2); ra → đứng (−15; −2,6). Cửa không vòng sáng (`portals[].marker:
+  false`). Sân 46 / 34,1k; gian trong 13 / 17,9k. Luật R-NHA-1/2/5, R-VUON-1, R-HANH-4/6/7, R-BANDO-2, R-THANH-1, R-MAN-2. Ảnh:
+  `screens/Canh-nha-ta-tren-v68.png`, `screens/Canh-nha-ta-trong.png`.
+
 ## 2026-11-15.39 — Làm lại 6 vùng (B0): xoá hết kiến trúc + vật, giữ địa hình, cổng đi bộ, bãi hạc
 
 - Loại: cảnh 3D — bố cục. Phiên code V-20261115-66 theo yêu cầu người dùng ("xoá hết kiến trúc các vùng, làm lại từ địa hình"), xoá ngay
