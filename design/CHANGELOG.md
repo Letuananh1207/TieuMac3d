@@ -11,6 +11,17 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
   (240 → 696 tam giác, bậc xa 192); bụi 4 múi (60 → 256, bậc xa 72); pháp tuyến pha theo tán, màu đỉnh: lõi tối, mép trên ấm. `softCrown`, `softLimb`
   (`khoiMem.ts`), `cayChum.ts`.
 - Nhìn từ trên 140 / 149,9k → 138 / 148,2k. Không chạm luật. Ảnh: `screens/Canh-tan-chum-tung.png`.
+## 2026-11-15.28 — Nối vùng: cổng đi bộ tới vùng lân cận (6 cặp mới) + đường bộ trên bản đồ
+
+- Loại: cảnh 3D — bố cục. Phiên code V-20261114-59; người dùng duyệt 7 cặp, xem ảnh "duyệt, gộp". **Đã duyệt 2026-11-15.**
+- 12 vòng sáng mới ở mép cảnh đúng hướng bản đồ, cuối lối lát, nhãn = tên nơi đến: Trúc Lâm ↔ Yên Vũ Lâu (đông), Trúc Lâm ↔ Nhạn Môn Quan
+  (bắc), Nhạn Môn Quan ↔ Đôn Hoàng Lộ (tây, lối cát), Nhạn Môn Quan ↔ Tử Cấm Thành (đông), Yên Vũ Lâu ↔ Tử Cấm Thành (bắc), Yên Vũ Lâu ↔
+  Bồng Lai Đảo (bến Vân Độ). Đi bộ qua vòng → màn tải (không hạc), tới ở cổng đối ứng.
+- Tử Cấm Thành thêm cổng **Tây Hoa Môn** trên tường tây (z 54, rộng 4). Bồng Lai: vòng ở đầu bến, chưa đặt trên cầu tàu (cần vòng lấy độ
+  cao mặt cầu).
+- Bản đồ truyền tống: quan đạo / đường mòn / đường cát giữa các vùng. `scene:check` mạnh hơn: thiếu cổng về = lỗi, nhãn khớp `ban-do.json`.
+- Nhìn từ trên: Yên Vũ Lâu 123 → 139 draw call (sát nhất), các vùng khác ≤ 134. Luật R-HANH-4, R-BANDO-2. Ảnh:
+  `screens/Canh-cong-tay-hoa-mon.png`, `screens/Canh-vong-ben-van-do.png`, `screens/Canh-vong-rung-truc-bac.png`, `screens/BanDo-trang-thai.png`.
 
 ## 2026-11-15.25 — Bồn hoa dọc lối khu công viên phía đông; bỏ tùng cạnh nhật quỹ
 
