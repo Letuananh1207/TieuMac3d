@@ -64,7 +64,7 @@ export function addPaths(
   paths.forEach((p, i) => {
     const color = p.color ?? defaultColor;
     let tex = paveTex ?? base.get(color);
-    if (!tex) {
+    if (!tex && !p.dirt) {
       tex = slabTex(color); // phiến đá so le, mép vát (2026-11-13)
       base.set(color, tex);
     }
@@ -73,7 +73,9 @@ export function addPaths(
     const len = Math.hypot(x2 - x1, z2 - z1);
     if (len < 0.01) return;
     // units −2: nhìn thẳng từ trên (độ dốc sâu ≈ 0) lối vẫn nằm trên sân lát và trên chất nền khu (`terrain.floors`, units −1)
-    const mat = pave ? null : lambert(0xffffff, { map: tex, polygonOffset: true, polygonOffsetFactor: -1 - i * 0.01, polygonOffsetUnits: -2 });
+    // đất nện (`dirt`): màu trơn, không vân phiến đá; vẫn nằm trên mặt đất như lối lát (không theo `pave`)
+    const offset = { polygonOffset: true, polygonOffsetFactor: -1 - i * 0.01, polygonOffsetUnits: -2 };
+    const mat = p.dirt ? lambert(color, offset) : pave ? null : lambert(0xffffff, { map: tex, ...offset });
     const lift = PATH_LIFT + i * 0.001;
     const dx = (x2 - x1) / len;
     const dz = (z2 - z1) / len;
@@ -125,7 +127,7 @@ export function addPaths(
       geo.setIndex(idx);
       geo.computeVertexNormals();
     }
-    if (pave) paveGeos.push(geo);
+    if (pave && !p.dirt) paveGeos.push(geo);
     else scene.add(new THREE.Mesh(geo, mat!));
   });
   if (paveGeos.length) {

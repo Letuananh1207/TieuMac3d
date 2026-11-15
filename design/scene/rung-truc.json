@@ -2,7 +2,63 @@
   "site": {
     "name": "Trúc Lâm",
     "han": "竹林",
-    "areas": []
+    "areas": [
+      {
+        "name": "Vọng Trúc Đình",
+        "from": [
+          -42,
+          -38
+        ],
+        "to": [
+          -14,
+          -15
+        ]
+      },
+      {
+        "name": "Khúc Thuỷ Đài",
+        "from": [
+          14,
+          -39
+        ],
+        "to": [
+          42,
+          -25
+        ]
+      },
+      {
+        "name": "Cầu Đá",
+        "from": [
+          22,
+          0
+        ],
+        "to": [
+          32,
+          8
+        ]
+      },
+      {
+        "name": "Trúc Lư",
+        "from": [
+          -40,
+          18
+        ],
+        "to": [
+          -24,
+          34
+        ]
+      },
+      {
+        "name": "Bãi giữa",
+        "from": [
+          -13,
+          -9
+        ],
+        "to": [
+          13,
+          17
+        ]
+      }
+    ]
   },
   "sky": {
     "top": "#7fa6b8",
@@ -567,6 +623,20 @@
         24
       ],
       "width": 2.2
+    },
+    {
+      "from": [
+        -32.5,
+        24.5
+      ],
+      "to": [
+        -27,
+        24.5
+      ],
+      "width": 7,
+      "color": "#9a8562",
+      "edge": false,
+      "dirt": true
     }
   ],
   "buildingStyle": {
@@ -578,7 +648,35 @@
     "base": "#9a968c",
     "heightScale": 1
   },
-  "buildings": [],
+  "buildings": [
+    {
+      "id": "vong-truc-dinh",
+      "x": -31,
+      "z": -30,
+      "w": 6.5,
+      "d": 6.5,
+      "rotY": 90,
+      "title": "Vọng Trúc Đình",
+      "roofColor": "#b49a6a",
+      "kind": "dinh",
+      "sides": 6,
+      "eaves": 2,
+      "pillarH": 3.4,
+      "benches": true
+    },
+    {
+      "id": "truc-lu",
+      "x": -35,
+      "z": 24.5,
+      "w": 6,
+      "d": 4.5,
+      "rotY": 90,
+      "title": "Trúc Lư",
+      "roofColor": "#b49a6a",
+      "kind": "nha-tranh",
+      "closed": true
+    }
+  ],
   "gates": [],
   "water": [
     {
@@ -587,7 +685,37 @@
       "r": 4
     }
   ],
-  "props": [],
+  "props": [
+    {
+      "kind": "dan-cam",
+      "x": -7.5,
+      "z": -4.5,
+      "rotY": 90
+    },
+    {
+      "kind": "da-khac",
+      "x": 15.6,
+      "z": -26.4,
+      "rotY": 0,
+      "text": "Khúc Thuỷ Đài",
+      "scale": 0.8
+    },
+    {
+      "kind": "bo-truc",
+      "x": -37.9,
+      "z": 28.6
+    },
+    {
+      "kind": "bo-truc",
+      "x": -37.3,
+      "z": 29.1
+    },
+    {
+      "kind": "den-truc",
+      "x": -31.8,
+      "z": 28.9
+    }
+  ],
   "trees": {
     "bamboo": [
       "#7a9446",
@@ -889,8 +1017,89 @@
   "lessons": {
     "radicals": true
   },
-  "fences": [],
-  "channels": [],
+  "fences": [
+    {
+      "from": [
+        -33,
+        20.6
+      ],
+      "to": [
+        -26.4,
+        20.6
+      ]
+    },
+    {
+      "from": [
+        -33,
+        28.4
+      ],
+      "to": [
+        -26.4,
+        28.4
+      ]
+    },
+    {
+      "from": [
+        -26.4,
+        20.6
+      ],
+      "to": [
+        -26.4,
+        22.8
+      ]
+    },
+    {
+      "from": [
+        -26.4,
+        26.2
+      ],
+      "to": [
+        -26.4,
+        28.4
+      ]
+    }
+  ],
+  "channels": [
+    {
+      "points": [
+        [
+          23.6,
+          -36.4
+        ],
+        [
+          20.2,
+          -35.7
+        ],
+        [
+          18.7,
+          -34.1
+        ],
+        [
+          20.3,
+          -32.6
+        ],
+        [
+          22.9,
+          -31.9
+        ],
+        [
+          23.4,
+          -30.3
+        ],
+        [
+          21.3,
+          -29.3
+        ],
+        [
+          18,
+          -28.9
+        ]
+      ],
+      "width": 0.6,
+      "cups": 3,
+      "speed": 0.35
+    }
+  ],
   "portals": [
     {
       "scene": "tong-mon",
@@ -959,7 +1168,18 @@
   "dayNight": {
     "enabled": true
   },
-  "bridges": [],
+  "bridges": [
+    {
+      "kind": "vom",
+      "x": 27,
+      "z": 4,
+      "rotY": 90,
+      "length": 7,
+      "width": 4.4,
+      "rise": 1,
+      "sunk": 0.5
+    }
+  ],
   "boats": [],
   "galleries": [],
   "mirages": [],
@@ -979,5 +1199,71 @@
       50,
       50
     ]
+  },
+  "terraces": [
+    {
+      "x": 21,
+      "z": -32.5,
+      "w": 8.4,
+      "d": 9.2,
+      "h": 0.4
+    }
+  ],
+  "seats": [
+    {
+      "x": 22.54,
+      "z": -35.23,
+      "rotY": -173,
+      "kind": "dem"
+    },
+    {
+      "x": 20.73,
+      "z": -34.85,
+      "rotY": -153,
+      "kind": "dem"
+    },
+    {
+      "x": 17.75,
+      "z": -34.5,
+      "rotY": 76,
+      "kind": "dem"
+    },
+    {
+      "x": 20.77,
+      "z": -33.48,
+      "rotY": -29,
+      "kind": "dem"
+    },
+    {
+      "x": 22.15,
+      "z": -31.18,
+      "rotY": 164,
+      "kind": "dem"
+    },
+    {
+      "x": 24.17,
+      "z": -29.63,
+      "rotY": -125,
+      "kind": "dem"
+    },
+    {
+      "x": 21.09,
+      "z": -30.28,
+      "rotY": 16,
+      "kind": "dem"
+    },
+    {
+      "x": 19.12,
+      "z": -30,
+      "rotY": 4,
+      "kind": "dem"
+    }
+  ],
+  "fenceStyle": {
+    "kind": "truc",
+    "height": 0.85,
+    "postEvery": 0.9,
+    "color": "#c8b27a",
+    "cap": "#6b4a2e"
   }
 }

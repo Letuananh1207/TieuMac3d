@@ -10,7 +10,7 @@ import { DEFAULT_DAY_NIGHT, type DayNightSpec } from './ngayDem';
 
 export type XZ = [number, number];
 
-export const BUILDING_KINDS = ['giang-duong', 'dien', 'thap', 'nha-nho', 'dinh', 'hi-dai', 'tra-lau', 'lau-sach', 'cua-hang', 'nha-o', 'gian-trong'] as const;
+export const BUILDING_KINDS = ['giang-duong', 'dien', 'thap', 'nha-nho', 'dinh', 'hi-dai', 'tra-lau', 'lau-sach', 'cua-hang', 'nha-o', 'gian-trong', 'nha-tranh'] as const;
 /** Hàng bày trong cửa hàng (`cua-hang`): bút mực · vải · bùa giấy · thuốc · thùng gỗ. */
 export const GOODS_KINDS = ['but', 'vai', 'bua', 'thuoc', 'thung'] as const;
 export const ROOF_KINDS = ['chop', 'cong'] as const;
@@ -134,6 +134,8 @@ export const PROP_KINDS = [
   /** bục đàn 3,4 × 2,6 m cao 0,4 (sân diễn nhỏ, viền son) + đàn cổ tranh 21 dây; nhạc công `cam-nu` ngồi sau đàn khi có
    *  model (R-NPC-9, tiếng đàn R-AM-2); mặt trước (khán giả) +z — `bucDan.ts`, `vat_dan_tranh.ts`, ghép `danTranh.ts` */
   'buc-dan',
+  /** Trúc Lâm (V-66 B3): tảng đá phẳng lớn 2,4 × 1,6 m + cây cổ cầm nằm trên, bồ đoàn rơm phía sau (−z) — "thất hiền" ngồi đàn */
+  'dan-cam',
 ] as const;
 /** tám pháp bảo Bát Tiên (ám Bát Tiên): hồ lô · quạt · ngọc bản · sáo · sen · giỏ hoa · kiếm · ống phách */
 export const PHAP_BAO: readonly string[] = ['葫', '扇', '板', '笛', '荷', '籃', '劍', '鼓'];
@@ -188,6 +190,12 @@ export interface BuildingSpec {
    * cảnh gian trong (`portals`, R-HANH-4). Thiếu / `false` = nhà vào được như cũ.
    */
   closed?: boolean;
+  /** đình: số tầng mái (1 mặc định · 2 = mái chồng 重檐 — tầng trên nhỏ hơn trên cổ gỗ, làm mốc cao — V-66 B3) */
+  eaves?: number;
+  /** đình: cao cột (m; thiếu = 2,6 × `buildingStyle.heightScale` như cũ) */
+  pillarH?: number;
+  /** đình: ghế tựa giữa các cột (chừa hai cạnh lối vào), mỗi ghế một chỗ ngồi nhìn ra ngoài (R-NGOI-1); thiếu = lan can như cũ */
+  benches?: boolean;
 }
 
 /**
@@ -288,7 +296,7 @@ export interface LanternString {
 export const HANG_KINDS = ['den', 'tua'] as const;
 
 /** Kiểu lan can `fences`: `go` gỗ sơn son (cũ) · `da` đá trắng đầu sen (Quảng Trường, V-42). */
-export const FENCE_KINDS = ['go', 'da'] as const;
+export const FENCE_KINDS = ['go', 'da', 'truc'] as const;
 
 /** Đoạn lan can gỗ thấp, thẳng trục (from / to cùng x hoặc cùng z). */
 export interface FenceSpec {
@@ -364,6 +372,8 @@ export interface PathSpec {
   color?: string;
   /** `false` = không bó vỉa lối này (khi `buildingStyle.pathEdge.width` > 0) */
   edge?: boolean;
+  /** `true` = sân / lối đất nện (V-66 B3 — sân Trúc Lư): màu `color` trơn, không lát đá, không vẽ trên bản đồ; cỏ không mọc */
+  dirt?: boolean;
 }
 
 /** Cổng sơn môn: mái, hai cột, bảng hiệu; mặt trước nhìn +z trước khi quay. Va chạm chỉ ở hai cột. */
@@ -403,6 +413,31 @@ export interface AreaSpec {
   han?: string;
   from: XZ;
   to: XZ;
+}
+
+/**
+ * Đài đá thấp (Khúc Thuỷ Đài — V-66 B3): khối đá đặc thẳng trục `w` × `d`, mặt trên cao `h` (≤ 0,6 — bước lên được, R-VA-3)
+ * đi được; mương (`channels`), vật (`props`), chỗ ngồi (`seats`) đặt trong chân đài nằm trên mặt đài.
+ */
+export interface TerraceSpec {
+  x: number;
+  z: number;
+  w: number;
+  d: number;
+  h: number;
+  /** 0 · 90 · 180 · 270 */
+  rotY?: number;
+}
+
+/** Kiểu chỗ ngồi ngoài trời (`seats`): `dem` đệm cỏ (bồ đoàn rơm) · `da` đá phẳng thấp. */
+export const SEAT_KINDS = ['dem', 'da'] as const;
+
+/** Chỗ ngồi ngoài trời (V-66 B3): ngồi được bằng nút "Ngồi" (R-NGOI-1); không chặn người đi. `rotY` độ, tuỳ ý (hướng nhìn). */
+export interface OutdoorSeatSpec {
+  x: number;
+  z: number;
+  rotY?: number;
+  kind?: (typeof SEAT_KINDS)[number];
 }
 
 /** Ao / hồ: tròn (`r`) hoặc chữ nhật (`w` × `d`); không đi xuống được. */
@@ -1075,8 +1110,13 @@ export interface SceneSpec {
   };
   /** lan can gỗ thấp quây sân (thẳng trục như `wallSegments`), có va chạm — kiểu dáng ở `fenceStyle` */
   fences: FenceSpec[];
+  /** đài đá thấp đi được (V-66 B3) — rỗng = không có (như cũ) */
+  terraces: TerraceSpec[];
+  /** chỗ ngồi ngoài trời (đệm cỏ / đá — V-66 B3) — rỗng = không có (như cũ) */
+  seats: OutdoorSeatSpec[];
   /** lan can: cao, khoảng hai trụ (m), màu thân (sơn son), màu chóp trụ. `kind`: `go` lan can gỗ sơn (mặc định, như cũ) ·
-   *  `da` lan can đá (V-42): trụ vuông đầu sen, tay vịn + tấm chắn đá giữa hai trụ — `color` thân đá, `cap` đầu sen / tay vịn */
+   *  `da` lan can đá (V-42): trụ vuông đầu sen, tay vịn + tấm chắn đá giữa hai trụ — `color` thân đá, `cap` đầu sen / tay vịn ·
+   *  `truc` rào trúc (Trúc Lư — V-66 B3): cọc trúc + hai thanh ngang buộc dây — `color` thân trúc, `cap` dây buộc / đầu cọc */
   fenceStyle: { kind: (typeof FENCE_KINDS)[number]; height: number; postEvery: number; color: string; cap: string };
   /** luống chè (Đồi Chè, V-46) — rỗng = không có (như cũ); kiểu + bướm + sương ở `teaStyle` */
   teaRows: TeaRowSpec[];
@@ -1273,6 +1313,8 @@ export const DEFAULT_SCENE: SceneSpec = {
     lanternEvery: 0,
   },
   fences: [],
+  terraces: [], // cảnh cũ không có đài đá
+  seats: [], // cảnh cũ không có chỗ ngồi ngoài trời
   fenceStyle: { kind: 'go', height: 1.0, postEvery: 1.6, color: '#9e2a20', cap: '#e0ae4c' },
   teaRows: [], // cảnh cũ không có luống chè
   garden: {

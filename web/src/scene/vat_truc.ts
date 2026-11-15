@@ -141,6 +141,31 @@ export function boDoan(g: THREE.Group, style: Style): [number, number] {
   return [0.9, 1.4];
 }
 
+/**
+ * Đá đàn cầm (V-66 B3 — bãi giữa Trúc Lâm, chỗ "thất hiền" ngồi đàn): tảng đá phẳng lớn 2,4 × 1,6 cao ≈ 0,55, cây cổ cầm
+ * sơn đen nằm chéo trên mặt đá (thân dẹt, đầu rộng, 7 dây, nhạn trục), bồ đoàn rơm trên đá phía sau (−z). Va chạm hộp.
+ */
+export function danCam(g: THREE.Group, style: Style): [number, number] {
+  const slab = new THREE.Mesh(new THREE.DodecahedronGeometry(1, 0).scale(1.25, 0.32, 0.85), lambert(style.stone));
+  slab.position.y = 0.24;
+  g.add(slab);
+  const top = 0.5;
+  put(g, new THREE.BoxGeometry(1.95, 0.12, 1.15), lambert(style.stone), 0, top - 0.06, 0); // mặt đá phẳng
+  const qin = new THREE.Group();
+  qin.position.set(0.05, top, 0.15);
+  qin.rotation.y = 0.18;
+  // sơn đàn = màu nóc (`ridge`), dây + nhạn trục = trúc khô: không thêm màu riêng (mỗi màu một draw call)
+  const lac = lambert(style.ridge);
+  const silk = lambert(BAMBOO_DRY);
+  put(qin, new THREE.BoxGeometry(1.2, 0.05, 0.17), lac, 0, 0.025, 0); // thân đàn
+  put(qin, new THREE.BoxGeometry(0.26, 0.06, 0.21), lac, 0.48, 0.03, 0); // đầu đàn rộng
+  put(qin, new THREE.BoxGeometry(1.15, 0.008, 0.11), silk, -0.02, 0.054, 0); // 7 dây
+  put(qin, new THREE.BoxGeometry(0.03, 0.04, 0.15), silk, 0.38, 0.06, 0); // nhạn trục
+  g.add(qin);
+  put(g, new THREE.CylinderGeometry(0.32, 0.34, 0.1, 10), lambert(THATCH), 0, top + 0.05, -0.38); // bồ đoàn
+  return [2.4, 1.6];
+}
+
 /** Va chạm của một vật: hộp [rộng, sâu] (theo hướng vật) · tròn bán kính · các trụ tròn (toạ độ cục bộ). */
 export interface PropCollide {
   box?: [number, number];
@@ -170,6 +195,8 @@ export function trucProp(kind: string, g: THREE.Group, style: Style, text: strin
       return {};
     case 'bo-doan':
       return { box: boDoan(g, style) };
+    case 'dan-cam':
+      return { box: danCam(g, style) };
     default:
       return null;
   }

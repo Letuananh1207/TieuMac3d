@@ -98,7 +98,7 @@ describe('Trúc Lâm — địa hình + phạm vi (V-66 B2)', () => {
     expect(at('tong-mon')).toEqual([-47.5, 4]);
     expect(at('giang-nam')).toEqual([47.5, 4]);
     expect(at('truong-thanh')).toEqual([0, -47]);
-    const widths = spec.paths.map((p) => p.width);
+    const widths = spec.paths.filter((p) => !p.dirt).map((p) => p.width); // sân đất Trúc Lư (B3) không phải lối
     expect(widths.every((w) => w >= 2 && w <= 4)).toBe(true);
     expect(hf.heightAt(0, -47)).toBeCloseTo(8, 1);
   });

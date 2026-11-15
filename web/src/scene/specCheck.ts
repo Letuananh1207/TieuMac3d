@@ -21,6 +21,7 @@ import {
   FLOWER_POTS,
   PHAP_BAO,
   ROOF_KINDS,
+  SEAT_KINDS,
   SIDES,
   TREE_KINDS,
   WALL_STYLES,
@@ -160,6 +161,12 @@ const positive =
   (...fields: string[]) =>
   (o: Obj, path: string): string[] =>
     fields.filter((f) => typeof o[f] === 'number' && (o[f] as number) <= 0).map((f) => `${path}.${f}: phải > 0`);
+
+/** Số `field` (nếu có) nằm trong [lo, hi]. */
+const range =
+  (field: string, lo: number, hi: number) =>
+  (o: Obj, path: string): string[] =>
+    typeof o[field] === 'number' && ((o[field] as number) < lo || (o[field] as number) > hi) ? [`${path}.${field}: ${lo} … ${hi}`] : [];
 
 const axisAligned = (o: Obj, path: string): string[] => {
   const [a, b] = [o.from as number[], o.to as number[]];
@@ -373,8 +380,8 @@ const SIGNS0 = { bac: '', nam: '', dong: '', tay: '' };
 const LISTS: Record<string, ItemParser> = {
   buildings: item(
     { id: '', x: 0, z: 0, w: 0, d: 0, title: '', roofColor: '#000000' },
-    { rotY: 0, notice: ['', ''], zone: { id: '', front: 0, r: 0 }, kind: '', roof: '', floors: 0, sides: 0, trim: '#000000', pillarColor: '#000000', sign: '', goods: '', closed: false },
-    all(rot, oneOf('kind', BUILDING_KINDS), oneOf('goods', GOODS_KINDS), oneOf('roof', ROOF_KINDS), oneOf('sides', [4, 6]), floorsRange, positive('w', 'd')),
+    { rotY: 0, notice: ['', ''], zone: { id: '', front: 0, r: 0 }, kind: '', roof: '', floors: 0, sides: 0, trim: '#000000', pillarColor: '#000000', sign: '', goods: '', closed: false, eaves: 0, pillarH: 0, benches: false },
+    all(rot, oneOf('kind', BUILDING_KINDS), oneOf('goods', GOODS_KINDS), oneOf('roof', ROOF_KINDS), oneOf('sides', [4, 6]), oneOf('eaves', [1, 2]), floorsRange, positive('w', 'd'), range('pillarH', 2, 6)),
   ),
   'walls.gates': item({ side: '', at: 0, width: 0 }, { kind: '', signs: SIGNS0, clearHeight: 0, roof: true }, all(oneOf('side', SIDES), positive('width'), gateLook)),
   wallSegments: item(
@@ -382,7 +389,7 @@ const LISTS: Record<string, ItemParser> = {
     { height: 0, thickness: 0, follow: true, gate: { at: 0, width: 0, kind: 'trang', signs: SIGNS0, clearHeight: 0, roof: true } },
     all(axisAligned, positive('height', 'thickness'), thicknessOk, segmentGateOk),
   ),
-  paths: item({ from: XZ0, to: XZ0, width: 0 }, { color: '#000000', edge: true }, positive('width')),
+  paths: item({ from: XZ0, to: XZ0, width: 0 }, { color: '#000000', edge: true, dirt: true }, positive('width')),
   gates: item(
     { id: '', x: 0, z: 0, width: 0, title: '' },
     { rotY: 0, hanTitle: '', roofColor: '#000000', model: '', modelScale: 0, height: 0, backTitle: '' },
@@ -406,6 +413,9 @@ const LISTS: Record<string, ItemParser> = {
   npcs: withRoute(item({ id: '', x: 0, z: 0 }, { rotY: 0, pose: '', scale: 0, speed: 0 }, all(oneOf('id', NPC_IDS), oneOf('pose', NPC_POSES), positive('scale', 'speed')))),
   lanternStrings: item({ from: XZ0, to: XZ0 }, {}),
   fences: item({ from: XZ0, to: XZ0 }, {}, axisAligned),
+  // đài đá thấp (V-66 B3): mặt trên bước lên được (≤ 0,6 m — R-VA-3)
+  terraces: item({ x: 0, z: 0, w: 0, d: 0, h: 0 }, { rotY: 0 }, all(rot, positive('w', 'd'), range('h', 0.1, 0.6))),
+  seats: item({ x: 0, z: 0 }, { rotY: 0, kind: '' }, oneOf('kind', SEAT_KINDS)),
   teaRows: item({ from: XZ0, to: XZ0 }, { width: 0, height: 0 }, all(axisAligned, positive('width', 'height'))),
   gameTables: item(
     { id: '', kind: '', x: 0, z: 0, npc: '' },
@@ -703,6 +713,7 @@ function checkOnFlatGround(s: SceneSpec): string[] {
   if (tp.enabled) flat('vòng trận (teleport)', box(tp.center[0], tp.center[1], pad, pad));
   const yard = s.stoneYard;
   if (yard.enabled) flat('sân đá trống (stoneYard)', box(yard.center[0], yard.center[1], yard.radius * 2, yard.radius * 2));
+  for (const t of s.terraces) flat(`đài đá (${t.x}; ${t.z})`, box(t.x, t.z, t.w, t.d, t.rotY));
   s.fences.forEach((w, i) => flat(`fences[${i}]`, [w.from, w.to, [(w.from[0] + w.to[0]) / 2, (w.from[1] + w.to[1]) / 2]]));
   for (const b of s.bridges) {
     const [ex, ez] = rotateXZ(0, b.length / 2, b.rotY ?? 0);

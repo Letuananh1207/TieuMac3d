@@ -5,6 +5,7 @@ import { addMirages } from './vat_bong_lai';
 import { addRamparts } from './thanh_luy';
 import { addPlateauRails } from './cung_dien';
 import { addFauna } from './fauna';
+import { addOutdoorSeats, addTerraces, onTerraces, terraceRect } from './daiDa';
 import * as THREE from 'three';
 import type { Colliders } from '../collision/colliders';
 import { LayeredGround, type Ground, type Pad } from '../collision/ground';
@@ -162,7 +163,16 @@ function* worldSteps(
     addRockyKe(scene, spec.terrain, spec.paths, groundY, spec.trees.seed, spec.terrain.colors.rock); // kè đá khối (V-66)
     const soft = isSoft(spec.look);
     // luống chè (V-46): cỏ / hoa / đá không mọc trong luống
-    const inTea = spec.teaRows.length ? (x: number, z: number): boolean => insideTea(spec.teaRows, spec.teaStyle, x, z, 0.2) : undefined;
+    // + đài đá, nền đình / nhà tranh (V-66 B3): cỏ không mọc xuyên mặt đài, nền nhà
+    const teaAt = spec.teaRows.length ? (x: number, z: number): boolean => insideTea(spec.teaRows, spec.teaStyle, x, z, 0.2) : undefined;
+    const rects = [
+      ...spec.terraces.map(terraceRect),
+      ...spec.buildings.filter((b) => b.kind === 'dinh' || b.kind === 'nha-tranh').map((b) => terraceRect({ ...b, h: 0 })),
+    ];
+    const inTea =
+      teaAt || rects.length
+        ? (x: number, z: number): boolean => !!teaAt?.(x, z) || rects.some((r) => x >= r.minX - 0.3 && x <= r.maxX + 0.3 && z >= r.minZ - 0.3 && z <= r.maxZ + 0.3)
+        : undefined;
     addGrassAndRocks(scene, spec.terrain, hf, spec.paths, !soft, inTea);
     yield 'co-da';
     if (soft) addSoftGrassAndFlowers(scene, spec.terrain, hf, spec.paths, spec.look, detail, inTea, spec.trees.crown === 'chum');
@@ -184,13 +194,20 @@ function* worldSteps(
   const rooms: Room[] = [];
   /** nền + dốc của nhà kín (`closed` — V-68): đứng lên hiên được, không có "trong nhà" */
   const closedPads: Pad[] = [];
+  /** chỗ ngồi + nền đi được của nhà không vào được (đình: nền đá, ghế tựa — V-66 B3) */
+  const buildingSeats: Seat[] = [];
+  const buildingPads: Pad[] = [];
   for (const b of spec.buildings) {
     const use = b.zone && kinds[b.zone.id] ? interiors[b.zone.id] : undefined;
     const walkIn = b.kind ? WALK_IN[b.kind] : undefined;
     if (use) rooms.push(addRoomBuilding(scene, colliders, b, style, use, base(b.x, b.z), softLook));
     else if (walkIn && b.closed) closedPads.push(...addWalkIn(scene, colliders, b, style, walkIn, base(b.x, b.z), softLook).pads);
     else if (walkIn) rooms.push(addWalkIn(scene, colliders, b, style, walkIn, base(b.x, b.z), softLook));
-    else addBuilding(scene, colliders, b, style, base(b.x, b.z));
+    else {
+      const extra = addBuilding(scene, colliders, b, style, base(b.x, b.z));
+      buildingSeats.push(...extra.seats);
+      buildingPads.push(...extra.pads);
+    }
     yield 'nha';
   }
   const gameTables = spec.gameTables.flatMap((t) => addGameTable(scene, colliders, t, style, base(t.x, t.z)));
@@ -207,16 +224,20 @@ function* worldSteps(
       });
   }
   yield 'ban-cong';
+  // đài đá thấp (V-66 B3): mương, vật, chỗ ngồi trong chân đài nằm trên mặt đài
+  const terracePads = addTerraces(scene, spec.terraces, style.stone, style.base, groundY ?? (() => 0));
+  const onTop = onTerraces(spec.terraces, groundY ?? (() => 0));
   addWater(scene, colliders, spec.water, style, groundY, isSoft(spec.look) ? { look: spec.look, sky: spec.sky.middle, ripple: detail >= 1 } : undefined);
   const bridgePads = addBridges(scene, colliders, spec.bridges, style, groundY);
   const fauna = addFauna(scene, spec, groundY);
-  const channels = addChannels(scene, spec.channels, style, groundY);
+  const channels = addChannels(scene, spec.channels, style, onTop);
   addGalleries(scene, colliders, spec.galleries, groundY);
   const mirages = addMirages(scene, spec.mirages);
   const rampartPads = addRamparts(scene, colliders, spec.ramparts, spec.walls, groundY);
   if (spec.terrain.enabled) addPlateauRails(scene, colliders, spec.terrain);
   yield 'nuoc-cau';
-  const props = addProps(scene, colliders, spec.props, style, spec.trees, groundY);
+  const props = addProps(scene, colliders, spec.props, style, spec.trees, onTop);
+  const outdoorSeats = addOutdoorSeats(scene, spec.seats, style.stone, onTop);
   yield 'do-vat';
   const trees = addTrees(scene, colliders, spec.trees, groundY, spec.look);
   const tea = addTeaGarden(scene, colliders, spec, groundY, detail); // Đồi Chè: luống + bướm + sương (V-46)
@@ -262,9 +283,9 @@ function* worldSteps(
     dayNight,
     garden,
     ground,
-    surface: new LayeredGround(hf, [...(teleport?.pads ?? []), ...bridgePads, ...rampartPads, ...rooms.flatMap((r) => r.pads), ...closedPads]),
+    surface: new LayeredGround(hf, [...(teleport?.pads ?? []), ...bridgePads, ...terracePads, ...buildingPads, ...rampartPads, ...rooms.flatMap((r) => r.pads), ...closedPads]),
     rooms,
-    seats: rooms.flatMap((r) => r.seats ?? []),
+    seats: [...rooms.flatMap((r) => r.seats ?? []), ...buildingSeats, ...outdoorSeats],
     studySign: rooms.find((r) => r.studySign)?.studySign ?? null,
     gameTables,
     zoneAnchors: zoneAnchors(spec.buildings, kinds),

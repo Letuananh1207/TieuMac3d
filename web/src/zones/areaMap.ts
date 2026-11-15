@@ -19,7 +19,7 @@ export interface AreaMapSource {
     gates: readonly { side: 'bac' | 'nam' | 'dong' | 'tay'; at: number; width: number }[];
   };
   wallSegments: readonly { from: XZ; to: XZ; gate?: { at: number; width: number } }[];
-  paths: readonly { from: XZ; to: XZ; width: number }[];
+  paths: readonly { from: XZ; to: XZ; width: number; dirt?: boolean }[];
   water: readonly { x: number; z: number; r?: number; w?: number; d?: number; rotY?: number }[];
   bridges: readonly { x: number; z: number; rotY?: number; length: number; width: number }[];
   buildings: readonly { id: string; x: number; z: number; w: number; d: number; rotY?: number; title: string; kind?: string }[];
@@ -233,7 +233,7 @@ export function buildAreaMap(src: AreaMapSource, spots: AreaMapSpots = {}): Area
     if (w.w !== undefined && w.d !== undefined) shapes.push({ kind: 'nuoc-vuong', x: w.x, z: w.z, w: w.w, d: w.d, rot: rad(w.rotY) });
     else shapes.push({ kind: 'nuoc', x: w.x, z: w.z, r: w.r ?? 1 });
   }
-  for (const p of src.paths) shapes.push({ kind: 'loi', from: p.from, to: p.to, width: p.width });
+  for (const p of src.paths.filter((q) => !q.dirt)) shapes.push({ kind: 'loi', from: p.from, to: p.to, width: p.width });
   for (const b of src.bridges) shapes.push({ kind: 'cau', x: b.x, z: b.z, w: b.width, d: b.length, rot: rad(b.rotY) });
   shapes.push(...wallLines(src));
   for (const h of houses) shapes.push({ kind: 'nha', id: h.id, ...h.rect });

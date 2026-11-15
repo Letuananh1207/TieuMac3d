@@ -2,14 +2,16 @@
  * Lan can thấp quây sân (`fences` + `fenceStyle` trong đặc tả), hai kiểu (`fenceStyle.kind`):
  * - `go` (mặc định, như cũ): gỗ sơn son — trụ vuông có chóp vàng cách đều, ba thanh ngang (tay vịn, giữa, chân);
  * - `da` (V-42, Quảng Trường): đá trắng kiểu 石欄杆 — trụ vuông đầu sen (chụp vuông + búp tròn), tay vịn trên, tấm chắn
- *   (欄板) đặc giữa hai trụ, gờ chân. `color` thân đá, `cap` đầu sen + tay vịn.
+ *   (欄板) đặc giữa hai trụ, gờ chân. `color` thân đá, `cap` đầu sen + tay vịn;
+ * - `truc` (V-66 B3, Trúc Lư): rào trúc mộc — cọc trúc tròn (đầu vát), hai thanh trúc ngang, dây buộc ở mỗi cọc.
+ *   `color` thân trúc, `cap` dây buộc.
  * Thấp hơn tầm camera nên không che; mỗi đoạn một vật cản dày 0,3 m (không chặn tầm nhìn camera).
  * Ngân sách: đứng yên, gộp theo màu (`mergeStatic` / cảnh mềm `mergeSoft`) → vài draw call cho mọi đoạn.
  */
 import * as THREE from 'three';
 import type { Colliders } from '../collision/colliders';
 import { lambert } from './materials';
-import { box } from './kien_truc/hinh';
+import { box, column } from './kien_truc/hinh';
 import type { SceneSpec } from './spec';
 import type { GroundY } from './terrainHeight';
 
@@ -62,6 +64,23 @@ export function addFences(scene: THREE.Scene, colliders: Colliders, spec: SceneS
       scene.add(along(HAND, 0.1, st.cap, y + h - 0.12)); // tay vịn
       scene.add(along(PANEL, h * 0.5, st.color, y + 0.12 + (h * 0.5) / 2)); // tấm chắn đặc
       scene.add(along(0.2, 0.1, st.color, y + 0.05)); // gờ chân
+    } else if (st.kind === 'truc') {
+      const h = st.height;
+      for (let i = 0; i <= n; i++) {
+        const x = ax + ((bx - ax) * i) / n;
+        const z = az + ((bz - az) * i) / n;
+        if (!newPost(x, z)) continue;
+        // cọc cao thấp so le chút cho mộc
+        const ph = h + (i % 2 ? 0.08 : 0.16);
+        scene.add(column(0.055, ph, st.color, x, y, z, 5));
+        scene.add(box(0.13, 0.05, 0.13, st.cap, x, y + h * 0.72, z));
+      }
+      for (const hy of [h * 0.72, h * 0.32]) {
+        const r = alongX ? new THREE.CylinderGeometry(0.035, 0.035, len, 5).rotateZ(Math.PI / 2) : new THREE.CylinderGeometry(0.035, 0.035, len, 5).rotateX(Math.PI / 2);
+        const m = new THREE.Mesh(r, lambert(st.color));
+        m.position.set(mx, y + hy, mz);
+        scene.add(m);
+      }
     } else {
       for (let i = 0; i <= n; i++) {
         const x = ax + ((bx - ax) * i) / n;
