@@ -3,6 +3,13 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-15.16 — Nhà của ta bỏ cổng đứng riêng
+
+- Loại: cảnh 3D — **bố cục**. Phiên code V-20261114-51; người dùng: "ở nhà của tôi hãy xoá cổng Khởi Nguyên Trấn".
+- `nha-ta.json` `gates`: [cong-nha (0; 11,5), biển "Nhà của ta" / "Khởi Nguyên Trấn"] → `[]`. Lối lát chạy liền xuống Bến mây;
+  vòng sáng "Khởi Nguyên Trấn" (0; 21) là lối ra duy nhất, không đổi.
+- Luật: R-NHA-1, R-NHA-5, R-HANH-2, R-HANH-4, R-HANH-5, R-BANDO-2 (lời). Ảnh: `screens/Canh-nha-ta-ben.png`.
+
 ## 2026-11-15.15 — Nhà của ta thành đảo nhỏ trên biển mây (khung rỗng)
 
 - Loại: cảnh 3D — **bố cục**. Phiên code V-20261114-48 (kế hoạch `docs/tasks/2026-11-15-nha-cua-ta-lam-lai.md`, khảo cứu
