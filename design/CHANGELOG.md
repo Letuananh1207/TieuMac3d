@@ -15,6 +15,19 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
   sân lát mà không bồn (R-VA-6).
 - Nhìn từ trên: trấn 139 / 149,9k; Yên Vũ Lâu 140 / 82,2k; Tử Cấm Thành 127 / 96,8k. Ảnh: `screens/Canh-cay-khoi-loi.png`,
   `screens/Canh-bon-cay-quang-truong.png`.
+## 2026-11-15.33 — Bỏ vòng trận ở 6 vùng: chỗ cũ thành sân đá trống làm bãi hạc đáp
+
+- Loại: cảnh 3D — bố cục + Cần code (đã làm). Phiên code V-20261115-65 theo yêu cầu người dùng ("xoá truyền tống trận ở các map ngoài
+  Khởi Nguyên Trấn"). **Đã duyệt 2026-11-15.**
+- Trúc Lâm, Yên Vũ Lâu, Bồng Lai Đảo, Nhạn Môn Quan, Tử Cấm Thành, Đôn Hoàng Lộ: `teleport.enabled` false — không còn bệ, vòng, cột sáng; đứng
+  vào chỗ cũ không mở bản đồ. Chỉ Truyền Tống Đài (trấn) còn vòng trận. Tạm thời từ vùng đi bằng cổng đi bộ (thanh công cụ V-64 sẽ mở bản đồ
+  từ mọi nơi).
+- Trường mới `stoneYard` (mặc định tắt): sân đá tròn phẳng bán kính 4,7 m (#9a9488 / viền #6f6a62, vẽ đè lối lát) tại tâm vòng cũ — (0; 39)
+  bốn vùng, (0; 70) Tử Cấm Thành, (0; 56) Đôn Hoàng Lộ. Chỗ xuất hiện dời vào giữa sân, lệch trái 1,25 m (vd. (−1,25; 39)); hạc đáp
+  (1,25; 39). `scene:check`: sân phẳng, không vật đè.
+- Bản đồ lớn bỏ mục "Vòng trận" ở cảnh không có vòng; lời Mặc Ông, gợi ý Tạp hoá ở nhà sửa theo. Draw call mỗi vùng giảm 3–4. Luật R-HANH-2/4/5,
+  R-BANDO-2/5. `design/l10n/vi.arb` khoá `gardenBagEmptyHint` còn câu cũ "vòng trận ở cổng nhà" — thiết kế cần sửa. Ảnh:
+  `screens/Canh-san-da-truc-lam.png`, `screens/Canh-san-da-tu-cam-thanh.png`.
 
 ## 2026-11-15.30 — Cây "tán chùm" nhân ra: cây tán, mai / đào, liễu, trúc, hoa cỏ, rau trong vườn
 
