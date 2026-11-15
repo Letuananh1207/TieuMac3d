@@ -3,7 +3,7 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
-## 2026-11-15.34 — Thanh công cụ (phần lõi): đi từ mọi nơi, Về nhà một chạm, 8 biểu cảm nhân vật
+## 2026-11-15.38 — Thanh công cụ (phần lõi): đi từ mọi nơi, Về nhà một chạm, 8 biểu cảm nhân vật
 
 - Loại: cảnh 3D — động tác + luồng / luật. Phiên code V-20261115-64 (kế hoạch `docs/tasks/2026-11-15-thanh-cong-cu.md`, người dùng duyệt
   1A 2A 3A 4A). **Đã duyệt 2026-11-15.** Giao diện thanh 5 nút, bảng biểu cảm, bong bóng hình, túi đồ, thẻ "đang ở nhà" **chờ thiết kế**
@@ -12,7 +12,7 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
   đang ở nhà → không đi. 8 biểu cảm (Vẫy tay, Chắp tay, Cúi chào, Vỗ tay, Cười, Nhảy mừng, Suy nghĩ, Ngồi nghỉ) bằng 7 xương tự gắn, draw call +0
   (R-BIEU-1…3). Máy tính: phím T · H · J · B rồi 1–8. Canvas 3D `?dang=bieu-cam&bc=<mã>`. Ảnh: `screens/NhanVat-bieu-cam.png`.
 
-## 2026-11-15.32 — Cây không mọc trên nền lát: dời khỏi lối, bồn đá cho cây trên sân lát (mọi cảnh)
+## 2026-11-15.36 — Cây không mọc trên nền lát: dời khỏi lối, bồn đá cho cây trên sân lát (mọi cảnh)
 
 - Loại: cảnh 3D — bố cục + Cần code (đã làm). Phiên code V-20261115-63; người dùng báo cây giữa lối lên Trà lâu, rồi nhờ soát mọi cảnh.
   **Đã duyệt 2026-11-15.**
@@ -24,7 +24,7 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
   sân lát mà không bồn (R-VA-6).
 - Nhìn từ trên: trấn 139 / 149,9k; Yên Vũ Lâu 140 / 82,2k; Tử Cấm Thành 127 / 96,8k. Ảnh: `screens/Canh-cay-khoi-loi.png`,
   `screens/Canh-bon-cay-quang-truong.png`.
-## 2026-11-15.33 — Bỏ vòng trận ở 6 vùng: chỗ cũ thành sân đá trống làm bãi hạc đáp
+## 2026-11-15.37 — Bỏ vòng trận ở 6 vùng: chỗ cũ thành sân đá trống làm bãi hạc đáp
 
 - Loại: cảnh 3D — bố cục + Cần code (đã làm). Phiên code V-20261115-65 theo yêu cầu người dùng ("xoá truyền tống trận ở các map ngoài
   Khởi Nguyên Trấn"). **Đã duyệt 2026-11-15.**
