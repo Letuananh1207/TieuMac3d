@@ -3,6 +3,16 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-15.22 — Bản đồ truyền tống vẽ lại theo đúng thế đất; trấn sang góc trái dưới, icon nhỏ
+
+- Loại: bản đồ (bố cục + ngoại hình). Phiên code V-20261114-54; người dùng: "bản đồ chưa đúng địa hình… di chuyển Khởi Nguyên Trấn sang
+  góc trái bên dưới và Nhà của tôi nằm ở góc trái dưới của Khởi Nguyên Trấn… icon đại diện cho các vùng đang quá lớn". **Đã duyệt 2026-11-15.**
+- Khởi Nguyên Trấn (1000; 680) → **(440; 800)** đỉnh núi Ba Thục, biển mây chân núi; Nhà của ta (1190; 560) r 80 → **(230; 975)** r 95, đảo nổi;
+  Trúc Lâm → **(860; 740)** thung lũng đồng bằng Trung Nguyên; Nhạn Môn Quan (930; 235) yên ngựa sống núi; Tử Cấm Thành (1430; 300);
+  Đôn Hoàng Lộ (330; 290) sa mạc + núi cát; Yên Vũ Lâu (1400; 790); Bồng Lai Đảo giữ (1880; 610). Miền: Ba Thục = trấn + nhà, Trung Nguyên = Trúc Lâm.
+- Biểu tượng × 0,6 → **0,36**, đế 56 × 16, nhãn cách 46; vùng chạm r 105 → 120; ghim dx −62, huy hiệu (46; −46).
+- Canvas cần vẽ lại `BanDo-doc`, `BanDo-ngang`, `BanDo-giay`, `TruyenTongDai`, `NhaTa-ban-do`. Ảnh: `screens/BanDo-v54.png`.
+
 ## 2026-11-15.20 — Đổi tên 6 vùng lần 2: bộ Hán Việt cổ trang
 
 - Loại: chuỗi + dữ liệu + bản đồ. Phiên code V-20261114-53; người dùng chưa hài lòng bộ từ láy (2026-11-15.18), thảo luận rồi chốt
