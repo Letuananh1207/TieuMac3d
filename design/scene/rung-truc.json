@@ -853,5 +853,8 @@
       "speed": 0.4
     }
   ],
+  "portals": [
+    { "scene": "tong-mon", "area": { "from": [-8.6, 37.8], "to": [-6.2, 40.2] }, "arrive": { "at": [-5, 38.6], "rotY": 180 }, "label": "Khởi Nguyên Trấn" }
+  ],
   "dayNight": { "enabled": true }
 }

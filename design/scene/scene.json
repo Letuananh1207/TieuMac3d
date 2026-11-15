@@ -2324,6 +2324,27 @@
         "rotY": 180
       },
       "label": "Về nhà"
+    },
+    {
+      "scene": "rung-truc",
+      "area": {
+        "from": [
+          40,
+          2.8
+        ],
+        "to": [
+          42.4,
+          5.2
+        ]
+      },
+      "arrive": {
+        "at": [
+          38.6,
+          4
+        ],
+        "rotY": 270
+      },
+      "label": "Trúc Lâm"
     }
   ],
   "look": {

@@ -2,10 +2,12 @@ import * as THREE from 'three';
 import { describe, expect, it, vi } from 'vitest';
 import { Colliders } from '../collision/colliders';
 import { addPlasterWalls } from './kien_truc/tuong';
+import { arrivalFor, checkPortals, portalRect } from './portals';
 import { DEFAULT_SCENE, type PortalSpec } from './spec';
 import { resolveSceneSpec } from './specCheck';
 import { addPortalMarkers, markerRadius } from './vongCong';
 import townRaw from '../../../design/scene/scene.json';
+import rungRaw from '../../../design/scene/rung-truc.json';
 
 // nhãn / đĩa vẽ bằng canvas 2D: Node không có — canvas giả, mọi lệnh vẽ trả lại chính nó
 const ctx: unknown = new Proxy({}, { get: (_t, key) => (key === 'measureText' ? () => ({ width: 10 }) : () => ctx) });
@@ -83,5 +85,36 @@ describe('chỗ xuất phát luôn ở cổng trấn (`player.arriveAtStart`, V-
     expect([gate.z, gate.height]).toEqual([51, 8]);
     // về từ Nhà ta cũng đứng ở cổng, nhìn bắc vào trấn; vòng "Về nhà" ngoài cổng
     expect(town.portals[0]).toMatchObject({ arrive: { at: [0, 48], rotY: 180 }, label: 'Về nhà' });
+  });
+});
+
+describe('cặp cổng trấn ↔ Trúc Lâm (V-57)', () => {
+  const town = resolveSceneSpec(townRaw).spec;
+  const rung = resolveSceneSpec(rungRaw).spec;
+  it('R-HANH-4: vòng "Trúc Lâm" cuối trục đông – tây (41,2; 4) nối cuối lối lát, ↔ vòng "Khởi Nguyên Trấn" phía tây vòng trận Trúc Lâm', () => {
+    const toRung = town.portals.find((p) => p.scene === 'rung-truc')!;
+    expect(toRung.label).toBe('Trúc Lâm');
+    expect(markerRadius(toRung)).toBeCloseTo(1.2);
+    const r = portalRect(toRung);
+    expect((r.minX + r.maxX) / 2).toBeCloseTo(41.2);
+    expect((r.minZ + r.maxZ) / 2).toBeCloseTo(4);
+    // vòng nối ngay cuối lối lát (trục rộng 5 m tới x 39,7 — không kéo lối: lối lát san phẳng sườn núi, mở lối ra ngoài
+    // hàng trúc — ranhDong.test.ts), trong khe hàng trúc mép đông (z 0 … 8), không chứa cây nào
+    const axis = town.paths.find((p) => p.from[1] === 4 && p.to[1] === 4 && p.width === 5)!;
+    expect(r.minX - axis.to[0]).toBeGreaterThanOrEqual(0);
+    expect(r.minX - axis.to[0]).toBeLessThan(0.5);
+    expect(r.maxX).toBeLessThanOrEqual(42.4);
+    for (const t of town.trees.yard) expect(t.x >= r.minX - 1 && t.x <= r.maxX + 1 && t.z >= r.minZ - 1 && t.z <= r.maxZ + 1).toBe(false);
+    const back = rung.portals.find((p) => p.scene === 'tong-mon')!;
+    expect(back.label).toBe('Khởi Nguyên Trấn');
+    expect(checkPortals(town)).toEqual([]);
+    expect(checkPortals(rung)).toEqual([]);
+  });
+
+  it('R-HANH-4: từ Trúc Lâm đi bộ về → đứng (38,6; 4) trước vòng, nhìn tây vào trấn (không phải cổng trấn dù `arriveAtStart`); từ trấn sang → đứng (−5; 38,6) cạnh vòng về, nhìn nam xuống lối rừng', () => {
+    expect(arrivalFor(town.portals, 'rung-truc')).toEqual({ at: [38.6, 4], rotY: (3 * Math.PI) / 2 });
+    expect(arrivalFor(rung.portals, 'tong-mon')).toEqual({ at: [-5, 38.6], rotY: Math.PI });
+    // chỗ đứng ở Trúc Lâm ngoài vòng trận (tâm (0; 39), chạm khi < 3,2 m)
+    expect(Math.hypot(-5 - rung.teleport.center[0], 38.6 - rung.teleport.center[1])).toBeGreaterThan(3.2);
   });
 });

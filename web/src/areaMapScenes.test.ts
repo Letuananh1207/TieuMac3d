@@ -40,7 +40,7 @@ describe('bản đồ vùng — đủ mọi cảnh (R-BANDO-2)', () => {
     });
   }
 
-  it('R-BANDO-2: Khởi Nguyên Trấn — 11 khu, vòng trận (0; −44,5) đầu Thiên Bậc, vòng "Về nhà" ngoài cổng xuống núi (0; 54) ghi "Nhà của ta", bàn cờ + Đấu chữ, Tạp hoá, bảng nhiệm vụ', () => {
+  it('R-BANDO-2: Khởi Nguyên Trấn — 11 khu, vòng trận (0; −44,5) đầu Thiên Bậc, vòng "Về nhà" ngoài cổng xuống núi (0; 54) ghi "Nhà của ta", vòng "Trúc Lâm" cuối trục đông – tây (41,2; 4) ghi "Trúc Lâm", bàn cờ + Đấu chữ, Tạp hoá, bảng nhiệm vụ', () => {
     const m = mapOf(HOME_SCENE);
     expect(m.labels.filter((l) => l.kind === 'khu').map((l) => l.text)).toEqual([
       'Sân Cổ Thụ',
@@ -56,10 +56,13 @@ describe('bản đồ vùng — đủ mọi cảnh (R-BANDO-2)', () => {
       'Đồi Chè',
     ]);
     expect(m.icons.find((i) => i.kind === 'vong-tran')).toMatchObject({ x: 0, z: -44.5 });
-    const gate = m.icons.find((i) => i.kind === 'cong-canh');
+    const gates = m.icons.filter((i) => i.kind === 'cong-canh');
+    const gate = gates.find((g) => g.scene === 'nha-ta');
     expect(Math.round(gate!.x)).toBe(0);
     expect(Math.round(gate!.z)).toBe(54);
-    expect(m.labels.find((l) => l.kind === 'cong')?.text).toBe('Nhà của ta');
+    // V-57: vòng "Trúc Lâm" cuối trục đông – tây (41,2; 4), khe hàng trúc mép đông
+    expect(gates.find((g) => g.scene === 'rung-truc')).toMatchObject({ x: 41.2, z: 4 });
+    expect(m.labels.filter((l) => l.kind === 'cong').map((l) => l.text).sort()).toEqual(['Nhà của ta', 'Trúc Lâm']);
     expect(m.icons.find((i) => i.kind === 'ban-co')).toMatchObject({ x: -30.5, z: 7.5 });
     expect(m.icons.find((i) => i.kind === 'ban-dau-chu')).toMatchObject({ x: -37.5, z: 7.5 });
     expect(m.icons.some((i) => i.kind === 'tap-hoa')).toBe(true);
@@ -87,5 +90,11 @@ describe('bản đồ vùng — đủ mọi cảnh (R-BANDO-2)', () => {
     expect(m.icons.find((i) => i.kind === 'cong-canh')).toMatchObject({ x: 0, z: 21, scene: HOME_SCENE });
     expect(m.labels.filter((l) => l.kind === 'cong').map((l) => l.text)).toEqual(['Khởi Nguyên Trấn']);
     expect(m.icons.map((i) => i.kind)).toEqual(['cong-canh']);
+  });
+
+  it('R-BANDO-2: Trúc Lâm — vòng "Khởi Nguyên Trấn" (−7,4; 39) phía tây vòng trận ghi "Khởi Nguyên Trấn" (V-57)', () => {
+    const m = mapOf('rung-truc');
+    expect(m.icons.find((i) => i.kind === 'cong-canh')).toMatchObject({ x: -7.4, z: 39, scene: HOME_SCENE });
+    expect(m.labels.filter((l) => l.kind === 'cong').map((l) => l.text)).toEqual(['Khởi Nguyên Trấn']);
   });
 });
