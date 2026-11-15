@@ -1,5 +1,6 @@
 # Phiếu: Hình minh hoạ 3D mềm thay biểu tượng nét (mọi chỗ — HUD web + màn Flutter)
 - Trạng thái: chờ thiết kế
+- Đã vẽ: 2026-11-16.2 — **đợt 1** (11 hình thanh công cụ + nút hành động, + 4 bản cắt nửa trên `-nut`; phong cách bản 5: cùng chất ảnh đàn cổ tranh, chính diện, nhân vật Tiểu Mặc — `design/icons/`). Đợt 2, 3 chưa vẽ.
 - Đợi bởi: kế hoạch `docs/tasks/2026-11-15-hinh-minh-hoa.md` (V-20261115-72)
 - Yêu cầu người dùng: "các hình tượng trưng cho chức năng ở thanh chức năng và những chỗ khác đang dùng icon và tôi cảm thấy
   không chuyên nghiệp; ở 摩尔 họ làm rất đẹp, có lẽ là hình ảnh nên tôi cũng muốn".
