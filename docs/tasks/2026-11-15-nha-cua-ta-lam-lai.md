@@ -1,7 +1,7 @@
 # Nhà của ta làm lại — tiểu động thiên trên mây (V-20261114-48)
 - Yêu cầu: "cấu trúc nhà cũng đang rất xấu, tôi không muốn người dùng ra được khỏi phạm vi nhà, và cảm giác đang rất chật và
   phân bố rất xấu, tường, cảnh vật… nói chung tệ — hãy tham khảo các game khác làm như nào rồi làm"
-- Loại: sửa hành vi (phạm vi đi được) + bố cục cảnh · Cỡ: vừa · Trạng thái: chờ duyệt
+- Loại: sửa hành vi (phạm vi đi được) + bố cục cảnh · Cỡ: vừa · Trạng thái: đang làm (NV1–5 xong trên nhánh `viec/nha-dao`, chờ người dùng duyệt Canvas 3D → NV6–7)
 - Hồ sơ khảo cứu: `docs/tham_khao/nha-rieng-game.md` (hiện trạng có ảnh, 6 game, tứ hợp viện, Võng Sư Viên, số đo).
 - Xây trên **V-47** (bỏ vòng trận khỏi nhà: đi bản đồ tới nhà → đứng ở `player.start` trong cổng nam). Kế hoạch này giả định
   `teleport.enabled: false` + `player.arriveAtStart: true` trong `nha-ta.json`. V-47 chưa gộp thì đợi gộp rồi mới bắt đầu.
@@ -131,24 +131,24 @@ HUD trang trí, cầu nối `getHome` / `setDecor`, lưu nhà (mã ô giữ nguy
 Giả định khác (không cần hỏi): tên khu chip như bảng `site.areas`; cổng nam vẫn tên "Nhà của ta"; ngày đêm giữ (`dayNight`).
 
 ## Nhiệm vụ
-- [ ] 1. **Sổ quy tắc** (`docs/testing/quy_tac.md` · nghiệp vụ): R-NHA-1 — tới từ trấn / bản đồ → đứng (0; 10,5) trong cổng lầu,
+- [x] 1. **Sổ quy tắc** (V-48: R-NHA-1, R-NHA-5 mới, R-HANH-4, R-BANDO-2 — `chờ`, **chưa** đồng bộ online: phiên điều phối chạy `/dong-bo-quy-tac`) (`docs/testing/quy_tac.md` · nghiệp vụ): R-NHA-1 — tới từ trấn / bản đồ → đứng (0; 10,5) trong cổng lầu,
       nhìn bắc về nhà; ra: đi qua cổng (z 13) xuống chiếu nghỉ Bến mây, bước vào vòng sáng "Khởi Nguyên Trấn" (x −1,8 … 1,8,
       z 22 … 25) → về trấn. **R-NHA-5 (mới) Phạm vi nhà**: nhà là một đảo nhỏ trên biển mây; đi về mọi hướng đều dừng ở mép vực
       (R-VA-2), đồi sau hoặc lan can — không có cách nào ra ngoài đảo; chỉ rời nhà qua vòng sáng ở Bến mây (hoặc bản đồ ở Truyền
       Tống Đài — không ở nhà). Ví dụ: từ (0; 0) đi thẳng tây → dừng trước x ≈ −26; đi thẳng bắc qua sân trong → sau nhà leo đồi rồi
       dừng (dốc > 35°) trước z −30; trên Bến mây đi ngang ra x 5 → lan can đá chặn ở x ≈ 3,5. R-HANH-4: ví dụ "(0; 10)" → "(0; 10,5)".
       → `/dong-bo-quy-tac`. Xong khi người dùng xác nhận trên tài liệu online.
-- [ ] 2. **Thử khả năng đặc tả** (bản nháp `nha-ta.json` trong worktree, chưa chốt · scene/spec): bật `terrain` đảo + bục + 12 ô
+- [x] 2. **Thử khả năng đặc tả** (chạy sẵn hết, không cần code — xem "Kết quả V-48") (bản nháp `nha-ta.json` trong worktree, chưa chốt · scene/spec): bật `terrain` đảo + bục + 12 ô
       dời + `galleries` không nước + `fences` + `dinh`; `npm run scene:check`; Canvas 3D đi thử: (a) mép vực chặn đủ 8 hướng kể cả
       chỗ `wobble`; (b) ô trang trí qua kiểm `flat` và vật đứng đúng mặt đất (`slotFloorY` + `groundY`); (c) hành lang dựng được
       không cần nước, camera có bị kéo (R-DIEU-4); (d) bản đồ nhỏ vẽ mép đảo. Xong khi có danh sách "chạy sẵn" / "cần code".
-- [ ] 3. **Code nhỏ nếu NV2 thấy thiếu** (scene · chỉ khi cần): vd. `galleries` cho phép `waterSide: 0` (ghế hai phía), kiểm
+- [x] 3. **Code nhỏ nếu NV2 thấy thiếu** (không cần) (scene · chỉ khi cần): vd. `galleries` cho phép `waterSide: 0` (ghế hai phía), kiểm
       `flat` dùng mặt đất địa hình, `homeDecor` truyền `groundY`. Mỗi trường mới có mặc định giữ cảnh cũ (CLAUDE.md quy tắc 8).
       Test vitest kèm. Xong khi `npx tsc --noEmit && npm test` xanh.
-- [ ] 4. **Dựng bố cục** `design/scene/nha-ta.json` theo mặt bằng + Q1–Q4 (`/canh`): `scene:check` "Không có lỗi", `build:design`,
+- [x] 4. **Dựng bố cục** (dựng + đăng Canvas 3D; chờ người dùng duyệt) `design/scene/nha-ta.json` theo mặt bằng + Q1–Q4 (`/canh`): `scene:check` "Không có lỗi", `build:design`,
       đăng Canvas 3D, chụp 6 góc (trên xuống, cả đảo, chỗ tới, sân trong, vườn ao, đình ngắm mây) + đo draw call / tam giác → người
       dùng **đi thử trên Canvas 3D** và duyệt. Xong khi người dùng duyệt.
-- [ ] 5. **Test** (web): test R-NHA-5 dùng đặc tả thật `nha-ta.json` + `canStep` / heightfield — từ 8 điểm trong đảo đi thẳng 8
+- [x] 5. **Test** (web — `web/src/nhaPhamVi.test.ts`, `areaMapScenes.test.ts`): test R-NHA-5 dùng đặc tả thật `nha-ta.json` + `canStep` / heightfield — từ 8 điểm trong đảo đi thẳng 8
       hướng 60 m → vị trí cuối luôn cách tâm (0; −2) < 28 m và không lọt ra ngoài trừ qua vùng cổng; cập nhật
       `areaMapScenes.test.ts` (đất nhà = đảo, nhãn khu mới, không còn biểu tượng vòng trận); `decorSlots.test.ts` / `portals.test.ts`
       nếu dùng toạ độ cũ. Dart `app/test/rules/nha_test.dart` không đổi (mã ô giữ). Xong khi `npm test` xanh, `rule_trace` thấy R-NHA-5.
@@ -168,3 +168,20 @@ cd app && flutter analyze && flutter test -r failures-only test/rules test/scene
 - Q1: **đảo nhỏ trên biển mây** (mép vực chặn, lối ra duy nhất bến mây phía nam).
 - Q2: **hai hành lang + lan can thấp**.
 - Q3 + Q4: "tôi muốn **rỗng**, chưa cần thêm gì cả vì sau này người dùng có đồ rồi mới trang trí thêm giống game 摩尔" → **không** thêm suối, hạc, ao sen trang trí, đình, cây đối… chỉ dựng khung: đảo + nhà chính + sân trong (hành lang + lan can) + nền / cỏ + ít cây nền ở đồi sau / mép đảo để đỡ trơ; giữ 12 ô trang trí (giữ mã, dời toạ độ) để người chơi tự đặt đồ.
+
+## Kết quả V-48 (2026-11-15, nhánh `viec/nha-dao`)
+Bố cục theo "Người dùng chốt" (rỗng — khung): khác đề xuất ở trên:
+- Đảo `terrain` tâm (0; −2), mép bán kính **27** (wobble 1,5); bục sân x −17 … 17, z −18 … 13 (gọn trong vòng mép — bản đồ không lòi góc);
+  Bến mây = bục lát x −3 … 3, z 13 … 23; hai "hố vực" (`peaks` h −24 r 9 ở (±10,5; 19,5)) khoét hai bên bến → bến là doi đất chìa ra biển mây.
+- Đồi sau `peaks` (−6; −25) r 11 h 8 · (9; −24) r 8 h 5 + cụm trúc mao (0; −23); 2 cụm tùng 3 cây ở mép (±20; −10). Không cây lẻ, không vật, không ao / đình / suối / hạc.
+- Sân trong `terrain.floors` x −9,5 … 9,5, z −15 … −1; hành lang `galleries` x ±8, z −13 … −1 rộng 2,2 (ghế tựa quay vào sân); lan can gỗ 0,8 m
+  (`fenceStyle` go, màu gỗ nâu) z −1 hai bên khe trục ±1,5; lan can hai mép + cuối Bến mây.
+- Cổng: **cổng đứng riêng** `gates` "cong-nha" (0; 11,5) rộng 3,2 cao 6, biển "Nhà của ta" / mặt sau "Khởi Nguyên Trấn" — thay đoạn tường có cổng
+  (tránh tường cụt — bài học V-44). Bỏ toàn bộ `wallSegments`.
+- Chỗ xuất phát giữ (0; 6,5), hạc đáp (2,5; 6,5); tới đi bộ giữ (0; 10) (R-HANH-2/5 không đổi số); vòng về trấn (−1,8; 19,5) … (1,8; 22,5).
+- 12 ô: trong-1/2/3 (−3,2; −12,8) · (0; −13) · (3,2; −12,8); san-1/2 (∓4,5; −4,5); san-3 (−4; 8); vuon-1/2/3 (−13; −11) · (−13; −4) · (−11; 4);
+  vuon-4/5/6 (13; −11) · (13; −4) · (11; 4).
+- V-44 (`pathEdge`, `paths[].edge`, `ground.variation`) chưa có trên main lúc làm → không dùng; gộp V-44 xong có thể thêm bó vỉa cho lối trục.
+- Draw call (chưa vật): trên xuống 48 · góc chơi ở chỗ xuất phát 38 · trong nhà 33; ≈ 34k tam giác. Đủ 12 ô (≤ 2 / vật + 1 lớp dấu ô) ≤ 73.
+- NV2: (a) mép chặn đủ 8 hướng — test; (b) ô qua kiểm `flat` có sẵn trong `specCheck`, `slotFloorY` đã dùng `groundY`; (c) `galleries` dựng
+  không cần nước, không kéo camera (không phải nhà / tường — R-DIEU-4); (d) bản đồ vẽ mép đảo (`mep`) + 2 bục + dấu cổng nhà (`son-mon`).

@@ -66,20 +66,26 @@ describe('bản đồ vùng — đủ mọi cảnh (R-BANDO-2)', () => {
     expect(m.icons.some((i) => i.kind === 'bang-nhiem-vu')).toBe(true);
   });
 
-  it('R-BANDO-2: đất = các bục cao từ −1 m (trấn); không có địa hình → khung các khu nới 3 m (Nhà của ta)', () => {
+  it('R-BANDO-2: đất = các bục cao từ −1 m (trấn; Nhà của ta — đảo: sân + Bến mây, mép đảo tròn)', () => {
     const tran = loadScene(HOME_SCENE).spec;
     const land = mapOf(HOME_SCENE).shapes.filter((s) => s.kind === 'dat');
     expect(land).toHaveLength(tran.terrain.plateaus.filter((p) => p.y >= -1).length);
-    const nha = mapOf('nha-ta').shapes.filter((s) => s.kind === 'dat');
-    expect(nha).toEqual([{ kind: 'dat', x: 0, z: -1, w: 38, d: 32 }]);
+    const nha = mapOf('nha-ta').shapes;
+    expect(nha.filter((s) => s.kind === 'dat')).toEqual([
+      { kind: 'dat', x: 0, z: -2.5, w: 34, d: 31 },
+      { kind: 'dat', x: 0, z: 18, w: 6, d: 10 },
+    ]);
+    // V-48: nhà là đảo nhỏ trên biển mây — bản đồ vẽ mép đảo (như Bồng Lai)
+    expect(nha.find((s) => s.kind === 'mep')).toEqual({ kind: 'mep', x: 0, z: -2, r: 27 });
     for (const id of IDS) expect(mapOf(id).shapes.filter((s) => s.kind === 'khu')).toHaveLength(loadScene(id).spec.site.areas.length);
   });
 
-  it('R-BANDO-2: Nhà của ta — 3 khu, cổng (0; 14) ghi "Khởi Nguyên Trấn", không có vòng trận, không có dấu ô trang trí', () => {
+  it('R-BANDO-2: Nhà của ta — 5 khu, vòng "Khởi Nguyên Trấn" (0; 21) cuối Bến mây, cổng nhà (0; 11,5), không có vòng trận, không có dấu ô trang trí', () => {
     const m = mapOf('nha-ta');
-    expect(m.labels.filter((l) => l.kind === 'khu').map((l) => l.text)).toEqual(['Chính phòng', 'Vườn', 'Sân trước']);
-    expect(m.icons.find((i) => i.kind === 'cong-canh')).toMatchObject({ x: 0, z: 14.25, scene: HOME_SCENE });
+    expect(m.labels.filter((l) => l.kind === 'khu').map((l) => l.text)).toEqual(['Chính phòng', 'Sân trong', 'Bến mây', 'Đồi sau', 'Vườn']);
+    expect(m.icons.find((i) => i.kind === 'cong-canh')).toMatchObject({ x: 0, z: 21, scene: HOME_SCENE });
     expect(m.labels.find((l) => l.kind === 'cong')?.text).toBe('Khởi Nguyên Trấn');
-    expect(m.icons.map((i) => i.kind)).toEqual(['cong-canh']);
+    expect(m.icons.find((i) => i.kind === 'son-mon')).toMatchObject({ x: 0, z: 11.5 });
+    expect(m.icons.map((i) => i.kind)).toEqual(['cong-canh', 'son-mon']);
   });
 });
