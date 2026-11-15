@@ -3,6 +3,19 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-16.1 — Vườn kiểu 摩尔 (lõi): sâu / cỏ / phân bón, nhân vật diễn động tác, hạt / nước / đất ẩm, cây nảy (HUD chờ thiết kế)
+
+- Loại: cảnh 3D — ngoại hình + luồng / luật (Cần code, đã làm). Phiên code V-20261115-73 (kế hoạch `docs/tasks/2026-11-15-vuon-mole.md`;
+  người dùng chọn: thanh nông cụ 6 ô, sâu / cỏ định sẵn lúc gieo, bỏ mặc thu ít hơn, phân mua ở Tạp hoá). **Đã duyệt 2026-11-16.**
+- Sâu (½ cây, 20–45 % thời gian lớn) và cỏ dại (½ cây, 55–85 %, 2–3 bụi) định sẵn lúc gieo; thu = 2 + lượt tưới − sâu còn − cỏ còn (2…4);
+  phân bón 10 Văn / bao ở Tạp hoá (× 1 · × 5 · × 10, mới cài 3 bao) — bón giảm nửa thời gian còn lại, mỗi cây 1 lần. Cây gieo từ bản cũ coi
+  là sạch sâu / cỏ.
+- Nhân vật tự đi tới luống, diễn 6 động tác (gieo, tưới cầm bình, bắt sâu, nhổ cỏ, bón, thu) với đồ cầm tay; hạt rơi, tia nước, đất khô / ẩm
+  đổi màu, sâu + cỏ (InstancedMesh), cây nảy + lấp lánh khi chín, quả bay khi thu; 7 tiếng vườn tự tổng hợp. `spec.garden.fx` (mặc định
+  giữ cảnh cũ). Đang làm vườn +5 draw call. Tạm điều khiển bằng phím 1–6 + E (máy tính); thanh nông cụ, lưới hạt, túi đồ lưới ô chờ phiếu
+  `2026-11-15-vuon-mole`. Luật R-VUON-2/3/5/6/9/10…13, R-TIEN-4/5/7, R-TUI-1, R-AM-4. Ảnh: `screens/Canh-lam-vuon-tuoi.png`,
+  `screens/Canh-lam-vuon-bat-sau.png`.
+
 ## 2026-11-15.45 — Nhà của ta: vùng đặt đồ trang trí tự do (`decorArea`) thay 12 ô
 
 - Loại: cảnh 3D — bố cục + Cần code (đã làm). Phiên code V-20261115-69 (kế hoạch `docs/tasks/2026-11-15-trang-tri-tu-do.md`; HUD áp thiết kế
