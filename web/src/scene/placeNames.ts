@@ -38,8 +38,8 @@ export function checkPlaceNames(
   return out;
 }
 
-/** Cảnh nhà riêng: cổng tới đó ghi "Về nhà", không ghi tên nơi (R-HANH-4). */
-const HOME_OF_PLAYER = 'nha-ta';
+/** Cảnh nhà riêng (Nhà của ta): cổng tới đó ghi "Về nhà", không ghi tên nơi (R-HANH-4); nút Về nhà đi tới đây (R-HANH-7). */
+export const HOME_OF_PLAYER = 'nha-ta';
 
 /**
  * Nhãn vòng sáng cổng đi bộ (R-HANH-4, V-59): cổng tới một nơi trên bản đồ ghi đúng `ten` của nơi đó (một nguồn tên —

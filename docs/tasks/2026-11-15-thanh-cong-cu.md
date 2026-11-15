@@ -6,7 +6,7 @@
   sắp lại HUD nếu cần, safe area).
 - Việc: V-20261115-64 · nhánh `viec/thanh-cong-cu`
 - Loại: thêm (HUD mới + luồng đi lại + động tác nhân vật) · sửa hành vi (R-HANH-2/5, R-NHA-1, R-NV-3) · Cỡ: **lớn**
-- Trạng thái: **đã duyệt 2026-11-15** — người dùng chọn 1A (thanh sát đáy, nâng HUD ~60 px), 2A (ở nhà: nút mờ + thẻ), 3A (hai nút Túi đồ / Nhiệm vụ, thanh 5 nút), 4A (túi đồ tấm đáy web); NV1 chờ V-65 gộp (phần HUD: chờ thiết kế — phiếu `docs/phieu_thiet_ke/2026-11-15-thanh-cong-cu.md`)
+- Trạng thái: **chờ thiết kế** — phần lõi (1–6, 11) xong trên nhánh `viec/thanh-cong-cu-2`; 7–10 chờ phiếu; 12 bỏ qua. Trước đó: **đã duyệt 2026-11-15** — người dùng chọn 1A (thanh sát đáy, nâng HUD ~60 px), 2A (ở nhà: nút mờ + thẻ), 3A (hai nút Túi đồ / Nhiệm vụ, thanh 5 nút), 4A (túi đồ tấm đáy web); NV1 chờ V-65 gộp (phần HUD: chờ thiết kế — phiếu `docs/phieu_thiet_ke/2026-11-15-thanh-cong-cu.md`)
 
 ## Liên quan việc song song V-65 (xoá vòng trận ở 6 vùng)
 
@@ -168,23 +168,23 @@ Viết theo phương án đề xuất (1A, 2A, 3A, 4A); người dùng chọn kh
 
 Làm được ngay (sau khi duyệt) — 1…6, 11; chờ thiết kế (phiếu `2026-11-15-thanh-cong-cu`) — 7…10; tuỳ chọn — 12.
 
-- [ ] 1. **Luật** (sau khi V-65 gộp — cùng sửa R-HANH-2/5): chép nháp trên vào `docs/testing/quy_tac.md` (sửa R-DIEU-1, R-HANH-2/5, R-NHA-1, R-NV-3, R-MAN-2; thêm
+- [x] 1. **Luật** (2026-11-15: đã ghi sổ — sửa R-DIEU-1, R-HANH-2/4/5, R-NHA-1, R-NV-3, R-MAN-2; thêm R-THANH-1/2, R-HANH-6/7, R-BIEU-1/2/3, R-TUI-1; R-BIEU-4 **không ghi** (NV12 chưa làm); R-HANH-4 sửa thêm (câu "cổng đi bộ là đường duy nhất" của V-65); **chưa đồng bộ online** — phiên chính chạy `/dong-bo-quy-tac` sau khi gộp) (sau khi V-65 gộp — cùng sửa R-HANH-2/5): chép nháp trên vào `docs/testing/quy_tac.md` (sửa R-DIEU-1, R-HANH-2/5, R-NHA-1, R-NV-3, R-MAN-2; thêm
   R-THANH-1/2, R-HANH-6/7, R-BIEU-1…4, R-TUI-1 — cột App `sửa`, R-BIEU-4 `chưa làm`) → `/dong-bo-quy-tac`. (sổ · xong khi
   `rule_trace --pending` trống)
-- [ ] 2. **Trạng thái thanh thuần** `web/src/zones/thanhCongCu.ts`: vào cờ ngữ cảnh (`hidden`-các màn, `sitting`, `air`,
+- [x] 2. **Trạng thái thanh thuần** `web/src/zones/thanhCongCu.ts`: vào cờ ngữ cảnh (`hidden`-các màn, `sitting`, `air`,
   `atHome`, `tasksLeft`) → từng nút `on | off` + chấm; khi chạm → việc (`stand-then`, `after-land`, `home-here`). (zones ·
   test `thanhCongCu.test.ts` R-THANH-1/2, R-HANH-7 · xong khi đỏ → xanh)
-- [ ] 3. **Đi bằng thanh**: `zones/cuoiHac.ts` `TravelHow` thêm `'thanh'`, `wantsCrane({…, indoor})`; `main.ts`
+- [x] 3. **Đi bằng thanh** (Về nhà = `travel('nha-ta', 'thanh')` — `HOME_SCENE` là mã trấn `tong-mon`, không phải nhà; URL tách ra `zones/cuoiHac.ts` `travelParams`; thẻ "Bạn đang ở Nhà của ta" tạm chỉ ghi Console — chờ NV10): `zones/cuoiHac.ts` `TravelHow` thêm `'thanh'`, `wantsCrane({…, indoor})`; `main.ts`
   `travel(to, 'thanh')`, `openMap(from = player)` (cuộn bay từ nhân vật), ring đang nạp → `rearm`; Về nhà = `travel(HOME_SCENE,
   'thanh')` (giữ `tu=`). (zones + ghép · test `cuoiHac.test.ts` R-HANH-5/6/7 · xong khi `?debug` `__hocXaTravel` + phím T/H
   đi được từ phố chợ, nhà, tầng 2 → màn tải)
-- [ ] 4. **Dữ liệu biểu cảm** `web/src/zones/bieuCam.ts` (8 mã, tên Việt, thời lượng, `hold`), luật thôi / thay. (zones ·
+- [x] 4. **Dữ liệu biểu cảm** (test ở `web/src/bieuCam.test.ts` — cần cả `player/` lẫn `zones/`) `web/src/zones/bieuCam.ts` (8 mã, tên Việt, thời lượng, `hold`), luật thôi / thay. (zones ·
   test `bieuCam.test.ts` R-BIEU-2)
-- [ ] 5. **Động tác 3D**: `CharacterState.emote?`, `controller.ts` `emote()` / thôi khi đi-nhảy-ngồi-chào (như `bow`),
+- [x] 5. **Động tác 3D** (dáng ở `player/bieuCamDang.ts`; Canvas 3D `?dang=bieu-cam[&bc=<mã>][&t=<giây>]` qua `bieuCamPreview.ts`; artifact không phục vụ `.glb` → trên link Canvas 3D là đệ tử khối, không thấy dáng — xem bằng `npm run build:design` + `vite preview` trên máy; chờ người dùng duyệt ảnh; fps chưa đo trên Android): `CharacterState.emote?`, `controller.ts` `emote()` / thôi khi đi-nhảy-ngồi-chào (như `bow`),
   `glbCharacter.ts` 8 dáng bằng 7 xương; `chibi` / `disciple` bỏ qua (không lỗi). Canvas 3D `?dang=bieu-cam&bc=<mã>`
   (`designPreview.ts`) để người dùng duyệt dáng. Draw call: +0. (player · thử tay + ảnh 8 dáng · đo fps trước / sau ·
   xong khi người dùng duyệt ảnh)
-- [ ] 6. **Ghép** `web/src/thanhCongCu.ts`: nối 2–5 + `openDaily` từ mọi nơi + hỏi `getGarden` / `getHome` ngoài nhà khi
+- [x] 6. **Ghép** (I = Túi đồ chỉ ghi Console tới NV9; B rồi 1…8 trong 4 s) `web/src/thanhCongCu.ts`: nối 2–5 + `openDaily` từ mọi nơi + hỏi `getGarden` / `getHome` ngoài nhà khi
   mở túi; phím T / H / B / I / J (`input/keyboard.ts`); B chọn biểu cảm tạm bằng phím số 1–8 tới khi có bảng; `mapBack`
   đóng bảng biểu cảm / túi trước. `main.ts` thêm vài dòng. (ghép · xong khi trên máy tính dùng được hết bằng phím)
 - [ ] 7. **HUD thanh đáy + sắp lại HUD** — chờ thiết kế (`2026-11-15-thanh-cong-cu`): `ui/toolbar.ts` + `ui/toolbar.css`,
@@ -195,7 +195,7 @@ Làm được ngay (sau khi duyệt) — 1…6, 11; chờ thiết kế (phiếu 
 - [ ] 9. **Túi đồ** — chờ thiết kế: `zones/tuiDo.ts` (view thuần: ngăn, dòng trống — test R-TUI-1), `ui/bagPanel.ts` (tấm đáy
   kiểu `gardenPanel`). (zones + ui)
 - [ ] 10. **Thẻ "Bạn đang ở Nhà của ta"** + nút Về nhà mờ — chờ thiết kế (dùng lại tấm báo nếu thiết kế cho). (ui)
-- [ ] 11. **Tài liệu**: `docs/bridge.md` cột "khi" của `getGarden` / `getHome` (thêm: mở túi đồ ở mọi cảnh); bảng tính năng
+- [x] 11. **Tài liệu** (`getGarden` / `getHome` chưa đổi lúc hỏi — làm cùng NV9; `bridge.md` ghi đổi vùng bằng thanh): `docs/bridge.md` cột "khi" của `getGarden` / `getHome` (thêm: mở túi đồ ở mọi cảnh); bảng tính năng
   `.claude/skills/lead/SKILL.md`. (docs)
 - [ ] 12. *(tuỳ chọn)* **NPC đáp lại** R-BIEU-4 — `townNpcs.ts` / `player/npc.ts` quay mặt + chào, `chat.npcSay`. (player + ghép)
 

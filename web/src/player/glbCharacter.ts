@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 import { autoRig, type Rig } from './autoRig';
+import { emotePose } from './bieuCamDang';
 import type { Character } from './character';
 import { RUN_SPEED, WALK_SPEED } from './controller';
 
@@ -215,6 +216,20 @@ export async function loadGlbCharacter(url: string): Promise<Character> {
         aRx = -0.95 - 0.18 * pl;
         aRz = ARM_REST + 0.28;
       }
+      // biểu cảm (R-BIEU-2, dáng `bieuCamDang.ts`): trộn đè lên dáng đứng theo trọng số vào / ra
+      const em = state?.emote ? emotePose(state.emote.id, state.emote.t, state.emote.len) : null;
+      const ew = em ? em.w * (1 - move) * (1 - airB) : 0;
+      if (em && ew > 0) {
+        aLx = mix(aLx, em.aLx, ew);
+        aRx = mix(aRx, em.aRx, ew);
+        aLz = mix(aLz, em.aLz, ew);
+        aRz = mix(aRz, em.aRz, ew);
+        bob.position.y += em.lift * ew;
+        if (em.legs !== undefined) {
+          rig.legL.rotation.x = mix(rig.legL.rotation.x, em.legs, ew);
+          rig.legR.rotation.x = mix(rig.legR.rotation.x, em.legs, ew);
+        }
+      }
       rig.armL.rotation.x = aLx;
       rig.armR.rotation.x = aRx;
       rig.armL.rotation.z = aLz;
@@ -227,6 +242,13 @@ export async function loadGlbCharacter(url: string): Promise<Character> {
       rig.hips.position.y = hipY + Math.sin(time * 2) * 0.012 * (1 - move) * (1 - airB);
       rig.head.rotation.z = Math.sin(time * 1.1) * 0.05 * still;
       rig.head.rotation.x = Math.sin(time * 0.7) * 0.03 * still + 0.12 * bowB - 0.25 * stretch + 0.15 * sitB;
+      if (em && ew > 0) {
+        rig.hips.rotation.x = mix(rig.hips.rotation.x, em.hipsX, ew);
+        rig.hips.rotation.y = mix(rig.hips.rotation.y, em.hipsY, ew);
+        rig.head.rotation.x = mix(rig.head.rotation.x, em.headX, ew);
+        rig.head.rotation.y = mix(rig.head.rotation.y, em.headY, ew);
+        rig.head.rotation.z = mix(rig.head.rotation.z, em.headZ, ew);
+      }
     },
   };
 }

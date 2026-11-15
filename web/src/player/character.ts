@@ -41,4 +41,7 @@ export interface CharacterState {
   /** đang gảy đàn (nhạc công `cam-nu` — R-NPC-9): có = ngồi, hai tay đưa ra trước đặt trên dây đàn; số 0…1 = tay phải
    *  nhấc lên (0 vừa gảy, 1 nhấc cao). Không có = dáng thường. Không bắt buộc — nhân vật người chơi bỏ qua */
   pluck?: number;
+  /** đang diễn biểu cảm (R-BIEU-2): mã (`zones/bieuCam.ts`), giây đã diễn `t`, thời lượng `len` (`Infinity` = giữ). Không
+   *  có = không diễn. Không bắt buộc — nhân vật không biết mã thì bỏ qua (đứng thường) */
+  emote?: { id: string; t: number; len: number };
 }

@@ -39,6 +39,7 @@ import { addGardenPreview } from './vuonPreview';
 import { inRect } from './scene/rooms';
 import { el } from './ui/dom';
 import { placeZones, ZONE_CONTENT } from './zones/zones';
+import { emotePreview } from './bieuCamPreview';
 
 // biến thể bố cục chỉ cho Canvas 3D (glob: chưa có file thì rỗng)
 const VARIANTS: Record<string, unknown> = import.meta.glob('../../design/scene/bien_the/*.json', { eager: true, import: 'default' });
@@ -334,6 +335,8 @@ async function boot(): Promise<void> {
   // ?dang=ngoi-mat[&cho=on|tu-hoc|tra|lan-can|co|dau] — nhìn từ mắt khi ngồi như app (R-DIEU-7, ngoiMat.ts): Ngồi ôn tại chỗ
   // (cuộn mở), bồ đoàn khu tự học, đôn bàn trà trà lâu, ghế lan can tầng 2 trà lâu, bàn cờ, bàn Đấu chữ. Thân mình ẩn, hai tay + cuộn / chén / bàn.
   const mat = pose === 'ngoi-mat' ? ngoiMatPreview(params.get('cho') ?? 'on') : null;
+  // ?dang=bieu-cam[&bc=<mã>][&t=<giây>] — dáng 8 biểu cảm (R-BIEU-2, bieuCamPreview.ts); tên biểu cảm hiện ở ô toạ độ
+  const bieuCam = emotePreview(params);
   if (pose) character.animate(1, poseState.mps / RUN_SPEED, poseState);
   if (Number.isFinite(phase) && phase > 0) character.animate(phase / 10, WALK_SPEED / RUN_SPEED, { ...poseState, mps: WALK_SPEED });
   interface MatPreview {
@@ -406,6 +409,10 @@ async function boot(): Promise<void> {
     world.update(dt, character.root.position, camera.position);
     const p = character.root.position;
     ngayDem.update(dt, world.rooms.some((r) => inRect(r.floor, p.x, p.z)));
+    if (bieuCam) {
+      bieuCam.apply(dt, poseState);
+      el('pick').textContent = `Biểu cảm: ${bieuCam.current.name}`;
+    }
     character.animate(dt, stateNow().mps / RUN_SPEED, stateNow());
     cuon?.update(dt, character.root.position, character.facing.rotation.y, 2);
     for (const npc of npcSet.npcs) npc.update(dt);

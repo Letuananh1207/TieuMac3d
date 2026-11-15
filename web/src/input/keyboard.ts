@@ -1,10 +1,23 @@
 import type { MoveInput } from '../player/controller';
 
 /** Hành động bằng phím (R-DIEU-6, R-DIEU-7) — trên điện thoại là nút (chờ thiết kế). */
-export type KeyAction = 'jump' | 'bow' | 'sit' | 'seat' | 'back' | 'chat' | 'map';
+export type KeyAction = 'jump' | 'bow' | 'sit' | 'seat' | 'back' | 'chat' | 'map' | 'tool' | 'digit';
 
-/** M: mở / đóng bản đồ lớn (R-BANDO-5). */
-const ACTION_KEYS: Record<string, KeyAction> = { ' ': 'jump', f: 'bow', c: 'sit', e: 'seat', escape: 'back', enter: 'chat', m: 'map' };
+/**
+ * M: mở / đóng bản đồ lớn (R-BANDO-5). T / H / B / I / J: 5 nút thanh công cụ (R-THANH-1 — nơi gọi tra nút theo phím).
+ * 1…9: phím số (B rồi số = chọn biểu cảm tạm, tới khi có bảng — R-BIEU-1).
+ */
+const ACTION_KEYS: Record<string, KeyAction> = {
+  ' ': 'jump',
+  f: 'bow',
+  c: 'sit',
+  e: 'seat',
+  escape: 'back',
+  enter: 'chat',
+  m: 'map',
+  ...Object.fromEntries([...'thbij'].map((k) => [k, 'tool' as const])),
+  ...Object.fromEntries([...'123456789'].map((k) => [k, 'digit' as const])),
+};
 
 /** Đang gõ chữ (ô nhập trò chuyện…) → phím không điều khiển nhân vật (R-CHAT, thiết kế 2026-11-14.9). */
 function typingIn(t: EventTarget | null): boolean {
@@ -15,7 +28,8 @@ function typingIn(t: EventTarget | null): boolean {
 export class Keyboard {
   private readonly keys: Record<string, boolean> = {};
 
-  constructor(onAction?: (a: KeyAction) => void) {
+  /** `onAction(a, key)`: `key` = phím đã bấm (chữ thường) — cho `tool` / `digit`. */
+  constructor(onAction?: (a: KeyAction, key: string) => void) {
     window.addEventListener('keydown', (e) => {
       if (typingIn(e.target)) {
         for (const k of Object.keys(this.keys)) this.keys[k] = false; // thả mọi phím đang giữ
@@ -26,7 +40,7 @@ export class Keyboard {
       const act = ACTION_KEYS[key];
       if (act && !e.repeat && onAction) {
         e.preventDefault(); // Space không cuộn trang
-        onAction(act);
+        onAction(act, key);
       }
     });
     window.addEventListener('keyup', (e) => {

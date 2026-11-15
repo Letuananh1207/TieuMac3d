@@ -20,7 +20,9 @@ import { CRANE_TIMING as T, CraneClock, arrivingByCrane, departStage, landStage,
 export const prefersReducedMotion = (): boolean => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 /** chế độ thử: `?hac` (giữ qua các chuyến — `main.ts` `travel`) */
 export const craneTrial = (params: URLSearchParams): boolean => params.has('hac');
-export const craneDeparts = (params: URLSearchParams, how: TravelHow): boolean => wantsCrane({ how, trial: craneTrial(params), reducedMotion: prefersReducedMotion() });
+/** `indoor`: đang đứng trong chân một nhà vào được / tầng 2 → màn tải (R-HANH-5) */
+export const craneDeparts = (params: URLSearchParams, how: TravelHow, indoor = false): boolean =>
+  wantsCrane({ how, trial: craneTrial(params), reducedMotion: prefersReducedMotion(), indoor });
 export const craneArrives = (params: URLSearchParams): boolean => arrivingByCrane(params, prefersReducedMotion());
 
 /** đêm (theo giờ VN + `?gio`) → mây chàm */

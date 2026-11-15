@@ -60,11 +60,11 @@ Dạng chung `{type: string, payload: object}`.
   lần nữa. Luật tiền (thưởng, trần, mua) một nguồn ở Dart `wallet.dart`; giá + chữ Hán của vật một nguồn ở `decor.ts`.
 - `openLesson` cũng là lúc Flutter ghi chữ `lesson.han` là **đã học** (lần đầu mở — R-HANH-1, tạm tới khi có nút
   "Đã thuộc"); tiến độ lưu ở Flutter (`app/lib/journey/progress_store.dart`).
-- **Đổi vùng** (R-HANH-2) không qua Flutter: trang tự tải lại `index.html?vung=<mã vùng>` (về nhà:
-  `index.html?tu=<mã vùng vừa rời>`). Đi bộ qua **cổng sang cảnh** (R-HANH-4) cũng tải lại trang như thế:
+- **Đổi vùng** (R-HANH-2, R-HANH-6/7 — cả nút Bản đồ / Về nhà của thanh công cụ) không qua Flutter: trang tự tải lại
+  `index.html?vung=<mã vùng>` (về trấn: `index.html?tu=<mã vùng vừa rời>`; Về nhà: `index.html?vung=nha-ta`). Đi bộ qua **cổng sang cảnh** (R-HANH-4) cũng tải lại trang như thế:
   `index.html?vung=nha-ta&qua=tong-mon` (từ trấn vào nhà), `index.html?qua=nha-ta` (từ nhà ra trấn). Flutter thấy một lần tải trang mới → `onLoadStop` gửi lại biến safe area và `debug`
   như lúc mở app; trang gọi lại `getProgress`.
-- **Cưỡi hạc** (R-HANH-5, bật trong app; `?hac` còn là cờ thử): đổi vùng bằng vòng trận thêm `den=hac` (+ `dem=1` ban
+- **Cưỡi hạc** (R-HANH-5, bật trong app; `?hac` còn là cờ thử): đổi vùng bằng bản đồ truyền tống / nút Về nhà (không đứng trong nhà) thêm `den=hac` (+ `dem=1` ban
   đêm → màn mây chàm) vào URL tải lại (`index.html?vung=rung-truc&den=hac&dem=1`); trang mới tự bỏ `den`, `dem`
   (history.replaceState) sau khi hạ. Trang cũ để lại `--inset-*` đang có trong sessionStorage (`hac-inset`) để màn mây
   trang mới đặt đúng safe area trước khi Flutter đẩy lại. Không có sự kiện cầu nối mới. `back` trong hoạt cảnh = bỏ qua

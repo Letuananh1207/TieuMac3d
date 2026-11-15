@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { arrivingByCrane, CRANE_IN_APP, CRANE_TIMING, CraneClock, craneTotal, departStage, landStage, wantsCrane } from './cuoiHac';
+import { arrivingByCrane, CRANE_IN_APP, CRANE_TIMING, CraneClock, craneTotal, departStage, landStage, travelParams, wantsCrane } from './cuoiHac';
 
 /** chạy đồng hồ từng bước 1/60 s; `loadedAt`: giây cảnh dựng xong; `skipAt`: giây chạm bỏ qua */
 function run(leg: 'cat' | 'bay' | 'ha', o: { loadedAt?: number; skipAt?: number } = {}): CraneClock {
@@ -79,5 +79,26 @@ describe('cưỡi hạc — dòng thời gian (R-HANH-5)', () => {
     expect(arrivingByCrane(new URLSearchParams('vung=rung-truc&den=hac'), false)).toBe(true);
     expect(arrivingByCrane(new URLSearchParams('vung=rung-truc&den=hac'), true)).toBe(false);
     expect(arrivingByCrane(new URLSearchParams('vung=rung-truc'), false)).toBe(false);
+  });
+
+  it('R-HANH-6: nút Bản đồ trên thanh công cụ → cưỡi hạc như vòng trận; giảm chuyển động / trong nhà → màn tải', () => {
+    expect(wantsCrane({ how: 'thanh', trial: false, reducedMotion: false })).toBe(true);
+    expect(wantsCrane({ how: 'thanh', trial: false, reducedMotion: true })).toBe(false);
+    // tầng 2 Tàng Thư Các / dưới mái một nhà vào được → màn tải (hạc không sà vào phòng)
+    expect(wantsCrane({ how: 'thanh', trial: false, reducedMotion: false, indoor: true })).toBe(false);
+    expect(wantsCrane({ how: 'vong', trial: false, reducedMotion: false, indoor: false })).toBe(true);
+    expect(wantsCrane({ how: 'cong', trial: false, reducedMotion: false, indoor: false })).toBe(false);
+    // ở Trúc Lâm bấm Bản đồ, chạm Khởi Nguyên Trấn → trang trấn (không `vung`), `tu` = vùng vừa rời
+    expect(travelParams('tong-mon', 'rung-truc', 'thanh', 'tong-mon', new URLSearchParams(), []).toString()).toBe('tu=rung-truc');
+    // ở nhà chạm Trúc Lâm → trang Trúc Lâm, đứng ở chỗ xuất phát (không `qua`)
+    expect(travelParams('rung-truc', 'nha-ta', 'thanh', 'tong-mon', new URLSearchParams(), []).toString()).toBe('vung=rung-truc');
+  });
+
+  it('R-HANH-7: Về nhà một chạm → trang Nhà của ta, đứng chỗ xuất phát (không `qua`), giữ tham số thử', () => {
+    const keep = new URLSearchParams('debug&hac&x=1');
+    expect(travelParams('nha-ta', 'rung-truc', 'thanh', 'tong-mon', keep, ['debug', 'hac']).toString()).toBe('vung=nha-ta&debug=&hac=');
+    // cổng đi bộ vẫn `qua` (R-HANH-4)
+    expect(travelParams('nha-ta', 'tong-mon', 'cong', 'tong-mon', keep, []).toString()).toBe('vung=nha-ta&qua=tong-mon');
+    expect(wantsCrane({ how: 'thanh', trial: false, reducedMotion: false, indoor: false })).toBe(true);
   });
 });

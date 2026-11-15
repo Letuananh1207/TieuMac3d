@@ -42,12 +42,32 @@ export type CraneLeg = 'cat' | 'bay' | 'ha';
  */
 export const CRANE_IN_APP = true;
 
-/** Đi bằng vòng trận (`vong`) hay cổng đi bộ (`cong`) — chỉ vòng trận mới cưỡi hạc. */
-export type TravelHow = 'vong' | 'cong';
+/**
+ * Đi bằng vòng trận (`vong`), thanh công cụ (`thanh` — nút Bản đồ / Về nhà, R-HANH-6/7) hay cổng đi bộ (`cong`).
+ * Vòng trận và thanh cưỡi hạc; cổng đi bộ → màn tải.
+ */
+export type TravelHow = 'vong' | 'thanh' | 'cong';
 
-/** Có cưỡi hạc không (R-HANH-5): chỉ khi đi bằng vòng trận, hoạt cảnh đang bật, máy không bật giảm chuyển động. */
-export function wantsCrane(o: { how: TravelHow; trial: boolean; reducedMotion: boolean; inApp?: boolean }): boolean {
-  return o.how === 'vong' && ((o.inApp ?? CRANE_IN_APP) || o.trial) && !o.reducedMotion;
+/**
+ * Có cưỡi hạc không (R-HANH-5/6/7): đi bằng bản đồ truyền tống / nút Về nhà, hoạt cảnh đang bật, máy không bật giảm
+ * chuyển động, và **không đứng trong nhà** (`indoor` — trong chân một nhà vào được, kể cả tầng 2: hạc sà xuống xuyên mái).
+ */
+export function wantsCrane(o: { how: TravelHow; trial: boolean; reducedMotion: boolean; inApp?: boolean; indoor?: boolean }): boolean {
+  return o.how !== 'cong' && ((o.inApp ?? CRANE_IN_APP) || o.trial) && !o.reducedMotion && !o.indoor;
+}
+
+/**
+ * Tham số URL cho trang nơi đến (R-HANH-2/4/6/7): `vung=<mã>` (không có = Khởi Nguyên Trấn, mã `town`); cổng đi bộ thêm
+ * `qua=<mã cảnh vừa rời>` (đứng ở cổng về); về trấn bằng bản đồ / thanh thêm `tu=<mã cảnh vừa rời>`; `keys` = tham số
+ * thử trên trình duyệt giữ lại qua các chuyến.
+ */
+export function travelParams(to: string, from: string, how: TravelHow, town: string, keep: URLSearchParams, keys: readonly string[]): URLSearchParams {
+  const next = new URLSearchParams();
+  if (to !== town) next.set('vung', to);
+  if (how === 'cong') next.set('qua', from);
+  else if (to === town) next.set('tu', from);
+  for (const k of keys) if (keep.has(k)) next.set(k, keep.get(k) ?? '');
+  return next;
 }
 
 /** Trang mới có đang giữa chuyến bay không: URL có `den=hac` (do khúc cất cánh thêm) và máy không bật giảm chuyển động. */

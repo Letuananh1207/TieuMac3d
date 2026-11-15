@@ -60,6 +60,8 @@ export class PlayerController {
   private airY = 0;
   private sitting = false;
   private bowLeft = 0;
+  /** biểu cảm đang diễn là Ngồi nghỉ (R-BIEU-2) */
+  private emoteSits = false;
   /** chạm để đi: chạy hay đi bộ (chọn lúc đặt điểm đến) */
   private tapRun = false;
   private lastTarget: THREE.Vector3 | null = null;
@@ -93,9 +95,15 @@ export class PlayerController {
     return this.bowLeft > 0;
   }
 
+  /** đang diễn biểu cảm (R-BIEU-2) — kể cả Ngồi nghỉ (không tính là ngồi: không cuộn sách, không học) */
+  get emoting(): boolean {
+    return !!this.state.emote;
+  }
+
   jump(): boolean {
     if (this.state.air || this.sitting) return false;
     this.bowLeft = 0;
+    this.stopEmote(); // nhảy → thôi biểu cảm (R-BIEU-2)
     this.state.vy = JUMP_V;
     this.state.air = true;
     return true;
@@ -106,12 +114,32 @@ export class PlayerController {
     if (this.state.air) return;
     this.sitting = !this.sitting;
     this.bowLeft = 0;
+    this.stopEmote();
   }
 
   /** R-DIEU-7: chắp tay chào (không khi đang bay / ngồi). */
   bow(): void {
     if (this.state.air || this.sitting) return;
+    this.stopEmote();
     this.bowLeft = BOW_TIME;
+  }
+
+  /**
+   * R-BIEU-2: diễn biểu cảm `id` trong `seconds` giây (`Infinity` = giữ tới khi đi); `sits` = ngồi xếp bằng (Ngồi nghỉ).
+   * Không khi đang bay / ngồi. Đang diễn cái khác → thay ngay. Đi, nhảy, Ngồi ôn, Chào → thôi.
+   */
+  emote(id: string, seconds: number, sits = false): boolean {
+    if (this.state.air || this.sitting) return false;
+    this.bowLeft = 0;
+    this.moveTarget = null;
+    this.state.emote = { id, t: 0, len: seconds };
+    this.emoteSits = sits;
+    return true;
+  }
+
+  stopEmote(): void {
+    this.state.emote = undefined;
+    this.emoteSits = false;
   }
 
   update(dt: number, input: MoveInput, camYaw: number, frozen: boolean): void {
@@ -158,6 +186,7 @@ export class PlayerController {
     if (mps > 0) {
       this.sitting = false;
       this.bowLeft = 0;
+      this.stopEmote(); // đi → thôi biểu cảm (R-BIEU-2)
     }
     // chân đang ở độ cao nào (mặt đất dưới chân, không tính nhảy) — nhà nhiều tầng chọn đúng sàn (R-VA-3)
     const footY = this.position.y - this.airY;
@@ -203,8 +232,15 @@ export class PlayerController {
     // chào: đếm lùi; ngồi: hoà mượt 0 ↔ 1; đứng lâu: đếm giây (R-DIEU-7, R-DIEU-8)
     this.bowLeft = Math.max(0, this.bowLeft - dt);
     st.bow = this.bowLeft > 0 ? Math.min(1, (BOW_TIME - this.bowLeft) / 0.3, this.bowLeft / 0.3) : 0;
-    st.sit += ((this.sitting ? 1 : 0) - st.sit) * Math.min(1, dt * 5);
-    const still = mps === 0 && !st.air && !this.sitting && this.bowLeft === 0;
+    // biểu cảm: đếm tới hết thời lượng rồi về dáng đứng (R-BIEU-2); Ngồi nghỉ ngồi như Ngồi ôn (chỉ dáng)
+    const em = st.emote;
+    if (em) {
+      em.t += dt;
+      if (em.t >= em.len) this.stopEmote();
+    }
+    st.sit += ((this.sitting || this.emoteSits ? 1 : 0) - st.sit) * Math.min(1, dt * 5);
+    // sau biểu cảm đếm đứng lâu lại từ 0 (R-BIEU-2, R-DIEU-8)
+    const still = mps === 0 && !st.air && !this.sitting && this.bowLeft === 0 && !st.emote;
     st.idle = still ? st.idle + dt : 0;
     st.mps = mps;
     this.character.animate(dt, mps / RUN_SPEED, st);

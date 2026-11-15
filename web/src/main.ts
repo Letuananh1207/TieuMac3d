@@ -22,6 +22,7 @@ import { npcInTalkRange, placeNpcs, showNearNpcs } from './player/npc';
 import { TownNpcs } from './townNpcs';
 import { DanTranh } from './danTranh';
 import { HOME_SCENE, loadScene, REGION_SCENES } from './scene/loadSpec';
+import { HOME_OF_PLAYER } from './scene/placeNames';
 import { createMapScroll } from './scene/banDo';
 import { arrivalSpot, CHARGE_SECONDS, ringTrigger } from './scene/teleportLayout';
 import { arrivalFor } from './scene/portals';
@@ -61,6 +62,8 @@ import { LoadingScreen, nextPaint } from './ui/loadingScreen';
 import { ZoneTracker } from './zones/zoneTracker';
 import { JOURNEY_MAP, placeAt, placeScene, placeStates, type PlaceState } from './zones/journeyMap';
 import { RingCharge } from './zones/ringCharge';
+import { travelParams, type TravelHow } from './zones/cuoiHac';
+import { ThanhCongCu } from './thanhCongCu';
 import { PortalTrigger } from './zones/portal';
 import { DIALOGS, DialogRunner, type Dialog } from './zones/dialogs';
 import { LIBRARIAN, LibraryDesk } from './libraryDesk';
@@ -206,6 +209,7 @@ async function boot(): Promise<void> {
   // nút quay lại của máy: bản đồ đang mở thì đóng (R-HANH-2); gán ở phần bản đồ bên dưới
   let mapBack = (): boolean => false;
   let ride: CraneRide | null = null; // cưỡi hạc: cất cánh (trang cũ) / hạ cánh (trang mới) — R-HANH-5
+  let thanh: ThanhCongCu | null = null; // thanh công cụ (R-THANH-1/2) — thanhCongCu.ts, dựng ở phần truyền tống
   const zoneById = new Map(placed.zones.map((z) => [z.id, z]));
   const anchorOf = new Map(world.rooms.map((r) => [r.zoneId, r.anchor]));
   let covered = false; // màn bài học Flutter đang che cảnh → ngừng vẽ (docs/bridge.md)
@@ -517,11 +521,14 @@ async function boot(): Promise<void> {
   // trò chuyện kênh chung (R-CHAT-1..3, thiết kế 2026-11-14.9) — tên NPC lấy từ dữ liệu hội thoại
   const chat = new ChatRoom((id) => dialogFor(id));
   // Space nhảy, F chào, C ngồi ôn (R-DIEU-6, R-DIEU-7); đang học / màn tải thì bỏ qua
-  const keyboard = new Keyboard((a) => {
+  const keyboard = new Keyboard((a, key) => {
     if (a === 'back') {
       if (!mapBack() && !decor?.back() && !garden?.back()) gamePlay.stand(); // Esc: đóng bảng / thoại / bản đồ, không có thì rời bàn (R-GIAO-1)
       return;
     }
+    // T / H / B / I / J: thanh công cụ (R-THANH-1; luật ẩn / ngồi / nhảy ở zones/thanhCongCu.ts); B rồi 1…8: biểu cảm tạm
+    if (a === 'tool') return void thanh?.key(key);
+    if (a === 'digit') return void thanh?.digit(Number(key));
     if (a === 'map') {
       areaMap.toggle(); // M: mở / đóng bản đồ lớn (R-BANDO-5)
       return;
@@ -772,6 +779,7 @@ async function boot(): Promise<void> {
       ride.skip();
       return true;
     }
+    if (thanh?.back()) return true; // đang chờ chọn biểu cảm (tạm — R-BIEU-1)
     if (areaMap.back()) return true; // bản đồ lớn (R-BANDO-5)
     if (scrollOpen && !covered) {
       standFromScroll(); // Esc / nút quay lại khi cuộn sách mở = "Đứng dậy" (R-ON-8)
@@ -785,29 +793,32 @@ async function boot(): Promise<void> {
     }
     return closeMap();
   };
-  const openMap = (): void => {
+  /** `from`: cuộn bay lên từ đâu — vòng trận (mặc định) hay chỗ nhân vật (nút Bản đồ trên thanh — R-HANH-6) */
+  const openMap = (from: 'vong' | 'thanh' = 'vong'): void => {
     mapOpen = true;
+    mapFrom = from;
     player.moveTarget = null;
     joystick.end();
+    ring?.rearm(); // mở bằng thanh khi đang nạp vòng → huỷ nạp; đóng bản đồ phải ra khỏi vòng rồi vào (R-THANH-2)
     states = placeStates(JOURNEY_MAP.places, SCENE.id, HOME_SCENE, REGION_SCENES);
-    scroll.open(world.teleport?.center ?? player.position, states);
+    scroll.open(from === 'vong' ? (world.teleport?.center ?? player.position) : player.position, states);
     mapHud.show(true);
   };
+  let mapFrom: TravelHow = 'vong';
   let travelling = false;
-  /** `cong`: qua cổng đi bộ → nơi đến đứng ở cổng về (`qua`, R-HANH-4); `vong`: vòng trận (`tu`, R-HANH-2) */
-  const travel = (to: string, how: 'vong' | 'cong' = 'vong'): void => {
+  /** `cong`: qua cổng đi bộ → nơi đến đứng ở cổng về (`qua`, R-HANH-4); `vong` / `thanh`: bản đồ, nút Về nhà (R-HANH-2/6/7) */
+  const travel = (to: string, how: TravelHow = 'vong'): void => {
+    if (travelling) return;
     travelling = true;
     player.moveTarget = null;
-    const next = new URLSearchParams();
-    if (to !== HOME_SCENE) next.set('vung', to);
-    if (how === 'cong') next.set('qua', SCENE.id);
-    else if (to === HOME_SCENE) next.set('tu', SCENE.id);
     // giữ tham số thử trên trình duyệt
-    for (const k of ['debug', 'nhan-vat', 'muc', 'look', 'gio', 'toc', 'hac', 'vuon']) if (params.has(k)) next.set(k, params.get(k) ?? '');
+    const next = travelParams(to, SCENE.id, how, HOME_SCENE, params, ['debug', 'nhan-vat', 'muc', 'look', 'gio', 'toc', 'hac', 'vuon']);
     // replace: không chất lịch sử trang mỗi lần đi về
     const go = (): void => location.replace(`${location.pathname}?${next.toString()}`);
-    // vòng trận + hoạt cảnh bật (giảm chuyển động → không) → cưỡi hạc: cất cánh ở đây, bay + hạ ở trang mới (R-HANH-5)
-    if (craneDeparts(params, how)) {
+    // bản đồ / nút Về nhà + hoạt cảnh bật (giảm chuyển động, trong nhà → không) → cưỡi hạc: cất cánh ở đây, bay + hạ ở trang
+    // mới (R-HANH-5)
+    const indoor = !!roomAt(player.position.x, player.position.z);
+    if (craneDeparts(params, how, indoor)) {
       closeMap();
       loading.hold(true); // đứng yên, HUD ẩn như màn tải
       const hud = craneHud(spec, params, loadScene(to).spec.site.name);
@@ -819,8 +830,37 @@ async function boot(): Promise<void> {
     loading.show(loadScene(to).spec.site); // loading.active → nhân vật đứng yên
     void nextPaint().then(go);
   };
-  // `?debug`: kịch bản thử / chụp ảnh gọi thẳng truyền tống (`__hocXaTravel('rung-truc')`) — không dùng trong app
-  if (params.has('debug')) Object.assign(window, { __hocXaTravel: travel });
+  // thanh công cụ (R-THANH-1/2, R-HANH-6/7, R-BIEU-1/2) — thanhCongCu.ts; HUD chờ thiết kế, máy tính dùng phím
+  thanh = new ThanhCongCu({
+    context: () => ({
+      loading: loading.active || travelling,
+      crane: !!ride?.owns,
+      covered: covered || (paused && !scrollOpen), // cuộn sách Ngồi ôn mở: thanh vẫn hiện (đứng dậy rồi làm — R-THANH-2)
+      travelMap: mapOpen,
+      areaMap: areaMap.open,
+      talking,
+      gameTable: gamePlay.active,
+      decorating: !!decor?.active,
+      garden: !!garden?.active,
+      chatTyping: chat.typing,
+      sitting: player.isSitting,
+      air: player.state.air,
+      atHome: SCENE.id === HOME_OF_PLAYER,
+      tasksLeft: tasksLeft(progress?.daily ?? null, (progress?.radicals.length ?? 0) >= RADICALS.length),
+    }),
+    standUp: () => (scrollOpen && !covered ? standFromScroll() : player.isSitting && player.toggleSit()),
+    halt: () => {
+      player.moveTarget = null;
+      joystick.end();
+      player.stopEmote();
+    },
+    openMap: () => openMap('thanh'),
+    goHome: () => travel(HOME_OF_PLAYER, 'thanh'),
+    openDaily,
+    emote: (e) => (e.asBow ? player.bow() : void player.emote(e.id, e.seconds, e.sits)),
+  });
+  // `?debug`: kịch bản thử / chụp ảnh gọi thẳng truyền tống (`__hocXaTravel('rung-truc')`), thanh (`__hocXaThanh.press('veNha')`)
+  if (params.has('debug')) Object.assign(window, { __hocXaTravel: travel, __hocXaThanh: thanh });
   onMapTap = (x, y) => {
     mapHud.hideCard(); // chạm chỗ khác → ẩn thẻ "sắp mở"
     const hit = scroll.pick(x, y);
@@ -828,7 +868,7 @@ async function boot(): Promise<void> {
     if (!place || travelling) return;
     const st = states[place.id];
     const to = placeScene(place.id, HOME_SCENE);
-    if (st === 'mo') travel(to);
+    if (st === 'mo') travel(to, mapFrom);
     else if (st === 'sapMo') {
       scroll.flash(place.id);
       mapHud.soon({ name: place.ten });
@@ -886,6 +926,7 @@ async function boot(): Promise<void> {
     const walking = !(paused || covered || loading.active || mapOpen || talking || travelling || !!decor?.active || !!garden?.active);
     for (const p of portals) if (p.trigger.update(pos, walking) && !travelling) travel(p.to, 'cong');
     scroll.update(dt);
+    thanh?.update(dt); // việc chờ đứng dậy / chạm đất (R-THANH-2)
     zones.update(pos);
     world.update(dt, pos, camera.position);
     const room = roomAt(pos.x, pos.z);
