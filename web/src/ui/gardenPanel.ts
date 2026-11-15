@@ -73,7 +73,7 @@ export class GardenPanel {
   showSeeds(sub: string, cards: readonly SeedCard[]): void {
     const head = this.head(ICON_SOW, 'Chọn hạt để gieo', sub); // gardenPickSeed, gardenPickSeedSub
     if (!cards.length) {
-      this.open('hat', [head, this.empty(ICON_BAG, 'Túi hạt trống — mua hạt ở Tạp hoá trấn', 'Tạp hoá ở phố chợ Khởi Nguyên Trấn, gần Cổng Trấn. Đi bằng vòng trận ở cổng nhà.')]);
+      this.open('hat', [head, this.empty(ICON_BAG, 'Túi hạt trống — mua hạt ở Tạp hoá trấn', 'Tạp hoá ở phố chợ Khởi Nguyên Trấn, gần Cổng Trấn. Về trấn bằng vòng sáng cuối Bến mây.')]);
       return;
     }
     const grid = h('ul', 'vr-seeds');

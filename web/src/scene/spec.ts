@@ -1174,8 +1174,8 @@ export const DEFAULT_SCENE: SceneSpec = {
       colors: { stone: '#c9c3b6', rail: '#ece8de', pillar: '#8d877f' },
     },
   },
-  // tắt: cảnh cũ không đổi; vùng bật ở tâm vòng trận cũ (V-65) — màu = sân / viền vòng trận cũ
-  stoneYard: { enabled: false, center: [0, 0], radius: 4.7, colors: { floor: '#b9b4a8', rim: '#8d877f' } },
+  // tắt: cảnh cũ không đổi; vùng bật ở tâm vòng trận cũ (V-65) — màu đá xám đậm hơn sân trấn (vẽ ngoài khối mềm nên trông sáng hơn)
+  stoneYard: { enabled: false, center: [0, 0], radius: 4.7, colors: { floor: '#9a9488', rim: '#6f6a62' } },
   floating: {
     islands: [],
     clouds: { count: 0, height: 26, radius: 60, speed: 0.6, color: '#d9dce8' },

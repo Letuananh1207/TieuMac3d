@@ -39,10 +39,13 @@ describe('vòng trận chỉ ở Truyền Tống Đài, vùng có sân đá tr�
       expect(spec.stoneYard).toMatchObject({ enabled: true, center, radius: 4.7 });
       expect(checkStoneYardEmpty(spec)).toEqual([]);
       expect(problems.filter((p) => p.includes('stoneYard') || p.includes('sân đá'))).toEqual([]);
-      // chỗ xuất phát + chỗ hạc đáp (2,5 m bên phải) ở sát sân (≤ 2 m ngoài mép), không xa lạc chỗ
-      const [sx, sz] = spec.player.start;
+      // hạc đáp giữa sân: chỗ xuất phát (1,25 m trái tâm) + chỗ hạc đáp (2,5 m bên phải) đều trong sân, cách mép ≥ 0,8 m
+      expect(spec.player.start).toEqual([center[0] - 1.25, center[1]]);
       const pad = landingPad(spec.player.start, START_HEADING, spec.crane.padOffset);
-      for (const [x, z] of [[sx, sz], pad]) expect(Math.hypot(x - center[0], z - center[1])).toBeLessThan(spec.stoneYard.radius + 2);
+      for (const [x, z] of [spec.player.start, pad]) expect(Math.hypot(x - center[0], z - center[1])).toBeLessThanOrEqual(spec.stoneYard.radius - 0.8);
+      // chỗ xuất phát không nằm trong vùng chạm cổng đi bộ nào (R-HANH-4)
+      const [sx, sz] = spec.player.start;
+      for (const p of spec.portals) expect(sx >= p.area.from[0] && sx <= p.area.to[0] && sz >= p.area.from[1] && sz <= p.area.to[1]).toBe(false);
     });
   }
 });

@@ -81,25 +81,39 @@ export interface TeleportRing {
   update(dt: number): void;
 }
 
-/** Đĩa đá phẳng + viền (sân Truyền Tống Đài không đài / bệ vòng / sân đá trống). Đứng yên → mergeStatic gộp. */
-function addStoneDisc(scene: THREE.Scene, cx: number, y0: number, cz: number, radius: number, colors: { floor: string; rim: string }, floor = true): void {
+/**
+ * Đĩa đá phẳng + viền (sân Truyền Tống Đài không đài / bệ vòng / sân đá trống). Đứng yên → mergeStatic gộp. `overPath`: đẩy
+ * độ sâu để sân vẽ đè lên lối lát cùng chỗ (lối lát đẩy -1 / -2 — `paths.ts`), mặt vẫn phẳng sát đất.
+ */
+function addStoneDisc(
+  scene: THREE.Scene,
+  cx: number,
+  y0: number,
+  cz: number,
+  radius: number,
+  colors: { floor: string; rim: string },
+  floor = true,
+  overPath = false,
+): void {
+  const push = (k: number): Parameters<typeof lambert>[1] => (overPath ? { polygonOffset: true, polygonOffsetFactor: -2 * k, polygonOffsetUnits: -4 * k } : undefined);
   if (floor) {
-    const disc = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius, 0.06, 56), lambert(colors.floor));
+    const disc = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius, 0.06, 56), lambert(colors.floor, push(1)));
     disc.position.set(cx, y0 + 0.03, cz);
     scene.add(disc);
   }
-  const rim = new THREE.Mesh(flat(new THREE.RingGeometry(radius - 0.5, radius, 56)), lambert(colors.rim));
+  const rim = new THREE.Mesh(flat(new THREE.RingGeometry(radius - 0.5, radius, 56)), lambert(colors.rim, push(1.5)));
   rim.position.set(cx, y0 + 0.065, cz);
   scene.add(rim);
 }
 
 /**
  * Sân đá trống (V-65): chỗ vòng trận cũ ở cảnh vùng — chỉ đĩa đá + viền, không vòng / phù hiệu / cột sáng / hạt, không
- * vật cản (bãi hạc đáp — R-HANH-5). Ngân sách: 2 khối tĩnh (gộp với khối cùng vật liệu).
+ * vật cản (bãi hạc đáp — R-HANH-5). Vẽ đè lên lối lát đi qua sân (Trúc Lâm: lối cửa rừng rộng 9,4 m). Ngân sách: 2 draw
+ * call (vật liệu đẩy độ sâu giữ riêng, không gộp vào khối mềm).
  */
 export function addStoneYard(scene: THREE.Scene, yard: StoneYardSpec, groundY: GroundY = () => 0): void {
   const [cx, cz] = yard.center;
-  addStoneDisc(scene, cx, groundY(cx, cz), cz, yard.radius, yard.colors);
+  addStoneDisc(scene, cx, groundY(cx, cz), cz, yard.radius, yard.colors, true, true);
 }
 
 /**
