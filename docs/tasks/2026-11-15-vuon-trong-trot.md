@@ -2,7 +2,7 @@
 - Yêu cầu: "ở nhà của tôi hãy tạo ra chỗ vườn có thể trồng trọt được, tham khảo 摩尔"
 - Đã chốt với người dùng: **trồng thuần, không gắn học chữ** · **6 ô đất, mở thêm dần tới 12 bằng Văn tiền** · **cây lớn theo
   giờ thật, vài giờ** (30 phút – 8 giờ, tắt app vẫn lớn).
-- Loại: thêm tính năng (luật + dữ liệu + cảnh 3D + HUD + cầu nối + Flutter) · Cỡ: lớn · Trạng thái: chờ duyệt
+- Loại: thêm tính năng (luật + dữ liệu + cảnh 3D + HUD + cầu nối + Flutter) · Cỡ: lớn · Trạng thái: đang làm
 - Xây trên V-48 (đảo trên biển mây, khung rỗng — CHANGELOG 2026-11-15.15) và V-51 (đã gộp: bỏ cổng đứng (0; 11,5)).
 - Phiếu HUD: `docs/phieu_thiet_ke/2026-11-15-vuon-trong-trot.md` (chờ thiết kế).
 
@@ -273,3 +273,12 @@ flutter analyze · flutter test -r failures-only test/rules test/scene · dart t
 - Xiaomi Game — 摩尔庄园手游 农夫职业全面介绍 (kinh nghiệm thu hoạch, trần ngày) — https://game.xiaomi.com/viewpoint/1359077112_1635909862400_13
 - Xiaomi Game — 摩尔庄园手游 邻居庄园 (tưới / bắt sâu hộ bạn) — https://game.xiaomi.com/viewpoint/1359077112_1636538592063_13
 - Hồ sơ dự án: `.claude/skills/y-tuong/references/mole.md` §2–4, `docs/tham_khao/nha-rieng-game.md`, `docs/tham_khao/assets-free-thuc-vat.md`
+
+
+## Người dùng chốt (2026-11-15)
+- Q1: **mua hạt ở Tạp hoá (trấn), bán nông sản ở vườn** (thùng thu mua) → cần **túi hạt** (kho hạt đã mua) thay cho trừ tiền lúc gieo;
+  Tạp hoá thêm mục hạt giống; bảng chọn hạt lúc gieo chỉ hiện hạt đang có (hết hạt → gợi ý mua ở Tạp hoá). Sửa phiếu theo.
+- Q2 (trần bán): **60 Văn tiền / ngày** giờ VN, phần vượt giữ trong kho.
+- Q3/Q4 hình + chỗ: **gói Kenney CC0 (`crops_*`)** cho cây, **bãi đông**; cây thiếu trong gói (bí / dưa / cúc…) thì dựng khối trong code hoặc thay
+  cây khác có trong gói — chọn an toàn, ghi lại; ghi `design/models/LICENSES.md`.
+- Thông báo khi tắt app: **không báo**. Sâu / cỏ dại: đợt sau.
