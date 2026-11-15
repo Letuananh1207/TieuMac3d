@@ -64,3 +64,4 @@ Trạng thái: `nhận` → `chờ trả lời` / `chờ duyệt` → `đang là
 | V-20261114-54 | Bản đồ truyền tống vẽ lại: đúng địa hình từng vùng (Trúc Lâm đồng bằng, Khởi Nguyên Trấn trên núi…), Khởi Nguyên Trấn sang góc trái dưới, Nhà của ta ở góc trái dưới của trấn, icon vùng nhỏ lại | canh | chờ thử máy — đã gộp 2026-11-15; canvas cần vẽ lại BanDo-* | R-HANH-2 (bản đồ) | duyệt ảnh |
 | V-20261114-55 | Dời đồng hồ (nhật quỹ) khỏi giữa Quảng Trường sang một góc cho trung tâm thoáng | canh | chờ thử máy — đã gộp 2026-11-15 | R-VA-*, R-NGAY-* nếu nhắc | duyệt ảnh |
 | V-20261114-56 | Dùng bồn hoa (mai / lan / cúc / trúc) trang trí nhiều chỗ dọc đường đi khu công viên (Sân Cổ Thụ – Mặc Trì) | canh | đang làm — nhánh `viec/chau-cong-vien` | — | duyệt ảnh |
+| V-20261114-57 | Vòng sáng đi bộ sang Trúc Lâm (như vòng "Về nhà") ở cuối lối phía đông trấn (ảnh người dùng) + vòng về trấn ở Trúc Lâm | canh | đang làm — nhánh `viec/vong-truc-lam` | R-HANH-4, R-BANDO-2 | duyệt ảnh |
