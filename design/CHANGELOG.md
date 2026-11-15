@@ -3,6 +3,24 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-15.35 — Thanh công cụ đáy màn + bảng Biểu cảm + Túi đồ
+
+- Loại: giao diện · chuỗi · luồng/luật (khớp nháp). Màn: **Thanh công cụ** (HUD web) — đặc tả `docs/screen_specs.md` mục cùng tên.
+- Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-15-thanh-cong-cu.md` (phiếu còn trong máy — dòng "Đã vẽ" ghi ở bản trong máy). Vẽ trong
+  phiên VS Code theo vai thiết kế; người dùng duyệt "Ổn, chốt".
+- **Mã .35**: các mục tới 2026-11-15.34 đã có ở `main` / nhánh việc trong máy — nhảy qua để khỏi trùng.
+- Artboard (15): `ThanhCongCu-{doc,ngang,nha-doc,nha-ngang,ngoi-doc,ngoi-ngang,trang-thai,ghi-chu}`, `BieuCam-{doc,ngang,bong-bong}`,
+  `TuiDo-{doc,ngang,trong-doc,sach-trong-doc}` (+ `canvas.json`).
+- Quyết định (theo phương án đề xuất của kế hoạch): dọc thanh sát đáy cao 60, nâng joystick / cụm / khung kênh / cột phải ≈ 60; ngang
+  thanh giữa đáy 380 không nâng; nhãn luôn hiện; Bản đồ nổi bật (đĩa `jade`); cột phải dọc xếp Trò chuyện → Đọc sách → Trang trí; tấm báo
+  "Bạn đang ở Nhà của ta" cạnh bản đồ nhỏ; bảng Biểu cảm 4 × 2 nổi trên thanh; bong bóng hình chỉ cho 5 biểu cảm (Chắp tay, Cúi chào,
+  Ngồi nghỉ không bóng); Túi đồ 4 mục cuộn (không tab), chỉ xem; thanh trượt xuống + mờ 0,2 s khi ẩn.
+- Chuỗi mới: `toolbarMap`, `toolbarHome`, `toolbarEmote`, `toolbarBag`, `toolbarDaily`, `toolbarDailyAria`, `homeHere`, `emote*` (8),
+  `bagTitle`, `bagSeeds`, `bagCrops`, `bagBooks`, `bagDecor`, `bagPlaced`, `bag*Empty` (4), `bagClose`, `bagReadOnly`, `bagBookProgress`.
+- Luật: khớp nháp `R-THANH-1/2`, `R-HANH-6/7`, `R-BIEU-1…3`, `R-TUI-1` trong phiếu. Đề xuất thêm vào R-BIEU-3: "Chắp tay, Cúi chào, Ngồi
+  nghỉ không có bong bóng"; R-THANH-1: thanh cũng ẩn khi Túi đồ mở ở màn dọc (tấm che); R-HANH-7: tấm báo đặt cạnh bản đồ nhỏ (dọc).
+- Ảnh: `screens/ThanhCongCu-*.png` (8), `screens/BieuCam-*.png` (3), `screens/TuiDo-*.png` (4) — cảnh là hình giữ chỗ.
+
 ## 2026-11-15.33 — Bộ ảnh đàn cổ tranh (đầu vào model AI, kiểu công trình nhỏ)
 
 - Loại: tài nguyên 3D — ảnh đầu vào (Hunyuan3D). Gắn với phiếu `docs/phieu_thiet_ke/2026-11-15-anh-cam-nu.md` / kế hoạch V-61 (phiếu còn trong

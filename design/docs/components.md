@@ -147,3 +147,13 @@ Một chất liệu: kính mờ `frost*` + viền `frost-line` / `frost-outline`
 | Dòng kho nông sản (hình 40, "× n", giá / cái, nút "Bán" nhỏ) + chip túi hạt + vạch "đã bán hôm nay" | `VuonRau-kho-*` | jade, slate-muted, gold |
 | Hình cây phẳng 8 loại (Cải ngọt, Củ cải, Ngô, Lúa, Bí đỏ, Hoa cúc, Dưa hấu, Trà) + gói hạt 26 | `VuonRau-*`, `CuaHang-hat-*` | map-paper |
 | Chọn số lượng × 1 · × 5 · × 10 trong hộp xác nhận mua | `CuaHang-hat-xac-nhan-doc` | slate |
+
+## Thêm ở 2026-11-15.35
+
+| Thành phần | Artboard | Token |
+|---|---|---|
+| Thanh công cụ đáy (viên kính 5 ô; Bản đồ đĩa `jade`; chấm son Nhiệm vụ; ô nhấn / mờ / đang mở) | `ThanhCongCu-*` | frost, frost-line, frost-outline, jade, lacquer, slate |
+| Nút "Đọc sách" viên `jade` 52 (biểu tượng sách + chữ) | `ThanhCongCu-nha-*` | jade, on-jade |
+| Bảng Biểu cảm nổi trên thanh (4 × 2 ô, mũi nhọn) | `BieuCam-doc`, `BieuCam-ngang` | frost-strong, jade, slate |
+| Bộ hình biểu cảm SVG hai màu (8) + bong bóng hình tròn 52 trên đầu | `BieuCam-bong-bong` | slate, gold, lacquer, jade |
+| Tấm Túi đồ (4 mục cuộn: chip hạt / nông sản, hàng sách + "Đọc", thẻ đồ "Đang đặt", khung trống nét đứt) | `TuiDo-*` | frost-strong, jade, map-paper, slate-muted |

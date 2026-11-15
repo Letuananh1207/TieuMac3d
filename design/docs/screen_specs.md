@@ -885,3 +885,45 @@ Mẫu một mục:
 - Chuỗi: `garden*`, `wallet{Seed,Sell,Unlock}`, `shop{TabSeeds,SeedName,InBag,SeedSub,SeedConfirm,Qty,SeedBought,SubtitleSeeds}`,
   `walletSourceGarden`, `crop*` (8 tên cây).
 - Ảnh: `screens/VuonRau-*.png`, `screens/CuaHang-hat-*.png` (cảnh vườn là hình giữ chỗ — vị trí luống / thùng theo cảnh thật).
+
+## Thanh công cụ đáy màn + Biểu cảm + Túi đồ (HUD) · artboard `ThanhCongCu-{doc,ngang,nha-doc,nha-ngang,ngoi-doc,ngoi-ngang,trang-thai,ghi-chu}.dc.html`, `BieuCam-{doc,ngang,bong-bong}.dc.html`, `TuiDo-{doc,ngang,trong-doc,sach-trong-doc}.dc.html` · từ mục 2026-11-15.35
+
+- Mục đích: một hàng nút luôn hiện ở đáy màn để từ bất cứ đâu mở Bản đồ (truyền tống), Về nhà, Biểu cảm, Túi đồ, Nhiệm vụ
+  (kế hoạch `docs/tasks/2026-11-15-thanh-cong-cu.md`, V-64, NV7–10). Luật `R-THANH-1/2`, `R-HANH-6/7`, `R-BIEU-1…3`, `R-TUI-1`,
+  `R-HUD-4`, `R-DIEU-1`, `R-MAN-1` (nháp trong phiếu).
+- **Thanh**: viên kính .9 (viền trắng + ngoài `slate` 16 %, bóng `0 6px 18px rgba(36,50,58,.2)`), bo 20, đệm 4, 5 ô bằng nhau cách 2.
+  - Dọc: trái / phải 12, đáy safe + 8 (42), cao 60 (ô ≈ 73 × 52). Ngang: giữa đáy — trái 232, rộng 380, đáy safe + 8 (29), cao 56.
+  - Ô: biểu tượng 24 nét 2 (`slate`) trong vùng 34 + nhãn 11/700. **Bản đồ** nổi bật: đĩa `jade` 34, biểu tượng 20 trắng, bóng trong.
+    Biểu tượng: cuộn bản đồ gấp · mái nhà có cửa · mặt cười · túi vải · thẻ có dải (lá cờ nhiệm vụ).
+  - Chấm son Nhiệm vụ: `lacquer` 18, viền trắng 1,5, số 11/700 trắng, góc trên phải biểu tượng; 0 → không chấm. Trợ năng
+    "Nhiệm vụ, còn {n} việc".
+  - Trạng thái ô: nhấn → thu 94 % + nền `slate` 8 % · mờ → biểu tượng + chữ 45 % (không bấm, trừ Về nhà ở nhà → tấm báo) · đang mở
+    (Biểu cảm / Túi đồ) → đĩa `jade` biểu tượng trắng, nhãn `jade`, nền ô `jade` 10 %.
+  - Vùng thanh không nhận joystick (`R-DIEU-1`).
+- **HUD dọc sắp lại** (nâng ≈ 60): joystick gợi ý dưới 114 · cụm hành động dưới 110 · khung kênh thu gọn dưới 244 · Trò chuyện phải 22
+  dưới 298 · Đọc sách (viên `jade` 52, biểu tượng sách 22 + chữ 14/700) phải 16 dưới 370 · Trang trí phải 20 dưới 434 (không có Đọc
+  sách → 370). **Ngang** không nâng: Trò chuyện phải 63 · Trang trí phải 127 · Đọc sách phải 191 (khi có Trang trí; không → 127),
+  cùng hàng dưới 214–220 trên cụm.
+- **Ở Nhà của ta**: Về nhà mờ; chạm → tấm báo `slate` bo 12 (biểu tượng nhà 18 + chữ 13/700 trắng) "Bạn đang ở Nhà của ta" 2 s — dọc:
+  trái 172 (cạnh bản đồ nhỏ), trên 103; ngang: giữa, đáy 95.
+- **Đang ngồi** (Ngồi ôn / bồ đoàn / đôn trà): thanh vẫn hiện, Biểu cảm mờ; cuộn / bảng ngồi giữ chỗ cũ; chạm nút khác → đứng dậy rồi làm.
+- **Bảng Biểu cảm** (`R-BIEU-1`): tấm kính .96 bo 18 nổi trên thanh — dọc trái / phải 12, đáy 112; ngang rộng 420 giữa, đáy 95; mũi nhọn
+  16 × 8 trỏ ô Biểu cảm. Lưới 4 × 2 cách 8; ô trắng bo 12 cao 72 (ngang 64), viền `slate` 12 %: hình 32 (ngang 28) + tên 11/700.
+  Vẫy tay · Chắp tay · Cúi chào · Vỗ tay · Cười · Nhảy mừng · Suy nghĩ · Ngồi nghỉ. Chạm ô → đóng + diễn; chạm ngoài / kéo joystick /
+  bấm lại / quay lại → đóng.
+- **Hình biểu cảm**: SVG hai màu (nét `slate` 2,4 + nhấn `gold` / `lacquer` / `jade`), không emoji hệ thống.
+- **Bong bóng hình** (`R-BIEU-3`): tròn 52 kính .95 viền `jade` 1,5, đuôi vuông 10 xoay 45°, hình 34; neo trên nhãn tên như bong bóng
+  chat; hiện phóng 90 → 100 % 0,15 s, giữ 2,5 s, mờ 0,4 s. Chỉ 5 biểu cảm có bóng: Vẫy tay, Vỗ tay, Cười, Nhảy mừng, Suy nghĩ (Chắp tay,
+  Cúi chào, Ngồi nghỉ chỉ diễn). Cùng lúc với tin chat: bóng hình **bên trái** bong bóng tin, đáy ngang nhau, cách 6.
+- **Túi đồ** (`R-TUI-1`): dọc tấm đáy cao 600 (tay nắm 40 × 4, bo trên 20, kính .97, cảnh tối 12 %, che thanh); ngang cột phải 340 từ mép
+  safe (bo trái 20). Đầu: vòng `jade` 34 + "Túi đồ" 16/700 + viên số dư (xu 22 + số 14/700, nền `slate` 6 %) + nút Đóng tròn 36 (×).
+  **4 mục cuộn** (không tab): tiêu đề 12/700 hoa giãn .06em `slate-muted` + viên số; Hạt giống / Nông sản = chip trắng bo 12 (hình cây 36
+  `map-paper` + tên 13/700 + "× n" 12), lưới dọc 3 / 2 cột (ngang 2); Sách = hàng (bìa 32 × 40 `jade` + tên 14/700 + dòng trang / hạn trả
+  12 + nút "Đọc" `jade` cao 34); Đồ trang trí = thẻ nhỏ (ô hình 40 `map-paper` + tên 11/700), đang đặt viền `jade` 2 + nhãn "Đang đặt"
+  `jade` 9/700; lưới dọc 5 / ngang 3. Ngăn trống: khung nét đứt `slate` 22 % bo 12 + dòng chỉ chỗ lấy 12. Mép dưới danh sách mờ dần.
+  Chân: "Chỉ xem — gieo ở luống, bán ở thùng thu mua, đặt đồ khi trang trí" 11 `slate-muted`. Đóng: nút Đóng, kéo tay nắm, chạm cảnh,
+  quay lại.
+- **Ẩn thanh**: trượt xuống + mờ 0,2 s (hiện lại trượt lên 0,2 s; giảm chuyển động: không trượt) khi màn tải, cưỡi hạc, bài học / màn
+  Flutter, bản đồ truyền tống, bản đồ lớn, thoại NPC, ngồi bàn chơi, chế độ trang trí, bảng vườn, ô nhập trò chuyện, Túi đồ (dọc).
+- Chuỗi: `toolbar*`, `homeHere`, `emote*`, `bag*`.
+- Ảnh: `screens/ThanhCongCu-*.png`, `screens/BieuCam-*.png`, `screens/TuiDo-*.png` (cảnh là hình giữ chỗ).
