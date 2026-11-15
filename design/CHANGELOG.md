@@ -12,6 +12,16 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
 - Cửa dời sang hồi tây, đóng + thảm đỏ mũi tên; đứng trên thảm → nút nổi "Ra sân" (phím E; `portals[].via: "nut"`) → màn tải → đứng trước hiên.
   Vào gian trong đứng (−3,8; 2,6). Nền quanh phòng tối. 27 draw call / 18,3k tam giác. Luật R-NHA-1, R-HANH-4, R-HUD-2, R-DIEU-3, R-MAN-2.
   Ảnh: `screens/Canh-gian-trong-mo.png`.
+## 2026-11-15.44 — Trúc Lâm (B3): kiến trúc đợt 1 — Vọng Trúc Đình, Cầu Đá, Khúc Thuỷ Đài, Trúc Lư
+
+- Loại: cảnh 3D — bố cục + Cần code (đã làm). Phiên code V-20261115-66 B3, người dùng chọn đợt 1 dựng bằng code. **Đã duyệt 2026-11-15.**
+- Vọng Trúc Đình (−31; −30) trên đỉnh gò +8: đình lục giác Ø 6,5 mái chồng lợp tranh, cột 3,4, chỏm 18,6 m — mốc thấy từ bãi hạc; vào được,
+  4 ghế tựa ngồi được. Cầu Đá vòm (27; 4) dài 7 × rộng 4,4, giữa cao 1 m, lan can đá thấp. Khúc Thuỷ Đài: đài đá 8,4 × 9,2 cao 0,4
+  (21; −32,5), mương chữ S dài 18 m có 3 chén trôi, 8 đệm cỏ ngồi được, đá khắc tên. Trúc Lư (−35; 24,5): nhà tranh kín 6 × 4,5, sân đất, rào
+  trúc 0,85 m. Bãi giữa: một tảng đá đàn cầm (−7,5; −4,5).
+- 5 tên khu (tiếng Việt). Trường mới: `buildings[].eaves/pillarH/benches`, kiểu nhà `nha-tranh`, `terraces`, `seats`, `paths[].dirt`,
+  `fenceStyle.kind: truc`, vật `dan-cam`. Nhìn từ trên 69 / 78,9k → 83 / 83,9k; bench máy yếu không tụt rõ. Luật R-VA-1, R-NGOI-1, R-BANDO-2.
+  Ảnh: `screens/Canh-truc-lam-b3-bai-hac.png`, `-dinh.png`, `-khuc-thuy.png`.
 
 ## 2026-11-15.40 — Nhà của ta: bỏ hành lang mái, nhà chính sát trái, vườn rau ra giữa, gian trong riêng
 
