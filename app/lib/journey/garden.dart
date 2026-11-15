@@ -238,23 +238,6 @@ bool canWater(Plot p, int now) {
   return p.watered == 0 || (p.watered == 1 && e * 2 >= c.growMs);
 }
 
-/// Đất khô (R-VUON-5): tới mốc tưới mà chưa tưới lượt đó — trùng [canWater].
-bool isDry(Plot p, int now) => canWater(p, now);
-
-/// Luống [id] đang có sâu (R-VUON-10): cây này có sâu, đã tới mốc hiện, chưa bắt. Chín rồi mà chưa bắt → vẫn còn.
-bool hasBug(Plot p, String id, int now) {
-  final c = cropOf(p.crop);
-  return c != null && p.bug == 0 && reached(pestsOf(id, p.plantedAt).bugAt, elapsedMs(p, now), c.growMs);
-}
-
-/// Số bụi cỏ đang mọc ở luống [id] (R-VUON-11): 0 / 2 / 3.
-int weedsOf(Plot p, String id, int now) {
-  final c = cropOf(p.crop);
-  if (c == null || p.weed != 0) return 0;
-  final s = pestsOf(id, p.plantedAt);
-  return reached(s.weedAt, elapsedMs(p, now), c.growMs) ? s.weeds : 0;
-}
-
 /// Sản lượng khi thu luống [id] chín (R-VUON-6): 2 + lượt tưới − sâu còn − cỏ còn, 2 … 4.
 int yieldOf(Plot p, String id) {
   final s = pestsOf(id, p.plantedAt);
@@ -322,7 +305,8 @@ class GardenRefused extends GardenResult {
   String toString() => 'GardenRefused($error, $short)';
 }
 
-Map<String, Plot> _withPlot(Garden g, String id, Plot p) => {...g.plots, id: p};
+/// Thay luống [id] (dùng chung với `garden_care.dart`).
+Map<String, Plot> withPlot(Garden g, String id, Plot p) => {...g.plots, id: p};
 
 /// Gieo [crop] vào luống [id] lúc [now] (R-VUON-3): dùng 1 hạt trong túi, không trừ tiền.
 GardenResult sow(Garden g, String id, String crop, int now) {
@@ -331,7 +315,7 @@ GardenResult sow(Garden g, String id, String crop, int now) {
   if (g.plot(id).crop != null) return const GardenRefused(GardenError.busy);
   final have = g.seeds[crop] ?? 0;
   if (have <= 0) return const GardenRefused(GardenError.noSeed);
-  return GardenDone(g.copyWith(plots: _withPlot(g, id, Plot(crop: crop, plantedAt: now)), seeds: {...g.seeds, crop: have - 1}));
+  return GardenDone(g.copyWith(plots: withPlot(g, id, Plot(crop: crop, plantedAt: now)), seeds: {...g.seeds, crop: have - 1}));
 }
 
 /// Tưới luống [id] (R-VUON-5): +1 lượt nếu tới lượt.
@@ -341,53 +325,7 @@ GardenResult water(Garden g, String id, int now) {
   final p = g.plot(id);
   if (p.crop == null) return const GardenRefused(GardenError.empty);
   if (!canWater(p, now)) return const GardenRefused(GardenError.dry);
-  return GardenDone(g.copyWith(plots: _withPlot(g, id, p.copyWith(watered: p.watered + 1))));
-}
-
-/// Luống có cây để chăm: mã sai → `bad`, hoang → `locked`, trống → `empty`; được → `null`.
-GardenRefused? _careRefuse(Garden g, String id) {
-  if (plotIndex(id) < 1 || plotIndex(id) > plotCount) return const GardenRefused(GardenError.bad);
-  if (plotIndex(id) > g.open) return const GardenRefused(GardenError.locked);
-  if (g.plot(id).crop == null) return const GardenRefused(GardenError.empty);
-  return null;
-}
-
-/// Bắt sâu ở luống [id] (R-VUON-10): sâu đang hiện → hết sâu; không có → `no-bug`.
-GardenResult catchBug(Garden g, String id, int now) {
-  final no = _careRefuse(g, id);
-  if (no != null) return no;
-  final p = g.plot(id);
-  if (!hasBug(p, id, now)) return const GardenRefused(GardenError.noBug);
-  return GardenDone(g.copyWith(plots: _withPlot(g, id, p.copyWith(bug: 1))));
-}
-
-/// Nhổ cỏ ở luống [id] (R-VUON-11): cỏ đang mọc → sạch; không có → `no-weed`.
-GardenResult pullWeed(Garden g, String id, int now) {
-  final no = _careRefuse(g, id);
-  if (no != null) return no;
-  final p = g.plot(id);
-  if (weedsOf(p, id, now) == 0) return const GardenRefused(GardenError.noWeed);
-  return GardenDone(g.copyWith(plots: _withPlot(g, id, p.copyWith(weed: 1))));
-}
-
-/// Bón phân luống [id] (R-VUON-12): cây chưa chín, chưa bón ở lần gieo này → thời gian còn lại giảm một nửa, túi −1 bao.
-/// Đã bón / đã chín → `fert-done`; hết phân → `no-fert`.
-GardenResult fertilize(Garden g, String id, int now) {
-  final no = _careRefuse(g, id);
-  if (no != null) return no;
-  final p = g.plot(id);
-  if (p.boost > 0 || remainingMs(p, now) <= 0) return const GardenRefused(GardenError.fertDone);
-  if (g.fert <= 0) return const GardenRefused(GardenError.noFert);
-  final boost = fertBoost(remainingMs(p, now));
-  return GardenDone(g.copyWith(plots: _withPlot(g, id, p.copyWith(boost: boost > 0 ? boost : 1)), fert: g.fert - 1));
-}
-
-/// Mua [count] bao phân (× 1 · × 5 · × 10) ở Tạp hoá với số dư [balance] (R-VUON-12, R-TIEN-4): 10 Văn / bao.
-GardenResult buyFert(Garden g, int balance, {int count = 1}) {
-  if (!fertCounts.contains(count)) return const GardenRefused(GardenError.bad);
-  final price = fertPrice * count;
-  if (balance < price) return GardenRefused(GardenError.short, short: price - balance);
-  return GardenDone(g.copyWith(fert: g.fert + count), amount: -price);
+  return GardenDone(g.copyWith(plots: withPlot(g, id, p.copyWith(watered: p.watered + 1))));
 }
 
 /// Thu luống chín [id] (R-VUON-6): 2 + lượt tưới − sâu / cỏ còn vào kho, luống trống lại.
@@ -399,7 +337,7 @@ GardenResult harvest(Garden g, String id, int now) {
   if (crop == null) return const GardenRefused(GardenError.empty);
   if (plotState(g, id, now) != PlotState.ripe) return const GardenRefused(GardenError.notRipe);
   final n = yieldOf(p, id);
-  return GardenDone(g.copyWith(plots: _withPlot(g, id, Plot.empty), barn: {...g.barn, crop: (g.barn[crop] ?? 0) + n}), got: n);
+  return GardenDone(g.copyWith(plots: withPlot(g, id, Plot.empty), barn: {...g.barn, crop: (g.barn[crop] ?? 0) + n}), got: n);
 }
 
 /// Bán [crop] (`null` = "Bán hết", giá cao trước) trong ngày giờ VN [today] (R-VUON-7): mỗi loại bán số cái vừa phần trần

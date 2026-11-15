@@ -153,7 +153,19 @@ export class HomeGarden {
         luot: (ids: string[]) => w.sweep(ids),
         thanh: () => w.slots(),
         xem: () => this.d.garden.plots.map((p) => lookText(this.g, p.id, this.now, this.speed)),
-        ...(d.debug ? { state: () => this.g, act: (a: GardenAct) => this.act(a), spot: () => this.spot() } : {}),
+        ...(d.debug
+          ? {
+              state: () => this.g,
+              act: (a: GardenAct) => this.act(a),
+              spot: () => this.spot(),
+              // nhảy tới mép nam luống [n] (thử nhanh)
+              toi: (n = 1) => {
+                const p = d.garden.plots[n - 1];
+                d.player.position.set(p.x, d.player.position.y, p.z + 1.2);
+                d.player.snapToGround();
+              },
+            }
+          : {}),
       },
     });
   }
