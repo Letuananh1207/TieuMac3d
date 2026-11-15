@@ -919,8 +919,10 @@ export interface SceneSpec {
     /** hạt giống ngẫu nhiên: cùng số → cây giống hệt nhau trên Canvas 3D và trong app */
     seed: number;
     /**
-     * Dáng tán (cảnh mềm `look.style: "mem"`): `cau` = mỗi đám lá một khối cầu (cũ) · `chum` = "tán chùm nổi" nhiều múi,
-     * thân + tán một hình, LOD 2 bậc (V-58 — hồ sơ `docs/tham_khao/thuc-vat-dep-nhe.md`). Đang áp: tùng, bụi `bui`.
+     * Dáng cây: `cau` = mỗi đám lá một khối cầu / khối 20 mặt (cũ) · `chum` = "tán chùm nổi" nhiều múi, thân + tán một hình,
+     * LOD 2 bậc (V-58, V-60 — hồ sơ `docs/tham_khao/thuc-vat-dep-nhe.md`): tùng, bụi, cây tán, mai, đào, liễu (gió trong
+     * shader), trúc (ngọn dải lá); cảnh mềm thêm hoa chén nghiêng + gốc cỏ theo màu đất (`coHoa.ts`); vườn rau dựng cây bằng
+     * code thay mẫu Kenney (`cayTrongHinh.ts`). Dùng được cả cảnh cũ lẫn mềm. Trúc mao (`truc-mao`) không đổi.
      */
     crown: 'cau' | 'chum';
     /** tán `chum`: cây cách nhân vật quá bao nhiêu m (hoặc camera cao hơn nhân vật quá số này — nhìn từ trên) thì dùng bậc xa */

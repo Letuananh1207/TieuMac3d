@@ -8,7 +8,8 @@ import * as THREE from 'three';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { softCrown, softLimb, type Lobe } from './khoiMem';
 import type { LookSpec } from './look';
-import { softMaterial } from './materials';
+import { bambooGeometry, broadleafGeometry, peachGeometry, plumGeometry, willowGeometry } from './cayChumLoai';
+import { softMaterial, type Wind } from './materials';
 import { seededRandom } from './random';
 import type { SceneSpec } from './spec';
 import type { Placed } from './trees';
@@ -99,7 +100,7 @@ export interface ChumKind {
   assign(focus: XYZ | undefined, eye: XYZ | undefined): number;
 }
 
-function chumKind(scene: THREE.Scene, nearGeo: THREE.BufferGeometry, farGeo: THREE.BufferGeometry, mat: THREE.Material, list: Placed[], seed: number, dist: number): ChumKind {
+function chumKind(scene: THREE.Scene, nearGeo: THREE.BufferGeometry, farGeo: THREE.BufferGeometry, mat: THREE.Material, list: Placed[], seed: number, dist: number, tall = 0.06): ChumKind {
   const rand = seededRandom(seed);
   const near = new THREE.InstancedMesh(nearGeo, mat, list.length);
   const far = new THREE.InstancedMesh(farGeo, mat, list.length);
@@ -108,7 +109,7 @@ function chumKind(scene: THREE.Scene, nearGeo: THREE.BufferGeometry, farGeo: THR
     q.setFromAxisAngle(new THREE.Vector3(0, 1, 0), rand() * Math.PI * 2);
     const s = t.scale;
     const w = 0.92 + rand() * 0.16;
-    return new THREE.Matrix4().compose(v(t.x, t.y ?? 0, t.z), q, v(s * w, s * (0.94 + rand() * 0.12), s * (2 - w)));
+    return new THREE.Matrix4().compose(v(t.x, t.y ?? 0, t.z), q, v(s * w, s * (1 - tall + rand() * tall * 2), s * (2 - w)));
   });
   // lệch sáng ±6 % + lệch sắc nhẹ: rừng không lặp
   const cols = list.map(() => {
@@ -154,18 +155,33 @@ function chumKind(scene: THREE.Scene, nearGeo: THREE.BufferGeometry, farGeo: THR
 /** Bộ cập nhật LOD của mọi kiểu cây chùm: chia lại mỗi 0,5 s, hoặc ngay khi vừa chuyển sang / khỏi nhìn từ trên. */
 export type ChumUpdate = (dt: number, focus?: XYZ, eye?: XYZ) => void;
 
-/** Tùng + bụi `chum` (cảnh mềm). Trả về các kiểu đã dựng + bộ cập nhật LOD. */
-export function addChumTrees(scene: THREE.Scene, spec: Trees, pines: Placed[], bushes: Placed[], look: LookSpec): { kinds: ChumKind[]; update: ChumUpdate } {
+/** Cây theo kiểu (`trees.ts` chia sẵn) — các kiểu dựng bằng tán chùm. */
+export type ChumLists = Record<'tung' | 'bui' | 'tan' | 'mai' | 'dao' | 'lieu' | 'truc', Placed[]>;
+
+/**
+ * Mọi kiểu cây `chum`: tùng, bụi (V-58) + cây tán, mai, đào, liễu, trúc (V-60). Mỗi kiểu có cây thì 2 InstancedMesh (gần /
+ * xa). Gió theo độ cao (`tip` — gốc đứng yên, tán lay); liễu theo `aSway` (dải rủ lay ở ngọn). Trả về các kiểu + bộ cập nhật LOD.
+ */
+export function addChumTrees(scene: THREE.Scene, spec: Trees, lists: ChumLists, look: LookSpec): { kinds: ChumKind[]; update: ChumUpdate } {
   const kinds: ChumKind[] = [];
   const dist = spec.lodDistance;
-  if (pines.length) {
-    // gió theo độ cao: gốc đứng yên, tầng mây lay (tip = chân tầng thấp nhất)
-    const mat = softMaterial(look.wrap, THREE.FrontSide, { amp: look.wind * 0.6, tip: 2 });
-    kinds.push(chumKind(scene, pineGeometry(spec.trunk, spec.leaves, false), pineGeometry(spec.trunk, spec.leaves, true), mat, pines, spec.seed * 4099 + 23, dist));
-  }
-  if (bushes.length) {
-    const mat = softMaterial(look.wrap, THREE.FrontSide, { amp: look.wind * 0.5, tip: 1 });
-    kinds.push(chumKind(scene, bushGeometry(spec.autumn, false), bushGeometry(spec.autumn, true), mat, bushes, spec.seed * 3571 + 29, dist));
+  const w = look.wind;
+  const peach: Tri = [spec.peach[0], spec.peach[1], spec.peach[2]];
+  const kindsDef: [Placed[], (far: boolean) => THREE.BufferGeometry, Wind, number, number?][] = [
+    [lists.tung, (far) => pineGeometry(spec.trunk, spec.leaves, far), { amp: w * 0.6, tip: 2 }, spec.seed * 4099 + 23],
+    [lists.bui, (far) => bushGeometry(spec.autumn, far), { amp: w * 0.5, tip: 1 }, spec.seed * 3571 + 29],
+    [lists.tan, (far) => broadleafGeometry(spec.trunk, spec.leaves, far), { amp: w * 0.5, tip: 2.4 }, spec.seed * 7919 + 31],
+    [lists.mai, (far) => plumGeometry(spec.plum, far), { amp: w * 0.5, tip: 1.4 }, spec.seed * 6151 + 37],
+    [lists.dao, (far) => peachGeometry(peach, far), { amp: w * 0.5, tip: 2.1 }, spec.seed * 7919 + 41],
+    // liễu: gió theo `aSway` của hình (ngọn dải lay ~0,25 m khi `look.wind` 0,06)
+    [lists.lieu, (far) => willowGeometry(spec.trunk, spec.willow, far), { amp: w * 3, sway: true }, spec.seed * 8191 + 43],
+    // trúc: khóm cao thấp khác nhau ±15 % (một hình cho mọi khóm)
+    [lists.truc, (far) => bambooGeometry(spec.bamboo, far), { amp: w * 0.8, tip: 5 }, spec.seed * 104729 + 47, 0.15],
+  ];
+  for (const [list, geo, wind, seed, tall] of kindsDef) {
+    if (!list.length) continue;
+    const mat = softMaterial(look.wrap, THREE.FrontSide, wind);
+    kinds.push(chumKind(scene, geo(false), geo(true), mat, list, seed, dist, tall));
   }
   let acc = Infinity;
   let top: boolean | null = null;

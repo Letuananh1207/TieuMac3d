@@ -98,11 +98,11 @@ export function softMaterial(wrap: number, side: THREE.Side = THREE.FrontSide, w
     if (sway) {
       shader.uniforms.uWindTime = WIND_TIME;
       shader.vertexShader = `uniform float uWindTime;
-${shader.vertexShader.replace('#include <begin_vertex>', sway)}`;
+${wind?.sway ? 'attribute float aSway;\n' : ''}${shader.vertexShader.replace('#include <begin_vertex>', sway)}`;
     }
   };
   // chương trình shader dùng lại theo `wrap` + gió — cấu hình khác nhau không dùng nhầm bản đã biên dịch
-  m.customProgramCacheKey = () => `soft-${wrap.toFixed(3)}-${sway ? `${wind?.amp.toFixed(3)}-${wind?.tip ?? 0}${wind?.world ? '-tg' : ''}` : 'yen'}`;
+  m.customProgramCacheKey = () => `soft-${wrap.toFixed(3)}-${sway ? `${wind?.amp.toFixed(3)}-${wind?.tip ?? 0}${wind?.world ? '-tg' : ''}${wind?.sway ? '-sw' : ''}` : 'yen'}`;
   m.userData.soft = true;
   return m;
 }
@@ -120,6 +120,11 @@ export interface Wind {
    * sóng — hai đoạn chồng mép không lệch pha nên không hở khe ở chỗ nối (V-46).
    */
   world?: boolean;
+  /**
+   * Trọng số lay theo **thuộc tính đỉnh** `aSway` (0 = đứng yên … 1 = lay hết `amp`) thay cho `tip` — vật rủ xuống (dải liễu:
+   * ngọn ở dưới lay mạnh hơn gốc ở trên), pha lệch thêm theo vị trí đỉnh để các dải không lay cùng nhịp. Hình phải có `aSway`.
+   */
+  sway?: boolean;
 }
 
 /** Đồng hồ gió dùng chung mọi vật liệu (giây) — `tickWind` mỗi khung. */
@@ -131,7 +136,7 @@ export function tickWind(dt: number): void {
 
 export function windChunk(w: Wind): string {
   const amp = w.amp.toFixed(4);
-  const k = w.tip ? `clamp(position.y / ${w.tip.toFixed(3)}, 0.0, 1.5)` : '1.0';
+  const k = w.sway ? 'aSway' : w.tip ? `clamp(position.y / ${w.tip.toFixed(3)}, 0.0, 1.5)` : '1.0';
   const origin = w.world
     ? `#ifdef USE_INSTANCING
   vec3 wOrigin = (modelMatrix * instanceMatrix * vec4(position, 1.0)).xyz;
@@ -145,7 +150,7 @@ export function windChunk(w: Wind): string {
 #endif`;
   return `#include <begin_vertex>
 ${origin}
-  float wPh = uWindTime + wOrigin.x * 0.21 + wOrigin.z * 0.17;
+  float wPh = uWindTime + wOrigin.x * 0.21 + wOrigin.z * 0.17${w.sway ? ' + (position.x * 0.9 + position.z * 0.7)' : ''};
   float wK = ${amp} * ${k};
   transformed.x += (sin(wPh * 1.7) + 0.4 * sin(wPh * 3.1)) * wK;
   transformed.z += cos(wPh * 1.3) * wK * 0.6;`;

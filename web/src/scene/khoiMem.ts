@@ -193,3 +193,74 @@ export function softLimb(
 export function triangleCount(g: THREE.BufferGeometry): number {
   return (g.index ? g.index.count : g.getAttribute('position').count) / 3;
 }
+
+/**
+ * Dải lá thon (lá liễu, lá trúc, lá rau — V-60): dải qua các điểm `points`, rộng `widths[i]` theo hướng `side` (0 ở ngọn =
+ * mũi nhọn), **hai mặt** (mặt sau cùng pháp tuyến — hai mặt sáng như nhau, không cần `DoubleSide`). Pháp tuyến từ `normal`
+ * (thường hướng ra khỏi tán / hướng lên — hồ sơ thuc-vat-dep-nhe), màu từ gốc `base` → ngọn `tip`. `sway` (tuỳ chọn):
+ * trọng số gió theo vị trí dọc dải (0 gốc → 1 ngọn) ghi vào thuộc tính `aSway`. Tam giác: 4 × số đoạn.
+ */
+export function softStrip(
+  points: readonly THREE.Vector3[],
+  widths: readonly number[],
+  side: THREE.Vector3,
+  normal: (p: THREE.Vector3) => THREE.Vector3,
+  base: THREE.ColorRepresentation,
+  tip: THREE.ColorRepresentation,
+  sway?: (t: number) => number,
+): THREE.BufferGeometry {
+  const n = points.length - 1;
+  const cb = new THREE.Color(base);
+  const ct = new THREE.Color(tip);
+  const c = new THREE.Color();
+  const pos: number[] = [];
+  const nrm: number[] = [];
+  const col: number[] = [];
+  const sw: number[] = [];
+  const p = new THREE.Vector3();
+  for (let face = 0; face < 2; face++) {
+    for (let i = 0; i <= n; i++) {
+      const t = i / n;
+      for (const k of [-0.5, 0.5]) {
+        p.copy(points[i]).addScaledVector(side, widths[i] * k);
+        pos.push(p.x, p.y, p.z);
+        const q = normal(p);
+        nrm.push(q.x, q.y, q.z);
+        c.copy(cb).lerp(ct, t);
+        col.push(c.r, c.g, c.b);
+        sw.push(sway ? sway(t) : 0);
+      }
+    }
+  }
+  const idx: number[] = [];
+  const back = (n + 1) * 2;
+  for (let i = 0; i < n; i++) {
+    const a = i * 2;
+    idx.push(a, a + 2, a + 1, a + 1, a + 2, a + 3); // mặt trước
+    idx.push(back + a, back + a + 1, back + a + 2, back + a + 1, back + a + 3, back + a + 2); // mặt sau (ngược chiều)
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  g.setAttribute('normal', new THREE.Float32BufferAttribute(nrm, 3));
+  g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+  if (sway) g.setAttribute('aSway', new THREE.Float32BufferAttribute(sw, 1));
+  g.setIndex(idx);
+  return g;
+}
+
+/** Gắn thuộc tính gió `aSway` cố định (hoặc theo vị trí đỉnh) cho một phần hình — để gộp được với phần có `sway`. */
+export function withSway(g: THREE.BufferGeometry, w: number | ((p: THREE.Vector3) => number)): THREE.BufferGeometry {
+  const pos = g.getAttribute('position');
+  const out = new Float32Array(pos.count);
+  const p = new THREE.Vector3();
+  for (let i = 0; i < pos.count; i++) out[i] = typeof w === 'number' ? w : w(p.fromBufferAttribute(pos, i));
+  g.setAttribute('aSway', new THREE.BufferAttribute(out, 1));
+  return g;
+}
+
+/** Gộp nhiều phần (cùng thuộc tính) rồi giải phóng các phần. */
+export function mergeParts(parts: readonly THREE.BufferGeometry[]): THREE.BufferGeometry {
+  const out = mergeGeometries([...parts]);
+  for (const g of parts) g.dispose();
+  return out;
+}

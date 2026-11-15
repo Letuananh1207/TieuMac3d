@@ -106,9 +106,14 @@ export function checkLook(l: LookSpec): string[] {
 }
 
 /**
- * Tham số URL `?look=cu` (Canvas 3D / thử): ép kiểu cũ để so trước / sau. Trả đặc tả mới, không sửa đặc tả gốc.
+ * Tham số URL `?look=cu` (Canvas 3D / thử): ép kiểu cũ để so trước / sau — cả dáng cây (`trees.crown` → `cau`, V-60). Trả
+ * đặc tả mới, không sửa đặc tả gốc.
  */
-export function withLookParam<T extends { look: LookSpec }>(spec: T, param: string | null): T {
-  if (param !== 'cu' || spec.look.style === 'cu') return spec;
-  return { ...spec, look: { ...spec.look, style: 'cu' } };
+export function withLookParam<T extends { look: LookSpec; trees?: { crown: string } }>(spec: T, param: string | null): T {
+  if (param !== 'cu') return spec;
+  const oldTrees = !!spec.trees && spec.trees.crown !== 'cau';
+  if (spec.look.style === 'cu' && !oldTrees) return spec;
+  const out: T = { ...spec, look: { ...spec.look, style: 'cu' } };
+  if (oldTrees) out.trees = { ...spec.trees, crown: 'cau' };
+  return out;
 }
