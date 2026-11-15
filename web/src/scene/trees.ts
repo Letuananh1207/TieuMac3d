@@ -7,7 +7,9 @@ import { addPine, addBush, addPeach, addPlum, addWillow } from './cay_moi';
 import { addTallBamboo } from './trucMao';
 import { addChumTrees, type ChumUpdate } from './cayChum';
 import { seededRandom } from './random';
-import type { GroveSpec, SceneSpec, TreePlace } from './spec';
+import { groveTrees, TRUNK_SIZE, type Placed } from './cayTrenNen';
+import { addPlanters } from './bonCay';
+import type { SceneSpec, TreePlace } from './spec';
 import type { GroundY } from './terrainHeight';
 
 export { seededRandom };
@@ -19,25 +21,7 @@ const stalkGeo = new THREE.CylinderGeometry(0.07, 0.09, 1, 5); // cao 1, kéo th
 const tuftGeo = new THREE.ConeGeometry(0.45, 1.3, 5);
 const STALKS = 5; // số thân trong một khóm trúc
 
-export interface Placed {
-  x: number;
-  z: number;
-  scale: number;
-  collide: boolean;
-  /** độ cao gốc cây (địa hình); thiếu = 0 */
-  y?: number;
-}
-
-/** Cụm cây rải trong hình chữ nhật. Mỗi cụm một dãy ngẫu nhiên riêng: thêm cụm không xê dịch cây có sẵn. */
-function groveTrees(g: GroveSpec, seed: number, index: number): Placed[] {
-  const rand = seededRandom(seed * 7919 + index + 1);
-  return Array.from({ length: g.count }, () => ({
-    x: g.x + (rand() - 0.5) * g.w,
-    z: g.z + (rand() - 0.5) * g.d,
-    scale: 0.8 + rand() * 0.5,
-    collide: g.collide ?? true,
-  }));
-}
+export type { Placed };
 
 /** Cây tán: 4 InstancedMesh (thân + 3 tầng lá) cho mọi cây — 4 draw call cả rừng. */
 function broadleaf(scene: THREE.Scene, spec: SceneSpec['trees'], all: Placed[], rand: () => number, look?: LookSpec): void {
@@ -146,10 +130,17 @@ export function addTrees(scene: THREE.Scene, colliders: Colliders, spec: SceneSp
     mao(dt);
     chum?.update(dt, focus, eye);
   };
-  // va chạm: thân cây, to nhỏ theo kiểu
-  const trunkSize = { tan: 0.8, truc: 1.2, tung: 0.9, lieu: 0.8, mai: 0.5, 'truc-mao': 1.1, dao: 0.6, bui: 0.9 } as const;
-  for (const [kind, list] of Object.entries(byKind) as [keyof typeof trunkSize, Placed[]][]) {
-    for (const t of list) if (t.collide) colliders.add(t.x, t.z, trunkSize[kind] * t.scale, trunkSize[kind] * t.scale);
+  // va chạm: thân cây, to nhỏ theo kiểu; bồn cây (R-VA-6) luôn chặn, bằng cỡ bồn (kể cả cụm `collide: false`)
+  const pots: { x: number; z: number; y: number; r: number }[] = [];
+  for (const [kind, list] of Object.entries(byKind) as [keyof typeof TRUNK_SIZE, Placed[]][]) {
+    for (const t of list) {
+      const side = TRUNK_SIZE[kind] * t.scale;
+      if (t.planter) {
+        pots.push({ x: t.x, z: t.z, y: t.y ?? 0, r: (side / 2) * spec.planter.size });
+        colliders.add(t.x, t.z, side * spec.planter.size, side * spec.planter.size);
+      } else if (t.collide) colliders.add(t.x, t.z, side, side);
+    }
   }
+  addPlanters(scene, pots, spec.planter);
   return sway;
 }

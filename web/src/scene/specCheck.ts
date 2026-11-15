@@ -31,6 +31,7 @@ import {
   type BridgeSpec,
 } from './spec';
 import { checkDecorSlots } from './decorSlots';
+import { paveProblem, treesOnPaving } from './cayTrenNen';
 import { checkGarden, gardenFootprints } from './vuonLayout';
 import { landingPad, START_HEADING } from './hacDuong';
 import { checkPortals } from './portals';
@@ -413,10 +414,10 @@ const LISTS: Record<string, ItemParser> = {
   portals: item({ scene: '', area: { from: XZ0, to: XZ0 }, arrive: { at: XZ0, rotY: 0 } }, { label: '' }, (o, path) =>
     typeof o.label === 'string' && [...o.label].length > 20 ? [`${path}.label: tối đa 20 ký tự (nhãn một dòng)`] : [],
   ),
-  'trees.yard': item({ x: 0, z: 0, scale: 0 }, { kind: '' }, all(oneOf('kind', TREE_KINDS), positive('scale'))),
+  'trees.yard': item({ x: 0, z: 0, scale: 0 }, { kind: '', planter: true }, all(oneOf('kind', TREE_KINDS), positive('scale'))),
   'trees.groves': item(
     { kind: '', x: 0, z: 0, w: 0, d: 0, count: 0 },
-    { collide: true },
+    { collide: true, planter: true },
     all(oneOf('kind', TREE_KINDS), positive('w', 'd', 'count')),
   ),
   'floating.islands': item({ x: 0, y: 0, z: 0, scale: 0 }, {}, positive('scale')),
@@ -477,6 +478,8 @@ function checkConsistency(s: SceneSpec): string[] {
   if (s.trees.ring.scaleMin > s.trees.ring.scaleMax) out.push('trees.ring: scaleMin phải ≤ scaleMax');
   if (!['cau', 'chum'].includes(s.trees.crown)) out.push(`trees.crown: "cau" | "chum" (đang "${s.trees.crown}")`);
   if (s.trees.lodDistance <= 0) out.push('trees.lodDistance: phải > 0');
+  if (s.trees.planter.size < 1 || s.trees.planter.height <= 0) out.push('trees.planter: size ≥ 1, height > 0');
+  out.push(...treesOnPaving(s).map(paveProblem));
   for (const p of s.props) {
     if (p.kind === 'phap-bao' && !PHAP_BAO.includes(p.text ?? '')) out.push(`props phap-bao (${p.x}; ${p.z}): text là một trong ${PHAP_BAO.join(' ')}`);
     if (p.kind === 'bon-hoa' && !FLOWER_POTS.includes(p.text ?? '')) out.push(`props bon-hoa (${p.x}; ${p.z}): text là một trong ${FLOWER_POTS.join(' ')} (đang "${p.text ?? ''}")`);

@@ -955,37 +955,43 @@
         "kind": "lieu",
         "x": 9,
         "z": -11.6,
-        "scale": 1.1
+        "scale": 1.1,
+        "planter": true
       },
       {
         "kind": "lieu",
-        "x": 28.5,
-        "z": -1,
-        "scale": 1.1
+        "x": 30.5,
+        "z": 0,
+        "scale": 1.1,
+        "planter": true
       },
       {
         "kind": "lieu",
-        "x": -29,
-        "z": -13.5,
-        "scale": 1
+        "x": -29.5,
+        "z": -16.5,
+        "scale": 1,
+        "planter": true
       },
       {
         "kind": "mai",
         "x": -23,
         "z": -25.5,
-        "scale": 0.9
+        "scale": 0.9,
+        "planter": true
       },
       {
         "kind": "mai",
         "x": -14,
         "z": 21,
-        "scale": 1
+        "scale": 1,
+        "planter": true
       },
       {
         "kind": "mai",
         "x": 14,
         "z": 21,
-        "scale": 1
+        "scale": 1,
+        "planter": true
       }
     ],
     "groves": [
@@ -995,7 +1001,8 @@
         "z": 30,
         "w": 16,
         "d": 14,
-        "count": 6
+        "count": 6,
+        "planter": true
       },
       {
         "kind": "lieu",
@@ -1003,7 +1010,8 @@
         "z": 30,
         "w": 16,
         "d": 14,
-        "count": 6
+        "count": 6,
+        "planter": true
       },
       {
         "kind": "lieu",
@@ -1029,8 +1037,9 @@
         "z": -31,
         "w": 50,
         "d": 4,
-        "count": 10,
-        "collide": false
+        "count": 7,
+        "collide": false,
+        "planter": true
       }
     ],
     "ring": {

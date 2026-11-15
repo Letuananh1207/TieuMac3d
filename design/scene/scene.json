@@ -707,14 +707,8 @@
     "yard": [
       {
         "kind": "tung",
-        "x": -47.5,
-        "z": -21,
-        "scale": 1.6
-      },
-      {
-        "kind": "tung",
-        "x": -19.5,
-        "z": -37,
+        "x": -18.5,
+        "z": -39.5,
         "scale": 1.6
       },
       {
@@ -745,31 +739,36 @@
         "kind": "mai",
         "x": -45,
         "z": 1.5,
-        "scale": 1.2
+        "scale": 1.2,
+        "planter": true
       },
       {
         "kind": "mai",
         "x": -45,
         "z": 13.5,
-        "scale": 1.2
+        "scale": 1.2,
+        "planter": true
       },
       {
         "kind": "tung",
         "x": -12.5,
         "z": -12.5,
-        "scale": 1.1
+        "scale": 1.1,
+        "planter": true
       },
       {
         "kind": "tung",
-        "x": -12.5,
-        "z": 12,
-        "scale": 1.1
+        "x": -13.5,
+        "z": 11,
+        "scale": 1.1,
+        "planter": true
       },
       {
         "kind": "tung",
-        "x": 12.5,
-        "z": 13,
-        "scale": 1.1
+        "x": 13.5,
+        "z": 11,
+        "scale": 1.1,
+        "planter": true
       },
       {
         "kind": "lieu",
@@ -815,8 +814,8 @@
       },
       {
         "kind": "tung",
-        "x": 30,
-        "z": -7,
+        "x": 21.5,
+        "z": -15.5,
         "scale": 3.2
       },
       {
@@ -955,7 +954,8 @@
         "kind": "bui",
         "x": 17,
         "z": 17.6,
-        "scale": 0.8
+        "scale": 0.8,
+        "planter": true
       },
       {
         "kind": "bui",

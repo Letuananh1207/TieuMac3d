@@ -935,20 +935,22 @@
       {
         "kind": "tung",
         "x": -30,
-        "z": -82,
+        "z": -86,
         "w": 12,
-        "d": 24,
-        "count": 8,
-        "collide": false
+        "d": 16,
+        "count": 7,
+        "collide": false,
+        "planter": true
       },
       {
         "kind": "tung",
         "x": 30,
-        "z": -74,
+        "z": -69,
         "w": 12,
-        "d": 20,
-        "count": 6,
-        "collide": false
+        "d": 9,
+        "count": 5,
+        "collide": false,
+        "planter": true
       },
       {
         "kind": "tung",
@@ -957,7 +959,8 @@
         "w": 18,
         "d": 8,
         "count": 5,
-        "collide": false
+        "collide": false,
+        "planter": true
       },
       {
         "kind": "tung",
@@ -966,7 +969,8 @@
         "w": 18,
         "d": 8,
         "count": 5,
-        "collide": false
+        "collide": false,
+        "planter": true
       },
       {
         "kind": "mai",
@@ -975,7 +979,8 @@
         "w": 8,
         "d": 4,
         "count": 3,
-        "collide": false
+        "collide": false,
+        "planter": true
       },
       {
         "kind": "mai",
@@ -984,7 +989,8 @@
         "w": 8,
         "d": 4,
         "count": 3,
-        "collide": false
+        "collide": false,
+        "planter": true
       }
     ],
     "ring": {

@@ -60,6 +60,8 @@ không muốn thứ của khuôn. Canvas 3D: `?vung=<mã>` xem cảnh vùng.
 | Trường | Ví dụ | Ghi chú |
 |---|---|---|
 | `trees.groves` | `{ "kind": "truc", "x": 63, "z": 30, "w": 4, "d": 20, "count": 10, "collide": false }` | cụm cây rải trong chữ nhật; `kind`: tan · truc · tung · lieu · mai |
+| `trees.yard[].planter` · `trees.groves[].planter` | `true` | bồn cây 樹池 quanh gốc (18 tam giác / bồn, 1 draw call cả cảnh; chặn người bằng cỡ bồn). **R-VA-6**: cây không chạm lối lát / bậc / cầu / nền nhà / cổng / đài truyền tống; trên sân lát (bục `pave`, `floors`) phải có bồn — `scene:check` báo lỗi |
+| `trees.planter` | `{ "stone": "#c9c3b6", "soil": "#6b5440", "size": 1.8, "height": 0.3 }` | màu đá / đất bồn; bán kính bồn = `size` × nửa cạnh thân |
 | `trees.leaves` · `willow` · `plum` | màu | tùng, liễu, mai |
 | `trees.crown` · `lodDistance` | `"chum"`, `35` | dáng tán (cảnh mềm): `cau` (mặc định, cũ) · `chum` = tán chùm nổi — tùng tầng mây ~650 tam giác, bụi `bui` ~260, thân + tán 1 hình; LOD 2 bậc: cây cách nhân vật > `lodDistance` m hoặc nhìn từ trên → bậc xa (~190 / ~70 tam giác). Thử V-58 |
 | `floating` | `"islands": [{ "x": -90, "y": 35, "z": -90, "scale": 2 }]`, `"clouds": { "count": 10 }` | đảo nổi, mây trôi |

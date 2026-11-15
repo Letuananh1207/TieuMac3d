@@ -613,6 +613,8 @@ export interface GroveSpec {
   count: number;
   /** có va chạm không (mặc định có) */
   collide?: boolean;
+  /** mỗi cây một bồn cây (`trees.planter`) — cây cố ý trên sân lát (R-VA-6) */
+  planter?: boolean;
 }
 
 export interface TreePlace {
@@ -620,6 +622,8 @@ export interface TreePlace {
   z: number;
   scale: number;
   kind?: (typeof TREE_KINDS)[number];
+  /** bồn cây quanh gốc (`trees.planter`) — cây cố ý trên sân lát (R-VA-6) */
+  planter?: boolean;
 }
 
 /** Bục phẳng (khu): đất trong hình chữ nhật `from`–`to` ép phẳng ở độ cao `y`; `pave` = lát gạch như sân. */
@@ -930,6 +934,11 @@ export interface SceneSpec {
     crown: 'cau' | 'chum';
     /** tán `chum`: cây cách nhân vật quá bao nhiêu m (hoặc camera cao hơn nhân vật quá số này — nhìn từ trên) thì dùng bậc xa */
     lodDistance: number;
+    /**
+     * Bồn cây 樹池 (R-VA-6) quanh gốc cây `planter: true` trên sân lát: bồn đá bát giác thấp, mặt đất trong bồn.
+     * `size`: bán kính bồn = `size` × cạnh thân va chạm của cây; `height`: cao thành bồn (m).
+     */
+    planter: { stone: string; soil: string; size: number; height: number };
   };
   /** `enabled: false` = không có giếng (cảnh vùng) */
   well: { enabled: boolean; x: number; z: number; stone: string; water: string };
@@ -1129,6 +1138,7 @@ export const DEFAULT_SCENE: SceneSpec = {
     seed: 7,
     crown: 'cau',
     lodDistance: 35,
+    planter: { stone: '#c9c3b6', soil: '#6b5440', size: 1.8, height: 0.3 },
   },
   well: { enabled: true, x: 6, z: 2, stone: '#6c6660', water: '#2b4a6a' },
   lessons: { radicals: false },
