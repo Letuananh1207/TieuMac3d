@@ -162,3 +162,9 @@ Làm được ngay sau khi duyệt + V-47 gộp: 1, 2 (song song). 3 đợi 2. 4
 ## Kiểm tra cuối
 dart tool/check.dart --changed · cd web && npm run scene:check && npx tsc --noEmit && npm test && npm run build ·
 cd app && flutter analyze && flutter test -r failures-only test/rules test/scene · dart tool/rule_trace.dart
+
+
+## Người dùng chốt (2026-11-15)
+- Q1: **đảo nhỏ trên biển mây** (mép vực chặn, lối ra duy nhất bến mây phía nam).
+- Q2: **hai hành lang + lan can thấp**.
+- Q3 + Q4: "tôi muốn **rỗng**, chưa cần thêm gì cả vì sau này người dùng có đồ rồi mới trang trí thêm giống game 摩尔" → **không** thêm suối, hạc, ao sen trang trí, đình, cây đối… chỉ dựng khung: đảo + nhà chính + sân trong (hành lang + lan can) + nền / cỏ + ít cây nền ở đồi sau / mép đảo để đỡ trơ; giữ 12 ô trang trí (giữ mã, dời toạ độ) để người chơi tự đặt đồ.
