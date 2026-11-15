@@ -941,3 +941,57 @@ Mẫu một mục:
   Flutter, bản đồ truyền tống, bản đồ lớn, thoại NPC, ngồi bàn chơi, chế độ trang trí, bảng vườn, ô nhập trò chuyện, Túi đồ (dọc).
 - Chuỗi: `toolbar*`, `homeHere`, `emote*`, `bag*`.
 - Ảnh: `screens/ThanhCongCu-*.png`, `screens/BieuCam-*.png`, `screens/TuiDo-*.png` (cảnh là hình giữ chỗ).
+
+## Trang trí tự do — túi đồ trang trí, món đang cầm, nút Xoay / Đặt / Cất / Huỷ, gợi ý phím (HUD) + Tạp hoá theo cái · artboard `TrangTriTuDo-{doc,ngang,may,moi-doc,du-tran-doc,tui-trong-doc,gian-trong-doc,cam-doc,cam-do-doc,cam-ngang,cam-may,cam-do-may,dau,ghi-chu}.dc.html`, `CuaHang-theo-cai-{doc,ngang,xac-nhan-doc,vua-mua-doc,ngheo-doc}.dc.html`, `TuiDo-trang-tri.dc.html` · từ mục 2026-11-15.42
+
+- Mục đích: đặt đồ trang trí tự do ở Nhà của ta (bỏ 12 ô), dời, xoay 8 hướng; đồ trang trí tính theo cái (kế hoạch
+  `docs/tasks/2026-11-15-trang-tri-tu-do.md`, V-69, NV14–15). **Thay** phần "chạm ô → bảng danh mục", viên nhắc, dấu ô, nút "Gỡ"
+  của mục Nhà của ta (2026-11-14.13) và trạng thái "Đã có" / "đã mua hết" của Tạp hoá (2026-11-14.12). Nút "Trang trí", "Xong", ví
+  giữ. Luật nháp `R-NHA-2/3/4/6/7`, `R-TIEN-4`, `R-TUI-1`; `R-HUD-4` (không chữ Hán).
+- **Vào chế độ**: ẩn thanh công cụ đáy, bản đồ nhỏ, joystick, cụm nút, Trò chuyện, khung kênh; giữ ví (góc trên phải) + "Xong" (dưới
+  ví, cách 10). Camera nhìn chéo ~55°.
+- **Viên nhắc** (trên trái — dọc trái 16 trên 57; ngang trái 59 trên 12; máy 24 / 24): kính .86 cao ≥ 36, bo 18, vòng `jade` 24 + biểu
+  tượng (bút khi chưa cầm / mũi tên bốn hướng khi cầm) + chữ 13/700, rộng ≤ 230 (ngang / máy 330). Chữ: chưa cầm "Chọn đồ trong túi để
+  đặt · chạm đồ trong sân để dời" (máy: "… click đồ trong sân để dời"; gian trong "Gian trong · chọn đồ trong nhà để đặt"; túi trống
+  "Chạm đồ trong sân để dời hoặc cất"); đang cầm "Kéo món để dời · Xoay, Đặt, Cất, Huỷ" (máy "Di chuột để dời · Q E xoay · click để đặt").
+- **Túi đồ trang trí** (danh mục = túi):
+  - Dọc: khay đáy kính .96 bo trên 20, tay nắm 40 × 4, đệm 8 12 42; đầu = vòng `jade` 28 + "Túi đồ trang trí" (gian trong "Đồ trong
+    nhà") 15/700 + viên đếm "{n} / 40 món" (gian trong / 20; đủ trần nền `lacquer` 12 %, chữ `lacquer`); một hàng thẻ rộng 92 cuộn
+    ngang, mép phải mờ; dòng 11 "Kéo lên để xem hết · có trong túi trước, rẻ → đắt". Kéo tay nắm lên → tấm đầy 60 % màn (lưới 3 cột).
+  - Ngang: cột phải 310 từ mép safe (bo trái 20), lưới 3 cột; ví + Xong dời sát trái cột. Máy tính: cột phải 360, lưới 3 cột.
+  - **Thẻ** (bo 14, đệm 6): ô hình 48 (dọc / ngang) – 60 (máy) `map-paper` + tên 12/700 + dòng 10,5 `slate-muted`:
+    có trong túi → trắng, viên "× n" `jade` cao 20 góc trên trái, "Đang đặt m" / "Chưa đặt" · đặt hết → nền trắng 60 %, hình mờ 45 %,
+    "Đặt hết · Mua thêm" + dòng xu + giá · chưa có → nền trắng 45 %, nét đứt `slate` 35 %, khoá tròn 24 góc dưới phải hình, "Mua ở Tạp
+    hoá" + xu + giá. Chỉ vật hợp nơi; xếp có trong túi trước rồi giá rẻ → đắt.
+  - Đủ trần: dải `lacquer` 8 % viền `lacquer` 35 % "Đã đủ 40 món — cất bớt để đặt thêm", thẻ "× n" mờ (viên `jade` 45 %).
+  - Túi trống: khung nét đứt + túi 26 + "Túi trống — mua thêm ở Tạp hoá phố chợ" + "Mọi món đã đặt. Chạm một món trong sân → Cất để lấy
+    lại vào túi."
+  - Chạm thẻ khoá / đặt hết → tấm báo `slate` "Mua {vật} ở Tạp hoá phố chợ — {n} Văn tiền (đang có {m})" 3 s; thẻ đang chạm viền `gold` 3.
+- **Đang cầm — điện thoại**: hàng nút **dưới món** (neo dưới khung chân, cách 24; đi theo khi kéo; mép màn đẩy vào trong safe): Xoay
+  (xoay 45°) · **Đặt** (viên `jade` cao 56, chữ 16/700, viền trắng 2 — khi đỏ: kính .7 nét đứt, chữ 45 %) · Cất · Huỷ (tròn kính 48 +
+  nhãn 11/700), cách 10. Khay túi thu thành dải cao 44 (trái / phải 16, đáy 42; ngang 59 / 29): hình 32 + "Đang cầm: {vật}" 13/700 +
+  "· trong túi còn n" (món nhấc: "Đang dời: {vật} · Huỷ = về chỗ cũ"); số trong túi giảm 1 ngay khi lấy.
+- **Đang cầm — máy tính**: không nút nổi. Dải phím giữa vùng cảnh (trừ cột túi), đáy 20, cao 40, kính .92 bo 12: phím chữ nổi (trắng,
+  viền `slate` 30 %, đáy dày 2,5, 11/700) — "Q E xoay 45° · R 90° · Click đặt · Esc huỷ · Delete cất · kéo nền trống: xoay camera";
+  "Click đặt" mờ 45 % khi đỏ. Cột túi vẫn hiện (chọn món khác = thay món đang cầm về túi).
+- **Lý do đỏ**: viên `lacquer` cao 28, biểu tượng cấm 16 + chữ 13/700 trắng, trên món (cách đỉnh 12). 9 lý do: Ngoài chỗ đặt · Lối đi ·
+  Cửa nhà · Luống rau · Thùng thu mua · Đè vật khác · Dốc quá · Chắn lối · Đã đủ 40 món (gian trong "Đã đủ 20 món").
+- **Dấu trong cảnh** (code vẽ 3D, `TrangTriTuDo-dau`): khung chân theo hướng món — hợp lệ tô `jade` 22 % viền `jade` 3; sai tô `lacquer`
+  22 % viền 3 · món ma mờ .85 + phủ cùng màu 18 % · lưới 0,5 m trắng 50 % nét 1, chỉ 4 × 4 m quanh món · mũi tên mặt trước tam giác
+  trắng viền cùng màu ở cạnh trước khung · vùng cấm (lối lát, quanh cửa, luống, thùng, bãi hạc) gạch chéo `lacquer` 12 % khi đang cầm.
+  Giữ `jade` / `lacquer` code đang dùng.
+- **Tấm báo** `slate` 3 s (dọc trái / phải 16 trên 150; ngang trái 59 trên 58 rộng 330; máy trái 24 trên 76 rộng 420): "Đã cất {vật} vào
+  túi" · "Không đặt được — {lý do}" + dòng giải thích (khi Đặt / click lúc đỏ) · lần đầu trên máy tính: "Q E xoay · Click đặt · Esc huỷ ·
+  Delete cất".
+- **Tạp hoá theo cái** (Flutter + bản web, nền như 2026-11-14.12): ấn son **chữ Việt** "Tạp hoá" (dọc 30, `lacquer`); dòng phụ "Đồ trang
+  trí Nhà của ta · mỗi cái đặt một chỗ · hạt giống cho Vườn rau". Tab: Tất cả · Ngoài trời · Trong nhà · Hạt giống. Thẻ: hình 64 (ngang 50)
+  + tên 13/700 + "Trong túi: n · Đang đặt: m" 11/700 `jade` (chưa có → "Chưa có" `slate-muted`) + xu + giá + nút cao 34 **luôn "Mua"**
+  (thiếu → "Còn thiếu n" nét đứt). Bỏ "Đã có", bỏ trạng thái đã mua hết. Hộp xác nhận × 1 (không chọn số): "Mua {vật} với {n} Văn tiền?" +
+  "Mỗi lần mua 1 cái vào túi · đặt ở {sân / gian trong} Nhà của ta. Đang có: n trong túi, m đang đặt." + Đang có / Giá / Còn lại + "Thôi"
+  / "Mua · n". Vừa mua: tấm `slate` hình 48 + "Đã mua {vật}" + "Trong túi {k} · về nhà để đặt", ví viền `lacquer` + "−n". Nghèo: dải vàng
+  thêm "bán nông sản ≤ 60 / ngày".
+- **Túi đồ** (2026-11-15.35) ngăn Đồ trang trí: dòng "Trong túi n · Đang đặt m" 10/500 thay nhãn "Đang đặt".
+- Chuỗi: `decor*` mới (xem CHANGELOG), `shopSubtitle` (mới), `shopDecor*`, `shopInBagPlaced`, `shopNotOwned`, `shopTabOutdoor`,
+  `shopTabIndoor`, `bagDecorCounts`. Bỏ: `decorSlot*`, `decorPick`, `decorReplace`, `decorRemove`, `decorPlacedHere`, `decorOwned`,
+  `decorHint` (cũ), `shopOwned`, `shopAllBought`, `bagPlaced`.
+- Ảnh: `screens/TrangTriTuDo-*.png`, `screens/CuaHang-theo-cai-*.png`, `screens/TuiDo-trang-tri.png` (cảnh là hình giữ chỗ).
