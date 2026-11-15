@@ -29,3 +29,4 @@ núi) · Hậu Sơn (thác, động bế quan) · trang phục theo bậc đệ 
 - [assets-free-thuc-vat.md](assets-free-thuc-vat.md) — gói tài sản thực vật miễn phí (CC0) cho Đồi Chè / cây cỏ; đề xuất luống chè từ Tiny Treats Pretty Park (V-46)
 - [nha-rieng-game.md](nha-rieng-game.md) — nhà / sân riêng trong game khác (Serenitea Pot, Animal Crossing, Stardew, 摩尔庄园) + tiểu viện; bài học cho Nhà của ta (V-48)
 - [thuc-vat-dep-nhe.md](thuc-vat-dep-nhe.md) — cây / hoa / cỏ / cây trồng đẹp mà nhẹ: game cùng thể loại làm thế nào, "tán chùm nổi" (múi + pháp tuyến pha trộn + màu đỉnh AO lõi), thẻ lá viền, LOD, đánh giá Hunyuan cho cây (V-58) — nháp, chờ chọn hướng (khuyên A + D)
+- [lam-lai-vung.md](lam-lai-vung.md) — làm lại 6 vùng: 15 nguyên tắc level design map nhỏ điện thoại (số đo), bài học từ 摩尔庄园 / AC / Sky / Liyue / 逆水寒, thế đất + màu + thứ không nhét của 6 vùng, 3 phương án địa hình Trúc Lâm B2 (khuyên A thung suối bãi giữa), phác B3 / B4 (V-66) — nháp, chờ chọn
