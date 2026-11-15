@@ -3,6 +3,14 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-15.25 — Bồn hoa dọc lối khu công viên phía đông; bỏ tùng cạnh nhật quỹ
+
+- Loại: cảnh 3D — bố cục. Phiên code V-20261114-56; người dùng: "tận dụng chậu cây ở nhiều nơi quanh đường đi ở công viên", "bỏ cây tùng
+  ở cạnh đồng hồ". **Đã duyệt 2026-11-15.**
+- 9 `bon-hoa` scale 1,1: mai / lan (27,5; 0,5) · (32,5; 0,5); cúc / trúc (25,6; −7) · (34,4; −7); cúc / lan (20,9; 7,9) · (25,1; 7,9);
+  trúc (25,1; 18,8); mai / lan (36,4; 7,6) · (40,6; 7,6). Bỏ tùng (12,5; −12,5). Code `bonHoa` bớt mặt khuất, hoa khối 8 mặt (cùng dáng).
+- Không chạm luật. Nhìn từ trên 140 draw call / 149 863 tam giác. Ảnh: `screens/Canh-bon-hoa-cong-vien.png`.
+
 ## 2026-11-15.24 — Bỏ 4 bồn hoa quanh nhật quỹ ở Quảng Trường
 
 - Loại: cảnh 3D — bố cục. Người dùng: "loại bỏ 4 chậu cây quanh đồng hồ". Bỏ `props` bồn hoa 梅 / 蘭 / 菊 / 竹 (V-55 vừa dời ra hai góc bắc).
