@@ -35,7 +35,7 @@ describe('hạc truyền tống — bãi đáp, đường bay (R-HANH-5)', () =>
     expect(jumpArc([0, 0, 0], [2, 1.8, 0], 0.5)[1]).toBeCloseTo(1.8 + 0.9, 5);
   });
 
-  it('R-HANH-5: bãi đáp ở mọi cảnh có vòng trận không nằm trong nhà / ao (về trấn: cạnh cổng trấn (0; 48))', () => {
+  it('R-HANH-5: bãi đáp ở mọi cảnh (kể cả Nhà của ta không vòng trận) không nằm trong nhà / ao (về trấn: cạnh cổng trấn (0; 48))', () => {
     const ids = [HOME_SCENE, ...REGION_SCENES];
     for (const id of ids) {
       const s = loadScene(id).spec;
@@ -44,6 +44,15 @@ describe('hạc truyền tống — bãi đáp, đường bay (R-HANH-5)', () =>
     const town = loadScene(HOME_SCENE).spec;
     expect(town.player.start).toEqual([0, 48]);
     near(landingPad(town.player.start, START_HEADING, town.crane.padOffset), [2.5, 48]);
+  });
+
+  it('R-HANH-5, R-NHA-1: tới Nhà của ta bằng bản đồ → đứng (0; 6,5) trong cổng nam, hạc đáp (2,5; 6,5) — nhà không có vòng trận', () => {
+    const home = loadScene('nha-ta').spec;
+    expect(home.teleport.enabled).toBe(false);
+    expect(home.player.start).toEqual([0, 6.5]);
+    near(landingPad(home.player.start, START_HEADING, home.crane.padOffset), [2.5, 6.5]);
+    // cảnh không vòng trận vẫn kiểm bãi đáp: đẩy chỗ xuất phát vào nhà chính → báo
+    expect(craneProblems({ ...home, player: { ...home.player, start: [-2.5, -8] } }).join()).toMatch(/nằm trong nhà "chinh-phong"/);
   });
 
   it('R-HANH-5: hạc 3 draw call, ≤ 800 tam giác; cảnh bay ≤ 12 draw call (Thấp: không mây phồng)', () => {

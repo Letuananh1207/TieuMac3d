@@ -19,14 +19,15 @@ describe('bản đồ vùng — đủ mọi cảnh (R-BANDO-2)', () => {
   });
 
   for (const id of IDS) {
-    it(`R-BANDO-2: ${id} — khung hữu hạn, có vòng trận, mọi khu có nhãn, mọi nhà có chân nhà`, () => {
+    it(`R-BANDO-2: ${id} — khung hữu hạn, vòng trận đúng như cảnh (Nhà của ta không có), mọi khu có nhãn, mọi nhà có chân nhà`, () => {
       const spec = loadScene(id).spec;
       const m = mapOf(id);
       const b = m.bounds;
       for (const v of [b.minX, b.maxX, b.minZ, b.maxZ]) expect(Number.isFinite(v)).toBe(true);
       expect(b.maxX - b.minX).toBeGreaterThan(10);
       expect(b.maxZ - b.minZ).toBeGreaterThan(10);
-      expect(m.icons.some((i) => i.kind === 'vong-tran')).toBe(true);
+      expect(m.icons.some((i) => i.kind === 'vong-tran')).toBe(id !== 'nha-ta');
+      expect(spec.teleport.enabled).toBe(id !== 'nha-ta'); // V-47: nhà bỏ vòng trận (R-HANH-2, R-NHA-1)
       expect(m.labels.filter((l) => l.kind === 'khu').map((l) => l.text)).toEqual(spec.site.areas.map((a) => a.name));
       expect(m.shapes.filter((s) => s.kind === 'nha')).toHaveLength(spec.buildings.length);
       // nhãn + biểu tượng đều nằm trong khung
@@ -74,11 +75,11 @@ describe('bản đồ vùng — đủ mọi cảnh (R-BANDO-2)', () => {
     for (const id of IDS) expect(mapOf(id).shapes.filter((s) => s.kind === 'khu')).toHaveLength(loadScene(id).spec.site.areas.length);
   });
 
-  it('R-BANDO-2: Nhà của ta — 3 khu, cổng (0; 14) ghi "Khởi Nguyên Trấn", không có dấu ô trang trí', () => {
+  it('R-BANDO-2: Nhà của ta — 3 khu, cổng (0; 14) ghi "Khởi Nguyên Trấn", không có vòng trận, không có dấu ô trang trí', () => {
     const m = mapOf('nha-ta');
     expect(m.labels.filter((l) => l.kind === 'khu').map((l) => l.text)).toEqual(['Chính phòng', 'Vườn', 'Sân trước']);
     expect(m.icons.find((i) => i.kind === 'cong-canh')).toMatchObject({ x: 0, z: 14.25, scene: HOME_SCENE });
     expect(m.labels.find((l) => l.kind === 'cong')?.text).toBe('Khởi Nguyên Trấn');
-    expect(m.icons.map((i) => i.kind).sort()).toEqual(['cong-canh', 'vong-tran']);
+    expect(m.icons.map((i) => i.kind)).toEqual(['cong-canh']);
   });
 });

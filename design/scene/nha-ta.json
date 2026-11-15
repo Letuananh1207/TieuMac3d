@@ -77,11 +77,12 @@
   ],
   "gates": [],
   "water": [],
-  "props": [],
+  "props": [{ "kind": "da-thai-ho", "x": -9, "z": -0.5, "scale": 0.8 }],
   "trees": {
     "yard": [
       { "kind": "tung", "x": -12.5, "z": -10.5, "scale": 1 },
-      { "kind": "truc", "x": -13, "z": 8.5, "scale": 1 }
+      { "kind": "truc", "x": -13, "z": 8.5, "scale": 1 },
+      { "kind": "mai", "x": -11.5, "z": -2.5, "scale": 1 }
     ],
     "groves": [
       { "kind": "truc-mao", "x": 0, "z": -20, "w": 36, "d": 6, "count": 16, "collide": false },
@@ -92,10 +93,9 @@
   },
   "well": { "enabled": false },
   "floating": { "islands": [], "clouds": { "count": 0, "height": 26, "radius": 60, "speed": 0.6, "color": "#d9dce8" } },
-  "player": { "start": [-5, 0.5] },
+  "player": { "start": [0, 6.5] },
   "npcs": [],
   "camera": { "fov": 55, "minDist": 3, "maxDist": 20, "near": { "dist": 4.2, "pitch": 0.32 }, "far": { "dist": 16, "pitch": 0.72 } },
-  "teleport": { "enabled": true, "center": [-10, -1.5], "radius": 0, "ringRadius": 4 },
   "lessons": { "radicals": false },
   "decorSlots": [
     { "id": "trong-1", "kind": "trong", "x": -3.2, "z": -9.8 },

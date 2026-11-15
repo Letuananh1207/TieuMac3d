@@ -544,15 +544,15 @@ export function hanOnDisplay(s: SceneSpec): { path: string; text: string }[] {
 const CRANE_CLEAR = 1.3;
 
 /**
- * Bãi đáp hạc (R-HANH-5): tới cảnh bằng vòng trận → hạc đáp `crane.padOffset` m bên phải chỗ xuất phát (hướng nhìn mặc
- * định: bắc). Bãi đáp không nằm trong nhà / ao (độ phẳng: `checkOnFlatGround`).
+ * Bãi đáp hạc (R-HANH-5): tới cảnh bằng bản đồ truyền tống → hạc đáp `crane.padOffset` m bên phải chỗ xuất phát (hướng
+ * nhìn mặc định: bắc). Kiểm ở mọi cảnh, kể cả cảnh không có vòng trận (Nhà của ta — V-47): bản đồ ở nơi khác vẫn tới
+ * được. Bãi đáp không nằm trong nhà / ao (độ phẳng: `checkOnFlatGround`).
  */
 export function craneProblems(s: SceneSpec): string[] {
   const out: string[] = [];
   const c = s.crane;
   if (!(c.scale >= 0.3 && c.scale <= 3)) out.push(`crane.scale: 0,3–3 (đang ${c.scale})`);
   if (!(c.padOffset >= 0 && c.padOffset <= 10)) out.push(`crane.padOffset: 0–10 m (đang ${c.padOffset})`);
-  if (!s.teleport.enabled) return out;
   const [px, pz] = landingPad(s.player.start, START_HEADING, c.padOffset);
   const r = CRANE_CLEAR * c.scale;
   const where = `crane: bãi đáp (${px.toFixed(1)}; ${pz.toFixed(1)})`;
@@ -657,7 +657,7 @@ function checkOnFlatGround(s: SceneSpec): string[] {
   }
   s.wallSegments.forEach((w, i) => !w.follow && flat(`wallSegments[${i}]`, [w.from, w.to, [(w.from[0] + w.to[0]) / 2, (w.from[1] + w.to[1]) / 2]]));
   flat('điểm xuất phát (player.start)', box(s.player.start[0], s.player.start[1], 2, 2));
-  if (s.teleport.enabled) flat('bãi đáp hạc (crane)', box(...landingPad(s.player.start, START_HEADING, s.crane.padOffset), 2, 2));
+  flat('bãi đáp hạc (crane)', box(...landingPad(s.player.start, START_HEADING, s.crane.padOffset), 2, 2));
   s.portals.forEach((p, i) => flat(`portals[${i}] chỗ đứng (arrive)`, box(p.arrive.at[0], p.arrive.at[1], 2, 2)));
   return out;
 }

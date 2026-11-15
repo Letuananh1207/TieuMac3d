@@ -31,6 +31,7 @@ const out = await build({
       "export { moonRadius, gateOpening, lauClearHeight, lauTop } from './src/scene/kien_truc/tuong.ts';\n" +
       "export { wallGates } from './src/scene/walls.ts';\n" +
       "export { ringTrigger, arrivalSpot, daisLayout } from './src/scene/teleportLayout.ts';\n" +
+      "export { landingPad, START_HEADING } from './src/scene/hacDuong.ts';\n" +
       "export { RADICALS, checkRadicals } from './src/zones/radicals.ts';\n" +
       "export { applyVariant } from './src/scene/bienThe.ts';\n",
     resolveDir: web,
@@ -44,7 +45,7 @@ const out = await build({
   define: { 'import.meta.glob': 'globalThis.__viteGlob' },
   loader: { '.png': 'empty', '.jpg': 'empty', '.glb': 'empty', '.css': 'empty', '.woff2': 'empty' },
 });
-const { buildWorld, Colliders, checkRoute, routeLength, DRAFT_TOWN_NPCS, Scene, resolveSceneSpec, roomKinds, zoneAnchors, placeZones, ZONE_CONTENT, moonRadius, gateOpening, lauClearHeight, lauTop, wallGates, ringTrigger, arrivalSpot, daisLayout, RADICALS, checkRadicals, applyVariant } = await import(
+const { buildWorld, Colliders, checkRoute, routeLength, DRAFT_TOWN_NPCS, Scene, resolveSceneSpec, roomKinds, zoneAnchors, placeZones, ZONE_CONTENT, moonRadius, gateOpening, lauClearHeight, lauTop, wallGates, ringTrigger, arrivalSpot, daisLayout, landingPad, START_HEADING, RADICALS, checkRadicals, applyVariant } = await import(
   `data:text/javascript;base64,${Buffer.from(out.outputFiles[0].text).toString('base64')}`
 );
 
@@ -245,7 +246,10 @@ function checkScene(rel, raw, opt = {}) {
       const a = arrivalSpot(tp).at;
       console.log(`  về tông môn đứng ở (${n(+a[0].toFixed(2))}; ${n(+a[1].toFixed(2))})`);
     }
-  }
+  } else console.log('Vòng trận: không có — tới cảnh này bằng bản đồ truyền tống ở nơi khác (R-HANH-2)');
+  // tới bằng bản đồ truyền tống: đứng ở chỗ xuất phát, hạc đáp bên phải (R-HANH-5)
+  const pad = landingPad(spec.player.start, START_HEADING, spec.crane.padOffset);
+  console.log(`Chỗ xuất phát (${n(spec.player.start[0])}; ${n(spec.player.start[1])}) · hạc đáp (${n(+pad[0].toFixed(2))}; ${n(+pad[1].toFixed(2))})`);
   // cổng đi bộ (R-HANH-4): vùng chạm, cảnh đích, chỗ đứng khi tới từ cảnh đó
   for (const p of spec.portals) {
     const [a, b] = [p.area.from, p.area.to];
