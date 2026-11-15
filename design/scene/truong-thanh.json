@@ -2,80 +2,7 @@
   "site": {
     "name": "Nhạn Môn Quan",
     "han": "長城",
-    "areas": [
-      {
-        "name": "Doanh Trại",
-        "han": "營寨",
-        "from": [
-          -16,
-          0
-        ],
-        "to": [
-          16,
-          44
-        ]
-      },
-      {
-        "name": "Khương Nữ Từ",
-        "han": "姜女祠",
-        "from": [
-          -30,
-          0
-        ],
-        "to": [
-          -16,
-          12
-        ]
-      },
-      {
-        "name": "Quan Thành",
-        "han": "關城",
-        "from": [
-          -8,
-          -16
-        ],
-        "to": [
-          8,
-          -4
-        ]
-      },
-      {
-        "name": "Mặt Tường",
-        "han": "城牆",
-        "from": [
-          -34,
-          -13
-        ],
-        "to": [
-          34,
-          -4
-        ]
-      },
-      {
-        "name": "Ung Thành",
-        "han": "瓮城",
-        "from": [
-          -12,
-          -27
-        ],
-        "to": [
-          12,
-          -15
-        ]
-      },
-      {
-        "name": "Mã Thị",
-        "han": "馬市",
-        "from": [
-          -24,
-          -46
-        ],
-        "to": [
-          24,
-          -28
-        ]
-      }
-    ]
+    "areas": []
   },
   "sky": {
     "top": "#5a86b4",
@@ -278,164 +205,10 @@
     "color": "#efece2"
   },
   "walls": {
-    "enabled": false,
-    "style": "gach",
-    "color": "#686c67",
-    "brickHue": 200,
-    "capColor": "#8a8a82",
-    "height": 6,
-    "thickness": 1.2,
-    "windows": 0,
-    "brickSat": 6
+    "enabled": false
   },
-  "wallSegments": [
-    {
-      "from": [
-        -84,
-        -10
-      ],
-      "to": [
-        -34.5,
-        -10
-      ],
-      "height": 6,
-      "thickness": 1.2,
-      "follow": true
-    },
-    {
-      "from": [
-        34.5,
-        -10
-      ],
-      "to": [
-        84,
-        -10
-      ],
-      "height": 6,
-      "thickness": 1.2,
-      "follow": true
-    },
-    {
-      "from": [
-        -12,
-        -15
-      ],
-      "to": [
-        -12,
-        -27
-      ],
-      "height": 6,
-      "thickness": 1.2,
-      "gate": {
-        "at": -21,
-        "width": 4
-      }
-    },
-    {
-      "from": [
-        -12,
-        -27
-      ],
-      "to": [
-        12,
-        -27
-      ],
-      "height": 6,
-      "thickness": 1.2
-    },
-    {
-      "from": [
-        12,
-        -27
-      ],
-      "to": [
-        12,
-        -15
-      ],
-      "height": 6,
-      "thickness": 1.2
-    }
-  ],
-  "paths": [
-    {
-      "from": [
-        0,
-        42
-      ],
-      "to": [
-        0,
-        -15
-      ],
-      "width": 4
-    },
-    {
-      "from": [
-        0,
-        -15
-      ],
-      "to": [
-        0,
-        -21
-      ],
-      "width": 4
-    },
-    {
-      "from": [
-        0,
-        -21
-      ],
-      "to": [
-        -16,
-        -21
-      ],
-      "width": 4
-    },
-    {
-      "from": [
-        -16,
-        -21
-      ],
-      "to": [
-        -16,
-        -36
-      ],
-      "width": 4
-    },
-    {
-      "from": [
-        -16,
-        -36
-      ],
-      "to": [
-        8,
-        -36
-      ],
-      "width": 4
-    },
-    {
-      "from": [
-        -40,
-        -3
-      ],
-      "to": [
-        40,
-        -3
-      ],
-      "width": 3
-    },
-    {
-      "from": [
-        -6,
-        5
-      ],
-      "to": [
-        -18,
-        5
-      ],
-      "width": 2.5
-    },
-    { "from": [0, 42], "to": [0, 47.6], "width": 3 }
-  ],
+  "wallSegments": [],
+  "paths": [],
   "buildingStyle": {
     "path": "#9c9282",
     "stone": "#8f877a",
@@ -445,270 +218,13 @@
     "eave": "#3c3a36",
     "heightScale": 1
   },
-  "buildings": [
-    {
-      "id": "kho-luong",
-      "x": 10,
-      "z": 16,
-      "w": 8,
-      "d": 6,
-      "rotY": 270,
-      "title": "Kho lương",
-      "roofColor": "#4a4a46",
-      "kind": "nha-nho"
-    },
-    {
-      "id": "khuong-nu-tu",
-      "x": -23,
-      "z": 5,
-      "w": 6,
-      "d": 5,
-      "rotY": 90,
-      "title": "Khương Nữ Từ",
-      "roofColor": "#4a4a46",
-      "kind": "nha-nho"
-    }
-  ],
+  "buildings": [],
   "gates": [],
   "water": [],
-  "props": [
-    {
-      "kind": "quan-thanh",
-      "x": 0,
-      "z": -10,
-      "text": "Trường Thành"
-    },
-    {
-      "kind": "dich-lau",
-      "x": -30,
-      "z": -10
-    },
-    {
-      "kind": "dich-lau",
-      "x": 30,
-      "z": -10
-    },
-    {
-      "kind": "phong-hoa",
-      "x": -40,
-      "z": -42
-    },
-    {
-      "kind": "phong-hoa",
-      "x": 40,
-      "z": -44
-    },
-    {
-      "kind": "phong-hoa",
-      "x": 0,
-      "z": -72
-    },
-    {
-      "kind": "phong-hoa",
-      "x": -66,
-      "z": -8
-    },
-    {
-      "kind": "phong-hoa",
-      "x": 66,
-      "z": -10
-    },
-    {
-      "kind": "tho-bich",
-      "x": 10.4,
-      "z": -21,
-      "rotY": 270,
-      "text": "Hoàng Hà xa tít giữa mây trắng"
-    },
-    {
-      "kind": "tho-bich",
-      "x": 0,
-      "z": -25.6,
-      "text": "Chẳng để ngựa Hồ vượt Âm Sơn"
-    },
-    {
-      "kind": "soai-truong",
-      "x": -10,
-      "z": 14,
-      "rotY": 90
-    },
-    {
-      "kind": "leu",
-      "x": -11,
-      "z": 26
-    },
-    {
-      "kind": "leu",
-      "x": -11,
-      "z": 32
-    },
-    {
-      "kind": "leu",
-      "x": 11,
-      "z": 26
-    },
-    {
-      "kind": "leu",
-      "x": 11,
-      "z": 32
-    },
-    {
-      "kind": "leu",
-      "x": 11,
-      "z": 6
-    },
-    {
-      "kind": "leu",
-      "x": -11,
-      "z": 38
-    },
-    {
-      "kind": "lua-trai",
-      "x": 5,
-      "z": 28
-    },
-    {
-      "kind": "co",
-      "x": -5,
-      "z": 12,
-      "text": "Soái"
-    },
-    {
-      "kind": "co",
-      "x": -6,
-      "z": -1.8,
-      "text": "Trường"
-    },
-    {
-      "kind": "co",
-      "x": 6,
-      "z": -1.8,
-      "text": "Thành"
-    },
-    {
-      "kind": "sap-o",
-      "x": -6,
-      "z": -32
-    },
-    {
-      "kind": "sap-o",
-      "x": 6,
-      "z": -32
-    },
-    {
-      "kind": "sap-o",
-      "x": -6,
-      "z": -41
-    },
-    {
-      "kind": "sap-o",
-      "x": 6,
-      "z": -41
-    },
-    {
-      "kind": "ngua",
-      "x": 15,
-      "z": -31,
-      "rotY": 90
-    },
-    {
-      "kind": "ngua",
-      "x": 15,
-      "z": -35,
-      "rotY": 90
-    },
-    {
-      "kind": "ngua",
-      "x": 15,
-      "z": -39,
-      "rotY": 270
-    },
-    {
-      "kind": "ban-tra",
-      "x": -12,
-      "z": -42
-    },
-    {
-      "kind": "da-thai-ho",
-      "x": -20,
-      "z": 8,
-      "scale": 0.9
-    }
-  ],
+  "props": [],
   "trees": {
-    "yard": [
-      {
-        "kind": "tung",
-        "x": 8,
-        "z": 38,
-        "scale": 1.2
-      }
-    ],
-    "groves": [
-      {
-        "kind": "bui",
-        "x": -34,
-        "z": 20,
-        "w": 18,
-        "d": 22,
-        "count": 16,
-        "collide": false
-      },
-      {
-        "kind": "bui",
-        "x": 34,
-        "z": 20,
-        "w": 18,
-        "d": 22,
-        "count": 16,
-        "collide": false
-      },
-      {
-        "kind": "bui",
-        "x": -34,
-        "z": -32,
-        "w": 16,
-        "d": 14,
-        "count": 12,
-        "collide": false
-      },
-      {
-        "kind": "bui",
-        "x": 34,
-        "z": -32,
-        "w": 16,
-        "d": 14,
-        "count": 12,
-        "collide": false
-      },
-      {
-        "kind": "tung",
-        "x": -30,
-        "z": -38,
-        "w": 16,
-        "d": 12,
-        "count": 5,
-        "collide": false
-      },
-      {
-        "kind": "tung",
-        "x": 30,
-        "z": -38,
-        "w": 16,
-        "d": 12,
-        "count": 5,
-        "collide": false
-      },
-      {
-        "kind": "tung",
-        "x": -36,
-        "z": 24,
-        "w": 14,
-        "d": 18,
-        "count": 5,
-        "collide": false
-      }
-    ],
+    "yard": [],
+    "groves": [],
     "ring": {
       "count": 0,
       "radius": 25,
@@ -766,54 +282,83 @@
   "lessons": {
     "radicals": false
   },
-  "ramparts": [
+  "ramparts": [],
+  "portals": [
     {
-      "from": [
-        -30,
-        -10
-      ],
-      "to": [
-        -7,
-        -10
-      ],
-      "height": 6,
-      "width": 5,
-      "outSide": -1,
-      "ramps": [
-        {
-          "at": -12,
-          "dir": -1,
-          "length": 12,
-          "width": 3
-        }
-      ]
+      "scene": "rung-truc",
+      "area": {
+        "from": [
+          -1.2,
+          47.8
+        ],
+        "to": [
+          1.2,
+          50.2
+        ]
+      },
+      "arrive": {
+        "at": [
+          0,
+          45.4
+        ],
+        "rotY": 180
+      },
+      "label": "Trúc Lâm"
     },
     {
-      "from": [
-        7,
-        -10
-      ],
-      "to": [
-        30,
-        -10
-      ],
-      "height": 6,
-      "width": 5,
-      "outSide": -1,
-      "ramps": [
-        {
-          "at": 12,
-          "dir": 1,
-          "length": 12,
-          "width": 3
-        }
-      ]
+      "scene": "to-lua",
+      "area": {
+        "from": [
+          -44.4,
+          -4.2
+        ],
+        "to": [
+          -42,
+          -1.8
+        ]
+      },
+      "arrive": {
+        "at": [
+          -39.6,
+          -3
+        ],
+        "rotY": 90
+      },
+      "label": "Đôn Hoàng Lộ"
+    },
+    {
+      "scene": "tu-cam-thanh",
+      "area": {
+        "from": [
+          42,
+          -4.2
+        ],
+        "to": [
+          44.4,
+          -1.8
+        ]
+      },
+      "arrive": {
+        "at": [
+          39.6,
+          -3
+        ],
+        "rotY": 270
+      },
+      "label": "Tử Cấm Thành"
     }
   ],
-  "portals": [
-    { "scene": "rung-truc", "area": { "from": [-1.2, 47.8], "to": [1.2, 50.2] }, "arrive": { "at": [0, 45.4], "rotY": 180 }, "label": "Trúc Lâm" },
-    { "scene": "to-lua", "area": { "from": [-44.4, -4.2], "to": [-42, -1.8] }, "arrive": { "at": [-39.6, -3], "rotY": 90 }, "label": "Đôn Hoàng Lộ" },
-    { "scene": "tu-cam-thanh", "area": { "from": [42, -4.2], "to": [44.4, -1.8] }, "arrive": { "at": [39.6, -3], "rotY": 270 }, "label": "Tử Cấm Thành" }
-  ],
-  "dayNight": { "enabled": true }
+  "dayNight": {
+    "enabled": true
+  },
+  "bridges": [],
+  "boats": [],
+  "channels": [],
+  "galleries": [],
+  "mirages": [],
+  "caravans": [],
+  "decorSlots": [],
+  "lanternStrings": [],
+  "fences": [],
+  "teaRows": []
 }

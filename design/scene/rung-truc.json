@@ -2,92 +2,7 @@
   "site": {
     "name": "Trúc Lâm",
     "han": "竹林",
-    "areas": [
-      {
-        "name": "Cửa rừng",
-        "han": "林口",
-        "from": [
-          -12,
-          22
-        ],
-        "to": [
-          12,
-          40
-        ]
-      },
-      {
-        "name": "Trúc Xá",
-        "han": "竹舍",
-        "from": [
-          -16,
-          8
-        ],
-        "to": [
-          -6,
-          20
-        ]
-      },
-      {
-        "name": "Khúc Thuỷ Uyển",
-        "han": "曲水苑",
-        "from": [
-          0,
-          -12
-        ],
-        "to": [
-          14,
-          8
-        ]
-      },
-      {
-        "name": "Lối trúc",
-        "han": "竹徑",
-        "from": [
-          -20,
-          -18
-        ],
-        "to": [
-          20,
-          22
-        ]
-      },
-      {
-        "name": "Vọng Trúc Đài",
-        "han": "望竹臺",
-        "from": [
-          -22,
-          -32
-        ],
-        "to": [
-          -11,
-          -18
-        ]
-      },
-      {
-        "name": "Nga Trì",
-        "han": "鵝池",
-        "from": [
-          -2,
-          -46
-        ],
-        "to": [
-          14,
-          -36
-        ]
-      },
-      {
-        "name": "Chân thác",
-        "han": "瀑下",
-        "from": [
-          -14,
-          -42
-        ],
-        "to": [
-          18,
-          -18
-        ]
-      }
-    ]
+    "areas": []
   },
   "sky": {
     "top": "#7fa6b8",
@@ -235,19 +150,7 @@
     },
     "slopeDirt": 20,
     "slopeRock": 35,
-    "stairs": [
-      {
-        "from": [
-          -12.5,
-          -18.5
-        ],
-        "to": [
-          -16,
-          -24.5
-        ],
-        "width": 2.4
-      }
-    ],
+    "stairs": [],
     "grass": {
       "density": 8,
       "colors": [
@@ -329,87 +232,7 @@
     "enabled": false
   },
   "wallSegments": [],
-  "paths": [
-    {
-      "from": [
-        0,
-        35
-      ],
-      "to": [
-        0,
-        43.5
-      ],
-      "width": 9.4
-    },
-    {
-      "from": [
-        0,
-        35
-      ],
-      "to": [
-        -6,
-        18
-      ],
-      "width": 3
-    },
-    {
-      "from": [
-        -6,
-        18
-      ],
-      "to": [
-        -2,
-        0
-      ],
-      "width": 3
-    },
-    {
-      "from": [
-        -2,
-        0
-      ],
-      "to": [
-        -7,
-        -18
-      ],
-      "width": 3
-    },
-    {
-      "from": [
-        -7,
-        -18
-      ],
-      "to": [
-        2,
-        -36
-      ],
-      "width": 3
-    },
-    {
-      "from": [
-        -4.9,
-        13
-      ],
-      "to": [
-        -8.3,
-        13
-      ],
-      "width": 2.5
-    },
-    {
-      "from": [
-        -4.6,
-        -10
-      ],
-      "to": [
-        6,
-        -10
-      ],
-      "width": 2.5
-    },
-    { "from": [4.5, 43], "to": [19.2, 43], "width": 2.5 },
-    { "from": [1.2, -35], "to": [-5, -42.8], "width": 2.5 }
-  ],
+  "paths": [],
   "buildingStyle": {
     "path": "#9d9686",
     "stone": "#8f8b80",
@@ -419,42 +242,7 @@
     "base": "#9a968c",
     "heightScale": 1
   },
-  "buildings": [
-    {
-      "id": "luu-thuong-dinh",
-      "x": 4,
-      "z": 0.5,
-      "w": 5,
-      "d": 5,
-      "rotY": 270,
-      "title": "Lưu Thương Đình",
-      "roofColor": "#56635b",
-      "kind": "dinh",
-      "sides": 6
-    },
-    {
-      "id": "truc-xa",
-      "x": -11,
-      "z": 13,
-      "w": 6,
-      "d": 5,
-      "rotY": 90,
-      "title": "Trúc Xá",
-      "roofColor": "#b49a6a",
-      "kind": "nha-nho"
-    },
-    {
-      "id": "vong-truc-dinh",
-      "x": -17,
-      "z": -27,
-      "w": 3.5,
-      "d": 3.5,
-      "title": "Vọng Trúc Đình",
-      "roofColor": "#56635b",
-      "kind": "dinh",
-      "sides": 4
-    }
-  ],
+  "buildings": [],
   "gates": [],
   "water": [
     {
@@ -463,266 +251,14 @@
       "r": 4
     }
   ],
-  "props": [
-    {
-      "kind": "cong-truc",
-      "x": -1.5,
-      "z": 31
-    },
-    {
-      "kind": "co",
-      "x": 3,
-      "z": 34,
-      "text": "Trúc",
-      "scale": 0.7
-    },
-    {
-      "kind": "gia-the",
-      "x": -7,
-      "z": 17,
-      "rotY": 90
-    },
-    {
-      "kind": "bo-truc",
-      "x": -8.2,
-      "z": 10.2
-    },
-    {
-      "kind": "bo-truc",
-      "x": -13.8,
-      "z": 16.4
-    },
-    {
-      "kind": "da-khac",
-      "x": 0.5,
-      "z": -8,
-      "rotY": 270,
-      "text": "Khúc thuỷ lưu thương"
-    },
-    {
-      "kind": "den-truc",
-      "x": 6.5,
-      "z": -11.5
-    },
-    {
-      "kind": "den-truc",
-      "x": 12.8,
-      "z": -9.5
-    },
-    {
-      "kind": "den-truc",
-      "x": 7,
-      "z": 7
-    },
-    {
-      "kind": "den-truc",
-      "x": 13,
-      "z": 7.5
-    },
-    {
-      "kind": "den-truc",
-      "x": -3.5,
-      "z": 29
-    },
-    {
-      "kind": "den-truc",
-      "x": -7.5,
-      "z": 11
-    },
-    {
-      "kind": "bo-doan",
-      "x": 6.4,
-      "z": -7.5,
-      "rotY": 90
-    },
-    {
-      "kind": "bo-doan",
-      "x": 6.4,
-      "z": -5,
-      "rotY": 90
-    },
-    {
-      "kind": "bo-doan",
-      "x": 6.4,
-      "z": 4.6,
-      "rotY": 90
-    },
-    {
-      "kind": "bo-doan",
-      "x": 12.6,
-      "z": -7,
-      "rotY": 270
-    },
-    {
-      "kind": "bo-doan",
-      "x": 12.6,
-      "z": -4,
-      "rotY": 270
-    },
-    {
-      "kind": "bo-doan",
-      "x": 12.6,
-      "z": -1,
-      "rotY": 270
-    },
-    {
-      "kind": "bo-doan",
-      "x": 12.6,
-      "z": 2,
-      "rotY": 270
-    },
-    {
-      "kind": "bo-doan",
-      "x": 12.6,
-      "z": 4.8,
-      "rotY": 270
-    },
-    {
-      "kind": "ngong",
-      "x": 6,
-      "z": -41
-    },
-    {
-      "kind": "ngong",
-      "x": 6.4,
-      "z": -40.6
-    },
-    {
-      "kind": "bo-doan",
-      "x": 0,
-      "z": -40,
-      "rotY": 180
-    },
-    {
-      "kind": "da-khac",
-      "x": -17,
-      "z": -23.6,
-      "text": "Vọng Trúc",
-      "scale": 0.6
-    }
-  ],
+  "props": [],
   "trees": {
     "bamboo": [
       "#7a9446",
       "#3f6a2c"
     ],
     "yard": [],
-    "groves": [
-      {
-        "kind": "truc-mao",
-        "x": -16,
-        "z": 30,
-        "w": 8,
-        "d": 18,
-        "count": 21
-      },
-      {
-        "kind": "truc-mao",
-        "x": 8,
-        "z": 31,
-        "w": 6,
-        "d": 14,
-        "count": 13
-      },
-      {
-        "kind": "truc-mao",
-        "x": -19,
-        "z": 8,
-        "w": 6,
-        "d": 22,
-        "count": 18
-      },
-      {
-        "kind": "truc-mao",
-        "x": 3,
-        "z": 13,
-        "w": 5,
-        "d": 10,
-        "count": 12
-      },
-      {
-        "kind": "truc-mao",
-        "x": -18,
-        "z": -11.5,
-        "w": 9,
-        "d": 9,
-        "count": 12
-      },
-      {
-        "kind": "truc-mao",
-        "x": 0,
-        "z": -16,
-        "w": 5,
-        "d": 10,
-        "count": 8
-      },
-      {
-        "kind": "truc-mao",
-        "x": 19,
-        "z": -4,
-        "w": 6,
-        "d": 40,
-        "count": 28
-      },
-      {
-        "kind": "truc-mao",
-        "x": -6,
-        "z": -34,
-        "w": 10,
-        "d": 6,
-        "count": 9
-      },
-      {
-        "kind": "truc-mao",
-        "x": 16,
-        "z": -34,
-        "w": 6,
-        "d": 8,
-        "count": 8
-      },
-      {
-        "kind": "truc-mao",
-        "x": -36,
-        "z": 0,
-        "w": 14,
-        "d": 70,
-        "count": 47,
-        "collide": false
-      },
-      {
-        "kind": "truc-mao",
-        "x": 36,
-        "z": 0,
-        "w": 14,
-        "d": 70,
-        "count": 47,
-        "collide": false
-      },
-      {
-        "kind": "truc-mao",
-        "x": -11,
-        "z": -2,
-        "w": 4,
-        "d": 10,
-        "count": 7
-      },
-      {
-        "kind": "truc-mao",
-        "x": 4,
-        "z": 22,
-        "w": 4,
-        "d": 8,
-        "count": 6
-      },
-      {
-        "kind": "truc-mao",
-        "x": 22,
-        "z": 30,
-        "w": 6,
-        "d": 16,
-        "count": 10
-      }
-    ],
+    "groves": [],
     "ring": {
       "count": 0,
       "radius": 25,
@@ -784,83 +320,84 @@
   "lessons": {
     "radicals": true
   },
-  "fences": [
+  "fences": [],
+  "channels": [],
+  "portals": [
     {
-      "from": [
-        -9,
-        31
-      ],
-      "to": [
-        -3.7,
-        31
-      ]
+      "scene": "tong-mon",
+      "area": {
+        "from": [
+          -8.6,
+          37.8
+        ],
+        "to": [
+          -6.2,
+          40.2
+        ]
+      },
+      "arrive": {
+        "at": [
+          -5,
+          38.6
+        ],
+        "rotY": 180
+      },
+      "label": "Khởi Nguyên Trấn"
     },
     {
-      "from": [
-        0.7,
-        31
-      ],
-      "to": [
-        6,
-        31
-      ]
-    }
-  ],
-  "fenceStyle": {
-    "height": 1.1,
-    "postEvery": 1.0,
-    "color": "#9a9a52",
-    "cap": "#c8b27a"
-  },
-  "channels": [
-    {
-      "points": [
-        [
-          13.5,
-          -11
+      "scene": "giang-nam",
+      "area": {
+        "from": [
+          19.4,
+          41.8
         ],
-        [
-          10,
-          -9
-        ],
-        [
-          8,
-          -6.5
-        ],
-        [
-          11,
-          -4.5
-        ],
-        [
-          8,
-          -2
-        ],
-        [
-          11,
-          0.5
-        ],
-        [
-          8,
-          3
-        ],
-        [
-          11,
-          5
-        ],
-        [
-          16,
-          6
+        "to": [
+          21.8,
+          44.2
         ]
-      ],
-      "width": 0.6,
-      "cups": 9,
-      "speed": 0.4
+      },
+      "arrive": {
+        "at": [
+          17,
+          43
+        ],
+        "rotY": 270
+      },
+      "label": "Yên Vũ Lâu"
+    },
+    {
+      "scene": "truong-thanh",
+      "area": {
+        "from": [
+          -6.2,
+          -45.4
+        ],
+        "to": [
+          -3.8,
+          -43
+        ]
+      },
+      "arrive": {
+        "at": [
+          -3.7,
+          -41.2
+        ],
+        "rotY": 35
+      },
+      "label": "Nhạn Môn Quan"
     }
   ],
-  "portals": [
-    { "scene": "tong-mon", "area": { "from": [-8.6, 37.8], "to": [-6.2, 40.2] }, "arrive": { "at": [-5, 38.6], "rotY": 180 }, "label": "Khởi Nguyên Trấn" },
-    { "scene": "giang-nam", "area": { "from": [19.4, 41.8], "to": [21.8, 44.2] }, "arrive": { "at": [17, 43], "rotY": 270 }, "label": "Yên Vũ Lâu" },
-    { "scene": "truong-thanh", "area": { "from": [-6.2, -45.4], "to": [-3.8, -43] }, "arrive": { "at": [-3.7, -41.2], "rotY": 35 }, "label": "Nhạn Môn Quan" }
-  ],
-  "dayNight": { "enabled": true }
+  "dayNight": {
+    "enabled": true
+  },
+  "bridges": [],
+  "boats": [],
+  "galleries": [],
+  "mirages": [],
+  "ramparts": [],
+  "caravans": [],
+  "gameTables": [],
+  "decorSlots": [],
+  "lanternStrings": [],
+  "teaRows": []
 }

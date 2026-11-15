@@ -2,92 +2,7 @@
   "site": {
     "name": "Bồng Lai Đảo",
     "han": "蓬萊",
-    "areas": [
-      {
-        "name": "Vân Độ",
-        "han": "雲渡",
-        "from": [
-          -22,
-          28
-        ],
-        "to": [
-          22,
-          54
-        ]
-      },
-      {
-        "name": "Bàn Đào Viên",
-        "han": "蟠桃園",
-        "from": [
-          -22,
-          -12
-        ],
-        "to": [
-          -4,
-          26
-        ]
-      },
-      {
-        "name": "Bàn Đào Yến",
-        "han": "蟠桃宴",
-        "from": [
-          -4,
-          -10
-        ],
-        "to": [
-          11,
-          12
-        ]
-      },
-      {
-        "name": "Bát Tiên Đài",
-        "han": "八仙臺",
-        "from": [
-          11,
-          -10
-        ],
-        "to": [
-          22,
-          8
-        ]
-      },
-      {
-        "name": "Đan Nhai · Bồng Lai Các",
-        "han": "丹崖",
-        "from": [
-          -22,
-          -46
-        ],
-        "to": [
-          22,
-          -12
-        ]
-      },
-      {
-        "name": "Doanh Châu",
-        "han": "瀛洲",
-        "from": [
-          30,
-          12
-        ],
-        "to": [
-          40,
-          27
-        ]
-      },
-      {
-        "name": "Phương Trượng",
-        "han": "方丈",
-        "from": [
-          -40,
-          -3
-        ],
-        "to": [
-          -30,
-          10
-        ]
-      }
-    ]
+    "areas": []
   },
   "sky": {
     "top": "#5f95c4",
@@ -273,19 +188,7 @@
     },
     "slopeDirt": 20,
     "slopeRock": 35,
-    "stairs": [
-      {
-        "from": [
-          0,
-          -10
-        ],
-        "to": [
-          0,
-          -21
-        ],
-        "width": 5
-      }
-    ],
+    "stairs": [],
     "grass": {
       "density": 7,
       "colors": [
@@ -338,53 +241,7 @@
     "enabled": false
   },
   "wallSegments": [],
-  "paths": [
-    {
-      "from": [
-        0,
-        43
-      ],
-      "to": [
-        0,
-        -10
-      ],
-      "width": 4
-    },
-    {
-      "from": [
-        0,
-        -4
-      ],
-      "to": [
-        -8,
-        -4
-      ],
-      "width": 2.6
-    },
-    {
-      "from": [
-        0,
-        19.5
-      ],
-      "to": [
-        19.5,
-        19.5
-      ],
-      "width": 2.6
-    },
-    {
-      "from": [
-        -2,
-        4
-      ],
-      "to": [
-        -19.5,
-        4
-      ],
-      "width": 2.6
-    },
-    { "from": [-2, 41.5], "to": [-7.6, 42.2], "width": 2.6 }
-  ],
+  "paths": [],
   "buildingStyle": {
     "path": "#b3ab9c",
     "stone": "#a29d92",
@@ -393,75 +250,8 @@
     "base": "#a29d92",
     "heightScale": 1.1
   },
-  "buildings": [
-    {
-      "id": "bong-lai-cac",
-      "x": 0,
-      "z": -31,
-      "w": 14,
-      "d": 8,
-      "title": "Bồng Lai Các",
-      "roofColor": "#4f5a63",
-      "kind": "lau-sach",
-      "trim": "#d4a64a",
-      "pillarColor": "#a8322a"
-    },
-    {
-      "id": "vong-hai-dinh",
-      "x": 14,
-      "z": -37,
-      "w": 4,
-      "d": 4,
-      "title": "Vọng Hải Đình",
-      "roofColor": "#2f6f6a",
-      "kind": "dinh",
-      "sides": 6
-    },
-    {
-      "id": "thap-tien",
-      "x": 17,
-      "z": -15,
-      "w": 5,
-      "d": 5,
-      "title": "Vọng Tiên Tháp",
-      "roofColor": "#2f6f6a",
-      "kind": "thap",
-      "floors": 5
-    },
-    {
-      "id": "dinh-vong-hac",
-      "x": 35,
-      "z": 19.5,
-      "w": 4.5,
-      "d": 4.5,
-      "rotY": 270,
-      "title": "Vọng Hạc Đình",
-      "roofColor": "#2f6f6a",
-      "kind": "dinh",
-      "sides": 6
-    },
-    {
-      "id": "luyen-dan-dinh",
-      "x": -35,
-      "z": 7,
-      "w": 3,
-      "d": 3,
-      "title": "Luyện Đan Đình",
-      "roofColor": "#2f6f6a",
-      "kind": "dinh",
-      "sides": 6
-    }
-  ],
-  "gates": [
-    {
-      "id": "cong-tien",
-      "x": 0,
-      "z": 15,
-      "width": 5,
-      "title": "Bồng Lai Đảo",
-      "roofColor": "#2f6f6a"
-    }
-  ],
+  "buildings": [],
+  "gates": [],
   "water": [
     {
       "x": -13,
@@ -469,273 +259,10 @@
       "r": 4
     }
   ],
-  "props": [
-    {
-      "kind": "dinh-dong",
-      "x": 4,
-      "z": 0,
-      "scale": 1.3
-    },
-    {
-      "kind": "ban-tra",
-      "x": 4,
-      "z": 6
-    },
-    {
-      "kind": "ban-tra",
-      "x": 7.5,
-      "z": -5
-    },
-    {
-      "kind": "ban-tra",
-      "x": 9,
-      "z": 4
-    },
-    {
-      "kind": "lo-dan",
-      "x": -35,
-      "z": 3
-    },
-    {
-      "kind": "den-da",
-      "x": -3.5,
-      "z": 44
-    },
-    {
-      "kind": "den-da",
-      "x": 3.5,
-      "z": 44
-    },
-    {
-      "kind": "den-da",
-      "x": -3,
-      "z": -9
-    },
-    {
-      "kind": "den-da",
-      "x": 3,
-      "z": -9
-    },
-    {
-      "kind": "lau-thuyen",
-      "x": 5.6,
-      "z": 50,
-      "y": -0.6
-    },
-    {
-      "kind": "cu-ngao",
-      "x": 0,
-      "z": -56,
-      "y": -5,
-      "rotY": 180
-    },
-    {
-      "kind": "hac",
-      "x": 33,
-      "z": 23
-    },
-    {
-      "kind": "hac",
-      "x": 37,
-      "z": 16,
-      "rotY": 270
-    },
-    {
-      "kind": "huou",
-      "x": 32.5,
-      "z": 16.5,
-      "rotY": 90
-    },
-    {
-      "kind": "hac",
-      "x": -8.6,
-      "z": -1.2,
-      "rotY": 270
-    },
-    {
-      "kind": "da-thai-ho",
-      "x": -17.5,
-      "z": -7,
-      "scale": 1.1
-    },
-    {
-      "kind": "phap-bao",
-      "x": 16.91,
-      "z": -6.74,
-      "text": "葫"
-    },
-    {
-      "kind": "phap-bao",
-      "x": 17.97,
-      "z": -5.97,
-      "text": "扇"
-    },
-    {
-      "kind": "phap-bao",
-      "x": 18.74,
-      "z": -4.91,
-      "text": "板"
-    },
-    {
-      "kind": "phap-bao",
-      "x": 19.15,
-      "z": -3.66,
-      "text": "笛"
-    },
-    {
-      "kind": "phap-bao",
-      "x": 19.15,
-      "z": -2.34,
-      "text": "荷"
-    },
-    {
-      "kind": "phap-bao",
-      "x": 18.74,
-      "z": -1.09,
-      "text": "籃"
-    },
-    {
-      "kind": "phap-bao",
-      "x": 17.97,
-      "z": -0.03,
-      "text": "劍"
-    },
-    {
-      "kind": "phap-bao",
-      "x": 16.91,
-      "z": 0.74,
-      "text": "鼓"
-    }
-  ],
+  "props": [],
   "trees": {
-    "yard": [
-      {
-        "kind": "dao",
-        "x": -18,
-        "z": -9,
-        "scale": 1.15
-      },
-      {
-        "kind": "dao",
-        "x": -9,
-        "z": -9,
-        "scale": 1.15
-      },
-      {
-        "kind": "dao",
-        "x": -19,
-        "z": 0,
-        "scale": 1.15
-      },
-      {
-        "kind": "dao",
-        "x": -18,
-        "z": 8,
-        "scale": 1.15
-      },
-      {
-        "kind": "dao",
-        "x": -12,
-        "z": 9,
-        "scale": 1.15
-      },
-      {
-        "kind": "dao",
-        "x": -6,
-        "z": 9,
-        "scale": 1.15
-      },
-      {
-        "kind": "dao",
-        "x": -19,
-        "z": 14,
-        "scale": 1.15
-      },
-      {
-        "kind": "dao",
-        "x": -13,
-        "z": 15,
-        "scale": 1.6
-      },
-      {
-        "kind": "dao",
-        "x": -7,
-        "z": 15,
-        "scale": 1.15
-      },
-      {
-        "kind": "dao",
-        "x": -18,
-        "z": 21,
-        "scale": 1.15
-      },
-      {
-        "kind": "dao",
-        "x": -12,
-        "z": 22,
-        "scale": 1.15
-      },
-      {
-        "kind": "dao",
-        "x": -6,
-        "z": 22,
-        "scale": 1.15
-      },
-      {
-        "kind": "dao",
-        "x": -9,
-        "z": 0.5,
-        "scale": 1.15
-      },
-      {
-        "kind": "tung",
-        "x": -8,
-        "z": -17,
-        "scale": 1.2
-      },
-      {
-        "kind": "tung",
-        "x": 9,
-        "z": -12,
-        "scale": 1.1
-      }
-    ],
-    "groves": [
-      {
-        "kind": "tung",
-        "x": -12,
-        "z": 34,
-        "w": 10,
-        "d": 8,
-        "count": 4
-      },
-      {
-        "kind": "tung",
-        "x": 12,
-        "z": 32,
-        "w": 8,
-        "d": 10,
-        "count": 3
-      },
-      {
-        "kind": "tung",
-        "x": -30,
-        "z": 0,
-        "w": 10,
-        "d": 40,
-        "count": 8,
-        "collide": false
-      },
-      {
-        "kind": "tung",
-        "x": 32,
-        "z": -12,
-        "w": 10,
-        "d": 14,
-        "count": 5,
-        "collide": false
-      }
-    ],
+    "yard": [],
+    "groves": [],
     "ring": {
       "count": 0,
       "radius": 25,
@@ -786,31 +313,7 @@
       "color": "#f2f0ec"
     }
   },
-  "bridges": [
-    {
-      "kind": "treo",
-      "x": 25.5,
-      "z": 19.5,
-      "rotY": 90,
-      "length": 12,
-      "width": 2.4
-    },
-    {
-      "kind": "treo",
-      "x": -25.5,
-      "z": 4,
-      "rotY": 90,
-      "length": 12,
-      "width": 2.4
-    },
-    {
-      "kind": "tau",
-      "x": 0,
-      "z": 48,
-      "length": 10,
-      "width": 4
-    }
-  ],
+  "bridges": [],
   "flocks": [
     {
       "x": 0,
@@ -867,40 +370,40 @@
   "lessons": {
     "radicals": false
   },
-  "lanternStrings": [
-    {
-      "from": [
-        -1,
-        9
-      ],
-      "to": [
-        11,
-        9
-      ]
-    },
-    {
-      "from": [
-        -1,
-        -8
-      ],
-      "to": [
-        11,
-        -8
-      ]
-    }
-  ],
-  "mirages": [
-    {
-      "x": 95,
-      "y": 8,
-      "z": -40,
-      "width": 50,
-      "rotY": 270,
-      "period": 40
-    }
-  ],
+  "lanternStrings": [],
+  "mirages": [],
   "portals": [
-    { "scene": "giang-nam", "area": { "from": [-10.2, 41], "to": [-7.8, 43.4] }, "arrive": { "at": [-5, 41.8], "rotY": 96 }, "label": "Yên Vũ Lâu" }
+    {
+      "scene": "giang-nam",
+      "area": {
+        "from": [
+          -10.2,
+          41
+        ],
+        "to": [
+          -7.8,
+          43.4
+        ]
+      },
+      "arrive": {
+        "at": [
+          -5,
+          41.8
+        ],
+        "rotY": 96
+      },
+      "label": "Yên Vũ Lâu"
+    }
   ],
-  "dayNight": { "enabled": true }
+  "dayNight": {
+    "enabled": true
+  },
+  "boats": [],
+  "channels": [],
+  "galleries": [],
+  "ramparts": [],
+  "caravans": [],
+  "decorSlots": [],
+  "fences": [],
+  "teaRows": []
 }
