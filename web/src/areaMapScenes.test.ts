@@ -80,12 +80,11 @@ describe('bản đồ vùng — đủ mọi cảnh (R-BANDO-2)', () => {
     for (const id of IDS) expect(mapOf(id).shapes.filter((s) => s.kind === 'khu')).toHaveLength(loadScene(id).spec.site.areas.length);
   });
 
-  it('R-BANDO-2: Nhà của ta — 5 khu, vòng "Khởi Nguyên Trấn" (0; 21) cuối Bến mây, cổng nhà (0; 11,5), không có vòng trận, không có dấu ô trang trí', () => {
+  it('R-BANDO-2: Nhà của ta — 5 khu, vòng "Khởi Nguyên Trấn" (0; 21) cuối Bến mây, không có cổng đứng riêng (V-51), không có vòng trận, không có dấu ô trang trí', () => {
     const m = mapOf('nha-ta');
     expect(m.labels.filter((l) => l.kind === 'khu').map((l) => l.text)).toEqual(['Chính phòng', 'Sân trong', 'Bến mây', 'Đồi sau', 'Vườn']);
     expect(m.icons.find((i) => i.kind === 'cong-canh')).toMatchObject({ x: 0, z: 21, scene: HOME_SCENE });
-    expect(m.labels.find((l) => l.kind === 'cong')?.text).toBe('Khởi Nguyên Trấn');
-    expect(m.icons.find((i) => i.kind === 'son-mon')).toMatchObject({ x: 0, z: 11.5 });
-    expect(m.icons.map((i) => i.kind)).toEqual(['cong-canh', 'son-mon']);
+    expect(m.labels.filter((l) => l.kind === 'cong').map((l) => l.text)).toEqual(['Khởi Nguyên Trấn']);
+    expect(m.icons.map((i) => i.kind)).toEqual(['cong-canh']);
   });
 });

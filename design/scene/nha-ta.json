@@ -97,9 +97,7 @@
       "kind": "nha-o"
     }
   ],
-  "gates": [
-    { "id": "cong-nha", "x": 0, "z": 11.5, "width": 3.2, "height": 6, "title": "Nhà của ta", "backTitle": "Khởi Nguyên Trấn", "roofColor": "#3b3f44" }
-  ],
+  "gates": [],
   "water": [],
   "props": [],
   "trees": {

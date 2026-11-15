@@ -46,7 +46,7 @@ describe('hạc truyền tống — bãi đáp, đường bay (R-HANH-5)', () =>
     near(landingPad(town.player.start, START_HEADING, town.crane.padOffset), [2.5, 48]);
   });
 
-  it('R-HANH-5, R-NHA-1: tới Nhà của ta bằng bản đồ → đứng (0; 6,5) trong cổng nam, hạc đáp (2,5; 6,5) — nhà không có vòng trận', () => {
+  it('R-HANH-5, R-NHA-1: tới Nhà của ta bằng bản đồ → đứng (0; 6,5) giữa lối lát trước sân, hạc đáp (2,5; 6,5) — nhà không có vòng trận', () => {
     const home = loadScene('nha-ta').spec;
     expect(home.teleport.enabled).toBe(false);
     expect(home.player.start).toEqual([0, 6.5]);
