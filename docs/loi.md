@@ -19,6 +19,17 @@ Mức độ:
 
 ## Đang mở
 
+### L-13 · Bộ quét mặt trùng (zfight) coi InstancedMesh là khối đặc → che mất ~18 chỗ chớp thật ở trấn
+
+- Trạng thái: mới · Mức độ: nhỏ (công cụ kiểm; mặt chớp thật có thể lộ khi chơi) · Phần: `web/src/scene/zfightScan.ts`, cảnh trấn · Quy tắc: chưa có
+- Báo: 2026-11-15 — subagent V-20261114-58 phát hiện khi chạy `ZFIGHT=1`
+- Các bước: 1. `ZFIGHT=1 npm test` (quét đầy đủ tông môn) 2. Sửa bộ quét bỏ qua InstancedMesh khi lấy khung bao
+- Mong đợi / thực tế: quét ra đúng các mặt trùng / `Box3.setFromObject` gộp khung bao mọi cây thành một khối phủ cả trấn → báo sai, che 18–19 chỗ thật
+- Bằng chứng: các chỗ — khối 48×48 lục cạnh địa hình quanh (−2,5; −35,7); khung gỗ `#8a5a3c` trùng nan `#3a2418` quanh (−7,9; 30); mặt tròn có texture trùng địa hình quanh (9,7; −10,5)
+
+**Lịch sử**
+- 2026-11-15: ghi từ báo cáo V-58.
+
 ### L-12 · Tiêu đề "Ngồi ôn" trên cuộn sách 3D bị tách dấu ("Ngô`i ôn")
 
 - Trạng thái: mới · Mức độ: nhỏ (chữ vẫn đọc được, chỉ xấu) · Phần: cuộn sách Ngồi ôn (`web/src/ui/cuonMucPaint.ts`, font Lora vẽ canvas) · Quy tắc: R-ON-8, R-HUD-4
