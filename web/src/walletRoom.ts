@@ -14,7 +14,8 @@ import { ShopPanel } from './ui/shopPanel';
 import { WalletHud } from './ui/wallet';
 import { DECOR_ITEMS, placedCount } from './zones/decor';
 import { SHOP_ID, shopButtonShown, shopDoor, type BuildingLike } from './zones/shop';
-import { DECOR_ENTRIES, SEED_ITEMS, seedCrop } from './zones/shopView';
+import { DECOR_ENTRIES, isFertEntry, SEED_ITEMS, seedCrop } from './zones/shopView';
+import { FERT_ITEM } from './zones/vuonCham';
 import { gameResultLine, gameRewardLabel, type GameEarning, type GameKind, type GameOutcome } from './zones/wallet';
 import { buyTrial, dayKey, earnTrialGame, gameTodayOn, gardenTrialAct, learnOnce, learnRewardLabel, type BuyResult } from './zones/walletRules';
 
@@ -64,12 +65,13 @@ export class WalletRoom {
     const trial = host.trial;
     this.panel = trial
       ? new ShopPanel([...DECOR_ENTRIES, ...SEED_ITEMS], {
-          bag: () => trial.wallet.garden.seeds,
+          bag: () => ({ ...trial.wallet.garden.seeds, [FERT_ITEM]: trial.wallet.garden.fert }),
           buy: (item, count): BuyResult => {
             // hạt giống Vườn rau (R-VUON-9): + [count] hạt (× 1 · × 5 · × 10) vào túi ở ví thử
+            // phân bón (R-VUON-12): + [count] bao
             const c = seedCrop(item);
-            if (c) {
-              const g = gardenTrialAct(trial.wallet, { act: 'buy', crop: c.id, count }, Date.now());
+            if (c || isFertEntry(item)) {
+              const g = gardenTrialAct(trial.wallet, c ? { act: 'buy', crop: c.id, count } : { act: 'buy', item: FERT_ITEM, count }, Date.now());
               trial.update(() => g.wallet);
               return g.result.ok
                 ? { ok: true, balance: g.wallet.coins, owned: g.wallet.owned }

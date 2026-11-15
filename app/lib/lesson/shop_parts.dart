@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../journey/garden.dart' show cropOf;
+import '../journey/garden.dart' show cropOf, fertItem;
 import '../journey/wallet.dart';
 import '../scene/garden_event.dart' show seedCrop;
 import '../scene/shop_event.dart';
@@ -38,6 +38,8 @@ class ItemArt extends StatelessWidget {
     'ke-sach': Icons.shelves,
     'an-doc': Icons.menu_book,
     'binh-phong': Icons.view_week,
+    // Phân bón (R-VUON-12) — tạm biểu tượng tới khi có hình V-72
+    'phan': Icons.grass,
   };
 
   @override
@@ -324,7 +326,7 @@ class BoughtToast extends StatelessWidget {
                   const TextSpan(text: '\n'),
                   TextSpan(
                     text: item.slot == SlotKind.hat
-                        ? 'Về Vườn rau để gieo — hạt ở trong túi hạt.' // shopSeedBoughtSub (R-VUON-9)
+                        ? (item.id == fertItem ? 'Về Vườn rau để bón — phân ở trong túi.' : 'Về Vườn rau để gieo — hạt ở trong túi hạt.') // shopSeedBoughtSub (R-VUON-9/12)
                         : 'Trong túi $inBag · về nhà để đặt', // shopDecorBoughtSub
                     style: TextStyle(color: AppColors.onJade.withValues(alpha: .85)),
                   ),

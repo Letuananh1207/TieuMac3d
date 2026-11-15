@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../journey/garden.dart' show seedCounts;
 import '../journey/wallet.dart';
+import '../scene/garden_event.dart' show isFertItem;
 import '../scene/shop_event.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text_size.dart';
@@ -31,6 +32,9 @@ class ShopConfirm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final seed = item.slot == SlotKind.hat;
+    // phân bón (R-VUON-12): như hạt, đơn vị "bao"
+    final fert = isFertItem(item);
+    final unit = fert ? 'bao' : 'hạt';
     final total = item.price * (seed ? count : 1);
     final short = total > balance ? total - balance : 0;
     final row = uiText.copyWith(fontSize: AppTextSize.detail, fontFeatures: const [FontFeature.tabularFigures()]);
@@ -71,13 +75,15 @@ class ShopConfirm extends StatelessWidget {
                       Text.rich(
                         TextSpan(children: [
                           TextSpan(text: 'Mua ${item.name}'), // shopConfirm / shopSeedConfirm
-                          TextSpan(text: seed ? ' · ${formatCoins(item.price)} Văn tiền / hạt' : ' với ${formatCoins(item.price)} Văn tiền?'),
+                          TextSpan(text: seed ? ' · ${formatCoins(item.price)} Văn tiền / $unit' : ' với ${formatCoins(item.price)} Văn tiền?'),
                         ]),
                         style: uiText.copyWith(fontSize: AppTextSize.task, fontWeight: FontWeight.w700),
                       ),
                       const SizedBox(height: 3),
                       Text(
-                        seed
+                        fert
+                            ? 'Phân vào túi · bón ở Vườn rau cho mau lớn. Trong túi: $inBag.'
+                            : seed
                             ? 'Hạt vào túi hạt · gieo ở Vườn rau. Trong túi: $inBag.' // shopSeedSub — bỏ "Mỗi lần mua 1 hạt" (chọn số hạt, R-VUON-9)
                             : 'Mỗi lần mua 1 cái vào túi · đặt ở ${item.slot == SlotKind.trong ? 'gian trong' : 'sân'} Nhà của ta. '
                                 'Đang có: $inBag trong túi, $placed đang đặt.', // shopDecorConfirmSub
@@ -90,7 +96,7 @@ class ShopConfirm extends StatelessWidget {
             ),
             if (seed) ...[
               const SizedBox(height: 14),
-              Text('Số hạt', style: uiText.copyWith(fontSize: AppTextSize.caption, fontWeight: FontWeight.w700, color: AppColors.slateMuted)), // shopQty
+              Text(fert ? 'Số bao' : 'Số hạt', style: uiText.copyWith(fontSize: AppTextSize.caption, fontWeight: FontWeight.w700, color: AppColors.slateMuted)), // shopQty
               const SizedBox(height: 6),
               _QtyRow(count: count, onCount: onCount),
             ],
@@ -99,7 +105,7 @@ class ShopConfirm extends StatelessWidget {
               columnWidths: const {0: FlexColumnWidth(), 1: IntrinsicColumnWidth()},
               children: [
                 line('Đang có', formatCoins(balance)), // shopHave
-                line(seed ? 'Giá ($count hạt)' : 'Giá', '−${formatCoins(total)}', color: AppColors.lacquer), // shopPrice
+                line(seed ? 'Giá ($count $unit)' : 'Giá', '−${formatCoins(total)}', color: AppColors.lacquer), // shopPrice
                 line('Còn lại', short > 0 ? '—' : formatCoins(balance - total), top: true), // shopAfter
               ],
             ),

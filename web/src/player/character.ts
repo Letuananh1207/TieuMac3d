@@ -44,4 +44,16 @@ export interface CharacterState {
   /** đang diễn biểu cảm (R-BIEU-2): mã (`zones/bieuCam.ts`), giây đã diễn `t`, thời lượng `len` (`Infinity` = giữ). Không
    *  có = không diễn. Không bắt buộc — nhân vật không biết mã thì bỏ qua (đứng thường) */
   emote?: { id: string; t: number; len: number };
+  /** đang diễn động tác làm vườn (R-VUON-13): mã `player/lamVuonDang.ts` (`gieo` · `tuoi` · `bat` · `nho` · `bon` · `thu`), giây
+   *  đã diễn `t`, thời lượng `len`. Không có = không diễn. Không bắt buộc — nhân vật không biết thì bỏ qua */
+  work?: { id: string; t: number; len: number };
+  /** đang cầm công cụ vườn (chưa diễn): mã việc như `work.id` → hiện đồ cầm tay (bình tưới, túi hạt…). Không có = tay không */
+  hold?: string;
 }
+
+/** Nhân vật có đồ cầm tay làm vườn (`glbCharacter`, đệ tử khối): miệng bình tưới (thế giới) + hướng tia; không cầm bình → false. */
+export interface ToolTip {
+  toolTip(out: THREE.Vector3, dir?: THREE.Vector3): boolean;
+}
+
+export const hasToolTip = (c: Character): c is Character & ToolTip => typeof (c as Partial<ToolTip>).toolTip === 'function';

@@ -1,7 +1,8 @@
 /**
  * Vườn rau — phần đất + rào (R-VUON-1): 12 luống đất xới (một `InstancedMesh`, luống hoang tô màu đất hoang), cọc gỗ + búi
  * cỏ trên luống hoang (một `InstancedMesh`, đổi số lượng khi mở ô), rào tre thấp + thùng thu mua gộp một lưới tĩnh. Rào và
- * thùng có va chạm; luống thì không (thấp, đi qua được). Số đo / màu ở đặc tả `garden` (`scene/spec.ts`). Tổng 3 draw call.
+ * thùng có va chạm; luống thì không (thấp, đi qua được). Số đo / màu ở đặc tả `garden` (`scene/spec.ts`). Tổng 3 draw call;
+ * đất khô / ẩm đổi màu instance (`setSoil` — 0 draw call). Sâu + cỏ: `vuonSauCo.ts`; bể hạt: `vuonHat.ts`.
  * Cây trên luống: `cayTrong.ts`.
  */
 import * as THREE from 'three';
@@ -15,6 +16,8 @@ import type { GardenSpec } from './spec';
 import type { GroundY } from './terrainHeight';
 import { BIN_SIZE, fenceBox, fenceSegments } from './vuonLayout';
 import { CropLayer, painted } from './cayTrong';
+import { HatPool } from './vuonHat';
+import { PestLayer } from './vuonSauCo';
 
 /** Một luống mẫu cạnh 1, cao 1: khối đất + 3 luống con (gờ xới) chạy theo x. */
 function plotGeometry(g: GardenSpec): THREE.BufferGeometry {
@@ -79,9 +82,21 @@ function fenceAndBin(g: GardenSpec, groundY: GroundY): THREE.BufferGeometry {
   return mergeGeometries(parts) ?? parts[0];
 }
 
+/** Màu đất một luống đã mở (R-VUON-5). */
+export type SoilLook = 'kho' | 'am' | 'thuong';
+
+/** Màu instance nhân với màu đỉnh đất luống → ra màu [hex] (tỉ lệ từng kênh). */
+export function soilTint(soil: string, hex: string): THREE.Color {
+  const sc = new THREE.Color(soil);
+  const c = new THREE.Color(hex);
+  return new THREE.Color(c.r / (sc.r || 1), c.g / (sc.g || 1), c.b / (sc.b || 1));
+}
+
 export interface GardenBeds {
   /** đổi số luống đã mở (luống quá số này = đất hoang) */
   setOpen(open: number): void;
+  /** đất luống thứ i (đếm từ 0): khô (nhạt — chờ tưới) · ẩm (sẫm — vừa tưới) · thường (R-VUON-5); luống hoang giữ màu hoang. Đổi màu instance — 0 draw call */
+  setSoil(i: number, soil: SoilLook): void;
   /** mặt luống (y) của luống thứ i (đếm từ 0) — cây đặt lên đây */
   topY(i: number): number;
   readonly meshes: THREE.Object3D[];
@@ -99,9 +114,10 @@ export function addGardenBeds(scene: THREE.Scene, colliders: Colliders, g: Garde
   const rand = seededRandom(n * 53 + 11);
   const soil = new THREE.Color(1, 1, 1);
   // màu instance nhân với màu đỉnh: tỉ lệ đất hoang / đất luống → luống hoang ra màu `wild`
-  const sc = new THREE.Color(g.colors.soil);
-  const wc = new THREE.Color(g.colors.wild);
-  const wildTint = new THREE.Color(wc.r / (sc.r || 1), wc.g / (sc.g || 1), wc.b / (sc.b || 1));
+  const wildTint = soilTint(g.colors.soil, g.colors.wild);
+  const tints: Record<SoilLook, THREE.Color> = { thuong: soil, kho: soilTint(g.colors.soil, g.fx.dry), am: soilTint(g.colors.soil, g.fx.wet) };
+  const looks: SoilLook[] = g.plots.map(() => 'thuong');
+  let opened = n;
   g.plots.forEach((p, i) => {
     const y = groundY(p.x, p.z);
     tops.push(y + g.height);
@@ -128,11 +144,12 @@ export function addGardenBeds(scene: THREE.Scene, colliders: Colliders, g: Garde
   const up = new THREE.Vector3(0, 1, 0);
   const spin = g.plots.map(() => rand() * Math.PI * 2);
   const setOpen = (open: number): void => {
+    opened = open;
     // luống hoang: đất nhạt + cọc + cỏ dại; luống đã mở: đất xới
     let k = 0;
     g.plots.forEach((p, i) => {
       const locked = Number(p.id.slice(2)) > open;
-      beds.setColorAt(i, locked ? wildTint : soil);
+      beds.setColorAt(i, locked ? wildTint : tints[looks[i]]);
       if (!locked) return;
       wild.setMatrixAt(k++, m.compose(new THREE.Vector3(p.x, tops[i], p.z), q.setFromAxisAngle(up, spin[i]), new THREE.Vector3(g.size, 1, g.size)));
     });
@@ -141,12 +158,23 @@ export function addGardenBeds(scene: THREE.Scene, colliders: Colliders, g: Garde
     if (beds.instanceColor) beds.instanceColor.needsUpdate = true;
   };
   setOpen(n);
-  return { setOpen, topY: (i) => tops[i] ?? 0, meshes: [beds, wild, fence] };
+  const setSoil = (i: number, s: SoilLook): void => {
+    if (looks[i] === s || i < 0 || i >= n) return;
+    looks[i] = s;
+    if (Number(g.plots[i].id.slice(2)) > opened) return; // hoang: giữ màu hoang
+    beds.setColorAt(i, tints[s]);
+    if (beds.instanceColor) beds.instanceColor.needsUpdate = true;
+  };
+  return { setOpen, setSoil, topY: (i) => tops[i] ?? 0, meshes: [beds, wild, fence] };
 }
 
 export interface Garden3D {
   beds: GardenBeds;
   crops: CropLayer;
+  /** sâu + cỏ dại trên luống (R-VUON-10/11) — 2 draw call khi có */
+  pests: PestLayer;
+  /** bể hạt: hạt rơi, tia nước, bụi, phân, lấp lánh (R-VUON-13) — 1 draw call khi có hạt bay */
+  hats: HatPool;
   /** tâm luống theo thứ tự đặc tả (`o-1` …) */
   plots: readonly { id: string; x: number; z: number }[];
   bin: { x: number; z: number };
@@ -156,6 +184,9 @@ export interface Garden3D {
 export function addGarden(scene: THREE.Scene, colliders: Colliders, g: GardenSpec, look: LookSpec, groundY: GroundY = () => 0, code = false): Garden3D {
   const beds = addGardenBeds(scene, colliders, g, look, groundY);
   // `code` = cây `chum` (V-60): cây dựng bằng code + nảy khi đổi dáng
-  const crops = new CropLayer(scene, g.plots.map((p, i) => ({ x: p.x, y: beds.topY(i), z: p.z, size: g.size })), look, g.cropScale, code);
-  return { beds, crops, plots: g.plots, bin: { x: g.bin.x, z: g.bin.z } };
+  const spots = g.plots.map((p, i) => ({ x: p.x, y: beds.topY(i), z: p.z, size: g.size }));
+  const crops = new CropLayer(scene, spots, look, g.cropScale, code);
+  const pests = new PestLayer(scene, spots, g.fx, look);
+  const hats = new HatPool(scene, g.fx);
+  return { beds, crops, pests, hats, plots: g.plots, bin: { x: g.bin.x, z: g.bin.z } };
 }

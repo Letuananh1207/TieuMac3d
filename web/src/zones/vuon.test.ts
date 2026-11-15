@@ -5,23 +5,16 @@ import {
   canWater,
   CROPS,
   freshGarden,
-  gardenSpeed,
   harvest,
-  nearestPlot,
   openPlot,
-  openPlotLabel,
   parseActReply,
   parseGarden,
-  plotButton,
   plotId,
   plotState,
   remainingMs,
-  remainingText,
   ripeCount,
-  seedLabel,
   sell,
   sellCapped,
-  sellLabel,
   sow,
   water,
   yieldOf,
@@ -29,6 +22,7 @@ import {
   type GardenResult,
   type Plot,
 } from './vuon';
+import { gardenSpeed, nearestPlot, openPlotLabel, plotButton, remainingText, seedLabel, sellLabel } from './vuonHud';
 import { gardenTrialAct, newTrial, parseTrial } from './walletRules';
 
 // Cùng ví dụ sổ với app/test/rules/vuon_test.dart (luật web chép Dart — lệch là đỏ).
@@ -76,7 +70,7 @@ describe('nút ở luống (R-VUON-2)', () => {
   });
 
   it('R-VUON-2: Cải ngọt gieo 10 phút trước, đã tưới 1 lượt → nhãn "còn 20 phút"', () => {
-    const p: Plot = { crop: 'cai', plantedAt: vn(14, 9), watered: 1 };
+    const p: Plot = { crop: 'cai', plantedAt: vn(14, 9), watered: 1, boost: 0, bug: 0, weed: 0 };
     expect(canWater(p, vn(14, 9, 10))).toBe(false);
     expect(remainingText(remainingMs(p, vn(14, 9, 10)))).toBe('còn 20 phút');
     expect(remainingText(80 * MIN)).toBe('còn 1 giờ 20 phút');
@@ -89,7 +83,7 @@ describe('gieo từ túi hạt (R-VUON-3)', () => {
     const g = freshGarden();
     expect(g.seeds).toEqual({ cai: 3 });
     const r = ok(sow(g, 'o-1', 'cai', vn(14, 9)));
-    expect(r.garden.plots['o-1']).toEqual({ crop: 'cai', plantedAt: vn(14, 9), watered: 0 });
+    expect(r.garden.plots['o-1']).toEqual({ crop: 'cai', plantedAt: vn(14, 9), watered: 0, boost: 0, bug: 0, weed: 0 });
     expect(r.garden.seeds.cai).toBe(2);
     expect(r.amount).toBe(0);
   });
@@ -105,7 +99,7 @@ describe('gieo từ túi hạt (R-VUON-3)', () => {
 
 describe('lớn theo giờ thật (R-VUON-4)', () => {
   it('R-VUON-4: Lúa gieo 8:00 → 8:15 vừa gieo, 8:20 mầm, 9:30 đang lớn, 11:00 chín; 3 ngày sau vẫn chín', () => {
-    const g = withPlot(freshGarden(), 'o-1', { crop: 'lua', plantedAt: vn(14, 8), watered: 0 });
+    const g = withPlot(freshGarden(), 'o-1', { crop: 'lua', plantedAt: vn(14, 8), watered: 0, boost: 0, bug: 0, weed: 0 });
     expect(plotState(g, 'o-1', vn(14, 8, 15))).toBe('vua-gieo');
     expect(plotState(g, 'o-1', vn(14, 8, 20))).toBe('mam');
     expect(plotState(g, 'o-1', vn(14, 9, 30))).toBe('lon');
@@ -114,7 +108,7 @@ describe('lớn theo giờ thật (R-VUON-4)', () => {
   });
 
   it('R-VUON-4: giờ máy lùi → như vừa gieo; bảng thời gian 8 cây; ?vuon=60 → Cải ngọt chín sau 30 giây', () => {
-    const g = withPlot(freshGarden(), 'o-1', { crop: 'cai', plantedAt: vn(14, 9), watered: 0 });
+    const g = withPlot(freshGarden(), 'o-1', { crop: 'cai', plantedAt: vn(14, 9), watered: 0, boost: 0, bug: 0, weed: 0 });
     expect(plotState(g, 'o-1', vn(14, 7))).toBe('vua-gieo');
     expect(remainingMs(g.plots['o-1'], vn(14, 7))).toBe(30 * MIN);
     expect(CROPS.map((c) => `${c.name} ${c.minutes}`)).toEqual([
@@ -129,7 +123,7 @@ describe('lớn theo giờ thật (R-VUON-4)', () => {
 
 describe('tưới (R-VUON-5)', () => {
   it('R-VUON-5: Cải ngọt 9:00 — tưới 9:01; 9:10 chưa tới lượt 2; 9:20 tưới; 9:30 chín thu 4', () => {
-    let g = withPlot(freshGarden(), 'o-1', { crop: 'cai', plantedAt: vn(14, 9), watered: 0 });
+    let g = withPlot(freshGarden(), 'o-1', { crop: 'cai', plantedAt: vn(14, 9), watered: 0, boost: 0, bug: 1, weed: 1 }); // đã sạch sâu / cỏ
     g = ok(water(g, 'o-1', vn(14, 9, 1))).garden;
     expect(water(g, 'o-1', vn(14, 9, 10))).toMatchObject({ reason: 'dry' });
     g = ok(water(g, 'o-1', vn(14, 9, 20))).garden;
@@ -138,9 +132,9 @@ describe('tưới (R-VUON-5)', () => {
   });
 
   it('R-VUON-5: tưới 1 lượt → 3; không tưới → 2; chín thì không tưới nữa', () => {
-    const p: Plot = { crop: 'cai', plantedAt: vn(14, 9), watered: 0 };
-    expect(yieldOf({ ...p, watered: 1 })).toBe(3);
-    expect(yieldOf(p)).toBe(2);
+    const p: Plot = { crop: 'cai', plantedAt: vn(14, 9), watered: 0, boost: 0, bug: 0, weed: 0 };
+    expect(yieldOf({ ...p, watered: 1, bug: 1, weed: 1 }, 'o-1')).toBe(3);
+    expect(yieldOf(p, 'o-1')).toBe(2);
     expect(canWater(p, vn(14, 9, 30))).toBe(false);
     expect(canWater(p, vn(14, 9))).toBe(true);
   });
@@ -148,7 +142,7 @@ describe('tưới (R-VUON-5)', () => {
 
 describe('thu hoạch (R-VUON-6)', () => {
   it('R-VUON-6: thu Bí đỏ tưới 2 lượt → +4 vào kho, luống trống; chưa chín → not-ripe', () => {
-    const g = withPlot(freshGarden(), 'o-2', { crop: 'bi', plantedAt: vn(14, 8), watered: 2 });
+    const g = withPlot(freshGarden(), 'o-2', { crop: 'bi', plantedAt: vn(14, 8), watered: 2, boost: 0, bug: 1, weed: 0 });
     expect(harvest(g, 'o-2', vn(14, 11))).toMatchObject({ reason: 'not-ripe' });
     const r = ok(harvest(g, 'o-2', vn(14, 12)));
     expect(r.got).toBe(4);
@@ -158,7 +152,7 @@ describe('thu hoạch (R-VUON-6)', () => {
 
   it('R-VUON-6: 3 ngày sau 6 luống chín vẫn còn → 6 luống đã chín', () => {
     let g = freshGarden();
-    for (let i = 1; i <= 6; i++) g = withPlot(g, plotId(i), { crop: 'tra', plantedAt: vn(14, 8), watered: 0 });
+    for (let i = 1; i <= 6; i++) g = withPlot(g, plotId(i), { crop: 'tra', plantedAt: vn(14, 8), watered: 0, boost: 0, bug: 0, weed: 0 });
     expect(ripeCount(g, vn(17, 8))).toBe(6);
   });
 });

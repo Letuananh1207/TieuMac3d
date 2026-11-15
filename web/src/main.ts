@@ -80,7 +80,7 @@ import { journeyLine } from './zones/tranSu';
 import { AmbientMusic } from './ui/ambientMusic';
 import { HomeDecor } from './homeDecor';
 import { HomeGarden } from './homeGarden';
-import { gardenSpeed } from './zones/vuon';
+import { gardenSpeed } from './zones/vuonHud';
 import { NgayDem } from './ngayDem';
 
 // con trỏ hoạt hình nhúng sẵn (L-9) — đặt sớm nhất, trước cả màn tải
@@ -563,7 +563,10 @@ async function boot(): Promise<void> {
     }
     // T / H / B / I / J: thanh công cụ (R-THANH-1; luật ẩn / ngồi / nhảy ở zones/thanhCongCu.ts); B rồi 1…8: biểu cảm tạm
     if (a === 'tool') return void thanh?.key(key);
-    if (a === 'digit') return void thanh?.digit(Number(key));
+    if (a === 'digit') {
+      if (thanh?.digit(Number(key))) return; // B rồi số: biểu cảm
+      return void garden?.key(Number(key)); // trong rào Vườn rau: 1…6 cầm nông cụ (V-73, tạm tới khi có HUD)
+    }
     if (a === 'map') {
       areaMap.toggle(); // M: mở / đóng bản đồ lớn (R-BANDO-5)
       return;
@@ -576,6 +579,7 @@ async function boot(): Promise<void> {
     if (a === 'jump') player.jump();
     else if (a === 'bow') player.bow();
     else if (a === 'seat') {
+      if (garden?.use()) return; // đang cầm nông cụ, gần luống: E = "Dùng" (R-VUON-2, V-73)
       const spot = seatButton.current;
       if (spot) sitAt(spot); // phím E = nút nổi Ngồi (R-NGOI-1)
       else exitAction(); // không có chỗ ngồi: E = nút nổi ra cửa (V-71)
@@ -599,7 +603,7 @@ async function boot(): Promise<void> {
       }
       if (chat.close()) return; // đang gõ: chạm cảnh = đóng ô nhập
       if (decor?.tap(x, y)) return; // trang trí: chạm món = nhấc, đang cầm = đặt (chuột) / dời tới (chạm) — R-NHA-6
-      if (garden?.tap()) return; // bảng vườn rau mở: chạm cảnh = đóng bảng
+      if (garden?.tap(garden.holding ? picker.pick(x, y) : null)) return; // bảng vườn rau mở: chạm cảnh = đóng bảng; đang cầm nông cụ: chạm luống = làm (V-73)
       if (scrollOpen && !covered && !talking) {
         ngoiMat.tapScroll(x, y, camera); // cuộn sách mở: chạm thẳng vào mục trên giấy (R-ON-8)
         return;
@@ -755,6 +759,10 @@ async function boot(): Promise<void> {
           player.moveTarget = null;
           joystick.end();
         },
+        player,
+        character,
+        fence: { from: { x: spec.garden.fence.from[0], z: spec.garden.fence.from[1] }, to: { x: spec.garden.fence.to[0], z: spec.garden.fence.to[1] } },
+        plotSize: spec.garden.size,
       })
     : null;
   await garden?.load(!isHomeScene(params.get('qua'))); // ra sân từ gian trong: không báo lại luống chín (V-68)

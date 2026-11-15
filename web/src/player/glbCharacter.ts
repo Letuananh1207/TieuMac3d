@@ -3,7 +3,9 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 import { autoRig, type Rig } from './autoRig';
 import { emotePose } from './bieuCamDang';
-import type { Character } from './character';
+import type { Character, ToolTip } from './character';
+import { createGardenProps, type GardenProps } from './doLamVuon';
+import { isWork, PROP_OF, workPose } from './lamVuonDang';
 import { RUN_SPEED, WALK_SPEED } from './controller';
 
 /** Chiều cao nhân vật sau khi nạp (m) — bằng đệ tử khối (búi tóc ~2,1 m), thước chuẩn của cảnh. */
@@ -13,6 +15,8 @@ export const GLB_HEIGHT = 2.1;
 const ARM_REST = 0.4;
 /** Tay hơi đưa ra trước khi đứng thả lỏng (radian). */
 const ARM_FORWARD = 0.12;
+/** Bàn tay phải trong toạ độ xương `armR` (tay chữ A chưa hạ — `autoRig` DEFAULT_SHAPE: vai 53 % → tay ~29 % cao). */
+const HAND_R = new THREE.Vector3(-0.19, -0.5, 0.04);
 
 /** Model `.glb` đã chuẩn hoá (dùng chung cho nhân vật chính và NPC — `npc.ts`). */
 export interface GlbModel {
@@ -91,7 +95,7 @@ export async function loadGlbModel(url: string): Promise<GlbModel> {
  *   thường chưa có xương) → nhún nhẹ + nghiêng khi đi.
  * Lỗi nạp → Promise bị từ chối; nơi gọi dùng đệ tử khối dự phòng.
  */
-export async function loadGlbCharacter(url: string): Promise<Character> {
+export async function loadGlbCharacter(url: string): Promise<Character & ToolTip> {
   const { gltf, model, root, body, bob } = await loadGlbModel(url);
 
   const clip = (name: string): THREE.AnimationClip | undefined =>
@@ -108,6 +112,8 @@ export async function loadGlbCharacter(url: string): Promise<Character> {
     bob.add(rigged.group);
   }
   const hipY = rig ? rig.hips.position.y : 0;
+  // đồ cầm tay làm vườn ở bàn tay phải (R-VUON-13) — chỉ model tự gắn xương; dựng khi cầm lần đầu (NPC không cầm)
+  let props: GardenProps | null = null;
   const idle = mixer && idleClip ? mixer.clipAction(idleClip) : null;
   const walk = mixer && walkClip ? mixer.clipAction(walkClip) : null;
   idle?.play();
@@ -126,6 +132,7 @@ export async function loadGlbCharacter(url: string): Promise<Character> {
   return {
     root,
     facing: body,
+    toolTip: (out, dir) => props?.tip(out, dir) ?? false,
     animate(dt, speed, state) {
       const mps = state?.mps ?? speed * RUN_SPEED;
       const k = Math.min(1, mps / WALK_SPEED);
@@ -217,7 +224,10 @@ export async function loadGlbCharacter(url: string): Promise<Character> {
         aRz = ARM_REST + 0.28;
       }
       // biểu cảm (R-BIEU-2, dáng `bieuCamDang.ts`): trộn đè lên dáng đứng theo trọng số vào / ra
-      const em = state?.emote ? emotePose(state.emote.id, state.emote.t, state.emote.len) : null;
+      // làm vườn (R-VUON-13, dáng `lamVuonDang.ts`): trộn cùng cách, biểu cảm đang diễn thì thắng
+      const wk = state?.work;
+      const wp = !state?.emote && wk ? workPose(wk.id, wk.t, wk.len) : null;
+      const em = state?.emote ? emotePose(state.emote.id, state.emote.t, state.emote.len) : wp;
       const ew = em ? em.w * (1 - move) * (1 - airB) : 0;
       if (em && ew > 0) {
         aLx = mix(aLx, em.aLx, ew);
@@ -234,6 +244,13 @@ export async function loadGlbCharacter(url: string): Promise<Character> {
       rig.armR.rotation.x = aRx;
       rig.armL.rotation.z = aLz;
       rig.armR.rotation.z = aRz;
+      const held = wk?.id ?? state?.hold;
+      const prop = held && isWork(held) ? PROP_OF[held] : null;
+      if (prop && !props) props = createGardenProps(rig.armR, HAND_R);
+      if (props) {
+        props.show(prop);
+        props.pose(rig.armR, (wp?.tilt ?? 0) * ew);
+      }
 
       /* ---- thân, đầu ---- */
       rig.hips.rotation.y = step * (0.1 + 0.08 * runB) * move;

@@ -5,6 +5,7 @@
  */
 import { DECOR_ITEMS, type DecorCounts, type DecorWhere } from './decor';
 import { CROPS, cropOf, SEED_COUNTS, type Crop, type CropId } from './vuon';
+import { FERT_ITEM, FERT_PRICE } from './vuonCham';
 import { growText } from './vuonHud';
 import { formatCoins } from './wallet';
 
@@ -29,7 +30,20 @@ const KINDS: readonly ShopKind[] = ['ngoai', 'trong', 'hat'];
 export const DECOR_ENTRIES: readonly ShopEntry[] = DECOR_ITEMS.map((i) => ({ id: i.id, name: i.name, slot: i.where, price: i.price }));
 
 /** Thẻ hạt giống (R-VUON-9): mã `hat-<cây>`, giá 1 hạt — như `seedShopItems` ở Dart. */
-export const SEED_ITEMS: readonly ShopEntry[] = CROPS.map((c) => ({ id: `hat-${c.id}`, name: `Hạt ${c.name}`, slot: 'hat', price: c.seed }));
+export const FERT_ENTRY: ShopEntry = { id: FERT_ITEM, name: 'Phân bón', slot: 'hat', price: FERT_PRICE };
+
+/** 8 thẻ hạt rồi thẻ **Phân bón** (mã `phan`, 10 Văn / bao — R-VUON-12), cùng mục, cùng khung thẻ hạt (như Dart). */
+export const SEED_ITEMS: readonly ShopEntry[] = [...CROPS.map((c): ShopEntry => ({ id: `hat-${c.id}`, name: `Hạt ${c.name}`, slot: 'hat', price: c.seed })), FERT_ENTRY];
+
+/** Túi mục vườn: hạt theo mã cây + `phan` = số bao phân. */
+export type GardenBag = Partial<Record<CropId | typeof FERT_ITEM, number>>;
+
+export const isFertEntry = (item: ShopEntry): boolean => item.slot === 'hat' && item.id === FERT_ITEM;
+
+/** Khoá túi của thẻ mục vườn: mã cây (hạt) · `phan`; đồ trang trí → `undefined`. */
+export function bagKey(item: ShopEntry): CropId | typeof FERT_ITEM | undefined {
+  return seedCrop(item)?.id ?? (isFertEntry(item) ? FERT_ITEM : undefined);
+}
 
 /** Cây của thẻ hạt; thẻ khác → `undefined`. */
 export function seedCrop(item: ShopEntry): Crop | undefined {
@@ -133,27 +147,30 @@ export const SEED_QTY: readonly number[] = SEED_COUNTS;
 export const SEED_GRID_HINT = 'Hạt vào túi hạt · gieo ở Vườn rau · mua × 1 · × 5 · × 10, mua được nhiều lần';
 
 /** Thẻ hạt: "Trong túi: n" (`shopInBag`) + thời gian lớn; thẻ đồ trang trí → `null`. */
-export function seedLine(item: ShopEntry, bag: Partial<Record<CropId, number>>): { inBag: number; text: string; time: string } | null {
+export function seedLine(item: ShopEntry, bag: GardenBag): { inBag: number; text: string; time: string | null } | null {
+  const k = bagKey(item);
+  if (!k) return null;
+  const inBag = bag[k] ?? 0;
   const c = seedCrop(item);
-  if (!c) return null;
-  const inBag = bag[c.id] ?? 0;
-  return { inBag, text: `Trong túi: ${inBag}`, time: growText(c) };
+  return { inBag, text: `Trong túi: ${inBag}`, time: c ? growText(c) : null };
 }
 
 /** Hộp xác nhận; hạt: [seed] = số hạt đang chọn + số đang có trong túi; đồ trang trí: [stock] = số cái (dòng "Đang có: n trong túi, m đang đặt"). */
 export function confirmView(item: ShopEntry, balance: number, seed?: { count: number; inBag: number }, stock?: DecorStock): ConfirmView {
   const unit = formatCoins(item.price);
-  const k = seedCrop(item) ? (seed?.count ?? 1) : 1;
+  const k = bagKey(item) ? (seed?.count ?? 1) : 1;
+  const fert = isFertEntry(item);
+  const per = fert ? 'bao' : 'hạt';
   const total = item.price * k;
   const short = Math.max(0, total - balance);
   const isSeed = item.slot === 'hat';
   return {
     before: `Mua ${item.name}`,
-    after: isSeed ? `· ${unit} Văn tiền / hạt` : `với ${unit} Văn tiền?`,
-    sub: isSeed ? `Hạt vào túi hạt · gieo ở Vườn rau. Trong túi: ${seed?.inBag ?? 0}.` : decorConfirmSub(item, stock),
+    after: isSeed ? `· ${unit} Văn tiền / ${per}` : `với ${unit} Văn tiền?`,
+    sub: fert ? `Phân vào túi · bón ở Vườn rau cho mau lớn. Trong túi: ${seed?.inBag ?? 0}.` : isSeed ? `Hạt vào túi hạt · gieo ở Vườn rau. Trong túi: ${seed?.inBag ?? 0}.` : decorConfirmSub(item, stock),
     rows: [
       ['Đang có', formatCoins(balance)],
-      [isSeed ? `Giá (${k} hạt)` : 'Giá', `−${formatCoins(total)}`],
+      [isSeed ? `Giá (${k} ${per})` : 'Giá', `−${formatCoins(total)}`],
       ['Còn lại', short > 0 ? '—' : formatCoins(balance - total)],
     ],
     buy: short > 0 ? `Còn thiếu ${formatCoins(short)}` : `Mua · ${formatCoins(total)}`,
@@ -169,6 +186,6 @@ function decorConfirmSub(item: ShopEntry, stock?: DecorStock): string {
 
 /** Tấm "Đã mua" 3 s (`shopBought`, `shopDecorBoughtSub`) — không tự đưa về nhà; [inBag] = số cái trong túi sau khi mua. */
 export function boughtView(item: ShopEntry, inBag = 1): { title: string; sub: string } {
-  const sub = item.slot === 'hat' ? 'Về Vườn rau để gieo — hạt ở trong túi hạt.' : `Trong túi ${inBag} · về nhà để đặt`;
+  const sub = isFertEntry(item) ? 'Về Vườn rau để bón — phân ở trong túi.' : item.slot === 'hat' ? 'Về Vườn rau để gieo — hạt ở trong túi hạt.' : `Trong túi ${inBag} · về nhà để đặt`;
   return { title: `Đã mua ${item.name}`, sub };
 }

@@ -154,6 +154,16 @@ export class CropLayer {
   private plotGeo: (THREE.BufferGeometry | null)[] = [];
   /** luống đang nảy → giây đã qua */
   private pops = new Map<number, number>();
+  /** luống đang nảy mạnh (bón / vừa chín — R-VUON-13) → giây đã qua */
+  private bounces = new Map<number, number>();
+  /** quả đang bay khi thu: hình luống lúc thu + giây + đích */
+  private flights: { geo: THREE.BufferGeometry; from: THREE.Vector3; to: THREE.Vector3 | null; t: number }[] = [];
+  /** luống vừa thu (hình đã bay đi) — không vẽ chỗ cũ tới khi `show` đổi dáng */
+  private flown = new Set<number>();
+  /** lưới quả bay (1 draw call, chỉ khi đang bay) */
+  readonly flyMesh: THREE.Mesh;
+  /** giảm chuyển động (R-VUON-13): bỏ nảy mạnh + quả bay */
+  reduced = false;
 
   constructor(
     scene: THREE.Scene,
@@ -168,6 +178,11 @@ export class CropLayer {
     this.mesh.frustumCulled = false; // hình đổi luôn — khỏi tính lại khối bao mỗi lần
     markDynamic(this.mesh);
     scene.add(this.mesh);
+    this.flyMesh = new THREE.Mesh(new THREE.BufferGeometry(), mat);
+    this.flyMesh.frustumCulled = false;
+    this.flyMesh.visible = false;
+    markDynamic(this.flyMesh);
+    this.mesh.add(this.flyMesh); // lưới cây ở gốc toạ độ → con của nó vẫn là toạ độ thế giới
     if (!code && typeof window !== 'undefined' && Object.keys(MODELS).length)
       loadShapes()
         .then((m) => {
@@ -195,6 +210,7 @@ export class CropLayer {
       if (k === this.plotKeys[i]) return;
       this.plotGeo[i]?.dispose();
       this.plotGeo[i] = this.buildPlot(list[i] ?? null, spot, i);
+      this.flown.delete(i);
       // đổi sang dáng mới (gieo, lớn lên) thì nảy; nhổ / thu (về trống) và lần dựng đầu thì không
       if (this.code && !first && k !== '-') this.pops.set(i, 0);
     });
@@ -204,12 +220,57 @@ export class CropLayer {
 
   /** Mỗi khung: luống đang nảy thì dựng lại lưới gộp với cỡ nảy (vài lần / giờ, mỗi lần ≤ 15 khung). */
   tick(dt: number): void {
-    if (!this.pops.size) return;
+    if (this.flights.length) this.fly(dt);
+    if (!this.pops.size && !this.bounces.size) return;
     for (const [i, t] of this.pops) {
       if (t + dt >= POP_S) this.pops.delete(i);
       else this.pops.set(i, t + dt);
     }
+    for (const [i, t] of this.bounces) {
+      if (t + dt >= BOUNCE_S) this.bounces.delete(i);
+      else this.bounces.set(i, t + dt);
+    }
     this.compose();
+  }
+
+  /** Nảy mạnh luống [i] (bón — "Mau lớn!", vừa chín — R-VUON-13): co dãn kiểu thạch 0,5 s. Giảm chuyển động → bỏ qua. */
+  bounce(i: number): void {
+    if (this.reduced || !this.plotGeo[i]) return;
+    this.bounces.set(i, 0);
+    this.compose();
+  }
+
+  /**
+   * Thu luống [i] (R-VUON-13): hình cây trên luống bay vòng lên rồi bay về [to] (thế giới — góc túi chiếu vào cảnh, thiếu =
+   * bay thẳng lên rồi biến) trong `FLY_S`; chỗ cũ trống ngay. Giảm chuyển động → chỉ ẩn chỗ cũ.
+   */
+  flyHarvest(i: number, to?: { x: number; y: number; z: number }): void {
+    const g = this.plotGeo[i];
+    const spot = this.spots[i];
+    if (!g || !spot || this.flown.has(i)) return;
+    this.flown.add(i);
+    if (!this.reduced) this.flights.push({ geo: g.clone(), from: new THREE.Vector3(spot.x, spot.y, spot.z), to: to ? new THREE.Vector3(to.x, to.y, to.z) : null, t: 0 });
+    this.compose();
+  }
+
+  private fly(dt: number): void {
+    const parts: THREE.BufferGeometry[] = [];
+    const m = new THREE.Matrix4();
+    const q = new THREE.Quaternion();
+    const v = new THREE.Vector3();
+    const up = new THREE.Vector3(0, 1, 0);
+    for (const f of this.flights) f.t += dt;
+    for (const f of this.flights.filter((x) => x.t >= FLY_S)) f.geo.dispose();
+    this.flights = this.flights.filter((f) => f.t < FLY_S);
+    for (const f of this.flights) {
+      const p = flyPath(f.t, f.from, f.to);
+      m.compose(v.set(p.x, p.y, p.z), q.setFromAxisAngle(up, f.t * 9), new THREE.Vector3(p.scale, p.scale, p.scale));
+      parts.push(f.geo.clone().applyMatrix4(m));
+    }
+    this.flyMesh.geometry.dispose();
+    this.flyMesh.geometry = parts.length ? (mergeGeometries(parts) ?? new THREE.BufferGeometry()) : new THREE.BufferGeometry();
+    for (const g of parts) g.dispose();
+    this.flyMesh.visible = parts.length > 0;
   }
 
   private buildPlot(s: PlotShow | null, spot: CropSpot, i: number): THREE.BufferGeometry | null {
@@ -238,15 +299,43 @@ export class CropLayer {
     const sc = new THREE.Matrix4();
     this.plotGeo.forEach((g, i) => {
       const spot = this.spots[i];
-      if (!g || !spot) return;
+      if (!g || !spot || this.flown.has(i)) return;
       const pop = this.pops.has(i) ? popScale(this.pops.get(i) ?? POP_S) : 1;
-      m.makeTranslation(spot.x, spot.y, spot.z).multiply(sc.makeScale(pop, pop, pop));
+      const b = this.bounces.has(i) ? bounceScale(this.bounces.get(i) ?? BOUNCE_S) : { xz: 1, y: 1 };
+      m.makeTranslation(spot.x, spot.y, spot.z).multiply(sc.makeScale(pop * b.xz, pop * b.y, pop * b.xz));
       parts.push(g.clone().applyMatrix4(m));
     });
     this.mesh.geometry.dispose();
     this.mesh.geometry = parts.length ? (mergeGeometries(parts) ?? new THREE.BufferGeometry()) : new THREE.BufferGeometry();
     for (const g of parts) g.dispose();
   }
+}
+
+/** Nảy mạnh (bón / vừa chín) kéo dài (s). */
+export const BOUNCE_S = 0.5;
+/** Quả bay khi thu (s). */
+export const FLY_S = 0.9;
+
+/** Co dãn kiểu thạch lúc [t]: dẹt 0,8 → vươn cao 1,3 → dẹt nhẹ → 1 (giữ thể tích gần đúng: ngang ngược dọc). */
+export function bounceScale(t: number): { xz: number; y: number } {
+  const u = t / BOUNCE_S;
+  if (u >= 1 || u < 0) return { xz: 1, y: 1 };
+  const y = 1 + Math.sin(u * Math.PI * 2.5) * 0.3 * (1 - u) - (u < 0.15 ? 0.2 * Math.sin((u / 0.15) * Math.PI) : 0);
+  return { xz: 1 / Math.sqrt(Math.max(0.5, y)), y };
+}
+
+/** Quỹ đạo quả bay lúc [t]: 40 % đầu bay vòng lên ~1,4 m (cỡ 0,8 → 1), rồi lao về [to] (thiếu → lên thêm) và co về 0,25. */
+export function flyPath(t: number, from: { x: number; y: number; z: number }, to: { x: number; y: number; z: number } | null): { x: number; y: number; z: number; scale: number } {
+  const u = Math.min(1, Math.max(0, t / FLY_S));
+  const rise = Math.min(1, u / 0.4);
+  const ease = rise * (2 - rise);
+  const top = { x: from.x + Math.sin(rise * Math.PI) * 0.3, y: from.y + 1.4 * ease, z: from.z };
+  if (u <= 0.4) return { ...top, scale: 0.8 + 0.2 * ease };
+  const k = (u - 0.4) / 0.6;
+  const kk = k * k;
+  const end = to ?? { x: from.x, y: from.y + 2.6, z: from.z };
+  const peak = { x: from.x, y: from.y + 1.4, z: from.z };
+  return { x: peak.x + (end.x - peak.x) * kk, y: peak.y + (end.y - peak.y) * kk, z: peak.z + (end.z - peak.z) * kk, scale: 1 - 0.75 * k };
 }
 
 /** Dáng code của một luống (cây `chum`). Cây lạ → cải. */

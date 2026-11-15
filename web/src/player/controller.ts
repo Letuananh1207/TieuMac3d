@@ -26,6 +26,8 @@ export function speedFor(push: number): number {
   const t = (m - RUN_FROM) / (1 - RUN_FROM);
   return WALK_SPEED + (RUN_SPEED - WALK_SPEED) * Math.min(1, t * 3); // vào chạy nhanh, không lửng lơ ở giữa
 }
+/** R-VUON-13: tự đi tới luống bị kẹt mà còn cách đích dưới chừng này (m) → coi như tới */
+export const ARRIVE_NEAR = 1.2;
 /** bán kính va chạm của nhân vật */
 export const PLAYER_RADIUS = 0.5;
 /** dốc tối đa đi được, độ (luật R-VA-2) */
@@ -65,6 +67,12 @@ export class PlayerController {
   /** chạm để đi: chạy hay đi bộ (chọn lúc đặt điểm đến) */
   private tapRun = false;
   private lastTarget: THREE.Vector3 | null = null;
+  /** tự đi tới luống (R-VUON-13) */
+  private auto: { target: THREE.Vector3; faceX: number; faceZ: number; onArrive: () => void; onCancel?: () => void } | null = null;
+  /** hướng mặt (radian) phải quay về khi tới nơi / đang diễn; null = không ép */
+  private faceYaw: number | null = null;
+  private workDone: (() => void) | null = null;
+  private workCancel: (() => void) | null = null;
 
   constructor(
     readonly character: Character,
@@ -142,9 +150,79 @@ export class PlayerController {
     this.emoteSits = false;
   }
 
+  /**
+   * Tự đi tới (x, z) (đi bộ / chạy như chạm để đi — R-DIEU-5) rồi quay mặt về (faceX, faceZ) → `onArrive` (R-VUON-13: đi tới
+   * mép luống). Người chơi đẩy joystick / phím, chạm đi chỗ khác, ngồi, nhảy, hay kẹt xa đích → `onCancel` (file ghép bỏ hàng
+   * đợi). Gọi lại khi đang tự đi → thay đích (đích cũ không báo huỷ). Không khi đang bay / ngồi → false.
+   */
+  walkTo(x: number, z: number, faceX: number, faceZ: number, onArrive: () => void, onCancel?: () => void): boolean {
+    if (this.state.air || this.sitting) return false;
+    this.stopEmote();
+    this.bowLeft = 0;
+    const target = new THREE.Vector3(x, this.position.y, z);
+    this.moveTarget = target;
+    this.auto = { target, faceX, faceZ, onArrive, onCancel };
+    return true;
+  }
+
+  /**
+   * Diễn động tác làm vườn `id` trong `len` giây (R-VUON-13): đứng yên (joystick không đi), quay dần về hướng mặt đã đặt ở
+   * `walkTo`; hết giờ → `onDone`. Joystick trong lúc diễn → vẫn diễn nốt, gọi `onCancel` một lần (bỏ phần còn lại của hàng
+   * đợi). Không khi đang bay / ngồi → false.
+   */
+  work(id: string, len: number, onDone?: () => void, onCancel?: () => void): boolean {
+    if (this.state.air || this.sitting) return false;
+    this.stopEmote();
+    this.bowLeft = 0;
+    this.moveTarget = null;
+    this.state.work = { id, t: 0, len };
+    this.workDone = onDone ?? null;
+    this.workCancel = onCancel ?? null;
+    return true;
+  }
+
+  /** đang tự đi tới luống / đang diễn làm vườn */
+  get autoWalking(): boolean {
+    return !!this.auto;
+  }
+  get working(): boolean {
+    return !!this.state.work;
+  }
+
+  /** Bỏ tự đi (không báo huỷ) — vd. ra khỏi vườn, mở màn che. Động tác đang diễn vẫn làm nốt. */
+  cancelAuto(): void {
+    if (this.auto && this.moveTarget === this.auto.target) this.moveTarget = null;
+    this.auto = null;
+  }
+
+  /** Tự đi: tới nơi / bị huỷ. Gọi đầu `update` (trước khi joystick xoá điểm đến). */
+  private checkAuto(userMove: boolean): void {
+    const a = this.auto;
+    if (a) {
+      const lost = userMove || this.moveTarget !== a.target || this.sitting || this.state.air;
+      const d = Math.hypot(a.target.x - this.position.x, a.target.z - this.position.z);
+      if (!lost && d >= 0.25) return;
+      this.auto = null;
+      // kẹt (điểm đến bị bỏ vì vướng) mà đã gần → coi như tới
+      if (!userMove && !this.sitting && (this.moveTarget === a.target || d < ARRIVE_NEAR)) {
+        if (this.moveTarget === a.target) this.moveTarget = null;
+        this.faceYaw = Math.atan2(a.faceX - this.position.x, a.faceZ - this.position.z);
+        a.onArrive();
+      } else a.onCancel?.();
+    }
+    if (userMove && this.state.work && this.workCancel) {
+      const c = this.workCancel;
+      this.workCancel = null;
+      c();
+    }
+  }
+
   update(dt: number, input: MoveInput, camYaw: number, frozen: boolean): void {
-    const ix = frozen ? 0 : input.x;
-    const iy = frozen ? 0 : input.y;
+    this.checkAuto(!frozen && !!(input.x || input.y));
+    // đang diễn làm vườn: không đi (R-VUON-13)
+    const locked = frozen || !!this.state.work;
+    const ix = locked ? 0 : input.x;
+    const iy = locked ? 0 : input.y;
     let mx = 0;
     let mz = 0;
 
@@ -238,9 +316,31 @@ export class PlayerController {
       em.t += dt;
       if (em.t >= em.len) this.stopEmote();
     }
+    // tới luống / đang diễn: quay mặt về luống (R-VUON-13); đi → thôi
+    if (this.faceYaw !== null) {
+      const facing = this.character.facing;
+      const dr = Math.atan2(Math.sin(this.faceYaw - facing.rotation.y), Math.cos(this.faceYaw - facing.rotation.y));
+      if (mps > 0) this.faceYaw = null;
+      else {
+        facing.rotation.y += dr * Math.min(1, dt * 12);
+        if (Math.abs(dr) < 0.01 && !st.work) this.faceYaw = null;
+      }
+    }
+    // làm vườn: đếm tới hết thời lượng → onDone (có thể nối việc kế trong hàng đợi)
+    const wk = st.work;
+    if (wk) {
+      wk.t += dt;
+      if (wk.t >= wk.len) {
+        st.work = undefined;
+        this.workCancel = null;
+        const done = this.workDone;
+        this.workDone = null;
+        done?.();
+      }
+    }
     st.sit += ((this.sitting || this.emoteSits ? 1 : 0) - st.sit) * Math.min(1, dt * 5);
     // sau biểu cảm đếm đứng lâu lại từ 0 (R-BIEU-2, R-DIEU-8)
-    const still = mps === 0 && !st.air && !this.sitting && this.bowLeft === 0 && !st.emote;
+    const still = mps === 0 && !st.air && !this.sitting && this.bowLeft === 0 && !st.emote && !st.work && !this.auto;
     st.idle = still ? st.idle + dt : 0;
     st.mps = mps;
     this.character.animate(dt, mps / RUN_SPEED, st);

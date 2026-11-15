@@ -4,14 +4,13 @@
  * chuỗi chép `design/l10n/vi.arb` (`garden*`). Thuần — không DOM (dựng: `ui/gardenHud.ts`, `ui/gardenPanel.ts`).
  */
 import {
-  BIN_RANGE,
   canWater,
   CROPS,
   cropOf,
   elapsedMs,
   growMs,
+  hasBug,
   nextOpenPrice,
-  plotButton,
   plotIndex,
   plotOf,
   plotState,
@@ -21,11 +20,14 @@ import {
   sellCapped,
   SELL_DAILY_CAP,
   soldOn,
+  weedsOf,
+  yieldOf,
   type Crop,
   type CropId,
   type Garden,
-  type PlotButton,
+  type PlotState,
 } from './vuon';
+import { pestsOf } from './vuonCham';
 import { formatCoins } from './wallet';
 
 /** Thời gian lớn trên thẻ hạt: "30 phút" · "1 giờ" · "2 giờ" (`gardenTimeM` / `gardenTimeHM`). */
@@ -227,3 +229,103 @@ export const harvestToast = (c: Crop, n: number): GardenToast => ({
   crop: c.id,
 });
 export const unlockedToast = (n: number): GardenToast => ({ kind: 'mo-o', title: `Đã mở luống ${n}`, sub: null });
+
+/* ---------- dáng luống trong cảnh + chữ nổi (V-73: R-VUON-5/10/11/12/13) ---------- */
+
+/** Dáng luống để cảnh vẽ: đất khô / ẩm / thường, sâu, số bụi cỏ, đã bón. */
+export interface PlotLook {
+  soil: 'kho' | 'am' | 'thuong';
+  bug: boolean;
+  weeds: 0 | 2 | 3;
+  fert: boolean;
+}
+
+/** Dáng luống [id] (R-VUON-5): tới mốc tưới mà chưa tưới → khô; có cây chưa chín khác → ẩm; trống / chín / hoang → thường. */
+export function plotLook(g: Garden, id: string, now: number, speed = 1): PlotLook {
+  const st = plotState(g, id, now, speed);
+  const p = plotOf(g, id);
+  if (st === 'hoang' || st === 'trong') return { soil: 'thuong', bug: false, weeds: 0, fert: false };
+  const soil = st === 'chin' ? 'thuong' : canWater(p, now, speed) ? 'kho' : 'am';
+  return { soil, bug: hasBug(p, id, now, speed), weeds: weedsOf(p, id, now, speed), fert: p.boost > 0 };
+}
+
+/** Chữ nổi khi làm xong (R-VUON-13): dòng chính + dòng phụ (có thể `null`). Tiếng Việt, không chữ Hán (R-HUD-4). */
+export interface FloatText {
+  text: string;
+  sub: string | null;
+}
+
+export const SOW_FLOAT: FloatText = { text: '−1 hạt', sub: null };
+export const WATER_FLOAT: FloatText = { text: 'Đất ẩm rồi!', sub: null };
+export const BUG_FLOAT: FloatText = { text: 'Bắt được sâu!', sub: null };
+export const WEED_FLOAT: FloatText = { text: 'Sạch cỏ!', sub: null };
+export const FERT_FLOAT: FloatText = { text: 'Mau lớn!', sub: null };
+
+/**
+ * Chữ nổi khi thu luống [id] (trước khi thu — R-VUON-6): "+3 Cải ngọt"; còn sâu / cỏ lúc thu → dòng 2 "ít hơn vì sâu" /
+ * "ít hơn vì cỏ" / "ít hơn vì sâu và cỏ" (chỉ khi thật sự bớt — đã ở mức thấp nhất 2 thì không ghi).
+ */
+export function harvestFloat(g: Garden, id: string, crop: Crop, got: number): FloatText {
+  const p = plotOf(g, id);
+  const s = pestsOf(id, p.plantedAt);
+  const bug = s.bugAt >= 0 && p.bug === 0;
+  const weed = s.weedAt >= 0 && p.weed === 0;
+  const full = yieldOf({ ...p, bug: 1, weed: 1 }, id);
+  const why = bug && weed ? 'sâu và cỏ' : bug ? 'sâu' : 'cỏ';
+  return { text: `+${got} ${crop.name}`, sub: got < full && (bug || weed) ? `ít hơn vì ${why}` : null };
+}
+
+/** Chuỗi trạng thái cho Console / thử (`__hocXaVuon.look`): "o-3 Lúa · mầm · khô · sâu · 2 cỏ · đã bón". */
+export function lookText(g: Garden, id: string, now: number, speed = 1): string {
+  const st: PlotState = plotState(g, id, now, speed);
+  const c = cropOf(plotOf(g, id).crop);
+  const l = plotLook(g, id, now, speed);
+  const parts = [`${id} ${c ? c.name : st}`, c ? st : null, l.soil === 'thuong' ? null : l.soil, l.bug ? 'sâu' : null, l.weeds ? `${l.weeds} cỏ` : null, l.fert ? 'đã bón' : null];
+  return parts.filter(Boolean).join(' · ');
+}
+
+/* ---------- chữ hiển thị (thiết kế 2026-11-15.29; chữ bảng / nút ở `vuonHud.ts`) ---------- */
+
+/** "còn 1 giờ 20 phút" · "còn 20 phút" · "còn 1 giờ" · dưới 1 phút "còn chưa tới 1 phút" · 0 → "đã chín". */
+export function remainingText(ms: number): string {
+  if (ms <= 0) return 'đã chín';
+  const m = Math.ceil(ms / 60000);
+  const h = Math.floor(m / 60);
+  const r = m % 60;
+  if (h === 0) return ms < 60000 ? 'còn chưa tới 1 phút' : `còn ${r} phút`;
+  return r ? `còn ${h} giờ ${r} phút` : `còn ${h} giờ`;
+}
+
+export const openPlotLabel = (price: number): string => `−${price} · Mở ô đất`;
+export const sellLabel = (amount: number): string => `+${amount} · Bán nông sản`;
+export const seedLabel = (c: Crop, count = 1): string => `−${c.seed * count} · Hạt ${c.name}`;
+
+/** Tầm hiện nút ở luống / thùng thu mua (R-VUON-2, R-VUON-7). */
+export const PLOT_RANGE = 1.6;
+export const BIN_RANGE = 2.5;
+
+export type PlotButton = 'gieo' | 'tuoi' | 'thu' | 'mo-o';
+
+/** Nút ở luống theo trạng thái (R-VUON-2): đang lớn không tưới được → không nút, chỉ nhãn. */
+export function plotButton(state: PlotState, waterable: boolean): PlotButton | null {
+  if (state === 'hoang') return 'mo-o';
+  if (state === 'trong') return 'gieo';
+  if (state === 'chin') return 'thu';
+  return waterable ? 'tuoi' : null;
+}
+
+/** Luống gần nhất trong tầm [PLOT_RANGE] (R-VUON-2); không có → `null`. */
+export function nearestPlot(plots: readonly { id: string; x: number; z: number }[], x: number, z: number): { id: string; dist: number } | null {
+  let best: { id: string; dist: number } | null = null;
+  for (const p of plots) {
+    const d = Math.hypot(p.x - x, p.z - z);
+    if (d < PLOT_RANGE && (!best || d < best.dist)) best = { id: p.id, dist: d };
+  }
+  return best;
+}
+
+/** Hệ số lớn nhanh `?vuon=<n>` (chế độ thử): số dương; thiếu / sai → 1. */
+export function gardenSpeed(search: string): number {
+  const v = Number(new URLSearchParams(search).get('vuon'));
+  return Number.isFinite(v) && v > 0 ? v : 1;
+}

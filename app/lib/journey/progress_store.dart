@@ -309,16 +309,21 @@ class ProgressStore {
   }
 
   /// Một thao tác ở vườn (docs/bridge.md `gardenAct`): tính theo `garden.dart`, làm được → ghi ngay vườn + số dư.
-  /// [act] = `sow` | `water` | `harvest` | `sell` | `open` | `buy`; lạ / thiếu tham số → `bad`.
-  Future<GardenResult> gardenAct(String act, {String? plot, String? crop, int count = 1}) async {
+  /// [act] = `sow` | `water` | `harvest` | `bug` | `weed` | `fert` | `sell` | `open` | `buy` (hạt: [crop]; phân: [item] `phan`);
+  /// lạ / thiếu tham số → `bad`.
+  Future<GardenResult> gardenAct(String act, {String? plot, String? crop, String? item, int count = 1}) async {
     final g = garden;
     final now = _clock().millisecondsSinceEpoch;
     final GardenResult r = switch ((act, plot, crop)) {
       ('sow', final p?, final c?) => vuon.sow(g, p, c, now),
       ('water', final p?, _) => vuon.water(g, p, now),
       ('harvest', final p?, _) => vuon.harvest(g, p, now),
+      ('bug', final p?, _) => vuon.catchBug(g, p, now),
+      ('weed', final p?, _) => vuon.pullWeed(g, p, now),
+      ('fert', final p?, _) => vuon.fertilize(g, p, now),
       ('sell', _, _) => vuon.sell(g, crop, vnDay(_clock())),
       ('open', _, _) => vuon.openPlot(g, coins),
+      ('buy', _, _) when item == vuon.fertItem => vuon.buyFert(g, coins, count: count),
       ('buy', _, final c?) => vuon.buySeed(g, c, coins, count: count),
       _ => const GardenRefused(GardenError.bad),
     };
@@ -332,6 +337,16 @@ class ProgressStore {
   /// Mua [count] hạt [crop] (× 1 · × 5 · × 10) ở Tạp hoá (R-VUON-9) — dạng kết quả như mua đồ để màn Tạp hoá dùng chung.
   Future<BuyResult> buySeed(String crop, {int count = 1}) async {
     final r = await gardenAct('buy', crop: crop, count: count);
+    return switch (r) {
+      GardenDone() => Bought(coins, ownedDecor),
+      GardenRefused(error: GardenError.short, :final short) => BuyRefused(BuyError.short, short: short),
+      GardenRefused() => const BuyRefused(BuyError.invalid),
+    };
+  }
+
+  /// Mua [count] bao phân bón (× 1 · × 5 · × 10) ở Tạp hoá (R-VUON-12) — dạng kết quả như mua hạt.
+  Future<BuyResult> buyFert({int count = 1}) async {
+    final r = await gardenAct('buy', item: vuon.fertItem, count: count);
     return switch (r) {
       GardenDone() => Bought(coins, ownedDecor),
       GardenRefused(error: GardenError.short, :final short) => BuyRefused(BuyError.short, short: short),

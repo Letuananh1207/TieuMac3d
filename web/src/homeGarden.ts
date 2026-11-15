@@ -11,23 +11,23 @@
 import * as THREE from 'three';
 import type { TrialStore } from './bridge/browserStore';
 import { getGarden, type FlutterBridge } from './bridge/flutterBridge';
+import { GardenWork } from './gardenWork';
+import type { Character } from './player/character';
+import type { PlayerController } from './player/controller';
 import type { CropStage, PlotShow } from './scene/cayTrong';
 import type { Garden3D } from './scene/vuonLuong';
 import { GardenHud, type MarkAt } from './ui/gardenHud';
 import { GardenPanel } from './ui/gardenPanel';
+import { VuonSound } from './ui/vuonSound';
 import { maNgayVN } from './zones/gioVN';
 import {
   cropOf,
   freshGarden,
-  nearestPlot,
   nextOpenPrice,
-  openPlotLabel,
   plotIndex,
   plotOf,
   plotState,
   ripeCount,
-  seedLabel,
-  sellLabel,
   type CropId,
   type Garden,
   type GardenAct,
@@ -37,7 +37,13 @@ import {
   bagChips,
   gardenHudShown,
   harvestToast,
+  lookText,
   MARK_RANGE,
+  nearestPlot,
+  openPlotLabel,
+  plotLook,
+  seedLabel,
+  sellLabel,
   pickSeedSub,
   pickSpot,
   plotMark,
@@ -49,6 +55,8 @@ import {
   type GardenBusy,
   type GardenSpot,
 } from './zones/vuonHud';
+import { fertLabel } from './zones/vuonCham';
+import type { Holding } from './zones/vuonThanh';
 import { gardenTrialAct } from './zones/walletRules';
 
 /** Nút nổi trên mép xa luống (m trên mặt luống / ra mép) và trên thùng thu mua. */
@@ -76,6 +84,12 @@ export interface HomeGardenDeps {
   onOpen(): void;
   /** `?debug`: `window.__hocXaVuon` để thử trong Console */
   debug: boolean;
+  /** làm vườn kiểu 摩尔 (V-73): nhân vật tự đi tới luống + diễn (`gardenWork.ts`) */
+  player: PlayerController;
+  character: Character;
+  /** rào vườn + cạnh luống (đặc tả `garden.fence`, `garden.size`) */
+  fence: { from: { x: number; z: number }; to: { x: number; z: number } };
+  plotSize: number;
 }
 
 export class HomeGarden {
@@ -95,6 +109,13 @@ export class HomeGarden {
   private readonly anchor = new THREE.Vector3();
   private readonly v = new THREE.Vector3();
   private readonly marks: (MarkAt | null)[];
+  /** cầm nông cụ, hàng đợi, đi tới + diễn (V-73) */
+  readonly work: GardenWork;
+  private readonly sound: VuonSound | null;
+  /** dáng luống lần vẽ trước — luống vừa chín lúc đang ở vườn → nảy + "ting" (R-VUON-13, R-AM-4) */
+  private stages: (string | null)[] = [];
+  private busyNow = false;
+  private ripeIdx: number[] = [];
 
   constructor(private readonly d: HomeGardenDeps) {
     this.hud = new GardenHud(d.garden.plots.length, () => void this.press());
@@ -105,9 +126,36 @@ export class HomeGarden {
       close: () => this.closePanel(),
     });
     this.marks = d.garden.plots.map(() => null);
-    if (d.debug) {
-      Object.assign(window, { __hocXaVuon: { state: () => this.g, act: (a: GardenAct) => this.act(a), spot: () => this.spot() } });
-    }
+    this.sound = typeof window.AudioContext === 'function' ? new VuonSound() : null;
+    this.work = new GardenWork({
+      garden: d.garden,
+      player: d.player,
+      character: d.character,
+      fence: d.fence,
+      plotSize: d.plotSize,
+      sound: this.sound,
+      state: () => this.g,
+      now: () => this.now,
+      speed: () => this.speed,
+      act: (a) => this.act(a),
+      harvested: (crop, got) => {
+        const c = cropOf(crop);
+        if (c) this.hud.toast(harvestToast(c, got)); // R-VUON-6
+      },
+    });
+    // thử làm vườn khi chưa có HUD (V-73): luôn có trong Console; `?debug` thêm state / act / spot như cũ
+    const w = this.work;
+    Object.assign(window, {
+      __hocXaVuon: {
+        cam: (n: number) => w.key(n),
+        dung: () => w.use(),
+        bo: () => w.drop(),
+        luot: (ids: string[]) => w.sweep(ids),
+        thanh: () => w.slots(),
+        xem: () => this.d.garden.plots.map((p) => lookText(this.g, p.id, this.now, this.speed)),
+        ...(d.debug ? { state: () => this.g, act: (a: GardenAct) => this.act(a), spot: () => this.spot() } : {}),
+      },
+    });
   }
 
   /** Bảng vườn đang mở → nhân vật đứng yên, không joystick (đặc tả "Vườn rau"). */
@@ -116,15 +164,30 @@ export class HomeGarden {
   }
 
   /** Chạm cảnh khi bảng mở → đóng bảng; `true` = đã nhận chạm. */
-  tap(): boolean {
-    if (!this.panel.isOpen) return false;
+  tap(point?: { x: number; z: number } | null): boolean {
+    if (!this.panel.isOpen) return this.work.tapAt(point ?? null);
     this.closePanel();
     return true;
   }
 
   /** Nút quay lại / Esc: đóng bảng; `true` = đã xử lý. */
   back(): boolean {
-    return this.tap();
+    return this.panel.isOpen ? this.tap() : this.work.drop();
+  }
+
+  /** Phím 1…6 (cầm nông cụ, V-73); ngoài rào → `false`. */
+  key(n: number): boolean {
+    return !this.panel.isOpen && this.work.key(n);
+  }
+
+  /** Phím E (nút "Dùng"): đang cầm + gần luống → làm; không → `false` (E về việc khác). */
+  use(): boolean {
+    return !this.panel.isOpen && this.work.use();
+  }
+
+  /** Đang cầm nông cụ (thanh nông cụ — HUD chờ thiết kế). */
+  get holding(): Holding | null {
+    return this.work.holding;
   }
 
   /** Vườn đang có (sau `load`). */
@@ -166,7 +229,11 @@ export class HomeGarden {
     this.camera = camera;
     const free = gardenHudShown(busy) && !this.panel.isOpen;
     if (!gardenHudShown(busy) && this.panel.isOpen) this.closePanel();
-    const s = free ? this.spot() : null;
+    this.busyNow = !gardenHudShown(busy) || this.panel.isOpen;
+    this.sound?.setMuted(busy.covered || busy.loading);
+    // đang cầm nông cụ → nút nổi cũ ẩn, E / chạm làm bằng công cụ (R-VUON-2 mới); vẫn giữ "Mở ô" / "Bán"
+    const s0 = free ? this.spot() : null;
+    const s = this.work.holding && s0?.kind !== 'bin' && !(s0?.kind === 'plot' && s0.button === 'mo-o') ? null : s0;
     this.here = s;
     this.hud.set(s, s ? this.anchorOf(s, camera) : null, nextOpenPrice(this.g));
     this.hud.follow(camera);
@@ -177,6 +244,7 @@ export class HomeGarden {
   update(dt: number, player: { x: number; z: number }): void {
     this.player = player;
     this.d.garden.crops.tick(dt); // nảy khi luống đổi dáng (cây chum)
+    this.work.update(dt, player, this.busyNow, this.ripeIdx);
     this.acc += dt;
     if (this.acc < TICK_S) return;
     this.acc = 0;
@@ -193,6 +261,30 @@ export class HomeGarden {
       return crop && st !== 'hoang' && st !== 'trong' ? { crop, stage: st as CropStage } : null;
     });
     garden.crops.show(shows);
+    // đất khô / ẩm, sâu, cỏ (R-VUON-5/10/11 — V-73); sâu / cỏ đang bay khỏi luống giữ ẩn tới khi luật ghi xong
+    const doing = this.work.doing;
+    const looks = garden.plots.map((p) => plotLook(this.g, p.id, now, this.speed));
+    looks.forEach((l, i) => garden.beds.setSoil(i, l.soil));
+    garden.pests.show(
+      looks.map((l, i) => {
+        const hide = doing?.i === i && doing.popped;
+        return {
+          bug: l.bug && !(hide && doing.work === 'bat'),
+          weeds: hide && doing.work === 'nho' ? 0 : l.weeds,
+        };
+      }),
+    );
+    // vừa chín lúc đang ở vườn → nảy + "ting" (lần vẽ đầu không tính)
+    const first = this.stages.length === 0;
+    shows.forEach((s, i) => {
+      const was = this.stages[i];
+      if (!first && s?.stage === 'chin' && was !== 'chin' && was != null) {
+        garden.crops.bounce(i);
+        this.sound?.play('ting');
+      }
+    });
+    this.stages = shows.map((s) => s?.stage ?? null);
+    this.ripeIdx = shows.flatMap((s, i) => (s?.stage === 'chin' ? [i] : []));
   }
 
   /** Việc ở chỗ đứng (R-VUON-2, R-VUON-7): vật gần hơn thắng; không gần gì → `null`. */
@@ -326,7 +418,9 @@ export class HomeGarden {
   private label(a: GardenAct, amount: number): string {
     if (a.act === 'open') return openPlotLabel(-amount);
     if (a.act === 'sell') return sellLabel(amount);
-    const c = a.act === 'buy' ? cropOf(a.crop) : undefined;
-    return c ? seedLabel(c, a.act === 'buy' ? (a.count ?? 1) : 1) : `${amount}`;
+    if (a.act !== 'buy') return `${amount}`;
+    if ('item' in a) return fertLabel(a.count ?? 1);
+    const c = cropOf(a.crop);
+    return c ? seedLabel(c, a.count ?? 1) : `${amount}`;
   }
 }

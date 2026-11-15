@@ -4,8 +4,11 @@ library;
 import '../journey/garden.dart';
 import 'shop_event.dart';
 
+export '../journey/garden_care.dart' show fertItem;
+
 /// Thao tác `gardenAct`: `act` + luống / cây (tuỳ thao tác). Sai dạng → `null` (trả `bad`).
-typedef GardenActArgs = ({String act, String? plot, String? crop, int count});
+/// `item` = `'phan'` khi mua phân bón (`{act:'buy', item:'phan', count}` — R-VUON-12).
+typedef GardenActArgs = ({String act, String? plot, String? crop, String? item, int count});
 
 GardenActArgs? gardenActArgs(List<dynamic> args) {
   if (args.isEmpty) return null;
@@ -13,10 +16,16 @@ GardenActArgs? gardenActArgs(List<dynamic> args) {
   if (e is! Map || e['type'] != 'gardenAct') return null;
   final p = e['payload'];
   if (p is! Map) return null;
-  final act = p['act'], plot = p['plot'], crop = p['crop'], count = p['count'];
+  final act = p['act'], plot = p['plot'], crop = p['crop'], item = p['item'], count = p['count'];
   if (act is! String) return null;
-  // `count` (mua hạt × 1 · × 5 · × 10 — R-VUON-9): thiếu → 1; số lạ → luật trả `bad`
-  return (act: act, plot: plot is String ? plot : null, crop: crop is String ? crop : null, count: count is num ? count.toInt() : 1);
+  // `count` (mua hạt / phân × 1 · × 5 · × 10 — R-VUON-9/12): thiếu → 1; số lạ → luật trả `bad`
+  return (
+    act: act,
+    plot: plot is String ? plot : null,
+    crop: crop is String ? crop : null,
+    item: item is String ? item : null,
+    count: count is num ? count.toInt() : 1,
+  );
 }
 
 /// Sự kiện `getGarden` (payload rỗng)?
@@ -45,7 +54,17 @@ Map<String, Object?> gardenActReply(GardenResult r, int balance) => switch (r) {
 /// Thẻ hạt giống ở Tạp hoá (R-VUON-9) — mã `hat-<cây>`, giá 1 hạt.
 const seedItemPrefix = 'hat-';
 
-List<ShopItem> seedShopItems() => [for (final c in crops) ShopItem(id: '$seedItemPrefix${c.id}', name: 'Hạt ${c.name}', slot: SlotKind.hat, price: c.seed)];
+/// 8 thẻ hạt rồi thẻ **Phân bón** (mã `phan`, 10 Văn / bao — R-VUON-12) cùng mục, cùng khung thẻ hạt.
+List<ShopItem> seedShopItems() => [
+      for (final c in crops) ShopItem(id: '$seedItemPrefix${c.id}', name: 'Hạt ${c.name}', slot: SlotKind.hat, price: c.seed),
+      const ShopItem(id: fertItem, name: 'Phân bón', slot: SlotKind.hat, price: fertPrice),
+    ];
 
 /// Mã cây của thẻ hạt; thẻ khác → `null`.
 String? seedCrop(ShopItem i) => i.slot == SlotKind.hat && i.id.startsWith(seedItemPrefix) ? i.id.substring(seedItemPrefix.length) : null;
+
+/// Thẻ Phân bón?
+bool isFertItem(ShopItem i) => i.slot == SlotKind.hat && i.id == fertItem;
+
+/// Khoá túi của thẻ mục vườn: mã cây (hạt) hoặc `phan`; đồ trang trí → `null`.
+String? gardenBagKey(ShopItem i) => seedCrop(i) ?? (isFertItem(i) ? fertItem : null);

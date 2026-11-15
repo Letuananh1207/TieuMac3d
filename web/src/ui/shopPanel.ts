@@ -5,8 +5,7 @@
  * đã mua hết; "Đóng" + Esc. DOM gốc `#shopPanel` ở index.html (`#shop` là nút nổi "Vào tiệm"), phần trong dựng bằng createElement. Không giữ luật: chữ + trạng thái
  * ở `zones/shopView.ts`, mua qua [ShopPanelHost.buy] (`walletRoom.ts` → `zones/walletRules.ts`).
  */
-import { boughtView, confirmView, POOR_HINT, SEED_GRID_HINT, SEED_QTY, seedCrop, seedLine, SHOP_TABS, shopBanner, shopGroups, stockLine, type DecorStock, type ShopCard, type ShopEntry, type ShopTab } from '../zones/shopView';
-import type { CropId } from '../zones/vuon';
+import { bagKey, boughtView, confirmView, isFertEntry, POOR_HINT, SEED_GRID_HINT, SEED_QTY, seedCrop, seedLine, type GardenBag, SHOP_TABS, shopBanner, shopGroups, stockLine, type DecorStock, type ShopCard, type ShopEntry, type ShopTab } from '../zones/shopView';
 import { formatCoins } from '../zones/wallet';
 import type { BuyResult } from '../zones/walletRules';
 import { cropPicture, SEED_PACK } from './cropArt';
@@ -40,6 +39,8 @@ function button(cls: string, label: string, icon?: SVGElement): HTMLButtonElemen
 /** Hình phẳng của vật (khung 64) cỡ [size] trên nền giấy; hạt → hình cây chín (+ gói hạt 26 góc dưới phải khi [pack]). */
 function picture(item: ShopEntry, size: number, pack = false): Node[] {
   const c = seedCrop(item);
+  // Phân bón (R-VUON-12): tạm gói hạt tới khi có hình V-72
+  if (isFertEntry(item)) return [svgIcon(SEED_PACK, Math.round(size * 0.7), '0 0 26 26')];
   if (!c) return [svgIcon(DECOR_PICTURES[item.id] ?? [], size, '0 0 64 64', { fill: 'none' })];
   const out: Node[] = [cropPicture(c.id, size)];
   if (pack) {
@@ -54,7 +55,7 @@ export interface ShopPanelHost {
   /** mua một vật (hạt: [count] hạt — × 1 · × 5 · × 10); `ok` → số dư + sở hữu mới (đã ghi kho) */
   buy(item: ShopEntry, count: number): BuyResult;
   /** túi hạt hiện có (thẻ "Trong túi: n" — R-VUON-9) */
-  bag(): Partial<Record<CropId, number>>;
+  bag(): GardenBag;
   /** màn vừa đóng ("Đóng" / Esc) */
   closed(): void;
 }
@@ -239,7 +240,7 @@ export class ShopPanel {
     const price = h('div', 'price');
     price.append(svgIcon(COIN, 14, '0 0 100 100'), h('b', '', formatCoins(item.price)));
     const seed = seedLine(item, this.host.bag());
-    if (seed) price.append(h('span', 'time', `· ${seed.time}`));
+    if (seed?.time) price.append(h('span', 'time', `· ${seed.time}`));
     const act = button(`act ${c.state}`, c.text); // shopBuy / shopShort
     if (c.state === 'short') act.setAttribute('aria-disabled', 'true');
     else act.addEventListener('click', () => this.pick(item));
@@ -260,8 +261,8 @@ export class ShopPanel {
       this.confirm.replaceChildren();
       return;
     }
-    const c = seedCrop(item);
-    const v = confirmView(item, this.balance, c ? { count: this.qty, inBag: this.host.bag()[c.id] ?? 0 } : undefined, this.stock);
+    const k = bagKey(item);
+    const v = confirmView(item, this.balance, k ? { count: this.qty, inBag: this.host.bag()[k] ?? 0 } : undefined, this.stock);
     this.confirm.setAttribute('aria-label', `Xác nhận mua ${item.name}`);
     const art = h('div', 'art');
     art.append(...picture(item, 64));
@@ -272,11 +273,11 @@ export class ShopPanel {
     const top = h('div', 'top');
     top.append(art, txt);
     const parts: HTMLElement[] = [top];
-    if (c) {
-      // chọn số hạt × 1 · × 5 · × 10 (R-VUON-9; viên cao 36, đang chọn nền slate)
+    if (k) {
+      // chọn số hạt / bao × 1 · × 5 · × 10 (R-VUON-9/12; viên cao 36, đang chọn nền slate)
       const qty = h('div', 'qty');
       qty.setAttribute('role', 'radiogroup');
-      qty.setAttribute('aria-label', 'Số hạt'); // shopQty
+      qty.setAttribute('aria-label', isFertEntry(item) ? 'Số bao' : 'Số hạt'); // shopQty
       for (const k of SEED_QTY) {
         const b = button(k === this.qty ? 'on' : '', `× ${k}`);
         b.setAttribute('role', 'radio');
@@ -306,7 +307,7 @@ export class ShopPanel {
   }
 
   private buy(item: ShopEntry): void {
-    const count = seedCrop(item) ? this.qty : 1;
+    const count = bagKey(item) ? this.qty : 1;
     const r = this.host.buy(item, count);
     this.picked = null;
     this.qty = 1;

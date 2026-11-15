@@ -35,7 +35,7 @@ describe('nút nổi ở luống (R-VUON-2)', () => {
 
   it('R-VUON-2: Cải ngọt gieo 10 phút trước, đã tưới 1 lượt → nhãn "Cải ngọt · còn 20 phút", không nút', () => {
     const t0 = vn(14, 9);
-    const g = withPlot(freshGarden(), 'o-2', { crop: 'cai', plantedAt: t0, watered: 1 });
+    const g = withPlot(freshGarden(), 'o-2', { crop: 'cai', plantedAt: t0, watered: 1, boost: 0, bug: 0, weed: 0 });
     const s = pickSpot(g, { id: 'o-2', dist: 1 }, 9, t0 + 10 * MIN);
     expect(s?.kind).toBe('grow');
     if (s?.kind !== 'grow') return;
@@ -58,9 +58,9 @@ describe('nút nổi ở luống (R-VUON-2)', () => {
 
   it('R-VUON-5: luống tưới được hiện giọt nước; chín → lấp lánh; trống / hoang → không dấu', () => {
     const t0 = vn(14, 9);
-    const g = withPlot(freshGarden(), 'o-1', { crop: 'cai', plantedAt: t0, watered: 0 });
+    const g = withPlot(freshGarden(), 'o-1', { crop: 'cai', plantedAt: t0, watered: 0, boost: 0, bug: 0, weed: 0 });
     expect(plotMark(g, 'o-1', t0 + MIN)).toBe('giot');
-    expect(plotMark(withPlot(g, 'o-1', { crop: 'cai', plantedAt: t0, watered: 1 }), 'o-1', t0 + 10 * MIN)).toBeNull();
+    expect(plotMark(withPlot(g, 'o-1', { crop: 'cai', plantedAt: t0, watered: 1, boost: 0, bug: 0, weed: 0 }), 'o-1', t0 + 10 * MIN)).toBeNull();
     expect(plotMark(g, 'o-1', t0 + 30 * MIN)).toBe('lap-lanh');
     expect(plotMark(g, 'o-2', t0)).toBeNull();
     expect(plotMark(g, 'o-9', t0)).toBeNull();

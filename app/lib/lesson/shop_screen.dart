@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../journey/wallet.dart';
-import '../scene/garden_event.dart' show seedCrop;
+import '../scene/garden_event.dart' show gardenBagKey;
 import '../scene/shop_event.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text_size.dart';
@@ -90,7 +90,7 @@ class _ShopScreenState extends State<ShopScreen> {
     if (_buying) return;
     setState(() => _buying = true);
     final buySeed = widget.onBuySeed;
-    final crop = seedCrop(item);
+    final crop = gardenBagKey(item);
     final count = crop != null ? _count : 1;
     final r = crop != null && buySeed != null ? await buySeed(item, count) : await widget.onBuy(item);
     if (!mounted) return;
@@ -151,7 +151,7 @@ class _ShopScreenState extends State<ShopScreen> {
         children: [
           Positioned.fill(child: body),
           if (bought != null)
-            Positioned(left: 0, right: 0, bottom: landscape ? 0 : 66, child: Center(child: ConstrainedBox(constraints: const BoxConstraints(maxWidth: 520), child: BoughtToast(item: bought, inBag: seedCrop(bought) == null ? _inBagOf(bought) : 0)))),
+            Positioned(left: 0, right: 0, bottom: landscape ? 0 : 66, child: Center(child: ConstrainedBox(constraints: const BoxConstraints(maxWidth: 520), child: BoughtToast(item: bought, inBag: gardenBagKey(bought) == null ? _inBagOf(bought) : 0)))),
           if (picked != null) ...[
             // cảnh tối 28 % phủ cả màn (thoát lề an toàn của khung)
             Positioned(
@@ -172,7 +172,7 @@ class _ShopScreenState extends State<ShopScreen> {
                     item: picked,
                     balance: _balance,
                     count: _count,
-                    inBag: seedCrop(picked) != null ? _bag[seedCrop(picked)] ?? 0 : _inBagOf(picked),
+                    inBag: gardenBagKey(picked) != null ? _bag[gardenBagKey(picked)] ?? 0 : _inBagOf(picked),
                     placed: _placedOf(picked),
                     onCount: (k) => setState(() => _count = k),
                     onCancel: () => setState(() => _picked = null),
@@ -296,7 +296,7 @@ class _ShopScreenState extends State<ShopScreen> {
                                 short: i.price - _balance,
                                 picked: _picked?.id == i.id,
                                 landscape: landscape,
-                                inBag: i.slot == SlotKind.hat ? (_bag[seedCrop(i)] ?? 0) : _inBagOf(i),
+                                inBag: i.slot == SlotKind.hat ? (_bag[gardenBagKey(i)] ?? 0) : _inBagOf(i),
                                 placed: i.slot == SlotKind.hat ? null : _placedOf(i),
                                 onBuy: () => setState(() {
                                   _picked = i;

@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import { lambert } from '../scene/materials';
-import type { Character } from './character';
+import type { Character, ToolTip } from './character';
+import { createGardenProps, type GardenProps } from './doLamVuon';
+import { isWork, PROP_OF, workPose } from './lamVuonDang';
 
 /**
  * Màu đệ tử ngoại môn theo bản mẫu `design/source/PhongCach-CayNhanVat.dc.html`. Nhân vật không thuộc cảnh nên màu
@@ -30,7 +32,7 @@ function mesh(geo: THREE.BufferGeometry, color: string, x = 0, y = 0, z = 0): TH
 /** Bảng màu nhân vật; đổi một phần để làm người khác (vd. thầy áo xà lam) cùng dáng. */
 export type DiscipleColors = Partial<typeof DEFAULT_COLOR>;
 
-export function createDiscipleCharacter(colors: DiscipleColors = {}): Character {
+export function createDiscipleCharacter(colors: DiscipleColors = {}): Character & ToolTip {
   const COLOR = { ...DEFAULT_COLOR, ...colors };
   const root = new THREE.Group();
   const body = new THREE.Group(); // xoay theo hướng đi
@@ -105,6 +107,8 @@ export function createDiscipleCharacter(colors: DiscipleColors = {}): Character 
   shadow.position.y = 0.02;
   root.add(shadow);
 
+  // đồ cầm tay làm vườn ở bàn tay phải (tay áo phía −x — R-VUON-13): dựng khi cầm lần đầu (NPC khối không bao giờ cầm — gộp khối không vướng)
+  let props: GardenProps | null = null;
   let walkT = 0;
   let time = 0;
   let move = 0; // 0..1, mượt theo tốc độ
@@ -112,7 +116,8 @@ export function createDiscipleCharacter(colors: DiscipleColors = {}): Character 
     root,
     facing: body,
     palette: { sleeve: COLOR.robe, cuff: COLOR.trim, skin: COLOR.skin },
-    animate(dt, speed) {
+    toolTip: (out, dir) => props?.tip(out, dir) ?? false,
+    animate(dt, speed, state) {
       time += dt;
       move += (speed - move) * Math.min(1, dt * 8);
       if (speed > 0.05) walkT += dt * 10 * speed;
@@ -128,6 +133,19 @@ export function createDiscipleCharacter(colors: DiscipleColors = {}): Character 
       // dải tóc: đung đưa, đi nhanh thì bay ra sau
       ribbon.rotation.x = 0.15 + move * 0.7 + Math.sin(time * 3.1) * 0.12; // dương = hất ra sau lưng
       ribbon.rotation.z = Math.sin(time * 2.3) * 0.08;
+      // làm vườn (R-VUON-13): tay áo theo dáng `lamVuonDang.ts`, cả người cúi nhẹ (không xương hông)
+      const wk = state?.work;
+      const wp = wk ? workPose(wk.id, wk.t, wk.len) : null;
+      const ww = wp ? wp.w * (1 - move) : 0;
+      sleeves[0].rotation.x += ((wp?.aRx ?? 0) - sleeves[0].rotation.x) * ww;
+      sleeves[1].rotation.x += ((wp?.aLx ?? 0) - sleeves[1].rotation.x) * ww;
+      bob.rotation.x = (wp?.hipsX ?? 0) * 0.45 * ww;
+      bob.position.y += (wp?.lift ?? 0) * ww;
+      const held = wk?.id ?? state?.hold;
+      const prop = held && isWork(held) ? PROP_OF[held] : null;
+      if (prop && !props) props = createGardenProps(sleeves[0], new THREE.Vector3(0, -0.6, 0.06));
+      props?.show(prop);
+      props?.pose(sleeves[0], (wp?.tilt ?? 0) * ww);
     },
   };
 }

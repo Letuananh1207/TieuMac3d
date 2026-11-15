@@ -358,6 +358,29 @@ export interface GardenSpec {
   colors: { soil: string; furrow: string; wild: string; stake: string; fence: string; bin: string; ground: string };
   /** cỡ cây (nhân) — hình Kenney gốc ~0,4 m */
   cropScale: number;
+  /** hiệu ứng làm vườn (R-VUON-5/10…13 — `vuonLuong.setSoil`, `vuonSauCo.ts`, `vuonHat.ts`) */
+  fx: GardenFxSpec;
+}
+
+/** Màu / cỡ hiệu ứng vườn: đất khô / ẩm (màu luống — 0 draw call), sâu, cỏ, bể hạt (1 draw call). */
+export interface GardenFxSpec {
+  /** màu đất luống khi khô (nhạt, chờ tưới) / ẩm (sẫm, vừa tưới) — đất thường giữ `colors.soil` */
+  dry: string;
+  wet: string;
+  /** sâu xanh bò trên lá, bụi cỏ dại giữa luống */
+  bug: string;
+  weed: string;
+  /** màu hạt: hạt giống rơi, nước tưới, bụi đất, phân bón, lấp lánh xanh (bón / lớn), lấp lánh vàng (chín) */
+  seed: string;
+  water: string;
+  dust: string;
+  fert: string;
+  sparkle: string;
+  gold: string;
+  /** cỡ một hạt (m — điểm co theo khoảng cách) */
+  size: number;
+  /** số hạt tối đa đang bay cùng lúc (một bể, một draw call) */
+  pool: number;
 }
 
 /** Đoạn tường thêm, thẳng trục (from / to cùng x hoặc cùng z), màu như tường bao; dày / cao mặc định như tường bao. */
@@ -1364,6 +1387,20 @@ export const DEFAULT_SCENE: SceneSpec = {
     fence: { from: [0, 0], to: [0, 0], gate: 0, gateWidth: 1.6, height: 0.6 },
     colors: { soil: '#8a6648', furrow: '#6a4c36', wild: '#8c8a52', stake: '#6b4a30', fence: '#c2a86a', bin: '#8a5a3a', ground: '#b48d68' },
     cropScale: 1.6,
+    fx: {
+      dry: '#cbb08a',
+      wet: '#5a3f2c',
+      bug: '#7cc04a',
+      weed: '#4a7a26',
+      seed: '#f1cf5a',
+      water: '#8fd0ff',
+      dust: '#b8946a',
+      fert: '#6b4a2e',
+      sparkle: '#b8ff8a',
+      gold: '#ffe27a',
+      size: 0.12,
+      pool: 160,
+    },
   },
   teaStyle: {
     width: 0.85,

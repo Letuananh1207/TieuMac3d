@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { STARTER_COUNTS } from './decor';
-import { boughtView, cardState, confirmView, DECOR_ENTRIES, SEED_GRID_HINT, SEED_ITEMS, SEED_QTY, seedCrop, seedLine, SHOP_TABS, shopBanner, shopGroups, stockLine } from './shopView';
+import { bagKey, boughtView, cardState, isFertEntry, confirmView, DECOR_ENTRIES, SEED_GRID_HINT, SEED_ITEMS, SEED_QTY, seedCrop, seedLine, SHOP_TABS, shopBanner, shopGroups, stockLine } from './shopView';
 
 const DECOR_ITEMS = DECOR_ENTRIES;
 const item = (id: string) => {
@@ -61,7 +61,7 @@ describe('Tạp hoá bản web — thẻ theo cái, tab, dải (R-TIEN-4)', () =
 describe('Tạp hoá — hạt giống (R-VUON-9)', () => {
   it('R-VUON-9: 8 thẻ hạt, mua nhiều lần (không "Đã có"); thiếu → "Còn thiếu 1"; chữ xác nhận + tấm đã mua', () => {
     expect(SEED_ITEMS.map((i) => `${i.name} ${i.price}`)).toEqual([
-      'Hạt Cải ngọt 4', 'Hạt Củ cải 6', 'Hạt Ngô 8', 'Hạt Lúa 10', 'Hạt Bí đỏ 12', 'Hạt Hoa cúc 14', 'Hạt Dưa hấu 16', 'Hạt Trà 20',
+      'Hạt Cải ngọt 4', 'Hạt Củ cải 6', 'Hạt Ngô 8', 'Hạt Lúa 10', 'Hạt Bí đỏ 12', 'Hạt Hoa cúc 14', 'Hạt Dưa hấu 16', 'Hạt Trà 20', 'Phân bón 10',
     ]);
     const cai = SEED_ITEMS[0];
     expect(cardState(cai, 10).state).toBe('buy');
@@ -92,5 +92,18 @@ describe('Tạp hoá — hạt giống (R-VUON-9)', () => {
     expect(s.buy).toBe('Còn thiếu 30');
     expect(s.rows[2]).toEqual(['Còn lại', '—']);
     expect(SEED_QTY).toEqual([1, 5, 10]);
+  });
+
+  it('R-VUON-12: thẻ Phân bón 10 Văn / bao cùng mục hạt; có 40, × 5 → "Giá (5 bao) −50", "Còn thiếu 10"; tấm đã mua', () => {
+    const phan = SEED_ITEMS[SEED_ITEMS.length - 1];
+    expect(isFertEntry(phan)).toBe(true);
+    expect(bagKey(phan)).toBe('phan');
+    expect(seedLine(phan, { phan: 3 })).toEqual({ inBag: 3, text: 'Trong túi: 3', time: null });
+    const v = confirmView(phan, 40, { count: 5, inBag: 3 });
+    expect(`${v.before} ${v.after}`).toBe('Mua Phân bón · 10 Văn tiền / bao');
+    expect(v.sub).toBe('Phân vào túi · bón ở Vườn rau cho mau lớn. Trong túi: 3.');
+    expect(v.rows[1]).toEqual(['Giá (5 bao)', '−50']);
+    expect(v.buy).toBe('Còn thiếu 10');
+    expect(boughtView(phan).sub).toBe('Về Vườn rau để bón — phân ở trong túi.');
   });
 });

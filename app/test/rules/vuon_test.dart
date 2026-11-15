@@ -80,7 +80,7 @@ void main() {
 
   group('tưới (R-VUON-5)', () {
     test('R-VUON-5: Cải ngọt 9:00 — tưới 9:01; 9:10 chưa tới lượt 2; 9:20 tưới; 9:30 chín thu 4', () {
-      var g = withPlot(Garden.fresh(), 'o-1', Plot(crop: 'cai', plantedAt: vn(14, 9)));
+      var g = withPlot(Garden.fresh(), 'o-1', Plot(crop: 'cai', plantedAt: vn(14, 9), bug: 1, weed: 1)); // đã sạch sâu / cỏ
       g = done(water(g, 'o-1', vn(14, 9, 1)));
       expect(water(g, 'o-1', vn(14, 9, 10)), const GardenRefused(GardenError.dry));
       g = done(water(g, 'o-1', vn(14, 9, 20)));
@@ -91,8 +91,8 @@ void main() {
 
     test('R-VUON-5: chỉ tưới lượt 1 → thu 3; không tưới → thu 2; chín thì không tưới nữa', () {
       final p = Plot(crop: 'cai', plantedAt: vn(14, 9));
-      expect(yieldOf(const Plot(crop: 'cai', watered: 1)), 3);
-      expect(yieldOf(p), 2);
+      expect(yieldOf(const Plot(crop: 'cai', watered: 1, bug: 1, weed: 1), 'o-1'), 3);
+      expect(yieldOf(p, 'o-1'), 2);
       expect(canWater(p, vn(14, 9, 30)), isFalse);
       expect(canWater(p, vn(14, 9)), isTrue);
     });
@@ -100,7 +100,7 @@ void main() {
 
   group('thu hoạch (R-VUON-6)', () {
     test('R-VUON-6: thu Bí đỏ tưới 2 lượt → +4 vào kho, luống trống; chưa chín → not-ripe', () {
-      final g = withPlot(Garden.fresh(), 'o-2', Plot(crop: 'bi', plantedAt: vn(14, 8), watered: 2));
+      final g = withPlot(Garden.fresh(), 'o-2', Plot(crop: 'bi', plantedAt: vn(14, 8), watered: 2, bug: 1));
       expect(harvest(g, 'o-2', vn(14, 11)), const GardenRefused(GardenError.notRipe));
       final r = harvest(g, 'o-2', vn(14, 12)) as GardenDone;
       expect(r.got, 4);

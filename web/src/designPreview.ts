@@ -256,8 +256,9 @@ async function boot(): Promise<void> {
   // ?dang=vuon-rau — vườn rau điền sẵn + bảng mẫu 8 cây × 4 dáng (vuonPreview.ts, R-VUON-4)
   // ?dang=dan-tranh — nhạc công thế (nhan-vat.glb; artifact không có .glb → đệ tử khối đứng) ngồi gảy trên bục đàn + tiếng đàn, để duyệt chỗ (R-NPC-9, R-AM-2)
   const dan = params.get('dang') === 'dan-tranh' ? await DanTranh.create(scene, spec, (x, z) => world.surface.heightAt(x, z), { url: PLAYER_MODEL_URL, block: () => createDiscipleCharacter() }) : null;
-  const vuon = addGardenPreview(scene, spec, world.garden, params, (x, z) => world.surface.heightAt(x, z));
-  if (vuon) el('problems').append(...vuon.map((t) => li(t)));
+  // ?dang=lam-vuon[&viec=…][&t=…] — nhân vật diễn 6 việc làm vườn + hạt / nước / sâu / cỏ / quả bay (vuonPreview.ts, R-VUON-13)
+  const vuon = addGardenPreview(scene, spec, world.garden, params, (x, z) => world.surface.heightAt(x, z), character);
+  if (vuon) el('problems').append(...vuon.lines.map((t) => li(t)));
   // 3 trò nhỏ Trúc Lâm (V-66 B4): đệm đàn, măng hôm nay, mưa, chén lệnh — `?dang=luu-thuong|hai-mang[&mua]` (trucLamPreview.ts)
   const truc = addTrucLamPreview(scene, colliders, spec, world, params);
   if (truc?.lines.length) el('problems').append(...truc.lines.map((t) => li(t)));
@@ -422,6 +423,7 @@ async function boot(): Promise<void> {
       bieuCam.apply(dt, poseState);
       el('pick').textContent = `Biểu cảm: ${bieuCam.current.name}`;
     }
+    vuon?.update(dt, poseState);
     character.animate(dt, stateNow().mps / RUN_SPEED, stateNow());
     cuon?.update(dt, character.root.position, character.facing.rotation.y, 2);
     for (const npc of npcSet.npcs) npc.update(dt);
