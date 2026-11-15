@@ -196,9 +196,11 @@ export const SQUARE_TILE_M = 4.8;
 
 /**
  * Sân lát gạch vuông xanh xám (方磚 / 青磚): viên 0,6 m xếp lưới, mạch vữa sáng mảnh, mép vát, mỗi viên đậm nhạt khác nhau,
- * thỉnh thoảng một viên mòn / sẫm. Một lần lặp = `SQUARE_TILE_M` mét.
+ * thỉnh thoảng một viên mòn / sẫm. Một lần lặp = `SQUARE_TILE_M` mét. `variation`: độ chênh sáng tối giữa các viên
+ * (`ground.variation`; 0,18 = cũ) — viên sẫm, vết mòn nhạt theo tỉ lệ (V-44: nền đồng màu, không lốm đốm).
  */
-export function squareTileTex(color: string): THREE.CanvasTexture {
+export function squareTileTex(color: string, variation = 0.18): THREE.CanvasTexture {
+  const r = variation / 0.18; // tỉ lệ so với cũ
   const t = makeCanvasTex(
     512,
     512,
@@ -209,12 +211,12 @@ export function squareTileTex(color: string): THREE.CanvasTexture {
       g.fillRect(0, 0, 512, 512);
       for (let y = 0; y < n; y++) {
         for (let x = 0; x < n; x++) {
-          let k = 0.9 + Math.random() * 0.18;
-          if (Math.random() < 0.06) k -= 0.12; // viên sẫm / cũ
+          let k = 0.99 - variation / 2 + Math.random() * variation;
+          if (Math.random() < 0.06) k -= 0.12 * r; // viên sẫm / cũ
           bevelTile(g, x * s + 2, y * s + 2, s - 4, s - 4, shade(color, k), 3);
           if (Math.random() < 0.08) {
             // vết mòn loang giữa viên
-            g.fillStyle = 'rgba(255,255,255,0.06)';
+            g.fillStyle = `rgba(255,255,255,${0.06 * Math.min(1, r)})`;
             g.beginPath();
             g.ellipse(x * s + s / 2, y * s + s / 2, s * 0.3, s * 0.2, Math.random() * 3, 0, Math.PI * 2);
             g.fill();

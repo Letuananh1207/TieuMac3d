@@ -143,6 +143,13 @@ describe('R-VA-1: phía đông — Sân Cổ Thụ + Mặc Trì không tường 
     expect(walk(real(), 30, 22, 0, 1, 10).z).toBeCloseTo(24.25, 2);
   });
 
+  it('R-VA-1 (V-44): tường không đầu cụt — nam Mặc Trì gập góc ở x 17 (từ (20; 21) đi tây dừng ở x 17,75); đông x 42 tới chân trà lâu', () => {
+    expect(walk(real(), 20, 21, -1, 0, 10).x).toBeCloseTo(17.75, 2);
+    const segs = spec.wallSegments;
+    expect(segs.some((s) => s.from[0] === 17 && s.from[1] === 17 && s.to[0] === 17 && s.to[1] === 25)).toBe(true);
+    expect(segs.find((s) => s.from[0] === 42 && s.to[0] === 42)!.from[1]).toBeCloseTo(-26.4, 6);
+  });
+
   it('R-VA-1: tường bắc Tàng Thư Các z −32 có cổng trăng hậu tâm x −33 rộng 5, lối 4 m; từ (−33; −29) đi bắc qua được ra Vườn Bia, x −37 dừng ở z −31,25', () => {
     const g = wallGates(spec.walls, spec.wallSegments).find((q) => q.axis === 'x' && q.fixed === -32 && q.at === -33)!;
     expect([g.width, g.kind]).toEqual([5, 'trang']);

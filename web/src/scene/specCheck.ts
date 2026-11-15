@@ -375,7 +375,7 @@ const LISTS: Record<string, ItemParser> = {
     { height: 0, thickness: 0, follow: true, gate: { at: 0, width: 0, kind: 'trang', signs: SIGNS0, clearHeight: 0, roof: true } },
     all(axisAligned, positive('height', 'thickness'), thicknessOk, segmentGateOk),
   ),
-  paths: item({ from: XZ0, to: XZ0, width: 0 }, { color: '#000000' }, positive('width')),
+  paths: item({ from: XZ0, to: XZ0, width: 0 }, { color: '#000000', edge: true }, positive('width')),
   gates: item(
     { id: '', x: 0, z: 0, width: 0, title: '' },
     { rotY: 0, hanTitle: '', roofColor: '#000000', model: '', modelScale: 0, height: 0, backTitle: '' },
@@ -416,7 +416,7 @@ const LISTS: Record<string, ItemParser> = {
     all(oneOf('kind', TREE_KINDS), positive('w', 'd', 'count')),
   ),
   'floating.islands': item({ x: 0, y: 0, z: 0, scale: 0 }, {}, positive('scale')),
-  'terrain.plateaus': item({ from: XZ0, to: XZ0, y: 0 }, { pave: true, blend: 0, rail: true }, positive('blend')),
+  'terrain.plateaus': item({ from: XZ0, to: XZ0, y: 0 }, { pave: true, blend: 0, rail: true, edge: true }, positive('blend')),
   'terrain.peaks': item({ x: 0, z: 0, r: 0, h: 0 }, {}, positive('r')),
   'terrain.dunes': item({ x: 0, z: 0, len: 0, h: 0 }, { rotY: 0, width: 0 }, positive('len', 'h', 'width')),
   'terrain.stairs': item({ from: XZ0, to: XZ0, width: 0 }, {}, positive('width')),
@@ -606,6 +606,9 @@ function checkLanterns(s: SceneSpec): string[] {
   if (st.drop <= 0) out.push('lanternStyle.drop: > 0');
   if (s.fences.length && (s.fenceStyle.height <= 0 || s.fenceStyle.postEvery < 0.5)) out.push('fenceStyle: height > 0, postEvery ≥ 0,5');
   if (!FENCE_KINDS.includes(s.fenceStyle.kind)) out.push(`fenceStyle.kind: chỉ ${FENCE_KINDS.join(' · ')}`);
+  if (s.ground.variation < 0 || s.ground.variation > 0.4) out.push('ground.variation: 0 … 0,4');
+  const pe = s.buildingStyle.pathEdge;
+  if (pe.width < 0 || pe.width > 1 || pe.height < 0 || pe.height > 0.3) out.push('buildingStyle.pathEdge: width 0 … 1, height 0 … 0,3 (gờ thấp)');
   s.lanternStrings.forEach((l, i) => {
     if (Math.hypot(l.to[0] - l.from[0], l.to[1] - l.from[1]) < 2) out.push(`lanternStrings[${i}]: dây ngắn hơn 2 m`);
   });

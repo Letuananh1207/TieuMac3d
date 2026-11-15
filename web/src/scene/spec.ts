@@ -284,6 +284,8 @@ export interface PathSpec {
   to: XZ;
   width: number;
   color?: string;
+  /** `false` = không bó vỉa lối này (khi `buildingStyle.pathEdge.width` > 0) */
+  edge?: boolean;
 }
 
 /** Cổng sơn môn: mái, hai cột, bảng hiệu; mặt trước nhìn +z trước khi quay. Va chạm chỉ ở hai cột. */
@@ -579,6 +581,8 @@ export interface PlateauSpec {
   blend?: number;
   /** lan can đá trắng quanh mép bục (Tam Đài), tự chừa chỗ bậc đá */
   rail?: boolean;
+  /** bục lát (`pave`): bó vỉa đá `buildingStyle.pathEdge` quanh mép, chừa chỗ lối vào (V-44) */
+  edge?: boolean;
 }
 
 /**
@@ -722,8 +726,11 @@ export interface SceneSpec {
      */
     lampGlow: number;
   };
-  /** `pattern`: kiểu gạch lát (`PAVE_PATTERNS`); `vuong` lấy `color` làm màu viên gạch, bỏ qua `brickHue`. */
-  ground: { size: number; color: string; brickHue: number; pattern: (typeof PAVE_PATTERNS)[number] };
+  /**
+   * `pattern`: kiểu gạch lát (`PAVE_PATTERNS`); `vuong` lấy `color` làm màu viên gạch, bỏ qua `brickHue`.
+   * `variation`: độ chênh sáng tối ngẫu nhiên giữa các viên (0 = đồng màu; 0,18 = cũ, lốm đốm). Viên sẫm / vết mòn nhạt theo.
+   */
+  ground: { size: number; color: string; brickHue: number; pattern: (typeof PAVE_PATTERNS)[number]; variation: number };
   /**
    * Địa hình cao thấp (`enabled: false` = mặt sân phẳng `ground` như cũ). Đất tự nhiên = nhiễu nhẹ + các đỉnh;
    * bục khu và lối lát đá được ép phẳng; ngoài bán kính `edge.radius` (tính từ `center`) đất đổ xuống vực.
@@ -799,6 +806,12 @@ export interface SceneSpec {
     path: string;
     /** mặt lối lát: `phien` phiến đá màu `path` (cảnh gốc) · `san` cùng gạch với sân lát (`ground`), mạch gạch liền */
     pathLook: 'phien' | 'san';
+    /**
+     * Bó vỉa đá (V-44): gờ thấp `width` × `height` (m) màu `color` dọc hai mép mỗi lối lát (`paths`, trừ `edge: false`) và
+     * quanh bục lát có `edge: true`. Tự chừa chỗ lối khác cắt vào, chỗ lối chạy trên sân lát cùng gạch (không thấy ranh).
+     * `width` 0 = không có (như cũ). Không va chạm.
+     */
+    pathEdge: { width: number; height: number; color: string };
     bronze: string;
     herb: string;
     smoke: string;
@@ -943,7 +956,7 @@ export const DEFAULT_SCENE: SceneSpec = {
     sunPosition: [-12, 20, 8],
     lampGlow: 0,
   },
-  ground: { size: 90, color: '#5b3f37', brickHue: 10, pattern: 'gach' },
+  ground: { size: 90, color: '#5b3f37', brickHue: 10, pattern: 'gach', variation: 0.18 },
   // tắt: cảnh gốc phẳng. Giá trị dưới là gợi ý cho hướng "cao nguyên giữa biển mây" (docs/tham_khao/dia-hinh-tong-mon.md)
   terrain: {
     enabled: false,
@@ -983,6 +996,7 @@ export const DEFAULT_SCENE: SceneSpec = {
     water: '#2b4a6a',
     path: '#7d726a',
     pathLook: 'phien',
+    pathEdge: { width: 0, height: 0.08, color: '#c9c3b6' },
     bronze: '#8a6a3a',
     herb: '#5f9a48',
     smoke: '#d8d4cc',

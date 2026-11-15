@@ -9,6 +9,8 @@ import type { SceneSpec } from './spec';
 
 /** Sân lát nổi trên mặt đất một chút để không nhấp nháy (z-fighting). */
 const PAVE_LIFT = 0.03;
+/** Chất nền khu (`terrain.floors`) nổi trên sân lát (lối lát `paths` nằm trên nữa: `PATH_LIFT` 0,05). */
+const FLOOR_LIFT = 0.04;
 
 function hash(i: number, j: number): number {
   const h = Math.imul(i, 73856093) ^ Math.imul(j, 19349663);
@@ -168,7 +170,8 @@ function addFloors(scene: THREE.Scene, spec: SceneSpec): void {
       const tint = [c.r / base.r, c.g / base.g, c.b / base.b];
       const [x0, x1] = [Math.min(f.from[0], f.to[0]), Math.max(f.from[0], f.to[0])];
       const [z0, z1] = [Math.min(f.from[1], f.to[1]), Math.max(f.from[1], f.to[1])];
-      const y = (f.y ?? 0) + PAVE_LIFT; // cùng mặt sân lát; thứ tự vẽ nhờ polygonOffset
+      // trên mặt sân lát 1 cm (V-44: chỉ nhờ polygonOffset thì nhìn từ xa / từ trên vẫn chớp sọc), dưới lối lát (`PATH_LIFT`)
+      const y = (f.y ?? 0) + FLOOR_LIFT;
       // hai tam giác hướng lên: (x0,z1) (x1,z1) (x1,z0) · (x0,z1) (x1,z0) (x0,z0); UV theo toạ độ cảnh (x, −z) như sân lát
       for (const [x, z] of [[x0, z1], [x1, z1], [x1, z0], [x0, z1], [x1, z0], [x0, z0]]) {
         pos.push(x, y, z);

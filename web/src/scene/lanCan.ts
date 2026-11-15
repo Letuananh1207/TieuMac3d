@@ -27,6 +27,13 @@ export function addFences(scene: THREE.Scene, colliders: Colliders, spec: SceneS
   const ground = (x: number, z: number): number => (groundY ? groundY(x, z) : 0);
   // búp sen 8 mặt (cầu 6 × 4 tốn ~5 lần tam giác — ~66 trụ quanh Quảng Trường)
   const bud = st.kind === 'da' ? new THREE.OctahedronGeometry(BUD_R, 0) : null;
+  // hai đoạn gặp nhau ở góc (cùng điểm đầu / cuối) dùng chung một trụ góc — không dựng trùng (V-44: góc lan can liền)
+  const posts: [number, number][] = [];
+  const newPost = (x: number, z: number): boolean => {
+    if (posts.some(([px, pz]) => Math.abs(px - x) < 0.05 && Math.abs(pz - z) < 0.05)) return false;
+    posts.push([x, z]);
+    return true;
+  };
   for (const f of spec.fences) {
     const [ax, az] = f.from;
     const [bx, bz] = f.to;
@@ -44,6 +51,7 @@ export function addFences(scene: THREE.Scene, colliders: Colliders, spec: SceneS
       for (let i = 0; i <= n; i++) {
         const x = ax + ((bx - ax) * i) / n;
         const z = az + ((bz - az) * i) / n;
+        if (!newPost(x, z)) continue;
         scene.add(box(STONE_POST, h, STONE_POST, st.color, x, y + h / 2, z));
         scene.add(box(STONE_POST + 0.06, 0.08, STONE_POST + 0.06, st.cap, x, y + h + 0.04, z));
         const m = new THREE.Mesh(bud!, lambert(st.cap));
@@ -58,6 +66,7 @@ export function addFences(scene: THREE.Scene, colliders: Colliders, spec: SceneS
       for (let i = 0; i <= n; i++) {
         const x = ax + ((bx - ax) * i) / n;
         const z = az + ((bz - az) * i) / n;
+        if (!newPost(x, z)) continue;
         scene.add(box(POST, st.height, POST, st.color, x, y + st.height / 2, z));
         scene.add(box(POST + 0.08, 0.1, POST + 0.08, st.cap, x, y + st.height + 0.05, z));
       }

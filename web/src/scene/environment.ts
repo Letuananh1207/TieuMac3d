@@ -70,11 +70,13 @@ export function addEnvironment(scene: THREE.Scene, spec: SceneSpec, far = 200): 
 export const paveTileM = (gs: SceneSpec['ground']): number => (gs.pattern === 'vuong' ? SQUARE_TILE_M : 8);
 
 export function brickTexture(gs: SceneSpec['ground'], repeat?: [number, number]): THREE.CanvasTexture {
+  const v = gs.variation ?? 0.18;
   if (gs.pattern === 'vuong') {
-    const t = squareTileTex(gs.color);
+    const t = squareTileTex(gs.color, v);
     if (repeat) t.repeat.set(repeat[0], repeat[1]);
     return t;
   }
+  const r = v / 0.18; // độ chênh giữa các viên so với cũ (V-44)
   return makeCanvasTex(
     256,
     256,
@@ -84,8 +86,8 @@ export function brickTexture(gs: SceneSpec['ground'], repeat?: [number, number])
       for (let y = 0; y < 8; y++) {
         for (let x = 0; x < 4; x++) {
           const off = (y % 2) * 32;
-          const l = 40 + Math.random() * 14;
-          g.fillStyle = `hsl(${gs.brickHue},${20 + Math.random() * 8}%,${l * 0.7}%)`;
+          const l = 47 + (Math.random() - 0.5) * 14 * r;
+          g.fillStyle = `hsl(${gs.brickHue},${24 + (Math.random() - 0.5) * 8 * r}%,${l * 0.7}%)`;
           g.fillRect(x * 64 + off - 64 + 2, y * 32 + 2, 60, 28);
           g.fillRect(x * 64 + off + 2, y * 32 + 2, 60, 28);
         }

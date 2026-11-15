@@ -21,7 +21,7 @@ import { isColorManaged, isSoft } from './look';
 import { createDayNight, type DayNight } from './apGio';
 import { addNightSky } from './troiDem';
 import { resetSignAtlas } from './signAtlas';
-import { addPaths } from './paths';
+import { addCurbs, addPaths } from './paths';
 import { addProps, DEN_DA_LIGHT_Y } from './props';
 import { addLanternGlow } from './quangDen';
 import { addFloating } from './sky';
@@ -165,6 +165,7 @@ function* worldSteps(
   // độ cao nền của nhà / cổng / ao / giếng: tâm của nó trên mặt đất (nằm trên bục → độ cao bục)
   const base = (x: number, z: number): number => (groundY ? groundY(x, z) : 0);
   addPaths(scene, spec.paths, style.path, groundY, style.pathLook === 'san' ? spec.ground : undefined);
+  addCurbs(scene, spec, groundY);
   addWalls(scene, colliders, spec.walls, spec.wallSegments, style, groundY);
   yield 'loi-tuong';
   const kinds = roomKinds(spec.buildings, interiors);

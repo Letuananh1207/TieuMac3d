@@ -103,7 +103,8 @@ export function daKhac(g: THREE.Group, style: Style, text: string): [number, num
   g.add(rock);
   const w = Math.min(2.2, 0.45 * textUnits(text) + 0.3);
   const face = signMesh(w, 0.6, Math.round(w * 160), 96, (cx, pw, ph) => drawStoneSign(cx, pw, ph, text, style.stone));
-  face.position.set(0, 0.72, 0.44);
+  // trước mặt đá: đỉnh khối mười hai mặt nhô tới z ≈ 0,47 (y ≈ 0,89) — mặt chữ ở 0,44 bị đỉnh đá đâm xuyên, che chữ (V-44)
+  face.position.set(0, 0.72, 0.52);
   face.rotation.x = -0.12;
   g.add(face);
   return [2.8, 1.1];
