@@ -10,6 +10,13 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
 - 9 `bon-hoa` scale 1,1: mai / lan (27,5; 0,5) · (32,5; 0,5); cúc / trúc (25,6; −7) · (34,4; −7); cúc / lan (20,9; 7,9) · (25,1; 7,9);
   trúc (25,1; 18,8); mai / lan (36,4; 7,6) · (40,6; 7,6). Bỏ tùng (12,5; −12,5). Code `bonHoa` bớt mặt khuất, hoa khối 8 mặt (cùng dáng).
 - Không chạm luật. Nhìn từ trên 140 draw call / 149 863 tam giác. Ảnh: `screens/Canh-bon-hoa-cong-vien.png`.
+## 2026-11-15.26 — Vòng sáng đi bộ trấn ↔ Trúc Lâm
+
+- Loại: cảnh 3D — bố cục. Phiên code V-20261114-57; người dùng (ảnh cuối lối đá phía đông): "thêm vòng sáng như về nhà nhưng mà là
+  đến rừng trúc". **Đã duyệt 2026-11-15.**
+- `scene.json` `portals` + cổng → `rung-truc`, nhãn "Trúc Lâm", vùng (40; 2,8)…(42,4; 5,2) cuối trục đông – tây trong khe hàng trúc; về đứng
+  (38,6; 4) nhìn tây. `rung-truc.json` `portals` → `tong-mon`, nhãn "Khởi Nguyên Trấn", vùng (−8,6; 37,8)…(−6,2; 40,2); tới đứng (−5; 38,6).
+- Luật: R-HANH-4, R-BANDO-2, R-MAN-2. Trấn nhìn từ trên 145 draw call / 148 453 tam giác. Ảnh: `screens/Canh-vong-truc-lam.png`.
 
 ## 2026-11-15.24 — Bỏ 4 bồn hoa quanh nhật quỹ ở Quảng Trường
 
