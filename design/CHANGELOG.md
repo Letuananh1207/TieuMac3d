@@ -3,6 +3,15 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-15.45 — Nhà của ta: vùng đặt đồ trang trí tự do (`decorArea`) thay 12 ô
+
+- Loại: cảnh 3D — bố cục + Cần code (đã làm). Phiên code V-20261115-69 (kế hoạch `docs/tasks/2026-11-15-trang-tri-tu-do.md`; HUD áp thiết kế
+  2026-11-15.42). **Đã duyệt 2026-11-15.**
+- Bỏ `decorSlots` (12 ô); thêm `decorArea` (mặc định null): `nha-ta` đa giác đảo x −22…22, z −16,5…12,5, cấm lối trục x ±1,6, lối nhánh
+  z −2,8…0, trước cửa nhà, Bến mây; trần 40 món, dốc ≤ 0,35. `nha-ta-trong` phòng ±6,35 × ±4,35, trần 20 (thảm cửa là vùng cấm tự sinh).
+  Kiểm còn đường đi tới Bến mây / cửa / cổng vườn / thùng thu mua. Đồ vẽ bằng InstancedMesh: 40 món +17 draw call. Luật R-NHA-2…7, R-TIEN-4/7,
+  R-TUI-1. `design/l10n/vi.arb` còn các chuỗi ô cũ (`decorSlot*`, `bagPlaced`) — thiết kế dọn. Ảnh: `screens/Canh-nha-ta-trang-tri-tu-do.png`.
+
 ## 2026-11-15.43 — Gian trong kiểu nhà 摩尔: không trần, camera chéo thấy cả phòng, ra bằng nút trên thảm cửa
 
 - Loại: cảnh 3D — bố cục + ngoại hình + Cần code (đã làm). Phiên code V-20261115-71 (người dùng: "không nên có trần, góc nhìn rộng hơn, bỏ lối
