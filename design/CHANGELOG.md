@@ -3,6 +3,30 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-15.29 — Vườn rau: nút nổi luống, chọn hạt, kho + bán, mở ô, tấm báo; Tạp hoá mục Hạt giống
+
+- Loại: giao diện · token · chuỗi · luồng/luật (đề xuất). Màn: **Vườn rau** (HUD web, Nhà của ta) + **Tạp hoá — Hạt giống** (Flutter + bản
+  web) — đặc tả `docs/screen_specs.md` mục "Vườn rau".
+- Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-15-vuon-trong-trot.md` (phiếu còn trong máy, chưa lên GitHub — dòng "Đã vẽ" ghi ở bản trong
+  máy). Vẽ trong phiên VS Code theo vai thiết kế; người dùng duyệt "Ổn, chốt".
+- **Mã .29**: các mục 2026-11-15.10 → .28 đã có ở `main` / nhánh việc trong máy (chưa đẩy) — nhảy qua để khỏi trùng.
+- Artboard (20): `VuonRau-nut-trang-thai`, `VuonRau-doc`, `VuonRau-ngang`, `VuonRau-hat-{doc,ngang,moi-doc,trong-doc}`,
+  `VuonRau-kho-{doc,ngang,trong-doc,du-doc,vua-ban-doc}`, `VuonRau-mo-o-{doc,ngang,thieu-doc}`, `VuonRau-tam-bao`,
+  `CuaHang-hat-{doc,ngang,xac-nhan-doc}`, `VuonRau-ghi-chu` (+ `canvas.json`).
+- Quyết định: nút nổi kiểu "Hướng dẫn"; luống đang lớn chỉ nhãn + vạch; dấu giọt nước / lấp lánh thấy từ xa; bảng hạt / kho / mở ô dùng
+  tấm đáy của bảng danh mục trang trí (ngang cột phải 310); chân bảng kho có chip túi hạt; vượt trần bán phần vừa đủ với nhãn giải thích;
+  tấm báo đặt cạnh bản đồ nhỏ; Tạp hoá thêm "Trong túi: n" + gói hạt trên thẻ.
+- Token mới: `color.garden-water` #5B9BC4 (giọt nước; `map-water` quá nhạt trên đất nâu).
+- Chuỗi mới: xem đặc tả (≈ 50 khoá `garden*`, `shop*Seed*`, `wallet*`, `crop*`). Thẻ "Văn tiền kiếm từ đâu": xác nhận dòng
+  "Bán nông sản ở Vườn rau · tối đa 60 / ngày".
+- **Luật — đề xuất cho phiên code** (hỏi người dùng rồi sửa sổ):
+  - R-VUON-9 ghi "mỗi lần mua 1 hạt": thiết kế thêm **chọn × 1 · × 5 · × 10** trong hộp xác nhận (giá nhân theo; thiếu cho số đã chọn →
+    "Còn thiếu n"). Chốt thì sửa câu luật + ví dụ; không chốt thì bỏ hàng chọn số.
+  - R-VUON-7: ghi rõ nút "Bán · +n" khi tổng vượt phần trần còn lại (đã đúng ý luật, chỉ thêm chữ).
+  - Ấn son 雜貨 của Tạp hoá (2026-11-14.12, vẽ trước R-HUD-4) trái R-HUD-4 — artboard hạt giống dùng ấn chữ Việt "Tạp hoá"; đề xuất đổi
+    ấn cũ theo.
+- Ảnh: `screens/VuonRau-*.png` (17), `screens/CuaHang-hat-*.png` (3) — cảnh vườn là hình giữ chỗ.
+
 ## 2026-11-15.9 — Cưỡi hạc: màn mây khi tải lại + lớp chữ khi bay
 
 - Loại: giao diện · chuỗi. Màn: **Cưỡi hạc** (HUD web, biến thể Màn tải khi `den=hac`) — đặc tả `docs/screen_specs.md` mục cùng tên.

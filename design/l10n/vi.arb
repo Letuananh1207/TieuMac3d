@@ -980,5 +980,209 @@
   "craneAlmostThere": "Sắp tới nơi",
   "@craneAlmostThere": {
     "description": "Thay gợi ý sau khi đã chạm bỏ qua mà cảnh nơi đến chưa dựng xong (kèm 3 chấm)"
-  }
+  },
+  "gardenName": "Vườn rau",
+  "@gardenName": {
+    "description": "Tên khu vườn ở Nhà của ta"
+  },
+  "gardenSow": "Gieo",
+  "@gardenSow": {
+    "description": "Nút nổi luống trống"
+  },
+  "gardenWater": "Tưới",
+  "@gardenWater": {
+    "description": "Nút nổi luống tưới được"
+  },
+  "gardenHarvest": "Thu",
+  "@gardenHarvest": {
+    "description": "Nút nổi luống chín"
+  },
+  "gardenUnlock": "Mở ô",
+  "@gardenUnlock": {
+    "description": "Nút nổi đất hoang (kèm viên giá)"
+  },
+  "gardenSell": "Bán",
+  "@gardenSell": {
+    "description": "Nút nổi thùng thu mua; nút bán từng loại"
+  },
+  "gardenSellAll": "Bán hết · +{n}",
+  "@gardenSellAll": {
+    "description": "Nút lớn chân bảng kho"
+  },
+  "gardenSellUpTo": "Bán · +{n}",
+  "@gardenSellUpTo": {
+    "description": "Nút lớn khi tổng vượt phần trần còn lại"
+  },
+  "gardenPickSeed": "Chọn hạt để gieo",
+  "@gardenPickSeed": {
+    "description": "Tiêu đề bảng chọn hạt"
+  },
+  "gardenPickSeedSub": "Luống {n} · tưới 2 lượt thì thu được nhiều nhất",
+  "@gardenPickSeedSub": {
+    "description": "Dòng phụ bảng chọn hạt"
+  },
+  "gardenSeedLeft": "còn {n}",
+  "@gardenSeedLeft": {
+    "description": "Viên số hạt trên thẻ hạt"
+  },
+  "gardenBagEmpty": "Túi hạt trống — mua hạt ở Tạp hoá trấn",
+  "@gardenBagEmpty": {
+    "description": "Bảng chọn hạt khi túi trống"
+  },
+  "gardenBagEmptyHint": "Tạp hoá ở phố chợ Khởi Nguyên Trấn, gần Cổng Trấn. Đi bằng vòng trận ở cổng nhà.",
+  "@gardenBagEmptyHint": {
+    "description": "Dòng phụ túi trống"
+  },
+  "gardenTapToSow": "Chạm một hạt để gieo ngay · hạt mua ở Tạp hoá trấn",
+  "@gardenTapToSow": {
+    "description": "Chân bảng chọn hạt"
+  },
+  "gardenGrowing": "{crop} · còn {time}",
+  "@gardenGrowing": {
+    "description": "Nhãn luống đang lớn không tưới được"
+  },
+  "gardenTimeHM": "{h} giờ {m} phút",
+  "@gardenTimeHM": {
+    "description": "Thời gian còn lại"
+  },
+  "gardenTimeM": "{m} phút",
+  "@gardenTimeM": {
+    "description": "Thời gian còn lại"
+  },
+  "gardenTimeUnder1": "chưa tới 1 phút",
+  "@gardenTimeUnder1": {
+    "description": "Thời gian còn lại dưới 1 phút"
+  },
+  "gardenRipe": "đã chín",
+  "@gardenRipe": {
+    "description": "Trạng thái chín"
+  },
+  "gardenSellPrice": "bán {n} / cái",
+  "@gardenSellPrice": {
+    "description": "Giá bán trên thẻ hạt / dòng kho"
+  },
+  "gardenShort": "Còn thiếu {n}",
+  "@gardenShort": {
+    "description": "Nút khi thiếu Văn tiền"
+  },
+  "gardenStore": "Kho nông sản",
+  "@gardenStore": {
+    "description": "Tiêu đề bảng kho"
+  },
+  "gardenSoldToday": "Hôm nay đã bán {n} / 60 Văn tiền",
+  "@gardenSoldToday": {
+    "description": "Dòng phụ bảng kho + vạch"
+  },
+  "gardenStoreEmpty": "Kho trống — thu hoạch rồi mang tới đây",
+  "@gardenStoreEmpty": {
+    "description": "Kho trống"
+  },
+  "gardenStoreEmptyHint": "Luống chín có lấp lánh. Mỗi luống cho 2–4 cái (tưới càng đủ càng nhiều).",
+  "@gardenStoreEmptyHint": {
+    "description": "Dòng phụ kho trống"
+  },
+  "gardenCapReached": "Hôm nay thu mua đã đủ — mai bán tiếp",
+  "@gardenCapReached": {
+    "description": "Dải vàng khi đủ trần"
+  },
+  "gardenCapLeft": "Hôm nay còn bán được {n} — phần còn lại giữ trong kho",
+  "@gardenCapLeft": {
+    "description": "Nhãn khi tổng vượt phần trần còn lại"
+  },
+  "gardenBag": "Túi hạt:",
+  "@gardenBag": {
+    "description": "Chip túi hạt ở chân bảng kho"
+  },
+  "gardenUnlockTitle": "Mở luống {n} / 12",
+  "@gardenUnlockTitle": {
+    "description": "Hộp xác nhận mở ô"
+  },
+  "gardenUnlockSub": "Ô đất kế tiếp · mở xong gieo được ngay. Giá tăng dần: 50 · 80 · 120 · 160 · 200 · 250.",
+  "@gardenUnlockSub": {
+    "description": "Dòng phụ hộp mở ô"
+  },
+  "gardenUnlockFor": "Mở · {price}",
+  "@gardenUnlockFor": {
+    "description": "Nút xác nhận mở ô"
+  },
+  "gardenCancel": "Thôi",
+  "@gardenCancel": {
+    "description": "Nút huỷ"
+  },
+  "gardenUnlocked": "Đã mở luống {n}",
+  "@gardenUnlocked": {
+    "description": "Tấm báo"
+  },
+  "gardenRipeCount": "Vườn rau: {n} luống đã chín",
+  "@gardenRipeCount": {
+    "description": "Tấm báo khi vào Nhà của ta"
+  },
+  "gardenRipeCountSub": "Lấp lánh là luống thu được",
+  "@gardenRipeCountSub": {
+    "description": "Dòng phụ tấm báo"
+  },
+  "gardenHarvested": "+{n} {crop} vào kho",
+  "@gardenHarvested": {
+    "description": "Tấm báo thu hoạch"
+  },
+  "gardenHarvestedHint": "Mang tới thùng thu mua ở cổng vườn để bán",
+  "@gardenHarvestedHint": {
+    "description": "Dòng phụ tấm báo thu hoạch"
+  },
+  "walletSeed": "−{price} · Hạt {crop}",
+  "@walletSeed": {
+    "description": "Nhãn ví khi mua hạt"
+  },
+  "walletSell": "+{n} · Bán nông sản",
+  "@walletSell": {
+    "description": "Nhãn ví khi bán"
+  },
+  "walletUnlock": "−{price} · Mở ô đất",
+  "@walletUnlock": {
+    "description": "Nhãn ví khi mở ô"
+  },
+  "shopTabSeeds": "Hạt giống",
+  "@shopTabSeeds": {
+    "description": "Tab Tạp hoá"
+  },
+  "shopSeedName": "Hạt {crop}",
+  "@shopSeedName": {
+    "description": "Tên thẻ hạt"
+  },
+  "shopInBag": "Trong túi: {n}",
+  "@shopInBag": {
+    "description": "Số hạt đang có trên thẻ"
+  },
+  "shopSeedSub": "Mỗi lần mua 1 hạt vào túi hạt · gieo ở Vườn rau · mua được nhiều lần",
+  "@shopSeedSub": {
+    "description": "Dòng trên lưới tab Hạt giống"
+  },
+  "shopSeedConfirm": "Mua Hạt {crop} · {price} Văn tiền / hạt",
+  "@shopSeedConfirm": {
+    "description": "Hộp xác nhận mua hạt"
+  },
+  "shopQty": "Số hạt",
+  "@shopQty": {
+    "description": "Nhãn chọn × 1 · × 5 · × 10"
+  },
+  "shopSeedBought": "Về Vườn rau để gieo — hạt ở trong túi hạt.",
+  "@shopSeedBought": {
+    "description": "Dòng phụ tấm báo đã mua hạt"
+  },
+  "shopSubtitleSeeds": "Đồ trang trí Nhà của ta · hạt giống cho Vườn rau",
+  "@shopSubtitleSeeds": {
+    "description": "Dòng phụ tiêu đề Tạp hoá khi có hạt"
+  },
+  "walletSourceGarden": "Bán nông sản ở Vườn rau · tối đa 60 / ngày",
+  "@walletSourceGarden": {
+    "description": "Dòng trong thẻ Văn tiền kiếm từ đâu"
+  },
+  "cropCaiNgot": "Cải ngọt",
+  "cropCuCai": "Củ cải",
+  "cropNgo": "Ngô",
+  "cropLua": "Lúa",
+  "cropBiDo": "Bí đỏ",
+  "cropHoaCuc": "Hoa cúc",
+  "cropDuaHau": "Dưa hấu",
+  "cropTra": "Trà"
 }

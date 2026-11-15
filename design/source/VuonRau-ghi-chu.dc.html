@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>VuonRau-ghi-chu</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;700&amp;family=Lora:wght@700&amp;display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="position:relative;width:1240px;height:700px;overflow:hidden;font-family:'Be Vietnam Pro',system-ui,sans-serif;color:#24323A"><div style="position:absolute;inset:0;background:#F4F7F6;padding:28px 32px;box-sizing:border-box;display:grid;grid-template-columns:1fr 1fr 1fr;gap:28px;font-size:13px;line-height:1.5">
+<div><div style="font:700 22px Lora,Georgia,serif;margin-bottom:8px">Vườn rau — số đo</div>
+<div style="padding:3px 0">• <b>Nút nổi</b>: viên <code>jade</code> 46, chữ 15/700, biểu tượng 20, mũi nhọn 14 × 8 — như "Hướng dẫn"; neo trên mép xa của luống gần nhất. "Mở ô" có viên giá (xu 14 + số).</div>
+<div style="padding:3px 0">• <b>Nhãn đang lớn</b>: kính sương bo 12, đệm 5 × 10; "{cây} · còn {thời gian}" 12/700 + 500 <code>slate-muted</code>; vạch 96 × 3 <code>jade</code>.</div>
+<div style="padding:3px 0">• <b>Dấu luống</b>: giọt nước <code>garden-water</code> (token mới) 14 px viền trắng; lấp lánh 16 px vàng trên quầng <code>aura-light</code>. Dấu thấy từ xa (≤ 25 m), nút chỉ &lt; 1,6 m.</div>
+<div style="padding:3px 0">• <b>Tấm đáy</b> (dọc): kiểu bảng danh mục trang trí — bo trên 20, kính .96, tay nắm 40 × 4; cao 392 (hạt), 420 (kho), 330 (mở ô). <b>Cột phải</b> (ngang) 310 từ mép safe.</div>
+<div style="padding:3px 0">• Đầu bảng: vòng <code>jade</code> 34 + tiêu đề 16/700 + dòng phụ 12 <code>slate-muted</code>.</div>
+<div style="padding:3px 0">• <b>Thẻ hạt</b>: bo 14, đệm 8; ô hình 64 (ngang 52) <code>map-paper</code> + viên "còn n" <code>jade</code> cao 20 góc trên trái; tên 13/700; dòng 11 thời gian + "bán xu n / cái". Lưới dọc 3, ngang 2 cột, cách 8. Chạm → gieo ngay, bảng đóng.</div>
+<div style="padding:3px 0">• <b>Dòng kho</b>: hình 40 · tên 14/700 + "× n" · "xu n / cái" 12 · nút "Bán" cao 32 (nền <code>jade</code> 10 %, viền <code>jade</code> 35 %). Chân: "Túi hạt: …" (chip) + nút lớn 48 "Bán hết · +n" (<code>jade</code>, xu 20).</div>
+<div style="padding:3px 0">• <b>Hộp mở ô</b>: như hộp xác nhận Tạp hoá — cảnh tối 28 %, hình 76, bảng Đang có / Giá (−n <code>lacquer</code>) / Còn lại, nút "Thôi" + "Mở · n".</div>
+<div style="padding:3px 0">• <b>Tấm báo</b>: nền <code>slate</code> bo 12, chữ trắng 13, hình 28–36; dọc: trái 132 (cạnh bản đồ nhỏ), phải 16, trên 103; ngang: trên 12 giữa bản đồ nhỏ và ví. 3 s, không chặn bấm; nhiều tấm nối nhau.</div>
+</div>
+<div><div style="font:700 22px Lora,Georgia,serif;margin-bottom:8px">Trạng thái · luật</div>
+<div style="padding:3px 0">• Bảng hạt: có hạt (chỉ loại đang có) · mới cài (Cải ngọt còn 3) · <b>túi trống</b> (không nút mua; chỉ đường tới Tạp hoá).</div>
+<div style="padding:3px 0">• Kho: có hàng · <b>vượt trần</b> (ngang: "Hôm nay còn bán được 20 — phần còn lại giữ trong kho", nút "Bán · +20") · <b>đủ trần</b> (dải vàng, nút "Bán" nét đứt, hàng vẫn hiện) · trống · <b>vừa bán</b> (xu bay từ thùng tới ví, ví "+47 · Bán nông sản", kho trống).</div>
+<div style="padding:3px 0">• Mở ô: đủ tiền · thiếu ("Còn thiếu 30" nét đứt).</div>
+<div style="padding:3px 0">• Bảng mở → nhân vật đứng yên; ẩn cần điều khiển, cụm nút, Trang trí, Trò chuyện; giữ ví + bản đồ nhỏ. Chạm cảnh / kéo tay nắm xuống → đóng.</div>
+<div style="padding:3px 0">• Ẩn toàn bộ HUD vườn (nút, nhãn; dấu giọt / lấp lánh vẫn là cảnh) khi trang trí, bản đồ, thoại NPC, ngồi, màn Flutter, màn tải.</div>
+<div style="padding:3px 0">• R-TIEN-5: mở ô / mua hạt → ví "−n" có nhãn, không xu bay; bán → xu bay như thưởng.</div>
+<div style="padding:3px 0">• Không chữ Hán ở đâu (R-HUD-4) — ấn son Tạp hoá ở mục này cũng viết "Tạp hoá" (đề xuất đổi ấn 雜貨 cũ cho khớp luật, mục 2026-11-14.12 làm trước luật).</div>
+</div>
+<div><div style="font:700 22px Lora,Georgia,serif;margin-bottom:8px">Tạp hoá · chuỗi</div>
+<div style="padding:3px 0">• Tab "Hạt giống" cuối hàng tab. Thẻ hạt: hình cây chín + gói hạt 26 góc dưới phải; "Hạt {cây}"; "Trong túi: n" 11/700 (<code>jade</code> khi > 0); giá + thời gian; nút "Mua" luôn (không "Đã có"); thiếu → "Còn thiếu n".</div>
+<div style="padding:3px 0">• Hộp xác nhận: chọn số hạt <b>× 1 · × 5 · × 10</b> (mặc định × 1; ví dụ × 5), giá nhân theo; "Mua · n". Thiếu cho số đã chọn → nút "Còn thiếu n"; × 1 vẫn chọn được.</div>
+<div style="padding:3px 0">• Dòng phụ tiêu đề Tạp hoá: "Đồ trang trí Nhà của ta · hạt giống cho Vườn rau".</div>
+<div style="padding:3px 0">• Thẻ "Văn tiền kiếm từ đâu": dòng "Bán nông sản ở Vườn rau · tối đa 60 / ngày" — xác nhận.</div>
+<div style="margin-top:8px;font-size:12px;color:#5E6A70">Chuỗi mới: gardenName, gardenSow, gardenWater, gardenHarvest, gardenUnlock, gardenSell, gardenSellAll, gardenSellUpTo, gardenPickSeed, gardenPickSeedSub, gardenSeedLeft, gardenBagEmpty, gardenBagEmptyHint, gardenTapToSow, gardenGrowing, gardenTimeHM, gardenTimeM, gardenTimeUnder1, gardenRipe, gardenSellPrice, gardenShort, gardenStore, gardenSoldToday, gardenStoreEmpty, gardenStoreEmptyHint, gardenCapReached, gardenCapLeft, gardenBag, gardenUnlockTitle, gardenUnlockSub, gardenUnlockFor, gardenCancel, gardenUnlocked, gardenRipeCount, gardenHarvested, gardenHarvestedHint, walletSeed, walletSell, walletUnlock, shopTabSeeds, shopSeedName, shopInBag, shopSeedSub, shopSeedBought, shopQty, shopSubtitleSeeds, walletSourceGarden; 8 tên cây crop*.</div>
+</div></div></div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1240,"height":700}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

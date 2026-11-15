@@ -135,3 +135,15 @@ Một chất liệu: kính mờ `frost*` + viền `frost-line` / `frost-outline`
 | Cuộn tay có mục (giấy 0,26 × 0,25 m ngửa 16°, hai trục; dòng mực thường / nổi bật / mờ / nhấn; "Đứng dậy" cuối giấy) — thay bảng chọn cuộn treo | `NgoiMat-on-*`, `NgoiMat-cham-*`, `NgoiMat-tuhoc-*`, `NgoiMat-bien-the` | map-paper, scroll-wood, jade, gold, lacquer, slate, slate-muted |
 | Hai tay nhìn từ mắt (ống tay áo `robe-sleeve` viền `jade`, bàn tay `skin`; giữ trục / trỏ / đặt bàn / cầm chén / cầm thẻ) | `NgoiMat-*` | robe-sleeve, skin, jade |
 | Gợi ý "Kéo để nhìn quanh" (viên kính cao 36, mũi tên hai chiều `jade`) | `NgoiMat-nhin-*` | frost, jade |
+
+## Thêm ở 2026-11-15.29
+
+| Thành phần | Artboard | Token |
+|---|---|---|
+| Nút nổi luống "Gieo" / "Tưới" / "Thu" / "Mở ô · giá" (viên `jade` 46 + mũi nhọn, kiểu "Hướng dẫn") | `VuonRau-nut-trang-thai`, `VuonRau-doc`, `VuonRau-ngang` | jade, gold |
+| Nhãn luống đang lớn (kính sương bo 12, "{cây} · còn {thời gian}", vạch 96 × 3) | `VuonRau-nut-trang-thai` | frost, jade, slate-muted |
+| Dấu luống trong cảnh: giọt nước (khát) · lấp lánh (chín) | `VuonRau-nut-trang-thai` | garden-water, gold, aura-light |
+| Thẻ hạt (hình cây chín 64 `map-paper` + viên "còn n", thời gian, giá bán) | `VuonRau-hat-*` | map-paper, jade, slate-muted |
+| Dòng kho nông sản (hình 40, "× n", giá / cái, nút "Bán" nhỏ) + chip túi hạt + vạch "đã bán hôm nay" | `VuonRau-kho-*` | jade, slate-muted, gold |
+| Hình cây phẳng 8 loại (Cải ngọt, Củ cải, Ngô, Lúa, Bí đỏ, Hoa cúc, Dưa hấu, Trà) + gói hạt 26 | `VuonRau-*`, `CuaHang-hat-*` | map-paper |
+| Chọn số lượng × 1 · × 5 · × 10 trong hộp xác nhận mua | `CuaHang-hat-xac-nhan-doc` | slate |

@@ -225,6 +225,11 @@
       "value": "#F0CDB5",
       "note": "da bàn tay nhìn từ mắt (như da nhân vật chibi) — 2026-11-14.21",
       "code": "chưa có"
+    },
+    "garden-water": {
+      "value": "#5B9BC4",
+      "note": "giọt nước \"khát\" trên luống Vườn rau, viền trắng 1,4 — map-water quá nhạt trên đất nâu — 2026-11-15.29",
+      "code": "chưa có"
     }
   },
   "font": {
