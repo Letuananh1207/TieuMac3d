@@ -3,6 +3,17 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-15.18 — Đổi tên 6 vùng theo kiểu 摩尔庄园
+
+- Loại: chuỗi + dữ liệu + bản đồ. Phiên code V-20261114-50 (kế hoạch `docs/tasks/2026-11-15-doi-ten-vung.md`); người dùng: "đổi tên cho
+  các vùng chứ không để chung chung… tham khảo cách đặt tên địa danh của game 摩尔"; chọn kiểu A "danh từ nơi + từ láy". **Đã chốt 2026-11-15.**
+- rung-truc **Rừng Trúc Rì Rào** · giang-nam **Phố Nước Lung Linh** · bong-lai **Đảo Mây Bồng Bềnh** · truong-thanh **Ải Gió Lồng Lộng** ·
+  tu-cam-thanh **Cung Vàng Rực Rỡ** · to-lua **Đường Cát Leng Keng**. Mã cảnh / cầu nối / tiến độ giữ; Khởi Nguyên Trấn + khu trong trấn giữ.
+- `site.name` 6 đặc tả + biển cổng giang-nam / bong-lai; `ban-do.json` `ten`; vẽ lại `ban-do-goc.png`, `screens/BanDo-trang-thai.png`;
+  `vi.arb`, `hanh_trinh.md`, `screen_specs.md`. Một nguồn tên: web `placeName(id)`, Flutter `regionNames`; `scene:check` kiểm khớp.
+- Luật: 22 luật đổi tên (R-VUNG-*, R-HANH-*, R-HUD-*, R-ON-*, R-MAN-2…). Canvas cần thay chữ ~50 artboard (`docs/testing/gui_thiet_ke_2026-11-15.md`).
+- Ảnh: `screens/BanDo-ten-vung-moi.png`.
+
 ## 2026-11-15.16 — Nhà của ta bỏ cổng đứng riêng
 
 - Loại: cảnh 3D — **bố cục**. Phiên code V-20261114-51; người dùng: "ở nhà của tôi hãy xoá cổng Khởi Nguyên Trấn".
