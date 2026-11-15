@@ -221,7 +221,8 @@ function nhatQuy(g: THREE.Group, style: Style): number {
 /** Màu cây tứ quân tử trong bồn hoa (lấy từ `trees` của đặc tả). */
 export type Flora = Pick<SceneSpec['trees'], 'plum' | 'bamboo' | 'orchid' | 'mum'>;
 
-const blossomGeo = new THREE.IcosahedronGeometry(0.08, 0);
+// hoa Ø 16 cm: bát diện 8 tam giác (thay khối 20 mặt — nhìn từ camera chơi như nhau; ngân sách V-56)
+const blossomGeo = new THREE.OctahedronGeometry(0.08, 0);
 
 /** Thêm một khối vào [g] tại (x; y; z), xoay quanh trục [rz] / [rx] (radian). */
 function put(g: THREE.Group, geo: THREE.BufferGeometry, m: THREE.Material, x: number, y: number, z: number, rx = 0, rz = 0): THREE.Mesh {
@@ -237,16 +238,17 @@ function put(g: THREE.Group, geo: THREE.BufferGeometry, m: THREE.Material, x: nu
  * 蘭 lan (lá dài cong rủ, vài hoa ngà) · 竹 trúc (5 thân, chỏm lá) · 菊 cúc (bụi tròn, hoa vàng). Trả về bán kính va chạm.
  */
 function bonHoa(g: THREE.Group, style: Style, flora: Flora, plant: string): number {
-  put(g, new THREE.CylinderGeometry(0.6, 0.48, 0.55, 6), lambert(style.stone), 0, 0.275, 0);
+  // thân bỏ hai đáy (trên khuất dưới gờ, dưới chạm đất); mặt đất trong bồn chỉ một mặt lục giác — bớt mặt khuất
+  put(g, new THREE.CylinderGeometry(0.6, 0.48, 0.55, 6, 1, true), lambert(style.stone), 0, 0.275, 0);
   put(g, new THREE.CylinderGeometry(0.66, 0.66, 0.08, 6), lambert(shade(style.stone, -0.18)), 0, 0.57, 0);
-  put(g, new THREE.CylinderGeometry(0.55, 0.55, 0.04, 6), lambert(shade(style.floor, -0.45)), 0, 0.6, 0);
+  put(g, new THREE.CircleGeometry(0.55, 6).rotateX(-Math.PI / 2), lambert(shade(style.floor, -0.45)), 0, 0.62, 0);
   const y0 = 0.6;
   if (plant === '梅') {
     const wood = lambert(flora.plum[0]);
     const tips: [number, number, number][] = [];
     // [x, z, nghiêng x, nghiêng z, dài] — cành gãy khúc toả từ gốc
     for (const [x, z, rx, rz, len] of [[0, 0, 0.1, 0.25, 1.2], [0.12, 0.05, -0.2, -0.55, 1.0], [-0.1, -0.05, 0.45, 0.35, 0.85], [0.05, -0.1, -0.5, 0.1, 0.75]] as const) {
-      put(g, new THREE.CylinderGeometry(0.03, 0.06, len, 5).translate(0, len / 2, 0), wood, x, y0, z, rx, rz);
+      put(g, new THREE.CylinderGeometry(0.03, 0.06, len, 5, 1, true).translate(0, len / 2, 0), wood, x, y0, z, rx, rz);
       // đầu cành: (0; len; 0) xoay Rz rồi Rx (Euler XYZ)
       tips.push([x - Math.sin(rz) * len, y0 + Math.cos(rz) * Math.cos(rx) * len, z + Math.cos(rz) * Math.sin(rx) * len]);
     }
@@ -260,7 +262,7 @@ function bonHoa(g: THREE.Group, style: Style, flora: Flora, plant: string): numb
   } else if (plant === '竹') {
     const culm = lambert(flora.bamboo[0]);
     const leaf = lambert(flora.bamboo[1]);
-    const blade = new THREE.ConeGeometry(0.06, 0.42, 3).scale(1, 1, 0.3).translate(0, 0.21, 0);
+    const blade = new THREE.ConeGeometry(0.06, 0.42, 3, 1, true).scale(1, 1, 0.3).translate(0, 0.21, 0);
     for (let i = 0; i < 5; i++) {
       const a = (i / 5) * Math.PI * 2;
       const [x, z, h] = [Math.cos(a) * 0.22, Math.sin(a) * 0.22, 1.5 + (i % 3) * 0.35];
@@ -285,7 +287,7 @@ function bonHoa(g: THREE.Group, style: Style, flora: Flora, plant: string): numb
   } else {
     put(g, new THREE.IcosahedronGeometry(0.45, 0).scale(1, 0.7, 1), lambert(flora.mum[0]), 0, y0 + 0.3, 0);
     const flower = lambert(flora.mum[1]);
-    const head = new THREE.IcosahedronGeometry(0.1, 0).scale(1, 0.6, 1);
+    const head = new THREE.OctahedronGeometry(0.1, 0).scale(1, 0.6, 1);
     for (let i = 0; i < 9; i++) {
       const a = (i / 9) * Math.PI * 2 + (i % 2) * 0.3;
       const r = i % 3 === 0 ? 0.12 : 0.34;
