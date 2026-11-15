@@ -32,6 +32,17 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
   `vi.arb`, `hanh_trinh.md`, `screen_specs.md`. Một nguồn tên: web `placeName(id)`, Flutter `regionNames`; `scene:check` kiểm khớp.
 - Luật: 22 luật đổi tên (R-VUNG-*, R-HANH-*, R-HUD-*, R-ON-*, R-MAN-2…). Canvas cần thay chữ ~50 artboard (`docs/testing/gui_thiet_ke_2026-11-15.md`).
 - Ảnh: `screens/BanDo-ten-vung-moi.png`.
+## 2026-11-15.21 — Nhà của ta: Vườn rau (cây + luật; HUD chờ thiết kế)
+
+- Loại: cảnh 3D bố cục + luồng / luật. Phiên code V-20261114-52 (kế hoạch `docs/tasks/2026-11-15-vuon-trong-trot.md`); người dùng: "ở nhà
+  của tôi hãy tạo ra chỗ vườn có thể trồng trọt được, tham khảo 摩尔"; chốt trồng thuần, 6 ô mở dần tới 12, giờ thật, mua hạt ở Tạp hoá,
+  bán ở vườn, trần 60 / ngày, cây Kenney CC0, bãi đông, không thông báo. **Đã duyệt 2026-11-15.**
+- `garden` (mới, mặc định tắt): rào tre (15; −5)…(22,4; 5), 12 luống (x 16,2 / 18,6 / 21; z ±1,2 / ±3,6), thùng thu mua (14,2; 1,9),
+  bục + lối nhánh + khu "Vườn rau". 8 cây: cải ngọt, củ cải, **ngô** (thay đậu xanh), lúa, bí đỏ, hoa cúc, dưa hấu, trà — Kenney Nature Kit
+  CC0 (`design/models/thuc-vat/vuon/`). Tạp hoá thêm tab "Hạt giống"; túi khởi đầu 3 hạt cải ngọt.
+- Cầu nối mới `getGarden`, `gardenAct`. Luật R-VUON-1…9 (mới) + R-NHA-2/5, R-TIEN-1/4/5/7, R-BANDO-2.
+- Chưa có nút trên màn (Gieo / Tưới / Thu / Bán / mở ô) — chờ `/ui-design` phiếu `2026-11-15-vuon-trong-trot`.
+- Ảnh: `screens/Canh-vuon-rau.png`, `screens/Canh-vuon-rau-4-dang.png`.
 
 ## 2026-11-15.16 — Nhà của ta bỏ cổng đứng riêng
 
