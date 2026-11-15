@@ -61,6 +61,7 @@ import { DAILY_NEW_GOAL, boardBeforeNpc, dailyBoardSpot, dailyBoardView, nearBoa
 import { seatInRange, type SeatSpot } from './zones/seats';
 import { addSeatGlow } from './scene/seatGlow';
 import { LoadingScreen, nextPaint } from './ui/loadingScreen';
+import { HINH_HUD, preloadHinh } from './ui/hinh';
 import { ZoneTracker } from './zones/zoneTracker';
 import { JOURNEY_MAP, placeAt, placeScene, placeStates, type PlaceState } from './zones/journeyMap';
 import { RingCharge } from './zones/ringCharge';
@@ -142,6 +143,7 @@ async function boot(): Promise<void> {
     document.fonts.load('700 72px Lora', `Aa${signText(spec)}`),
     document.fonts.load('700 13px "Be Vietnam Pro"'),
     document.fonts.load('700 52px "Han Serif"', hanText || '字'),
+    preloadHinh(HINH_HUD), // hình minh hoạ HUD đợt 1 (2026-11-16.2) giải mã sẵn dưới màn tải — nút hiện hình ngay
   ]);
   let progress = await progressAsk;
   const trial = (await flutterAsk) ? null : openTrialStore();

@@ -317,6 +317,8 @@ flutter:
   assets:
     - assets/scene/
     - assets/scene/assets/
+    # hình minh hoạ dùng chung với scene web (web/scripts/hinh.mjs → build chép sang) — widget Hinh, AppHinh
+    - assets/scene/hinh/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

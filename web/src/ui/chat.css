@@ -6,6 +6,7 @@
 /* nút "Trò chuyện": tròn 48 kính, bên phải ngay trên cụm hành động (dọc nâng trên thanh công cụ — 2026-11-15.35: phải 22, đáy 298) */
 #chatBtn{position:fixed;z-index:5;right:22px;bottom:calc(var(--sa-bottom) + 264px);display:flex;flex-direction:column;align-items:center;gap:3px}
 #chatBtn button{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-sizing:border-box;padding:0;color:var(--slate);background:rgba(244,247,246,.86);border:1px solid var(--frost-line);outline:1px solid var(--frost-outline);box-shadow:var(--shadow-hud);-webkit-backdrop-filter:var(--blur-hud);backdrop-filter:var(--blur-hud);transition:transform .08s;touch-action:manipulation}
+#chatBtn .hinh{width:40px;height:40px;flex:none;margin-top:-6px} /* hình minh hoạ 40 nhô 6 (2026-11-16.2) */
 #chatBtn button:active{transform:scale(.94);background:rgba(214,222,220,.95);outline-color:rgba(36,50,58,.22);box-shadow:none}
 #chatBtn .lbl{font-size:11px;font-weight:700;color:var(--slate);background:rgba(244,247,246,.82);border-radius:999px;padding:1px 7px;white-space:nowrap}
 #chatBtn .key{display:none;min-width:22px;box-sizing:border-box;padding:1px 7px;border-radius:5px;font:700 11px/16px var(--ui);text-align:center;color:var(--slate);background:rgba(244,247,246,.92);border:1px solid var(--frost-outline);box-shadow:inset 0 -2px 0 rgba(36,50,58,.18)}

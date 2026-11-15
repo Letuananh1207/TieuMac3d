@@ -53,11 +53,16 @@
   /* lề HUD: dọc 16 từ mép; ngang safe + 12 (tai thỏ bên nào cũng được → hai bên bằng nhau) */
   --edge-left:max(16px,calc(var(--sa-left) + 12px));
   --edge-right:max(16px,calc(var(--sa-right) + 12px));
+  /* hình minh hoạ (2026-11-16.2): bóng thả chung; mờ = xám .6 (+ opacity .5 ở nơi dùng) — một ảnh cho mọi trạng thái */
+  --hinh-shadow:drop-shadow(0 2px 2px rgba(36,50,58,.25));
+  --hinh-off-filter:grayscale(.6) var(--hinh-shadow);
   color-scheme:light;
 }
 html,body{margin:0;height:100%;overflow:hidden;background:var(--mist);color:var(--slate);font-family:var(--ui)}
 body{overscroll-behavior:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
 [hidden]{display:none !important}
+/* hình minh hoạ đất sét (ui/hinh.ts): không bắt chạm (nút nhận), không kéo / chọn, bóng thả chung */
+.hinh{display:block;object-fit:contain;filter:var(--hinh-shadow);pointer-events:none;-webkit-user-drag:none}
 #stage{position:fixed;inset:0;width:100%;height:100%;touch-action:none;display:block}
 .hud{position:fixed;z-index:5;pointer-events:none}
 
@@ -244,7 +249,11 @@ html.hac body > :not(#stage):not(#loading):not(#crane){visibility:hidden !import
 #actions .act-jump button:active{background:var(--jade-press)}
 #actions button.on{color:#fff;background:var(--jade);border:2px solid var(--gold);box-shadow:0 0 0 4px rgba(212,166,74,.35),var(--shadow-hud)}
 #actions button.off{background:rgba(244,247,246,.6);box-shadow:none}
-#actions button.off svg{opacity:.45}
+/* hình minh hoạ (2026-11-16.2): bản cắt nửa trên <mã>-nut — Nhảy 60 nhô 10, Chào / Ngồi ôn 50 nhô 6; mờ xám .6 + 50 %; đang ôn nhô thêm 2 */
+#actions .hinh{width:50px;height:50px;flex:none;margin-top:-6px;transition:transform .08s}
+#actions .act-jump .hinh{width:60px;height:60px;margin-top:-10px}
+#actions button.off .hinh{filter:var(--hinh-off-filter);opacity:.5}
+#actions button.on .hinh{transform:translateY(-2px)}
 #actions .act-jump button.off{background:rgba(43,84,70,.55)}
 #actions .lbl{font-size:11px;font-weight:700;color:var(--slate);background:rgba(244,247,246,.82);border-radius:999px;padding:1px 7px;white-space:nowrap}
 #actions .act-sit button.on + .lbl{color:var(--jade)}
@@ -267,12 +276,11 @@ html.hac body > :not(#stage):not(#loading):not(#crane){visibility:hidden !import
 #talk .who,#board .who,#guide .who,#shop .who{margin-top:4px;height:24px;box-sizing:border-box;padding:0 10px;display:flex;align-items:center;gap:6px;background:rgba(244,247,246,.86);border:1px solid var(--frost-line);outline:1px solid var(--frost-outline);border-radius:999px;font-size:12px;font-weight:700;white-space:nowrap;pointer-events:none}
 #talk .han,#dialog .han{font-family:var(--han);font-weight:700}
 /* thẻ "Đọc sách" (2026-11-13.28) — cột phải dọc xếp Trò chuyện → Đọc sách → Trang trí (2026-11-15.35: đáy 370 = safe + 336) */
-#readBook{position:fixed;z-index:5;right:16px;bottom:calc(var(--sa-bottom) + 336px);height:52px;box-sizing:border-box;padding:0 14px 0 8px;font:inherit;color:var(--slate);border-radius:14px;background:rgba(244,247,246,.88);border:1px solid var(--frost-line);outline:1px solid var(--frost-outline);box-shadow:0 4px 14px rgba(36,50,58,.18);display:flex;align-items:center;gap:10px}
+#readBook{position:fixed;z-index:5;right:16px;bottom:calc(var(--sa-bottom) + 336px);height:52px;box-sizing:border-box;padding:0 16px 0 6px;font:inherit;font-size:14px;font-weight:700;color:#fff;white-space:nowrap;border-radius:999px;background:var(--jade);border:2px solid rgba(255,255,255,.9);box-shadow:0 4px 14px rgba(36,50,58,.22);display:flex;align-items:center;gap:6px;transition:transform .08s}
 #readBook[hidden]{display:none}
-#readBook .cover{width:28px;height:36px;box-sizing:border-box;border-radius:2px 5px 5px 2px;color:#fff;box-shadow:inset 3px 0 0 rgba(0,0,0,.2);display:flex;align-items:center;justify-content:center;font-family:var(--han);font-weight:700;font-size:15px}
-#readBook .txt{display:flex;flex-direction:column;align-items:flex-start;line-height:1.2}
-#readBook .name{font-size:14px;font-weight:700}
-#readBook .book{font-size:11px;font-weight:700;color:var(--jade)}
+/* viên ngọc "Đọc sách" + hình doc-sach-nut 46 bên trái chữ, nhô 12 (2026-11-16.2; tên cuốn ở nhãn trợ năng) */
+#readBook .hinh{width:46px;height:46px;flex:none;margin-top:-12px}
+#readBook:active{transform:scale(.94);background:var(--jade-press)}
 /* chấm son trên nút "Xem bảng" — số việc còn hôm nay (thiết kế 2026-11-13.25) */
 #boardBtn{position:relative}
 #boardBtn .badge{position:absolute;right:-6px;top:-8px;min-width:var(--count-badge);height:var(--count-badge);box-sizing:border-box;padding:0 6px;border-radius:999px;background:var(--lacquer);color:#fff;border:2px solid #fff;font-size:11px;font-weight:700;line-height:18px;text-align:center}

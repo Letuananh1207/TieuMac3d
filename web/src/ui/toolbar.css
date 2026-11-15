@@ -6,23 +6,23 @@
 #toolbar{position:fixed;z-index:5;left:calc(var(--sa-left) + 12px);right:calc(var(--sa-right) + 12px);bottom:calc(var(--sa-bottom) + 8px);height:60px;box-sizing:border-box;padding:4px;border-radius:20px;background:rgba(244,247,246,.9);border:1px solid var(--frost-line);outline:1px solid var(--frost-outline);box-shadow:0 6px 18px rgba(36,50,58,.2);-webkit-backdrop-filter:var(--blur-hud);backdrop-filter:var(--blur-hud);display:flex;gap:2px;transition:transform .2s ease,opacity .2s ease,visibility 0s;touch-action:manipulation}
 /* ẩn (R-THANH-1): trượt xuống + mờ 0,2 s; không bắt chạm */
 #toolbar.tb-hidden{transform:translateY(calc(100% + var(--sa-bottom) + 12px));opacity:0;visibility:hidden;pointer-events:none;transition:transform .2s ease,opacity .2s ease,visibility 0s .2s}
-.tb-cell{flex:1;min-width:0;height:100%;border:0;margin:0;padding:0;border-radius:14px;background:transparent;color:var(--slate);font:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transition:transform .08s,background-color .08s;-webkit-tap-highlight-color:transparent}
-.tb-disc{position:relative;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center}
-.tb-disc svg{display:block}
+.tb-cell{flex:1;min-width:0;height:100%;border:0;margin:0;padding:0;border-radius:14px;background:transparent;color:var(--slate);font:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;transition:transform .08s,background-color .08s;-webkit-tap-highlight-color:transparent}
+/* hình minh hoạ 44 trong vùng 40, nhô 8 khỏi ô (2026-11-16.2 HinhMinhHoa-HUD-doc); bỏ đĩa ngọc của Bản đồ — hình tự nổi */
+.tb-disc{position:relative;width:40px;height:40px;margin-top:-8px;display:flex;align-items:center;justify-content:center}
+.tb-disc .hinh{width:44px;height:44px;flex:none;transition:transform .08s}
 .tb-lbl{font-size:11px;font-weight:700;white-space:nowrap;line-height:1.2}
-/* Bản đồ nổi bật: đĩa ngọc 34, biểu tượng 20 trắng */
-.tb-banDo .tb-disc{background:var(--jade);color:#fff;box-shadow:inset 0 -2px 0 rgba(0,0,0,.18)}
 /* nhấn: thu 94 %, nền slate 8 % */
 .tb-cell:active{transform:scale(.94);background:rgba(36,50,58,.08)}
-/* mờ: biểu tượng + chữ 45 % (Về nhà ở nhà vẫn chạm được → tấm báo) */
-.tb-cell.off .tb-disc svg,.tb-cell.off .tb-lbl{opacity:.45}
+/* mờ: hình xám .6 + 50 %, chữ 45 % (Về nhà ở nhà vẫn chạm được → tấm báo) */
+.tb-cell.off .hinh{filter:var(--hinh-off-filter);opacity:.5}
+.tb-cell.off .tb-lbl{opacity:.45}
 .tb-cell.off:active{transform:none;background:transparent}
-/* đang mở (Biểu cảm / Túi đồ): đĩa ngọc biểu tượng trắng, nhãn ngọc, nền ô ngọc 10 % */
+/* đang mở (Biểu cảm / Túi đồ): nền ô ngọc 10 %, hình nhô thêm 2, nhãn ngọc */
 .tb-cell.open{background:rgba(43,84,70,.1)}
-.tb-cell.open .tb-disc{background:var(--jade);color:#fff}
+.tb-cell.open .hinh{transform:translateY(-2px)}
 .tb-cell.open .tb-lbl{color:var(--jade)}
 /* chấm son Nhiệm vụ: lacquer 18, viền trắng 1,5, số 11/700 */
-.tb-badge{position:absolute;right:-8px;top:-6px;min-width:18px;height:18px;padding:0 5px;box-sizing:border-box;border-radius:999px;background:var(--lacquer);border:1.5px solid #fff;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.tb-badge{position:absolute;right:-6px;top:-4px;min-width:18px;height:18px;padding:0 5px;box-sizing:border-box;border-radius:999px;background:var(--lacquer);border:1.5px solid #fff;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
 .tb-badge[hidden]{display:none}
 
 /* tấm báo "Bạn đang ở Nhà của ta" (R-HANH-7): slate bo 12, nhà 18 + chữ 13/700. Dọc: cạnh bản đồ nhỏ */

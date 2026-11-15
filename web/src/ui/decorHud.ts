@@ -6,7 +6,8 @@
  */
 import * as THREE from 'three';
 import './decor.css';
-import { ICON_BAG, ICON_BAN, ICON_CHECK, ICON_DECOR, ICON_MOVE, ICON_PEN, ICON_ROTATE, ICON_X, STROKE, svgIcon } from './decorIcons';
+import { ICON_BAG, ICON_BAN, ICON_CHECK, ICON_MOVE, ICON_PEN, ICON_ROTATE, ICON_X, STROKE, svgIcon } from './decorIcons';
+import { hinhImg } from './hinh';
 
 export interface DecorHudHandlers {
   open(): void;
@@ -61,7 +62,7 @@ export class DecorHud {
     const btn = h('button');
     btn.type = 'button';
     btn.setAttribute('aria-label', 'Trang trí'); // decorButton
-    btn.append(svgIcon(ICON_DECOR, 24, undefined, { ...STROKE, 'stroke-width': '2' }));
+    btn.append(hinhImg('trang-tri', 50)); // hình minh hoạ 50 nhô 8 (2026-11-16.2)
     btn.addEventListener('click', () => on.open());
     this.btnWrap.append(btn, h('span', 'lbl', 'Trang trí'));
 

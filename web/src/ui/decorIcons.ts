@@ -24,8 +24,6 @@ export function svgIcon(nodes: readonly SvgNode[], size: number, view = '0 0 24 
 export const STROKE = { fill: 'none', stroke: 'currentColor', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' } as const;
 const path = (d: string): SvgNode => ['path', { d }];
 
-/** Nút Trang trí: mái nhà + bút. */
-export const ICON_DECOR: readonly SvgNode[] = [path('M3 11l9-7 9 7'), path('M5 10v10h8'), path('M14.5 20.5l1-3.5 5-5 2.5 2.5-5 5z')];
 /** Bút (viên nhắc). */
 export const ICON_PEN: readonly SvgNode[] = [path('M4 20l4-1 11-11-3-3L5 16z')];
 /** Dấu ✓ (Xong, thẻ đang đặt). */

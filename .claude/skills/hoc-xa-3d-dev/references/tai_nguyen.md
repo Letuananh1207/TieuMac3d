@@ -38,7 +38,15 @@ const url = Object.values(MODELS)[0] as string | undefined; // không có file �
 Chữ Hán mới trong bài học / code / đặc tả → `npm run build` tự cắt lại cả hai. Chữ gõ lúc chạy (người dùng nhập) thì
 không có — khi cần, đổi cách (font đầy đủ, nặng).
 
+## Hình minh hoạ (HUD web + Flutter)
+
+Thiết kế xuất `design/icons/xuat/<mã>.webp` (160 alpha; cỡ khác `<mã>@<cỡ>.webp`) + bảng `design/icons/hinh.json`.
+`scripts/hinh.mjs` (thuần ở `hinh-kiem.mjs`, vitest): kiểm cỡ / ≤ 16 KB (160) / ≤ 32 KB (256) / tổng ≤ 1,5 MB → chép
+`web/public/hinh/` (không commit; Vite → `dist/hinh/` → `app/assets/scene/hinh/`) → sinh `ui/hinh.g.ts` (`HinhId`, `hinhUrl`)
+và `app/lib/theme/app_hinh.g.dart` (`AppHinh`). Web: `hinhImg(id, size)` (`ui/hinh.ts`), CSS `.hinh` + `--hinh-off-filter`;
+nạp sẵn `HINH_HUD` dưới màn tải. Flutter: widget `Hinh(AppHinh.x, size:, off:)` (`theme/hinh.dart`).
+
 ## Lệnh `npm run build` làm gì (theo thứ tự)
 
-`tsc --noEmit` → `check-scene.mjs` (kiểm `scene.json`) → `subset-han.mjs` → `vite build` → `copy-to-app.mjs`
+`tsc --noEmit` → `check-scene.mjs` (kiểm `scene.json`) → `subset-han.mjs` → `hinh.mjs` → `vite build` → `copy-to-app.mjs`
 (`dist/` → `app/assets/scene/`) → `fonts-app.mjs`. `build:design` → `dist-design/` (Canvas 3D, không vào app).

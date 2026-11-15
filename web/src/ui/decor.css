@@ -3,6 +3,7 @@
 #decorBtn[hidden]{display:none}
 body:has(#readBook[hidden]) #decorBtn{bottom:calc(var(--sa-bottom) + 336px)}
 #decorBtn button{width:52px;height:52px;border-radius:50%;padding:0;display:flex;align-items:center;justify-content:center;box-sizing:border-box;color:var(--slate);background:rgba(244,247,246,.86);border:1px solid var(--frost-line);outline:1px solid var(--frost-outline);box-shadow:var(--shadow-hud);-webkit-backdrop-filter:var(--blur-hud);backdrop-filter:var(--blur-hud);transition:transform .08s;touch-action:manipulation}
+#decorBtn .hinh{width:50px;height:50px;flex:none;margin-top:-8px} /* hình minh hoạ 50 nhô 8 (2026-11-16.2) */
 #decorBtn button:active{transform:scale(.94);background:rgba(214,222,220,.95)}
 #decorBtn .lbl{font-size:11px;font-weight:700;color:var(--slate);background:rgba(244,247,246,.82);border-radius:999px;padding:1px 7px;white-space:nowrap}
 

@@ -1,3 +1,5 @@
 node_modules/
 dist/
 dist-design/
+# hình minh hoạ chép từ design/icons/xuat/ (scripts/hinh.mjs)
+public/hinh/

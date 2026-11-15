@@ -1,6 +1,7 @@
 import { chatLength, MAX_CHAT_CHARS, normalizeChat, type ChatMessage, type SendCheck } from '../chat/chatMessage';
 import { collapsedVisible } from '../chat/chatChannel';
 import { fillChatText, h, speakerName } from './chatText';
+import { hinhImg } from './hinh';
 import './chat.css';
 
 /** Đếm chữ hiện từ số này (thiết kế 2026-11-14.9). */
@@ -80,7 +81,7 @@ export class ChatPanel {
     const btn = h('button');
     btn.type = 'button';
     btn.setAttribute('aria-label', 'Trò chuyện');
-    btn.append(icon(24, ['M5 5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-8l-4 3v-3H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z', 'M8 10h8M8 13h5']));
+    btn.append(hinhImg('tro-chuyen', 40)); // hình minh hoạ 40 nhô 6 (2026-11-16.2)
     btn.addEventListener('click', () => this.show());
     const key = h('kbd', 'key', 'Enter');
     key.setAttribute('aria-hidden', 'true');

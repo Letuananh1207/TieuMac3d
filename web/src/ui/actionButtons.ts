@@ -1,4 +1,5 @@
 import { el } from './dom';
+import { hinhImg } from './hinh';
 
 /** Trạng thái cụm nút mỗi khung (R-DIEU-6/7). */
 export interface ActionState {
@@ -39,6 +40,10 @@ export class ActionButtons {
   private last = '';
 
   constructor(on: { jump(): void; bow(): void; sit(): void }) {
+    // hình minh hoạ bản cắt nửa trên (2026-11-16.2): Nhảy 60, Chào / Ngồi ôn 50 — chấm son Ngồi ôn vẫn nằm trên hình
+    this.jump.prepend(hinhImg('nhay-nut', 60));
+    this.bow.prepend(hinhImg('chao-nut', 50));
+    this.sit.prepend(hinhImg('ngoi-on-nut', 50));
     // pointerdown: phản hồi ngay (nhảy cần nhạy); nút nằm trên canvas nên chạm nút không thành kéo xoay camera
     const bind = (b: HTMLButtonElement, f: () => void): void =>
       b.addEventListener('pointerdown', (e) => {
