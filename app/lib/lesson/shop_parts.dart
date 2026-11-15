@@ -39,7 +39,7 @@ class ItemArt extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Icon(
-        _icons[item.id] ?? switch (item.slot) { SlotKind.vuon => Icons.park, SlotKind.san => Icons.deck, SlotKind.trong => Icons.chair },
+        _icons[item.id] ?? switch (item.slot) { SlotKind.vuon => Icons.park, SlotKind.san => Icons.deck, SlotKind.trong => Icons.chair, SlotKind.hat => Icons.eco },
         size: size,
         color: AppColors.slateMuted.withValues(alpha: .75),
       );
@@ -258,7 +258,9 @@ class BoughtToast extends StatelessWidget {
                   TextSpan(text: 'Đã mua ${item.name}', style: const TextStyle(fontWeight: FontWeight.w700)), // shopBought
                   const TextSpan(text: '\n'),
                   TextSpan(
-                    text: 'Về nhà để đặt — chạm ô ${item.slot.label} khi trang trí.', // shopBoughtSub
+                    text: item.slot == SlotKind.hat
+                        ? 'Về Vườn rau để gieo — hạt ở trong túi hạt.' // shopSeedBoughtSub (R-VUON-9)
+                        : 'Về nhà để đặt — chạm ô ${item.slot.label} khi trang trí.', // shopBoughtSub
                     style: TextStyle(color: AppColors.onJade.withValues(alpha: .85)),
                   ),
                 ]),

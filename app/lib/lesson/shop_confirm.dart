@@ -63,7 +63,9 @@ class ShopConfirm extends StatelessWidget {
                       ),
                       const SizedBox(height: 3),
                       Text(
-                        'Đặt ở ô ${item.slot.label} · mua một lần, đặt được nhiều ô', // shopConfirmSub
+                        item.slot == SlotKind.hat
+                            ? 'Mỗi lần mua 1 hạt vào túi hạt · gieo ở Vườn rau' // shopSeedConfirmSub (R-VUON-9)
+                            : 'Đặt ở ô ${item.slot.label} · mua một lần, đặt được nhiều ô', // shopConfirmSub
                         style: uiText.copyWith(fontSize: AppTextSize.small, color: AppColors.slateMuted),
                       ),
                     ],

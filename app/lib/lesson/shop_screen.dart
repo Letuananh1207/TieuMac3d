@@ -14,21 +14,27 @@ import 'wallet_chip.dart';
 /// Tạp hoá — cửa hàng đồ trang trí Nhà của ta (native) — R-TIEN-4. Thiết kế: design/docs/screen_specs.md "Tạp hoá 雜貨"
 /// (artboard `CuaHang-doc`, `-doc-ngheo`, `-doc-xac-nhan`, `-doc-vua-mua`, `-doc-het`, `-ngang`). Danh mục + giá do trang
 /// gửi (`openShop`); mua qua [onBuy] (kho trừ ví + ghi sở hữu — `ProgressStore.buyDecor`). Đóng: "Đóng" / quay lại → về cảnh.
+/// Hạt giống Vườn rau (R-VUON-9): [seeds] loại `SlotKind.hat`, mua nhiều lần qua [onBuySeed] (dùng thẻ + hộp xác nhận có sẵn;
+/// số hạt đang có trên thẻ chờ thiết kế — phiếu 2026-11-15-vuon-trong-trot).
 class ShopScreen extends StatefulWidget {
-  const ShopScreen({super.key, required this.items, required this.balance, required this.owned, required this.onBuy});
+  const ShopScreen({super.key, required this.items, required this.balance, required this.owned, required this.onBuy, this.seeds = const [], this.onBuySeed});
 
   final List<ShopItem> items;
   final int balance;
   final List<String> owned;
   final Future<BuyResult> Function(ShopItem item) onBuy;
+  final List<ShopItem> seeds;
+  final Future<BuyResult> Function(ShopItem item)? onBuySeed;
 
   static Route<void> route({
     required List<ShopItem> items,
     required int balance,
     required List<String> owned,
     required Future<BuyResult> Function(ShopItem item) onBuy,
+    List<ShopItem> seeds = const [],
+    Future<BuyResult> Function(ShopItem item)? onBuySeed,
   }) =>
-      fadeRoute(ShopScreen(items: items, balance: balance, owned: owned, onBuy: onBuy));
+      fadeRoute(ShopScreen(items: items, balance: balance, owned: owned, onBuy: onBuy, seeds: seeds, onBuySeed: onBuySeed));
 
   @override
   State<ShopScreen> createState() => _ShopScreenState();
@@ -53,8 +59,12 @@ class _ShopScreenState extends State<ShopScreen> {
     super.dispose();
   }
 
-  ItemState _state(ShopItem i) =>
-      _owned.contains(i.id) ? ItemState.owned : (_balance < i.price ? ItemState.short : ItemState.buy);
+  /// hạt chỉ hiện khi có cách mua
+  List<ShopItem> get _all => [...widget.items, if (widget.onBuySeed != null) ...widget.seeds];
+
+  ItemState _state(ShopItem i) => i.slot != SlotKind.hat && _owned.contains(i.id)
+      ? ItemState.owned
+      : (_balance < i.price ? ItemState.short : ItemState.buy);
 
   List<ShopItem> get _unowned => [for (final i in widget.items) if (!_owned.contains(i.id)) i];
 
@@ -66,7 +76,8 @@ class _ShopScreenState extends State<ShopScreen> {
   Future<void> _buy(ShopItem item) async {
     if (_buying) return;
     setState(() => _buying = true);
-    final r = await widget.onBuy(item);
+    final buySeed = widget.onBuySeed;
+    final r = item.slot == SlotKind.hat && buySeed != null ? await buySeed(item) : await widget.onBuy(item);
     if (!mounted) return;
     setState(() {
       _buying = false;
@@ -196,7 +207,7 @@ class _ShopScreenState extends State<ShopScreen> {
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      child: Row(children: [tab('Tất cả', null), for (final k in SlotKind.values) tab(k.label, k)]), // shopTabAll, slot*
+      child: Row(children: [tab('Tất cả', null), for (final k in SlotKind.values) if (_all.any((i) => i.slot == k)) tab(k.label, k)]), // shopTabAll, slot*
     );
   }
 
@@ -214,7 +225,7 @@ class _ShopScreenState extends State<ShopScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   for (final k in kinds)
-                    if (widget.items.any((i) => i.slot == k)) ...[
+                    if (_all.any((i) => i.slot == k)) ...[
                       if (_tab == null) ...[
                         Text(
                           k.label.toUpperCase(),
@@ -226,7 +237,7 @@ class _ShopScreenState extends State<ShopScreen> {
                         spacing: 8,
                         runSpacing: 8,
                         children: [
-                          for (final i in widget.items.where((i) => i.slot == k))
+                          for (final i in _all.where((i) => i.slot == k))
                             SizedBox(
                               width: w,
                               child: ShopCard(

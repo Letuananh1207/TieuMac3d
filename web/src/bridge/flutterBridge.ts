@@ -4,6 +4,7 @@ import type { Radical } from '../zones/radicals';
 import type { ReviewItem } from '../zones/review';
 import type { StudyMenu } from '../zones/studyMenu';
 import { parseGameEarning, type GameEarning, type GameKind, type GameOutcome } from '../zones/wallet';
+import { parseActReply, parseGarden, type Garden, type GardenAct } from '../zones/vuon';
 import { parseAlms, type AlmsRecord, type AlmsResult } from '../zones/walletRules';
 import type { Lesson } from '../zones/zones';
 
@@ -120,6 +121,22 @@ export async function getProgress(): Promise<JourneyProgress | null> {
   const event: SceneEvent = { type: 'getProgress', payload: {} };
   try {
     return parseProgress(await host.callHandler(HANDLER, event));
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Hỏi Flutter vườn rau đã lưu (`getGarden` — R-VUON-1). `null` = không có Flutter / lỗi / bản cũ → trang coi vườn mới chỉ
+ * xem. Có → vườn đã đọc (`zones/vuon.ts` `parseGarden`).
+ */
+export async function getGarden(): Promise<Garden | null> {
+  const host = await hostReady();
+  if (!host) return null;
+  try {
+    const r = await host.callHandler(HANDLER, { type: 'getGarden', payload: {} } satisfies SceneEvent);
+    if (!r || typeof r !== 'object' || !('garden' in r)) return null;
+    return parseGarden((r as { garden: unknown }).garden);
   } catch {
     return null;
   }
@@ -289,6 +306,20 @@ export class FlutterBridge {
     if (!host || typeof host.callHandler !== 'function') return null;
     try {
       return parseAlmsReply(await host.callHandler(HANDLER, { type: 'giveAlms', payload: {} }));
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * Một thao tác ở vườn rau (`gardenAct` — R-VUON-1…9): Flutter tính theo `garden.dart` và ghi ngay. `null` = không có
+   * Flutter / lỗi / bản cũ → không làm gì (không có Flutter thì trang tự tính trên ví thử, không gọi tới đây).
+   */
+  async gardenAct(a: GardenAct): Promise<ReturnType<typeof parseActReply>> {
+    const host = window.flutter_inappwebview;
+    if (!host || typeof host.callHandler !== 'function') return null;
+    try {
+      return parseActReply(await host.callHandler(HANDLER, { type: 'gardenAct', payload: a }));
     } catch {
       return null;
     }

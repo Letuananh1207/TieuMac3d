@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'daily.dart';
+import 'garden.dart' show Garden, GardenDone, GardenError, GardenRefused, GardenResult;
+import 'garden.dart' as vuon;
 import 'journey.dart';
 import 'review.dart';
 import 'wallet.dart';
@@ -12,7 +14,8 @@ import 'wallet.dart' as rules show giveAlms;
 /// Lưu tiến độ học trên máy (R-HANH-1: giữ qua những lần mở app sau). Dùng `shared_preferences` — kho khoá–giá trị
 /// nhỏ của nền tảng (Android SharedPreferences, iOS NSUserDefaults, web localStorage).
 /// Kèm lịch ôn từng bộ thủ (R-ON-1…4), các ngày đã xong nhiệm vụ hằng ngày (R-NV-1, R-NV-2), sổ từ đang mượn ở Tàng
-/// Thư Các và trang đang đọc của từng cuốn (R-SACH-1…4), nhà của ta (R-NHA-3, R-NHA-4), ví Văn tiền (R-TIEN-1…4).
+/// Thư Các và trang đang đọc của từng cuốn (R-SACH-1…4), nhà của ta (R-NHA-3, R-NHA-4), ví Văn tiền (R-TIEN-1…4), vườn rau
+/// (R-VUON-1…9, khoá `vuon.state`).
 class ProgressStore {
   /// [clock] = đồng hồ (test truyền giờ giả để đi qua nhiều ngày).
   ProgressStore(this._prefs, {DateTime Function()? clock})
@@ -36,6 +39,7 @@ class ProgressStore {
   static const _gameDayKey = 'tien.tro-ngay';
   static const _streakPaidKey = 'tien.chuoi-da-thuong';
   static const _almsKey = 'tien.cho-tieu-khat';
+  static const _gardenKey = 'vuon.state';
 
   final SharedPreferences _prefs;
   final DateTime Function() _clock;
@@ -229,6 +233,48 @@ class ProgressStore {
     await _prefs.setInt(_coinsKey, r.balance);
     await _prefs.setString(_almsKey, jsonEncode({'lastDay': r.alms.lastDay, 'count': r.alms.count}));
     return (ok: true, reason: null, balance: r.balance, alms: r.alms);
+  }
+
+  /// Vườn rau đã lưu (R-VUON-1…9); chưa có / hỏng → vườn mới (6 luống trống, túi 3 hạt Cải ngọt).
+  Garden get garden {
+    final raw = _prefs.getString(_gardenKey);
+    if (raw == null) return Garden.fresh();
+    try {
+      return Garden.fromJson(jsonDecode(raw));
+    } on FormatException {
+      return Garden.fresh();
+    }
+  }
+
+  /// Một thao tác ở vườn (docs/bridge.md `gardenAct`): tính theo `garden.dart`, làm được → ghi ngay vườn + số dư.
+  /// [act] = `sow` | `water` | `harvest` | `sell` | `open` | `buy`; lạ / thiếu tham số → `bad`.
+  Future<GardenResult> gardenAct(String act, {String? plot, String? crop}) async {
+    final g = garden;
+    final now = _clock().millisecondsSinceEpoch;
+    final GardenResult r = switch ((act, plot, crop)) {
+      ('sow', final p?, final c?) => vuon.sow(g, p, c, now),
+      ('water', final p?, _) => vuon.water(g, p, now),
+      ('harvest', final p?, _) => vuon.harvest(g, p, now),
+      ('sell', _, _) => vuon.sell(g, crop, vnDay(_clock())),
+      ('open', _, _) => vuon.openPlot(g, coins),
+      ('buy', _, final c?) => vuon.buySeed(g, c, coins),
+      _ => const GardenRefused(GardenError.bad),
+    };
+    if (r is GardenDone) {
+      await _prefs.setString(_gardenKey, jsonEncode(r.garden.toJson()));
+      if (r.amount != 0) await _prefs.setInt(_coinsKey, coins + r.amount);
+    }
+    return r;
+  }
+
+  /// Mua 1 hạt [crop] ở Tạp hoá (R-VUON-9) — dạng kết quả như mua đồ để màn Tạp hoá dùng chung.
+  Future<BuyResult> buySeed(String crop) async {
+    final r = await gardenAct('buy', crop: crop);
+    return switch (r) {
+      GardenDone() => Bought(coins, ownedDecor),
+      GardenRefused(error: GardenError.short, :final short) => BuyRefused(BuyError.short, short: short),
+      GardenRefused() => const BuyRefused(BuyError.invalid),
+    };
   }
 
   /// Vật trang trí đã sở hữu (R-NHA-4), theo thứ tự có được.

@@ -15,6 +15,7 @@ import 'lesson/reward_overlay.dart';
 import 'lesson/shop_screen.dart';
 import 'lesson/study_board.dart';
 import 'lesson/learned_screen.dart';
+import 'scene/garden_event.dart';
 import 'scene/review_event.dart';
 import 'scene/scene_event.dart';
 import 'scene/scene_server.dart';
@@ -134,7 +135,18 @@ class HocXaApp extends StatelessWidget {
                         balance: progress!.coins,
                         owned: progress!.ownedDecor,
                         onBuy: (i) => progress!.buyDecor(i.id, i.price),
+                        // hạt giống Vườn rau (R-VUON-9) — bảng cây một nguồn ở garden.dart
+                        seeds: seedShopItems(),
+                        onBuySeed: (i) => progress!.buySeed(seedCrop(i) ?? ''),
                       )),
+              // vườn rau: gieo / tưới / thu / bán / mở ô, giữ qua tắt app (R-VUON-1…9)
+              onGetGarden: progress == null ? null : () => gardenReply(progress!.garden, progress!.now),
+              onGardenAct: progress == null
+                  ? null
+                  : (a) async {
+                      final r = await progress!.gardenAct(a.act, plot: a.plot, crop: a.crop);
+                      return gardenActReply(r, progress!.coins);
+                    },
               onSetDecor: (slot, item) async => await progress?.placeDecor(slot, item) ?? false,
               // ôn câu đố + bảng nhiệm vụ 日課榜 (R-ON-5, R-NV-3); không có kho tiến độ → trang tự lo (thẻ bộ mới / Tiểu Mặc)
               onOpenReview: progress == null

@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 import '../theme/app_colors.dart';
+import 'garden_event.dart';
 import 'library_event.dart';
 import 'review_event.dart';
 import 'safe_area_script.dart';
@@ -32,6 +33,8 @@ class SceneView extends StatefulWidget {
     this.onEarnGame,
     this.onGiveAlms,
     this.onOpenShop,
+    this.onGetGarden,
+    this.onGardenAct,
   });
 
   final WebUri url;
@@ -91,6 +94,12 @@ class SceneView extends StatefulWidget {
 
   /// Mở Tạp hoá (`openShop` — R-TIEN-4, R-TIEN-6); đóng → `resume`. `null` → trả `false`, trang báo "Tiệm chưa mở".
   final Future<void> Function(BuildContext context, OpenShopRequest request)? onOpenShop;
+
+  /// Trả lời `getGarden` — vườn rau đã lưu (R-VUON-1…9). `null` → trả `null`, trang coi vườn mới chỉ xem.
+  final Map<String, Object?> Function()? onGetGarden;
+
+  /// Một thao tác ở vườn (`gardenAct`): Flutter tính + ghi, trả `gardenActReply`. `null` → trả `null` (không làm gì).
+  final Future<Map<String, Object?>> Function(GardenActArgs args)? onGardenAct;
 
   @override
   State<SceneView> createState() => _SceneViewState();
@@ -200,6 +209,12 @@ class _SceneViewState extends State<SceneView> {
     if (type == 'giveAlms' && isGiveAlms(args)) {
       final give = widget.onGiveAlms;
       return give?.call();
+    }
+    if (type == 'getGarden' && isGetGarden(args)) return widget.onGetGarden?.call();
+    if (type == 'gardenAct') {
+      final a = gardenActArgs(args);
+      final act = widget.onGardenAct;
+      return act != null && a != null ? act(a) : null;
     }
     if (type == 'openShop') {
       final f = widget.onOpenShop;

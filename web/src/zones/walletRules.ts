@@ -6,6 +6,7 @@
  * Thuần — không DOM, không lưu (lưu: `bridge/browserStore.ts`). Giá một nguồn ở `decor.ts`.
  */
 import { decorItem, STARTER_DECOR } from './decor';
+import { applyAct, freshGarden, parseGarden, type Garden, type GardenAct, type GardenResult } from './vuon';
 import type { GameEarning } from './wallet';
 
 /** Học 1 bộ thủ mới (R-TIEN-2) — `learnCoins` ở Dart. */
@@ -70,11 +71,13 @@ export interface TrialWallet {
   learned: string[];
   /** đã cho Tiểu Khất (R-TIEN-8) */
   alms: AlmsRecord;
+  /** vườn rau (R-VUON-1…9) */
+  garden: Garden;
 }
 
-/** Ví thử mới: 300 Văn tiền, 3 vật khởi đầu, nhà trống, chưa học bộ nào. */
+/** Ví thử mới: 300 Văn tiền, 3 vật khởi đầu, nhà trống, chưa học bộ nào, vườn mới (6 luống trống, 3 hạt Cải ngọt). */
 export function newTrial(): TrialWallet {
-  return { coins: TRIAL_START_COINS, gameDay: '', gameToday: 0, owned: [...STARTER_DECOR], placed: {}, learned: [], alms: { ...NO_ALMS } };
+  return { coins: TRIAL_START_COINS, gameDay: '', gameToday: 0, owned: [...STARTER_DECOR], placed: {}, learned: [], alms: { ...NO_ALMS }, garden: freshGarden() };
 }
 
 const strings = (v: unknown): string[] => (Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string') : []);
@@ -97,6 +100,7 @@ export function parseTrial(raw: unknown): TrialWallet {
     placed,
     learned: [...new Set(strings(o.learned))],
     alms: parseAlms(o.alms),
+    garden: parseGarden(o.garden),
   };
 }
 
@@ -181,4 +185,12 @@ export function almsLabel(amount = ALMS_COINS): string {
 export function giveTrialAlms(w: TrialWallet, today: number): { wallet: TrialWallet; result: AlmsResult } {
   const result = giveAlms(w.coins, w.alms, today);
   return { wallet: result.ok ? { ...w, coins: result.balance, alms: result.alms } : w, result };
+}
+
+/* ---------- Vườn rau (R-VUON-1…9) — luật ở `vuon.ts` (chép `garden.dart`) ---------- */
+
+/** Một thao tác vườn ở chế độ thử (R-TIEN-7): như `gardenAct` của Flutter; [speed] = `?vuon=`. Không được → ví giữ nguyên. */
+export function gardenTrialAct(w: TrialWallet, a: GardenAct, now: number, speed = 1): { wallet: TrialWallet; result: GardenResult } {
+  const result = applyAct(w.garden, a, w.coins, now, speed);
+  return { wallet: result.ok ? { ...w, coins: w.coins + result.amount, garden: result.garden } : w, result };
 }

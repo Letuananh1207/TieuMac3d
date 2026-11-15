@@ -6,12 +6,16 @@ library;
 enum SlotKind {
   vuon('Vườn'), // slotGarden
   san('Sân'), // slotYard
-  trong('Trong nhà'); // slotIndoor
+  trong('Trong nhà'), // slotIndoor
+
+  /// hạt giống Vườn rau (R-VUON-9) — không phải loại ô; trang không gửi loại này, Flutter tự thêm từ `garden.dart`
+  hat('Hạt giống'); // slotSeed (chờ thiết kế — phiếu 2026-11-15-vuon-trong-trot)
 
   const SlotKind(this.label);
 
   final String label;
 
+  /// chỉ nhận ba loại ô của trang (`hat` không qua cầu nối)
   static SlotKind? parse(Object? v) => switch (v) {
         'vuon' => vuon,
         'san' => san,
