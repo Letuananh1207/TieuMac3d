@@ -12,6 +12,16 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
   rõ, "nảy" 0,25 s khi đổi giai đoạn. Bật ở Khởi Nguyên Trấn và Nhà của ta (`nha-ta.json` thêm `trees.crown`). `?look=cu` ép về `cau`.
 - Trấn nhìn từ trên 138 / 149,4k (sát trần 150k — thêm vật ở trấn phải bù, vd. bỏ cuống + lá hoa cỏ ≈ −1,2k); nhà 44 / 34,7k. Bench không tụt.
   Không chạm luật. Ảnh: `screens/Canh-vuon-rau-chum.png`, `screens/Canh-lieu-chum.png`, `screens/Canh-mai-chum.png`.
+## 2026-11-15.31 — Bục đàn tranh ở Quảng Trường + nhạc công Cầm Nương (chờ model)
+
+- Loại: cảnh 3D — bố cục + Cần code (đã làm). Phiên code V-20261115-61; người dùng chọn: bục nhỏ cạnh mép Quảng Trường, có tiếng đàn to dần
+  khi lại gần, không tương tác, chờ model Hunyuan riêng. **Đã duyệt 2026-11-15.**
+- Prop mới `buc-dan` (3,4 × 2,6 m, cao 0,4, viền son, bình phong ba tấm, bồ đoàn, đàn cổ tranh 21 dây + nhạn) ở (8,5; 14,3) `rotY` 180 — mép
+  nam Quảng Trường, phía đông cổng nam, dưới tán tùng; giữa quảng trường vẫn trống. Gộp vào khối mềm: 0 draw call thêm, +518 tam giác.
+- Nhạc công **Cầm Nương** (`cam-nu`) ngồi gảy, quay mặt vào giữa — chỉ hiện khi có `design/models/cam-nu.glb` (phiếu ảnh
+  `docs/phieu_thiet_ke/2026-11-15-anh-cam-nu.md`; model ≤ ~5 000 tam giác để trấn không vượt trần). Tiếng đàn tự tổng hợp (Karplus–Strong,
+  điệu ngũ cung 30 s, đài phát theo giờ thật): đầy trong 3 m, tắt từ 15 m; có cùng model. Luật R-NPC-9, R-AM-2.
+- Ảnh: `screens/Canh-buc-dan-tranh.png`, `screens/Canh-buc-dan-tranh-can.png` (Canvas 3D `?dang=dan-tranh`, người thế tạm).
 
 ## 2026-11-15.27 — Cây "tán chùm" (thử A): tùng tầng mây + bụi mềm, LOD 2 bậc
 
