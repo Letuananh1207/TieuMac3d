@@ -3,6 +3,18 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-15.15 — Nhà của ta thành đảo nhỏ trên biển mây (khung rỗng)
+
+- Loại: cảnh 3D — **bố cục**. Phiên code V-20261114-48 (kế hoạch `docs/tasks/2026-11-15-nha-cua-ta-lam-lai.md`, khảo cứu
+  `docs/tham_khao/nha-rieng-game.md`); người dùng: "cấu trúc nhà rất xấu, không muốn ra được khỏi phạm vi nhà, chật…"; chọn đảo,
+  hai hành lang + lan can thấp, "rỗng, sau này người dùng có đồ rồi mới trang trí thêm giống game 摩尔". **Đã duyệt 2026-11-15.**
+- Đảo tâm (0; −2) mép vực bán kính 27; đồi sau có trúc, 2 cụm tùng mép (±20; −10). Nhà chính (0; −8) → **(0; −11)**. Sân trong
+  lát x −9,5…9,5, z −15…−1; 2 hành lang (`galleries`) x ±8; lan can gỗ 0,8 m z −1. Bỏ toàn bộ `wallSegments` + cổng trăng vườn;
+  cổng đứng riêng (0; 11,5) "Nhà của ta" / "Khởi Nguyên Trấn". **Bến mây** x −3…3, z 13…23, vòng sáng "Khởi Nguyên Trấn"
+  (−1,8; 19,5)…(1,8; 22,5) — lối ra duy nhất. Chỗ xuất phát (0; 6,5), đi bộ tới (0; 10) giữ. 12 ô trang trí giữ mã, dời chỗ.
+- Luật: R-NHA-5 (mới — phạm vi nhà), R-NHA-1, R-HANH-4, R-BANDO-2. Draw call 48 (nhìn trên) / 38 / 33, ~34k tam giác.
+- Ảnh: `screens/Canh-nha-ta-dao.png`, `screens/Canh-nha-ta-san.png`.
+
 ## 2026-11-15.13 — Nhà của ta bỏ vòng trận truyền tống
 
 - Loại: cảnh 3D — **bố cục**. Phiên code V-20261114-47; người dùng: "ở nhà hãy loại bỏ truyền tống trận ở nhà".
