@@ -21,25 +21,52 @@ Mức độ:
 
 ### L-15 · `viec.dart gop` thay cả chữ mẫu `L-?1`, `L-?2` ở đầu docs/loi.md bằng số thật
 
-- Trạng thái: mới · Mức độ: nhỏ (công cụ; lần gộp sau cấp nhầm số, lệch đánh số) · Phần: `tool/viec.dart` (hàm cấp mã, dòng ~77) · Quy tắc: chưa có
+- Trạng thái: xong · Mức độ: nhỏ (công cụ; lần gộp sau cấp nhầm số, lệch đánh số) · Phần: `tool/viec.dart` (hàm cấp mã, dòng ~77) · Quy tắc: chưa có
 - Báo: 2026-11-16 — phiên điều phối /task thấy khi gộp V-78
 - Các bước: 1. Một nhánh việc sửa `docs/loi.md` (bất kỳ) 2. `dart tool/viec.dart gop`
 - Mong đợi / thực tế: chỉ cấp số cho mã tạm trong mục lỗi mới / dòng hướng dẫn "ghi tạm `L-?1`, `L-?2`…" bị đổi thành "`L-14`, `L-15`…" (in "L-?1 → L-14, L-?2 → L-15" dù việc không có lỗi mới)
 - Bằng chứng: commit dc62fb2 (đã trả dòng hướng dẫn về tay)
 
+**Sửa**
+- Nguyên nhân: `assignBugIds` gom **mọi** chuỗi `L-?n` trong cả nội dung các file nhánh đã đổi (kể cả dòng cũ của main
+  như hướng dẫn đầu sổ, chú thích tool / skill) rồi thay hết → nhánh nào chạm `docs/loi.md` cũng "cấp" số cho chữ mẫu.
+  Thêm nữa thứ tự xếp theo chữ (`L-?10` trước `L-?2`).
+- Code: `tool/viec.dart` — chỉ cấp số cho mã có tiêu đề mục lỗi `### L-?n ·` nằm ở dòng nhánh thêm (`git diff -U0
+  main...HEAD`); chỉ thay ở các dòng nhánh thêm / sửa; bỏ qua dòng chữ mẫu kiểu "ghi tạm `L-?1`" / "mã tạm `L-?1`" dù nhánh sửa dòng đó; không có
+  mục lỗi mới → không cấp, không commit. Đánh số theo thứ tự số. Phần thuần tách thành hàm (`addedLineNumbers`,
+  `tempIdsWithHeading`, `numberTempIds`, `replaceTempIds`).
+- Test: `tool/` chưa có chỗ test → bài kiểm chạy tay (2026-11-16, 14/14 đạt): script Dart import `viec.dart`, kiểm các
+  hàm thuần (hunk `-U0`, thứ tự số, CRLF, giữ dòng mẫu) + chạy thật `assignBugIds` trong repo git tạm: nhánh chỉ sửa sổ
+  không có lỗi mới → 0 mã, hướng dẫn giữ nguyên; nhánh thêm `### L-?2`, `### L-?1` + tham chiếu ở file `.ts` và sửa
+  dòng hướng dẫn → cấp L-15, L-16 ở tiêu đề + tham chiếu, dòng hướng dẫn và chú thích cũ giữ `L-?1`, commit
+  `chore: cấp mã lỗi L-15, L-16`.
+- Thử máy: không cần (công cụ); lần `viec.dart gop` tới của một nhánh không có lỗi mới phải in "không có mã tạm".
+
 **Lịch sử**
 - 2026-11-16: ghi.
+- 2026-11-16: sửa (V-20261116-80), bài kiểm chạy tay đạt.
 
 ### L-14 · `tool/guard.dart` báo "tsc (web/) chưa cài node_modules" khi chạy trong worktree
 
-- Trạng thái: mới · Mức độ: nhỏ (công cụ; chốt chặn báo đỏ sai trong mọi worktree) · Phần: `tool/guard.dart` · Quy tắc: chưa có
+- Trạng thái: xong · Mức độ: nhỏ (công cụ; chốt chặn báo đỏ sai trong mọi worktree) · Phần: `tool/guard.dart` · Quy tắc: chưa có
 - Báo: 2026-11-16 — subagent V-78 và V-79 cùng gặp
 - Các bước: 1. Trong `.claude/worktrees/<việc>` chạy `dart tool/viec.dart chuan-bi` 2. `dart tool/guard.dart`
 - Mong đợi / thực tế: tsc chạy và qua (như `npx tsc --noEmit`) / guard tìm cứng `web/node_modules/typescript/bin/tsc`, gói lại nằm ở `.claude/worktrees/node_modules` → báo thiếu
 - Hướng sửa: tìm `typescript` ngược lên các thư mục cha như Node (giống `npmDirs()` trong `web/vite.config.ts` của L-12)
 
+**Sửa**
+- Nguyên nhân: guard chỉ xét `web/node_modules/typescript/bin/tsc`; worktree không có `web/node_modules` (Node tự tìm
+  ngược lên `.claude/worktrees/node_modules`, guard thì không).
+- Code: `tool/guard.dart` — hàm `findUp(dir, rel)` tìm `node_modules/typescript/bin/tsc` từ `web/` ngược lên các thư
+  mục cha, chạy `node <đường dẫn tuyệt đối>`.
+- Test: `tool/` chưa có chỗ test → kiểm tay trong worktree `sua-cong-cu` (không có `web/node_modules`, 2026-11-16):
+  thêm tạm `web/src/__l14.ts` có lỗi kiểu → guard in `error TS2322` (trước: "chưa cài node_modules"), thoát 1; bỏ file,
+  chạm `web/src/main.ts` không lỗi → guard im, thoát 0.
+- Thử máy: không cần (công cụ).
+
 **Lịch sử**
 - 2026-11-16: ghi từ báo cáo V-78 / V-79.
+- 2026-11-16: sửa (V-20261116-80), kiểm tay đạt.
 
 ### L-13 · Bộ quét mặt trùng (zfight) coi InstancedMesh là khối đặc → che mất ~18 chỗ chớp thật ở trấn
 

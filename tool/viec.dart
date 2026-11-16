@@ -11,7 +11,7 @@
 //   dart tool/viec.dart ds         các việc đang mở (worktree, nhánh, số commit chưa gộp)
 //
 // Mã lỗi mới trong worktree ghi tạm `L-?1`, `L-?2`… (hai việc song song không lấy trùng số); `gop` cấp số thật
-// = lớn nhất trên main + 1… và thay ở mọi file đã đổi.
+// = lớn nhất trên main + 1… cho mã có tiêu đề `### L-?n ·` mới, và thay ở các dòng nhánh thêm / sửa.
 import 'dart:io';
 
 ProcessResult run(String exe, List<String> args, {String? cwd, bool echo = false}) {
@@ -74,26 +74,75 @@ int maxBugId(String root) {
   return RegExp(r'L-(\d+)').allMatches(f.readAsStringSync()).map((m) => int.parse(m.group(1)!)).fold(0, (a, b) => a > b ? a : b);
 }
 
-/// Thay `L-?1`, `L-?2`… trong các file nhánh đã đổi so với main bằng số thật; trả về số mã đã cấp.
+// Cấp mã (L-15): chỉ mã tạm có mục lỗi thật — `### L-?n · …` ở một dòng nhánh thêm — mới được cấp số; chỉ thay ở
+// các dòng nhánh thêm / sửa (dòng cũ của main như hướng dẫn đầu docs/loi.md, chú thích tool / skill không đụng), và
+// bỏ qua dòng chữ mẫu kiểu "ghi tạm `L-?1`" / "mã tạm `L-?1`" dù nhánh có sửa dòng đó.
+final _tempId = RegExp(r'L-\?\d+');
+final _tempHeading = RegExp(r'^### (L-\?\d+) ·');
+final _templateLine = RegExp(r'tạm\s*`L-\?\d+`');
+
+/// Số dòng (từ 1, theo file mới) mà một `git diff -U0` thêm vào.
+Set<int> addedLineNumbers(String diff) {
+  final out = <int>{};
+  for (final m in RegExp(r'^@@ -\S+ \+(\d+)(?:,(\d+))? @@', multiLine: true).allMatches(diff)) {
+    final start = int.parse(m.group(1)!);
+    final count = m.group(2) == null ? 1 : int.parse(m.group(2)!);
+    for (var i = 0; i < count; i++) {
+      out.add(start + i);
+    }
+  }
+  return out;
+}
+
+List<String> _lines(String text) => text.split('\n'); // giữ '\r' cuối dòng (CRLF) nguyên chỗ
+
+/// Mã tạm có tiêu đề mục lỗi `### L-?n ·` nằm trên dòng được phép.
+Set<String> tempIdsWithHeading(String text, Set<int> allowed) {
+  final ids = <String>{};
+  final lines = _lines(text);
+  for (var i = 0; i < lines.length; i++) {
+    final m = _tempHeading.firstMatch(lines[i]);
+    if (m != null && allowed.contains(i + 1)) ids.add(m.group(1)!);
+  }
+  return ids;
+}
+
+/// Mã tạm → số thật, theo thứ tự số (L-?2 trước L-?10).
+Map<String, String> numberTempIds(Set<String> ids, int maxId) {
+  final sorted = ids.toList()..sort((a, b) => int.parse(a.substring(3)).compareTo(int.parse(b.substring(3))));
+  var next = maxId + 1;
+  return {for (final t in sorted) t: 'L-${next++}'};
+}
+
+/// Thay mã tạm trong `map` ở các dòng được phép, trừ dòng chữ mẫu ("ghi tạm `L-?1`").
+String replaceTempIds(String text, Map<String, String> map, Set<int> allowed) {
+  final lines = _lines(text);
+  for (var i = 0; i < lines.length; i++) {
+    if (!allowed.contains(i + 1) || _templateLine.hasMatch(lines[i])) continue;
+    lines[i] = lines[i].replaceAllMapped(_tempId, (m) => map[m.group(0)!] ?? m.group(0)!);
+  }
+  return lines.join('\n');
+}
+
+/// Cấp số thật cho mã lỗi tạm `L-?n` của các mục lỗi nhánh thêm (xem chú thích trên); trả về số mã đã cấp.
 int assignBugIds() {
   final files = git(['diff', '--name-only', 'main...HEAD']).split('\n').where((f) => f.isNotEmpty && File(f).existsSync());
-  final tokens = <String>{};
-  final re = RegExp(r'L-\?\d+');
+  final texts = <String, String>{};
+  final added = <String, Set<int>>{};
   for (final f in files) {
     try {
-      tokens.addAll(re.allMatches(File(f).readAsStringSync()).map((m) => m.group(0)!));
-    } catch (_) {} // file nhị phân
+      texts[f] = File(f).readAsStringSync();
+    } catch (_) {
+      continue; // file nhị phân
+    }
+    added[f] = addedLineNumbers(git(['diff', '-U0', '--no-color', 'main...HEAD', '--', f]));
   }
-  if (tokens.isEmpty) return 0;
-  var next = maxBugId(here()) + 1;
-  final map = {for (final t in (tokens.toList()..sort())) t: 'L-${next++}'};
-  for (final f in files) {
-    try {
-      var s = File(f).readAsStringSync();
-      final before = s;
-      map.forEach((k, v) => s = s.replaceAll(k, v));
-      if (s != before) File(f).writeAsStringSync(s);
-    } catch (_) {}
+  final ids = <String>{for (final f in texts.keys) ...tempIdsWithHeading(texts[f]!, added[f]!)};
+  if (ids.isEmpty) return 0;
+  final map = numberTempIds(ids, maxBugId(here()));
+  for (final f in texts.keys) {
+    final s = replaceTempIds(texts[f]!, map, added[f]!);
+    if (s != texts[f]) File(f).writeAsStringSync(s);
   }
   git(['commit', '-am', 'chore: cấp mã lỗi ${map.values.join(', ')}']);
   map.forEach((k, v) => stdout.writeln('  $k → $v'));

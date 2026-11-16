@@ -21,6 +21,19 @@ ProcessResult run(String exe, List<String> args, {String? cwd}) => Process.runSy
       stderrEncoding: utf8,
     );
 
+/// Tìm `rel` trong `dir` rồi ngược lên các thư mục cha (như Node tìm node_modules) — trong worktree gói npm dùng
+/// chung nằm ở `.claude/worktrees/node_modules` (L-14). Trả đường dẫn tuyệt đối; không thấy → null.
+String? findUp(String dir, String rel) {
+  var d = Directory(dir).absolute;
+  while (true) {
+    final f = File('${d.path}/$rel');
+    if (f.existsSync()) return f.path;
+    final parent = d.parent;
+    if (parent.path == d.path) return null;
+    d = parent;
+  }
+}
+
 List<String> changedFiles() {
   final names = <String>{};
   for (final args in [
@@ -100,8 +113,8 @@ String collectErrors() {
       p.startsWith('web/') &&
       (p.endsWith('.ts') || p.endsWith('tsconfig.json') || p.endsWith('package.json')));
   if (webTouched) {
-    final tsc = 'node_modules/typescript/bin/tsc';
-    if (!File('web/$tsc').existsSync()) {
+    final tsc = findUp('web', 'node_modules/typescript/bin/tsc');
+    if (tsc == null) {
       report.writeln('tsc (web/)\n  chưa cài node_modules — chạy `cd web && npm install` rồi kiểm lại');
     } else {
       final r = run('node', [tsc, '--noEmit', '--pretty', 'false'], cwd: 'web');
