@@ -41,13 +41,19 @@ Mức độ:
 
 ### L-19 · Thân nhân vật chính phồng / méo khi vươn vai (đứng yên lâu)
 
-- Trạng thái: đang sửa · Mức độ: khó chịu (méo hình rõ, lặp mỗi 16 giây khi đứng) · Phần: xương Mixamo (`player/mixamoRig.ts`, trọng số da model Tripo) · Quy tắc: R-DIEU-8
+- Trạng thái: chờ thử máy · Mức độ: khó chịu (méo hình rõ, lặp mỗi 16 giây khi đứng) · Phần: xương Mixamo (`player/mixamoRig.ts`, trọng số da model Tripo) · Quy tắc: R-DIEU-8
 - Báo: 2026-11-16 — "khi nhân vật dang tay thì bị phồng thân hình rất xấu" (ảnh người dùng: nhìn sau lưng, hai tay giơ ngang, thân / nách phình ra); xảy ra khi **vươn vai khi đứng lâu**
 - Các bước: 1. Đứng yên > 6 giây 2. Nhân vật vươn vai (hai tay giơ cao)
 - Mong đợi / thực tế: tay giơ lên, thân giữ dáng / thân và nách phồng ra theo tay
 - Bằng chứng: ảnh người dùng gửi trong chat (2026-11-16); nghi nguyên nhân: Tripo cho đỉnh thân / vai bám xương `LeftArm` / `RightArm` (trọng số da), tay giơ cao kéo theo thân
 
 **Sửa**
+- Tái hiện: Canvas 3D `?dang=vuon` chụp sau lưng + chính diện — sườn dưới nách phình theo tay như cánh dơi (ảnh trước ở `design/screens/Loi-L19-vuon-vai.png`).
+- Nguyên nhân (đo trọng số `nhan-vat.glb` ở tư thế gốc): ~400 đỉnh thân phía trong khớp vai (x 0,04…0,12, khớp `LeftArm` x 0,121) dưới vai tới ngực / sườn bám `LeftArm` (trung bình 0,1–0,3), thêm 144 đỉnh sườn bám `LeftForeArm` / `LeftHand` (tới 0,47) — tay giơ thì kéo sườn theo. `thu-thu`, `su-phu`, `tieu-mac` cùng kiểu (do Tripo tự gắn xương). Chọn hướng (a) sửa trọng số lúc nạp (đúng nguyên nhân, chung mọi model Tripo, không làm lại file); không cần (b) giảm biên độ vươn vai.
+- Code: `web/src/player/mixamoRig.ts` — `chuyenTrongSoNach` (thuần) + `suaNach` gọi trong `mixamoRig()` lúc nạp: đỉnh "thuộc thân" (phía trong khớp vai theo x · thấp hơn khớp vai · xa trục cánh tay hơn cỡ ống tay áo `r` = trung vị khoảng cách của đỉnh bám chính cánh tay; mỗi điều kiện chuyển mềm qua dải 0,5 r / 0,6 r) chuyển phần trọng số xương tay (cánh tay, cẳng tay, bàn tay, ngón) sang `Spine2`, chuẩn hoá tổng = 1. Ống tay áo, đỉnh vai (trên khớp) giữ nguyên.
+- Test: `web/src/player/mixamoRig.test.ts` — `'R-DIEU-8 (L-19): đỉnh thân cạnh nách bám tay → chuyển sang Spine2, tổng 1; ống tay áo và đỉnh vai giữ nguyên'`, `'R-DIEU-8 (L-19): đỉnh ở dải chuyển … chỉ chuyển một phần, tổng vẫn 1'` (lưới giả). Hình dạng khi biến dạng chỉ khoá bằng ảnh chụp (cần GPU).
+- Ảnh: `design/screens/Loi-L19-vuon-vai.png` (sau lưng / chính diện, trước / sau) — sườn dưới nách hết phình, thân thẳng xuống đai; vai trên khớp vẫn tròn theo tay (cơ vai, cố ý). `design/screens/Loi-L19-soat-dang-khac.png` — vẫy tay, nhảy, thủ thư, sư phụ vươn vai: không rách, thân gọn hơn.
+- Thử máy: `cd web && npm run build` → app → đứng yên > 6 s chờ vươn vai, xoay camera ra sau lưng + chính diện; thử vẫy tay, Vui mừng (nhảy mừng); đi gần thủ thư / sư phụ xem dáng NPC. Còn phình → chụp màn lúc tay giơ cao.
 
 **Lịch sử**
 - 2026-11-16: ghi, sửa ngay (người dùng chọn).
