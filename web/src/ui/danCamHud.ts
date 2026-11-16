@@ -105,7 +105,7 @@ export class DanCamHud {
   private keys: HTMLButtonElement[][] = [];
   private lanes: HTMLElement | null = null;
   private notePool: HTMLElement[] = [];
-  private stats: { hay: HTMLElement; duoc: HTMLElement; bar: HTMLElement } | null = null;
+  private stats: { count: HTMLElement; bar: HTMLElement } | null = null;
 
   constructor(private readonly on: DanHudHandlers) {
     this.root.id = 'danHud';
@@ -118,7 +118,7 @@ export class DanCamHud {
     // phần đổi mỗi khung của "Theo bài" (đếm Hay / Được, tiến độ) đặt riêng, không dựng lại cả làn
     const key = v ? JSON.stringify(v.mode === 'theo' ? { mode: v.mode, name: v.name, paused: v.paused } : v) : '';
     if (v?.mode === 'theo' && this.stats) {
-      this.stats.hay.textContent = `${T.hay} ${v.hay} · ${T.duoc} ${v.duoc}`;
+      this.stats.count.textContent = `${T.hay} ${v.hay} · ${T.duoc} ${v.duoc}`;
       this.stats.bar.style.width = `${Math.round(v.progress * 100)}%`;
     }
     if (key === this.key) return;
@@ -341,7 +341,7 @@ export class DanCamHud {
     stand.append(strokeIcon(18, ICON_STAND, 2.2));
     stand.addEventListener('click', () => this.on.stand());
     top.append(pause, info, stand);
-    this.stats = { hay: count, duoc: count, bar: fill };
+    this.stats = { count, bar: fill };
     const wrap = node('div', 'dc-lanes');
     wrap.setAttribute('role', 'group');
     wrap.setAttribute('aria-label', '5 làn nốt');
@@ -377,8 +377,10 @@ export class DanCamHud {
     counts.append(cell(v.hay, T.hay, 'hay'), cell(v.duoc, T.duoc, 'duoc'), cell(v.miss, T.miss, 'miss'));
     const reward = node('div', 'dc-reward');
     if (v.reward?.kind === 'coins') reward.append(coinIcon(20), T.reward(v.reward.n));
-    else if (v.reward?.kind === 'song') reward.append(T.songRewarded), reward.classList.add('off');
-    else if (v.reward?.kind === 'capped') reward.append(T.capped), reward.classList.add('off');
+    else if (v.reward) {
+      reward.classList.add('off');
+      reward.append(v.reward.kind === 'song' ? T.songRewarded : T.capped);
+    }
     const btns = node('div', 'dc-btns');
     btns.append(
       this.pill(strokeIcon(18, ICON_AGAIN, 2.2), T.again, () => this.on.again(), 'dc-again'),
