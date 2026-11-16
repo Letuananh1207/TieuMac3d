@@ -17,6 +17,7 @@ import { addInterior, type LocalBox } from './kien_truc/noi_that';
 import { traLau } from './kien_truc/tra_lau';
 import type { Cutaway, LocalPad, Shell, WalkInBuilder } from './kien_truc/vao_trong';
 import type { Seat } from './seat';
+import { worldService, type TeaService } from './teaPath';
 import { cloneMaterial, markDynamic, markOwnMaterials, mergeStatic, mergeVertexColors } from './merge';
 import type { SoftLook } from './bake';
 import { rotateXZ, type BuildingSpec, type InteriorKind } from './spec';
@@ -53,6 +54,8 @@ export interface Room {
   seats?: Seat[];
   /** chân biển "Khu tự học" (toạ độ cảnh) — nút nổi "Hướng dẫn" (R-VA-5) */
   studySign?: { x: number; y: number; z: number };
+  /** trà lâu: mốc cho tiểu nhị mang trà (R-TRA-1), cùng thứ tự `seats` */
+  service?: TeaService;
   /**
    * gọi mỗi khung: mờ dần mái + tường trước khi `inside`; `y` = chân nhân vật (nhà nhiều tầng: tầng 2 không mờ sàn);
    * `eye` = vị trí camera — tường cắt được (gian trong, V-71) ẩn phần trên khi camera ở phía ngoài
@@ -277,15 +280,18 @@ export function addWalkIn(scene: THREE.Scene, colliders: Colliders, b: BuildingS
   const cuts = (shell.cutaway ?? []).map((c) => worldCut(b, c));
   let opacity = 1;
   let lowOpacity = 1;
+  const service = shell.service ? worldService(b, shell.service, shell.seats ?? [], y0) : undefined;
   return {
     zoneId: b.id,
     floor: worldRect(b, shell.floor),
     pads,
-    seats: (shell.seats ?? []).map((s) => {
+    seats: (shell.seats ?? []).map((s, i) => {
       const [sx, sz] = toWorld(b, s.x, s.z);
       const rotY = s.rotY + ((b.rotY ?? 0) * Math.PI) / 180;
-      return { x: sx, y: y0 + s.y, z: sz, rotY, ...(s.study ? { study: true } : {}), ...(s.hold ? { hold: s.hold } : {}), ...(s.rail ? { rail: s.rail } : {}) };
+      const serve = service?.seats[i] ? { serve: { room: b.id, i } } : {}; // tiểu nhị mang trà tới (R-TRA-1)
+      return { x: sx, y: y0 + s.y, z: sz, rotY, ...(s.study ? { study: true } : {}), ...(s.hold ? { hold: s.hold } : {}), ...(s.rail ? { rail: s.rail } : {}), ...serve };
     }),
+    ...(service ? { service } : {}),
     ...(shell.studySign ? { studySign: worldPoint(b, shell.studySign, y0) } : {}),
     hits: [],
     anchor: new THREE.Vector3(b.x, y0 + 2, b.z),

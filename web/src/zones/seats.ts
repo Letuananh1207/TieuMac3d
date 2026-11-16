@@ -29,6 +29,8 @@ export interface SeatSpot {
   hold?: 'tra' | 'sach' | 'lan-can';
   /** ghế lan can (R-VA-4): lan can cách chỗ ngồi `d` m theo hướng nhìn, mặt trên cao hơn mặt ngồi `h` m — tay đặt lên đó */
   rail?: { d: number; h: number };
+  /** trà lâu (R-TRA-1): tiểu nhị mang trà tới — nhà `room`, chỗ thứ `i` của nhà; thiếu = không ai mang (cầm chén ngay) */
+  serve?: { room: string; i: number };
 }
 
 /** Chỗ ngồi gần nhất trong tầm của chính nó, cùng tầng với chân nhân vật `y`; không có → `undefined`. */

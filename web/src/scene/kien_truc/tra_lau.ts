@@ -12,11 +12,12 @@ import type { BuildingSpec } from '../spec';
 import { addBeamBand, addLanterns, addSign, hk, type Style } from './chi_tiet';
 import { addStairs, gapForBridge, stairLayout, type StairLayout } from './cau_thang';
 import { columnXs } from './dien';
-import { CUSHION_R, FURN, guqinTable, longTeaTable, soloSeat, STOOL_H, TEA_STOOLS, teaBed, teaTable, type LocalSeat } from './do_pho';
+import { CUSHION_R, FURN, guqinTable, longTeaTable, soloSeat, STOOL_H, STOOL_R, TEA_STOOLS, TEA_W, teaBed, teaTable, type LocalSeat } from './do_pho';
 import { box, column } from './hinh';
 import { RAIL_H, upperRail } from './lau_sach';
 import { gableHipRoof, skirt } from './mai';
 import type { LocalBox } from './noi_that';
+import { rect, teaServiceLocal, type ServiceFloor } from './tra_lau_phuc_vu';
 import { frontRamp, type LocalPad, type Shell } from './vao_trong';
 
 /** Nền thấp (m) — một bậc; dốc trước mặt tiền dài `RAMP` để bước lên. */
@@ -85,6 +86,9 @@ export function traLau(g: THREE.Group, b: BuildingSpec, style: Style, fade: THRE
   const pillar = b.pillarColor ?? style.pillar;
   const trim = b.trim ?? style.ridge;
   const boxes: LocalBox[] = [];
+  // vật cản mịn cho tiểu nhị mang trà (R-TRA-1): mặt bàn + đôn tròn thay hộp bao — chỉ là số, không dựng hình
+  const low: Pick<ServiceFloor, 'boxes' | 'circles'> = { boxes: [rect(0, -d / 2 + WALL / 2, w, WALL)], circles: [] };
+  const high: Pick<ServiceFloor, 'boxes' | 'circles'> = { boxes: [], circles: [] };
 
   /* ---------- tầng 1: nền, sàn, tường sau + bên, cột mặt tiền ---------- */
   g.add(box(w + 2 * PLAT_OVER, PLAT, d + 2 * PLAT_OVER, style.base, 0, PLAT / 2, 0));
@@ -96,28 +100,35 @@ export function traLau(g: THREE.Group, b: BuildingSpec, style: Style, fade: THRE
     g.add(box(WALL, h1, d, style.wall, s * (w / 2 - WALL / 2), PLAT + h1 / 2, 0));
     const wall: LocalBox = { x: s * (w / 2 - WALL / 2), z: 0, w: 0.3, d, h: Infinity };
     boxes.push(...(s > 0 ? gapForBridge(wall, stairs) : [wall])); // hồi phải: cầu nối tầng 2 đi qua đầu tường
+    low.boxes.push(rect(s * (w / 2 - WALL / 2), 0, WALL, d));
   }
   const xs = columnXs(w, w / 3);
   const circles = xs.map((x) => ({ x, z: d / 2 - 0.3, r: 0.28 }));
   for (const c of circles) g.add(column(0.22, h1, pillar, c.x, PLAT, c.z));
+  low.circles.push(...circles);
 
   // quầy trà sát tường sau + 3 bàn trà (đôn ngồi được — mặt đôn là tấm `upper`, R-NHAC-2) + cầm án — chỉ chặn người ở
   // tầng 1
-  const low = PLAT + 1.5;
+  const lowY = PLAT + 1.5;
   g.add(box(w * 0.45, 0.95, 0.7, style.timber, 0, PLAT + 0.475, -d / 2 + 1.1));
   g.add(box(w * 0.45, 0.06, 0.8, style.floor, 0, PLAT + 0.98, -d / 2 + 1.1));
-  boxes.push({ x: 0, z: -d / 2 + 1.1, w: w * 0.45, d: 0.8, maxY: low });
+  boxes.push({ x: 0, z: -d / 2 + 1.1, w: w * 0.45, d: 0.8, maxY: lowY });
+  low.boxes.push(rect(0, -d / 2 + 1.1, w * 0.45, 0.8));
   const seats: LocalSeat[] = [];
   const seatPads: LocalPad[] = [];
   for (let i = 0; i < xs.length - 1; i++) {
     const tx = (xs[i] + xs[i + 1]) / 2;
-    boxes.push({ ...teaTable(g, tx, TEA_Z, PLAT), maxY: low });
+    boxes.push({ ...teaTable(g, tx, TEA_Z, PLAT), maxY: lowY });
+    low.boxes.push(rect(tx, TEA_Z, TEA_W, TEA_W));
     for (const [dx, dz] of TEA_STOOLS) {
+      low.circles.push({ x: tx + dx, z: TEA_Z + dz, r: STOOL_R });
       seats.push({ x: tx + dx, z: TEA_Z + dz, y: PLAT + STOOL_H, rotY: Math.atan2(-dx, -dz), hold: 'tra' });
       seatPads.push({ x: tx + dx, z: TEA_Z + dz, w: 0.5 * FURN, d: 0.5 * FURN, y: PLAT + STOOL_H, upper: true });
     }
   }
-  boxes.push({ ...guqinTable(g, -w / 2 + GUQIN_IN.x, -d / 2 + GUQIN_IN.z, PLAT), maxY: low });
+  const guqin = guqinTable(g, -w / 2 + GUQIN_IN.x, -d / 2 + GUQIN_IN.z, PLAT);
+  boxes.push({ ...guqin, maxY: lowY });
+  low.boxes.push(rect(guqin.x, guqin.z, guqin.w, guqin.d));
   addStairs(g, stairs, style);
 
   /* ---------- sàn lầu + tầng 2 mở (hiện khi đứng trên tầng 2, mờ khi ở tầng 1 — R-HUD-2) ---------- */
@@ -131,6 +142,7 @@ export function traLau(g: THREE.Group, b: BuildingSpec, style: Style, fade: THRE
   const cx = w / 2 - 0.25;
   const cz = d / 2 - 0.25;
   for (const x of xs) for (const z of [-cz, cz]) fadeLow.add(column(0.15, h2, pillar, x, yf, z));
+  for (const x of xs) for (const z of [-cz, cz]) high.circles.push({ x, z, r: 0.15 });
   for (let i = 0; i < xs.length - 1; i++) for (const z of [-cz, cz]) upperRail(fadeLow, xs[i], z, xs[i + 1], z, yf);
   upperRail(fadeLow, -cx, -cz, -cx, cz, yf);
   upperRail(fadeLow, cx, stairs.zTop, cx, cz, yf); // hồi phải: chừa lối ra cầu nối
@@ -142,30 +154,36 @@ export function traLau(g: THREE.Group, b: BuildingSpec, style: Style, fade: THRE
   for (const bx of BEDS_X) {
     const bed = teaBed(fadeLow, west + bx, -id / 2 + BED_FROM_BACK, yf);
     boxes.push({ ...bed.box, minY: up });
+    high.boxes.push(rect(bed.box.x, bed.box.z, bed.box.w, bed.box.d));
     bedTops.push({ ...bed.top, upper: true });
     seats.push(...bed.seats);
   }
   for (const z of SOLO_WEST_Z) {
     const solo = soloSeat(fadeLow, west + SOLO_IN, z, yf, -Math.PI / 2);
     boxes.push({ ...solo.box, minY: up });
+    high.boxes.push(rect(solo.box.x, solo.box.z, solo.box.w, solo.box.d));
     seats.push({ ...solo.seat, hold: 'lan-can', rail: { d: west + SOLO_IN + cx, h: RAIL_H + 0.05 } }); // lan can hồi trái x −cx
   }
   for (const x of SOLO_FRONT_X) {
     const solo = soloSeat(fadeLow, west + x, id / 2 - SOLO_IN, yf, 0);
     boxes.push({ ...solo.box, minY: up });
+    high.boxes.push(rect(solo.box.x, solo.box.z, solo.box.w, solo.box.d));
     seats.push({ ...solo.seat, hold: 'lan-can', rail: { d: cz - (id / 2 - SOLO_IN), h: RAIL_H + 0.05 } }); // lan can mặt tiền z cz
   }
   const long = longTeaTable(fadeLow, LONG_AT.x, LONG_AT.z, yf);
   boxes.push({ ...long.box, minY: up });
+  high.boxes.push(rect(long.box.x, long.box.z, long.box.w, long.box.d));
   seats.push(...long.seats);
   for (const dx of DOUBLE_X) {
     const x = west + dx;
     lowTeaTable(fadeLow, x, DOUBLE_Z, yf, style.timber);
     boxes.push({ x, z: DOUBLE_Z, w: LOW_W, d: LOW_W, minY: up });
+    high.boxes.push(rect(x, DOUBLE_Z, LOW_W, LOW_W));
     seats.push({ x, z: DOUBLE_Z - SEAT_GAP, y: yf, rotY: 0, hold: 'tra' }, { x, z: DOUBLE_Z + SEAT_GAP, y: yf, rotY: Math.PI, hold: 'tra' });
   }
   // lan can mặt tiền tầng 2 (hồi + sau trùng tường tầng 1, đã chặn) — chỉ chặn người ở tầng 2
   boxes.push({ x: 0, z: cz, w, d: 0.3, minY: yf - 0.4 }, ...stairs.boxes);
+  high.boxes.push(rect(0, cz, w, 0.3));
 
   /* ---------- xà, mái, biển, đèn (mờ khi ở trong) ---------- */
   const y2 = yf + h2;
@@ -190,5 +208,52 @@ export function traLau(g: THREE.Group, b: BuildingSpec, style: Style, fade: THRE
     floor: { x: 0, z: 0, w: w - 0.6, d: d - 0.6 },
     upperY: yf - 1,
     seats,
+    service: serviceOf(b, style, xs, low, high, seats),
   };
+}
+
+/** Đầu quầy: cách mép quầy (x) bấy nhiêu m — tiểu nhị ra khỏi khe sau quầy ở đây (R-TRA-1). */
+const COUNTER_OUT = 0.7;
+/** Cửa: trước hàng cột mặt tiền, trên dốc. */
+const DOOR_OUT = 0.45;
+
+/** Mốc phục vụ (R-TRA-1): sau quầy → hai đầu quầy; cửa gian phía hồi phải; thang ngoài; chỗ đứng rót từng chỗ. */
+function serviceOf(
+  b: BuildingSpec,
+  style: Style,
+  xs: readonly number[],
+  low: Pick<ServiceFloor, 'boxes' | 'circles'>,
+  high: Pick<ServiceFloor, 'boxes' | 'circles'>,
+  seats: readonly LocalSeat[],
+): NonNullable<Shell['service']> {
+  const { w, d } = b;
+  const { yf, iw, id, stairs: L } = traLauLayout(b, style);
+  const half = (w * 0.45) / 2;
+  const counterZ = -d / 2 + 1.1;
+  const behindZ = (-d / 2 + WALL + counterZ - 0.4) / 2; // giữa tường sau và mép sau mặt quầy
+  const doorZ = d / 2 + PLAT_OVER + DOOR_OUT;
+  const door = [(xs[xs.length - 2] + xs[xs.length - 1]) / 2, doorZ] as const;
+  const xc = (L.x0 + L.x1) / 2;
+  const zl = (L.zBack + L.zTop) / 2;
+  return teaServiceLocal(
+    {
+      behind: [1, -1].map((e) => [
+        [e * (half + 0.35), behindZ],
+        [e * (half + COUNTER_OUT), counterZ],
+      ]),
+      door,
+      stairs: [
+        [xc, doorZ],
+        [xc, L.zStart],
+        [xc, zl],
+        [iw / 2 - 0.6, zl],
+      ],
+      floors: [
+        { y: PLAT, bounds: { minX: -w / 2, maxX: w / 2, minZ: -d / 2, maxZ: doorZ + 0.35 }, ...low },
+        { y: yf, bounds: { minX: -iw / 2, maxX: iw / 2, minZ: -id / 2, maxZ: id / 2 }, ...high },
+      ],
+    },
+    seats,
+    (s) => (s.y > yf - 1 ? 2 : 1),
+  );
 }

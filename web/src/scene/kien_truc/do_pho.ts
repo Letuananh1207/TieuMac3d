@@ -30,7 +30,9 @@ export const CUSHION_R = 0.42;
 /** Cao mặt đôn trống (m) — ngồi đôn bàn trà (R-NHAC-2). */
 export const STOOL_H = 0.58; // L-8: 0,45 × FURN ≈ 0,58 (R-NHAC-2)
 const TEA_TOP = k(0.75);
-const TEA_W = k(1.2);
+/** Cạnh mặt bàn trà tầng 1 · bán kính đôn (m) — vật cản mịn cho tiểu nhị (R-TRA-1). */
+export const TEA_W = k(1.2);
+export const STOOL_R = k(0.24);
 const STOOL_AT = k(0.95);
 /** Vị trí 4 đôn quanh tâm bàn trà (đông, tây, nam, bắc). */
 export const TEA_STOOLS: readonly (readonly [number, number])[] = [
@@ -45,13 +47,13 @@ export function teaTable(g: THREE.Group, x: number, z: number, y0 = 0): LocalBox
   const leg = TEA_TOP - 0.08;
   g.add(box(TEA_W, 0.08, TEA_W, TABLE, x, y0 + TEA_TOP - 0.04, z));
   for (const sx of [-1, 1]) for (const sz of [-1, 1]) g.add(box(0.1, leg, 0.1, TABLE, x + sx * (TEA_W / 2 - 0.1), y0 + leg / 2, z + sz * (TEA_W / 2 - 0.1)));
-  for (const [dx, dz] of TEA_STOOLS) g.add(column(k(0.24), STOOL_H, STOOL, x + dx, y0, z + dz));
+  for (const [dx, dz] of TEA_STOOLS) g.add(column(STOOL_R, STOOL_H, STOOL, x + dx, y0, z + dz));
   const pot = new THREE.Mesh(new THREE.SphereGeometry(0.13, 8, 6), lambert(POT));
   pot.position.set(x - 0.15, y0 + TEA_TOP + 0.11, z);
   pot.scale.y = 0.8;
   g.add(pot);
   for (const dx of [0.2, 0.38]) g.add(column(0.05, 0.07, CUP, x + dx, y0 + TEA_TOP, z + 0.1, 6));
-  const span = 2 * (STOOL_AT + k(0.24)) + 0.02;
+  const span = 2 * (STOOL_AT + STOOL_R) + 0.02;
   return { x, z, w: span, d: span };
 }
 

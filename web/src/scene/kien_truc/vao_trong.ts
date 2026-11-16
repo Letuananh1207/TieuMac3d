@@ -7,6 +7,7 @@ import type * as THREE from 'three';
 import type { BuildingSpec } from '../spec';
 import type { Style } from './chi_tiet';
 import type { LocalBox } from './noi_that';
+import type { TeaServiceLocal } from './tra_lau_phuc_vu';
 
 /** Tấm nền theo toạ độ nhà; `ramp` dốc dọc trục của nhà từ `y` (tại `at0`) xuống `y1` (tại `at1`). */
 export interface LocalPad {
@@ -49,6 +50,8 @@ export interface Shell {
    * `study` = bồ đoàn khu tự học: ngồi đủ 1 giây mở cuộn sách như Ngồi ôn (R-ON-8)
    */
   seats?: { x: number; z: number; y: number; rotY: number; study?: boolean; hold?: 'tra' | 'sach' | 'lan-can'; rail?: { d: number; h: number } }[];
+  /** trà lâu: mốc cho tiểu nhị mang trà (R-TRA-1) — cùng thứ tự `seats` */
+  service?: TeaServiceLocal;
   /** biển gỗ "Khu tự học" (chân biển, `y` từ chân nhà) — nút nổi "Hướng dẫn" (R-VA-5) */
   studySign?: { x: number; z: number; y: number };
 }
