@@ -41,7 +41,7 @@ export const STUDY_GUIDE: GameGuide = {
   ],
   tipBy: LIBRARIAN,
   tipTitle: 'Lời thủ thư Điển Thư',
-  tip: 'Mỗi ngày ôn một ít, chữ sẽ ở lại lâu. Số son trên nút **Ngồi ôn** là số bộ đến hạn hôm nay.',
+  tip: 'Mỗi ngày ôn một ít, chữ sẽ ở lại lâu. Số son trên nút **Tĩnh toạ** là số bộ đến hạn hôm nay.',
   none: {
     icon: 'ban-do',
     title: 'Đạo hữu chưa học bộ thủ nào',

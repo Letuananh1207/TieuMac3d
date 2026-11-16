@@ -9,19 +9,19 @@ export interface ActionState {
   air: boolean;
   sitting: boolean;
   bowing: boolean;
-  /** chấm son nút "Ngồi ôn" (R-DIEU-7): `due` = số bộ đến hạn, `new` = số bộ chưa học (vùng có bài học); `null` = không chấm */
+  /** chấm son nút "Tĩnh toạ" (R-DIEU-7): `due` = số bộ đến hạn; `null` = không chấm */
   badge: { n: number; kind: 'due' } | null;
 }
 
-/** Chữ nút "Ngồi ôn" theo trạng thái (R-DIEU-7, thiết kế 2026-11-14.10 — chuỗi `actionSit*`). Thuần. */
+/** Chữ nút "Tĩnh toạ" theo trạng thái (R-DIEU-7, thiết kế 2026-11-14.10 + tên 2026-11-16.12 — chuỗi `actionSit*`). Thuần. */
 export function sitButtonText(
   sitting: boolean,
   badge: ActionState['badge'],
 ): { label: string; aria: string; badge: string | null } {
-  if (sitting) return { label: 'Đang ôn', aria: 'Đang ôn, bấm để đứng dậy', badge: null };
-  if (!badge) return { label: 'Ngồi ôn', aria: 'Ngồi ôn', badge: null };
-  const aria = `Ngồi ôn, còn ${badge.n} bộ đến hạn`;
-  return { label: 'Ngồi ôn', aria, badge: badge.n >= 100 ? '99+' : String(badge.n) };
+  if (sitting) return { label: 'Đang tĩnh toạ', aria: 'Đang tĩnh toạ, bấm để đứng dậy', badge: null };
+  if (!badge) return { label: 'Tĩnh toạ', aria: 'Tĩnh toạ', badge: null };
+  const aria = `Tĩnh toạ, còn ${badge.n} bộ đến hạn`;
+  return { label: 'Tĩnh toạ', aria, badge: badge.n >= 100 ? '99+' : String(badge.n) };
 }
 
 /**
@@ -40,7 +40,7 @@ export class ActionButtons {
   private last = '';
 
   constructor(on: { jump(): void; bow(): void; sit(): void }) {
-    // hình minh hoạ bản cắt nửa trên (2026-11-16.2): Nhảy 60, Chào / Ngồi ôn 50 — chấm son Ngồi ôn vẫn nằm trên hình
+    // hình minh hoạ bản cắt nửa trên (2026-11-16.2): Nhảy 60, Chào / Tĩnh toạ 50 — chấm son Tĩnh toạ vẫn nằm trên hình
     this.jump.prepend(hinhImg('nhay-nut', 60));
     this.bow.prepend(hinhImg('chao-nut', 50));
     this.sit.prepend(hinhImg('ngoi-on-nut', 50));
@@ -66,7 +66,7 @@ export class ActionButtons {
     this.bow.classList.toggle('on', s.bowing);
     this.sit.classList.toggle('on', s.sitting);
     this.sit.setAttribute('aria-pressed', String(s.sitting));
-    // R-DIEU-7 (thiết kế 2026-11-14.10): "Ngồi ôn" / "Đang ôn"; chấm son bộ đến hạn hoặc bộ chưa học; đang ngồi ẩn chấm
+    // R-DIEU-7 (thiết kế 2026-11-14.10, tên 2026-11-16.12): "Tĩnh toạ" / "Đang tĩnh toạ"; chấm son bộ đến hạn; đang ngồi ẩn chấm
     const t = sitButtonText(s.sitting, s.badge);
     this.sitLabel.textContent = t.label;
     this.sitBadge.hidden = t.badge === null;

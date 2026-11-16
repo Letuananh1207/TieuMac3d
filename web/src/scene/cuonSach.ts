@@ -12,12 +12,11 @@ import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js
 import { setLayer } from './layers';
 import { lambert } from './materials';
 import { markDynamic } from './merge';
-import { CUON_AN, CUON_CAO, CUON_GIAY_H, CUON_GIAY_W, CUON_TRUOC, isOpen, poseOf, stepCuon, type CuonState } from './cuonSachNhip';
+import { CUON_AN, CUON_CAO, CUON_NGUC_H, CUON_NGUC_W, CUON_TRUOC, isOpen, poseOf, stepCuon, type CuonState } from './cuonSachNhip';
 
 // cỡ (m) — nhân vật cao 2,1 m
-const GIAY_W = CUON_GIAY_W;
-const GIAY_H = CUON_GIAY_H; // V-43: 0,26 × 0,35 (thiết kế 2026-11-14.21: 0,26 × 0,25) — mục cao hơn, gợi ý không bị cắt
-const TRUC_DAI = GIAY_H + 0.02; // trục dài hơn giấy 1 cm mỗi đầu
+// giấy: `CuonOptions.paper` (trước mắt 0,48 × 0,27 — thiết kế 2026-11-16.12) hoặc trước ngực 0,26 × 0,35; trục dài hơn
+// giấy 1 cm mỗi đầu
 const TRUC_R = 0.015; // Ø 0,03, trụ 8 cạnh
 const DAU_R = 0.02; // đầu trục cầu Ø 0,04
 const VIEN_R = 0.019; // viền vàng giữa trục và đầu trục
@@ -32,7 +31,8 @@ const PAPER = '#F2EADA';
 const LACQUER = '#A8322A';
 
 /** Một trục: thân gỗ + hai đầu ngọc viền vàng, gộp màu theo đỉnh → 1 draw call. */
-function trucGeometry(): THREE.BufferGeometry {
+function trucGeometry(giayH: number): THREE.BufferGeometry {
+  const TRUC_DAI = giayH + 0.02;
   const parts: [THREE.BufferGeometry, string][] = [[new THREE.CylinderGeometry(TRUC_R, TRUC_R, TRUC_DAI, 8), WOOD]];
   for (const s of [1, -1]) {
     const vien = new THREE.CylinderGeometry(VIEN_R, VIEN_R, 0.008, 8);
@@ -57,6 +57,8 @@ function trucGeometry(): THREE.BufferGeometry {
 export interface CuonOptions {
   /** lớp vẽ (`layers.ts`); không có = lớp 0 */
   layer?: number;
+  /** cỡ giấy (m) rộng × cao; không có = trước ngực `CUON_NGUC_W` × `CUON_NGUC_H` */
+  paper?: { w: number; h: number };
 }
 
 export class CuonSach {
@@ -69,8 +71,12 @@ export class CuonSach {
   private state: CuonState = CUON_AN;
   private rollUp = false;
   private afterRoll: (() => void) | null = null;
+  private readonly giayW: number;
 
   constructor(scene: THREE.Scene, opts: CuonOptions = {}) {
+    const GIAY_W = opts.paper?.w ?? CUON_NGUC_W;
+    const GIAY_H = opts.paper?.h ?? CUON_NGUC_H;
+    this.giayW = GIAY_W;
     const fade = { transparent: true };
     const trucMat = new THREE.MeshLambertMaterial({ vertexColors: true, ...fade });
     const truoc = lambert(PAPER, fade);
@@ -78,7 +84,7 @@ export class CuonSach {
     const anMat = lambert(LACQUER, fade);
     this.mats = [trucMat, truoc, sau, anMat];
 
-    const trucGeo = trucGeometry();
+    const trucGeo = trucGeometry(GIAY_H);
     this.trucs = [new THREE.Mesh(trucGeo, trucMat), new THREE.Mesh(trucGeo, trucMat)];
     // mặt trước (hướng về mặt nhân vật, −Z) và mặt sau (camera thường thấy, +Z); mỗi mặt một phía, không chồng nhau
     const truocGeo = new THREE.PlaneGeometry(GIAY_W, GIAY_H).rotateY(Math.PI);
@@ -115,6 +121,16 @@ export class CuonSach {
     if (!this.root.visible || !this.giay[0].visible) return null;
     const hit = ray.intersectObject(this.giay[0], false)[0];
     return hit?.uv ? { u: hit.uv.x, v: hit.uv.y, point: hit.point } : null;
+  }
+
+  /** Điểm (cảnh) trên mặt giấy phía người cầm ở (u, v) — như `hitUv` (Canvas 3D: tay trỏ vào ô). */
+  uvPoint(u: number, v: number, out: THREE.Vector3): THREE.Vector3 {
+    const g = this.giay[0];
+    const p = g.geometry.getAttribute('position');
+    const w = Math.abs(p.getX(0) - p.getX(1)); // mặt trước đã quay 180°: u tăng → x giảm
+    const h = Math.abs(p.getY(0) - p.getY(2));
+    g.updateWorldMatrix(true, false);
+    return g.localToWorld(out.set((0.5 - u) * w, (v - 0.5) * h, 0));
   }
 
   /** Nửa khoảng cách hai trục hiện tại (m, đã nhân cỡ) — tay cầm ngoài chỗ này; 0 = chưa hiện. */
@@ -162,7 +178,7 @@ export class CuonSach {
     this.root.position.copy(at);
     this.root.rotation.y = yaw;
     this.holder.scale.setScalar(p.scale);
-    const half = (GIAY_W / 2) * p.mo;
+    const half = (this.giayW / 2) * p.mo;
     // trục nằm ngoài mép giấy (thiết kế 2026-11-14.21: trục chỉ lấn mép giấy ~4 px) — chữ sát lề không bị trục che
     const trucX = Math.max(TRUC_R, half + TRUC_R * 0.7 * p.mo);
     this.trucs[0].position.x = trucX;

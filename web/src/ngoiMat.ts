@@ -6,8 +6,8 @@
  *
  * `main.ts` (và Canvas 3D) chỉ: `sit(chỗ)` / `stand()`, chuyển kéo màn vào `drag`, mỗi khung `update` với camera ngôi 3
  * (OrbitCamera vẽ vào camera phụ) và camera bàn chơi (`GamePlay.placeCamera` vẽ vào camera phụ).
- * Chữ / mục trên cuộn (thiết kế 2026-11-14.21): `setMenu` vẽ các mục lên giấy (`ui/cuonMucPaint.ts`) — hiện khi giấy mở hết,
- * mờ → rõ 0,2 s; chạm mục dùng được → ngón trỏ chỉ vào + viền vàng 0,15 s rồi gọi `onPick` (R-ON-8).
+ * Ô trên cuộn (thiết kế 2026-11-16.12 "Cuộn Tĩnh toạ"): `setMenu` vẽ 4 ô lên giấy (`ui/cuonMucPaint.ts`) — hiện khi giấy mở
+ * hết, mờ → rõ 0,2 s; chạm ô dùng được → ngón trỏ tay gần ô chỉ vào + ô nhấn 0,15 s rồi gọi `onPick` (R-ON-8).
  */
 import * as THREE from 'three';
 import {
@@ -29,25 +29,14 @@ import { LAYER_MAT, LAYER_THAN, setLayer, viewLayers } from './scene/layers';
 import { isSoft, type LookSpec } from './scene/look';
 import type { FirstPersonSpec } from './scene/spec';
 import { CuonA11y, loadCuonFonts, paintCuon, type CuonPaintState } from './ui/cuonMucPaint';
-import { cuonHit, cuonLayout, cuonUsable, type CuonLayout, type CuonRowId, type CuonView } from './zones/cuonMuc';
+import { cuonHand, cuonHit, cuonLayout, cuonUsable, type CuonLayout, type CuonRowId, type CuonView } from './zones/cuonMuc';
 import { TayNgoi, worldToBody } from './scene/tayNgoi';
-import {
-  bookPose,
-  railPose,
-  reach,
-  reachPhase,
-  REACH_TOTAL,
-  restPose,
-  scrollPose,
-  tablePose,
-  teaPose,
-  type HandsPose,
-  type V3,
-} from './scene/tayNgoiDang';
+// prettier-ignore
+import { bookPose, railPose, reach, reachPhase, REACH_GO, REACH_TOTAL, restPose, scrollPose, tablePose, teaPose, type HandsPose, type V3 } from './scene/tayNgoiDang';
 
 /** Chỗ đang ngồi — quyết camera, tay, vật cầm. */
 export type SitPlace =
-  /** Ngồi ôn tại chỗ, bồ đoàn khu tự học: hai tay cầm cuộn sách (R-ON-8) */
+  /** Tĩnh toạ tại chỗ, bồ đoàn khu tự học: hai tay cầm cuộn sách (R-ON-8) */
   | { kind: 'on' }
   /** án thư, bàn trà, đôn, sập, ghế lan can (R-NGOI-1) */
   | { kind: 'ngoi'; hold?: 'tra' | 'sach' | 'lan-can'; rail?: { d: number; h: number } }
@@ -87,6 +76,7 @@ export class NgoiMat {
   private reachK = Infinity;
   private reachAt: V3 = [0, 0, 0];
   private reachStone = false;
+  private reachSide: 'left' | 'right' = 'right';
   /** mục in trên giấy (thiết kế 2026-11-14.21) */
   private menu: CuonView | null = null;
   private onPick: ((id: CuonRowId) => void) | null = null;
@@ -115,7 +105,7 @@ export class NgoiMat {
     this.pitchOf = { study: fp.pitch.study * DEG, seat: fp.pitch.seat * DEG, game: fp.pitch.game * DEG };
     this.look = new EyeLook(this.s);
     setLayer(character.root, LAYER_THAN); // thân mình: chỉ camera ngôi 3 thấy (dáng ngồi không đổi)
-    this.scroll = new CuonSach(scene, { layer: LAYER_MAT });
+    this.scroll = new CuonSach(scene, { layer: LAYER_MAT, paper: { w: CUON_GIAY_W, h: CUON_GIAY_H } });
     this.hands = new TayNgoi(scene, character.palette ?? { sleeve: fp.sleeve, cuff: fp.cuff, skin: fp.skin }, look && isSoft(look) ? look.wrap : undefined);
     this.ray.layers.set(LAYER_MAT);
     this.paperTex.colorSpace = THREE.SRGBColorSpace;
@@ -241,11 +231,12 @@ export class NgoiMat {
     this.reachAt = worldToBody(at, this.eye, this.character.facing.rotation.y);
     this.reachK = 0;
     this.reachStone = true;
+    this.reachSide = 'right';
   }
 
   /**
-   * Chạm màn (client px) khi ngồi ôn: trúng giấy cuộn trước mắt → `true` (nuốt chạm). Trúng mục dùng được (chữ đã hiện)
-   * → ngón trỏ tay phải chỉ vào, viền vàng 0,15 s rồi `onPick` (R-ON-8); mục mờ / chỗ trống → không gì.
+   * Chạm màn (client px) khi tĩnh toạ: trúng giấy cuộn trước mắt → `true` (nuốt chạm). Trúng ô dùng được (chữ đã hiện)
+   * → ngón trỏ tay gần ô chỉ vào, ô nhấn 0,15 s rồi `onPick` (R-ON-8); ô mờ / "Sắp có" / chỗ trống → không gì.
    */
   tapScroll(x: number, y: number, camera: THREE.Camera): boolean {
     if (this.place?.kind !== 'on' || !this.firstPerson) return false;
@@ -254,15 +245,41 @@ export class NgoiMat {
     const hit = this.scroll.hitUv(this.ray);
     if (!hit) return false;
     const id = this.menu && this.paperOn && this.paint.alpha >= 1 ? cuonHit(this.layout, this.menu, hit.u, hit.v) : null;
-    if (id && this.pick(id)) {
+    if (id && this.menu && this.pick(id)) {
       this.reachAt = worldToBody(hit.point, this.eye, this.character.facing.rotation.y);
       this.reachK = 0;
       this.reachStone = false;
+      this.reachSide = cuonHand(this.menu, id); // ô 1–2 tay trái, ô 3–4 / "Đứng dậy" tay phải
     }
     return true;
   }
 
   private readonly tmp = new THREE.Vector3();
+  private holdReach = false; // Canvas 3D: giữ tay ở chỗ trỏ (không rút về)
+
+  /** Canvas 3D (`?dang=ngoi-mat&moi`): ô `id` giữ dáng "vừa cập nhật" (viền vàng + ✓) để chụp. */
+  previewFlash(id: CuonRowId): void {
+    this.paint.flash = id;
+    this.flashT = Infinity;
+    this.dirty = true;
+  }
+
+  /** Canvas 3D (`?dang=ngoi-mat&nhan=<ô>`): ô `id` đang nhấn + ngón trỏ tay gần ô chạm tâm ô, giữ yên để chụp — không mở gì. */
+  previewPress(id: CuonRowId): void {
+    if (!this.menu) return;
+    const l = this.layout;
+    const i = this.menu.tiles.findIndex((t) => t.id === id);
+    const b = id === 'stand' ? l.stand : l.tiles[i];
+    if (!b) return;
+    const at = this.scroll.uvPoint((b.x + b.w / 2) / l.w, 1 - (b.y + b.h / 2) / l.h, new THREE.Vector3());
+    this.paint.press = id;
+    this.dirty = true;
+    this.reachAt = worldToBody(at, this.eye, this.character.facing.rotation.y);
+    this.reachK = REACH_GO;
+    this.reachStone = false;
+    this.reachSide = cuonHand(this.menu, id);
+    this.holdReach = true;
+  }
 
   /** Ghế lan can xa quá tầm tay: mắt (camera + tay) nhoài tới trước chừng này (m) — chỉ camera mình, thân ngoài cảnh đứng yên. */
   private lean(p: SitPlace): number {
@@ -276,7 +293,6 @@ export class NgoiMat {
   private fov(aspect: number): number {
     return eyeFov(this.cam.fov, aspect, this.s.minHFov);
   }
-
 
   /**
    * Mỗi khung (sau khi OrbitCamera vẽ vào `third`, GamePlay vẽ vào `game` nếu đang ngồi chơi): đặt `camera` thật, lớp vẽ,
@@ -320,7 +336,7 @@ export class NgoiMat {
     const fp = this.firstPerson;
     viewLayers(camera, fp);
 
-    // cuộn sách trước mắt (Ngồi ôn, bồ đoàn khu tự học)
+    // cuộn sách trước mắt (Tĩnh toạ, bồ đoàn khu tự học)
     const cuonT = p?.kind === 'on' ? studyT : null;
     const dist = fitScroll(fov, camera.aspect, CUON_GIAY_W / 2, CUON_GIAY_H / 2); // giữa màn cả dọc lẫn ngang (V-43)
     const base = p ? this.basePitch(p) : 0;
@@ -351,8 +367,8 @@ export class NgoiMat {
               : restPose();
     else pose = this.tableHands(p);
     if (this.reachK < REACH_TOTAL) {
-      this.reachK += dt;
-      pose = reach(pose, this.reachAt, reachPhase(this.reachK), this.reachStone && this.reachK < REACH_TOTAL * 0.65);
+      if (!this.holdReach) this.reachK += dt;
+      pose = reach(pose, this.reachAt, reachPhase(this.reachK), this.reachStone && this.reachK < REACH_TOTAL * 0.65, this.reachSide);
     }
     return pose;
   }

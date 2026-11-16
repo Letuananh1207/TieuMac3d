@@ -130,15 +130,17 @@ export function reachPhase(k: number): number {
 }
 
 /**
- * Tay phải với tới `target` (thân) theo mức `e` (0..1): đầu ngón trỏ chạm đúng điểm khi `e` = 1 — ngón trỏ duỗi, cổ tay
- * lùi lại `FINGER` theo hướng từ vai tới điểm. `stone` = cầm quân cờ (đặt quân).
+ * Một tay với tới `target` (thân) theo mức `e` (0..1): đầu ngón trỏ chạm đúng điểm khi `e` = 1 — ngón trỏ duỗi, cổ tay
+ * lùi lại `FINGER` theo hướng từ vai tới điểm. `stone` = cầm quân cờ (đặt quân — tay phải). `side` = tay nào (cuộn Tĩnh
+ * toạ: ô nửa trái → tay trái, thiết kế 2026-11-16.12); tay kia giữ nguyên dáng.
  */
-export function reach(base: HandsPose, target: V3, e: number, stone = false): HandsPose {
+export function reach(base: HandsPose, target: V3, e: number, stone = false, side: 'left' | 'right' = 'right'): HandsPose {
   if (e <= 0) return base;
-  const dir = norm(sub(target, SHOULDER_R));
+  const from = base[side];
+  const dir = norm(sub(target, side === 'left' ? SHOULDER_L : SHOULDER_R));
   const wrist = sub(target, scale(dir, FINGER));
-  const pos = mix(base.right.pos, wrist, e);
-  return { ...base, right: { pos, palm: mix(base.right.palm, DOWN, e), point: e }, stone };
+  const hand: HandPose = { pos: mix(from.pos, wrist, e), palm: mix(from.palm, DOWN, e), point: e };
+  return side === 'left' ? { ...base, left: hand, stone } : { ...base, right: hand, stone };
 }
 
 /** Đầu ngón trỏ (thân) của tay có cổ tay `wrist` khi duỗi, theo hướng vai → cổ tay. */

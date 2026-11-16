@@ -1,14 +1,29 @@
 /**
- * Vẽ chữ / mục lên giấy cuộn sách Ngồi ôn trước mắt (R-ON-8; thiết kế 2026-11-14.21 `NgoiMat-on-*`, `-bien-the`): đầu cuộn
- * (dòng nơi · "Ngồi ôn" Lora · ấn son "Ôn"), vạch chấm vàng, 3 "dòng mực" (thường gạch chân · nổi bật vệt mực ngọc · mờ
- * nét đứt + lý do · nhấn viền vàng + quầng), dòng gợi ý, "Đứng dậy". Vẽ vào canvas (gắn làm `CanvasTexture` ở `ngoiMat.ts`)
- * — chỉ khi mục đổi / nhịp hiện chữ, không mỗi khung. Kèm nút ẩn cho đọc màn hình (`sitScrollItemLabel`).
+ * Vẽ mặt giấy cuộn Tĩnh toạ trước mắt (R-ON-8; thiết kế 2026-11-16.12 "Cuộn Tĩnh toạ", artboard `Cuon-*`): đầu cuộn
+ * (dòng nơi · "Tĩnh toạ" Lora · ấn son "Tĩnh" · viên "Đứng dậy" góc trên phải), vạch chấm vàng, một hàng 4 ô kiểu triện gỗ
+ * khảm (hình nét mực + tên + dòng phụ; thường · mờ nét đứt · "Sắp có" · nhấn viền ngọc + quầng vàng · vừa cập nhật viền
+ * vàng + ✓), chấm son trên ô Nhiệm vụ, dòng gợi ý chưa học. Vẽ vào canvas (gắn làm `CanvasTexture` ở `ngoiMat.ts`) — chỉ
+ * khi ô đổi / nhịp hiện chữ, không mỗi khung. Kèm nút ẩn cho đọc màn hình (chuỗi `scrollTileLabel`; ô "Sắp có" không đọc).
  */
-import { CUON_SEAL, CUON_TITLE, fitHint, HINT_PAD_Y, STAND_UP, type CuonLayout, type CuonRowId, type CuonView } from '../zones/cuonMuc';
+import {
+  cuonA11yItems,
+  CUON_SEAL,
+  CUON_TITLE,
+  fitHint,
+  HINT_PAD_Y,
+  STAND_UP,
+  type CuonBox,
+  type CuonLayout,
+  type CuonRowId,
+  type CuonTile,
+  type CuonView,
+} from '../zones/cuonMuc';
+import { standIcon, tileIcon } from './cuonMucHinh';
 
-/** Bề ngang ảnh giấy (px thật) — 1024 × 1378 (giấy 0,26 × 0,35), chữ nghiêng vẫn rõ (mipmap). */
+/** Bề ngang ảnh giấy (px thật) — 1024 × 576 (giấy 0,48 × 0,27), chữ nghiêng vẫn rõ (mipmap). */
 export const PAPER_PX = 1024;
 
+// token (design/tokens/design_tokens.json): map-paper · slate · slate-muted · jade · gold · lacquer
 const PAPER = '#f2eada';
 const SLATE = '#24323a';
 const MUTED = '#5e6a70';
@@ -16,38 +31,18 @@ const JADE = '#2b5446';
 const GOLD = '#d4a64a';
 const LACQUER = '#a8322a';
 const UI = '"Be Vietnam Pro", system-ui, sans-serif';
-const HAN = '"Han Serif", "Noto Serif SC", serif';
-
-const ICON: Record<CuonRowId, string[]> = {
-  // V-45: sổ từ mở · bảng nhiệm vụ có dấu tích — hình tạm theo nét biểu tượng cũ, ô có hình riêng chờ thiết kế (phiếu 2026-11-15-cuon-bang-chon)
-  book: ['M4 5.5c2.5-1 5.5-1 8 .5 2.5-1.5 5.5-1.5 8-.5v13c-2.5-1-5.5-1-8 .5-2.5-1.5-5.5-1.5-8-.5z', 'M12 6v13.5'],
-  daily: ['M5 4h14v16H5z', 'M8 9l1.5 1.5L12 8', 'M14 9.5h3', 'M8 15l1.5 1.5L12 14', 'M14 15.5h3'],
-  learned: ['M5.5 4h3.5a1.5 1.5 0 0 1 1.5 1.5V9a1.5 1.5 0 0 1-1.5 1.5H5.5A1.5 1.5 0 0 1 4 9V5.5A1.5 1.5 0 0 1 5.5 4z', 'M15 4h3.5A1.5 1.5 0 0 1 20 5.5V9a1.5 1.5 0 0 1-1.5 1.5H15A1.5 1.5 0 0 1 13.5 9V5.5A1.5 1.5 0 0 1 15 4z', 'M5.5 13.5h3.5a1.5 1.5 0 0 1 1.5 1.5v3.5a1.5 1.5 0 0 1-1.5 1.5H5.5A1.5 1.5 0 0 1 4 18.5V15a1.5 1.5 0 0 1 1.5-1.5z', 'M15 13.5h3.5A1.5 1.5 0 0 1 20 15v3.5a1.5 1.5 0 0 1-1.5 1.5H15a1.5 1.5 0 0 1-1.5-1.5V15a1.5 1.5 0 0 1 1.5-1.5z'],
-  stand: ['M12 19V7M7 12l5-5 5 5M5 21h14'],
-};
+const SERIF = 'Lora, Georgia, serif';
 
 export interface CuonPaintState {
   /** chữ mờ → rõ (0..1) */
   alpha: number;
-  /** đang nhấn: viền vàng + quầng (0,15 s) */
+  /** đang nhấn: viền ngọc + quầng vàng, co 97 % (0,15 s) */
   press: CuonRowId | null;
-  /** vừa đóng màn: viền ngọc nhấp một lần (0,6 s) */
+  /** vừa đóng màn: viền vàng + ✓ nhấp một lần (0,6 s) */
   flash: CuonRowId | null;
 }
 
 type Ctx = CanvasRenderingContext2D;
-
-function icon(c: Ctx, id: CuonRowId, x: number, y: number, size: number, color: string): void {
-  c.save();
-  c.translate(x, y);
-  c.scale(size / 24, size / 24);
-  c.strokeStyle = color;
-  c.lineWidth = 2.3;
-  c.lineCap = 'round';
-  c.lineJoin = 'round';
-  for (const d of ICON[id]) c.stroke(new Path2D(d));
-  c.restore();
-}
 
 /** Chữ cắt "…" cho vừa `max` px. */
 function fit(c: Ctx, s: string, max: number): string {
@@ -57,14 +52,144 @@ function fit(c: Ctx, s: string, max: number): string {
   return `${t}…`;
 }
 
+/** Gói chữ ô tối đa 2 dòng (dòng 2 cắt "…") — tên ô và dòng phụ (artboard: chữ xuống dòng, không cắt giữa từ). */
+function twoLines(c: Ctx, s: string, max: number): string[] {
+  if (c.measureText(s).width <= max) return [s];
+  const words = s.split(' ');
+  let first = words[0] ?? '';
+  let i = 1;
+  while (i < words.length && c.measureText(`${first} ${words[i]}`).width <= max) first = `${first} ${words[i++]}`;
+  const rest = words.slice(i).join(' ');
+  return rest ? [fit(c, first, max), fit(c, rest, max)] : [fit(c, first, max)];
+}
+
 /** Nạp sẵn font chữ Việt cho canvas (canvas không tự kéo phần font tiếng Việt như DOM) — xong thì vẽ lại. */
 export function loadCuonFonts(): Promise<unknown> {
-  const vi = 'Ngồi ôn Đứng dậy ấầẩẫậắằẳẵặếềểễệốồổỗộớờởỡợứừửữự';
+  const vi = 'Tĩnh toạ Đứng dậy Đọc sách Bộ đã học Nhiệm vụ hôm nay Sắp có ấầẩẫậắằẳẵặếềểễệốồổỗộớờởỡợứừửữự';
   return Promise.allSettled([
-    document.fonts.load('700 18px Lora', vi),
+    document.fonts.load(`700 18px ${SERIF}`, vi),
     document.fonts.load(`700 16px ${UI}`, vi),
     document.fonts.load(`500 12px ${UI}`, vi),
   ]);
+}
+
+function roundBox(c: Ctx, b: CuonBox, r: number): void {
+  c.beginPath();
+  c.roundRect(b.x, b.y, b.w, b.h, r);
+}
+
+/** Một ô: nền + viền theo trạng thái, hình, tên (≤ 2 dòng), dòng phụ (1 dòng), chấm son / ✓. */
+function paintTile(c: Ctx, l: CuonLayout, b0: CuonBox, t: CuonTile, st: CuonPaintState): void {
+  const ty = l.type;
+  const press = st.press === t.id;
+  const flash = !press && st.flash === t.id;
+  const k = press ? 0.97 : 1;
+  const b = { x: b0.x + (b0.w * (1 - k)) / 2, y: b0.y + (b0.h * (1 - k)) / 2, w: b0.w * k, h: b0.h * k };
+  c.save();
+  // quầng ngoài (nhấn: vàng 45 % 4 px · vừa cập nhật: vàng 30 % 3 px)
+  if (press || flash) {
+    const g = press ? 4 : 3;
+    c.fillStyle = press ? 'rgba(212,166,74,.45)' : 'rgba(212,166,74,.3)';
+    roundBox(c, { x: b.x - g, y: b.y - g, w: b.w + g * 2, h: b.h + g * 2 }, 8 + g);
+    c.fill();
+  }
+  c.fillStyle = PAPER;
+  if (press || flash) {
+    roundBox(c, b, 8);
+    c.fill();
+  }
+  c.fillStyle =
+    t.look === 'sap' ? 'transparent' : press ? 'rgba(43,84,70,.14)' : flash ? 'rgba(212,166,74,.16)' : t.look === 'mo' ? 'rgba(255,255,255,.18)' : 'rgba(255,255,255,.42)';
+  if (t.look === 'thuong' && !press) {
+    c.shadowColor = 'rgba(58,36,24,.12)';
+    c.shadowBlur = 4;
+    c.shadowOffsetY = 2;
+  }
+  roundBox(c, b, 8);
+  c.fill();
+  c.shadowColor = 'transparent';
+  c.strokeStyle = press ? JADE : flash ? GOLD : t.look === 'thuong' ? 'rgba(58,36,24,.35)' : t.look === 'mo' ? 'rgba(58,48,36,.35)' : 'rgba(58,48,36,.3)';
+  c.lineWidth = press ? 2 : 1.5;
+  c.setLineDash(t.look === 'thuong' || press || flash ? [] : [4, 3]);
+  roundBox(c, { x: b.x + c.lineWidth / 2, y: b.y + c.lineWidth / 2, w: b.w - c.lineWidth, h: b.h - c.lineWidth }, 8);
+  c.stroke();
+  c.setLineDash([]);
+  if (t.look === 'thuong' && !press) {
+    c.strokeStyle = 'rgba(255,255,255,.6)'; // ánh sáng mép trên trong ô
+    c.lineWidth = 1;
+    c.beginPath();
+    c.moveTo(b.x + 6, b.y + 2.5);
+    c.lineTo(b.x + b.w - 6, b.y + 2.5);
+    c.stroke();
+  }
+
+  // nội dung căn giữa: hình · 4 · tên · 4 · dòng phụ
+  const maxW = b.w - 8 * k;
+  c.font = `700 ${ty.tileName * k}px ${UI}`;
+  const names = twoLines(c, t.title, maxW);
+  const nameH = ty.tileName * 1.2 * k;
+  c.font = `500 ${ty.tileSub * k}px ${UI}`;
+  const subs = t.sub ? twoLines(c, t.sub, maxW) : [];
+  const subH = ty.tileSub * 1.25 * k;
+  // chật (tên 2 dòng + lý do 2 dòng): hình nhỏ lại cho vừa ô, chữ giữ cỡ
+  const textH = names.length * nameH + (subs.length ? 4 * k + subs.length * subH : 0);
+  const icon = Math.min(ty.icon * k, b.h - 8 - 4 * k - textH);
+  const gap = 4 * k;
+  const total = icon + gap + textH;
+  let y = b.y + (b.h - total) / 2;
+  const cx = b.x + b.w / 2;
+  tileIcon(c, t, cx - icon / 2, y, icon);
+  y += icon + gap;
+  c.textAlign = 'center';
+  c.textBaseline = 'middle';
+  c.fillStyle = t.look === 'thuong' || press || flash ? SLATE : MUTED;
+  c.font = `700 ${ty.tileName * k}px ${UI}`;
+  for (const s of names) {
+    c.fillText(s, cx, y + nameH / 2);
+    y += nameH;
+  }
+  if (subs.length) {
+    y += gap;
+    c.font = `500 ${ty.tileSub * k}px ${UI}`;
+    c.fillStyle = MUTED;
+    for (const s of subs) {
+      c.fillText(s, cx, y + subH / 2);
+      y += subH;
+    }
+  }
+  // chấm son (số việc còn lại) · ✓ khi vừa cập nhật
+  if (flash) {
+    const r = 8;
+    const ox = b.x + b.w - 6 - r;
+    const oy = b.y + 6 + r;
+    c.fillStyle = JADE;
+    c.beginPath();
+    c.arc(ox, oy, r, 0, Math.PI * 2);
+    c.fill();
+    c.save();
+    c.translate(ox - 5, oy - 5);
+    c.scale(10 / 24, 10 / 24);
+    c.strokeStyle = '#ffffff';
+    c.lineWidth = 3.5;
+    c.lineCap = 'round';
+    c.stroke(new Path2D('M5 12l5 5 9-10'));
+    c.restore();
+  } else if (t.badge !== null) {
+    const s = t.badge >= 100 ? '99+' : String(t.badge);
+    c.font = `700 10px ${UI}`;
+    const bw = Math.max(18, c.measureText(s).width + 10);
+    const bx = b.x + b.w - 5 - bw;
+    const by = b.y + 5;
+    c.fillStyle = LACQUER;
+    c.strokeStyle = '#ffffff';
+    c.lineWidth = 1.5;
+    roundBox(c, { x: bx, y: by, w: bw, h: 18 }, 9);
+    c.fill();
+    c.stroke();
+    c.fillStyle = '#ffffff';
+    c.fillText(s, bx + bw / 2, by + 9.5);
+  }
+  c.restore();
 }
 
 /** Vẽ cả mặt giấy vào `canvas` (đổi cỡ nếu cần). */
@@ -78,42 +203,69 @@ export function paintCuon(canvas: HTMLCanvasElement, l: CuonLayout, view: CuonVi
   const c = canvas.getContext('2d');
   if (!c) return;
   const k = W / l.w;
+  const ty = l.type;
   c.setTransform(1, 0, 0, 1, 0, 0);
   c.globalAlpha = 1;
   c.fillStyle = PAPER;
   c.fillRect(0, 0, W, H);
   c.setTransform(k, 0, 0, k, 0, 0);
-  // viền bồi: ngọc 12 % + gỗ 18 %
+  // viền bồi: ngọc 12 % + gỗ 18 %; thớ giấy dọc mờ ở 1/4, 1/2, 3/4
   c.strokeStyle = 'rgba(43,84,70,.12)';
   c.lineWidth = 4;
   c.strokeRect(2, 2, l.w - 4, l.h - 4);
   c.strokeStyle = 'rgba(58,36,24,.18)';
   c.lineWidth = 1;
   c.strokeRect(4.5, 4.5, l.w - 9, l.h - 9);
+  c.fillStyle = 'rgba(58,36,24,.07)';
+  for (const f of [0.25, 0.5, 0.75]) c.fillRect(l.w * f, 5, 1, l.h - 10);
   c.globalAlpha = Math.max(0, Math.min(1, st.alpha));
-  const ls = l.landscape;
   c.textBaseline = 'alphabetic';
   c.textAlign = 'left';
 
-  // đầu cuộn
+  // đầu cuộn: dòng nơi (trên) · "Tĩnh toạ" + ấn son "Tĩnh" (dưới) — bên trái viên "Đứng dậy"
   const hd = l.header;
-  const sealW = 22;
-  c.font = `700 11px ${UI}`;
+  const sb = l.stand;
+  const left = sb.x - hd.x - 8;
+  c.font = `700 ${ty.place}px ${UI}`;
   c.fillStyle = MUTED;
-  c.fillText(fit(c, view.place, hd.w - sealW - 10), hd.x, hd.y + 12);
-  c.font = `700 ${ls ? 16 : 18}px Lora, Georgia, serif`;
+  c.fillText(fit(c, view.place, left), hd.x, hd.y + hd.h / 2 - 3);
+  c.font = `700 ${ty.title}px ${SERIF}`;
   c.fillStyle = SLATE;
-  c.fillText(CUON_TITLE, hd.x, hd.y + (ls ? 31 : 35));
-  // ấn son "Ôn" chữ dọc (R-HUD-4)
+  const titleY = hd.y + hd.h / 2 + ty.title * 0.95;
+  c.fillText(CUON_TITLE, hd.x, titleY);
+  const sealX = hd.x + c.measureText(CUON_TITLE).width + 6;
+  c.font = `700 ${ty.seal}px ${UI}`;
+  const sealW = c.measureText(CUON_SEAL).width + 10;
+  const sealH = ty.seal + 4;
   c.fillStyle = LACQUER;
-  c.beginPath();
-  c.roundRect(hd.x + hd.w - sealW, hd.y + 2, sealW, hd.h - 4, 3);
+  roundBox(c, { x: sealX, y: titleY - ty.title * 0.72 - 2, w: sealW, h: sealH }, 3);
   c.fill();
   c.fillStyle = '#ffffff';
-  c.font = `700 12px ${UI}`;
   c.textAlign = 'center';
-  c.fillText(CUON_SEAL, hd.x + hd.w - sealW / 2, hd.y + hd.h / 2 + 4);
+  c.textBaseline = 'middle';
+  c.fillText(CUON_SEAL, sealX + sealW / 2, titleY - ty.title * 0.72 - 2 + sealH / 2 + 0.5);
+
+  // "Đứng dậy": viên viền mực 45 % 1,5, nền trắng 40 %, biểu tượng 14 + chữ 700 — sát phải ô `stand`
+  c.font = `700 ${ty.stand}px ${UI}`;
+  const tw = c.measureText(STAND_UP).width;
+  const pw = Math.min(sb.w, 10 + 14 + 5 + tw + 10);
+  const px = sb.x + sb.w - pw;
+  if (st.press === 'stand') {
+    c.fillStyle = 'rgba(212,166,74,.45)';
+    roundBox(c, { x: px - 4, y: sb.y - 4, w: pw + 8, h: sb.h + 8 }, sb.h / 2 + 4);
+    c.fill();
+  }
+  c.fillStyle = st.press === 'stand' ? '#eef0ea' : 'rgba(255,255,255,.4)';
+  c.strokeStyle = 'rgba(58,48,36,.45)';
+  c.lineWidth = 1.5;
+  roundBox(c, { x: px + 0.75, y: sb.y + 0.75, w: pw - 1.5, h: sb.h - 1.5 }, sb.h / 2);
+  c.fill();
+  c.stroke();
+  standIcon(c, px + 10, sb.y + sb.h / 2 - 7, 14);
+  c.fillStyle = SLATE;
   c.textAlign = 'left';
+  c.fillText(STAND_UP, px + 10 + 14 + 5, sb.y + sb.h / 2 + 0.5);
+
   // vạch chấm vàng
   c.strokeStyle = 'rgba(58,36,24,.22)';
   c.lineWidth = 1;
@@ -129,126 +281,40 @@ export function paintCuon(canvas: HTMLCanvasElement, l: CuonLayout, view: CuonVi
   c.arc(mid, l.ruleY, 2, 0, Math.PI * 2);
   c.fill();
 
-  // các dòng mực
-  view.rows.forEach((row, i) => {
-    const b = l.rows[i];
-    if (!b) return;
-    const noi = row.look === 'noi';
-    const mo = row.look === 'mo';
-    if (noi) {
-      const g = c.createLinearGradient(b.x, 0, b.x + b.w, 0);
-      g.addColorStop(0, 'rgba(43,84,70,.92)');
-      g.addColorStop(0.85, 'rgba(43,84,70,.82)');
-      g.addColorStop(1, 'rgba(43,84,70,.55)');
-      c.fillStyle = g;
-      c.beginPath();
-      c.roundRect(b.x, b.y, b.w, b.h, 4);
-      c.fill();
-    } else {
-      c.strokeStyle = mo ? 'rgba(58,48,36,.3)' : 'rgba(58,48,36,.22)';
-      c.lineWidth = 1.5;
-      c.setLineDash(mo ? [4, 3] : []);
-      c.beginPath();
-      c.moveTo(b.x, b.y + b.h - 0.75);
-      c.lineTo(b.x + b.w, b.y + b.h - 0.75);
-      c.stroke();
-      c.setLineDash([]);
-    }
-    const ink = noi ? '#ffffff' : mo ? MUTED : SLATE;
-    const iconSize = ls ? 18 : 20;
-    icon(c, row.id, b.x + 10, b.y + (b.h - iconSize) / 2, iconSize, noi ? '#ffffff' : mo ? MUTED : JADE);
-    const tx = b.x + 10 + iconSize + 10;
-    const maxW = b.x + b.w - 26 - tx;
-    c.fillStyle = ink;
-    c.globalAlpha = Math.max(0, Math.min(1, st.alpha)) * (mo ? 0.9 : 1);
-    c.font = `700 ${ls ? 15 : 16}px ${UI}`;
-    c.fillText(fit(c, row.title, maxW), tx, b.y + b.h / 2 - 2);
-    c.globalAlpha = Math.max(0, Math.min(1, st.alpha));
-    // dòng phụ (chữ Hán bộ thủ bằng font chữ Hán)
-    let x = tx;
-    const subY = b.y + b.h / 2 + 15;
-    c.fillStyle = noi ? 'rgba(255,255,255,.88)' : MUTED;
-    for (const part of row.sub) {
-      c.font = part.han ? `700 ${ls ? 11.5 : 12}px ${HAN}` : `500 ${ls ? 11.5 : 12}px ${UI}`;
-      const room = tx + maxW - x;
-      if (room <= 8) break;
-      const s = fit(c, part.text, room);
-      c.fillText(s, x, subY);
-      x += c.measureText(s).width;
-    }
-    if (!mo) {
-      c.fillStyle = ink;
-      c.font = `700 18px ${UI}`;
-      c.fillText('›', b.x + b.w - 18, b.y + b.h / 2 + 6);
-    }
-    const ring = st.press === row.id ? GOLD : st.flash === row.id ? JADE : null;
-    if (ring) {
-      c.save();
-      c.shadowColor = st.press === row.id ? 'rgba(212,166,74,.7)' : 'transparent';
-      c.shadowBlur = 18;
-      c.strokeStyle = ring;
-      c.lineWidth = st.press === row.id ? 3 : 2;
-      c.beginPath();
-      c.roundRect(b.x + 1.5, b.y + 1.5, b.w - 3, b.h - 3, 4);
-      c.stroke();
-      c.restore();
-    }
+  // hàng 4 ô
+  view.tiles.forEach((t, i) => {
+    const b = l.tiles[i];
+    if (b) paintTile(c, l, b, t, st);
   });
 
-  // dòng gợi ý chưa học: chữ ngọc 12, vạch trái 3, nền ngọc 8 % — cả bề ngang dưới mục, đủ mọi dòng (V-43: không cắt)
+  // dòng gợi ý chưa học: chữ mực căn giữa, cả bề ngang dưới hàng ô, đủ mọi dòng (không cắt)
   if (view.hint) {
     const hb = l.hint;
     const font = (size: number): string => `500 ${size}px ${UI}`;
-    const fitted = fitHint(view.hint, hb, ls ? 11 : 12, (s, size) => {
+    const fitted = fitHint(view.hint, hb, ty.hint, (s, size) => {
       c.font = font(size);
       return c.measureText(s).width;
     });
     c.font = font(fitted.size);
-    const boxH = fitted.lines.length * fitted.lineH + HINT_PAD_Y;
-    c.fillStyle = 'rgba(43,84,70,.08)';
-    c.fillRect(hb.x, hb.y, hb.w, boxH);
-    c.fillStyle = JADE;
-    c.fillRect(hb.x, hb.y, 3, boxH);
-    fitted.lines.forEach((s, i) => c.fillText(s, hb.x + 9, hb.y + HINT_PAD_Y / 2 + (i + 1) * fitted.lineH - 3));
-  }
-
-  // "Đứng dậy": biểu tượng 16 + 14/700, gạch chân mực 45 %
-  const sb = l.stand;
-  c.font = `700 14px ${UI}`;
-  const tw = c.measureText(STAND_UP).width;
-  const sx = sb.x + sb.w - tw - 8;
-  icon(c, 'stand', sx - 22, sb.y + sb.h / 2 - 8, 16, SLATE);
-  c.fillStyle = SLATE;
-  c.fillText(STAND_UP, sx, sb.y + sb.h / 2 + 5);
-  c.strokeStyle = 'rgba(58,48,36,.45)';
-  c.lineWidth = 1.5;
-  c.beginPath();
-  c.moveTo(sx - 30, sb.y + sb.h - 1);
-  c.lineTo(sb.x + sb.w, sb.y + sb.h - 1);
-  c.stroke();
-  if (st.press === 'stand') {
-    c.save();
-    c.shadowColor = 'rgba(212,166,74,.7)';
-    c.shadowBlur = 18;
-    c.strokeStyle = GOLD;
-    c.lineWidth = 3;
-    c.beginPath();
-    c.roundRect(sx - 34, sb.y + 2, sb.x + sb.w - sx + 34, sb.h - 4, 4);
-    c.stroke();
-    c.restore();
+    c.fillStyle = SLATE;
+    c.textAlign = 'center';
+    c.textBaseline = 'middle';
+    fitted.lines.forEach((s, i) => c.fillText(s, hb.x + hb.w / 2, hb.y + HINT_PAD_Y / 2 + (i + 0.5) * fitted.lineH));
   }
   c.globalAlpha = 1;
+  c.textAlign = 'left';
+  c.textBaseline = 'alphabetic';
   c.setTransform(1, 0, 0, 1, 0, 0);
 }
 
-/** Nút ẩn đọc được cho từng mục trên cuộn 3D (trợ năng — cuộn không có nút DOM thật). */
+/** Nút ẩn đọc được cho từng ô trên cuộn 3D (trợ năng — cuộn không có nút DOM thật). Ô "Sắp có" không có nút. */
 export class CuonA11y {
   private readonly root = document.createElement('div');
 
   constructor(private readonly onPick: (id: CuonRowId) => void) {
     this.root.className = 'sr-only';
     this.root.setAttribute('role', 'group');
-    this.root.setAttribute('aria-label', 'Cuộn sách Ngồi ôn');
+    this.root.setAttribute('aria-label', `Cuộn ${CUON_TITLE}`);
     this.root.hidden = true;
     document.body.append(this.root);
   }
@@ -257,15 +323,13 @@ export class CuonA11y {
     this.root.replaceChildren();
     this.root.hidden = !view;
     if (!view) return;
-    const add = (id: CuonRowId, label: string, enabled: boolean): void => {
+    for (const it of cuonA11yItems(view)) {
       const b = document.createElement('button');
       b.type = 'button';
-      b.textContent = `${label}, trên cuộn sách`;
-      b.disabled = !enabled;
-      b.addEventListener('click', () => this.onPick(id));
+      b.textContent = it.label;
+      b.disabled = !it.enabled;
+      b.addEventListener('click', () => this.onPick(it.id));
       this.root.append(b);
-    };
-    for (const r of view.rows) add(r.id, r.title, r.look !== 'mo');
-    add('stand', STAND_UP, true);
+    }
   }
 }

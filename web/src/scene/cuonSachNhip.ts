@@ -108,25 +108,31 @@ export function poseOf(s: CuonState): CuonPose {
 }
 
 /**
- * Giấy cuộn (m): rộng × cao. V-43 (người dùng đổi thiết kế 2026-11-14.21 — giấy 0,26 × 0,25, màn ngang lệch phải): giấy dài
- * hơn 0,26 × 0,35, cầm giữa màn. Bố cục chữ theo cùng tỉ lệ (`zones/cuonMuc.ts` `PAPER_RATIO`).
+ * Giấy cuộn trước mắt (m): rộng × cao — thiết kế 2026-11-16.12 "Cuộn Tĩnh toạ": trải ngang **0,48 × 0,27** (16 : 9, trục
+ * đứng dài 0,29), hàng 4 ô (`zones/cuonMuc.ts` `PAPER_RATIO` cùng tỉ lệ). Thay 0,26 × 0,35 của V-43.
  */
-export const CUON_GIAY_W = 0.26;
-export const CUON_GIAY_H = 0.35;
+export const CUON_GIAY_W = 0.48;
+export const CUON_GIAY_H = 0.27;
+/**
+ * Giấy cuộn trước ngực (m — bản người ngoài nhìn, lớp thân; tay chibi cầm hai đầu ở `CUON_NUA_NGANG`): giữ 0,26 × 0,35
+ * (thiết kế mới chỉ vẽ cuộn nhìn từ mắt; giấy 0,48 m quá tầm tay chibi).
+ */
+export const CUON_NGUC_W = 0.26;
+export const CUON_NGUC_H = 0.35;
 
-/** Giấy chiếm chừng này bề ngang màn (màn dọc) / chiều cao màn (màn ngang) — lấy cái chật hơn. */
-export const CUON_GIAY_NGANG = 0.8;
-export const CUON_GIAY_CAO = 0.84;
+/** Giấy chiếm chừng này bề ngang màn (màn dọc: 352 / 390) / chiều cao màn (màn ngang: 261 / 390) — lấy cái chật hơn. */
+export const CUON_GIAY_NGANG = 0.9;
+export const CUON_GIAY_CAO = 0.67;
 
 /**
  * Cuộn sách trước mắt khi nhìn từ mắt (R-DIEU-7, R-ON-8): đặt vừa khung màn thay vì cố định theo mét — màn dọc hẹp
  * (~36° ngang sau khi nới FOV), màn ngang rộng. `fovDeg` FOV dọc đang dùng, `aspect` rộng / cao, `halfW` / `halfH` nửa bề
  * ngang / nửa chiều cao **giấy** (m). Trả khoảng cách từ mắt tới tâm cuộn theo hướng nhìn chuẩn — tâm cuộn luôn giữa màn
- * (cả dọc lẫn ngang). Màn dọc: giấy ~80 % bề ngang (hai trục sát mép màn); màn ngang: giấy ~84 % chiều cao (đầu trục
- * chạm / quá mép màn chút ít, chữ cách mép trên / dưới ~8 %). Khoảng cách giữ trong tầm tay.
+ * (cả dọc lẫn ngang). Màn dọc: giấy ~90 % bề ngang (hai trục sát mép màn); màn ngang: giấy ~67 % chiều cao, hai tay +
+ * cảnh hai bên (thiết kế 2026-11-16.12). Khoảng cách giữ trong tầm tay.
  */
 export const CUON_GAN = 0.3;
-export const CUON_XA = 0.7;
+export const CUON_XA = 0.8; // giấy 0,48 m rộng: màn dọc hẹp cần ~0,73 m để giấy còn ~90 % bề ngang (thiết kế 2026-11-16.12)
 
 export function fitScroll(fovDeg: number, aspect: number, halfW: number, halfH: number): number {
   const tv = Math.tan((fovDeg * Math.PI) / 360);

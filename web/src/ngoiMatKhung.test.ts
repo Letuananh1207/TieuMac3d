@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { CUON_GAN, CUON_GIAY_H, CUON_GIAY_W, CUON_XA, fitScroll } from './scene/cuonSachNhip';
-import { fingertip, scrollPose, SHOULDER_L, SHOULDER_R, type V3 } from './scene/tayNgoiDang';
-import { cuonLayout } from './zones/cuonMuc';
+import { fingertip, reach, scrollPose, SHOULDER_L, SHOULDER_R, type V3 } from './scene/tayNgoiDang';
+import { cuonHand, cuonLayout, cuonView } from './zones/cuonMuc';
+import { scrollMenu } from './zones/studyMenu';
 
 const HALF_W = CUON_GIAY_W / 2;
 const HALF_H = CUON_GIAY_H / 2;
@@ -42,35 +43,39 @@ const SCREENS: [string, number, number][] = [
   ['ngang 640×360', 640, 360],
 ];
 
-describe('R-ON-8: cuộn sách trước mắt — giữa màn, dài hơn (V-43)', () => {
-  it('R-ON-8: màn dọc 390×844 — giấy ~80 % bề ngang, giữa màn, trong tầm tay', () => {
+describe('R-ON-8: cuộn Tĩnh toạ trước mắt — giấy trải ngang 0,48 × 0,27 giữa màn (thiết kế 2026-11-16.12)', () => {
+  it('R-ON-8: màn dọc 390×844 — giấy ~90 % bề ngang (~352 px), giữa màn, trong tầm tay', () => {
     const f = frame(390, 844);
     const p = paperNdc(f);
-    expect(p.x).toBeCloseTo(0.8, 2);
-    expect(p.y).toBeLessThan(0.84);
+    expect(p.x).toBeCloseTo(0.9, 2);
+    expect(p.x * 390).toBeCloseTo(352, -1);
+    expect(p.y).toBeLessThan(0.3);
     expect(f.dist).toBeGreaterThanOrEqual(CUON_GAN);
     expect(f.dist).toBeLessThanOrEqual(CUON_XA);
   });
 
-  it('R-ON-8: màn ngang 844×390 — giấy ~84 % chiều cao (cũ ~60 %), giữa màn theo bề ngang, chữ cách mép trên / dưới', () => {
+  it('R-ON-8: màn ngang 844×390 — giấy ~67 % chiều cao (~261 × 464 px), giữa màn, hai tay + cảnh hai bên', () => {
     const f = frame(844, 390);
     const p = paperNdc(f);
-    expect(p.y).toBeCloseTo(0.84, 2);
-    expect(p.y * 390).toBeGreaterThan(320); // nửa trên + nửa dưới: giấy ≥ 320 / 390 px
-    expect((1 - p.y) * 195).toBeGreaterThan(21); // mép giấy cách mép màn > vạch home (21 px)
-    expect(p.x).toBeLessThan(0.5);
+    expect(p.y).toBeCloseTo(0.67, 2);
+    expect(p.y * 390).toBeCloseTo(261, -1);
+    expect(p.x * 844).toBeCloseTo(464, -1);
+    expect(p.x).toBeLessThan(0.6);
     expect(f.dist).toBeGreaterThanOrEqual(CUON_GAN);
     expect(f.dist).toBeLessThanOrEqual(CUON_XA);
   });
 
   for (const [name, w, h] of SCREENS) {
-    it(`R-ON-8: ${name} — "Đứng dậy" và mục ≥ 44 px chạm; giấy trong màn`, () => {
+    it(`R-ON-8: ${name} — vùng chạm "Đứng dậy" ≥ 44 px, ô ≥ 70 × 90 px; giấy trong màn`, () => {
       const f = frame(w, h);
       const p = paperNdc(f);
       const l = cuonLayout(w > h);
       const pxPerDesign = (p.x * w) / l.w; // px màn / px giấy (giấy quay thẳng về mắt)
-      expect(l.stand.h * pxPerDesign).toBeGreaterThanOrEqual(44);
-      expect(Math.min(...l.rows.map((r) => r.h)) * pxPerDesign).toBeGreaterThanOrEqual(44);
+      expect(Math.min(l.standHit.w, l.standHit.h) * pxPerDesign).toBeGreaterThanOrEqual(44);
+      for (const t of l.tiles) {
+        expect(t.w * pxPerDesign).toBeGreaterThanOrEqual(70);
+        expect(t.h * pxPerDesign).toBeGreaterThanOrEqual(89.5); // 360 × 640: 98 × 0,92 ≈ 90
+      }
       expect(p.x).toBeLessThan(1);
       expect(p.y).toBeLessThan(1);
     });
@@ -104,4 +109,26 @@ describe('R-ON-8: cuộn sách trước mắt — giữa màn, dài hơn (V-43)'
       }
     });
   }
+
+  it('R-ON-8: chạm ô → ngón trỏ tay gần ô chạm đúng ô (ô 1–2 tay trái, ô 3–4 tay phải), tay kia vẫn giữ trục', () => {
+    const f = frame(390, 844);
+    const l = cuonLayout(false);
+    const v = cuonView(scrollMenu({ book: { title: 'HSK 1', subtitle: 'Nhập môn' }, learned: ['a'], tasksLeft: 1 }), 'x', null);
+    expect(v.tiles.map((t) => cuonHand(v, t.id === 'soon' ? 'daily' : t.id))).toEqual(['left', 'left', 'right', 'right']);
+    expect(cuonHand(v, 'stand')).toBe('right');
+    const center: V3 = [0, Math.sin(PITCH) * f.dist, Math.cos(PITCH) * f.dist];
+    const base = scrollPose(center, [1, 0, 0], ROD_X);
+    const k = (2 * HALF_W) / l.w; // m / px giấy
+    const tileAt = (i: number): V3 => {
+      const b = l.tiles[i]!;
+      return [center[0] + (b.x + b.w / 2 - l.w / 2) * k, center[1], center[2]];
+    };
+    const left = reach(base, tileAt(0), 1, false, 'left');
+    const tipL = fingertip(left.left.pos, SHOULDER_L);
+    expect(Math.hypot(tipL[0] - tileAt(0)[0], tipL[1] - tileAt(0)[1], tipL[2] - tileAt(0)[2])).toBeLessThan(1e-6);
+    expect(left.right).toEqual(base.right);
+    const right = reach(base, tileAt(2), 1, false, 'right');
+    expect(right.left).toEqual(base.left);
+    expect(right.right.point).toBe(1);
+  });
 });

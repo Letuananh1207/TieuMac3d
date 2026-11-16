@@ -406,12 +406,17 @@ async function boot(): Promise<void> {
       }
     } else character.facing.rotation.y = 0;
     if (place.kind === 'on') {
-      // mục mẫu trên cuộn (R-ON-8, V-45): mượn HSK 1, đã học 5 bộ, còn 1 việc; &muc=chua-muon — chưa mượn sách;
-      // &muc=chua-hoc — chưa mượn, chưa học bộ nào
+      // ô mẫu trên cuộn Tĩnh toạ (R-ON-8, thiết kế 2026-11-16.12 `Cuon-*`): mượn HSK 1, đã học 5 bộ, còn 1 việc;
+      // &muc=chua-muon — chưa mượn sách · &muc=chua-hoc — chưa mượn, chưa học bộ nào (còn 2 việc) · &muc=xong — xong việc
+      // hôm nay; &nhan=book|learned|daily|stand — ô đang nhấn + tay gần ô trỏ (giữ yên) · &moi — ô Nhiệm vụ vừa cập nhật
       const muc = params.get('muc');
       const learned = muc === 'chua-hoc' ? [] : RADICALS.slice(0, 5).map((r) => r.id);
       const book = muc === 'chua-hoc' || muc === 'chua-muon' ? null : { title: 'HSK 1', subtitle: 'Nhập môn' };
-      ngoi.setMenu(cuonView(scrollMenu({ book, learned, tasksLeft: 1 }), spec.site.name, book));
+      const left = muc === 'xong' || params.has('moi') ? 0 : muc === 'chua-hoc' ? 2 : 1;
+      const { x, z } = character.root.position; // dòng nơi như app (`main.ts` sitPlaceName): khu chứa chỗ ngồi
+      const area = spec.site.areas.find((q) => x >= Math.min(q.from[0], q.to[0]) && x <= Math.max(q.from[0], q.to[0]) && z >= Math.min(q.from[1], q.to[1]) && z <= Math.max(q.from[1], q.to[1]));
+      const placeName = area ? `${spec.site.name} · ${area.name}` : spec.site.name;
+      ngoi.setMenu(cuonView(scrollMenu({ book, learned, tasksLeft: left }), placeName, book));
     }
     world.update(1, character.root.position); // trong nhà: mái mờ sẵn
     // camera ngôi 3 lúc trước khi ngồi: sau lưng như app
@@ -429,6 +434,9 @@ async function boot(): Promise<void> {
       placeGame();
       ngoi.update(0.2, camera, third, game, 2);
     }
+    const nhan = params.get('nhan');
+    if (nhan === 'book' || nhan === 'learned' || nhan === 'daily' || nhan === 'stand') ngoi.previewPress(nhan);
+    if (params.has('moi')) ngoi.previewFlash('daily');
     return { ngoi, third, game, placeGame };
   }
   let sat = 0;
