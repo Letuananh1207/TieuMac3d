@@ -3,6 +3,22 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-16.14 — Bộ ảnh Tripo: Nhà của ta (bên ngoài) + hạc cưỡi truyền tống
+
+- Loại: tài nguyên 3D (ảnh đầu vào).
+- Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-16-anh-nha-ta.md` (V-20261116-88), `docs/phieu_thiet_ke/2026-11-16-anh-hac.md` (V-20261116-87).
+- Ảnh (Google Gemini, người dùng tạo; Claude chuẩn hoá — `models/LICENSES.md`):
+  - `models/anh/nha-ta-{truoc,trai,sau,phai,cheo}.png` — giữ dáng khối (3 gian, cửa giữa, 4 cột hiên, 2 bậc), làm đẹp: ngói âm dương gờ nổi + đầu ngói
+    tròn, nóc vểnh nhẹ, khung gỗ lộ, cửa hai cánh có khung, song cửa sổ đóng giấy. **Mặt sau tường kín, không cửa sổ** (người dùng chọn — phiếu cho
+    phép 2 cửa sổ nhỏ). `-phai` = `-trai` lật ngang (ảnh phải Gemini lệch dáng; nhà đối xứng). Không biển, không đèn lồng (code gắn).
+  - `models/anh/hac-{truoc,trai,sau,phai,tren}.png` — hạc đỉnh đỏ chibi bay lướt. `-trai` = `-phai` lật ngang (ảnh trái gốc bị ghép người); tô trắng mảng
+    be như đệm yên trên lưng. Lệch nhẹ còn lại: ảnh nghiêng cánh hơi chếch về sau, ảnh sau chân thòng xuống. Chưa có ảnh so cỡ nhân vật ngồi lưng.
+- Bảng duyệt: `source/NhaTa-bo-anh.dc.html` (kèm ảnh khối hiện tại), `source/Hac-bo-anh.dc.html`; ảnh `screens/Nha-ta-bo-anh.png`, `screens/Hac-bo-anh.png`.
+- Bước sau: `/tai-nguyen cong-trinh nha-ta` và `/tai-nguyen hac` trên Tripo (thiết lập trong từng phiếu; Front = `-truoc`, Left = `-trai`, Back = `-sau`,
+  Right = `-phai`; `-cheo` / `-tren` chỉ để đối chiếu).
+- Luật: không đổi (R-NHA-1, R-HANH-5, R-HUD-4).
+- File: 10 ảnh `models/anh/`, `models/LICENSES.md`, 2 ảnh `screens/`, `source/{NhaTa,Hac}-bo-anh.dc.html`, `source/canvas.json`.
+
 ## 2026-11-16.13 — Trúc Lâm: HUD Lưu Thương Lệnh, Hái măng, Đàn cầm + ngăn Lâm sản
 
 - Loại: giao diện · token · chuỗi · luồng/luật (đề xuất nhỏ).
