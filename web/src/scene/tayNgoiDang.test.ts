@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   bookPose,
   railPose,
+  railTeaPose,
   fingertip,
   len,
   MIN_EYE_DIST,
@@ -78,5 +79,18 @@ describe('R-DIEU-7: hai bàn tay khi nhìn từ mắt', () => {
     expect(p.right.pos[0] - p.left.pos[0]).toBeGreaterThan(0.3);
     expect(p.left.palm[1]).toBeLessThan(0);
     far(p);
+  });
+
+  it('R-TRA-1: ghế lan can trà lâu rót xong — tay trái vẫn trên lan can, tay phải cầm chén, nâng nhấp theo nhịp', () => {
+    const rail = railPose(0.58, -0.4);
+    const p = railTeaPose(0.58, -0.4, 0);
+    expect(p.cup).toBe(true);
+    expect(p.left).toEqual(rail.left);
+    expect(p.right).toEqual(teaPose(0).right);
+    const sip = railTeaPose(0.58, -0.4, TEA_CYCLE - TEA_SIP / 2);
+    expect(sip.right.pos[1]).toBeGreaterThan(p.right.pos[1] + 0.05);
+    expect(sip.left).toEqual(rail.left);
+    far(p);
+    far(sip);
   });
 });

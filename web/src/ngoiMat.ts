@@ -32,7 +32,7 @@ import { CuonA11y, loadCuonFonts, paintCuon, type CuonPaintState } from './ui/cu
 import { cuonHand, cuonHit, cuonLayout, cuonUsable, type CuonLayout, type CuonRowId, type CuonView } from './zones/cuonMuc';
 import { TayNgoi, worldToBody } from './scene/tayNgoi';
 // prettier-ignore
-import { bookPose, railPose, reach, reachPhase, REACH_GO, REACH_TOTAL, restPose, scrollPose, tablePose, teaPose, type HandsPose, type V3 } from './scene/tayNgoiDang';
+import { bookPose, railPose, railTeaPose, reach, reachPhase, REACH_GO, REACH_TOTAL, restPose, scrollPose, tablePose, teaPose, type HandsPose, type V3 } from './scene/tayNgoiDang';
 
 /** Chỗ đang ngồi — quyết camera, tay, vật cầm. */
 export type SitPlace =
@@ -61,6 +61,9 @@ export class NgoiMat {
   private w = 0;
   /** giây đã ngồi (nhịp chén trà) */
   private sitT = 0;
+  /** trà lâu (R-TRA-1): `false` chưa rót (không chén) · `true` đã rót (nhịp nhấp tính từ lúc rót, `teaT`) · `null` không ai mang */
+  private tea: boolean | null = null;
+  private teaT = 0;
   private readonly s: EyeSettings;
   private readonly pitchOf: { study: number; seat: number; game: number };
   readonly look: EyeLook;
@@ -199,6 +202,12 @@ export class NgoiMat {
     this.look.reset();
   }
 
+  /** Tiểu nhị đã rót chưa (R-TRA-1) — `tieuNhi.ts` gọi mỗi khung; `null` = chỗ không có người mang (cầm chén ngay như cũ). */
+  setTea(served: boolean | null): void {
+    if (served === true && this.tea !== true) this.teaT = 0;
+    this.tea = served;
+  }
+
   /** Đứng dậy: trượt về camera ngôi 3 (giữ khung mắt cuối cùng làm điểm đầu). */
   stand(): void {
     this.place = null;
@@ -308,6 +317,7 @@ export class NgoiMat {
     const fov = this.fov(camera.aspect);
     if (p) {
       this.sitT += dt;
+      this.teaT += dt;
       this.look.update(dt);
       eyeAt(this.character.root.position, yaw, this.s, this.eye);
       const lean = this.lean(p);
@@ -359,11 +369,11 @@ export class NgoiMat {
     else if (p.kind === 'ngoi')
       pose =
         p.hold === 'tra'
-          ? teaPose(this.sitT)
+          ? (this.tea === false ? restPose() : teaPose(this.tea ? this.teaT : this.sitT)) // chưa rót: tay trên bàn (R-TRA-1)
           : p.hold === 'sach'
             ? bookPose(BOOK)
             : p.hold === 'lan-can' && p.rail
-              ? railPose(p.rail.d - this.s.eyeFwd - this.lean(p), p.rail.h - this.s.eyeY)
+              ? (this.tea ? railTeaPose : railPose)(p.rail.d - this.s.eyeFwd - this.lean(p), p.rail.h - this.s.eyeY, this.teaT)
               : restPose();
     else pose = this.tableHands(p);
     if (this.reachK < REACH_TOTAL) {
