@@ -23,6 +23,12 @@ export interface EmotePose {
   lift: number;
   /** chân co (radian, x âm = gối ra trước); undefined = giữ dáng chân */
   legs?: number;
+  /** khuỷu trái / phải (x âm = gập cẳng tay lên) — chỉ xương có khuỷu (Mixamo, `dang7.ts`); `autoRig` / đệ tử khối bỏ qua */
+  eL?: number;
+  eR?: number;
+  /** vai x khi có khuỷu (thay `aLx` / `aRx`); thiếu = dùng `aLx` / `aRx` */
+  aLxE?: number;
+  aRxE?: number;
 }
 
 /** Tay buông xuôi (như `ARM_REST` của `glbCharacter.ts`). */
@@ -56,6 +62,7 @@ export function emotePose(id: string, t: number, len: number): EmotePose | null 
       p.aRx = -0.25;
       p.headZ = 0.12;
       p.headY = -0.1;
+      p.eR = -0.35;
       break;
     }
     case 'cui-chao': {
@@ -67,6 +74,8 @@ export function emotePose(id: string, t: number, len: number): EmotePose | null 
       p.aRz = REST + 0.3;
       p.hipsX = 0.55 * d;
       p.headX = 0.2 * d;
+      p.eL = -0.25;
+      p.eR = -0.25;
       break;
     }
     case 'vo-tay': {
@@ -77,6 +86,10 @@ export function emotePose(id: string, t: number, len: number): EmotePose | null 
       p.aLz = -(REST + 0.45 - 0.35 * open);
       p.aRz = REST + 0.45 - 0.35 * open;
       p.headX = -0.06;
+      p.aLxE = -0.95;
+      p.aRxE = -0.95;
+      p.eL = -0.5;
+      p.eR = -0.5;
       break;
     }
     case 'cuoi': {
@@ -89,6 +102,10 @@ export function emotePose(id: string, t: number, len: number): EmotePose | null 
       p.headX = -0.25 + shake * 0.04;
       p.hipsX = -0.06 + shake * 0.03;
       p.lift = Math.abs(shake) * 0.025;
+      p.aLxE = -0.3;
+      p.aRxE = -0.3;
+      p.eL = -1.0;
+      p.eR = -1.0;
       break;
     }
     case 'nhay-mung': {
@@ -101,6 +118,8 @@ export function emotePose(id: string, t: number, len: number): EmotePose | null 
       p.headX = -0.15;
       p.lift = 0.25 * hop;
       p.legs = -0.45 * hop;
+      p.eL = -0.2;
+      p.eR = -0.2;
       break;
     }
     case 'suy-nghi': {
@@ -112,6 +131,11 @@ export function emotePose(id: string, t: number, len: number): EmotePose | null 
       p.headZ = 0.18;
       p.headX = 0.08;
       p.hipsY = Math.sin(t * 1.6) * 0.08;
+      // Mixamo: cánh tay trên ra trước vừa, cẳng tay gập lên chống cằm; tay trái gập vắt bụng
+      p.aRxE = -0.75;
+      p.eR = -1.9;
+      p.aLxE = -0.3;
+      p.eL = -1.1;
       break;
     }
     default:

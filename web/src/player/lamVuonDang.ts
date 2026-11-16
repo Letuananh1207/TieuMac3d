@@ -72,6 +72,10 @@ export function workPose(id: string, t: number, len = isWork(id) ? WORK_LEN[id] 
       p.hipsX = 0.3 * smooth(k * 4);
       p.headX = 0.25;
       p.hipsY = id === 'bon' ? 0.1 * sw : -0.1 * sw;
+      // Mixamo: tay trái gập khuỷu ôm túi trước bụng; tay phải gập nhẹ khi vung
+      p.aLxE = -0.4;
+      p.eL = -1.0;
+      p.eR = -0.35 - 0.3 * sw;
       break;
     }
     case 'tuoi': {
@@ -85,6 +89,9 @@ export function workPose(id: string, t: number, len = isWork(id) ? WORK_LEN[id] 
       p.hipsY = Math.sin(t * 7) * 0.08 * pour;
       p.headX = 0.3;
       p.tilt = pour;
+      p.eR = -0.25;
+      p.aLxE = -0.5;
+      p.eL = -0.9;
       break;
     }
     case 'bat': {
@@ -97,6 +104,9 @@ export function workPose(id: string, t: number, len = isWork(id) ? WORK_LEN[id] 
       p.aLx = -0.9;
       p.aLz = -(REST + 0.3);
       p.headX = 0.35 * reach;
+      p.aLxE = -0.5;
+      p.eL = -1.0;
+      p.eR = -0.2 - 0.6 * lift;
       break;
     }
     case 'nho': {
@@ -110,6 +120,8 @@ export function workPose(id: string, t: number, len = isWork(id) ? WORK_LEN[id] 
       p.aRz = REST + 0.25;
       p.headX = 0.3 * reach - 0.4 * pull;
       p.lift = 0.04 * bump(t, 0.56, 0.12);
+      p.eL = -0.2 - 0.5 * pull;
+      p.eR = -0.2 - 0.5 * pull;
       break;
     }
     case 'thu': {
@@ -123,6 +135,8 @@ export function workPose(id: string, t: number, len = isWork(id) ? WORK_LEN[id] 
       p.aRz = REST + 0.35;
       p.headX = 0.3 * reach * (1 - up) - 0.2 * up;
       p.lift = 0.05 * bump(t, 0.7, 0.15);
+      p.eL = -0.3 - 0.2 * up;
+      p.eR = -0.3 - 0.2 * up;
       break;
     }
   }
