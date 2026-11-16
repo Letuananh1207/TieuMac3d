@@ -38,6 +38,7 @@ import { PLAYER_MODEL_URL } from './player/playerCharacter';
 import { addGardenPreview } from './vuonPreview';
 import { addDecorPreview } from './decorPreview';
 import { addTrucLamPreview } from './trucLamPreview';
+import { addDongTacPreview } from './dongTacPreview';
 import { inRect } from './scene/rooms';
 import { el } from './ui/dom';
 import { placeZones, ZONE_CONTENT } from './zones/zones';
@@ -262,6 +263,13 @@ async function boot(): Promise<void> {
   // 3 trò nhỏ Trúc Lâm (V-66 B4): đệm đàn, măng hôm nay, mưa, chén lệnh — `?dang=luu-thuong|hai-mang[&mua]` (trucLamPreview.ts)
   const truc = addTrucLamPreview(scene, colliders, spec, world, params);
   if (truc?.lines.length) el('problems').append(...truc.lines.map((t) => li(t)));
+  // ?dang=dong-tac&nv=thu-thu[&tinh=…] — phòng thử động tác xương chuẩn + thanh trượt (dongTacPreview.ts, R-NPC-10)
+  const dong = await addDongTacPreview(scene, colliders, spec, (x, z) => world.surface.heightAt(x, z), params, (x, z) => {
+    if (params.has('cam')) return; // ?cam=…&tam=… đã đặt góc nhìn
+    controls.target.set(x, 1.2, z);
+    camera.position.set(x + 2, 3.2, z + 9);
+  });
+  if (dong) el('problems').append(...dong.lines.map((t) => li(t)));
   const follow = params.has('theo') && town?.walker ? town.walker.root.position.clone() : null;
   // ?dang=trang-tri&so=20&ma=ban-tra:0:0:45&vungcam — đồ trang trí tự do rải sẵn + bóng ma + vùng cấm (decorPreview.ts, R-NHA-7)
   const decorPv = addDecorPreview(scene, colliders, spec, SCENE.id, (x, z) => world.surface.heightAt(x, z), params);
@@ -432,6 +440,7 @@ async function boot(): Promise<void> {
     town?.update(dt, camera, controls.target);
     dan?.update({ dt, player: controls.target, camera, covered: false });
     truc?.update(dt, camera.position);
+    dong?.update(dt);
     if (follow && town?.walker) {
       const d = town.walker.root.position.clone().sub(follow);
       camera.position.add(d);

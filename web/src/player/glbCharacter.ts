@@ -4,6 +4,8 @@ import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.j
 import { autoRig, type Rig } from './autoRig';
 import { emotePose } from './bieuCamDang';
 import type { Character, ToolTip } from './character';
+import { DongTac, TINH, type TinhId } from './dongTac';
+import { mixamoRig } from './mixamoRig';
 import { createGardenProps, type GardenProps } from './doLamVuon';
 import { isWork, PROP_OF, workPose } from './lamVuonDang';
 import { RUN_SPEED, WALK_SPEED } from './controller';
@@ -91,12 +93,38 @@ export async function loadGlbModel(url: string): Promise<GlbModel> {
  * khối nên `PlayerController` không đổi.
  * - Cỡ: co giãn đều cho cao `GLB_HEIGHT`, chân chạm y = 0, tâm x/z về gốc. Mặt trước model nhìn về +z (như đệ tử khối).
  * - Vật liệu: đổi sang Lambert (quy tắc 4 — rẻ, không cần đèn môi trường), giữ màu / texture / màu đỉnh.
- * - Động tác: model có clip tên chứa `idle` / `walk` → `AnimationMixer`, trộn theo tốc độ; không có clip (model AI
+ * - Động tác: xương chuẩn Mixamo → dáng code `dongTac.ts` (R-NPC-10, `opts.tinh`); model có clip tên chứa `idle` / `walk` → `AnimationMixer`, trộn theo tốc độ; không có clip (model AI
  *   thường chưa có xương) → nhún nhẹ + nghiêng khi đi.
  * Lỗi nạp → Promise bị từ chối; nơi gọi dùng đệ tử khối dự phòng.
  */
-export async function loadGlbCharacter(url: string): Promise<Character & ToolTip> {
+export async function loadGlbCharacter(
+  url: string,
+  opts: { tinh?: TinhId; seed?: number } = {},
+): Promise<Character & ToolTip & { readonly dong?: DongTac }> {
   const { gltf, model, root, body, bob } = await loadGlbModel(url);
+
+  // xương chuẩn Mixamo (model Tripo — R-NPC-10): dáng bằng code `dongTac.ts`, bỏ qua clip đi kèm file
+  const mx = mixamoRig(model);
+  if (mx) {
+    bob.add(model);
+    const dong = new DongTac(TINH[opts.tinh ?? 'diem-tinh'], opts.seed ?? 0);
+    let lastYaw = body.rotation.y;
+    return {
+      root,
+      facing: body,
+      dong,
+      toolTip: () => false,
+      animate(dt, speed, state) {
+        const mps = state?.mps ?? speed * RUN_SPEED;
+        let dy = body.rotation.y - lastYaw;
+        lastYaw = body.rotation.y;
+        dy = Math.atan2(Math.sin(dy), Math.cos(dy)); // quay qua ±π không thành vòng
+        const pose = dong.update(dt, { mps, turn: dt > 0 ? dy / dt : 0 });
+        mx.apply(pose);
+        bob.position.y = pose.lift;
+      },
+    };
+  }
 
   const clip = (name: string): THREE.AnimationClip | undefined =>
     gltf.animations.find((a) => a.name.toLowerCase().includes(name));

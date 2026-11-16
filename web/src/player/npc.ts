@@ -5,7 +5,9 @@ import { GAME_NPC_IDS, type NpcSpec } from '../scene/spec';
 import { autoRig, type RigShape } from './autoRig';
 import type { Character, CharacterState } from './character';
 import { createDiscipleCharacter, type DiscipleColors } from './discipleCharacter';
+import { DongTac, lookYaw, TINH, type TinhId } from './dongTac';
 import { GLB_HEIGHT, loadGlbCharacter, loadGlbModel } from './glbCharacter';
+import { mixamoRig } from './mixamoRig';
 
 /** Bán kính vật cản tròn của NPC (R-NPC-1). */
 export const NPC_RADIUS = 0.45;
@@ -31,12 +33,32 @@ const NPC_RIGS: Record<string, { shape: Partial<RigShape>; armDown: number }> = 
   'tieu-mac': { shape: { hip: 0.3, neck: 0.53, shoulderY: 0.49, shoulderX: 0.18, torsoLowX: 0.22, handY: 0.23, legTop: 0.11 }, armDown: 0.45 },
 };
 
+/** R-NPC-10: tính cách dáng của NPC có xương chuẩn (model Tripo); thiếu → điềm tĩnh. */
+export const NPC_TINH: Readonly<Record<string, TinhId>> = {
+  'thu-thu': 'diem-tinh',
+  'cam-nu': 'diem-tinh',
+  'tieu-nhi': 'hoat-bat',
+  'khat-nhi': 'hoat-bat',
+  'tieu-mac': 'hoat-bat',
+  'go-mo': 'gia',
+  'su-phu': 'gia',
+  'quan-su': 'nghiem',
+  'tran-su': 'nghiem',
+};
+
 export interface Npc {
   /** mã NPC (đặc tả cảnh `npcs[].id`) — dùng tra hội thoại */
   readonly id: string;
   readonly root: THREE.Object3D;
   /** Mỗi khung hình: thở, tay buông khẽ đung đưa, thỉnh thoảng nhìn quanh. Giữ nguyên hướng đặc tả (R-NPC-1). */
   update(dt: number): void;
+  /**
+   * R-NPC-10 (NPC có xương chuẩn): người chơi đang ở (px, pz); `line` = mã câu thoại đang hiện nếu đang thoại với NPC
+   * này, không thì `null` — đổi câu thì gật. Gọi trước `update` mỗi khung; NPC khác bỏ qua.
+   */
+  watch?(px: number, pz: number, line: string | null): void;
+  /** bộ động tác (NPC có xương chuẩn) — phòng thử Canvas 3D `?dang=dong-tac` chỉnh `tinh` trực tiếp */
+  readonly dong?: DongTac;
   /** vật cản tròn của NPC (`placeNpcs` gắn) — NPC biết đi dời `x`, `z` theo mình (R-NPC-7) */
   block?: Circle;
 }
@@ -57,7 +79,7 @@ export const isMovingSpec = (s: NpcSpec): boolean => !!s.route || s.pose === 'ng
 
 /** Dựng NPC biết đi / ngồi từ model [url]. */
 export async function createMovingNpc(spec: NpcSpec, url: string): Promise<MovingNpc> {
-  const character = await loadGlbCharacter(url);
+  const character = await loadGlbCharacter(url, { tinh: NPC_TINH[spec.id], seed: spec.x * 0.37 + spec.z * 0.11 });
   character.root.scale.setScalar(spec.scale ?? 1);
   character.facing.rotation.y = THREE.MathUtils.degToRad(spec.rotY ?? 0);
   const motion = { mps: 0, sit: spec.pose === 'ngoi' ? 1 : 0 } as MovingNpc['motion'];
@@ -91,6 +113,8 @@ export async function createNpc(spec: NpcSpec): Promise<Npc | null> {
   if (!url) return null;
   const { model, root, body, bob } = await loadGlbModel(url);
   root.scale.setScalar(spec.scale ?? 1); // thiếu = 1 (như cũ)
+  const mx = mixamoRig(model);
+  if (mx) return standingMixamoNpc(spec, root, body, bob, model, mx);
   const tune = NPC_RIGS[spec.id];
   const rig = tune ? autoRig(model, GLB_HEIGHT, tune.shape) : null;
   bob.add(rig ? rig.group : model);
@@ -112,6 +136,38 @@ export async function createNpc(spec: NpcSpec): Promise<Npc | null> {
       // nhìn quanh chậm: hai nhịp sin lệch nhau → không lặp đều
       r.head.rotation.y = Math.sin(time * 0.31) * Math.sin(time * 0.13) * 0.18;
       r.head.rotation.x = Math.sin(time * 0.5) * 0.03;
+    },
+  };
+}
+
+/** NPC đứng có xương chuẩn (R-NPC-10): thở, dồn trọng tâm, nhìn quanh, nhìn người chơi, gật khi thoại — thân giữ hướng. */
+function standingMixamoNpc(
+  spec: NpcSpec,
+  root: THREE.Group,
+  body: THREE.Group,
+  bob: THREE.Group,
+  model: THREE.Object3D,
+  mx: NonNullable<ReturnType<typeof mixamoRig>>,
+): Npc {
+  bob.add(model);
+  const rotY = THREE.MathUtils.degToRad(spec.rotY ?? 0);
+  body.rotation.y = rotY;
+  const dong = new DongTac(TINH[NPC_TINH[spec.id] ?? 'diem-tinh'], spec.x * 0.37 + spec.z * 0.11);
+  let look: number | null = null;
+  let lastLine: string | null = null;
+  return {
+    id: spec.id,
+    root,
+    dong,
+    watch(px, pz, line) {
+      look = lookYaw(root.position.x, root.position.z, rotY, px, pz, line !== null);
+      if (line !== null && line !== lastLine) dong.nodOnce();
+      lastLine = line;
+    },
+    update(dt) {
+      const pose = dong.update(dt, { mps: 0, look });
+      mx.apply(pose);
+      bob.position.y = pose.lift;
     },
   };
 }

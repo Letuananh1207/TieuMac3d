@@ -1038,7 +1038,12 @@ async function boot(): Promise<void> {
     // camera bám êm: dây kéo + tự về sau lưng chậm (R-DIEU-3)
     if (!riding) orbit.follow(dt, pos.x - fromX, pos.z - fromZ, character.facing.rotation.y, player.state.mps > 0);
     town?.update({ dt, player: pos, camera, talkingTo: talking ? (runner?.dialog.npc ?? null) : null, covered: paused || covered || loading.active }); // NPC đi (R-NPC-7)
-    for (const npc of showNearNpcs(npcSet.npcs, pos.x, pos.z)) npc.update(dt); // xa từ 35 m → ẩn (R-NPC-1)
+    const talkTo = talking ? (runner?.dialog.npc ?? null) : null;
+    const talkLine = runner?.current?.id ?? null;
+    for (const npc of showNearNpcs(npcSet.npcs, pos.x, pos.z)) {
+      npc.watch?.(pos.x, pos.z, npc.id === talkTo ? talkLine : null); // nhìn người chơi, gật khi sang câu (R-NPC-10)
+      npc.update(dt); // xa từ 35 m → ẩn (R-NPC-1)
+    }
     danTranh?.update({ dt, player: pos, camera, covered: paused || covered || loading.active || travelling }); // R-AM-2
     mini?.update({ dt, player: pos, camera, covered: paused || covered || loading.active || travelling, busy: paused || mapOpen || talking || loading.active || !!thanh?.busy }); // V-66 B4
     gamePlay.update(dt);
