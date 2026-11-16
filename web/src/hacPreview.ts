@@ -1,15 +1,16 @@
 /**
  * Canvas 3D `?dang=hac` — duyệt hạc truyền tống bằng model (kế hoạch docs/tasks/2026-11-16-hac-model.md, Q3). Không vào app.
- * Hạc lượn tại chỗ xuất phát (hoặc `&nv=x,z`), nhân vật ngồi trên lưng (như lúc bay — R-HANH-5), thông số đo ở bảng.
+ * Hạc lượn tại chỗ xuất phát (hoặc `&nv=x,z`), nhân vật ngồi cưỡi trên lưng (dáng `cuoiDang.ts` — R-HANH-5), thông số đo ở bảng.
  * - `&mau=hac` (mặc định khi có `design/models/hac.glb`) · `&mau=khoi-gop` (thân + cánh khối gộp một lưới — thử đường tự
  *   tách cánh, mặc định khi chưa có model; artifact không nhúng được .glb lớn) · `&mau=<mã>` (model khác trong design/models/)
  * - `&khoi` — bản khối cũ (3 draw call) để so · `&gap=1` — đứng đáp trên hai chân, cánh xếp (Q1, L-22)
  * - `&chan=0…1` — chân: 0 duỗi sau (bay) → 1 đứng (mặc định theo `gap`) · `&nhun=0…1` — nhún · `&cao=<m>` — cao hơn đất
  *   (mặc định: đứng hẳn → 0, còn lại lượn 2,2 m) — chụp "vừa rời đất, chân đang thu" (L-22)
+ * - `&gan[=k]` — camera lại gần (khoảng cách × k, mặc định 0,5 — soát chân người cưỡi)
  * - `&vo=len|xuong` — dừng ở đỉnh / đáy nhịp vỗ (chụp so) · `&goc=truoc|sau-tren|ben|cheo|co|hong` — góc camera (co / hong: cận cổ, cận hông)
  */
 import * as THREE from 'three';
-import type { Character } from './player/character';
+import { showGroundShadow, type Character } from './player/character';
 import { blockCraneGeometry, Crane } from './scene/hac';
 import { craneModelFrom, CRANE_MODEL_TUNE, loadCraneModel, type CraneModel } from './scene/hacModel';
 import { lambert } from './scene/materials';
@@ -41,7 +42,7 @@ export async function addCranePreview(
   groundAt: (x: number, z: number) => number,
   rider: Character,
   view: (pos: V3, target: V3) => void,
-): Promise<{ update(dt: number): void; lines: string[] } | null> {
+): Promise<{ update(dt: number): void; lines: string[]; ride: { w: number; pitch: number } } | null> {
   if (params.get('dang') !== 'hac') return null;
   const lines: string[] = [];
   const crane = new Crane(spec.crane);
@@ -96,7 +97,10 @@ export async function addCranePreview(
   if (goc === 'hong') target.splice(0, 3, P.x, P.y + 0.6 * k, P.z - 0.4 * k);
   cams.co = [P.x + 3.2 * k, P.y + 2.6 * k, P.z + 2.6 * k];
   cams.hong = [P.x + 3 * k, P.y + 0.9 * k, P.z + 1.2 * k];
-  const cam: V3 = cams[goc] ?? [P.x, P.y + up + 0.3 * k, P.z + 7.5 * k];
+  const far: V3 = cams[goc] ?? [P.x, P.y + up + 0.3 * k, P.z + 7.5 * k];
+  // `&gan[=k]` — kéo camera lại gần (soát chân người cưỡi — R-HANH-5)
+  const near = params.has('gan') ? Number(params.get('gan')) || 0.5 : 1;
+  const cam = far.map((v, i) => target[i] + (v - target[i]) * near) as V3;
   if (!params.has('cam')) view(cam, target);
 
   const seat = new THREE.Vector3();
@@ -106,8 +110,12 @@ export async function addCranePreview(
     rider.facing.rotation.y = crane.root.rotation.y;
   };
   place();
+  showGroundShadow(rider, false);
+  // dáng ngồi cưỡi (R-HANH-5) — hông theo lưng hạc
+  const ride = { w: 1, pitch: crane.pitch };
   return {
     lines,
+    ride,
     update(dt) {
       if (!frozen) {
         t += dt;
@@ -115,6 +123,7 @@ export async function addCranePreview(
         if (hover) P.y = base + lift + Math.sin(t * 1.6) * 0.15;
       }
       place();
+      ride.pitch = crane.pitch;
     },
   };
 }

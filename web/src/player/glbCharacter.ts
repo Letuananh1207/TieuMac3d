@@ -4,7 +4,8 @@ import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.j
 import { autoRig, type Rig } from './autoRig';
 import { emotePose } from './bieuCamDang';
 import { CHAO, diCuDang, diCuMoi, diCuTien, dungLauDang, gayDanDang, goMoDang, NGOI7, NHAY7, NHIN_QUANH, REST, VUON_VAI } from './dang7';
-import type { Character, ToolTip } from './character';
+import { GROUND_SHADOW, type Character, type ToolTip } from './character';
+import { CUOI7 } from './cuoiDang';
 import type { DongTac } from './dongTac';
 import { mixamoCharacter, type MixamoOpts } from './mixamoCharacter';
 import { mixamoRig } from './mixamoRig';
@@ -87,6 +88,7 @@ export async function loadGlbModel(url: string): Promise<GlbModel> {
   );
   shadow.rotation.x = -Math.PI / 2;
   shadow.position.y = 0.02;
+  shadow.name = GROUND_SHADOW;
   root.add(shadow);
   return { gltf, model, root, body, bob };
 }
@@ -149,6 +151,8 @@ export async function loadGlbCharacter(
       const { move, runB, airB } = diCuTien(di, dt, mps, !!state?.air);
       const sitB = ease(state?.sit ?? 0);
       const bowB = ease(state?.bow ?? 0);
+      // cưỡi hạc (R-HANH-5): chân dạng chếch xuống hai bên thân hạc, tay ra trước — thay ngồi xếp bằng
+      const rideB = (state?.ride?.w ?? 0) * sitB;
       if (mixer) {
         if (walk) walk.setEffectiveWeight(idle ? move : 1).setEffectiveTimeScale(0.6 + 0.6 * move + 0.6 * runB);
         if (idle) idle.setEffectiveWeight(walk ? 1 - move : 1);
@@ -178,6 +182,12 @@ export async function loadGlbCharacter(
       rig.legR.rotation.x = mix(lR, NGOI7.legs, sitB);
       rig.legL.rotation.z = NGOI7.legZ * sitB;
       rig.legR.rotation.z = -NGOI7.legZ * sitB;
+      if (rideB > 0) {
+        rig.legL.rotation.x = mix(rig.legL.rotation.x, CUOI7.legs, rideB);
+        rig.legR.rotation.x = mix(rig.legR.rotation.x, CUOI7.legs, rideB);
+        rig.legL.rotation.z = mix(rig.legL.rotation.z, CUOI7.legZ, rideB);
+        rig.legR.rotation.z = mix(rig.legR.rotation.z, -CUOI7.legZ, rideB);
+      }
 
       /* ---- tay ---- tay trái ở +x: rotation.z âm = khép vào thân */
       let aLx = -ARM_FORWARD + d.armL + Math.sin(time * 1.3) * 0.04 * still;
@@ -194,6 +204,10 @@ export async function loadGlbCharacter(
       aRx = mix(aRx, NGOI7.aRx, sitB);
       aLz = mix(aLz, NGOI7.aLz, sitB);
       aRz = mix(aRz, NGOI7.aRz, sitB);
+      aLx = mix(aLx, CUOI7.aX, rideB);
+      aRx = mix(aRx, CUOI7.aX, rideB);
+      aLz = mix(aLz, -(ARM_REST + CUOI7.aZ), rideB);
+      aRz = mix(aRz, ARM_REST + CUOI7.aZ, rideB);
       // chắp tay chào (拱手): hai tay đưa lên trước ngực, khép vào giữa
       aLx = mix(aLx, CHAO.aLx, bowB);
       aRx = mix(aRx, CHAO.aRx, bowB);

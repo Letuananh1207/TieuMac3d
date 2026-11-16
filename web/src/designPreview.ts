@@ -362,6 +362,7 @@ async function boot(): Promise<void> {
   if (pose === 'chay') poseState.mps = RUN_SPEED;
   else if (pose === 'nhay') poseState.air = true;
   else if (pose === 'ngoi' || pose === 'ngoi-mat' || pose === 'hac') poseState.sit = 1;
+  if (hac) poseState.ride = hac.ride; // ngồi cưỡi hạc (R-HANH-5)
   else if (pose === 'chao') poseState.bow = 1;
   else if (pose === 'vuon') poseState.idle = 7.25;
   else if (pose === 'nhin') poseState.idle = 14.6;

@@ -9,7 +9,7 @@
  * Lớp phủ theo thiết kế 2026-11-15.9 (màn mây + lớp chữ khi bay): `ui/craneHud.ts` (DOM) + nhịp `ui/craneView.ts`.
  */
 import * as THREE from 'three';
-import type { Character } from './player/character';
+import { showGroundShadow, type Character } from './player/character';
 import { buildFlight, type FlightScene } from './scene/bayMay';
 import { Crane } from './scene/hac';
 import { loadCraneModel, withCraneModel } from './scene/hacModel';
@@ -45,7 +45,10 @@ export function craneParams(next: URLSearchParams, hud: CraneHud): void {
   if (hud.night) next.set('dem', '1');
 }
 
-const pose = (c: Character, dt: number, sit: number, air = false, vy = 0): void => c.animate(dt, 0, { mps: 0, air, vy, sit, bow: 0, idle: 0 });
+const pose = (c: Character, dt: number, sit: number, air = false, vy = 0, ride?: { w: number; pitch: number }): void =>
+  c.animate(dt, 0, { mps: 0, air, vy, sit, bow: 0, idle: 0, ride });
+/** ngồi cưỡi trên lưng hạc (R-HANH-5): chân dạng hai bên thân, hông theo lưng hạc */
+const rideOn = (c: Character, dt: number, sit: number, crane: { pitch: number }): void => pose(c, dt, sit, false, 0, { w: 1, pitch: crane.pitch });
 const v3 = (v: THREE.Vector3): V3 => [v.x, v.y, v.z];
 const clamp01 = (v: number): number => Math.min(1, Math.max(0, v));
 
@@ -174,7 +177,8 @@ export class CraneRide {
     if (jumping) return;
     ch.root.position.copy(this.crane.seatWorld(this.seat));
     ch.facing.rotation.y = this.crane.root.rotation.y;
-    pose(ch, dt, sit);
+    showGroundShadow(ch, false);
+    rideOn(ch, dt, sit, this.crane);
   }
 
   private updateLand(dt: number, camera: THREE.Camera): void {
@@ -196,6 +200,7 @@ export class CraneRide {
       const k = clamp01((t - T.jumpOff) / (T.camBack - T.jumpOff));
       ch.root.position.set(...(k < 1 ? jumpArc(v3(this.crane.seatWorld(this.seat)), ground, k, 0.5) : ground));
       ch.facing.rotation.y = heading;
+      showGroundShadow(ch, k >= 1);
       pose(ch, dt, 0, k < 1, k < 0.4 ? 2 : -4);
     }
     const cam = landCamera(this.o.camera, p, v3(ch.root.position), clamp01((t - T.camBack) / (T.land - T.camBack)));
@@ -208,6 +213,7 @@ export class CraneRide {
     const { character: ch, at, heading } = this.o;
     ch.root.position.set(at[0], this.o.groundAt(...at), at[1]);
     ch.facing.rotation.y = heading;
+    showGroundShadow(ch, true);
     pose(ch, 0, 0);
     this.o.hud.remove();
     this.owns = false;
@@ -315,8 +321,10 @@ export class CraneFlight {
     this.flight.scene.add(r.root);
     r.root.position.copy(this.flight.seat);
     r.facing.rotation.y = this.flight.heading;
-    pose(r, dt, 1);
+    showGroundShadow(r, false);
+    rideOn(r, dt, 1, { pitch: 0 });
     this.renderer.render(this.flight.scene, this.flight.camera);
+    showGroundShadow(r, true);
     if (parent) parent.add(r.root);
     else this.flight.scene.remove(r.root);
     r.root.position.copy(pos);

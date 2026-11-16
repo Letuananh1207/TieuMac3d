@@ -155,6 +155,8 @@ export class Crane {
   stand = 0;
   /** nhún khi đứng 0…1 (hông lùi + hạ, bàn chân giữ chỗ) — trước khi bật lên / lúc chạm đất */
   squat = 0;
+  /** góc thân hạc lúc này (rad, âm = mũi ngẩng — model đứng, L-22); bản khối / bay = 0 — nhân vật cưỡi nghiêng hông theo */
+  pitch = 0;
 
   constructor(spec: CraneSpec) {
     // tự sáng nhẹ: mặt dưới cánh (pháp tuyến lật, ánh đất xanh của hemi) không bị xỉn màu rêu
@@ -244,6 +246,7 @@ export class Crane {
     const p = standPose(shape.legs, [shape.seat[1], shape.seat[2]], s, clamp01(this.squat));
     body.position.set(0, p.dy, p.dz);
     body.rotation.set(p.pitch, 0, 0);
+    this.pitch = p.pitch;
     for (const { hong, goi, co } of legs) {
       hong.rotation.set(p.hip, 0, 0);
       goi.rotation.set(p.knee, 0, 0);

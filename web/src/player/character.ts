@@ -44,6 +44,9 @@ export interface CharacterState {
   /** đang ngồi xin (Tiểu Khất — R-NPC-6, model cầm sẵn bát + gậy): 0…1 = trọng số dáng tay `xinDang.ts` (nhân với độ
    *  ngồi). Không có = dáng thường. Không bắt buộc — nhân vật khác bỏ qua */
   beg?: number;
+  /** đang ngồi cưỡi hạc (R-HANH-5): `w` 0…1 = trọng số dáng cưỡi `cuoiDang.ts` (nhân với độ ngồi) thay ngồi xếp bằng;
+   *  `pitch` = góc thân hạc (rad, âm = mũi ngẩng) — hông theo lưng hạc. Không có = dáng thường. Nhân vật khác bỏ qua */
+  ride?: { w: number; pitch: number };
   /** đang diễn biểu cảm (R-BIEU-2): mã (`zones/bieuCam.ts`), giây đã diễn `t`, thời lượng `len` (`Infinity` = giữ). Không
    *  có = không diễn. Không bắt buộc — nhân vật không biết mã thì bỏ qua (đứng thường) */
   emote?: { id: string; t: number; len: number };
@@ -57,6 +60,15 @@ export interface CharacterState {
 /** Nhân vật có đồ cầm tay làm vườn (`glbCharacter`, đệ tử khối): miệng bình tưới (thế giới) + hướng tia; không cầm bình → false. */
 export interface ToolTip {
   toolTip(out: THREE.Vector3, dir?: THREE.Vector3): boolean;
+}
+
+/** tên đĩa bóng giả dưới chân nhân vật (`glbCharacter`, đệ tử khối) */
+export const GROUND_SHADOW = 'bong-gia';
+
+/** Bật / tắt đĩa bóng giả dưới chân — tắt khi nhân vật ngồi trên lưng hạc (R-HANH-5: đĩa nằm trên lưng hạc trông như tấm lót). */
+export function showGroundShadow(c: Character, on: boolean): void {
+  const s = c.root.getObjectByName(GROUND_SHADOW);
+  if (s) s.visible = on;
 }
 
 export const hasToolTip = (c: Character): c is Character & ToolTip => typeof (c as Partial<ToolTip>).toolTip === 'function';

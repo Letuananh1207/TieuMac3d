@@ -11,6 +11,7 @@ import { ChopMat, mucBieuCam } from './chopMat';
 import { RUN_SPEED } from './controller';
 import { CHAO, diCuDang, diCuMoi, diCuTien, dungLauDang, gayDanDang, goMoDang, NHIN_QUANH, REST, tronDang7, tronDiCu, VUON_VAI } from './dang7';
 import { createGardenProps, type GardenProps } from './doLamVuon';
+import { tronCuoi } from './cuoiDang';
 import { DongTac, TINH, type Tinh, type TinhId } from './dongTac';
 import { isWork, PROP_OF, workPose } from './lamVuonDang';
 import type { MiMat } from './miMat';
@@ -103,6 +104,8 @@ export function mixamoCharacter(
       if (state?.pluck !== undefined) tronDang7(pose, gayDanDang(state.pluck, time), 1, cal);
       // ngồi xin (R-NPC-6): bát trước bụng, gậy chống đất bên trái — chỉ khi ngồi
       if (state?.beg) tronXin(pose, dong.tinh.haTay, state.beg * ease(state.sit ?? 0));
+      // cưỡi hạc (R-HANH-5): chân dạng hai bên thân hạc, tay đặt trên cổ — thay ngồi xếp bằng
+      if (state?.ride) tronCuoi(pose, dong.tinh.haTay, state.ride.w * ease(state.sit ?? 0), state.ride.pitch);
       // biểu cảm (R-BIEU-2) / làm vườn (R-VUON-13): biểu cảm đang diễn thì thắng
       const wk = state?.work;
       const wp = !state?.emote && wk ? workPose(wk.id, wk.t, wk.len) : null;

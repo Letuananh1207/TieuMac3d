@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { lambert } from '../scene/materials';
-import type { Character, ToolTip } from './character';
+import { GROUND_SHADOW, type Character, type ToolTip } from './character';
 import { createGardenProps, type GardenProps } from './doLamVuon';
 import { isWork, PROP_OF, workPose } from './lamVuonDang';
 
@@ -105,6 +105,7 @@ export function createDiscipleCharacter(colors: DiscipleColors = {}): Character 
   );
   shadow.rotation.x = -Math.PI / 2;
   shadow.position.y = 0.02;
+  shadow.name = GROUND_SHADOW;
   root.add(shadow);
 
   // đồ cầm tay làm vườn ở bàn tay phải (tay áo phía −x — R-VUON-13): dựng khi cầm lần đầu (NPC khối không bao giờ cầm — gộp khối không vướng)
