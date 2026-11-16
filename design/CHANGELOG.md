@@ -10,6 +10,27 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
   chạy trên xương Mixamo.
 - `design/models/nhan-vat.glb` (thay bản Hunyuan), `cam-nu.glb` (mới — hiện trên bục đàn, ngồi gảy, R-NPC-9), `go-mo.glb` (mới —
   chưa có đường đi trong đặc tả, `/canh` đặt sau theo bản thử `scene/npcDraft.ts`, R-NPC-7). Ảnh so: `screens/Model-<mã>-so-thiet-ke.png`.
+## 2026-11-16.9 — Khởi Nguyên Trấn: tiểu nhị sau quầy trà Phẩm Minh Các, trận sư cạnh Truyền Tống Đài
+
+- Loại: cảnh 3D — dữ liệu (đặt NPC). Phiên code V-20261116-84 làm thay việc `/canh` theo yêu cầu người dùng "cho model Tripo
+  vào map". Luật R-NPC-2, R-NPC-3, R-NPC-5, R-NPC-10. Model: `models/tieu-nhi.glb`, `models/tran-su.glb` (mục 2026-11-16.8).
+- `design/scene/scene.json` `npcs` thêm:
+  - `tieu-nhi` ở (42,1; −36), `rotY` 270° (nhìn −x, ra cửa) — sau **quầy trà sẵn có** sát tường sau tầng 1 (quầy x 41,1 … 41,9,
+    z −40,3 … −31,7, cao 0,95; mặt trong tường sau x ≈ 42,35), thẳng trục giữa nhà và bàn trà giữa. Vào cửa (mặt tây, x ≈ 31,4)
+    là thấy ngay phía cuối gian. Người chơi đứng trước quầy (x ≤ ~40,8) cách 1,3–2,5 m → "Nói chuyện"; đôn bàn trà gần nhất
+    (≈ x 37,2) cách chỗ đứng đó > 3 m → không trùng tầm "Ngồi" 1,2 m (R-NGOI-1); cầm án góc (41,4; −43,8) ngoài tầm; thang tầng 2
+    ở ngoài hồi phải, không vướng. Đứng sàn tầng 1 (nền 0,3).
+  - `tran-su` ở (−7; −39,2), `rotY` 65° — trên bục đài (y 5,5), phía tây, đối xứng Mặc Ông (6,5; −38,5; 295°), mặt nhìn về đầu
+    Thiên Bậc (0; −36): lên hết bậc là thấy bên trái. Cách tâm vòng trận 8,8 m (ngoài chân đài ∅ 14,4 và vòng 3,2 m — R-HANH-2),
+    cách đèn đá (−4,6; −37,2) 3,1 m (đèn lệch 15° khỏi hướng nhìn — chỗ đứng 1,6 m trước mặt cách đèn ~1,7 m, trống), cách
+    chỗ quay đầu của Lão Canh (−1,5; −35) 6,9 m, cách mép bục tây 2 m; Mặc Ông cách 13,5 m → hai nút "Nói chuyện" không chồng tầm.
+- Tiểu nhị chibi thấp, quầy cao 0,95 → nhìn từ cửa chỉ thấy đầu + vai trên quầy (đúng "sau quầy"). Nếu muốn thấy rõ hơn: hạ quầy
+  (~0,75) là "Cần code" trong `kien_truc/tra_lau.ts`, để sau. Thấy thêm: vài búi cỏ mọc trong sàn tầng 1 trà lâu (có từ trước).
+- `scene:check`: Không có lỗi. Draw call / tam giác chưa đo (Canvas 3D headless không hiện bảng khi bỏ `?chup`); thêm 2 model
+  ~15 300 tam giác mỗi cái, hai nơi cách xa nhau (≤ 1 model mỗi góc).
+- Ảnh: `screens/Canh-tieu-nhi-cua.png` (từ cửa nhìn vào), `screens/Canh-tieu-nhi-noi-chuyen.png` (đứng trước quầy trong tầm),
+  `screens/Canh-tieu-nhi-mat.png` (cận mặt), `screens/Canh-tran-su-toi.png` (đầu Thiên Bậc nhìn lên), `screens/Canh-tran-su-mat.png`
+  (cận mặt trước).
 
 ## 2026-11-16.8 — Model Tripo: Tiểu Mặc, Mặc Ông (thay Hunyuan), tiểu nhị, trận sư
 
