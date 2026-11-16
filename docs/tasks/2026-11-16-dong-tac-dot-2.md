@@ -2,7 +2,7 @@
 - Yêu cầu: "đổi nhân vật chính sang model Tripo có xương Mixamo (`design/models/nhan-vat.glb` sẽ được thay bằng bản
   Tripo — người dùng đang tạo, chưa có file; model mẫu cùng loại xương: `design/models/thu-thu.glb`) mà không mất dáng
   nào: chuyển mọi dáng lập trình sẵn của nhân vật chính từ bộ xương tự gắn 7 khớp (`autoRig`) sang xương Mixamo." (V-20261116-83)
-- Loại: sửa cách vẽ (hành vi giữ nguyên) + dữ liệu (model) · Cỡ: lớn · Trạng thái: chờ duyệt
+- Loại: sửa cách vẽ (hành vi giữ nguyên) + dữ liệu (model) · Cỡ: lớn · Trạng thái: đang làm (duyệt 2026-11-16: Q1 hoat-bat, Q2 không sửa sổ, Q3 Claude tự đặt + duyệt ảnh, Q4 giữ autoRig)
 - Tiếp theo: `docs/tasks/2026-11-16-dong-tac-code-mixamo.md` (đợt 1 — đi / đứng / nhìn / gật, đã gộp `main`; NV7 đợt 1
   — người dùng chỉnh bộ số thu-thu — vẫn mở, đợt này không đổi các trường `Tinh` để không vướng bộ số đang chỉnh).
 
