@@ -13,8 +13,9 @@ export const WORK_IDS: readonly WorkId[] = ['gieo', 'tuoi', 'bat', 'nho', 'bon',
 /** Thời lượng mỗi động tác (s) — R-VUON-13. */
 export const WORK_LEN: Readonly<Record<WorkId, number>> = { gieo: 0.9, tuoi: 1.2, bat: 0.8, nho: 0.8, bon: 0.9, thu: 0.9 };
 
-/** Đồ cầm tay khi diễn / khi đang cầm công cụ (`CharacterState.hold`): túi hạt, bình tưới, ống tre, (tay không), bao phân, giỏ. */
-export type PropId = 'tui-hat' | 'binh' | 'ong-tre' | 'bao-phan' | 'gio';
+/** Đồ cầm tay khi diễn / khi đang cầm công cụ (`CharacterState.hold`): túi hạt, bình tưới, ống tre, (tay không), bao phân, giỏ;
+ *  ấm trà của tiểu nhị (R-TRA-1). */
+export type PropId = 'tui-hat' | 'binh' | 'ong-tre' | 'bao-phan' | 'gio' | 'am-tra';
 export const PROP_OF: Readonly<Record<WorkId, PropId | null>> = { gieo: 'tui-hat', tuoi: 'binh', bat: 'ong-tre', nho: null, bon: 'bao-phan', thu: 'gio' };
 
 /**
@@ -31,6 +32,13 @@ export const WORK_FX: Readonly<Record<WorkId, { at: readonly number[]; until?: n
 };
 
 export const isWork = (id: string): id is WorkId => (WORK_IDS as readonly string[]).includes(id);
+
+/** Tiểu nhị rót trà (R-TRA-1): mượn dáng tưới, cầm ấm trà — không thuộc 6 việc vườn (`WORK_IDS`). */
+export const ROT = 'rot';
+export const ROT_LEN = 2;
+
+/** Đồ cầm tay của động tác / công cụ `id` (việc vườn hoặc rót); mã lạ → `null`. */
+export const propFor = (id: string): PropId | null => (isWork(id) ? PROP_OF[id] : id === ROT ? 'am-tra' : null);
 
 /** Dáng làm vườn = dáng biểu cảm + độ nghiêng đồ cầm tay `tilt` (0 thẳng … 1 nghiêng hết — miệng bình chúc xuống). */
 export interface WorkPose extends EmotePose {
@@ -55,8 +63,8 @@ export function workWeight(t: number, len: number): number {
 const bump = (t: number, c: number, w: number): number => Math.max(0, 1 - Math.abs(t - c) / w);
 
 /** Dáng việc `id` ở giây `t` (thời lượng `len`, mặc định `WORK_LEN`). Mã lạ → null. */
-export function workPose(id: string, t: number, len = isWork(id) ? WORK_LEN[id] : 1): WorkPose | null {
-  if (!isWork(id)) return null;
+export function workPose(id: string, t: number, len = isWork(id) ? WORK_LEN[id] : id === ROT ? ROT_LEN : 1): WorkPose | null {
+  if (!isWork(id) && id !== ROT) return null;
   const p: WorkPose = { w: workWeight(t, len), aLx: -0.12, aLz: -REST, aRx: -0.12, aRz: REST, hipsX: 0, hipsY: 0, headX: 0, headY: 0, headZ: 0, lift: 0, tilt: 0 };
   const k = Math.min(1, Math.max(0, t / len));
   switch (id) {
@@ -92,6 +100,21 @@ export function workPose(id: string, t: number, len = isWork(id) ? WORK_LEN[id] 
       p.eR = -0.25;
       p.aLxE = -0.5;
       p.eL = -0.9;
+      break;
+    }
+    case ROT: {
+      // tiểu nhị rót (R-TRA-1): tay phải đưa ấm ra trước, nghiêng dần rồi giữ, cuối dựng lại; tay trái giữ nắp; hơi cúi về chén
+      const pour = smooth((t - 0.2) / 0.4) * smooth((len - 0.15 - t) / 0.35);
+      p.aRx = -0.85 + 0.08 * pour;
+      p.aRz = REST + 0.25;
+      p.aLx = -0.75;
+      p.aLz = -(REST + 0.45);
+      p.hipsX = 0.15 * smooth(t / 0.4);
+      p.headX = 0.3;
+      p.tilt = 0.85 * pour;
+      p.eR = -0.45;
+      p.aLxE = -0.5;
+      p.eL = -1.0;
       break;
     }
     case 'bat': {

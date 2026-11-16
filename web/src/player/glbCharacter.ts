@@ -11,7 +11,7 @@ import { mixamoCharacter, type MixamoOpts } from './mixamoCharacter';
 import { mixamoRig } from './mixamoRig';
 import { createMiMat, type MiMat } from './miMat';
 import { createGardenProps, type GardenProps } from './doLamVuon';
-import { isWork, PROP_OF, workPose } from './lamVuonDang';
+import { propFor, workPose } from './lamVuonDang';
 import { RUN_SPEED } from './controller';
 
 /** Chiều cao nhân vật sau khi nạp (m) — bằng đệ tử khối (búi tóc ~2,1 m), thước chuẩn của cảnh. */
@@ -245,7 +245,7 @@ export async function loadGlbCharacter(
       rig.armL.rotation.z = aLz;
       rig.armR.rotation.z = aRz;
       const held = wk?.id ?? state?.hold;
-      const prop = held && isWork(held) ? PROP_OF[held] : null;
+      const prop = held ? propFor(held) : null;
       if (prop && !props) props = createGardenProps(rig.armR, HAND_R);
       if (props) {
         props.show(prop);

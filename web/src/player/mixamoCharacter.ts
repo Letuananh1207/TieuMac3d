@@ -13,7 +13,7 @@ import { CHAO, diCuDang, diCuMoi, diCuTien, dungLauDang, gayDanDang, goMoDang, N
 import { createGardenProps, type GardenProps } from './doLamVuon';
 import { tronCuoi } from './cuoiDang';
 import { DongTac, TINH, type Tinh, type TinhId } from './dongTac';
-import { isWork, PROP_OF, workPose } from './lamVuonDang';
+import { propFor, workPose } from './lamVuonDang';
 import type { MiMat } from './miMat';
 import type { MixamoRig } from './mixamoRig';
 import { tronXin } from './xinDang';
@@ -64,6 +64,7 @@ export function mixamoCharacter(
   const hand = mx.bone('handR') ?? mx.bone('foreR');
   let props: GardenProps | null = null;
   let lastYaw = body.rotation.y;
+  let nods = 0;
   let time = 0;
   // nhân vật chính: dáng đi cũ (L-18) — trạng thái riêng, `dongTac` chỉ dựng dáng đứng / nhảy / ngồi
   const di = opts.player ? diCuMoi() : null;
@@ -81,7 +82,13 @@ export function mixamoCharacter(
       let dy = body.rotation.y - lastYaw;
       lastYaw = body.rotation.y;
       dy = Math.atan2(Math.sin(dy), Math.cos(dy)); // quay qua ±π không thành vòng
-      const pose = dong.update(dt, { mps, turn: dt > 0 ? dy / dt : 0, air: state?.air, sit: state?.sit, sitDrop, tuDi: !!di });
+      // NPC biết đi đứng yên nhìn người chơi, gật khi sang câu thoại (tiểu nhị — R-NPC-10, R-TRA-1)
+      if (state?.nod !== undefined && state.nod !== nods) {
+        nods = state.nod;
+        dong.nodOnce();
+        chop.chopNgay();
+      }
+      const pose = dong.update(dt, { mps, turn: dt > 0 ? dy / dt : 0, air: state?.air, sit: state?.sit, sitDrop, tuDi: !!di, look: state?.look });
       const cal = { off: dong.tinh.haTay - REST };
       let move = dong.moving;
       let airB = dong.airborne;
@@ -124,7 +131,7 @@ export function mixamoCharacter(
       bob.position.y = pose.lift;
       // đồ cầm tay ở bàn tay phải (R-VUON-13): dựng khi cầm lần đầu
       const held = wk?.id ?? state?.hold;
-      const prop = held && isWork(held) ? PROP_OF[held] : null;
+      const prop = held ? propFor(held) : null;
       if (prop && !props && hand) props = createGardenProps(hand, mx.gripR, { upright: body });
       if (props && hand) {
         props.show(prop);

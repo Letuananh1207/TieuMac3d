@@ -75,3 +75,30 @@ describe('Tay nhân vật chính lúc đứng (L-23)', () => {
     expect(p.j.armR[2]).toBeCloseTo(CHAO.aRz + off, 6);
   });
 });
+
+describe('NPC phục vụ đứng ở quầy (tiểu nhị — R-TRA-1, R-NPC-10)', () => {
+  function npcRun(state: (i: number) => CharacterState, frames: number): Pose {
+    const parts = { root: new THREE.Group(), body: new THREE.Group(), bob: new THREE.Group(), model: new THREE.Object3D() };
+    let last: Pose | null = null;
+    const rig: MixamoRig = { aPose: A_POSE, hipY: 0.6, gripR: new THREE.Vector3(), bone: () => undefined, apply: (p) => void (last = JSON.parse(JSON.stringify(p)) as Pose) };
+    const ch = mixamoCharacter(parts, rig, { tinh: 'hoat-bat', seed: 1 });
+    for (let i = 0; i < frames; i++) ch.animate(1 / 60, 0, state(i));
+    return last!;
+  }
+  const yawOf = (p: Pose): number => p.j.head[1] + p.j.neck[1];
+
+  it('R-TRA-1: `look` quay đầu về phía người chơi; không có `look` thì nhìn thẳng như cũ', () => {
+    const plain = yawOf(npcRun(() => st(), 120));
+    const left = yawOf(npcRun(() => st({ look: 0.8 }), 120));
+    const right = yawOf(npcRun(() => st({ look: -0.8 }), 120));
+    expect(left - plain).toBeGreaterThan(0.3);
+    expect(plain - right).toBeGreaterThan(0.3);
+  });
+
+  it('R-TRA-1: `nod` tăng → gật một cái (đầu cúi xuống rồi về)', () => {
+    const pitch = (p: Pose): number => p.j.head[0] + p.j.neck[0];
+    const base = pitch(npcRun(() => st({ nod: 0 }), 40));
+    const nod = Math.max(...[10, 15, 20, 25, 30].map((f) => pitch(npcRun((i) => st({ nod: i >= 5 ? 1 : 0 }), f))));
+    expect(nod - base).toBeGreaterThan(0.05);
+  });
+});

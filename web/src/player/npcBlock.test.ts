@@ -1,7 +1,14 @@
 import * as THREE from 'three';
 import { describe, expect, it } from 'vitest';
 import { GAME_NPC_IDS, NPC_IDS } from '../scene/spec';
-import { BLOCK_NPC_COLORS, createBlockNpc } from './npc';
+import { BLOCK_NPC_COLORS, createBlockNpc, isMovingSpec } from './npc';
+
+describe('Tiểu nhị đi mang trà (R-TRA-1)', () => {
+  it('R-TRA-1: tiểu nhị dựng như NPC biết đi (không cần `route`); NPC đứng khác vẫn đứng', () => {
+    expect(isMovingSpec({ id: 'tieu-nhi', x: 42.1, z: -36, rotY: 270 })).toBe(true);
+    expect(isMovingSpec({ id: 'thu-thu', x: 0, z: 0 })).toBe(false);
+  });
+});
 
 describe('NPC trò chơi thế bằng khối', () => {
   it('R-NPC-1: 4 NPC trò chơi + thầy Trúc Lão (R-HANH-8) có trong NPC_IDS và có bảng màu áo riêng', () => {

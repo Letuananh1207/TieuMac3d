@@ -55,6 +55,11 @@ export interface CharacterState {
   work?: { id: string; t: number; len: number };
   /** đang cầm công cụ vườn (chưa diễn): mã việc như `work.id` → hiện đồ cầm tay (bình tưới, túi hạt…). Không có = tay không */
   hold?: string;
+  /** NPC biết đi đứng yên (tiểu nhị ở quầy — R-TRA-1, R-NPC-10): góc quay đầu nhìn người chơi (`lookYaw`), `null` = không nhìn.
+   *  Không có = không nhìn. Nhân vật người chơi bỏ qua */
+  look?: number | null;
+  /** số lần gật (R-NPC-10): tăng lên 1 → gật một cái + chớp. Không có = không gật */
+  nod?: number;
 }
 
 /** Nhân vật có đồ cầm tay làm vườn (`glbCharacter`, đệ tử khối): miệng bình tưới (thế giới) + hướng tia; không cầm bình → false. */

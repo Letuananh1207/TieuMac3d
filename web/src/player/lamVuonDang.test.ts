@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { Colliders } from '../collision/colliders';
 import type { Character, CharacterState } from './character';
 import { PlayerController } from './controller';
-import { PROP_OF, WORK_FX, WORK_IDS, WORK_LEN, workPose, workWeight } from './lamVuonDang';
+import { PROP_OF, propFor, ROT, ROT_LEN, WORK_FX, WORK_IDS, WORK_LEN, workPose, workWeight } from './lamVuonDang';
 
 function rig(): { player: PlayerController; facing: THREE.Group; last: () => CharacterState | undefined } {
   const root = new THREE.Group();
@@ -52,6 +52,24 @@ describe('R-VUON-13: dáng làm vườn', () => {
     expect(PROP_OF.tuoi).toBe('binh');
     expect(PROP_OF.thu).toBe('gio');
     expect(PROP_OF.nho).toBeNull();
+  });
+});
+
+describe('R-TRA-1: tiểu nhị rót trà (động tác `rot`, mượn dáng tưới)', () => {
+  it('R-TRA-1: rót 2 giây — giữa động tác nghiêng ấm, đầu / cuối thẳng; cầm ấm trà', () => {
+    expect(ROT_LEN).toBe(2);
+    expect(workPose(ROT, 1)!.tilt).toBeGreaterThan(0.5);
+    expect(workPose(ROT, 0.05)!.tilt).toBeLessThan(0.1);
+    expect(workPose(ROT, ROT_LEN - 0.02)!.tilt).toBeLessThan(0.1);
+    expect(workPose(ROT, 1)!.w).toBe(1);
+    expect(workPose(ROT, 1)!.aRx).toBeLessThan(-0.6); // tay phải đưa ấm ra trước
+    expect(propFor(ROT)).toBe('am-tra');
+    expect(propFor('tuoi')).toBe('binh');
+    expect(propFor('mua')).toBeNull();
+  });
+
+  it('R-TRA-1: rót không lẫn vào 6 việc vườn (vòng công cụ, Canvas 3D vườn)', () => {
+    expect(WORK_IDS).toEqual(['gieo', 'tuoi', 'bat', 'nho', 'bon', 'thu']);
   });
 });
 

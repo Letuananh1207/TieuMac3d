@@ -75,12 +75,18 @@ export interface Npc {
 export interface MovingNpc extends Npc {
   readonly spec: NpcSpec;
   readonly character: Character;
-  /** dáng khung này: tốc độ (m/s), ngồi 0…1, gõ mõ (`strike`) */
-  readonly motion: { mps: number; sit: number; strike?: number };
+  /**
+   * dáng khung này: tốc độ (m/s), ngồi 0…1, gõ mõ (`strike`); tiểu nhị (R-TRA-1): đồ cầm tay (`hold`, mã `lamVuonDang` — ấm trà
+   * là `rot`), động tác (`work` — rót), `watch` = đang đứng ở quầy → `watch()` nhìn người chơi / gật (R-NPC-10)
+   */
+  readonly motion: { mps: number; sit: number; strike?: number; hold?: string; work?: { id: string; t: number; len: number }; watch?: boolean };
 }
 
-/** NPC có đường đi hoặc ngồi → dựng bằng `Character` thay cho dáng đứng tại chỗ. */
-export const isMovingSpec = (s: NpcSpec): boolean => !!s.route || s.pose === 'ngoi';
+/** NPC phục vụ đi theo việc (R-TRA-1): dựng bằng `Character` như NPC biết đi nhưng không có `route` — file ghép riêng lái. */
+export const SERVING_NPC_IDS: readonly string[] = ['tieu-nhi'];
+
+/** NPC có đường đi, ngồi, hoặc phục vụ → dựng bằng `Character` thay cho dáng đứng tại chỗ. */
+export const isMovingSpec = (s: NpcSpec): boolean => !!s.route || s.pose === 'ngoi' || SERVING_NPC_IDS.includes(s.id);
 
 /** Dựng NPC biết đi / ngồi từ model [url]. */
 export async function createMovingNpc(spec: NpcSpec, url: string): Promise<MovingNpc> {
@@ -89,7 +95,8 @@ export async function createMovingNpc(spec: NpcSpec, url: string): Promise<Movin
   character.facing.rotation.y = THREE.MathUtils.degToRad(spec.rotY ?? 0);
   const motion = { mps: 0, sit: spec.pose === 'ngoi' ? 1 : 0 } as MovingNpc['motion'];
   const state: CharacterState = { mps: 0, air: false, vy: 0, sit: 0, bow: 0, idle: 0, beg: NPC_XIN.includes(spec.id) ? 1 : undefined };
-  return {
+  let lastLine: string | null = null;
+  const npc: MovingNpc = {
     id: spec.id,
     spec,
     root: character.root,
@@ -99,10 +106,23 @@ export async function createMovingNpc(spec: NpcSpec, url: string): Promise<Movin
       state.mps = motion.mps;
       state.sit = motion.sit;
       state.strike = motion.strike;
-      state.idle = motion.mps > 0 ? 0 : state.idle + dt;
+      state.hold = motion.hold;
+      state.work = motion.work;
+      if (!motion.watch) state.look = undefined;
+      state.idle = motion.mps > 0 || motion.work ? 0 : state.idle + dt;
       character.animate(dt, 0, state);
     },
   };
+  // NPC phục vụ đứng ở quầy: nhìn người chơi, gật khi sang câu thoại (R-NPC-10) — NPC đi vòng / ngồi giữ như cũ
+  if (SERVING_NPC_IDS.includes(spec.id))
+    npc.watch = (px, pz, line) => {
+      if (!motion.watch) return;
+      const at = character.root.position;
+      state.look = lookYaw(at.x, at.z, character.facing.rotation.y, px, pz, line !== null);
+      if (line !== null && line !== lastLine) state.nod = (state.nod ?? 0) + 1;
+      lastLine = line;
+    };
+  return npc;
 }
 
 /** Model của NPC [id] (`design/models/<mã>.glb`); không có → `undefined`. */

@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { lambert } from '../scene/materials';
 import { GROUND_SHADOW, type Character, type ToolTip } from './character';
 import { createGardenProps, type GardenProps } from './doLamVuon';
-import { isWork, PROP_OF, workPose } from './lamVuonDang';
+import { propFor, workPose } from './lamVuonDang';
 
 /**
  * Màu đệ tử ngoại môn theo bản mẫu `design/source/PhongCach-CayNhanVat.dc.html`. Nhân vật không thuộc cảnh nên màu
@@ -143,7 +143,7 @@ export function createDiscipleCharacter(colors: DiscipleColors = {}): Character 
       bob.rotation.x = (wp?.hipsX ?? 0) * 0.45 * ww;
       bob.position.y += (wp?.lift ?? 0) * ww;
       const held = wk?.id ?? state?.hold;
-      const prop = held && isWork(held) ? PROP_OF[held] : null;
+      const prop = held ? propFor(held) : null;
       if (prop && !props) props = createGardenProps(sleeves[0], new THREE.Vector3(0, -0.6, 0.06));
       props?.show(prop);
       props?.pose(sleeves[0], (wp?.tilt ?? 0) * ww);
