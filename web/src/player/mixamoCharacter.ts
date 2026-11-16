@@ -2,16 +2,18 @@
  * Nhân vật `.glb` có xương chuẩn Mixamo (model Tripo — R-NPC-10): mọi dáng bằng code trên 18 khớp. Nền đi / đứng / chạy /
  * nhảy / ngồi từ `dongTac.ts`; các dáng riêng viết theo 7 khớp (chào, đứng lâu, biểu cảm, làm vườn, gõ mõ, gảy đàn —
  * `dang7.ts`, `bieuCamDang.ts`, `lamVuonDang.ts`) trộn đè bằng `tronDang7`, cùng thứ tự / trọng số như nhánh `autoRig` của
- * `glbCharacter.ts`. Nhân vật chính (`opts.player`) đi / chạy bằng dáng đi cũ (`diCuDang`, L-18). Đồ cầm tay làm vườn gắn vào xương `RightHand` ở điểm nắm (R-VUON-13).
+ * `glbCharacter.ts`. Mắt: chớp + theo biểu cảm, ngủ gật gục đầu (R-MAT-1/2 — `chopMat.ts`, mí `miMat.ts`). Nhân vật chính (`opts.player`) đi / chạy bằng dáng đi cũ (`diCuDang`, L-18). Đồ cầm tay làm vườn gắn vào xương `RightHand` ở điểm nắm (R-VUON-13).
  */
 import type * as THREE from 'three';
 import { emotePose } from './bieuCamDang';
 import type { Character, ToolTip } from './character';
+import { ChopMat, mucBieuCam } from './chopMat';
 import { RUN_SPEED } from './controller';
 import { CHAO, diCuDang, diCuMoi, diCuTien, dungLauDang, gayDanDang, goMoDang, NHIN_QUANH, REST, tronDang7, tronDiCu, VUON_VAI } from './dang7';
 import { createGardenProps, type GardenProps } from './doLamVuon';
 import { DongTac, TINH, type Tinh, type TinhId } from './dongTac';
 import { isWork, PROP_OF, workPose } from './lamVuonDang';
+import type { MiMat } from './miMat';
 import type { MixamoRig } from './mixamoRig';
 import { tronXin } from './xinDang';
 
@@ -47,7 +49,9 @@ export function mixamoCharacter(
   parts: { root: THREE.Group; body: THREE.Group; bob: THREE.Group; model: THREE.Object3D },
   mx: MixamoRig,
   opts: MixamoOpts,
-): Character & ToolTip & { readonly dong: DongTac } {
+  /** mí mắt (`createMiMat`); `null` = model chưa dò mắt → không chớp */
+  mi: MiMat | null = null,
+): Character & ToolTip & { readonly dong: DongTac; readonly chop: ChopMat; readonly mi: MiMat | null } {
   const { root, body, bob, model } = parts;
   bob.add(model);
   const dong = new DongTac(tinhFor(opts, mx.aPose), opts.seed ?? 0);
@@ -58,10 +62,13 @@ export function mixamoCharacter(
   let time = 0;
   // nhân vật chính: dáng đi cũ (L-18) — trạng thái riêng, `dongTac` chỉ dựng dáng đứng / nhảy / ngồi
   const di = opts.player ? diCuMoi() : null;
+  const chop = new ChopMat(opts.seed ?? 0);
   return {
     root,
     facing: body,
     dong,
+    chop,
+    mi,
     toolTip: (out, dir) => props?.tip(out, dir) ?? false,
     animate(dt, speed, state) {
       time += dt;
@@ -98,6 +105,14 @@ export function mixamoCharacter(
       const em = state?.emote ? emotePose(state.emote.id, state.emote.t, state.emote.len) : wp;
       const ew = em ? em.w * (1 - move) * (1 - airB) : 0;
       if (em) tronDang7(pose, em, ew, cal);
+      // mắt (R-MAT-2): híp / nhắm theo biểu cảm, chào, vươn vai, gảy đàn; ngồi nghỉ lâu → ngủ gật, đầu gục theo nhịp thở
+      const muc = mucBieuCam({ emote: state?.emote, bow: ease(state?.bow ?? 0), stretch, pluck: state?.pluck }, dong.tinh.nhipTho);
+      pose.j.neck[0] += muc.guc * 0.4;
+      pose.j.head[0] += muc.guc * 0.6;
+      if (mi) {
+        const m = chop.update(dt, muc);
+        mi.dat(m.tren, m.duoi);
+      }
       mx.apply(pose);
       bob.position.y = pose.lift;
       // đồ cầm tay ở bàn tay phải (R-VUON-13): dựng khi cầm lần đầu

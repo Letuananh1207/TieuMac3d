@@ -90,6 +90,9 @@ cho màu sạch, xương Mixamo chuẩn. Quyết định 0003 mục "Cập nhậ
    `-so.png`, soát dáng / màu / phụ kiện; trình người dùng; đồng ý → `--dat` (chép vào `design/models/<tên>.glb`).
 3. Ghi như luồng cũ: `LICENSES.md` (Tripo gói Professional), `design/CHANGELOG.md`, ảnh `design/screens/Model-<tên>-so-thiet-ke.png`,
    trạng thái phiếu ảnh, `cd web && npm run build`, commit chỉ đường dẫn của mình.
+4. **Mắt** (nhân vật xương Mixamo — R-MAT-1): `tripo.sh` bước 4 dò mắt cho mí chớp (`npm run model:mat`) — Read ảnh soát
+   `<tên>-mat-do.png` (elip đỏ phải ôm đúng hai mắt, không lông mày / tóc). `--dat` ghi `design/models/mat.json` (file sinh, commit
+   cùng model). Dò lệch → `MAT_CHINH` trong `web/src/player/matDo.ts`; mắt vẽ sẵn nhắm (^^) → `tat`. Thiếu mục → nhân vật không chớp.
 - **Không** giảm lưới Tripo bằng meshopt sau khi xuất (cắt đường UV → xé màu). File lỡ ra 2 000 000 mặt → nhờ người dùng
   Retopo (20) trên chính model đó (Triangle ~16 000, giữ texture), không tạo lại.
 - Thứ tự làm model theo lúc cần dùng (người dùng chốt 2026-11-16: không trả coin cho model nằm chờ): NPC cần dáng riêng

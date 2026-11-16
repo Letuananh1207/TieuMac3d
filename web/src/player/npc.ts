@@ -8,6 +8,8 @@ import { createDiscipleCharacter, type DiscipleColors } from './discipleCharacte
 import { DongTac, lookYaw, TINH, type TinhId } from './dongTac';
 import { GLB_HEIGHT, loadGlbCharacter, loadGlbModel } from './glbCharacter';
 import { mixamoRig } from './mixamoRig';
+import { createMiMat, type MiMat } from './miMat';
+import { ChopMat } from './chopMat';
 
 /** Bán kính vật cản tròn của NPC (R-NPC-1). */
 export const NPC_RADIUS = 0.45;
@@ -117,7 +119,7 @@ export async function createNpc(spec: NpcSpec): Promise<Npc | null> {
   const { model, root, body, bob } = await loadGlbModel(url);
   root.scale.setScalar(spec.scale ?? 1); // thiếu = 1 (như cũ)
   const mx = mixamoRig(model);
-  if (mx) return standingMixamoNpc(spec, root, body, bob, model, mx);
+  if (mx) return standingMixamoNpc(spec, root, body, bob, model, mx, createMiMat(model, mx.bone('head')!, url));
   const tune = NPC_RIGS[spec.id];
   const rig = tune ? autoRig(model, GLB_HEIGHT, tune.shape) : null;
   bob.add(rig ? rig.group : model);
@@ -143,7 +145,7 @@ export async function createNpc(spec: NpcSpec): Promise<Npc | null> {
   };
 }
 
-/** NPC đứng có xương chuẩn (R-NPC-10): thở, dồn trọng tâm, nhìn quanh, nhìn người chơi, gật khi thoại — thân giữ hướng. */
+/** NPC đứng có xương chuẩn (R-NPC-10): thở, dồn trọng tâm, nhìn quanh, nhìn người chơi, gật khi thoại (+ chớp — R-MAT-1) — thân giữ hướng. */
 function standingMixamoNpc(
   spec: NpcSpec,
   root: THREE.Group,
@@ -151,11 +153,14 @@ function standingMixamoNpc(
   bob: THREE.Group,
   model: THREE.Object3D,
   mx: NonNullable<ReturnType<typeof mixamoRig>>,
+  mi: MiMat | null,
 ): Npc {
   bob.add(model);
   const rotY = THREE.MathUtils.degToRad(spec.rotY ?? 0);
   body.rotation.y = rotY;
-  const dong = new DongTac(TINH[NPC_TINH[spec.id] ?? 'diem-tinh'], spec.x * 0.37 + spec.z * 0.11);
+  const seed = spec.x * 0.37 + spec.z * 0.11;
+  const dong = new DongTac(TINH[NPC_TINH[spec.id] ?? 'diem-tinh'], seed);
+  const chop = new ChopMat(seed); // mắt (R-MAT-1): chớp lệch nhịp theo vị trí
   let look: number | null = null;
   let lastLine: string | null = null;
   return {
@@ -164,13 +169,20 @@ function standingMixamoNpc(
     dong,
     watch(px, pz, line) {
       look = lookYaw(root.position.x, root.position.z, rotY, px, pz, line !== null);
-      if (line !== null && line !== lastLine) dong.nodOnce();
+      if (line !== null && line !== lastLine) {
+        dong.nodOnce();
+        chop.chopNgay(); // gật thì chớp cùng lúc (R-MAT-1)
+      }
       lastLine = line;
     },
     update(dt) {
       const pose = dong.update(dt, { mps: 0, look });
       mx.apply(pose);
       bob.position.y = pose.lift;
+      if (mi) {
+        const m = chop.update(dt);
+        mi.dat(m.tren, m.duoi);
+      }
     },
   };
 }

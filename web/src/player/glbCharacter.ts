@@ -8,6 +8,7 @@ import type { Character, ToolTip } from './character';
 import type { DongTac } from './dongTac';
 import { mixamoCharacter, type MixamoOpts } from './mixamoCharacter';
 import { mixamoRig } from './mixamoRig';
+import { createMiMat, type MiMat } from './miMat';
 import { createGardenProps, type GardenProps } from './doLamVuon';
 import { isWork, PROP_OF, workPose } from './lamVuonDang';
 import { RUN_SPEED } from './controller';
@@ -102,12 +103,13 @@ export async function loadGlbModel(url: string): Promise<GlbModel> {
 export async function loadGlbCharacter(
   url: string,
   opts: MixamoOpts = {},
-): Promise<Character & ToolTip & { readonly dong?: DongTac }> {
+): Promise<Character & ToolTip & { readonly dong?: DongTac; readonly mi?: MiMat | null }> {
   const { gltf, model, root, body, bob } = await loadGlbModel(url);
 
   // xương chuẩn Mixamo (model Tripo — R-NPC-10): mọi dáng bằng code (`mixamoCharacter.ts`), bỏ qua clip đi kèm file
   const mx = mixamoRig(model);
-  if (mx) return mixamoCharacter({ root, body, bob, model }, mx, opts);
+  // mí mắt (R-MAT-1): dựng ngay lúc nạp, gắn xương Head — trước khi nơi gọi gán lớp / quét vật liệu ngày đêm
+  if (mx) return mixamoCharacter({ root, body, bob, model }, mx, opts, createMiMat(model, mx.bone('head')!, url));
 
   const clip = (name: string): THREE.AnimationClip | undefined =>
     gltf.animations.find((a) => a.name.toLowerCase().includes(name));

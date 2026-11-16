@@ -30,6 +30,23 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
 - File: `models/khat-nhi.glb`, `models/LICENSES.md`, `scene/scene.json`, 4 ảnh `screens/`; code `web/src/player/{xinDang.ts,npc.ts,mixamoCharacter.ts,character.ts}`,
   `web/src/scene/npcDraft.ts`, `web/src/designPreview.ts`.
 
+## 2026-11-16.21 — Mắt nhân vật: chớp mắt + mắt theo biểu cảm (mí bằng code)
+
+- Loại: tài nguyên 3D (dữ liệu dò từ model) + luồng/luật (R-MAT-1, R-MAT-2). Việc V-20261116-93, kế hoạch `docs/tasks/2026-11-16-chop-mat.md`
+  (người dùng chọn A + C; ngồi nghỉ ≥ 15 s ngủ gật có đầu gục theo nhịp thở). Phiên VS Code (subagent) làm.
+- `models/mat.json` — **FILE SINH** (`cd web && npm run model:mat`, `web/scripts/mat-do.mjs`; không sửa tay): mỗi model xương Mixamo một mục —
+  số đỉnh, lưới bề mặt 9 × 9 quanh mỗi mắt (khung xương `Head`), elip mắt, 16 màu da quanh mắt, màu viền mi. Dò trên ảnh mặt trước
+  dựng từ chính model (lưới + texture). Không sửa file `.glb`.
+- Chớp: `nhan-vat`, `thu-thu`, `tieu-mac`, `tieu-nhi`, `tran-su`, `quan-su`, `cam-nu` (soát ảnh: elip ôm đúng hai mắt, không lông mày / tóc /
+  ria). **Không chớp**: `su-phu`, `go-mo` — mắt vẽ sẵn nhắm cười (^^), không có mắt mở để chớp (`MAT_CHINH.tat`). `khat-nhi` (V-94) chưa có
+  mục: `tripo.sh` bước 4 tự dò khi `--dat`.
+- Hiệu năng: mở mắt → mí ẩn (+0); đang chớp / híp / nhắm → +1 draw call, +144 tam giác mỗi nhân vật. Canvas 3D mặc định trước / sau:
+  116 / 116 draw call, 215 333 / 215 333 tam giác; `?dang=bieu-cam&bc=cuoi` 116 → 117, 215 333 → 215 477. FPS không đổi (máy tính 240,
+  SwiftShader 20).
+- Ảnh duyệt (Canvas 3D `?dang=mat`): `screens/Chop-mat-1-mo.png`, `-2-giua-chop`, `-3-khep`, `-4-cuoi`, `-5-lim-dim`, `-6-ngu-gat`,
+  `-7-nghieng-gat`, `-8-xa`, `-9-21h`, `-10-npc-mo`, `-11-npc-khep`, `-12-gan-khep` — chờ người dùng duyệt.
+- File: `models/mat.json`, 12 ảnh `screens/Chop-mat-*.png`; code `web/src/player/{chopMat,miMat,matDo,matLuoi}.ts`, `web/scripts/mat-do.mjs`.
+
 ## 2026-11-16.16 — Kỳ Muội (NPC `quan-su`): model Tripo + vào cảnh Kỳ Văn Uyển + đổi tên
 
 - Loại: tài nguyên 3D + cảnh 3D — **bố cục** (thêm NPC) + luồng/luật (tên, xưng hô). Việc V-20261116-92; phiếu ảnh `docs/phieu_thiet_ke/2026-11-13-anh-quan-su.md`

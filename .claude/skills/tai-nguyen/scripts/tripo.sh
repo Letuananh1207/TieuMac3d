@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Luồng Tripo (chốt 2026-11-16): file GLB người dùng xuất từ Tripo (Retopo Triangle ~16k + Rig humanoid, clip idle/walk)
-# → bỏ texture pháp tuyến / nhám, ảnh màu 1024 → model:clean --khong-sang (nén meshopt, giữ xương + clip) → ảnh so thiết kế.
+# → bỏ texture pháp tuyến / nhám, ảnh màu 1024 → model:clean --khong-sang (nén meshopt, giữ xương + clip) → ảnh so thiết kế
+# → nhân vật: dò mắt cho mí chớp (model:mat — ảnh soát <tên>-mat-do.png; --dat ghi design/models/mat.json).
 #   bash .claude/skills/tai-nguyen/scripts/tripo.sh <tên> [<file Tripo.glb>] [--loai nhan-vat|cong-trinh] [--ra <thư mục>] [--dat]
 # Mặc định file vào: C:/ai3d/tripo/<tên>-lowpoly.glb. --dat: chép bản nén vào design/models/<tên>.glb.
 # --loai (mặc định nhan-vat — như cũ): cong-trinh = công trình tĩnh Tripo (Generate, không Rig, ~18k — nhà, V-88): ngân sách
@@ -48,3 +49,9 @@ echo "== 3. anh so thiet ke (tu the goc)"
 cd "$ROOT"
 $PY -s "$SC/xem.py" "$OUTW/$TEN-tex.glb" design/models/anh "$TEN" "$OUTW/$TEN-so.png" $VUA 2>&1 | tail -1
 if [ $DAT = 1 ]; then cp "$OUT/$TEN-final.glb" "design/models/$TEN.glb"; echo "-> design/models/$TEN.glb"; fi
+if [ $LOAI = nhan-vat ]; then
+  # 4. mắt (R-MAT-1): dò cặp mắt cho mí chớp → design/models/mat.json (file sinh); chưa --dat = chỉ thử + ảnh soát
+  echo "== 4. do mat (model:mat)"
+  cd "$ROOT/web"
+  if [ $DAT = 1 ]; then npm run -s model:mat -- "$TEN" --anh "$OUTW"; else npm run -s model:mat -- --file "$OUTW/$TEN-final.glb" --ten "$TEN" --thu --anh "$OUTW"; fi
+fi

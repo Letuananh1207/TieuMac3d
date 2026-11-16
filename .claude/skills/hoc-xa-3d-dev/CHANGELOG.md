@@ -22,3 +22,4 @@
 - 2026-11-14 — Cảnh hoạt hình mềm (decisions/0005): quy tắc 4 nới có đo — `softMaterial` (Lambert + wrap + màu đỉnh + gió), `ShaderMaterial` nước trong `scene/`, bóng nướng; cảnh báo mới `W-VATLIEU` (PBR / EffectComposer); trường đặc tả `look` (`cu` mặc định).
 - 2026-11-14 — Ngày đêm (V-20261114-27): web_scene.md thêm dòng `dayNight` / `apGio` / `dayNightTag` (vật Basic giữ màu ban đêm).
 - 2026-11-16 — Nhà bằng model (V-88): tai_nguyen.md thêm `buildings[].model` → `scene/nhaModel.ts` (va chạm / biển / đèn của code, model co ba trục khớp khung khối, tấm sáng cửa sổ đêm, màn tải chờ ≤ 2 s); `tripo.sh --loai cong-trinh`.
+- 2026-11-16 — Mắt nhân vật (V-93): web_scene.md thêm mí bằng code (`miMat`, `chopMat`, dựng lúc nạp); tai_nguyen.md thêm `npm run model:mat` → file sinh `design/models/mat.json` (`MAT_CHINH`).

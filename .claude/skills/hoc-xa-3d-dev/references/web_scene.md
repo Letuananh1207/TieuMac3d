@@ -74,6 +74,11 @@ export interface Character {
 dùng chung `loadGlbModel` + `autoRig` với dáng riêng từng model (`NPC_RIGS` — NPC mới phải đo vai / tay trên ảnh `-truoc.png`, chưa đo thì chỉ thở), tay buông, giữ hướng đặc tả (không quay theo người chơi); đặt theo `spec.npcs` qua `placeNpcs`. Nhân vật mới = một hàm trả
 về `Character`; không sửa controller.
 
+Mắt (R-MAT-1/2): nhân vật xương chuẩn có **mí bằng code** gắn xương `Head` (`player/miMat.ts`, số dò sẵn
+`design/models/mat.json` — `npm run model:mat`), lịch chớp + mắt theo biểu cảm thuần `player/chopMat.ts`; dựng ngay lúc nạp
+(`loadGlbCharacter`, `createNpc`) để `ngoiMat.ts` gán lớp / `apGio.ts` nhuộm đêm. Mở hẳn → ẩn (+0 draw call); khép → +1 draw
+call, +144 tam giác mỗi nhân vật. Canvas 3D `?dang=mat`.
+
 ## Điều khiển (input/)
 
 `attachPointerInput` phân luồng Pointer Events: ngón ở 45% trái (`JOYSTICK_ZONE`) → `Joystick`; còn lại →

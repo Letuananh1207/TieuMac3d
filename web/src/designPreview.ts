@@ -46,6 +46,7 @@ import { el } from './ui/dom';
 import { placeZones, ZONE_CONTENT } from './zones/zones';
 import { emotePreview } from './bieuCamPreview';
 import { addCranePreview } from './hacPreview';
+import { addMatPreview } from './matPreview';
 
 // biến thể bố cục chỉ cho Canvas 3D (glob: chưa có file thì rỗng)
 const VARIANTS: Record<string, unknown> = import.meta.glob('../../design/scene/bien_the/*.json', { eager: true, import: 'default' });
@@ -285,6 +286,8 @@ async function boot(): Promise<void> {
     controls.target.set(...tam);
   });
   if (hac) el('problems').append(...hac.lines.map((t) => li(t)));
+  // ?dang=mat[&nv=…][&mi=…][&bc=…&t=…][&goc=…][&xa] — duyệt mí mắt: chớp, biểu cảm, ngủ gật (matPreview.ts, R-MAT-1/2)
+  (await addMatPreview(scene, spec, params, (x, z) => world.surface.heightAt(x, z), (pos, tam) => (camera.position.set(...pos), controls.target.set(...tam))))?.lines.forEach((t) => el('problems').append(li(t)));
   el('problems').append(...houseInfo.map((t) => li(t)));
   const follow = params.has('theo') && town?.walker ? town.walker.root.position.clone() : null;
   // ?dang=trang-tri&so=20&ma=ban-tra:0:0:45&vungcam — đồ trang trí tự do rải sẵn + bóng ma + vùng cấm (decorPreview.ts, R-NHA-7)
