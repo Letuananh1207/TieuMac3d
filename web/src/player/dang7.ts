@@ -186,9 +186,9 @@ export function gayDanDang(pluck: number, time: number) {
     aLz: -(REST + 0.28) + Math.sin(time * 1.7) * 0.03,
     aRx: -0.95 - 0.18 * pluck,
     aRz: REST + 0.28,
-    aLxE: -0.55 + Math.sin(time * 2.3) * 0.05,
-    aRxE: -0.55 - 0.18 * pluck,
-    eL: -0.8,
-    eR: -0.8 - 0.25 * pluck,
+    aLxE: -0.85 + Math.sin(time * 2.3) * 0.05,
+    aRxE: -0.85 - 0.18 * pluck,
+    eL: -0.55,
+    eR: -0.55 - 0.25 * pluck,
   };
 }
