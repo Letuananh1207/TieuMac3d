@@ -9,7 +9,7 @@
 | `/loi mo L-…` | Thử trên máy vẫn lỗi → mở lại. |
 
 Trạng thái: `mới` → `đang sửa` → `chờ thử máy` → `xong` · `không sửa (<lý do>)`.
-Mã `L-<số>` tăng dần, không dùng lại. Trong worktree (làm song song) ghi tạm `L-14`, `L-15`… — `dart tool/viec.dart
+Mã `L-<số>` tăng dần, không dùng lại. Trong worktree (làm song song) ghi tạm `L-?1`, `L-?2`… — `dart tool/viec.dart
 gop` cấp số thật khi gộp vào main.
 
 Mức độ:
@@ -18,6 +18,28 @@ Mức độ:
 - **nhỏ** — lệch màu, lệch vài pixel, chữ sai chính tả, thứ chỉ thấy khi cố tìm.
 
 ## Đang mở
+
+### L-15 · `viec.dart gop` thay cả chữ mẫu `L-?1`, `L-?2` ở đầu docs/loi.md bằng số thật
+
+- Trạng thái: mới · Mức độ: nhỏ (công cụ; lần gộp sau cấp nhầm số, lệch đánh số) · Phần: `tool/viec.dart` (hàm cấp mã, dòng ~77) · Quy tắc: chưa có
+- Báo: 2026-11-16 — phiên điều phối /task thấy khi gộp V-78
+- Các bước: 1. Một nhánh việc sửa `docs/loi.md` (bất kỳ) 2. `dart tool/viec.dart gop`
+- Mong đợi / thực tế: chỉ cấp số cho mã tạm trong mục lỗi mới / dòng hướng dẫn "ghi tạm `L-?1`, `L-?2`…" bị đổi thành "`L-14`, `L-15`…" (in "L-?1 → L-14, L-?2 → L-15" dù việc không có lỗi mới)
+- Bằng chứng: commit dc62fb2 (đã trả dòng hướng dẫn về tay)
+
+**Lịch sử**
+- 2026-11-16: ghi.
+
+### L-14 · `tool/guard.dart` báo "tsc (web/) chưa cài node_modules" khi chạy trong worktree
+
+- Trạng thái: mới · Mức độ: nhỏ (công cụ; chốt chặn báo đỏ sai trong mọi worktree) · Phần: `tool/guard.dart` · Quy tắc: chưa có
+- Báo: 2026-11-16 — subagent V-78 và V-79 cùng gặp
+- Các bước: 1. Trong `.claude/worktrees/<việc>` chạy `dart tool/viec.dart chuan-bi` 2. `dart tool/guard.dart`
+- Mong đợi / thực tế: tsc chạy và qua (như `npx tsc --noEmit`) / guard tìm cứng `web/node_modules/typescript/bin/tsc`, gói lại nằm ở `.claude/worktrees/node_modules` → báo thiếu
+- Hướng sửa: tìm `typescript` ngược lên các thư mục cha như Node (giống `npmDirs()` trong `web/vite.config.ts` của L-12)
+
+**Lịch sử**
+- 2026-11-16: ghi từ báo cáo V-78 / V-79.
 
 ### L-13 · Bộ quét mặt trùng (zfight) coi InstancedMesh là khối đặc → che mất ~18 chỗ chớp thật ở trấn
 
