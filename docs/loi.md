@@ -30,10 +30,15 @@ Mức độ:
 **Sửa**
 - Hướng: sửa texture — dò vùng mắt (`matDo`), dời tròng đen ra giữa, vá lòng trắng; không tạo lại model (0 coin). Không đẹp → hỏi người dùng tạo lại bằng Tripo.
 - Nguyên nhân: texture Tripo vẽ tròng đen sát khoé trong (lòng trắng chỉ còn phía ngoài) — lỗi ảnh nướng, không phải lưới / mí.
-- Cách: script `web/scripts/model-mat-sua.mjs` (`npm run model:mat-sua -- cam-nu`, chạy trên glb gốc): dựng ảnh mặt trước 1280 px từ model, dò mắt
-  (`matDo`), tách lòng trắng / tròng, khớp elip tròng, dời tròng + đốm sáng về giữa ổ (trái −12,2 px, phải +11,1 px ≈ 7 % bề ngang ổ), vá lòng trắng
-  (bóng theo mép + nội suy điều hoà), ghi chênh lệch về texel qua UV. Chỉ đổi texture (1 699 texel); lưới / UV / xương / meshopt / unlit y nguyên.
-  `model:mat -- cam-nu` chạy lại (mat.json gần như không đổi). Thiết kế 2026-11-16.23.
+- Cách: dựng ảnh mặt trước từ model, dò mắt (`matDo`), tách lòng trắng / tròng, dời tròng + đốm sáng về phía giữa ổ (≈ 5–6 texel), vá lòng trắng
+  (nội suy từ lòng trắng quanh đó), ghi chênh lệch về texel qua UV. Chỉ đổi texture; lưới / UV / xương / meshopt / unlit y nguyên (9 741 đỉnh).
+  Bản glb này làm ở phiên VS Code — script của phiên đó **không được lưu** vào nhánh. Phiên cloud (2026-11-16) soát lại: so texture gốc (main) / sau
+  phóng ×4 và Canvas 3D chính diện + chéo ¾ → mắt nhìn thẳng tự nhiên, không vết vá → **giữ**.
+- Đo: `npm run model:mat-sua -- cam-nu` (`web/scripts/model-mat-sua.mjs`, mặc định chỉ đo, ảnh mặt 640 px): lòng trắng hai bên tròng trước
+  29 % | 0 % và 0 % | 31 % (lệch tâm ±15–16 % bề ngang ổ) → sau 22 % | 2 % và 5 % | 24 % (±9–10 %). Chế độ `--sua` của script này là thử nghiệm,
+  **chưa đạt** (để lại vệt chấm viền tròng cũ, cạnh tròng phía mũi bị bằng) — không dùng cho glb này. Nếu người dùng muốn tròng giữa hẳn hơn
+  (còn lệch ~9 %) mà sửa texture không đẹp được → tạo lại Cầm Nương bằng Tripo (vẽ ảnh mặt chính diện tròng giữa mắt).
+  `model:mat -- cam-nu` chạy lại (mat.json khớp 9 741 đỉnh). Thiết kế 2026-11-16.24.
 - Ảnh: `design/screens/Loi-L24-cam-nu-mat.png` (trước | sau: chính diện, chéo ¾, gảy đàn, so Thủ thư).
 - Thử máy: `cd web && npm run build` → app → tới bục đàn Quảng Trường, đứng trước mặt Cầm Nương nhìn cận (xoay camera chính diện + chéo): hai tròng đen
   nằm giữa mắt, lòng trắng thấy cả hai bên, không vết vá / viền xám; lúc gảy đàn mắt lim dim + chớp vẫn khép đúng mắt. Còn lỗi → chụp cận mặt.
@@ -41,6 +46,7 @@ Mức độ:
 **Lịch sử**
 - 2026-11-16: ghi.
 - 2026-11-16: sửa texture bằng script (dời tròng về giữa), chờ thử máy.
+- 2026-11-16 (cloud): soát bản WIP — đạt (Canvas 3D chính diện + chéo ¾), giữ glb; thêm `model:mat-sua` (đo lệch tròng); chờ thử máy.
 
 ### L-23 · Hai tay nhân vật chính lúc đứng ép sát thân, trông xấu
 

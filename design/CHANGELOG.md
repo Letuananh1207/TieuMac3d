@@ -3,19 +3,20 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
-## 2026-11-16.23 — Cầm Nương (`cam-nu`): sửa mắt lé trên texture (L-24)
+## 2026-11-16.24 — Cầm Nương (`cam-nu`): sửa mắt lé trên texture (L-24)
 
-- Loại: tài nguyên 3D — **ngoại hình** (sửa lỗi L-24, việc V-20261116-103). Phiên VS Code (subagent) — người dùng chọn sửa texture, 0 coin, không tạo lại Tripo.
+- Loại: tài nguyên 3D — **ngoại hình** (sửa lỗi L-24, việc V-20261116-103). Người dùng chọn sửa texture, 0 coin, không tạo lại Tripo.
+  Bản sửa làm ở phiên VS Code (nhánh `viec/mat-cam-nu`, WIP), soát + hoàn tất ở phiên cloud 2026-11-16.
 - `models/cam-nu.glb`: chỉ đổi **texture màu** (JPEG 1024², 137 → 174 KB; glb 284 → 321 KB). Lưới / UV / xương / vật liệu không-sáng / nén meshopt
-  giữ nguyên (so từng thuộc tính đỉnh: chênh 0; 9 741 đỉnh). Hai tròng đen (kèm đốm sáng) dời về giữa ổ mắt: mắt trái −12,2 px, mắt phải +11,1 px
-  trên ảnh mặt trước 1280 px (≈ 7 % bề ngang ổ mắt, ≈ 5–6 texel); chỗ trống vá bằng lòng trắng (bóng theo khoảng cách mép ổ + nội suy điều hoà từ
-  lòng trắng cũ quanh đó); mép tròng mềm ≈ 1,2 texel; lông mày, viền mi không đụng. 1 699 texel đổi.
-- Script tái dùng: `web/scripts/model-mat-sua.mjs` (`npm run model:mat-sua -- cam-nu [--lech 0] [--thu] [--anh <dir>]`) — tham số ghi đầu file
-  (ngưỡng lòng trắng L > 165 / sắc < 40, tròng L < 150 / sắc < 45, mép tròng 2,5 px, làm trơn mép ổ 3 px, giữ lòng trắng cách tròng cũ > 4 px).
-  Chạy trên glb **gốc** (chạy lại trên bản đã sửa: dời ≈ 0).
-- Mí chớp (R-MAT-1): `npm run model:mat -- cam-nu` chạy lại → `models/mat.json` mục cam-nu gần như không đổi (elip mắt lệch ≤ 1 px/320, lưới mí ≤ 2 mm,
-  màu viền mi đo lại); mí khép ½ vẫn ôm đúng mắt (soát Canvas 3D `?dang=mat&nv=cam-nu&mi=0.5`).
-- Ảnh: `screens/Loi-L24-cam-nu-mat.png` — trước | sau: chính diện, chéo ¾, gảy đàn trên bục, so với Thủ thư (Canvas 3D bản build trong worktree, chưa đăng lại).
+  giữ nguyên (9 741 đỉnh, extension như cũ). Hai tròng đen (kèm đốm sáng) dời về phía giữa ổ mắt (≈ 5–6 texel), chỗ trống vá bằng lòng trắng, mép mềm;
+  lông mày, viền mi không đụng. Đo bằng `npm run model:mat-sua -- cam-nu` (ảnh mặt 640 px): lòng trắng hai bên tròng
+  trước 29 % | 0 % và 0 % | 31 % (lệch tâm ±15–16 % bề ngang ổ) → sau 22 % | 2 % và 5 % | 24 % (±9–10 %) — trên Canvas 3D nhìn thẳng tự nhiên,
+  không vết vá (chính diện + chéo ¾).
+- Script: script sửa của phiên VS Code **không được lưu** vào nhánh. Phiên cloud viết `web/scripts/model-mat-sua.mjs` (`npm run model:mat-sua`):
+  mặc định **chỉ đo** (lòng trắng trái / phải, lệch tâm tròng); `--sua` dời tròng + vá — **thử nghiệm, chưa đạt** (soát Canvas 3D: viền tròng cũ
+  để lại vệt chấm, cạnh tròng phía mũi bị bằng) nên **không** dùng cho glb này; ghi hướng cải tiến đầu file.
+- Mí chớp (R-MAT-1): `models/mat.json` mục cam-nu chạy lại `npm run model:mat -- cam-nu` (elip lệch ≤ 1 px/320, cùng 9 741 đỉnh).
+- Ảnh: `screens/Loi-L24-cam-nu-mat.png` — trước | sau: chính diện, chéo ¾, gảy đàn trên bục, so với Thủ thư.
 - File: `models/cam-nu.glb`, `models/mat.json`, `models/LICENSES.md`, `screens/Loi-L24-cam-nu-mat.png`; code `web/scripts/model-mat-sua.mjs`, `web/package.json`.
 
 ## 2026-11-16.21 — Tiểu Khất (NPC `khat-nhi`): model Tripo + vào cảnh góc tây nam Quảng Trường, ngồi xin cầm bát + gậy
