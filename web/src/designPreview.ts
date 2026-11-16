@@ -43,6 +43,7 @@ import { inRect } from './scene/rooms';
 import { el } from './ui/dom';
 import { placeZones, ZONE_CONTENT } from './zones/zones';
 import { emotePreview } from './bieuCamPreview';
+import { addCranePreview } from './hacPreview';
 
 // biến thể bố cục chỉ cho Canvas 3D (glob: chưa có file thì rỗng)
 const VARIANTS: Record<string, unknown> = import.meta.glob('../../design/scene/bien_the/*.json', { eager: true, import: 'default' });
@@ -271,6 +272,12 @@ async function boot(): Promise<void> {
     camera.position.set(x + 2, 3.2, z + 9);
   });
   if (dong) el('problems').append(...dong.lines.map((t) => li(t)));
+  // ?dang=hac[&mau=khoi-gop|hac|<mã>][&khoi][&gap=1][&vo=len|xuong][&goc=truoc|sau-tren|ben] — hạc truyền tống lượn tại chỗ, nhân vật ngồi lưng (hacPreview.ts)
+  const hac = await addCranePreview(scene, spec, params, (x, z) => world.surface.heightAt(x, z), character, (pos, tam) => {
+    camera.position.set(...pos);
+    controls.target.set(...tam);
+  });
+  if (hac) el('problems').append(...hac.lines.map((t) => li(t)));
   const follow = params.has('theo') && town?.walker ? town.walker.root.position.clone() : null;
   // ?dang=trang-tri&so=20&ma=ban-tra:0:0:45&vungcam — đồ trang trí tự do rải sẵn + bóng ma + vùng cấm (decorPreview.ts, R-NHA-7)
   const decorPv = addDecorPreview(scene, colliders, spec, SCENE.id, (x, z) => world.surface.heightAt(x, z), params);
@@ -343,7 +350,7 @@ async function boot(): Promise<void> {
   const poseState: CharacterState = { mps: 0, air: false, vy: 0, sit: 0, bow: 0, idle: 0 };
   if (pose === 'chay') poseState.mps = RUN_SPEED;
   else if (pose === 'nhay') poseState.air = true;
-  else if (pose === 'ngoi' || pose === 'ngoi-mat') poseState.sit = 1;
+  else if (pose === 'ngoi' || pose === 'ngoi-mat' || pose === 'hac') poseState.sit = 1;
   else if (pose === 'chao') poseState.bow = 1;
   else if (pose === 'vuon') poseState.idle = 7.25;
   else if (pose === 'nhin') poseState.idle = 14.6;
@@ -445,6 +452,7 @@ async function boot(): Promise<void> {
     dan?.update({ dt, player: controls.target, camera, covered: false });
     truc?.update(dt, camera.position);
     dong?.update(dt);
+    hac?.update(dt);
     if (follow && town?.walker) {
       const d = town.walker.root.position.clone().sub(follow);
       camera.position.add(d);

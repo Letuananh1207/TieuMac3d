@@ -20,6 +20,11 @@ Ngân sách: nhân vật ≤ 10k tam giác ≤ 1,5 MB, công trình ≤ 20k ≤ 
 tam giác. Model AI một khối = 1 draw call (đệ tử khối ~25). Công trình `.glb`: `scene/staticModel.ts` (`staticModelUrl`, `loadStaticModel`, `footprints` = hộp va chạm chân đế đo từ
 lưới); cổng: `gates[].model` → `gate.ts` `addGateModel` (co theo `gateSpan`, biển chữ dán lên biển trống), nạp sau
 `mergeStatic`, lỗi → bản khối. Nhà (`buildings[].model`) chưa có.
+Hạc truyền tống `design/models/hac.glb` (Tripo, tư thế bay lướt, KHÔNG rig): `scene/hacModel.ts` nạp một lần (`preloadCrane`
+ở `main.ts`), chuẩn hoá (sải dọc x — `spanYaw`; mũi +z — chỉnh `CRANE_MODEL_TUNE.yaw`; sải 5,6 m; đáy y 0), `scene/hacCanh.ts`
+đo vai / đầu cánh / đỉnh lưng + trọng số mềm → 5 xương (gốc, vai + đầu cánh hai bên), `Crane.useModel` vỗ bằng xương
+(1 draw call, vật liệu bản sao riêng mỗi hạc — ngày đêm). Thiếu file / lỗi → hạc khối. Thử: Canvas 3D `?dang=hac`
+(`&mau=khoi-gop|hac|<mã>`, `&khoi`, `&gap=1`, `&vo=len|xuong`, `&goc=truoc|sau-tren|ben`).
 
 Mẫu nạp model mới (giữ hợp đồng `Character` / bản khối dự phòng):
 
