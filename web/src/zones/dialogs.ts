@@ -143,7 +143,7 @@ export const DIALOGS: Dialog[] = [
       },
       {
         id: 'tra',
-        text: 'Long Tỉnh Tây Hồ thơm cốm non, Bích La Xuân xoăn như ốc, Thiết Quan Âm đậm vị, còn Phổ Nhĩ để lâu năm thì càng uống càng êm. Khách quan cứ chọn chỗ ngồi, trà sẽ có ngay!',
+        text: 'Long Tỉnh Tây Hồ thơm cốm non, Bích La Xuân xoăn như ốc, Thiết Quan Âm đậm vị, còn Phổ Nhĩ để lâu năm thì càng uống càng êm. Khách quan cứ chọn chỗ ngồi, tiểu nhân mang trà tới tận nơi!',
         choices: [{ text: 'Tiếng nhạc ở đâu ra vậy?', next: 'nhac' }, { text: 'Hỏi chuyện khác', next: 'chao' }, BYE],
       },
       {

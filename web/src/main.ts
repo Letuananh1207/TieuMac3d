@@ -21,6 +21,7 @@ import { createPlayerCharacter } from './player/playerCharacter';
 import { PlayerController, type MoveInput } from './player/controller';
 import { npcInTalkRange, placeNpcs, showNearNpcs } from './player/npc';
 import { TownNpcs } from './townNpcs';
+import { TieuNhi } from './tieuNhi';
 import { DanTranh } from './danTranh';
 import { HOME_SCENE, loadScene, REGION_SCENES } from './scene/loadSpec';
 import { HOME_OF_PLAYER, isHomeScene } from './scene/placeNames';
@@ -263,6 +264,7 @@ async function boot(): Promise<void> {
   let running = true;
   let music: AmbientMusic | null = null; // nhạc nền trà lâu — dựng bên dưới (R-NHAC-1)
   let town: TownNpcs | null = null; // Tiểu Khất + Lão Canh — dựng bên dưới (townNpcs.ts)
+  let tieuNhi: TieuNhi | null = null; // tiểu nhị mang trà (R-TRA-1) — dựng bên dưới (tieuNhi.ts)
   let danTranh: DanTranh | null = null; // nhạc công bục đàn Quảng Trường (R-NPC-9, R-AM-2) — danTranh.ts
   let mini: MiniGames | null = null; // 3 trò nhỏ Trúc Lâm (V-66 B4) — miniGames.ts; chỉ cảnh có `miniGames`
   const setRunning = (): void => {
@@ -371,6 +373,7 @@ async function boot(): Promise<void> {
       onSeat = false;
       seatStudy = false;
       if (ngoiMat.seated) ngoiMat.stand(); // đứng dậy: camera trượt về ngôi 3 như trước khi ngồi (R-DIEU-7)
+      tieuNhi?.stand(); // tiểu nhị quay về / chén mất (R-TRA-1)
       return;
     }
     if (miniSeated) return; // tiệc Lưu Thương / đàn cầm: camera ngôi 3, không cuộn sách (R-LUU-1, R-CAM-1)
@@ -532,6 +535,7 @@ async function boot(): Promise<void> {
     character.facing.rotation.y = spot.rotY;
     orbit.yaw = spot.rotY - Math.PI; // camera sau lưng, nhìn về án
     player.toggleSit(); // nhìn từ mắt: `meditate` gọi ngoiMat.sit (R-NGOI-1)
+    tieuNhi?.sit(spot); // chỗ trong trà lâu → tiểu nhị mang trà (R-TRA-1)
   };
   const seatButton = new SeatButton<SeatPick>((spot) => sitAt(spot));
   // nhạc nền trà lâu (R-NHAC-1): đài phát theo giờ thật, âm lượng theo khoảng cách tới sàn trà lâu
@@ -801,6 +805,12 @@ async function boot(): Promise<void> {
       if (progress) progress = { ...progress, coins, alms };
     },
   });
+  // tiểu nhị mang trà tới chỗ ngồi trà lâu (R-TRA-1) — tieuNhi.ts; thiếu model tiểu nhị / trà lâu → không có
+  tieuNhi = TieuNhi.create(npcSet.npcs, world.rooms.flatMap((r) => (r.service ? [r.service] : [])), {
+    heightAt: (x, z, y) => world.surface.heightAt(x, z, y),
+    colliders,
+    chatSay: (id, text) => chat.npcSay(id, text),
+  });
   // 3 trò nhỏ Trúc Lâm (V-66 B4): Lưu Thương, hái măng, đàn cầm — miniGames.ts; chỉ khi đặc tả có `miniGames`
   if (spec.miniGames.length) {
     mini = new MiniGames(
@@ -1049,6 +1059,8 @@ async function boot(): Promise<void> {
     // camera bám êm: dây kéo + tự về sau lưng chậm (R-DIEU-3)
     if (!riding) orbit.follow(dt, pos.x - fromX, pos.z - fromZ, character.facing.rotation.y, player.state.mps > 0);
     town?.update({ dt, player: pos, camera, talkingTo: talking ? (runner?.dialog.npc ?? null) : null, covered: paused || covered || loading.active }); // NPC đi (R-NPC-7)
+    tieuNhi?.update(dt, [pos.x, pos.z]); // R-TRA-1
+    ngoiMat.setTea(tieuNhi?.tea ?? null); // chén trà chỉ có sau khi rót (R-TRA-1)
     const talkTo = talking ? (runner?.dialog.npc ?? null) : null;
     const talkLine = runner?.current?.id ?? null;
     for (const npc of showNearNpcs(npcSet.npcs, pos.x, pos.z)) {
@@ -1094,7 +1106,7 @@ async function boot(): Promise<void> {
     chat.update({ camera, player: pos, nameTagHeight: NAME_TAG_HEIGHT, npcs: npcSet.npcs, busy: busy || gamePlay.active, hideMe: ngoiMat.firstPerson, docked: troChuyenTrenThanh() && !!thanh?.view?.visible });
     learn.follow(zones.current ? anchorOf.get(zones.current.id) : undefined, camera);
     // nút "Nói chuyện": NPC gần nhất trong 2,5 m, không đang học / ngồi / bản đồ / thoại / màn tải (R-NPC-2)
-    const npcNear = paused || mapOpen || talking || loading.active || player.isSitting ? null : npcInTalkRange(npcSet.npcs, pos);
+    const npcNear = paused || mapOpen || talking || loading.active || player.isSitting ? null : npcInTalkRange(tieuNhi?.canTalk === false ? npcSet.npcs.filter((n) => n !== tieuNhi?.npc) : npcSet.npcs, pos); // tiểu nhị đi / rót: không nút (R-NPC-3)
     const seatFree = !(paused || covered || loading.active || mapOpen || talking || player.isSitting || player.state.air);
     // Tiểu Mặc đứng sát bảng nhiệm vụ: "Nói chuyện" và "Xem bảng" cùng trong tầm → chỉ nút của vật gần hơn (R-NPC-2, R-NV-3)
     let atBoard = !!boardAt && seatFree && nearBoard(boardAt, pos.x, pos.z);

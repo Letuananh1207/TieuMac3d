@@ -38,6 +38,8 @@ describe('Hội thoại NPC công trình', () => {
     expect(all).toContain('trà');
     expect(all).toContain('nhạc');
     expect(all).toContain('lầu');
+    // R-TRA-1: ngồi đâu tiểu nhị mang trà tới đó
+    expect(d.lines.find((l) => l.id === 'tra')!.text).toContain('tiểu nhân mang trà tới tận nơi');
   });
 
   it('R-NPC-4: Kỳ Muội xưng "muội", gọi "đạo hữu"; giới thiệu Ngũ Tử Kỳ (5 quân liền) và Đấu chữ (10 câu, không ghi tiến độ)', () => {
