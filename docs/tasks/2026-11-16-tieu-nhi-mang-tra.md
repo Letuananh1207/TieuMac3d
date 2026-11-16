@@ -2,7 +2,7 @@
 - Yêu cầu: "Tiểu nhị mang trà tới chỗ ngồi ở trà lâu" — đợt 2 của `docs/tasks/2026-11-13-npc-cong-trinh.md`. Người dùng đã
   chọn (2026-11-13): phục vụ **mọi chỗ ngồi trong trà lâu** (tầng 1 đôn + tầng 2). Sổ việc V-20261116-105.
 - Loại: thêm hành vi (NPC biết đi theo việc, không theo đồng hồ) + sửa hành vi ngồi nhìn từ mắt · Cỡ: lớn ·
-  Trạng thái: đang làm — người dùng duyệt 2026-11-16: QĐ1 đi 2,4 m/s + câu báo · QĐ2 chén chỉ có sau khi rót (ghế lan can: tay phải chén, tay trái lan can) · QĐ3 đứng rót chếch trước – phải · QĐ4 miễn phí
+  Trạng thái: chờ duyệt ảnh + thử máy (NV2–10 xong 2026-11-16, nhánh việc) — người dùng duyệt 2026-11-16: QĐ1 đi 2,4 m/s + câu báo · QĐ2 chén chỉ có sau khi rót (ghế lan can: tay phải chén, tay trái lan can) · QĐ3 đứng rót chếch trước – phải · QĐ4 miễn phí
 
 ## Hiện trạng đã kiểm bằng code (2026-11-16) — khác bản nháp 2026-11-13
 - **Model có rồi**: `design/models/tieu-nhi.glb` (Tripo, xương Mixamo, ~15 300 tam giác, CHANGELOG 2026-11-16.8). Đặt ở
@@ -133,16 +133,16 @@ Sửa kèm (cùng lần chép):
 - [x] 1. **Luật** (phiên chính — xong 2026-11-16, đã đồng bộ online): R-TRA-1 + sửa R-NPC-1, R-NPC-3, R-NGOI-1 theo bản nháp (sau khi người dùng chọn QĐ1–4) →
   `/dong-bo-quy-tac` → `dart tool/rule_trace.dart --mark-synced R-TRA-1 …`.
   (`docs/testing/quy_tac.md` · tài liệu · xong khi `rule_trace` báo R-TRA-1 có trong sổ, đã đồng bộ, chờ test.)
-- [ ] 2. **Tìm đường lưới** `web/src/collision/gridPath.ts` (lớp `collision/` — thuần): `findPath(from, to, walkable(x, z),
+- [x] 2. **Tìm đường lưới** `web/src/collision/gridPath.ts` (lớp `collision/` — thuần): `findPath(from, to, walkable(x, z),
   bounds, cell = 0.25)` (A* 8 hướng) + `simplify` (bỏ điểm giữa khi hai đầu nhìn thấy nhau qua ô đi được).
   Test `collision/gridPath.test.ts`: đi vòng một hộp; không có đường → `null`; điểm đầu / cuối nằm trong ô cấm sát mép → nhích ra
   ô gần nhất; sau rút gọn mọi đoạn vẫn qua ô đi được. Xong khi: `npm test` xanh, `check.dart --changed` sạch.
-- [ ] 3. **Máy trạng thái** `web/src/zones/teaService.ts` (lớp `zones/` — thuần): pha `quay` → `cho` (2 s) → `di` → `rot` (2 s)
+- [x] 3. **Máy trạng thái** `web/src/zones/teaService.ts` (lớp `zones/` — thuần): pha `quay` → `cho` (2 s) → `di` → `rot` (2 s)
   → `ve` → `quay`; đầu vào mỗi khung `{ dt, seated: chỗ | null }` + độ dài đường; ra `{ phase, s (m dọc đường), served, canTalk,
   say? }`. Đứng dậy ở `cho` / `di` / `rot` → `ve` từ `s` hiện tại; ngồi chỗ khác lúc `ve` → giữ chỗ chờ, tới quầy mới `cho`.
   Test `zones/teaService.test.ts` theo cột ví dụ R-TRA-1 (đôn tầng 1, ghế lan can tầng 2, đứng dậy giữa thang, đổi chỗ khi đang
   về, ngồi lại sau khi có chén). Xong khi: test đỏ trước khi code (theo sổ), rồi xanh; `rule_trace` nối R-TRA-1 ↔ test.
-- [ ] 4. **Mốc phục vụ trong nhà** `scene/kien_truc/tra_lau.ts` (+ `vao_trong.ts` `Shell.service`, `rooms.ts`, `scene/seat.ts`,
+- [x] 4. **Mốc phục vụ trong nhà** `scene/kien_truc/tra_lau.ts` (+ `vao_trong.ts` `Shell.service`, `rooms.ts`, `scene/seat.ts`,
   `zones/seats.ts`) — lớp `scene/`: xuất `traLauService(b, style)` toạ độ nhà: đoạn cố định sau quầy (khe 0,43 m — từ chỗ tiểu nhị
   tới đầu quầy phía hồi phải), cửa (giữa mặt tiền, trên dốc), chân thang / đỉnh vế / giữa chiếu nghỉ / đầu cầu nối (từ
   `stairLayout`), vật cản mịn từng tầng (mặt bàn + đôn tròn, sập, bàn dài, bàn đôi, bàn nhỏ lan can, cột, quầy, cầm án), và mỗi
@@ -150,13 +150,13 @@ Sửa kèm (cùng lần chép):
   vào chỗ ngồi trà lâu. Không đổi hình dựng (chỉ thêm số xuất ra). Test thêm vào `web/src/traLau.test.ts`: 30 chỗ đều có chỗ
   đứng rót; chỗ đứng rót cách chỗ ngồi 0,8–1,2 m, nằm ngoài vật cản mịn, cùng tầng, góc so với hướng nhìn theo QĐ3; cửa / chân
   thang nằm trên tấm đi được. Xong khi test xanh, `npm run scene:check` không đổi kết quả cũ.
-- [ ] 5. **Dựng đường** `web/src/scene/teaPath.ts` (lớp `scene/`, dùng `gridPath` + `clearanceAt` của `scene/routeCheck.ts`):
+- [x] 5. **Dựng đường** `web/src/scene/teaPath.ts` (lớp `scene/`, dùng `gridPath` + `clearanceAt` của `scene/routeCheck.ts`):
   `teaPath(service, seat)` → điểm `[x, y, z]` toạ độ cảnh: đoạn sau quầy (cố định) + lưới tầng 1 (cách vật cản mịn ≥ 0,3) tới
   chỗ đứng rót (tầng 1) hoặc tới cửa → mốc thang → lưới tầng 2 (ô ngoài sàn tầng 2 cấm) → chỗ đứng rót. Nhớ theo chỉ số chỗ.
   Test (trong `traLau.test.ts` hoặc `scene/teaPath.test.ts`): **cả 30 chỗ** có đường; mỗi điểm lấy mẫu 0,25 m cách vật cản cùng
   tầng ≥ 0,3 (đoạn sau quầy ≥ 0,2) và có mặt đất (`LayeredGround.heightAt(…, fromY)`) lệch ≤ 0,6 so với điểm trước; dốc ≤ 35°;
   dài tầng 1 ≤ 12 m, tầng 2 ≤ 60 m (in độ dài để ghi vào sổ). Xong khi test xanh.
-- [ ] 6. **Tiểu nhị biết đi + rót** `player/npc.ts`, `player/character.ts`, `player/mixamoCharacter.ts`, `player/lamVuonDang.ts`,
+- [x] 6. **Tiểu nhị biết đi + rót** `player/npc.ts`, `player/character.ts`, `player/mixamoCharacter.ts`, `player/lamVuonDang.ts`,
   `player/doLamVuon.ts` — lớp `player/`: `SERVING_NPC_IDS = ['tieu-nhi']` → `isMovingSpec` true (dựng `createMovingNpc`, không
   cần `route`); `MovingNpc.motion` thêm `look?`, `hold?`, `work?`; `MovingNpc.watch` (đứng yên: `lookYaw` + gật mỗi câu thoại —
   giữ R-NPC-10, mixamoCharacter nhận `CharacterState.look` / `nod`); động tác `rot` (2 s, nghiêng ấm) + đồ `am-tra` (dựng lúc nạp
@@ -164,26 +164,46 @@ Sửa kèm (cùng lần chép):
   Test: `isMovingSpec({id:'tieu-nhi'})`; dáng `rot` có độ nghiêng > 0 giữa động tác (`lamVuonDang` test), vườn không đổi;
   `townNpcs.test.ts` vẫn xanh (tiểu nhị không có `route` → `TownNpcs` bỏ qua). Xong khi test xanh, Canvas 3D tiểu nhị đứng quầy
   vẫn nhìn người chơi / gật / chớp như trước.
-- [ ] 7. **Chén theo lượt rót** `scene/tayNgoiDang.ts`, `ngoiMat.ts` — lớp `scene/` + ghép: `NgoiMat.setTea(served: boolean |
+- [x] 7. **Chén theo lượt rót** `scene/tayNgoiDang.ts`, `ngoiMat.ts` — lớp `scene/` + ghép: `NgoiMat.setTea(served: boolean |
   null)` (`null` = chỗ không có người mang → cầm chén ngay như cũ); chỗ `tra` chưa rót → hai tay đặt trên bàn (`restPose`), rót
   xong → `teaPose` với nhịp tính từ lúc rót; ghế lan can theo QĐ2 (đề xuất: `railTeaPose` — trái trên lan can, phải cầm chén).
   Test `scene/tayNgoiDang.test.ts` (`railTeaPose` có `cup`, tay trái đúng chỗ lan can), `ngoiMatKhung.test.ts` nếu chạm.
   Xong khi Canvas 3D `?dang=ngoi-mat&cho=…` không có tiểu nhị vẫn như cũ.
-- [ ] 8. **Ghép** `web/src/tieuNhi.ts` (mới, như `townNpcs.ts`): giữ `TeaService` + đường hiện tại; mỗi khung đặt vị trí theo
+- [x] 8. **Ghép** `web/src/tieuNhi.ts` (mới, như `townNpcs.ts`): giữ `TeaService` + đường hiện tại; mỗi khung đặt vị trí theo
   `s` (đường đi rồi về = cùng đường, `s` giảm), y theo `world.surface.heightAt(x, z, yTrước)`, hướng mặt theo đoạn (xoay mượt
   ở góc — dùng lại cách `pointAt`, mở rộng nhận điểm 3D hoặc tách `polylineAt`), `motion.mps`, `hold: 'am-tra'`, `work: 'rot'`
   khi rót, quay về chỗ ngồi lúc rót, gỡ / gắn vật cản (`colliders.remove` / `addCircle`), `isBlocking` khi về; nói "Có ngay…"
   qua `chatSay` (QĐ1); `canTalk` cho nút "Nói chuyện". Test `web/src/tieuNhi.test.ts` (như `townNpcs.test.ts`, NPC giả): ngồi
   → 2 s đứng yên → rời quầy, vật cản gỡ; tới chỗ → rót 2 s → `served`; đứng dậy giữa đường → quay về, không `served`; về tới
   quầy → vật cản gắn lại, `canTalk`.
-- [ ] 9. **`main.ts`** (~15 dòng): tạo `TieuNhi` khi cảnh có trà lâu + tiểu nhị là `MovingNpc`; `sitAt` → `tieuNhi.sit(spot)` nếu
+- [x] 9. **`main.ts`** (~15 dòng): tạo `TieuNhi` khi cảnh có trà lâu + tiểu nhị là `MovingNpc`; `sitAt` → `tieuNhi.sit(spot)` nếu
   `spot.serve`; `meditate` đứng dậy → `tieuNhi.stand()`; mỗi khung `tieuNhi.update` trước `showNearNpcs`; `ngoiMat.setTea(…)`;
   lọc `npcInTalkRange` bỏ tiểu nhị khi `!canTalk`. `zones/dialogs.ts` câu `tra`: "… khách quan cứ chọn chỗ ngồi, tiểu nhân mang
   trà tới tận nơi!" (test `dialogs.test.ts` nếu so chữ). Xong khi `npx tsc --noEmit` + `npm test` xanh.
-- [ ] 10. **Canvas 3D + build + đo**: `?dang=tieu-nhi&cho=<chỉ số 0…29>` (`townPreview.ts`) — tự ngồi chỗ đó, xem tiểu nhị đi /
+- [x] 10. **Canvas 3D + build + đo**: `?dang=tieu-nhi&cho=<chỉ số 0…29>` (`townPreview.ts`) — tự ngồi chỗ đó, xem tiểu nhị đi /
   rót; chụp 3 ảnh (đôn tầng 1, ghế lan can tầng 2 nhìn từ mắt, tiểu nhị trên thang) cho người dùng duyệt; Bản đồ tính năng thêm
   dòng; `npm run build`; đo draw call / tam giác khi ngồi trong trà lâu (app). Xong khi người dùng duyệt ảnh → sổ việc "chờ thử
   máy": ngồi đôn tầng 1 / sập / ghế lan can tầng 2, đứng dậy giữa chừng, đổi chỗ, nói chuyện với tiểu nhị ở quầy.
+
+## Kết quả (NV2–10, 2026-11-16)
+- File mới: `collision/gridPath.ts` · `zones/teaService.ts` · `scene/kien_truc/tra_lau_phuc_vu.ts` (mốc + chỗ đứng rót; `tra_lau.ts`
+  gom vật cản mịn, `Shell.service`) · `scene/teaPath.ts` (đổi sang toạ độ cảnh, dựng + nhớ đường, `polylineAt`) · `tieuNhi.ts`
+  (ghép) · `tieuNhiPreview.ts` (Canvas 3D). Sửa: `rooms.ts` (`Room.service`, `Seat.serve`), `seat.ts`, `zones/seats.ts`, `do_pho.ts`
+  (xuất `TEA_W`, `STOOL_R`), `player/{npc,character,mixamoCharacter,lamVuonDang,doLamVuon,glbCharacter,discipleCharacter}.ts`,
+  `scene/tayNgoiDang.ts` (`railTeaPose`), `ngoiMat.ts` (`setTea`), `main.ts` (~12 dòng), `zones/dialogs.ts`, `designPreview.ts`.
+- Test: `collision/gridPath.test.ts` (4), `zones/teaService.test.ts` (9), `traLauPhucVu.test.ts` (4), `tieuNhi.test.ts` (5), thêm vào
+  `lamVuonDang.test.ts` (2), `mixamoCharacter.test.ts` (2), `npcBlock.test.ts` (1), `tayNgoiDang.test.ts` (1), `dialogs.test.ts` —
+  toàn bộ `npm test` xanh.
+- **Chỗ đứng rót** (QĐ3 không làm đúng 45° được ở mọi chỗ — bàn ghế chật): lấy góc gần 45° nhất còn cách bàn ≥ 0,2 m, 0,8–1,2 m.
+  Đôn tầng 1: 55° · bàn đôi / sập (nửa) / bàn dài đầu: 50° · bàn dài giữa: 75° · ghế lan can: 45° so chỗ ngồi (người ngồi nhoài
+  ~0,8 m tới lan can → từ mắt là ngay bên phải). **2 chỗ trên sập quay lưng ra tường sau** (chỗ 13, 15): phía phải là tường → đứng
+  **trước – trái** 50°.
+- **Dài đường** (m, ở 2,4 m/s): tầng 1 9,7–13,5 (≈ 4–5,6 s; ra đầu quầy nào gần hơn — quầy dài 8,6 m); tầng 2 39–52 (≈ 16–22 s).
+  Đường tầng 1 > 12 m của ước tính → test để ≤ 15 m.
+- **Đo Canvas 3D** (900 × 600, SwiftShader): ngồi đôn bàn giữa nhìn sang tiểu nhị đang rót **102 draw call · 150,8k tam giác**
+  (cùng góc nhìn lúc tiểu nhị còn ở quầy: 97 · 119,8k — model tiểu nhị lọt khung gần); nhìn lệch 20°: 94 · 148,2k; ghế lan can
+  tầng 2: 49–88 · 88–145k; tiểu nhị trên thang nhìn từ ngoài: 58 · 103k. Ấm trà +1 draw call, ≈ 0,3k tam giác.
+- Ảnh duyệt: `docs/tasks/2026-11-16-tieu-nhi-{1-don-dang-rot,1b-don-ngoai,2-lan-can-dang-rot,2b-lan-can-co-chen,3-thang}.png`.
 
 ## Kiểm tra cuối
 dart tool/check.dart --changed · cd web && npx tsc --noEmit && npm test && npm run build · cd app && flutter analyze ·
