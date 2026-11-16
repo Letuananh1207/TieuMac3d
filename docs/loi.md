@@ -19,6 +19,20 @@ Mức độ:
 
 ## Đang mở
 
+### L-23 · Hai tay nhân vật chính lúc đứng ép sát thân, trông xấu
+
+- Trạng thái: đang sửa · Mức độ: nhỏ (ngoại hình, không chặn dùng) · Phần: nhân vật (`player/dongTac.ts`, `mixamoCharacter.ts`) · Quy tắc: R-DIEU-8 (dáng đứng)
+- Báo: 2026-11-16 — "2 tay nhân vật đang bám thân quá sát xấu"
+- Các bước: 1. Mở app, đứng yên. 2. Nhìn nhân vật từ sau lưng.
+- Mong đợi / thực tế: tay buông xuôi nhưng dạng khỏi thân ~15°, khuỷu hơi cong, có khe hở giữa tay và áo / hai tay dính sát hai bên thân.
+- Bằng chứng: `design/screens/Loi-L23-tay-sat-than.png`.
+
+**Sửa**
+- Cách (người dùng chọn 2026-11-16): dạng ~15°, ảnh trước / sau duyệt rồi gộp.
+
+**Lịch sử**
+- 2026-11-16: ghi.
+
 ### L-22 · Hạc cưỡi (model Tripo) nằm phục khi đáp — phải đứng trên hai chân rồi mới bay
 
 - Trạng thái: chờ thử máy · Mức độ: khó chịu (hoạt cảnh truyền tống trông sai dáng, không chặn dùng) · Phần: cưỡi hạc (`scene/hac.ts`, `scene/hacModel.ts`, `cuoiHac.ts`) · Quy tắc: R-HANH-5

@@ -110,3 +110,4 @@ ha-ta-lowpoly.glb` |
 | V-20261116-98 | Tự động tạo ảnh Gemini (gói Pro) bằng thư viện Gemini-API (cookie web) thay cho làm tay; tạo vài bản / góc, người dùng chọn rồi chốt | lead nhỏ (công cụ) | đang làm — nhánh viec/gemini-tu-dong | — | chép 2 cookie Gemini khi công cụ xong |
 | V-20261116-99 | Tư thế nhân vật trên hạc không tự nhiên → ngồi cưỡi: 2 chân dạng hai bên, qua gốc cánh, áp sát hông hạc | lead nhỏ | đang làm — R-HANH-5 đã sửa + đồng bộ; nhánh viec/cuoi-hac-ngoi | R-HANH-5 | duyệt ảnh ngồi cưỡi |
 | V-20261116-100 | Thanh công cụ bản máy tính xấu: ô quá sát nhau, sát đáy, nhãn tên (ru-băng) thiếu chuyên nghiệp → 3 phương án chụp thật cho người dùng chọn rồi áp | ui (thay canvas) + lead nhỏ | đang làm — nhánh viec/thanh-may | R-THANH-1 | chọn phương án |
+| V-20261116-101 | Hai tay nhân vật chính lúc đứng ép sát thân → dạng ~15° | loi sua | đang làm — nhánh viec/tay-dang | L-23 | duyệt ảnh trước / sau |
