@@ -2,13 +2,13 @@
  * Nhân vật `.glb` có xương chuẩn Mixamo (model Tripo — R-NPC-10): mọi dáng bằng code trên 18 khớp. Nền đi / đứng / chạy /
  * nhảy / ngồi từ `dongTac.ts`; các dáng riêng viết theo 7 khớp (chào, đứng lâu, biểu cảm, làm vườn, gõ mõ, gảy đàn —
  * `dang7.ts`, `bieuCamDang.ts`, `lamVuonDang.ts`) trộn đè bằng `tronDang7`, cùng thứ tự / trọng số như nhánh `autoRig` của
- * `glbCharacter.ts`. Đồ cầm tay làm vườn gắn vào xương `RightHand` ở điểm nắm (R-VUON-13).
+ * `glbCharacter.ts`. Nhân vật chính (`opts.player`) đi / chạy bằng dáng đi cũ (`diCuDang`, L-18). Đồ cầm tay làm vườn gắn vào xương `RightHand` ở điểm nắm (R-VUON-13).
  */
 import type * as THREE from 'three';
 import { emotePose } from './bieuCamDang';
 import type { Character, ToolTip } from './character';
 import { RUN_SPEED } from './controller';
-import { CHAO, dungLauDang, gayDanDang, goMoDang, NHIN_QUANH, REST, tronDang7, VUON_VAI } from './dang7';
+import { CHAO, diCuDang, diCuMoi, diCuTien, dungLauDang, gayDanDang, goMoDang, NHIN_QUANH, REST, tronDang7, tronDiCu, VUON_VAI } from './dang7';
 import { createGardenProps, type GardenProps } from './doLamVuon';
 import { DongTac, TINH, type Tinh, type TinhId } from './dongTac';
 import { isWork, PROP_OF, workPose } from './lamVuonDang';
@@ -24,7 +24,7 @@ export interface MixamoOpts {
   tinh?: TinhId;
   seed?: number;
   /** nhân vật người chơi (Q1 2026-11-16): `hoat-bat`, tắt nhìn quanh liên tục (R-DIEU-8 là lúc duy nhất nhìn quanh), tay
-   *  buông đo từ xương */
+   *  buông đo từ xương; dáng đi / chạy là dáng cũ của nhánh `autoRig` (L-18 — `tronDiCu` của `dang7.ts`) */
   player?: boolean;
 }
 
@@ -55,6 +55,8 @@ export function mixamoCharacter(
   let props: GardenProps | null = null;
   let lastYaw = body.rotation.y;
   let time = 0;
+  // nhân vật chính: dáng đi cũ (L-18) — trạng thái riêng, `dongTac` chỉ dựng dáng đứng / nhảy / ngồi
+  const di = opts.player ? diCuMoi() : null;
   return {
     root,
     facing: body,
@@ -66,10 +68,17 @@ export function mixamoCharacter(
       let dy = body.rotation.y - lastYaw;
       lastYaw = body.rotation.y;
       dy = Math.atan2(Math.sin(dy), Math.cos(dy)); // quay qua ±π không thành vòng
-      const pose = dong.update(dt, { mps, turn: dt > 0 ? dy / dt : 0, air: state?.air, sit: state?.sit, sitDrop });
+      const pose = dong.update(dt, { mps, turn: dt > 0 ? dy / dt : 0, air: state?.air, sit: state?.sit, sitDrop, tuDi: !!di });
       const cal = { off: dong.tinh.haTay - REST };
-      const move = dong.moving;
-      const airB = dong.airborne;
+      let move = dong.moving;
+      let airB = dong.airborne;
+      if (di) {
+        diCuTien(di, dt, mps, !!state?.air);
+        const d = diCuDang(di);
+        tronDiCu(pose, di, d, ease(state?.sit ?? 0));
+        bob.rotation.x = d.lean;
+        ({ move, airB } = di);
+      }
       // chắp tay chào (R-DIEU-8 cũ / Chắp tay R-BIEU-1)
       tronDang7(pose, CHAO, ease(state?.bow ?? 0), cal);
       // đứng lâu (R-DIEU-8): vươn vai, rồi nhìn quanh

@@ -118,6 +118,112 @@ function elbow(fore: Euler3, e: number, z: number, w: number): void {
   to(fore, 2, zz, w);
 }
 
+/* ---------------- dáng đi / chạy cũ (L-18: nhân vật chính trả về dáng đi trước khi đổi model Tripo) ---------------- */
+
+/** Tốc độ (m/s) — bằng `WALK_SPEED` / `RUN_SPEED` của `controller.ts` (file này thuần, không nạp controller). */
+const DI_BO = 3.2;
+const CHAY_HET = 7;
+
+/** Trạng thái dáng đi cũ của một nhân vật — nhánh `autoRig` của `glbCharacter.ts` (R-DIEU-5), số giữ nguyên. */
+export interface DiCu {
+  /** 0…1: cường độ bước (đi bộ hết tốc = 1), mượt */
+  move: number;
+  /** 0…1: hoà dáng chạy */
+  runB: number;
+  /** 0…1: dáng nhảy */
+  airB: number;
+  /** pha bước (rad) */
+  walkT: number;
+}
+
+export const diCuMoi = (): DiCu => ({ move: 0, runB: 0, airB: 0, walkT: 0 });
+
+/** Tiến dáng đi cũ một khung (tại chỗ): cường độ bước, hoà chạy, nhảy, pha bước theo tốc độ thật (đi ~7,7 rad/s, chạy ~17). */
+export function diCuTien(s: DiCu, dt: number, mps: number, air: boolean): DiCu {
+  const k = Math.min(1, mps / DI_BO);
+  const run = Math.min(1, Math.max(0, (mps - DI_BO) / (CHAY_HET - DI_BO)));
+  s.move += (k - s.move) * Math.min(1, dt * 8);
+  s.runB += (run - s.runB) * Math.min(1, dt * 6);
+  s.airB += ((air ? 1 : 0) - s.airB) * Math.min(1, dt * 14);
+  if (mps > 0.05) s.walkT += dt * (2.4 * Math.max(mps, 2.2)) * (1 - s.airB);
+  else s.walkT *= 0.85;
+  return s;
+}
+
+/** Góc dáng đi cũ một khung (7 khớp; phần cộng thêm vào dáng đứng). */
+export interface DiCuDang {
+  /** sin pha bước */
+  step: number;
+  /** đùi trái / phải (x âm = ra trước) — chưa trộn nhảy / ngồi */
+  legL: number;
+  legR: number;
+  /** vung tay (cộng vào `x` tay trái / phải) */
+  armL: number;
+  armR: number;
+  /** tay dạng ra theo bước (cộng vào độ mở `z` mỗi tay) */
+  sway: number;
+  /** nhún cả thân (m) */
+  lift: number;
+  /** đổ người về trước (rad, cả thân quanh bàn chân) */
+  lean: number;
+  /** hông xoay theo bước, đầu xoay ngược (rad) */
+  hipsY: number;
+  headY: number;
+}
+
+/** Dáng đi / chạy cũ (R-DIEU-5) từ trạng thái [s] — số chép nguyên nhánh `autoRig` của `glbCharacter.ts`. */
+export function diCuDang(s: DiCu): DiCuDang {
+  const { move, runB, airB } = s;
+  const step = Math.sin(s.walkT);
+  const amp = (0.55 + 0.35 * runB) * move;
+  const swing = (0.34 + 0.45 * runB) * move;
+  return {
+    step,
+    legL: step * amp,
+    legR: -step * amp,
+    armL: -step * swing,
+    armR: step * swing,
+    sway: Math.abs(step) * 0.07 * move,
+    lift: Math.abs(step) * (0.05 + 0.06 * runB) * move * (1 - airB),
+    lean: (0.05 + 0.2 * runB) * move, // đi hơi đổ người, chạy đổ hẳn về trước
+    hipsY: step * (0.1 + 0.08 * runB) * move,
+    headY: -step * 0.06 * move,
+  };
+}
+
+/** Gối co khi chân đưa lên trong dáng đi cũ trên xương có gối (rad, đúng nhịp `walkT`) — dáng 7 khớp cũ không có gối. */
+export const DI_CU_GOI = { di: 0.75, chay: 0.8 };
+
+/**
+ * Cộng dáng đi cũ [d] (trạng thái [s]) vào [pose] 18 khớp (nhánh Mixamo của nhân vật chính, L-18). Dáng nền phải tắt phần
+ * bước (`DongTac.update(…, { tuDi: true })`). Trộn với nhảy / ngồi như bản cũ: đùi + tay dạng `mix(…, NHAY7 | NGOI7, …)` →
+ * nhân (1 − nhảy)(1 − ngồi); vung tay `mix(…, NGOI7, ngồi)` → nhân (1 − ngồi); hông / đầu xoay, nhún không giảm. Gối (bản
+ * cũ không có) theo phần đùi. Đổ người (`d.lean`) nơi gọi xoay cả thân quanh bàn chân (như `bob.rotation.x` cũ).
+ */
+export function tronDiCu(pose: Pose, s: DiCu, d: DiCuDang, sit: number): void {
+  const wLeg = (1 - s.airB) * (1 - sit);
+  const wArm = 1 - sit;
+  const j = pose.j;
+  const c = Math.cos(s.walkT);
+  const knee = (DI_CU_GOI.di + DI_CU_GOI.chay * s.runB) * s.move * wLeg;
+  const kL = knee * Math.max(0, -c);
+  const kR = knee * Math.max(0, c);
+  j.upLegL[0] += d.legL * wLeg;
+  j.upLegR[0] += d.legR * wLeg;
+  j.legL[0] += kL;
+  j.legR[0] += kR;
+  j.footL[0] -= (d.legL * wLeg + kL) * 0.6;
+  j.footR[0] -= (d.legR * wLeg + kR) * 0.6;
+  j.armL[0] += d.armL * wArm;
+  j.armR[0] += d.armR * wArm;
+  j.armL[2] += d.sway * wLeg;
+  j.armR[2] -= d.sway * wLeg;
+  j.hips[1] += d.hipsY;
+  j.neck[1] += d.headY * HEAD_SPLIT[0];
+  j.head[1] += d.headY * HEAD_SPLIT[1];
+  pose.lift += d.lift;
+}
+
 /* ---------------- dáng riêng (số rút từ glbCharacter.ts, giữ nguyên) ---------------- */
 
 /** Chắp tay chào (拱手): hai tay lên trước ngực, khép vào giữa; cúi người, cúi đầu. Trọng số = `bow`. */

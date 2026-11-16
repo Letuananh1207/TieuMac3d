@@ -3,14 +3,14 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 import { autoRig, type Rig } from './autoRig';
 import { emotePose } from './bieuCamDang';
-import { CHAO, dungLauDang, gayDanDang, goMoDang, NGOI7, NHAY7, NHIN_QUANH, REST, VUON_VAI } from './dang7';
+import { CHAO, diCuDang, diCuMoi, diCuTien, dungLauDang, gayDanDang, goMoDang, NGOI7, NHAY7, NHIN_QUANH, REST, VUON_VAI } from './dang7';
 import type { Character, ToolTip } from './character';
 import type { DongTac } from './dongTac';
 import { mixamoCharacter, type MixamoOpts } from './mixamoCharacter';
 import { mixamoRig } from './mixamoRig';
 import { createGardenProps, type GardenProps } from './doLamVuon';
 import { isWork, PROP_OF, workPose } from './lamVuonDang';
-import { RUN_SPEED, WALK_SPEED } from './controller';
+import { RUN_SPEED } from './controller';
 
 /** Chiều cao nhân vật sau khi nạp (m) — bằng đệ tử khối (búi tóc ~2,1 m), thước chuẩn của cảnh. */
 export const GLB_HEIGHT = 2.1;
@@ -130,10 +130,8 @@ export async function loadGlbCharacter(
   idle?.play();
   walk?.play();
 
-  let move = 0; // 0..1: cường độ bước (đi bộ hết tốc = 1), mượt
-  let runB = 0; // 0..1: hoà dáng chạy (R-DIEU-5)
-  let airB = 0; // 0..1: dáng nhảy (R-DIEU-6)
-  let walkT = 0;
+  // cường độ bước, hoà chạy (R-DIEU-5), nhảy (R-DIEU-6), pha bước — dáng đi `dang7.ts` (nhân vật chính Mixamo dùng chung, L-18)
+  const di = diCuMoi();
   let time = 0;
   const mix = (a: number, b: number, t: number): number => a + (b - a) * t;
   const ease = (x: number): number => {
@@ -146,11 +144,7 @@ export async function loadGlbCharacter(
     toolTip: (out, dir) => props?.tip(out, dir) ?? false,
     animate(dt, speed, state) {
       const mps = state?.mps ?? speed * RUN_SPEED;
-      const k = Math.min(1, mps / WALK_SPEED);
-      const run = Math.min(1, Math.max(0, (mps - WALK_SPEED) / (RUN_SPEED - WALK_SPEED)));
-      move += (k - move) * Math.min(1, dt * 8);
-      runB += (run - runB) * Math.min(1, dt * 6);
-      airB += ((state?.air ? 1 : 0) - airB) * Math.min(1, dt * 14);
+      const { move, runB, airB } = diCuTien(di, dt, mps, !!state?.air);
       const sitB = ease(state?.sit ?? 0);
       const bowB = ease(state?.bow ?? 0);
       if (mixer) {
@@ -160,12 +154,11 @@ export async function loadGlbCharacter(
         return;
       }
       time += dt;
-      // nhịp bước theo tốc độ thật: đi bộ ~7,5 rad/s, chạy ~14 (R-DIEU-5)
-      if (mps > 0.05) walkT += dt * (2.4 * Math.max(mps, 2.2)) * (1 - airB);
-      else walkT *= 0.85;
-      const step = Math.sin(walkT);
-      bob.position.y = Math.abs(step) * (0.05 + 0.06 * runB) * move * (1 - airB) - NGOI7.drop * sitB;
-      bob.rotation.x = (0.05 + 0.2 * runB) * move; // đi hơi đổ người, chạy đổ hẳn về trước
+      // nhịp bước theo tốc độ thật (R-DIEU-5) — `diCuTien`; góc đi / chạy — `diCuDang`
+      const d = diCuDang(di);
+      const step = d.step;
+      bob.position.y = d.lift - NGOI7.drop * sitB;
+      bob.rotation.x = d.lean;
       if (!rig) {
         bob.rotation.z = step * 0.03 * move;
         return;
@@ -175,9 +168,8 @@ export async function loadGlbCharacter(
       const { stretch, look } = dungLauDang(state?.idle ?? 0);
 
       /* ---- chân ---- */
-      const amp = (0.55 + 0.35 * runB) * move;
-      let lL = step * amp;
-      let lR = -step * amp;
+      let lL = d.legL;
+      let lR = d.legR;
       lL = mix(lL, NHAY7.legL, airB); // nhảy: gối trước co lên, chân sau duỗi
       lR = mix(lR, NHAY7.legR, airB);
       rig.legL.rotation.x = mix(lL, NGOI7.legs, sitB); // ngồi thiền: hai chân xếp ra trước
@@ -186,11 +178,10 @@ export async function loadGlbCharacter(
       rig.legR.rotation.z = -NGOI7.legZ * sitB;
 
       /* ---- tay ---- tay trái ở +x: rotation.z âm = khép vào thân */
-      const swing = (0.34 + 0.45 * runB) * move;
-      let aLx = -ARM_FORWARD - step * swing + Math.sin(time * 1.3) * 0.04 * still;
-      let aRx = -ARM_FORWARD + step * swing + Math.sin(time * 1.3 + 1.7) * 0.04 * still;
-      const swayL = Math.abs(step) * 0.07 * move + (Math.sin(time * 2) * 0.5 + 0.5) * 0.03 * still;
-      const swayR = Math.abs(step) * 0.07 * move + (Math.sin(time * 2 + 1.1) * 0.5 + 0.5) * 0.03 * still;
+      let aLx = -ARM_FORWARD + d.armL + Math.sin(time * 1.3) * 0.04 * still;
+      let aRx = -ARM_FORWARD + d.armR + Math.sin(time * 1.3 + 1.7) * 0.04 * still;
+      const swayL = d.sway + (Math.sin(time * 2) * 0.5 + 0.5) * 0.03 * still;
+      const swayR = d.sway + (Math.sin(time * 2 + 1.1) * 0.5 + 0.5) * 0.03 * still;
       let aLz = -(ARM_REST - swayL);
       let aRz = ARM_REST - swayR;
       // nhảy: tay giang ra giữ thăng bằng
@@ -246,9 +237,9 @@ export async function loadGlbCharacter(
       }
 
       /* ---- thân, đầu ---- */
-      rig.hips.rotation.y = step * (0.1 + 0.08 * runB) * move;
+      rig.hips.rotation.y = d.hipsY;
       rig.hips.rotation.x = CHAO.hipsX * bowB; // cúi người khi chào
-      rig.head.rotation.y = -step * 0.06 * move + look * NHIN_QUANH;
+      rig.head.rotation.y = d.headY + look * NHIN_QUANH;
       rig.hips.position.y = hipY + Math.sin(time * 2) * 0.012 * (1 - move) * (1 - airB);
       rig.head.rotation.z = Math.sin(time * 1.1) * 0.05 * still;
       rig.head.rotation.x = Math.sin(time * 0.7) * 0.03 * still + CHAO.headX * bowB + VUON_VAI.headX * stretch + NGOI7.headX * sitB;

@@ -128,6 +128,9 @@ export interface DongTacInput {
   sit?: number;
   /** ngồi hạ thân bao nhiêu (m, trước co giãn NPC) — đáy hông chạm mặt ngồi; thiếu = `SIT_DROP` */
   sitDrop?: number;
+  /** nơi gọi tự dựng dáng bước (nhân vật chính — dáng đi cũ `tronDiCu` của `dang7.ts`, L-18): tắt mọi phần theo bước (đùi,
+   *  gối, vung tay, nhún, xoay hông / vai, đổ người, nghiêng khi rẽ); đứng / thở / nhảy / ngồi / khuỷu giữ nguyên */
+  tuDi?: boolean;
 }
 
 /**
@@ -240,6 +243,7 @@ export class DongTac {
     const s = Math.sin(this.phase);
     const c = Math.cos(this.phase);
     const still = (1 - m) * (1 - ab) * (1 - sb);
+    const mw = input.tuDi ? 0 : m; // phần theo bước
     const j = this.pose.j;
 
     /* ---- đứng: thở, dồn trọng tâm, nhìn quanh ---- */
@@ -268,31 +272,31 @@ export class DongTac {
     }
 
     /* ---- thân ---- */
-    const lean = (t.doNguoi * Math.min(1.6, Math.max(0.6, mps / NPC_WALK)) + CHAY.doNguoi * rb) * m;
-    const roll = -t.nghiengRe * this.turnS * m;
-    set(j.hips, 0, t.xoayHong * m * s, roll + sh + 0.02 * m * s);
-    set(j.spine, lean * 0.5 + t.cong * 0.4 - t.tho * 0.3 * br * still, -t.xoayVai * m * s * 0.4, -sh * 0.6);
-    set(j.chest, lean * 0.3 + t.cong * 0.4 - t.tho * 0.5 * br * still, -t.xoayVai * m * s * 0.6 + yaw * 0.2, -sh * 0.5);
+    const lean = (t.doNguoi * Math.min(1.6, Math.max(0.6, mps / NPC_WALK)) + CHAY.doNguoi * rb) * mw;
+    const roll = -t.nghiengRe * this.turnS * mw;
+    set(j.hips, 0, t.xoayHong * mw * s, roll + sh + 0.02 * mw * s);
+    set(j.spine, lean * 0.5 + t.cong * 0.4 - t.tho * 0.3 * br * still, -t.xoayVai * mw * s * 0.4, -sh * 0.6);
+    set(j.chest, lean * 0.3 + t.cong * 0.4 - t.tho * 0.5 * br * still, -t.xoayVai * mw * s * 0.6 + yaw * 0.2, -sh * 0.5);
     set(j.upperChest, lean * 0.2 + t.cong * 0.2 - t.tho * br * still, 0, 0);
     set(j.neck, -lean * 0.4 - t.cong * 0.5 + nod * 0.4, yaw * 0.3, sh * 0.4);
-    set(j.head, -lean * 0.3 - t.cong * 0.3 + nod * 0.6 + Math.sin(this.time * 0.5) * 0.02 * still, yaw * 0.5 + t.xoayVai * m * s * 0.3, sh * 0.3 + Math.sin(this.time * 1.1) * 0.025 * still);
+    set(j.head, -lean * 0.3 - t.cong * 0.3 + nod * 0.6 + Math.sin(this.time * 0.5) * 0.02 * still, yaw * 0.5 + t.xoayVai * mw * s * 0.3, sh * 0.3 + Math.sin(this.time * 1.1) * 0.025 * still);
 
     /* ---- tay: vung từ vai, khuỷu trễ nhịp; chạy: vung mạnh, khuỷu gập ---- */
-    const swing = (t.vungTay + CHAY.vungTay * rb) * m * (1 - ab);
+    const swing = (t.vungTay + CHAY.vungTay * rb) * mw * (1 - ab);
     const breathArm = t.tho * 0.6 * br * still;
     const lagS = Math.sin(this.phase - 0.7);
     const bent = t.khuyuCong + (CHAY.khuyu - t.khuyuCong) * rb * m;
     const lagK = t.khuyuTre * (1 - rb);
-    set(j.armL, -t.tayTruoc - swing * s, 0, -(t.haTay - breathArm - 0.04 * m));
-    set(j.armR, -t.tayTruoc + swing * s, 0, t.haTay - breathArm - 0.04 * m);
+    set(j.armL, -t.tayTruoc - swing * s, 0, -(t.haTay - breathArm - 0.04 * mw));
+    set(j.armR, -t.tayTruoc + swing * s, 0, t.haTay - breathArm - 0.04 * mw);
     set(j.foreL, -bent - swing * lagK * Math.max(0, -lagS) * 1.4, 0, 0);
     set(j.foreR, -bent - swing * lagK * Math.max(0, lagS) * 1.4, 0, 0);
-    set(j.handL, -0.05 - 0.08 * m * Math.max(0, -lagS), 0, 0);
-    set(j.handR, -0.05 - 0.08 * m * Math.max(0, lagS), 0, 0);
+    set(j.handL, -0.05 - 0.08 * mw * Math.max(0, -lagS), 0, 0);
+    set(j.handR, -0.05 - 0.08 * mw * Math.max(0, lagS), 0, 0);
 
     /* ---- chân: đùi theo pha, gối co khi đưa lên, bàn chân giữ bằng; chạy: bước dài, gối co cao ---- */
-    const amp = (t.buoc + CHAY.buoc * rb) * m;
-    const knee = (t.goi + CHAY.goi * rb) * m;
+    const amp = (t.buoc + CHAY.buoc * rb) * mw;
+    const knee = (t.goi + CHAY.goi * rb) * mw;
     const thighL = s * amp;
     const thighR = -s * amp;
     const kneeL = knee * Math.max(0, -c);
@@ -305,7 +309,7 @@ export class DongTac {
     set(j.footR, -(thighR + kneeR) * 0.6, 0, 0);
 
     // nhún: cao nhất khi chân qua thẳng đứng — 2 lần mỗi chu kỳ; hạ nhẹ khi gối co lúc dồn trọng tâm
-    this.pose.lift = (t.nhun + CHAY.nhun * rb) * m * (Math.abs(c) - 0.64) * (1 - ab) - Math.abs(sh) * 0.15 + t.tho * 0.15 * br * still;
+    this.pose.lift = (t.nhun + CHAY.nhun * rb) * mw * (Math.abs(c) - 0.64) * (1 - ab) - Math.abs(sh) * 0.15 + t.tho * 0.15 * br * still;
     if (ab > 0) this.jump(ab);
     if (sb > 0) this.sit(sb, input.sitDrop ?? SIT_DROP);
     return this.pose;

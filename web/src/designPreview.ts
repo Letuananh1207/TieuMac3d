@@ -357,7 +357,10 @@ async function boot(): Promise<void> {
   // ?dang=bieu-cam[&bc=<mã>][&t=<giây>] — dáng 8 biểu cảm (R-BIEU-2, bieuCamPreview.ts); tên biểu cảm hiện ở ô toạ độ
   const bieuCam = emotePreview(params);
   if (pose) character.animate(1, poseState.mps / RUN_SPEED, poseState);
-  if (Number.isFinite(phase) && phase > 0) character.animate(phase / 10, WALK_SPEED / RUN_SPEED, { ...poseState, mps: WALK_SPEED });
+  // ?pha=<n> — dựng sẵn một khung đi bộ (một bước dt = n/10 s; &dang=chay → chạy); &dung — giữ nguyên khung đó (chụp so dáng đi, L-18)
+  const walkMps = poseState.mps || WALK_SPEED;
+  if (Number.isFinite(phase) && phase > 0) character.animate(phase / 10, walkMps / RUN_SPEED, { ...poseState, mps: walkMps });
+  const freeze = params.has('dung') && Number.isFinite(phase) && phase > 0;
   interface MatPreview {
     ngoi: NgoiMat;
     third: THREE.PerspectiveCamera;
@@ -435,7 +438,7 @@ async function boot(): Promise<void> {
       el('pick').textContent = `Biểu cảm: ${bieuCam.current.name}`;
     }
     vuon?.update(dt, poseState);
-    character.animate(dt, stateNow().mps / RUN_SPEED, stateNow());
+    if (!freeze) character.animate(dt, stateNow().mps / RUN_SPEED, stateNow());
     cuon?.update(dt, character.root.position, character.facing.rotation.y, 2);
     for (const npc of npcSet.npcs) npc.update(dt);
     town?.update(dt, camera, controls.target);

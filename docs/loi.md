@@ -21,13 +21,20 @@ Mức độ:
 
 ### L-18 · Dáng đi nhân vật chính (bản Tripo) kém dáng đi cũ — trả về đúng dáng đi cũ
 
-- Trạng thái: đang sửa · Mức độ: khó chịu (dáng đi thấy suốt lúc chơi) · Phần: nhân vật (`player/mixamoCharacter.ts`, `dongTac.ts`, `dang7.ts`) · Quy tắc: R-DIEU-5 (dáng đi / chạy), R-NPC-10
+- Trạng thái: chờ thử máy · Mức độ: khó chịu (dáng đi thấy suốt lúc chơi) · Phần: nhân vật (`player/mixamoCharacter.ts`, `dongTac.ts`, `dang7.ts`) · Quy tắc: R-DIEU-5 (dáng đi / chạy), R-NPC-10
 - Báo: 2026-11-16 — "tôi chưa hài lòng với dáng đi hiện nay của nhân vật tôi cảm giác ban đầu trước đó vẫn tốt hơn"; người dùng chọn: trả về đúng dáng đi cũ (nhịp, vung tay, nhún như trước khi đổi model), các dáng khác giữ nguyên
 - Các bước: 1. Mở app (nhân vật chính bản Tripo, sau đợt 2 `b69fdbd`) 2. Đi bộ / chạy
 - Mong đợi / thực tế: dáng đi như bản cũ (nhánh `autoRig` của `glbCharacter.ts`: nhịp `2,4·max(mps, 2,2)`, đùi 0,55 (+0,35 chạy), vung tay 0,34 (+0,45), nhún |sin|·0,05, đổ người 0,05 (+0,2)) / dáng `hoat-bat` của `dongTac` (nhanh, nhún nhiều, vung rộng)
 - Bằng chứng: người dùng thử máy 2026-11-16
 
 **Sửa**
+- Nguyên nhân: đổi sang model Tripo (xương Mixamo, `b69fdbd`) thì nhân vật chính đi bằng `DongTac` bảng `hoat-bat` (`mixamoCharacter.ts`, `opts.player`): nhịp `3,1·mps` (đi bộ 9,9 rad/s thay vì 7,7), nhún `0,05·(|cos|−0,64)` + gối co 0,75, vung tay 0,42 kèm khuỷu trễ, xoay vai / hông, nghiêng khi rẽ — khác hẳn dáng 7 khớp cũ của nhánh `autoRig` (`glbCharacter.ts`).
+- Hành vi đúng: R-DIEU-5 (đi / chạy theo tốc độ) không đổi chữ; người dùng chọn trả về đúng dáng cũ → không sửa sổ quy tắc.
+- Code: dáng đi / chạy cũ rút thành hàm thuần ở `web/src/player/dang7.ts` — `diCuTien` (cường độ bước, hoà chạy, nhảy, pha `2,4·max(mps, 2,2)`), `diCuDang` (đùi 0,55 (+0,35), vung tay 0,34 (+0,45), tay dạng |sin|·0,07, nhún |sin|·(0,05 + 0,06), đổ người 0,05 (+0,2), hông 0,1 (+0,08), đầu −0,06 — số chép nguyên); nhánh `autoRig` của `glbCharacter.ts` gọi lại hai hàm này (không đổi hành vi). Nhánh Mixamo nhân vật chính: `DongTac.update(…, { tuDi: true })` (`dongTac.ts` — cờ mới tắt mọi phần theo bước, giữ đứng / thở / nhảy / ngồi / khuỷu) + `tronDiCu` cộng dáng cũ vào 18 khớp (đùi, gối co đúng nhịp `walkT` 0,75 (+0,8 chạy) vì xương mới có gối, bàn chân bù, vung tay, hông / cổ / đầu xoay, nhún) + `bob.rotation.x` = đổ người như cũ. NPC không đổi (không bật `tuDi`). Canvas 3D: `?pha=<n>&dung` giữ nguyên một khung đi (`&dang=chay` → chạy) để chụp so dáng (`designPreview.ts`).
+- Test: `web/src/player/diCu.test.ts` — `'R-DIEU-5 (L-18): nhân vật chính đi bộ / chạy — đùi, vung tay, nhún, đổ người, xoay hông bằng dáng đi cũ'` (so từng khung với công thức cũ chép nguyên văn), `'R-DIEU-5 (L-18): nhịp bước như cũ…'` (đỏ trước khi sửa: 3 test), `'R-NPC-10 (L-18): NPC giữ dáng đi theo tính cách…'`, `'R-DIEU-8 (L-18): đứng yên…'`. Toàn bộ `npm test` xanh.
+- Ảnh: `design/screens/Loi-L18-dang-di.png` (bản cũ Hunyuan · trước sửa · sau sửa, đi bộ + chạy cùng pha) — sau sửa đổ người, nhún, sải chân như bản cũ.
+- Còn khác bản cũ (cố ý): gối co theo nhịp + khuỷu gập khi chạy (`CHAY.khuyu` của `dongTac`) vì xương Tripo có gối / khuỷu, model Hunyuan cũ không có — muốn bỏ thì báo.
+- Thử máy: `cd web && npm run build` → app → đi bộ (đẩy nửa cần) và chạy (đẩy hết) vài vòng sân, nhìn ngang; so với cảm giác dáng đi trước khi đổi model. Còn lỗi → quay màn 5 giây khi đi + chạy.
 
 **Lịch sử**
 - 2026-11-16: ghi, sửa ngay (người dùng chọn).
