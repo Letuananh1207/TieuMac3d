@@ -26,6 +26,11 @@ export const NHA_MODEL_TUNE = {
   skewWarn: 0.15,
   /** tấm sáng cửa sổ nhô trước mặt model bao nhiêu (m) — tránh chớp (z-fight) */
   glowLift: 0.02,
+  /**
+   * Thử phương án giữ tỉ lệ model (NV9 (b)) — chỉ Canvas 3D `&ty-le=giu`: co đều theo bề ngang khung, giữ mặt trước +
+   * chân, nhà dài ra phía sau. Va chạm / nền vẫn theo khối — app luôn false.
+   */
+  keepRatio: false,
 };
 export type HouseTune = typeof NHA_MODEL_TUNE;
 
@@ -123,10 +128,12 @@ export function fitToFrame(src: THREE.BufferGeometry, material: THREE.Material |
   const size = b.getSize(new THREE.Vector3());
   const want = frame.getSize(new THREE.Vector3());
   if (!(size.x > 0 && size.y > 0 && size.z > 0)) throw new Error('nhaModel: model dẹt / rỗng');
-  const scale: [number, number, number] = [want.x / size.x, want.y / size.y, want.z / size.z];
+  const u = want.x / size.x;
+  const scale: [number, number, number] = tune.keepRatio ? [u, u, u] : [want.x / size.x, want.y / size.y, want.z / size.z];
   g.translate(-b.min.x, -b.min.y, -b.min.z);
   g.scale(...scale);
-  g.translate(frame.min.x, frame.min.y, frame.min.z);
+  // giữ tỉ lệ: mặt trước (bậc đá) trùng khung, phần sâu thừa dồn ra sau
+  g.translate(frame.min.x, frame.min.y, tune.keepRatio ? frame.max.z - size.z * u : frame.min.z);
   if (g.getAttribute('normal')) g.computeVertexNormals();
   g.computeBoundingBox();
   g.computeBoundingSphere();

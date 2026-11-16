@@ -51,6 +51,17 @@ describe('model nhà — khớp khung bản khối (V-88 NV3)', () => {
     expect(Float32Array.from(src.getAttribute('position').array)).toEqual(before);
   });
 
+  it('keepRatio (Canvas 3D &ty-le=giu): co đều theo bề ngang, trùng mặt trước + chân, dài ra sau', () => {
+    const src = new THREE.BoxGeometry(1, 0.66, 0.94); // khung bao nha-ta.glb (gần vuông)
+    const fit = fitToFrame(src, new THREE.MeshBasicMaterial(), frame, { ...NHA_MODEL_TUNE, keepRatio: true });
+    const b = new THREE.Box3().setFromObject(fit.mesh);
+    const u = frame.max.x - frame.min.x;
+    expect(fit.scale.every((s) => Math.abs(s - u) < 1e-6)).toBe(true);
+    expect(near(new THREE.Vector3(b.min.x, b.min.y, b.max.z), new THREE.Vector3(frame.min.x, frame.min.y, frame.max.z))).toBe(true);
+    expect(b.min.z).toBeLessThan(frame.min.z);
+    expect(fit.skew).toBeCloseTo(0, 6);
+  });
+
   it('yaw: model mặt tiền nhìn +x quay về +z trước khi co', () => {
     // hộp dài theo z (như nhà nằm ngang) → quay 90° thành dài theo x: co gần đều
     const src = new THREE.BoxGeometry(frame.max.z - frame.min.z, frame.max.y - frame.min.y, frame.max.x - frame.min.x);
