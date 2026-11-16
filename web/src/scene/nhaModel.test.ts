@@ -95,7 +95,8 @@ describe('model nhà — khớp khung bản khối (V-88 NV3)', () => {
 
 describe('ghép cảnh — va chạm / mặt đi trùng bản khối (V-88 NV4)', () => {
   const build = (model?: string): { colliders: Colliders; world: ReturnType<typeof buildWorld>; scene: THREE.Scene } => {
-    const spec = { ...home, buildings: home.buildings.map((b) => (b === nha && model ? { ...b, model } : b)) };
+    // không truyền model → nhà khối (bỏ `model` của nha-ta.json — đặt từ 2026-11-16 NV9)
+    const spec = { ...home, buildings: home.buildings.map((b) => (b === nha ? { ...b, model } : b)) };
     const scene = new THREE.Scene();
     const colliders = new Colliders();
     return { colliders, world: buildWorld(scene, colliders, spec), scene };
