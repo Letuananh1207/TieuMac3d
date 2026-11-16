@@ -21,7 +21,7 @@ Mức độ:
 
 ### L-24 · Cầm Nương mắt lé: hai con ngươi hướng vào trong, khác mắt các nhân vật khác
 
-- Trạng thái: mới · Mức độ: nhỏ (ngoại hình NPC) · Phần: model `design/models/cam-nu.glb` (texture Tripo) · Quy tắc: R-NPC-9
+- Trạng thái: chờ thử máy · Mức độ: nhỏ (ngoại hình NPC) · Phần: model `design/models/cam-nu.glb` (texture Tripo) · Quy tắc: R-NPC-9
 - Báo: 2026-11-16 — "mắt của nhân vật này đang rất sầu không linh hoạt … 2 con ngươi đang hướng vào trong nhìn rất xấu và không giống mắt các nhân vật còn lại"
 - Các bước: 1. Tới bàn đàn Cầm Nương. 2. Nhìn cận mặt.
 - Mong đợi / thực tế: tròng đen nằm giữa mắt như các nhân vật khác / hai tròng đen lệch vào phía mũi (lé).
@@ -29,9 +29,18 @@ Mức độ:
 
 **Sửa**
 - Hướng: sửa texture — dò vùng mắt (`matDo`), dời tròng đen ra giữa, vá lòng trắng; không tạo lại model (0 coin). Không đẹp → hỏi người dùng tạo lại bằng Tripo.
+- Nguyên nhân: texture Tripo vẽ tròng đen sát khoé trong (lòng trắng chỉ còn phía ngoài) — lỗi ảnh nướng, không phải lưới / mí.
+- Cách: script `web/scripts/model-mat-sua.mjs` (`npm run model:mat-sua -- cam-nu`, chạy trên glb gốc): dựng ảnh mặt trước 1280 px từ model, dò mắt
+  (`matDo`), tách lòng trắng / tròng, khớp elip tròng, dời tròng + đốm sáng về giữa ổ (trái −12,2 px, phải +11,1 px ≈ 7 % bề ngang ổ), vá lòng trắng
+  (bóng theo mép + nội suy điều hoà), ghi chênh lệch về texel qua UV. Chỉ đổi texture (1 699 texel); lưới / UV / xương / meshopt / unlit y nguyên.
+  `model:mat -- cam-nu` chạy lại (mat.json gần như không đổi). Thiết kế 2026-11-16.23.
+- Ảnh: `design/screens/Loi-L24-cam-nu-mat.png` (trước | sau: chính diện, chéo ¾, gảy đàn, so Thủ thư).
+- Thử máy: `cd web && npm run build` → app → tới bục đàn Quảng Trường, đứng trước mặt Cầm Nương nhìn cận (xoay camera chính diện + chéo): hai tròng đen
+  nằm giữa mắt, lòng trắng thấy cả hai bên, không vết vá / viền xám; lúc gảy đàn mắt lim dim + chớp vẫn khép đúng mắt. Còn lỗi → chụp cận mặt.
 
 **Lịch sử**
 - 2026-11-16: ghi.
+- 2026-11-16: sửa texture bằng script (dời tròng về giữa), chờ thử máy.
 
 ### L-23 · Hai tay nhân vật chính lúc đứng ép sát thân, trông xấu
 
