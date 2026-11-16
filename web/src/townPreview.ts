@@ -7,7 +7,7 @@
 import * as THREE from 'three';
 import type { Colliders } from './collision/colliders';
 import { placeNpcs, type Npc } from './player/npc';
-import { PLAYER_MODEL_URL } from './player/playerCharacter';
+import { playerModelUrl } from './player/playerCharacter';
 import { DRAFT_TOWN_NPCS } from './scene/npcDraft';
 import type { SceneSpec } from './scene/spec';
 import { GO_MO, TownNpcs } from './townNpcs';
@@ -33,7 +33,7 @@ export async function addTownPreview(
 ): Promise<TownPreview | null> {
   if (params.get('dang') !== 'go-mo') return null;
   const drafts = DRAFT_TOWN_NPCS.filter((d) => !spec.npcs.some((p) => p.id === d.id));
-  const { npcs, problems } = await placeNpcs(scene, colliders, drafts, groundAt, PLAYER_MODEL_URL);
+  const { npcs, problems } = await placeNpcs(scene, colliders, drafts, groundAt, playerModelUrl(params.get('nhan-vat')));
   const lines = [...problems];
   const go = drafts.find((d) => d.id === GO_MO);
   if (go?.route) {

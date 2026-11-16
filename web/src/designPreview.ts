@@ -34,7 +34,7 @@ import { buildWorld } from './scene/world';
 import { hourSlider, NgayDem } from './ngayDem';
 import { addTownPreview } from './townPreview';
 import { DanTranh } from './danTranh';
-import { PLAYER_MODEL_URL } from './player/playerCharacter';
+import { playerModelUrl } from './player/playerCharacter';
 import { addGardenPreview } from './vuonPreview';
 import { addDecorPreview } from './decorPreview';
 import { addTrucLamPreview } from './trucLamPreview';
@@ -251,12 +251,12 @@ async function boot(): Promise<void> {
     controls.target.set(tx, 1.5, tz);
   }
 
-  // ?dang=go-mo — bản thử Tiểu Khất + Lão Canh (model thế nhan-vat.glb), đường vòng B, &gio=08:59:50, &theo (townPreview.ts)
+  // ?dang=go-mo — bản thử Tiểu Khất + Lão Canh (model thế nhan-vat.glb hoặc `&nhan-vat=<mã>` — playerModelUrl), đường vòng B, &gio=08:59:50, &theo (townPreview.ts)
   const town = await addTownPreview(scene, colliders, spec, (x, z) => world.surface.heightAt(x, z), params);
   if (town?.lines.length) el('problems').append(...town.lines.map((t) => li(t)));
   // ?dang=vuon-rau — vườn rau điền sẵn + bảng mẫu 8 cây × 4 dáng (vuonPreview.ts, R-VUON-4)
-  // ?dang=dan-tranh — nhạc công thế (nhan-vat.glb; artifact không có .glb → đệ tử khối đứng) ngồi gảy trên bục đàn + tiếng đàn, để duyệt chỗ (R-NPC-9, R-AM-2)
-  const dan = params.get('dang') === 'dan-tranh' ? await DanTranh.create(scene, spec, (x, z) => world.surface.heightAt(x, z), { url: PLAYER_MODEL_URL, block: () => createDiscipleCharacter() }) : null;
+  // ?dang=dan-tranh — nhạc công thế (nhan-vat.glb hoặc `&nhan-vat=<mã>`; artifact không có .glb → đệ tử khối đứng) ngồi gảy trên bục đàn + tiếng đàn, để duyệt chỗ (R-NPC-9, R-AM-2)
+  const dan = params.get('dang') === 'dan-tranh' ? await DanTranh.create(scene, spec, (x, z) => world.surface.heightAt(x, z), { url: playerModelUrl(params.get('nhan-vat')), block: () => createDiscipleCharacter() }) : null;
   // ?dang=lam-vuon[&viec=…][&t=…] — nhân vật diễn 6 việc làm vườn + hạt / nước / sâu / cỏ / quả bay (vuonPreview.ts, R-VUON-13)
   const vuon = addGardenPreview(scene, spec, world.garden, params, (x, z) => world.surface.heightAt(x, z), character);
   if (vuon) el('problems').append(...vuon.lines.map((t) => li(t)));

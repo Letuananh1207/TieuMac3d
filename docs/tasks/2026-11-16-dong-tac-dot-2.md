@@ -77,8 +77,8 @@ cầu nối, Flutter, đặc tả cảnh, HUD, tay giả nhìn từ mắt, NPC H
       `bieu-cam`, `lam-vuon` với model Hunyuan hiện tại).
 - [x] 4. `mixamoRig.ts`: `bone(j)`, điểm nắm bàn tay phải, độ cao hông, góc chữ A + test trên khung xương giả.
 - [x] 5. `doLamVuon.ts`: gắn xương bất kỳ, dựng thẳng theo thân, bù co giãn + test.
-- [ ] 6. Nhánh Mixamo của `glbCharacter.ts` đủ dáng, đồ cầm tay, `toolTip`, `sitDrop`, `opts.player`.
-- [ ] 7. `playerCharacter.ts` `?nhan-vat=<mã>` + `playerModelUrl` cho trang thế.
+- [x] 6. Nhánh Mixamo của `glbCharacter.ts` đủ dáng, đồ cầm tay, `toolTip`, `sitDrop`, `opts.player`.
+- [x] 7. `playerCharacter.ts` `?nhan-vat=<mã>` + `playerModelUrl` cho trang thế.
 - [ ] 8. Kiểm Canvas 3D bằng thu-thu từng nhóm (di chuyển · đứng / chào · ngồi · biểu cảm · làm vườn · NPC thế gõ mõ /
       gảy đàn), chụp `design/screens/Dong-tac-nhan-vat-<nhóm>.png`, đo fps; xong khi người dùng duyệt ảnh từng nhóm.
 - [ ] 9. **Thay `nhan-vat.glb` bằng bản Tripo** (chờ model): `tripo.sh nhan-vat` → trình → `--dat`; kiểm xương / lưới /
