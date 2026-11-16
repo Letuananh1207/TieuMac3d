@@ -3,6 +3,19 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-16.7 — Tàng Thư Các: thủ thư Điển Thư đứng sau án đọc tầng 1
+
+- Loại: cảnh 3D — dữ liệu (đặt NPC). Phiên code V-20261116-82 làm thay việc `/canh` theo kế hoạch đã duyệt
+  `docs/tasks/2026-11-13-tang-thu-cac-muon-sach.md` (nhiệm vụ 11). Luật R-SACH-1, R-NPC-2, R-NPC-10.
+- `design/scene/scene.json` `npcs` thêm `thu-thu` ở (−33; −23), `rotY` 0° — sau án đọc giữa tầng 1 (án tâm (−33; −22), 1,4 × 0,7),
+  thẳng hai gian cửa giữa (x −36 … −30, cửa ở z ≈ −17,9), mặt nhìn ra cửa (+z): vào cửa là thấy. Người chơi đứng trước án
+  (z ≈ −21,3 … −20,5) cách 1,7–2,5 m → nút "Nói chuyện"; lối hai bên án rộng ~3 m tới kệ sau / kệ hồi; cầu thang tầng 2 ở ngoài đầu
+  hồi đông, không vướng. Đứng đúng sàn tầng 1 (`heightAt` lấy nền đá, không lấy sàn tầng 2).
+- **Chưa có quầy sách** — án đọc sẵn có làm quầy. Quầy riêng (nếu muốn) là "Cần code" trong `noi_that.ts` (`thuVien`), để sau.
+- `scene:check`: Không có lỗi. Góc cửa: 68 draw call · 105 752 tam giác (trong ngân sách).
+- Ảnh: `screens/Canh-thu-thu-cua.png` (từ gian cửa trái nhìn vào), `screens/Canh-thu-thu-noi-chuyen.png` (đứng trong tầm nói
+  chuyện), `screens/Canh-thu-thu-mat.png` (cận mặt trước).
+
 ## 2026-11-16.6 — Model thủ thư `thu-thu` bằng Tripo (đổi luồng tạo model nhân vật)
 
 - Loại: tài nguyên 3D (`/tai-nguyen`). Đáp ứng phiếu `docs/phieu_thiet_ke/2026-11-13-anh-thu-thu.md`.

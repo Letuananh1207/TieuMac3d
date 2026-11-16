@@ -52,9 +52,10 @@ bàn cờ. Không làm sách cầm trên tay nhân vật (để sau nếu muốn
 - [x] 9. Thẻ "Đọc sách" — áp 2026-11-13.28 (`web/src/ui/readBookButton.ts`).
 
 **Đợt C — tài nguyên + cảnh**
-- [ ] 10. (đang: hồ sơ `docs/tham_khao/thu-thu.md` + phiếu `2026-11-13-anh-thu-thu.md` đã đẩy — chờ bộ ảnh) `/tai-nguyen thu-thu` (một bước): khảo cứu thủ thư Tàng Thư Các → phiếu ảnh 4 góc cho `/ui-design` → bạn
+- [x] 10. (xong 2026-11-16: model làm bằng Tripo, `design/models/thu-thu.glb` — CHANGELOG 2026-11-16.6; trước: hồ sơ `docs/tham_khao/thu-thu.md` + phiếu `2026-11-13-anh-thu-thu.md` đã đẩy — chờ bộ ảnh) `/tai-nguyen thu-thu` (một bước): khảo cứu thủ thư Tàng Thư Các → phiếu ảnh 4 góc cho `/ui-design` → bạn
       chạy Gemini → Hunyuan3D → `design/models/thu-thu.glb`; đo dáng → `NPC_RIGS`.
-- [ ] 11. `/canh`: đặt thủ thư + quầy sách tầng 1 trong `scene.json` (`npcs`), kiểm `scene:check`, chụp duyệt.
+- [x] 11. `/canh`: đặt thủ thư + quầy sách tầng 1 trong `scene.json` (`npcs`), kiểm `scene:check`, chụp duyệt — xong
+      2026-11-16 (CHANGELOG 2026-11-16.7): (−33; −23) `rotY` 0, sau án đọc; chưa có quầy riêng (án đọc làm quầy).
 
 ## Kiểm tra cuối
 dart tool/check.dart --changed · cd web && npx tsc --noEmit && npm test && npm run build · cd app && flutter analyze ·
