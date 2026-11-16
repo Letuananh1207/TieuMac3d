@@ -122,7 +122,43 @@ export interface DongTacInput {
   turn?: number;
   /** góc nhìn người chơi (`lookYaw`), `null` = không nhìn */
   look?: number | null;
+  /** đang bay (nhảy — R-DIEU-6) */
+  air?: boolean;
+  /** 0 → 1: ngồi xếp bằng (R-DIEU-7, NPC ngồi R-NPC-6 / R-NPC-9) — nơi gọi làm mượt */
+  sit?: number;
+  /** ngồi hạ thân bao nhiêu (m, trước co giãn NPC) — đáy hông chạm mặt ngồi; thiếu = `SIT_DROP` */
+  sitDrop?: number;
 }
+
+/**
+ * Hằng dáng chạy (R-DIEU-5) — hoà dần từ đi bộ hết tốc (3,2 m/s) tới chạy hết tốc (7 m/s), cộng thêm vào số của `Tinh`
+ * (không thêm trường vào `Tinh` — bộ số đi / đứng đang chỉnh trên phòng thử).
+ */
+export const CHAY = {
+  /** tốc độ bắt đầu / hết hoà chạy (m/s) = WALK_SPEED / RUN_SPEED (controller.ts) */
+  tu: 3.2,
+  toi: 7,
+  /** cộng thêm biên độ đùi, gối co, vung tay (rad) */
+  buoc: 0.3,
+  goi: 0.8,
+  vungTay: 0.4,
+  /** khuỷu gập khi chạy hết tốc (rad, thay `khuyuCong`) */
+  khuyu: 1.2,
+  /** đổ người thêm (rad) */
+  doNguoi: 0.2,
+  /** nhún thêm (m) */
+  nhun: 0.05,
+  /** nhịp bước chậm lại (phần) — bước dài ra thay vì đạp nhanh */
+  nhipGiam: 0.4,
+};
+
+/** Dáng nhảy (R-DIEU-6): gối trước co lên, chân sau duỗi ra sau, tay giang giữ thăng bằng. */
+export const NHAY = { dui: -0.8, goi: 1.3, duiSau: 0.35, goiSau: 0.5, giangTay: 0.55, khuyu: 0.5 };
+
+/** Ngồi xếp bằng: hạ thân mặc định (m — như dáng 7 khớp cũ). */
+export const SIT_DROP = 0.3;
+/** Ngồi xếp bằng: đùi ra trước + dạng + xoay, gối gập vào giữa, tay đặt lên gối, thân hơi cúi. */
+export const NGOI = { dui: -1.4, dang: 0.75, xoayDui: 0.35, goi: 2.3, tayTruoc: 0.55, tayKhep: 0.05, khuyu: 0.75, cui: 0.1, dau: 0.12 };
 
 const WALK_REF = 3.2; // = WALK_SPEED (controller.ts) — m/s ứng với bước đủ biên độ
 const NPC_WALK = 1.1; // tốc độ đi thường của NPC (R-NPC-7) — dưới mức này biên độ giảm dần
@@ -140,6 +176,8 @@ export class DongTac {
   private nextShift: number;
   private nod = -1;
   private rnd: number;
+  private runB = 0;
+  private airB = 0;
 
   constructor(
     public tinh: Tinh,
@@ -168,6 +206,16 @@ export class DongTac {
     return this.move;
   }
 
+  /** 0…1: hoà dáng chạy (mượt) */
+  get running(): number {
+    return this.runB;
+  }
+
+  /** 0…1: dáng nhảy (mượt) */
+  get airborne(): number {
+    return this.airB;
+  }
+
   update(dt: number, input: DongTacInput): Pose {
     const t = this.tinh;
     const mps = Math.max(0, input.mps);
@@ -176,14 +224,22 @@ export class DongTac {
     const target = mps > 0.05 ? Math.min(1, 0.55 + 0.45 * Math.min(1, mps / NPC_WALK) * Math.min(1, 0.6 + mps / WALK_REF)) : 0;
     this.move += (target - this.move) * Math.min(1, dt * t.da);
     const m = this.move;
-    // nhịp bước theo tốc độ thật; dừng thì pha trôi nốt về bước gần nhất (chân khép) thay vì giật
-    if (mps > 0.05) this.phase += dt * t.nhip * Math.max(mps, 0.9);
-    else if (m > 0.01) this.phase += dt * t.nhip * 0.9 * m;
+    // chạy (R-DIEU-5) / nhảy (R-DIEU-6): hoà mượt; ngồi: nơi gọi đã làm mượt
+    const runT = Math.min(1, Math.max(0, (mps - CHAY.tu) / (CHAY.toi - CHAY.tu)));
+    this.runB += (runT - this.runB) * Math.min(1, dt * 6);
+    this.airB += ((input.air ? 1 : 0) - this.airB) * Math.min(1, dt * 14);
+    const rb = this.runB;
+    const ab = this.airB;
+    const sb = smooth(input.sit ?? 0);
+    // nhịp bước theo tốc độ thật; dừng thì pha trôi nốt về bước gần nhất (chân khép) thay vì giật; bay thì chân đứng nhịp
+    const rate = t.nhip * (1 - CHAY.nhipGiam * rb) * (1 - ab);
+    if (mps > 0.05) this.phase += dt * rate * Math.max(mps, 0.9);
+    else if (m > 0.01) this.phase += dt * rate * 0.9 * m;
     this.turnS += ((input.turn ?? 0) - this.turnS) * Math.min(1, dt * 6);
 
     const s = Math.sin(this.phase);
     const c = Math.cos(this.phase);
-    const still = 1 - m;
+    const still = (1 - m) * (1 - ab) * (1 - sb);
     const j = this.pose.j;
 
     /* ---- đứng: thở, dồn trọng tâm, nhìn quanh ---- */
@@ -212,7 +268,7 @@ export class DongTac {
     }
 
     /* ---- thân ---- */
-    const lean = t.doNguoi * m * Math.min(1.6, Math.max(0.6, mps / NPC_WALK));
+    const lean = (t.doNguoi * Math.min(1.6, Math.max(0.6, mps / NPC_WALK)) + CHAY.doNguoi * rb) * m;
     const roll = -t.nghiengRe * this.turnS * m;
     set(j.hips, 0, t.xoayHong * m * s, roll + sh + 0.02 * m * s);
     set(j.spine, lean * 0.5 + t.cong * 0.4 - t.tho * 0.3 * br * still, -t.xoayVai * m * s * 0.4, -sh * 0.6);
@@ -221,23 +277,26 @@ export class DongTac {
     set(j.neck, -lean * 0.4 - t.cong * 0.5 + nod * 0.4, yaw * 0.3, sh * 0.4);
     set(j.head, -lean * 0.3 - t.cong * 0.3 + nod * 0.6 + Math.sin(this.time * 0.5) * 0.02 * still, yaw * 0.5 + t.xoayVai * m * s * 0.3, sh * 0.3 + Math.sin(this.time * 1.1) * 0.025 * still);
 
-    /* ---- tay: vung từ vai, khuỷu trễ nhịp ---- */
-    const swing = t.vungTay * m;
+    /* ---- tay: vung từ vai, khuỷu trễ nhịp; chạy: vung mạnh, khuỷu gập ---- */
+    const swing = (t.vungTay + CHAY.vungTay * rb) * m * (1 - ab);
     const breathArm = t.tho * 0.6 * br * still;
     const lagS = Math.sin(this.phase - 0.7);
+    const bent = t.khuyuCong + (CHAY.khuyu - t.khuyuCong) * rb * m;
+    const lagK = t.khuyuTre * (1 - rb);
     set(j.armL, -t.tayTruoc - swing * s, 0, -(t.haTay - breathArm - 0.04 * m));
     set(j.armR, -t.tayTruoc + swing * s, 0, t.haTay - breathArm - 0.04 * m);
-    set(j.foreL, -t.khuyuCong - swing * t.khuyuTre * Math.max(0, -lagS) * 1.4, 0, 0);
-    set(j.foreR, -t.khuyuCong - swing * t.khuyuTre * Math.max(0, lagS) * 1.4, 0, 0);
+    set(j.foreL, -bent - swing * lagK * Math.max(0, -lagS) * 1.4, 0, 0);
+    set(j.foreR, -bent - swing * lagK * Math.max(0, lagS) * 1.4, 0, 0);
     set(j.handL, -0.05 - 0.08 * m * Math.max(0, -lagS), 0, 0);
     set(j.handR, -0.05 - 0.08 * m * Math.max(0, lagS), 0, 0);
 
-    /* ---- chân: đùi theo pha, gối co khi đưa lên, bàn chân giữ bằng ---- */
-    const amp = t.buoc * m;
+    /* ---- chân: đùi theo pha, gối co khi đưa lên, bàn chân giữ bằng; chạy: bước dài, gối co cao ---- */
+    const amp = (t.buoc + CHAY.buoc * rb) * m;
+    const knee = (t.goi + CHAY.goi * rb) * m;
     const thighL = s * amp;
     const thighR = -s * amp;
-    const kneeL = t.goi * m * Math.max(0, -c);
-    const kneeR = t.goi * m * Math.max(0, c);
+    const kneeL = knee * Math.max(0, -c);
+    const kneeR = knee * Math.max(0, c);
     set(j.upLegL, thighL - sh * 0.3, 0, -sh * 0.4);
     set(j.upLegR, thighR - sh * 0.3, 0, -sh * 0.4);
     set(j.legL, kneeL + Math.max(0, sh) * 0.15, 0, 0);
@@ -246,8 +305,46 @@ export class DongTac {
     set(j.footR, -(thighR + kneeR) * 0.6, 0, 0);
 
     // nhún: cao nhất khi chân qua thẳng đứng — 2 lần mỗi chu kỳ; hạ nhẹ khi gối co lúc dồn trọng tâm
-    this.pose.lift = t.nhun * m * (Math.abs(c) - 0.64) - Math.abs(sh) * 0.15 + t.tho * 0.15 * br * still;
+    this.pose.lift = (t.nhun + CHAY.nhun * rb) * m * (Math.abs(c) - 0.64) * (1 - ab) - Math.abs(sh) * 0.15 + t.tho * 0.15 * br * still;
+    if (ab > 0) this.jump(ab);
+    if (sb > 0) this.sit(sb, input.sitDrop ?? SIT_DROP);
     return this.pose;
+  }
+
+  /** nhảy (R-DIEU-6): gối trước co lên, chân sau duỗi, tay giang — trộn theo `w` */
+  private jump(w: number): void {
+    const j = this.pose.j;
+    const t = this.tinh;
+    mixTo(j.upLegL, [NHAY.dui, 0, 0], w);
+    mixTo(j.legL, [NHAY.goi, 0, 0], w);
+    mixTo(j.footL, [-(NHAY.dui + NHAY.goi) * 0.5, 0, 0], w);
+    mixTo(j.upLegR, [NHAY.duiSau, 0, 0], w);
+    mixTo(j.legR, [NHAY.goiSau, 0, 0], w);
+    mixTo(j.footR, [0.2, 0, 0], w);
+    mixTo(j.armL, [-t.tayTruoc, 0, -t.haTay + NHAY.giangTay], w);
+    mixTo(j.armR, [-t.tayTruoc, 0, t.haTay - NHAY.giangTay], w);
+    mixTo(j.foreL, [-NHAY.khuyu, 0, 0], w);
+    mixTo(j.foreR, [-NHAY.khuyu, 0, 0], w);
+  }
+
+  /** ngồi xếp bằng: đùi ra trước + dạng, gối gập vào giữa, tay đặt lên gối; hạ thân `drop` — trộn theo `w` */
+  private sit(w: number, drop: number): void {
+    const j = this.pose.j;
+    const t = this.tinh;
+    mixTo(j.upLegL, [NGOI.dui, NGOI.xoayDui, NGOI.dang], w);
+    mixTo(j.upLegR, [NGOI.dui, -NGOI.xoayDui, -NGOI.dang], w);
+    mixTo(j.legL, [NGOI.goi, 0, 0], w);
+    mixTo(j.legR, [NGOI.goi, 0, 0], w);
+    mixTo(j.footL, [0, 0, 0], w);
+    mixTo(j.footR, [0, 0, 0], w);
+    mixTo(j.hips, [0, 0, 0], w);
+    j.spine[0] += NGOI.cui * w;
+    j.head[0] += NGOI.dau * w;
+    mixTo(j.armL, [-NGOI.tayTruoc, 0, -t.haTay - NGOI.tayKhep], w);
+    mixTo(j.armR, [-NGOI.tayTruoc, 0, t.haTay + NGOI.tayKhep], w);
+    mixTo(j.foreL, [-NGOI.khuyu, 0, 0], w);
+    mixTo(j.foreR, [-NGOI.khuyu, 0, 0], w);
+    this.pose.lift -= drop * w;
   }
 
   /** Số giả ngẫu nhiên 0…1 có hạt giống (Park–Miller) — hai NPC cùng hạt giống cùng nhịp. */
@@ -255,6 +352,16 @@ export class DongTac {
     this.rnd = (this.rnd * 16807) % 2147483647;
     return (this.rnd - 1) / 2147483646;
   }
+}
+
+function smooth(x: number): number {
+  const v = Math.min(1, Math.max(0, x));
+  return v * v * (3 - 2 * v);
+}
+
+/** trộn góc khớp [e] về [to] theo trọng số [w] (tại chỗ) */
+function mixTo(e: Euler3, to: Euler3, w: number): void {
+  for (let i = 0; i < 3; i++) e[i] += (to[i] - e[i]) * w;
 }
 
 function set(e: Euler3, x: number, y: number, z: number): void {

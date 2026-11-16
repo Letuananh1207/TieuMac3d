@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { DongTac, LOOK_MAX, NOD_TIME, TINH, TINH_IDS, lookYaw } from './dongTac';
+import { CHAY, DongTac, LOOK_MAX, NGOI, NOD_TIME, SIT_DROP, TINH, TINH_IDS, lookYaw } from './dongTac';
 
 const deg = (r: number): number => (r * 180) / Math.PI;
 const run = (d: DongTac, secs: number, mps: number, look: number | null = null): void => {
@@ -115,6 +115,71 @@ describe('R-NPC-10: đi / đứng mềm', () => {
       }
       expect(maxShift).toBeGreaterThan(TINH[id].donTam * 0.3);
       expect(maxLook).toBeGreaterThan(0.02);
+    }
+  });
+});
+
+describe('R-DIEU-5/6/7: chạy, nhảy, ngồi (nhân vật chính xương chuẩn)', () => {
+  const maxOver = (d: DongTac, secs: number, mps: number, f: (p: DongTac['pose']) => number): number => {
+    let m = 0;
+    for (let i = 0; i < secs * 60; i++) m = Math.max(m, f(d.update(1 / 60, { mps })));
+    return m;
+  };
+  it('R-DIEU-5: chạy hết tốc — bước dài hơn, khuỷu gập ~CHAY.khuyu, đổ người nhiều hơn đi bộ', () => {
+    const walk = new DongTac(TINH['hoat-bat']);
+    const runner = new DongTac(TINH['hoat-bat']);
+    run(walk, 2, CHAY.tu);
+    run(runner, 2, CHAY.toi);
+    expect(runner.running).toBeGreaterThan(0.95);
+    expect(walk.running).toBeLessThan(0.01);
+    const thighW = maxOver(walk, 1, CHAY.tu, (p) => Math.abs(p.j.upLegL[0]));
+    const thighR = maxOver(runner, 1, CHAY.toi, (p) => Math.abs(p.j.upLegL[0]));
+    expect(thighR).toBeGreaterThan(thighW + 0.2);
+    expect(-runner.pose.j.foreL[0]).toBeGreaterThan(CHAY.khuyu * 0.9);
+    expect(runner.pose.j.spine[0]).toBeGreaterThan(walk.pose.j.spine[0]);
+  });
+  it('R-DIEU-5: nhịp bước khi chạy chậm lại theo CHAY.nhipGiam (bước dài, không đạp nhanh)', () => {
+    const a = new DongTac(TINH['hoat-bat']);
+    run(a, 2, CHAY.toi);
+    const p0 = a.stepPhase;
+    run(a, 1, CHAY.toi);
+    expect(a.stepPhase - p0).toBeCloseTo(TINH['hoat-bat'].nhip * (1 - CHAY.nhipGiam) * CHAY.toi, 0);
+  });
+  it('R-DIEU-6: nhảy — gối trước co lên (đùi ra trước, gối gập), tay giang; chạm đất thì về', () => {
+    const d = new DongTac(TINH['hoat-bat']);
+    run(d, 1, 0);
+    for (let i = 0; i < 30; i++) d.update(1 / 60, { mps: 0, air: true });
+    expect(d.airborne).toBeGreaterThan(0.95);
+    expect(d.pose.j.upLegL[0]).toBeLessThan(-0.6);
+    expect(d.pose.j.legL[0]).toBeGreaterThan(1);
+    expect(d.pose.j.armL[2]).toBeGreaterThan(-TINH['hoat-bat'].haTay + 0.4);
+    run(d, 1, 0);
+    expect(d.airborne).toBeLessThan(0.01);
+    expect(Math.abs(d.pose.j.upLegL[0])).toBeLessThan(0.1);
+  });
+  it('R-DIEU-7: ngồi — thân hạ đúng sitDrop, đùi ra trước, gối gập, tay đặt lên gối', () => {
+    const d = new DongTac(TINH['hoat-bat']);
+    for (let i = 0; i < 60; i++) d.update(1 / 60, { mps: 0, sit: 1, sitDrop: 0.42 });
+    expect(d.pose.lift).toBeLessThan(-0.42 + 0.03);
+    expect(d.pose.lift).toBeGreaterThan(-0.42 - 0.03);
+    expect(d.pose.j.upLegL[0]).toBeCloseTo(NGOI.dui, 6);
+    expect(d.pose.j.legR[0]).toBeCloseTo(NGOI.goi, 6);
+    expect(d.pose.j.upLegL[2]).toBeGreaterThan(0); // dạng ra (trái +x)
+    expect(d.pose.j.upLegR[2]).toBeLessThan(0);
+    expect(d.pose.j.foreL[0]).toBeCloseTo(-NGOI.khuyu, 6);
+    // không truyền độ hạ → SIT_DROP
+    const e = new DongTac(TINH['hoat-bat']);
+    for (let i = 0; i < 60; i++) e.update(1 / 60, { mps: 0, sit: 1 });
+    expect(e.pose.lift).toBeCloseTo(-SIT_DROP, 1);
+  });
+  it('R-DIEU-7: sit = 0 không đổi dáng đứng', () => {
+    const a = new DongTac(TINH['diem-tinh'], 4);
+    const b = new DongTac(TINH['diem-tinh'], 4);
+    for (let i = 0; i < 120; i++) {
+      const pa = a.update(1 / 60, { mps: 0 });
+      const pb = b.update(1 / 60, { mps: 0, sit: 0, air: false });
+      expect(pb.lift).toBeCloseTo(pa.lift, 9);
+      expect(pb.j.armL[2]).toBeCloseTo(pa.j.armL[2], 9);
     }
   });
 });
