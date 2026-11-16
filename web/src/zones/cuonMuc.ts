@@ -1,25 +1,26 @@
 /**
- * Mục in trên cuộn sách Ngồi ôn trước mắt (R-ON-8; thiết kế 2026-11-14.21 `NgoiMat-*`): chữ từng dòng mực, bố cục giấy
- * (px thiết kế: dọc 343 × 462, ngang 250 × 337 — V-43) và vùng chạm theo (u, v) trên giấy. Thuần — không three, không DOM;
- * vẽ ở `ui/cuonMucPaint.ts`. Chuỗi theo `design/l10n/vi.arb` (`reviewDue*`, `learnNew*`, `learnAt*`, `viewLearned*`,
- * `hintGoForest`, `standUp`). Ấn son chỉ chữ Việt "Ôn" (R-HUD-4).
+ * Mục in trên cuộn khi ngồi trước mắt (R-ON-8, V-45 — bảng chọn chức năng: Đọc sách · Bộ đã học · Nhiệm vụ hôm nay):
+ * chữ từng dòng mực, bố cục giấy (px thiết kế: dọc 343 × 462, ngang 250 × 337 — V-43; thiết kế 2026-11-14.21 `NgoiMat-*`)
+ * và vùng chạm theo (u, v) trên giấy. Bố cục lưới ô trải ngang chờ thiết kế (phiếu `2026-11-15-cuon-bang-chon`) — tới khi
+ * áp, 3 mục in thành 3 dòng như thiết kế cũ. Thuần — không three, không DOM; vẽ ở `ui/cuonMucPaint.ts`. Ấn son chỉ chữ
+ * Việt "Ôn" (R-HUD-4).
  */
 import { RADICALS, type Radical } from './radicals';
-import type { StudyItemId, StudyMenu } from './studyMenu';
+import type { ScrollItem, ScrollItemId } from './studyMenu';
 import { placeName } from './journeyMap';
 
 /** vùng học bộ thủ: tên lấy từ bản đồ (R-HANH-1), không viết cứng */
 const FOREST = placeName('rung-truc');
 
-export type CuonRowId = StudyItemId | 'stand';
-/** thường · nổi bật (vệt mực ngọc) · mờ (lý do) */
+export type CuonRowId = ScrollItemId | 'stand';
+/** thường · nổi bật (vệt mực ngọc — V-45 không mục nào nổi bật, giữ cho bố cục sau) · mờ (lý do) */
 export type CuonRowLook = 'thuong' | 'noi' | 'mo';
 
 export interface CuonRow {
-  id: StudyItemId;
+  id: ScrollItemId;
   look: CuonRowLook;
   title: string;
-  /** dòng phụ: các đoạn chữ, `han` = chữ Hán nội dung học (bộ thủ — R-HUD-4 cho phép) */
+  /** dòng phụ: các đoạn chữ, `han` = chữ Hán nội dung học (R-HUD-4 cho phép) */
   sub: { text: string; han?: boolean }[];
 }
 
@@ -27,51 +28,33 @@ export interface CuonView {
   /** dòng nơi đang ngồi ("Khởi Nguyên Trấn · Quảng Trường") */
   place: string;
   rows: CuonRow[];
-  /** chưa học bộ nào → dòng gợi ý đi Rừng trúc */
+  /** chưa học bộ nào → dòng gợi ý gặp Trúc Lão */
   hint: string | null;
 }
 
 export const CUON_TITLE = 'Ngồi ôn';
 export const CUON_SEAL = 'Ôn';
 export const STAND_UP = 'Đứng dậy';
-const HINT = `Chưa học bộ nào. Đến Truyền Tống Đài, chọn ${FOREST} rồi Ngồi ôn để học bộ đầu tiên.`;
-const REASON: Record<string, string> = {
-  reviewedToday: 'Hôm nay đã ôn xong',
-  learnInRegion: `Học ở ${FOREST}`,
-  allLearned: 'Đã học đủ',
-};
+export const CUON_HINT = `Chưa học bộ nào. Sang ${FOREST}, gặp Trúc Lão ở bãi hạc đáp để học bộ đầu tiên.`;
 
-/** Chữ các mục trên cuộn từ bảng chọn (`studyMenu`) + các bộ đến hạn (theo thứ tự hỏi). */
-export function cuonView(menu: StudyMenu, due: readonly string[], place: string, pool: readonly Radical[] = RADICALS): CuonView {
-  const byId = new Map(pool.map((r) => [r.id, r]));
-  const look = (id: StudyItemId, enabled: boolean): CuonRowLook => (!enabled ? 'mo' : menu.highlight === id ? 'noi' : 'thuong');
-  const rows = menu.items.map((it): CuonRow => {
-    if (it.id === 'review') {
-      if (!it.enabled)
-        return { id: 'review', look: 'mo', title: 'Ôn bộ đến hạn', sub: [{ text: it.reason === 'noneLearned' ? 'Chưa có bộ nào để ôn' : REASON.reviewedToday! }] };
-      const sub: CuonRow['sub'] = [];
-      for (const r of due.map((id) => byId.get(id)).filter((r): r is Radical => !!r).slice(0, 3)) {
-        sub.push({ text: r.form, han: true }, { text: ` ${r.name} · ` });
-      }
-      sub.push({ text: 'mỗi bộ 2 câu' });
-      return { id: 'review', look: look('review', true), title: `Ôn bộ đến hạn (${it.count})`, sub };
-    }
-    if (it.id === 'learn') {
-      if (!it.enabled) return { id: 'learn', look: 'mo', title: 'Học bộ mới', sub: [{ text: REASON[it.reason ?? ''] ?? '' }] };
-      const n = menu.next;
-      return {
-        id: 'learn',
-        look: look('learn', true),
-        title: 'Học bộ mới',
-        sub: n ? [{ text: 'Bộ kế tiếp: ' }, { text: n.form, han: true }, { text: ` ${n.name} — ${n.meaning}` }] : [],
-      };
-    }
-    return it.enabled
-      ? { id: 'learned', look: 'thuong', title: 'Xem bộ đã học', sub: [{ text: `${it.count} / ${pool.length} bộ` }] }
-      : { id: 'learned', look: 'mo', title: 'Xem bộ đã học', sub: [{ text: 'Chưa học bộ nào' }] };
+/** Chữ các mục trên cuộn từ bảng chọn (`scrollMenu`) + sổ từ đang mượn. */
+export function cuonView(
+  items: readonly ScrollItem[],
+  place: string,
+  book: { title: string; subtitle: string } | null,
+  pool: readonly Radical[] = RADICALS,
+): CuonView {
+  const rows = items.map((it): CuonRow => {
+    const look: CuonRowLook = it.enabled ? 'thuong' : 'mo';
+    if (it.id === 'book')
+      return { id: 'book', look, title: 'Đọc sách', sub: [{ text: it.enabled && book ? `${book.title} · ${book.subtitle}` : 'Mượn ở Tàng Thư Các' }] };
+    if (it.id === 'learned')
+      return { id: 'learned', look, title: 'Bộ đã học', sub: [{ text: it.enabled ? `${it.count ?? 0} / ${pool.length} bộ` : 'Chưa học bộ nào' }] };
+    const n = it.count;
+    return { id: 'daily', look, title: 'Nhiệm vụ hôm nay', sub: [{ text: n === null ? 'Xem việc hôm nay' : n > 0 ? `Còn ${n} việc` : 'Đã xong hôm nay' }] };
   });
-  const none = menu.items.find((i) => i.id === 'learned')?.enabled === false; // chưa học bộ nào
-  return { place, rows, hint: none ? HINT : null };
+  const none = items.find((i) => i.id === 'learned')?.enabled === false; // chưa học bộ nào
+  return { place, rows, hint: none ? CUON_HINT : null };
 }
 
 /** Hộp (px thiết kế, gốc góc trên trái giấy). */

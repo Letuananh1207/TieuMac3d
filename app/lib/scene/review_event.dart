@@ -24,7 +24,7 @@ class ReviewItem {
   final List<ReviewQuestion> questions;
 }
 
-/// JS nhờ mở màn ôn câu đố (ngồi thiền ở Rừng trúc khi còn bộ đến hạn — R-ON-5).
+/// JS nhờ mở màn ôn câu đố (thầy Trúc Lão ở Trúc Lâm — R-HANH-8; "Ôn ngay" ở bảng nhiệm vụ do Flutter tự mở — R-ON-5).
 class OpenReviewRequest {
   const OpenReviewRequest({required this.items, required this.region});
 

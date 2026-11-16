@@ -1,7 +1,8 @@
 /**
  * Hướng dẫn **Khu tự học** tầng 2 Tàng Thư Các (R-VA-5, thiết kế 2026-11-14.17): đứng gần biển gỗ "Khu tự học"
  * → nút nổi "Hướng dẫn" → bảng, cùng khung bảng cách chơi (`gameGuides.ts`, `ui/guidePanel.ts`). Chữ theo
- * `design/l10n/vi.arb` `studyGuide*`, nói đúng R-VA-4, R-ON-8, R-NGOI-1, R-VUNG-1. Thuần, không three, không DOM.
+ * `design/l10n/vi.arb` `studyGuide*` (V-45 đổi theo cuộn bảng chọn — chuỗi mới chờ thiết kế đặt), nói đúng R-VA-4, R-ON-8,
+ * R-NGOI-1, R-VUNG-1, R-HANH-8. Thuần, không three, không DOM.
  */
 import { gameGuide, type GameGuide, type GameSign } from './gameGuides';
 import { LIBRARIAN } from './library';
@@ -17,21 +18,21 @@ export const STUDY_GUIDE: GameGuide = {
   label: 'Hướng dẫn',
   eyebrow: 'Tàng Thư Các · Hướng dẫn',
   name: 'Khu tự học',
-  intro: 'Ngồi bồ đoàn, mở cuộn sách ôn bộ thủ đã học.',
+  intro: 'Ngồi bồ đoàn, mở cuộn bảng chọn: đọc sách, xem bộ đã học, nhiệm vụ hôm nay.',
   figure: 'tu-hoc',
-  caption: `Ngồi **1 giây** → cuộn sách mở. Ở đây **ôn** và **xem bộ đã học**; học bộ mới ở ${FOREST}.`,
+  caption: `Ngồi **1 giây** → cuộn mở: **đọc sách**, **xem bộ đã học**, **nhiệm vụ hôm nay** (ôn ở đó); học bộ mới ở ${FOREST}.`,
   sections: [
     {
       title: 'Ngồi vào bồ đoàn',
       body: 'Đứng gần một bồ đoàn đỏ → nút nổi **"Ngồi"**. Bấm → ngồi xếp bằng, quay mặt về phía nam. Bồ đoàn nào cũng được — 24 chỗ.',
     },
     {
-      title: 'Cuộn sách ôn',
-      body: 'Ngồi đủ **1 giây** → nhập định, cuộn sách mở trên tay. Chọn **"Ôn bộ đến hạn"** để ôn (ôn đúng được Văn tiền) hoặc **"Xem bộ đã học"** để mở lại thẻ cũ. Đóng thẻ / màn ôn → vẫn ngồi, cuộn sách hiện lại.',
+      title: 'Cuộn bảng chọn',
+      body: 'Ngồi đủ **1 giây** → nhập định, cuộn mở trên tay. **"Đọc sách"** mở sổ từ đang mượn, **"Bộ đã học"** mở lại thẻ cũ, **"Nhiệm vụ hôm nay"** mở bảng nhiệm vụ — bấm **"Ôn ngay"** ở đó để ôn (ôn đúng được Văn tiền). Đóng sổ / bảng → vẫn ngồi, cuộn hiện lại.',
     },
     {
       title: `Học bộ mới ở ${FOREST}`,
-      body: `Trong trấn, **"Học bộ mới"** mờ, ghi "Học ở ${FOREST}". Muốn học bộ mới: ra **Truyền Tống Đài**, chọn ${FOREST} rồi Ngồi ôn ở đó.`,
+      body: `Bộ thủ mới do **thầy Trúc Lão** dạy, ở bãi hạc đáp ${FOREST}. Bấm **Bản đồ**, chọn ${FOREST}, rồi nói chuyện với thầy → **"Học bộ mới"**.`,
     },
     {
       title: 'Đứng dậy',
@@ -44,7 +45,7 @@ export const STUDY_GUIDE: GameGuide = {
   none: {
     icon: 'ban-do',
     title: 'Đạo hữu chưa học bộ thủ nào',
-    body: `Cuộn sách ở đây chỉ để ôn, nên chưa có gì để ôn. Hãy tới **${FOREST}** học bộ đầu tiên — đi Truyền Tống Đài, chọn ${FOREST}.`,
+    body: `Chưa có bộ nào để ôn. Hãy tới **${FOREST}** gặp thầy Trúc Lão học bộ đầu tiên — bấm Bản đồ, chọn ${FOREST}.`,
   },
 };
 

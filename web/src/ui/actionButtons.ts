@@ -10,7 +10,7 @@ export interface ActionState {
   sitting: boolean;
   bowing: boolean;
   /** chấm son nút "Ngồi ôn" (R-DIEU-7): `due` = số bộ đến hạn, `new` = số bộ chưa học (vùng có bài học); `null` = không chấm */
-  badge: { n: number; kind: 'due' | 'new' } | null;
+  badge: { n: number; kind: 'due' } | null;
 }
 
 /** Chữ nút "Ngồi ôn" theo trạng thái (R-DIEU-7, thiết kế 2026-11-14.10 — chuỗi `actionSit*`). Thuần. */
@@ -20,7 +20,7 @@ export function sitButtonText(
 ): { label: string; aria: string; badge: string | null } {
   if (sitting) return { label: 'Đang ôn', aria: 'Đang ôn, bấm để đứng dậy', badge: null };
   if (!badge) return { label: 'Ngồi ôn', aria: 'Ngồi ôn', badge: null };
-  const aria = badge.kind === 'due' ? `Ngồi ôn, còn ${badge.n} bộ đến hạn` : `Ngồi ôn, còn ${badge.n} bộ chưa học`;
+  const aria = `Ngồi ôn, còn ${badge.n} bộ đến hạn`;
   return { label: 'Ngồi ôn', aria, badge: badge.n >= 100 ? '99+' : String(badge.n) };
 }
 

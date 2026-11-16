@@ -97,7 +97,7 @@ function duelFigure(): HTMLElement {
 function studyFigure(): HTMLElement {
   const row = node('div', 'gp-study');
   row.setAttribute('role', 'img');
-  row.setAttribute('aria-label', 'Hình minh hoạ: người ngồi bồ đoàn mở cuộn sách, cuộn có 3 mục — Ôn bộ đến hạn sáng, Học bộ mới mờ, Xem bộ đã học');
+  row.setAttribute('aria-label', 'Hình minh hoạ: người ngồi bồ đoàn mở cuộn sách, cuộn có 3 mục — Đọc sách, Bộ đã học, Nhiệm vụ hôm nay');
   const s = svg('svg', { viewBox: '-90 -165 180 175', 'aria-hidden': 'true' });
   const robe = { fill: '#F4F4EF', stroke: '#2B5446', 'stroke-width': 1.6 };
   s.append(
@@ -121,7 +121,7 @@ function studyFigure(): HTMLElement {
   }
   const menu = node('div', 'gp-mini');
   menu.setAttribute('aria-hidden', 'true');
-  menu.append(node('span', 'on', 'Ôn bộ đến hạn (2)'), node('span', 'off', 'Học bộ mới'), node('span', '', 'Xem bộ đã học'));
+  menu.append(node('span', '', 'Đọc sách'), node('span', '', 'Bộ đã học'), node('span', '', 'Nhiệm vụ hôm nay')); // R-ON-8 (V-45)
   row.append(s, menu);
   return row;
 }

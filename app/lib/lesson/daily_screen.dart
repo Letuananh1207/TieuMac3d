@@ -209,8 +209,8 @@ class _DailyScreenState extends State<DailyScreen> {
         : s.learnDone
             ? 'Đã học $dailyNewGoal bộ mới hôm nay${_v.learnedToday.isEmpty ? '' : ': ${_v.learnedToday.map(_form).join(' ')}'}.' // dailyLearnDone
             : _v.learnedTotal == 0
-                ? 'Học $dailyNewGoal bộ thủ mới. Tới Truyền Tống Đài → $firstRegion, ngồi thiền để lĩnh hội bộ đầu tiên.' // dailyLearnFirst
-                : 'Học $dailyNewGoal bộ thủ mới. Ngồi thiền ở $firstRegion để lĩnh hội bộ kế tiếp.'; // dailyLearnSub
+                ? 'Học $dailyNewGoal bộ thủ mới. Sang $firstRegion, gặp thầy Trúc Lão để lĩnh hội bộ đầu tiên.' // dailyLearnFirst (V-45 — R-HANH-8)
+                : 'Học $dailyNewGoal bộ thủ mới. Gặp thầy Trúc Lão ở $firstRegion để lĩnh hội bộ kế tiếp.'; // dailyLearnSub (V-45)
     final items = _items;
     return [
       DailyTask(

@@ -22,7 +22,7 @@ import { CuonSach } from './scene/cuonSach';
 import { JOURNEY_MAP, placeStates } from './zones/journeyMap';
 import { RADICALS } from './zones/radicals';
 import { cuonView } from './zones/cuonMuc';
-import { studyMenu } from './zones/studyMenu';
+import { scrollMenu } from './zones/studyMenu';
 import { viewDistance } from './scene/farMountains';
 import { mergeStatic } from './scene/merge';
 import { portalRect } from './scene/portals';
@@ -383,10 +383,12 @@ async function boot(): Promise<void> {
       }
     } else character.facing.rotation.y = 0;
     if (place.kind === 'on') {
-      // mục mẫu trên cuộn (`NgoiMat-on`): 2 bộ đến hạn, đã học 5 bộ, trấn không học bộ mới; &muc=chua-hoc — chưa học bộ nào
-      const learned = params.get('muc') === 'chua-hoc' ? [] : RADICALS.slice(0, 5).map((r) => r.id);
-      const due = learned.slice(0, 2);
-      ngoi.setMenu(cuonView(studyMenu({ due, learned, hasLessons: !!spec.lessons.radicals }), due, spec.site.name));
+      // mục mẫu trên cuộn (R-ON-8, V-45): mượn HSK 1, đã học 5 bộ, còn 1 việc; &muc=chua-muon — chưa mượn sách;
+      // &muc=chua-hoc — chưa mượn, chưa học bộ nào
+      const muc = params.get('muc');
+      const learned = muc === 'chua-hoc' ? [] : RADICALS.slice(0, 5).map((r) => r.id);
+      const book = muc === 'chua-hoc' || muc === 'chua-muon' ? null : { title: 'HSK 1', subtitle: 'Nhập môn' };
+      ngoi.setMenu(cuonView(scrollMenu({ book, learned, tasksLeft: 1 }), spec.site.name, book));
     }
     world.update(1, character.root.position); // trong nhà: mái mờ sẵn
     // camera ngôi 3 lúc trước khi ngồi: sau lưng như app

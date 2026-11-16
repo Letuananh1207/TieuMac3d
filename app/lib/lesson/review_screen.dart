@@ -224,7 +224,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
     final daily = widget.daily?.call();
     final hint = [
       if (counts[0] > 0) 'Bộ "chưa nhớ" sẽ hỏi lại ngày mai.',
-      if (daily != null && !daily.learnDone) 'Còn việc Lĩnh hội ${daily.newToday}/$dailyNewGoal — ngồi thiền ở $firstRegion.',
+      if (daily != null && !daily.learnDone) 'Còn việc Lĩnh hội ${daily.newToday}/$dailyNewGoal — gặp thầy Trúc Lão ở $firstRegion.', // V-45 — R-HANH-8
       if (daily != null && daily.done) 'Hôm nay đã xong cả 2 việc trên bảng.',
     ].join(' ');
     final head = Column(

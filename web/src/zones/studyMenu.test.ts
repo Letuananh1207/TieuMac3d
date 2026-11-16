@@ -1,82 +1,49 @@
 import { describe, expect, it } from 'vitest';
 import { RADICALS } from './radicals';
-import { fallbackStudy, sitBadge, studyMenu } from './studyMenu';
+import { scrollMenu, sitBadge } from './studyMenu';
 
 const ids = RADICALS.map((r) => r.id);
 const first5 = ids.slice(0, 5);
+const HSK1 = { title: 'HSK 1', subtitle: 'Nhập môn' };
 
-describe('Cuộn sách Ngồi ôn — bảng chọn', () => {
-  it('R-ON-8: tông môn, 2 bộ đến hạn, đã học 5 → Ôn (2) nổi bật, Học bộ mới mờ "Học ở Trúc Lâm", Xem bộ đã học', () => {
-    const m = studyMenu({ due: ['truc', 'moc'], learned: first5, hasLessons: false });
-    expect(m.items.map((i) => i.id)).toEqual(['review', 'learn', 'learned']);
-    expect(m.items[0]).toEqual({ id: 'review', enabled: true, reason: null, count: 2 });
-    expect(m.items[1]).toEqual({ id: 'learn', enabled: false, reason: 'learnInRegion', count: 0 });
-    expect(m.items[2]).toEqual({ id: 'learned', enabled: true, reason: null, count: 5 });
-    expect(m.highlight).toBe('review');
-    expect(m.next).toBeNull();
+describe('cuộn khi ngồi — bảng chọn chức năng (R-ON-8, V-45)', () => {
+  it('R-ON-8: đang mượn sách, đã học 5 bộ → 3 mục dùng được theo thứ tự Đọc sách · Bộ đã học · Nhiệm vụ hôm nay', () => {
+    const m = scrollMenu({ book: HSK1, learned: first5, tasksLeft: 1 });
+    expect(m.map((i) => [i.id, i.enabled])).toEqual([
+      ['book', true],
+      ['learned', true],
+      ['daily', true],
+    ]);
+    expect(m[1]!.count).toBe(5);
+    expect(m[2]!.count).toBe(1);
   });
 
-  it('R-ON-8: ôn xong → Ôn mờ "Hôm nay đã ôn xong"', () => {
-    const m = studyMenu({ due: [], learned: first5, hasLessons: false });
-    expect(m.items[0]).toEqual({ id: 'review', enabled: false, reason: 'reviewedToday', count: 0 });
-    expect(m.highlight).toBeNull();
+  it('R-ON-8: chưa mượn, chưa học → "Đọc sách" mờ (noBook), "Bộ đã học" mờ (noneLearned), Nhiệm vụ vẫn dùng được', () => {
+    const m = scrollMenu({ book: null, learned: [], tasksLeft: null });
+    expect(m.map((i) => [i.id, i.enabled, i.reason])).toEqual([
+      ['book', false, 'noBook'],
+      ['learned', false, 'noneLearned'],
+      ['daily', true, null],
+    ]);
+    expect(m[2]!.count).toBeNull();
   });
 
-  it('R-ON-8 / R-HANH-3: Trúc Lâm, không bộ đến hạn → Học bộ mới nổi bật, bộ chưa học đầu tiên', () => {
-    const m = studyMenu({ due: [], learned: ['truc'], hasLessons: true });
-    expect(m.items[1]).toEqual({ id: 'learn', enabled: true, reason: null, count: RADICALS.length - 1 });
-    expect(m.highlight).toBe('learn');
-    expect(m.next?.id).toBe(ids[1]);
-    expect(m.upcoming.map((r) => r.id)).toEqual(ids.slice(2));
-  });
-
-  it('R-ON-8: Trúc Lâm còn bộ đến hạn → Ôn nổi bật dù học bộ mới được', () => {
-    const m = studyMenu({ due: ['truc'], learned: ['truc'], hasLessons: true });
-    expect(m.items[1].enabled).toBe(true);
-    expect(m.highlight).toBe('review');
-  });
-
-  it('R-ON-8: học đủ 50 bộ → Học bộ mới mờ "Đã học đủ"', () => {
-    const m = studyMenu({ due: [], learned: ids, hasLessons: true });
-    expect(m.items[1]).toEqual({ id: 'learn', enabled: false, reason: 'allLearned', count: 0 });
-    expect(m.next).toBeNull();
-    expect(m.upcoming).toEqual([]);
-    expect(m.highlight).toBeNull();
-  });
-
-  it('R-ON-8: chưa học bộ nào → Ôn mờ "Chưa có bộ nào để ôn", Xem bộ đã học mờ, không mục nổi bật', () => {
-    const m = studyMenu({ due: [], learned: [], hasLessons: false });
-    expect(m.items[0]).toEqual({ id: 'review', enabled: false, reason: 'noneLearned', count: 0 });
-    expect(m.items[1]).toEqual({ id: 'learn', enabled: false, reason: 'learnInRegion', count: 0 });
-    expect(m.items[2]).toEqual({ id: 'learned', enabled: false, reason: 'noneLearned', count: 0 });
-    expect(m.highlight).toBeNull();
-  });
-
-  it('R-ON-8: mã lạ trong tiến độ bị bỏ qua khi đếm', () => {
-    const m = studyMenu({ due: ['khong-co', 'truc'], learned: ['truc', 'khong-co'], hasLessons: false });
-    expect(m.items[0].count).toBe(1);
-    expect(m.items[2].count).toBe(1);
-  });
-
-  it('R-ON-8: không có Flutter → đến hạn thì ôn; không thì ở vùng có bài học → thẻ bộ mới; còn lại không mở gì', () => {
-    expect(fallbackStudy(studyMenu({ due: ['truc'], learned: ['truc'], hasLessons: false }))).toBe('review');
-    expect(fallbackStudy(studyMenu({ due: [], learned: [], hasLessons: true }))).toBe('learn');
-    expect(fallbackStudy(studyMenu({ due: [], learned: first5, hasLessons: false }))).toBeNull();
-    expect(fallbackStudy(studyMenu({ due: [], learned: ids, hasLessons: true }))).toBeNull();
+  it('R-ON-8: cuộn không còn mục ôn / học bộ mới ở bất kỳ đâu (R-VUNG-1)', () => {
+    const m = scrollMenu({ book: null, learned: ['khong-co', 'truc'], tasksLeft: 2 });
+    expect(m.map((i) => i.id)).not.toContain('review');
+    expect(m.map((i) => i.id)).not.toContain('learn');
+    expect(m[1]!.count).toBe(1); // mã lạ không tính
   });
 });
 
-describe('Nút Ngồi ôn — chấm son', () => {
-  it('R-DIEU-7: còn bộ đến hạn → số bộ đến hạn (tông môn cũng có)', () => {
-    expect(sitBadge({ due: ['truc', 'moc', 'thuy', 'son'], learned: first5, hasLessons: false })).toEqual({ n: 4, kind: 'due' });
+describe('chấm son nút Ngồi ôn (R-DIEU-7)', () => {
+  it('R-DIEU-7: 4 bộ đến hạn → chấm "4" kiểu đến hạn', () => {
+    expect(sitBadge(['truc', 'moc', 'thuy', 'son'])).toEqual({ n: 4, kind: 'due' });
   });
 
-  it('R-DIEU-7: Trúc Lâm, không bộ đến hạn, học 3 bộ → 47', () => {
-    expect(sitBadge({ due: [], learned: ids.slice(0, 3), hasLessons: true })).toEqual({ n: 47, kind: 'new' });
-  });
-
-  it('R-DIEU-7: tông môn không bộ đến hạn → không chấm; học đủ ở Trúc Lâm → không chấm', () => {
-    expect(sitBadge({ due: [], learned: first5, hasLessons: false })).toBeNull();
-    expect(sitBadge({ due: [], learned: ids, hasLessons: true })).toBeNull();
+  it('R-DIEU-7: không bộ đến hạn → không chấm (kể cả ở Trúc Lâm còn bộ chưa học); mã lạ không tính', () => {
+    expect(sitBadge([])).toBeNull();
+    expect(sitBadge(['khong-co'])).toBeNull();
+    expect(sitBadge(['khong-co', 'truc'])).toEqual({ n: 1, kind: 'due' });
   });
 });

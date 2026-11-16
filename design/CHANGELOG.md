@@ -3,6 +3,16 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-16.5 — Trúc Lâm: thầy Trúc Lão ở bãi hạc đáp (dạy bộ thủ)
+
+- Loại: cảnh 3D — dữ liệu (đặt NPC) + luồng / luật. Phiên code V-20261114-45 làm thay việc `/canh` theo kế hoạch đã duyệt
+  2026-11-16 (`docs/tasks/2026-11-15-cuon-bang-chon.md` — Q1 phương án A). Luật R-HANH-8 (mới), R-HANH-3, R-NPC-1.
+- `design/scene/rung-truc.json` `npcs` thêm `truc-lao` ở (−3,6; 33,2), `rotY` 32° — mép bắc bãi hạc đáp (sân đá trống tâm
+  (0; 39), bán kính 4,7 — cách tâm 6,8 m, ngoài sân), cạnh lối lát lên bắc (x −1,75 … 1,75), mặt nhìn về giữa sân: người
+  xuống hạc ở (−1,25; 39) nhìn bắc là thấy thầy. Chưa có model riêng → thế bằng khối (áo lục trúc sẫm, tóc bạc — R-NPC-1);
+  model riêng sau qua `/ui-design` (ảnh 4 góc) → `/tai-nguyen`.
+- `scene:check`: vùng bật `lessons.radicals` mà thiếu NPC `truc-lao` → lỗi.
+
 ## 2026-11-16.1 — Vườn kiểu 摩尔 (lõi): sâu / cỏ / phân bón, nhân vật diễn động tác, hạt / nước / đất ẩm, cây nảy (HUD chờ thiết kế)
 
 - Loại: cảnh 3D — ngoại hình + luồng / luật (Cần code, đã làm). Phiên code V-20261115-73 (kế hoạch `docs/tasks/2026-11-15-vuon-mole.md`;

@@ -3,8 +3,11 @@
   chức năng hơn là hiện tại ví dụ: đọc sách,..." — người dùng đã chốt: bố cục **lưới ô** (cuộn trải ngang rộng, ô vuông
   có hình + tên, "Đứng dậy" ở góc); mục **Đọc sách** + **Xem bộ đã học** + chừa chỗ mục sau; **bỏ "Ôn bộ đến hạn" và
   "Học bộ mới" khỏi cuộn — học / ôn chuyển chỗ khác** (đã được nhắc "Học bộ mới" trên cuộn ở Rừng trúc là cách duy nhất).
-- Loại: sửa hành vi + giao diện (cuộn) + thêm (chỗ học bộ mới ở Rừng trúc) · Cỡ: lớn · Trạng thái: đã duyệt 2026-11-16 (theo đề xuất: A Trúc Lão + ô Nhiệm vụ hôm nay) — chờ V-79 (L-12) gộp rồi làm
-- Phiếu thiết kế: `docs/phieu_thiet_ke/2026-11-15-cuon-bang-chon.md` (nháp — chờ duyệt kế hoạch)
+- Loại: sửa hành vi + giao diện (cuộn) + thêm (chỗ học bộ mới ở Rừng trúc) · Cỡ: lớn · Trạng thái: chờ thiết kế (phần hành vi + dữ liệu xong 2026-11-16 trên nhánh `viec/cuon-bang-chon`; còn bố cục lưới ô + cuộn ngang)
+- Phiếu thiết kế: `docs/phieu_thiet_ke/2026-11-15-cuon-bang-chon.md` (chờ thiết kế)
+- **Người dùng duyệt 2026-11-16** theo đúng đề xuất: Q1 = A (thầy Trúc Lão ở Trúc Lâm dạy "Học bộ mới" + "Ôn bộ đến hạn (n)" qua
+  khung thoại); Q2 = có ô "Nhiệm vụ hôm nay" trên cuộn (cuộn 4 ô: Đọc sách · Bộ đã học · Nhiệm vụ hôm nay · Sắp có; bỏ Ôn /
+  Học bộ mới khỏi cuộn); Q4 = model tạm (thế bằng khối như NPC trò chơi chưa có model — không gọi Hunyuan).
 
 ## 1. Học bộ mới ở đâu (Rừng trúc)
 
@@ -168,28 +171,28 @@ Không thêm thư mục `web/src`.
 
 ## Nhiệm vụ
 
-- [ ] 0. Người dùng chốt Q1–Q4 + duyệt phiếu → phiếu `chờ thiết kế`; `/ui-design` vẽ cuộn lưới ô; `/canh` đặt Trúc Lão trong
+- [~] 0. Người dùng chốt Q1–Q4 + duyệt phiếu → phiếu `chờ thiết kế`; `/ui-design` vẽ cuộn lưới ô; `/canh` đặt Trúc Lão trong
   `design/scene/rung-truc.json` (thiết kế — xong khi CHANGELOG có mục mới + `scene:check` đạt).
-- [ ] 1. Sổ luật: sửa R-ON-8, R-HANH-3, R-ON-5, R-VUNG-1/2/3, R-DIEU-7, R-VA-4/5, R-NV-3, R-SACH-2 (+R-NPC-1), thêm R-HANH-6
+- [x] 1. Sổ luật: sửa R-ON-8, R-HANH-3, R-ON-5, R-VUNG-1/2/3, R-DIEU-7, R-VA-4/5, R-NV-3, R-SACH-2 (+R-NPC-1), thêm R-HANH-6
   theo mục 4 → `/dong-bo-quy-tac` (Claude tự chép). (`docs/testing/quy_tac.md` · xong khi `rule_trace.dart --pending` trống.)
-- [ ] 2. `docs/bridge.md` cột "lúc gửi" của `openRadical`, `openReview`, `openLearned`, `openBook`, `openDaily`. (xong khi hai
+- [x] 2. `docs/bridge.md` cột "lúc gửi" của `openRadical`, `openReview`, `openLearned`, `openBook`, `openDaily`. (xong khi hai
   phía đọc cùng chỗ gửi; không đổi dạng.)
-- [ ] 3. Dữ liệu Trúc Lão: `zones/trucLao.ts` (thoại theo `learned`, `due`) + `NPC_IDS` `truc-lao` + model tạm (Q4) + Mặc Ông
+- [x] 3. Dữ liệu Trúc Lão: `zones/trucLao.ts` (thoại theo `learned`, `due`) + `NPC_IDS` `truc-lao` + model tạm (Q4) + Mặc Ông
   câu `hoc`. (zones / scene/spec · test `zones/trucLao.test.ts`: chưa học → "Học bộ mới — bộ trúc"; 2 đến hạn → "(2)"; đủ 50 →
   không lựa chọn học; `dialogs.test.ts` · xong khi vitest xanh.)
-- [ ] 4. Dữ liệu ô cuộn: `zones/studyMenu.ts` (ô + lý do + chấm son đến hạn) + `zones/cuonMuc.ts` (`cuonView`, `cuonLayout`
+- [~] 4. Dữ liệu ô cuộn: `zones/studyMenu.ts` (ô + lý do + chấm son đến hạn) + `zones/cuonMuc.ts` (`cuonView`, `cuonLayout`
   lưới ô dọc / ngang theo phiếu, `cuonHit`, gợi ý mới). (zones · test: 4 ô đúng thứ tự, mờ + lý do, chạm góc "Đứng dậy", ô ≥ 44
   px ở 360 × 640 và 640 × 360, gợi ý đủ câu · **chờ thiết kế** cho số px cuối — làm trước với số tạm ở mục 3 được.)
 - [ ] 5. Cuộn 3D: giấy 0,48 × 0,27, `fitScroll` hằng mới, trục, tay gần ô trỏ, tay yên không đè chữ. (scene · test
   `ngoiMatKhung.test.ts`: giấy giữa màn ~66 % cao / ~90 % ngang, tay ngoài giấy · đo fps trước / sau — quy tắc 4.)
 - [ ] 6. Vẽ ô trên giấy + nút ẩn đọc màn hình: `ui/cuonMucPaint.ts`. (ui · **chờ thiết kế** (`2026-11-15-cuon-bang-chon`).)
-- [ ] 7. Nút ngồi: tên (Q3) + chấm son chỉ đến hạn: `ui/actionButtons.ts`, `index.html`. (ui · test `actionButtons.test.ts`.)
-- [ ] 8. Ghép: `web/src/trucLao.ts` + `main.ts` (`pickScroll` 3 ô, bỏ ôn / học khỏi cuộn, `dialogFor`, thoại mở lại sau
+- [x] 7. Nút ngồi: tên (Q3) + chấm son chỉ đến hạn: `ui/actionButtons.ts`, `index.html`. (ui · test `actionButtons.test.ts`.)
+- [x] 8. Ghép: `web/src/trucLao.ts` + `main.ts` (`pickScroll` 3 ô, bỏ ôn / học khỏi cuộn, `dialogFor`, thoại mở lại sau
   `resume`); `ngoiMat.ts` tay trỏ theo ô. (ghép · thử tay `npm run dev`: Rừng trúc gặp Trúc Lão học 竹 → thoại "bộ mộc"; trấn
   ngồi → 4 ô, Đọc sách mở sổ, đóng → cuộn hiện lại.)
-- [ ] 9. Chữ hướng dẫn khu tự học `zones/studyGuide.ts` + Canvas 3D `designPreview.ts` (`?dang=ngoi-mat` 3 trạng thái).
+- [x] 9. Chữ hướng dẫn khu tự học `zones/studyGuide.ts` + Canvas 3D `designPreview.ts` (`?dang=ngoi-mat` 3 trạng thái).
   (test `studyGuide.test.ts`.)
-- [ ] 10. Flutter: kiểm `daily_screen` / thẻ bộ thủ mở từ Trúc Lão (đứng) đóng đúng; sửa nếu lệch. (`app/lib/lesson/` ·
+- [x] 10. Flutter: kiểm `daily_screen` / thẻ bộ thủ mở từ Trúc Lão (đứng) đóng đúng; sửa nếu lệch. (`app/lib/lesson/` ·
   `flutter test test/scene test/lesson`.)
 - [ ] 11. Build + kiểm cuối; thử máy: màn dọc / ngang, 360 × 640, tay trái / phải trỏ ô.
 
@@ -206,3 +209,35 @@ cd app && flutter analyze · flutter test -r failures-only test/scene test/lesso
 - Q2 ô "Nhiệm vụ hôm nay": **để sau**.
 - Q3 tên nút "Ngồi ôn": người dùng gợi ý **"Học"** ("Học hay gì đó") — chốt khi làm (cân nhắc trùng nghĩa nếu cuộn không còn học).
 - Q4 model Trúc Lão: **chờ model riêng** (ảnh 4 góc `/ui-design` → `/tai-nguyen`).
+
+
+## Làm 2026-11-16 (V-20261114-45, nhánh `viec/cuon-bang-chon`)
+
+Kế hoạch viết 2026-11-15 đã cũ một phần — làm theo cảnh hiện tại:
+- Vùng tên **Trúc Lâm** (V-53), không còn "Cửa rừng" / vòng trận (V-65 → **bãi hạc đáp** = sân đá trống tâm (0; 39)), địa hình
+  làm lại (V-66). Trúc Lão đặt ở **(−3,6; 33,2)**, `rotY` 32° — mép bắc bãi hạc đáp, cạnh lối lát lên bắc, nhìn về giữa sân
+  (người xuống hạc ở (−1,25; 39) nhìn bắc thấy ngay). `design/scene/rung-truc.json` + CHANGELOG 2026-11-16.5 (phiên code làm thay
+  `/canh`); `scene:check` báo lỗi nếu vùng có `lessons.radicals` mà thiếu `truc-lao`.
+- **Mã luật mới là R-HANH-8** (R-HANH-6 đã dùng cho "Bản đồ từ mọi nơi", R-HANH-7 "Về nhà").
+- Gợi ý: "Chưa học bộ nào. Sang Trúc Lâm, gặp Trúc Lão ở bãi hạc đáp để học bộ đầu tiên."
+- **Q3 (tên nút "Ngồi ôn")**: chưa chốt (người dùng gợi ý "Học", đề xuất "Tĩnh toạ") → **giữ "Ngồi ôn" / "Đang ôn" / ấn "Ôn"**, không đổi.
+- **Giao diện cuộn**: lưới ô trải ngang chưa có thiết kế → không dựng tạm. Cuộn giữ giấy 0,26 × 0,35 và kiểu 3 dòng mục đã
+  thiết kế (2026-11-14.21), nội dung đổi thành 3 mục mới **Đọc sách · Bộ đã học · Nhiệm vụ hôm nay** (không nổi bật; ô "Sắp có"
+  chỉ có ở bố cục lưới). Biểu tượng dòng Đọc sách / Nhiệm vụ: nét đơn giản cùng họ biểu tượng cũ — hình ô thật chờ thiết kế.
+  Ngón trỏ vẫn tay phải.
+
+Đã làm: sổ luật (R-ON-8, R-ON-5, R-HANH-3, R-HANH-8 mới, R-VUNG-1/2/3, R-DIEU-7, R-VA-4/5, R-NV-3, R-SACH-2, R-NPC-1);
+`docs/bridge.md` cột "lúc gửi"; `zones/trucLao.ts` (+ test), ghép `web/src/trucLao.ts`; `zones/studyMenu.ts` `scrollMenu` +
+`sitBadge` chỉ đến hạn (`studyMenu` cũ chỉ còn cho `openStudy` thôi dùng); `zones/cuonMuc.ts` `cuonView` 3 mục mới;
+`ui/cuonMucPaint.ts` biểu tượng; `ui/actionButtons.ts` chấm son; `main.ts` (`pickScroll` Đọc sách → `desk.read`, Bộ đã học →
+`openLearned`, Nhiệm vụ → `openDaily`; Trúc Lão trong `dialogFor` + khung thoại; thoại mở lại trong `closeLesson`);
+`designPreview.ts` `?dang=ngoi-mat&muc=chua-muon|chua-hoc`; Mặc Ông câu `hoc`; chữ hướng dẫn khu tự học + hình minh hoạ cuộn;
+chữ "ngồi thiền ở Trúc Lâm" trên bảng nhiệm vụ (web + Flutter `daily_screen.dart`, `review_screen.dart`) → "gặp thầy Trúc Lão".
+
+Còn chờ:
+- Thiết kế (phiếu `2026-11-15-cuon-bang-chon`): lưới ô, giấy 0,48 × 0,27 (nhiệm vụ 5, 6, phần px của 4), tay gần ô trỏ, chấm son
+  trên ô Nhiệm vụ, chuỗi mới vào `design/l10n/vi.arb` (đang viết thẳng trong code: "Đọc sách", "Bộ đã học", "Nhiệm vụ hôm nay",
+  "Mượn ở Tàng Thư Các", "Còn n việc", "Đã xong hôm nay", "Xem việc hôm nay", gợi ý mới, `dailyLearnFirst` / `dailyLearnSub` mới).
+- Q3 tên nút.
+- Model riêng Trúc Lão (`/ui-design` ảnh 4 góc → `/tai-nguyen`).
+- Thử máy (nhiệm vụ 11).

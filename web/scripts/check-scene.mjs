@@ -303,7 +303,9 @@ function checkScene(rel, raw, opt = {}) {
 
   if (spec.lessons.radicals) {
     all.push(...checkRadicals(RADICALS));
-    console.log(`Tu luyện bộ thủ: Ngồi ôn ≥ 1 giây → cuộn sách, "Học bộ mới" mở bộ chưa học đầu tiên (${RADICALS.length} bộ — R-HANH-3, R-ON-8)`);
+    const lao = spec.npcs.find((q) => q.id === 'truc-lao');
+    if (!lao) all.push('lessons.radicals bật nhưng thiếu NPC "truc-lao" — vùng có bài học bộ thủ học qua thầy Trúc Lão (R-HANH-8)');
+    console.log(`Tu luyện bộ thủ: nói chuyện Trúc Lão${lao ? ` (${n(lao.x)}; ${n(lao.z)})` : ''} → "Học bộ mới" mở bộ chưa học đầu tiên (${RADICALS.length} bộ — R-HANH-3, R-HANH-8)`);
   }
   const tp = spec.teleport;
   if (tp.enabled) {

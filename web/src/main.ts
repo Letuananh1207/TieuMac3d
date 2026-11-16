@@ -72,7 +72,9 @@ import { PortalTrigger } from './zones/portal';
 import { DIALOGS, DialogRunner, type Dialog } from './zones/dialogs';
 import { LIBRARIAN, LibraryDesk } from './libraryDesk';
 import { reviewItems } from './zones/review';
-import { sitBadge, studyMenu, type StudyMenu } from './zones/studyMenu';
+import { scrollMenu, sitBadge } from './zones/studyMenu';
+import { TrucLao } from './trucLao';
+import { TRUC_LAO } from './zones/trucLao';
 import { cuonView, type CuonRowId } from './zones/cuonMuc';
 import { RADICALS, type Radical } from './zones/radicals';
 import { placeZones, ZONE_CONTENT, type Zone } from './zones/zones';
@@ -222,6 +224,7 @@ async function boot(): Promise<void> {
   let covered = false; // màn bài học Flutter đang che cảnh → ngừng vẽ (docs/bridge.md)
   let scrollOpen = false; // cuộn sách Ngồi ôn trước mắt đang mở (R-ON-8) — đóng màn Flutter thì vẫn ngồi, cuộn hiện lại
   let lastPick: CuonRowId | null = null; // mục vừa mở từ cuộn → viền ngọc nhấp khi cuộn hiện lại
+  let trucLao: TrucLao | null = null; // thầy Trúc Lão (R-HANH-8) — trucLao.ts; chỉ cảnh có NPC `truc-lao`
   const closeLesson = (): void => {
     paused = scrollOpen;
     covered = false;
@@ -236,6 +239,7 @@ async function boot(): Promise<void> {
       void garden?.load(false); // Tạp hoá có thể vừa bán hạt vào túi (R-VUON-9); không báo lại luống chín
       if (scrollOpen) showScroll(lastPick); // cuộn hiện lại ngay, mục vừa dùng cập nhật (thiết kế 2026-11-14.21)
       lastPick = null;
+      trucLao?.resume(); // thẻ / lượt ôn mở từ Trúc Lão → khung thoại mở lại (R-HANH-8)
     });
   };
   const lesson = new LessonBoard(closeLesson);
@@ -300,7 +304,7 @@ async function boot(): Promise<void> {
   };
   const learn = new LearnButton(openLesson);
 
-  /* ---------- tu luyện (R-HANH-3): ngồi thiền ≥ 1 giây ở vùng có bộ thủ → thẻ bộ chưa học đầu tiên ---------- */
+  /* ---------- tu luyện (R-HANH-3): thẻ bộ thủ mở từ Trúc Lão (R-HANH-8); ngồi 1 giây → cuộn bảng chọn (R-ON-8) ---------- */
   // Bài học là lớp riêng của người học (theo tiến độ của họ) — cảnh không đổi theo tiến độ (R-VUNG-1).
   let learnedRadicals = new Set(progress?.radicals ?? trial?.wallet.learned ?? []); // chế độ thử: bộ đã mở thẻ HTML (R-TIEN-7)
   // ngồi ôn 1 s → bảng chọn cuộn sách (R-ON-8, thiết kế 2026-11-14.10 — scene/nhapDinh.ts)
@@ -381,9 +385,9 @@ async function boot(): Promise<void> {
   };
   /** Mục in trên cuộn trước mắt theo tiến độ mới nhất (`flash` = mục vừa dùng — viền ngọc nhấp). */
   const showScroll = (flash: CuonRowId | null = null): void => {
-    const due = progress?.due ?? [];
-    const menu = studyMenu({ due, learned: learnedRadicals, hasLessons: !!spec.lessons.radicals });
-    ngoiMat.setMenu(cuonView(menu, due, sitPlaceName()), (id) => pickScroll(id, menu, due), flash);
+    const book = borrowedBook(desk.book);
+    const left = tasksLeft(progress?.daily ?? null, learnedRadicals.size >= RADICALS.length);
+    ngoiMat.setMenu(cuonView(scrollMenu({ book, learned: learnedRadicals, tasksLeft: left }), sitPlaceName(), book), pickScroll, flash);
   };
   /**
    * Cuộn sách Ngồi ôn (R-ON-8, thiết kế 2026-11-14.21): các mục in thẳng trên cuộn trước mắt; nhân vật đứng yên, cần điều
@@ -397,16 +401,17 @@ async function boot(): Promise<void> {
     joystick.end();
     showScroll();
   };
-  const pickScroll = (id: CuonRowId, menu: StudyMenu, due: readonly string[]): void => {
+  const pickScroll = (id: CuonRowId): void => {
     if (id === 'stand') {
       standFromScroll();
       return;
     }
     lastPick = id;
     paused = false; // các màn tự đặt lại `paused`
-    if (id === 'review') openReview(due, menu.next);
-    else if (id === 'learn' && menu.next) openRadical(menu.next);
+    // Đọc sách → sổ từ ở trang đã nhớ (R-SACH-3); không có màn đọc (trình duyệt) → không mở, cuộn vẫn mở
+    if (id === 'book') void desk.read().then((opened) => opened || closeLesson());
     else if (id === 'learned') openLearned();
+    else openDaily(); // bảng nhiệm vụ (R-NV-3) — "Ôn ngay" ở đó (R-ON-5)
   };
   /** "Xem bộ đã học" (R-ON-8): màn Bộ đã học Flutter (`openLearned`); không có Flutter → thẻ HTML bộ học gần nhất. */
   const openLearned = (): void => {
@@ -434,8 +439,8 @@ async function boot(): Promise<void> {
     ngoiMat.rollUp();
     nhapDinh.rollUpThen(() => player.isSitting && player.toggleSit());
   };
-  /** Lượt ôn câu đố (R-ON-5); chưa có màn ôn → thẻ bộ mới nếu học được ở đây. */
-  const openReview = (due: readonly string[], next: Radical | null): void => {
+  /** Lượt ôn câu đố (R-ON-5); chưa có màn ôn → thẻ bộ `next` nếu có, không thì `onNone` (Trúc Lão: thoại mở lại). */
+  const openReview = (due: readonly string[], next: Radical | null, onNone?: () => void): void => {
     paused = true;
     learn.suspend(true);
     player.moveTarget = null;
@@ -447,6 +452,7 @@ async function boot(): Promise<void> {
       paused = false;
       learn.suspend(false);
       if (next) openRadical(next);
+      else if (onNone) onNone();
       else if (scrollOpen) closeLesson(); // không mở gì: cuộn vẫn mở, đứng yên (R-ON-8)
     });
   };
@@ -649,6 +655,7 @@ async function boot(): Promise<void> {
       if (LibraryDesk.handles(c)) afterSay = () => desk.act(c); // mượn / trả sách (R-SACH-1, R-SACH-4)
       if (town?.handles(c)) afterSay = () => town?.act(c); // cho Tiểu Khất, hỏi giờ Lão Canh (R-NPC-6, R-NPC-7)
       if (mini?.handles(c)) afterSay = () => mini?.act(c); // dự tiệc Lưu Thương, bán măng (R-LUU-1, R-MANG-5)
+      if (trucLao?.handles(c)) afterSay = () => trucLao?.act(c); // học bộ mới / ôn với Trúc Lão (R-HANH-8)
       return runner?.choose(i) ?? null;
     },
     () => {
@@ -698,7 +705,11 @@ async function boot(): Promise<void> {
       learn.suspend(true);
     },
   });
-  const dialogFor = (npcId: string): Dialog | undefined => (npcId === LIBRARIAN ? desk.dialog() : (town?.dialog(npcId) ?? mini?.dialog(npcId) ?? dialogOf.get(npcId)));
+  // thầy Trúc Lão ở Trúc Lâm: học bộ mới + ôn qua khung thoại (R-HANH-8)
+  if (spec.npcs.some((n) => n.id === TRUC_LAO))
+    trucLao = new TrucLao({ learned: () => learnedRadicals, due: () => progress?.due ?? [], openRadical, openReview: (due) => openReview(due, null, closeLesson), talk: startTalk });
+  const dialogFor = (npcId: string): Dialog | undefined =>
+    npcId === LIBRARIAN ? desk.dialog() : (trucLao?.dialog(npcId) ?? town?.dialog(npcId) ?? mini?.dialog(npcId) ?? dialogOf.get(npcId));
   // thẻ "Đọc sách" khi đang mượn sổ từ, mọi khu mọi vùng → mở sổ từ Flutter (R-SACH-2, R-SACH-3)
   const readBook = new ReadBookButton(() => {
     player.moveTarget = null;
@@ -1132,7 +1143,7 @@ async function boot(): Promise<void> {
       air: player.state.air,
       sitting: player.isSitting,
       bowing: player.isBowing,
-      badge: sitBadge({ due: progress?.due ?? [], learned: learnedRadicals, hasLessons: !!spec.lessons.radicals }),
+      badge: sitBadge(progress?.due ?? []), // chỉ số bộ đến hạn (R-DIEU-7)
     });
     fps.tick(rawDt, renderer.info.render.calls, renderer.info.render.triangles);
     // độ nét động (R-HIEU-1): chậm kéo dài → vẽ thưa đi một bậc; mượt lại → nét lên. HUD là HTML nên vẫn nét.

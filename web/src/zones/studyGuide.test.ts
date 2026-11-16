@@ -33,20 +33,23 @@ describe('Hướng dẫn Khu tự học — R-VA-5', () => {
     expect(JSON.stringify(g)).not.toMatch(/\p{Script=Han}/u);
     expect(g.name).toBe('Khu tự học');
     expect(g.figure).toBe('tu-hoc');
-    expect(g.sections.map((s) => s.title)).toEqual(['Ngồi vào bồ đoàn', 'Cuộn sách ôn', 'Học bộ mới ở Trúc Lâm', 'Đứng dậy']);
+    expect(g.sections.map((s) => s.title)).toEqual(['Ngồi vào bồ đoàn', 'Cuộn bảng chọn', 'Học bộ mới ở Trúc Lâm', 'Đứng dậy']);
     expect(g.tipBy).toBe(LIBRARIAN);
     expect(g.tipTitle).toBe('Lời thủ thư Điển Thư');
   });
 
-  it('R-VA-5: bảng nói đúng luật (R-NGOI-1, R-ON-8, R-VUNG-1, R-VA-4)', () => {
+  it('R-VA-5: bảng nói đúng luật (R-NGOI-1, R-ON-8, R-ON-5, R-HANH-8, R-VA-4)', () => {
     const all = plain([STUDY_GUIDE.caption, ...STUDY_GUIDE.sections.map((s) => s.body)].join(' '));
     expect(all).toContain('"Ngồi"'); // nút nổi ở bồ đoàn giữ nhãn "Ngồi"
     expect(all).toContain('24 chỗ');
     expect(all).toContain('phía nam');
     expect(all).toContain('1 giây');
-    expect(all).toContain('"Ôn bộ đến hạn"');
-    expect(all).toContain('"Xem bộ đã học"');
-    expect(all).toContain('"Học bộ mới" mờ, ghi "Học ở Trúc Lâm"');
+    expect(all).toContain('"Đọc sách"');
+    expect(all).toContain('"Bộ đã học"');
+    expect(all).toContain('"Nhiệm vụ hôm nay"');
+    expect(all).toContain('"Ôn ngay"');
+    expect(all).toContain('thầy Trúc Lão');
+    expect(all).not.toContain('"Ôn bộ đến hạn"'); // cuộn không còn mục ôn / học (R-ON-8)
     expect(all).toContain('"Đứng dậy"');
   });
 

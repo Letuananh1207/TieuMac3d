@@ -118,13 +118,14 @@ export async function createNpc(spec: NpcSpec): Promise<Npc | null> {
 
 /**
  * Màu áo thế khối của NPC trò chơi chưa có model (R-NPC-1, V-66 B4): Thi Ông áo lam râu bạc, Tú Tài trắng ngà, Tài Nữ
- * lục nhạt, Trúc Ông nâu (lão tiều phu). Dáng đệ tử khối (`discipleCharacter.ts`) — bản đẹp qua `/tai-nguyen`.
+ * lục nhạt, Trúc Ông nâu (lão tiều phu), thầy Trúc Lão lục trúc sẫm (R-HANH-8). Dáng đệ tử khối (`discipleCharacter.ts`) — bản đẹp qua `/tai-nguyen`.
  */
 export const BLOCK_NPC_COLORS: Readonly<Record<string, DiscipleColors>> = {
   'thi-ong': { robe: '#5b7896', trim: '#2e3f58', hair: '#d9d6cf', jade: '#c9b37a' },
   'tu-tai': { robe: '#efe6d2', trim: '#7a6a4a', hair: '#1f1a1a' },
   'tai-nu': { robe: '#bcd5b4', trim: '#5f8a63', hair: '#1f1a1a', jade: '#d98aa0' },
   'truc-ong': { robe: '#8a6a48', trim: '#4f3b28', hair: '#bdb6aa', jade: '#6f8a4a' },
+  'truc-lao': { robe: '#3f5e48', trim: '#22362a', hair: '#e4e0d6', jade: '#c9b37a' }, // Trúc Lão: lục trúc sẫm, tóc bạc (R-HANH-8)
 };
 
 /** Ngồi xếp bằng (thế khối): hạ thân xuống — vạt áo chìm dưới mặt đệm (m). */

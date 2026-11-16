@@ -1,7 +1,8 @@
 /**
- * Cuộn sách Ngồi ôn (R-ON-8): ngồi ôn đủ 1 giây → bảng chọn 3 mục — ôn bộ đến hạn · học bộ mới · xem bộ đã học.
- * Trang dựng dữ liệu bảng từ tiến độ + vùng, gửi Flutter qua `openStudy` (docs/bridge.md); chuỗi hiển thị ở phía Flutter
- * theo mã `reason`. Cùng tính chấm son của nút "Ngồi ôn" (R-DIEU-7). Thuần, không three, không DOM.
+ * Dữ liệu cuộn khi ngồi (R-ON-8, V-45): bảng chọn chức năng — **Đọc sách · Bộ đã học · Nhiệm vụ hôm nay** (`scrollMenu`);
+ * cuộn không còn ôn / học bộ mới (học ở thầy Trúc Lão — R-HANH-8, `zones/trucLao.ts`; ôn ở bảng nhiệm vụ — R-ON-5).
+ * Cùng tính chấm son nút "Ngồi ôn" (R-DIEU-7 — chỉ số bộ đến hạn). `studyMenu` cũ chỉ còn cho cầu nối `openStudy` (thôi
+ * dùng — docs/bridge.md; Flutter vẫn đón, xoá sau khi thử máy). Thuần, không three, không DOM.
  */
 import { RADICALS, type Radical } from './radicals';
 
@@ -62,21 +63,50 @@ export function studyMenu(input: StudyInput, pool: readonly Radical[] = RADICALS
   return { items: [review, learn, learned], highlight, next: canLearn ? c.left[0] : null, upcoming: canLearn ? c.left.slice(1) : [] };
 }
 
-/** Không có màn Flutter (trình duyệt): đến hạn → lượt ôn; không thì thẻ bộ mới nếu học được; còn lại không mở (R-ON-8). */
-export function fallbackStudy(menu: StudyMenu): 'review' | 'learn' | null {
-  return menu.highlight;
+/** Mục trên cuộn khi ngồi (R-ON-8), theo thứ tự in. */
+export type ScrollItemId = 'book' | 'learned' | 'daily';
+export const SCROLL_ITEMS: readonly ScrollItemId[] = ['book', 'learned', 'daily'];
+
+/** Vì sao mục mờ: chưa mượn sổ từ ("Mượn ở Tàng Thư Các") · chưa học bộ nào ("Chưa học bộ nào"). */
+export type ScrollReason = 'noBook' | 'noneLearned';
+
+export interface ScrollItem {
+  id: ScrollItemId;
+  enabled: boolean;
+  reason: ScrollReason | null;
+  /** learned: số bộ đã học · daily: số việc còn hôm nay (`null` = không biết tiến độ) · book: 0 */
+  count: number | null;
 }
 
-/** Chấm son nút "Ngồi ôn" (R-DIEU-7): số + loại — `due` = bộ đến hạn ôn, `new` = bộ chưa học (chỉ vùng có bài học). */
+export interface ScrollInput {
+  /** sổ từ đang mượn (R-SACH-1) — `null` = chưa mượn */
+  book: { title: string; subtitle: string } | null;
+  /** mã bộ đã học */
+  learned: Iterable<string>;
+  /** số việc còn hôm nay (R-NV-1, `zones/dailyBoard.ts` `tasksLeft`); `null` = không biết (không có Flutter) */
+  tasksLeft: number | null;
+}
+
+/** Ba mục của cuộn khi ngồi (R-ON-8): Đọc sách (mờ khi chưa mượn) · Bộ đã học (mờ khi chưa học) · Nhiệm vụ hôm nay (luôn dùng được). */
+export function scrollMenu(input: ScrollInput, pool: readonly Radical[] = RADICALS): ScrollItem[] {
+  const known = new Set(pool.map((r) => r.id));
+  const learned = new Set([...input.learned].filter((id) => known.has(id))).size;
+  return [
+    input.book ? { id: 'book', enabled: true, reason: null, count: 0 } : { id: 'book', enabled: false, reason: 'noBook', count: 0 },
+    learned ? { id: 'learned', enabled: true, reason: null, count: learned } : { id: 'learned', enabled: false, reason: 'noneLearned', count: 0 },
+    { id: 'daily', enabled: true, reason: null, count: input.tasksLeft },
+  ];
+}
+
+/** Chấm son nút "Ngồi ôn" (R-DIEU-7): số bộ đến hạn. */
 export interface SitBadge {
   n: number;
-  kind: 'due' | 'new';
+  kind: 'due';
 }
 
-/** Chấm son nút "Ngồi ôn" (R-DIEU-7): số bộ đến hạn; không có thì ở vùng có bài học → số bộ chưa học; không chấm → null. */
-export function sitBadge(input: StudyInput, pool: readonly Radical[] = RADICALS): SitBadge | null {
-  const c = counts(input, pool);
-  if (c.due) return { n: c.due, kind: 'due' };
-  if (input.hasLessons && c.left.length) return { n: c.left.length, kind: 'new' };
-  return null;
+/** Chấm son nút "Ngồi ôn" (R-DIEU-7): số bộ đến hạn ôn; không có → không chấm (`null`) — kể cả ở vùng có bài học. */
+export function sitBadge(due: readonly string[], pool: readonly Radical[] = RADICALS): SitBadge | null {
+  const known = new Set(pool.map((r) => r.id));
+  const n = due.filter((id) => known.has(id)).length;
+  return n ? { n, kind: 'due' } : null;
 }

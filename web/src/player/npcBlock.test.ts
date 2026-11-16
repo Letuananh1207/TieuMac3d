@@ -4,13 +4,13 @@ import { GAME_NPC_IDS, NPC_IDS } from '../scene/spec';
 import { BLOCK_NPC_COLORS, createBlockNpc } from './npc';
 
 describe('NPC trò chơi thế bằng khối', () => {
-  it('R-NPC-1: 4 NPC trò chơi có trong NPC_IDS và có bảng màu áo riêng', () => {
-    expect(GAME_NPC_IDS).toEqual(['thi-ong', 'tu-tai', 'tai-nu', 'truc-ong']);
+  it('R-NPC-1: 4 NPC trò chơi + thầy Trúc Lão (R-HANH-8) có trong NPC_IDS và có bảng màu áo riêng', () => {
+    expect(GAME_NPC_IDS).toEqual(['thi-ong', 'tu-tai', 'tai-nu', 'truc-ong', 'truc-lao']);
     for (const id of GAME_NPC_IDS) {
       expect((NPC_IDS as readonly string[]).includes(id)).toBe(true);
       expect(BLOCK_NPC_COLORS[id]?.robe).toMatch(/^#/);
     }
-    expect(new Set(GAME_NPC_IDS.map((id) => BLOCK_NPC_COLORS[id].robe)).size).toBe(4);
+    expect(new Set(GAME_NPC_IDS.map((id) => BLOCK_NPC_COLORS[id].robe)).size).toBe(GAME_NPC_IDS.length); // mỗi người một màu áo
   });
 
   it('R-NPC-1: thiếu model → dựng khối (không bỏ), gộp còn ≤ 2 khối vẽ; ngồi thì thân hạ xuống', () => {

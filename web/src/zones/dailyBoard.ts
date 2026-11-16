@@ -86,8 +86,8 @@ export function dailyBoardView(d: DailyFull, allLearned: boolean, learnedTotal: 
     : learnDone
       ? `Đã học ${d.goal} bộ mới hôm nay.`
       : learnedTotal === 0
-        ? `Học ${d.goal} bộ thủ mới. Tới Truyền Tống Đài → ${FOREST}, ngồi thiền để lĩnh hội bộ đầu tiên.`
-        : `Học ${d.goal} bộ thủ mới. Ngồi thiền ở ${FOREST} để lĩnh hội bộ kế tiếp.`;
+        ? `Học ${d.goal} bộ thủ mới. Sang ${FOREST}, gặp thầy Trúc Lão để lĩnh hội bộ đầu tiên.`
+        : `Học ${d.goal} bộ thủ mới. Gặp thầy Trúc Lão ở ${FOREST} để lĩnh hội bộ kế tiếp.`;
   const dots = Math.min(d.learned, d.goal);
   return {
     learn: { done: learnDone, dots, count: allLearned ? null : `${dots}/${d.goal}`, sub: learnSub },

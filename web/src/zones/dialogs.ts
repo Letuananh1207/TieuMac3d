@@ -15,13 +15,15 @@ export interface DialogChoice {
   /** đóng khung thoại rồi làm việc này: `daily` = mở bảng nhiệm vụ hằng ngày (R-NV-3); `borrow` = mượn cuốn `book`, hoặc
    *  mở danh mục khi không có `book` (R-SACH-1); `return` = trả sách đang mượn (R-SACH-4); `journey` = trận sư đọc tiến
    *  độ hành trình (R-NPC-5); `alms` = cho Tiểu Khất 5 văn rồi nghe tin đồn (R-NPC-6, R-TIEN-8); `gio` = Lão Canh đọc giờ
-   *  hiện tại (R-NPC-7) */
-  action?: 'daily' | 'borrow' | 'return' | 'journey' | 'alms' | 'gio' | 'mini';
+   *  hiện tại (R-NPC-7); `truc` = việc với thầy Trúc Lão (R-HANH-8 — `zones/trucLao.ts`) */
+  action?: 'daily' | 'borrow' | 'return' | 'journey' | 'alms' | 'gio' | 'mini' | 'truc';
   /** mã sách cho `action: 'borrow'` */
   book?: string;
   /** việc của trò nhỏ Trúc Lâm cho `action: 'mini'` (V-66 B4 — `zones/trucLamThoai.ts`): `luu-du` dự tiệc, `luu-cach` cách
    *  chơi, `mang-ban` bán hết măng, `mang-cach` cách chơi hái măng */
   mini?: 'luu-du' | 'luu-cach' | 'mang-ban' | 'mang-cach';
+  /** việc với Trúc Lão cho `action: 'truc'`: `hoc` học bộ chưa học đầu tiên (R-HANH-3), `on` ôn các bộ đến hạn (R-ON-5) */
+  truc?: 'hoc' | 'on';
 }
 
 /** Một câu NPC nói, kèm các lựa chọn (1–3; câu nào cũng có "Tạm biệt"). */
@@ -109,7 +111,7 @@ export const DIALOGS: Dialog[] = [
       },
       {
         id: 'hoc',
-        text: `Sang ${FOREST}, tìm chỗ yên tĩnh mà ngồi thiền. Tâm tĩnh thì chữ tự hiện: nét, âm, nghĩa. Mỗi lần ngồi lĩnh hội một chữ — chậm mà chắc, chớ vội.`,
+        text: `Sang ${FOREST}, tìm thầy Trúc Lão ở bãi hạc đáp. Thầy dạy từng bộ thủ: nét, âm, nghĩa. Mỗi lần lĩnh hội một bộ — chậm mà chắc, chớ vội.`,
         choices: [{ text: 'Con nhớ rồi ạ', next: 'nho' }, OTHER, BYE],
       },
       {
