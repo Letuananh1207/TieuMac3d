@@ -194,8 +194,11 @@ export function diCuDang(s: DiCu): DiCuDang {
 /**
  * Cộng dáng đi cũ [d] (trạng thái [s]) vào [pose] 18 khớp (nhánh Mixamo của nhân vật chính, L-18). Dáng nền phải tắt phần
  * bước (`DongTac.update(…, { tuDi: true })`). Trộn với nhảy / ngồi như bản cũ: đùi + tay dạng `mix(…, NHAY7 | NGOI7, …)` →
- * nhân (1 − nhảy)(1 − ngồi); vung tay `mix(…, NGOI7, ngồi)` → nhân (1 − ngồi); hông / đầu xoay, nhún không giảm. Đổ người
+ * nhân (1 − nhảy)(1 − ngồi); vung tay `mix(…, NGOI7, ngồi)` → nhân (1 − ngồi); nhún không giảm. Đổ người
  * (`d.lean`) nơi gọi xoay cả thân quanh bàn chân (như `bob.rotation.x` cũ).
+ *
+ * L-21: lưng thẳng hẳn khi bước — không cộng xoay hông / đầu quay ngược của dáng cũ (`hipsY`, `headY` chỉ nhánh `autoRig`
+ * dùng: ở đó xoay cả người cứng), và duỗi vặn / nghiêng ngang của hông + đốt sống (trọng số theo cường độ bước, trừ lúc ngồi).
  *
  * L-20: như dáng 7 khớp cũ (không gối, không khuỷu) — khi bước, gối và khuỷu duỗi thẳng (kể cả khuỷu gập khi chạy / khuỷu
  * đứng của `DongTac`): chân thẳng, cả cánh tay vung từ vai. Trọng số theo cường độ bước (đứng ↔ đi chuyển mượt), trừ lúc
@@ -215,9 +218,13 @@ export function tronDiCu(pose: Pose, s: DiCu, d: DiCuDang, sit: number): void {
   j.armR[0] += d.armR * wArm;
   j.armL[2] += d.sway * wLeg;
   j.armR[2] -= d.sway * wLeg;
-  j.hips[1] += d.hipsY;
-  j.neck[1] += d.headY * HEAD_SPLIT[0];
-  j.head[1] += d.headY * HEAD_SPLIT[1];
+  // L-21: lưng thẳng — bỏ xoay hông theo bước (`d.hipsY`, kéo theo đầu quay ngược `d.headY`); hông + ba đốt sống không vặn
+  // (y), không nghiêng ngang (z — dồn trọng tâm khi đứng) lúc bước. Cúi / ngửa (x: dáng lưng, thở) giữ; đổ người = cả thân.
+  const wBack = Math.min(1, 2 * s.move) * (1 - sit);
+  for (const e of [j.hips, j.spine, j.chest, j.upperChest]) {
+    e[1] *= 1 - wBack;
+    e[2] *= 1 - wBack;
+  }
   pose.lift += d.lift;
 }
 

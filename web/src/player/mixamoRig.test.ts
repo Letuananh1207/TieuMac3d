@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { describe, expect, it } from 'vitest';
 import { DongTac, TINH } from './dongTac';
-import { boneBaseName, chuyenTrongSoNach, mixamoRig, type TayNach } from './mixamoRig';
+import { boneBaseName, chuyenTrongSoEo, chuyenTrongSoNach, mixamoRig, type TayNach } from './mixamoRig';
 
 /** Khung xương giả kiểu Mixamo: trục xương lệch lung tung (như file Tripo: Hips xoay −90° quanh y). */
 function fakeSkeleton(): { root: THREE.Group; bone: (n: string) => THREE.Bone } {
@@ -173,6 +173,28 @@ describe('Trọng số da vùng nách (L-19, R-DIEU-8)', () => {
     expect(chuyenTrongSoNach(m.pos, m.index, m.weight, arms, SPINE2)).toBe(0);
   });
 
+  it('R-DIEU-5 (L-21): đỉnh lưng sau bả vai bám tay → chuyển sang Spine2, tổng 1; ống tay áo, mặt sau đỉnh vai giữ', () => {
+    const m = mesh([
+      // 0: lưng sát nách, sau trục tay hơn cỡ ống tay áo (L-19 chỉ chuyển ~1/4 vì gần trục tay)
+      { p: [0.11, 0.51, -0.04], j: [SPINE2, 2, 0, 0], w: [0.5, 0.5, 0, 0] },
+      // 1: bả vai — sau lưng, ngang / hơi cao hơn khớp vai (L-19 bỏ qua: không thấp hơn khớp vai)
+      { p: [0.08, 0.535, -0.05], j: [SPINE2, 2, 0, 0], w: [0.6, 0.4, 0, 0] },
+      // 2: mặt sau ống tay áo (cách trục tay đúng 1 r, phía ngoài khớp vai) — giữ
+      { p: [0.14, 0.495, -0.03], j: [2, SPINE2, 0, 0], w: [0.8, 0.2, 0, 0] },
+      // 3: mặt sau đỉnh vai, cao hơn khớp vai > r — giữ (cơ vai)
+      { p: [0.1, 0.56, -0.02], j: [2, SPINE2, 0, 0], w: [0.5, 0.5, 0, 0] },
+    ]);
+    const before = [...m.weight];
+    chuyenTrongSoNach(m.pos, m.index, m.weight, arms, SPINE2);
+    const f = m.first;
+    expect(at(m, f, 2)).toBeLessThan(0.2);
+    expect(at(m, f, 2) + at(m, f, SPINE2)).toBeCloseTo(1, 9);
+    expect(at(m, f + 1, 2)).toBeLessThan(0.25);
+    expect(at(m, f + 1, 2) + at(m, f + 1, SPINE2)).toBeCloseTo(1, 9);
+    expect(m.weight.slice((f + 2) * 4)).toEqual(before.slice((f + 2) * 4));
+    expect(m.weight.slice(0, f * 4)).toEqual(before.slice(0, f * 4));
+  });
+
   it('R-DIEU-8 (L-19): đỉnh ở dải chuyển (sát mép ống tay áo) chỉ chuyển một phần, tổng vẫn 1', () => {
     // cách trục tay ~1,3 lần bán kính ống tay áo, phía trong vai, dưới vai
     const m = mesh([{ p: [0.105, 0.475, 0.0], j: [SPINE2, 2, 0, 0], w: [0.5, 0.5, 0, 0] }]);
@@ -181,5 +203,38 @@ describe('Trọng số da vùng nách (L-19, R-DIEU-8)', () => {
     expect(arm).toBeGreaterThan(0);
     expect(arm).toBeLessThan(0.5);
     expect(arm + at(m, m.first, SPINE2)).toBeCloseTo(1, 9);
+  });
+});
+
+describe('Trọng số da vùng eo / đai (L-21, R-DIEU-5)', () => {
+  // xương: 0 Spine, 1 Spine1, 2 LeftUpLeg, 3 RightUpLeg, 4 LeftLeg; háng y 0,25, Spine1 y 0,40 → dải 0,295…0,3625
+  const SPINE = 0;
+  const legs = new Set([2, 3, 4]);
+  const y0 = 0.25 + 0.3 * 0.15;
+  const y1 = 0.25 + 0.75 * 0.15;
+  const at = (w: number[], idx: number[], i: number, b: number): number =>
+    [0, 1, 2, 3].reduce((s, k) => s + (idx[i * 4 + k] === b ? w[i * 4 + k] : 0), 0);
+
+  it('R-DIEU-5 (L-21): đỉnh đai / lưng trên háng bám chân → chuyển sang Spine, tổng 1; vạt áo dưới giữ, dải giữa chuyển một phần', () => {
+    const pos = [
+      0.05, 0.38, -0.08, // 0: đai, lưng sau (như nhan-vat.glb: UpLeg 0,18)
+      -0.06, 0.4, 0.07, // 1: đai trước, không có ô Spine
+      0.05, 0.27, -0.07, // 2: vạt áo dưới đai — giữ theo chân
+      0.04, (y0 + y1) / 2, -0.08, // 3: giữa dải — một phần
+    ];
+    const index = [SPINE, 2, 1, 0, 1, 3, 0, 0, 2, SPINE, 0, 0, SPINE, 3, 0, 0];
+    const weight = [0.5, 0.18, 0.32, 0, 0.7, 0.3, 0, 0, 0.7, 0.3, 0, 0, 0.6, 0.4, 0, 0];
+    const before = [...weight];
+    expect(chuyenTrongSoEo(pos, index, weight, legs, SPINE, y0, y1)).toBe(3);
+    expect(at(weight, index, 0, 2)).toBeCloseTo(0, 9);
+    expect(at(weight, index, 0, SPINE)).toBeCloseTo(0.68, 9);
+    expect(at(weight, index, 1, 3)).toBeCloseTo(0, 9);
+    expect(at(weight, index, 1, SPINE)).toBeCloseTo(0.3, 9);
+    expect(at(weight, index, 1, 1)).toBeCloseTo(0.7, 9);
+    expect(weight.slice(8, 12)).toEqual(before.slice(8, 12));
+    const mid = at(weight, index, 3, 3);
+    expect(mid).toBeGreaterThan(0.1);
+    expect(mid).toBeLessThan(0.3);
+    for (let i = 0; i < 4; i++) expect(weight.slice(i * 4, i * 4 + 4).reduce((a, b) => a + b, 0)).toBeCloseTo(1, 9);
   });
 });

@@ -60,7 +60,7 @@ const st = (mps: number): CharacterState => ({ mps, air: false, vy: 0, sit: 0, b
 
 describe('Dáng đi nhân vật chính (L-18, R-DIEU-5, R-NPC-10)', () => {
   for (const [ten, mps] of [['đi bộ', WALK_SPEED], ['chạy', RUN_SPEED]] as const) {
-    it(`R-DIEU-5 (L-18): nhân vật chính ${ten} — đùi, vung tay, nhún, đổ người, xoay hông bằng dáng đi cũ`, () => {
+    it(`R-DIEU-5 (L-18): nhân vật chính ${ten} — đùi, vung tay, nhún, đổ người bằng dáng đi cũ`, () => {
       const { ch, rig, bob } = make({ player: true });
       // dáng nền: cùng bộ số người chơi, tắt phần bước
       const base = new DongTac(tinhFor({ player: true }, rig.aPose), 0);
@@ -76,7 +76,8 @@ describe('Dáng đi nhân vật chính (L-18, R-DIEU-5, R-NPC-10)', () => {
         expect(p.j.upLegR[0] - b.j.upLegR[0]).toBeCloseTo(-o.thighL, 9);
         expect(p.j.armL[0] - b.j.armL[0]).toBeCloseTo(o.armLx, 9);
         expect(p.j.armR[0] - b.j.armR[0]).toBeCloseTo(o.armRx, 9);
-        expect(p.j.hips[1] - b.j.hips[1]).toBeCloseTo(o.hipsY, 9);
+        // L-21: lưng thẳng — bỏ xoay hông theo bước của dáng cũ (`o.hipsY`), hông không vặn
+        expect(p.j.hips[1]).toBeCloseTo(0, 9);
         expect(bob.position.y - b.lift).toBeCloseTo(o.lift, 9);
         expect(bob.rotation.x).toBeCloseTo(o.lean, 9);
         maxThigh = Math.max(maxThigh, Math.abs(o.thighL));
@@ -210,4 +211,47 @@ describe('Dáng đi / chạy nhân vật chính trên xương thật (L-20, R-DI
       expect(swingMax).toBeGreaterThan(mps === WALK_SPEED ? 0.3 : 0.7);
     });
   }
+});
+
+describe('Lưng thẳng khi đi / chạy (L-21, R-DIEU-5)', () => {
+  const LUNG = ['hips', 'spine', 'chest', 'upperChest'] as const;
+  for (const [ten, mps] of [['đi bộ', WALK_SPEED], ['chạy', RUN_SPEED]] as const) {
+    it(`R-DIEU-5 (L-21): nhân vật chính ${ten} — hông, spine, chest, upperChest không vặn (y), không nghiêng ngang (z); đầu không quay ngược`, () => {
+      const { ch, rig, bob } = make({ player: true });
+      // đứng lâu trước (dồn trọng tâm sang một bên — R-DIEU-8), rồi đi
+      for (let i = 0; i < 60 * 20; i++) ch.animate(1 / 60, 0, st(0));
+      let lean = 0;
+      for (let i = 0; i < 150; i++) {
+        ch.animate(1 / 60, mps / RUN_SPEED, st(mps));
+        if (i < 20) continue; // vừa bước (cường độ bước ≥ 0,5)
+        const j = rig.last!.j;
+        for (const k of LUNG) {
+          expect(j[k][1], `${k} y (vặn)`).toBeCloseTo(0, 9);
+          expect(j[k][2], `${k} z (nghiêng ngang)`).toBeCloseTo(0, 9);
+        }
+        expect(j.neck[1], 'cổ y').toBeCloseTo(0, 9);
+        expect(j.head[1], 'đầu y').toBeCloseTo(0, 9);
+        lean = Math.max(lean, bob.rotation.x);
+      }
+      // giữ: đổ người về trước bằng cả thân cứng (bob), nhún
+      expect(lean).toBeGreaterThan(mps === WALK_SPEED ? 0.04 : 0.2);
+    });
+  }
+
+  it('R-DIEU-5 (L-21): trên xương thật — ngực (`Spine2`) chỉ cúi / ngửa, trục ngang của ngực luôn nằm ngang khi đi / chạy', () => {
+    const { root, rot } = aPoseSkeleton();
+    const rig = mixamoRig(root)!;
+    const ch = mixamoCharacter({ root: new THREE.Group(), body: new THREE.Group(), bob: new THREE.Group(), model: root }, rig, { player: true });
+    for (const mps of [WALK_SPEED, RUN_SPEED]) {
+      for (let i = 0; i < 120; i++) {
+        ch.animate(1 / 60, mps / RUN_SPEED, st(mps));
+        if (i < 20) continue;
+        root.updateMatrixWorld(true);
+        for (const b of ['Hips', 'Spine', 'Spine1', 'Spine2']) {
+          const side = new THREE.Vector3(1, 0, 0).applyQuaternion(rot(b));
+          expect(side.distanceTo(new THREE.Vector3(1, 0, 0)), `${b} vặn / nghiêng`).toBeLessThan(1e-6);
+        }
+      }
+    }
+  });
 });
