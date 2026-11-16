@@ -73,7 +73,7 @@ cầu nối, Flutter, đặc tả cảnh, HUD, tay giả nhìn từ mắt, NPC H
 - [x] 1. `dongTac.ts`: chạy, nhảy, ngồi xếp bằng + test (player · thuần · xong khi `npm test` xanh).
 - [x] 2. `dang7.ts` + `eL/eR` trong `bieuCamDang.ts` / `lamVuonDang.ts` + test: `w` = 0 không đổi; `hipsX` chia cho thân,
       `hips` x giữ; tay buông cũ → `−haTay`; `legs` âm → gối dương; `dungLauDang` vươn vai / nhìn quanh; `goMoDang`.
-- [ ] 3. Nhánh `autoRig` gọi các hàm rút ra — **không đổi hành vi** (chụp so trước / sau `?dang=chay|nhay|ngoi|chao|vuon|nhin`,
+- [x] 3. Nhánh `autoRig` gọi các hàm rút ra — **không đổi hành vi** (chụp so trước / sau `?dang=chay|nhay|ngoi|chao|vuon|nhin`,
       `bieu-cam`, `lam-vuon` với model Hunyuan hiện tại).
 - [ ] 4. `mixamoRig.ts`: `bone(j)`, điểm nắm bàn tay phải, độ cao hông, góc chữ A + test trên khung xương giả.
 - [ ] 5. `doLamVuon.ts`: gắn xương bất kỳ, dựng thẳng theo thân, bù co giãn + test.

@@ -96,24 +96,22 @@ export function tronDang7(pose: Pose, d: Dang7, w: number, cal: Cal7): void {
 /* ---------------- dáng riêng (số rút từ glbCharacter.ts, giữ nguyên) ---------------- */
 
 /** Chắp tay chào (拱手): hai tay lên trước ngực, khép vào giữa; cúi người, cúi đầu. Trọng số = `bow`. */
-export function chaoDang(): Dang7 {
-  return {
-    aLx: -1.35,
-    aRx: -1.35,
-    aLz: -(REST + 0.55),
-    aRz: REST + 0.55,
-    hipsX: 0.28,
-    headX: 0.12,
-    // Mixamo: cánh tay trên ra trước vừa phải, cẳng tay gập lên ngực
-    aLxE: -0.9,
-    aRxE: -0.9,
-    eL: -1.3,
-    eR: -1.3,
-  };
-}
+export const CHAO = {
+  aLx: -1.35,
+  aRx: -1.35,
+  aLz: -(REST + 0.55),
+  aRz: REST + 0.55,
+  hipsX: 0.28,
+  headX: 0.12,
+  // Mixamo: cánh tay trên ra trước vừa phải, cẳng tay gập lên ngực
+  aLxE: -0.9,
+  aRxE: -0.9,
+  eL: -1.3,
+  eR: -1.3,
+} satisfies Dang7;
 
 /** Vươn vai (R-DIEU-8): hai tay giơ cao, ngửa đầu. Trọng số = `stretch` của `dungLauDang`; chỉ đổi `z` tay + đầu. */
-export const VUON_VAI: Dang7 = { aLz: 1.5, aRz: -1.5, headX: -0.25, eL: -0.25, eR: -0.25 };
+export const VUON_VAI = { aLz: 1.5, aRz: -1.5, headX: -0.25, eL: -0.25, eR: -0.25 } satisfies Dang7;
 /** Nhìn quanh (R-DIEU-8): đầu quay tối đa (rad) — cộng vào góc đầu. */
 export const NHIN_QUANH = 0.6;
 
@@ -140,7 +138,7 @@ export const NGOI7 = { legs: -1.45, legZ: 0.45, aLx: -0.75, aRx: -0.75, aLz: -(R
  * Gõ mõ (R-NPC-8): tay trái đưa mõ ra trước ngang ngực, tay phải giơ dùi cao theo `strike` (0 chạm mõ … 1 giơ cao). Đè hẳn
  * dáng tay (trọng số 1).
  */
-export function goMoDang(strike: number): Dang7 {
+export function goMoDang(strike: number) {
   return {
     aLx: -1.1,
     aLz: -(REST + 0.35),
@@ -157,7 +155,7 @@ export function goMoDang(strike: number): Dang7 {
  * Gảy đàn (R-NPC-9): hai tay đưa ra trước, hạ xuống mặt đàn; tay trái nhấn dây đung đưa chậm (rung tiếng), tay phải nhấc
  * theo `pluck` (0 = vừa gảy); `time` = đồng hồ của nhân vật (s). Đè hẳn dáng tay.
  */
-export function gayDanDang(pluck: number, time: number): Dang7 {
+export function gayDanDang(pluck: number, time: number) {
   return {
     aLx: -0.95 + Math.sin(time * 2.3) * 0.05,
     aLz: -(REST + 0.28) + Math.sin(time * 1.7) * 0.03,

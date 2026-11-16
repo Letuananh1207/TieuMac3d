@@ -3,6 +3,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 import { autoRig, type Rig } from './autoRig';
 import { emotePose } from './bieuCamDang';
+import { CHAO, dungLauDang, gayDanDang, goMoDang, NGOI7, NHAY7, NHIN_QUANH, REST, VUON_VAI } from './dang7';
 import type { Character, ToolTip } from './character';
 import { DongTac, TINH, type TinhId } from './dongTac';
 import { mixamoRig } from './mixamoRig';
@@ -13,8 +14,8 @@ import { RUN_SPEED, WALK_SPEED } from './controller';
 /** Chiều cao nhân vật sau khi nạp (m) — bằng đệ tử khối (búi tóc ~2,1 m), thước chuẩn của cảnh. */
 export const GLB_HEIGHT = 2.1;
 
-/** Góc hạ tay từ tư thế chữ A xuống buông xuôi (radian, quanh khớp vai). */
-const ARM_REST = 0.4;
+/** Góc hạ tay từ tư thế chữ A xuống buông xuôi (radian, quanh khớp vai) — chung với dáng 7 khớp (`dang7.ts`). */
+const ARM_REST = REST;
 /** Tay hơi đưa ra trước khi đứng thả lỏng (radian). */
 const ARM_FORWARD = 0.12;
 /** Bàn tay phải trong toạ độ xương `armR` (tay chữ A chưa hạ — `autoRig` DEFAULT_SHAPE: vai 53 % → tay ~29 % cao). */
@@ -181,7 +182,7 @@ export async function loadGlbCharacter(
       if (mps > 0.05) walkT += dt * (2.4 * Math.max(mps, 2.2)) * (1 - airB);
       else walkT *= 0.85;
       const step = Math.sin(walkT);
-      bob.position.y = Math.abs(step) * (0.05 + 0.06 * runB) * move * (1 - airB) - 0.3 * sitB;
+      bob.position.y = Math.abs(step) * (0.05 + 0.06 * runB) * move * (1 - airB) - NGOI7.drop * sitB;
       bob.rotation.x = (0.05 + 0.2 * runB) * move; // đi hơi đổ người, chạy đổ hẳn về trước
       if (!rig) {
         bob.rotation.z = step * 0.03 * move;
@@ -189,26 +190,18 @@ export async function loadGlbCharacter(
       }
       const still = (1 - move) * (1 - sitB) * (1 - airB);
       // động tác khi đứng lâu (R-DIEU-8): sau 6 s, mỗi 8 s một lần — vươn vai, rồi nhìn quanh
-      const idleT = state?.idle ?? 0;
-      let stretch = 0;
-      let look = 0;
-      if (idleT > 6) {
-        const c = (idleT - 6) % 8;
-        const env = c < 2.5 ? Math.sin((Math.PI * c) / 2.5) : 0;
-        if (Math.floor((idleT - 6) / 8) % 2 === 0) stretch = env;
-        else look = Math.sin((2 * Math.PI * c) / 2.5) * (c < 2.5 ? 1 : 0);
-      }
+      const { stretch, look } = dungLauDang(state?.idle ?? 0);
 
       /* ---- chân ---- */
       const amp = (0.55 + 0.35 * runB) * move;
       let lL = step * amp;
       let lR = -step * amp;
-      lL = mix(lL, -0.8, airB); // nhảy: gối trước co lên, chân sau duỗi
-      lR = mix(lR, 0.35, airB);
-      rig.legL.rotation.x = mix(lL, -1.45, sitB); // ngồi thiền: hai chân xếp ra trước
-      rig.legR.rotation.x = mix(lR, -1.45, sitB);
-      rig.legL.rotation.z = 0.45 * sitB;
-      rig.legR.rotation.z = -0.45 * sitB;
+      lL = mix(lL, NHAY7.legL, airB); // nhảy: gối trước co lên, chân sau duỗi
+      lR = mix(lR, NHAY7.legR, airB);
+      rig.legL.rotation.x = mix(lL, NGOI7.legs, sitB); // ngồi thiền: hai chân xếp ra trước
+      rig.legR.rotation.x = mix(lR, NGOI7.legs, sitB);
+      rig.legL.rotation.z = NGOI7.legZ * sitB;
+      rig.legR.rotation.z = -NGOI7.legZ * sitB;
 
       /* ---- tay ---- tay trái ở +x: rotation.z âm = khép vào thân */
       const swing = (0.34 + 0.45 * runB) * move;
@@ -219,38 +212,28 @@ export async function loadGlbCharacter(
       let aLz = -(ARM_REST - swayL);
       let aRz = ARM_REST - swayR;
       // nhảy: tay giang ra giữ thăng bằng
-      aLz = mix(aLz, 0.15, airB);
-      aRz = mix(aRz, -0.15, airB);
+      aLz = mix(aLz, NHAY7.aLz, airB);
+      aRz = mix(aRz, NHAY7.aRz, airB);
       // ngồi thiền: tay đặt lên gối
-      aLx = mix(aLx, -0.75, sitB);
-      aRx = mix(aRx, -0.75, sitB);
-      aLz = mix(aLz, -(ARM_REST + 0.1), sitB);
-      aRz = mix(aRz, ARM_REST + 0.1, sitB);
+      aLx = mix(aLx, NGOI7.aLx, sitB);
+      aRx = mix(aRx, NGOI7.aRx, sitB);
+      aLz = mix(aLz, NGOI7.aLz, sitB);
+      aRz = mix(aRz, NGOI7.aRz, sitB);
       // chắp tay chào (拱手): hai tay đưa lên trước ngực, khép vào giữa
-      aLx = mix(aLx, -1.35, bowB);
-      aRx = mix(aRx, -1.35, bowB);
-      aLz = mix(aLz, -(ARM_REST + 0.55), bowB);
-      aRz = mix(aRz, ARM_REST + 0.55, bowB);
+      aLx = mix(aLx, CHAO.aLx, bowB);
+      aRx = mix(aRx, CHAO.aRx, bowB);
+      aLz = mix(aLz, CHAO.aLz, bowB);
+      aRz = mix(aRz, CHAO.aRz, bowB);
       // vươn vai: hai tay giơ cao
-      aLz = mix(aLz, 1.5, stretch);
-      aRz = mix(aRz, -1.5, stretch);
+      aLz = mix(aLz, VUON_VAI.aLz, stretch);
+      aRz = mix(aRz, VUON_VAI.aRz, stretch);
       // gõ mõ (R-NPC-8, có `strike`): tay trái đưa mõ ra trước ngang ngực, tay phải giơ dùi cao theo `strike` (1 = giơ cao)
       const hit = state?.strike;
-      if (hit !== undefined) {
-        aLx = -1.1;
-        aLz = -(ARM_REST + 0.35);
-        aRx = -0.9 - 0.9 * hit;
-        aRz = ARM_REST + 0.25;
-      }
+      if (hit !== undefined) ({ aLx, aLz, aRx, aRz } = goMoDang(hit));
       // gảy đàn (R-NPC-9, có `pluck`): hai tay đưa ra trước, hạ xuống mặt đàn; tay trái nhấn dây đung đưa chậm (rung
       // tiếng), tay phải nhấc theo `pluck` (0 = vừa gảy)
       const pl = state?.pluck;
-      if (pl !== undefined) {
-        aLx = -0.95 + Math.sin(time * 2.3) * 0.05;
-        aLz = -(ARM_REST + 0.28) + Math.sin(time * 1.7) * 0.03;
-        aRx = -0.95 - 0.18 * pl;
-        aRz = ARM_REST + 0.28;
-      }
+      if (pl !== undefined) ({ aLx, aLz, aRx, aRz } = gayDanDang(pl, time));
       // biểu cảm (R-BIEU-2, dáng `bieuCamDang.ts`): trộn đè lên dáng đứng theo trọng số vào / ra
       // làm vườn (R-VUON-13, dáng `lamVuonDang.ts`): trộn cùng cách, biểu cảm đang diễn thì thắng
       const wk = state?.work;
@@ -282,11 +265,11 @@ export async function loadGlbCharacter(
 
       /* ---- thân, đầu ---- */
       rig.hips.rotation.y = step * (0.1 + 0.08 * runB) * move;
-      rig.hips.rotation.x = 0.28 * bowB; // cúi người khi chào
-      rig.head.rotation.y = -step * 0.06 * move + look * 0.6;
+      rig.hips.rotation.x = CHAO.hipsX * bowB; // cúi người khi chào
+      rig.head.rotation.y = -step * 0.06 * move + look * NHIN_QUANH;
       rig.hips.position.y = hipY + Math.sin(time * 2) * 0.012 * (1 - move) * (1 - airB);
       rig.head.rotation.z = Math.sin(time * 1.1) * 0.05 * still;
-      rig.head.rotation.x = Math.sin(time * 0.7) * 0.03 * still + 0.12 * bowB - 0.25 * stretch + 0.15 * sitB;
+      rig.head.rotation.x = Math.sin(time * 0.7) * 0.03 * still + CHAO.headX * bowB + VUON_VAI.headX * stretch + NGOI7.headX * sitB;
       if (em && ew > 0) {
         rig.hips.rotation.x = mix(rig.hips.rotation.x, em.hipsX, ew);
         rig.hips.rotation.y = mix(rig.hips.rotation.y, em.hipsY, ew);

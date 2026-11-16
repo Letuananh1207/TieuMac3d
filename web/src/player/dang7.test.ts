@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { emotePose } from './bieuCamDang';
-import { chaoDang, dungLauDang, goMoDang, gayDanDang, REST, SPINE_SPLIT, tronDang7 } from './dang7';
+import { CHAO, dungLauDang, goMoDang, gayDanDang, REST, SPINE_SPLIT, tronDang7 } from './dang7';
 import { DongTac, JOINTS, TINH } from './dongTac';
 import { WORK_IDS, WORK_LEN, workPose } from './lamVuonDang';
 
@@ -51,7 +51,7 @@ describe('Lớp nối dáng 7 khớp → xương chuẩn (R-BIEU-2, R-VUON-13, R
     tronDang7(p, { aLx: -1.2 }, 1, cal);
     expect(p.j.foreL[0]).toBe(fore);
     expect(p.j.armL[0]).toBeCloseTo(-1.2, 9);
-    tronDang7(p, chaoDang(), 1, cal);
+    tronDang7(p, CHAO, 1, cal);
     expect(p.j.foreL[0]).toBeCloseTo(-1.3, 9);
     expect(p.j.armL[0]).toBeCloseTo(-0.9, 9);
   });
