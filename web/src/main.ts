@@ -564,9 +564,6 @@ async function boot(): Promise<void> {
   const orbit = new OrbitCamera(spec.camera);
   const joystick = new Joystick(el('joy'), el('knob'), el('joyGhost'));
   attachCheDoNhap(); // máy tính chuột: ẩn joystick gợi ý, thanh công cụ sang trái (R-DIEU-1, R-THANH-1)
-  // TẠM V-20261116-100: duyệt 3 phương án thanh bản máy tính (?thanh=a|b|c → toolbarMayThu.css) — gỡ ở giai đoạn 2
-  const thanhThu = params.get('thanh');
-  if (thanhThu && /^[abc]$/.test(thanhThu)) document.body.classList.add(`thanh-${thanhThu}`);
   const picker = new GroundPicker(camera, world.ground);
   // trò chuyện kênh chung (R-CHAT-1..3, thiết kế 2026-11-14.9) — tên NPC lấy từ dữ liệu hội thoại
   const chat = new ChatRoom((id) => dialogFor(id));

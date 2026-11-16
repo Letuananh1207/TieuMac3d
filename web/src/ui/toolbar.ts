@@ -13,7 +13,6 @@ import { hinhImg, type HinhId } from './hinh';
 import { TOOL_ICONS } from './toolbarIcons';
 import './toolbar.css';
 import './toolbarMay.css';
-import './toolbarMayThu.css'; // TẠM V-20261116-100: phương án thanh ?thanh=a|b|c — gỡ ở giai đoạn 2
 
 /** Hình minh hoạ của 5 ô (thiết kế 2026-11-16.2 `HinhMinhHoa-HUD-doc`). */
 /** Hình Trò chuyện trên thanh bản máy tính (V-20261116-77): tên + phím (Enter như cũ — R-CHAT-3). */

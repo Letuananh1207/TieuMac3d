@@ -1,51 +1,56 @@
-/* Thanh công cụ BẢN MÁY TÍNH (body.ban-may, màn ngang — V-20261116-74, V-76, V-77, V-97, R-THANH-1, R-CHAT-3; theo người dùng,
-   học bố cục đáy kiểu 摩尔 bản web — chưa có trên canvas, ghi lệch docs/testing/gui_thiet_ke_2026-11-16.md). Điện thoại giữ
-   thanh 5 ô (toolbar.css). Cùng DOM ui/toolbar.ts, chỉ khác CSS:
-   - thanh TRONG SUỐT (V-76: "thanh công cụ không nên có màu") — không nền, không dải gỗ; vẫn chiếm dải cao --band-h ở đáy
-     (trong safe area) để các cụm khác tính chỗ;
-   - V-77: bỏ ô chat luôn hiện; một hàng 6 hình sát TRÁI đáy Trò chuyện · Bản đồ · Biểu cảm · Về nhà · Túi đồ · Nhiệm vụ
-     (Trò chuyện đầu hàng — đúng chỗ ô chat cũ), không khung ô, hình 56 (V-97: 76 → 56) đứng thẳng trên cảnh, dưới là ru-băng chữ màu đá đen
-     bán trong suốt (đọc rõ trên cảnh ngày lẫn đêm; đang mở → vàng, mờ → xám). Ô nhập / khung kênh / 3 tin mới nổi ngay trên
-     hàng hình bên trái (chat.css #chat.bar); bảng Biểu cảm, tấm báo nhà cũng nổi bên trái trên hàng;
-   - phải trống → cụm hành động về sát đáy, Đọc sách + Trang trí ngay trên cụm. Ô phím tắt nhỏ (Enter M G H B J) trên mỗi hình. */
+/* Thanh công cụ BẢN MÁY TÍNH (body.ban-may, màn ngang — V-20261116-74, V-76, V-77, V-97, V-100, R-THANH-1, R-CHAT-3; theo
+   người dùng, chưa có trên canvas, ghi lệch docs/testing/gui_thiet_ke_2026-11-16.md). Điện thoại giữ thanh 5 ô (toolbar.css).
+   Cùng DOM ui/toolbar.ts, chỉ khác CSS:
+   - thanh TRONG SUỐT (V-76: "thanh công cụ không nên có màu") — không nền, không dải; chỉ giữ chỗ ở đáy, chạm vào chỗ trống
+     xuống cảnh;
+   - V-77: một hàng 6 hình sát TRÁI đáy Trò chuyện · Bản đồ · Biểu cảm · Về nhà · Túi đồ · Nhiệm vụ, hình 56 (V-97);
+   - V-100 phương án A "nổi tối giản" (người dùng chọn 2026-11-16, thay ru-băng đuôi én): cách đáy 20 + safe area, mép trái
+     20, ô 66 cách 16; hình đứng tự do, nhãn chữ trắng 12,5/700 viền bóng mềm ngay dưới hình (đọc rõ ngày + đêm); ô phím tắt
+     (Enter M G H B J) chip tròn tối mờ góc trên trái hình; di chuột → hình nhô + phóng nhẹ + quầng sáng; đang mở → hình nhô,
+     quầng vàng, gạch vàng dày rộng bằng nhãn; mờ → hình xám (toolbar.css), chữ mờ 60 %. Ô nhập / khung kênh / 3 tin mới
+     (chat.css #chat.bar), bảng Biểu cảm, tấm báo nhà nổi trên hàng cách 14, mép trái thẳng hàng;
+   - phải trống → cụm hành động cách đáy 20, Đọc sách + Trang trí ngay trên cụm. */
 .tb-key,.tb-troChuyen{display:none}
 @media (orientation:landscape){
-  body.ban-may{--band-h:52px}
+  /* --tb-h cao hàng (hình 56 + nhãn), --tb-floor cách đáy, --tb-edge cách mép trái; --tb-top = đáy các thứ nổi trên hàng */
+  body.ban-may{--tb-h:78px;--tb-floor:20px;--tb-edge:20px;--tb-top:calc(var(--sa-bottom) + var(--tb-floor) + var(--tb-h) + 14px)}
   /* dải đáy trong suốt: không nền / viền / bóng (V-76) — chỉ giữ chỗ, chạm vào chỗ trống không thuộc thanh */
-  body.ban-may #toolbar{left:0;right:0;bottom:0;width:auto;margin:0;height:calc(var(--band-h) + var(--sa-bottom));padding:0 calc(var(--sa-right) + 12px) var(--sa-bottom) calc(var(--sa-left) + 12px);border:0;outline:0;border-radius:0;background:none;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;justify-content:flex-start;align-items:stretch;gap:4px;pointer-events:none}
+  body.ban-may #toolbar{left:0;right:0;bottom:0;width:auto;margin:0;height:calc(var(--tb-h) + var(--sa-bottom) + var(--tb-floor));padding:0 calc(var(--sa-right) + var(--tb-edge)) calc(var(--sa-bottom) + var(--tb-floor)) calc(var(--sa-left) + var(--tb-edge));border:0;outline:0;border-radius:0;background:none;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;justify-content:flex-start;align-items:flex-end;gap:16px;pointer-events:none}
   body.ban-may #toolbar .tb-cell{pointer-events:auto}
   body.ban-may #toolbar.tb-hidden{transform:translateY(calc(100% + 140px))}
-  /* hàng hình phải: không khung, hình nhô lên khỏi dải, ru-băng ở đáy */
-  body.ban-may .tb-cell{flex:none;min-width:68px;height:100%;justify-content:flex-end;gap:0;padding-bottom:6px;box-sizing:border-box;background:transparent;border-radius:0;cursor:pointer}
+  /* ô: không khung, hình trên nhãn dưới */
+  body.ban-may .tb-cell{flex:none;position:relative;width:66px;min-width:0;height:var(--tb-h);padding:0;justify-content:flex-start;gap:0;background:transparent;border-radius:0;cursor:pointer;transition:transform .12s ease}
   body.ban-may .tb-troChuyen{display:flex}
   /* thứ tự hàng: Trò chuyện · Bản đồ · Biểu cảm · Về nhà · Túi đồ · Nhiệm vụ (V-74/76/77) */
   body.ban-may .tb-troChuyen{order:-3}
   body.ban-may .tb-banDo{order:-2}
   body.ban-may .tb-bieuCam{order:-1}
-  body.ban-may .tb-disc{width:56px;height:56px;margin:0}
-  body.ban-may .tb-disc .hinh{width:56px;height:56px;filter:var(--hinh-shadow)}
-  body.ban-may .tb-lbl{position:relative;z-index:1;margin-top:-9px;height:20px;padding:0 14px;box-sizing:border-box;display:flex;align-items:center;white-space:nowrap;font-size:12px;color:#fff;text-shadow:0 1px 1px rgba(0,0,0,.35);background:rgba(36,50,58,.72);box-shadow:inset 0 1px 0 rgba(255,255,255,.22);clip-path:polygon(0 0,100% 0,calc(100% - 6px) 50%,100% 100%,0 100%,6px 50%)}
-  /* nhấn: thu 94 %, không nền ô */
-  body.ban-may .tb-cell:active{transform:scale(.94);background:transparent}
-  /* di chuột: hình nhô thêm 3 */
-  body.ban-may .tb-cell:not(.off):hover .hinh{transform:translateY(-3px)}
-  /* mờ: hình xám (toolbar.css) + ru-băng xám */
-  body.ban-may .tb-cell.off .tb-lbl{opacity:1;color:rgba(255,255,255,.8);background:rgba(110,120,124,.72);box-shadow:none}
+  body.ban-may .tb-disc{width:56px;height:56px;margin:0 auto}
+  body.ban-may .tb-disc .hinh{width:56px;height:56px;filter:var(--hinh-shadow);transition:transform .12s ease,filter .12s}
+  /* nhãn: chữ trắng viền bóng mềm, không nền (V-100 A) */
+  body.ban-may .tb-lbl{position:relative;margin-top:3px;white-space:nowrap;text-align:center;font:700 12.5px/18px var(--ui);letter-spacing:.01em;color:#fff;text-shadow:0 0 2px rgba(20,30,36,.95),0 1px 2px rgba(20,30,36,.85),0 0 8px rgba(20,30,36,.5)}
+  /* nhấn: thu 95 %, không nền ô */
+  body.ban-may .tb-cell:active{transform:scale(.95);background:transparent}
+  /* di chuột: hình nhô 4 + phóng 1,06 + quầng sáng */
+  body.ban-may .tb-cell:not(.off):hover .hinh{transform:translateY(-4px) scale(1.06);filter:drop-shadow(0 0 7px rgba(255,244,214,.95)) var(--hinh-shadow)}
+  /* mờ: hình xám (toolbar.css) + chữ 60 % */
+  body.ban-may .tb-cell.off .tb-lbl{opacity:.6;color:#fff}
   body.ban-may .tb-cell.off{cursor:default}
   body.ban-may .tb-cell.off:active{transform:none}
-  /* đang mở: ru-băng vàng chữ slate, hình nhô 3 */
+  /* đang mở: hình nhô 4 + quầng vàng rõ, gạch vàng 4 px rộng bằng nhãn (V-100: làm rõ hơn bản duyệt) */
   body.ban-may .tb-cell.open{background:transparent}
-  body.ban-may .tb-cell.open .hinh{transform:translateY(-3px)}
-  body.ban-may .tb-cell.open .tb-lbl{color:var(--slate);text-shadow:none;background:var(--gold);box-shadow:inset 0 1.5px 0 var(--coin-rim),inset 0 -1.5px 0 var(--coin-rim)}
-  /* ô phím tắt: góc trên trái hình */
-  body.ban-may .tb-key{display:block;position:absolute;left:-2px;top:3px;z-index:2;min-width:18px;box-sizing:border-box;padding:0 4px;border-radius:4px;font:700 10px/15px var(--ui);text-align:center;color:var(--slate);background:rgba(244,247,246,.95);border:1px solid var(--frost-outline);box-shadow:inset 0 -1.5px 0 rgba(36,50,58,.18)}
-  /* bảng Biểu cảm nổi trên hàng hình (hình nhô ≈ 21 khỏi dải — V-97), mép trái thẳng hàng; mũi nhọn trỏ giữa hình Biểu cảm (emotePanel.ts) */
-  body.ban-may #emotePanel{left:calc(var(--sa-left) + 12px);right:auto;margin:0;width:420px;bottom:calc(var(--sa-bottom) + var(--band-h) + 33px)}
-  /* tấm báo "Bạn đang ở Nhà của ta": trên hàng hình, bên trái (chỗ khung tin — khung tin nhường, chat.css) */
-  body.ban-may #homeHere{left:calc(var(--sa-left) + 12px);top:auto;bottom:calc(var(--sa-bottom) + var(--band-h) + 33px);transform:none}
-  /* phải không còn hình → cụm hành động sát đáy; Đọc sách, Trang trí ngay trên cụm */
-  body.ban-may #actions{right:calc(var(--sa-right) + 12px);bottom:calc(var(--sa-bottom) + 9px)}
-  body.ban-may:has(#actions):has(#toolbar) #readBook{right:calc(var(--sa-right) + 12px);bottom:calc(var(--sa-bottom) + 189px)}
-  body.ban-may:has(#actions):has(#toolbar) #decorBtn{right:calc(var(--sa-right) + 20px);bottom:calc(var(--sa-bottom) + 253px)}
-  body.ban-may:has(#actions):has(#toolbar):has(#readBook[hidden]) #decorBtn{bottom:calc(var(--sa-bottom) + 189px)}
+  body.ban-may .tb-cell.open .tb-lbl{color:#fff}
+  body.ban-may .tb-cell.open .hinh{transform:translateY(-4px);filter:drop-shadow(0 0 4px rgba(255,214,120,.95)) drop-shadow(0 0 10px rgba(255,200,90,.7)) var(--hinh-shadow)}
+  body.ban-may .tb-cell.open .tb-lbl::after{content:'';position:absolute;left:-2px;right:-2px;bottom:-6px;height:4px;border-radius:2px;background:var(--gold);box-shadow:0 0 0 1px rgba(90,62,18,.35),0 0 8px rgba(212,166,74,.9)}
+  /* ô phím tắt: chip tròn tối mờ góc trên trái hình */
+  body.ban-may .tb-key{display:block;position:absolute;left:-4px;top:-2px;z-index:2;min-width:17px;height:17px;box-sizing:border-box;padding:0 5px;border-radius:999px;border:1px solid rgba(255,255,255,.4);font:700 9.5px/15px var(--ui);text-align:center;color:#fff;background:rgba(36,50,58,.58);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+  /* bảng Biểu cảm nổi trên hàng cách 14, mép trái thẳng hàng; mũi nhọn trỏ giữa hình Biểu cảm (emotePanel.ts) */
+  body.ban-may #emotePanel{left:calc(var(--sa-left) + var(--tb-edge));right:auto;margin:0;width:420px;bottom:var(--tb-top)}
+  /* tấm báo "Bạn đang ở Nhà của ta": cùng chỗ (khung tin nhường, chat.css) */
+  body.ban-may #homeHere{left:calc(var(--sa-left) + var(--tb-edge));top:auto;bottom:var(--tb-top);transform:none}
+  /* phải không còn hình → cụm hành động cách đáy như thanh; Đọc sách, Trang trí ngay trên cụm */
+  body.ban-may #actions{right:calc(var(--sa-right) + var(--tb-edge));bottom:calc(var(--sa-bottom) + var(--tb-floor))}
+  body.ban-may:has(#actions):has(#toolbar) #readBook{right:calc(var(--sa-right) + 12px);bottom:calc(var(--sa-bottom) + 200px)}
+  body.ban-may:has(#actions):has(#toolbar) #decorBtn{right:calc(var(--sa-right) + 20px);bottom:calc(var(--sa-bottom) + 264px)}
+  body.ban-may:has(#actions):has(#toolbar):has(#readBook[hidden]) #decorBtn{bottom:calc(var(--sa-bottom) + 200px)}
 }

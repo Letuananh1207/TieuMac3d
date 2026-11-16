@@ -49,3 +49,14 @@ Người dùng 2026-11-16: "kích thước các icon tiện ích ở thanh công
 | Mục thiết kế | Thiết kế vẽ gì | Luật nói gì | Code đang làm |
 |---|---|---|---|
 | 2026-11-15.35 Thanh công cụ (máy tính) | chưa vẽ bản máy tính | R-THANH-1 (không ghi cỡ hình — không sửa) | hàng 6 hình **56** (trước 76), ô rộng tối thiểu 68 (trước 88), ru-băng chữ giữ 12 px cao 20, chồng hình 9 (trước 12); bảng Biểu cảm / tấm báo nhà đáy `--band-h + 33` (trước + 50), ô nhập / khung kênh `--bar-b` 85 (trước 102) — `web/src/ui/toolbarMay.css`, `chat.css`. Ảnh trước / sau: `design/screens/Thanh-may-icon-56.png`. Xin vẽ `ThanhCongCu-may` theo cỡ này |
+
+## Thanh máy tính: phương án A "nổi tối giản" (V-20261116-100)
+
+Người dùng 2026-11-16: "trình bày thanh đang quá xấu, quá gần nhau, quá sát đáy, hiệu ứng tên thiếu chuyên nghiệp" → dựng 3
+phương án (A nổi tối giản · B ô kính riêng · C đĩa tròn + nhãn — ảnh `design/screens/Thanh-may-phuong-an.png`,
+`Thanh-may-phuong-an-can.png`), **người dùng chọn A** (2026-11-16). Chỉ **bản máy tính** (body.ban-may, màn ngang); điện
+thoại giữ thanh 5 ô. Giữ V-76 (không dải nền), V-77 (thứ tự, Trò chuyện đầu hàng), V-97 (hình 56), phím tắt. Thay hàng V-97 ở trên:
+
+| Mục thiết kế | Thiết kế vẽ gì | Luật nói gì | Code đang làm |
+|---|---|---|---|
+| 2026-11-15.35 Thanh công cụ (máy tính) + 2026-11-14.9 Trò chuyện | chưa vẽ bản máy tính | R-THANH-1, R-CHAT-3 (không ghi cách trình bày — không sửa) | **bỏ ru-băng đuôi én**; hàng 6 hình **56** đứng tự do, ô rộng 66 **cách nhau 16**, **cách đáy 20** + safe area, mép trái safe + 20; nhãn **chữ trắng 12,5/700 viền bóng mềm** (text-shadow slate) ngay dưới hình, không nền; ô phím tắt = **chip tròn tối mờ** (slate 58 %, viền trắng 40 %, chữ trắng 9,5/700) góc trên trái hình; **di chuột**: hình nhô 4 + phóng 1,06 + quầng sáng kem; **đang mở**: hình nhô 4 + quầng vàng + **gạch vàng 4 px rộng bằng nhãn** dưới nhãn (chữ vẫn trắng); **mờ**: hình xám (như cũ) + chữ 60 %; bảng Biểu cảm / tấm báo nhà / ô nhập + khung kênh (`--bar-b`) nổi **cách hàng 14** (đáy safe + 112), mép trái safe + 20; cụm hành động phải cách đáy 20, Đọc sách + 200, Trang trí + 264 — `web/src/ui/toolbarMay.css`, `chat.css`. Ảnh: `design/screens/Thanh-may-A.png`. Xin vẽ `ThanhCongCu-may` theo bản này (thường / Biểu cảm mở / ô chat mở / mờ / di chuột) + token "nhãn chữ trên cảnh" (trắng viền bóng) |
