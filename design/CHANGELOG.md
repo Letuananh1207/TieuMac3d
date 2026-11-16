@@ -3,6 +3,16 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-16.6 — Model thủ thư `thu-thu` bằng Tripo (đổi luồng tạo model nhân vật)
+
+- Loại: tài nguyên 3D (`/tai-nguyen`). Đáp ứng phiếu `docs/phieu_thiet_ke/2026-11-13-anh-thu-thu.md`.
+- `design/models/thu-thu.glb`: Tripo (Multiview 4 ảnh, H3.1) → Retopo Triangle 14 632 tam giác (giữ texture) → Rig humanoid
+  (xương Mixamo, clip `idle` / `walk`) → `tripo.sh` → `model:clean --khong-sang`, 769 KB. Ảnh so: `screens/Model-thu-thu-so-thiet-ke.png`.
+- So với Hunyuan cùng bộ ảnh: màu sạch (không lem thái dương / tóc), lưới gọn, xương chuẩn. Người dùng chọn Tripo cho mọi NPC
+  còn lại (quyết định 0003, mục "Cập nhật 2026-11-16").
+- Chưa đặt vào cảnh (không có `npcs` `thu-thu` trong đặc tả) → `/canh` đặt ở Tàng Kinh Các. Clip Tripo chưa dùng (NPC đứng yên);
+  người dùng chưa hài lòng động tác sẵn của Tripo → động tác riêng để sau.
+
 ## 2026-11-16.5 — Trúc Lâm: thầy Trúc Lão ở bãi hạc đáp (dạy bộ thủ)
 
 - Loại: cảnh 3D — dữ liệu (đặt NPC) + luồng / luật. Phiên code V-20261114-45 làm thay việc `/canh` theo kế hoạch đã duyệt

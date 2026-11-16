@@ -69,7 +69,24 @@ không đoán được nó là gì.
    khối code (dự phòng khi phiên thiết kế không đọc repo). Bước của người dùng: mở `/ui-design` → làm theo phiếu → "chốt".
    Ảnh về `main` → người dùng gõ `/tai-nguyen nhan-vat <tên>` (hoặc `cong-trinh <tên>`) để dựng model (luồng chuẩn dưới).
 
-## Luồng chuẩn: nhân vật từ bộ ảnh 4 góc (chốt 2026-11-12.12)
+## Luồng chuẩn MỚI: nhân vật / NPC bằng Tripo (chốt 2026-11-16, thay Hunyuan cho nhân vật)
+
+Vì sao: Hunyuan trên laptop chậm + lag, màu chiếu hay lem, xương tự gắn sơ sài; Tripo (gói Professional của người dùng)
+cho màu sạch, xương Mixamo chuẩn. Quyết định 0003 mục "Cập nhật 2026-11-16". `/tai-nguyen nhan-vat <tên>` đi luồng này.
+
+1. **Người dùng** làm trên tripo3d.ai (hướng dẫn từng bước khi cần, đừng tự đoán giá): Model → Multiview: Front `<tên>-truoc`,
+   Left `<tên>-trai`, Back `<tên>-sau`, Right `<tên>-phai` (ngược bên → đổi Left / Right) → H3.1 Best Quality → Generate
+   → **Retopo**: Triangle, ~16 000 mặt, giữ texture → **Rig** humanoid → **Export GLB** → `C:\ai3d\tripo\<tên>-lowpoly.glb`.
+   Không cần tạo lại để retopo / rig — các nút đó chạy trên model đã có.
+2. **Claude**: `bash .claude/skills/tai-nguyen/scripts/tripo.sh <tên>` → `C:/ai3d/tripo/ra/<tên>-{final.glb,so.png}`; Read
+   `-so.png`, soát dáng / màu / phụ kiện; trình người dùng; đồng ý → `--dat` (chép vào `design/models/<tên>.glb`).
+3. Ghi như luồng cũ: `LICENSES.md` (Tripo gói Professional), `design/CHANGELOG.md`, ảnh `design/screens/Model-<tên>-so-thiet-ke.png`,
+   trạng thái phiếu ảnh, `cd web && npm run build`, commit chỉ đường dẫn của mình.
+- **Không** giảm lưới Tripo bằng meshopt sau khi xuất (cắt đường UV → xé màu). File chưa retopo → nhờ người dùng Retopo.
+- Động tác sẵn của Tripo người dùng chưa ưng (2026-11-16) — clip riêng (Mixamo cùng tên xương, hoặc động tác bằng code) cần kế hoạch `/lead`.
+- Đừng chạy Hunyuan khi phiên khác đang chạy (`tasklist | grep python` / dòng lệnh `mv_gen.py`) — hai phiên chung GPU → lỗi CUDA.
+
+## Luồng cũ (dự phòng): nhân vật bằng Hunyuan từ bộ ảnh 4 góc (chốt 2026-11-12.12)
 
 Vì sao luồng này: 4 ảnh cho Hunyuan đủ dáng mọi phía; bản **đầy đủ** Hunyuan3D-2mv (không turbo) cho tóc / tai / đầu
 khớp ảnh nên màu chiếu từ chính bộ ảnh lên không lem; vật liệu không-sáng giữ đúng màu ảnh thiết kế ở mọi góc.

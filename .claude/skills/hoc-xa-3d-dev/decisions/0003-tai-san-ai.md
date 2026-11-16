@@ -15,6 +15,15 @@ Ngày: 2026-11-11 · Trạng thái: đã chốt hướng (người dùng), đang
   Nhân vật `.glb` qua hợp đồng `Character` (`player/glbCharacter.ts`, `AnimationMixer` clip `idle` / `walk`); đệ tử dựng
   bằng khối giữ làm dự phòng khi thiếu file hoặc lỗi nạp.
 
+## Cập nhật 2026-11-16: nhân vật / NPC làm bằng Tripo (người dùng chọn)
+
+- Hunyuan chạy trên laptop chậm (~10 phút / seed), chiếm GPU gây lag, màu chiếu từ 4 ảnh hay lem, `autoRig` chỉ 7 xương.
+  Thử `thu-thu` trên Tripo (tripo3d.ai, gói Professional người dùng mua): màu sạch, xương Mixamo chuẩn, máy không tốn gì.
+- Luồng mới: người dùng chạy Tripo (Multiview 4 ảnh → **Retopo Triangle ~16k, giữ texture** → Rig humanoid → Export GLB) →
+  Claude `tai-nguyen/scripts/tripo.sh` (ảnh màu 1024 + nén + ảnh so). **Giảm lưới phải làm trong Tripo** — giảm sau bằng
+  meshopt cắt ngang đường UV làm xé màu.
+- Hunyuan giữ làm dự phòng (công trình, hoặc khi không muốn tốn credit). Ngân sách giữ nguyên.
+
 ## Ngân sách mỗi model
 
 | | Tam giác | Dung lượng | Vật liệu / texture |
