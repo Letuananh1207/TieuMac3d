@@ -3,6 +3,14 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-16.10 — Nhân vật chính, Cầm Nương, Lão Canh bản Tripo (xương Mixamo, động tác đợt 2)
+
+- Loại: tài nguyên 3D (`/tai-nguyen`, luồng Tripo). Sau khi gộp động tác đợt 2 (`docs/tasks/2026-11-16-dong-tac-dot-2.md`,
+  người dùng duyệt ảnh NV8): mọi dáng của nhân vật chính (đi hoạt bát, chạy, nhảy, ngồi, chào, biểu cảm, làm vườn + đồ cầm tay)
+  chạy trên xương Mixamo.
+- `design/models/nhan-vat.glb` (thay bản Hunyuan), `cam-nu.glb` (mới — hiện trên bục đàn, ngồi gảy, R-NPC-9), `go-mo.glb` (mới —
+  chưa có đường đi trong đặc tả, `/canh` đặt sau theo bản thử `scene/npcDraft.ts`, R-NPC-7). Ảnh so: `screens/Model-<mã>-so-thiet-ke.png`.
+
 ## 2026-11-16.8 — Model Tripo: Tiểu Mặc, Mặc Ông (thay Hunyuan), tiểu nhị, trận sư
 
 - Loại: tài nguyên 3D (`/tai-nguyen`, luồng Tripo 60 coin / nhân vật). Phiếu: `2026-11-12-anh-su-phu`, `2026-11-13-anh-tieu-nhi`,
