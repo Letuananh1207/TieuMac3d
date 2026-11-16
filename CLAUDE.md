@@ -28,6 +28,10 @@ dev Flutter chưa làm game: mỗi khi chọn thư viện / cách làm, giải t
   bằng `/ui-apply phieu <yêu cầu>`, việc đó chờ thiết kế.
 - Cảnh 3D thiết kế bằng đặc tả `design/scene/scene.json` + **Canvas 3D** (`/canh …`, trang `web/design.html` chạy đúng
   code app). Quyết định: `decisions/0002-thiet-ke-3d.md`.
+- **Ảnh concept trước** (người dùng 2026-11-16): map / vùng mới, khu mới, công trình / kiến trúc mới, đổi dáng một khu →
+  soạn phiếu ảnh concept (`docs/phieu_thiet_ke/<ngày>-concept-<tên>.md`, câu lệnh Gemini soạn sẵn) → người dùng tạo ảnh
+  Gemini ở `/ui-design` và **chốt** (`design/concept/<tên>/`) → lúc đó mới sửa đặc tả / code / làm model. Việc nhỏ (dời, chỉnh
+  cỡ / màu, đặt NPC, sửa lỗi) được miễn. Quyết định: `decisions/0006-anh-concept-truoc.md`.
 - Model 3D bằng AI (nhân vật, 1–2 công trình nổi bật): `/tai-nguyen` — luồng chuẩn: bộ ảnh 4 góc từ `/ui-design` →
   `bash .claude/skills/tai-nguyen/scripts/nhan-vat.sh <tên> <thư mục ra>` (Hunyuan3D-2mv đầy đủ chạy trên máy người dùng
   → làm mịn → nướng màu từ ảnh → nén, không-sáng → ảnh so thiết kế), đặt `design/models/`. Quyết định: `decisions/0003-tai-san-ai.md`.

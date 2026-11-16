@@ -24,6 +24,12 @@ phiên code (`/ui-apply`) hỏi người dùng rồi sửa sổ. Thường chạ
 
 Không thuộc skill này: cảnh 3D → `/canh` · model .glb → `/tai-nguyen` · nghiên cứu phong cách → `/khao-cuu`.
 
+**Phiếu ảnh concept bối cảnh / kiến trúc** (`docs/phieu_thiet_ke/*-concept-*.md`, `decisions/0006-anh-concept-truoc.md`,
+2026-11-16): skill này nhận như phiếu ảnh 4 góc — người dùng chạy Gemini với câu lệnh trong phiếu, chọn / sửa tới khi ưng;
+"chốt" → ảnh vào `design/concept/<tên>/*.png` (chuẩn hoá: PNG, tên theo góc trong phiếu), mục `design/CHANGELOG.md`
+(loại: concept, đáp phiếu …), trạng thái phiếu `đã chốt`, dòng ảnh trong `design/models/LICENSES.md` (công cụ Gemini, ngày).
+Sau đó phiên `/canh` / `/lead` mới dựng theo ảnh.
+
 ## Trước khi vẽ — đọc
 
 1. Phiếu: người dùng dán, hoặc `docs/phieu_thiet_ke/*.md` có trạng thái `chờ thiết kế`.

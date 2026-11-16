@@ -41,6 +41,12 @@ Giao diện 2D (HUD, màn, thẻ) → `/ui-design`. Model AI (.glb) → `/tai-ng
 
 ## Sửa cảnh
 
+0. **Cổng ảnh concept** (`decisions/0006-anh-concept-truoc.md`, người dùng 2026-11-16): việc là map / vùng mới, khu mới,
+   công trình / kiến trúc mới hoặc đổi dáng một khu → cần ảnh concept Gemini **đã chốt** trong `design/concept/<tên>/`.
+   Chưa có → **dừng, không sửa đặc tả**: soạn phiếu `docs/phieu_thiet_ke/<ngày>-concept-<tên>.md` (góc toàn cảnh trên cao
+   chếch, góc người chơi đi vào, từng công trình mới mặt tiền + chếch ¾; số đo gần đúng; bảng màu; câu lệnh Gemini; không chữ
+   Hán) + khối "Dán vào canvas", báo người dùng chạy `/ui-design`. Có ảnh → dựng theo ảnh, chụp Canvas 3D cạnh ảnh để so.
+   Việc nhỏ (dời, chỉnh cỡ / màu, đặt NPC, thêm vật lặp có sẵn, sửa lỗi) bỏ qua bước này.
 1. Sửa `scene.json` (chỉ trường có trong khuôn). Màu `"#rrggbb"`; `rotY` nhà / cổng: 0 · 90 · 180 · 270 (độ); `pitch`
    camera: radian; mặt trước (cửa, biển) nhìn +z trước khi quay. Vùng neo theo nhà `zone: { id, front, r }`.
 2. `cd web && npm run scene:check` → phải **"Không có lỗi"**; in toạ độ nhà / vùng / tường / bục để đối chiếu luật.

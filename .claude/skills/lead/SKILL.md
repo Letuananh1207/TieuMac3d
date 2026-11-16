@@ -42,6 +42,9 @@ Flutter (`app/lib/`) → test → build (`npm run build`).
 Mỗi nhiệm vụ: mục tiêu một câu · file · lớp (để đọc đúng reference) · chuỗi giao diện mới · test · "xong khi".
 
 Cờ cảnh báo:
+- **bối cảnh / kiến trúc mới hoặc đổi lớn** (map / vùng, khu, công trình mới, đổi dáng một khu) → cần ảnh concept Gemini đã
+  chốt (`design/concept/<tên>/`, `decisions/0006-anh-concept-truoc.md`); chưa có → soạn phiếu concept (như `/canh` bước 0),
+  nhiệm vụ dựng hình ghi `chờ thiết kế (concept <tên>)`; phần không phụ thuộc hình (luật, dữ liệu, logic) làm trước được;
 - đổi hành vi nghiệp vụ → sửa `docs/testing/quy_tac.md` trước, chạy skill `/dong-bo-quy-tac` (tự chép lên tài liệu
   online, không nhờ người dùng), rồi test, rồi code;
 - đổi tên / dạng sự kiện cầu nối → sửa `docs/bridge.md` trước, hai phía cùng lúc;
