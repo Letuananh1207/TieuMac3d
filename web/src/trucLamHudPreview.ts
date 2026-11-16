@@ -5,6 +5,7 @@
  * · `?dang=dan-cam&hud=chon|bai|tu-do|theo-bai|ket-qua` · `&may` = bản máy tính (phím chữ nổi).
  */
 import type * as THREE from 'three';
+import './ui/toolbar.css';
 import { BagPanel } from './ui/bagPanel';
 import { DanCamHud, type DanNote } from './ui/danCamHud';
 import { LuuHud, type LuuCardView, type LuuSeatView, type LuuView } from './ui/luuHud';

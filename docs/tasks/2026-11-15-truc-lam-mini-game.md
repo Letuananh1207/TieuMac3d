@@ -284,17 +284,17 @@ thiết kế (`/canh`, `/tai-nguyen`).
   gỗ, rắc, mưa — tự tổng hợp `AudioBuffer`, phần thuần (dựng mẫu, âm lượng theo khoảng cách) có test như `pluckSamples`.
 
 **HUD** (chờ thiết kế — không dựng tạm)
-- [ ] 15. [chờ TK] `ui/luuThuongHud.ts` + CSS: thẻ câu ghép, bảng điểm 4 người, viên lượt, thẻ kết quả, "Rời tiệc".
-- [ ] 16. [chờ TK] `ui/mangHud.ts`: nút "Hái", nhãn "+1 Măng", chip lứa / đếm, thẻ măng chữ, bảng bán Trúc Ông; ngăn Lâm sản `ui/bagPanel.ts`.
-- [ ] 17. [chờ TK] `ui/danCamHud.ts`: tấm chọn chế độ / bài, dây ngũ cung, làn nốt rơi + chấm Hay / Được, thẻ kết quả bài.
+- [x] 15. (2026-11-16 V-91 — `ui/luuHud.ts` + `luuHud.css`) [chờ TK] `ui/luuThuongHud.ts` + CSS: thẻ câu ghép, bảng điểm 4 người, viên lượt, thẻ kết quả, "Rời tiệc".
+- [x] 16. (2026-11-16 V-91 — `ui/mangHud.ts` + `mangHud.css`, tab Lâm sản riêng) [chờ TK] `ui/mangHud.ts`: nút "Hái", nhãn "+1 Măng", chip lứa / đếm, thẻ măng chữ, bảng bán Trúc Ông; ngăn Lâm sản `ui/bagPanel.ts`.
+- [x] 17. (2026-11-16 V-91 — `ui/danCamHud.ts` + `danCamHud.css`) [chờ TK] `ui/danCamHud.ts`: tấm chọn chế độ / bài, dây ngũ cung, làn nốt rơi + chấm Hay / Được, thẻ kết quả bài.
 - [x] 18. [ngay] `zones/gameGuides.ts`: nội dung 3 bảng "Cách chơi" (khung bảng đã có — R-GIAO-2), nút trên đá khắc / đá đàn / Trúc Lư.
 
 **Ghép** (file riêng ở gốc `web/src/`, `main.ts` chỉ vài dòng)
-- [~] 19. (logic xong 2026-11-15 — điều khiển phím / Console; HUD chờ TK) [ngay phần logic · chờ TK phần HUD] `web/src/luuThuong.ts`: thoại Thi Ông → ngồi đệm → vòng `LuuThuongRound` ↔ chén lệnh ↔ bong
+- [x] 19. (logic 2026-11-15; HUD 2026-11-16 V-91) [ngay phần logic · chờ TK phần HUD] `web/src/luuThuong.ts`: thoại Thi Ông → ngồi đệm → vòng `LuuThuongRound` ↔ chén lệnh ↔ bong
   bóng NPC (`chatRoom`) → `earnGame` → xu bay khi rời; ẩn thanh công cụ / ví; Canvas 3D `?dang=luu-thuong`.
-- [~] 20. (logic xong 2026-11-15 — điều khiển phím / Console; HUD chờ TK) [ngay phần logic · chờ TK phần HUD] `web/src/haiMang.ts`: lứa theo giờ VN (`?gio=` `?toc=` thử), dựng măng, mưa, nút Hái
+- [x] 20. (logic 2026-11-15; HUD 2026-11-16 V-91) [ngay phần logic · chờ TK phần HUD] `web/src/haiMang.ts`: lứa theo giờ VN (`?gio=` `?toc=` thử), dựng măng, mưa, nút Hái
   → `mangAct`, thoại Trúc Ông → bảng bán; Canvas 3D `?dang=hai-mang&gio=14.8`.
-- [~] 21. (logic xong 2026-11-15 — điều khiển phím / Console; HUD chờ TK) [ngay phần logic · chờ TK phần HUD] `web/src/danCam.ts`: chỗ ngồi đá, camera sau vai, tự do / theo bài, `earnGame`.
+- [x] 21. (logic 2026-11-15; HUD 2026-11-16 V-91) [ngay phần logic · chờ TK phần HUD] `web/src/danCam.ts`: chỗ ngồi đá, camera sau vai, tự do / theo bài, `earnGame`.
 - [x] 22. [ngay] `main.ts`: gọi 3 file ghép (chỉ khi cảnh có `miniGames` loại tương ứng); Bản đồ tính năng trong `lead/SKILL.md`.
 
 **Flutter + cầu nối**
