@@ -4,10 +4,12 @@
  * dư + nút Đóng. **5 tab hình** dưới đầu tấm: Hạt giống · Đồ làm vườn · Nông sản · Sách · Trang trí (ô tab bo 12, hình 34 +
  * nhãn 10/700; tab mở nền trắng viền `jade` 2). Hạt giống / Nông sản = lưới ô vuông 72 (ngang 52) 4 cột (ngang 5), số góc
  * dưới phải; chạm → ô viền `jade` + thẻ chi tiết `slate` dưới lưới. Đồ làm vườn = "Nông cụ" (5 ô, không số) + "Vật tư"
- * (Phân bón × n) + chân. Nông sản kèm ngăn Lâm sản (R-TUI-1, V-66). **Chỉ xem.** Đóng: nút Đóng, kéo tay nắm xuống, chạm
+ * (Phân bón × n) + chân. Tab thứ 4 **Lâm sản** (thiết kế 2026-11-16.13 `TuiDo-lam-san-*`): lưới ô búp măng, chạm → thẻ
+ * "Măng to × 1 · Hái ở Trúc Lâm · bán cho Trúc Ông 8 Văn / cái"; trống → khung nét đứt. **Chỉ xem.** Đóng: nút Đóng, kéo tay nắm xuống, chạm
  * cảnh, nút quay lại. Dữ liệu dựng sẵn ở `zones/tuiDo.ts`. DOM dựng bằng createElement.
  */
 import './bag.css';
+import { MANG_PRICES } from '../zones/mang';
 import { BAG_TABS, BAG_TEXT, BAG_TOOLS, type BagCrop, type BagForest, type BagTab, type BagView } from '../zones/tuiDo';
 import { cropOf } from '../zones/vuon';
 import { growText } from '../zones/vuonHud';
@@ -17,6 +19,7 @@ import { h } from './chatText';
 import { cropPicture } from './cropArt';
 import { COIN, DECOR_PICTURES, STROKE, svgIcon } from './decorIcons';
 import { hinhImg, type HinhId } from './hinh';
+import { shootIcon } from './trucLamIcons';
 import { ICON_BOOK, ICON_CLOSE } from './toolbarIcons';
 import { BUG_NET, FERT_BAG, HAND, WEED } from './vuonIcons';
 import { coinIcon } from './wallet';
@@ -27,7 +30,7 @@ const DRAG_CLOSE_PX = 60;
 const stroke = { ...STROKE, 'stroke-width': '2' };
 
 /** Hình tab (hình minh hoạ đợt 1–2); Sách chưa có hình cuốn sách riêng → biểu tượng nét. */
-const TAB_HINH: Readonly<Record<Exclude<BagTab, 'sach'>, HinhId>> = { hat: 'gieo', vuon: 'tuoi', nong: 'thu', trang: 'trang-tri' };
+const TAB_HINH: Readonly<Record<Exclude<BagTab, 'sach' | 'lam'>, HinhId>> = { hat: 'gieo', vuon: 'tuoi', nong: 'thu', trang: 'trang-tri' };
 
 /** Hình nông cụ (hình đợt 2 hoặc hình giữ chỗ — `vuonIcons.ts`). */
 function toolArt(id: SlotId, size: number): Element {
@@ -111,7 +114,7 @@ export class BagPanel {
         b.type = 'button';
         b.setAttribute('role', 'tab');
         b.setAttribute('aria-selected', String(tab === this.tab));
-        b.append(tab === 'sach' ? svgIcon(ICON_BOOK, 30, undefined, stroke) : hinhImg(TAB_HINH[tab], 34), h('span', '', label));
+        b.append(tab === 'sach' ? svgIcon(ICON_BOOK, 30, undefined, stroke) : tab === 'lam' ? shootIcon(34) : hinhImg(TAB_HINH[tab], 34), h('span', '', label));
         b.addEventListener('click', () => {
           this.tab = tab;
           this.picked = null;
@@ -121,7 +124,7 @@ export class BagPanel {
         return b;
       }),
     );
-    this.foot.textContent = this.tab === 'vuon' ? BAG_TEXT.bagToolsHint : BAG_TEXT.bagReadOnly;
+    this.foot.textContent = this.tab === 'vuon' ? BAG_TEXT.bagToolsHint : this.tab === 'lam' ? BAG_TEXT.bagForestFoot : BAG_TEXT.bagReadOnly;
     this.list.replaceChildren(...this.body(v));
   }
 
@@ -129,12 +132,10 @@ export class BagPanel {
     switch (this.tab) {
       case 'hat':
         return v.seeds.items.length ? this.cells(v.seeds.items, true) : [this.empty(v.seeds.empty)];
-      case 'nong': {
-        const out = v.crops.items.length ? this.cells(v.crops.items, false) : [this.empty(v.crops.empty)];
-        // ngăn Lâm sản (R-TUI-1, V-66 B4): chip "tên × n"; hình măng chờ thiết kế (phiếu 2026-11-15-truc-lam-mini-game)
-        out.push(this.section(BAG_TEXT.bagForest), v.forest.items.length ? this.chips(v.forest.items) : this.empty(v.forest.empty));
-        return out;
-      }
+      case 'nong':
+        return v.crops.items.length ? this.cells(v.crops.items, false) : [this.empty(v.crops.empty)];
+      case 'lam':
+        return v.forest.items.length ? this.forest(v.forest.items) : [this.forestEmpty()];
       case 'vuon':
         return [this.section(BAG_TEXT.bagToolsSection), this.tools(), this.section(BAG_TEXT.bagSuppliesSection), this.supplies(v.fert)];
       case 'sach':
@@ -203,16 +204,40 @@ export class BagPanel {
     return grid;
   }
 
-  private chips(items: readonly BagForest[]): HTMLElement {
-    const grid = h('div', 'bg-chips bg-crops');
+  /** Lâm sản (R-TUI-1, R-MANG-3/5): lưới ô búp măng + số; chạm → thẻ chi tiết (nơi hái, giá Trúc Ông). */
+  private forest(items: readonly BagForest[]): HTMLElement[] {
+    const grid = h('div', 'bg-cells');
     for (const c of items) {
-      const chip = h('div', 'bg-chip');
-      const txt = h('div', 'bg-txt');
-      txt.append(h('div', 'bg-name', c.name), h('div', 'bg-n', `× ${c.n}`));
-      chip.append(h('span', 'bg-crop'), txt);
-      grid.append(chip);
+      const b = h('button', c.kind === this.picked ? 'bg-cell on' : 'bg-cell');
+      b.type = 'button';
+      b.setAttribute('aria-label', `${c.name} × ${c.n}`);
+      b.setAttribute('aria-pressed', String(c.kind === this.picked));
+      b.append(shootIcon(46, c.kind === 'mang-to'), h('span', 'bg-num', String(c.n)));
+      b.addEventListener('click', () => {
+        this.picked = this.picked === c.kind ? null : c.kind;
+        this.draw();
+      });
+      grid.append(b);
     }
-    return grid;
+    const out: HTMLElement[] = [grid];
+    const pick = items.find((c) => c.kind === this.picked);
+    if (pick) {
+      const card = h('div', 'bg-detail bg-forest');
+      const txt = h('div', 'bg-txt');
+      txt.append(h('b', '', `${pick.name} × ${pick.n}`), h('span', '', `${BAG_TEXT.bagForestWhere} ${MANG_PRICES[pick.kind]} Văn / cái`));
+      card.append(shootIcon(30, pick.kind === 'mang-to'), txt);
+      out.push(card);
+    }
+    return out;
+  }
+
+  /** Lâm sản trống: khung nét đứt + búp măng mờ + "Chưa có lâm sản" + chỗ lấy. */
+  private forestEmpty(): HTMLElement {
+    const box = h('div', 'bg-forestEmpty');
+    const pic = shootIcon(40);
+    pic.classList.add('dim');
+    box.append(pic, h('b', '', BAG_TEXT.bagForestEmptyTitle), h('span', '', BAG_TEXT.bagForestEmpty));
+    return box;
   }
 
   private decor(v: BagView): HTMLElement {

@@ -1,0 +1,95 @@
+/* HUD Hái măng · bán măng (R-MANG-1…5) — thiết kế 2026-11-16.13 `HaiMang-*`, `BanMang-*`, `TrucLam-nut-trang-thai`.
+   Nút "Hái" = nút nổi luống (viên jade 46, đĩa giấy 34 búp măng, mũi nhọn); chip lứa măng kính 34 dưới bản đồ nhỏ (dọc trái 16
+   trên safe + 122 · ngang trái safe + 12 trên 112 · máy trái 24 trên 156); thẻ măng chữ kính .96 bo 16 (dọc trái / phải 24 dưới
+   116; ngang giữa rộng 320); bảng bán tấm đáy cao 400 (ngang cột phải 340, máy phải 24 rộng 380). */
+#mangPick{position:fixed;z-index:6;transform:translate(-50%,calc(-100% - 6px));display:flex;flex-direction:column;align-items:center;pointer-events:none}
+#mangPick[hidden]{display:none}
+.mh-btn{pointer-events:auto;height:46px;box-sizing:border-box;padding:0 16px 0 5px;font:inherit;font-size:15px;font-weight:700;border-radius:999px;background:var(--jade);color:#fff;border:2px solid rgba(255,255,255,.9);box-shadow:0 6px 16px rgba(43,84,70,.35);display:flex;align-items:center;gap:8px;touch-action:manipulation;cursor:pointer}
+.mh-btn:active{background:var(--jade-press)}
+.mh-disc{width:34px;height:34px;border-radius:50%;background:#fbf7ee;display:flex;align-items:center;justify-content:center}
+.mh-btn .tl-key{margin-left:2px}
+.mh-tip{width:12px;height:12px;margin-top:-7px;background:var(--jade);transform:rotate(45deg);border-right:2px solid rgba(255,255,255,.9);border-bottom:2px solid rgba(255,255,255,.9)}
+.mh-tag{display:none;height:20px;margin-bottom:4px;padding:0 8px;border-radius:999px;background:var(--gold);color:var(--slate);font-size:11px;font-weight:800;align-items:center}
+#mangPick.big .mh-tag{display:inline-flex}
+#mangPick.big .mh-btn{border-color:var(--gold);box-shadow:0 0 0 4px rgba(212,166,74,.35),0 6px 16px rgba(43,84,70,.35)}
+.mh-hint{display:none}
+body.ban-may .mh-hint:not([hidden]){position:fixed;z-index:6;left:50%;transform:translateX(-50%);bottom:110px;height:30px;padding:0 12px;border-radius:999px;background:rgba(36,50,58,.86);color:#fff;font-size:12px;font-weight:700;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;pointer-events:none}
+
+/* nhãn bay "+1 Măng" */
+.mh-fly{position:fixed;z-index:8;transform:translate(-50%,-100%);height:32px;box-sizing:border-box;padding:0 12px 0 6px;border-radius:999px;background:rgba(244,247,246,.92);border:1px solid var(--frost-line);outline:1px solid var(--frost-outline);box-shadow:var(--shadow-hud);display:flex;align-items:center;gap:6px;font-size:14px;font-weight:800;color:var(--jade);white-space:nowrap;pointer-events:none;animation:mh-fly .9s ease-out forwards}
+.mh-fly.big{outline:2px solid var(--gold)}
+@keyframes mh-fly{0%{opacity:0;transform:translate(-50%,-100%)}15%{opacity:1}70%{opacity:1}100%{opacity:0;transform:translate(-50%,calc(-100% - 40px))}}
+@media (prefers-reduced-motion:reduce){.mh-fly{animation:none;opacity:1}}
+
+/* chip lứa măng */
+#mangChip{position:fixed;z-index:5;left:16px;top:calc(var(--sa-top) + 122px);height:34px;box-sizing:border-box;padding:0 12px 0 7px;border-radius:999px;background:rgba(244,247,246,.86);border:1px solid var(--frost-line);outline:1px solid var(--frost-outline);box-shadow:var(--shadow-hud);display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:var(--slate);white-space:nowrap;pointer-events:none;-webkit-backdrop-filter:var(--blur-hud);backdrop-filter:var(--blur-hud)}
+#mangChip[hidden],body.covered #mangChip,body.map-open #mangChip,body.area-map #mangChip,body.talking #mangChip,body.bag-open #mangChip{display:none}
+
+/* thẻ măng chữ */
+#mangQuiz{position:fixed;inset:0;z-index:7;pointer-events:none}
+#mangQuiz[hidden]{display:none}
+.mh-dim{position:absolute;inset:0;background:rgba(36,50,58,.12)}
+.mh-quiz{position:absolute;left:24px;right:24px;bottom:calc(var(--sa-bottom) + 82px);box-sizing:border-box;padding:14px;border-radius:16px;background:rgba(244,247,246,.96);border:1px solid var(--frost-line);outline:1px solid var(--frost-outline);box-shadow:0 8px 26px rgba(36,50,58,.28);display:flex;flex-direction:column;gap:10px;overflow:hidden;pointer-events:auto}
+.mh-q-top{display:flex;align-items:center;gap:14px}
+.mh-shell{position:relative;flex:none;width:104px;height:120px;display:flex;align-items:flex-end;justify-content:center}
+.mh-shell svg{width:104px;height:116px}
+.mh-carve{position:absolute;left:0;right:0;top:48px;text-align:center;font-family:var(--han);font-weight:700;font-size:44px;line-height:1;color:#6e4a22;text-shadow:0 1px 0 rgba(255,240,200,.8),0 -1px 0 rgba(80,50,20,.4)}
+.mh-q-txt{display:flex;flex-direction:column;gap:4px}
+.mh-q-tag{font-size:11px;font-weight:700;color:var(--slate-muted)}
+.mh-q-title{font-size:19px;font-weight:700;line-height:1.3}
+.mh-q-sub{font-size:12px;color:var(--slate-muted);line-height:1.4}
+.mh-opts{display:flex;flex-direction:column;gap:8px}
+.mh-opt{position:relative;min-height:58px;padding:0 14px;font:inherit;color:var(--slate);text-align:left;border-radius:12px;background:#fbf7ee;border:1px solid rgba(36,50,58,.2);display:flex;align-items:center;gap:10px;box-shadow:0 2px 6px rgba(36,50,58,.1);touch-action:manipulation;cursor:pointer}
+.mh-opt-m{font-size:16px;font-weight:700}
+.mh-opt-hv{font-size:13px;color:var(--slate-muted)}
+.mh-opt .tl-key{margin-left:auto}
+.mh-opt.right{background:var(--answer-right);border:2px solid var(--jade)}
+.mh-opt.wrong{background:var(--answer-wrong);border:2px solid var(--lacquer)}
+.mh-opt.dim{opacity:.5}
+.mh-verdict{font-size:14px;font-weight:700;color:var(--slate)}
+.mh-verdict.right{color:var(--jade)}
+.mh-close-bar{position:absolute;left:0;bottom:0;height:3px;width:100%;background:var(--jade);transform-origin:left;animation:mh-bar linear forwards}
+@keyframes mh-bar{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+
+/* bảng bán cho Trúc Ông */
+#mangSell{position:fixed;inset:0;z-index:9;pointer-events:none}
+#mangSell[hidden]{display:none}
+#mangSell .mh-dim{pointer-events:auto}
+.mh-sell{position:absolute;left:0;right:0;bottom:0;height:calc(400px + var(--sa-bottom) - 34px);min-height:300px;box-sizing:border-box;padding:10px 16px calc(var(--sa-bottom) + 12px);border-radius:20px 20px 0 0;background:rgba(244,247,246,.97);box-shadow:0 -10px 30px rgba(36,50,58,.22);display:flex;flex-direction:column;gap:12px;pointer-events:auto;font-family:var(--ui);color:var(--slate)}
+.mh-grip{align-self:center;width:40px;height:4px;border-radius:999px;background:rgba(36,50,58,.25)}
+.mh-s-head{display:flex;align-items:center;gap:10px}
+.mh-s-name{flex:1;display:flex;flex-direction:column}
+.mh-s-title{font-size:16px;font-weight:700}
+.mh-s-sub{font-size:12px;color:var(--slate-muted)}
+.mh-s-close{width:36px;height:36px;border-radius:50%;border:0;background:rgba(36,50,58,.07);color:var(--slate);display:flex;align-items:center;justify-content:center;font:inherit;cursor:pointer}
+.mh-s-close .tl-key{display:none}
+.mh-rows{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.mh-rows li{min-height:60px;box-sizing:border-box;padding:8px 10px;border-radius:12px;background:#fff;outline:1px solid rgba(36,50,58,.1);display:flex;align-items:center;gap:10px}
+.mh-rows li.sold{opacity:.55}
+.mh-pic{width:44px;height:44px;border-radius:10px;background:var(--hua-paper);display:flex;align-items:center;justify-content:center}
+.mh-mid{flex:1;display:flex;flex-direction:column;gap:2px}
+.mh-row-n{font-size:15px;font-weight:700}
+.mh-price{font-size:12px;color:var(--slate-muted);display:flex;align-items:center;gap:4px}
+.mh-one{height:40px;padding:0 16px;font:inherit;font-size:14px;font-weight:700;border-radius:10px;border:1.5px solid var(--jade);background:rgba(43,84,70,.08);color:var(--jade);cursor:pointer}
+.mh-sold{font-size:13px;font-weight:700;color:var(--slate-muted)}
+.mh-gap{flex:1}
+.mh-all{height:52px;font:inherit;font-size:16px;font-weight:700;border-radius:14px;border:0;background:var(--jade);color:#fff;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:var(--shadow-primary);cursor:pointer}
+.mh-all.done{background:rgba(36,50,58,.1);color:var(--slate-muted);box-shadow:none;cursor:default}
+
+@media (orientation:landscape) and (max-height:600px){
+  #mangChip{left:calc(var(--sa-left) + 12px);top:112px}
+  .mh-quiz{left:50%;right:auto;width:320px;transform:translate(-50%,-50%);bottom:auto;top:50%;padding:12px;gap:8px}
+  .mh-shell{width:72px;height:84px}
+  .mh-shell svg{width:72px;height:80px}
+  .mh-carve{top:34px;font-size:30px}
+  .mh-q-title{font-size:17px}
+  .mh-opt{min-height:50px}
+  .mh-sell{left:auto;right:calc(var(--sa-right) + 12px);top:12px;bottom:12px;width:340px;height:auto;min-height:0;border-radius:20px;padding:10px 14px 12px}
+  .mh-grip{display:none}
+}
+body.ban-may #mangChip{left:24px;top:156px}
+body.ban-may .mh-quiz{left:50%;right:auto;width:420px;transform:translateX(-50%);bottom:150px}
+body.ban-may .mh-sell{left:auto;right:24px;top:auto;bottom:24px;width:380px;height:420px;border-radius:20px;padding-bottom:16px}
+body.ban-may .mh-grip{display:none}
+body.ban-may .mh-s-close{width:auto;padding:0 10px;border-radius:999px;gap:6px}
+body.ban-may .mh-s-close .tl-key{display:inline-block}

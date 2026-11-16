@@ -2,8 +2,9 @@
  * Ghép 3 trò nhỏ Trúc Lâm (V-66 B4, kế hoạch `docs/tasks/2026-11-15-truc-lam-mini-game.md`): Lưu Thương Lệnh
  * (`luuThuong.ts`), Hái măng sau mưa (`haiMang.ts`), Đàn cầm (`danCam.ts`) — chỉ dựng trò có trong `miniGames` của đặc tả.
  * File này giữ phần chung (chỗ dựa `MiniHost`, đồng hồ thử `?gio=&toc=`, tiếng Trúc Lâm) để `main.ts` chỉ gọi vài dòng.
- * **HUD cả 3 trò chờ thiết kế** (phiếu `docs/phieu_thiet_ke/2026-11-15-truc-lam-mini-game.md`): tới lúc đó chơi bằng phím +
- * Console (`__hocXaLuu`, `__hocXaMang`, `__hocXaDanCam` — luôn có trên `window` khi cảnh có trò) và khung thoại NPC có sẵn.
+ * HUD cả 3 trò theo thiết kế 2026-11-16.13 (`ui/luuHud.ts`, `ui/mangHud.ts`, `ui/danCamHud.ts`); điều khiển thử trên Console
+ * (`__hocXaLuu`, `__hocXaMang`, `__hocXaDanCam` — luôn có trên `window` khi cảnh có trò). Đang chơi → lớp `mini-play` trên
+ * body (ẩn joystick, cụm nút, nút nổi); thẻ măng chữ → `mini-quiz` (chỉ ẩn joystick + cụm nút — R-MANG-4).
  */
 import type * as THREE from 'three';
 import type { TrialStore } from './bridge/browserStore';
@@ -104,9 +105,19 @@ export class MiniGames {
     if (this.dan) w.__hocXaDanCam = this.dan.console();
   }
 
-  /** Có trò nào đang chơi (ngồi tiệc / ngồi đàn) — ẩn thanh công cụ, ví như ngồi bàn chơi (R-THANH-1, R-TIEN-1). */
+  /** Có trò nào đang chơi (ngồi tiệc / ngồi đàn / bảng bán măng) — ẩn thanh công cụ, bản đồ nhỏ, ví (R-THANH-1, R-TIEN-1). */
   get active(): boolean {
-    return !!this.luu?.active || !!this.dan?.active;
+    return !!this.luu?.active || !!this.dan?.active || !!this.mang?.sellOpen;
+  }
+
+  /** Nhân vật đứng yên: thẻ măng chữ, bảng bán măng (R-MANG-4/5). */
+  get frozen(): boolean {
+    return !!this.mang?.quizOpen || !!this.mang?.sellOpen;
+  }
+
+  /** Vừa bán măng: ví hiện lại 2 s dù bảng bán còn mở (R-MANG-5). */
+  get walletShown(): boolean {
+    return !!this.mang?.walletFlash;
   }
 
   /** Đang ngồi ở chỗ của một trò (không góc từ mắt, không cuộn sách Ngồi ôn). */
@@ -131,7 +142,7 @@ export class MiniGames {
   act(c: DialogChoice): void {
     if (c.mini === 'luu-du') this.luu?.join();
     else if (c.mini === 'luu-cach') this.h.openGuide('luu-thuong');
-    else if (c.mini === 'mang-ban') void this.mang?.sellAll();
+    else if (c.mini === 'mang-ban') this.mang?.openSell();
     else if (c.mini === 'mang-cach') this.h.openGuide('hai-mang');
   }
 
@@ -154,6 +165,7 @@ export class MiniGames {
 
   /** Nút quay lại / Esc: đang chơi → đứng dậy, `true`. */
   back(): boolean {
+    if (this.mang?.back()) return true;
     if (this.luu?.seated) return (this.luu.leave(), true);
     if (this.dan?.seated) return (this.dan.leave(), true);
     return false;
@@ -167,6 +179,8 @@ export class MiniGames {
   }
 
   update(f: MiniFrame): void {
+    document.body.classList.toggle('mini-play', this.active && !f.covered);
+    document.body.classList.toggle('mini-quiz', !!this.mang?.quizOpen && !f.covered);
     this.luu?.update(f);
     this.mang?.update(f);
     this.dan?.update(f);

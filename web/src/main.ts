@@ -1035,7 +1035,7 @@ async function boot(): Promise<void> {
     // hướng đi khoá khi giữ joystick cùng hướng → camera tự xoay không làm nhân vật đi vòng (R-DIEU-3)
     // cưỡi hạc: hoạt cảnh giữ nhân vật + camera (không đi, camera không bám)
     const riding = !!ride?.owns;
-    if (!riding) player.update(dt, input, orbit.steerYaw(input.x, input.y), paused || loading.active || mapOpen || areaMap.open || talking || chat.typing || !!decor?.active || !!garden?.active || !!thanh?.busy);
+    if (!riding) player.update(dt, input, orbit.steerYaw(input.x, input.y), paused || loading.active || mapOpen || areaMap.open || talking || chat.typing || !!decor?.active || !!garden?.active || !!thanh?.busy || !!mini?.frozen);
     const pos = player.position;
     // camera bám êm: dây kéo + tự về sau lưng chậm (R-DIEU-3)
     if (!riding) orbit.follow(dt, pos.x - fromX, pos.z - fromZ, character.facing.rotation.y, player.state.mps > 0);
@@ -1112,7 +1112,7 @@ async function boot(): Promise<void> {
       guideButton.set(sign, sign ? (sign.y ?? groundAt(sign.x, sign.z)) : 0);
       guideButton.follow(camera);
     }
-    walletRoom.update({ camera, player: pos, roomId: room?.zoneId, busy: busy || gamePlay.active || !!mini?.active, free: seatFree }); // ngồi tiệc / đàn: ví ẩn (R-TIEN-1)
+    walletRoom.update({ camera, player: pos, roomId: room?.zoneId, busy: busy || gamePlay.active || (!!mini?.active && !mini.walletShown), free: seatFree }); // ngồi tiệc / đàn / bảng bán: ví ẩn (R-TIEN-1); bán măng xong hiện 2 s (R-MANG-5)
     areaMap.update(dt, {
       x: pos.x,
       y: pos.y,

@@ -1,7 +1,7 @@
 /**
  * Túi đồ (R-TUI-1 — thiết kế 2026-11-15.35 `TuiDo-*`, 2026-11-16.4 `TuiDo-vuon-*`): từ số đã lưu (vườn `getGarden`, nhà
- * `getHome`, sách đang mượn `getProgress.book`, số dư, măng `getMang`) dựng các ngăn **chỉ xem** — 5 tab hình Hạt giống · Đồ
- * làm vườn (nông cụ + Phân bón × n) · Nông sản (+ Lâm sản — V-66 B4) · Sách · Trang trí; ngăn trống → dòng chỉ chỗ lấy.
+ * `getHome`, sách đang mượn `getProgress.book`, số dư, măng `getMang`) dựng các ngăn **chỉ xem** — 6 tab hình Hạt giống · Đồ
+ * làm vườn (nông cụ + Phân bón × n) · Nông sản · Lâm sản (thiết kế 2026-11-16.13) · Sách · Trang trí; ngăn trống → dòng chỉ chỗ lấy.
  * Thuần (không DOM) — test `tuiDo.test.ts`. Tấm đáy: `ui/bagPanel.ts`.
  */
 import { cleanHome, DECOR_ITEMS, inBag, placedCount } from './decor';
@@ -22,6 +22,9 @@ export const BAG_TEXT = {
   bagDecorEmpty: 'Chưa có đồ — mua ở Tạp hoá',
   bagForest: 'Lâm sản',
   bagForestEmpty: 'Hái măng ở rừng Trúc Lâm',
+  bagForestEmptyTitle: 'Chưa có lâm sản',
+  bagForestFoot: 'Chỉ xem — bán măng ở Trúc Ông (Trúc Lư)',
+  bagForestWhere: 'Hái ở Trúc Lâm · bán cho Trúc Ông',
   bagClose: 'Đóng',
   bagReadOnly: 'Chỉ xem — gieo ở luống, bán ở thùng thu mua, đặt đồ khi trang trí',
   bagRead: 'Đọc',
@@ -33,12 +36,13 @@ export const BAG_TEXT = {
   bagFert: 'Phân bón',
 } as const;
 
-/** 5 tab hình (thiết kế 2026-11-16.4): mã, nhãn, hình minh hoạ. */
-export type BagTab = 'hat' | 'vuon' | 'nong' | 'sach' | 'trang';
+/** 6 tab hình (thiết kế 2026-11-16.4; Lâm sản thứ 4 — 2026-11-16.13): mã, nhãn, hình minh hoạ. */
+export type BagTab = 'hat' | 'vuon' | 'nong' | 'lam' | 'sach' | 'trang';
 export const BAG_TABS: readonly { tab: BagTab; label: string }[] = [
   { tab: 'hat', label: BAG_TEXT.bagSeeds },
   { tab: 'vuon', label: BAG_TEXT.bagTabTools },
   { tab: 'nong', label: BAG_TEXT.bagCrops },
+  { tab: 'lam', label: BAG_TEXT.bagForest },
   { tab: 'sach', label: BAG_TEXT.bagBooks },
   { tab: 'trang', label: BAG_TEXT.bagTabDecor },
 ];

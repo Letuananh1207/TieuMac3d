@@ -20,7 +20,7 @@ export function thiOngDialog(): Dialog {
     lines: [
       {
         id: 'chao',
-        text: 'Nước chảy quanh co, chén trôi tới đâu thì người đó ghép chữ. Đạo hữu có muốn cùng lão thả một tuần chén?',
+        text: 'Chén lệnh trôi tới ai, người ấy ghép một chữ. Đạo hữu có muốn ngồi cùng?', // luuHostInvite (2026-11-16.13)
         choices: [{ text: 'Dự tiệc Lưu Thương', next: null, action: 'mini', mini: 'luu-du' }, { text: 'Cách chơi', next: null, action: 'mini', mini: 'luu-cach' }, BYE],
       },
     ],
@@ -51,24 +51,28 @@ export function mangValue(bag: MangState['bag']): number {
   return (bag.mang ?? 0) * MANG_PRICES.mang + (bag['mang-to'] ?? 0) * MANG_PRICES['mang-to'];
 }
 
-/** Trúc Ông (R-MANG-5): có măng → "Bán hết (n măng · m Văn)"; túi trống → câu nhắc mưa chiều. */
+/**
+ * Trúc Ông (R-MANG-5, thiết kế 2026-11-16.13 `BanMang-doc-thoai` / `-trong`): có măng → "Bán măng" (mở bảng bán) · "Cách hái
+ * măng" (bảng cách chơi — không có biển gỗ) · "Thôi"; túi trống → câu nhắc mưa chiều + "Vâng".
+ */
 export function trucOngDialog(bag: MangState['bag']): Dialog {
-  const n = (bag.mang ?? 0) + (bag['mang-to'] ?? 0);
-  const has = n > 0;
+  const has = (bag.mang ?? 0) + (bag['mang-to'] ?? 0) > 0;
   return {
     npc: TRUC_ONG,
     name: 'Trúc Ông',
     start: 'chao',
     lines: [
-      {
-        id: 'chao',
-        text: has ? 'Măng sau mưa ngọt nhất đấy, con hái được bao nhiêu?' : 'Túi con còn trống. Mưa chiều xong là măng lại nhú.',
-        choices: [
-          ...(has ? [{ text: `Bán hết (${n} măng · ${mangValue(bag)} Văn)`, next: null, action: 'mini' as const, mini: 'mang-ban' as const }] : []),
-          { text: 'Cách chơi', next: null, action: 'mini', mini: 'mang-cach' },
-          BYE,
-        ],
-      },
+      has
+        ? {
+            id: 'chao',
+            text: 'Măng rừng sau mưa ngọt lắm. Con hái được bao nhiêu, lão mua bấy nhiêu.', // trucOngGreet
+            choices: [
+              { text: 'Bán măng', next: null, action: 'mini', mini: 'mang-ban' },
+              { text: 'Cách hái măng', next: null, action: 'mini', mini: 'mang-cach' },
+              BYE,
+            ],
+          }
+        : { id: 'chao', text: 'Túi con còn trống. Mưa chiều xong là măng lại nhú.', choices: [{ text: 'Vâng', next: null }] }, // trucOngEmpty
     ],
   };
 }

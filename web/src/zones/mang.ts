@@ -216,6 +216,26 @@ export function sellMang(s: MangState, kind: MangKind | null): MangResult {
 
 /** Nhãn bán (R-TIEN-5): "+23 · Bán măng". */
 export const mangSellLabel = (amount: number): string => `+${amount} · Bán măng`;
+
+/**
+ * Chữ trên chip lứa măng (thiết kế 2026-11-16.13 `TrucLam-nut-trang-thai`, chuỗi `mangToday`…`mangDone`): đang mưa →
+ * "Đang mưa phùn — măng sắp nhú"; hái hết măng của ngày → "Đã hái hết · Mai măng lại nhú"; hết lứa đã nhú, còn lứa sau →
+ * "Lứa chiều nhú sau mưa · 15:00"; còn lại "Măng hôm nay · đã hái n / m". [perWave] = số chỗ mọc từng lứa hôm nay.
+ */
+export function mangChip(sec: number, picked: number, raining: boolean, perWave: readonly number[], waves = MANG_WAVES): string {
+  const total = perWave.reduce((a, n) => a + n, 0);
+  if (raining) return 'Đang mưa phùn — măng sắp nhú';
+  if (total > 0 && picked >= total) return 'Đã hái hết · Mai măng lại nhú';
+  const open = wavesOpen(sec, waves);
+  const openTotal = perWave.slice(0, open).reduce((a, n) => a + n, 0);
+  const next = waves[open];
+  if (open > 0 && next && picked >= openTotal) {
+    const h = Math.floor(next.at / 3600);
+    const m = Math.floor((next.at % 3600) / 60);
+    return `Lứa chiều nhú sau mưa · ${h}:${String(m).padStart(2, '0')}`;
+  }
+  return `Măng hôm nay · đã hái ${picked} / ${total}`;
+}
 /** Nhãn hái (R-MANG-3): "+1 Măng" / "+2 Măng to". */
 export const mangPickLabel = (big: boolean, got: number): string => `+${got} ${big ? 'Măng to' : 'Măng'}`;
 

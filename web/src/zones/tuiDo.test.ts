@@ -6,8 +6,8 @@ const garden = (seeds: Garden['seeds'], barn: Garden['barn']): Garden => ({ ...f
 const empty: BagSource = { garden: garden({}, {}), home: { placed: {}, owned: [] }, book: null, coins: 0 };
 
 describe('túi đồ (R-TUI-1)', () => {
-  it('R-TUI-1: 5 tab hình Hạt giống · Đồ làm vườn · Nông sản · Sách · Trang trí; Đồ làm vườn = nông cụ Tay · Bình tưới · Bắt sâu · Nhổ cỏ · Mở ô + Phân bón × n', () => {
-    expect(BAG_TABS.map((t) => t.label)).toEqual(['Hạt giống', 'Đồ làm vườn', 'Nông sản', 'Sách', 'Trang trí']);
+  it('R-TUI-1: 6 tab hình Hạt giống · Đồ làm vườn · Nông sản · Lâm sản · Sách · Trang trí; Đồ làm vườn = nông cụ Tay · Bình tưới · Bắt sâu · Nhổ cỏ · Mở ô + Phân bón × n', () => {
+    expect(BAG_TABS.map((t) => t.label)).toEqual(['Hạt giống', 'Đồ làm vườn', 'Nông sản', 'Lâm sản', 'Sách', 'Trang trí']);
     expect(BAG_TOOLS.map((t) => t.name)).toEqual(['Tay', 'Bình tưới', 'Bắt sâu', 'Nhổ cỏ', 'Mở ô']);
     expect(bagView({ garden: freshGarden(), home: null, book: null, coins: 0 }).fert).toBe(3);
     expect(bagView({ garden: { ...freshGarden(), fert: 7 }, home: null, book: null, coins: 0 }).fert).toBe(7);

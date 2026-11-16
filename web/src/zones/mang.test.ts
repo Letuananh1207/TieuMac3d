@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   MANG_PICK_RANGE,
   MANG_WAVES,
+  mangChip,
   mangInRange,
   mangOfDay,
   mangOn,
@@ -132,5 +133,17 @@ describe('Măng — bán (R-MANG-5)', () => {
     expect(parseMangReply({ ok: false, reason: 'picked', balance: 4 })).toEqual({ ok: false, reason: 'picked', balance: 4 });
     expect(parseMangReply({ ok: false, reason: 'la', balance: 4 })).toBeNull();
     expect(parseMangReply(null)).toBeNull();
+  });
+});
+
+describe('chip lứa măng (thiết kế 2026-11-16.13)', () => {
+  it('R-MANG-1: chip theo giờ VN + số đã hái — còn măng · chờ lứa chiều · đang mưa · hết', () => {
+    const per = [8, 6];
+    expect(mangChip(10 * 3600, 5, false, per)).toBe('Măng hôm nay · đã hái 5 / 14');
+    expect(mangChip(10 * 3600, 8, false, per)).toBe('Lứa chiều nhú sau mưa · 15:00');
+    expect(mangChip(14 * 3600 + 55 * 60, 3, true, per)).toBe('Đang mưa phùn — măng sắp nhú');
+    expect(mangChip(16 * 3600, 9, false, per)).toBe('Măng hôm nay · đã hái 9 / 14');
+    expect(mangChip(16 * 3600, 14, false, per)).toBe('Đã hái hết · Mai măng lại nhú');
+    expect(mangChip(3 * 3600, 0, false, per)).toBe('Măng hôm nay · đã hái 0 / 14');
   });
 });
