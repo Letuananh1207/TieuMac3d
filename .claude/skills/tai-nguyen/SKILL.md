@@ -74,15 +74,26 @@ không đoán được nó là gì.
 Vì sao: Hunyuan trên laptop chậm + lag, màu chiếu hay lem, xương tự gắn sơ sài; Tripo (gói Professional của người dùng)
 cho màu sạch, xương Mixamo chuẩn. Quyết định 0003 mục "Cập nhật 2026-11-16". `/tai-nguyen nhan-vat <tên>` đi luồng này.
 
-1. **Người dùng** làm trên tripo3d.ai (hướng dẫn từng bước khi cần, đừng tự đoán giá): Model → Multiview: Front `<tên>-truoc`,
-   Left `<tên>-trai`, Back `<tên>-sau`, Right `<tên>-phai` (ngược bên → đổi Left / Right) → H3.1 Best Quality → Generate
-   → **Retopo**: Triangle, ~16 000 mặt, giữ texture → **Rig** humanoid → **Export GLB** → `C:\ai3d\tripo\<tên>-lowpoly.glb`.
-   Không cần tạo lại để retopo / rig — các nút đó chạy trên model đã có.
+1. **Người dùng** làm trên tripo3d.ai (hướng dẫn từng bước khi cần, đừng tự đoán giá) — **60 coin / nhân vật** (chốt 2026-11-16,
+   lần đầu: `nhan-vat`; trước đó HD → Retopo → Rig = 95):
+   - Model → Multiview: Front `<tên>-truoc`, Left `<tên>-trai`, Back `<tên>-sau`, Right `<tên>-phai` (ngược bên → đổi
+     Left / Right), HD Model, AI Model **H3.1 – Best Quality**.
+   - **Geometry & Texture** (đặt trước khi Generate — thay bước Retopo): Ultra Mesh Quality **bật** · Texture **bật**, **2K** ·
+     Remove Lighting **tắt** (giữ sáng tối mềm như ảnh thiết kế; app dùng vật liệu không-sáng) · PBR **tắt** · Topology
+     **Triangle** · Polycount **16000**. 8K Texture, Generate in Parts **tắt**. Nút Generate phải hiện **40**.
+   - Chưa ưng → **Free Retry** trước khi Generate mới.
+   - **Rig** (20): Humanoid, Skeleton Preset **Mixamo** (code nhận xương `mixamorig` — đừng đổi), **không** Animate / mua động tác
+     (app dùng động tác code `dongTac.ts`).
+   - **Export**: GLB, Texture 2k, **Export Skeleton bật** → `C:\ai3d\tripo\<tên>-lowpoly.glb`.
+   - Không cần tạo lại để rig — nút chạy trên model đã có.
 2. **Claude**: `bash .claude/skills/tai-nguyen/scripts/tripo.sh <tên>` → `C:/ai3d/tripo/ra/<tên>-{final.glb,so.png}`; Read
    `-so.png`, soát dáng / màu / phụ kiện; trình người dùng; đồng ý → `--dat` (chép vào `design/models/<tên>.glb`).
 3. Ghi như luồng cũ: `LICENSES.md` (Tripo gói Professional), `design/CHANGELOG.md`, ảnh `design/screens/Model-<tên>-so-thiet-ke.png`,
    trạng thái phiếu ảnh, `cd web && npm run build`, commit chỉ đường dẫn của mình.
-- **Không** giảm lưới Tripo bằng meshopt sau khi xuất (cắt đường UV → xé màu). File chưa retopo → nhờ người dùng Retopo.
+- **Không** giảm lưới Tripo bằng meshopt sau khi xuất (cắt đường UV → xé màu). File lỡ ra 2 000 000 mặt → nhờ người dùng
+  Retopo (20) trên chính model đó (Triangle ~16 000, giữ texture), không tạo lại.
+- Thứ tự làm model theo lúc cần dùng (người dùng chốt 2026-11-16: không trả coin cho model nằm chờ): NPC cần dáng riêng
+  (`go-mo` gõ mõ, `cam-nu` gảy đàn) chỉ làm khi code dáng trên xương Mixamo đã xong.
 - Động tác sẵn của Tripo người dùng chưa ưng (2026-11-16) — clip riêng (Mixamo cùng tên xương, hoặc động tác bằng code) cần kế hoạch `/lead`.
 - Đừng chạy Hunyuan khi phiên khác đang chạy (`tasklist | grep python` / dòng lệnh `mv_gen.py`) — hai phiên chung GPU → lỗi CUDA.
 
