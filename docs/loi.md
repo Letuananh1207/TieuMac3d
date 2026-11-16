@@ -19,6 +19,32 @@ Mức độ:
 
 ## Đang mở
 
+### L-18 · Dáng đi nhân vật chính (bản Tripo) kém dáng đi cũ — trả về đúng dáng đi cũ
+
+- Trạng thái: đang sửa · Mức độ: khó chịu (dáng đi thấy suốt lúc chơi) · Phần: nhân vật (`player/mixamoCharacter.ts`, `dongTac.ts`, `dang7.ts`) · Quy tắc: R-DIEU-5 (dáng đi / chạy), R-NPC-10
+- Báo: 2026-11-16 — "tôi chưa hài lòng với dáng đi hiện nay của nhân vật tôi cảm giác ban đầu trước đó vẫn tốt hơn"; người dùng chọn: trả về đúng dáng đi cũ (nhịp, vung tay, nhún như trước khi đổi model), các dáng khác giữ nguyên
+- Các bước: 1. Mở app (nhân vật chính bản Tripo, sau đợt 2 `b69fdbd`) 2. Đi bộ / chạy
+- Mong đợi / thực tế: dáng đi như bản cũ (nhánh `autoRig` của `glbCharacter.ts`: nhịp `2,4·max(mps, 2,2)`, đùi 0,55 (+0,35 chạy), vung tay 0,34 (+0,45), nhún |sin|·0,05, đổ người 0,05 (+0,2)) / dáng `hoat-bat` của `dongTac` (nhanh, nhún nhiều, vung rộng)
+- Bằng chứng: người dùng thử máy 2026-11-16
+
+**Sửa**
+
+**Lịch sử**
+- 2026-11-16: ghi, sửa ngay (người dùng chọn).
+
+### L-19 · Thân nhân vật chính phồng / méo khi vươn vai (đứng yên lâu)
+
+- Trạng thái: đang sửa · Mức độ: khó chịu (méo hình rõ, lặp mỗi 16 giây khi đứng) · Phần: xương Mixamo (`player/mixamoRig.ts`, trọng số da model Tripo) · Quy tắc: R-DIEU-8
+- Báo: 2026-11-16 — "khi nhân vật dang tay thì bị phồng thân hình rất xấu" (ảnh người dùng: nhìn sau lưng, hai tay giơ ngang, thân / nách phình ra); xảy ra khi **vươn vai khi đứng lâu**
+- Các bước: 1. Đứng yên > 6 giây 2. Nhân vật vươn vai (hai tay giơ cao)
+- Mong đợi / thực tế: tay giơ lên, thân giữ dáng / thân và nách phồng ra theo tay
+- Bằng chứng: ảnh người dùng gửi trong chat (2026-11-16); nghi nguyên nhân: Tripo cho đỉnh thân / vai bám xương `LeftArm` / `RightArm` (trọng số da), tay giơ cao kéo theo thân
+
+**Sửa**
+
+**Lịch sử**
+- 2026-11-16: ghi, sửa ngay (người dùng chọn).
+
 ### L-17 · Cỏ mọc trên sàn gỗ tầng 1 trong trà lâu Phẩm Minh Các
 
 - Trạng thái: mới · Mức độ: nhỏ (lệch hình, không ảnh hưởng điều khiển) · Phần: cỏ hoa có gió (`scene/coHoa.ts`) ↔ vùng loại trừ trong nhà (`rooms`) · Quy tắc: chưa có
