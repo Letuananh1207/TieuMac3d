@@ -59,7 +59,7 @@ describe('Mốc phục vụ trà lâu (R-TRA-1)', () => {
       const right = -Math.cos(s.rotY) * vx + Math.sin(s.rotY) * vz;
       const ang = Math.atan2(right, fx * vx + fz * vz) * DEG;
       expect(ang).toBeCloseTo(t.angle, 2);
-      if (s.hold === 'lan-can') expect(Math.abs(ang - 90)).toBeLessThanOrEqual(20);
+      if (s.hold === 'lan-can') expect(ang >= 40 && ang <= 70, `ghế lan can ${i}: ${ang}°`).toBe(true); // nhoài tới lan can → từ mắt là bên phải
       angles.push(`${i}:${Math.round(ang)}°`);
       // quay mặt về chỗ ngồi
       expect(Math.abs(Math.atan2(Math.sin(t.face - Math.atan2(-vx, -vz)), Math.cos(t.face - Math.atan2(-vx, -vz))))).toBeLessThan(1e-6);

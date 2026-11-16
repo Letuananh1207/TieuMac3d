@@ -46,9 +46,13 @@ export const STAND_CLEAR = 0.2;
 /** Chỗ đứng rót không đè lên chỗ ngồi khác (tâm cách tâm, m). */
 const OTHER_SEAT = 0.5;
 const DEG = Math.PI / 180;
-/** Góc thử (độ, so hướng nhìn, dương = phải): gần 45° trước (QĐ3); ghế lan can quanh 90°. Bàn bày chật → lấy góc gần nhất còn trống. */
+/**
+ * Góc thử (độ, so hướng nhìn, dương = phải): gần 45° trước (QĐ3). Bàn bày chật → lấy góc gần nhất còn trống. Ghế lan can: người
+ * ngồi nhìn từ mắt **nhoài người** ~0,8 m tới lan can (`ngoiMat` RAIL_REACH) → đứng chếch trước 45–60° so với chỗ ngồi thì từ
+ * mắt là ngay bên phải (~90°), quay đầu sang thấy; đứng đúng 90° so với chỗ ngồi thì đã ở sau lưng mắt.
+ */
 const TABLE_ANGLES = [45, 50, 40, 55, 35, 60, 65, 70, 75, 80, 85];
-const RAIL_ANGLES = [90, 85, 95, 80, 100, 75, 105, 70, 110];
+const RAIL_ANGLES = [45, 50, 55, 60, 40, 65, 70];
 const DISTS = [1.0, 1.1, 0.9, 1.2, 0.8];
 
 /** Box thẳng trục theo tâm + cỡ (toạ độ nhà). */

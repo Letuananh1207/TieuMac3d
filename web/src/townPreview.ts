@@ -112,7 +112,7 @@ function addRouteLine(scene: THREE.Scene, route: readonly (readonly [number, num
 }
 
 /** Dòng chữ nổi góc dưới (thoại / rao của bản thử), tự mờ sau 6 s. */
-function makeToast(): (text: string) => void {
+export function makeToast(): (text: string) => void {
   const box = document.createElement('div');
   box.style.cssText = 'position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%);max-width:90vw;display:flex;flex-direction:column;gap:6px;pointer-events:none;z-index:50';
   document.body.append(box);

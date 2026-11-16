@@ -73,6 +73,11 @@ export class TieuNhi {
     return this.out?.served ?? false;
   }
 
+  /** Dài đường quầy → chỗ đứng rót của chỗ `i` (m); không có → `null`. */
+  pathLength(i: number): number | null {
+    return this.paths.get(i)?.length ?? null;
+  }
+
   /** Đứng ở quầy → có nút "Nói chuyện" (R-NPC-3). */
   get canTalk(): boolean {
     return this.out?.canTalk ?? true;

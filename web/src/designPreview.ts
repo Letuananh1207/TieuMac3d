@@ -34,6 +34,7 @@ import { buildWorld } from './scene/world';
 import { houseLines, withHouseParam } from './nhaPreview';
 import { hourSlider, NgayDem } from './ngayDem';
 import { addTownPreview } from './townPreview';
+import { addTieuNhiPreview } from './tieuNhiPreview';
 import { DanTranh } from './danTranh';
 import { playerModelUrl } from './player/playerCharacter';
 import { addGardenPreview } from './vuonPreview';
@@ -361,7 +362,7 @@ async function boot(): Promise<void> {
   const poseState: CharacterState = { mps: 0, air: false, vy: 0, sit: 0, bow: 0, idle: 0 };
   if (pose === 'chay') poseState.mps = RUN_SPEED;
   else if (pose === 'nhay') poseState.air = true;
-  else if (pose === 'ngoi' || pose === 'ngoi-mat' || pose === 'hac') poseState.sit = 1;
+  else if (pose === 'ngoi' || pose === 'ngoi-mat' || pose === 'tieu-nhi' || pose === 'hac') poseState.sit = 1;
   if (hac) poseState.ride = hac.ride; // ngồi cưỡi hạc (R-HANH-5)
   else if (pose === 'chao') poseState.bow = 1;
   else if (pose === 'vuon') poseState.idle = 7.25;
@@ -372,7 +373,14 @@ async function boot(): Promise<void> {
   const cuon = pose === 'ngoi' ? new CuonSach(scene) : null;
   // ?dang=ngoi-mat[&cho=on|tu-hoc|tra|lan-can|co|dau] — nhìn từ mắt khi ngồi như app (R-DIEU-7, ngoiMat.ts): Ngồi ôn tại chỗ
   // (cuộn mở), bồ đoàn khu tự học, đôn bàn trà trà lâu, ghế lan can tầng 2 trà lâu, bàn cờ, bàn Đấu chữ. Thân mình ẩn, hai tay + cuộn / chén / bàn.
-  const mat = pose === 'ngoi-mat' ? ngoiMatPreview(params.get('cho') ?? 'on') : null;
+  // ?dang=tieu-nhi&cho=<0…29>[&t=…][&ngoai] — ngồi chỗ trà lâu, tiểu nhị mang trà như app (tieuNhiPreview.ts, R-TRA-1)
+  const tn = addTieuNhiPreview(params, world, npcSet.npcs, colliders);
+  if (tn) {
+    el('problems').append(...tn.lines.map((t) => li(t)));
+    character.root.position.set(tn.seat.x, tn.seat.y, tn.seat.z);
+    character.facing.rotation.y = tn.seat.rotY;
+  }
+  const mat = pose === 'ngoi-mat' || (tn && !params.has('ngoai')) ? ngoiMatPreview(params.get('cho') ?? 'on') : null;
   // ?dang=bieu-cam[&bc=<mã>][&t=<giây>] — dáng 8 biểu cảm (R-BIEU-2, bieuCamPreview.ts); tên biểu cảm hiện ở ô toạ độ
   const bieuCam = emotePreview(params);
   if (pose) character.animate(1, poseState.mps / RUN_SPEED, poseState);
@@ -396,7 +404,8 @@ async function boot(): Promise<void> {
       character.root.position.set(x, y, z);
       character.facing.rotation.y = rotY;
     };
-    if (cho === 'tu-hoc' || cho === 'tra' || cho === 'lan-can') {
+    if (tn) place = { kind: 'ngoi', hold: tn.seat.hold, rail: tn.seat.rail };
+    else if (cho === 'tu-hoc' || cho === 'tra' || cho === 'lan-can') {
       const s = world.seats.find((q) => (cho === 'tu-hoc' ? q.study : q.hold === cho));
       if (s) seatAt(s.x, s.y, s.z, s.rotY);
       place = cho === 'tu-hoc' ? { kind: 'on' } : { kind: 'ngoi', hold: s?.hold, rail: s?.rail };
@@ -467,6 +476,7 @@ async function boot(): Promise<void> {
     vuon?.update(dt, poseState);
     if (!freeze) character.animate(dt, stateNow().mps / RUN_SPEED, stateNow());
     cuon?.update(dt, character.root.position, character.facing.rotation.y, 2);
+    tn?.update(dt, mat?.ngoi ?? null);
     for (const npc of npcSet.npcs) npc.update(dt);
     town?.update(dt, camera, controls.target);
     dan?.update({ dt, player: controls.target, camera, covered: false });
