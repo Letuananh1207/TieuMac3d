@@ -8,12 +8,15 @@ import { pluckSamples } from './ui/zitherSound';
 
 vi.stubGlobal('window', { addEventListener: () => {}, AudioContext: undefined });
 
-describe('Nhạc công bục đàn — chưa có model', () => {
-  it('R-NPC-9: mã `cam-nu` có trong NPC_IDS; chưa có design/models/cam-nu.glb → không người, không tiếng', async () => {
+describe('Nhạc công bục đàn', () => {
+  it('R-NPC-9: mã `cam-nu` có trong NPC_IDS và có model design/models/cam-nu.glb (Tripo, 2026-11-16)', () => {
     expect(NPC_IDS).toContain(CAM_NU);
-    expect(npcModelUrl(CAM_NU)).toBeUndefined();
+    expect(npcModelUrl(CAM_NU)).toBeDefined();
+  });
+  it('R-NPC-9: cảnh không có bục đàn → không người, không tiếng', async () => {
+    const spec = loadScene(HOME_SCENE).spec;
     const scene = new THREE.Scene();
-    const d = await DanTranh.create(scene, loadScene(HOME_SCENE).spec, () => 0);
+    const d = await DanTranh.create(scene, { ...spec, props: spec.props.filter((p) => p.kind !== 'buc-dan') }, () => 0);
     expect(d).toBeNull();
     expect(scene.children).toHaveLength(0);
   });
