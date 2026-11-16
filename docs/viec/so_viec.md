@@ -109,7 +109,7 @@ ha-ta-lowpoly.glb` |
 | V-20261116-97 | Icon tiện ích ở thanh công cụ (bản máy tính) khá lớn → thu nhỏ ~1/4 (76 → 56 px) | lead nhỏ | xong — đã gộp (máy tính 56 px; người dùng duyệt ảnh) | R-THANH-1 | duyệt ảnh trước / sau |
 | V-20261116-98 | Tự động tạo ảnh Gemini (gói Pro) bằng thư viện Gemini-API (cookie web) thay cho làm tay; tạo vài bản / góc, người dùng chọn rồi chốt | lead nhỏ (công cụ) | chờ người dùng — công cụ đã gộp (gemini-anh.sh); chờ cookie để chạy thật lần đầu | — | chép 2 cookie Gemini khi công cụ xong |
 | V-20261116-99 | Tư thế nhân vật trên hạc không tự nhiên → ngồi cưỡi: 2 chân dạng hai bên, qua gốc cánh, áp sát hông hạc | lead nhỏ | đang làm — R-HANH-5 đã sửa + đồng bộ; nhánh viec/cuoi-hac-ngoi | R-HANH-5 | duyệt ảnh ngồi cưỡi |
-| V-20261116-100 | Thanh công cụ bản máy tính xấu: ô quá sát nhau, sát đáy, nhãn tên (ru-băng) thiếu chuyên nghiệp → 3 phương án chụp thật cho người dùng chọn rồi áp | ui (thay canvas) + lead nhỏ | đang làm — nhánh viec/thanh-may | R-THANH-1 | chọn phương án |
-| V-20261116-101 | Hai tay nhân vật chính lúc đứng ép sát thân → dạng ~15° | loi sua | đang làm — nhánh viec/tay-dang | L-23 | duyệt ảnh trước / sau |
+| V-20261116-100 | Thanh công cụ bản máy tính xấu: ô quá sát nhau, sát đáy, nhãn tên (ru-băng) thiếu chuyên nghiệp → 3 phương án chụp thật cho người dùng chọn rồi áp | ui (thay canvas) + lead nhỏ | đang làm — người dùng chọn A, áp + gỡ bản thử | R-THANH-1 | chọn phương án |
+| V-20261116-101 | Hai tay nhân vật chính lúc đứng ép sát thân → dạng ~15° | loi sua | chờ thử máy — đã gộp (tay dạng ~15°, người dùng duyệt ảnh) | L-23 | duyệt ảnh trước / sau |
 | V-20261116-102 | Tiểu Khất tỉ lệ quá nhỏ (scale 0,8) → bằng các NPC khác (1,0) | canh nhỏ | đang làm — nhánh viec/khat-nhi-co | R-NPC-6 | duyệt ảnh |
-| V-20261116-103 | Cầm Nương mắt lé (con ngươi hướng vào trong) → sửa texture | loi sua | xếp hàng (đủ 4 việc chạy) | L-24 | duyệt ảnh trước / sau |
+| V-20261116-103 | Cầm Nương mắt lé (con ngươi hướng vào trong) → sửa texture | loi sua | đang làm — nhánh viec/mat-cam-nu | L-24 | duyệt ảnh trước / sau |
