@@ -1,6 +1,6 @@
 # Phiếu: Bộ ảnh nhiều góc NPC Tiểu nhị 小二 (đầu vào dựng model 3D bằng Hunyuan3D)
 
-- Trạng thái: chờ thiết kế
+- Trạng thái: đã dựng model (Tripo, 2026-11-16)
 - Đã vẽ: 2026-11-14.11
 - Hồ sơ khảo cứu: `docs/tham_khao/tieu-nhi.md` — **người dùng chọn hướng A "trà bác sĩ trẻ" 茶博士 (2026-11-14)**: khăn vấn nâu sẫm, áo ngắn màu trà, dây tháp tay áo đỏ son chéo sau lưng, tạp dề chàm, khăn lau gài hông. Mô tả áo lam / khăn vắt vai bên dưới KHÔNG còn dùng; câu lệnh thật ở `design/CHANGELOG.md` mục 2026-11-14.11.
 - Đợi bởi: `/tai-nguyen nhan-vat tieu-nhi` (dựng `design/models/tieu-nhi.glb`, 8 000 tam giác) — kế hoạch

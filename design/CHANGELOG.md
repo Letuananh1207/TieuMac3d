@@ -3,6 +3,15 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-16.8 — Model Tripo: Tiểu Mặc, Mặc Ông (thay Hunyuan), tiểu nhị, trận sư
+
+- Loại: tài nguyên 3D (`/tai-nguyen`, luồng Tripo 60 coin / nhân vật). Phiếu: `2026-11-12-anh-su-phu`, `2026-11-13-anh-tieu-nhi`,
+  `2026-11-13-anh-tran-su`.
+- `design/models/tieu-mac.glb`, `su-phu.glb` (thay bản Hunyuan — màu sạch, xương Mixamo → dáng mềm R-NPC-10, hết dùng `NPC_RIGS`),
+  `tieu-nhi.glb`, `tran-su.glb` (mới). Mỗi model ~15 300 tam giác, 250–280 KB. Ảnh so: `screens/Model-<mã>-so-thiet-ke.png`.
+- `tieu-nhi`, `tran-su` chưa có chỗ trong đặc tả cảnh → `/canh` đặt (R-NPC-3, R-NPC-5). `cam-nu`, `go-mo` đã dựng (bản chờ
+  `C:/ai3d/tripo/ra/`) — đưa vào khi xong động tác đợt 2 (gảy đàn, gõ mõ trên xương Mixamo).
+
 ## 2026-11-16.7 — Tàng Thư Các: thủ thư Điển Thư đứng sau án đọc tầng 1
 
 - Loại: cảnh 3D — dữ liệu (đặt NPC). Phiên code V-20261116-82 làm thay việc `/canh` theo kế hoạch đã duyệt
