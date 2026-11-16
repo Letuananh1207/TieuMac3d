@@ -1,5 +1,7 @@
 # NPC khất nhi và người gõ mõ báo giờ (乞兒 · 更夫)
 - Ngày: 2026-11-14 · Khu: Khởi Nguyên Trấn (Cổng Trấn, Quảng Trường, Thiên Bậc) · Trạng thái: đã chọn hướng (Claude, một bước) · đã chuyển phiếu ảnh (`docs/phieu_thiet_ke/2026-11-14-anh-khat-nhi.md`, `docs/phieu_thiet_ke/2026-11-14-anh-go-mo.md`)
+
+> **Cập nhật 2026-11-15 (người dùng duyệt ảnh):** Lão Canh đổi sang hướng C "ông lão béo phúc hậu" — khăn quấn đầu nâu #6B5A44, áo nâu đỏ #7A3B2E tới giữa bắp chân, đai vàng đất #C9A35A, cầm sẵn mõ (tay phải) + dùi (tay trái); chốt `design/CHANGELOG.md` 2026-11-15.1. Khất nhi (Tiểu Khất) đổi thành đứa trẻ tóc rối bù xoã (không dây), mặt hơi buồn, bưng bát sứ trắng nứt và chống gậy cành cây (ảnh: bát tay phải, gậy tay trái); chốt 2026-11-15.2. Phần hướng A bên dưới về hai nhân vật này không còn là bản chốt.
 - Việc: V-20261114-31 · kế hoạch `docs/tasks/2026-11-14-npc-khat-nhi-go-mo.md`
 - Luật mới (V-28): biển và TÊN trong game chỉ có tiếng Việt, nên tên NPC không kèm chữ Hán. Chữ Hán ở hồ sơ này chỉ để
   tra cứu.
