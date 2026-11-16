@@ -49,17 +49,17 @@
   nhật (R-NPC-1). Đo fps Canvas 3D trước / sau với 7 NPC (quy tắc 4).
 
 ## Nhiệm vụ
-- [ ] 1. Sổ quy tắc: sửa R-NPC-1 / R-NPC-2, thêm R-NPC-10 → `/dong-bo-quy-tac` (docs · xong khi tài liệu online đã chép).
-- [ ] 2. `dongTac.ts` + test: dáng đứng (thở, dồn trọng tâm, nhìn quanh), dáng đi (theo tốc độ, đà, rẽ), nhìn người chơi
+- [x] 1. Sổ quy tắc: sửa R-NPC-1 / R-NPC-2, thêm R-NPC-10 → `/dong-bo-quy-tac` (docs · xong khi tài liệu online đã chép).
+- [x] 2. `dongTac.ts` + test: dáng đứng (thở, dồn trọng tâm, nhìn quanh), dáng đi (theo tốc độ, đà, rẽ), nhìn người chơi
       (giới hạn góc, mượt), gật đầu; 4 tính cách mẫu: điềm tĩnh (thủ thư), hoạt bát (tiểu nhị, khất nhi), già (gõ mõ),
       nghiêm (quản sự, trận sư) (player · vitest: chu kỳ bước khớp tốc độ, góc trong giới hạn, đứng yên → về tư thế nghỉ ·
       xong khi `npm test` xanh).
-- [ ] 3. `mixamoRig.ts`: nhận diện + áp góc theo quy ước chung; hạ tay chữ A (player · vitest với khung xương giả · xong
+- [x] 3. `mixamoRig.ts`: nhận diện + áp góc theo quy ước chung; hạ tay chữ A (player · vitest với khung xương giả · xong
       khi thu-thu trên Canvas 3D đứng tay buông xuôi, không méo áo).
-- [ ] 4. `glbCharacter.ts`: nhánh Mixamo dùng `dongTac` (player · xong khi NPC đi thế `?dang=go-mo` bằng thu-thu đi mềm).
-- [ ] 5. `npc.ts` + `main.ts`: NPC đứng Mixamo thở / nhìn quanh / nhìn người chơi / gật khi thoại; `NPC_TINH` (player, ghép ·
+- [x] 4. `glbCharacter.ts`: nhánh Mixamo dùng `dongTac` (player · xong khi NPC đi thế `?dang=go-mo` bằng thu-thu đi mềm).
+- [x] 5. `npc.ts` + `main.ts`: NPC đứng Mixamo thở / nhìn quanh / nhìn người chơi / gật khi thoại; `NPC_TINH` (player, ghép ·
       vitest `npcVisibility` vẫn xanh · xong khi đi tới gần thu-thu đầu quay theo, mở thoại thì gật).
-- [ ] 6. Phòng thử `?dang=dong-tac&nv=thu-thu[&tinh=…]`: đi vòng / dừng / đứng, người giả lại gần, thanh trượt (nhịp bước,
+- [x] 6. Phòng thử `?dang=dong-tac&nv=thu-thu[&tinh=…]`: đi vòng / dừng / đứng, người giả lại gần, thanh trượt (nhịp bước,
       vung tay, khuỷu trễ, nhún, đổ người, thở, dồn trọng tâm, tầm nhìn), nút Chốt chép JSON (Canvas 3D · xong khi chạy trên
       `npm run dev` và artifact Canvas 3D).
 - [ ] 7. Người dùng chỉnh trên phòng thử → chốt → ghi bộ số vào `dongTac.ts`; đo fps trước / sau; chụp ảnh
