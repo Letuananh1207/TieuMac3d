@@ -81,6 +81,11 @@ cầu nối, Flutter, đặc tả cảnh, HUD, tay giả nhìn từ mắt, NPC H
 - [x] 7. `playerCharacter.ts` `?nhan-vat=<mã>` + `playerModelUrl` cho trang thế.
 - [ ] 8. Kiểm Canvas 3D bằng thu-thu từng nhóm (di chuyển · đứng / chào · ngồi · biểu cảm · làm vườn · NPC thế gõ mõ /
       gảy đàn), chụp `design/screens/Dong-tac-nhan-vat-<nhóm>.png`, đo fps; xong khi người dùng duyệt ảnh từng nhóm.
+      — Đã chụp 2026-11-16 (chờ duyệt): 6 nhóm thu-thu + 6 nhóm bản Tripo thử (`…-tripo.png`, model chép tạm, không commit).
+      Canvas 3D mặc định: 76 draw call cả ba model (Hunyuan 129 274 · thu-thu 127 906 · Tripo 129 244 tam giác); fps headless
+      swiftshader không đọc được (“—”), cần đo trên máy thật.
+      Thực hiện: nhánh Mixamo ở `player/mixamoCharacter.ts` (tách khỏi `glbCharacter.ts` để file < 400 dòng); khuỷu gập trong
+      mặt phẳng cánh tay (`dang7.ts` `elbow`); ảnh so NV3 trước / sau 18 dáng `autoRig`: không đổi.
 - [ ] 9. **Thay `nhan-vat.glb` bằng bản Tripo** (chờ model): `tripo.sh nhan-vat` → trình → `--dat`; kiểm xương / lưới /
       tam giác; chạy lại NV8 không `?nhan-vat=`; LICENSES, CHANGELOG, ảnh so, `npm run build`.
 
