@@ -4,6 +4,7 @@
  * index.html (#guidePanel); phần thân dựng bằng createElement / textContent. Cùng khung: hướng dẫn Khu tự học (R-VA-5,
  * thiết kế 2026-11-14.17 `TuHoc-doc`, `-doc-chua-hoc`, `-ngang`).
  */
+import { trucLamFace } from './trucLamFaces';
 import { boldParts, type GameGuide } from '../zones/gameGuides';
 import { portraitOf } from './dialogBox';
 import { el } from './dom';
@@ -204,7 +205,7 @@ export class GuidePanel {
       img.src = url;
       img.alt = g.tipTitle ? '' : tipName; // có đầu ô mẹo ghi tên rồi → ảnh chỉ trang trí
       tip.append(img);
-    } else tip.append(node('span', 'ph'));
+    } else tip.append(g.tipBy ? trucLamFace(g.tipBy, 44, 'ph') : node('span', 'ph')); // NPC Trúc Lâm chưa có ảnh → chân dung giữ chỗ
     const bub = node('div', 'bub');
     const say = node('div', 'say');
     say.append('"', ...rich(g.tip), '"');

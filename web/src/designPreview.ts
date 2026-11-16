@@ -39,6 +39,7 @@ import { playerModelUrl } from './player/playerCharacter';
 import { addGardenPreview } from './vuonPreview';
 import { addDecorPreview } from './decorPreview';
 import { addTrucLamPreview } from './trucLamPreview';
+import { addTrucLamHudPreview } from './trucLamHudPreview';
 import { addDongTacPreview } from './dongTacPreview';
 import { inRect } from './scene/rooms';
 import { el } from './ui/dom';
@@ -268,6 +269,9 @@ async function boot(): Promise<void> {
   // 3 trò nhỏ Trúc Lâm (V-66 B4): đệm đàn, măng hôm nay, mưa, chén lệnh — `?dang=luu-thuong|hai-mang[&mua]` (trucLamPreview.ts)
   const truc = addTrucLamPreview(scene, colliders, spec, world, params);
   if (truc?.lines.length) el('problems').append(...truc.lines.map((t) => li(t)));
+  // &hud=… — HUD 3 trò Trúc Lâm dựng bằng lớp HUD của app với dữ liệu mẫu (trucLamHudPreview.ts, thiết kế 2026-11-16.13)
+  const trucHud = addTrucLamHudPreview(params, camera, (x, z) => world.surface.heightAt(x, z));
+  if (trucHud) el('problems').append(li(trucHud));
   // ?dang=dong-tac&nv=thu-thu[&tinh=…] — phòng thử động tác xương chuẩn + thanh trượt (dongTacPreview.ts, R-NPC-10)
   const dong = await addDongTacPreview(scene, colliders, spec, (x, z) => world.surface.heightAt(x, z), params, (x, z) => {
     if (params.has('cam')) return; // ?cam=…&tam=… đã đặt góc nhìn

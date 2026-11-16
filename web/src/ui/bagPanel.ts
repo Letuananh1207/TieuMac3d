@@ -96,6 +96,13 @@ export class BagPanel {
     if (on) this.list.scrollTop = 0;
   }
 
+  /** Mở sẵn tab [tab] (và ô [picked]) — Canvas 3D chụp so thiết kế. */
+  showTab(tab: BagTab, picked: string | null = null): void {
+    this.tab = tab;
+    this.picked = picked;
+    this.draw();
+  }
+
   /** Vẽ lại theo số đã lưu. */
   render(v: BagView): void {
     this.view = v;
