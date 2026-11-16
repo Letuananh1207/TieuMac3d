@@ -1,4 +1,12 @@
 # Cài đặt Claude Code riêng từng máy (vd. quyền chạy Hunyuan3D) — không đưa lên repo
 .claude/settings.local.json
+# Cookie Gemini (gemini-anh.sh — để ở C:/ai3d/gemini/, ngoài repo; luật này phòng hờ lỡ chép vào)
+cookie.json
+*cookie*.json
+.cached_cookies_*
+gemini-cache/
+# Python tạm (script skill)
+__pycache__/
+.pytest_cache/
 # worktree của từng việc (EnterWorktree — tool/viec.dart)
 .claude/worktrees/

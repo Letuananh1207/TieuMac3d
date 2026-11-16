@@ -53,3 +53,55 @@ Luật liên quan: không có luật R-… (ngoại hình nhân vật). Va chạ
 App đang có: design/models/nhan-vat.glb (Hunyuan3D mini-turbo, octree 384, làm mịn, 16 000 tam giác, chiếu 1 ảnh trước);
 xem ảnh design/screens/Model-nhan-vat.png — hông và lưng màu loang vì thiếu ảnh 3 góc còn lại.
 ```
+
+## Câu lệnh Gemini
+
+(Mẫu khối cho `gemini-anh.sh` — thêm 2026-11-16, V-98; dạng khối: `.claude/skills/ui-design/references/gemini.md`. Phiếu ảnh
+mới chép mục này rồi sửa phần mô tả. Bộ ảnh nhân vật chính đã chốt — chạy lại phiếu này chỉ để thử công cụ.)
+
+```gemini-cau-hinh
+ten: nhan-vat
+loai: nhan-vat
+tham-chieu: design/models/anh/nhan-vat.webp   # ảnh thiết kế gốc — giữ đúng nhân vật
+mau: truoc
+rieng: mat
+nen: #DDDDDD
+```
+
+```gemini chung
+Character turnaround image for a 3D modelling AI. Keep EXACTLY the character design of the attached reference image: a cute
+chibi young Taoist disciple (head about 1/3 of total height). Light blue Taoist robe #C9D6E3 with blue trim #4D6DB2 on the
+cross collar, cuffs, front edge and hem; white inner collar; the LEFT front panel overlaps the RIGHT (traditional Han-style
+cross collar). Dark navy sash #33456D, a round jade-green pendant #8CCB9E hanging on a blue cord at the right side of the sash.
+Black hair in a solid top bun tied with a blue band and a gold hairpin #E2B24C through the bun; side hair short and pressed
+to the head, no loose strands. Dark navy boots with white soles. Skin #F6D3BD, black open eyes, small mouth, calm face.
+Pose: A-pose, arms angled down about 35 degrees, sleeves NOT touching the body, legs slightly apart, both boots visible.
+Render: soft 3D vinyl / clay toy (Pop Mart style), soft even studio light, gentle shading for depth. NO outlines, NO cel
+shading. Orthographic camera at chest height, no perspective. Plain flat light grey background #DDDDDD, no gradient, no floor
+shadow, no frame. Square 1:1 image, character centred, about 80% of the image height, feet on the same ground line.
+NO text, NO letters, NO Chinese characters, NO logo, NO watermark.
+```
+
+```gemini truoc
+FRONT view: the character faces the camera straight on, symmetrical.
+```
+
+```gemini trai
+LEFT side view, exact 90-degree profile: we see the character's LEFT side, the face points to the LEFT edge of the image.
+Same pose, same size, same ground line as the attached front view.
+```
+
+```gemini sau
+BACK view: we see the character's back straight on — bun, nape, sash and plain back of the robe (no pendant, no crossed
+front panels visible from behind).
+```
+
+```gemini phai
+RIGHT side view, exact 90-degree profile: we see the character's RIGHT side, the face points to the RIGHT edge of the image.
+The jade pendant on the right side of the sash is visible. Same pose, size and ground line as the attached front view.
+```
+
+```gemini mat
+mau: truoc
+Close-up portrait of the same character's head and neck, facing the camera straight on, sharp facial details, same style.
+```

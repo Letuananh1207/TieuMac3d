@@ -1,0 +1,6 @@
+# Gói Python cho gemini_anh.py (venv riêng ngoài repo: C:/ai3d/gemini/venv) — ghim cố định, V-20261116-98.
+# gemini_webapi: không chính thức, AGPL-3.0 — chỉ dùng làm công cụ trên máy, không vào app.
+gemini_webapi==2.1.1
+Pillow==12.0.0
+numpy==2.4.6
+pytest==9.2.0

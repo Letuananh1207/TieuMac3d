@@ -31,6 +31,9 @@ Quyết định: `.claude/skills/hoc-xa-3d-dev/decisions/0003-tai-san-ai.md` (la
   app Claude tạo ảnh được), mẫu `docs/phieu_thiet_ke/2026-11-12-anh-nhan-vat-3d.md`: bộ 4 góc trước / trái / sau / phải
   (+ cận mặt), tư thế chữ A, render kiểu đồ chơi 3D (không vẽ phẳng), không viền, nền trơn sáng, không watermark, chuẩn
   hoá: vuông 1024, đỉnh búi 10 %, đế 90 %, trục thân giữa ảnh, 4 góc cùng tỉ lệ. In khối "Dán vào canvas" cho người dùng chép sang.
+  Phiếu kèm mục `## Câu lệnh Gemini` (khối ```` ```gemini <góc> ````, `loai: nhan-vat | cong-trinh`) → ảnh tạo **tự động** bằng
+  `bash .claude/skills/ui-design/scripts/gemini-anh.sh tao <phiếu>` (vài bản mỗi góc, người dùng chọn, `chot` tự chuẩn hoá như
+  trên vào `design/models/anh/`) — luồng: `/ui-design` mục "Phiếu ảnh — Claude tự chạy Gemini", `ui-design/references/gemini.md`.
   Ảnh / model **không có chữ Hán** trên biển, áo, đồ vật (chữ trên cảnh chỉ tiếng Việt — R-HUD-4, người dùng 2026-11-14).
   **Tóc và mặt cho 3D** (2026-11-13 — chỗ hay lỗi nhất; luôn chép vào phiếu ảnh):
   - tóc là khối liền ôm đầu; tóc mai ngắn hoặc ép sát má, **không lọn rủ hở khỏi mặt / cổ** (Hunyuan không dựng được lọn
@@ -61,7 +64,8 @@ không đoán được nó là gì.
    `docs/phieu_thiet_ke/2026-11-12-anh-nhan-vat-3d.md` (giữ nguyên toàn bộ "Yêu cầu kỹ thuật"; công trình / đồ vật bỏ
    ảnh `mat` và tư thế chữ A, thay bằng: đặt trên mặt đất, nhìn ngang tầm mắt, 4 góc trước / trái / sau / phải cùng tâm
    xoay). Phần ngoại hình viết từ hồ sơ: hình dáng, màu hex, chất liệu, chi tiết nhận diện, sai thường gặp cần tránh,
-   tỉ lệ (chibi cho nhân vật). Giao nộp: `design/models/anh/<tên>-{truoc,trai,sau,phai}.png` (+ `-mat`).
+   tỉ lệ (chibi cho nhân vật). Giao nộp: `design/models/anh/<tên>-{truoc,trai,sau,phai}.png` (+ `-mat`). Thêm mục
+   `## Câu lệnh Gemini` (tiếng Anh, mỗi góc một khối — `ui-design/references/gemini.md`), kiểm `gemini-anh.sh doc <phiếu>`.
 4. **Đẩy sang `/ui-design`**: `git add` chỉ hồ sơ + phiếu của mình → commit `phieu: anh <tên> (tai-nguyen một bước)` →
    `git push origin main` (người dùng đã cho phép đẩy phiếu theo luồng này). Phiên `/ui-design` tự thấy phiếu
    `chờ thiết kế` trên `main`.

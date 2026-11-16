@@ -25,10 +25,35 @@ phiên code (`/ui-apply`) hỏi người dùng rồi sửa sổ. Thường chạ
 Không thuộc skill này: cảnh 3D → `/canh` · model .glb → `/tai-nguyen` · nghiên cứu phong cách → `/khao-cuu`.
 
 **Phiếu ảnh concept bối cảnh / kiến trúc** (`docs/phieu_thiet_ke/*-concept-*.md`, `decisions/0006-anh-concept-truoc.md`,
-2026-11-16): skill này nhận như phiếu ảnh 4 góc — người dùng chạy Gemini với câu lệnh trong phiếu, chọn / sửa tới khi ưng;
+2026-11-16): skill này nhận như phiếu ảnh 4 góc — tạo bằng Gemini (mục dưới), người dùng chọn / sửa tới khi ưng;
 "chốt" → ảnh vào `design/concept/<tên>/*.png` (chuẩn hoá: PNG, tên theo góc trong phiếu), mục `design/CHANGELOG.md`
 (loại: concept, đáp phiếu …), trạng thái phiếu `đã chốt`, dòng ảnh trong `design/models/LICENSES.md` (công cụ Gemini, ngày).
 Sau đó phiên `/canh` / `/lead` mới dựng theo ảnh.
+
+## Phiếu ảnh — Claude tự chạy Gemini (2026-11-16, V-98)
+
+Phiếu ảnh 4 góc (`*-anh-*.md`), concept (`*-concept-*.md`), hình minh hoạ: **Claude tự tạo ảnh** bằng
+`bash .claude/skills/ui-design/scripts/gemini-anh.sh` (thư viện không chính thức `gemini_webapi`, cookie Gemini Pro của người
+dùng ở `C:/ai3d/gemini/cookie.json` — người dùng đã chọn, đã biết rủi ro). Người dùng **chỉ chọn bản**. Chi tiết, dạng khối
+câu lệnh, cách lấy cookie: `references/gemini.md`. Chạy được ở phiên VS Code (người dùng nhờ) lẫn phiên thiết kế có shell.
+
+1. Phiếu phải có mục `## Câu lệnh Gemini` (khối ```` ```gemini-cau-hinh ````, ```` ```gemini chung ````, ```` ```gemini <góc> ````).
+   Phiếu cũ chưa có → soạn từ "Dán vào canvas" (giữ nguyên yêu cầu kỹ thuật), ghi vào phiếu. Kiểm: `gemini-anh.sh doc <phiếu>`.
+2. `gemini-anh.sh tao <phiếu> --ban 3` (nền, `run_in_background`; ~1 phút / ảnh). Nhân vật / công trình nên làm hai đợt:
+   `--goc truoc` → người dùng chọn → `--goc trai,sau,phai --mau truoc=<số>` (các góc sau gửi kèm bản đã chọn → cùng một vật).
+   Lỗi cookie (mã 3) → chuyển nguyên hướng dẫn script in cho người dùng, dừng. **Không** tự tìm / đọc cookie trình duyệt.
+3. `gemini-anh.sh so <tên>` → Read `C:/ai3d/gemini/ra/<tên>/so.png`, soát theo phiếu (góc đúng phía, đủ chi tiết, không chữ,
+   nền trơn, tỉ lệ khớp nhau) → trình người dùng bằng **AskUserQuestion** (mỗi góc một câu, lựa chọn = số bản + "sửa" +
+   "tạo thêm"; kèm nhận xét ngắn từng bản). Không tự quyết thẩm mỹ.
+4. Chưa ưng → `gemini-anh.sh sua <tên> <góc> "<lời sửa tiếng Anh>"` hoặc `tao … --goc <góc>` thêm bản → quay lại bước 3.
+   Hai góc nghiêng gần đối xứng hỏng một bên → `phai=lat-trai` khi chốt (lật ngang).
+5. Người dùng "chốt" → `gemini-anh.sh chot <tên> truoc=2,trai=1,…` (chép + chuẩn hoá vào `design/models/anh/`,
+   `design/concept/<tên>/` hoặc `design/icons/nguon|xuat/` theo loại) → Read lại ảnh ra → các bước **Chốt** dưới như cũ:
+   mục `design/CHANGELOG.md`, dòng `design/models/LICENSES.md` công cụ **"Google Gemini (gemini_webapi 2.1.1, gói Pro, tự động)"**
+   + bản chọn + chuẩn hoá (script in dòng gợi ý), hình minh hoạ thêm dòng `design/icons/hinh.json`, trạng thái phiếu.
+   Câu lệnh đã dùng nằm trong `C:/ai3d/gemini/ra/<tên>/tao.json` — ghi tóm tắt vào mục CHANGELOG (không chép cookie / đường dẫn cache).
+
+Từ nay phiếu ảnh mới (`/tai-nguyen`, `/canh` bước 0, `/ui-apply phieu`) soạn kèm mục `## Câu lệnh Gemini` theo `references/gemini.md`.
 
 ## Trước khi vẽ — đọc
 

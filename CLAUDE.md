@@ -60,6 +60,7 @@ cd web && npm run build        # kiểm kiểu + kiểm đặc tả cảnh + bui
 cd web && npm run scene:check  # kiểm design/scene/scene.json, in toạ độ nhà / vùng / tường
 cd web && npm run build:design # Canvas 3D → web/dist-design/ (đăng artifact — /canh)
 bash .claude/skills/tai-nguyen/scripts/nhan-vat.sh <tên> <ra> [--seed 1234,7] [--nhanh] [--dat]  # ảnh 4 góc → model
+bash .claude/skills/ui-design/scripts/gemini-anh.sh tao <phiếu.md> [--ban 3] [--goc truoc]  # ảnh Gemini tự động (so / chot / sua / kiem)
 cd web && npm run model:clean -- <file.glb> [--loai nhan-vat|cong-trinh] [--ten <tên>]  # model AI → design/models/
 cd web && npm run model:paint -- <model.glb> <atlas.png> [--ra <file.glb>]  # tô màu model trắng bằng chiếu ảnh
 cd web && npx tsc --noEmit     # chỉ kiểm kiểu TS
