@@ -30,7 +30,7 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
 - File: `models/khat-nhi.glb`, `models/LICENSES.md`, `scene/scene.json`, 4 ảnh `screens/`; code `web/src/player/{xinDang.ts,npc.ts,mixamoCharacter.ts,character.ts}`,
   `web/src/scene/npcDraft.ts`, `web/src/designPreview.ts`.
 
-## 2026-11-16.21 — Mắt nhân vật: chớp mắt + mắt theo biểu cảm (mí bằng code)
+## 2026-11-16.22 — Mắt nhân vật: chớp mắt + mắt theo biểu cảm (mí bằng code)
 
 - Loại: tài nguyên 3D (dữ liệu dò từ model) + luồng/luật (R-MAT-1, R-MAT-2). Việc V-20261116-93, kế hoạch `docs/tasks/2026-11-16-chop-mat.md`
   (người dùng chọn A + C; ngồi nghỉ ≥ 15 s ngủ gật có đầu gục theo nhịp thở). Phiên VS Code (subagent) làm.
