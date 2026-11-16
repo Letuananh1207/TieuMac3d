@@ -6,6 +6,8 @@ import {
   camSeatAt,
   judge,
   laneOfKey,
+  songClock,
+  songLaneOfKey,
   rankOutcome,
   songLength,
   songNotes,
@@ -38,6 +40,13 @@ describe('Đàn cầm — đàn tự do', () => {
 });
 
 describe('Đàn cầm — theo bài', () => {
+  it('R-CAM-3: máy tính đánh làn bằng phím 1–5 (hàng Q W E R T không đánh làn)', () => {
+    expect([1, 2, 3, 4, 5].map((n) => songLaneOfKey(`Digit${n}`))).toEqual([0, 1, 2, 3, 4]);
+    expect(songLaneOfKey('KeyQ')).toBeNull();
+    expect(songLaneOfKey('Digit6')).toBeNull();
+    expect(SONGS.map(songClock).every((c) => /^[01]:\d\d$/.test(c))).toBe(true);
+  });
+
   it('R-CAM-3: 3 bài 40–60 s, ≤ 2 nốt / giây, 5 làn, một làn một lúc', () => {
     expect(SONGS.map((s) => s.name)).toEqual(['Suối trúc', 'Mưa măng', 'Trăng trên gò']);
     for (const s of SONGS) {

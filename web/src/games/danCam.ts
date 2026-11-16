@@ -26,6 +26,18 @@ export function laneOfKey(code: string): number | null {
 
 /* ---------- theo bài (R-CAM-3) ---------- */
 
+/** Phím làn khi theo bài trên máy tính (R-CAM-3, thiết kế 2026-11-16.13): chỉ **1–5** (trùng hàng Trầm của đàn tự do). */
+export function songLaneOfKey(code: string): number | null {
+  const i = ['Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5'].indexOf(code);
+  return i >= 0 ? i : null;
+}
+
+/** Độ dài bài để hiện ("0:45"), làm tròn giây. */
+export function songClock(s: CamSong): string {
+  const sec = Math.round(songLength(s));
+  return `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}`;
+}
+
 export const CAM_HAY = 0.12;
 export const CAM_DUOC = 0.25;
 /** Nốt đầu rơi tới vạch sau chừng này giây (kịp nhìn). */
