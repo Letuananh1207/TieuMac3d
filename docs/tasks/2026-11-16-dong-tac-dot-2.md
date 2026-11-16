@@ -79,7 +79,7 @@ cầu nối, Flutter, đặc tả cảnh, HUD, tay giả nhìn từ mắt, NPC H
 - [x] 5. `doLamVuon.ts`: gắn xương bất kỳ, dựng thẳng theo thân, bù co giãn + test.
 - [x] 6. Nhánh Mixamo của `glbCharacter.ts` đủ dáng, đồ cầm tay, `toolTip`, `sitDrop`, `opts.player`.
 - [x] 7. `playerCharacter.ts` `?nhan-vat=<mã>` + `playerModelUrl` cho trang thế.
-- [ ] 8. Kiểm Canvas 3D bằng thu-thu từng nhóm (di chuyển · đứng / chào · ngồi · biểu cảm · làm vườn · NPC thế gõ mõ /
+- [x] 8. Kiểm Canvas 3D bằng thu-thu từng nhóm (di chuyển · đứng / chào · ngồi · biểu cảm · làm vườn · NPC thế gõ mõ /
       gảy đàn), chụp `design/screens/Dong-tac-nhan-vat-<nhóm>.png`, đo fps; xong khi người dùng duyệt ảnh từng nhóm.
       — Đã chụp 2026-11-16 (chờ duyệt): 6 nhóm thu-thu + 6 nhóm bản Tripo thử (`…-tripo.png`, model chép tạm, không commit).
       Canvas 3D mặc định: 76 draw call cả ba model (Hunyuan 129 274 · thu-thu 127 906 · Tripo 129 244 tam giác); fps headless
@@ -92,3 +92,6 @@ cầu nối, Flutter, đặc tả cảnh, HUD, tay giả nhìn từ mắt, NPC H
 ## Kiểm tra cuối
 dart tool/check.dart --changed · cd web && npx tsc --noEmit && npm test && npm run build · dart tool/guard.dart ·
 dart tool/rule_trace.dart
+
+## Duyệt
+- 2026-11-16: người dùng duyệt ảnh NV8 (bản Tripo `nhan-vat`) → gộp + thay nhân vật chính (NV9), Cầm Nương, Lão Canh. Gõ mõ: dáng giơ dùi chưa thấy rõ trên ảnh headless — thử trên máy.
