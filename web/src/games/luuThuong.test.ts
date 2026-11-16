@@ -4,7 +4,11 @@ import {
   canJoin,
   emptyScores,
   ghepRadicals,
+  LUU_NEED_LINE,
   LUU_NPCS,
+  hostLine,
+  rankTitle,
+  thiKhoi,
   luuOutcome,
   makeQuestions,
   npcChoice,
@@ -113,5 +117,22 @@ describe('Lưu Thương — hết ván', () => {
       ['tai-nu', 2],
       ['tu-tai', 4],
     ]);
+  });
+
+  it('R-LUU-5: thẻ kết quả — dòng hạng, ấn "Thi khôi" chỉ khi hạng 1 một mình, lời Thi Ông', () => {
+    const alone = { nguoi: 3, 'thi-ong': 2, 'tai-nu': 2, 'tu-tai': 1 };
+    const tie = { nguoi: 3, 'thi-ong': 3, 'tai-nu': 1, 'tu-tai': 0 };
+    expect([rankTitle(alone), thiKhoi(alone)]).toEqual(['Hạng nhất', true]);
+    expect([rankTitle(tie), thiKhoi(tie)]).toEqual(['Đồng hạng nhất', false]);
+    expect(rankTitle({ nguoi: 2, 'thi-ong': 3, 'tai-nu': 2, 'tu-tai': 0 })).toBe('Hạng nhì');
+    expect(rankTitle({ nguoi: 0, 'thi-ong': 3, 'tai-nu': 2, 'tu-tai': 1 })).toBe('Hạng tư');
+    expect(hostLine('thang')).toBe('Hay! Chén này xin kính đạo hữu.');
+  });
+});
+
+describe('Lưu Thương — vào tiệc', () => {
+  it('R-LUU-1: chưa đủ 3 bộ → Thi Ông nhắc "Tĩnh toạ" (tên nút mới)', () => {
+    expect(canJoin(['truc', 'moc'])).toBe(false);
+    expect(LUU_NEED_LINE).toBe('Đạo hữu hãy Tĩnh toạ học thêm vài bộ thủ, rồi lại đây cùng thả chén.');
   });
 });

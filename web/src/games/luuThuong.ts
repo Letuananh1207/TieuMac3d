@@ -124,12 +124,23 @@ export function luuOutcome(s: LuuScores): 'thang' | 'hoa' | 'thua' {
   return Object.values(s).filter((v) => v === top).length > 1 ? 'hoa' : 'thang';
 }
 
-/** Lời Thi Ông trên thẻ kết quả. */
+/** Lời Thi Ông trên thẻ kết quả (chuỗi `luuHostWin` / `luuHostTie` / `luuHostLose` — thiết kế 2026-11-16.13). */
 export function hostLine(outcome: 'thang' | 'hoa' | 'thua'): string {
-  if (outcome === 'thang') return 'Đạo hữu ghép chữ nhanh như nước chảy — chén này lão kính đạo hữu!';
-  if (outcome === 'hoa') return 'Ngang tài ngang sức, thả thêm một tuần chén nữa chứ?';
-  return 'Chén phạt uống rồi, chữ thì nhớ lấy. Tuần sau ắt hơn.';
+  if (outcome === 'thang') return 'Hay! Chén này xin kính đạo hữu.';
+  if (outcome === 'hoa') return 'Ngang tài ngang sức, cạn chén nào!';
+  return 'Ván sau ắt đạo hữu hơn lão.';
 }
 
-/** Câu Thi Ông khi chưa đủ bộ (R-LUU-1). */
-export const LUU_NEED_LINE = 'Đạo hữu hãy Ngồi ôn học thêm vài bộ thủ, rồi lại đây cùng thả chén.';
+/** Dòng hạng của người chơi trên thẻ kết quả (R-LUU-5): hạng 1 đồng → "Đồng hạng nhất". */
+export function rankTitle(s: LuuScores): string {
+  const me = ranking(s).find((r) => r.seat === 'nguoi');
+  const rank = me?.rank ?? 4;
+  if (rank === 1) return luuOutcome(s) === 'hoa' ? 'Đồng hạng nhất' : 'Hạng nhất';
+  return ['Hạng nhì', 'Hạng ba', 'Hạng tư'][Math.min(4, rank) - 2];
+}
+
+/** Ấn son "Thi khôi" trên thẻ kết quả: chỉ khi hạng 1 một mình (R-LUU-5 — chỉ hình, không đổi thưởng). */
+export const thiKhoi = (s: LuuScores): boolean => luuOutcome(s) === 'thang';
+
+/** Câu Thi Ông khi chưa đủ bộ (R-LUU-1, chuỗi `luuHostNotEnough`). */
+export const LUU_NEED_LINE = 'Đạo hữu hãy Tĩnh toạ học thêm vài bộ thủ, rồi lại đây cùng thả chén.';

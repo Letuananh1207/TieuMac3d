@@ -1,17 +1,17 @@
 /**
  * Ghép Lưu Thương Lệnh ở Khúc Thuỷ Đài (R-LUU-1…5): thoại Thi Ông → ngồi đệm trống gần nhất (camera chéo cao, không góc từ
  * mắt) → vòng `LuuThuongRound` ↔ chén lệnh trên mương (`scene/channels.ts`) ↔ bong bóng văn nhân → `earnGame` khi hết ván.
- * **HUD chờ thiết kế** (thẻ câu ghép, bảng điểm, thẻ kết quả, "Rời tiệc"): tới lúc đó câu hỏi in ra Console, chọn bằng
- * phím **1–4** hoặc `__hocXaLuu.chon(i)`; ván mới `__hocXaLuu.vanMoi()`; rời: đi / Esc / nút quay lại.
+ * HUD thiết kế 2026-11-16.13 (`ui/luuHud.ts`): thẻ câu ghép, 4 thẻ điểm, viên lượt, thẻ kết quả, "Rời tiệc"; chọn ô bằng chạm
+ * hoặc phím **1–4**; thử trên Console: `__hocXaLuu.chon(i)`, `__hocXaLuu.vanMoi()`; rời: "Rời tiệc" / đi / Esc / nút quay lại.
  */
 import type * as THREE from 'three';
-import { ghepDetail } from './games/ghepChu';
-import { canJoin, hostLine, LUU_HOST, LUU_NEED_LINE, LUU_NPCS, ranking, type LuuSeat } from './games/luuThuong';
-import { LuuThuongRound } from './games/luuThuongRound';
+import { canJoin, hostLine, LUU_HOST, LUU_NEED_LINE, LUU_NPCS, ranking, rankTitle, thiKhoi, type LuuSeat } from './games/luuThuong';
+import { LUU_ANSWER_SECONDS, LuuThuongRound } from './games/luuThuongRound';
 import type { MiniFrame, MiniHost } from './miniGames';
 import { stopPoint, type ChannelPath, type CommandCup } from './scene/channels';
 import type { MiniGameSpec } from './scene/spec';
 import type { LamSound } from './ui/lamSound';
+import { LuuHud, type LuuResultView, type LuuTile, type LuuView } from './ui/luuHud';
 import { waterVolume } from './ui/lamSound';
 import { ZitherSound } from './ui/zitherSound';
 import { RADICALS } from './zones/radicals';
@@ -45,6 +45,8 @@ export class LuuThuong {
   private round: LuuThuongRound | null = null;
   private mine: Cushion | null = null;
   private lastPhase = '';
+  private result: LuuResultView | null = null;
+  private readonly hud: LuuHud;
   private readonly zither = new ZitherSound('tranh');
   private readonly keys = (e: KeyboardEvent): void => this.onKey(e);
 
@@ -68,6 +70,7 @@ export class LuuThuong {
       if (c) this.npcSeat.set(n.id, c);
     }
     this.zither.setLevel(1, 0); // tiếng gảy khi ghép đúng (R-LUU-3) — đầy, giữa hai tai
+    this.hud = new LuuHud({ leave: () => this.leave(), newRound: () => this.newRound(), pick: (i) => this.round?.choose(i) });
     window.addEventListener('keydown', this.keys, true);
   }
 
@@ -119,7 +122,7 @@ export class LuuThuong {
     if (!this.mine) return;
     this.round = new LuuThuongRound([...this.h.learned()]);
     this.lastPhase = '';
-    console.info('Lưu Thương: ván mới — 8 lượt; tới lượt đạo hữu chọn bộ thủ bằng phím 1–4 (hoặc __hocXaLuu.chon(i))');
+    this.result = null;
   }
 
   /** "Rời tiệc": đứng dậy cạnh đệm; giữa ván → không thưởng (R-LUU-5). */
@@ -132,11 +135,14 @@ export class LuuThuong {
   private end(): void {
     this.mine = null;
     this.round = null;
+    this.result = null;
     this.cup?.place(null);
+    this.hud.render(null);
   }
 
   update(f: MiniFrame): void {
     if (!this.mine) return;
+    this.hud.render(f.busy ? null : this.view());
     if (!this.h.player.isSitting) {
       this.end(); // đi / nút đứng dậy → rời tiệc (R-LUU-1)
       return;
@@ -154,7 +160,7 @@ export class LuuThuong {
     this.announce(r);
   }
 
-  /** Mỗi lần đổi pha: in câu / bong bóng văn nhân / kết quả (HUD chờ thiết kế). */
+  /** Mỗi lần đổi pha: bong bóng "…" văn nhân, tiếng gảy khi đúng, ghi thưởng khi hết ván. */
   private announce(r: LuuThuongRound): void {
     const q = r.question;
     if (r.phase === 'het') {
@@ -162,28 +168,75 @@ export class LuuThuong {
       return;
     }
     if (!q) return;
-    const name = (s: LuuSeat): string => (s === 'nguoi' ? 'Đạo hữu' : (LUU_NPCS.find((n) => n.id === s)?.name ?? s));
-    if (r.phase === 'hoi') {
-      const opts = q.options.map((id, i) => `${i + 1} ${radicalOf(id)?.form ?? id} ${radicalOf(id)?.name ?? ''}`).join(' · ');
-      const where = q.char.layout === 'bao' ? 'bộ bao ngoài' : q.char.at === 'dau' ? (q.char.layout === 'trai-phai' ? 'bộ bên trái' : 'bộ ở trên') : q.char.layout === 'trai-phai' ? 'bộ bên phải' : 'bộ ở dưới';
-      console.info(`Lưu Thương · lượt ${r.turn + 1}/8 · đạo hữu ghép: phần còn lại ${q.char.rest} (${where}) · ${q.char.meaning} · ${q.char.pinyin} — ${opts} (20 giây)`);
-    } else if (r.phase === 'nghi' && q.by !== 'nguoi') this.h.chatSay(q.by, '…');
-    else if (r.phase === 'cham') {
-      const by = q.by;
-      if (by !== 'nguoi') this.h.chatSay(by, r.lastRight ? `${radicalOf(q.char.radical)?.form ?? ''} — ${q.char.han}!` : 'Ôi chà… chén phạt vậy.');
-      else if (r.lastRight) this.zither.pluck(69, 0.8);
-      console.info(`Lưu Thương · ${name(by)} ${r.lastRight ? 'đúng +1' : r.picked === null ? 'hết giờ — uống phạt' : 'sai — uống phạt'} · ${q.char.han} = ${ghepDetail(q.char)}`);
-    }
+    if (r.phase === 'nghi' && q.by !== 'nguoi') this.h.chatSay(q.by, '…');
+    else if (r.phase === 'cham' && q.by === 'nguoi' && r.lastRight) this.zither.pluck(69, 0.8);
   }
 
   private async finish(r: LuuThuongRound): Promise<void> {
     const outcome = r.outcome;
-    const board = ranking(r.scores)
-      .map((x) => `${x.rank}. ${x.seat === 'nguoi' ? 'Đạo hữu' : (LUU_NPCS.find((n) => n.id === x.seat)?.name ?? x.seat)} ${x.score}`)
-      .join(' · ');
-    this.h.chatSay(LUU_HOST, hostLine(outcome));
+    const name = (s: LuuSeat): string => (s === 'nguoi' ? 'Đạo hữu' : (LUU_NPCS.find((n) => n.id === s)?.name ?? s));
+    const result: LuuResultView = {
+      title: rankTitle(r.scores),
+      seal: thiKhoi(r.scores),
+      points: r.scores.nguoi,
+      rows: ranking(r.scores).map((x) => ({ rank: x.rank, npc: x.seat === 'nguoi' ? null : x.seat, name: name(x.seat), score: x.score, me: x.seat === 'nguoi' })),
+      line: hostLine(outcome),
+    };
+    this.result = result;
     const e = await this.h.earn('luu-thuong', outcome);
-    console.info(`Lưu Thương · hết ván: ${board} → ${outcome}${e ? ` · +${e.amount} Văn` : ''} — __hocXaLuu.vanMoi() / đứng dậy để rời`);
+    if (this.result === result) this.result = { ...result, reward: e ? (e.amount > 0 ? e.amount : e.capped ? null : 0) : undefined };
+  }
+
+  /** Dữ liệu HUD (thiết kế 2026-11-16.13) từ vòng đang chơi. */
+  private view(): LuuView | null {
+    const r = this.round;
+    if (!r) return null;
+    const q = r.question;
+    const order = r.questions.map((x) => x.by);
+    const dots = order.map((by, i) => ({
+      mine: by === 'nguoi',
+      state: i < r.marks.length ? (r.marks[i] ? 'dung' : 'sai') : i === r.turn && r.phase !== 'het' ? 'dang' : 'cho',
+    })) as LuuView['dots'];
+    const seatName = (s: LuuSeat): string => (s === 'nguoi' ? 'Đạo hữu' : (LUU_NPCS.find((n) => n.id === s)?.name ?? s));
+    const seatOrder: LuuSeat[] = ['nguoi', 'thi-ong', 'tu-tai', 'tai-nu'];
+    const live = r.phase !== 'het' && !!q;
+    const seats = seatOrder.map((s) => ({
+      npc: s === 'nguoi' ? null : s,
+      name: seatName(s),
+      score: r.scores[s],
+      turn: live && q?.by === s,
+      gained: live && r.phase === 'cham' && r.lastRight && q?.by === s,
+    }));
+    const v: LuuView = { turn: Math.min(r.questions.length, r.turn + 1), total: r.questions.length, dots, seats, status: null, card: null, result: r.phase === 'het' ? this.result : null };
+    if (!live || !q) return v;
+    const mine = q.by === 'nguoi';
+    if (r.phase === 'tha' || r.phase === 'troi') v.status = { kind: 'troi' };
+    else if (r.phase === 'nghi') v.status = { kind: 'nghi', npc: q.by, name: seatName(q.by) };
+    else if (r.phase === 'cham') v.status = mine ? { kind: r.lastRight ? 'dung' : 'phat' } : { kind: 'npc', name: seatName(q.by), right: r.lastRight };
+    if (r.phase === 'hoi' || r.phase === 'nghi' || r.phase === 'cham') {
+      const full = r.phase === 'cham';
+      const tiles: LuuTile[] = q.options.map((id, i) => {
+        const rad = radicalOf(id);
+        const state: LuuTile['state'] = !full ? 'thuong' : i === q.answer ? 'dung' : i === r.picked ? 'sai' : 'mo';
+        return { form: rad?.form ?? id, hv: rad?.name ?? '', state, ...(full && !mine && i === r.picked ? { npcPick: q.by } : {}) };
+      });
+      v.card = {
+        mine,
+        ...(mine ? {} : { who: { npc: q.by, name: seatName(q.by) } }),
+        full,
+        han: q.char.han,
+        rest: q.char.rest,
+        layout: q.char.layout,
+        at: q.char.at,
+        hv: q.char.hv,
+        pinyin: q.char.pinyin,
+        meaning: q.char.meaning,
+        left: r.phase === 'hoi' ? Math.round(r.left * 4) / 4 : null,
+        total: LUU_ANSWER_SECONDS,
+        tiles,
+      };
+    }
+    return v;
   }
 
   private onKey(e: KeyboardEvent): void {
