@@ -72,7 +72,7 @@ describe('Bản thử đường vòng B trên Khởi Nguyên Trấn', () => {
     // đặc tả có Lão Canh thì đúng đường vòng B đã duyệt (bản thử)
     const inSpec = spec.npcs.find((p) => p.id === 'go-mo');
     if (inSpec) expect(inSpec.route).toEqual(DRAFT_GO_MO.route);
-    // Tiểu Khất trong đặc tả (2026-11-16) = đúng bản thử (vị trí, hướng, ngồi, cỡ)
+    // Tiểu Khất trong đặc tả (khi đưa lại — đang tạm gỡ, V-20261116-102) = đúng bản thử (vị trí, hướng, ngồi, cỡ)
     const kn = spec.npcs.find((p) => p.id === 'khat-nhi');
     if (kn) expect(kn).toEqual(DRAFT_KHAT_NHI);
     const ground = (x: number, z: number): number => world.surface.heightAt(x, z);

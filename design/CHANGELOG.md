@@ -3,6 +3,19 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-16.23 — Tạm gỡ Tiểu Khất (NPC `khat-nhi`) khỏi cảnh, chờ model mới
+
+- Loại: cảnh 3D — **bố cục** (bỏ NPC). Việc V-20261116-102; luật R-NPC-6 (đã sửa "tạm gỡ" + đồng bộ). Người dùng 2026-11-16:
+  "tạm thời hãy bỏ nhân vật này, có lẽ cần gen mô hình thiết kế lại" (model Tripo 2026-11-16.21 dáng ngồi lỗi, cỡ 0,8 quá nhỏ).
+- `scene/scene.json` `npcs`: bỏ mục `khat-nhi`. **Để đưa lại** (khi có model mới) chép lại đúng mục cũ:
+  `{ "id": "khat-nhi", "x": -10, "z": 14, "rotY": 110, "pose": "ngoi", "scale": 0.8 }` — góc tây nam Quảng Trường
+  (cũng là `DRAFT_KHAT_NHI` trong `web/src/scene/npcDraft.ts`); V-102 định nâng `scale` lên 1,0 cho bằng các NPC khác.
+- Giữ nguyên: `models/khat-nhi.glb`, `models/mat.json` mục `khat-nhi`, ảnh `models/anh/khat-nhi-*`; code dáng ngồi xin
+  (`xinDang.ts`), thoại / tin đồn / bố thí (`zones/alms.ts`, R-TIEN-8), `NPC_IDS`. Không có NPC trong đặc tả → app không dựng,
+  kênh chung không có câu Tiểu Khất (người nói lấy từ `npcs`). Canvas 3D: chỉ `?dang=go-mo` còn hiện bản thử (model thế).
+- `scene:check`: Không có lỗi.
+- File: `scene/scene.json`.
+
 ## 2026-11-16.21 — Tiểu Khất (NPC `khat-nhi`): model Tripo + vào cảnh góc tây nam Quảng Trường, ngồi xin cầm bát + gậy
 
 - Loại: tài nguyên 3D + cảnh 3D — **bố cục** (thêm NPC). Việc V-20261116-94; phiếu ảnh `docs/phieu_thiet_ke/2026-11-14-anh-khat-nhi.md`

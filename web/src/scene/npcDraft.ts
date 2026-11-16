@@ -6,7 +6,8 @@
 import type { NpcSpec } from './spec';
 
 // Tiểu Khất: góc tây nam Quảng Trường (người dùng chọn 2026-11-15 thay chỗ cũ (−6,2; 25,6) trước Tạp hoá) — đã vào đặc tả
-// 2026-11-16 (V-20261116-94); giữ cho test + `--thu-npc`, `townPreview.ts` bỏ bản thử khi đặc tả đã có
+// 2026-11-16 (V-20261116-94), tạm gỡ khỏi đặc tả cùng ngày chờ model mới (V-20261116-102, CHANGELOG 2026-11-16.23) — đưa
+// lại thì chép đúng mục này vào `npcs`; giữ cho test + `--thu-npc` + Canvas 3D `?dang=go-mo` (bản thử chỉ hiện khi có tham số)
 export const DRAFT_KHAT_NHI: NpcSpec = { id: 'khat-nhi', x: -10, z: 14, rotY: 110, pose: 'ngoi', scale: 0.8 };
 
 export const DRAFT_GO_MO: NpcSpec = {
