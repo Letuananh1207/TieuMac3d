@@ -19,6 +19,19 @@ Mức độ:
 
 ## Đang mở
 
+### L-17 · Cỏ mọc trên sàn gỗ tầng 1 trong trà lâu Phẩm Minh Các
+
+- Trạng thái: mới · Mức độ: nhỏ (lệch hình, không ảnh hưởng điều khiển) · Phần: cỏ hoa có gió (`scene/coHoa.ts`) ↔ vùng loại trừ trong nhà (`rooms`) · Quy tắc: chưa có
+- Báo: 2026-11-16 — subagent đặt tiểu nhị (V-84) thấy khi chụp; người dùng chọn ghi lỗi — "Cỏ (búi cỏ / lá) mọc trên sàn gỗ tầng 1 bên trong trà lâu Phẩm Minh Các… Đúng phải là: trong nhà không có cỏ."
+- Các bước: 1. Khởi Nguyên Trấn, vào trà lâu Phẩm Minh Các tầng 1 2. Đứng trước quầy trà nhìn vào trong
+- Mong đợi / thực tế: sàn gỗ trong nhà không có cỏ / vài búi cỏ, lá mọc xuyên sàn gỗ
+- Bằng chứng: `design/screens/Canh-tieu-nhi-noi-chuyen.png` (Canvas 3D, chụp headless); có từ trước việc đặt tiểu nhị
+
+**Sửa**
+
+**Lịch sử**
+- 2026-11-16: ghi.
+
 ### L-15 · `viec.dart gop` thay cả chữ mẫu `L-?1`, `L-?2` ở đầu docs/loi.md bằng số thật
 
 - Trạng thái: xong · Mức độ: nhỏ (công cụ; lần gộp sau cấp nhầm số, lệch đánh số) · Phần: `tool/viec.dart` (hàm cấp mã, dòng ~77) · Quy tắc: chưa có
