@@ -247,13 +247,13 @@ async function boot(): Promise<void> {
       if (box.checked) box.click();
     }
   }
-  // ?cam=x,y,z&tam=x,z — đặt camera nhìn vào một điểm (chụp chi tiết một nhà / vật)
+  // ?cam=x,y,z&tam=x,z[,y] — đặt camera nhìn vào một điểm (chụp chi tiết một nhà / vật; y thiếu = 1,5 — cận NPC ngồi: y thấp)
   const nums = (key: string): number[] => (params.get(key) ?? '').split(',').map(Number);
   const [cx, cy, cz] = nums('cam');
-  const [tx, tz] = nums('tam');
+  const [tx, tz, ty] = nums('tam');
   if ([cx, cy, cz, tx, tz].every(Number.isFinite)) {
     camera.position.set(cx, cy, cz);
-    controls.target.set(tx, 1.5, tz);
+    controls.target.set(tx, Number.isFinite(ty) ? ty : 1.5, tz);
   }
 
   // ?dang=go-mo — bản thử Tiểu Khất + Lão Canh (model thế nhan-vat.glb hoặc `&nhan-vat=<mã>` — playerModelUrl), đường vòng B, &gio=08:59:50, &theo (townPreview.ts)

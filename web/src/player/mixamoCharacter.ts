@@ -13,6 +13,7 @@ import { createGardenProps, type GardenProps } from './doLamVuon';
 import { DongTac, TINH, type Tinh, type TinhId } from './dongTac';
 import { isWork, PROP_OF, workPose } from './lamVuonDang';
 import type { MixamoRig } from './mixamoRig';
+import { tronXin } from './xinDang';
 
 /** Tay buông của nhân vật chính = góc chữ A đo từ xương trừ chừng này (rad) — tay sát thân nhưng không xuyên áo. */
 const ARM_DOWN_GAP = 0.06;
@@ -89,6 +90,8 @@ export function mixamoCharacter(
       // gõ mõ (R-NPC-8) / gảy đàn (R-NPC-9): đè hẳn dáng tay
       if (state?.strike !== undefined) tronDang7(pose, goMoDang(state.strike), 1, cal);
       if (state?.pluck !== undefined) tronDang7(pose, gayDanDang(state.pluck, time), 1, cal);
+      // ngồi xin (R-NPC-6): bát trước bụng, gậy chống đất bên trái — chỉ khi ngồi
+      if (state?.beg) tronXin(pose, dong.tinh.haTay, state.beg * ease(state.sit ?? 0));
       // biểu cảm (R-BIEU-2) / làm vườn (R-VUON-13): biểu cảm đang diễn thì thắng
       const wk = state?.work;
       const wp = !state?.emote && wk ? workPose(wk.id, wk.t, wk.len) : null;

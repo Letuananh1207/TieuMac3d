@@ -1,6 +1,6 @@
 # Phiếu: Bộ ảnh nhiều góc NPC Tiểu Khất, cậu bé ăn xin (đầu vào dựng model 3D bằng Hunyuan3D)
 
-- Trạng thái: chờ thiết kế
+- Trạng thái: đã dựng model (Tripo, 2026-11-16) — `design/models/khat-nhi.glb`, CHANGELOG 2026-11-16.21
 - Đã vẽ: 2026-11-15.2 (đổi hướng: đứa trẻ tóc rối bù xoã không dây, mặt hơi buồn, CẦM bát sứ trắng nứt + chống gậy cành cây — thay "tay không, cười láu lỉnh"; ảnh lật: bát tay phải, gậy tay trái)
 - Hồ sơ khảo cứu: `docs/tham_khao/khat-nhi-go-mo.md`, hướng A "cậu bé lanh lợi, áo vá nhiều màu" (Claude chọn, một bước)
 - Đợi bởi: `/tai-nguyen nhan-vat khat-nhi` (dựng `design/models/khat-nhi.glb`, 8 000 tam giác). Kế hoạch

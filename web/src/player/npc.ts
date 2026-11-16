@@ -46,6 +46,9 @@ export const NPC_TINH: Readonly<Record<string, TinhId>> = {
   'tran-su': 'nghiem',
 };
 
+/** NPC ngồi xin (R-NPC-6): model cầm sẵn bát + gậy → dáng tay `xinDang.ts` khi ngồi. */
+const NPC_XIN: readonly string[] = ['khat-nhi'];
+
 export interface Npc {
   /** mã NPC (đặc tả cảnh `npcs[].id`) — dùng tra hội thoại */
   readonly id: string;
@@ -83,7 +86,7 @@ export async function createMovingNpc(spec: NpcSpec, url: string): Promise<Movin
   character.root.scale.setScalar(spec.scale ?? 1);
   character.facing.rotation.y = THREE.MathUtils.degToRad(spec.rotY ?? 0);
   const motion = { mps: 0, sit: spec.pose === 'ngoi' ? 1 : 0 } as MovingNpc['motion'];
-  const state: CharacterState = { mps: 0, air: false, vy: 0, sit: 0, bow: 0, idle: 0 };
+  const state: CharacterState = { mps: 0, air: false, vy: 0, sit: 0, bow: 0, idle: 0, beg: NPC_XIN.includes(spec.id) ? 1 : undefined };
   return {
     id: spec.id,
     spec,

@@ -72,6 +72,9 @@ describe('Bản thử đường vòng B trên Khởi Nguyên Trấn', () => {
     // đặc tả có Lão Canh thì đúng đường vòng B đã duyệt (bản thử)
     const inSpec = spec.npcs.find((p) => p.id === 'go-mo');
     if (inSpec) expect(inSpec.route).toEqual(DRAFT_GO_MO.route);
+    // Tiểu Khất trong đặc tả (2026-11-16) = đúng bản thử (vị trí, hướng, ngồi, cỡ)
+    const kn = spec.npcs.find((p) => p.id === 'khat-nhi');
+    if (kn) expect(kn).toEqual(DRAFT_KHAT_NHI);
     const ground = (x: number, z: number): number => world.surface.heightAt(x, z);
     const route = DRAFT_GO_MO.route!;
     const problems = checkRoute('go-mo', route, colliders, ground);
@@ -87,5 +90,14 @@ describe('Bản thử đường vòng B trên Khởi Nguyên Trấn', () => {
     expect(len).toBeGreaterThan(160);
     expect(len).toBeLessThan(200);
     expect(Math.abs(DRAFT_KHAT_NHI.x - -2.5)).toBeGreaterThan(3);
+    // Tiểu Khất ngồi cách mọi đoạn đường Lão Canh ≥ 1,5 m (không chắn lối, hai NPC không chạm nhau)
+    const segDist = ([ax, az]: XZ, [bx, bz]: XZ): number => {
+      const dx = bx - ax;
+      const dz = bz - az;
+      const t = Math.max(0, Math.min(1, ((DRAFT_KHAT_NHI.x - ax) * dx + (DRAFT_KHAT_NHI.z - az) * dz) / (dx * dx + dz * dz)));
+      return Math.hypot(DRAFT_KHAT_NHI.x - (ax + dx * t), DRAFT_KHAT_NHI.z - (az + dz * t));
+    };
+    const nearest = Math.min(...route.map((p, i) => segDist(p, route[(i + 1) % route.length])));
+    expect(nearest).toBeGreaterThanOrEqual(1.5);
   }, 120_000);
 });

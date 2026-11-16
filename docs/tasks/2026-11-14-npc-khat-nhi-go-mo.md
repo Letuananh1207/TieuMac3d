@@ -1,7 +1,7 @@
 # NPC khất nhi + người gõ mõ báo giờ
 - Yêu cầu: "tôi cần thêm 2 nhân vật là NPC Ăn mày khất nhi, gõ mõ báo giờ đi quanh map"
 - Việc: V-20261114-31 · nhánh `viec/npc-khat-nhi-mo`
-- Loại: thêm (NPC, luật tiền, âm thanh, cầu nối) · Cỡ: lớn · Trạng thái: đang làm (trước model) — phần hình chờ thiết kế: phiếu ảnh
+- Loại: thêm (NPC, luật tiền, âm thanh, cầu nối) · Cỡ: lớn · Trạng thái: đang làm (hai model đã vào cảnh — còn NV14, NV15; NV11 Lão Canh xem 2026-11-16.10) — phần hình chờ thiết kế: phiếu ảnh
   `2026-11-14-anh-khat-nhi`, `2026-11-14-anh-go-mo`
 - Người dùng đã chọn: ngoại hình **chờ model AI** (bộ ảnh 4 góc → Hunyuan3D trên máy người dùng), **không dựng khối tạm
   trong cảnh app**. Khất nhi ngồi một chỗ, xin Văn tiền mỗi ngày một lần, cho thì được mẹo / tin đồn. Người gõ mõ đi vòng
@@ -203,10 +203,14 @@ Canvas 3D `?dang=go-mo`, **không** đưa vào cảnh app):
 
 **Sau khi có model** (`design/models/khat-nhi.glb`, `go-mo.glb` từ `/task tai-nguyen` trên máy người dùng):
 - [ ] 11. Đo dáng hai model → `NPC_RIGS` (xương tự gắn); Tiểu Khất `scale` 0,8 + dáng ngồi; Lão Canh dáng đi + gõ (`player/npc.ts`, `glbCharacter.ts` · chụp headless 6 góc · xong khi không rách tay / vạt áo)
+  — **Tiểu Khất xong** 2026-11-16 (V-20261116-94): model Tripo xương Mixamo (không cần `NPC_RIGS`), `scale` 0,8 + dáng ngồi;
+  dáng tay ngồi xin riêng `player/xinDang.ts` (bát trước bụng, gậy chống đất) vì model cầm sẵn bát + gậy. Lão Canh: CHANGELOG 2026-11-16.10.
 - [ ] 12. Đạo cụ bằng code: bát + gậy (Tiểu Khất), mõ + dùi gắn xương tay, đèn lồng hông sáng ban đêm (theo ngày đêm V-27, chưa có thì luôn tắt) (`scene/` hoặc `player/` · draw call +2 · xong khi ảnh khớp ảnh `-dao-cu.png`)
-- [ ] 13. `/canh`: thêm 2 NPC vào `npcs` của `design/scene/scene.json` (vị trí Tiểu Khất, `route` Lão Canh) → `scene:check` (design · xong khi CHANGELOG có mục mới)
+  — **Tiểu Khất: bỏ** (bộ ảnh 2026-11-15.2 vẽ bát + gậy trong tay → nằm trong model; không dựng bằng code, không có hai bát).
+- [x] 13. `/canh`: thêm 2 NPC vào `npcs` của `design/scene/scene.json` (vị trí Tiểu Khất, `route` Lão Canh) → `scene:check` (design · xong khi CHANGELOG có mục mới)
   — **Lão Canh xong** 2026-11-16 (V-20261116-84, CHANGELOG 2026-11-16.11: vòng B nguyên bản, 176,3 m, 160 s / vòng, hợp lệ);
-  Tiểu Khất chờ model (`khat-nhi.glb`) + chọn góc Quảng Trường.
+  — **Tiểu Khất xong** 2026-11-16 (V-20261116-94, CHANGELOG 2026-11-16.21): góc tây nam Quảng Trường (−10; 14) `rotY` 110, ngồi, cỡ 0,8;
+  `npcDraft.ts` dời theo (test `routeCheck.test.ts` kiểm đặc tả = bản thử, cách đường Lão Canh ≥ 1,5 m). Nội dung R-NPC-6 (chỗ ngồi, bát / gậy) chưa sửa theo — chờ người dùng duyệt rồi `/dong-bo-quy-tac`.
 - [ ] 14. Ảnh mặt cho khung thoại (`-mat.png` của bộ ảnh) (`main.ts` / thoại · xong khi khung thoại có mặt hai NPC)
 - [ ] 15. `npm run build`, thử máy: nghe mõ trên Android (WebView chặn tự phát), app xuống nền thì im, đo fps khi hai NPC cùng hiện
 

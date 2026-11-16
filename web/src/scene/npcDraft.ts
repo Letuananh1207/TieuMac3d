@@ -5,7 +5,9 @@
  */
 import type { NpcSpec } from './spec';
 
-export const DRAFT_KHAT_NHI: NpcSpec = { id: 'khat-nhi', x: -6.2, z: 25.6, rotY: 90, pose: 'ngoi', scale: 0.8 };
+// Tiểu Khất: góc tây nam Quảng Trường (người dùng chọn 2026-11-15 thay chỗ cũ (−6,2; 25,6) trước Tạp hoá) — đã vào đặc tả
+// 2026-11-16 (V-20261116-94); giữ cho test + `--thu-npc`, `townPreview.ts` bỏ bản thử khi đặc tả đã có
+export const DRAFT_KHAT_NHI: NpcSpec = { id: 'khat-nhi', x: -10, z: 14, rotY: 110, pose: 'ngoi', scale: 0.8 };
 
 export const DRAFT_GO_MO: NpcSpec = {
   id: 'go-mo',

@@ -3,6 +3,33 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-16.21 — Tiểu Khất (NPC `khat-nhi`): model Tripo + vào cảnh góc tây nam Quảng Trường, ngồi xin cầm bát + gậy
+
+- Loại: tài nguyên 3D + cảnh 3D — **bố cục** (thêm NPC). Việc V-20261116-94; phiếu ảnh `docs/phieu_thiet_ke/2026-11-14-anh-khat-nhi.md`
+  (→ "đã dựng model (Tripo, 2026-11-16)"), kế hoạch `docs/tasks/2026-11-14-npc-khat-nhi-go-mo.md` (NV11–13). Phiên VS Code (subagent) làm thay `/canh`.
+- Model: `models/khat-nhi.glb` — Tripo H3.1 Multiview 4 ảnh → rig Mixamo → `tripo.sh` → `model:clean --khong-sang` (15 592 tam giác, 296 KB); ảnh so
+  `screens/Model-khat-nhi-so-thiet-ke.png` khớp bộ ảnh 2026-11-15.2; giấy phép `models/LICENSES.md`. Tính cách dáng (R-NPC-10) giữ `hoat-bat`.
+- **Bát + gậy nằm trong model** (bát tay phải, gậy tay trái — theo bộ ảnh 2026-11-15.2); code không dựng bát / gậy riêng (NV12 cũ "đạo cụ bằng code"
+  bỏ — không có hai cái bát). Ngồi xếp bằng bằng dáng ngồi chung thì tay đặt lên gối → bát giơ ngang vai, gậy chĩa ngang ra trước. Thêm **dáng tay ngồi xin**
+  riêng cho NPC này (`web/src/player/xinDang.ts`, như gõ mõ / gảy đàn): tay phải gập vừa → bát ngửa trước bụng; tay trái dạng ra, cẳng tay gập lên,
+  cổ tay bẻ ngược → gậy dựng chéo ra trước bên trái, đầu gậy chạm đất (không xuyên đất, không xuyên chân — ảnh bên trái).
+- `scene/scene.json` `npcs` thêm `{ id: khat-nhi, x: −10, z: 14, rotY: 110, pose: ngoi, scale: 0,8 }`: **góc tây nam Quảng Trường** (người dùng chọn
+  2026-11-15 khi bỏ chỗ trước Tạp hoá — mục 2026-11-15.5; góc này để dành từ 2026-11-15.23), mặt nhìn đông chếch bắc ra lối từ cổng nam vào.
+  Khoảng cách: Tiểu Mặc (−4,4; 19) 7,5 m · bảng nhiệm vụ (−7,5; 18,8) 5,4 m (ngoài tường) · Kỳ Muội (−21; 7) 13 m · cửa Tạp hoá ≈ 16 m → nút
+  "Nói chuyện" (2,5 m) không trùng "Nói chuyện" Tiểu Mặc, "Xem bảng", "Vào tiệm"; đường Lão Canh (đoạn (−2,5; 18) → (−8; 10)) gần nhất 3,9 m (≥ 1,5);
+  tùng (−13,5; 11) 4,6 m; cổng nam (lối x −4,5 … 4,5) không bị chắn. Nền lát phẳng — ngồi đúng mặt đất (ảnh).
+- Luật: **R-NPC-6** — sổ còn ghi "ven đường Cổng Trấn, chéo trước cửa Tạp hoá … bát gỗ đặt trước mặt, gậy trúc dựng bên cạnh"; cảnh nay theo quyết
+  định người dùng 2026-11-15 (góc Quảng Trường) + bộ ảnh 2026-11-15.2 (bát sứ mẻ cầm tay phải, gậy cành cây tay trái). **Chưa sửa nội dung luật** —
+  phiên chính hỏi người dùng rồi sửa + `/dong-bo-quy-tac`. Chỉ đổi cột App → `ok`.
+- `scene:check`: Không có lỗi (`NPC khat-nhi: (-10; 14) nhìn 110° · ngồi · cỡ 0,8`; đường Lão Canh vẫn hợp lệ). Ngân sách: +1 NPC Tripo ≈ 15,6k tam giác
+  (ẩn khi cách > 35 m — R-NPC-1); đo ở lối vào Quảng Trường: 93 draw call · 202 848 tam giác — tam giác **đã vượt 150k từ trước** (các NPC / nhà Tripo),
+  việc này thêm ≈ 15,6k; nên xem lại ngân sách tam giác chung (việc riêng).
+- Canvas 3D: `?tam=x,z,y` nhận thêm độ cao điểm nhìn (chụp cận NPC ngồi). `?dang=go-mo` không còn bản thử Tiểu Khất (đặc tả đã có).
+- Ảnh (Canvas 3D bản build trong worktree, chưa đăng lại): `screens/Canh-khat-nhi-loi-vao.png` (vừa qua cổng nam vào Quảng Trường, cậu ngồi bên trái),
+  `screens/Canh-khat-nhi-can.png` (cận trước mặt: bát, gậy, dáng ngồi), `screens/Canh-khat-nhi-ben-trai.png` (bên trái: gậy chạm đất).
+- File: `models/khat-nhi.glb`, `models/LICENSES.md`, `scene/scene.json`, 4 ảnh `screens/`; code `web/src/player/{xinDang.ts,npc.ts,mixamoCharacter.ts,character.ts}`,
+  `web/src/scene/npcDraft.ts`, `web/src/designPreview.ts`.
+
 ## 2026-11-16.16 — Kỳ Muội (NPC `quan-su`): model Tripo + vào cảnh Kỳ Văn Uyển + đổi tên
 
 - Loại: tài nguyên 3D + cảnh 3D — **bố cục** (thêm NPC) + luồng/luật (tên, xưng hô). Việc V-20261116-92; phiếu ảnh `docs/phieu_thiet_ke/2026-11-13-anh-quan-su.md`
