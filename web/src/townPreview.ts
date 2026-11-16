@@ -3,6 +3,8 @@
  * `scene/npcDraft.ts` (chưa có trong đặc tả) bằng model thế `nhan-vat.glb`, vẽ đường vòng B + số thứ tự điểm, chạy đúng
  * `townNpcs.ts` như app (đi theo đồng hồ, dừng đầu giờ gõ mõ + rao). Chỉ trang thiết kế dùng, không vào app.
  * Thêm: `&gio=08:59:50` ép giờ bắt đầu · `&theo` camera bám Lão Canh.
+ * NPC đã có trong đặc tả (vd. Lão Canh từ 2026-11-16) thì không thêm bản thử mà lái chính NPC đó — kể cả không có
+ * `?dang=go-mo` (như app: `&gio`, `&theo` dùng được ở mọi trang); đường vẽ + toạ độ điểm vẫn chỉ ở `?dang=go-mo`.
  */
 import * as THREE from 'three';
 import type { Colliders } from './collision/colliders';
@@ -11,6 +13,7 @@ import { playerModelUrl } from './player/playerCharacter';
 import { DRAFT_TOWN_NPCS } from './scene/npcDraft';
 import type { SceneSpec } from './scene/spec';
 import { GO_MO, TownNpcs } from './townNpcs';
+import { KHAT_NHI } from './zones/alms';
 import { routeLength } from './scene/routeCheck';
 
 export interface TownPreview {
@@ -23,27 +26,32 @@ export interface TownPreview {
 
 const n = (v: number): string => String(+v.toFixed(2)).replace('.', ',');
 
-/** `?dang=go-mo` → dựng bản thử; khác → `null`. */
+/** `?dang=go-mo` → dựng bản thử (NPC đặc tả chưa có); đặc tả có NPC của `townNpcs.ts` → lái NPC đó; không có gì → `null`. */
 export async function addTownPreview(
   scene: THREE.Scene,
   colliders: Colliders,
   spec: SceneSpec,
   groundAt: (x: number, z: number) => number,
   params: URLSearchParams,
+  /** NPC đặc tả đã dựng (designPreview — `placeNpcs(spec.npcs)`); đi / ngồi thì `TownNpcs` lái, cử động do trang gọi */
+  placed: readonly Npc[] = [],
 ): Promise<TownPreview | null> {
-  if (params.get('dang') !== 'go-mo') return null;
-  const drafts = DRAFT_TOWN_NPCS.filter((d) => !spec.npcs.some((p) => p.id === d.id));
+  const show = params.get('dang') === 'go-mo';
+  const fromSpec = placed.filter((p) => p.id === GO_MO || p.id === KHAT_NHI);
+  if (!show && !fromSpec.length) return null;
+  const drafts = show ? DRAFT_TOWN_NPCS.filter((d) => !spec.npcs.some((p) => p.id === d.id)) : [];
   const { npcs, problems } = await placeNpcs(scene, colliders, drafts, groundAt, playerModelUrl(params.get('nhan-vat')));
   const lines = [...problems];
-  const go = drafts.find((d) => d.id === GO_MO);
+  const go = show ? (spec.npcs.find((p) => p.id === GO_MO) ?? drafts.find((d) => d.id === GO_MO)) : undefined;
   if (go?.route) {
+    const nguon = drafts.includes(go) ? 'bản thử' : 'đặc tả';
     addRouteLine(scene, go.route, groundAt);
-    lines.push(`Vòng B (bản thử): ${go.route.length} điểm, dài ${n(routeLength(go.route, groundAt))} m, ${n(go.speed ?? 1.1)} m/s`);
+    lines.push(`Vòng B (${nguon}): ${go.route.length} điểm, dài ${n(routeLength(go.route, groundAt))} m, ${n(go.speed ?? 1.1)} m/s`);
     go.route.forEach(([x, z], i) => lines.push(`  ${i}: (${n(x)}; ${n(z)})`));
   }
   const toast = makeToast();
   const town = new TownNpcs(
-    npcs,
+    [...fromSpec, ...npcs],
     {
       bridge: { giveAlms: async () => null },
       trial: null,
@@ -56,13 +64,13 @@ export async function addTownPreview(
     },
     params.get('gio'),
   );
-  const walker = npcs.find((x) => x.id === GO_MO) ?? null;
+  const walker = [...fromSpec, ...npcs].find((x) => x.id === GO_MO) ?? null;
   return {
     walker,
     lines,
     update(dt, camera, listener) {
       town.update({ dt, player: listener, camera, talkingTo: null, covered: false });
-      for (const x of npcs) x.update(dt);
+      for (const x of npcs) x.update(dt); // bản thử; NPC đặc tả do trang cập nhật
     },
   };
 }

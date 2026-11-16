@@ -252,7 +252,8 @@ async function boot(): Promise<void> {
   }
 
   // ?dang=go-mo — bản thử Tiểu Khất + Lão Canh (model thế nhan-vat.glb hoặc `&nhan-vat=<mã>` — playerModelUrl), đường vòng B, &gio=08:59:50, &theo (townPreview.ts)
-  const town = await addTownPreview(scene, colliders, spec, (x, z) => world.surface.heightAt(x, z), params);
+  // Lão Canh đã có trong đặc tả → đi theo đồng hồ như app ở mọi trang (`&gio`, `&theo` dùng được không cần ?dang=go-mo)
+  const town = await addTownPreview(scene, colliders, spec, (x, z) => world.surface.heightAt(x, z), params, npcSet.npcs);
   if (town?.lines.length) el('problems').append(...town.lines.map((t) => li(t)));
   // ?dang=vuon-rau — vườn rau điền sẵn + bảng mẫu 8 cây × 4 dáng (vuonPreview.ts, R-VUON-4)
   // ?dang=dan-tranh — nhạc công thế (nhan-vat.glb hoặc `&nhan-vat=<mã>`; artifact không có .glb → đệ tử khối đứng) ngồi gảy trên bục đàn + tiếng đàn, để duyệt chỗ (R-NPC-9, R-AM-2)

@@ -3,6 +3,32 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-16.11 — Khởi Nguyên Trấn: Lão Canh vào cảnh (đường vòng B)
+
+- Loại: cảnh 3D — **bố cục** (NPC biết đi). Phiên code V-20261116-84 làm thay việc `/canh` (kế hoạch
+  `docs/tasks/2026-11-14-npc-khat-nhi-go-mo.md` NV13, phần Lão Canh). Luật R-NPC-7, R-NPC-8, R-NPC-10. Model
+  `models/go-mo.glb` (mục 2026-11-16.10).
+- `design/scene/scene.json` `npcs` thêm `go-mo`: chép **nguyên** bản thử đã duyệt `DRAFT_GO_MO` (`web/src/scene/npcDraft.ts`) —
+  chỗ dự phòng (2,5; 44) `rotY` 180°, `speed` 1,1, `route` 15 điểm: (2,5; 44) → (−2,5; 44) → (−2,5; 18) → (−8; 10) → (−8; −8)
+  → (−2,5; −14) → (−2,5; −19) → **quay đầu ở đỉnh Thiên Bậc** (−1,5; −35) → (1,5; −35) → (1,5; −20) → (2,5; −14) → (8; −8) →
+  (8; 8) → (2,5; 14) → (2,5; 18) → về đầu nam (2,5; 44) (quay đầu trước cổng xuống núi). Không chỉnh đường.
+- Khoảng cách (tâm NPC → đoạn đường gần nhất): trận sư (−7; −39,2) **6,9 m** (tại chỗ quay đầu (−1,5; −35); ≥ 1,5 m),
+  Mặc Ông (6,5; −38,5) 6,1 m, **Tiểu Mặc (−4,4; 19) 1,9 m** (làn tây z 19 — hở 1,0 m giữa hai vòng va chạm 0,45, máy kiểm đạt
+  ≥ 0,6 m; như bản thử đã duyệt), thủ thư 29 m, tiểu nhị 41 m. Bục đàn Cầm Nương (x 6,8 … 10,2, z 13 … 15,6) không vướng
+  (đoạn (8; 8) → (2,5; 14) qua z 13 ở x ≈ 3,4).
+- `scene:check`: Không có lỗi — `đường đi go-mo: 15 điểm, dài 176,3 m, 1,1 m/s → 160 s / vòng — hợp lệ (khép kín, cách vật
+  cản ≥ 0,6 m, trên nền, dốc ≤ 35°)` (bản thử NV4 đo 191,8 m trước khi cảnh đổi bậc / cổng). Thêm 1 model ~15 300 tam giác,
+  1 draw call (+ đạo cụ mõ).
+- Code kèm (nhỏ): Canvas 3D lái Lão Canh **của đặc tả** theo đồng hồ như app ở mọi trang (`&gio=…` dùng được không cần
+  `?dang=go-mo`; `?dang=go-mo` vẽ đường của đặc tả, bản thử chỉ còn Tiểu Khất) — `web/src/townPreview.ts`, `designPreview.ts`;
+  test `scene/routeCheck.test.ts` không coi NPC biết đi là vật cản đứng (như `check-scene.mjs`) + kiểm đặc tả = vòng B đã duyệt.
+  Bản thử `DRAFT_GO_MO` giữ nguyên (test + `--thu-npc` dùng). Tiểu Khất chưa có model → vẫn bản thử.
+- Thấy thêm: `&theo` (camera bám) lệch vì lấy vị trí đứng dự phòng (2,5; 44) làm gốc trước khi ông nhảy về chỗ theo giờ —
+  ảnh dưới chụp bằng `&cam` + toạ độ tính trước.
+- Ảnh: `screens/Canh-go-mo-1005.png` (10:05, ông trên lối Cổng Trấn đi về đầu nam), `screens/Canh-go-mo-0900.png` (08:59:56,
+  qua cổng "Lên Đài truyền tống" sắp tới đầu giờ), `screens/Canh-go-mo-bac.png` (lên Thiên Bậc, đứng đúng mặt bậc),
+  `screens/Canh-go-mo-can.png` (cận, 09:00:03 dừng trên bậc giơ mõ gõ báo giờ; trận sư trên đỉnh).
+
 ## 2026-11-16.10 — Nhân vật chính, Cầm Nương, Lão Canh bản Tripo (xương Mixamo, động tác đợt 2)
 
 - Loại: tài nguyên 3D (`/tai-nguyen`, luồng Tripo). Sau khi gộp động tác đợt 2 (`docs/tasks/2026-11-16-dong-tac-dot-2.md`,

@@ -205,6 +205,8 @@ Canvas 3D `?dang=go-mo`, **không** đưa vào cảnh app):
 - [ ] 11. Đo dáng hai model → `NPC_RIGS` (xương tự gắn); Tiểu Khất `scale` 0,8 + dáng ngồi; Lão Canh dáng đi + gõ (`player/npc.ts`, `glbCharacter.ts` · chụp headless 6 góc · xong khi không rách tay / vạt áo)
 - [ ] 12. Đạo cụ bằng code: bát + gậy (Tiểu Khất), mõ + dùi gắn xương tay, đèn lồng hông sáng ban đêm (theo ngày đêm V-27, chưa có thì luôn tắt) (`scene/` hoặc `player/` · draw call +2 · xong khi ảnh khớp ảnh `-dao-cu.png`)
 - [ ] 13. `/canh`: thêm 2 NPC vào `npcs` của `design/scene/scene.json` (vị trí Tiểu Khất, `route` Lão Canh) → `scene:check` (design · xong khi CHANGELOG có mục mới)
+  — **Lão Canh xong** 2026-11-16 (V-20261116-84, CHANGELOG 2026-11-16.11: vòng B nguyên bản, 176,3 m, 160 s / vòng, hợp lệ);
+  Tiểu Khất chờ model (`khat-nhi.glb`) + chọn góc Quảng Trường.
 - [ ] 14. Ảnh mặt cho khung thoại (`-mat.png` của bộ ảnh) (`main.ts` / thoại · xong khi khung thoại có mặt hai NPC)
 - [ ] 15. `npm run build`, thử máy: nghe mõ trên Android (WebView chặn tự phát), app xuống nền thì im, đo fps khi hai NPC cùng hiện
 

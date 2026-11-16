@@ -66,8 +66,12 @@ describe('Bản thử đường vòng B trên Khởi Nguyên Trấn', () => {
     const spec = loadScene(HOME_SCENE).spec;
     const colliders = new Colliders();
     const world = buildWorld(new THREE.Scene(), colliders, spec);
-    for (const p of spec.npcs) colliders.addCircle(p.x, p.z, 0.45);
+    // NPC đứng là vật cản; NPC có đường đi (Lão Canh đã vào đặc tả 2026-11-16) thì không — như `check-scene.mjs`
+    for (const p of spec.npcs) if (!p.route) colliders.addCircle(p.x, p.z, 0.45);
     colliders.addCircle(DRAFT_KHAT_NHI.x, DRAFT_KHAT_NHI.z, 0.45);
+    // đặc tả có Lão Canh thì đúng đường vòng B đã duyệt (bản thử)
+    const inSpec = spec.npcs.find((p) => p.id === 'go-mo');
+    if (inSpec) expect(inSpec.route).toEqual(DRAFT_GO_MO.route);
     const ground = (x: number, z: number): number => world.surface.heightAt(x, z);
     const route = DRAFT_GO_MO.route!;
     const problems = checkRoute('go-mo', route, colliders, ground);
