@@ -1128,3 +1128,78 @@ Mẫu một mục:
 - Luật: `R-ON-8`, `R-DIEU-7`, `R-VA-4`, `R-SACH-2`, `R-SACH-3`, `R-NV-3`, `R-HANH-8`, `R-HUD-4`; đề xuất mới ở CHANGELOG 2026-11-16.12.
 - Ảnh: chưa có ảnh. Nền giữ chỗ: ảnh Canvas 3D quảng trường + bãi hạc Trúc Lâm (còn nhân vật đứng — chưa có `?dang=ngoi-mat`),
   nội thất Tàng Thư Các vẽ tay.
+
+## Trúc Lâm — Lưu Thương Lệnh, Hái măng, Đàn cầm (HUD) + ngăn Lâm sản Túi đồ · artboard `LuuThuong-*` (15), `HaiMang-*` (8), `BanMang-*` (6), `TuiDo-lam-san-*` (4), `DanCam-*` (10), `CachChoi-doc-{luu-thuong,hai-mang,dan-cam}.dc.html`, `TrucLam-nut-trang-thai.dc.html`, `TrucLam-ghi-chu.dc.html` · từ mục 2026-11-16.13
+
+- Phiếu `docs/phieu_thiet_ke/2026-11-15-truc-lam-mini-game.md`, kế hoạch `docs/tasks/2026-11-15-truc-lam-mini-game.md`. Luật `R-LUU-1…5`,
+  `R-MANG-1…5`, `R-CAM-1…4`, `R-TIEN-3/5`, `R-TUI-1`, `R-THANH-1`, `R-NPC-2`, `R-HUD-4`. Mỗi màn chính: dọc 390 × 844, ngang 844 × 390, máy tính
+  1280 × 800 (phím tắt dạng phím chữ nổi, ô trò chuyện góc trái dưới, không joystick).
+- **Đang chơi** (ngồi tiệc, ngồi đàn, bảng bán): ẩn thanh công cụ, joystick, cụm nút, bản đồ nhỏ, ví (R-THANH-1). Thẻ măng chữ: ẩn joystick +
+  cụm nút, giữ bản đồ nhỏ + ví + thanh. Hái măng (đi lại): HUD thường đủ.
+
+### Lưu Thương Lệnh
+- **Vào**: thoại Thi Ông (khung thoại có sẵn) "Dự tiệc Lưu Thương" · "Cách chơi" · "Thôi"; chưa đủ 3 bộ → lời Thi Ông + "Vâng" (`LuuThuong-doc-vao`,
+  `-doc-chua-du`). Gợi ý: đang ngồi nghỉ ở đệm Khúc Thuỷ → nút nổi "Dự tiệc" (đĩa chén) trên đầu Thi Ông.
+- **Khung chung** — dọc: "Rời tiệc" (viên 44, như Rời bàn) trái + viên "Lượt n / 8" phải, trên 55; hàng **4 thẻ điểm** trên 109 (mỗi thẻ cao 56:
+  chân dung 28 + điểm Lora 20 `jade` hàng trên, tên 11/700 hàng dưới; tới lượt viền `jade` 2; vừa ghi điểm quầng `gold` + nhãn "+1"). Ngang:
+  Rời tiệc trái 59 trên 12, thẻ điểm cột trái rộng 150 (cao 48: chân dung 30 · tên 11,5/700 · điểm Lora 20), tiến độ phải trên 12. Máy: Rời tiệc +
+  phím Esc trái 24, tiến độ giữa trên 24, thẻ điểm cột trái 190.
+- **Chấm tiến độ** 8: lượt mình 12, văn nhân 8; đúng `jade` / sai `lacquer` (văn nhân 55 %); chưa tới `slate` 18 %; lượt đang tới trắng viền vàng.
+- **Chén đang trôi**: viên lượt (đĩa chén 26 + "Chén lệnh đang trôi" + 3 chấm nhấp nháy) giữa dưới, không che mương; chén lệnh có quầng vàng (vật 3D).
+- **Thẻ câu ghép chữ** (giấy hoa tiên `map-paper` chuyển sáng, bo 16, viền gỗ 22 %, lá trúc mờ 14 % góc phải; dọc trái / phải 12 dưới 46;
+  ngang cột phải 352 trên 64; máy phải 48 trên 150 rộng 470):
+  - đầu "Ghép bộ thủ thành chữ" 14/700 (biểu tượng bút);
+  - **khung ghép** vuông 124 (ngang 104, máy 140), nền #FBF6EA, viền gỗ 30 % + chỉ vàng trong, lưới chữ 米 son mờ. Phần còn lại in đúng chỗ:
+    trái – phải nén ngang 62 % đặt 56 % bên phải; trên – dưới nén dọc 72 % đặt 64 % dưới; bao: phần trong 40 % giữa. **Ô bộ thủ trống** = khung nét
+    đứt `jade` 2, nền `jade` 7 % (bao: khung ∩ mở đáy). Bên phải: "Nghĩa · âm" 11/700 · nghĩa 22/700 · pinyin Lora 15 `jade` · "Chọn bộ thủ còn thiếu" 12;
+  - **thời gian**: vạch 4 (`slate` 10 %), phần còn `jade` 50 % ngắn dần + "n giây" 11/700 `slate-muted`; ≤ 5 giây: `jade` đặc, số `slate`. Không đỏ;
+  - **4 ô bộ thủ** thẻ trúc (`bamboo-slip`, bo 10, cao `size.radical-tile` 74 / 62 / 84): bộ thủ 40 % chiều cao + âm Hán Việt 12/700; chạm là chọn;
+    máy: phím 1–4 góc trên trái ô.
+- **Đúng**: khung hiện chữ đầy đủ `jade` 78 %, bên phải "Chữ đầy đủ" · "河 hà" · "hé — sông"; ô đúng nền `answer-right-bg`-đặc #E3EBE4 viền `jade` + ✓,
+  ô khác mờ 50 %; viên "Đúng rồi! +1 điểm" (viên báo Đấu chữ) trên thẻ. **Sai / hết giờ**: ô chọn viền `lacquer` + ×, ô đúng ✓, chữ đầy đủ;
+  viên **"Uống phạt một chén!"** nền vàng nhạt viền `gold`, chữ `slate`, hình chén son viền vàng (vui, không trách).
+- **Lượt văn nhân**: viên "Tú Tài đang nghĩ" (chân dung 26 + 3 chấm); bong bóng "…" trên đầu NPC; thẻ câu thu nhỏ (khung 104, ô 62, cách mép 28),
+  mờ 72 %, đầu "Câu của Tú Tài" + "chạm không có gì"; chọn xong: huy hiệu chân dung 22 trên ô NPC chọn + viên "Tú Tài đúng · +1".
+- **Kết quả ván** (Thẻ kết quả ván mở rộng): chân dung Thi Ông 56 + tên nhô trên; "Hạng nhất" 24/700 `jade` (+ ấn son **"Thi khôi"** khi hạng nhất một
+  mình) + "n điểm"; **bảng xếp hạng 4 dòng** cao 38 (hạng Lora 15 · chân dung 26 · tên 14/700 · điểm Lora 17; dòng mình nền `jade` 10 % viền 1,5;
+  bằng điểm cùng hạng); lời Thi Ông 15; thưởng xu 20 + "+8 Văn tiền" hoặc "Hôm nay trò chơi đã đủ thưởng" xám; "Ván mới" (`jade`) · "Rời tiệc".
+  Trạng thái: hạng nhất · đồng hạng nhất (+5) · hạng tư (+3) · đủ trần (`LuuThuong-ket-qua-trang-thai`).
+
+### Hái măng · bán măng · Lâm sản
+- **Nút "Hái"** (Nút nổi luống): viên `jade` 46, đĩa giấy 34 vẽ búp măng, "Hái" 15/700, mũi nhọn xuống măng gần nhất (< 1,5 m). Măng to: viền `gold` 2 +
+  quầng vàng + nhãn "Măng to" (nền `gold`, chữ `slate` 11/800) trên nút. Máy: phím E trong nút + dải "E hái măng gần nhất · WASD đi".
+- **Nhãn bay** "+1 Măng" / "+1 Măng to": viên kính 32, búp măng 22 + chữ 14/800 `jade` (măng to viền vàng); bay lên 40 px 0,9 s rồi mờ; không xu.
+- **Chip lứa măng** (chỉ ở Trúc Lâm, dưới bản đồ nhỏ: dọc trái 16 trên 169 · ngang trái 59 trên 112 · máy trái 24 trên 156): viên kính 34, chữ 12,5/700:
+  "Măng hôm nay · đã hái n / m" · "Lứa chiều nhú sau mưa · 15:00" · "Đang mưa phùn — măng sắp nhú" · "Đã hái hết · Mai măng lại nhú".
+- **Thẻ măng chữ**: tấm kính .96 bo 16 (dọc trái / phải 24 dưới 116; ngang giữa rộng 320), cảnh tối 12 %: vỏ măng 104 × 120 (bộ thủ khắc 44 nâu
+  #6E4A22, bóng khắc) + "Măng chữ · măng to" 11 · "Bộ này nghĩa là gì?" 19/700 · "Đúng được gấp đôi" 12; 3 phương án cao 58 (ngang 50) — nghĩa
+  16/700 + âm 13. Đúng: "Đúng! ×2 — được 2 Măng to" `jade`; sai: "Chưa đúng — 木 mộc · cây. Vẫn được 1 Măng to"; vạch mảnh tự đóng 1,5 s.
+- **Bán cho Trúc Ông**: thoại "Bán măng" · "Cách hái măng" · "Thôi". Tấm đáy cao 400 (ngang cột phải 340, máy phải 24 rộng 380): chân dung 40 +
+  "Bán măng cho Trúc Ông" 16/700 + dòng phụ + nút Đóng 36; dòng 60 (ô hình 44 `map-paper` · "Măng × 5" 15/700 · xu 14 "3 / cái" · nút "Bán" viền
+  `jade` cao 40); chân nút lớn `jade` 52 "Bán hết · +23 ◎". **Đề xuất**: bán hết → bảng giữ mở, dòng mờ "Đã bán", nút xám "Đã bán hết"; ví hiện lại
+  góc trên phải 2 s với nhãn `jade` "+23 · Bán măng" + xu bay. Túi trống → lời Trúc Ông + "Vâng". Máy: Enter bán hết, Esc đóng.
+- **Túi đồ — tab "Lâm sản"** (thứ 4, sau Nông sản; 6 tab): hình búp măng 34; lưới ô 72 (ngang 52, máy 64) như Nông sản: Măng × n, Măng to × n; chạm
+  → thẻ chi tiết `slate` "Măng to × 1 · Hái ở Trúc Lâm · bán cho Trúc Ông 8 Văn / cái". Trống: khung nét đứt "Chưa có lâm sản" + "Hái măng ở rừng
+  Trúc Lâm". Chân "Chỉ xem — bán măng ở Trúc Ông (Trúc Lư)". 6 tab chữ 10/700 (ngang / máy 9,5).
+
+### Đàn cầm
+- **Ngồi đàn**: nút nổi viên `jade` 46 "Ngồi đàn" (biểu tượng đàn). **Tấm chọn** (kính .95, dưới 46): "Đàn cầm" 18/700 + "Tảng đá đàn · Trúc Lâm"; 3
+  dòng 58 (đĩa 36 + tên 15/700 + phụ 12): "Đàn tự do" (nổi bật `jade`) · "Theo bài" · "Đứng dậy"; máy phím 1 / 2 / Esc.
+- **Chọn bài**: ‹ + "Theo bài" + "mỗi bài thưởng 1 lần / ngày"; dòng 60: số Lora trong đĩa 30 · tên 15/700 · "Tốt nhất: Thanh nhã" (viên vàng nhạt) hoặc
+  "Chưa đàn hôm nay" · "✓ Đã thưởng hôm nay" `jade` · độ dài 12/700.
+- **Đàn tự do — bàn dây** (`qin-lacquer`, bo 18, viền #120C09, 7 chấm huy vàng bên trái): 2 hàng "Bổng" / "Trầm" × 5 phím (cao `size.qin-key` 92 /
+  64 / 86, bo 10, nền trắng 8 %, dây tơ dọc giữa phím); tên dây "Cung · Thương · Giốc · Chuỷ · Vũ" 12/700 dưới. Gảy: dây lượn sóng sáng + quầng vàng → jade
+  0,3 s. Dọc: bàn dây dưới 42 cách mép 8 (≈ 1/3 màn), "Đàn tự do" + "Theo bài" ngay trên bàn, "Đứng dậy" trên phải; ngang: bàn dây đáy trong safe,
+  hàng nút trên; máy: bàn 760 giữa đáy, phím 1–5 (trầm) + Q W E R T (bổng) trên phím, Esc đứng dậy.
+- **Theo bài**: cảnh tối 30–35 %; 5 làn (nền `slate` 32 %, dây tơ giữa), **vạch gảy** vàng 3 + 5 vòng đích 44; nốt = đĩa giấy 30 viền `jade` 3; trúng →
+  loé vàng 52; "Hay" viên `gold` chữ `slate` 14/800 · "Được" viên `jade` chữ trắng, trên vạch 0,5 s; trượt: nốt mờ, không chữ. Trên: tạm dừng 44 · viên
+  tên bài + "Hay n · Được n" + thanh tiến độ 3 · "Đứng dậy" (dọc: nút tròn 44). Dọc làn 310 × 600; ngang 300 × 240 giữa; máy 400 × 560, **phím 1–5**.
+- **Kết quả bài**: đĩa đàn 56 `jade` + tên bài nhô trên; "Tri âm" 26/700 `jade` + "92 %" Lora; 3 ô đếm Hay (vàng nhạt) · Được (`jade` 10 %) · Trượt (xám);
+  thưởng "+5 Văn tiền" hoặc "Bài này hôm nay đã thưởng"; "Đàn lại" `jade` · "Chọn bài khác" · nút đứng dậy 48.
+
+### Cách chơi (3 bảng, khung 2026-11-13.31)
+- Đầu "Trúc Lâm · Cách chơi" + tên trò Lora 24 `jade` (**không chữ Hán**), hình minh hoạ giấy, 4 mục đánh số, ô mẹo Thi Ông / Trúc Ông / "Mẹo" (Đàn cầm).
+  Nút "Cách chơi" (viên kính) ở đá "Khúc Thuỷ Đài" và đá đàn; Hái măng chỉ qua thoại Trúc Ông "Cách hái măng" (đề xuất — không thêm biển gỗ).
+- Chuỗi: `luu*`, `mang*`, `cam*`, `npc{ThiOng,TuTai,TaiNu,TrucOng}`, `trucOng*`, `bagTabForest`, `bagForest*`, `rewardCoins`, `guideTrucLam`, `guideHelp`.
+- Ảnh: chưa có ảnh. Nền giữ chỗ: Canvas 3D `Canh-truc-lam-b4-luu-thuong` / `-b4-mang-mua`; Trúc Lư + tảng đá đàn tạm dùng ảnh bãi hạc; chân dung 4 NPC
+  vẽ giữ chỗ (chưa có model).

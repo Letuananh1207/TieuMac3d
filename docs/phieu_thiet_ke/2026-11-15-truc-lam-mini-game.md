@@ -1,5 +1,6 @@
 # Phiếu: Trúc Lâm — HUD 3 mini game (Lưu Thương Lệnh · Hái măng sau mưa · Đàn cầm) + ngăn Lâm sản trong Túi đồ
 - Trạng thái: chờ thiết kế   (→ đã áp (<mã>) · bỏ (<lý do>))
+- Đã vẽ: 2026-11-16.13 (đủ 3 trò + Lâm sản + 3 bảng Cách chơi; vài đề xuất nhỏ trong CHANGELOG)
 - Đợi bởi: kế hoạch `docs/tasks/2026-11-15-truc-lam-mini-game.md` (nhiệm vụ 15, 16, 17 + phần HUD của 19–21). Luật thuần, dữ liệu,
   cảnh 3D, âm thanh, cầu nối làm được trước, không chờ phiếu.
 - Luật: nháp R-LUU-1…5, R-MANG-1…5, R-CAM-1…4 trong kế hoạch mục 4 (**chưa vào sổ** — chờ người dùng chọn 4 điểm quyết định; phiếu

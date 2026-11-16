@@ -3,6 +3,29 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-16.13 — Trúc Lâm: HUD Lưu Thương Lệnh, Hái măng, Đàn cầm + ngăn Lâm sản
+
+- Loại: giao diện · token · chuỗi · luồng/luật (đề xuất nhỏ).
+- Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-15-truc-lam-mini-game.md` (kế hoạch `docs/tasks/2026-11-15-truc-lam-mini-game.md`, nhiệm vụ 15–17 + HUD 19–21).
+- Màn: 48 artboard — Lưu Thương (thoại vào, chưa đủ bộ, chén trôi, lượt mình, đúng, uống phạt, lượt văn nhân nghĩ / xong, kết quả + 4 trạng thái, 3 kiểu
+  ghép), Hái măng (nút Hái, măng to, thẻ măng chữ hỏi / đúng / sai), Bán măng (thoại, bảng, vừa bán, túi trống), Túi đồ tab Lâm sản (có / trống),
+  Đàn cầm (tấm chọn, chọn bài, đàn tự do, theo bài, kết quả + trạng thái), 3 bảng Cách chơi, bảng nút nổi + chip, ghi chú. Màn chính đủ dọc / ngang /
+  máy tính 1280 × 800. Đặc tả: `docs/screen_specs.md` mục mới.
+- Token mới: `color.qin-lacquer`, `color.bamboo-slip`, `size.radical-tile` 74, `size.qin-key` 92. Chuỗi mới: `luu*`, `mang*`, `cam*`, `npc*`, `trucOng*`,
+  `bagTabForest`, `bagForest*`, `rewardCoins`, `guideTrucLam`, `guideHelp`.
+- **Đề xuất** (phiên code hỏi người dùng rồi ghi sổ):
+  1. R-MANG-5: bán hết → bảng giữ mở (dòng "Đã bán", nút xám "Đã bán hết"); ví hiện lại 2 s góc trên phải với "+23 · Bán măng" + xu bay.
+  2. Cách chơi Hái măng chỉ qua thoại Trúc Ông ("Cách hái măng"), không thêm biển gỗ.
+  3. R-CAM-3: Theo bài trên máy tính dùng phím **1–5** (trùng hàng trầm đàn tự do).
+  4. R-LUU-5: hạng nhất một mình có ấn son "Thi khôi" trên thẻ kết quả (chỉ hình, không đổi thưởng).
+  5. R-LUU-1: lời Thi Ông "…hãy **Tĩnh toạ** học thêm vài bộ thủ…" (đổi theo tên nút mới 2026-11-16.12; sổ đang ghi "Ngồi ôn").
+  6. Thẻ măng chữ: giữ bản đồ nhỏ + ví + thanh công cụ, chỉ ẩn joystick + cụm nút (nhân vật đứng yên).
+- Luật bị chạm: `R-LUU-1…5`, `R-MANG-1…5`, `R-CAM-1…4`, `R-TIEN-3/5`, `R-TUI-1`, `R-THANH-1`, `R-NPC-2`, `R-HUD-4`.
+- File: `source/{LuuThuong,HaiMang,BanMang,DanCam}-*.dc.html`, `source/TuiDo-lam-san-*.dc.html`, `source/CachChoi-doc-{luu-thuong,hai-mang,dan-cam}.dc.html`,
+  `source/TrucLam-{nut-trang-thai,ghi-chu}.dc.html` (48), `source/canvas.json` · `tokens/design_tokens.json` · `l10n/vi.arb` · `docs/screen_specs.md`,
+  `docs/components.md`.
+- Ảnh: chưa có ảnh (nền giữ chỗ Canvas 3D b4 + ảnh bãi hạc; chân dung NPC vẽ giữ chỗ).
+
 ## 2026-11-16.12 — Cuộn Tĩnh toạ: bảng chọn lưới ô trên cuộn tay
 
 - Loại: giao diện · token · chuỗi · luồng/luật (đề xuất).

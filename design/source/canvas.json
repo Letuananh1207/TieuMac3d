@@ -1877,6 +1877,294 @@
       "y": 89114,
       "w": 1300,
       "h": 640
+    },
+    "LuuThuong-doc-luot.dc.html": {
+      "x": 0,
+      "y": 90134,
+      "w": 390,
+      "h": 844
+    },
+    "LuuThuong-doc-troi.dc.html": {
+      "x": 470,
+      "y": 90134,
+      "w": 390,
+      "h": 844
+    },
+    "LuuThuong-doc-dung.dc.html": {
+      "x": 940,
+      "y": 90134,
+      "w": 390,
+      "h": 844
+    },
+    "LuuThuong-doc-sai.dc.html": {
+      "x": 1410,
+      "y": 90134,
+      "w": 390,
+      "h": 844
+    },
+    "LuuThuong-doc-npc.dc.html": {
+      "x": 1880,
+      "y": 90134,
+      "w": 390,
+      "h": 844
+    },
+    "LuuThuong-doc-npc-xong.dc.html": {
+      "x": 2350,
+      "y": 90134,
+      "w": 390,
+      "h": 844
+    },
+    "LuuThuong-ngang-luot.dc.html": {
+      "x": 2820,
+      "y": 90134,
+      "w": 844,
+      "h": 390
+    },
+    "LuuThuong-ngang-dung.dc.html": {
+      "x": 3744,
+      "y": 90134,
+      "w": 844,
+      "h": 390
+    },
+    "LuuThuong-may-luot.dc.html": {
+      "x": 4668,
+      "y": 90134,
+      "w": 1280,
+      "h": 800
+    },
+    "LuuThuong-doc-ket-qua.dc.html": {
+      "x": 6028,
+      "y": 90134,
+      "w": 390,
+      "h": 844
+    },
+    "LuuThuong-ngang-ket-qua.dc.html": {
+      "x": 6498,
+      "y": 90134,
+      "w": 844,
+      "h": 390
+    },
+    "LuuThuong-doc-chua-du.dc.html": {
+      "x": 7422,
+      "y": 90134,
+      "w": 390,
+      "h": 844
+    },
+    "LuuThuong-doc-vao.dc.html": {
+      "x": 7892,
+      "y": 90134,
+      "w": 390,
+      "h": 844
+    },
+    "LuuThuong-kieu-ghep.dc.html": {
+      "x": 0,
+      "y": 91098,
+      "w": 1300,
+      "h": 900
+    },
+    "LuuThuong-ket-qua-trang-thai.dc.html": {
+      "x": 1380,
+      "y": 91098,
+      "w": 1300,
+      "h": 760
+    },
+    "HaiMang-doc.dc.html": {
+      "x": 0,
+      "y": 92498,
+      "w": 390,
+      "h": 844
+    },
+    "HaiMang-doc-mang-to.dc.html": {
+      "x": 470,
+      "y": 92498,
+      "w": 390,
+      "h": 844
+    },
+    "HaiMang-ngang.dc.html": {
+      "x": 940,
+      "y": 92498,
+      "w": 844,
+      "h": 390
+    },
+    "HaiMang-may.dc.html": {
+      "x": 1864,
+      "y": 92498,
+      "w": 1280,
+      "h": 800
+    },
+    "HaiMang-doc-the.dc.html": {
+      "x": 3224,
+      "y": 92498,
+      "w": 390,
+      "h": 844
+    },
+    "HaiMang-doc-the-dung.dc.html": {
+      "x": 3694,
+      "y": 92498,
+      "w": 390,
+      "h": 844
+    },
+    "HaiMang-doc-the-sai.dc.html": {
+      "x": 4164,
+      "y": 92498,
+      "w": 390,
+      "h": 844
+    },
+    "HaiMang-ngang-the.dc.html": {
+      "x": 4634,
+      "y": 92498,
+      "w": 844,
+      "h": 390
+    },
+    "BanMang-doc.dc.html": {
+      "x": 5558,
+      "y": 92498,
+      "w": 390,
+      "h": 844
+    },
+    "BanMang-doc-vua-ban.dc.html": {
+      "x": 6028,
+      "y": 92498,
+      "w": 390,
+      "h": 844
+    },
+    "BanMang-doc-trong.dc.html": {
+      "x": 6498,
+      "y": 92498,
+      "w": 390,
+      "h": 844
+    },
+    "BanMang-ngang.dc.html": {
+      "x": 6968,
+      "y": 92498,
+      "w": 844,
+      "h": 390
+    },
+    "BanMang-may.dc.html": {
+      "x": 0,
+      "y": 93462,
+      "w": 1280,
+      "h": 800
+    },
+    "BanMang-doc-thoai.dc.html": {
+      "x": 1360,
+      "y": 93462,
+      "w": 390,
+      "h": 844
+    },
+    "TuiDo-lam-san-doc.dc.html": {
+      "x": 1830,
+      "y": 93462,
+      "w": 390,
+      "h": 844
+    },
+    "TuiDo-lam-san-trong-doc.dc.html": {
+      "x": 2300,
+      "y": 93462,
+      "w": 390,
+      "h": 844
+    },
+    "TuiDo-lam-san-ngang.dc.html": {
+      "x": 2770,
+      "y": 93462,
+      "w": 844,
+      "h": 390
+    },
+    "TuiDo-lam-san-may.dc.html": {
+      "x": 3694,
+      "y": 93462,
+      "w": 1280,
+      "h": 800
+    },
+    "DanCam-doc-chon.dc.html": {
+      "x": 0,
+      "y": 94926,
+      "w": 390,
+      "h": 844
+    },
+    "DanCam-doc-bai.dc.html": {
+      "x": 470,
+      "y": 94926,
+      "w": 390,
+      "h": 844
+    },
+    "DanCam-doc-tu-do.dc.html": {
+      "x": 940,
+      "y": 94926,
+      "w": 390,
+      "h": 844
+    },
+    "DanCam-ngang-tu-do.dc.html": {
+      "x": 1410,
+      "y": 94926,
+      "w": 844,
+      "h": 390
+    },
+    "DanCam-may-tu-do.dc.html": {
+      "x": 2334,
+      "y": 94926,
+      "w": 1280,
+      "h": 800
+    },
+    "DanCam-doc-theo-bai.dc.html": {
+      "x": 3694,
+      "y": 94926,
+      "w": 390,
+      "h": 844
+    },
+    "DanCam-ngang-theo-bai.dc.html": {
+      "x": 4164,
+      "y": 94926,
+      "w": 844,
+      "h": 390
+    },
+    "DanCam-may-theo-bai.dc.html": {
+      "x": 5088,
+      "y": 94926,
+      "w": 1280,
+      "h": 800
+    },
+    "DanCam-doc-ket-qua.dc.html": {
+      "x": 6448,
+      "y": 94926,
+      "w": 390,
+      "h": 844
+    },
+    "DanCam-ket-qua-trang-thai.dc.html": {
+      "x": 0,
+      "y": 95890,
+      "w": 1300,
+      "h": 640
+    },
+    "CachChoi-doc-luu-thuong.dc.html": {
+      "x": 0,
+      "y": 97030,
+      "w": 390,
+      "h": 844
+    },
+    "CachChoi-doc-hai-mang.dc.html": {
+      "x": 470,
+      "y": 97030,
+      "w": 390,
+      "h": 844
+    },
+    "CachChoi-doc-dan-cam.dc.html": {
+      "x": 940,
+      "y": 97030,
+      "w": 390,
+      "h": 844
+    },
+    "TrucLam-nut-trang-thai.dc.html": {
+      "x": 0,
+      "y": 97994,
+      "w": 1300,
+      "h": 720
+    },
+    "TrucLam-ghi-chu.dc.html": {
+      "x": 1380,
+      "y": 97994,
+      "w": 1300,
+      "h": 640
     }
   },
   "order": [
@@ -2156,7 +2444,55 @@
     "Cuon-7-tang-thu-cac-ngang.dc.html",
     "Cuon-8-nhin-quanh-doc.dc.html",
     "Cuon-8-nhin-quanh-ngang.dc.html",
-    "Cuon-so-do.dc.html"
+    "Cuon-so-do.dc.html",
+    "LuuThuong-doc-luot.dc.html",
+    "LuuThuong-doc-troi.dc.html",
+    "LuuThuong-doc-dung.dc.html",
+    "LuuThuong-doc-sai.dc.html",
+    "LuuThuong-doc-npc.dc.html",
+    "LuuThuong-doc-npc-xong.dc.html",
+    "LuuThuong-ngang-luot.dc.html",
+    "LuuThuong-ngang-dung.dc.html",
+    "LuuThuong-may-luot.dc.html",
+    "LuuThuong-doc-ket-qua.dc.html",
+    "LuuThuong-ngang-ket-qua.dc.html",
+    "LuuThuong-doc-chua-du.dc.html",
+    "LuuThuong-doc-vao.dc.html",
+    "LuuThuong-kieu-ghep.dc.html",
+    "LuuThuong-ket-qua-trang-thai.dc.html",
+    "HaiMang-doc.dc.html",
+    "HaiMang-doc-mang-to.dc.html",
+    "HaiMang-ngang.dc.html",
+    "HaiMang-may.dc.html",
+    "HaiMang-doc-the.dc.html",
+    "HaiMang-doc-the-dung.dc.html",
+    "HaiMang-doc-the-sai.dc.html",
+    "HaiMang-ngang-the.dc.html",
+    "BanMang-doc.dc.html",
+    "BanMang-doc-vua-ban.dc.html",
+    "BanMang-doc-trong.dc.html",
+    "BanMang-ngang.dc.html",
+    "BanMang-may.dc.html",
+    "BanMang-doc-thoai.dc.html",
+    "TuiDo-lam-san-doc.dc.html",
+    "TuiDo-lam-san-trong-doc.dc.html",
+    "TuiDo-lam-san-ngang.dc.html",
+    "TuiDo-lam-san-may.dc.html",
+    "DanCam-doc-chon.dc.html",
+    "DanCam-doc-bai.dc.html",
+    "DanCam-doc-tu-do.dc.html",
+    "DanCam-ngang-tu-do.dc.html",
+    "DanCam-may-tu-do.dc.html",
+    "DanCam-doc-theo-bai.dc.html",
+    "DanCam-ngang-theo-bai.dc.html",
+    "DanCam-may-theo-bai.dc.html",
+    "DanCam-doc-ket-qua.dc.html",
+    "DanCam-ket-qua-trang-thai.dc.html",
+    "CachChoi-doc-luu-thuong.dc.html",
+    "CachChoi-doc-hai-mang.dc.html",
+    "CachChoi-doc-dan-cam.dc.html",
+    "TrucLam-nut-trang-thai.dc.html",
+    "TrucLam-ghi-chu.dc.html"
   ],
   "notes": {
     "cach-dung": {
@@ -2688,6 +3024,34 @@
       "text": "Cuộn Tĩnh toạ — bảng chọn lưới ô (thay 3 dòng mục 2026-11-14.21)",
       "kind": "title1",
       "maxW": 8236
+    },
+    "tieu-de-trlam-lt": {
+      "x": 0,
+      "y": 89914,
+      "text": "Trúc Lâm · Lưu Thương Lệnh",
+      "kind": "title1",
+      "maxW": 3000
+    },
+    "tieu-de-trlam-mang": {
+      "x": 0,
+      "y": 92278,
+      "text": "Trúc Lâm · Hái măng · Bán măng · Lâm sản",
+      "kind": "title1",
+      "maxW": 3000
+    },
+    "tieu-de-trlam-dan": {
+      "x": 0,
+      "y": 94706,
+      "text": "Trúc Lâm · Đàn cầm",
+      "kind": "title1",
+      "maxW": 3000
+    },
+    "tieu-de-trlam-chung": {
+      "x": 0,
+      "y": 96810,
+      "text": "Trúc Lâm · nút nổi, cách chơi, ghi chú",
+      "kind": "title1",
+      "maxW": 3000
     }
   },
   "designSystems": []

@@ -203,3 +203,19 @@ Một chất liệu: kính mờ `frost*` + viền `frost-line` / `frost-outline`
 | Cuộn Tĩnh toạ 16 : 9 (đầu cuộn, ấn son "Tĩnh", "Đứng dậy" góc) | `Cuon-*` | map-paper, scroll-wood, jade, gold, lacquer, size.scroll-stand-hit |
 | Ô triện gỗ trên cuộn (thường / mờ / nhấn / lắc / vừa cập nhật / sắp có) | `Cuon-*`, `Cuon-so-do` | size.scroll-tile, count-badge, jade, gold |
 | Hình nét mực trong ô: bìa mini, bó thẻ tre, bảng gỗ | `Cuon-1-tran-*` | slate, lacquer, scroll-wood |
+
+## Thêm ở 2026-11-16.13
+
+| Thành phần | Artboard | Token |
+|---|---|---|
+| Thẻ câu ghép chữ (khung ghép 3 kiểu, ô bộ thủ trống, vạch 20 giây) | `LuuThuong-kieu-ghep`, `LuuThuong-*` | map-paper, jade, lacquer, gold |
+| Ô bộ thủ thẻ trúc (thường / đúng / sai / mờ / huy hiệu NPC / phím) | `LuuThuong-*` | bamboo-slip, size.radical-tile, answer-right-bg, answer-wrong-bg |
+| Thẻ điểm đứng 4 người (dọc) | `LuuThuong-doc-*` | frost, jade, gold |
+| Viên "Uống phạt một chén!" | `LuuThuong-doc-sai` | gold, answer-partial-bg |
+| Bảng xếp hạng 4 dòng trong Thẻ kết quả + ấn "Thi khôi" | `LuuThuong-ket-qua-*` | jade, lacquer |
+| Nút nổi "Hái" (thường / măng to) + nhãn bay "+1 Măng" | `TrucLam-nut-trang-thai`, `HaiMang-*` | jade, gold |
+| Chip lứa măng (4 trạng thái) | `TrucLam-nut-trang-thai` | frost |
+| Thẻ măng chữ (vỏ măng khắc bộ thủ + 3 phương án) | `HaiMang-doc-the*` | frost, size.option-row |
+| Bảng bán măng (dòng + Bán hết) | `BanMang-*` | jade, map-paper |
+| Tab Túi đồ "Lâm sản" | `TuiDo-lam-san-*` | jade, slate |
+| Tấm chọn đàn, danh sách bài, bàn dây 10 phím, làn nốt rơi, thẻ kết quả bài | `DanCam-*` | qin-lacquer, size.qin-key, gold, jade |

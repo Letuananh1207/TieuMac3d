@@ -1615,5 +1615,213 @@
       }
     }
   },
-  "scrollTileOff": "chưa dùng được"
+  "scrollTileOff": "chưa dùng được",
+  "luuTitle": "Lưu Thương Lệnh",
+  "luuJoin": "Dự tiệc Lưu Thương",
+  "luuJoinShort": "Dự tiệc",
+  "luuLeave": "Rời tiệc",
+  "luuTurn": "Lượt {n} / 8",
+  "@luuTurn": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "luuCupFloating": "Chén lệnh đang trôi",
+  "luuThinking": "{name} đang nghĩ",
+  "@luuThinking": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "luuCompose": "Ghép bộ thủ thành chữ",
+  "luuMeaning": "Nghĩa · âm",
+  "luuPickRadical": "Chọn bộ thủ còn thiếu",
+  "luuFullChar": "Chữ đầy đủ",
+  "luuSeconds": "{n} giây",
+  "@luuSeconds": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "luuNpcCard": "Câu của {name}",
+  "@luuNpcCard": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "luuNpcCardHint": "chạm không có gì",
+  "luuRight": "Đúng rồi! +1 điểm",
+  "luuPenalty": "Uống phạt một chén!",
+  "luuNpcRight": "{name} đúng · +1",
+  "@luuNpcRight": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "luuNpcWrong": "{name} chưa đúng",
+  "@luuNpcWrong": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "luuRank1": "Hạng nhất",
+  "luuRank2": "Hạng nhì",
+  "luuRank3": "Hạng ba",
+  "luuRank4": "Hạng tư",
+  "luuRankTie1": "Đồng hạng nhất",
+  "luuSealWinner": "Thi khôi",
+  "luuPoints": "{n} điểm",
+  "@luuPoints": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "rewardCoins": "+{n} Văn tiền",
+  "@rewardCoins": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "luuHostWin": "Hay! Chén này xin kính đạo hữu.",
+  "luuHostTie": "Ngang tài ngang sức, cạn chén nào!",
+  "luuHostLose": "Ván sau ắt đạo hữu hơn lão.",
+  "luuHostInvite": "Chén lệnh trôi tới ai, người ấy ghép một chữ. Đạo hữu có muốn ngồi cùng?",
+  "luuHostNotEnough": "Đạo hữu hãy Tĩnh toạ học thêm vài bộ thủ, rồi lại đây cùng thả chén.",
+  "luuOk": "Vâng",
+  "npcThiOng": "Thi Ông",
+  "npcTuTai": "Tú Tài",
+  "npcTaiNu": "Tài Nữ",
+  "npcTrucOng": "Trúc Ông",
+  "mangPick": "Hái",
+  "mangBigTag": "Măng to",
+  "mangGot": "+1 Măng",
+  "mangGotBig": "+1 Măng to",
+  "mangToday": "Măng hôm nay · đã hái {n} / {m}",
+  "@mangToday": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "m": {
+        "type": "int"
+      }
+    }
+  },
+  "mangAfternoon": "Lứa chiều nhú sau mưa · 15:00",
+  "mangRaining": "Đang mưa phùn — măng sắp nhú",
+  "mangDone": "Đã hái hết · Mai măng lại nhú",
+  "mangQuizTag": "Măng chữ · măng to",
+  "mangQuiz": "Bộ này nghĩa là gì?",
+  "mangQuizSub": "Đúng được gấp đôi",
+  "mangQuizRight": "Đúng! ×2 — được 2 Măng to",
+  "mangQuizWrong": "Chưa đúng — {radical} {hv} · {meaning}. Vẫn được 1 Măng to",
+  "@mangQuizWrong": {
+    "placeholders": {
+      "radical": {
+        "type": "String"
+      },
+      "hv": {
+        "type": "String"
+      },
+      "meaning": {
+        "type": "String"
+      }
+    }
+  },
+  "mangSell": "Bán măng",
+  "mangSellTitle": "Bán măng cho Trúc Ông",
+  "mangSellSub": "Không giới hạn · măng không hỏng trong túi",
+  "mangSellOne": "Bán",
+  "mangSellAll": "Bán hết · +{n}",
+  "@mangSellAll": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "mangSold": "Đã bán",
+  "mangSoldAll": "Đã bán hết",
+  "mangPrice": "{n} / cái",
+  "@mangPrice": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "mangSellReason": "+{n} · Bán măng",
+  "@mangSellReason": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "mangName": "Măng",
+  "mangBigName": "Măng to",
+  "mangHowTo": "Cách hái măng",
+  "trucOngGreet": "Măng rừng sau mưa ngọt lắm. Con hái được bao nhiêu, lão mua bấy nhiêu.",
+  "trucOngEmpty": "Túi con còn trống. Mưa chiều xong là măng lại nhú.",
+  "bagTabForest": "Lâm sản",
+  "bagForestEmpty": "Chưa có lâm sản",
+  "bagForestWhere": "Hái măng ở rừng Trúc Lâm",
+  "bagForestFoot": "Chỉ xem — bán măng ở Trúc Ông (Trúc Lư)",
+  "camSit": "Ngồi đàn",
+  "camTitle": "Đàn cầm",
+  "camPlace": "Tảng đá đàn · Trúc Lâm",
+  "camFree": "Đàn tự do",
+  "camFreeSub": "Gảy tuỳ ý — không chấm điểm",
+  "camSong": "Theo bài",
+  "camSongSub": "3 bài · chạm đúng lúc nốt rơi",
+  "camStandSub": "Rời tảng đá",
+  "camSongsNote": "mỗi bài thưởng 1 lần / ngày",
+  "camHigh": "Bổng",
+  "camLow": "Trầm",
+  "camCung": "Cung",
+  "camThuong": "Thương",
+  "camGioc": "Giốc",
+  "camChuy": "Chuỷ",
+  "camVu": "Vũ",
+  "camSong1": "Suối trúc",
+  "camSong2": "Mưa măng",
+  "camSong3": "Trăng trên gò",
+  "camBest": "Tốt nhất: {grade}",
+  "@camBest": {
+    "placeholders": {
+      "grade": {
+        "type": "String"
+      }
+    }
+  },
+  "camNotToday": "Chưa đàn hôm nay",
+  "camRewardedToday": "Đã thưởng hôm nay",
+  "camHay": "Hay",
+  "camDuoc": "Được",
+  "camMiss": "Trượt",
+  "camTriAm": "Tri âm",
+  "camThanhNha": "Thanh nhã",
+  "camTapDan": "Tập đàn",
+  "camAgain": "Đàn lại",
+  "camOther": "Chọn bài khác",
+  "camSongRewarded": "Bài này hôm nay đã thưởng",
+  "camPause": "Tạm dừng",
+  "guideTrucLam": "Trúc Lâm · Cách chơi",
+  "guideHelp": "Cách chơi"
 }

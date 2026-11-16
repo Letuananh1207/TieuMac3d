@@ -230,6 +230,16 @@
       "value": "#5B9BC4",
       "note": "giọt nước \"khát\" trên luống Vườn rau, viền trắng 1,4 — map-water quá nhạt trên đất nâu — 2026-11-15.29",
       "code": "chưa có"
+    },
+    "qin-lacquer": {
+      "value": "#2A1F1A",
+      "note": "thân đàn cầm sơn đen (bàn dây chuyển #3A2A22 → #22170F, viền #120C09); dây tơ rgba(244,236,210,.85) — 2026-11-16.13",
+      "code": "chưa có"
+    },
+    "bamboo-slip": {
+      "value": "#EFE4C4",
+      "note": "ô bộ thủ kiểu thẻ trúc (chuyển #F3EAD2 → #E9DCB8, viền gỗ 28 %) — Lưu Thương 2026-11-16.13",
+      "code": "chưa có"
     }
   },
   "font": {
@@ -475,6 +485,16 @@
     "scroll-stand-hit": {
       "value": 48,
       "note": "vùng chạm \"Đứng dậy\" trên cuộn (nút hiện 32 dọc / 36 ngang, vùng chạm tràn ra ngoài mép giấy) — 2026-11-16.12",
+      "code": "chưa có"
+    },
+    "radical-tile": {
+      "value": 74,
+      "note": "cao ô bộ thủ Lưu Thương (ngang 62, máy 84; thẻ NPC thu nhỏ 62) — 2026-11-16.13",
+      "code": "chưa có"
+    },
+    "qin-key": {
+      "value": 92,
+      "note": "cao phím dây đàn tự do (dọc; ngang 64, máy 86), rộng ≥ 52 — 2026-11-16.13",
       "code": "chưa có"
     }
   }
