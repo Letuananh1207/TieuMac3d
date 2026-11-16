@@ -75,7 +75,7 @@ cầu nối, Flutter, đặc tả cảnh, HUD, tay giả nhìn từ mắt, NPC H
       `hips` x giữ; tay buông cũ → `−haTay`; `legs` âm → gối dương; `dungLauDang` vươn vai / nhìn quanh; `goMoDang`.
 - [x] 3. Nhánh `autoRig` gọi các hàm rút ra — **không đổi hành vi** (chụp so trước / sau `?dang=chay|nhay|ngoi|chao|vuon|nhin`,
       `bieu-cam`, `lam-vuon` với model Hunyuan hiện tại).
-- [ ] 4. `mixamoRig.ts`: `bone(j)`, điểm nắm bàn tay phải, độ cao hông, góc chữ A + test trên khung xương giả.
+- [x] 4. `mixamoRig.ts`: `bone(j)`, điểm nắm bàn tay phải, độ cao hông, góc chữ A + test trên khung xương giả.
 - [ ] 5. `doLamVuon.ts`: gắn xương bất kỳ, dựng thẳng theo thân, bù co giãn + test.
 - [ ] 6. Nhánh Mixamo của `glbCharacter.ts` đủ dáng, đồ cầm tay, `toolTip`, `sitDrop`, `opts.player`.
 - [ ] 7. `playerCharacter.ts` `?nhan-vat=<mã>` + `playerModelUrl` cho trang thế.

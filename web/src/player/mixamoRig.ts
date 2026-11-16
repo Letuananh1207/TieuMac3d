@@ -42,6 +42,14 @@ interface Slot {
 export interface MixamoRig {
   /** đặt góc mọi khớp theo `pose` (góc trong khung nhân vật — quy ước ở `dongTac.ts`) */
   apply(pose: Pose): void;
+  /** xương của khớp (thiếu → `undefined`) */
+  bone(j: Joint): THREE.Bone | undefined;
+  /** góc chữ A lúc gốc (rad, trung bình hai tay): góc giữa cánh tay (vai → cổ tay) và phương thẳng đứng xuống, trên mặt trước */
+  readonly aPose: number;
+  /** độ cao khớp háng lúc gốc (m, khung model: chân y = 0) — để tính độ hạ khi ngồi */
+  readonly hipY: number;
+  /** điểm nắm của bàn tay phải (gốc ngón giữa), toạ độ trong xương `RightHand` — chỗ gắn đồ cầm tay */
+  readonly gripR: THREE.Vector3;
 }
 
 /**
@@ -71,6 +79,17 @@ export function mixamoRig(model: THREE.Object3D): MixamoRig | null {
     slots[j] = { bone, rest: bone.quaternion.clone(), wp, wpInv: wp.clone().invert() };
   }
 
+  const at = (j: Joint): THREE.Vector3 | null => slots[j]?.bone.getWorldPosition(new THREE.Vector3()) ?? null;
+  // góc chữ A: vai → cổ tay (thiếu bàn tay → vai → khuỷu)
+  const armAngle = (arm: Joint, hand: Joint, fore: Joint): number => {
+    const a = at(arm)!;
+    const b = (at(hand) ?? at(fore)!).sub(a).applyQuaternion(rootInv);
+    return Math.atan2(Math.abs(b.x), -b.y);
+  };
+  const aPose = (armAngle('armL', 'handL', 'foreL') + armAngle('armR', 'handR', 'foreR')) / 2;
+  const hipY = (at('upLegL')!.y + at('upLegR')!.y) / 2;
+  const gripR = handGrip(slots.handR?.bone ?? slots.foreR!.bone, at('foreR')!);
+
   model.traverse((o) => {
     const s = o as THREE.SkinnedMesh;
     if (!s.isSkinnedMesh) return;
@@ -81,6 +100,10 @@ export function mixamoRig(model: THREE.Object3D): MixamoRig | null {
   const e = new THREE.Euler();
   const q = new THREE.Quaternion();
   return {
+    aPose,
+    hipY,
+    gripR,
+    bone: (j) => slots[j]?.bone,
     apply(pose) {
       for (const j of JOINTS) {
         const s = slots[j];
@@ -91,4 +114,19 @@ export function mixamoRig(model: THREE.Object3D): MixamoRig | null {
       }
     },
   };
+}
+
+/**
+ * Điểm nắm của bàn tay (toạ độ trong xương [hand]): trung bình gốc các ngón (xương con của bàn tay — Mixamo `RightHandIndex1`,
+ * `RightHandMiddle1`…); không có ngón → kéo dài cẳng tay thêm 35 % chiều dài bàn tay ước lượng.
+ */
+function handGrip(hand: THREE.Bone, elbow: THREE.Vector3): THREE.Vector3 {
+  const wrist = hand.getWorldPosition(new THREE.Vector3());
+  const fingers = hand.children.filter((c) => (c as THREE.Bone).isBone);
+  const p = new THREE.Vector3();
+  if (fingers.length) {
+    for (const f of fingers) p.add(f.getWorldPosition(new THREE.Vector3()));
+    p.divideScalar(fingers.length);
+  } else p.copy(wrist).sub(elbow).multiplyScalar(0.35).add(wrist);
+  return hand.worldToLocal(p);
 }

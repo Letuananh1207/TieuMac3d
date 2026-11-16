@@ -25,7 +25,9 @@ function fakeSkeleton(): { root: THREE.Group; bone: (n: string) => THREE.Bone } 
   for (const [side, sx] of [['Left', 1], ['Right', -1]] as const) {
     const arm = add(`${side}Arm`, spine, [0, 0.25, 0.15 * sx], new THREE.Euler(0.9 * sx, 0.3, -0.2));
     const fore = add(`${side}ForeArm`, arm, [0, 0.25, 0], new THREE.Euler(0.1, 0, 0.05));
-    add(`${side}Hand`, fore, [0, 0.2, 0]);
+    const hand = add(`${side}Hand`, fore, [0, 0.2, 0]);
+    add(`${side}HandMiddle1`, hand, [0, 0.08, 0]);
+    add(`${side}HandIndex1`, hand, [0.02, 0.07, 0]);
     const up = add(`${side}UpLeg`, hips, [0, -0.05, -0.1 * sx], new THREE.Euler(Math.PI, 0, 0));
     add(`${side}Leg`, up, [0, 0.4, 0]);
   }
@@ -88,5 +90,21 @@ describe('R-NPC-10: lớp nối xương Mixamo', () => {
     p.j.neck = [0, 0.5, 0];
     rig.apply(p);
     expect(fwd().x).toBeCloseTo(Math.sin(0.5), 5);
+  });
+  it('hiệu chỉnh đo từ xương: góc chữ A, độ cao háng, điểm nắm bàn tay phải (R-DIEU-7, R-VUON-13)', () => {
+    const { root, bone } = fakeSkeleton();
+    const rig = mixamoRig(root)!;
+    const angle = (side: string): number => {
+      const d = worldPos(bone(`${side}Hand`)).sub(worldPos(bone(`${side}Arm`)));
+      return Math.atan2(Math.abs(d.x), -d.y);
+    };
+    expect(rig.aPose).toBeCloseTo((angle('Left') + angle('Right')) / 2, 6);
+    expect(rig.aPose).toBeGreaterThan(0);
+    expect(rig.hipY).toBeCloseTo(worldPos(bone('LeftUpLeg')).y, 6);
+    expect(rig.bone('handR')).toBe(bone('RightHand'));
+    // điểm nắm = trung bình gốc hai ngón, đổi về toạ độ bàn tay
+    const want = worldPos(bone('RightHandMiddle1')).add(worldPos(bone('RightHandIndex1'))).multiplyScalar(0.5);
+    const got = bone('RightHand').localToWorld(rig.gripR.clone());
+    expect(got.distanceTo(want)).toBeLessThan(1e-6);
   });
 });
