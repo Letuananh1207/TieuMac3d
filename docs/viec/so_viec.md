@@ -85,3 +85,5 @@ Trạng thái: `nhận` → `chờ trả lời` / `chờ duyệt` → `đang là
 | V-20261116-75 | Kho đồ khi trang trí (sân / vườn / gian trong) kiểu 摩尔 web: dải đáy có tab nhóm, hàng ô vuông chỉ đồ còn trong túi (số góc dưới phải), mũi tên cuộn, nút đóng — mọi màn | ui (code thẳng) | chờ thử máy — đã gộp 2026-11-16 (luật R-NHA-2/4/6 đã đồng bộ) | R-NHA-6, R-NHA-4 | duyệt ảnh |
 | V-20261116-76 | Bản máy tính: Bản đồ vào cùng hàng thanh công cụ; phím tắt theo chuẩn tiếng Anh phổ biến; thanh công cụ không màu nền | ui (code thẳng) | chờ thử máy — đã gộp 2026-11-16 (phím M · G · H · B · J, bản đồ lớn N; luật đã đồng bộ) | R-THANH-1 | duyệt ảnh |
 | V-20261116-77 | Bản máy tính: bỏ ô chat luôn hiện, thay bằng biểu tượng Trò chuyện (bấm / Enter mới mở ô nhập); dời thanh công cụ sang trái | ui (code thẳng) | chờ thử máy — đã gộp 2026-11-16 (luật đã đồng bộ) | R-THANH-1, R-CHAT-3 | duyệt ảnh |
+| V-20261116-78 | Sửa L-13: bộ quét zfight coi InstancedMesh là khối đặc | loi sua | đang làm | L-13 | — |
+| V-20261116-79 | Sửa L-12: tiêu đề "Ngồi ôn" trên cuộn bị tách dấu | loi sua | đang làm | L-12 | — |
