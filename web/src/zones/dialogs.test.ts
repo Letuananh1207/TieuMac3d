@@ -40,10 +40,15 @@ describe('Hội thoại NPC công trình', () => {
     expect(all).toContain('lầu');
   });
 
-  it('R-NPC-4: Quản sự giới thiệu Ngũ Tử Kỳ (5 quân liền) và Đấu chữ (10 câu, không ghi tiến độ)', () => {
+  it('R-NPC-4: Kỳ Muội xưng "muội", gọi "đạo hữu"; giới thiệu Ngũ Tử Kỳ (5 quân liền) và Đấu chữ (10 câu, không ghi tiến độ)', () => {
     const d = of('quan-su')!;
+    expect(d.name).toBe('Kỳ Muội');
     expect(d.han).toBeUndefined(); // tên nhân vật không kèm chữ Hán (người dùng 2026-11-14)
+    const start = d.lines.find((l) => l.id === d.start)!.text;
+    expect(start).toContain('Đạo hữu');
+    expect(start).toContain('Muội');
     const lines = d.lines.map((l) => l.text).join(' ');
+    expect(lines).not.toMatch(/tại hạ/i);
     expect(lines).toContain('5 quân');
     expect(lines).toContain('10 câu');
     expect(lines).toContain('không ghi');

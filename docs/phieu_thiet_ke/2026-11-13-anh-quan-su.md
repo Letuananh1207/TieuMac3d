@@ -1,6 +1,6 @@
 # Phiếu: Bộ ảnh nhiều góc NPC Quản sự Kỳ Văn Uyển 管事 (đầu vào dựng model 3D bằng Hunyuan3D)
 
-- Trạng thái: chờ thiết kế
+- Trạng thái: đã dựng model (Tripo, 2026-11-16)
 - Đã vẽ: 2026-11-14.18
 - Hồ sơ khảo cứu: `docs/tham_khao/npc-ky-van-uyen.md` — **người dùng đổi nhân vật (2026-11-14): "một người trẻ năng động", chọn hướng C thiếu nữ ≈ 16 tuổi, mặt dịu dàng** (hai búi dải ngọc, áo ngắn hồng đào viền ngọc lục, váy ngắn + quần bó). Mô tả quản sự trung niên bên dưới KHÔNG còn dùng; mã NPC giữ `quan-su`; câu lệnh thật ở ghi chú `quan-su-cau-lenh` (`design/source/canvas.json`).
 - Đợi bởi: `/tai-nguyen nhan-vat quan-su` (dựng `design/models/quan-su.glb`, 8 000 tam giác) — kế hoạch

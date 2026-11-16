@@ -158,15 +158,15 @@ export const DIALOGS: Dialog[] = [
       },
     ],
   },
-  // Quản sự Kỳ Văn Uyển (R-NPC-4): chừng mực, xưng "tại hạ", gọi "đạo hữu".
+  // Kỳ Muội — thiếu nữ chủ trò Kỳ Văn Uyển (R-NPC-4): giọng nhẹ nhàng, xưng "muội", gọi "đạo hữu".
   {
     npc: 'quan-su',
-    name: 'Quản sự',
+    name: 'Kỳ Muội',
     start: 'chao',
     lines: [
       {
         id: 'chao',
-        text: 'Đạo hữu đến chơi à? Tại hạ trông coi Kỳ Văn Uyển. Trong sân có hai bàn đá dài: một bàn Ngũ Tử Kỳ, một bàn Đấu chữ — mỗi bàn ba chỗ, ai đến trước ngồi trước.',
+        text: 'Đạo hữu đến chơi ạ? Muội trông sân Kỳ Văn Uyển đó. Trong sân có hai bàn đá dài: một bàn Ngũ Tử Kỳ, một bàn Đấu chữ — mỗi bàn ba chỗ, ai đến trước ngồi trước nha.',
         choices: [
           { text: 'Ngũ Tử Kỳ chơi thế nào?', next: 'co' },
           { text: 'Đấu chữ là gì?', next: 'dau' },
@@ -175,17 +175,17 @@ export const DIALOGS: Dialog[] = [
       },
       {
         id: 'co',
-        text: 'Đạo hữu cầm quân đen, đi trước; Tiểu Mặc cầm quân trắng. Mỗi lượt đặt một quân vào giao điểm trống. Bên nào có 5 quân liền nhau theo hàng ngang, dọc hay chéo trước thì thắng.',
+        text: 'Đạo hữu cầm quân đen, đi trước; Tiểu Mặc cầm quân trắng. Mỗi lượt đặt một quân vào giao điểm trống. Bên nào có 5 quân liền nhau theo hàng ngang, dọc hay chéo trước thì thắng — dễ lắm, đạo hữu thử một ván nhé.',
         choices: [{ text: 'Vào bàn thế nào?', next: 'vao' }, { text: 'Hỏi chuyện khác', next: 'chao' }, BYE],
       },
       {
         id: 'dau',
-        text: 'Mặc Ông ra 10 câu, mỗi câu một bộ thủ đạo hữu đã học cùng bốn nghĩa — chọn nghĩa đúng. Chỉ là ôn cho nhớ, không ghi gì vào tiến độ, thua cũng chẳng mất gì.',
+        text: 'Mặc Ông ra 10 câu, mỗi câu một bộ thủ đạo hữu đã học cùng bốn nghĩa — chọn nghĩa đúng. Chỉ là ôn cho nhớ, không ghi gì vào tiến độ, thua cũng chẳng mất gì đâu, đạo hữu đừng ngại.',
         choices: [{ text: 'Vào bàn thế nào?', next: 'vao' }, { text: 'Hỏi chuyện khác', next: 'chao' }, BYE],
       },
       {
         id: 'vao',
-        text: 'Đến gần một ghế bên bàn, nút "Vào bàn" hiện lên thì bấm. Muốn xem kỹ luật, đọc biển "Cách chơi" ở đầu mỗi bàn.',
+        text: 'Đạo hữu đến gần một ghế bên bàn, nút "Vào bàn" hiện lên thì bấm là ngồi được. Muốn xem kỹ luật, cứ đọc biển "Cách chơi" ở đầu mỗi bàn ạ.',
         choices: [{ text: 'Hỏi chuyện khác', next: 'chao' }, BYE],
       },
     ],

@@ -42,7 +42,7 @@ export const NPC_TINH: Readonly<Record<string, TinhId>> = {
   'tieu-mac': 'hoat-bat',
   'go-mo': 'gia',
   'su-phu': 'gia',
-  'quan-su': 'nghiem',
+  'quan-su': 'hoat-bat', // thiếu nữ chủ trò ≈ 16 tuổi, nhanh nhẹn (hồ sơ npc-ky-van-uyen.md — mặt dịu là nét mặt, không phải dáng)
   'tran-su': 'nghiem',
 };
 

@@ -3,6 +3,25 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-16.16 — Kỳ Muội (NPC `quan-su`): model Tripo + vào cảnh Kỳ Văn Uyển + đổi tên
+
+- Loại: tài nguyên 3D + cảnh 3D — **bố cục** (thêm NPC) + luồng/luật (tên, xưng hô). Việc V-20261116-92; phiếu ảnh `docs/phieu_thiet_ke/2026-11-13-anh-quan-su.md`
+  (→ "đã dựng model (Tripo, 2026-11-16)"), hồ sơ `docs/tham_khao/npc-ky-van-uyen.md` (thiếu nữ ≈ 16 tuổi — mục 2026-11-14.18). Phiên VS Code (subagent) làm.
+- Model: `models/quan-su.glb` — Tripo H3.1 Multiview 4 ảnh → rig Mixamo → `tripo.sh` → `model:clean --khong-sang` (15 424 tam giác, 269 KB); ảnh so
+  `screens/Model-quan-su-so-thiet-ke.png`; giấy phép `models/LICENSES.md`. Mã NPC giữ `quan-su`.
+- Tên hiển thị **"Kỳ Muội"** (người dùng chọn 2026-11-16), xưng "muội", gọi người chơi "đạo hữu", giọng nhẹ nhàng; lựa chọn thoại giữ nguyên.
+  Chỉ tiếng Việt (R-HUD-4). Tính cách dáng (R-NPC-10) `nghiem` → **`hoat-bat`** (hồ sơ: thiếu nữ hoạt bát, nhanh nhẹn; "mặt dịu dàng" là nét mặt
+  trên model, không phải dáng đi đứng).
+- `scene/scene.json` `npcs` thêm `{ id: quan-su, x: −21, z: 7, rotY: 110 }`: ngay trong khe lan can tây Quảng Trường, sát mép nam trục đông – tây
+  (lối z 1,5 … 6,5 — Kỳ Muội đứng sát mép nam, vật cản tới z 6,55, không lấn lối), cạnh biển "Khu vui chơi" (−19; 9,2) cách 2 m, giữa biển và
+  đèn đá (−23; 7,5); mặt nhìn đông chếch bắc về phía người chơi từ Quảng Trường đi vào. Không chắn bàn / ghế: ghế gần nhất (−29,1; 5) cách 8,3 m,
+  biển "Cờ caro" (−30,5; 2,6) cách 10,5 m, bảng nhiệm vụ (−7,5; 18,8) cách 18 m → tầm "Nói chuyện" 2,5 m không trùng "Vào bàn" (1,5 m),
+  "Cách chơi" (2,5 m), "Xem bảng". Nền lát phẳng Kỳ Văn Uyển — đứng đúng mặt đất (ảnh).
+- Luật: R-NPC-4 (tên Kỳ Muội, thiếu nữ chủ trò, xưng "muội", câu ví dụ, toạ độ) — Xác nhận `chờ`.
+- `scene:check`: Không có lỗi (`NPC quan-su: (-21; 7) nhìn 110°`). Ngân sách: thêm 1 NPC Tripo ≈ 15,4k tam giác (ẩn khi cách > 35 m — R-NPC-1).
+- Ảnh (Canvas 3D bản build trong worktree, chưa đăng lại): `screens/Canh-quan-su-loi-vao.png` (từ khe lan can nhìn vào), `screens/Canh-quan-su-can-mat.png`.
+- File: `models/quan-su.glb`, `models/LICENSES.md`, `scene/scene.json`, 3 ảnh `screens/`; code `web/src/zones/dialogs.ts`, `web/src/player/npc.ts`.
+
 ## 2026-11-16.15 — Nhà của ta: ngôi nhà ngoài sân bằng model Tripo
 
 - Loại: tài nguyên 3D + cảnh 3D (dữ liệu). Kế hoạch `docs/tasks/2026-11-16-nha-model.md` NV9 (V-20261116-88). Phiếu ảnh `2026-11-16-anh-nha-ta`.
