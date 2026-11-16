@@ -3,7 +3,7 @@
   (2) đi / đứng mềm bằng code; (3) NPC quay đầu nhìn người chơi khi lại gần + gật đầu khi nói chuyện; (4) phòng thử động tác
   trên Canvas 3D có thanh trượt để người dùng chỉnh rồi chốt; (5) áp cho NPC thu-thu trước, sau đó các NPC khác và nhân vật
   chính." — người dùng chê động tác sẵn của Tripo "đi đứng cứng" (2026-11-16).
-- Loại: thêm + sửa hành vi (R-NPC-1, R-NPC-2) · Cỡ: lớn · Trạng thái: đang làm (duyệt 2026-11-16, Q1 + Q2 theo đề xuất)
+- Loại: thêm + sửa hành vi (R-NPC-1, R-NPC-2) · Cỡ: lớn · Trạng thái: xong (2026-11-16 — NV7: người dùng thử "tạm ổn", giữ bộ số mặc định)
 
 ## Bối cảnh
 - Model Tripo (`design/models/thu-thu.glb`): xương `mixamorig:*` 65 khớp (Hips, Spine/Spine1/Spine2, Neck, Head, Shoulder,
@@ -62,7 +62,7 @@
 - [x] 6. Phòng thử `?dang=dong-tac&nv=thu-thu[&tinh=…]`: đi vòng / dừng / đứng, người giả lại gần, thanh trượt (nhịp bước,
       vung tay, khuỷu trễ, nhún, đổ người, thở, dồn trọng tâm, tầm nhìn), nút Chốt chép JSON (Canvas 3D · xong khi chạy trên
       `npm run dev` và artifact Canvas 3D).
-- [ ] 7. Người dùng chỉnh trên phòng thử → chốt → ghi bộ số vào `dongTac.ts`; đo fps trước / sau; chụp ảnh
+- [x] 7. Người dùng chỉnh trên phòng thử → chốt → ghi bộ số vào `dongTac.ts`; đo fps trước / sau; chụp ảnh
       `design/screens/Dong-tac-thu-thu-*.png` (xong khi người dùng duyệt).
 
 ## Kiểm tra cuối
