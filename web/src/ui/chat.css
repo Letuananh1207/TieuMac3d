@@ -90,7 +90,7 @@ body.chatting #joy,body.chatting #joyGhost,body.chatting #actions,body.chatting 
    Trò chuyện là hình đầu hàng thanh công cụ (toolbarMay.css), bấm / Enter → ô nhập + khung kênh nổi ngay trên hàng hình, mép
    trái thẳng hình Trò chuyện; 3 tin mới hiện ở đó vài giây rồi mờ (im lặng 10 s). Màn dọc: nút Trò chuyện tròn như điện thoại */
 @media (orientation:landscape){body.ban-may #chatBtn{display:none}}
-#chat.bar{--bar-l:calc(var(--sa-left) + 12px);--bar-w:min(440px,calc(100% - var(--sa-left) - var(--sa-right) - 24px));--bar-b:calc(var(--sa-bottom) + 102px)}
+#chat.bar{--bar-l:calc(var(--sa-left) + 12px);--bar-w:min(440px,calc(100% - var(--sa-left) - var(--sa-right) - 24px));--bar-b:calc(var(--sa-bottom) + 85px)}
 #chat.bar #chatForm{left:var(--bar-l);right:auto;bottom:var(--bar-b);width:var(--bar-w);padding:0;background:transparent;border:0;gap:4px;flex-direction:column-reverse}
 #chat.bar .cx-field{height:40px;box-shadow:0 6px 18px rgba(36,50,58,.2)}
 #chat.bar .cx-field input{font-size:14px}

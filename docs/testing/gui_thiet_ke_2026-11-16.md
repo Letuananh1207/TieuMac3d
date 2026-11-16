@@ -42,3 +42,10 @@ Người dùng gửi ảnh 摩尔 bản web (dải kho đáy khi trang trí nhà
 |---|---|---|---|
 | 2026-11-16.4 Túi đồ (`TuiDo-vuon-{doc,ngang}`) | 5 tab Hạt giống · Đồ làm vườn · Nông sản · Sách · Trang trí — không có Lâm sản | R-TUI-1 có ngăn **Lâm sản** (Măng × n, Măng to × n — R-MANG-3/5) | giữ ngăn Lâm sản thành nhóm "Lâm sản" dưới lưới Nông sản trong tab Nông sản (chip "tên × n", hình măng chờ thiết kế); R-TUI-1 ghi rõ. Xin vẽ: tab Nông sản có nhóm Lâm sản (hoặc tab thứ 6) + hình măng |
 
+## Thanh máy tính: hình 76 → 56 (V-20261116-97)
+
+Người dùng 2026-11-16: "kích thước các icon tiện ích ở thanh công cụ đang khá lớn" → chỉ **bản máy tính** (body.ban-may) thu ~1/4; điện thoại giữ 44. Bản máy tính chưa có trên canvas.
+
+| Mục thiết kế | Thiết kế vẽ gì | Luật nói gì | Code đang làm |
+|---|---|---|---|
+| 2026-11-15.35 Thanh công cụ (máy tính) | chưa vẽ bản máy tính | R-THANH-1 (không ghi cỡ hình — không sửa) | hàng 6 hình **56** (trước 76), ô rộng tối thiểu 68 (trước 88), ru-băng chữ giữ 12 px cao 20, chồng hình 9 (trước 12); bảng Biểu cảm / tấm báo nhà đáy `--band-h + 33` (trước + 50), ô nhập / khung kênh `--bar-b` 85 (trước 102) — `web/src/ui/toolbarMay.css`, `chat.css`. Ảnh trước / sau: `design/screens/Thanh-may-icon-56.png`. Xin vẽ `ThanhCongCu-may` theo cỡ này |
