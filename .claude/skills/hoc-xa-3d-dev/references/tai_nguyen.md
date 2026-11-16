@@ -19,7 +19,11 @@ skill `/tai-nguyen` (Hunyuan3D trên máy người dùng). Mọi thứ đóng g�
 Ngân sách: nhân vật ≤ 10k tam giác ≤ 1,5 MB, công trình ≤ 20k ≤ 3 MB, ≤ 1024² texture; cả cảnh ≤ 150 draw call ≤ 150k
 tam giác. Model AI một khối = 1 draw call (đệ tử khối ~25). Công trình `.glb`: `scene/staticModel.ts` (`staticModelUrl`, `loadStaticModel`, `footprints` = hộp va chạm chân đế đo từ
 lưới); cổng: `gates[].model` → `gate.ts` `addGateModel` (co theo `gateSpan`, biển chữ dán lên biển trống), nạp sau
-`mergeStatic`, lỗi → bản khối. Nhà (`buildings[].model`) chưa có.
+`mergeStatic`, lỗi → bản khối. Nhà kín `nha-o` (`buildings[].model`, V-88): `scene/nhaModel.ts` — va chạm / nền / biển / đèn
+lồng dựng ngay từ bản khối (`nhaOBody` + `nhaODecor`, `rooms.ts` `buildWalkIn` / `addShellColliders`), model co riêng ba trục
+khớp `houseFrame` (thân + mái khối ∪ bậc đá; `NHA_MODEL_TUNE.yaw`, cảnh báo lệch dáng > 15 %), tấm sáng hai ô cửa sổ ban đêm
+(`windowGlowMaterial`, R-NGAY-3); nạp xong mới thêm (`World.ready`, màn tải chờ ≤ 2 s — `waitHouses`); thiếu file → khối,
+lỗi → khối muộn. Thử: Canvas 3D `?vung=nha-ta&mau-nha=khoi-gop|<mã>`, `&khoi`. Tripo công trình: `tripo.sh <tên> --loai cong-trinh`.
 Hạc truyền tống `design/models/hac.glb` (Tripo, tư thế bay lướt, KHÔNG rig): `scene/hacModel.ts` nạp một lần (`preloadCrane`
 ở `main.ts`), chuẩn hoá (sải dọc x — `spanYaw`; mũi +z — chỉnh `CRANE_MODEL_TUNE.yaw`; sải 5,6 m; đáy y 0), `scene/hacCanh.ts`
 đo vai / đầu cánh / đỉnh lưng + trọng số mềm → 5 xương (gốc, vai + đầu cánh hai bên), `Crane.useModel` vỗ bằng xương

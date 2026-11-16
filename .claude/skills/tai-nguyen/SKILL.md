@@ -97,6 +97,14 @@ cho màu sạch, xương Mixamo chuẩn. Quyết định 0003 mục "Cập nhậ
 - Động tác sẵn của Tripo người dùng chưa ưng (2026-11-16) — clip riêng (Mixamo cùng tên xương, hoặc động tác bằng code) cần kế hoạch `/lead`.
 - Đừng chạy Hunyuan khi phiên khác đang chạy (`tasklist | grep python` / dòng lệnh `mv_gen.py`) — hai phiên chung GPU → lỗi CUDA.
 
+### Công trình tĩnh bằng Tripo (nhà — V-88, 2026-11-16)
+
+Như trên nhưng **không Rig**, Polycount **18000** (ngân sách công trình 20k — `model:clean` không giảm thêm, giữ UV), Export
+Skeleton **tắt**; ảnh 4 góc theo phiếu (vd. `2026-11-16-anh-nha-ta`, khung `xem.py --vua`). Claude: `bash .claude/skills/tai-nguyen/scripts/tripo.sh
+<tên> --loai cong-trinh` → Read `-so.png` → `--dat`. Nhà kín: `/canh` thêm `"model": "<tên>"` vào `buildings[]`, chỉnh
+`NHA_MODEL_TUNE` (`web/src/scene/nhaModel.ts` — `yaw` nếu mặt tiền không nhìn +z), soát Canvas 3D `?vung=nha-ta` ngày + `&gio=21`
+(bảng báo co / lệch dáng; > 15 % → ảnh / model sai tỉ lệ). Artifact Canvas 3D không nhúng .glb lớn → ở đó thấy khối.
+
 ## Luồng cũ (dự phòng): nhân vật bằng Hunyuan từ bộ ảnh 4 góc (chốt 2026-11-12.12)
 
 Vì sao luồng này: 4 ảnh cho Hunyuan đủ dáng mọi phía; bản **đầy đủ** Hunyuan3D-2mv (không turbo) cho tóc / tai / đầu
