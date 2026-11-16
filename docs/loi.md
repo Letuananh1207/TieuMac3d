@@ -21,13 +21,19 @@ Mức độ:
 
 ### L-20 · Dáng chạy / đi kỳ quặc: chân không thẳng, chỉ cẳng tay đung đưa (cánh tay trên đứng yên)
 
-- Trạng thái: đang sửa · Mức độ: khó chịu (dáng di chuyển thấy suốt lúc chơi) · Phần: nhân vật (`player/dang7.ts` `tronDiCu`, `mixamoCharacter.ts`, `dongTac.ts` `CHAY`) · Quy tắc: R-DIEU-5
+- Trạng thái: chờ thử máy · Mức độ: khó chịu (dáng di chuyển thấy suốt lúc chơi) · Phần: nhân vật (`player/dang7.ts` `tronDiCu`, `mixamoCharacter.ts`, `dongTac.ts` `CHAY`) · Quy tắc: R-DIEU-5
 - Báo: 2026-11-16 (thử máy sau sửa L-18) — "dáng chạy rất kỳ quặc chân không được thẳng, tay đung đưa cũng kỳ quặc chỉ mình phần dưới gần bàn tay là đung đưa, còn phần trên thì không"; người dùng chọn: bỏ gối co + khuỷu gập, tay vung nguyên cánh từ vai, chân thẳng như dáng cũ — **cả đi bộ lẫn chạy**; các dáng khác (biểu cảm, làm vườn, chắp tay…) vẫn dùng khuỷu
 - Các bước: 1. App, nhân vật chính bản Tripo (sau gộp L-18 `f57db3d`) 2. Chạy (đẩy hết cần) / đi bộ
 - Mong đợi / thực tế: chân thẳng, cả cánh tay vung từ vai như dáng cũ / gối co (đi 0,75, chạy +0,8), khuỷu gập + trễ nhịp → chỉ cẳng tay lắc, cánh tay trên gần như đứng
 - Bằng chứng: người dùng thử máy 2026-11-16
 
 **Sửa**
+- Nguyên nhân: nhánh Mixamo của nhân vật chính (L-18) cộng dáng đi cũ lên nền `DongTac` nhưng (1) `tronDiCu` thêm gối co theo nhịp (`DI_CU_GOI` 0,75 đi / +0,8 chạy) → chân không thẳng; (2) khuỷu vẫn lấy từ `DongTac` (`bent` = `khuyuCong` 0,28 khi đi, lên tới `CHAY.khuyu` 1,2 khi chạy — cờ `tuDi` chỉ tắt phần theo bước, không tắt khuỷu) → cánh tay trên có vung đúng ±0,34 / ±0,79 từ vai (đo bằng test: góc xương `LeftArm` đúng `diCuDang`), nhưng cẳng tay gập lệch hướng cánh tay trên nên mắt chỉ thấy bàn tay / cẳng tay lắc. Hàm `elbow` của `tronDang7` không dính vào đi / chạy.
+- Hành vi đúng: R-DIEU-5 không đổi chữ; người dùng chọn chân thẳng + tay thẳng vung từ vai như dáng 7 khớp cũ → không sửa sổ quy tắc.
+- Code: `web/src/player/dang7.ts` `tronDiCu` — bỏ `DI_CU_GOI`; khi bước, gối (`legL/legR`) và khuỷu (`foreL/foreR`, kể cả khuỷu chạy) duỗi về 0 theo trọng số `min(1, 2·move)·(1 − nhảy)·(1 − ngồi)` (đứng ↔ đi chuyển mượt; nhảy / ngồi giữ gối / khuỷu của dáng đó); vung tay vẫn đặt vào `armL/armR` (cánh tay trên). Biểu cảm, làm vườn, chắp tay, gõ mõ, gảy đàn trộn đè sau nên giữ khuỷu như cũ; NPC không đi qua `tronDiCu` (không đổi); nhánh `autoRig` không đổi.
+- Test: `web/src/player/diCu.test.ts` — `'R-DIEU-5 (L-20): nhân vật chính đi bộ / chạy — chân thẳng (gối 0), cả cánh tay vung từ vai, cẳng tay đi theo (khuỷu 0)'` chạy `mixamoCharacter` + `mixamoRig` thật trên xương giả chữ A, đo hướng xương thế giới: đùi ∥ cẳng chân, cẳng tay ∥ cánh tay trên, góc ra trước của `LeftArm` (khung ngực) = tay đưa trước + vung tay dáng cũ từng khung, biên độ hai chiều. Đỏ trước khi sửa (gối 0,03…0,31 rad; khuỷu 0,21 đi / 0,89 chạy). Toàn bộ `npm test` xanh.
+- Ảnh: `design/screens/Loi-L20-dang-di.png` (bản cũ Hunyuan autoRig · trước sửa · sau sửa; đi bộ pha 2/4/6, chạy pha 3/4/5, nhìn ngang) — sau sửa: chân thẳng, tay thẳng vung trước / sau từ vai (rõ nhất chạy pha 4), không xuyên thân.
+- Thử máy: `cd web && npm run build` → app → đi bộ (đẩy nửa cần) và chạy (đẩy hết) vài vòng, nhìn ngang: chân thẳng, cả cánh tay vung từ vai; dừng lại → đứng / vươn vai / biểu cảm chuyển mượt, khuỷu biểu cảm vẫn gập. Còn lỗi → quay màn 5 giây khi đi + chạy.
 
 **Lịch sử**
 - 2026-11-16: ghi, sửa ngay (người dùng chọn). Liên quan L-18 (hai chỗ "tự chọn khác bản cũ" của L-18 bị bỏ).

@@ -4,7 +4,7 @@ import type { CharacterState } from './character';
 import { RUN_SPEED, WALK_SPEED } from './controller';
 import { DongTac, TINH, type Pose } from './dongTac';
 import { mixamoCharacter, tinhFor, type MixamoOpts } from './mixamoCharacter';
-import type { MixamoRig } from './mixamoRig';
+import { mixamoRig, type MixamoRig } from './mixamoRig';
 
 /** Xương giả: ghi lại dáng mỗi khung (không cần model). */
 function fakeRig(): MixamoRig & { last: Pose | null } {
@@ -128,4 +128,86 @@ describe('Dáng đi nhân vật chính (L-18, R-DIEU-5, R-NPC-10)', () => {
     }
     expect(bob.rotation.x).toBe(0);
   });
+});
+
+/** Xương giả kiểu Mixamo đứng chữ A (tay trái chéo ra +x, xuống), chân thẳng — để đo hướng xương thật sau `mixamoRig`. */
+function aPoseSkeleton(a = 0.7): { root: THREE.Group; at: (n: string) => THREE.Vector3; rot: (n: string) => THREE.Quaternion } {
+  const root = new THREE.Group();
+  const bones = new Map<string, THREE.Bone>();
+  const add = (name: string, parent: THREE.Object3D, pos: [number, number, number]): THREE.Bone => {
+    const b = new THREE.Bone();
+    b.name = `mixamorig${name}`;
+    b.position.set(...pos);
+    parent.add(b);
+    bones.set(name, b);
+    return b;
+  };
+  const hips = add('Hips', root, [0, 0.6, 0]);
+  const spine = add('Spine', hips, [0, 0.1, 0]);
+  const chest = add('Spine1', spine, [0, 0.1, 0]);
+  const upper = add('Spine2', chest, [0, 0.1, 0]);
+  const neck = add('Neck', upper, [0, 0.15, 0]);
+  add('Head', neck, [0, 0.08, 0]);
+  for (const [side, sx] of [['Left', 1], ['Right', -1]] as const) {
+    const dir: [number, number, number] = [Math.sin(a) * sx * 0.2, -Math.cos(a) * 0.2, 0];
+    const arm = add(`${side}Arm`, upper, [0.12 * sx, 0.1, 0]);
+    const fore = add(`${side}ForeArm`, arm, dir);
+    add(`${side}Hand`, fore, dir);
+    const up = add(`${side}UpLeg`, hips, [0.08 * sx, -0.05, 0]);
+    const leg = add(`${side}Leg`, up, [0, -0.25, 0]);
+    add(`${side}Foot`, leg, [0, -0.25, 0]);
+  }
+  root.updateMatrixWorld(true);
+  return {
+    root,
+    at: (n) => {
+      root.updateMatrixWorld(true);
+      return bones.get(n)!.getWorldPosition(new THREE.Vector3());
+    },
+    rot: (n) => bones.get(n)!.getWorldQuaternion(new THREE.Quaternion()),
+  };
+}
+
+describe('Dáng đi / chạy nhân vật chính trên xương thật (L-20, R-DIEU-5)', () => {
+  for (const [ten, mps] of [['đi bộ', WALK_SPEED], ['chạy', RUN_SPEED]] as const) {
+    it(`R-DIEU-5 (L-20): nhân vật chính ${ten} — chân thẳng (gối 0), cả cánh tay vung từ vai, cẳng tay đi theo (khuỷu 0)`, () => {
+      const { root, at, rot } = aPoseSkeleton();
+      const rig = mixamoRig(root)!;
+      const ch = mixamoCharacter(
+        { root: new THREE.Group(), body: new THREE.Group(), bob: new THREE.Group(), model: root },
+        rig,
+        { player: true },
+      );
+      const ref = oldWalk();
+      const fwd = (v: THREE.Vector3): number => Math.atan2(v.z, -v.y); // góc ra trước trên mặt phẳng dọc
+      let lo = Infinity;
+      let hi = -Infinity;
+      let swingMax = 0;
+      for (let i = 0; i < 120; i++) {
+        ch.animate(1 / 60, mps / RUN_SPEED, st(mps));
+        const o = ref(1 / 60, mps);
+        if (i < 60) continue; // đã vào nhịp đều
+        // (a) chân thẳng: đùi → gối → cổ chân thẳng hàng
+        for (const s of ['Left', 'Right']) {
+          const thigh = at(`${s}Leg`).sub(at(`${s}UpLeg`)).normalize();
+          const shin = at(`${s}Foot`).sub(at(`${s}Leg`)).normalize();
+          expect(thigh.angleTo(shin), `gối ${s}`).toBeLessThan(0.02);
+        }
+        // (b) đo trong khung ngực (`Spine2` — cha của vai; xương giả gốc không xoay): bỏ phần thân cúi / xoay hông
+        const chest = rot('Spine2').invert();
+        const up = at('LeftForeArm').sub(at('LeftArm')).applyQuaternion(chest).normalize();
+        const fore = at('LeftHand').sub(at('LeftForeArm')).applyQuaternion(chest).normalize();
+        // cẳng tay cùng hướng cánh tay trên (khuỷu thẳng như tư thế gốc) — không lắc riêng
+        expect(up.angleTo(fore), 'khuỷu trái').toBeLessThan(0.02);
+        // góc ra trước của cánh tay trên = tay đưa trước của dáng nền + vung tay dáng cũ, từng khung (x âm = ra trước)
+        expect(fwd(up)).toBeCloseTo(TINH['hoat-bat'].tayTruoc - o.armLx, 2);
+        lo = Math.min(lo, fwd(up));
+        hi = Math.max(hi, fwd(up));
+        swingMax = Math.max(swingMax, Math.abs(o.armLx));
+      }
+      // cánh tay trên dao động hai chiều quanh vai với biên độ vung tay dáng cũ (0,34 đi bộ, 0,79 chạy)
+      expect(hi - lo).toBeGreaterThan(2 * swingMax * 0.95);
+      expect(swingMax).toBeGreaterThan(mps === WALK_SPEED ? 0.3 : 0.7);
+    });
+  }
 });

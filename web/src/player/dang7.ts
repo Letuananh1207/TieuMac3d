@@ -191,29 +191,26 @@ export function diCuDang(s: DiCu): DiCuDang {
   };
 }
 
-/** Gối co khi chân đưa lên trong dáng đi cũ trên xương có gối (rad, đúng nhịp `walkT`) — dáng 7 khớp cũ không có gối. */
-export const DI_CU_GOI = { di: 0.75, chay: 0.8 };
-
 /**
  * Cộng dáng đi cũ [d] (trạng thái [s]) vào [pose] 18 khớp (nhánh Mixamo của nhân vật chính, L-18). Dáng nền phải tắt phần
  * bước (`DongTac.update(…, { tuDi: true })`). Trộn với nhảy / ngồi như bản cũ: đùi + tay dạng `mix(…, NHAY7 | NGOI7, …)` →
- * nhân (1 − nhảy)(1 − ngồi); vung tay `mix(…, NGOI7, ngồi)` → nhân (1 − ngồi); hông / đầu xoay, nhún không giảm. Gối (bản
- * cũ không có) theo phần đùi. Đổ người (`d.lean`) nơi gọi xoay cả thân quanh bàn chân (như `bob.rotation.x` cũ).
+ * nhân (1 − nhảy)(1 − ngồi); vung tay `mix(…, NGOI7, ngồi)` → nhân (1 − ngồi); hông / đầu xoay, nhún không giảm. Đổ người
+ * (`d.lean`) nơi gọi xoay cả thân quanh bàn chân (như `bob.rotation.x` cũ).
+ *
+ * L-20: như dáng 7 khớp cũ (không gối, không khuỷu) — khi bước, gối và khuỷu duỗi thẳng (kể cả khuỷu gập khi chạy / khuỷu
+ * đứng của `DongTac`): chân thẳng, cả cánh tay vung từ vai. Trọng số theo cường độ bước (đứng ↔ đi chuyển mượt), trừ lúc
+ * nhảy / ngồi (dáng đó giữ gối / khuỷu của nó).
  */
 export function tronDiCu(pose: Pose, s: DiCu, d: DiCuDang, sit: number): void {
   const wLeg = (1 - s.airB) * (1 - sit);
   const wArm = 1 - sit;
+  const wStraight = Math.min(1, 2 * s.move) * wLeg;
   const j = pose.j;
-  const c = Math.cos(s.walkT);
-  const knee = (DI_CU_GOI.di + DI_CU_GOI.chay * s.runB) * s.move * wLeg;
-  const kL = knee * Math.max(0, -c);
-  const kR = knee * Math.max(0, c);
   j.upLegL[0] += d.legL * wLeg;
   j.upLegR[0] += d.legR * wLeg;
-  j.legL[0] += kL;
-  j.legR[0] += kR;
-  j.footL[0] -= (d.legL * wLeg + kL) * 0.6;
-  j.footR[0] -= (d.legR * wLeg + kR) * 0.6;
+  for (const e of [j.legL, j.legR, j.foreL, j.foreR]) for (let i = 0; i < 3; i++) e[i] *= 1 - wStraight;
+  j.footL[0] -= d.legL * wLeg * 0.6;
+  j.footR[0] -= d.legR * wLeg * 0.6;
   j.armL[0] += d.armL * wArm;
   j.armR[0] += d.armR * wArm;
   j.armL[2] += d.sway * wLeg;
