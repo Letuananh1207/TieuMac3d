@@ -5,3 +5,7 @@ declare module 'node:fs' {
   export function existsSync(path: URL | string): boolean;
   export function realpathSync(path: URL | string): string;
 }
+declare module 'node:fs' {
+  /** không mã hoá → bytes (Buffer của Node là Uint8Array) */
+  export function readFileSync(path: URL | string): Uint8Array;
+}

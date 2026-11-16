@@ -1,9 +1,9 @@
 /**
  * Hạc truyền tống bằng model (`design/models/hac.glb` — Tripo, tư thế bay lướt, KHÔNG rig; kế hoạch
  * docs/tasks/2026-11-16-hac-model.md). Nạp một lần, chuẩn hoá (sải dọc x, mũi +z, sải `CRANE_SPAN`, đáy y = 0, chỗ ngồi ở
- * z = `SEAT_Z` như bản khối), đo dáng + chia trọng số (`hacCanh.ts`, chân `hacChan.ts`) rồi tự gắn 13 xương: gốc · vai
- * + đầu cánh trái / phải · hông + gối + cổ chân trái / phải · gốc cổ + đầu (`hacCo.ts`) → `Crane.useModel` vỗ cánh, đứng
- * (L-22) bằng xương. Thiếu file / nạp lỗi → `null`, hạc giữ bản khối (`hac.ts`).
+ * z = `SEAT_Z` như bản khối), nắn dáng thon (`hacNan.ts`, V-20261116-104 — model chibi khớp sải làm thân phình), đo
+ * dáng + chia trọng số (`hacCanh.ts`, chân `hacChan.ts`) rồi tự gắn 13 xương: gốc · vai + đầu cánh trái / phải · hông +
+ * gối + cổ chân trái / phải · gốc cổ + đầu (`hacCo.ts`) → `Crane.useModel` vỗ cánh, đứng (L-22) bằng xương. Thiếu file / nạp lỗi → `null`, hạc giữ bản khối (`hac.ts`).
  * Lớp `scene/` không import `player/` (0001) → không dùng `autoRig.ts`; nạp bằng `staticModel.ts`.
  */
 import * as THREE from 'three';
@@ -11,6 +11,7 @@ import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js
 import { CRANE_BONES, craneWeights, measureCrane, spanYaw, type CraneShape } from './hacCanh';
 import { measureLegs } from './hacChan';
 import { measureNeck } from './hacCo';
+import { reshapeCrane, type CraneReshape } from './hacNan';
 import { bakeTransforms, loadStaticModel, staticModelUrl } from './staticModel';
 
 /** Sải cánh chuẩn (m, chưa nhân `crane.scale`) — bằng bản khối (Q4): bãi đáp, camera, đường bay giữ nguyên. */
@@ -18,7 +19,25 @@ export const CRANE_SPAN = 5.6;
 /** z chỗ ngồi (như `SEAT_AT` của bản khối) */
 const SEAT_Z = -0.1;
 
-/** Chỉnh tay khi đặt model thật (NV8): mã file, hướng mũi, ép vai, độ nâng chỗ ngồi. */
+/**
+ * Nắn dáng model Tripo (V-20261116-104, `hacNan.ts`): mình chibi → thon, cổ dài, chân dài như hạc khối. Số đo trước / sau:
+ * docs/tasks/2026-11-16-hac-thon.md.
+ */
+const NAN: CraneReshape = {
+  /** thu cả con còn 0,7 (thân dài 5,6 → ~3,9 m như hạc khối 3,6 m + cổ dài hơn); cánh dãn bù — sải vẫn 5,6 m */
+  size: 0.78,
+  /** thân co ngang 30 %, co dày 30 % quanh trục thân (dày 1,1 → ~0,55 m sau thu) */
+  bodyX: 0.25,
+  bodyY: 0.3,
+  /** cổ dài gấp 2,2 */
+  neck: 2.0,
+  /** đầu to kiểu chibi → thu còn 0,65 (cổ vuốt mảnh dần tới đó) */
+  head: 0.75,
+  /** chân dài gấp 1,6 */
+  legs: 1.7,
+};
+
+/** Chỉnh tay khi đặt model thật (NV8): mã file, hướng mũi, ép vai, độ nâng chỗ ngồi, nắn dáng. */
 export const CRANE_MODEL_TUNE = {
   id: 'hac',
   /** quay thêm quanh trục đứng (rad) sau khi tự đặt sải dọc x — mũi phải nhìn +z */
@@ -27,6 +46,8 @@ export const CRANE_MODEL_TUNE = {
   shoulderX: null as number | null,
   /** chỗ ngồi cao hơn đỉnh lưng (m) */
   seatLift: 0.11,
+  /** nắn dáng lúc nạp (`hacNan.ts`); `null` = giữ nguyên model (Canvas 3D `&nan=0` để so) */
+  nan: NAN as CraneReshape | null,
 };
 export type CraneTune = typeof CRANE_MODEL_TUNE;
 
@@ -41,11 +62,8 @@ export interface CraneModel {
 
 const positions = (g: THREE.BufferGeometry): ArrayLike<number> => g.getAttribute('position').array;
 
-/** Lưới bất kỳ (toạ độ model) → model hạc chuẩn hoá + trọng số. Không sửa `src`. */
-export function craneModelFrom(src: THREE.BufferGeometry, material: THREE.Material, tune: CraneTune = CRANE_MODEL_TUNE): CraneModel {
-  const g = src.clone();
-  const yaw = spanYaw(positions(g)) + tune.yaw;
-  if (yaw) g.rotateY(yaw);
+/** Sải dọc x, tâm ngang x = 0, đáy y = 0, sải `CRANE_SPAN` (sửa `g` tại chỗ). */
+function normalize(g: THREE.BufferGeometry): void {
   g.computeBoundingBox();
   const b = g.boundingBox as THREE.Box3;
   const half = (b.max.x - b.min.x) / 2;
@@ -53,16 +71,47 @@ export function craneModelFrom(src: THREE.BufferGeometry, material: THREE.Materi
   g.translate(-(b.min.x + b.max.x) / 2, -b.min.y, 0);
   const k = CRANE_SPAN / 2 / half;
   g.scale(k, k, k);
+}
+
+/** Đo đủ (cánh, chân, cổ) trên lưới đã chuẩn hoá. */
+function measureAll(g: THREE.BufferGeometry, opts: { shoulderX: number | null; seatLift: number }): CraneShape {
+  const pos = positions(g);
+  const index = g.index ? g.index.array : null;
+  const shape: CraneShape = measureCrane(pos, opts);
+  shape.legs = measureLegs(pos, index, shape.halfSpan, shape.shoulder[0] * 0.9);
+  shape.neck = measureNeck(pos, index, shape.seat[2], shape.shoulder[0] * 0.9, shape.halfSpan);
+  return shape;
+}
+
+/**
+ * Lưới bất kỳ (toạ độ model) → model hạc chuẩn hoá + trọng số. Không sửa `src`. `nan` (mặc định không nắn — "khối gộp" /
+ * test): nắn dáng rồi chuẩn hoá + đo lại.
+ */
+export function craneModelFrom(
+  src: THREE.BufferGeometry,
+  material: THREE.Material,
+  tune: CraneTune = CRANE_MODEL_TUNE,
+  nan: CraneReshape | null = null,
+): CraneModel {
+  const g = src.clone();
+  const yaw = spanYaw(positions(g)) + tune.yaw;
+  if (yaw) g.rotateY(yaw);
+  normalize(g);
   const opts = { shoulderX: tune.shoulderX, seatLift: tune.seatLift };
+  if (nan) {
+    const attr = g.getAttribute('position') as THREE.BufferAttribute;
+    if (!(attr.array instanceof Float32Array)) throw new Error('hacModel: toạ độ đỉnh phải là số thực để nắn');
+    reshapeCrane(attr.array, measureAll(g, { shoulderX: null, seatLift: tune.seatLift }), nan);
+    attr.needsUpdate = true;
+    normalize(g);
+  }
   g.translate(0, 0, SEAT_Z - measureCrane(positions(g), opts).seat[2]);
   const pos = positions(g);
-  const shape: CraneShape = measureCrane(pos, opts);
-  shape.legs = measureLegs(pos, g.index ? g.index.array : null, shape.halfSpan, shape.shoulder[0] * 0.9);
-  shape.neck = measureNeck(pos, g.index ? g.index.array : null, shape.seat[2], shape.shoulder[0] * 0.9, shape.halfSpan);
+  const shape = measureAll(g, opts);
   const w = craneWeights(pos, shape);
   g.setAttribute('skinIndex', new THREE.Uint16BufferAttribute(w.index, 4));
   g.setAttribute('skinWeight', new THREE.Float32BufferAttribute(w.weight, 4));
-  if (!g.getAttribute('normal')) g.computeVertexNormals();
+  if (nan || !g.getAttribute('normal')) g.computeVertexNormals();
   g.computeBoundingSphere();
   const triangles = (g.index ? g.index.count : g.getAttribute('position').count) / 3;
   return { geometry: g, material, shape, triangles };
@@ -128,24 +177,28 @@ async function loadFrom(url: string, tune: CraneTune): Promise<CraneModel> {
   const geo = geos.length === 1 ? geos[0] : mergeGeometries(geos);
   if (!geo) throw new Error(`hacModel: không gộp được ${geos.length} lưới (${url})`);
   const mat = meshes[0].material;
-  const model = craneModelFrom(geo, Array.isArray(mat) ? mat[0] : mat, tune);
+  const model = craneModelFrom(geo, Array.isArray(mat) ? mat[0] : mat, tune, tune.nan);
   for (const g of new Set([geo, ...geos])) g.dispose();
   return model;
 }
 
-/** Nạp model hạc `id` (mặc định `hac`) một lần; không có file / lỗi → `null` (báo ở console). */
-export function loadCraneModel(id: string = CRANE_MODEL_TUNE.id): Promise<CraneModel | null> {
-  let p = pending.get(id);
+/**
+ * Nạp model hạc `id` (mặc định `hac`) một lần; không có file / lỗi → `null` (báo ở console). `nan = false`: bản chưa nắn
+ * (chỉ Canvas 3D so trước / sau).
+ */
+export function loadCraneModel(id: string = CRANE_MODEL_TUNE.id, nan = true): Promise<CraneModel | null> {
+  const key = nan ? id : `${id}#tho`;
+  let p = pending.get(key);
   if (!p) {
     const url = staticModelUrl(id);
-    const tune = { ...CRANE_MODEL_TUNE, id };
+    const tune = { ...CRANE_MODEL_TUNE, id, nan: nan ? CRANE_MODEL_TUNE.nan : null };
     p = url
       ? loadFrom(url, tune).then(
-          (m) => (ready.set(id, m), m),
+          (m) => (ready.set(key, m), m),
           (e: unknown) => (console.warn(`[hac] ${id}.glb nạp lỗi — dùng hạc khối`, e), null),
         )
       : Promise.resolve(null);
-    pending.set(id, p);
+    pending.set(key, p);
   }
   return p;
 }

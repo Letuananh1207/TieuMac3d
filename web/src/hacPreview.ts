@@ -3,7 +3,7 @@
  * Hạc lượn tại chỗ xuất phát (hoặc `&nv=x,z`), nhân vật ngồi cưỡi trên lưng (dáng `cuoiDang.ts` — R-HANH-5), thông số đo ở bảng.
  * - `&mau=hac` (mặc định khi có `design/models/hac.glb`) · `&mau=khoi-gop` (thân + cánh khối gộp một lưới — thử đường tự
  *   tách cánh, mặc định khi chưa có model; artifact không nhúng được .glb lớn) · `&mau=<mã>` (model khác trong design/models/)
- * - `&khoi` — bản khối cũ (3 draw call) để so · `&gap=1` — đứng đáp trên hai chân, cánh xếp (Q1, L-22)
+ * - `&nan=0` — model chưa nắn dáng (so trước / sau V-20261116-104) · `&khoi` — bản khối cũ (3 draw call) để so · `&gap=1` — đứng đáp trên hai chân, cánh xếp (Q1, L-22)
  * - `&chan=0…1` — chân: 0 duỗi sau (bay) → 1 đứng (mặc định theo `gap`) · `&nhun=0…1` — nhún · `&cao=<m>` — cao hơn đất
  *   (mặc định: đứng hẳn → 0, còn lại lượn 2,2 m) — chụp "vừa rời đất, chân đang thu" (L-22)
  * - `&gan[=k]` — camera lại gần (khoảng cách × k, mặc định 0,5 — soát chân người cưỡi)
@@ -25,13 +25,14 @@ const SPEED = 4;
 /** lượn: cao hơn mặt đất (m) */
 const HOVER = 2.2;
 
-async function pickModel(spec: SceneSpec, mau: string, lines: string[]): Promise<CraneModel | null> {
+async function pickModel(spec: SceneSpec, mau: string, nan: boolean, lines: string[]): Promise<CraneModel | null> {
   if (mau === 'khoi-gop') {
     lines.push('Hạc: khối gộp (thân + 2 cánh một lưới) — thử đường tự tách cánh như model Tripo');
     return craneModelFrom(blockCraneGeometry(spec.crane), lambert('#ffffff', { vertexColors: true, side: THREE.DoubleSide, emissive: '#2b2b2b' }));
   }
-  const m = await loadCraneModel(mau);
-  lines.push(m ? `Hạc: model design/models/${mau}.glb` : `Hạc: không nạp được design/models/${mau}.glb — đang xem bản khối`);
+  const m = await loadCraneModel(mau, nan);
+  const how = nan ? 'đã nắn dáng' : 'chưa nắn (`&nan=0`)';
+  lines.push(m ? `Hạc: model design/models/${mau}.glb — ${how}` : `Hạc: không nạp được design/models/${mau}.glb — đang xem bản khối`);
   return m;
 }
 
@@ -48,7 +49,7 @@ export async function addCranePreview(
   const crane = new Crane(spec.crane);
   const block = params.has('khoi');
   const mau = params.get('mau') ?? (staticModelUrl(CRANE_MODEL_TUNE.id) ? CRANE_MODEL_TUNE.id : 'khoi-gop');
-  const model = block ? null : await pickModel(spec, mau, lines);
+  const model = block ? null : await pickModel(spec, mau, params.get('nan') !== '0', lines);
   if (block) lines.push('Hạc: bản khối cũ (3 draw call)');
   if (model) {
     crane.useModel(model);
