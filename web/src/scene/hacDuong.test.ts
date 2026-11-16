@@ -1,7 +1,8 @@
 import * as THREE from 'three';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { buildFlight } from './bayMay';
-import { Crane } from './hac';
+import { blockCraneGeometry, Crane } from './hac';
+import { craneModelFrom } from './hacModel';
 import { arriveCurve, bezier, jumpArc, landCurve, landingPad, mountPad, START_HEADING, takeoffCurve } from './hacDuong';
 import { HOME_SCENE, loadScene, REGION_SCENES } from './loadSpec';
 import { craneProblems } from './specCheck';
@@ -73,5 +74,28 @@ describe('hạc truyền tống — bãi đáp, đường bay (R-HANH-5)', () =>
     // + nhân vật (glb ~3) lúc vẽ
     expect(count(1) + 3).toBeLessThanOrEqual(12);
     expect(count(0.5)).toBe(count(1) - 2); // Thấp: bỏ mây phồng + dải sương núi
+  });
+
+  it('R-HANH-5: cảnh bay đổi hạc sang model (nạp xong giữa chừng) → bớt 2 draw call, ban đêm vật liệu model nhân màu đêm như cảnh', () => {
+    // sao / trăng vẽ bằng canvas 2D → canvas giả (mọi lệnh vẽ trả lại chính nó)
+    const ctx: unknown = new Proxy({}, { get: (_t, key) => (key === 'getImageData' ? () => ({ data: new Uint8ClampedArray(4) }) : () => ctx) });
+    vi.stubGlobal('document', { createElement: () => ({ width: 0, height: 0, style: {}, getContext: () => ctx }) });
+    const town = loadScene(HOME_SCENE).spec;
+    const f = buildFlight({ ...town, dayNight: { ...town.dayNight, enabled: true } }, 1, 0, true);
+    vi.unstubAllGlobals();
+    const meshes = (): number => {
+      let n = 0;
+      f.scene.traverse((o) => o instanceof THREE.Mesh && n++);
+      return n;
+    };
+    const before = meshes();
+    f.useCraneModel(craneModelFrom(blockCraneGeometry(town.crane), new THREE.MeshBasicMaterial({ color: '#ffffff' })));
+    expect(f.crane.usesModel).toBe(true);
+    expect(meshes()).toBe(before - 2);
+    let mat: THREE.MeshBasicMaterial | null = null;
+    f.crane.root.traverse((o) => o instanceof THREE.SkinnedMesh && (mat = o.material as THREE.MeshBasicMaterial));
+    expect(mat).not.toBeNull();
+    expect((mat as unknown as THREE.MeshBasicMaterial).color.r).toBeLessThan(0.8); // 0 giờ: đêm
+    f.dispose();
   });
 });

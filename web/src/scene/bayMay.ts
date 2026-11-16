@@ -3,13 +3,15 @@
  * (trời, sương, đèn, núi xa) + mặt biển mây + mây phồng (bỏ ở mức Thấp) + hạc; màu theo giờ (ngày đêm — `apGio.ts`, áp một
  * lần). Hạc lượn vòng rộng quanh tâm cảnh nên núi xa trôi chậm, mây phồng lướt qua. Chạy cùng renderer với cảnh thật
  * trong lúc cảnh thật dựng ngầm; xong thì `dispose()`.
- * Ngân sách: trời 1 + núi xa 1–2 + biển mây 1 + mây phồng 1 + sao / trăng 0–2 + hạc 3 + nhân vật ≈ 12 draw call.
+ * Ngân sách: trời 1 + núi xa 1–2 + biển mây 1 + mây phồng 1 + sao / trăng 0–2 + hạc 3 (model `hac.glb`: 1) + nhân vật
+ * ≈ 12 draw call.
  */
 import * as THREE from 'three';
-import { createDayNight } from './apGio';
+import { createDayNight, type DayNight } from './apGio';
 import { addEnvironment } from './environment';
 import { addFarMountains, viewDistance } from './farMountains';
 import { Crane } from './hac';
+import { withCraneModel, type CraneModel } from './hacModel';
 import { flightCamera, type V3 } from './hacDuong';
 import { viewLayers } from './layers';
 import { dayNightTag } from './materials';
@@ -37,6 +39,8 @@ export interface FlightScene {
   /** vị trí chỗ ngồi + hướng bay — để đặt nhân vật (bên gọi đặt, không thêm vào cảnh này lúc áp giờ) */
   readonly seat: THREE.Vector3;
   heading: number;
+  /** đổi hạc sang model + quét ngày đêm (tự gọi khi model nạp xong) */
+  useCraneModel(m: CraneModel): void;
   update(dt: number, aspect: number): void;
   dispose(): void;
 }
@@ -86,14 +90,23 @@ export function buildFlight(spec: SceneSpec, detail: number, gio: number, colorM
     owned.push(puffs.geometry, puffs.material as THREE.Material);
   }
   const dn = spec.dayNight;
+  let dayNight: DayNight | null = null;
   if (dn.enabled) {
     // áp giờ một lần, TRƯỚC khi thêm hạc / nhân vật: vật liệu nhân vật dùng chung với cảnh thật — không được nhân màu đêm hai lần
     const sky = addNightSky(scene, dn, far * 0.72, detail >= 1);
-    createDayNight(scene, spec, env, { glow: null, sky, colorManaged }).apply(phaNgay(gio, dn.moc), 0);
+    dayNight = createDayNight(scene, spec, env, { glow: null, sky, colorManaged });
+    dayNight.apply(phaNgay(gio, dn.moc), 0);
   }
   const crane = new Crane(spec.crane);
   crane.fold = 0;
   scene.add(crane.root);
+  // model hạc nạp xong (kể cả khi đang bay): đổi hình rồi quét lại ngày đêm — vật liệu không-sáng của model (bản sao riêng
+  // từng hạc) nhân màu đêm như cảnh. Nhân vật chỉ ở trong cảnh này lúc vẽ (CraneFlight.draw) nên không bị quét trúng.
+  const useCraneModel = (m: CraneModel): void => {
+    crane.useModel(m);
+    dayNight?.scan();
+  };
+  withCraneModel(useCraneModel);
   const seat = new THREE.Vector3();
   let a = Math.PI * 0.5;
   let t = 0;
@@ -104,6 +117,7 @@ export function buildFlight(spec: SceneSpec, detail: number, gio: number, colorM
     crane,
     seat,
     heading: 0,
+    useCraneModel,
     update(dt, aspect) {
       t += dt;
       a += (dt * FLY_SPEED) / LOOP_R;

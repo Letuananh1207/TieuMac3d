@@ -10,6 +10,7 @@ import * as THREE from 'three';
 import type { Character } from './player/character';
 import { buildFlight, type FlightScene } from './scene/bayMay';
 import { Crane } from './scene/hac';
+import { loadCraneModel, withCraneModel } from './scene/hacModel';
 import { arriveCurve, bezier, curveHeading, departCamera, ease, easeOut, jumpArc, landCamera, landCurve, landingPad, leaveCurve, lerp3, mountPad, takeoffCurve, type Curve, type V3 } from './scene/hacDuong';
 import { docEpGio, gioLuc, phaNgay } from './scene/ngayDem';
 import type { SceneSpec, XZ } from './scene/spec';
@@ -24,6 +25,8 @@ export const craneTrial = (params: URLSearchParams): boolean => params.has('hac'
 export const craneDeparts = (params: URLSearchParams, how: TravelHow, indoor = false): boolean =>
   wantsCrane({ how, trial: craneTrial(params), reducedMotion: prefersReducedMotion(), indoor });
 export const craneArrives = (params: URLSearchParams): boolean => arrivingByCrane(params, prefersReducedMotion());
+/** nạp model hạc sớm (một lần) — hạc hiện lúc chưa nạp xong thì dùng bản khối rồi đổi ngay khi xong (Q2) */
+export const preloadCrane = (): void => void loadCraneModel();
 
 /** đêm (theo giờ VN + `?gio`) → mây chàm */
 function isNight(spec: SceneSpec, params: URLSearchParams): { gio: number; night: boolean } {
@@ -80,6 +83,8 @@ export class CraneRide {
   ) {
     this.clock = new CraneClock(leg);
     this.crane = new Crane(o.spec.crane);
+    // model hạc (nếu có): đổi ngay khi nạp xong; ngày đêm của cảnh thật tự quét vật liệu mới (ngayDem.ts)
+    withCraneModel((m) => this.crane.useModel(m));
     this.pad = leg === 'cat' ? mountPad(o.at, o.heading) : landingPad(o.at, o.heading, o.spec.crane.padOffset);
     this.padY = o.groundAt(...this.pad);
     this.curves =

@@ -36,7 +36,7 @@ import { mergeStatic } from './scene/merge';
 import { inRect, type Room } from './scene/rooms';
 import { signText } from './scene/signAtlas';
 import { buildWorld, buildWorldStepped, type StepTimes } from './scene/world';
-import { CraneFlight, CraneRide, cameraPose, clearCraneParam, craneArrives, craneDeparts, craneHud, craneParams, dropCraneVeil, uncoverVeil } from './cuoiHac';
+import { CraneFlight, CraneRide, cameraPose, clearCraneParam, craneArrives, craneDeparts, craneHud, craneParams, dropCraneVeil, preloadCrane, uncoverVeil } from './cuoiHac';
 import { NHAP_DINH_OPEN_AT, NhapDinh } from './scene/nhapDinh';
 import { NgoiMat, type SitPlace } from './ngoiMat';
 import { el } from './ui/dom';
@@ -130,6 +130,7 @@ async function boot(): Promise<void> {
     colorManaged: isColorManaged(spec.look),
   });
   // tới bằng hạc (`?den=hac`, R-HANH-5): bay trên biển mây trong lúc cảnh thật dựng ngầm — màn tải mờ ngay khi cảnh bay hiện
+  preloadCrane(); // model hạc (design/models/hac.glb) nạp sớm, cả khi cất cánh lát nữa; thiếu file → hạc khối
   const flight = craneArrives(params) ? new CraneFlight(renderer, spec, params, detailOf(tier), isColorManaged(spec.look)) : null;
   if (!flight) dropCraneVeil(); // màn mây của index.html chỉ khi thật sự bay (cùng điều kiện — phòng lệch)
   if (flight) {
