@@ -2,7 +2,7 @@
 - Yêu cầu: "Tiểu nhị mang trà tới chỗ ngồi ở trà lâu" — đợt 2 của `docs/tasks/2026-11-13-npc-cong-trinh.md`. Người dùng đã
   chọn (2026-11-13): phục vụ **mọi chỗ ngồi trong trà lâu** (tầng 1 đôn + tầng 2). Sổ việc V-20261116-105.
 - Loại: thêm hành vi (NPC biết đi theo việc, không theo đồng hồ) + sửa hành vi ngồi nhìn từ mắt · Cỡ: lớn ·
-  Trạng thái: chờ duyệt (kế hoạch viết 2026-11-16 — chưa sửa code / sổ)
+  Trạng thái: đang làm — người dùng duyệt 2026-11-16: QĐ1 đi 2,4 m/s + câu báo · QĐ2 chén chỉ có sau khi rót (ghế lan can: tay phải chén, tay trái lan can) · QĐ3 đứng rót chếch trước – phải · QĐ4 miễn phí
 
 ## Hiện trạng đã kiểm bằng code (2026-11-16) — khác bản nháp 2026-11-13
 - **Model có rồi**: `design/models/tieu-nhi.glb` (Tripo, xương Mixamo, ~15 300 tam giác, CHANGELOG 2026-11-16.8). Đặt ở
@@ -130,7 +130,7 @@ Sửa kèm (cùng lần chép):
 - CPU: tìm đường lưới 0,25 m trên nhà 20 × 12 m (≈ 4 000 ô) mỗi lần ngồi chỗ chưa có đường (< 1 ms), nhớ lại; không chạy mỗi khung.
 
 ## Nhiệm vụ
-- [ ] 1. **Luật** (phiên chính): R-TRA-1 + sửa R-NPC-1, R-NPC-3, R-NGOI-1 theo bản nháp (sau khi người dùng chọn QĐ1–4) →
+- [x] 1. **Luật** (phiên chính — xong 2026-11-16, đã đồng bộ online): R-TRA-1 + sửa R-NPC-1, R-NPC-3, R-NGOI-1 theo bản nháp (sau khi người dùng chọn QĐ1–4) →
   `/dong-bo-quy-tac` → `dart tool/rule_trace.dart --mark-synced R-TRA-1 …`.
   (`docs/testing/quy_tac.md` · tài liệu · xong khi `rule_trace` báo R-TRA-1 có trong sổ, đã đồng bộ, chờ test.)
 - [ ] 2. **Tìm đường lưới** `web/src/collision/gridPath.ts` (lớp `collision/` — thuần): `findPath(from, to, walkable(x, z),
