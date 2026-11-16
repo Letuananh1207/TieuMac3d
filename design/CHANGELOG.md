@@ -21,6 +21,13 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
 - `scene:check`: Không có lỗi (`NPC quan-su: (-21; 7) nhìn 110°`). Ngân sách: thêm 1 NPC Tripo ≈ 15,4k tam giác (ẩn khi cách > 35 m — R-NPC-1).
 - Ảnh (Canvas 3D bản build trong worktree, chưa đăng lại): `screens/Canh-quan-su-loi-vao.png` (từ khe lan can nhìn vào), `screens/Canh-quan-su-can-mat.png`.
 - File: `models/quan-su.glb`, `models/LICENSES.md`, `scene/scene.json`, 3 ảnh `screens/`; code `web/src/zones/dialogs.ts`, `web/src/player/npc.ts`.
+## 2026-11-16.20 — Hạc cưỡi truyền tống bằng model Tripo
+
+- Loại: tài nguyên 3D. Kế hoạch `docs/tasks/2026-11-16-hac-model.md` NV8 (V-20261116-87). Phiếu ảnh `2026-11-16-anh-hac`.
+- `design/models/hac.glb` (Tripo, 15 814 tam giác, 182 KB, không xương) — code tự tách cánh, vỗ bằng xương tự dựng, đứng đáp gập đầu cánh;
+  `CRANE_MODEL_TUNE` giữ mặc định (mũi +z, vai đo đúng). Chỗ ngồi y 1,34 (khối 1,82 — model chân duỗi sau, lưng thấp hơn).
+- Cảnh bay: mesh 8 → 6 (mức Cao), tam giác +~15 500 chỉ trong lúc bay. Thiếu file / lỗi nạp → hạc khối. Đàn hạc bay xa + hạc đồng giữ khối.
+- Ảnh: `screens/Hac-model-dat.png` (khối · model; bay, vỗ, đứng đáp, đêm). Người dùng duyệt 2026-11-16.
 
 ## 2026-11-16.15 — Nhà của ta: ngôi nhà ngoài sân bằng model Tripo
 
