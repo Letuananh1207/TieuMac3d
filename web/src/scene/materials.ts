@@ -69,6 +69,18 @@ export function windowMaterial(color: THREE.ColorRepresentation): THREE.MeshLamb
   return m;
 }
 
+/**
+ * Tấm sáng cửa sổ dán lên model nhà (V-88, R-NGAY-3): model không-sáng không có giấy song riêng → một tấm trong suốt màu
+ * `dayNight.dem.windowColor`, `apGio.ts` đổi độ mờ theo giờ (`userData.lampOpacity`) và ẩn ban ngày. Không ngày đêm → null.
+ */
+export function windowGlowMaterial(opacity = 0.7): THREE.MeshBasicMaterial | null {
+  if (!lampDynamic) return null;
+  const m = new THREE.MeshBasicMaterial({ color: windowGlowColor, transparent: true, opacity: 0, depthWrite: false });
+  m.userData.lampOpacity = opacity;
+  m.visible = false; // ban ngày: không vẽ (apGio bật khi đêm)
+  return m;
+}
+
 /** Vật liệu có tự phát sáng (đèn đang bật, hoặc đèn / cửa sổ đổi theo giờ) — các bước gộp màu đỉnh bỏ qua để không mất phần sáng. */
 export const isGlowing = (m: THREE.MeshLambertMaterial): boolean => !!m.userData.lamp || (m.emissiveIntensity > 0 && m.emissive.getHex() !== 0);
 

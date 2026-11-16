@@ -25,7 +25,55 @@ const DOOR_DEPTH = 0.6;
 /** giấy dán song cửa sổ (chi tiết hình dạng, như màu đồ đạc ở `noi_that.ts`) */
 const PAPER = '#efe4c8';
 
+/** Số đo mặt tiền của nhà ở (toạ độ nhà, mặt trước +z, y từ chân nhà) — model nhà (`scene/nhaModel.ts`) dán biển / đèn / tấm sáng. */
+export interface NhaOFront {
+  /** cao nền + cao tường (trên nền) */
+  plat: number;
+  h: number;
+  /** rộng gian giữa (cửa) — bậc đá trước cửa cùng bề rộng */
+  door: number;
+  /** sâu dải bậc / dốc trước nền, mép nền trước ở z = `stepZ` */
+  stepRun: number;
+  stepZ: number;
+  sign: { y: number; z: number; scale: number };
+  lanterns: [number, number, number][];
+  /** hai ô cửa sổ: tâm (x, y), cỡ, mặt ngoài tường trước ở z */
+  windows: { x: number; y: number; w: number; h: number; z: number }[];
+}
+
+export function nhaOFront(b: BuildingSpec, style: Style): NhaOFront {
+  const { w, d } = b;
+  const h = 2.6 * hk(style);
+  const door = w / 3;
+  const side = (w - door) / 2;
+  const cx = door / 2 + side / 2;
+  return {
+    plat: PLAT,
+    h,
+    door,
+    stepRun: RAMP,
+    stepZ: (d + 0.3) / 2,
+    sign: { y: PLAT + h - 0.55, z: d / 2 + 0.36, scale: Math.min(0.55, w / 7) },
+    lanterns: [[-door / 2, PLAT + h - 0.6, d / 2 + 0.5], [door / 2, PLAT + h - 0.6, d / 2 + 0.5]],
+    windows: [-1, 1].map((s) => ({ x: s * cx, y: PLAT + 1.5, w: side - 0.3, h: 1.2, z: d / 2 })),
+  };
+}
+
+/** Biển `title` + 2 đèn lồng trước hiên (của code, không thuộc model — phiếu `2026-11-16-anh-nha-ta`). */
+export function nhaODecor(g: THREE.Group, b: BuildingSpec, style: Style): void {
+  const f = nhaOFront(b, style);
+  addSign(g, b.title, f.sign.y, f.sign.z, f.sign.scale);
+  addLanterns(g, f.lanterns, style);
+}
+
 export function nhaO(g: THREE.Group, b: BuildingSpec, style: Style, fade: THREE.Group): Shell {
+  const shell = nhaOBody(g, b, style, fade);
+  nhaODecor(b.closed ? g : fade, b, style);
+  return shell;
+}
+
+/** Nhà ở không biển / đèn lồng: hình khối + va chạm + nền (model nhà dùng va chạm, khung đo; dự phòng khi nạp lỗi). */
+export function nhaOBody(g: THREE.Group, b: BuildingSpec, style: Style, fade: THREE.Group): Shell {
   const { w, d } = b;
   const k = hk(style);
   const h = 2.6 * k;
@@ -74,11 +122,9 @@ export function nhaO(g: THREE.Group, b: BuildingSpec, style: Style, fade: THREE.
   for (const x of [-w / 2, -door / 2, door / 2, w / 2]) g.add(column(0.15, h, pillar, x, PLAT, d / 2 + 0.2, 8));
   g.add(box(w + 0.2, 0.26, 0.26, style.timber, 0, PLAT + h - 0.13, d / 2 + 0.2)); // xà hiên
 
-  /* ---------- mái + biển (mờ khi ở trong; nhà kín: không mờ — gộp chung khối nhà) ---------- */
+  /* ---------- mái (mờ khi ở trong; nhà kín: không mờ — gộp chung khối nhà); biển + đèn: `nhaODecor` ---------- */
   const top = b.closed ? g : fade;
   gableRoof(top, { y: PLAT + h, w, d: d + 0.6, over: 0.6, h: 1.5 * k, color: b.roofColor, ridgeColor: trim });
-  addSign(top, b.title, PLAT + h - 0.55, d / 2 + 0.36, Math.min(0.55, w / 7));
-  addLanterns(top, [[-door / 2, PLAT + h - 0.6, d / 2 + 0.5], [door / 2, PLAT + h - 0.6, d / 2 + 0.5]], style);
 
   return {
     boxes,

@@ -256,6 +256,13 @@ const floorsRange = (o: Obj, path: string): string[] =>
 
 const rot = oneOf('rotY', ROTATIONS);
 
+/** `buildings[].model` (V-88): mã file `design/models/<mã>.glb` — chỉ nhà kín `nha-o` (nhà khác chưa có đường nạp model). */
+const buildingModelOk = (o: Obj, path: string): string[] => {
+  if (o.model === undefined) return [];
+  if (!/^[a-z0-9-]+$/.test(o.model as string)) return [`${path}.model: mã file chữ thường không dấu, số, gạch nối (vd. "nha-ta")`];
+  return o.kind === 'nha-o' && o.closed === true ? [] : [`${path}.model: chỉ nhà kín (kind "nha-o", closed true) dùng model`];
+};
+
 /** Cổng cỡ người (`gates[].height`): 6–12 m — thấp hơn 6 thì lòng cổng dưới 3 m, camera gần chạm xà. */
 export const GATE_HEIGHT: [number, number] = [6, 12];
 const gateHeightOk = (o: Obj, path: string): string[] =>
@@ -384,8 +391,8 @@ const SIGNS0 = { bac: '', nam: '', dong: '', tay: '' };
 const LISTS: Record<string, ItemParser> = {
   buildings: item(
     { id: '', x: 0, z: 0, w: 0, d: 0, title: '', roofColor: '#000000' },
-    { rotY: 0, notice: ['', ''], zone: { id: '', front: 0, r: 0 }, kind: '', roof: '', floors: 0, sides: 0, trim: '#000000', pillarColor: '#000000', sign: '', goods: '', closed: false, eaves: 0, pillarH: 0, benches: false },
-    all(rot, oneOf('kind', BUILDING_KINDS), oneOf('goods', GOODS_KINDS), oneOf('roof', ROOF_KINDS), oneOf('sides', [4, 6]), oneOf('eaves', [1, 2]), floorsRange, positive('w', 'd'), range('pillarH', 2, 6)),
+    { rotY: 0, notice: ['', ''], zone: { id: '', front: 0, r: 0 }, kind: '', roof: '', floors: 0, sides: 0, trim: '#000000', pillarColor: '#000000', sign: '', goods: '', closed: false, eaves: 0, pillarH: 0, benches: false, model: '' },
+    all(rot, buildingModelOk, oneOf('kind', BUILDING_KINDS), oneOf('goods', GOODS_KINDS), oneOf('roof', ROOF_KINDS), oneOf('sides', [4, 6]), oneOf('eaves', [1, 2]), floorsRange, positive('w', 'd'), range('pillarH', 2, 6)),
   ),
   'walls.gates': item({ side: '', at: 0, width: 0 }, { kind: '', signs: SIGNS0, clearHeight: 0, roof: true }, all(oneOf('side', SIDES), positive('width'), gateLook)),
   wallSegments: item(

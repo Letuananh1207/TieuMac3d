@@ -34,6 +34,7 @@ import { addLanternStrings } from './dayDenLong';
 import { addFences } from './lanCan';
 import { addGameSign, addGameTable, type GameTable } from './gameTable';
 import { addRoomBuilding, addWalkIn, inRect, WALK_IN, type InteriorUse, type Room } from './rooms';
+import { addHouseModel, type HouseReport } from './nhaModel';
 import { addStairs } from './stairs';
 import { roomKinds, zoneAnchors, type SceneSpec, type ZoneAnchor } from './spec';
 import { addTerrain } from './terrain';
@@ -74,6 +75,8 @@ export interface World {
   channels: ChannelSet;
   /** ngày đêm (`dayNight.enabled`): áp giờ lên cảnh — `web/src/ngayDem.ts` gọi; tắt = `null` (luôn ban ngày) */
   dayNight: DayNight | null;
+  /** model nhà (`buildings[].model`, V-88) nạp xong / lỗi (đã về bản khối); không có model → xong ngay. Màn tải chờ ≤ 2 s */
+  ready: Promise<HouseReport[]>;
   /** gọi mỗi khung hình: khói lò đan, mây, đảo nổi, mờ mái nhà khi `player` đứng trong; `eye` = vị trí camera (LOD cây chùm) */
   update(dt: number, player?: { x: number; y?: number; z: number }, eye?: { x: number; y: number; z: number }): void;
 }
@@ -199,10 +202,17 @@ function* worldSteps(
   /** chỗ ngồi + nền đi được của nhà không vào được (đình: nền đá, ghế tựa — V-66 B3) */
   const buildingSeats: Seat[] = [];
   const buildingPads: Pad[] = [];
+  const houses: Promise<HouseReport>[] = [];
+  let dayNight: DayNight | null = null;
   for (const b of spec.buildings) {
     const use = b.zone && kinds[b.zone.id] ? interiors[b.zone.id] : undefined;
     const walkIn = b.kind ? WALK_IN[b.kind] : undefined;
-    if (use) rooms.push(addRoomBuilding(scene, colliders, b, style, use, base(b.x, b.z), softLook));
+    // nhà kín có model AI (V-88): va chạm / nền / biển như khối, hình model thêm sau khi gộp; thiếu file → khối
+    const house = !use && b.kind === 'nha-o' && b.closed && b.model ? addHouseModel(scene, colliders, b, style, base(b.x, b.z), () => dayNight?.scan()) : null;
+    if (house) {
+      closedPads.push(...house.pads);
+      houses.push(house.ready);
+    } else if (use) rooms.push(addRoomBuilding(scene, colliders, b, style, use, base(b.x, b.z), softLook));
     else if (walkIn && b.closed) closedPads.push(...addWalkIn(scene, colliders, b, style, walkIn, base(b.x, b.z), softLook).pads);
     else if (walkIn) rooms.push(addWalkIn(scene, colliders, b, style, walkIn, base(b.x, b.z), softLook));
     else {
@@ -275,7 +285,7 @@ function* worldSteps(
   mergeStatic(scene, new Set([ground]));
   yield 'gop';
   // trăng + sao (mức Thấp: không sao — R-NGAY-4) và bộ áp giờ — dựng sau khi gộp: chỉ đổi số / màu, không dựng lại
-  const dayNight = dn
+  dayNight = dn
     ? createDayNight(scene, spec, env, {
         glow,
         sky: addNightSky(scene, spec.dayNight, viewDistance(spec) * 0.72, detail >= 1),
@@ -285,6 +295,7 @@ function* worldSteps(
     : null;
   return {
     dayNight,
+    ready: Promise.all(houses),
     garden,
     ground,
     surface: new LayeredGround(hf, [...(teleport?.pads ?? []), ...bridgePads, ...terracePads, ...buildingPads, ...rampartPads, ...rooms.flatMap((r) => r.pads), ...closedPads]),

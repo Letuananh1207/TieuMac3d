@@ -230,7 +230,10 @@ function checkScene(rel, raw, opt = {}) {
   else console.log(`Tường: ±${n(spec.walls.half)} cao ${n(spec.walls.height)} dày ${n(spec.walls.thickness)} kiểu ${spec.walls.style} · người chơi bắt đầu (${n(spec.player.start[0])}; ${n(spec.player.start[1])})`);
   console.log(`Nơi: ${spec.site.name}${spec.site.areas.length ? ` · khu: ${spec.site.areas.map((a) => a.name).join(', ')}` : ''}`);
   for (const b of spec.buildings) {
-    console.log(`Nhà ${b.id} (${b.kind ?? 'giang-duong'}): tâm (${n(b.x)}; ${n(b.z)}) ${n(b.w)}×${n(b.d)} quay ${b.rotY ?? 0}°`);
+    // model nhà (V-88, Q5): thiếu file → app dựng bản khối, chỉ ghi chú; `khoi-gop` = model thế để thử
+    const hasModel = b.model && (b.model === 'khoi-gop' || existsSync(resolve(web, '..', 'design', 'models', `${b.model}.glb`)));
+    const model = !b.model ? '' : hasModel ? ` · model ${b.model}` : ` · model ${b.model} — chưa có design/models/${b.model}.glb, app dựng bản khối`;
+    console.log(`Nhà ${b.id} (${b.kind ?? 'giang-duong'}): tâm (${n(b.x)}; ${n(b.z)}) ${n(b.w)}×${n(b.d)} quay ${b.rotY ?? 0}°${model}`);
   }
   for (const z of placed.zones) console.log(`Vùng ${z.id}: tâm (${n(z.x)}; ${n(z.z)}) bán kính ${n(z.r)}${rooms[z.id] ? ` · trong nhà (${rooms[z.id]})` : ""}`);
   console.log(`Cây lẻ: ${spec.trees.yard.length} · cụm cây: ${spec.trees.groves.length} ${spec.well.enabled ? ` · giếng (${n(spec.well.x)}; ${n(spec.well.z)})` : ''}`);

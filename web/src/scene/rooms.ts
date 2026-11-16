@@ -15,7 +15,7 @@ import { gianTrong } from './kien_truc/gian_trong';
 import { nhaO } from './kien_truc/nha_o';
 import { addInterior, type LocalBox } from './kien_truc/noi_that';
 import { traLau } from './kien_truc/tra_lau';
-import type { Cutaway, LocalPad, WalkInBuilder } from './kien_truc/vao_trong';
+import type { Cutaway, LocalPad, Shell, WalkInBuilder } from './kien_truc/vao_trong';
 import type { Seat } from './seat';
 import { cloneMaterial, markDynamic, markOwnMaterials, mergeStatic, mergeVertexColors } from './merge';
 import type { SoftLook } from './bake';
@@ -224,22 +224,30 @@ function worldPad(b: BuildingSpec, p: LocalPad, y0: number): Pad {
   return { ...r, y: y0 + p.y, ramp: { axis: wx, at0: wx === 'x' ? x0 : z0, at1: wx === 'x' ? x1 : z1, y1: y0 + y1 } };
 }
 
-/**
- * Nhà vào được không có bài học (trà lâu, hí đài, Tàng Thư Các, cửa hàng): dựng theo `WALK_IN`, mái / tầng trên mờ
- * khi đứng trong sàn (R-HUD-2), va chạm theo phần (R-VA-3). `zoneId` = mã nhà; không có vật học.
- */
-/** `look`: cảnh mềm — mái / tầng trên nướng bóng + vật liệu mềm (NV10); không có = như cũ. */
-export function addWalkIn(scene: THREE.Scene, colliders: Colliders, b: BuildingSpec, style: Style, build: WalkInBuilder, y0 = 0, look?: SoftLook): Room {
-  const g = new THREE.Group();
-  g.position.set(b.x, y0, b.z);
-  g.rotation.y = ((b.rotY ?? 0) * Math.PI) / 180;
+/** Nhóm nhà vào được đã dựng (chưa vào cảnh, chưa đăng ký va chạm) — `buildWalkIn`. */
+export interface WalkInParts {
+  group: THREE.Group;
+  /** mờ khi ở trong (mái, tầng trên) */
+  fade: THREE.Group;
+  /** mờ khi ở tầng 1 (nhà hai tầng) */
+  fadeLow: THREE.Group;
+  shell: Shell;
+}
+
+/** Dựng hình nhà vào được theo `build` vào một nhóm đặt sẵn vị trí / hướng (toạ độ cảnh) — chưa thêm vào cảnh. */
+export function buildWalkIn(b: BuildingSpec, style: Style, build: WalkInBuilder, y0 = 0): WalkInParts {
+  const group = new THREE.Group();
+  group.position.set(b.x, y0, b.z);
+  group.rotation.y = ((b.rotY ?? 0) * Math.PI) / 180;
   const fade = new THREE.Group();
   const fadeLow = new THREE.Group();
-  g.add(fade, fadeLow);
-  const shell = build(g, b, style, fade, fadeLow);
-  scene.add(g);
-  const mats = fadeable(fade, look);
-  const lowMats = fadeLow.children.length > 0 ? fadeable(fadeLow, look) : [];
+  group.add(fade, fadeLow);
+  const shell = build(group, b, style, fade, fadeLow);
+  return { group, fade, fadeLow, shell };
+}
+
+/** Đăng ký va chạm của vỏ nhà (hộp + cột tròn, toạ độ cảnh) — R-VA-3; trả về nền đi được (toạ độ cảnh). */
+export function addShellColliders(colliders: Colliders, b: BuildingSpec, shell: Shell, y0 = 0): Pad[] {
   for (const l of shell.boxes) {
     const r = worldRect(b, l);
     const range = {
@@ -252,13 +260,27 @@ export function addWalkIn(scene: THREE.Scene, colliders: Colliders, b: BuildingS
     const [cx, cz] = toWorld(b, c.x, c.z);
     colliders.addCircle(cx, cz, c.r);
   }
+  return shell.pads.map((p) => worldPad(b, p, y0));
+}
+
+/**
+ * Nhà vào được không có bài học (trà lâu, hí đài, Tàng Thư Các, cửa hàng): dựng theo `WALK_IN`, mái / tầng trên mờ
+ * khi đứng trong sàn (R-HUD-2), va chạm theo phần (R-VA-3). `zoneId` = mã nhà; không có vật học.
+ */
+/** `look`: cảnh mềm — mái / tầng trên nướng bóng + vật liệu mềm (NV10); không có = như cũ. */
+export function addWalkIn(scene: THREE.Scene, colliders: Colliders, b: BuildingSpec, style: Style, build: WalkInBuilder, y0 = 0, look?: SoftLook): Room {
+  const { group: g, fade, fadeLow, shell } = buildWalkIn(b, style, build, y0);
+  scene.add(g);
+  const mats = fadeable(fade, look);
+  const lowMats = fadeLow.children.length > 0 ? fadeable(fadeLow, look) : [];
+  const pads = addShellColliders(colliders, b, shell, y0);
   const cuts = (shell.cutaway ?? []).map((c) => worldCut(b, c));
   let opacity = 1;
   let lowOpacity = 1;
   return {
     zoneId: b.id,
     floor: worldRect(b, shell.floor),
-    pads: shell.pads.map((p) => worldPad(b, p, y0)),
+    pads,
     seats: (shell.seats ?? []).map((s) => {
       const [sx, sz] = toWorld(b, s.x, s.z);
       const rotY = s.rotY + ((b.rotY ?? 0) * Math.PI) / 180;

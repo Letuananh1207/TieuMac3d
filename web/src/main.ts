@@ -36,6 +36,7 @@ import { mergeStatic } from './scene/merge';
 import { inRect, type Room } from './scene/rooms';
 import { signText } from './scene/signAtlas';
 import { buildWorld, buildWorldStepped, type StepTimes } from './scene/world';
+import { waitHouses } from './scene/nhaModel';
 import { CraneFlight, CraneRide, cameraPose, clearCraneParam, craneArrives, craneDeparts, craneHud, craneParams, dropCraneVeil, preloadCrane, uncoverVeil } from './cuoiHac';
 import { NHAP_DINH_OPEN_AT, NhapDinh } from './scene/nhapDinh';
 import { NgoiMat, type SitPlace } from './ngoiMat';
@@ -1170,6 +1171,9 @@ async function boot(): Promise<void> {
   loading.progress(90);
   lap('lap-rap');
   flight?.progress(0.9);
+  // model nhà (`buildings[].model`, V-88 Q4): nhà là thứ thấy đầu tiên khi về → màn tải chờ tối đa 2 s; quá hạn thì nhà hiện khi nạp xong
+  await waitHouses(world.ready);
+  lap('model-nha');
   await renderer.compileAsync(scene, camera).catch(() => undefined);
   lap('shader');
   if (params.has('debug')) {

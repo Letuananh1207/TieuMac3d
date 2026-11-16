@@ -206,6 +206,12 @@ export interface BuildingSpec {
   pillarH?: number;
   /** đình: ghế tựa giữa các cột (chừa hai cạnh lối vào), mỗi ghế một chỗ ngồi nhìn ra ngoài (R-NGOI-1); thiếu = lan can như cũ */
   benches?: boolean;
+  /**
+   * Nhà kín `nha-o` (V-88): model AI `design/models/<model>.glb` (Tripo, `/tai-nguyen`) thay hình bên ngoài — co ba trục
+   * khớp khung bản khối (`scene/nhaModel.ts`); va chạm, nền, biển, đèn lồng, cổng vào nhà vẫn của code. Thiếu trường /
+   * thiếu file / nạp lỗi → bản khối như cũ. `khoi-gop` = model thế dựng từ chính bản khối (chỉ để thử Canvas 3D).
+   */
+  model?: string;
 }
 
 /**
