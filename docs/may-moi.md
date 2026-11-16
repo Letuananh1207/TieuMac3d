@@ -49,7 +49,7 @@ Cookie hết hạn (vài ngày / đăng xuất) → chép lại bước 2–4. C
 
 - `tripo.sh` đọc file Tripo tải về ở `C:/ai3d/tripo/<tên>-lowpoly.glb`, ra `C:/ai3d/tripo/ra/`; bước xem ảnh (`xem.py`) dùng
   Python của Hunyuan `C:/ai3d/Hunyuan3D2_WinPortable/python_standalone/python.exe`. Máy mới không cài Hunyuan → cần một Python
-  có `trimesh`, `pyrender` / `Pillow` (xem `xem.py`) và sửa biến `PY` trong `tripo.sh` (hoặc cài Hunyuan WinPortable như
+  có `numpy`, `trimesh`, `Pillow` (đủ cho `xem.py`) và sửa biến `PY` trong `tripo.sh` (hoặc cài Hunyuan WinPortable như
   `docs/ai3d.md`).
 - Tripo dùng trên web (tripo3d.ai) bằng tài khoản Professional — không cần cài.
 
