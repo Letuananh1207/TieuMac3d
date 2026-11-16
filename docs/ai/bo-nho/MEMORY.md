@@ -1,0 +1,7 @@
+- [Tài liệu xác nhận quy tắc](tai-lieu-xac-nhan-quy-tac.md) — link Claude Docs để người dùng duyệt quy tắc nghiệp vụ
+- [Kế hoạch 5 mốc](ke-hoach-5-moc.md) — lộ trình Học Xá 3D, báo sau mỗi mốc, đã chọn xoay tự do
+- [Canvas thiết kế](canvas-thiet-ke.md) — link canvas Design của app, lựa chọn C (thiết kế trước cho phần mới)
+- [Tài nguyên một bước](tai-nguyen-mot-buoc.md) — nêu mong muốn là đủ; Claude tự khảo cứu + đẩy phiếu /ui-design
+- [Hán Tự Ký — nguồn quy luật](han-tu-ky-nguon-quy-luat.md) — lịch ôn / nhiệm vụ ngày lấy theo app Han_tu_ky
+- [Muốn trò chuyện người thật](muon-tro-chuyen-nguoi-that.md) — trà lâu: chat với người chơi thật để dành tới mốc multiplayer
+- [Ảnh concept trước](anh-concept-truoc.md) — cảnh / kiến trúc mới: ảnh Gemini chốt rồi mới dựng (việc nhỏ miễn)
