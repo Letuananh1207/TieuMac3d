@@ -99,16 +99,29 @@ export function scanZFight(root: THREE.Object3D, tol = 0.002): FightHit[] {
       buckets.get(bk)!.push(t);
     }
   });
-  // khối đặc (hộp, trụ) để biết mặt nào bị che: điểm ngay trước mặt nằm trong khối khác → không thấy, bỏ qua
+  // khối đặc (hộp, trụ) để biết mặt nào bị che: điểm ngay trước mặt nằm trong khối khác → không thấy, bỏ qua.
+  // Khung bao lấy từ chính hình của khối (không `Box3.setFromObject`: hàm đó gộp cả vật con, và với InstancedMesh gộp
+  // mọi bản sao thành một khối phủ cả trấn — L-13); InstancedMesh: mỗi bản sao một khung bao.
   const solids: { o: THREE.Object3D; bb: THREE.Box3 }[] = [];
+  const inst = new THREE.Matrix4();
   root.traverse((o) => {
     const m = o as THREE.Mesh;
     if (!m.isMesh || !m.visible) return;
-    const type = (m.geometry as THREE.BufferGeometry).type;
-    if (type !== 'BoxGeometry' && type !== 'CylinderGeometry') return;
+    const g = m.geometry as THREE.BufferGeometry;
+    if (g.type !== 'BoxGeometry' && g.type !== 'CylinderGeometry') return;
     const mat = (Array.isArray(m.material) ? m.material[0] : m.material) as THREE.Material;
     if (mat.transparent || !mat.visible) return;
-    solids.push({ o: m, bb: new THREE.Box3().setFromObject(m).expandByScalar(-0.001) });
+    if (!g.boundingBox) g.computeBoundingBox();
+    const im = m as unknown as THREE.InstancedMesh;
+    if (!im.isInstancedMesh) {
+      solids.push({ o: m, bb: g.boundingBox!.clone().applyMatrix4(m.matrixWorld).expandByScalar(-0.001) });
+      return;
+    }
+    for (let i = 0; i < im.count; i++) {
+      im.getMatrixAt(i, inst);
+      const bb = g.boundingBox!.clone().applyMatrix4(inst).applyMatrix4(m.matrixWorld);
+      if (!bb.isEmpty()) solids.push({ o: m, bb: bb.expandByScalar(-0.001) });
+    }
   });
   const hidden = (p: THREE.Vector3, n: THREE.Vector3, a: Tri, b: Tri): boolean => {
     const q = p.clone().addScaledVector(n, 0.01);

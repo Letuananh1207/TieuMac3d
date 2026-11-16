@@ -21,14 +21,37 @@ Mức độ:
 
 ### L-13 · Bộ quét mặt trùng (zfight) coi InstancedMesh là khối đặc → che mất ~18 chỗ chớp thật ở trấn
 
-- Trạng thái: mới · Mức độ: nhỏ (công cụ kiểm; mặt chớp thật có thể lộ khi chơi) · Phần: `web/src/scene/zfightScan.ts`, cảnh trấn · Quy tắc: chưa có
+- Trạng thái: xong (bộ quét; các chỗ chớp thật còn mở — xem Sửa) · Mức độ: nhỏ (công cụ kiểm; mặt chớp thật có thể lộ khi chơi) · Phần: `web/src/scene/zfightScan.ts`, cảnh trấn · Quy tắc: chưa có
 - Báo: 2026-11-15 — subagent V-20261114-58 phát hiện khi chạy `ZFIGHT=1`
 - Các bước: 1. `ZFIGHT=1 npm test` (quét đầy đủ tông môn) 2. Sửa bộ quét bỏ qua InstancedMesh khi lấy khung bao
 - Mong đợi / thực tế: quét ra đúng các mặt trùng / `Box3.setFromObject` gộp khung bao mọi cây thành một khối phủ cả trấn → báo sai, che 18–19 chỗ thật
 - Bằng chứng: các chỗ — khối 48×48 lục cạnh địa hình quanh (−2,5; −35,7); khung gỗ `#8a5a3c` trùng nan `#3a2418` quanh (−7,9; 30); mặt tròn có texture trùng địa hình quanh (9,7; −10,5)
 
+**Sửa**
+- Nguyên nhân: khối che (`solids`, để bỏ mặt bị khối khác che) lấy khung bao bằng `Box3.setFromObject` — với
+  InstancedMesh hàm này dùng khung bao gộp mọi bản sao (vd. thân cây `cay_moi.ts` là InstancedMesh trụ) → một hộp
+  phủ cả vùng cây, mặt chớp nào nằm trong hộp đó bị coi là "bị che"; với khối có vật con, khung bao gộp cả con.
+- Code: `web/src/scene/zfightScan.ts` — khung bao lấy từ hình của khối × `matrixWorld`; InstancedMesh: mỗi bản sao
+  một khung bao (`getMatrixAt`).
+- Test: `web/src/scene/zfightScan.test.ts` — `'(L-13): khoảng trống giữa các cây InstancedMesh không bị coi là khối
+  đặc …'`, `'(L-13): khung bao một khối đặc không gộp khung bao vật con của nó'` (đỏ trước, xanh sau) +
+  `'(L-13): chỗ chớp nằm trong một cây InstancedMesh thật thì vẫn bị che'` (giữ đúng phần che thật).
+- Quét đủ (`ZFIGHT=1 npx vitest run src/scene/zfightRegions.test.ts`, 2026-11-16, trên main e1e9c22): **trước và sau
+  khi sửa ra cùng một danh sách** — 37 chỗ ở 4 cảnh (trên main hiện tại không InstancedMesh nào đang che chỗ chớp; các
+  chỗ ghi ở Bằng chứng đã lộ sẵn). Bộ quét giờ không che sai nữa nếu cây được đặt lại. Chỗ chớp thật (chưa sửa cảnh —
+  việc riêng, thuộc L-10):
+  - tong-mon (19): địa hình khối 48×48 (lục `0.19–0.20,0.31,0.10`) × địa hình 97,6×159,5 (xám đá) tại (22,7; 0; −24,3)
+    và (−2,7…1,3; 5,5; −35,7); khung gỗ `#8a5a3c` (hộp 2,6×1,44×0,08) × nan `#3a2418` (0,05×1,44×0,12 và 2,6×0,05×0,12)
+    quanh (−7,9; 4,9–6,3; 29,1–30,9) — 7 chỗ; mặt tròn có ảnh (Circle 1,4) × địa hình đá quanh (9,7–11,3; 2,5–3,9; −10,0…−11,0) — 8 chỗ.
+  - nha-ta-trong (4): xà `#5a4030` (0,1×0,24×9,32 và 13,52×0,24×0,1) × cột trụ `#3a3430` tại (±6,7; 4; −2,4 / 2,4) và (0,1; 4; −4,7).
+  - nha-ta (4): tấm `#efe4c8` (3,2×1,2×0,08) × nan `#3a3430` (0,05×1,2×0,12) tại (−18,5 / −19,3 / −11,5 / −12,3; 2; −5,15).
+  - rung-truc (10): mặt `#9d9686` (4,4×0,12×3,64) × khối `#8f8b80` (0,3×0,63×3,64) quanh (24,7–29,3; 0,4–0,8; 1,8 và 6,2) — 8 chỗ;
+    `#3a3f3a` (0,26×0,06×0,21) × `#c8b27a` (1,15×0,008×0,11) tại (−7,5; 0,56; −5,0); que `#6b4a2e` (0,03×0,46×0,03) × tấm `#f3e9d2` (0,4×0,04×0,4) tại (−32,0; 0,97; 28,7).
+- Thử máy: không cần (công cụ kiểm chạy trong test).
+
 **Lịch sử**
 - 2026-11-15: ghi từ báo cáo V-58.
+- 2026-11-16: V-78 sửa bộ quét; quét đủ liệt kê 37 chỗ thật ở 4 cảnh (chưa dập).
 
 ### L-12 · Tiêu đề "Ngồi ôn" trên cuộn sách 3D bị tách dấu ("Ngô`i ôn")
 
