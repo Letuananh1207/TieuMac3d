@@ -1,3 +1,4 @@
+import { existsSync, realpathSync } from 'node:fs';
 import { defineConfig, type Plugin } from 'vite';
 import { DEFAULT_SCENE } from './src/scene/spec';
 
@@ -11,6 +12,23 @@ function emitDefaultScene(): Plugin {
   };
 }
 
+/**
+ * Thư mục gói npm THẬT mà `from` dùng (đi ngược lên như Node, theo nối về đích). Worktree (`tool/viec.dart chuan-bi`):
+ * gói nằm ở `.claude/worktrees/node_modules` → nối tới `web/node_modules` của thư mục chính — ngoài `web/` của worktree,
+ * Vite dev chặn ("outside of Vite serving allow list") → font @fontsource không nạp, canvas vẽ bằng Georgia, chữ Việt
+ * tách dấu "Ngô`i ôn" (L-12). Thêm các thư mục này vào `server.fs.allow`.
+ */
+export function npmDirs(from: URL): string[] {
+  const out: string[] = [];
+  for (let d = from; ; ) {
+    const nm = new URL('node_modules', d);
+    if (existsSync(nm)) out.push(realpathSync(nm));
+    const up = new URL('../', d);
+    if (up.href === d.href) return out;
+    d = up;
+  }
+}
+
 // base './' → mọi đường dẫn trong bản build là tương đối, để Flutter phục vụ
 // từ bất kỳ thư mục nào (http://localhost:<port>/assets/scene/index.html).
 // `--mode design` → Canvas 3D (design.html) ra dist-design/, không chép sang app.
@@ -19,7 +37,8 @@ export default defineConfig(({ mode }) => {
   return {
     base: './',
     // design/scene/scene.json nằm ngoài web/ (decisions/0002); đường dẫn tính từ web/
-    server: { fs: { allow: ['.', '../design'] } },
+    // + gói npm thật (worktree nối ra ngoài web/ — L-12)
+    server: { fs: { allow: ['.', '../design', ...npmDirs(new URL('./', import.meta.url))] } },
     plugins: design ? [emitDefaultScene()] : [],
     build: {
       outDir: design ? 'dist-design' : 'dist',

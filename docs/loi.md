@@ -55,17 +55,28 @@ Mức độ:
 
 ### L-12 · Tiêu đề "Ngồi ôn" trên cuộn sách 3D bị tách dấu ("Ngô`i ôn")
 
-- Trạng thái: mới · Mức độ: nhỏ (chữ vẫn đọc được, chỉ xấu) · Phần: cuộn sách Ngồi ôn (`web/src/ui/cuonMucPaint.ts`, font Lora vẽ canvas) · Quy tắc: R-ON-8, R-HUD-4
+- Trạng thái: chờ thử máy · Mức độ: nhỏ (chữ vẫn đọc được, chỉ xấu) · Phần: cuộn sách Ngồi ôn (`web/src/ui/cuonMucPaint.ts`, font Lora vẽ canvas) · Quy tắc: R-ON-8, R-HUD-4
 - Báo: 2026-11-15 — subagent V-20261114-43 thấy trong ảnh chụp (trước và sau khi sửa cuộn), người dùng chưa báo
 - Các bước: 1. Ngồi bồ đoàn tầng 2 Tàng Thư Các (hoặc Ngồi ôn) 2. Nhìn tiêu đề cuộn
 - Mong đợi / thực tế: "Ngồi ôn" dấu huyền nằm trên chữ "ô" / dấu tách ra thành "Ngô`i"
 - Bằng chứng: `C:/Users/admin/AppData/Local/Temp/claude/651327167d39025b/51df7f0c-c8dd-448d-8a23-6df66204bf24/scratchpad/cuon-ngoi-to/sau-tuhoc-ngang_.png` (Chrome headless); chưa kiểm máy thật
 
 **Sửa**
-- Nguyên nhân: chưa xét (nghi chữ tổ hợp NFD / font Lora cắt thiếu glyph "ồ" hoặc nạp font chưa đủ mặt chữ trước khi vẽ canvas)
+- Nguyên nhân: không phải app. Chuỗi `CUON_TITLE` là NFC; Lora 700 đóng gói có mảnh vietnamese (`style.css`); `loadCuonFonts()`
+  chờ `document.fonts.load` rồi vẽ lại giấy. Ảnh V-43 chụp từ `npm run dev` **trong worktree**: gói npm nối ra
+  `web/node_modules` của thư mục chính (ngoài `web/` của worktree) → Vite dev chặn file font ("outside of Vite serving
+  allow list") → Lora / Be Vietnam Pro không nạp, canvas vẽ bằng Georgia (Windows) — Georgia thiếu "ồ", "ề", "ắ"… dựng
+  sẵn nên trình duyệt ghép "ô" + dấu huyền rời → "Ngô`i ôn". Bản build (`app/assets/scene/`) có đủ font, vẽ đúng.
+- Test: `web/viteConfig.test.ts` — `'(L-12): file font Lora / Be Vietnam Pro (đường dẫn thật, như Vite tìm) nằm trong
+  server.fs.allow'` (đỏ trong worktree trước khi sửa). Ảnh mẫu trước / sau (Chrome headless, dev trong worktree): chữ
+  canvas Lora "Ngô`i ôn", "ă´ ê`" → "Ngồi ôn", "ắ ề".
+- Code: `web/vite.config.ts` — `npmDirs()` thêm thư mục gói npm thật vào `server.fs.allow`; `web/src/node-fs.d.ts` thêm kiểu.
+- Thử máy: `npm run dev` trong một worktree → Ngồi ôn → tiêu đề cuộn "Ngồi ôn" dấu huyền nằm trên "ô"; máy thật (bản
+  build) xem lại một lần. Còn lỗi → gửi ảnh + log `chrome://inspect` (tab Network, lọc woff2).
 
 **Lịch sử**
 - 2026-11-15: ghi từ báo cáo V-43.
+- 2026-11-16: V-79 sửa — Vite dev trong worktree chặn font @fontsource (không phải lỗi app).
 
 ### L-10 · Bề mặt chớp sáng liên tục (sàn tầng 2 trong nhà, cổng mái ngói)
 
