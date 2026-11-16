@@ -1,11 +1,15 @@
 /**
  * Hạc truyền tống (R-HANH-5): hạc đỉnh đỏ (丹顶鹤) lớn chở nhân vật — thân trắng, cổ + đuôi + mép cánh đen, đỉnh đầu đỏ, mỏ
- * vàng xám, chân duỗi sau. Dài ~3 m, sải cánh ~5,6 m (× `crane.scale`). Dựng bằng khối (cần vỗ cánh — model AI không có
- * xương cánh): thân gộp màu theo đỉnh + 2 cánh = **3 draw call**, ~260 tam giác, một vật liệu Lambert (quy tắc 4).
- * Mũi nhìn +z, gốc ở mặt đất dưới thân. Neo `seat` trên lưng — chỗ nhân vật ngồi.
+ * vàng xám, chân duỗi sau. Dài ~3 m, sải cánh ~5,6 m (× `crane.scale`). Mũi nhìn +z, gốc ở mặt đất dưới thân. Neo `seat`
+ * trên lưng — chỗ nhân vật ngồi.
+ * - Có `design/models/hac.glb` (Tripo, không rig): `useModel` — code tự tách 2 cánh bằng 5 xương (`hacModel.ts`,
+ *   `hacCanh.ts`), **1 draw call**, vật liệu không-sáng của model (ngày đêm nhân màu — `apGio.ts`).
+ * - Chưa có / nạp lỗi (và trước khi nạp xong): bản khối — thân gộp màu theo đỉnh + 2 cánh = **3 draw call**, ~260 tam giác,
+ *   một vật liệu Lambert (quy tắc 4).
  */
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
+import { craneMesh, type CraneModel } from './hacModel';
 import { lambert } from './materials';
 import { markDynamic } from './merge';
 import type { CraneSpec } from './spec';
@@ -92,6 +96,29 @@ function wingGeometry(side: number, s: CraneSpec): THREE.BufferGeometry {
   return g;
 }
 
+/**
+ * "Khối gộp": thân + hai cánh dang (tư thế bay, không vỗ) gộp một lưới — đứng thay model Tripo để thử đường tự tách cánh
+ * (`craneModelFrom`, test, Canvas 3D `?dang=hac&mau=khoi-gop`). Màu theo đỉnh (`color`).
+ */
+export function blockCraneGeometry(spec: CraneSpec): THREE.BufferGeometry {
+  const geos = [bodyGeometry(spec), ...[-1, 1].map((side) => wingGeometry(side, spec).translate(side * SHOULDER[0], SHOULDER[1], SHOULDER[2]))];
+  const g = mergeGeometries(geos);
+  for (const p of geos) p.dispose();
+  return g;
+}
+
+/** Bản model đứng đáp (Q1): vai quay ra sau + hạ xuống, đầu cánh gập ngược về trước dọc cánh trong (rad). */
+const MODEL_FOLD = { back: 1.1, drop: 0.3, tip: -2.5 };
+/** đầu cánh vỗ trễ nhịp sau vai, biên độ bằng phần này của vai */
+const TIP_LAG = { phase: -0.7, amp: 0.4 };
+
+interface ModelParts {
+  mesh: THREE.SkinnedMesh;
+  material: THREE.Material;
+  /** vai trái, đầu trái, vai phải, đầu phải */
+  wings: { vai: THREE.Bone; dau: THREE.Bone; side: number }[];
+}
+
 export class Crane {
   readonly root = new THREE.Group();
   /** neo chỗ ngồi trên lưng (con của `root`) */
@@ -99,7 +126,13 @@ export class Crane {
   private readonly wings: { pivot: THREE.Object3D; side: number }[] = [];
   private readonly material: THREE.MeshLambertMaterial;
   private readonly geos: THREE.BufferGeometry[] = [];
+  private readonly blocks: THREE.Object3D[] = [];
+  private model: ModelParts | null = null;
+  private disposed = false;
   private t = 0;
+  private amp = 0;
+  private speed = 5;
+  private glide = 0;
   /** 0 = dang cánh bay · 1 = xếp dọc thân (đứng) */
   fold = 0;
 
@@ -109,6 +142,7 @@ export class Crane {
     const body = new THREE.Mesh(bodyGeometry(spec), this.material);
     this.geos.push(body.geometry);
     this.root.add(body);
+    this.blocks.push(body);
     for (const side of [-1, 1]) {
       const pivot = new THREE.Object3D();
       pivot.position.set(side * SHOULDER[0], SHOULDER[1], SHOULDER[2]);
@@ -117,6 +151,7 @@ export class Crane {
       pivot.add(w);
       this.root.add(pivot);
       this.wings.push({ pivot, side });
+      this.blocks.push(pivot);
     }
     this.seat.position.set(...SEAT_AT);
     this.root.add(this.seat);
@@ -126,11 +161,52 @@ export class Crane {
     this.root.traverse((o) => (o.frustumCulled = false));
   }
 
+  /** đang dùng model (đã tự tách cánh) thay bản khối */
+  get usesModel(): boolean {
+    return this.model !== null;
+  }
+
+  /**
+   * Thay bản khối bằng model đã gắn xương (`hacModel.ts`): 1 draw call, vỗ cánh bằng xương vai + đầu cánh, chỗ ngồi theo
+   * đỉnh lưng đo được. Gọi lúc nào cũng được (model nạp xong khi hạc đã hiện — Q2); gọi lần hai / sau `dispose` → bỏ qua.
+   */
+  useModel(m: CraneModel): void {
+    if (this.disposed || this.model) return;
+    for (const o of this.blocks) o.removeFromParent();
+    for (const g of this.geos) g.dispose();
+    this.geos.length = 0;
+    this.material.dispose();
+    const { mesh, bones, material } = craneMesh(m);
+    const [, vaiT, dauT, vaiP, dauP] = bones;
+    this.model = { mesh, material, wings: [{ vai: vaiT, dau: dauT, side: -1 }, { vai: vaiP, dau: dauP, side: 1 }] };
+    this.root.add(mesh);
+    this.seat.position.set(...m.shape.seat);
+    this.pose();
+  }
+
   /** Mỗi khung: vỗ cánh biên độ `amp` (rad), nhịp `speed`; `glide` 0…1 giữ cánh hơi nâng khi lượn. */
   update(dt: number, amp: number, speed = 5, glide = 0): void {
     this.t += dt;
-    const beat = flapAngle(this.t, 0, amp, speed) + glide * 0.12;
-    for (const { pivot, side } of this.wings) pivot.rotation.set(0, side * FOLD_YAW * this.fold, side * beat * (1 - this.fold));
+    this.amp = amp;
+    this.speed = speed;
+    this.glide = glide;
+    this.pose();
+  }
+
+  /** dựng dáng cánh theo nhịp + `fold` hiện tại */
+  private pose(): void {
+    const beat = flapAngle(this.t, 0, this.amp, this.speed) + this.glide * 0.12;
+    const open = 1 - this.fold;
+    if (!this.model) {
+      for (const { pivot, side } of this.wings) pivot.rotation.set(0, side * FOLD_YAW * this.fold, side * beat * open);
+      return;
+    }
+    const lag = flapAngle(this.t, TIP_LAG.phase, this.amp * TIP_LAG.amp, this.speed);
+    const f = this.fold;
+    for (const { vai, dau, side } of this.model.wings) {
+      vai.rotation.set(0, side * MODEL_FOLD.back * f, side * (beat * open - MODEL_FOLD.drop * f));
+      dau.rotation.set(0, side * MODEL_FOLD.tip * f, side * lag * open);
+    }
   }
 
   /** Vị trí chỗ ngồi trong toạ độ cảnh. */
@@ -140,8 +216,12 @@ export class Crane {
   }
 
   dispose(): void {
+    this.disposed = true;
     this.root.removeFromParent();
     for (const g of this.geos) g.dispose();
     this.material.dispose();
+    // lưới model dùng chung giữa các hạc (nạp một lần) — chỉ bỏ vật liệu riêng + xương
+    this.model?.material.dispose();
+    this.model?.mesh.skeleton.dispose();
   }
 }
