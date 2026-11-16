@@ -1,8 +1,12 @@
 /**
  * Đồ cầm tay làm vườn (R-VUON-13) dựng bằng code — khối đơn giản, sau thay hình (phiếu V-72): bình tưới, túi hạt, ống tre, bao
  * phân, giỏ. Mỗi món một lưới gộp màu đỉnh, cùng một vật liệu Lambert; chỉ món đang cầm hiện → **+1 draw call** khi làm vườn,
- * 0 khi không cầm. Gắn vào tay phải (xương `armR` của `autoRig` hoặc tay áo đệ tử khối) ở chỗ bàn tay; mỗi khung `pose()` xoay
- * ngược lại góc tay để đồ đứng thẳng theo thân, rồi nghiêng theo `tilt` (bình chúc miệng). `tip()` = miệng bình (tia nước).
+ * 0 khi không cầm. Gắn vào tay phải (xương `armR` của `autoRig`, tay áo đệ tử khối, hoặc xương bàn tay `RightHand` của Mixamo) ở
+ * chỗ bàn tay; mỗi khung `pose()` xoay ngược lại góc tay để đồ đứng thẳng theo thân, rồi nghiêng theo `tilt` (bình chúc miệng).
+ * `tip()` = miệng bình (tia nước).
+ * - Mặc định (`autoRig` / đệ tử khối): bỏ góc của chính xương tay (`arm.quaternion`) — đồ đứng thẳng theo hông.
+ * - `upright` (xương bất kỳ, nằm sâu trong cây xương, có thể co giãn riêng): đồ đứng thẳng theo vật mốc (thân nhân vật) — tính từ
+ *   hướng thế giới của xương cha và vật mốc; cỡ bù co giãn của xương để đồ luôn cỡ `PROP_SCALE` theo vật mốc.
  */
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
@@ -12,7 +16,7 @@ import type { PropId } from './lamVuonDang';
 /** Bình nghiêng hết (`tilt` = 1) bao nhiêu radian — miệng bình chúc xuống. */
 const POUR_ANGLE = 0.9;
 /** Phóng đồ cầm tay so với số đo thật (nhân vật chibi tay to, đồ thật trông bé quá). */
-const PROP_SCALE = 1.6;
+export const PROP_SCALE = 1.6;
 
 const box = (w: number, h: number, d: number, x: number, y: number, z: number, c: string, shade = 0.25): THREE.BufferGeometry =>
   painted(new THREE.BoxGeometry(w, h, d).translate(x, y, z), c, shade);
@@ -62,7 +66,7 @@ export interface GardenProps {
   tip(out: THREE.Vector3, dir?: THREE.Vector3): boolean;
 }
 
-export function createGardenProps(parent: THREE.Object3D, hand: THREE.Vector3): GardenProps {
+export function createGardenProps(parent: THREE.Object3D, hand: THREE.Vector3, opts: { upright?: THREE.Object3D } = {}): GardenProps {
   const mat = new THREE.MeshLambertMaterial({ vertexColors: true });
   const holder = new THREE.Group();
   holder.position.copy(hand);
@@ -86,6 +90,10 @@ export function createGardenProps(parent: THREE.Object3D, hand: THREE.Vector3): 
   const tiltQ = new THREE.Quaternion();
   const xAxis = new THREE.Vector3(1, 0, 0);
   const q = new THREE.Quaternion();
+  const qRef = new THREE.Quaternion();
+  const sRef = new THREE.Vector3();
+  const sPar = new THREE.Vector3();
+  const ref = opts.upright;
   return {
     holder,
     show(id) {
@@ -97,7 +105,18 @@ export function createGardenProps(parent: THREE.Object3D, hand: THREE.Vector3): 
     pose(arm, tilt) {
       // đồ đứng thẳng theo thân: bỏ góc tay; bình chúc miệng ra trước (+z xuống dưới) theo tilt
       tiltQ.setFromAxisAngle(xAxis, POUR_ANGLE * Math.min(1, Math.max(0, tilt)));
-      holder.quaternion.copy(q.copy(arm.quaternion).invert()).multiply(tiltQ);
+      if (!ref) {
+        holder.quaternion.copy(q.copy(arm.quaternion).invert()).multiply(tiltQ);
+        return;
+      }
+      // hướng thế giới: cha⁻¹ · mốc · nghiêng; cỡ: PROP_SCALE theo mốc, chia co giãn của xương cha
+      parent.updateWorldMatrix(true, false);
+      parent.getWorldQuaternion(q).invert();
+      ref.getWorldQuaternion(qRef);
+      holder.quaternion.copy(q).multiply(qRef).multiply(tiltQ);
+      ref.getWorldScale(sRef);
+      parent.getWorldScale(sPar);
+      holder.scale.set((PROP_SCALE * sRef.x) / sPar.x, (PROP_SCALE * sRef.y) / sPar.y, (PROP_SCALE * sRef.z) / sPar.z);
     },
     tip(out, dir) {
       if (shown !== 'binh') return false;
