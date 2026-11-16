@@ -213,5 +213,24 @@ dart tool/rule_trace.dart · dart tool/guard.dart
 - Khoảng đứng rót **lùi xa 1,4–1,6 m** (đầu chibi chiếm nửa màn khi đứng 0,8–1,2 m); chỗ chật → xa nhất có thể. R-TRA-1 đã sửa + đồng bộ.
 - 2 chỗ sập quay lưng ra tường: đứng **trước – trái** — chấp nhận, đã ghi ngoại lệ vào R-TRA-1.
 - Hiệu năng 150,8k ở một góc lúc rót: chấp nhận, đo fps Android trong trà lâu; < 30 fps mới làm model nhẹ.
-- [ ] 11. Sửa khoảng đứng rót 1,4–1,6 m (`tra_lau_phuc_vu.ts` + test) · chụp lại ảnh duyệt.
+- [x] 11. Sửa khoảng đứng rót 1,4–1,6 m (`tra_lau_phuc_vu.ts` + test) · chụp lại ảnh duyệt.
+
+## Kết quả NV11 (2026-11-16)
+- `standFor`: thử 1,4–1,6 m theo góc gần 45° như cũ; không chỗ nào được → lùi từ 1,39 m xuống (0,01 m một, sàn 0,8 m), lấy
+  khoảng **xa nhất** còn cách bàn ghế ≥ 0,2 m, trong sàn, cách chỗ ngồi khác ≥ 0,5 m. Phía phải chắn hết (sập quay tường) → trái.
+  Ghế lan can thử 1,6 m trước (người ngồi nhoài tới lan can nên cách **mắt** ngắn hơn cách chỗ ngồi).
+- **Khoảng đạt được** (tâm chỗ ngồi → tâm tiểu nhị): đôn tầng 1 (0–11) **1,40 m · 60°** · sập (12–15) **1,50 m · 45°** (13, 15
+  quay lưng ra tường: trước – trái −45°) · ghế lan can (16–19) **1,60 m · 45°** (cách mắt ≈ 1,2 m) · bàn dài đầu (20, 25)
+  **1,50 m · 45°** · bàn dài giữa / chỗ hướng phải nhìn vào ghế bên cạnh (21–24) **0,88 m · 75°** (chật: xa nhất có thể phía
+  phải — trái thì đủ 1,5 m nhưng luật chỉ cho trái ở sập quay tường) · bàn đôi (26–29) **1,50 m · 45°**.
+- Test `traLauPhucVu.test.ts`: khoảng ≤ 1,6 m, ≥ 0,8 m; chỗ < 1,4 m thì quét cùng phía, góc 35–85° (lan can 40–70°) mỗi 5°,
+  khoảng từ d + 0,02 tới 1,6 m mỗi 0,01 m → không điểm nào đứng được (= xa nhất có thể); ≥ 20/30 chỗ đạt 1,4–1,6 m. Đường
+  vẫn tới cả 30 chỗ (tầng 1 9,3–13,5 m, tầng 2 38,8–52,5 m).
+- **Đo Canvas 3D** (900 × 600, SwiftShader, 10 giờ sáng, `&chup`): đôn chỗ 7 lúc rót nhìn thẳng **85 draw call · 134,6k tam
+  giác**, nhìn phải 25° (ảnh 1) 69 · 113,2k (trước: 102 · 150,8k — tiểu nhị lùi xa, ít lọt khung gần); ghế lan can chỗ 17 quay
+  đầu 60° (ảnh 2) 41 · 82,0k, quay 40°: 42 · 81,3k.
+- Ảnh: `docs/tasks/2026-11-16-tieu-nhi-1-don-dang-rot.png` (`?dang=tieu-nhi&cho=7&t=8&dung&chup&gio=10&nhin=25`) ·
+  `-2-lan-can-dang-rot.png` (`cho=17&t=24.8&dung&chup&gio=10&nhin=60`).
+- Còn chờ người dùng: ghế lan can từ mắt tiểu nhị vẫn to (người ngồi nhoài ~0,8 m → cách mắt ~1,2 m); thử 60° · 1,6 m thì cách
+  mắt ~1,4 m nhưng ở sau vai, quay đầu hết cỡ chỉ thấy mép áo → giữ 45°. Bàn dài giữa 0,88 m (xem trên).
 

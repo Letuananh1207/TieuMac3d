@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { Colliders } from './collision/colliders';
 import { LayeredGround } from './collision/ground';
 import type { XZ } from './collision/gridPath';
-import { STAND_CLEAR } from './scene/kien_truc/tra_lau_phuc_vu';
+import { MIN_FALLBACK, STAND_CLEAR } from './scene/kien_truc/tra_lau_phuc_vu';
 import { traLau, traLauLayout } from './scene/kien_truc/tra_lau';
 import { clearanceAt } from './scene/routeCheck';
 import { addWalkIn } from './scene/rooms';
@@ -17,6 +17,7 @@ vi.stubGlobal('document', { createElement: () => ({ width: 0, height: 0, getCont
 /** Phẩm Minh Các đúng như design/scene/scene.json: (37; −36), 19,2 × 11,2, mặt tiền nhìn tây (rotY 270), kiến trúc × 1,6. */
 const style = { ...DEFAULT_SCENE.buildingStyle, heightScale: 1.6 };
 const b: BuildingSpec = { id: 'pham-minh-cac', kind: 'tra-lau', x: 37, z: -36, w: 19.2, d: 11.2, title: 'Trà lâu', roofColor: '#2b5446', rotY: 270 };
+const DEG = 180 / Math.PI;
 /** chỗ tiểu nhị (đặc tả cảnh `npcs` → `tieu-nhi`) */
 const HOME: XZ = [42.1, -36];
 const { plat, yf } = traLauLayout(b, style);
@@ -27,8 +28,24 @@ function setup() {
   return { room, colliders, ground: new LayeredGround(null, room.pads), svc: room.service!, seats: room.seats! };
 }
 
+/** điểm ở góc `deg` (so hướng nhìn, dương = phải), cách chỗ ngồi `d` m */
+function at(s: { x: number; z: number; rotY: number }, deg: number, d: number): XZ {
+  const a = deg / DEG;
+  const fx = Math.sin(s.rotY);
+  const fz = Math.cos(s.rotY);
+  const rx = -Math.cos(s.rotY);
+  const rz = Math.sin(s.rotY);
+  return [s.x + (fx * Math.cos(a) + rx * Math.sin(a)) * d, s.z + (fz * Math.cos(a) + rz * Math.sin(a)) * d];
+}
+/** đứng được: trong sàn (cách mép ≥ STAND_CLEAR), cách vật cản mịn ≥ STAND_CLEAR, cách chỗ ngồi khác ≥ 0,5 m */
+function standFree(f: TeaFloor, seats: readonly { x: number; z: number }[], me: object, x: number, z: number): boolean {
+  const m = STAND_CLEAR - 1e-9;
+  if (x < f.bounds.minX + m || x > f.bounds.maxX - m || z < f.bounds.minZ + m || z > f.bounds.maxZ - m) return false;
+  if (clearanceAt(f, x, z) < m) return false;
+  return !seats.some((o) => o !== me && Math.hypot(o.x - x, o.z - z) < 0.5 - 1e-9);
+}
+
 const inside = (f: TeaFloor, x: number, z: number): boolean => x >= f.bounds.minX && x <= f.bounds.maxX && z >= f.bounds.minZ && z <= f.bounds.maxZ;
-const DEG = 180 / Math.PI;
 
 describe('Mốc phục vụ trà lâu (R-TRA-1)', () => {
   it('R-TRA-1: cả 30 chỗ ngồi đều có chỗ đứng rót, chỗ ngồi gắn mã nhà để tiểu nhị mang tới', () => {
@@ -39,18 +56,30 @@ describe('Mốc phục vụ trà lâu (R-TRA-1)', () => {
     expect(svc.seats.filter((s) => s!.floor === 1)).toHaveLength(12);
   });
 
-  it('R-TRA-1: chỗ đứng rót cách chỗ ngồi 0,8–1,2 m, cùng tầng, ngoài vật cản mịn, phía trước – phải (ghế lan can: bên phải)', () => {
+  it('R-TRA-1: chỗ đứng rót cách chỗ ngồi 1,4–1,6 m (chỗ chật: xa nhất có thể), cùng tầng, ngoài vật cản mịn, phía trước – phải (ghế lan can: bên phải)', () => {
     const { svc, seats } = setup();
     const angles: string[] = [];
+    const dists: string[] = [];
     seats.forEach((s, i) => {
       const t = svc.seats[i]!;
       const f = svc.floors[t.floor - 1];
       expect(Math.abs(f.y - (s.y < yf - 1 ? plat : yf)) < 1e-9).toBe(true);
       const d = Math.hypot(t.stand[0] - s.x, t.stand[1] - s.z);
-      expect(d).toBeGreaterThanOrEqual(0.8 - 1e-5);
-      expect(d).toBeLessThanOrEqual(1.2 + 1e-5);
-      expect(inside(f, ...t.stand)).toBe(true);
-      expect(clearanceAt(f, ...t.stand)).toBeGreaterThanOrEqual(STAND_CLEAR - 1e-9);
+      expect(d, `chỗ ${i}`).toBeGreaterThanOrEqual(MIN_FALLBACK - 1e-5);
+      expect(d, `chỗ ${i}`).toBeLessThanOrEqual(1.6 + 1e-5);
+      expect(standFree(f, seats, s, ...t.stand), `chỗ ${i}`).toBe(true);
+      dists.push(`${i}:${d.toFixed(2)}`);
+      if (d < 1.4 - 1e-5) {
+        // chỗ chật — xa nhất có thể: quét cùng phía, mọi góc trong dải ứng viên (5° một), khoảng từ d + 0,02 tới 1,6 (0,01 m một)
+        // → không có điểm nào hợp lệ (trong sàn, cách bàn ghế ≥ STAND_CLEAR, không đè chỗ ngồi khác)
+        const side = Math.sign(t.angle);
+        const band = s.hold === 'lan-can' ? [40, 70] : [35, 85];
+        for (let a = band[0]; a <= band[1]; a += 5)
+          for (let dd = d + 0.02; dd <= 1.6 + 1e-9; dd += 0.01) {
+            const [x, z] = at(s, side * a, dd);
+            expect(standFree(f, seats, s, x, z), `chỗ ${i} (d ${d.toFixed(2)}): ${side * a}° · ${dd.toFixed(2)} m vẫn đứng được`).toBe(false);
+          }
+      }
       // góc thật trong cảnh so với hướng nhìn: dương = bên phải người ngồi
       const fx = Math.sin(s.rotY);
       const fz = Math.cos(s.rotY);
@@ -68,7 +97,10 @@ describe('Mốc phục vụ trà lâu (R-TRA-1)', () => {
     const left = seats.filter((_, i) => svc.seats[i]!.angle < 0);
     for (const s of seats.filter((q) => q.hold !== 'lan-can')) expect(Math.abs(svc.seats[seats.indexOf(s)]!.angle)).toBeLessThan(90);
     expect(left.length, angles.join(' ')).toBeLessThanOrEqual(2);
+    // phần lớn chỗ đạt đủ 1,4–1,6 m
+    expect(dists.filter((q) => Number(q.split(':')[1]) >= 1.4 - 1e-5).length, dists.join(' ')).toBeGreaterThanOrEqual(20);
     console.log(`R-TRA-1 góc chỗ đứng rót: ${angles.join(' ')}`);
+    console.log(`R-TRA-1 khoảng chỗ đứng rót (m): ${dists.join(' ')}`);
   });
 
   it('R-TRA-1: cửa, mốc thang nằm trên nền đi được; cửa ở gian phía hồi phải (nam), đầu cầu nối trên sàn tầng 2', () => {
