@@ -96,7 +96,7 @@
       "d": 6,
       "title": "Nhà của ta",
       "roofColor": "#3b3f44",
-      "kind": "nha-o",
+      "kind": "nha-o", "model": "nha-ta",
       "closed": true
     }
   ],

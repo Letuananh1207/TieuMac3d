@@ -3,6 +3,14 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-16.15 — Nhà của ta: ngôi nhà ngoài sân bằng model Tripo
+
+- Loại: tài nguyên 3D + cảnh 3D (dữ liệu). Kế hoạch `docs/tasks/2026-11-16-nha-model.md` NV9 (V-20261116-88). Phiếu ảnh `2026-11-16-anh-nha-ta`.
+- `design/models/nha-ta.glb` (Tripo, 14 913 tam giác, 305 KB); `design/scene/nha-ta.json` nhà `nha-o` thêm `"model": "nha-ta"`.
+- Người dùng chọn **(a) ép khung cũ**: model co riêng ba trục khớp khung nhà khối (12,56 × 7,92 × 8,46, lệch dáng 59 % — có cảnh báo, chấp nhận);
+  va chạm, nền + dốc, cổng vào nhà, vùng đặt đồ không đổi; biển "Nhà của ta", 2 đèn lồng, tấm sáng cửa sổ ban đêm do code. Thiếu file / lỗi nạp → nhà khối.
+- Ảnh so: `screens/Nha-model-ty-le.png` (khối · (a) · (b) — (b) giữ tỉ lệ bị loại: cao 8 m, lấn sân sau).
+
 ## 2026-11-16.14 — Bộ ảnh Tripo: Nhà của ta (bên ngoài) + hạc cưỡi truyền tống
 
 - Loại: tài nguyên 3D (ảnh đầu vào).
