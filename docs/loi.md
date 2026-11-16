@@ -19,6 +19,21 @@ Mức độ:
 
 ## Đang mở
 
+### L-22 · Hạc cưỡi (model Tripo) nằm phục khi đáp — phải đứng trên hai chân rồi mới bay
+
+- Trạng thái: đang sửa · Mức độ: khó chịu (hoạt cảnh truyền tống trông sai dáng, không chặn dùng) · Phần: cưỡi hạc (`scene/hac.ts`, `scene/hacModel.ts`, `cuoiHac.ts`) · Quy tắc: R-HANH-5
+- Báo: 2026-11-16 — "tôi muốn lúc hạc đến phải giống như ban đầu nghĩa là đứng rồi mới bay"
+- Các bước: 1. Mở bản đồ truyền tống, chọn nơi đến. 2. Xem hạc sà xuống trước mặt. 3. Tới nơi, xem hạc hạ cánh thả nhân vật.
+- Mong đợi / thực tế: hạc đáp xuống **đứng trên hai chân** (thân nâng, cổ ngẩng, cánh xếp), nhân vật nhảy lên / xuống, rồi hạc nhún chân bật lên bay (chân thu ra sau) / model Tripo tư thế bay, chân duỗi ra sau → lúc đáp chỉ gập cánh, bụng sát đất như "nằm phục".
+- Bằng chứng: `design/screens/Hac-model-dat.png` (hàng "Đứng đáp", cột phải).
+
+**Sửa**
+- Nguyên nhân: model không có dáng đứng; `hacModel.ts` chỉ tự tách 5 xương (gốc, vai, đầu cánh), không có xương chân → `fold` chỉ gập cánh.
+- Cách (người dùng chọn 2026-11-16): code tự tách hai chân như cánh, bẻ chân thẳng đứng khi đáp, nâng thân; cất cánh nhún + thu chân. 0 coin.
+
+**Lịch sử**
+- 2026-11-16: ghi, người dùng chọn "code bẻ chân".
+
 ### L-21 · Lưng nhân vật chính cong / vặn theo hai tay khi đi, chạy
 
 - Trạng thái: chờ thử máy · Mức độ: khó chịu (thấy suốt khi di chuyển, nhìn từ sau lưng) · Phần: nhân vật (`player/dang7.ts` `tronDiCu` / `diCuDang`, `player/mixamoRig.ts` trọng số da) · Quy tắc: R-DIEU-5
