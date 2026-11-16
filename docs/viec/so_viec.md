@@ -112,3 +112,4 @@ ha-ta-lowpoly.glb` |
 | V-20261116-100 | Thanh công cụ bản máy tính xấu: ô quá sát nhau, sát đáy, nhãn tên (ru-băng) thiếu chuyên nghiệp → 3 phương án chụp thật cho người dùng chọn rồi áp | ui (thay canvas) + lead nhỏ | đang làm — nhánh viec/thanh-may | R-THANH-1 | chọn phương án |
 | V-20261116-101 | Hai tay nhân vật chính lúc đứng ép sát thân → dạng ~15° | loi sua | đang làm — nhánh viec/tay-dang | L-23 | duyệt ảnh trước / sau |
 | V-20261116-102 | Tiểu Khất tỉ lệ quá nhỏ (scale 0,8) → bằng các NPC khác (1,0) | canh nhỏ | đang làm — nhánh viec/khat-nhi-co | R-NPC-6 | duyệt ảnh |
+| V-20261116-103 | Cầm Nương mắt lé (con ngươi hướng vào trong) → sửa texture | loi sua | xếp hàng (đủ 4 việc chạy) | L-24 | duyệt ảnh trước / sau |

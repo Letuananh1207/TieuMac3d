@@ -19,6 +19,20 @@ Mức độ:
 
 ## Đang mở
 
+### L-24 · Cầm Nương mắt lé: hai con ngươi hướng vào trong, khác mắt các nhân vật khác
+
+- Trạng thái: mới · Mức độ: nhỏ (ngoại hình NPC) · Phần: model `design/models/cam-nu.glb` (texture Tripo) · Quy tắc: R-NPC-9
+- Báo: 2026-11-16 — "mắt của nhân vật này đang rất sầu không linh hoạt … 2 con ngươi đang hướng vào trong nhìn rất xấu và không giống mắt các nhân vật còn lại"
+- Các bước: 1. Tới bàn đàn Cầm Nương. 2. Nhìn cận mặt.
+- Mong đợi / thực tế: tròng đen nằm giữa mắt như các nhân vật khác / hai tròng đen lệch vào phía mũi (lé).
+- Bằng chứng: ảnh người dùng gửi trong chat (cận Cầm Nương gảy đàn).
+
+**Sửa**
+- Hướng: sửa texture — dò vùng mắt (`matDo`), dời tròng đen ra giữa, vá lòng trắng; không tạo lại model (0 coin). Không đẹp → hỏi người dùng tạo lại bằng Tripo.
+
+**Lịch sử**
+- 2026-11-16: ghi.
+
 ### L-23 · Hai tay nhân vật chính lúc đứng ép sát thân, trông xấu
 
 - Trạng thái: đang sửa · Mức độ: nhỏ (ngoại hình, không chặn dùng) · Phần: nhân vật (`player/dongTac.ts`, `mixamoCharacter.ts`) · Quy tắc: R-DIEU-8 (dáng đứng)
