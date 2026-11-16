@@ -2,13 +2,15 @@
  * Hạc truyền tống (R-HANH-5): hạc đỉnh đỏ (丹顶鹤) lớn chở nhân vật — thân trắng, cổ + đuôi + mép cánh đen, đỉnh đầu đỏ, mỏ
  * vàng xám, chân duỗi sau. Dài ~3 m, sải cánh ~5,6 m (× `crane.scale`). Mũi nhìn +z, gốc ở mặt đất dưới thân. Neo `seat`
  * trên lưng — chỗ nhân vật ngồi.
- * - Có `design/models/hac.glb` (Tripo, không rig): `useModel` — code tự tách 2 cánh bằng 5 xương (`hacModel.ts`,
- *   `hacCanh.ts`), **1 draw call**, vật liệu không-sáng của model (ngày đêm nhân màu — `apGio.ts`).
+ * - Có `design/models/hac.glb` (Tripo, không rig): `useModel` — code tự tách 2 cánh + 2 chân bằng 9 xương (`hacModel.ts`,
+ *   `hacCanh.ts`, `hacChan.ts`), **1 draw call**, vật liệu không-sáng của model (ngày đêm nhân màu — `apGio.ts`). Đáp
+ *   xuống đứng trên hai chân (`stand`, nhún `squat` — L-22), chỗ ngồi đi theo thân.
  * - Chưa có / nạp lỗi (và trước khi nạp xong): bản khối — thân gộp màu theo đỉnh + 2 cánh = **3 draw call**, ~260 tam giác,
  *   một vật liệu Lambert (quy tắc 4).
  */
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
+import { bodyPoint, standPose, type CraneLegs } from './hacChan';
 import { craneMesh, type CraneModel } from './hacModel';
 import { lambert } from './materials';
 import { markDynamic } from './merge';
@@ -27,6 +29,8 @@ export const SEAT_AT: [number, number, number] = [0, 1.82, -0.1];
 const FOLD_YAW = 1.35;
 
 type Part = [THREE.BufferGeometry, string];
+
+const clamp01 = (v: number): number => Math.min(1, Math.max(0, v));
 
 function painted(g: THREE.BufferGeometry, hex: string): THREE.BufferGeometry {
   const geo = g.index ? g.toNonIndexed() : g;
@@ -117,6 +121,11 @@ interface ModelParts {
   material: THREE.Material;
   /** vai trái, đầu trái, vai phải, đầu phải */
   wings: { vai: THREE.Bone; dau: THREE.Bone; side: number }[];
+  /** xương thân (gốc) — đứng: nâng + ngẩng */
+  body: THREE.Bone;
+  /** hông + cổ chân hai bên */
+  legs: { hong: THREE.Bone; co: THREE.Bone }[];
+  shape: { legs: CraneLegs | null; seat: [number, number, number] };
 }
 
 export class Crane {
@@ -135,6 +144,13 @@ export class Crane {
   private glide = 0;
   /** 0 = dang cánh bay · 1 = xếp dọc thân (đứng) */
   fold = 0;
+  /**
+   * Chân (model, L-22): 0 = duỗi sau (bay) · 1 = đứng trên hai chân, bàn chân chạm `root` y = 0, thân nâng + hơi ngẩng.
+   * Bản khối: không đổi (chân khối đã chạm đất).
+   */
+  stand = 0;
+  /** nhún khi đứng 0…1 (hông lùi + hạ, bàn chân giữ chỗ) — trước khi bật lên / lúc chạm đất */
+  squat = 0;
 
   constructor(spec: CraneSpec) {
     // tự sáng nhẹ: mặt dưới cánh (pháp tuyến lật, ánh đất xanh của hemi) không bị xỉn màu rêu
@@ -177,8 +193,15 @@ export class Crane {
     this.geos.length = 0;
     this.material.dispose();
     const { mesh, bones, material } = craneMesh(m);
-    const [, vaiT, dauT, vaiP, dauP] = bones;
-    this.model = { mesh, material, wings: [{ vai: vaiT, dau: dauT, side: -1 }, { vai: vaiP, dau: dauP, side: 1 }] };
+    const [body, vaiT, dauT, vaiP, dauP, hongT, coT, hongP, coP] = bones;
+    this.model = {
+      mesh,
+      material,
+      wings: [{ vai: vaiT, dau: dauT, side: -1 }, { vai: vaiP, dau: dauP, side: 1 }],
+      body,
+      legs: [{ hong: hongT, co: coT }, { hong: hongP, co: coP }],
+      shape: { legs: m.shape.legs ?? null, seat: m.shape.seat },
+    };
     this.root.add(mesh);
     this.seat.position.set(...m.shape.seat);
     this.pose();
@@ -193,7 +216,7 @@ export class Crane {
     this.pose();
   }
 
-  /** dựng dáng cánh theo nhịp + `fold` hiện tại */
+  /** dựng dáng cánh theo nhịp + `fold` hiện tại; model: chân + thân theo `stand` / `squat`, chỗ ngồi theo thân */
   private pose(): void {
     const beat = flapAngle(this.t, 0, this.amp, this.speed) + this.glide * 0.12;
     const open = 1 - this.fold;
@@ -207,6 +230,23 @@ export class Crane {
       vai.rotation.set(0, side * MODEL_FOLD.back * f, side * (beat * open - MODEL_FOLD.drop * f));
       dau.rotation.set(0, side * MODEL_FOLD.tip * f, side * lag * open);
     }
+    const { body, legs, shape } = this.model;
+    if (!shape.legs) return;
+    const p = standPose(shape.legs, clamp01(this.stand), clamp01(this.squat));
+    body.position.set(0, p.dy, p.dz);
+    body.rotation.set(p.pitch, 0, 0);
+    for (const { hong, co } of legs) {
+      hong.rotation.set(p.leg, 0, 0);
+      co.rotation.set(p.foot, 0, 0);
+    }
+    const [sy, sz] = bodyPoint(p, shape.seat[1], shape.seat[2]);
+    this.seat.position.set(shape.seat[0], sy, sz);
+  }
+
+  /** chỗ ngồi đang cao hơn lúc bay bấy nhiêu (m, đã nhân `scale`) — đứng nâng thân (camera nhìn theo) */
+  get standLift(): number {
+    const rest = this.model ? this.model.shape.seat[1] : SEAT_AT[1];
+    return (this.seat.position.y - rest) * this.root.scale.y;
   }
 
   /** Vị trí chỗ ngồi trong toạ độ cảnh. */

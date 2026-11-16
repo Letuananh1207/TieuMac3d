@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { describe, expect, it } from 'vitest';
 import { blockCraneGeometry, Crane, SEAT_AT } from './hac';
 import { craneMesh, craneModelFrom, CRANE_SPAN, loadCraneModel, type CraneModel } from './hacModel';
+import { fakeFlyingCrane } from './hacGia';
 import { DEFAULT_SCENE } from './spec';
 
 const spec = DEFAULT_SCENE.crane;
@@ -53,11 +54,11 @@ describe('hạc model — tự gắn xương từ "khối gộp" (NV2)', () => {
     expect(b.min.y).toBeCloseTo(0, 4);
   });
 
-  it('1 SkinnedMesh, 5 xương (gốc, vai + đầu cánh hai bên), trọng số mỗi đỉnh tổng 1', () => {
+  it('1 SkinnedMesh, 9 xương (gốc, vai + đầu cánh, hông + cổ chân hai bên — L-22), trọng số mỗi đỉnh tổng 1', () => {
     const { mesh, bones } = craneMesh(model);
     expect(mesh).toBeInstanceOf(THREE.SkinnedMesh);
-    expect(mesh.skeleton.bones.length).toBe(5);
-    expect(bones.map((b) => b.name)).toEqual(['goc', 'vai-trai', 'dau-trai', 'vai-phai', 'dau-phai']);
+    expect(mesh.skeleton.bones.length).toBe(9);
+    expect(bones.map((b) => b.name)).toEqual(['goc', 'vai-trai', 'dau-trai', 'vai-phai', 'dau-phai', 'hong-trai', 'co-chan-trai', 'hong-phai', 'co-chan-phai']);
     const w = model.geometry.getAttribute('skinWeight');
     for (let i = 0; i < n; i++) expect(w.getX(i) + w.getY(i) + w.getZ(i) + w.getW(i)).toBeCloseTo(1, 5);
   });
@@ -132,5 +133,99 @@ describe('Crane.useModel — vỗ cánh bằng xương (NV3)', () => {
     d.dispose();
     d.useModel(model);
     expect(d.usesModel).toBe(false);
+  });
+});
+
+describe('R-HANH-5 (L-22): hạc model đáp xuống đứng trên hai chân, không nằm phục', () => {
+  /** hạc giả tư thế bay như Tripo: chân duỗi thẳng ra sau (`hacGia.ts`) */
+  const flyer = craneModelFrom(new THREE.BufferGeometry().setAttribute('position', new THREE.Float32BufferAttribute(fakeFlyingCrane(), 3)), mat());
+  const fp = flyer.geometry.getAttribute('position');
+  const FP = (i: number): THREE.Vector3 => new THREE.Vector3().fromBufferAttribute(fp, i);
+  const fBest = (score: (p: THREE.Vector3) => number): number => {
+    let k = 0;
+    let s = -Infinity;
+    for (let i = 0; i < fp.count; i++) {
+      const v = score(FP(i));
+      if (v > s) [k, s] = [i, v];
+    }
+    return k;
+  };
+  const fBack = fBest((p) => (Math.abs(p.x) < 0.1 && Math.abs(p.z - flyer.shape.seat[2]) < 0.3 ? p.y : -Infinity));
+  const fToe = fBest((p) => (p.x > 0 ? -p.z : -Infinity));
+  const crane = (m: CraneModel): Crane => {
+    const c = new Crane(spec);
+    c.useModel(m);
+    return c;
+  };
+  const at = (c: Crane, m: CraneModel, i: number): THREE.Vector3 => {
+    c.root.updateMatrixWorld(true);
+    const mesh = c.root.children.find((o): o is THREE.SkinnedMesh => o instanceof THREE.SkinnedMesh);
+    if (!mesh) throw new Error('không có SkinnedMesh');
+    return mesh.applyBoneTransform(i, new THREE.Vector3().fromBufferAttribute(m.geometry.getAttribute('position'), i));
+  };
+  const lowest = (c: Crane, m: CraneModel): number => {
+    let y = Infinity;
+    for (let i = 0; i < m.geometry.getAttribute('position').count; i++) y = Math.min(y, at(c, m, i).y);
+    return y;
+  };
+
+  it('đo được hai chân: hạc giả chân duỗi sau, "khối gộp" chân thõng', () => {
+    for (const m of [flyer, model]) {
+      expect(m.shape.legs).toBeTruthy();
+      expect(m.shape.legs?.toe[1]).toBeLessThan(0.2);
+    }
+  });
+
+  it('đứng (fold = 1, stand = 1): bàn chân chạm đất (không lún, không lơ lửng), lưng nâng ≥ 0,6 m — không nằm bụng sát đất', () => {
+    const c = crane(flyer);
+    const rest = at(c, flyer, fBack);
+    expect(lowest(c, flyer)).toBeCloseTo(0, 3); // dáng bay để dưới đất = nằm phục (lỗi cũ)
+    c.fold = 1;
+    c.stand = 1;
+    c.update(0.3, 0, 4);
+    expect(Math.abs(lowest(c, flyer))).toBeLessThan(0.05);
+    expect(at(c, flyer, fBack).y - rest.y).toBeGreaterThan(0.6);
+    // "khối gộp" (chân vốn thõng xuống): đứng vẫn chạm đất, không lún
+    const b = crane(model);
+    b.stand = 1;
+    b.update(0.1, 0, 4);
+    expect(Math.abs(lowest(b, model))).toBeLessThan(0.05);
+  });
+
+  it('chỗ ngồi đi theo lưng khi đứng / nhún (nhân vật ngồi đúng lưng)', () => {
+    const c = crane(flyer);
+    const gap0 = c.seat.position.y - at(c, flyer, fBack).y;
+    for (const squat of [0, 1]) {
+      c.stand = 1;
+      c.squat = squat;
+      c.update(0.1, 0, 4);
+      const b = at(c, flyer, fBack);
+      expect(Math.abs(c.seat.position.y - b.y - gap0)).toBeLessThan(0.06);
+      expect(Math.abs(c.seat.position.z - b.z)).toBeLessThan(0.15);
+    }
+  });
+
+  it('nhún: thân hạ, bàn chân giữ chỗ; stand = 0 về đúng dáng bay', () => {
+    const c = crane(flyer);
+    c.stand = 1;
+    c.update(0.1, 0, 4);
+    const a = at(c, flyer, fToe);
+    const up = at(c, flyer, fBack).y;
+    c.squat = 1;
+    c.update(0.1, 0, 4);
+    expect(at(c, flyer, fToe).distanceTo(a)).toBeLessThan(0.08);
+    expect(at(c, flyer, fBack).y).toBeLessThan(up - 0.15);
+    c.stand = 0;
+    c.squat = 0;
+    c.update(0.1, 0, 4);
+    for (const i of [fToe, fBack]) expect(at(c, flyer, i).distanceTo(FP(i))).toBeLessThan(1e-4);
+  });
+
+  it('bản khối (chưa có model): stand không đổi gì', () => {
+    const c = new Crane(spec);
+    const before = c.seat.position.clone();
+    c.stand = 1;
+    c.update(0.1, 0, 4);
+    expect(c.seat.position.distanceTo(before)).toBe(0);
   });
 });

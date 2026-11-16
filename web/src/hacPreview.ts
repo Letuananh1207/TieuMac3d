@@ -3,8 +3,10 @@
  * Hạc lượn tại chỗ xuất phát (hoặc `&nv=x,z`), nhân vật ngồi trên lưng (như lúc bay — R-HANH-5), thông số đo ở bảng.
  * - `&mau=hac` (mặc định khi có `design/models/hac.glb`) · `&mau=khoi-gop` (thân + cánh khối gộp một lưới — thử đường tự
  *   tách cánh, mặc định khi chưa có model; artifact không nhúng được .glb lớn) · `&mau=<mã>` (model khác trong design/models/)
- * - `&khoi` — bản khối cũ (3 draw call) để so · `&gap=1` — đứng đáp, cánh xếp (Q1)
- * - `&vo=len|xuong` — dừng ở đỉnh / đáy nhịp vỗ (chụp so) · `&goc=truoc|sau-tren|ben` — góc camera
+ * - `&khoi` — bản khối cũ (3 draw call) để so · `&gap=1` — đứng đáp trên hai chân, cánh xếp (Q1, L-22)
+ * - `&chan=0…1` — chân: 0 duỗi sau (bay) → 1 đứng (mặc định theo `gap`) · `&nhun=0…1` — nhún · `&cao=<m>` — cao hơn đất
+ *   (mặc định: đứng hẳn → 0, còn lại lượn 2,2 m) — chụp "vừa rời đất, chân đang thu" (L-22)
+ * - `&vo=len|xuong` — dừng ở đỉnh / đáy nhịp vỗ (chụp so) · `&goc=truoc|sau-tren|ben|cheo` — góc camera
  */
 import * as THREE from 'three';
 import type { Character } from './player/character';
@@ -58,24 +60,38 @@ export async function addCranePreview(
   }
   const gap = params.get('gap') === '1';
   crane.fold = gap ? 1 : 0;
+  const num = (k: string, d: number): number => {
+    const v = Number(params.get(k));
+    return params.has(k) && Number.isFinite(v) ? v : d;
+  };
+  crane.stand = num('chan', gap ? 1 : 0);
+  crane.squat = num('nhun', 0);
+  const lift = num('cao', crane.stand >= 1 ? 0 : HOVER);
+  const hover = lift > 0 && !gap && !params.has('cao');
   const vo = params.get('vo');
   const frozen = vo === 'len' || vo === 'xuong';
   // dừng nhịp: sin(t·SPEED) = ±1
   if (frozen) crane.update((vo === 'len' ? Math.PI / 2 : Math.PI * 1.5) / SPEED, gap ? 0 : AMP, SPEED);
+  else crane.update(0, gap ? 0 : AMP, SPEED);
   // chỗ nhân vật đứng lúc mở trang (chỗ xuất phát, hoặc `&nv=x,z` — chọn chỗ thoáng để chụp)
   const { x, z } = rider.root.position;
   const ground = groundAt(x, z);
   const base = Number.isFinite(ground) ? ground : 0;
-  crane.root.position.set(x, base + (gap ? 0 : HOVER), z);
+  crane.root.position.set(x, base + lift, z);
   crane.root.rotation.set(0, 0, 0); // mũi nhìn +z
   scene.add(crane.root);
 
   const k = spec.crane.scale;
   const P = crane.root.position;
   const goc = params.get('goc') ?? 'truoc';
-  const target: V3 = [P.x, P.y + 1.6 * k, P.z];
-  const cam: V3 =
-    goc === 'sau-tren' ? [P.x, P.y + 6 * k, P.z - 6.5 * k] : goc === 'ben' ? [P.x + 8 * k, P.y + 1.8 * k, P.z] : [P.x, P.y + 1.9 * k, P.z + 7.5 * k];
+  const up = 1.6 * k + crane.standLift * 0.6;
+  const target: V3 = [P.x, P.y + up, P.z];
+  const cams: Record<string, V3> = {
+    'sau-tren': [P.x, P.y + 6 * k, P.z - 6.5 * k],
+    ben: [P.x + 8 * k, P.y + up + 0.2 * k, P.z],
+    cheo: [P.x + 6 * k, P.y + up + 1.2 * k, P.z + 6 * k],
+  };
+  const cam: V3 = cams[goc] ?? [P.x, P.y + up + 0.3 * k, P.z + 7.5 * k];
   if (!params.has('cam')) view(cam, target);
 
   const seat = new THREE.Vector3();
@@ -91,7 +107,7 @@ export async function addCranePreview(
       if (!frozen) {
         t += dt;
         crane.update(dt, gap ? 0 : AMP, SPEED, 0);
-        if (!gap) P.y = base + HOVER + Math.sin(t * 1.6) * 0.15;
+        if (hover) P.y = base + lift + Math.sin(t * 1.6) * 0.15;
       }
       place();
     },

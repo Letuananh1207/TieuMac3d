@@ -130,6 +130,39 @@ export function landCamera(home: { pos: V3; look: V3 }, crane: V3, rider: V3, k:
   return { pos: lerp3(watch.pos, home.pos, ease(k)), look: lerp3(watch.look, home.look, ease(k)) };
 }
 
+/* ---------- chân hạc (L-22): đáp đứng trên hai chân, nhún rồi bật lên ---------- */
+
+/** giây: nhún xuống · bật thẳng chân · thu chân ra sau sau khi rời đất · nhún đỡ lúc chạm đất */
+export const CRANE_LEGS = { crouch: 0.2, spring: 0.1, tuck: 0.3, absorb: 0.3, absorbDepth: 0.35 };
+
+const smoothstep = (a: number, b: number, v: number): number => ease((v - a) / (b - a));
+
+/** Sà xuống đáp: `k` 0 → 1 của đoạn đáp (chạm đất ở 1) — chân duỗi xuống từ giữa đoạn, thẳng hẳn trước khi chạm. */
+export const arriveStand = (k: number): number => smoothstep(0.45, 0.85, k);
+
+/** Nhún đỡ khi chạm đất: `s` giây kể từ lúc chạm (trước chạm một chút cũng được — âm). */
+export function absorbSquat(s: number): number {
+  const a = -0.06;
+  const b = CRANE_LEGS.absorb;
+  return s <= a || s >= b ? 0 : CRANE_LEGS.absorbDepth * Math.sin((Math.PI * (s - a)) / (b - a));
+}
+
+/**
+ * Cất cánh từ đất: `s` giây kể từ lúc bắt đầu, `length` giây cả đoạn (tới hết đường bay). Nhún xuống → bật thẳng chân (rời
+ * đất) → chân thu dần ra sau; cánh mở ngay khi nhún. `u` 0 → 1 = tiến độ đường bay (đứng yên trong lúc nhún).
+ */
+export function launchLegs(s: number, length: number): { stand: number; squat: number; fold: number; u: number } {
+  const { crouch, spring, tuck } = CRANE_LEGS;
+  const squat = s < crouch ? ease(s / crouch) : 1 - ease((s - crouch) / spring);
+  const off = crouch + spring * 0.5;
+  return {
+    stand: 1 - smoothstep(crouch + spring, crouch + spring + tuck, s),
+    squat,
+    fold: clamp01(1 - s / crouch),
+    u: clamp01((s - off) / Math.max(1e-6, length - off)),
+  };
+}
+
 /** Khoảng cách mặt phẳng hai điểm. */
 export const distXZ = (a: XZ, b: XZ): number => Math.hypot(a[0] - b[0], a[1] - b[1]);
 

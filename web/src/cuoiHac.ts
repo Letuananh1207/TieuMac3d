@@ -1,6 +1,8 @@
 /**
  * Ghép hoạt cảnh cưỡi hạc truyền tống (R-HANH-5, kế hoạch docs/tasks/2026-11-15-cuoi-hac.md) — `main.ts` chỉ gọi vài chỗ.
  * - `CraneRide('cat')` trang cũ: hạc sà xuống đáp trước mặt, nhân vật nhảy lên lưng, hạc vút lên, mây phủ → tải lại trang.
+ * - Hạc model đáp xuống **đứng trên hai chân** (L-22): chân duỗi xuống trước khi chạm, nhún đỡ, đứng khi nhân vật nhảy lên /
+ *   xuống; cất cánh: nhún, bật lên, chân thu dần ra sau (`launchLegs`). Mốc thời gian R-HANH-5 giữ nguyên.
  * - `CraneFlight` trang mới (`?den=hac`): cảnh bay biển mây riêng (`scene/bayMay.ts`) vẽ trong lúc cảnh thật dựng ngầm.
  * - `CraneRide('ha')` cảnh thật: hạc lượn hạ xuống bãi đáp, nhân vật nhảy xuống đúng chỗ xuất hiện, camera về sau lưng;
  *   rồi hạc bay đi (3 s) và gỡ khỏi cảnh.
@@ -11,7 +13,7 @@ import type { Character } from './player/character';
 import { buildFlight, type FlightScene } from './scene/bayMay';
 import { Crane } from './scene/hac';
 import { loadCraneModel, withCraneModel } from './scene/hacModel';
-import { arriveCurve, bezier, curveHeading, departCamera, ease, easeOut, jumpArc, landCamera, landCurve, landingPad, leaveCurve, lerp3, mountPad, takeoffCurve, type Curve, type V3 } from './scene/hacDuong';
+import { absorbSquat, arriveCurve, arriveStand, bezier, curveHeading, departCamera, ease, easeOut, jumpArc, landCamera, landCurve, landingPad, launchLegs, leaveCurve, lerp3, mountPad, takeoffCurve, type Curve, type V3 } from './scene/hacDuong';
 import { docEpGio, gioLuc, phaNgay } from './scene/ngayDem';
 import type { SceneSpec, XZ } from './scene/spec';
 import { CraneHud } from './ui/craneHud';
@@ -111,12 +113,21 @@ export class CraneRide {
     else this.updateLand(dt, camera);
   }
 
-  private placeCrane(c: Curve, k: number, fold: number): V3 {
+  /** đặt hạc trên đường `c` ở tiến độ `k`; `legs` = chân đứng / nhún (L-22) */
+  private placeCrane(c: Curve, k: number, fold: number, legs: { stand: number; squat: number } = { stand: 0, squat: 0 }): V3 {
     const p = bezier(c, k);
     this.crane.root.position.set(...p);
     this.crane.root.rotation.set(0, curveHeading(c, k, this.o.heading), 0);
     this.crane.fold = fold;
+    this.crane.stand = legs.stand;
+    this.crane.squat = legs.squat;
     return p;
+  }
+
+  /** cất cánh từ bãi: `s` giây từ lúc nhún, `length` giây cả đoạn bay lên */
+  private launch(c: Curve, s: number, length: number, shape: (u: number) => number): V3 {
+    const l = launchLegs(s, length);
+    return this.placeCrane(c, shape(l.u), l.fold, l);
   }
 
   private updateDepart(dt: number, camera: THREE.Camera): void {
@@ -126,25 +137,25 @@ export class CraneRide {
     let at: V3;
     if (st === 'den') {
       const k = t / T.arrive;
-      at = this.placeCrane(this.curves.a, easeOut(k), clamp01((k - 0.75) / 0.25));
+      at = this.placeCrane(this.curves.a, easeOut(k), clamp01((k - 0.75) / 0.25), { stand: arriveStand(k), squat: absorbSquat(t - T.arrive) });
       pose(ch, dt, 0);
     } else if (st === 'len') {
-      at = this.placeCrane(this.curves.a, 1, 1);
+      at = this.placeCrane(this.curves.a, 1, 1, { stand: 1, squat: absorbSquat(t - T.arrive) });
       const k = (t - T.arrive) / (T.mount - T.arrive);
       const from: V3 = [this.o.at[0], this.o.groundAt(...this.o.at), this.o.at[1]];
       ch.root.position.set(...jumpArc(from, v3(this.crane.seatWorld(this.seat)), k, 0.8));
       ch.facing.rotation.y = heading;
       pose(ch, dt, 0, k < 1, k < 0.5 ? 3 : -3);
     } else {
-      const k = (t - T.mount) / (T.takeoff - T.mount);
-      at = this.placeCrane(this.curves.b, ease(k) ** 1.3, clamp01(1 - k * 4));
+      // nhún → bật lên → chân thu ra sau (L-22); đường bay như cũ, chỉ bắt đầu sau nhịp nhún
+      at = this.launch(this.curves.b, t - T.mount, T.takeoff - T.mount, (u) => ease(u) ** 1.3);
     }
     this.crane.update(dt, st === 'len' ? 0 : st === 'den' ? 0.6 : 0.7, st === 'den' ? 5 : 6);
     if (st !== 'den') this.ride(dt, st === 'len' ? 0 : clamp01((t - T.mount) * 6), st === 'len');
     const cam = departCamera(this.o.camera.pos, at, heading, t / T.takeoff);
     camera.position.set(...cam);
     // điểm nhìn trượt dần từ chỗ đang nhìn sang hạc (không giật ngẩng lên lúc hạc còn trên cao)
-    const lk = lerp3(this.o.camera.look, [at[0], at[1] + 1.4, at[2]], ease(t / T.mount));
+    const lk = lerp3(this.o.camera.look, [at[0], at[1] + 1.4 + this.crane.standLift, at[2]], ease(t / T.mount));
     camera.lookAt(this.look.set(...lk));
     // bỏ qua → mây phủ trong 0,4 s (như màn tải mờ) rồi sang bay
     if (this.fade >= 0) this.fade += dt;
@@ -176,11 +187,11 @@ export class CraneRide {
     let p: V3;
     if (st === 'ha') {
       const k = t / T.jumpOff;
-      p = this.placeCrane(this.curves.a, easeOut(k), clamp01((k - 0.8) / 0.2));
+      p = this.placeCrane(this.curves.a, easeOut(k), clamp01((k - 0.8) / 0.2), { stand: arriveStand(k), squat: absorbSquat(t - T.jumpOff) });
       this.crane.update(dt, 0.6 * (1 - k * 0.7), 4, 0.4);
       this.ride(dt, 1);
     } else {
-      p = this.placeCrane(this.curves.a, 1, 1);
+      p = this.placeCrane(this.curves.a, 1, 1, { stand: 1, squat: absorbSquat(t - T.jumpOff) });
       this.crane.update(dt, 0, 4);
       const k = clamp01((t - T.jumpOff) / (T.camBack - T.jumpOff));
       ch.root.position.set(...(k < 1 ? jumpArc(v3(this.crane.seatWorld(this.seat)), ground, k, 0.5) : ground));
@@ -207,7 +218,7 @@ export class CraneRide {
   private updateLeave(dt: number): void {
     this.leaving += dt;
     const k = this.leaving / T.leave;
-    this.placeCrane(this.curves.b, ease(k), clamp01(1 - this.leaving * 3));
+    this.launch(this.curves.b, this.leaving, T.leave, ease);
     this.crane.update(dt, 0.75, 6);
     if (k >= 1) {
       this.crane.dispose();
