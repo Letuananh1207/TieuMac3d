@@ -19,6 +19,20 @@ Mức độ:
 
 ## Đang mở
 
+### L-21 · Lưng nhân vật chính cong / vặn theo hai tay khi đi, chạy
+
+- Trạng thái: đang sửa · Mức độ: khó chịu (thấy suốt khi di chuyển, nhìn từ sau lưng) · Phần: nhân vật (`player/dang7.ts` `tronDiCu` / `diCuDang`, `player/mixamoRig.ts` trọng số da) · Quy tắc: R-DIEU-5
+- Báo: 2026-11-16 (thử máy sau L-20) — "ở dáng đi chạy và đi bộ có 1 chỗ tôi không ưng là lưng không thẳng mà bị cong theo hai tay đung đưa"; người dùng chọn: **lưng thẳng hoàn toàn** — bỏ vặn thân khi bước, chỉ tay + chân chuyển động, lưng thẳng đứng + sửa trọng số lưng bám tay
+- Các bước: 1. App, nhân vật chính bản Tripo 2. Đi bộ / chạy, nhìn từ sau lưng
+- Mong đợi / thực tế: lưng thẳng, đai ngang / lưng vặn chéo, đai lệch theo nhịp tay
+- Bằng chứng: ảnh người dùng gửi trong chat (sau lưng, đai lệch chéo)
+- Nghi nguyên nhân: (1) góc xoay hông `hipsY` của dáng đi cũ (autoRig: xoay cả người cứng) nay chia cho spine / chest / upperChest → lưng vặn cong; (2) đỉnh lưng sau vai bám xương tay (L-19 mới chuyển phần sườn dưới nách)
+
+**Sửa**
+
+**Lịch sử**
+- 2026-11-16: ghi, sửa ngay (người dùng chọn).
+
 ### L-20 · Dáng chạy / đi kỳ quặc: chân không thẳng, chỉ cẳng tay đung đưa (cánh tay trên đứng yên)
 
 - Trạng thái: chờ thử máy · Mức độ: khó chịu (dáng di chuyển thấy suốt lúc chơi) · Phần: nhân vật (`player/dang7.ts` `tronDiCu`, `mixamoCharacter.ts`, `dongTac.ts` `CHAY`) · Quy tắc: R-DIEU-5
