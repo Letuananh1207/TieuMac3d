@@ -1,6 +1,8 @@
 # Xem model .glb ở TƯ THẾ GỐC (không gắn xương, không ánh sáng — đúng màu texture không-sáng), chiếu thẳng 4 góc
 # cạnh ảnh thiết kế. Dùng cho NPC / tài nguyên chưa có chỗ trong app, hoặc tách lỗi màu khỏi lỗi xương:
-#   python.exe -s xem.py <model.glb> <thư mục ảnh> <tên> <ra.png> [--co 420]
+#   python.exe -s xem.py <model.glb> <thư mục ảnh> <tên> <ra.png> [--co 420] [--vua]
+# --vua (công trình rộng hơn cao — nhà V-88): một tỉ lệ cho cả 4 góc, bề ngang lớn nhất chiếm 84 % ảnh (8 % → 92 %), đáy ở
+#   75 % chiều cao, tâm theo khung bao — đúng khung phiếu ảnh 4 góc công trình. Mặc định: cao 80 %, tâm theo chân (nhân vật).
 # (Python của gói Hunyuan: trimesh. Model đọc được cả file đã nén meshopt? — không: dùng bản trước model:clean.)
 import sys
 import numpy as np
@@ -18,9 +20,14 @@ tex = np.asarray(m.visual.material.baseColorTexture.convert('RGB')).astype(np.ui
 TH, TW = tex.shape[:2]
 minY, maxY = V[:, 1].min(), V[:, 1].max()
 H = maxY - minY
-foot = V[V[:, 1] < minY + 0.08 * H]
-fx, fz = foot[:, 0].mean(), foot[:, 2].mean()
-s = 0.8 / H
+VUA = '--vua' in args
+if VUA:
+    fx, fz = (V[:, 0].min() + V[:, 0].max()) / 2, (V[:, 2].min() + V[:, 2].max()) / 2
+    s = min(0.84 / max(np.ptp(V[:, 0]), np.ptp(V[:, 2])), 0.7 / H)
+else:
+    foot = V[V[:, 1] < minY + 0.08 * H]
+    fx, fz = foot[:, 0].mean(), foot[:, 2].mean()
+    s = 0.8 / H
 views = {  # như bake.py: u ngang ảnh, độ sâu lớn = gần máy
     'truoc': (lambda P: 0.5 + (P[:, 0] - fx) * s, lambda P: P[:, 2]),
     'trai': (lambda P: 0.5 - (P[:, 2] - fz) * s, lambda P: P[:, 0]),
@@ -32,7 +39,7 @@ for col, (k, (fu, fd)) in enumerate(views.items()):
     img = np.full((S, S, 3), 221, np.uint8)
     zb = np.full((S, S), -np.inf)
     U = fu(V) * S
-    W = (0.1 + 0.8 * (maxY - V[:, 1]) / H) * S
+    W = (0.75 - (V[:, 1] - minY) * s if VUA else 0.1 + 0.8 * (maxY - V[:, 1]) / H) * S
     D = fd(V)
     for f in F:
         x, y = U[f], W[f]
