@@ -1,0 +1,65 @@
+/* TẠM — V-20261116-100 giai đoạn 1: 3 phương án trình bày thanh công cụ BẢN MÁY TÍNH để người dùng chọn, bật bằng
+   `?thanh=a|b|c` (main.ts thêm lớp body.thanh-a|b|c). Giai đoạn 2: chép phương án được chọn vào toolbarMay.css (thay
+   khối hàng hình + ru-băng), xoá file này và tham số thử. Giữ yêu cầu đã chốt: không dải nền chung (V-76), thứ tự
+   Trò chuyện · Bản đồ · Biểu cảm · Về nhà · Túi đồ · Nhiệm vụ (V-77), ô phím tắt, hình minh hoạ giữ nguyên ảnh,
+   mờ / đang mở / di chuột phân biệt được. Điện thoại (toolbar.css) không đổi. */
+@media (orientation:landscape){
+  /* ---------- chung 3 phương án: cách đáy 20 + safe area, mép trái 20, ô cách đều, bỏ ru-băng ---------- */
+  body.ban-may:is(.thanh-a,.thanh-b,.thanh-c){--tb-floor:20px;--tb-edge:20px;--tb-top:calc(var(--sa-bottom) + var(--tb-floor) + var(--tb-h) + 14px)}
+  body.ban-may:is(.thanh-a,.thanh-b,.thanh-c) #toolbar{height:calc(var(--tb-h) + var(--sa-bottom) + var(--tb-floor));padding:0 calc(var(--sa-right) + var(--tb-edge)) calc(var(--sa-bottom) + var(--tb-floor)) calc(var(--sa-left) + var(--tb-edge));gap:var(--tb-gap);align-items:flex-end}
+  body.ban-may:is(.thanh-a,.thanh-b,.thanh-c) .tb-cell{position:relative;width:var(--tb-w);min-width:0;height:var(--tb-h);padding:0;justify-content:flex-start;transition:transform .12s ease,background-color .12s,box-shadow .12s}
+  body.ban-may:is(.thanh-a,.thanh-b,.thanh-c) .tb-lbl{margin:0;height:auto;padding:0;clip-path:none;background:none;box-shadow:none;display:block;text-align:center}
+  body.ban-may:is(.thanh-a,.thanh-b,.thanh-c) .tb-cell.off .tb-lbl{background:none;box-shadow:none}
+  body.ban-may:is(.thanh-a,.thanh-b,.thanh-c) .tb-cell.open .tb-lbl{background:none;box-shadow:none}
+  body.ban-may:is(.thanh-a,.thanh-b,.thanh-c) .tb-disc .hinh{transition:transform .12s ease,filter .12s}
+  body.ban-may:is(.thanh-a,.thanh-b,.thanh-c) .tb-cell:active{transform:scale(.95)}
+  body.ban-may:is(.thanh-a,.thanh-b,.thanh-c) .tb-cell.off:active{transform:none}
+  /* thứ phụ thuộc: bảng Biểu cảm, tấm báo nhà, ô chat / khung kênh nổi cách hàng 14, mép trái thẳng hàng */
+  body.ban-may:is(.thanh-a,.thanh-b,.thanh-c) #emotePanel,body.ban-may:is(.thanh-a,.thanh-b,.thanh-c) #homeHere{left:calc(var(--sa-left) + var(--tb-edge));bottom:var(--tb-top)}
+  body.ban-may:is(.thanh-a,.thanh-b,.thanh-c) #chat.bar{--bar-l:calc(var(--sa-left) + var(--tb-edge));--bar-b:var(--tb-top)}
+  /* cụm hành động phải cùng cách đáy với thanh */
+  body.ban-may:is(.thanh-a,.thanh-b,.thanh-c) #actions{right:calc(var(--sa-right) + var(--tb-edge));bottom:calc(var(--sa-bottom) + var(--tb-floor))}
+
+  /* ---------- A · nổi tối giản: hình tự do 56, chữ trắng viền mềm ngay dưới, chip phím tròn mờ ---------- */
+  body.ban-may.thanh-a{--tb-h:78px;--tb-w:66px;--tb-gap:16px}
+  body.ban-may.thanh-a .tb-disc{width:56px;height:56px;margin:0 auto}
+  body.ban-may.thanh-a .tb-disc .hinh{width:56px;height:56px}
+  body.ban-may.thanh-a .tb-lbl{margin-top:3px;font:700 12.5px/18px var(--ui);letter-spacing:.01em;color:#fff;text-shadow:0 0 2px rgba(20,30,36,.95),0 1px 2px rgba(20,30,36,.85),0 0 8px rgba(20,30,36,.5)}
+  body.ban-may.thanh-a .tb-key{left:-4px;top:-2px;min-width:17px;height:17px;padding:0 5px;border-radius:999px;border:1px solid rgba(255,255,255,.4);font:700 9.5px/15px var(--ui);color:#fff;background:rgba(36,50,58,.58);box-shadow:none;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+  body.ban-may.thanh-a .tb-cell:not(.off):hover .hinh{transform:translateY(-4px) scale(1.06);filter:drop-shadow(0 0 7px rgba(255,244,214,.95)) var(--hinh-shadow)}
+  body.ban-may.thanh-a .tb-cell.open .hinh{transform:translateY(-4px);filter:drop-shadow(0 0 7px rgba(255,226,150,.9)) var(--hinh-shadow)}
+  body.ban-may.thanh-a .tb-cell.open .tb-lbl{color:#fff}
+  body.ban-may.thanh-a .tb-cell.open::after{content:'';position:absolute;left:50%;bottom:-8px;width:22px;height:3px;margin-left:-11px;border-radius:2px;background:var(--gold);box-shadow:0 0 6px rgba(212,166,74,.85)}
+  body.ban-may.thanh-a .tb-cell.off .tb-lbl{opacity:.6;color:#fff}
+
+  /* ---------- B · ô kính riêng: mỗi nút một ô kính sương bo 16 (không dải chung), hình + nhãn bên trong ---------- */
+  body.ban-may.thanh-b{--tb-h:80px;--tb-w:80px;--tb-gap:12px}
+  body.ban-may.thanh-b .tb-cell{justify-content:center;gap:2px;padding-top:2px;border-radius:16px;background:var(--frost);-webkit-backdrop-filter:var(--blur-hud);backdrop-filter:var(--blur-hud);box-shadow:inset 0 0 0 1px var(--frost-line),0 0 0 1px var(--frost-outline),var(--shadow-hud)}
+  body.ban-may.thanh-b .tb-disc{position:static;width:52px;height:52px;margin:0 auto}
+  body.ban-may.thanh-b .tb-disc .hinh{width:52px;height:52px}
+  body.ban-may.thanh-b .tb-lbl{font:700 11.5px/16px var(--ui);color:var(--slate);text-shadow:none}
+  body.ban-may.thanh-b .tb-key{left:auto;right:5px;top:5px;min-width:15px;height:15px;padding:0 3px;border-radius:4px;border:0;font:700 9px/13px var(--ui);color:var(--slate-muted);background:rgba(255,255,255,.9);border:1px solid var(--frost-outline);box-shadow:none}
+  body.ban-may.thanh-b .tb-badge{right:-6px;top:-6px}
+  body.ban-may.thanh-b .tb-nhiemVu:has(.tb-badge:not([hidden])) .tb-key{right:auto;left:5px}
+  body.ban-may.thanh-b .tb-cell:not(.off):hover{transform:translateY(-3px);background:rgba(255,255,255,.95);box-shadow:inset 0 0 0 1px #fff,0 0 0 1px var(--frost-outline),0 8px 20px rgba(36,50,58,.24)}
+  body.ban-may.thanh-b .tb-cell:not(.off):hover .hinh{transform:none}
+  body.ban-may.thanh-b .tb-cell.open{background:#fff;transform:translateY(-3px);box-shadow:inset 0 0 0 2px var(--jade),0 8px 20px rgba(43,84,70,.28)}
+  body.ban-may.thanh-b .tb-cell.open .hinh{transform:none}
+  body.ban-may.thanh-b .tb-cell.open .tb-lbl{color:var(--jade)}
+  body.ban-may.thanh-b .tb-cell.off{background:var(--frost-weak)}
+  body.ban-may.thanh-b .tb-cell.off .tb-lbl{opacity:.5;color:var(--slate)}
+
+  /* ---------- C · đĩa tròn kính + nhãn nhỏ dưới: keycap góc dưới phải đĩa, đang mở = viền ngọc ---------- */
+  body.ban-may.thanh-c{--tb-h:82px;--tb-w:66px;--tb-gap:14px}
+  body.ban-may.thanh-c .tb-disc{width:60px;height:60px;margin:0 auto;border-radius:50%;background:rgba(244,247,246,.78);-webkit-backdrop-filter:var(--blur-hud);backdrop-filter:var(--blur-hud);box-shadow:inset 0 0 0 1.5px var(--frost-line),0 0 0 1px var(--frost-outline),var(--shadow-hud);transition:background-color .12s,box-shadow .12s}
+  body.ban-may.thanh-c .tb-disc .hinh{width:50px;height:50px;margin-top:-4px}
+  body.ban-may.thanh-c .tb-lbl{margin-top:4px;font:700 11.5px/18px var(--ui);color:#fff;text-shadow:0 0 2px rgba(20,30,36,.95),0 1px 2px rgba(20,30,36,.85),0 0 8px rgba(20,30,36,.5)}
+  body.ban-may.thanh-c .tb-key{left:auto;right:-7px;top:auto;bottom:-3px;min-width:18px;height:17px;padding:0 4px;border-radius:5px;border:1px solid var(--frost-outline);font:700 9.5px/14px var(--ui);color:var(--slate);background:#fff;box-shadow:inset 0 -2px 0 rgba(36,50,58,.16),0 1px 3px rgba(36,50,58,.2)}
+  body.ban-may.thanh-c .tb-cell:not(.off):hover .tb-disc{background:rgba(255,255,255,.96);box-shadow:inset 0 0 0 1.5px #fff,0 0 0 1px var(--frost-outline),0 6px 16px rgba(36,50,58,.26)}
+  body.ban-may.thanh-c .tb-cell:not(.off):hover .hinh{transform:translateY(-3px) scale(1.05)}
+  body.ban-may.thanh-c .tb-cell.open .tb-disc{background:#fff;box-shadow:0 0 0 2.5px var(--jade),0 0 14px rgba(43,84,70,.45)}
+  body.ban-may.thanh-c .tb-cell.open .hinh{transform:translateY(-3px)}
+  body.ban-may.thanh-c .tb-cell.open .tb-lbl{width:max-content;margin:4px auto 0;padding:0 8px;border-radius:999px;color:#fff;text-shadow:none;background:var(--jade)}
+  body.ban-may.thanh-c .tb-cell.off .tb-disc{background:var(--frost-weak)}
+  body.ban-may.thanh-c .tb-cell.off .tb-lbl{opacity:.6;color:#fff}
+}
