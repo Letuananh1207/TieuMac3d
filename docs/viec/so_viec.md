@@ -87,4 +87,4 @@ Trạng thái: `nhận` → `chờ trả lời` / `chờ duyệt` → `đang là
 | V-20261116-77 | Bản máy tính: bỏ ô chat luôn hiện, thay bằng biểu tượng Trò chuyện (bấm / Enter mới mở ô nhập); dời thanh công cụ sang trái | ui (code thẳng) | chờ thử máy — đã gộp 2026-11-16 (luật đã đồng bộ) | R-THANH-1, R-CHAT-3 | duyệt ảnh |
 | V-20261116-78 | Sửa L-13: bộ quét zfight coi InstancedMesh là khối đặc | loi sua | xong — đã gộp dc62fb2; quét đúng lộ 37 chỗ chớp thật (ghi ở L-13, dập thuộc L-10) | L-13 | — |
 | V-20261116-79 | Sửa L-12: tiêu đề "Ngồi ôn" trên cuộn bị tách dấu | loi sua | chờ thử máy — đã gộp a1c938b (lỗi chỉ ở máy chủ dev trong worktree: font bị chặn; bản build vốn đúng) | L-12 | — |
-| V-20261116-80 | Sửa L-14 (guard trong worktree) + L-15 (viec.dart cấp nhầm mã mẫu) | loi sua | đang làm | L-14, L-15 · worktree `sua-cong-cu` | — |
+| V-20261116-80 | Sửa L-14 (guard trong worktree) + L-15 (viec.dart cấp nhầm mã mẫu) | loi sua | xong — đã gộp 7e796e5 | L-14, L-15 | — |
