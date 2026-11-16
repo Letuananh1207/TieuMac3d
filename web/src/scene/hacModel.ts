@@ -1,14 +1,16 @@
 /**
  * Hạc truyền tống bằng model (`design/models/hac.glb` — Tripo, tư thế bay lướt, KHÔNG rig; kế hoạch
  * docs/tasks/2026-11-16-hac-model.md). Nạp một lần, chuẩn hoá (sải dọc x, mũi +z, sải `CRANE_SPAN`, đáy y = 0, chỗ ngồi ở
- * z = `SEAT_Z` như bản khối), đo dáng + chia trọng số (`hacCanh.ts`, chân `hacChan.ts`) rồi tự gắn 9 xương: gốc · vai
- * trái / phải · đầu cánh trái / phải · hông + cổ chân trái / phải → `Crane.useModel` vỗ cánh, đứng (L-22) bằng xương. Thiếu file / nạp lỗi → `null`, hạc giữ bản khối (`hac.ts`).
+ * z = `SEAT_Z` như bản khối), đo dáng + chia trọng số (`hacCanh.ts`, chân `hacChan.ts`) rồi tự gắn 13 xương: gốc · vai
+ * + đầu cánh trái / phải · hông + gối + cổ chân trái / phải · gốc cổ + đầu (`hacCo.ts`) → `Crane.useModel` vỗ cánh, đứng
+ * (L-22) bằng xương. Thiếu file / nạp lỗi → `null`, hạc giữ bản khối (`hac.ts`).
  * Lớp `scene/` không import `player/` (0001) → không dùng `autoRig.ts`; nạp bằng `staticModel.ts`.
  */
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { CRANE_BONES, craneWeights, measureCrane, spanYaw, type CraneShape } from './hacCanh';
 import { measureLegs } from './hacChan';
+import { measureNeck } from './hacCo';
 import { bakeTransforms, loadStaticModel, staticModelUrl } from './staticModel';
 
 /** Sải cánh chuẩn (m, chưa nhân `crane.scale`) — bằng bản khối (Q4): bãi đáp, camera, đường bay giữ nguyên. */
@@ -56,6 +58,7 @@ export function craneModelFrom(src: THREE.BufferGeometry, material: THREE.Materi
   const pos = positions(g);
   const shape: CraneShape = measureCrane(pos, opts);
   shape.legs = measureLegs(pos, g.index ? g.index.array : null, shape.halfSpan, shape.shoulder[0] * 0.9);
+  shape.neck = measureNeck(pos, g.index ? g.index.array : null, shape.seat[2], shape.shoulder[0] * 0.9, shape.halfSpan);
   const w = craneWeights(pos, shape);
   g.setAttribute('skinIndex', new THREE.Uint16BufferAttribute(w.index, 4));
   g.setAttribute('skinWeight', new THREE.Float32BufferAttribute(w.weight, 4));
@@ -66,12 +69,12 @@ export function craneModelFrom(src: THREE.BufferGeometry, material: THREE.Materi
 }
 
 /**
- * Xương của một hạc (theo thứ tự `CRANE_BONES`) — đầu cánh là con của vai, cổ chân con của hông; không đo được chân →
- * xương chân vẫn có (không đỉnh nào theo) cho đủ thứ tự.
+ * Xương của một hạc (theo thứ tự `CRANE_BONES`) — đầu cánh là con của vai, gối con của hông, cổ chân con của gối, đầu con
+ * của gốc cổ; không đo được chân / cổ → xương vẫn có (không đỉnh nào theo) cho đủ thứ tự.
  */
 function craneBones(s: CraneShape): THREE.Bone[] {
   const bones = CRANE_BONES.map((name) => Object.assign(new THREE.Bone(), { name }));
-  const [root, vaiT, dauT, vaiP, dauP, hongT, coT, hongP, coP] = bones;
+  const [root, vaiT, dauT, vaiP, dauP, hongT, goiT, coT, hongP, goiP, coP, goCo, dauHac] = bones;
   for (const [vai, dau, side] of [[vaiT, dauT, -1], [vaiP, dauP, 1]] as const) {
     vai.position.set(side * s.shoulder[0], s.shoulder[1], s.shoulder[2]);
     dau.position.set(side * (s.tip[0] - s.shoulder[0]), s.tip[1] - s.shoulder[1], s.tip[2] - s.shoulder[2]);
@@ -79,14 +82,23 @@ function craneBones(s: CraneShape): THREE.Bone[] {
     root.add(vai);
   }
   const L = s.legs;
-  for (const [hong, co, side] of [[hongT, coT, -1], [hongP, coP, 1]] as const) {
+  for (const [hong, goi, co, side] of [[hongT, goiT, coT, -1], [hongP, goiP, coP, 1]] as const) {
     if (L) {
       hong.position.set(side * L.hip[0], L.hip[1], L.hip[2]);
-      co.position.set(0, L.ankle[1] - L.hip[1], L.ankle[2] - L.hip[2]);
+      goi.position.set(0, L.knee[1] - L.hip[1], L.knee[2] - L.hip[2]);
+      co.position.set(0, L.ankle[1] - L.knee[1], L.ankle[2] - L.knee[2]);
     }
-    hong.add(co);
+    goi.add(co);
+    hong.add(goi);
     root.add(hong);
   }
+  const N = s.neck;
+  if (N) {
+    goCo.position.set(...N.base);
+    dauHac.position.set(0, N.head[1] - N.base[1], N.head[2] - N.base[2]);
+  }
+  goCo.add(dauHac);
+  root.add(goCo);
   return bones;
 }
 

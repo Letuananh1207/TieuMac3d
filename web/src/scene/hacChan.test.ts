@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { craneWeights, measureCrane } from './hacCanh';
-import { bodyPoint, legWeight, measureLegs, standPose } from './hacChan';
+import { legWeight, measureLegs } from './hacChan';
+import type { V3 } from './hacCanh';
+import { bodyPoint, rot, STAND, standPose, type StandPose } from './hacDang';
 import { fakeFlyingCrane, grid } from './hacGia';
 
 const pos = fakeFlyingCrane();
@@ -8,28 +10,41 @@ const shape = measureCrane(pos);
 const legs = measureLegs(pos, null, shape.halfSpan, shape.shoulder[0] * 0.9);
 const count = pos.length / 3;
 
-/** áp dáng đứng lên một điểm theo trọng số chân (như da theo xương, chỉ quay quanh x) */
+const seat: [number, number] = [shape.seat[1], shape.seat[2]];
+const pose = (s: number, squat = 0): StandPose => {
+  if (!legs) throw new Error('không có chân');
+  return standPose(legs, seat, s, squat);
+};
+
+/** khớp sau dáng `p` (y, z): hông · gối · cổ chân — như xương three (thân → hông → gối → cổ chân) */
+function joints(p: StandPose): { hip: [number, number]; knee: [number, number]; ankle: [number, number]; t: [number, number, number] } {
+  if (!legs) throw new Error('không có chân');
+  const hip = bodyPoint(p, legs.hip[1], legs.hip[2]);
+  const t1 = p.pitch + p.hip;
+  const t2 = t1 + p.knee;
+  const [ky, kz] = rot(legs.knee[1] - legs.hip[1], legs.knee[2] - legs.hip[2], t1);
+  const knee: [number, number] = [hip[0] + ky, hip[1] + kz];
+  const [ay, az] = rot(legs.ankle[1] - legs.knee[1], legs.ankle[2] - legs.knee[2], t2);
+  return { hip, knee, ankle: [knee[0] + ay, knee[1] + az], t: [t1, t2, t2 + p.foot] };
+}
+
+/** áp dáng đứng lên đỉnh i theo trọng số chân (thân / hông / gối / cổ chân) */
 function posed(i: number, s: number, squat = 0): [number, number] {
   if (!legs) throw new Error('không có chân');
-  const x = pos[i * 3];
-  const y = pos[i * 3 + 1];
-  const z = pos[i * 3 + 2];
-  const p = standPose(legs, s, squat);
-  const rot = (yy: number, zz: number, t: number): [number, number] => [yy * Math.cos(t) - zz * Math.sin(t), yy * Math.sin(t) + zz * Math.cos(t)];
-  const body = bodyPoint(p, y, z);
-  // chân: thân → hông quay (pitch + leg) quanh hông → cổ chân quay thêm `foot` quanh cổ chân
-  const [hy, hz] = bodyPoint(p, legs.hip[1], legs.hip[2]);
-  const tl = p.pitch + p.leg;
-  const [ly, lz] = rot(y - legs.hip[1], z - legs.hip[2], tl);
-  const leg: [number, number] = [hy + ly, hz + lz];
-  const [ay, az] = rot(legs.ankle[1] - legs.hip[1], legs.ankle[2] - legs.hip[2], tl);
-  const [fy, fz] = rot(y - legs.ankle[1], z - legs.ankle[2], tl + p.foot);
-  const foot: [number, number] = [hy + ay + fy, hz + az + fz];
+  const [x, y, z] = [pos[i * 3], pos[i * 3 + 1], pos[i * 3 + 2]];
+  const p = pose(s, squat);
+  const J = joints(p);
+  const seg = (o: [number, number], from: V3, t: number): [number, number] => {
+    const [ry, rz] = rot(y - from[1], z - from[2], t);
+    return [o[0] + ry, o[1] + rz];
+  };
+  const parts: [[number, number], number][] = [];
   const w = legWeight(x, y, z, legs);
-  const wb = 1 - w.w;
-  const wl = w.w * (1 - w.foot);
-  const wf = w.w * w.foot;
-  return [body[0] * wb + leg[0] * wl + foot[0] * wf, body[1] * wb + leg[1] * wl + foot[1] * wf];
+  parts.push([bodyPoint(p, y, z), 1 - w.w]);
+  parts.push([seg(J.hip, legs.hip, J.t[0]), w.w * (1 - w.knee)]);
+  parts.push([seg(J.knee, legs.knee, J.t[1]), w.w * (w.knee - w.foot)]);
+  parts.push([seg(J.ankle, legs.ankle, J.t[2]), w.w * w.foot]);
+  return parts.reduce<[number, number]>((o, [q, k]) => [o[0] + q[0] * k, o[1] + q[1] * k], [0, 0]);
 }
 
 describe('R-HANH-5 (L-22): hạc model đáp xuống đứng trên hai chân — đo chân, dáng đứng', () => {
@@ -82,39 +97,42 @@ describe('R-HANH-5 (L-22): hạc model đáp xuống đứng trên hai chân —
     }
   });
 
-  it('đứng (stand = 1): ống chân gần thẳng đứng, bàn chân chạm y = 0 (không lún, không lơ lửng), thân nâng, hơi ngẩng', () => {
+  it('đứng (stand = 1): bàn chân chạm y = 0 (không lún, không lơ lửng), dưới khoảng giữa thân; chỗ ngồi cao STAND.seat; thân ngẩng', () => {
     if (!legs) throw new Error('không có chân');
     let low = Infinity;
     for (let i = 0; i < count; i++) low = Math.min(low, posed(i, 1)[0]);
     expect(Math.abs(low)).toBeLessThan(0.04);
-    const p = standPose(legs, 1);
-    const [hy, hz] = bodyPoint(p, legs.hip[1], legs.hip[2]);
-    const tl = p.pitch + p.leg;
-    const ay = (legs.ankle[1] - legs.hip[1]) * Math.cos(tl) - (legs.ankle[2] - legs.hip[2]) * Math.sin(tl);
-    const az = (legs.ankle[1] - legs.hip[1]) * Math.sin(tl) + (legs.ankle[2] - legs.hip[2]) * Math.cos(tl);
-    expect(Math.atan2(Math.abs(az), -ay)).toBeLessThan(0.2); // lệch phương thẳng đứng < ~11°
-    expect(hy + ay).toBeGreaterThan(0); // cổ chân trên đất
-    expect(hz).toBeDefined();
-    // lưng nâng ≈ chiều dài ống chân
-    const back = bodyPoint(p, 0.9, 0);
-    const leg = Math.hypot(legs.ankle[1] - legs.hip[1], legs.ankle[2] - legs.hip[2]);
-    expect(back[0] - 0.9).toBeGreaterThan(leg * 0.8);
-    expect(p.pitch).toBeLessThan(0); // mũi ngẩng
+    const p = pose(1);
+    const J = joints(p);
+    const foot = (J.ankle[1] + J.ankle[1] + Math.hypot(legs.toe[1] - legs.ankle[1], legs.toe[2] - legs.ankle[2])) / 2;
+    const [sy, sz] = bodyPoint(p, seat[0], seat[1]);
+    expect(Math.abs(foot - sz)).toBeLessThan(0.15); // giữa bàn chân ngay dưới chỗ ngồi
+    expect(sy).toBeLessThanOrEqual(STAND.seat + 1e-6); // chân ngắn không với tới → hông hạ, chỗ ngồi thấp hơn chút
+    expect(sy).toBeGreaterThan(STAND.seat - 0.15);
+    expect(p.pitch).toBeLessThan(-0.35); // mũi ngẩng rõ (đuôi hạ)
+  });
+
+  it('chân khuỵu kiểu chim: gối nằm sau đường hông → cổ chân, chiều dài từng đoạn giữ nguyên', () => {
+    if (!legs) throw new Error('không có chân');
+    const J = joints(pose(1));
+    const k = (J.knee[0] - J.hip[0]) / (J.ankle[0] - J.hip[0]);
+    const lineZ = J.hip[1] + (J.ankle[1] - J.hip[1]) * k;
+    expect(J.knee[1]).toBeLessThan(lineZ - 0.05);
+    const len = (a: [number, number], b: [number, number]): number => Math.hypot(a[0] - b[0], a[1] - b[1]);
+    expect(len(J.hip, J.knee)).toBeCloseTo(Math.hypot(legs.knee[1] - legs.hip[1], legs.knee[2] - legs.hip[2]), 5);
   });
 
   it('stand = 0: dáng bay nguyên vẹn (không dời, không quay)', () => {
-    if (!legs) throw new Error('không có chân');
-    const p = standPose(legs, 0);
-    for (const v of [p.pitch, p.dy, p.dz, p.leg, p.foot]) expect(v).toBeCloseTo(0, 9);
+    const p = pose(0);
+    for (const v of [p.pitch, p.dy, p.dz, p.hip, p.knee, p.foot]) expect(v).toBeCloseTo(0, 9);
   });
 
   it('nhún (squat = 1): thân hạ, bàn chân giữ nguyên chỗ trên đất', () => {
-    if (!legs) throw new Error('không có chân');
     const toe = Array.from({ length: count }, (_, i) => i).reduce((b, i) => (pos[i * 3 + 2] < pos[b * 3 + 2] && pos[i * 3] > 0 ? i : b), 0);
     const a = posed(toe, 1, 0);
     const b = posed(toe, 1, 1);
     expect(Math.hypot(a[0] - b[0], a[1] - b[1])).toBeLessThan(0.05);
-    expect(bodyPoint(standPose(legs, 1, 1), 0.9, 0)[0]).toBeLessThan(bodyPoint(standPose(legs, 1, 0), 0.9, 0)[0] - 0.15);
+    expect(bodyPoint(pose(1, 1), seat[0], seat[1])[0]).toBeLessThan(bodyPoint(pose(1, 0), seat[0], seat[1])[0] - 0.15);
   });
 
   it('không có chân (thân chạm đất, không phần mảnh) → null', () => {

@@ -10,7 +10,9 @@
  */
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
-import { bodyPoint, standPose, type CraneLegs } from './hacChan';
+import type { CraneLegs } from './hacChan';
+import type { CraneNeck } from './hacCo';
+import { bodyPoint, neckPose, standPose } from './hacDang';
 import { craneMesh, type CraneModel } from './hacModel';
 import { lambert } from './materials';
 import { markDynamic } from './merge';
@@ -123,9 +125,11 @@ interface ModelParts {
   wings: { vai: THREE.Bone; dau: THREE.Bone; side: number }[];
   /** xương thân (gốc) — đứng: nâng + ngẩng */
   body: THREE.Bone;
-  /** hông + cổ chân hai bên */
-  legs: { hong: THREE.Bone; co: THREE.Bone }[];
-  shape: { legs: CraneLegs | null; seat: [number, number, number] };
+  /** hông + gối + cổ chân hai bên */
+  legs: { hong: THREE.Bone; goi: THREE.Bone; co: THREE.Bone }[];
+  /** gốc cổ + đầu */
+  neck: { co: THREE.Bone; dau: THREE.Bone };
+  shape: { legs: CraneLegs | null; neck: CraneNeck | null; seat: [number, number, number] };
 }
 
 export class Crane {
@@ -193,14 +197,18 @@ export class Crane {
     this.geos.length = 0;
     this.material.dispose();
     const { mesh, bones, material } = craneMesh(m);
-    const [body, vaiT, dauT, vaiP, dauP, hongT, coT, hongP, coP] = bones;
+    const [body, vaiT, dauT, vaiP, dauP, hongT, goiT, coT, hongP, goiP, coP, goCo, dauHac] = bones;
     this.model = {
       mesh,
       material,
       wings: [{ vai: vaiT, dau: dauT, side: -1 }, { vai: vaiP, dau: dauP, side: 1 }],
       body,
-      legs: [{ hong: hongT, co: coT }, { hong: hongP, co: coP }],
-      shape: { legs: m.shape.legs ?? null, seat: m.shape.seat },
+      legs: [
+        { hong: hongT, goi: goiT, co: coT },
+        { hong: hongP, goi: goiP, co: coP },
+      ],
+      neck: { co: goCo, dau: dauHac },
+      shape: { legs: m.shape.legs ?? null, neck: m.shape.neck ?? null, seat: m.shape.seat },
     };
     this.root.add(mesh);
     this.seat.position.set(...m.shape.seat);
@@ -230,15 +238,23 @@ export class Crane {
       vai.rotation.set(0, side * MODEL_FOLD.back * f, side * (beat * open - MODEL_FOLD.drop * f));
       dau.rotation.set(0, side * MODEL_FOLD.tip * f, side * lag * open);
     }
-    const { body, legs, shape } = this.model;
+    const { body, legs, neck, shape } = this.model;
     if (!shape.legs) return;
-    const p = standPose(shape.legs, clamp01(this.stand), clamp01(this.squat));
+    const s = clamp01(this.stand);
+    const p = standPose(shape.legs, [shape.seat[1], shape.seat[2]], s, clamp01(this.squat));
     body.position.set(0, p.dy, p.dz);
     body.rotation.set(p.pitch, 0, 0);
-    for (const { hong, co } of legs) {
-      hong.rotation.set(p.leg, 0, 0);
+    for (const { hong, goi, co } of legs) {
+      hong.rotation.set(p.hip, 0, 0);
+      goi.rotation.set(p.knee, 0, 0);
       co.rotation.set(p.foot, 0, 0);
     }
+    if (shape.neck) {
+      const n = neckPose(shape.neck, p.pitch, s, this.t);
+      neck.co.rotation.set(n.neck, 0, 0);
+      neck.dau.rotation.set(n.head, 0, 0);
+    }
+    // chỗ ngồi theo thân (nhân vật vẫn ngồi thẳng — chỉ quay theo hướng hạc)
     const [sy, sz] = bodyPoint(p, shape.seat[1], shape.seat[2]);
     this.seat.position.set(shape.seat[0], sy, sz);
   }

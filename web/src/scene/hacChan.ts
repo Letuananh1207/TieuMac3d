@@ -1,18 +1,19 @@
 /**
  * Chân hạc model (L-22): model Tripo tư thế bay, hai chân duỗi thẳng ra sau, không xương → code tự tìm chân, chia trọng
- * số cho xương hông + cổ chân, và tính dáng ĐỨNG (chân thẳng xuống đất, thân nâng bằng chiều dài chân, hơi ngẩng). Thuần
- * (mảng số, không three) — `hacModel.ts` dựng xương, `hac.ts` đặt góc.
+ * số cho xương hông + gối + cổ chân. Thuần (mảng số, không three) — `hacModel.ts` dựng xương, `hacDang.ts` tính dáng đứng.
  *
  * Cách tìm: chiếu phần giữa thân (|x| nhỏ, bỏ cánh) lên mặt bên (z, y) bằng cách tô các tam giác vào lưới ô; "mở" hình
  * (co rồi nở `OPEN` ô) giữ lại phần dày = thân; phần mảnh còn lại nối với ô thấp nhất = chân (cả hai chân chồng nhau khi
- * nhìn ngang — tách trái / phải theo dấu x). Ô chân sát thân = **hông**, ô chân xa hông nhất = **mút ngón**, **cổ chân**
- * ở `ANKLE_AT` chiều dài chân. Mọi góc quay của dáng đứng quanh trục x (chân nằm trong mặt phẳng dọc thân).
+ * nhìn ngang — tách trái / phải theo dấu x). Ô chân sát thân = **hông**, ô chân xa hông nhất = **mút ngón**, **gối** /
+ * **cổ chân** ở `KNEE_AT` / `ANKLE_AT` chiều dài chân. Dáng đứng: `hacDang.ts` (mọi góc quanh trục x).
  */
 import type { V3 } from './hacCanh';
 
 export interface CraneLegs {
   /** khớp hông chân phải (x > 0; trái đối xứng) */
   hip: V3;
+  /** khớp gối chim phải (giữa ống chân — gập ra sau khi đứng khuỵu) */
+  knee: V3;
   /** khớp cổ chân phải */
   ankle: V3;
   /** mút ngón chân phải */
@@ -26,23 +27,24 @@ export interface CraneLegs {
   footDrop: number;
 }
 
-/** cổ chân ở bấy nhiêu phần chiều dài hông → ngón */
+/** gối / cổ chân ở bấy nhiêu phần chiều dài hông → ngón */
+const KNEE_AT = 0.45;
 const ANKLE_AT = 0.76;
 /** ô lưới = nửa sải / bấy nhiêu */
 const CELLS = 100;
 /** "mở" hình bấy nhiêu ô (≈ 0,11 m với nửa sải 2,8) — chân mảnh hơn, thân dày hơn */
 const OPEN = 4;
 
-/** Dáng đứng (rad): thân ngẩng, chân nghiêng về trước, bàn chân chúi, nhún (chân nghiêng thêm, hông lùi + hạ). */
-export const STAND = { pitch: 0.35, lean: 0.15, foot: 0.04, squat: 0.5, squatPitch: 0.3 };
+/** bàn chân khi đứng chúi xuống bấy nhiêu (rad) — ngón chạm đất */
+export const FOOT_TILT = 0.04;
 
-const smooth = (a: number, b: number, v: number): number => {
+export const smooth = (a: number, b: number, v: number): number => {
   const k = Math.min(1, Math.max(0, (v - a) / (b - a)));
   return k * k * (3 - 2 * k);
 };
-const wrap = (a: number): number => Math.atan2(Math.sin(a), Math.cos(a));
+export const wrap = (a: number): number => Math.atan2(Math.sin(a), Math.cos(a));
 /** góc của véc-tơ (dz, dy) trong mặt bên; quay quanh x một góc θ (như three) làm góc này giảm θ */
-const angleOf = (dz: number, dy: number): number => Math.atan2(dy, dz);
+export const angleOf = (dz: number, dy: number): number => Math.atan2(dy, dz);
 
 /** khoảng cách điểm (z, y) tới đoạn a → b */
 function segDist(z: number, y: number, a: [number, number], b: [number, number]): number {
@@ -176,20 +178,19 @@ export function measureLegs(pos: ArrayLike<number>, index: ArrayLike<number> | n
   if (len < 0.1 * halfSpan) return null;
   const dir: [number, number] = [(toe[0] - hip[0]) / len, (toe[1] - hip[1]) / len];
   const along = ([z, y]: [number, number]): number => (z - hip[0]) * dir[0] + (y - hip[1]) * dir[1];
-  // cổ chân: giữa các ô quanh `ANKLE_AT` chiều dài (theo đúng đường cong của chân)
-  const ankle: [number, number] = [0, 0];
-  let na = 0;
-  for (const i of best.cells) {
-    const p = zy(i);
-    const a = along(p) / len;
-    if (Math.abs(a - ANKLE_AT) < 0.04) {
-      ankle[0] += p[0];
-      ankle[1] += p[1];
-      na++;
+  // gối / cổ chân: giữa các ô quanh `KNEE_AT` / `ANKLE_AT` chiều dài (theo đúng đường cong của chân)
+  const cut = (k: number): [number, number] => {
+    let z = 0;
+    let y = 0;
+    let m = 0;
+    for (const i of best.cells) {
+      const p = zy(i);
+      if (Math.abs(along(p) / len - k) < 0.04) [z, y, m] = [z + p[0], y + p[1], m + 1];
     }
-  }
-  if (na) [ankle[0], ankle[1]] = [ankle[0] / na, ankle[1] / na];
-  else [ankle[0], ankle[1]] = [hip[0] + dir[0] * len * ANKLE_AT, hip[1] + dir[1] * len * ANKLE_AT];
+    return m ? [z / m, y / m] : [hip[0] + dir[0] * len * k, hip[1] + dir[1] * len * k];
+  };
+  const knee = cut(KNEE_AT);
+  const ankle = cut(ANKLE_AT);
   const ankleAlong = along(ankle);
   // bán kính: phân vị 85 % khoảng cách ô → trục (chỗ chân nối hông loe ra không làm bán kính phình)
   const dLeg: number[] = [];
@@ -218,7 +219,7 @@ export function measureLegs(pos: ArrayLike<number>, index: ArrayLike<number> | n
   const legX = n ? sx / n : 0;
   const halfX = xs.reduce((m, x) => Math.max(m, Math.abs(x - legX)), c);
   // đáy bàn chân khi đứng: quay các ô bàn chân quanh cổ chân tới hướng nằm ngang
-  const turn = wrap(angleOf(toe[0] - ankle[0], toe[1] - ankle[1]) + STAND.foot);
+  const turn = wrap(angleOf(toe[0] - ankle[0], toe[1] - ankle[1]) + FOOT_TILT);
   let footDrop = c / 2;
   for (const i of best.cells) {
     const p = zy(i);
@@ -229,6 +230,7 @@ export function measureLegs(pos: ArrayLike<number>, index: ArrayLike<number> | n
   }
   return {
     hip: [legX, hip[1], hip[0]],
+    knee: [legX, knee[1], knee[0]],
     ankle: [legX, ankle[1], ankle[0]],
     toe: [legX, toe[1], toe[0]],
     legR,
@@ -239,10 +241,10 @@ export function measureLegs(pos: ArrayLike<number>, index: ArrayLike<number> | n
 }
 
 /**
- * Trọng số chân của một đỉnh: `w` (0…1, phần còn lại theo thân) · `foot` (phần của `w` theo cổ chân) · `side` (−1 trái,
- * 1 phải). Dải chuyển mềm quanh hông (dọc chân ± 1,5 bán kính, ngang chân 1,3 → 2,3 bán kính) — da hông uốn, không rách.
+ * Trọng số chân của một đỉnh: `w` (0…1, phần còn lại theo thân) · `knee` (phần của `w` từ gối trở xuống) · `foot` (phần
+ * của `w` theo cổ chân, ≤ `knee`) · `side` (−1 trái, 1 phải). Dải chuyển mềm quanh hông (dọc chân ± 1,5 bán kính, ngang chân 1,3 → 2,3 bán kính) — da hông uốn, không rách.
  */
-export function legWeight(x: number, y: number, z: number, L: CraneLegs): { w: number; foot: number; side: number } {
+export function legWeight(x: number, y: number, z: number, L: CraneLegs): { w: number; knee: number; foot: number; side: number } {
   const side = x < 0 ? -1 : 1;
   const dx = Math.max(0, Math.abs(Math.abs(x) - L.hip[0]) - L.halfX);
   const H: [number, number] = [L.hip[2], L.hip[1]];
@@ -258,50 +260,7 @@ export function legWeight(x: number, y: number, z: number, L: CraneLegs): { w: n
   const band = 1.5 * L.legR;
   const w = smooth(-band, band, along) * near;
   const foot = smooth(-L.legR, L.legR, along - l1);
-  return { w, foot, side };
-}
-
-export interface StandPose {
-  /** xương gốc (thân): quay quanh x + dời (y, z) */
-  pitch: number;
-  dy: number;
-  dz: number;
-  /** xương hông: quay quanh x so với thân */
-  leg: number;
-  /** xương cổ chân: quay quanh x so với ống chân */
-  foot: number;
-}
-
-/** quay (y, z) quanh x góc θ như three */
-const rot = (y: number, z: number, t: number): [number, number] => [y * Math.cos(t) - z * Math.sin(t), y * Math.sin(t) + z * Math.cos(t)];
-
-/**
- * Dáng đứng: `s` 0 (bay, chân duỗi sau) → 1 (đứng: chân thẳng xuống hơi chếch trước, bàn chân nằm ngang chạm y = 0,
- * thân nâng + ngẩng `STAND.pitch`); `squat` 0…1 nhún (hông lùi + hạ, chân nghiêng, bàn chân giữ nguyên chỗ, thân chúi).
- */
-export function standPose(L: CraneLegs, s: number, squat = 0): StandPose {
-  const H: [number, number] = [L.hip[2], L.hip[1]];
-  const dA: [number, number] = [L.ankle[2] - H[0], L.ankle[1] - H[1]];
-  const l1 = Math.hypot(dA[0], dA[1]);
-  const psiD = angleOf(dA[0], dA[1]);
-  const psiF = angleOf(L.toe[2] - L.ankle[2], L.toe[1] - L.ankle[1]);
-  const q = squat * s;
-  const pitch = s * -STAND.pitch + q * STAND.squatPitch;
-  const psiT = -Math.PI / 2 + STAND.lean + q * STAND.squat;
-  const legTotal = s * wrap(psiD - psiT);
-  const footTotal = s * wrap(psiF + STAND.foot);
-  // cổ chân khi đứng (không nhún): ngay dưới hông lệch theo `lean`, cao `footDrop` — nhún giữ nguyên chỗ này
-  const psi0 = -Math.PI / 2 + STAND.lean;
-  const ankleZ = H[0] + l1 * Math.cos(psi0);
-  const hipStand: [number, number] = [ankleZ - l1 * Math.cos(psiT), L.footDrop - l1 * Math.sin(psiT)];
-  const hz = H[0] + (hipStand[0] - H[0]) * s;
-  const hy = H[1] + (hipStand[1] - H[1]) * s;
-  const [ry, rz] = rot(H[1], H[0], pitch);
-  return { pitch, dy: hy - ry, dz: hz - rz, leg: legTotal - pitch, foot: footTotal - legTotal };
-}
-
-/** Điểm (y, z) của thân sau dáng `p` (vd. chỗ ngồi). */
-export function bodyPoint(p: StandPose, y: number, z: number): [number, number] {
-  const [ry, rz] = rot(y, z, p.pitch);
-  return [ry + p.dy, rz + p.dz];
+  const lk = ((L.knee[2] - H[0]) * dz + (L.knee[1] - H[1]) * dy) / l1;
+  const knee = smooth(-L.legR, L.legR, along - lk);
+  return { w, knee, foot, side };
 }

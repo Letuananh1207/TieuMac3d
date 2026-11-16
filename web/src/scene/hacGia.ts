@@ -30,7 +30,7 @@ function tube(a: P, b: P, r: number, out: number[]): void {
 }
 
 /**
- * Hạc giả tư thế bay như model Tripo: thân bầu dục (y 0,1…0,9 quanh z = 0), đuôi phía trên sau, cổ + đầu trước, hai cánh
+ * Hạc giả tư thế bay như model Tripo: thân bầu dục (y 0,1…0,9 quanh z = 0), đuôi phía trên sau, cổ vươn ngang + đầu + mỏ trước, hai cánh
  * tấm mỏng, **hai chân duỗi thẳng ra sau** (hông z = −0,7 y 0,3 → cổ chân z = −2 y 0,12 → ngón z = −2,4 y 0,08, x = ±0,12).
  */
 export function fakeFlyingCrane(): Float32Array {
@@ -41,7 +41,13 @@ export function fakeFlyingCrane(): Float32Array {
     return [0.45 * Math.sin(th) * Math.cos(ph), 0.5 + 0.4 * Math.sin(th) * Math.sin(ph), 1.1 * Math.cos(th)];
   }, p);
   tube([0, 0.65, -1.0], [0, 0.6, -1.7], 0.18, p); // đuôi
-  tube([0, 0.8, 0.9], [0, 1.4, 2.0], 0.12, p); // cổ
+  tube([0, 0.75, 0.9], [0, 0.85, 1.9], 0.12, p); // cổ vươn ngang
+  grid(9, 10, (i, k) => {
+    const th = (i / 8) * Math.PI;
+    const ph = (k / 10) * Math.PI * 2;
+    return [0.2 * Math.sin(th) * Math.cos(ph), 0.9 + 0.2 * Math.sin(th) * Math.sin(ph), 2.15 + 0.3 * Math.cos(th)];
+  }, p); // đầu
+  tube([0, 0.9, 2.4], [0, 0.85, 2.9], 0.04, p); // mỏ
   for (const x of [-0.12, 0.12]) {
     tube([x, 0.3, -0.6], [x, 0.12, -2.0], 0.06, p);
     tube([x, 0.12, -2.0], [x, 0.08, -2.4], 0.07, p);

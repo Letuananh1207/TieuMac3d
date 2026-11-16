@@ -30,7 +30,7 @@ Mức độ:
 **Sửa**
 - Nguyên nhân: model không có dáng đứng; `hacModel.ts` chỉ tự tách 5 xương (gốc, vai, đầu cánh), không có xương chân → `fold` chỉ gập cánh.
 - Cách (người dùng chọn 2026-11-16): code tự tách hai chân như cánh, bẻ chân thẳng đứng khi đáp, nâng thân; cất cánh nhún + thu chân. 0 coin.
-- Đo `hac.glb` (sau chuẩn hoá, chưa nhân scale 1,25): hông y 0,29 z −1,19 · cổ chân y 0,10 z −2,23 · ngón z −2,57 · |x| chân 0,14 · bán kính ống chân 0,095 / bàn chân 0,073 → đứng: thân nâng ~1,15 m (chỗ ngồi y 1,34 → ~2,7, tức ~3,3 m trên đất sau scale), ngẩng 0,35 rad.
+- Đo `hac.glb` (sau chuẩn hoá, chưa nhân scale 1,25): hông y 0,29 z −1,19 · gối z −1,74 · cổ chân y 0,10 z −2,23 · ngón z −2,57 · |x| chân 0,14 · bán kính ống chân 0,095 / bàn chân 0,073 · gốc cổ y 0,72 z 0,97 · khớp đầu y 0,83 z 1,44 → đứng: chỗ ngồi y 1,34 → 2,08 (≈ 2,6 m trên đất sau scale), thân ngẩng 0,38 rad, chân khuỵu.
 - Hành vi đúng: R-HANH-5 không đổi chữ, mốc `CRANE_TIMING` giữ nguyên → không sửa sổ quy tắc.
 - Test: `web/src/scene/hacChan.test.ts` — `'R-HANH-5 (L-22): hạc model đáp xuống đứng trên hai chân — đo chân, dáng đứng'` (lưới giả chân duỗi sau `hacGia.ts`: tìm chân, trọng số + dải chuyển mềm ở hông, đứng chạm y = 0, chân gần thẳng đứng, nhún giữ bàn chân); `web/src/scene/hacModel.test.ts` — `'R-HANH-5 (L-22): hạc model đáp xuống đứng trên hai chân, không nằm phục'` (`Crane.stand` qua xương thật: dáng bay đặt dưới đất = nằm phục, đứng → bàn chân chạm đất, lưng nâng ≥ 0,6 m, chỗ ngồi theo lưng, stand = 0 về đúng dáng bay, bản khối không đổi); `web/src/cuoiHacChan.test.ts` (nhịp chân trong mốc R-HANH-5: chân thẳng trước khi chạm, nhún đỡ hết trước khi nhân vật lên xong, nhún → bật → thu chân xong trước khi mây phủ). Trước sửa: `Crane` không có `stand` / xương chân → test không chạy được (đỏ).
 - Code: `web/src/scene/hacChan.ts` (mới — tìm chân bằng hình chiếu mặt bên + "mở" hình, trọng số chân, `standPose`), `hacCanh.ts` (9 xương, trọng số chân), `hacModel.ts` (xương hông + cổ chân), `hac.ts` (`stand`, `squat`, chỗ ngồi theo thân, `standLift`), `hacDuong.ts` (`arriveStand`, `absorbSquat`, `launchLegs`), `cuoiHac.ts` (khúc `cat` / `ha` / bay đi: chân duỗi xuống trước khi chạm, nhún đỡ, đứng khi nhảy lên / xuống, nhún → bật → thu chân; đường bay lên chờ hết nhịp nhún; camera nhìn theo chỗ ngồi cao hơn), `hacPreview.ts` (`&chan`, `&nhun`, `&cao`, `&goc=cheo`). Vẫn 1 SkinnedMesh, vật liệu như cũ. Ảnh `design/screens/Hac-dung.png`.
@@ -40,6 +40,7 @@ Mức độ:
 **Lịch sử**
 - 2026-11-16: ghi, người dùng chọn "code bẻ chân".
 - 2026-11-16: sửa (9 xương: thêm hông + cổ chân hai bên), chờ thử máy.
+- 2026-11-16: người dùng xem `Hac-dung.png` → "chỉnh thêm": đứng chúi về trước, cổ vẫn vươn ngang, chỗ ngồi ~3,3 m cao quá. Chỉnh: 13 xương (thêm gối chim hai bên + gốc cổ + đầu — `hacCo.ts`, dáng `hacDang.ts`): thân ngẩng 0,38 rad, chân khuỵu gối gập ra sau (giải hai đoạn) đặt giữa bàn chân dưới chỗ ngồi, chỗ ngồi 2,08 (≈ 2,6 m sau scale 1,25); cổ ngẩng ~66°, đầu giữ mỏ hướng trước hơi chúc, nhúc nhích nhẹ lúc đứng; stand = 0 về đúng dáng bay. Test thêm: cổ ngẩng / về dáng bay, chỗ ngồi 2,2–2,6 m, gối nằm sau đường hông → cổ chân. Ảnh chụp lại `design/screens/Hac-dung.png` (thêm cận đầu cổ, cận hông).
 
 ### L-21 · Lưng nhân vật chính cong / vặn theo hai tay khi đi, chạy
 

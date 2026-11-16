@@ -54,11 +54,25 @@ describe('hạc model — tự gắn xương từ "khối gộp" (NV2)', () => {
     expect(b.min.y).toBeCloseTo(0, 4);
   });
 
-  it('1 SkinnedMesh, 9 xương (gốc, vai + đầu cánh, hông + cổ chân hai bên — L-22), trọng số mỗi đỉnh tổng 1', () => {
+  it('1 SkinnedMesh, 13 xương (gốc, vai + đầu cánh, hông + gối + cổ chân hai bên, gốc cổ + đầu — L-22), trọng số mỗi đỉnh tổng 1', () => {
     const { mesh, bones } = craneMesh(model);
     expect(mesh).toBeInstanceOf(THREE.SkinnedMesh);
-    expect(mesh.skeleton.bones.length).toBe(9);
-    expect(bones.map((b) => b.name)).toEqual(['goc', 'vai-trai', 'dau-trai', 'vai-phai', 'dau-phai', 'hong-trai', 'co-chan-trai', 'hong-phai', 'co-chan-phai']);
+    expect(mesh.skeleton.bones.length).toBe(13);
+    expect(bones.map((b) => b.name)).toEqual([
+      'goc',
+      'vai-trai',
+      'dau-trai',
+      'vai-phai',
+      'dau-phai',
+      'hong-trai',
+      'goi-trai',
+      'co-chan-trai',
+      'hong-phai',
+      'goi-phai',
+      'co-chan-phai',
+      'goc-co',
+      'dau-hac',
+    ]);
     const w = model.geometry.getAttribute('skinWeight');
     for (let i = 0; i < n; i++) expect(w.getX(i) + w.getY(i) + w.getZ(i) + w.getW(i)).toBeCloseTo(1, 5);
   });
@@ -219,6 +233,38 @@ describe('R-HANH-5 (L-22): hạc model đáp xuống đứng trên hai chân, kh
     c.squat = 0;
     c.update(0.1, 0, 4);
     for (const i of [fToe, fBack]) expect(at(c, flyer, i).distanceTo(FP(i))).toBeLessThan(1e-4);
+  });
+
+  it('cổ: đứng → đầu nâng cao lên trên vai, mỏ vẫn hướng trước; stand = 0 → cổ về đúng dáng bay', () => {
+    expect(flyer.shape.neck).toBeTruthy();
+    const beak = fBest((p) => p.z);
+    const crown = fBest((p) => (Math.abs(p.x) < 0.05 && p.z > 1.9 && p.z < 2.4 ? p.y : -Infinity));
+    const c = crane(flyer);
+    c.stand = 1;
+    c.update(0, 0, 4);
+    const back = at(c, flyer, fBack);
+    const head = at(c, flyer, crown);
+    const tip = at(c, flyer, beak);
+    expect(head.y).toBeGreaterThan(back.y + 0.4); // đầu cao hơn lưng
+    // cổ ngẩng: gốc cổ → khớp đầu dốc lên ≥ 50° so với mặt đất
+    const mesh = c.root.children.find((o): o is THREE.SkinnedMesh => o instanceof THREE.SkinnedMesh);
+    const bone = (name: string): THREE.Vector3 => (mesh?.skeleton.getBoneByName(name) as THREE.Bone).getWorldPosition(new THREE.Vector3());
+    const d = bone('dau-hac').sub(bone('goc-co'));
+    expect(Math.atan2(d.y, Math.hypot(d.x, d.z))).toBeGreaterThan(0.87);
+    expect(tip.z).toBeGreaterThan(head.z + 0.3); // mỏ hướng trước
+    expect(Math.abs(tip.y - head.y)).toBeLessThan(0.45); // không chĩa lên trời / cắm xuống
+    c.stand = 0;
+    c.update(0.5, 0, 4);
+    for (const i of [beak, crown]) expect(at(c, flyer, i).distanceTo(FP(i))).toBeLessThan(1e-4);
+  });
+
+  it('chỗ ngồi khi đứng cao 2,2–2,6 m (sau scale) — nhân vật nhảy lên được', () => {
+    const c = crane(flyer);
+    c.stand = 1;
+    c.update(0, 0, 4);
+    const h = c.seat.position.y * spec.scale;
+    expect(h).toBeGreaterThanOrEqual(2.2);
+    expect(h).toBeLessThanOrEqual(2.6);
   });
 
   it('bản khối (chưa có model): stand không đổi gì', () => {

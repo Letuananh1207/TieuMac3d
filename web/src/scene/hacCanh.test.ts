@@ -68,7 +68,9 @@ describe('hạc model — đo dáng, chia trọng số (kế hoạch 2026-11-16-
     expect(b).toBeGreaterThan(shape.shoulder[0]);
     const xs = Array.from({ length: 21 }, (_, k) => a + ((b - a) * k) / 20);
     const tmp = craneWeights(Float32Array.from(xs.flatMap((x) => [x, 1.5, 0])), shape);
-    const wing = xs.map((_, k) => 1 - tmp.weight[k * 4]);
+    // phần thân = trọng số của xương 0 (thứ tự trong 4 ô theo độ nặng)
+    const bodyW = (k: number): number => [0, 1, 2, 3].reduce((t, j) => t + (tmp.index[k * 4 + j] === 0 ? tmp.weight[k * 4 + j] : 0), 0);
+    const wing = xs.map((_, k) => 1 - bodyW(k));
     expect(wing[0]).toBeCloseTo(0, 5);
     expect(wing[20]).toBeCloseTo(1, 5);
     for (let k = 1; k <= 20; k++) {

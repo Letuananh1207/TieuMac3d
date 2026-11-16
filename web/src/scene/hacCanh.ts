@@ -9,14 +9,31 @@
  */
 
 import { legWeight, type CraneLegs } from './hacChan';
+import { neckWeight, type CraneNeck } from './hacCo';
 
 export type V3 = [number, number, number];
 
 /**
- * Thứ tự xương: gốc (thân) · vai trái (x < 0) · đầu cánh trái · vai phải · đầu cánh phải · hông trái · cổ chân trái ·
- * hông phải · cổ chân phải (chân — L-22, `hacChan.ts`).
+ * Thứ tự xương: gốc (thân) · vai trái (x < 0) · đầu cánh trái · vai phải · đầu cánh phải · hông / gối / cổ chân trái ·
+ * hông / gối / cổ chân phải (chân — L-22, `hacChan.ts`) · gốc cổ · đầu (cổ — L-22, `hacCo.ts`).
  */
-export const CRANE_BONES = ['goc', 'vai-trai', 'dau-trai', 'vai-phai', 'dau-phai', 'hong-trai', 'co-chan-trai', 'hong-phai', 'co-chan-phai'] as const;
+export const CRANE_BONES = [
+  'goc',
+  'vai-trai',
+  'dau-trai',
+  'vai-phai',
+  'dau-phai',
+  'hong-trai',
+  'goi-trai',
+  'co-chan-trai',
+  'hong-phai',
+  'goi-phai',
+  'co-chan-phai',
+  'goc-co',
+  'dau-hac',
+] as const;
+/** chỉ số xương theo tên */
+export const BONE = Object.fromEntries(CRANE_BONES.map((n, i) => [n, i])) as Record<(typeof CRANE_BONES)[number], number>;
 
 export interface CraneShape {
   /** nửa sải cánh (m) */
@@ -31,6 +48,8 @@ export interface CraneShape {
   seat: V3;
   /** hai chân (đo riêng bằng `measureLegs` — cần tam giác); không có → không đứng được, chỉ gập cánh */
   legs?: CraneLegs | null;
+  /** cổ (đo riêng bằng `measureNeck`); không có → cổ giữ dáng bay */
+  neck?: CraneNeck | null;
 }
 
 const BINS = 48;
@@ -153,8 +172,8 @@ export function blendBands(s: CraneShape): { shoulder: [number, number]; tip: [n
 
 /**
  * Trọng số da: mỗi đỉnh 4 chỉ số xương + 4 trọng số (tổng 1). Thân (gốc) → vai (dải chuyển mềm quanh vai, phần thân sát
- * vai uốn theo một ít — không rách) → đầu cánh (dải chuyển quanh khớp). Bên theo dấu x. Có chân (`s.legs`): đỉnh quanh chân
- * → hông / cổ chân (dải chuyển ở hông, `legWeight`), phần thân còn lại như trên (chân xa đầu cánh — bỏ khe đầu cánh).
+ * vai uốn theo một ít — không rách) → đầu cánh (dải chuyển quanh khớp). Bên theo dấu x. Phần thân (ngoài cánh) chia tiếp:
+ * quanh chân → hông / gối / cổ chân (`legWeight`), phía trước gốc cổ → cổ / đầu (`neckWeight`). Giữ 4 xương nặng nhất.
  */
 export function craneWeights(pos: ArrayLike<number>, s: CraneShape): { index: Uint16Array; weight: Float32Array } {
   const n = Math.floor(pos.length / 3);
@@ -163,19 +182,34 @@ export function craneWeights(pos: ArrayLike<number>, s: CraneShape): { index: Ui
   const bands = blendBands(s);
   for (let i = 0; i < n; i++) {
     const x = pos[i * 3];
+    const y = pos[i * 3 + 1];
+    const z = pos[i * 3 + 2];
     const ax = Math.abs(x);
     const wing = smooth(bands.shoulder[0], bands.shoulder[1], ax);
     const hand = smooth(bands.tip[0], bands.tip[1], ax);
-    const vai = x < 0 ? 1 : 3;
-    const leg = s.legs ? legWeight(x, pos[i * 3 + 1], pos[i * 3 + 2], s.legs) : null;
-    if (leg && leg.w > 0) {
-      const hong = leg.side < 0 ? 5 : 7;
-      index.set([0, hong, hong + 1, vai], i * 4);
-      weight.set([(1 - leg.w) * (1 - wing), leg.w * (1 - leg.foot), leg.w * leg.foot, (1 - leg.w) * wing], i * 4);
-      continue;
-    }
-    index.set([0, vai, vai + 1, 0], i * 4);
-    weight.set([1 - wing, wing * (1 - hand), wing * hand, 0], i * 4);
+    const left = x < 0;
+    // phần thân (không cánh) chia tiếp cho chân / cổ
+    const core = 1 - wing;
+    const leg = s.legs ? legWeight(x, y, z, s.legs) : { w: 0, knee: 0, foot: 0 };
+    const neck = s.neck ? neckWeight(z, s.neck) : { w: 0, head: 0 };
+    const lw = core * leg.w;
+    const nw = core * (1 - leg.w) * neck.w;
+    const parts: [number, number][] = [
+      [BONE.goc, core - lw - nw],
+      [left ? BONE['vai-trai'] : BONE['vai-phai'], wing * (1 - hand)],
+      [left ? BONE['dau-trai'] : BONE['dau-phai'], wing * hand],
+      [left ? BONE['hong-trai'] : BONE['hong-phai'], lw * (1 - leg.knee)],
+      [left ? BONE['goi-trai'] : BONE['goi-phai'], lw * (leg.knee - leg.foot)],
+      [left ? BONE['co-chan-trai'] : BONE['co-chan-phai'], lw * leg.foot],
+      [BONE['goc-co'], nw * (1 - neck.head)],
+      [BONE['dau-hac'], nw * neck.head],
+    ];
+    // giữ 4 phần lớn nhất (mỗi đỉnh chỉ 4 xương), chuẩn lại tổng 1
+    parts.sort((a, b) => b[1] - a[1]);
+    const top = parts.slice(0, 4);
+    const sum = top.reduce((t, p) => t + Math.max(0, p[1]), 0) || 1;
+    index.set(top.map((p) => p[0]), i * 4);
+    weight.set(top.map((p) => Math.max(0, p[1]) / sum), i * 4);
   }
   return { index, weight };
 }

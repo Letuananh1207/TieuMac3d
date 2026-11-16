@@ -6,7 +6,7 @@
  * - `&khoi` — bản khối cũ (3 draw call) để so · `&gap=1` — đứng đáp trên hai chân, cánh xếp (Q1, L-22)
  * - `&chan=0…1` — chân: 0 duỗi sau (bay) → 1 đứng (mặc định theo `gap`) · `&nhun=0…1` — nhún · `&cao=<m>` — cao hơn đất
  *   (mặc định: đứng hẳn → 0, còn lại lượn 2,2 m) — chụp "vừa rời đất, chân đang thu" (L-22)
- * - `&vo=len|xuong` — dừng ở đỉnh / đáy nhịp vỗ (chụp so) · `&goc=truoc|sau-tren|ben|cheo` — góc camera
+ * - `&vo=len|xuong` — dừng ở đỉnh / đáy nhịp vỗ (chụp so) · `&goc=truoc|sau-tren|ben|cheo|co|hong` — góc camera (co / hong: cận cổ, cận hông)
  */
 import * as THREE from 'three';
 import type { Character } from './player/character';
@@ -91,6 +91,11 @@ export async function addCranePreview(
     ben: [P.x + 8 * k, P.y + up + 0.2 * k, P.z],
     cheo: [P.x + 6 * k, P.y + up + 1.2 * k, P.z + 6 * k],
   };
+  // cận đầu cổ / hông (khi đứng — L-22): nhìn ngang chéo
+  if (goc === 'co') target.splice(0, 3, P.x, P.y + 2.2 * k, P.z + 0.9 * k);
+  if (goc === 'hong') target.splice(0, 3, P.x, P.y + 0.6 * k, P.z - 0.4 * k);
+  cams.co = [P.x + 3.2 * k, P.y + 2.6 * k, P.z + 2.6 * k];
+  cams.hong = [P.x + 3 * k, P.y + 0.9 * k, P.z + 1.2 * k];
   const cam: V3 = cams[goc] ?? [P.x, P.y + up + 0.3 * k, P.z + 7.5 * k];
   if (!params.has('cam')) view(cam, target);
 
