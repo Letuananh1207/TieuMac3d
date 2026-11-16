@@ -195,3 +195,11 @@ Một chất liệu: kính mờ `frost*` + viền `frost-line` / `frost-outline`
 | Dấu trạng thái luống (đĩa trắng 22: khô · sâu · cỏ · bón được · chín) | `VuonMole-trang-thai` | `garden-water`, `aura-light` |
 | Chữ nổi (trắng viền `slate`) + viên lý do (`slate` 92 %) | `VuonMole-trang-thai`, `VuonMole-chu-noi-doc` | `slate` |
 | Túi đồ tab hình (5 tab, tab mở viền `jade`) — thay 4 mục cuộn | `TuiDo-vuon-*` | `jade` |
+
+## Thêm ở 2026-11-16.12
+
+| Thành phần | Artboard | Token |
+|---|---|---|
+| Cuộn Tĩnh toạ 16 : 9 (đầu cuộn, ấn son "Tĩnh", "Đứng dậy" góc) | `Cuon-*` | map-paper, scroll-wood, jade, gold, lacquer, size.scroll-stand-hit |
+| Ô triện gỗ trên cuộn (thường / mờ / nhấn / lắc / vừa cập nhật / sắp có) | `Cuon-*`, `Cuon-so-do` | size.scroll-tile, count-badge, jade, gold |
+| Hình nét mực trong ô: bìa mini, bó thẻ tre, bảng gỗ | `Cuon-1-tran-*` | slate, lacquer, scroll-wood |

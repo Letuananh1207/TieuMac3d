@@ -1,5 +1,6 @@
 # Phiếu: Cuộn Ngồi ôn thành bảng chọn lưới ô (trải ngang)
 - Trạng thái: chờ thiết kế   (→ đã áp (<mã>) · bỏ (<lý do>))
+- Đã vẽ: 2026-11-16.12 (Q3 = "Tĩnh toạ" / ấn "Tĩnh"; giấy 16 : 9 giữ)
 - Đợi bởi: kế hoạch `docs/tasks/2026-11-15-cuon-bang-chon.md` (V-20261114-45; nhiệm vụ 4, 5, 6). **Duyệt 2026-11-16**: Q1-A Trúc
   Lão, Q2 có ô Nhiệm vụ, Q4 model tạm (khối). **Q3 chưa chốt** — code giữ "Ngồi ôn" / "Đang ôn" / ấn "Ôn"; thiết kế đề xuất tên
   (người dùng gợi ý "Học", kế hoạch đề xuất "Tĩnh toạ") để người dùng chọn.

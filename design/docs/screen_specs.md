@@ -796,6 +796,8 @@ Mẫu một mục:
 
 ## Ngồi — nhìn từ mắt nhân vật: hai tay + cuộn sách có mục (cảnh 3D + HUD) · artboard `NgoiMat-{on,cham,tuhoc,tra,co,dau,nhin}-{doc,ngang}.dc.html`, `NgoiMat-bien-the.dc.html` · từ mục 2026-11-14.21
 
+- **Phần "Cuộn tay", "Nội dung giấy", chạm mục bằng tay phải: thay bởi mục "Cuộn Tĩnh toạ" (2026-11-16.12)**; nhịp, nhìn
+  quanh, các kiểu ngồi khác giữ.
 - **Thay** bảng chọn cuộn treo Flutter của mục 2026-11-14.10 (phần "Bảng chọn"; nút Ngồi ôn, màn Bộ đã học, nhịp nhập định giữ). Áp mọi
   kiểu ngồi. Luật: `R-DIEU-7`, `R-ON-8`, `R-NGOI-1`, `R-VA-4`, `R-GIAO-1`, `R-DAU-2`, `R-CO-3`, `R-HANH-3`, `R-ON-5`, `R-VUNG-1`,
   `R-MAN-1`, `R-BANDO-1` (bản sửa trong `docs/tasks/2026-11-14-ngoi-goc-mat.md`).
@@ -1078,3 +1080,51 @@ Mẫu một mục:
   `shopTabGarden`, `shopFertilizer*`, `shopSubtitleGarden`, `walletSpendFertilizer`.
 - Ảnh: `screens/VuonMole-*.png`, `screens/TuiDo-vuon-*.png`, `screens/CuaHang-lam-vuon-doc.png`, `screens/CuaHang-phan-bon-xac-nhan-doc.png`
   (cảnh là hình giữ chỗ).
+
+## Cuộn Tĩnh toạ — bảng chọn lưới ô trên cuộn tay (cảnh 3D + HUD) · artboard `Cuon-{1-tran,2-truc-lam,3-moi,4a-cham-o1,4b-cham-o3,5-cham-mo,6-dong-man,7-tang-thu-cac,8-nhin-quanh}-{doc,ngang}.dc.html`, `Cuon-so-do.dc.html` · từ mục 2026-11-16.12
+
+- **Thay** phần cuộn tay + 3 dòng mục của mục 2026-11-14.21 (`NgoiMat-*`) và giấy 0,26 × 0,35 của V-43. Nhịp mở / đứng dậy,
+  nhìn quanh, kiểu ngồi án thư / bàn trà / cờ / Đấu chữ giữ 2026-11-14.21. Phiếu `docs/phieu_thiet_ke/2026-11-15-cuon-bang-chon.md`.
+- **Tên (Q3, người dùng chọn 2026-11-16)**: nút "Tĩnh toạ" / "Đang tĩnh toạ", tiêu đề cuộn "Tĩnh toạ", ấn son "Tĩnh" (chữ Việt, R-HUD-4).
+  Nút giữ hình + cỡ 2026-11-14.10 (tròn 52 kính sương, nhãn 11/700); chấm son = **số bộ đến hạn ôn** (0 → không chấm).
+- **Cuộn tay (vật 3D)**: giấy `map-paper` **0,48 × 0,27 m (16 : 9)**, viền bồi `jade` 12 % + gỗ 18 %, ngửa 16° về mắt; hai trục
+  `scroll-wood` đứng hai mép trái / phải (dài 0,29 m, rộng 14 px màn), đầu trục `jade` viền `gold` 20. Hai tay áo `robe-sleeve` viền cổ
+  tay `jade`, bàn tay `skin` cầm hai trục **ngoài mép giấy** — lúc yên không tay nào đè chữ / ô.
+  - Dọc 390 × 844: giấy **352 × 198** px, trái 19, trên 330 (giữa màn). Ngang 844 × 390: **464 × 261**, trái 190, trên 56.
+- **Nội dung giấy** (đệm 8):
+  - Đầu (cao 36 dọc / 42 ngang): dòng nơi đang ngồi 10,5/700 (11,5) `slate-muted` ("Khởi Nguyên Trấn · Quảng Trường", "Trúc Lâm ·
+    Bãi giữa", "Tàng Thư Các · Khu tự học") · "Tĩnh toạ" Lora 700 16 (18) `slate` · ấn son "Tĩnh" (`lacquer`, chữ trắng 700 11, bo 3)
+    · **"Đứng dậy"** góc trên phải: viên viền mực 45 % 1,5, biểu tượng 14 + 12/700, hiện cao 32 (36), **vùng chạm 48 × 48** tràn ra
+    trên mép giấy (token `size.scroll-stand-hit`).
+  - Vạch chấm vàng (như 2026-11-14.21).
+  - **Một hàng 4 ô** (dọc và ngang như nhau), cách nhau 8, ô kiểu **triện gỗ khảm**: **78 × 98** dọc / **104 × 128** ngang (token
+    `size.scroll-tile`), nền giấy đậm 6 %, viền gỗ `scroll-wood` 30 % 1,5 + viền trong mực 12 %, bo 6. Trong ô: hình nét mực 40 (52)
+    trên · tên 12,5/700 (14) · dòng phụ 10,5 (11,5) `slate-muted`, căn giữa, tên ≤ 2 dòng, dòng phụ 1 dòng cắt "…".
+    1. **Đọc sách** — bìa mini màu cuốn (số cấp "1"), dòng phụ "HSK 1 · Nhập môn" (`scrollBookSub`). Mở sổ ở trang đã nhớ (R-SACH-2/3).
+       Chưa mượn → mờ, "Mượn ở Tàng Thư Các".
+    2. **Bộ đã học** — bó thẻ tre buộc dây son, dòng phụ "5 / 50 bộ". Chưa học → mờ, "Chưa học bộ nào".
+    3. **Nhiệm vụ hôm nay** — bảng gỗ treo, chấm son `count-badge` (số việc còn lại, 0 → không chấm) góc trên phải ô, dòng phụ
+       "Còn 1 việc" / "Đã xong hôm nay". Mở bảng nhiệm vụ (R-NV-3, có "Ôn ngay").
+    4. **Sắp có** — viền nét đứt mực 30 %, chỉ chữ "Sắp có" `slate-muted`, không chạm, không nút trợ năng.
+  - **Chưa học bộ nào**: dòng gợi ý dưới hàng ô, 11 (12) `jade`, vạch trái 3 `jade`, nền `jade` 8 %, **luôn đủ câu** (xuống dòng; chật
+    thì nhỏ dần tới 10, không cắt): "Chưa học bộ nào. Sang Trúc Lâm, gặp Trúc Lão ở bãi hạc đáp để học bộ đầu tiên."
+- **Trạng thái ô**:
+  - Thường: như trên. **Mờ**: viền nét đứt, hình + tên 45 %, dòng phụ = lý do `slate-muted`.
+  - **Nhấn**: viền `jade` 2 + quầng `gold` 18, co 97 %; **ngón trỏ tay gần ô** (ô 1–2 tay trái, ô 3–4 tay phải) thả trục chạm ô 0,15 s
+    rồi màn mở; tay kia giữ trục.
+  - **Chạm ô mờ (đề xuất)**: không mở, không vệt vàng, tay không rời trục — ô lắc ngang ±3 px hai nhịp 0,24 s + rung máy 10 ms (nếu
+    có), dòng lý do đậm lên `slate` 0,6 s rồi về.
+  - **Vừa cập nhật** (đóng màn về): ô đổi chữ + viền `gold` 2 + dấu ✓ nhỏ, nhấp 1 lần 0,6 s (vd. Nhiệm vụ → "Đã xong hôm nay", chấm son mất).
+- **Chuyển màn**: chạm ô → màn Flutter trượt lên đè 0,25 s, cuộn giữ mở phía sau; đóng → cuộn hiện lại ngay (không chạy lại nhịp 1 s).
+- **Bồ đoàn khu tự học tầng 2 Tàng Thư Các**: như trên, nền nội thất, dòng nơi "Tàng Thư Các · Khu tự học" (R-VA-4).
+- **Nhìn quanh** lệch 60° phải: cuộn + hai tay trôi sang trái (dọc −250 px, ngang −420 px), ra một phần ngoài mép — chữ không co.
+- **Màn nhỏ nhất** 360 × 640 / 640 × 360 (× 0,92 / × 0,91, mép xa − 9 %): ô ≈ **71 × 90** dọc / **93 × 116** ngang (≥ 70 × 90 ✓); tên
+  ô ≈ 11,5 / 12,7 px, dòng phụ ≈ 9,6 / 10,5 px; "Đứng dậy" vùng chạm ≈ 44 px ✓. Bảng số đo đủ ở `Cuon-so-do`.
+- Trợ năng: mỗi ô dùng được / mờ một nút ẩn `scrollTileLabel` ("Đọc sách, HSK 1 · Nhập môn"; mờ thêm ", chưa dùng được"); ô Sắp có
+  không đọc. Ấn son đọc "Tĩnh".
+- Chuỗi: `actionSit*` (đổi "Ngồi ôn" → "Tĩnh toạ"), `reviewScroll` "Tĩnh toạ", `reviewScrollSeal` "Tĩnh", `viewLearned` "Bộ đã học",
+  `viewLearnedSub`, `viewLearnedNone`, `readBook`, `hintGoForest` (câu mới), `standUp`; mới `scroll*`. Thôi dùng trên cuộn:
+  `reviewDue*`, `learnNew*`, `learnAtForest`, `learnAllDone*`.
+- Luật: `R-ON-8`, `R-DIEU-7`, `R-VA-4`, `R-SACH-2`, `R-SACH-3`, `R-NV-3`, `R-HANH-8`, `R-HUD-4`; đề xuất mới ở CHANGELOG 2026-11-16.12.
+- Ảnh: chưa có ảnh. Nền giữ chỗ: ảnh Canvas 3D quảng trường + bãi hạc Trúc Lâm (còn nhân vật đứng — chưa có `?dang=ngoi-mat`),
+  nội thất Tàng Thư Các vẽ tay.

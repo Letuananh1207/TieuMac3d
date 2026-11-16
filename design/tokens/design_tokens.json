@@ -466,6 +466,16 @@
       "value": 96,
       "note": "bản đồ nhỏ tròn, ngang — 2026-11-14.20",
       "code": "chưa có"
+    },
+    "scroll-tile": {
+      "value": 98,
+      "note": "ô bảng chọn trên cuộn Tĩnh toạ (px thiết kế, dọc; ngang 128) — màn nhỏ nhất ≥ 70 × 90 px — 2026-11-16.12",
+      "code": "chưa có"
+    },
+    "scroll-stand-hit": {
+      "value": 48,
+      "note": "vùng chạm \"Đứng dậy\" trên cuộn (nút hiện 32 dọc / 36 ngang, vùng chạm tràn ra ngoài mép giấy) — 2026-11-16.12",
+      "code": "chưa có"
     }
   }
 }

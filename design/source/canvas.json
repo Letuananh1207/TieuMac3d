@@ -1637,6 +1637,246 @@
       "w": 390,
       "h": 844,
       "title": "Hình minh hoạ · HUD thử (dọc)"
+    },
+    "HinhMinhHoa-dot2.dc.html": {
+      "x": 0,
+      "y": 81296,
+      "w": 1500,
+      "h": 1640,
+      "title": "Hình minh hoạ · đợt 2 (21 hình)"
+    },
+    "VuonMole-trang-thai.dc.html": {
+      "x": 0,
+      "y": 83296,
+      "w": 1500,
+      "h": 1160,
+      "title": "VuonMole-trang-thai"
+    },
+    "VuonMole-doc.dc.html": {
+      "x": 0,
+      "y": 84576,
+      "w": 390,
+      "h": 844,
+      "title": "VuonMole-doc"
+    },
+    "VuonMole-trong-doc.dc.html": {
+      "x": 470,
+      "y": 84576,
+      "w": 390,
+      "h": 844,
+      "title": "VuonMole-trong-doc"
+    },
+    "VuonMole-luoi-hat-doc.dc.html": {
+      "x": 940,
+      "y": 84576,
+      "w": 390,
+      "h": 844,
+      "title": "VuonMole-luoi-hat-doc"
+    },
+    "VuonMole-tui-trong-doc.dc.html": {
+      "x": 1410,
+      "y": 84576,
+      "w": 390,
+      "h": 844,
+      "title": "VuonMole-tui-trong-doc"
+    },
+    "VuonMole-kho-sau-doc.dc.html": {
+      "x": 1880,
+      "y": 84576,
+      "w": 390,
+      "h": 844,
+      "title": "VuonMole-kho-sau-doc"
+    },
+    "VuonMole-chin-doc.dc.html": {
+      "x": 2350,
+      "y": 84576,
+      "w": 390,
+      "h": 844,
+      "title": "VuonMole-chin-doc"
+    },
+    "VuonMole-hoang-doc.dc.html": {
+      "x": 2820,
+      "y": 84576,
+      "w": 390,
+      "h": 844,
+      "title": "VuonMole-hoang-doc"
+    },
+    "VuonMole-chu-noi-doc.dc.html": {
+      "x": 3290,
+      "y": 84576,
+      "w": 390,
+      "h": 844,
+      "title": "VuonMole-chu-noi-doc"
+    },
+    "TuiDo-vuon-doc.dc.html": {
+      "x": 3760,
+      "y": 84576,
+      "w": 390,
+      "h": 844,
+      "title": "TuiDo-vuon-doc"
+    },
+    "CuaHang-lam-vuon-doc.dc.html": {
+      "x": 4230,
+      "y": 84576,
+      "w": 390,
+      "h": 844,
+      "title": "CuaHang-lam-vuon-doc"
+    },
+    "CuaHang-phan-bon-xac-nhan-doc.dc.html": {
+      "x": 4700,
+      "y": 84576,
+      "w": 390,
+      "h": 844,
+      "title": "CuaHang-phan-bon-xac-nhan-doc"
+    },
+    "VuonMole-ngang.dc.html": {
+      "x": 0,
+      "y": 85560,
+      "w": 844,
+      "h": 390,
+      "title": "VuonMole-ngang"
+    },
+    "VuonMole-luoi-hat-ngang.dc.html": {
+      "x": 924,
+      "y": 85560,
+      "w": 844,
+      "h": 390,
+      "title": "VuonMole-luoi-hat-ngang"
+    },
+    "TuiDo-vuon-ngang.dc.html": {
+      "x": 1848,
+      "y": 85560,
+      "w": 844,
+      "h": 390,
+      "title": "TuiDo-vuon-ngang"
+    },
+    "VuonMole-may.dc.html": {
+      "x": 2772,
+      "y": 85560,
+      "w": 1280,
+      "h": 800,
+      "title": "VuonMole-may"
+    },
+    "VuonMole-ghi-chu.dc.html": {
+      "x": 0,
+      "y": 86500,
+      "w": 1500,
+      "h": 760,
+      "title": "VuonMole-ghi-chu"
+    },
+    "Cuon-1-tran-doc.dc.html": {
+      "x": 0,
+      "y": 87640,
+      "w": 390,
+      "h": 844
+    },
+    "Cuon-1-tran-ngang.dc.html": {
+      "x": 0,
+      "y": 88604,
+      "w": 844,
+      "h": 390
+    },
+    "Cuon-2-truc-lam-doc.dc.html": {
+      "x": 924,
+      "y": 87640,
+      "w": 390,
+      "h": 844
+    },
+    "Cuon-2-truc-lam-ngang.dc.html": {
+      "x": 924,
+      "y": 88604,
+      "w": 844,
+      "h": 390
+    },
+    "Cuon-3-moi-doc.dc.html": {
+      "x": 1848,
+      "y": 87640,
+      "w": 390,
+      "h": 844
+    },
+    "Cuon-3-moi-ngang.dc.html": {
+      "x": 1848,
+      "y": 88604,
+      "w": 844,
+      "h": 390
+    },
+    "Cuon-4a-cham-o1-doc.dc.html": {
+      "x": 2772,
+      "y": 87640,
+      "w": 390,
+      "h": 844
+    },
+    "Cuon-4a-cham-o1-ngang.dc.html": {
+      "x": 2772,
+      "y": 88604,
+      "w": 844,
+      "h": 390
+    },
+    "Cuon-4b-cham-o3-doc.dc.html": {
+      "x": 3696,
+      "y": 87640,
+      "w": 390,
+      "h": 844
+    },
+    "Cuon-4b-cham-o3-ngang.dc.html": {
+      "x": 3696,
+      "y": 88604,
+      "w": 844,
+      "h": 390
+    },
+    "Cuon-5-cham-mo-doc.dc.html": {
+      "x": 4620,
+      "y": 87640,
+      "w": 390,
+      "h": 844
+    },
+    "Cuon-5-cham-mo-ngang.dc.html": {
+      "x": 4620,
+      "y": 88604,
+      "w": 844,
+      "h": 390
+    },
+    "Cuon-6-dong-man-doc.dc.html": {
+      "x": 5544,
+      "y": 87640,
+      "w": 390,
+      "h": 844
+    },
+    "Cuon-6-dong-man-ngang.dc.html": {
+      "x": 5544,
+      "y": 88604,
+      "w": 844,
+      "h": 390
+    },
+    "Cuon-7-tang-thu-cac-doc.dc.html": {
+      "x": 6468,
+      "y": 87640,
+      "w": 390,
+      "h": 844
+    },
+    "Cuon-7-tang-thu-cac-ngang.dc.html": {
+      "x": 6468,
+      "y": 88604,
+      "w": 844,
+      "h": 390
+    },
+    "Cuon-8-nhin-quanh-doc.dc.html": {
+      "x": 7392,
+      "y": 87640,
+      "w": 390,
+      "h": 844
+    },
+    "Cuon-8-nhin-quanh-ngang.dc.html": {
+      "x": 7392,
+      "y": 88604,
+      "w": 844,
+      "h": 390
+    },
+    "Cuon-so-do.dc.html": {
+      "x": 0,
+      "y": 89114,
+      "w": 1300,
+      "h": 640
     }
   },
   "order": [
@@ -1879,7 +2119,44 @@
     "TrangTriTuDo-cam-do-may.dc.html",
     "TrangTriTuDo-ghi-chu.dc.html",
     "HinhMinhHoa-dot1.dc.html",
-    "HinhMinhHoa-HUD-doc.dc.html"
+    "HinhMinhHoa-HUD-doc.dc.html",
+    "HinhMinhHoa-dot2.dc.html",
+    "VuonMole-trang-thai.dc.html",
+    "VuonMole-doc.dc.html",
+    "VuonMole-trong-doc.dc.html",
+    "VuonMole-luoi-hat-doc.dc.html",
+    "VuonMole-tui-trong-doc.dc.html",
+    "VuonMole-kho-sau-doc.dc.html",
+    "VuonMole-chin-doc.dc.html",
+    "VuonMole-hoang-doc.dc.html",
+    "VuonMole-chu-noi-doc.dc.html",
+    "TuiDo-vuon-doc.dc.html",
+    "CuaHang-lam-vuon-doc.dc.html",
+    "CuaHang-phan-bon-xac-nhan-doc.dc.html",
+    "VuonMole-ngang.dc.html",
+    "VuonMole-luoi-hat-ngang.dc.html",
+    "TuiDo-vuon-ngang.dc.html",
+    "VuonMole-may.dc.html",
+    "VuonMole-ghi-chu.dc.html",
+    "Cuon-1-tran-doc.dc.html",
+    "Cuon-1-tran-ngang.dc.html",
+    "Cuon-2-truc-lam-doc.dc.html",
+    "Cuon-2-truc-lam-ngang.dc.html",
+    "Cuon-3-moi-doc.dc.html",
+    "Cuon-3-moi-ngang.dc.html",
+    "Cuon-4a-cham-o1-doc.dc.html",
+    "Cuon-4a-cham-o1-ngang.dc.html",
+    "Cuon-4b-cham-o3-doc.dc.html",
+    "Cuon-4b-cham-o3-ngang.dc.html",
+    "Cuon-5-cham-mo-doc.dc.html",
+    "Cuon-5-cham-mo-ngang.dc.html",
+    "Cuon-6-dong-man-doc.dc.html",
+    "Cuon-6-dong-man-ngang.dc.html",
+    "Cuon-7-tang-thu-cac-doc.dc.html",
+    "Cuon-7-tang-thu-cac-ngang.dc.html",
+    "Cuon-8-nhin-quanh-doc.dc.html",
+    "Cuon-8-nhin-quanh-ngang.dc.html",
+    "Cuon-so-do.dc.html"
   ],
   "notes": {
     "cach-dung": {
@@ -2391,6 +2668,26 @@
       "y": 79192,
       "w": 760,
       "text": "Câu lệnh Gemini — Hình minh hoạ, ĐỢT 1 (11 hình) · bản 5 \"cùng chất ảnh đã duyệt của game\" (người dùng 2026-11-16: bản 4 kiểu 摩尔 2.5D viền màu kẹo → \"quá hiện đại\").\r\n\r\nNeo phong cách vào ẢNH ĐÃ DUYỆT CỦA CHÍNH GAME, không mô tả bằng lời nữa:\r\n- Chất liệu / ánh sáng / màu = ảnh đàn cổ tranh `design/models/anh/dan-tranh-cheo.png` (người dùng đã chốt 2026-11-15.33): đất sét mờ mịn, khối tròn mềm, KHÔNG viền, màu tự nhiên trầm ấm (gỗ, ngà, son nhạt) — giống bản 3 mà người dùng đã thấy ổn.\r\n- Nhân vật trong hình (biểu cảm, nhảy, chào, ngồi ôn) = chính nhân vật chính Tiểu Mặc `design/models/anh/nhan-vat-truoc.png` thu nhỏ — đúng người trong game, không phải mặt cười emoji hay hình người bánh gừng.\r\n- Góc nhìn CHÍNH DIỆN (người dùng 2026-11-16).\r\n- Từ 摩尔 chỉ học CÁCH CHỌN VẬT: mỗi nút một vật dễ đoán nhất (nhà = mặt tiền nhà, túi = cái túi / tay nải, nhiệm vụ = cuốn sổ). Không học nét vẽ.\r\n\r\nLàm trong MỘT cuộc trò chuyện Gemini. Câu 1 tạo hình mẫu; từ câu 2 đính kèm ảnh đàn + hình 1 đã duyệt.\r\n\r\n1 · ve-nha (hình mẫu) — đính kèm design/models/anh/dan-tranh-cheo.png:\r\nCreate a single game icon illustration in EXACTLY the same 3D rendering style, material, lighting and colour mood as the attached zither image: soft matte clay toy render, smooth rounded chunky shapes, no outlines, soft studio light, warm natural muted colours. Subject: the front of a small humble village house from ancient Song-dynasty China — grey clay-tile roof gently curving up at the ends, cream plaster walls, a plain wooden plank door in the middle, one small red paper lantern beside the door. FRONT VIEW, straight on, symmetrical, seen from very slightly above. NOT royal, NOT luxurious, NOT modern. NO text, NO letters, NO numbers, NO Chinese characters, NO logos. Object centred, filling about 80% of the square frame, even margin. Background: plain flat light grey #DDDDDD like the attached image, no floor, no cast shadow, no frame, no badge. Square 1:1.\r\n\r\nTừ câu 2: MẪU CHUNG — đính kèm ảnh đàn + hình ve-nha đã duyệt, thay <VẬT>:\r\n\"Create a single game icon illustration of <VẬT>, in EXACTLY the same 3D rendering style, material, lighting and colour mood as the attached images: soft matte clay toy render, smooth rounded chunky shapes, no outlines, soft studio light, warm natural muted colours (wood, ivory, soft vermilion, indigo, moss green). An object from an ordinary ancient Song-dynasty Chinese village or scholar academy — NOT royal, NOT luxurious, NOT modern. FRONT VIEW, straight on, symmetrical, seen from very slightly above. NO text, NO letters, NO numbers, NO Chinese characters, NO logos. Object centred, filling about 80% of the square frame, even margin. Background: plain flat light grey #DDDDDD, no floor, no cast shadow, no frame, no badge. Square 1:1.\"\r\n\r\n2 · ban-do: an old map scroll half unrolled, facing the viewer — rough cream paper with a few rounded ink-wash hills, a winding blue river and a small red dot, one plain wooden roller at each end, tied loosely with a hemp cord (giống cuộn bản đồ truyền tống trong game — người dùng 2026-11-16: không dùng chùa)\r\n3 · bieu-cam (đính kèm thêm design/models/anh/nhan-vat-truoc.png): the head of the attached chibi character (black hair with a small top bun) smiling happily with closed curved eyes and rosy cheeks — head only, facing the viewer\r\n4 · tui-do: a traveller's cloth bundle (tay nải) of indigo cotton tied at the top in a knot, a rolled scroll peeking out\r\n5 · nhiem-vu: a thread-bound book of daily tasks standing upright, plain ochre cover, a short red ribbon bookmark, one round vermilion seal mark on the cover (no writing)\r\n6 · nhay (đính kèm nhan-vat-truoc.png): the attached chibi character, full body, caught in mid-air in a natural little hop — knees bent and tucked up, arms held slightly out to the sides for balance (NOT raised overhead), robe hem fluttering, a small soft puff of dust / cloud on the ground below; facing the viewer\r\n7 · chao (đính kèm nhan-vat-truoc.png): the attached chibi character, full body, bowing slightly with hands joined in a fist-and-palm greeting, facing the viewer\r\n8 · ngoi-on (đính kèm nhan-vat-truoc.png): the attached chibi character sitting cross-legged on a round woven rush cushion, a short paper scroll unrolled across the lap, eyes on it, calm and focused (reviewing), facing the viewer\r\n9 · tro-chuyen: two round soft speech bubbles overlapping, the front one ivory with three small vermilion dots, the back one pale indigo\r\n10 · trang-tri: a small potted pine bonsai in an unglazed terracotta pot on a little wooden stand\r\n11 · doc-sach (đính kèm nhan-vat-truoc.png): the attached chibi character standing and reading — holding an open thread-bound book with both hands in front of the chest (plain indigo cover, ivory pages, small red ribbon), head tilted slightly down towards the pages, gentle happy expression; full body, facing the viewer\r\n\r\nNền xám #DDDDDD như mọi bộ ảnh của game — Claude tự tách nền. Xong: gửi hình 1 trước để duyệt.\r\n"
+    },
+    "hinh-dot2-cau-lenh": {
+      "x": 1580,
+      "y": 81296,
+      "w": 760,
+      "text": "Câu lệnh Gemini — Hình minh hoạ ĐỢT 2 (21 hình: 13 nút nổi + 8 biểu cảm). Cùng phong cách đợt 1 đã chốt (2026-11-16.2).\nLàm trong MỘT cuộc trò chuyện Gemini (có thể tiếp cuộc trò chuyện đợt 1). Mỗi câu đính kèm: design/models/anh/dan-tranh-cheo.png + 1–2 hình đợt 1 đã chốt (design/icons/nguon/ve-nha.png, tui-do.png). Câu có Tiểu Mặc đính kèm thêm design/models/anh/nhan-vat-truoc.png. Nền xám — Claude tự tách nền.\n\nMẪU CHUNG (thay <VẬT>):\n\"Create a single game icon illustration of <VẬT>, in EXACTLY the same 3D rendering style, material, lighting and colour mood as the attached images: soft matte clay toy render, smooth rounded chunky shapes, no outlines, soft studio light, warm natural muted colours (wood, ivory, soft vermilion, indigo, moss green). An object from an ordinary ancient Song-dynasty Chinese village or scholar academy — NOT royal, NOT luxurious, NOT modern. FRONT VIEW, straight on, symmetrical, seen from very slightly above. NO text, NO letters, NO numbers, NO Chinese characters, NO logos. Object centred, filling about 80% of the square frame, even margin. Background: plain flat light grey #DDDDDD, no floor, no cast shadow, no frame, no badge. Square 1:1.\"\n\nA · NÚT NỔI (13):\n1 · noi-chuyen: a single round ivory speech bubble with three small vermilion dots and a small indigo tail, slightly puffy\n2 · ngoi: a low round wooden stool with a plump indigo cotton cushion on top\n3 · ra-san: a plain wooden plank door standing half open, warm sunlight and two green leaves peeking through the gap\n4 · xem-bang: a small wooden notice board on two short legs with three plain cream paper sheets pinned on it (blank, NO writing)\n5 · vao-tiem: the front of a tiny village shop stall with a striped indigo-and-ivory cloth awning, a wooden counter and two small rice sacks\n6 · cach-choi: the corner of a wooden go board with a few round black and white stones on it\n7 · vao-hoc: a calligraphy brush resting on a small round black inkstone, a short sheet of blank rice paper behind\n8 · gieo: a small hemp seed pouch tipped over, a few round golden seeds spilling out onto a tiny mound of soil with one green sprout\n9 · tuoi: a small wooden water bucket with a bamboo ladle resting on its rim and two clear water drops falling from the ladle\n10 · thu: a woven bamboo basket full of vegetables — a green cabbage, an orange pumpkin and a white radish\n11 · mo-o: a wooden hoe stuck upright in a small mound of fresh brown soil with a tiny green sprout beside it\n12 · ban: a small wooden crate of vegetables with three round copper coins with square holes stacked on its lid (plain coins, no characters)\n13 · van-moi: one black and one white round go stone side by side on a small square of wooden board, a tiny sparkle above them\n\nB · BIỂU CẢM (8) — đính kèm thêm nhan-vat-truoc.png, Tiểu Mặc, NỬA TRÊN NGƯỜI (đầu + vai + tay) trừ khi ghi khác:\n14 · vay-tay: the attached chibi character, upper body only, smiling and waving one open hand beside the face, facing the viewer\n15 · chap-tay: the attached chibi character, upper body only, hands joined in front of the chest in a respectful fist-and-palm salute, calm smile, facing the viewer\n16 · cui-chao: the attached chibi character, upper body only, bowing deeply forward with head lowered and hands joined, polite and gentle, facing the viewer\n17 · vo-tay: the attached chibi character, upper body only, clapping both hands together with a big happy smile, three tiny golden sparkle dots around the hands\n18 · cuoi: the attached chibi character, upper body only, laughing heartily — eyes squeezed shut in happy curves, mouth wide open, one hand on the belly\n19 · nhay-mung: the attached chibi character, full body, jumping for joy with both small fists raised in celebration, a few tiny paper confetti pieces in soft vermilion and moss green\n20 · suy-nghi: the attached chibi character, upper body only, one finger on the chin, eyes looking up thoughtfully, three small ivory thought dots floating beside the head\n21 · ngoi-nghi: the attached chibi character, full body, sitting cross-legged on a round woven rush cushion with eyes peacefully closed, resting, a tiny soft cloud puff beside the head\n\nHay sai: Gemini hay vẽ chữ lên bảng / giấy / đồng xu, thêm bóng sàn, đổi khuôn mặt Tiểu Mặc, hoặc quay chéo. Hình nào lệch thì tạo lại riêng câu đó.\nXong: dán ảnh vào chat (ghi số câu nếu không theo thứ tự) — Claude tách nền, xuất WebP, đặt lên artboard, thử trên nút nổi + bảng Biểu cảm + bong bóng thật.\n"
+    },
+    "tieu-de-vuon-mole": {
+      "x": 0,
+      "y": 83096,
+      "text": "Vườn rau kiểu Mole — vòng công cụ quanh luống, lưới hạt, dấu luống, chữ nổi, Túi đồ tab hình, Tạp hoá Làm vườn (phiếu 2026-11-15-vuon-mole)",
+      "kind": "title1",
+      "maxW": 3000
+    },
+    "tieu-de-cuon-bang-chon": {
+      "x": 0,
+      "y": 87380,
+      "text": "Cuộn Tĩnh toạ — bảng chọn lưới ô (thay 3 dòng mục 2026-11-14.21)",
+      "kind": "title1",
+      "maxW": 8236
     }
   },
   "designSystems": []

@@ -115,9 +115,9 @@
   "radicalLearned": "Đã học",
   "actionJump": "Nhảy",
   "actionBow": "Chào",
-  "actionSit": "Ngồi ôn",
-  "actionSitting": "Đang ôn",
-  "actionSitLabel": "Ngồi ôn",
+  "actionSit": "Tĩnh toạ",
+  "actionSitting": "Đang tĩnh toạ",
+  "actionSitLabel": "Tĩnh toạ",
   "talk": "Nói chuyện",
   "@talk": {
     "description": "Nút nổi trên đầu NPC (R-NPC-2). Lời thoại giữ trong dữ liệu hội thoại (web/src/zones/dialogs.ts), không ở đây."
@@ -570,7 +570,7 @@
       }
     }
   },
-  "actionSitDueLabel": "Ngồi ôn, còn {n} bộ đến hạn",
+  "actionSitDueLabel": "Tĩnh toạ, còn {n} bộ đến hạn",
   "@actionSitDueLabel": {
     "description": "Trợ năng nút Ngồi ôn khi có chấm son bộ đến hạn (R-DIEU-7)",
     "placeholders": {
@@ -579,7 +579,7 @@
       }
     }
   },
-  "actionSitNewLabel": "Ngồi ôn, còn {n} bộ chưa học",
+  "actionSitNewLabel": "Tĩnh toạ, còn {n} bộ chưa học",
   "@actionSitNewLabel": {
     "description": "Trợ năng nút Ngồi ôn ở vùng có bài học, không bộ đến hạn",
     "placeholders": {
@@ -588,14 +588,14 @@
       }
     }
   },
-  "actionSitOnLabel": "Đang ôn, bấm để đứng dậy",
-  "reviewScroll": "Ngồi ôn",
+  "actionSitOnLabel": "Đang tĩnh toạ, bấm để đứng dậy",
+  "reviewScroll": "Tĩnh toạ",
   "@reviewScroll": {
     "description": "Tiêu đề cuộn sách bảng chọn (R-ON-8)"
   },
-  "reviewScrollSeal": "Ôn cũ biết mới",
+  "reviewScrollSeal": "Tĩnh",
   "@reviewScrollSeal": {
-    "description": "Nhãn trợ năng ấn son chữ Ôn trên cuộn sách (R-HUD-4)"
+    "description": "Ấn son trên cuộn Tĩnh toạ (chữ Việt — R-HUD-4)"
   },
   "reviewDue": "Ôn bộ đến hạn ({n})",
   "@reviewDue": {
@@ -626,7 +626,7 @@
   "learnAtForest": "Học ở Trúc Lâm",
   "learnAllDone": "Đã học đủ",
   "learnAllDoneBanner": "Đã học đủ 50 bộ thủ Trúc Lâm",
-  "viewLearned": "Xem bộ đã học",
+  "viewLearned": "Bộ đã học",
   "viewLearnedSub": "{n} / 50 bộ",
   "@viewLearnedSub": {
     "placeholders": {
@@ -636,7 +636,7 @@
     }
   },
   "viewLearnedNone": "Chưa học bộ nào",
-  "hintGoForest": "Chưa học bộ nào. Đến Truyền Tống Đài, chọn Trúc Lâm rồi Ngồi ôn để học bộ đầu tiên.",
+  "hintGoForest": "Chưa học bộ nào. Sang Trúc Lâm, gặp Trúc Lão ở bãi hạc đáp để học bộ đầu tiên.",
   "standUp": "Đứng dậy",
   "learnedTitle": "Bộ đã học",
   "learnedHint": "Chạm một bộ để mở lại thẻ",
@@ -1571,5 +1571,49 @@
   "shopSubtitleGarden": "Đồ trang trí Nhà của ta · hạt giống, phân bón cho Vườn rau",
   "@shopSubtitleGarden": {
     "description": "Tạp hoá — dòng phụ"
-  }
+  },
+  "scrollDaily": "Nhiệm vụ hôm nay",
+  "scrollDailyLeft": "Còn {n} việc",
+  "@scrollDailyLeft": {
+    "description": "Dòng phụ ô Nhiệm vụ trên cuộn Tĩnh toạ; chấm son = n",
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "scrollDailyDone": "Đã xong hôm nay",
+  "scrollSoon": "Sắp có",
+  "@scrollSoon": {
+    "description": "Ô nét đứt chừa chỗ chức năng sau — không chạm"
+  },
+  "scrollBookNone": "Mượn ở Tàng Thư Các",
+  "@scrollBookNone": {
+    "description": "Lý do ô Đọc sách mờ (chưa mượn cuốn nào)"
+  },
+  "scrollBookSub": "{book} · {subtitle}",
+  "@scrollBookSub": {
+    "description": "Dòng phụ ô Đọc sách, vd. \"HSK 1 · Nhập môn\"",
+    "placeholders": {
+      "book": {
+        "type": "String"
+      },
+      "subtitle": {
+        "type": "String"
+      }
+    }
+  },
+  "scrollTileLabel": "{name}, {sub}",
+  "@scrollTileLabel": {
+    "description": "Nhãn trợ năng nút ẩn của từng ô trên cuộn (ô mờ: sub = lý do, thêm \", \" + scrollTileOff)",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "sub": {
+        "type": "String"
+      }
+    }
+  },
+  "scrollTileOff": "chưa dùng được"
 }

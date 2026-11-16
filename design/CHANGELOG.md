@@ -3,6 +3,26 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-16.12 — Cuộn Tĩnh toạ: bảng chọn lưới ô trên cuộn tay
+
+- Loại: giao diện · token · chuỗi · luồng/luật (đề xuất).
+- Phiếu đáp ứng: `docs/phieu_thiet_ke/2026-11-15-cuon-bang-chon.md` (kế hoạch `docs/tasks/2026-11-15-cuon-bang-chon.md`).
+- Màn: cuộn tay khi ngồi nhìn từ mắt — giấy 16 : 9 (0,48 × 0,27 m), hàng 4 ô Đọc sách · Bộ đã học · Nhiệm vụ hôm nay · Sắp có;
+  8 trạng thái × dọc / ngang + bảng số đo. **Thay** phần cuộn + 3 dòng mục của 2026-11-14.21 (nhịp, nhìn quanh giữ). Đặc tả mục mới.
+- **Q3 — tên (người dùng chọn)**: "Ngồi ôn" → **"Tĩnh toạ"** (nút, tiêu đề cuộn), "Đang ôn" → "Đang tĩnh toạ", ấn son "Ôn" → "Tĩnh".
+  `vi.arb` đổi `actionSit*`, `reviewScroll*`; `viewLearned` "Xem bộ đã học" → "Bộ đã học"; `hintGoForest` câu mới (Trúc Lão, bãi hạc
+  đáp). Sổ quy tắc còn tên cũ ở R-DIEU-7 / R-ON-8 → phiên code đổi theo.
+- Token mới: `size.scroll-tile` 98 (ngang 128; màn nhỏ ≥ 70 × 90), `size.scroll-stand-hit` 48. Chuỗi mới: `scroll*`.
+- **Đề xuất luật** (phiên code hỏi người dùng rồi ghi sổ):
+  1. Chạm ô mờ: không mở; ô lắc ±3 px hai nhịp + rung 10 ms, dòng lý do đậm lên 0,6 s. Ví dụ: chưa mượn sách, chạm "Đọc sách" →
+     ô lắc, "Mượn ở Tàng Thư Các" đậm lên, không màn nào mở.
+  2. Ô "Sắp có" không chạm, không đọc màn hình.
+  3. "Đứng dậy" vùng chạm 48 × 48 (nút hiện nhỏ hơn).
+- Luật bị chạm: `R-ON-8`, `R-DIEU-7`, `R-VA-4`, `R-SACH-2/3`, `R-NV-3`, `R-HANH-8`, `R-HUD-4`.
+- File: `source/Cuon-*.dc.html` (19), `source/canvas.json` · `tokens/design_tokens.json` · `l10n/vi.arb` · `docs/screen_specs.md`,
+  `docs/components.md`.
+- Ảnh: chưa có ảnh (nền giữ chỗ: ảnh Canvas 3D cũ, nội thất vẽ tay).
+
 ## 2026-11-16.11 — Khởi Nguyên Trấn: Lão Canh vào cảnh (đường vòng B)
 
 - Loại: cảnh 3D — **bố cục** (NPC biết đi). Phiên code V-20261116-84 làm thay việc `/canh` (kế hoạch
