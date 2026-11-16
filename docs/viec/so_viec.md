@@ -109,3 +109,4 @@ ha-ta-lowpoly.glb` |
 | V-20261116-97 | Icon tiện ích ở thanh công cụ (bản máy tính) khá lớn → thu nhỏ ~1/4 (76 → 56 px) | lead nhỏ | xong — đã gộp (máy tính 56 px; người dùng duyệt ảnh) | R-THANH-1 | duyệt ảnh trước / sau |
 | V-20261116-98 | Tự động tạo ảnh Gemini (gói Pro) bằng thư viện Gemini-API (cookie web) thay cho làm tay; tạo vài bản / góc, người dùng chọn rồi chốt | lead nhỏ (công cụ) | đang làm — nhánh viec/gemini-tu-dong | — | chép 2 cookie Gemini khi công cụ xong |
 | V-20261116-99 | Tư thế nhân vật trên hạc không tự nhiên → ngồi cưỡi: 2 chân dạng hai bên, qua gốc cánh, áp sát hông hạc | lead nhỏ | đang làm — R-HANH-5 đã sửa + đồng bộ; nhánh viec/cuoi-hac-ngoi | R-HANH-5 | duyệt ảnh ngồi cưỡi |
+| V-20261116-100 | Thanh công cụ bản máy tính xấu: ô quá sát nhau, sát đáy, nhãn tên (ru-băng) thiếu chuyên nghiệp → 3 phương án chụp thật cho người dùng chọn rồi áp | ui (thay canvas) + lead nhỏ | đang làm — nhánh viec/thanh-may | R-THANH-1 | chọn phương án |
