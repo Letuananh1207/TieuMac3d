@@ -88,3 +88,5 @@ Trạng thái: `nhận` → `chờ trả lời` / `chờ duyệt` → `đang là
 | V-20261116-78 | Sửa L-13: bộ quét zfight coi InstancedMesh là khối đặc | loi sua | xong — đã gộp dc62fb2; quét đúng lộ 37 chỗ chớp thật (ghi ở L-13, dập thuộc L-10) | L-13 | — |
 | V-20261116-79 | Sửa L-12: tiêu đề "Ngồi ôn" trên cuộn bị tách dấu | loi sua | chờ thử máy — đã gộp a1c938b (lỗi chỉ ở máy chủ dev trong worktree: font bị chặn; bản build vốn đúng) | L-12 | — |
 | V-20261116-80 | Sửa L-14 (guard trong worktree) + L-15 (viec.dart cấp nhầm mã mẫu) | loi sua | xong — đã gộp 7e796e5 | L-14, L-15 | — |
+| V-20261116-81 | Động tác bằng code cho xương Mixamo (Tripo): đi / đứng mềm, nhìn người chơi, gật khi thoại, phòng thử | lead | đang làm — NV1–6 gộp; NV7 chờ người dùng chỉnh trên phòng thử | `docs/tasks/2026-11-16-dong-tac-code-mixamo.md` | chỉnh thanh trượt Canvas 3D `?dang=dong-tac&nv=thu-thu` → bấm Chốt, dán bộ số |
+| V-20261116-82 | Đặt thủ thư `thu-thu` vào tầng 1 Tàng Thư Các | canh | nhận | `docs/tasks/2026-11-13-tang-thu-cac-muon-sach.md` NV11 | — |
