@@ -19,6 +19,19 @@ Mức độ:
 
 ## Đang mở
 
+### L-20 · Dáng chạy / đi kỳ quặc: chân không thẳng, chỉ cẳng tay đung đưa (cánh tay trên đứng yên)
+
+- Trạng thái: đang sửa · Mức độ: khó chịu (dáng di chuyển thấy suốt lúc chơi) · Phần: nhân vật (`player/dang7.ts` `tronDiCu`, `mixamoCharacter.ts`, `dongTac.ts` `CHAY`) · Quy tắc: R-DIEU-5
+- Báo: 2026-11-16 (thử máy sau sửa L-18) — "dáng chạy rất kỳ quặc chân không được thẳng, tay đung đưa cũng kỳ quặc chỉ mình phần dưới gần bàn tay là đung đưa, còn phần trên thì không"; người dùng chọn: bỏ gối co + khuỷu gập, tay vung nguyên cánh từ vai, chân thẳng như dáng cũ — **cả đi bộ lẫn chạy**; các dáng khác (biểu cảm, làm vườn, chắp tay…) vẫn dùng khuỷu
+- Các bước: 1. App, nhân vật chính bản Tripo (sau gộp L-18 `f57db3d`) 2. Chạy (đẩy hết cần) / đi bộ
+- Mong đợi / thực tế: chân thẳng, cả cánh tay vung từ vai như dáng cũ / gối co (đi 0,75, chạy +0,8), khuỷu gập + trễ nhịp → chỉ cẳng tay lắc, cánh tay trên gần như đứng
+- Bằng chứng: người dùng thử máy 2026-11-16
+
+**Sửa**
+
+**Lịch sử**
+- 2026-11-16: ghi, sửa ngay (người dùng chọn). Liên quan L-18 (hai chỗ "tự chọn khác bản cũ" của L-18 bị bỏ).
+
 ### L-18 · Dáng đi nhân vật chính (bản Tripo) kém dáng đi cũ — trả về đúng dáng đi cũ
 
 - Trạng thái: chờ thử máy · Mức độ: khó chịu (dáng đi thấy suốt lúc chơi) · Phần: nhân vật (`player/mixamoCharacter.ts`, `dongTac.ts`, `dang7.ts`) · Quy tắc: R-DIEU-5 (dáng đi / chạy), R-NPC-10
