@@ -208,3 +208,10 @@ Sửa kèm (cùng lần chép):
 ## Kiểm tra cuối
 dart tool/check.dart --changed · cd web && npx tsc --noEmit && npm test && npm run build · cd app && flutter analyze ·
 dart tool/rule_trace.dart · dart tool/guard.dart
+
+## Duyệt ảnh (2026-11-16, người dùng)
+- Khoảng đứng rót **lùi xa 1,4–1,6 m** (đầu chibi chiếm nửa màn khi đứng 0,8–1,2 m); chỗ chật → xa nhất có thể. R-TRA-1 đã sửa + đồng bộ.
+- 2 chỗ sập quay lưng ra tường: đứng **trước – trái** — chấp nhận, đã ghi ngoại lệ vào R-TRA-1.
+- Hiệu năng 150,8k ở một góc lúc rót: chấp nhận, đo fps Android trong trà lâu; < 30 fps mới làm model nhẹ.
+- [ ] 11. Sửa khoảng đứng rót 1,4–1,6 m (`tra_lau_phuc_vu.ts` + test) · chụp lại ảnh duyệt.
+
