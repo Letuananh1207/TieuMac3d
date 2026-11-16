@@ -172,6 +172,8 @@ async function loadHouseGeometry(url: string): Promise<{ geometry: THREE.BufferG
 
 export interface HouseReport {
   id: string;
+  /** mã model (`buildings[].model`) */
+  model: string;
   /** `model` = file nạp được · `the` = model thế · `khoi` = thiếu file / nạp lỗi → bản khối */
   source: 'model' | 'the' | 'khoi';
   fit?: Omit<FittedHouse, 'mesh'>;
@@ -208,8 +210,9 @@ export function addHouseModel(
   const frame = houseFrame(b, style, parts.group);
   const front = nhaOFront(b, style);
   const source = standIn ? Promise.resolve(houseStandIn(b, style)) : loadHouseGeometry(url as string);
-  const ready = source.then(
-    ({ geometry, material }): HouseReport => {
+  // co + tấm sáng xong hết mới thêm vào cảnh; lỗi ở bất kỳ bước nào (nạp, co, dán) → bản khối muộn
+  const ready = source
+    .then(({ geometry, material }): HouseReport => {
       const fit = fitToFrame(geometry, material, frame, tune);
       if (fit.skew > tune.skewWarn)
         console.warn(`nhà "${b.id}": model lệch dáng ${Math.round(fit.skew * 100)} % (co ${fit.scale.map((v) => v.toFixed(2)).join(' × ')}) — xem lại ảnh / NHA_MODEL_TUNE`);
@@ -223,15 +226,14 @@ export function addHouseModel(
       scene.add(g);
       onAdded();
       const { mesh: _mesh, ...rest } = fit;
-      return { id: b.id, source: standIn ? 'the' : 'model', fit: rest };
-    },
-    (e: unknown): HouseReport => {
-      console.warn(`buildings: nạp model nhà "${b.id}" lỗi — dùng bản khối`, e);
+      return { id: b.id, model: id, source: standIn ? 'the' : 'model', fit: rest };
+    })
+    .catch((e: unknown): HouseReport => {
+      console.warn(`buildings: model nhà "${b.id}" lỗi — dùng bản khối`, e);
       mergeStatic(parts.group, new Set()); // bản khối muộn: gộp riêng theo vật liệu (cảnh đã gộp xong)
       scene.add(parts.group);
       onAdded();
-      return { id: b.id, source: 'khoi' };
-    },
-  );
+      return { id: b.id, model: id, source: 'khoi' };
+    });
   return { pads, ready };
 }

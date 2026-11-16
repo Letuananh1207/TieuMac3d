@@ -31,6 +31,7 @@ import { isColorManaged, isSoft, withLookParam } from './scene/look';
 import { addVignette } from './ui/vignette';
 import { signText } from './scene/signAtlas';
 import { buildWorld } from './scene/world';
+import { houseLines, withHouseParam } from './nhaPreview';
 import { hourSlider, NgayDem } from './ngayDem';
 import { addTownPreview } from './townPreview';
 import { DanTranh } from './danTranh';
@@ -67,7 +68,8 @@ async function boot(): Promise<void> {
   if (bocuc && patch === undefined) SCENE.problems.push(`?bocuc=${bocuc}: không có design/scene/bien_the/${bocuc}.json — đang xem bản chính`);
   const SCENE_FILE = SCENE.file;
   // ?look=cu — xem kiểu nhìn cũ để so (kế hoạch 2026-11-14-canh-dep)
-  const spec = withLookParam(SCENE.spec, query.get('look'));
+  // &mau-nha=khoi-gop|<mã> · &khoi — nhà kín bằng model / bản khối (nhaPreview.ts, V-88)
+  const spec = withHouseParam(withLookParam(SCENE.spec, query.get('look')), query);
   await Promise.allSettled([
     document.fonts.load('700 72px Lora', `Aa${signText(spec)}`),
     document.fonts.load('700 13px "Be Vietnam Pro"'),
@@ -83,6 +85,7 @@ async function boot(): Promise<void> {
   // nội thất như app: theo nội dung bài (main.ts)
   const interiors = Object.fromEntries(ZONE_CONTENT.map((c) => [c.id, { kind: c.interior, han: c.lesson.han }]));
   const world = buildWorld(scene, colliders, spec, interiors);
+  const houseInfo = await houseLines(world.ready, query); // model nhà nạp xong trước khung đầu (đo draw call có model)
   const vignette = isSoft(spec.look) ? addVignette(canvas, spec.look.vignette, spec.look.vignetteColor) : null; // như app (main.ts)
   // ngày đêm như app: ?gio=21 ép giờ, ?gio=17&toc=60 tua nhanh; thanh trượt giờ ở bảng (R-NGAY-1)
   const ngayDem = new NgayDem(world.dayNight, spec, query, vignette);
@@ -278,6 +281,7 @@ async function boot(): Promise<void> {
     controls.target.set(...tam);
   });
   if (hac) el('problems').append(...hac.lines.map((t) => li(t)));
+  el('problems').append(...houseInfo.map((t) => li(t)));
   const follow = params.has('theo') && town?.walker ? town.walker.root.position.clone() : null;
   // ?dang=trang-tri&so=20&ma=ban-tra:0:0:45&vungcam — đồ trang trí tự do rải sẵn + bóng ma + vùng cấm (decorPreview.ts, R-NHA-7)
   const decorPv = addDecorPreview(scene, colliders, spec, SCENE.id, (x, z) => world.surface.heightAt(x, z), params);
