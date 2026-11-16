@@ -3,7 +3,7 @@
   chức năng hơn là hiện tại ví dụ: đọc sách,..." — người dùng đã chốt: bố cục **lưới ô** (cuộn trải ngang rộng, ô vuông
   có hình + tên, "Đứng dậy" ở góc); mục **Đọc sách** + **Xem bộ đã học** + chừa chỗ mục sau; **bỏ "Ôn bộ đến hạn" và
   "Học bộ mới" khỏi cuộn — học / ôn chuyển chỗ khác** (đã được nhắc "Học bộ mới" trên cuộn ở Rừng trúc là cách duy nhất).
-- Loại: sửa hành vi + giao diện (cuộn) + thêm (chỗ học bộ mới ở Rừng trúc) · Cỡ: lớn · Trạng thái: chờ người dùng (Q1, Q2 để sau)
+- Loại: sửa hành vi + giao diện (cuộn) + thêm (chỗ học bộ mới ở Rừng trúc) · Cỡ: lớn · Trạng thái: đã duyệt 2026-11-16 (theo đề xuất: A Trúc Lão + ô Nhiệm vụ hôm nay) — chờ V-79 (L-12) gộp rồi làm
 - Phiếu thiết kế: `docs/phieu_thiet_ke/2026-11-15-cuon-bang-chon.md` (nháp — chờ duyệt kế hoạch)
 
 ## 1. Học bộ mới ở đâu (Rừng trúc)
