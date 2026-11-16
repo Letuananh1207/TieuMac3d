@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import { describe, expect, it } from 'vitest';
 import { emotePose } from './bieuCamDang';
 import { CHAO, dungLauDang, goMoDang, gayDanDang, REST, SPINE_SPLIT, tronDang7 } from './dang7';
@@ -52,8 +53,17 @@ describe('Lớp nối dáng 7 khớp → xương chuẩn (R-BIEU-2, R-VUON-13, R
     expect(p.j.foreL[0]).toBe(fore);
     expect(p.j.armL[0]).toBeCloseTo(-1.2, 9);
     tronDang7(p, CHAO, 1, cal);
-    expect(p.j.foreL[0]).toBeCloseTo(-1.3, 9);
-    expect(p.j.armL[0]).toBeCloseTo(-0.9, 9);
+    expect(p.j.armL[0]).toBeCloseTo(CHAO.aLxE, 9);
+  });
+  it('R-BIEU-2: khuỷu gập trong mặt phẳng cánh tay — cánh tay + cẳng tay = cánh tay thẳng góc trước x + e, cùng góc khép', () => {
+    for (const [aLz, eL] of [[CHAO.aLz, CHAO.eL], [1.5, -0.4], [-(REST + 0.2), -1.9]]) {
+      const p = standing();
+      tronDang7(p, { aLx: -0.7, aLz, eL }, 1, cal);
+      const q = (e: number[]): THREE.Quaternion => new THREE.Quaternion().setFromEuler(new THREE.Euler(e[0], e[1], e[2], 'XYZ'));
+      const got = q(p.j.armL).multiply(q(p.j.foreL));
+      const want = q([-0.7 + eL, 0, p.j.armL[2]]);
+      expect(got.angleTo(want)).toBeLessThan(1e-6);
+    }
   });
   it('R-BIEU-2 / R-VUON-13: mọi dáng biểu cảm / làm vườn có khuỷu nằm trong giới hạn khớp', () => {
     const ids = ['vay-tay', 'cui-chao', 'vo-tay', 'cuoi', 'nhay-mung', 'suy-nghi'];

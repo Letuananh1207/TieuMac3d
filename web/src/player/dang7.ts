@@ -70,8 +70,8 @@ export function tronDang7(pose: Pose, d: Dang7, w: number, cal: Cal7): void {
   if (d.aRx !== undefined || d.aRz !== undefined) to(j.armR, 1, 0, w);
   to(j.armL, 2, d.aLz === undefined ? undefined : d.aLz - cal.off, w);
   to(j.armR, 2, d.aRz === undefined ? undefined : d.aRz + cal.off, w);
-  to(j.foreL, 0, d.eL, w);
-  to(j.foreR, 0, d.eR, w);
+  if (elbowL) elbow(j.foreL, d.eL!, j.armL[2], w);
+  if (elbowR) elbow(j.foreR, d.eR!, j.armR[2], w);
   const spine = [j.spine, j.chest, j.upperChest];
   spine.forEach((e, i) => {
     to(e, 0, d.hipsX === undefined ? undefined : d.hipsX * SPINE_SPLIT[i], w);
@@ -93,6 +93,31 @@ export function tronDang7(pose: Pose, d: Dang7, w: number, cal: Cal7): void {
   if (d.lift !== undefined) pose.lift += d.lift * w;
 }
 
+/**
+ * Gập khuỷu [e] rad trong mặt phẳng của cánh tay: cánh tay đã khép / dạng `z` quanh trục trước — gập quanh trục x của khung
+ * nhân vật thì cẳng tay quay ngang (lệch trục). Gập quanh trục x đã xoay theo `z` (Rz(−z)·Rx(e)·Rz(z)) → cẳng tay đi tiếp
+ * như một cánh tay thẳng có góc trước `x + e`, cùng góc khép `z`. Trộn về góc Euler XYZ đó theo [w].
+ */
+function elbow(fore: Euler3, e: number, z: number, w: number): void {
+  const ax = Math.cos(z);
+  const ay = -Math.sin(z);
+  const c = Math.cos(e);
+  const s = Math.sin(e);
+  const t = 1 - c;
+  // ma trận xoay quanh trục (ax, ay, 0) góc e → Euler XYZ (như three.js)
+  const m11 = t * ax * ax + c;
+  const m12 = t * ax * ay;
+  const m13 = s * ay;
+  const m23 = -s * ax;
+  const m33 = c;
+  const y = Math.asin(Math.max(-1, Math.min(1, m13)));
+  const x = Math.atan2(-m23, m33);
+  const zz = Math.atan2(-m12, m11);
+  to(fore, 0, x, w);
+  to(fore, 1, y, w);
+  to(fore, 2, zz, w);
+}
+
 /* ---------------- dáng riêng (số rút từ glbCharacter.ts, giữ nguyên) ---------------- */
 
 /** Chắp tay chào (拱手): hai tay lên trước ngực, khép vào giữa; cúi người, cúi đầu. Trọng số = `bow`. */
@@ -104,8 +129,8 @@ export const CHAO = {
   hipsX: 0.28,
   headX: 0.12,
   // Mixamo: cánh tay trên ra trước vừa phải, cẳng tay gập lên ngực
-  aLxE: -0.9,
-  aRxE: -0.9,
+  aLxE: -0.5,
+  aRxE: -0.5,
   eL: -1.3,
   eR: -1.3,
 } satisfies Dang7;
