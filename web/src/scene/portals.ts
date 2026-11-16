@@ -22,6 +22,32 @@ function gapTo(p: Pick<PortalSpec, 'area'>, x: number, z: number): number {
   return Math.hypot(dx, dz);
 }
 
+/** Tâm vùng chạm (cũng là tâm vòng sáng). */
+export function portalCenter(p: Pick<PortalSpec, 'area'>): { x: number; z: number } {
+  const r = portalRect(p);
+  return { x: (r.minX + r.maxX) / 2, z: (r.minZ + r.maxZ) / 2 };
+}
+
+/**
+ * (x, z) có trong vùng của cổng không: cổng có `ring` (vòng sáng nhỏ trước cửa nhà — V-96) → trong vòng tròn bán kính `ring`
+ * quanh tâm `area`; không có → trong ô `area` (như cũ). Thuần.
+ */
+export function portalContains(p: Pick<PortalSpec, 'area' | 'ring'>, x: number, z: number): boolean {
+  if (p.ring) {
+    const c = portalCenter(p);
+    return Math.hypot(x - c.x, z - c.z) <= p.ring;
+  }
+  const r = portalRect(p);
+  return x >= r.minX && x <= r.maxX && z >= r.minZ && z <= r.maxZ;
+}
+
+/** Khoảng cách từ (x, z) tới vùng của cổng (vòng nếu có `ring`, không thì ô `area`; 0 = trong vùng). */
+function triggerGap(p: Pick<PortalSpec, 'area' | 'ring'>, x: number, z: number): number {
+  if (!p.ring) return gapTo(p, x, z);
+  const c = portalCenter(p);
+  return Math.max(0, Math.hypot(x - c.x, z - c.z) - p.ring);
+}
+
 /** Hai cổng trong một cảnh phải cách nhau ít nhất bấy nhiêu mét (mép vùng chạm / chỗ đứng) — không trùng, không lỡ chân. */
 const PORTAL_GAP = 3;
 
@@ -41,13 +67,17 @@ export function checkPortals(s: Pick<SceneSpec, 'portals' | 'teleport'>): string
     if (p.via === 'nut' && !p.label) out.push(`${name}: cổng "nut" cần label (chữ trên nút nổi)`);
     const r = portalRect(p);
     if (r.maxX - r.minX < 0.5 || r.maxZ - r.minZ < 0.5) out.push(`${name}: vùng chạm hẹp dưới 0,5 m — nới area`);
+    if (p.ring !== undefined && p.ring > Math.min(r.maxX - r.minX, r.maxZ - r.minZ) / 2 + 1e-6) out.push(`${name}: vòng (ring ${p.ring} m) rộng hơn vùng area — nới area`);
     const [ax, az] = p.arrive.at;
-    const gap = gapTo(p, ax, az);
-    if (gap < ARRIVE_GAP) out.push(`${name}: chỗ đứng (arrive) cách vùng chạm ${gap.toFixed(1)} m — dời ra ngoài (≥ ${ARRIVE_GAP} m)`);
+    const gap = triggerGap(p, ax, az);
+    // cổng bấm nút không tự sang: chỗ đứng chỉ cần ngoài vùng (vừa tới không hiện nút ngay); cổng đi bộ cách ≥ 1 m
+    const minGap = p.via === 'nut' ? 0 : ARRIVE_GAP;
+    if (p.via === 'nut' ? gap <= 0 : gap < minGap)
+      out.push(`${name}: chỗ đứng (arrive) cách vùng ${gap.toFixed(1)} m — dời ra ngoài${minGap ? ` (≥ ${minGap} m)` : ''}`);
     // hướng nhìn (rotY 0 = +z) phải ra xa tâm vòng: vừa tới thấy cảnh, không thấy ngay vòng vừa bước ra
     const a = (p.arrive.rotY * Math.PI) / 180;
     const away = Math.sin(a) * (ax - (r.minX + r.maxX) / 2) + Math.cos(a) * (az - (r.minZ + r.maxZ) / 2);
-    if (gap >= ARRIVE_GAP && away <= 0) out.push(`${name}: chỗ đứng nhìn về phía vòng (arrive.rotY ${p.arrive.rotY}°) — quay vào trong cảnh`);
+    if (gap >= minGap && gap > 0 && away <= 0) out.push(`${name}: chỗ đứng nhìn về phía vòng (arrive.rotY ${p.arrive.rotY}°) — quay vào trong cảnh`);
     const tp = s.teleport;
     if (tp.enabled && gapTo(p, ...tp.center) < ringTrigger(tp)) out.push(`${name}: vùng chạm chồng lên vòng trận — dời cổng hoặc vòng`);
     s.portals.forEach((q, j) => {
@@ -75,11 +105,7 @@ export function arrivalFor(portals: readonly PortalSpec[], from: string | null):
   return p ? { at: [p.arrive.at[0], p.arrive.at[1]], rotY: (p.arrive.rotY * Math.PI) / 180 } : undefined;
 }
 
-/** Cổng bấm nút (`via: "nut"`, V-71) mà (x, z) đang đứng trong vùng — nút nổi hiện khi có. Thuần. */
-export function buttonPortalAt<T extends Pick<PortalSpec, 'area' | 'via'>>(portals: readonly T[], x: number, z: number): T | undefined {
-  return portals.find((p) => {
-    if (p.via !== 'nut') return false;
-    const r = portalRect(p);
-    return x >= r.minX && x <= r.maxX && z >= r.minZ && z <= r.maxZ;
-  });
+/** Cổng bấm nút (`via: "nut"`, V-71) mà (x, z) đang đứng trong vùng (trong vòng nếu có `ring` — V-96) — nút nổi hiện khi có. Thuần. */
+export function buttonPortalAt<T extends Pick<PortalSpec, 'area' | 'via' | 'ring'>>(portals: readonly T[], x: number, z: number): T | undefined {
+  return portals.find((p) => p.via === 'nut' && portalContains(p, x, z));
 }

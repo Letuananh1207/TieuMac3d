@@ -133,7 +133,7 @@
   },
   "portals": [
     { "scene": "tong-mon", "area": { "from": [-1.8, 19.5], "to": [1.8, 22.5] }, "arrive": { "at": [0, 10], "rotY": 180 }, "label": "Khởi Nguyên Trấn" },
-    { "scene": "nha-ta-trong", "area": { "from": [-16.2, -5.6], "to": [-13.8, -4.6] }, "arrive": { "at": [-15, -2.6], "rotY": 0 }, "label": "Vào nhà", "marker": false }
+    { "scene": "nha-ta-trong", "area": { "from": [-15.75, -4.15], "to": [-14.25, -2.65] }, "arrive": { "at": [-15, -2.6], "rotY": 0 }, "label": "Vào nhà", "marker": false, "via": "nut", "ring": 0.75 }
   ],
   "dayNight": { "enabled": true },
   "garden": {

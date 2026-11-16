@@ -34,7 +34,7 @@ import { addLanternStrings } from './dayDenLong';
 import { addFences } from './lanCan';
 import { addGameSign, addGameTable, type GameTable } from './gameTable';
 import { addRoomBuilding, addWalkIn, inRect, WALK_IN, type InteriorUse, type Room } from './rooms';
-import { addHouseModel, type HouseReport } from './nhaModel';
+import { addHouseModel, houseFrame, type HouseReport } from './nhaModel';
 import { addStairs } from './stairs';
 import { roomKinds, zoneAnchors, type SceneSpec, type ZoneAnchor } from './spec';
 import { addTerrain } from './terrain';
@@ -75,6 +75,8 @@ export interface World {
   channels: ChannelSet;
   /** ngày đêm (`dayNight.enabled`): áp giờ lên cảnh — `web/src/ngayDem.ts` gọi; tắt = `null` (luôn ban ngày) */
   dayNight: DayNight | null;
+  /** hộp bao nhà kín `nha-o` (`closed`, toạ độ cảnh — mái, tường, cửa; model co vừa khung này): chạm nhà để vào (R-NHA-1, V-96) */
+  closedHouses: { id: string; box: THREE.Box3 }[];
   /** model nhà (`buildings[].model`, V-88) nạp xong / lỗi (đã về bản khối); không có model → xong ngay. Màn tải chờ ≤ 2 s */
   ready: Promise<HouseReport[]>;
   /** gọi mỗi khung hình: khói lò đan, mây, đảo nổi, mờ mái nhà khi `player` đứng trong; `eye` = vị trí camera (LOD cây chùm) */
@@ -203,6 +205,7 @@ function* worldSteps(
   const buildingSeats: Seat[] = [];
   const buildingPads: Pad[] = [];
   const houses: Promise<HouseReport>[] = [];
+  const closedHouses: World['closedHouses'] = [];
   let dayNight: DayNight | null = null;
   for (const b of spec.buildings) {
     const use = b.zone && kinds[b.zone.id] ? interiors[b.zone.id] : undefined;
@@ -219,6 +222,10 @@ function* worldSteps(
       const extra = addBuilding(scene, colliders, b, style, base(b.x, b.z));
       buildingSeats.push(...extra.seats);
       buildingPads.push(...extra.pads);
+    }
+    if (b.kind === 'nha-o' && b.closed && !use) {
+      const at = new THREE.Matrix4().compose(new THREE.Vector3(b.x, base(b.x, b.z), b.z), new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), ((b.rotY ?? 0) * Math.PI) / 180), new THREE.Vector3(1, 1, 1));
+      closedHouses.push({ id: b.id, box: houseFrame(b, style).applyMatrix4(at) });
     }
     yield 'nha';
   }
@@ -296,6 +303,7 @@ function* worldSteps(
   return {
     dayNight,
     ready: Promise.all(houses),
+    closedHouses,
     garden,
     ground,
     surface: new LayeredGround(hf, [...(teleport?.pads ?? []), ...bridgePads, ...terracePads, ...buildingPads, ...rampartPads, ...rooms.flatMap((r) => r.pads), ...closedPads]),

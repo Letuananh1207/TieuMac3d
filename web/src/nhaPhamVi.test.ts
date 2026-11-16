@@ -180,12 +180,10 @@ describe('Nhà của ta — nhà chính sát mép trái, vườn giữa, gian tr
     expect(spec.paths.some((p) => p.from[0] === 0 && p.to[0] === 0 && p.to[1] === f.gate)).toBe(true);
   });
 
-  it('R-NHA-1, R-HANH-4: bước vào ô cửa nhà chính (vùng chạm phủ mép cửa, không vòng sáng) → gian trong; gian trong 14 × 10, ra bằng nút "Ra sân" trên thảm trước cửa hồi tây (V-71), vào đứng (−3,8; 2,6) quay vào phòng; ra đứng (−15; −2,6) quay ra sân', () => {
-    expect(door).toMatchObject({ area: { from: [-16.2, -5.6], to: [-13.8, -4.6] }, arrive: { at: [-15, -2.6], rotY: 0 }, label: 'Vào nhà', marker: false });
-    expect(door.via ?? 'di').toBe('di'); // vào: vẫn bước qua ô cửa
+  it('R-NHA-1, R-HANH-4: vào nhà chính bằng nút "Vào nhà" ở vòng sáng nhỏ trước cửa (V-96, không tự vào khi bước qua ô cửa) → gian trong; gian trong 14 × 10, ra bằng nút "Ra sân" trên thảm trước cửa hồi tây (V-71), vào đứng (−3,8; 2,6) quay vào phòng; ra đứng (−15; −2,6) quay ra sân', () => {
+    expect(door).toMatchObject({ area: { from: [-15.75, -4.15], to: [-14.25, -2.65] }, arrive: { at: [-15, -2.6], rotY: 0 }, label: 'Vào nhà', marker: false, via: 'nut', ring: 0.75 });
     const front = house.z + house.d / 2;
-    expect(door.area.from[1]).toBeLessThan(front); // phủ mép cửa (mặt tiền z −5)
-    expect(door.area.to[1]).toBeGreaterThan(front);
+    expect(door.area.from[1]).toBeGreaterThan(front); // vòng ngoài mặt tiền (z −5), trên sân trước cửa
     expect([room.kind, room.w, room.d]).toEqual(['gian-trong', 14, 10]);
     const out = inside.portals[0];
     expect(out).toMatchObject({ scene: 'nha-ta', arrive: { at: [-3.8, 2.6], rotY: 90 }, label: 'Ra sân', marker: false, via: 'nut' });

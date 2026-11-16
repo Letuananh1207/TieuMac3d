@@ -21,6 +21,8 @@ const VEIL_OPACITY = [0.1, 0.22] as const;
 /** Nhãn: tâm cao hơn mặt vòng (m), cao chữ (m). */
 const LABEL_Y = 2.5;
 const LABEL_H = 0.75;
+/** Vòng nhỏ không chữ (`ring`, V-96): màn sáng + hạt thấp còn bấy nhiêu phần — dấu chỗ đứng, không như cổng sang cảnh. */
+const RING_VEIL = 0.45;
 /** Nhịp thở (rad/s). */
 const BREATH = 1.8;
 
@@ -102,7 +104,8 @@ function fadeTex(): THREE.CanvasTexture {
 }
 
 /**
- * Dựng vòng cổng cho mọi cổng có `label` trong `portals` (trừ `marker: false` — cửa nhà, V-68). Trả hàm gọi mỗi khung (thở sáng, hạt bay). Không cổng nào có
+ * Dựng vòng cổng cho mọi cổng có `label` trong `portals` (trừ `marker: false` — cửa nhà, V-68); cổng có `ring` (cửa nhà
+ * chính — V-96) → vòng nhỏ bán kính `ring`, không chữ, màn sáng thấp. Trả hàm gọi mỗi khung (thở sáng, hạt bay). Không cổng nào có
  * nhãn → không dựng gì (cảnh cũ).
  */
 export function addPortalMarkers(
@@ -111,8 +114,10 @@ export function addPortalMarkers(
   colors: TeleportSpec['colors'],
   groundY: GroundY = () => 0,
 ): (dt: number) => void {
-  const marked = portals.filter((p) => p.label && p.marker !== false);
-  if (!marked.length) return () => {};
+  const marked = portals.filter((p) => p.label && p.marker !== false && !p.ring);
+  // vòng nhỏ không chữ (`ring` — cửa nhà chính, V-96): đĩa + màn sáng thấp + hạt, cùng vật liệu
+  const ringed = portals.filter((p) => !!p.ring);
+  if (!marked.length && !ringed.length) return () => {};
   const disc = discTex();
   const fade = fadeTex();
   const discMat = new THREE.MeshBasicMaterial({
@@ -136,14 +141,16 @@ export function addPortalMarkers(
   const sparkMat = new THREE.PointsMaterial({ color: colors.spark, size: 0.12, transparent: true, opacity: 0.9, depthWrite: false });
   const ticks: ((t: number) => void)[] = [];
 
-  for (const p of marked) {
+  for (const p of [...marked, ...ringed]) {
     const r = portalRect(p);
     const [cx, cz] = [(r.minX + r.maxX) / 2, (r.minZ + r.maxZ) / 2];
-    const R = markerRadius(p);
+    const R = p.ring ?? markerRadius(p);
+    const small = !!p.ring;
     const y0 = groundY(cx, cz);
     const discMesh = new THREE.Mesh(new THREE.PlaneGeometry(2 * R, 2 * R).rotateX(-Math.PI / 2), discMat);
     discMesh.position.set(cx, y0 + 0.06, cz);
-    const veil = new THREE.Mesh(new THREE.CylinderGeometry(R * 0.9, R * 0.95, VEIL_H, 28, 1, true).translate(0, VEIL_H / 2, 0), veilMat);
+    const veilH = small ? VEIL_H * RING_VEIL : VEIL_H;
+    const veil = new THREE.Mesh(new THREE.CylinderGeometry(R * 0.9, R * 0.95, veilH, 28, 1, true).translate(0, veilH / 2, 0), veilMat);
     veil.position.set(cx, y0, cz);
 
     const pos = new Float32Array(SPARKS * 3);
@@ -158,23 +165,27 @@ export function addPortalMarkers(
     const sparks = new THREE.Points(sparkGeo, sparkMat);
     sparks.frustumCulled = false; // vị trí đổi mỗi khung
 
-    const { tex, aspect } = labelTex(p.label!);
-    const label = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false, fog: false }));
-    label.scale.set(LABEL_H * aspect, LABEL_H, 1);
-    label.position.set(cx, y0 + LABEL_Y, cz);
-    label.renderOrder = 2; // vẽ sau vòng cộng sáng: chữ không bị quầng phủ
-
-    for (const o of [discMesh, veil, sparks, label]) markDynamic(o);
-    scene.add(discMesh, veil, sparks, label);
+    let label: THREE.Sprite | null = null;
+    if (!small) {
+      const { tex, aspect } = labelTex(p.label!);
+      label = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false, fog: false }));
+      label.scale.set(LABEL_H * aspect, LABEL_H, 1);
+      label.position.set(cx, y0 + LABEL_Y, cz);
+      label.renderOrder = 2; // vẽ sau vòng cộng sáng: chữ không bị quầng phủ
+    }
+    const parts = label ? [discMesh, veil, sparks, label] : [discMesh, veil, sparks];
+    for (const o of parts) markDynamic(o);
+    scene.add(...parts);
+    const rise = small ? 2.2 * RING_VEIL : 2.2; // hạt bay thấp theo màn sáng
 
     ticks.push((t) => {
       const b = 0.5 + 0.5 * Math.sin(t * BREATH);
-      label.position.y = y0 + LABEL_Y + 0.06 * Math.sin(t * BREATH * 0.5); // nhấp nhô rất khẽ
+      if (label) label.position.y = y0 + LABEL_Y + 0.06 * Math.sin(t * BREATH * 0.5); // nhấp nhô rất khẽ
       for (let i = 0; i < SPARKS; i++) {
         const s = seed[i];
         const k = (s.t + t * s.v) % 1;
         const a = s.a + k * 1.2;
-        pos.set([cx + Math.cos(a) * s.r, y0 + 0.1 + k * 2.2, cz + Math.sin(a) * s.r], i * 3);
+        pos.set([cx + Math.cos(a) * s.r, y0 + 0.1 + k * rise, cz + Math.sin(a) * s.r], i * 3);
       }
       sparkGeo.attributes.position.needsUpdate = true;
       discMesh.scale.setScalar(0.97 + 0.03 * b);

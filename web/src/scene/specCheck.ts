@@ -437,9 +437,10 @@ const LISTS: Record<string, ItemParser> = {
   ),
   'garden.plots': item({ id: '', x: 0, z: 0 }, {}),
   // cổng đi bộ (R-HANH-4): kiểm vùng / chỗ đứng / cặp cổng ở `portals.ts` + `scripts/check-scene.mjs`
-  portals: item({ scene: '', area: { from: XZ0, to: XZ0 }, arrive: { at: XZ0, rotY: 0 } }, { label: '', marker: true, via: '' }, (o, path) => [
+  portals: item({ scene: '', area: { from: XZ0, to: XZ0 }, arrive: { at: XZ0, rotY: 0 } }, { label: '', marker: true, via: '', ring: 0 }, (o, path) => [
     ...(typeof o.label === 'string' && [...o.label].length > 20 ? [`${path}.label: tối đa 20 ký tự (nhãn một dòng)`] : []),
     ...oneOf('via', PORTAL_VIAS)(o, path),
+    ...positive('ring')(o, path),
   ]),
   'trees.yard': item({ x: 0, z: 0, scale: 0 }, { kind: '', planter: true }, all(oneOf('kind', TREE_KINDS), positive('scale'))),
   'trees.groves': item(

@@ -49,6 +49,7 @@ import { ActionButtons } from './ui/actionButtons';
 import { DialogBox, TalkButton } from './ui/dialogBox';
 import { SeatButton } from './ui/seatButton';
 import { ExitButton } from './ui/exitButton';
+import { HouseDoor, tapHitsHouse } from './vaoNha';
 import { BoardButton } from './ui/boardButton';
 import { ReadBookButton } from './ui/readBookButton';
 import { borrowedBook } from './zones/library';
@@ -219,6 +220,7 @@ async function boot(): Promise<void> {
   let mapBack = (): boolean => false;
   // phím E khi không có chỗ ngồi: ra cửa bằng nút (V-71); gán ở phần cổng bên dưới
   let exitAction = (): boolean => false;
+  let houseDoor: HouseDoor | null = null; // chạm nhà chính để vào (R-NHA-1, V-96) — vaoNha.ts, dựng ở phần cổng
   let ride: CraneRide | null = null; // cưỡi hạc: cất cánh (trang cũ) / hạ cánh (trang mới) — R-HANH-5
   let thanh: ThanhCongCu | null = null; // thanh công cụ (R-THANH-1/2) — thanhCongCu.ts, dựng ở phần truyền tống
   const zoneById = new Map(placed.zones.map((z) => [z.id, z]));
@@ -636,6 +638,8 @@ async function boot(): Promise<void> {
         openLesson(zone);
         return;
       }
+      // chạm nhà chính (mái / tường / cửa): trong vòng sáng → vào; xa → tự đi tới vòng rồi vào (R-NHA-1, V-96)
+      if (houseDoor && tapHitsHouse(picker.hitsBox(x, y, houseDoor.box), picker.pick(x, y)?.distanceTo(camera.position) ?? null) && houseDoor.tapHouse()) return;
       // chạm mặt sân không làm nhân vật đi nữa — chỉ joystick / phím (R-DIEU-2, 2026-11-13)
     },
   });
@@ -1002,6 +1006,11 @@ async function boot(): Promise<void> {
     if (d) travel(d.to, 'cong');
     return !!d;
   };
+  houseDoor = HouseDoor.find(spec.portals, world.closedHouses, {
+    player,
+    enter: (to) => travel(to, 'cong'),
+    busy: () => paused || covered || loading.active || mapOpen || talking || travelling || player.isSitting || !!decor?.active || !!garden?.active,
+  });
 
   /* ---------- vòng lặp ---------- */
   const nameTag = new NameTag();

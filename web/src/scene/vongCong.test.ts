@@ -43,6 +43,20 @@ describe('vòng cổng "Về nhà" (V-39)', () => {
     expect(scene.children).toEqual([]);
   });
 
+  it('R-NHA-1 (V-96): cửa nhà chính có `ring` → vòng sáng nhỏ bán kính `ring` (nhỏ hơn vòng cổng), không chữ nổi', () => {
+    const scene = new THREE.Scene();
+    const door: PortalSpec = { scene: 'nha-ta-trong', area: { from: [-15.75, -4.15], to: [-14.25, -2.65] }, arrive: { at: [-15, -2.6], rotY: 0 }, label: 'Vào nhà', marker: false, via: 'nut', ring: 0.75 };
+    const tick = addPortalMarkers(scene, [door], DEFAULT_SCENE.teleport.colors, () => 0);
+    expect(scene.children.some((o) => o instanceof THREE.Sprite)).toBe(false);
+    const disc = scene.children.find((o) => o instanceof THREE.Mesh && o.geometry.type === 'PlaneGeometry') as THREE.Mesh;
+    expect(disc.position.x).toBeCloseTo(-15, 6);
+    expect(disc.position.z).toBeCloseTo(-3.4, 6);
+    expect((disc.geometry as THREE.PlaneGeometry).parameters.width).toBeCloseTo(1.5);
+    expect(0.75).toBeLessThan(markerRadius(HOME));
+    tick(0.5);
+    expect(scene.children.length).toBe(3); // đĩa + màn sáng + hạt
+  });
+
   it('R-HUD-4: nhãn cổng dài quá 20 ký tự → scene:check báo; nhãn có chữ Hán → báo', () => {
     const long = resolveSceneSpec({ portals: [{ ...HOME, label: 'Về nhà của ta ở dưới chân núi' }] }).problems.join('\n');
     expect(long).toContain('portals[0].label');

@@ -4,6 +4,7 @@ import * as THREE from 'three';
 export class GroundPicker {
   private readonly ray = new THREE.Raycaster();
   private readonly ndc = new THREE.Vector2();
+  private readonly hit = new THREE.Vector3();
 
   constructor(
     private readonly camera: THREE.Camera,
@@ -21,6 +22,13 @@ export class GroundPicker {
     if (!objects.length) return null;
     this.aim(clientX, clientY);
     return this.ray.intersectObjects(objects, false)[0]?.object ?? null;
+  }
+
+  /** Tia chạm có trúng hộp `box` (toạ độ cảnh — hộp bao nhà kín, R-NHA-1) không; trúng → khoảng cách từ camera, không → null. */
+  hitsBox(clientX: number, clientY: number, box: THREE.Box3): number | null {
+    this.aim(clientX, clientY);
+    const p = this.ray.ray.intersectBox(box, this.hit);
+    return p ? p.distanceTo(this.ray.ray.origin) : null;
   }
 
   private aim(clientX: number, clientY: number): void {

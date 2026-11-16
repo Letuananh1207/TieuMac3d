@@ -710,6 +710,12 @@ export interface PortalSpec {
    * (cùng kiểu nút "Ngồi" / "Nói chuyện"), bấm mới sang (cửa gian trong ra sân — V-71). Cặp cổng vẫn đủ hai chiều.
    */
   via?: (typeof PORTAL_VIAS)[number];
+  /**
+   * Bán kính (m) **vòng sáng nhỏ không chữ** trên mặt đất ở tâm `area` (cửa nhà chính — V-96, R-NHA-1): có → vùng tính là
+   * hình tròn này ("đứng trong vòng"), `area` chỉ còn là ô bao (vùng cấm đặt đồ, dấu bản đồ); phải ≤ nửa cạnh ngắn của
+   * `area`. Thiếu = như cũ (vùng là ô `area`; vòng có chữ theo `label` / `marker`).
+   */
+  ring?: number;
 }
 
 /** Cách sang của cổng (`PortalSpec.via`). */
