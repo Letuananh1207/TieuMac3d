@@ -35,7 +35,7 @@ Mức độ:
 
 ### L-23 · Hai tay nhân vật chính lúc đứng ép sát thân, trông xấu
 
-- Trạng thái: đang sửa · Mức độ: nhỏ (ngoại hình, không chặn dùng) · Phần: nhân vật (`player/dongTac.ts`, `mixamoCharacter.ts`) · Quy tắc: R-DIEU-8 (dáng đứng)
+- Trạng thái: chờ thử máy · Mức độ: nhỏ (ngoại hình, không chặn dùng) · Phần: nhân vật (`player/dongTac.ts`, `mixamoCharacter.ts`) · Quy tắc: R-DIEU-8 (dáng đứng)
 - Báo: 2026-11-16 — "2 tay nhân vật đang bám thân quá sát xấu"
 - Các bước: 1. Mở app, đứng yên. 2. Nhìn nhân vật từ sau lưng.
 - Mong đợi / thực tế: tay buông xuôi nhưng dạng khỏi thân ~15°, khuỷu hơi cong, có khe hở giữa tay và áo / hai tay dính sát hai bên thân.
@@ -43,9 +43,29 @@ Mức độ:
 
 **Sửa**
 - Cách (người dùng chọn 2026-11-16): dạng ~15°, ảnh trước / sau duyệt rồi gộp.
+- Nguyên nhân: `tinhFor` (`mixamoCharacter.ts`) cho người chơi `haTay` = góc chữ A đo từ xương − `ARM_DOWN_GAP` 0,06 rad → tay
+  đứng chỉ lệch phương thẳng đứng ~3,4°, áp vào áo.
+- Hành vi đúng: R-DIEU-8 không nói dáng tay → không sửa sổ quy tắc.
+- Sửa: thêm trường tuỳ chọn `dangTay` vào `Tinh` (`dongTac.ts`) — chỉ cộng vào dáng đứng / thở / đi (góc `z` vai), không đổi
+  `haTay`. Người chơi `dangTay` = 15° − 0,06 → cánh tay dạng 15° khỏi phương thẳng đứng; khuỷu cong sẵn `khuyuCong` 0,28 của
+  `hoat-bat` giữ (đi / chạy L-20 vẫn duỗi thẳng, vung từ vai; `sway` dạng thêm theo bước). `haTay` — mốc của dáng riêng (`cal`
+  của `tronDang7`: chào, biểu cảm, vươn vai, gõ mõ…), ngồi, nhảy — giữ nguyên nên các dáng đó không đổi. NPC không có
+  `dangTay` (= 0) → thủ thư, Tiểu Mặc… không đổi (NPC dùng `TINH` riêng, không chung dáng đứng người chơi). Thanh trượt phòng
+  thử `?dang=dong-tac` bỏ qua `dangTay`.
+- Test: `web/src/player/mixamoCharacter.test.ts` — `'R-DIEU-8 (L-23): đứng / thở — hai tay dạng khỏi thân ~15°, khuỷu hơi cong'`
+  (3 pha thở, 12°–18°, khuỷu < −0,15 rad), `'R-DIEU-5 (L-23): đi / chạy — tay vẫn dạng ít nhất như lúc đứng'`,
+  `'R-BIEU-2 (L-23): dáng riêng (chắp tay) giữ đúng đích cũ'`. Trước sửa: 2 test đầu đỏ (dạng 2,5°–3,6°).
+- Code: `web/src/player/dongTac.ts`, `mixamoCharacter.ts`, `dongTacPreview.ts` (kiểu thanh trượt).
+- Ảnh: `design/screens/Loi-L23-truoc-sau.png` (Canvas 3D, sau lưng · trước mặt · chéo ¾ · đang đi · đang chạy; hàng trên
+  trước, dưới sau). Đã soát thêm chào, ngồi ôn, nhảy, vươn vai — không hỏng; nách không phồng / méo ở 15° (L-19).
+- Thử máy: 1. App (bản build mới) → đứng yên, xoay camera ra sau lưng / trước mặt: hai tay buông chếch ra, có khe giữa tay
+  và áo, khuỷu hơi cong. 2. Đi / chạy: tay vung từ vai, không xuyên áo. 3. Chắp tay / biểu cảm / Tĩnh toạ như cũ. Còn lỗi →
+  chụp màn (sau lưng, trước mặt).
+- Commit: nhánh `viec/tay-dang`.
 
 **Lịch sử**
 - 2026-11-16: ghi.
+- 2026-11-16: sửa — tay đứng dạng 15° (`dangTay`), chờ thử máy.
 
 ### L-22 · Hạc cưỡi (model Tripo) nằm phục khi đáp — phải đứng trên hai chân rồi mới bay
 

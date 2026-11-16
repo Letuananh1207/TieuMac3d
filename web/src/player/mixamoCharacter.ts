@@ -17,8 +17,11 @@ import type { MiMat } from './miMat';
 import type { MixamoRig } from './mixamoRig';
 import { tronXin } from './xinDang';
 
-/** Tay buông của nhân vật chính = góc chữ A đo từ xương trừ chừng này (rad) — tay sát thân nhưng không xuyên áo. */
+/** Tay buông tham chiếu của nhân vật chính = góc chữ A đo từ xương trừ chừng này (rad) — tay sát thân nhưng không xuyên
+ *  áo. Mốc cho dáng riêng (`cal` của `tronDang7`: chào, biểu cảm, gõ mõ…), ngồi, nhảy. */
 const ARM_DOWN_GAP = 0.06;
+/** L-23: đứng / đi, cánh tay dạng khỏi phương thẳng đứng ~15° (có khe giữa tay và áo) — `dangTay` = phần thêm vào mốc trên. */
+const ARM_STAND_OUT = (15 * Math.PI) / 180;
 /** Ngồi: tâm khớp háng cách mặt ngồi bấy nhiêu (m, khung model) — đáy hông chạm mặt ngồi như dáng 7 khớp cũ. */
 const SIT_SEAT = 0.13;
 
@@ -27,14 +30,15 @@ export interface MixamoOpts {
   tinh?: TinhId;
   seed?: number;
   /** nhân vật người chơi (Q1 2026-11-16): `hoat-bat`, tắt nhìn quanh liên tục (R-DIEU-8 là lúc duy nhất nhìn quanh), tay
-   *  buông đo từ xương; dáng đi / chạy là dáng cũ của nhánh `autoRig` (L-18 — `tronDiCu` của `dang7.ts`) */
+   *  buông đo từ xương, đứng / đi dạng ~15° (L-23); dáng đi / chạy là dáng cũ của nhánh `autoRig` (L-18 — `tronDiCu` của `dang7.ts`) */
   player?: boolean;
 }
 
 /** Bộ số dáng của nhân vật: người chơi theo Q1 (không đổi bảng `TINH`), NPC theo `tinh`. */
 export function tinhFor(opts: MixamoOpts, aPose: number): Tinh {
   if (!opts.player) return TINH[opts.tinh ?? 'diem-tinh'];
-  return { ...TINH['hoat-bat'], nhinQuanh: 0, haTay: Math.max(0, aPose - ARM_DOWN_GAP) };
+  const haTay = Math.max(0, aPose - ARM_DOWN_GAP);
+  return { ...TINH['hoat-bat'], nhinQuanh: 0, haTay, dangTay: Math.min(haTay, Math.max(0, ARM_STAND_OUT - ARM_DOWN_GAP)) };
 }
 
 /** Độ hạ thân khi ngồi (m): tâm khớp háng xuống còn `SIT_SEAT` trên mặt ngồi. */

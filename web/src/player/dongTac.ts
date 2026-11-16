@@ -64,6 +64,9 @@ export interface Tinh {
   tayTruoc: number;
   /** lưng còng (rad, người già) */
   cong: number;
+  /** tay dạng khỏi thân khi đứng / đi (rad, cộng vào `haTay` ngược chiều — L-23); dáng nhảy / ngồi / dáng riêng không theo.
+   *  Thiếu = 0 (NPC) */
+  dangTay?: number;
 }
 
 /** 4 tính cách mẫu (R-NPC-10). Bộ số chốt từ phòng thử động tác (`?dang=dong-tac`). */
@@ -287,8 +290,9 @@ export class DongTac {
     const lagS = Math.sin(this.phase - 0.7);
     const bent = t.khuyuCong + (CHAY.khuyu - t.khuyuCong) * rb * m;
     const lagK = t.khuyuTre * (1 - rb);
-    set(j.armL, -t.tayTruoc - swing * s, 0, -(t.haTay - breathArm - 0.04 * mw));
-    set(j.armR, -t.tayTruoc + swing * s, 0, t.haTay - breathArm - 0.04 * mw);
+    const down = t.haTay - (t.dangTay ?? 0) - breathArm - 0.04 * mw;
+    set(j.armL, -t.tayTruoc - swing * s, 0, -down);
+    set(j.armR, -t.tayTruoc + swing * s, 0, down);
     set(j.foreL, -bent - swing * lagK * Math.max(0, -lagS) * 1.4, 0, 0);
     set(j.foreR, -bent - swing * lagK * Math.max(0, lagS) * 1.4, 0, 0);
     set(j.handL, -0.05 - 0.08 * mw * Math.max(0, -lagS), 0, 0);

@@ -15,7 +15,9 @@ import { NPC_TINH, npcModelUrl, placeNpcs } from './player/npc';
 import { NPC_IDS, type NpcSpec, type SceneSpec } from './scene/spec';
 
 /** Nhãn + khoảng của từng tham số (đơn vị như chú thích `Tinh`). */
-const KNOBS: readonly [keyof Tinh, string, number, number][] = [
+/** tham số có thanh trượt (`dangTay` chỉ nhân vật chính — L-23) */
+type Knob = Exclude<keyof Tinh, 'dangTay'>;
+const KNOBS: readonly [Knob, string, number, number][] = [
   ['nhip', 'Nhịp bước', 1.5, 4],
   ['buoc', 'Biên độ bước', 0, 0.9],
   ['goi', 'Co gối', 0, 1.2],
@@ -162,7 +164,7 @@ function buildPanel(tinh: Tinh, onPreset: (id: TinhId) => void, current: () => T
   }
   preset.value = current();
   const speed = slider('Tốc độ đi (m/s)', 0.5, 3.2, 1.1);
-  const inputs = new Map<keyof Tinh, HTMLInputElement>();
+  const inputs = new Map<Knob, HTMLInputElement>();
   const rows = KNOBS.map(([key, name, min, max]) => {
     const row = slider(name, min, max, tinh[key], (v) => {
       tinh[key] = v;
