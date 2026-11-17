@@ -1,9 +1,10 @@
 /**
- * Đấu chữ với Mặc Ông (R-DAU-1, R-DAU-2): 10 câu, mỗi câu một bộ thủ ĐÃ HỌC + 4 nghĩa (1 đúng, 3 nhiễu từ 50 bộ của
- * Rừng trúc); câu lẻ người chọn, câu chẵn NPC chọn (đúng ~70 %). Chỉ ôn — không mở thẻ học, không ghi tiến độ (R-VUNG-1).
- * Logic thuần — không three, không DOM.
+ * Đấu chữ với Mặc Ông (R-DAU-1, R-DAU-2, V-80): 10 câu, mỗi câu một **từ ĐÃ HỌC** (thẻ hiện chữ Hán) + 4 nghĩa (1 đúng, 3
+ * nhiễu — dạng a của R-TU-2: ưu tiên từ đã học, không trùng nghĩa); câu lẻ người chọn, câu chẵn NPC chọn (đúng ~70 %). Chỉ ôn
+ * — không mở bài học, không ghi tiến độ (R-VUNG-1). Logic thuần — không three, không DOM.
  */
-import { RADICALS, type Radical } from '../zones/radicals';
+import { cauHoi } from '../zones/tuVung/cauHoi';
+import { TU_VUNG, type Tu } from '../zones/tuVung/tu';
 
 export const DUEL_QUESTIONS = 10;
 export const NPC_ACCURACY = 0.7;
@@ -11,7 +12,7 @@ export const NPC_ACCURACY = 0.7;
 export type Side = 'nguoi' | 'npc';
 
 export interface DuelQuestion {
-  radical: Radical;
+  word: Tu;
   /** 4 nghĩa khác nhau */
   options: string[];
   /** chỉ số nghĩa đúng trong `options` */
@@ -30,34 +31,29 @@ function shuffle<T>(items: T[], rng: () => number): T[] {
 }
 
 /**
- * 10 câu từ các bộ đã học (`learnedIds` — mã trong `RADICALS`). Hai câu liền nhau không cùng bộ (trừ khi chỉ học 1 bộ).
- * Không học bộ nào (hoặc mã lạ hết) → mảng rỗng: không có ván (R-DAU-1).
+ * 10 câu từ các từ đã học (`learnedIds` — mã từ). Hai câu liền nhau không cùng từ (trừ khi chỉ học 1 từ).
+ * Không học từ nào (hoặc mã lạ hết) → mảng rỗng: không có ván (R-DAU-1).
  */
 export function makeQuestions(
   learnedIds: readonly string[],
   rng: () => number = Math.random,
-  pool: readonly Radical[] = RADICALS,
+  pool: readonly Tu[] = TU_VUNG,
   count = DUEL_QUESTIONS,
 ): DuelQuestion[] {
-  const learned = pool.filter((r) => learnedIds.includes(r.id));
+  const learned = pool.filter((t) => learnedIds.includes(t.id));
   if (learned.length === 0) return [];
-  const picks: Radical[] = [];
-  let bag: Radical[] = [];
+  const picks: Tu[] = [];
+  let bag: Tu[] = [];
   while (picks.length < count) {
     if (bag.length === 0) bag = shuffle(learned, rng);
     const prev = picks[picks.length - 1];
-    let k = bag.findIndex((r) => r !== prev);
-    if (k < 0) k = 0; // chỉ còn đúng bộ vừa hỏi (học 1 bộ, hoặc túi mới bắt đầu bằng bộ đó và chỉ có nó)
+    let k = bag.findIndex((t) => t !== prev);
+    if (k < 0) k = 0; // chỉ còn đúng từ vừa hỏi (học 1 từ)
     picks.push(bag.splice(k, 1)[0]);
   }
-  const meanings = [...new Set(pool.map((r) => r.meaning))];
-  return picks.map((radical, i) => {
-    const wrong = shuffle(
-      meanings.filter((m) => m !== radical.meaning),
-      rng,
-    ).slice(0, 3);
-    const options = shuffle([radical.meaning, ...wrong], rng);
-    return { radical, options, answer: options.indexOf(radical.meaning), answerer: i % 2 === 0 ? 'nguoi' : 'npc' };
+  return picks.map((word, i) => {
+    const q = cauHoi('chu-nghia', word, learnedIds, pool, rng);
+    return { word, options: q.options, answer: q.answer, answerer: i % 2 === 0 ? 'nguoi' : 'npc' };
   });
 }
 
@@ -99,13 +95,7 @@ export class CharDuel {
   }
 }
 
-/** Nhãn một nghĩa trên ô chọn: âm Hán Việt của bộ có nghĩa đó + nghĩa — "mộc — cây" (R-DAU-1, thiết kế 2026-11-13.27). */
-export function meaningLabel(meaning: string, pool: readonly Radical[] = RADICALS): string {
-  const r = pool.find((x) => x.meaning === meaning);
-  return r ? `${r.name} — ${meaning}` : meaning;
-}
-
-/** Dòng phụ sau khi chấm: "mộc · mù — cây". */
-export function radicalDetail(r: Radical): string {
-  return `${r.name} · ${r.pinyin} — ${r.meaning}`;
+/** Dòng phụ sau khi chấm: "hǎo · tốt, hay, khỏe" (viên báo "Chưa đúng — <pinyin> · <nghĩa>" — R-DAU-2). */
+export function wordDetail(t: Tu): string {
+  return `${t.pinyin} · ${t.meaning}`;
 }

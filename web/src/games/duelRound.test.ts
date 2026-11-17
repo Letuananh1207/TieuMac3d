@@ -14,7 +14,7 @@ function seeded(seed: number): () => number {
 describe('Vòng Đấu chữ — R-DAU-2', () => {
   it('R-DAU-2: câu 1 của người — chạm là chọn, hiện nghĩa đúng ~1 giây rồi sang câu 2 (Mặc Ông nghĩ 1–2 giây)', () => {
     const rng = seeded(7);
-    const r = new DuelRound(makeQuestions(['moc', 'truc', 'thuy'], rng), rng);
+    const r = new DuelRound(makeQuestions(['你', '好', '谢谢'], rng), rng);
     expect(r.phase).toBe('hoi');
     const q = r.question!;
     const wrong = (q.answer + 1) % 4;
@@ -39,7 +39,7 @@ describe('Vòng Đấu chữ — R-DAU-2', () => {
   });
 
   it('R-DAU-2: người đúng 4/5 → 4 điểm, điểm Mặc Ông = số câu Mặc Ông đúng; hết 10 câu → het', () => {
-    const r = new DuelRound(makeQuestions(['moc', 'truc', 'thuy'], seeded(3)), seeded(3));
+    const r = new DuelRound(makeQuestions(['你', '好', '谢谢'], seeded(3)), seeded(3));
     let npcRight = 0;
     let you = 0;
     for (let k = 0; k < 10; k++) {

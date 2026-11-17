@@ -116,7 +116,9 @@ function drawCard(canvas: HTMLCanvasElement, text: string | null): void {
   g.fillStyle = '#1d1d1f';
   g.textAlign = 'center';
   g.textBaseline = 'middle';
-  g.font = `700 ${Math.round(s * 0.62)}px "Han Serif", serif`;
+  // từ 2–5 chữ (Đấu chữ ôn từ vựng — R-DAU-1) thu cỡ cho vừa thẻ: 1 chữ giữ cỡ cũ
+  const n = Math.max(1, [...text].length);
+  g.font = `700 ${Math.round(s * Math.min(0.62, 0.84 / n))}px "Han Serif", serif`;
   g.fillText(text, s / 2, s / 2 + s * 0.03);
 }
 

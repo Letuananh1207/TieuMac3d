@@ -6,7 +6,7 @@
 import * as THREE from 'three';
 import type { Colliders } from './collision/colliders';
 import { BLACK, Gomoku, WHITE, npcMove } from './games/gomoku';
-import { makeQuestions, meaningLabel, radicalDetail } from './games/charDuel';
+import { makeQuestions, wordDetail } from './games/charDuel';
 import { DuelRound } from './games/duelRound';
 import type { GameNpc, GameResult, GameView } from './ui/gameView';
 import { NPC_RADIUS, createNpc, type Npc } from './player/npc';
@@ -31,7 +31,7 @@ export const GAME_LINES = {
   coThua: 'Đạo hữu cao tay quá!',
   coThang: 'Ha, lần này đệ thắng rồi!',
   coHoa: 'Ngang tài ngang sức!',
-  dauChuaHoc: `Con hãy tới ${FOREST} tu luyện trước, học vài bộ thủ rồi lại đây đấu với lão.`,
+  dauChuaHoc: `Con hãy tới ${FOREST} học vài bài từ với Trúc Lão rồi lại đây đấu với lão.`,
   dauChuaHocRoi: 'Vâng, con đi đây (rời bàn)',
   dauThua: 'Khá lắm! Con nhớ bộ thủ chắc hơn lão tưởng.',
   dauThang: 'Lần này lão hơn một chút. Ôn thêm rồi lại đấu nhé con.',
@@ -188,7 +188,7 @@ export class GamePlay {
     s.table.mark(null);
   }
 
-  /** R-DAU-1: chưa học bộ nào → câu thoại + "Vâng, con đi đây (rời bàn)", không có ván; có → 10 câu (R-DAU-2). */
+  /** R-DAU-1: chưa học từ nào → câu thoại + "Vâng, con đi đây (rời bàn)", không có ván; có → 10 câu (R-DAU-2). */
   private startDuel(): void {
     const s = this.seated;
     if (!s) return;
@@ -209,7 +209,7 @@ export class GamePlay {
       return;
     }
     s.round = new DuelRound(questions);
-    s.table.showCard(s.round.question?.radical.form ?? null, s.seat);
+    s.table.showCard(s.round.question?.word.han ?? null, s.seat);
   }
 
   /** Rời bàn (nút "Rời bàn", phím Esc — R-GIAO-1): đứng dậy, ván bỏ, bàn dọn sạch. */
@@ -344,7 +344,7 @@ export class GamePlay {
     if (!r || !q) return null;
     const cham = r.phase === 'cham' && !s.result;
     const by = r.lastBy === 'npc' ? 'npc' : 'you';
-    const answer = `${q.radical.name} · ${q.radical.meaning}`;
+    const answer = wordDetail(q.word);
     let toast: { right: boolean; text: string } | null = null;
     if (cham && by === 'you') toast = { right: r.lastRight, text: r.lastRight ? 'Đúng rồi! +1 điểm' : `Chưa đúng — ${answer}` };
     else if (cham) toast = { right: r.lastRight, text: r.lastRight ? `${npc.name} đúng · +1` : `${npc.name} sai — ${answer}` };
@@ -357,9 +357,9 @@ export class GamePlay {
       you: r.duel.score.nguoi,
       npcScore: r.duel.score.npc,
       answerer: q.answerer === 'npc' ? 'npc' : 'you',
-      form: q.radical.form,
-      detail: radicalDetail(q.radical),
-      options: q.options.map((m) => meaningLabel(m)),
+      form: q.word.han,
+      detail: wordDetail(q.word),
+      options: q.options.slice(),
       phase: s.result ? 'het' : r.phase,
       optionMarks: q.options.map((_, i) => (!cham ? null : i === q.answer ? 'dung' : i === r.picked ? 'sai' : 'mo')),
       npcPick: cham && by === 'npc' ? r.picked : null,
@@ -383,7 +383,7 @@ export class GamePlay {
       const before = r.shown;
       r.update(dt);
       if (r.phase === 'het') this.endDuel();
-      else if (r.shown !== before) s.table.showCard(r.question?.radical.form ?? null, s.seat); // câu mới: lật thẻ
+      else if (r.shown !== before) s.table.showCard(r.question?.word.han ?? null, s.seat); // câu mới: lật thẻ
       return;
     }
     const g = s.gomoku;

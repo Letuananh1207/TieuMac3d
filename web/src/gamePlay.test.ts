@@ -191,7 +191,7 @@ describe('Khu giao lưu — Ngũ Tử Kỳ', () => {
 });
 
 describe('Khu giao lưu — Đấu chữ', () => {
-  it('R-DAU-1: chưa học bộ nào → Mặc Ông bảo tới Trúc Lâm, lựa chọn "Vâng, con đi đây (rời bàn)" → đứng dậy', () => {
+  it('R-DAU-1: chưa học từ nào → Mặc Ông bảo tới Trúc Lâm, lựa chọn "Vâng, con đi đây (rời bàn)" → đứng dậy', () => {
     const { game, said, dau, player } = setup(-22, 48);
     expect(game.trySit()).toBe(true);
     expect(last(said)).toMatchObject({ npc: 'su-phu', text: GAME_LINES.dauChuaHoc, choice: 'Vâng, con đi đây (rời bàn)' });
@@ -203,16 +203,16 @@ describe('Khu giao lưu — Đấu chữ', () => {
     expect(game.active).toBe(false);
   });
 
-  it('R-DAU-2: đã học → thẻ bộ thủ trên bàn, "Câu 1 / 10", 4 nghĩa "âm — nghĩa"; chạm là chọn, chấm ~1 s rồi câu 2 Mặc Ông nghĩ', () => {
-    const { game, dau } = setup(-22, 48, ['moc', 'truc', 'thuy']);
+  it('R-DAU-2: đã học → thẻ chữ trên bàn, "Câu 1 / 10", 4 nghĩa; chạm là chọn, chấm ~1 s rồi câu 2 Mặc Ông nghĩ', () => {
+    const { game, dau } = setup(-22, 48, ['你', '好', '谢谢']);
     expect(game.trySit()).toBe(true);
     const v = game.view();
     if (v?.kind !== 'dau-chu') throw new Error('không phải Đấu chữ');
     expect(v).toMatchObject({ step: 0, total: 10, answerer: 'you', phase: 'hoi', marks: [], you: 0, npcScore: 0 });
     expect(dau.state.card).toBe(v.form);
     expect(v.options).toHaveLength(4);
-    for (const o of v.options) expect(o).toMatch(/ — /);
-    const right = v.options.findIndex((o) => o.endsWith(v.detail.split(' — ')[1]));
+    const right = v.options.findIndex((o) => v.detail.endsWith(` · ${o}`));
+    expect(right).toBeGreaterThanOrEqual(0);
     expect(game.pick(right)).toBe(true);
     const c = game.view();
     expect(c).toMatchObject({ phase: 'cham', marks: [true], you: 1, scored: 'you', toast: { right: true, text: 'Đúng rồi! +1 điểm' } });
@@ -224,7 +224,7 @@ describe('Khu giao lưu — Đấu chữ', () => {
   });
 
   it('R-DAU-2: hết 10 câu → thẻ kết quả với điểm ván; "Ván mới" → câu 1 lại', () => {
-    const { game } = setup(-22, 48, ['moc', 'truc', 'thuy']);
+    const { game } = setup(-22, 48, ['你', '好', '谢谢']);
     game.trySit();
     for (let k = 0; k < 400 && !game.view()?.result; k++) {
       const v = game.view();
@@ -381,7 +381,7 @@ describe('Văn tiền khi ngồi bàn (R-TIEN-3, quyết định 4)', () => {
   });
 
   it('R-TIEN-3: hết 10 câu Đấu chữ → báo (dau-chu, kết quả ván); rời bàn giữa ván → không báo', () => {
-    const { game, ended } = setupEarn(-22, 48, ['moc', 'truc', 'thuy']);
+    const { game, ended } = setupEarn(-22, 48, ['你', '好', '谢谢']);
     game.trySit();
     game.pick(0);
     game.stand(); // rời giữa ván
