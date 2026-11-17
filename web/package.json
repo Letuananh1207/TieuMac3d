@@ -6,10 +6,12 @@
   "scripts": {
     "dev": "node scripts/subset-han.mjs && node scripts/hinh.mjs && vite --host",
     "typecheck": "tsc --noEmit",
-    "build": "tsc --noEmit && node scripts/check-scene.mjs && node scripts/subset-han.mjs && node scripts/hinh.mjs && vite build && node scripts/copy-to-app.mjs && node scripts/fonts-app.mjs",
+    "build": "tsc --noEmit && node scripts/check-scene.mjs && node scripts/check-tu.mjs && node scripts/subset-han.mjs && node scripts/hinh.mjs && vite build && node scripts/copy-to-app.mjs && node scripts/fonts-app.mjs",
     "preview": "vite preview --host",
     "build:design": "tsc --noEmit && node scripts/subset-han.mjs && node scripts/hinh.mjs && vite build --mode design",
     "scene:check": "node scripts/check-scene.mjs",
+    "tu:check": "node scripts/check-tu.mjs",
+    "tu:am-list": "node scripts/check-tu.mjs --am-list",
     "test": "vitest run",
     "fonts:han": "node scripts/subset-han.mjs",
     "fonts:app": "node scripts/fonts-app.mjs",

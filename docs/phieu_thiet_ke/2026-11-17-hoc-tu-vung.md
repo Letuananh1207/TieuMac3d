@@ -7,7 +7,7 @@
 ```
 PHIẾU THIẾT KẾ — HỌC TỪ VỰNG TIẾNG TRUNG (V-80, 2026-11-17)
 
-Bối cảnh: mục tiêu sản phẩm đổi từ "học bộ thủ / chữ Hán" sang "học TỪ VỰNG tiếng Trung" (HSK 2.0 cấp 1–2, 303 từ,
+Bối cảnh: mục tiêu sản phẩm đổi từ "học bộ thủ / chữ Hán" sang "học TỪ VỰNG tiếng Trung" (HSK 2.0 cấp 1–2, 304 từ,
 giản thể). Mỗi từ người học: NGHE + NÓI THEO (âm, thanh điệu), biết NGHĨA tiếng Việt, PINYIN, NHẬN MẶT CHỮ (không tập
 viết). Từ xếp thành 50 bài × 6–7 từ theo chủ đề tiếng Việt (bài 1 "Chào hỏi": 你 我 好 谢谢 再见 不客气).
 Âm phát âm là file MP3 đóng gói (chưa có — giai đoạn sau), nên mọi nút loa phải có trạng thái "không có âm".
@@ -47,10 +47,10 @@ Cần vẽ 7 phần (mỗi màn: dọc 390×844 + ngang 844×390; màn nhỏ 360
 
 5. MÀN "TỪ ĐÃ HỌC" (Flutter native) — thay "Bộ đã học" (artboard BoDaHoc-*)
    Mở khi: chạm ô "Từ đã học" trên cuộn Tĩnh toạ. Danh sách từ đã học NHÓM THEO BÀI (tiêu đề bài chữ Việt), mỗi từ: chữ +
-   pinyin + nghĩa ngắn + loa nhỏ; chạm từ → trang từ (mục 1, "Xuất định"). Trạng thái: ít (6 từ), đầy (300 từ — cuộn,
+   pinyin + nghĩa ngắn + loa nhỏ; chạm từ → trang từ (mục 1, "Xuất định"). Trạng thái: ít (6 từ), đầy (304 từ — cuộn,
    tìm nhanh theo bài?), ngang.
 
-6. Ô "TỪ ĐÃ HỌC" TRÊN CUỘN TĨNH TOẠ (cuộn 3D — artboard Cuon-*): đổi ô "Bộ đã học" → "Từ đã học", dòng phụ "n / 303 từ",
+6. Ô "TỪ ĐÃ HỌC" TRÊN CUỘN TĨNH TOẠ (cuộn 3D — artboard Cuon-*): đổi ô "Bộ đã học" → "Từ đã học", dòng phụ "n / 304 từ",
    mờ "Chưa học từ nào"; hình minh hoạ ô (hiện là bộ thủ) cần hình mới hợp "từ vựng" (vd. cuộn chữ + loa) theo phong cách
    hình minh hoạ đã duyệt. Dòng gợi ý: "Chưa học từ nào. Sang Trúc Lâm, gặp Trúc Lão ở bãi hạc đáp để học bài đầu tiên."
 
@@ -60,7 +60,7 @@ Cần vẽ 7 phần (mỗi màn: dọc 390×844 + ngang 844×390; màn nhỏ 360
 Luật phải theo (sổ docs/testing/quy_tac.md — chép nguyên văn khi vẽ): R-TU-1, R-TU-2, R-TU-3, R-AM-5, R-HANH-3, R-ON-2,
 R-ON-8, R-SACH-3, R-HUD-4, R-VUNG-3.
 
-Chuỗi có sẵn: "Đã lĩnh hội", "Xuất định", "Đã học", "Từ đã học", "n / 303 từ", "Chưa học từ nào", "Học bài mới — <chủ đề>",
+Chuỗi có sẵn: "Đã lĩnh hội", "Xuất định", "Đã học", "Từ đã học", "n / 304 từ", "Chưa học từ nào", "Học bài mới — <chủ đề>",
 "Ôn từ đến hạn (n)". Chuỗi mới cần đặt: tên nút loa (nhãn đọc màn hình), "Nói theo", "Giống rồi", "Chưa giống",
 "Đến lượt đạo hữu", tiêu đề câu b / e, tóm tắt câu nhanh.
 Dùng lại: khung Thẻ học bộ thủ (TheBoThu), Màn ôn câu đố (OnTap), Bộ đã học (BoDaHoc), Sổ từ (SoTu), token màu
