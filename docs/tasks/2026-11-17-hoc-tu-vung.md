@@ -4,7 +4,7 @@
   (không tập viết); nguồn **HSK, bắt đầu HSK 1–2**; mọi phần học bộ thủ / chữ **chuyển hết sang từ vựng** — giữ trò,
   giữ hệ ôn, đổi nội dung.
 - Loại: sửa hành vi + dữ liệu + giao diện (đổi trục sản phẩm) · Cỡ: **lớn** (≈ 28 nhiệm vụ, 6 giai đoạn) ·
-  Trạng thái: **chờ duyệt** (4 điểm cần quyết định bên dưới)
+  Trạng thái: **đã duyệt 2026-11-17**, đang làm (xem "Tiến độ" cuối file)
 - Ràng buộc: offline (âm phát âm đóng gói hoặc tổng hợp offline), không backend, R-HUD-4 (chữ Hán chỉ ở nội dung học),
   thế giới mới bộ 2 đang chờ concept (phiếu ý tưởng `docs/y_tuong/2026-11-17-the-gioi-moi.md`, nhánh `viec/ten-map-moly`:
   mỗi vùng một chủ đề từ).
@@ -137,17 +137,17 @@ Trạng thái mỗi nhiệm vụ: **[làm ngay]** sau khi duyệt · **[chờ qu
 `2026-11-17-hoc-tu-vung`) · **[chờ concept]** (thế giới mới).
 
 ### Gđ 0 — Quyết định + luật
-- [ ] 1. Người dùng chốt 4 quyết định (mục 5). [làm ngay]
-- [ ] 2. Sửa sổ `docs/testing/quy_tac.md` theo danh sách luật (mục 4b), thêm họ **R-TU-*** → `/dong-bo-quy-tac` (subagent
+- [x] 1. Người dùng chốt 4 quyết định (mục 5). [làm ngay]
+- [x] 2. Sửa sổ `docs/testing/quy_tac.md` theo danh sách luật (mục 4b), thêm họ **R-TU-*** → `/dong-bo-quy-tac` (subagent
   gửi ops JSON kèm ifRev). (docs · xong khi `rule_trace --pending` rỗng) [chờ quyết định 1–4]
 
 ### Gđ 1 — Dữ liệu (web/src/zones, thuần, vitest)
-- [ ] 3. `zones/tuVung/` (thư mục mới → bảng phụ thuộc decisions/0001 + `LAYERS` trong `tool/check.dart`): `tu.ts` (kiểu
+- [x] 3. `zones/tuVung/` (thư mục mới → bảng phụ thuộc decisions/0001 + `LAYERS` trong `tool/check.dart`): `tu.ts` (kiểu
   `Tu`, sinh từ `sach/hsk*.ts` — một nguồn), `thanh.ts` (pinyin → thanh từng âm tiết), `bai.ts` (≈ 50 bài × 6 từ, chủ đề
   Việt). Test: mọi từ thuộc đúng 1 bài, số âm tiết khớp số chữ (trừ 儿化 ghi rõ), không trùng mã. [chờ quyết định 1]
-- [ ] 4. Công cụ kiểm `web/scripts/check-tu.mjs` (`npm run tu:check`, gọi trong build): pinyin hợp lệ, cảnh báo đa âm,
+- [x] 4. Công cụ kiểm `web/scripts/check-tu.mjs` (`npm run tu:check`, gọi trong build): pinyin hợp lệ, cảnh báo đa âm,
   thiếu âm. [làm ngay sau 3]
-- [ ] 5. Câu hỏi `zones/tuVung/cauHoi.ts` (thay `zones/review.ts`): 5 dạng a–e, chọn dạng theo bậc, nhiễu (cùng âm khác
+- [x] 5. Câu hỏi `zones/tuVung/cauHoi.ts` (thay `zones/review.ts`): 5 dạng a–e, chọn dạng theo bậc, nhiễu (cùng âm khác
   thanh cho dạng c). Test bằng rng cố định. [chờ quyết định 1]
 
 ### Gđ 2 — Âm thanh
@@ -159,23 +159,23 @@ Trạng thái mỗi nhiệm vụ: **[làm ngay]** sau khi duyệt · **[chờ qu
   ghim bản). Luật R-AM-5 (phát âm từ). Đo cỡ app trước / sau. [chờ quyết định 2]
 
 ### Gđ 3 — Hệ học / ôn (Flutter + cầu nối)
-- [ ] 8. `docs/bridge.md`: `openWordLesson`, `openReview` (items `{word, questions}`), `openDaily.words`, `openLearned
+- [x] 8. `docs/bridge.md`: `openWordLesson`, `openReview` (items `{word, questions}`), `openDaily.words`, `openLearned
   {words}`, `getProgress.words/lessons/due`; đánh dấu thôi dùng `openRadical`, `openStudy`, `openLesson`. Hai phía cùng
   lúc: `web/src/bridge/flutterBridge.ts`, `app/lib/scene/{scene_event,review_event}.dart`. [chờ quyết định 1]
-- [ ] 9. `progress_store.dart` + `journey.dart`: khoá `tu-vung.*`, `learnLesson(bài, từ)`, `reviewWord`, `dueWords` (trần
+- [x] 9. `progress_store.dart` + `journey.dart`: khoá `tu-vung.*`, `learnLesson(bài, từ)`, `reviewWord`, `dueWords` (trần
   20 / lượt), tổng số từ thay `rungTrucRadicalCount`; khoá cũ cất. Test `app/test/rules/{on_tap,hanh_trinh}_test.dart`.
   [chờ quyết định 1, 4]
-- [ ] 10. `daily.dart` + `zones/dailyBoard.ts`: Lĩnh hội = 1 bài / ngày; Ôn tập = hết từ đến hạn / đủ 20. Test
+- [x] 10. `daily.dart` + `zones/dailyBoard.ts`: Lĩnh hội = 1 bài / ngày; Ôn tập = hết từ đến hạn / đủ 20. Test
   `nhiem_vu_test.dart`, `dailyBoard.test.ts`. [chờ quyết định 1]
-- [ ] 11. Thưởng `wallet.dart` ↔ `walletRules.ts` (R-TIEN-2 mới). Test `tien_test.dart`, `walletRules.test.ts`. [chờ 2 luật]
-- [ ] 12. Thầy Trúc Lão `zones/trucLao.ts` + `trucLao.ts` + `main.ts`: "Học bài mới — <chủ đề>", "Ôn từ đến hạn (n)";
+- [x] 11. Thưởng `wallet.dart` ↔ `walletRules.ts` (R-TIEN-2 mới). Test `tien_test.dart`, `walletRules.test.ts`. [chờ 2 luật]
+- [x] 12. Thầy Trúc Lão `zones/trucLao.ts` + `trucLao.ts` + `main.ts`: "Học bài mới — <chủ đề>", "Ôn từ đến hạn (n)";
   `spec.ts` `lessons.words`. Test `trucLao.test.ts`. [chờ quyết định 1]
 
 ### Gđ 4 — Màn Flutter (bài học, ôn)
-- [ ] 13. Màn ôn: thay bộ thủ bằng từ cho dạng **a, c, d** (khung "Màn ôn câu đố" hiện có đủ — chữ to, câu hỏi, 3–4 phương
+- [x] 13. Màn ôn: thay bộ thủ bằng từ cho dạng **a, c, d** (khung "Màn ôn câu đố" hiện có đủ — chữ to, câu hỏi, 3–4 phương
   án; chữ phương án dạng d là chữ Hán thay nghĩa). `review_{screen,parts,session}.dart`. Test `review_screen_test.dart`.
   [làm ngay sau 8–9]
-- [ ] 14. Soạn phiếu `docs/phieu_thiet_ke/2026-11-17-hoc-tu-vung.md` bằng `/ui-apply phieu`: màn bài từ (trang từ + câu
+- [x] 14. Soạn phiếu `docs/phieu_thiet_ke/2026-11-17-hoc-tu-vung.md` bằng `/ui-apply phieu`: màn bài từ (trang từ + câu
   nhanh cuối bài, dọc / ngang), nút loa (trạng thái: chờ, đang phát, không có âm), dạng câu nghe b / e, "Nói theo", màn
   "Từ đã học" (thay "Bộ đã học"), loa trên sổ từ, ô "Từ đã học" trên cuộn, pinyin tô màu thanh (token màu 4 thanh).
   [làm ngay]
@@ -189,14 +189,14 @@ Trạng thái mỗi nhiệm vụ: **[làm ngay]** sau khi duyệt · **[chờ qu
   [làm ngay sau 13]
 
 ### Gđ 5 — Các trò + thoại
-- [ ] 21. Đấu chữ `games/{charDuel,duelRound}.ts`, `gamePlay.ts`: từ đã học → 4 nghĩa; phát âm khi lộ đáp án (khi có âm).
+- [x] 21. Đấu chữ `games/{charDuel,duelRound}.ts`, `gamePlay.ts`: từ đã học → 4 nghĩa; phát âm khi lộ đáp án (khi có âm).
   Test `charDuel.test.ts`, `duelRound.test.ts`. HUD hiện có đủ (ô nghĩa dài hơn — kiểm 360 px). [chờ quyết định 1]
-- [ ] 22. Lưu Thương ghép từ `games/ghepTu.ts` (thay `ghepChu.ts`), `luuThuong*.ts`, `ui/luuHud.ts` (chỉ đổi nội dung ô:
+- [x] 22. Lưu Thương ghép từ `games/ghepTu.ts` (thay `ghepChu.ts`), `luuThuong*.ts`, `ui/luuHud.ts` (chỉ đổi nội dung ô:
   chữ thay bộ, nhãn pinyin thay Hán Việt); điều kiện vào tiệc ≥ 6 từ 2 chữ đã học. Test `ghepTu.test.ts`,
   `luuThuong*.test.ts`. [chờ quyết định 1]
-- [ ] 23. Măng chữ `zones/mang.ts` ↔ `mang.dart`, `ui/mangHud.ts`, `scene/mangLam.ts` (khắc từ). Test `mang.test.ts`,
+- [x] 23. Măng chữ `zones/mang.ts` ↔ `mang.dart`, `ui/mangHud.ts`, `scene/mangLam.ts` (khắc từ). Test `mang.test.ts`,
   `mang_test.dart`. [chờ quyết định 1]
-- [ ] 24. Thoại + cách chơi: `zones/{dialogs,tranSu,tinDon,studyGuide,trucLamThoai,gameGuides}.ts`. Test có sẵn của từng
+- [x] 24. Thoại + cách chơi: `zones/{dialogs,tranSu,tinDon,studyGuide,trucLamThoai,gameGuides}.ts`. Test có sẵn của từng
   file. [làm ngay sau 2]
 
 ### Gđ 6 — Dọn + tài liệu
@@ -277,3 +277,19 @@ Kèm: dòng 9 "Quy tắc khi viết code" — "chữ Hán chỉ ở nội dung h
 dart tool/check.dart --changed · cd web && npx tsc --noEmit && npm test && npm run build · cd app && flutter analyze ·
 flutter test -r failures-only test/rules test/lesson test/journey · dart tool/rule_trace.dart · thử máy Android tầm trung:
 phát âm trong WebView + màn Flutter khi tắt mạng.
+
+## Tiến độ (2026-11-17, phiên làm việc)
+
+- Xong: gđ 0 (luật R-TU-1…5, R-AM-5 + 39 luật đổi, đã đồng bộ online), NV14 (phiếu `docs/phieu_thiet_ke/2026-11-17-hoc-tu-vung.md`),
+  gđ 1 (`web/src/zones/tuVung/` + `npm run tu:check` trong build, `npm run tu:am-list`), gđ 3 (cầu nối `openWordLesson`,
+  `getProgress.lessons/words/dueSteps`, khoá `tu-vung.*`, nhiệm vụ 1 bài + trần 20, thưởng +10 / bài, +1 / từ ≤ 20 / ngày,
+  Trúc Lão), NV13 (màn ôn dạng a / c / d bằng khung cũ), gđ 5 (Đấu chữ, Lưu Thương ghép từ `games/ghepTu.ts`, măng chữ, thoại).
+- Đã dọn sớm (phần của NV25): `zones/radicals.ts`, `zones/review.ts`, `games/ghepChu.ts`, `radical_screen.dart`, `svg_strokes.dart`,
+  `study_board/screen/parts.dart`, sự kiện `openRadical`, `openStudy` (+ test). Còn: `openLesson` / `LearnButton` / `lesson_screen.dart`.
+- **Thực tế 304 từ** (HSK 1 có 152 từ — sổ có 女儿), không phải 303; luật / phiếu đã sửa.
+- Tạm (chờ thiết kế, phiếu NV14): `word_lesson_screen.dart` dùng khung thẻ bộ thủ cũ (lật từng từ + "Đã lĩnh hội", chưa câu nhanh,
+  loa, Nói theo); màn Từ đã học dùng khung Bộ đã học; câu nghe b / e chưa có giao diện (không phát sinh khi chưa có âm).
+- Gđ 2 chỉ chuẩn bị: quy cách file + tên tệp mã điểm (`zones/tuVung/am.ts`), danh sách đọc `npm run tu:am-list` (608 dòng: từ + câu),
+  `web/src/ui/amTu.ts` (phát khi có âm, im khi chưa có — gắn ở Đấu chữ / măng chữ). Phía Flutter chưa có (cần gói `audioplayers` —
+  hỏi người dùng khi làm gđ 2).
+- Giữ khoá đặc tả `lessons.radicals` (đặc tả `design/scene/*.json` chưa đổi — đổi tên khi /canh chốt thế giới mới).
