@@ -1,5 +1,5 @@
 /// Tiến độ học của hành trình (R-HANH-1). Vùng **không khoá** theo tiến độ: mọi vùng đã dựng cảnh đều đi được
-/// (trang 3D tự biết vùng nào có cảnh). Ở đây chỉ còn chữ, bộ thủ đã học — dùng cho tu luyện (R-HANH-3), ôn, nhiệm vụ.
+/// (trang 3D tự biết vùng nào có cảnh). Ở đây chỉ còn bài / từ đã học — dùng cho tu luyện (R-HANH-3), ôn, nhiệm vụ.
 library;
 
 /// Tên hiển thị của các vùng theo mã cảnh (R-HANH-1, V-50). Nguồn là `ten` trong `design/scene/ban-do/ban-do.json`
@@ -13,17 +13,21 @@ const regionNames = <String, String>{
   'to-lua': 'Đôn Hoàng Lộ',
 };
 
-/// Vùng học bộ thủ (vùng đầu, R-HANH-3) — mặc định của `region` khi trang không gửi.
+/// Vùng học bài từ (vùng đầu, R-HANH-3) — mặc định của `region` khi trang không gửi.
 const firstRegion = 'Trúc Lâm';
 
-/// Số bộ thủ bài học của Rừng trúc (≈ 50 bộ thủ thường gặp — docs/tham_khao/rung-truc.md); bảng nhiệm vụ dùng để
-/// biết đã học hết bộ mới chưa (R-NV-1).
-const rungTrucRadicalCount = 50;
+/// Giáo trình từ vựng (R-TU-1): số bài + số từ — khớp `BAI_HOC` / `TONG_TU` của `web/src/zones/tuVung/` (test
+/// `tu_vung_test.dart` đọc `bai.ts` so số bài). Bảng nhiệm vụ dùng để biết đã học hết bài chưa (R-NV-1).
+const tuVungLessonCount = 50;
+const tuVungWordCount = 304;
 
-/// Tiến độ học: các chữ, bộ thủ đã học (mỗi thứ tính một lần).
+/// Tiến độ học (R-TU-1): các bài đã học và các từ của chúng (mỗi thứ một lần). Tiến độ bộ thủ cũ không đọc (R-TU-5).
 class Progress {
-  const Progress({this.chars = const {}, this.radicals = const {}});
+  const Progress({this.lessons = const [], this.words = const []});
 
-  final Set<String> chars;
-  final Set<String> radicals;
+  /// mã bài theo thứ tự đã học
+  final List<String> lessons;
+
+  /// mã từ theo thứ tự đã học
+  final List<String> words;
 }

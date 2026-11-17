@@ -5,12 +5,12 @@
 /// Khoản thưởng là **danh sách** [Reward] để sau này Văn khí 文氣 (hướng B) nghe cùng sự kiện mà không sửa phần này.
 library;
 
-/// Học 1 bộ thủ mới (R-TIEN-2).
+/// Học 1 bài từ mới (R-TIEN-2).
 const learnCoins = 10;
 
-/// Ôn đúng hạn 2/2 · 1/2 (R-TIEN-2).
-const reviewFullCoins = 5;
-const reviewHalfCoins = 2;
+/// Ôn đúng hạn 1 từ 2/2 (R-TIEN-2); 1/2, 0/2 không có. Thưởng ôn tối đa [reviewDailyCap] / ngày.
+const reviewWordCoins = 1;
+const reviewDailyCap = 20;
 
 /// Xong cả 2 việc nhiệm vụ hằng ngày, một lần / ngày (R-TIEN-2).
 const dailyCoins = 20;
@@ -25,16 +25,16 @@ const gameDailyCap = 60;
 /// Vật sở hữu sẵn khi mới cài app (R-NHA-4): Trúc cảnh, Đèn lồng, Tranh chữ.
 const starterDecor = ['truc-canh', 'den-long', 'tranh-chu'];
 
-enum RewardKind { learn, review, reviewHalf, daily, streak, gameWin, gameDraw, gameLose, gameCapped }
+enum RewardKind { learn, review, daily, streak, gameWin, gameDraw, gameLose, gameCapped }
 
 /// Một khoản thưởng — để màn Flutter chạy hiệu ứng xu bay + nhãn (R-TIEN-5). Số dư đã cộng sẵn trong kho.
 class Reward {
-  const Reward(this.kind, this.amount, {this.char, this.days, this.game});
+  const Reward(this.kind, this.amount, {this.char, this.days, this.game, this.title});
 
   final RewardKind kind;
   final int amount;
 
-  /// chữ / bộ thủ vừa học, ôn (nhãn "Học bộ 竹", mặt sau đồng xu)
+  /// chữ khắc mặt sau đồng xu: chữ đầu của từ vừa học / ôn (R-TIEN-2)
   final String? char;
 
   /// số ngày chuỗi (nhãn "Chuỗi 7 ngày")
@@ -43,25 +43,35 @@ class Reward {
   /// tên trò ("Đấu chữ", "Cờ caro")
   final String? game;
 
+  /// tên bài vừa học ("Học bài Chào hỏi") / từ vừa ôn ("Ôn đúng 朋友") — nhãn R-TIEN-5
+  final String? title;
+
   @override
   bool operator ==(Object other) =>
-      other is Reward && other.kind == kind && other.amount == amount && other.char == char && other.days == days && other.game == game;
+      other is Reward &&
+      other.kind == kind &&
+      other.amount == amount &&
+      other.char == char &&
+      other.days == days &&
+      other.game == game &&
+      other.title == title;
 
   @override
-  int get hashCode => Object.hash(kind, amount, char, days, game);
+  int get hashCode => Object.hash(kind, amount, char, days, game, title);
 
   @override
-  String toString() => 'Reward($kind, $amount, $char, $days, $game)';
+  String toString() => 'Reward($kind, $amount, $char, $days, $game, $title)';
 }
 
-Reward learnReward(String char) => Reward(RewardKind.learn, learnCoins, char: char);
+/// Chữ đầu (chữ Hán đầu tiên) của một từ — khắc mặt sau đồng xu (R-TIEN-2).
+String firstHan(String word) => word.isEmpty ? '' : String.fromCharCode(word.runes.first);
 
-/// Ôn đúng [correct] / 2 → khoản thưởng; 0/2 → `null`.
-Reward? reviewReward(int correct, String char) => switch (correct) {
-      >= 2 => Reward(RewardKind.review, reviewFullCoins, char: char),
-      1 => Reward(RewardKind.reviewHalf, reviewHalfCoins, char: char),
-      _ => null,
-    };
+/// Học 1 bài mới [title] (lần đầu "Đã lĩnh hội" — R-HANH-3), [firstWord] = từ đầu bài → +10, xu khắc chữ đầu.
+Reward learnReward(String title, String firstWord) => Reward(RewardKind.learn, learnCoins, char: firstHan(firstWord), title: title);
+
+/// Ôn từ [word] đúng [correct] / 2: 2/2 → +1 nếu hôm nay mới nhận [paidToday] < 20 thưởng ôn; còn lại → `null`.
+Reward? reviewReward(int correct, String word, {int paidToday = 0}) =>
+    correct >= 2 && paidToday < reviewDailyCap ? Reward(RewardKind.review, reviewWordCoins, char: firstHan(word), title: word) : null;
 
 /// Vừa xong nhiệm vụ ngày, chuỗi hiện tại [streak] ngày → +20, và +50 nếu chuỗi chạm mốc 7, 14, 21…
 List<Reward> dailyRewards(int streak) => [
@@ -138,9 +148,8 @@ int coinsToFly(int amount) => amount <= 0 ? 0 : ((amount + 4) ~/ 5).clamp(1, 5);
 
 /// Nhãn lý do (R-TIEN-5; chuỗi `reward*` ở design/l10n/vi.arb).
 String rewardLabel(Reward r) => switch (r.kind) {
-      RewardKind.learn => '+${r.amount} · Học bộ ${r.char ?? ''}',
-      RewardKind.review => '+${r.amount} · Ôn đúng ${r.char ?? ''}',
-      RewardKind.reviewHalf => '+${r.amount} · Ôn ${r.char ?? ''}',
+      RewardKind.learn => '+${r.amount} · Học bài ${r.title ?? ''}',
+      RewardKind.review => '+${r.amount} · Ôn đúng ${r.title ?? r.char ?? ''}',
       RewardKind.daily => '+${r.amount} · Xong nhiệm vụ ngày',
       RewardKind.streak => '+${r.amount} · Chuỗi ${r.days ?? streakEvery} ngày',
       // Đàn cầm theo bài: nhãn là hạng bài (R-CAM-4, R-TIEN-5) — "+5 · Tri âm"

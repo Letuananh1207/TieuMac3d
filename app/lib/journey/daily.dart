@@ -4,33 +4,41 @@ library;
 
 import 'review.dart';
 
-/// Mục tiêu việc Lĩnh hội: số bộ thủ mới mỗi ngày (R-NV-1).
-const dailyNewGoal = 3;
+/// Mục tiêu việc Lĩnh hội: số bài từ mới mỗi ngày (R-NV-1).
+const dailyNewGoal = 1;
 
 /// Hai việc của một ngày.
 class DailyStatus {
-  const DailyStatus({required this.newToday, required this.dueLeft, required this.allLearned});
+  const DailyStatus({required this.newToday, required this.dueLeft, required this.allLearned, this.reviewedToday = 0});
 
-  /// số bộ bấm "đã học" lần đầu trong ngày
+  /// số bài bấm "Đã lĩnh hội" lần đầu trong ngày
   final int newToday;
 
-  /// số bộ còn đến hạn ôn hôm nay
+  /// số từ còn đến hạn ôn hôm nay — 0 khi hôm nay đã ôn đủ [reviewSessionCap] từ (R-NV-1)
   final int dueLeft;
 
-  /// đã học hết các bộ của Rừng trúc → việc Lĩnh hội tự xong
+  /// đã học hết giáo trình → việc Lĩnh hội tự xong
   final bool allLearned;
+
+  /// số từ đã ôn (chấm) hôm nay
+  final int reviewedToday;
 
   bool get learnDone => allLearned || newToday >= dailyNewGoal;
   bool get reviewDone => dueLeft == 0;
   bool get done => learnDone && reviewDone;
 }
 
-/// Trạng thái hai việc hôm [today] từ lịch ôn [cards] (mỗi bộ đã học có một thẻ); [total] = số bộ của Rừng trúc.
-DailyStatus dailyStatus(Map<String, ReviewCard> cards, int total, int today) => DailyStatus(
-      newToday: cards.values.where((c) => c.learnedDay == today).length,
-      dueLeft: cards.values.where((c) => c.isDue(today)).length,
-      allLearned: cards.length >= total,
-    );
+/// Trạng thái hai việc hôm [today] (R-NV-1): [lessonDays] = mã bài đã học → ngày học; [cards] = lịch ôn từng từ;
+/// [totalLessons] = số bài của giáo trình. Ôn tập xong khi hết từ đến hạn **hoặc** hôm nay đã ôn đủ 20 từ (R-ON-4).
+DailyStatus dailyStatus(Map<String, ReviewCard> cards, Map<String, int> lessonDays, int totalLessons, int today) {
+  final reviewed = cards.values.where((c) => c.lastDay == today).length;
+  return DailyStatus(
+    newToday: lessonDays.values.where((d) => d == today).length,
+    dueLeft: reviewed >= reviewSessionCap ? 0 : cards.values.where((c) => c.isDue(today)).length,
+    allLearned: lessonDays.length >= totalLessons,
+    reviewedToday: reviewed,
+  );
+}
 
 /// Chuỗi ngày (R-NV-2): [current] = số ngày xong liên tiếp tới hôm nay (hôm nay chưa xong → tính tới hôm qua);
 /// [best] = chuỗi dài nhất từng có.

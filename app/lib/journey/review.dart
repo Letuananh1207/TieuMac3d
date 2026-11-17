@@ -8,13 +8,16 @@ const reviewIntervals = [1, 3, 7, 14, 30, 60, 120];
 /// Bậc cuối đúng 2/2 → đã thuộc, chừng này ngày sau mới hỏi lại (R-ON-3).
 const masteredDays = 180;
 
-/// Số câu đố mỗi bộ trong một lượt ôn: Pinyin → Nghĩa (R-ON-2).
+/// Số câu đố mỗi từ trong một lượt ôn (dạng câu theo bậc — R-ON-2, R-TU-2).
 const reviewQuestions = 2;
+
+/// Một lượt ôn tối đa chừng này từ; việc Ôn tập hôm nay xong khi đã ôn đủ chừng này (R-ON-4, R-NV-1).
+const reviewSessionCap = 20;
 
 /// Số ngày của [t] theo giờ máy (ngày mới bắt đầu lúc 0 giờ — R-NV-1). Hai thời điểm cùng ngày lịch → cùng số.
 int dayOf(DateTime t) => DateTime.utc(t.year, t.month, t.day).difference(DateTime.utc(1970)).inDays;
 
-/// Lịch ôn của một bộ thủ.
+/// Lịch ôn của một từ (mã = mã từ — R-ON-1).
 class ReviewCard {
   const ReviewCard({
     required this.step,
@@ -105,8 +108,8 @@ class ReviewCard {
   }
 }
 
-/// Các bộ đến hạn hôm [today], theo thứ tự hỏi (R-ON-4): bậc thấp trước → trễ lâu hơn trước → thứ tự học [order]
-/// (bộ không có trong [order] xếp cuối).
+/// Các từ đến hạn hôm [today], theo thứ tự hỏi (R-ON-4): bậc thấp trước → trễ lâu hơn trước → thứ tự giáo trình [order]
+/// (từ không có trong [order] xếp cuối). Không cắt 20 — trang cắt lượt (R-ON-4).
 List<String> dueOrder(Map<String, ReviewCard> cards, List<String> order, int today) {
   int rank(String id) {
     final i = order.indexOf(id);

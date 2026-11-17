@@ -15,23 +15,29 @@ import 'wallet.dart' as rules show giveAlms;
 
 /// Lưu tiến độ học trên máy (R-HANH-1: giữ qua những lần mở app sau). Dùng `shared_preferences` — kho khoá–giá trị
 /// nhỏ của nền tảng (Android SharedPreferences, iOS NSUserDefaults, web localStorage).
-/// Kèm lịch ôn từng bộ thủ (R-ON-1…4), các ngày đã xong nhiệm vụ hằng ngày (R-NV-1, R-NV-2), sổ từ đang mượn ở Tàng
+/// Kèm bài / từ đã học + lịch ôn từng từ (R-TU-1, R-ON-1…4; tiến độ bộ thủ bản cũ cất, không đọc — R-TU-5), các ngày đã xong nhiệm vụ hằng ngày (R-NV-1, R-NV-2), sổ từ đang mượn ở Tàng
 /// Thư Các và trang đang đọc của từng cuốn (R-SACH-1…4), nhà của ta (R-NHA-3, R-NHA-4), ví Văn tiền (R-TIEN-1…4), vườn rau
 /// (R-VUON-1…9, khoá `vuon.state`), măng Trúc Lâm (R-MANG-1…5, khoá `mang.state`), bài đàn cầm đã thưởng (R-CAM-4).
 class ProgressStore {
   /// [clock] = đồng hồ (test truyền giờ giả để đi qua nhiều ngày).
   ProgressStore(this._prefs, {DateTime Function()? clock})
       : _clock = clock ?? DateTime.now,
-        _progress = _read(_prefs),
+        _lessonDays = _readLessons(_prefs),
+        _words = [...?_prefs.getStringList(_wordsKey)],
         _cards = _readCards(_prefs),
         _doneDays = {...?_prefs.getStringList(_doneKey)?.map(int.tryParse).whereType<int>()} {
-    _adoptLegacy();
     _adoptOwned();
   }
 
-  static const _charsKey = 'hanh-trinh.chu';
-  static const _radicalsKey = 'hanh-trinh.bo-thu';
-  static const _cardsKey = 'on-tap.lich';
+  // Tiến độ bộ thủ bản cũ ('hanh-trinh.chu', 'hanh-trinh.bo-thu', 'on-tap.lich') **cất**, không đọc, không xoá (R-TU-5).
+  /// bài đã học: JSON {mã bài: ngày học} theo thứ tự học
+  static const _lessonsKey = 'tu-vung.bai';
+  /// từ đã học (mã từ) theo thứ tự học
+  static const _wordsKey = 'tu-vung.da-hoc';
+  /// lịch ôn từng từ
+  static const _cardsKey = 'tu-vung.lich';
+  /// thưởng ôn đã nhận hôm nay (trần 20 — R-TIEN-2): {day, n}
+  static const _reviewPaidKey = 'tu-vung.thuong-on';
   static const _doneKey = 'nhiem-vu.ngay-xong';
   static const _bookKey = 'tang-thu.dang-muon';
   static const _pagesKey = 'tang-thu.trang';
@@ -49,7 +55,8 @@ class ProgressStore {
 
   final SharedPreferences _prefs;
   final DateTime Function() _clock;
-  Progress _progress;
+  final Map<String, int> _lessonDays;
+  final List<String> _words;
   final Map<String, ReviewCard> _cards;
   final Set<int> _doneDays;
 
@@ -59,7 +66,7 @@ class ProgressStore {
   static Future<ProgressStore> open({DateTime Function()? clock}) async =>
       ProgressStore(await SharedPreferences.getInstance(), clock: clock);
 
-  Progress get progress => _progress;
+  Progress get progress => Progress(lessons: _lessonDays.keys.toList(), words: List.unmodifiable(_words));
 
   /// Giờ máy (theo đồng hồ của kho — test truyền giờ giả).
   DateTime get now => _clock();
@@ -67,14 +74,17 @@ class ProgressStore {
   /// Hôm nay (số ngày theo giờ máy).
   int get today => dayOf(_clock());
 
-  /// Lịch ôn từng bộ thủ đã học.
+  /// Lịch ôn từng từ đã học.
   Map<String, ReviewCard> get cards => Map.unmodifiable(_cards);
 
-  /// Các bộ đến hạn hôm nay theo thứ tự hỏi (R-ON-4); thứ tự học = thứ tự đã học.
-  List<String> get dueRadicals => dueOrder(_cards, _progress.radicals.toList(), today);
+  /// Các từ đến hạn hôm nay theo thứ tự hỏi (R-ON-4) — tổng, chưa cắt 20; thứ tự học = thứ tự giáo trình đã học.
+  List<String> get dueWords => dueOrder(_cards, _words, today);
+
+  /// Bậc của từng từ trong [dueWords] (0 = 1 ngày … 6 = 120 ngày, 7 = đã thuộc) — trang chọn dạng câu (R-ON-2).
+  List<int> get dueSteps => [for (final id in dueWords) _cards[id]!.mastered ? reviewIntervals.length : _cards[id]!.step];
 
   /// Hai việc hôm nay (R-NV-1).
-  DailyStatus get daily => dailyStatus(_cards, rungTrucRadicalCount, today);
+  DailyStatus get daily => dailyStatus(_cards, _lessonDays, tuVungLessonCount, today);
 
   /// Chuỗi ngày và kỷ lục (R-NV-2).
   ({int current, int best}) get streak => streakOf(_doneDays, today);
@@ -82,16 +92,23 @@ class ProgressStore {
   /// Các ngày đã xong cả 2 việc (R-NV-2) — dải 7 ngày của bảng nhiệm vụ.
   Set<int> get doneDays => Set.unmodifiable(_doneDays);
 
-  /// Bộ thủ học mới hôm nay, theo thứ tự đã học (việc Lĩnh hội — R-NV-1).
+  /// Bài học mới hôm nay, theo thứ tự đã học (việc Lĩnh hội — R-NV-1).
   List<String> get learnedToday => [
-        for (final id in _progress.radicals)
-          if (_cards[id]?.learnedDay == today) id,
+        for (final e in _lessonDays.entries)
+          if (e.value == today) e.key,
       ];
 
-  static Progress _read(SharedPreferences p) => Progress(
-        chars: {...?p.getStringList(_charsKey)},
-        radicals: {...?p.getStringList(_radicalsKey)},
-      );
+  static Map<String, int> _readLessons(SharedPreferences p) {
+    final raw = p.getString(_lessonsKey);
+    if (raw == null) return {};
+    try {
+      final j = jsonDecode(raw);
+      if (j is! Map) return {};
+      return {for (final e in j.entries) if (e.key is String && e.value is int) e.key as String: e.value as int};
+    } on FormatException {
+      return {};
+    }
+  }
 
   static Map<String, ReviewCard> _readCards(SharedPreferences p) {
     final raw = p.getString(_cardsKey);
@@ -108,48 +125,44 @@ class ProgressStore {
     }
   }
 
-  /// Bộ đã học từ trước khi có lịch ôn → bậc 1, hạn hôm nay (R-ON-1).
-  void _adoptLegacy() {
-    final missing = _progress.radicals.where((id) => !_cards.containsKey(id)).toList();
-    if (missing.isEmpty) return;
-    for (final id in missing) {
-      _cards[id] = ReviewCard.legacy(today);
+  /// "Đã lĩnh hội" bài [id] (R-HANH-3) với các từ [words] (mã từ, thứ tự trang): bài thành đã học, mọi từ chưa có lịch vào
+  /// lịch ôn bậc 1 hạn mai (R-ON-1), tính vào việc Lĩnh hội hôm nay (R-NV-1), thưởng +10 (R-TIEN-2; [title] cho nhãn).
+  /// Bài đã học / mã rỗng / không có từ → không đổi, `false`.
+  Future<bool> learnLesson(String id, List<String> words, {String? title}) async {
+    if (id.isEmpty || words.isEmpty || _lessonDays.containsKey(id)) return false;
+    _lessonDays[id] = today;
+    for (final w in words) {
+      if (w.isEmpty || _words.contains(w)) continue;
+      _words.add(w);
+      _cards.putIfAbsent(w, () => ReviewCard.learned(today));
     }
-    _saveCards();
-  }
-
-  /// Ghi chữ [han] là đã học (lần đầu mở bài — tạm, tới khi có nút "Đã thuộc"). Học rồi → không đổi, trả `false`.
-  Future<bool> learnChar(String han) async {
-    if (han.isEmpty || _progress.chars.contains(han)) return false;
-    final chars = {..._progress.chars, han};
-    _progress = Progress(chars: chars, radicals: _progress.radicals);
-    await _prefs.setStringList(_charsKey, chars.toList());
-    return true;
-  }
-
-  /// Ghi bộ thủ [id] là đã học (nút đã học ở thẻ bộ thủ — R-HANH-3): vào lịch ôn (R-ON-1), tính vào việc Lĩnh hội hôm
-  /// nay (R-NV-1), thưởng +10 (R-TIEN-2; [char] = dạng bộ thủ cho nhãn "Học bộ 竹"). Học rồi → không đổi, trả `false`.
-  Future<bool> learnRadical(String id, {String? char}) async {
-    if (id.isEmpty || _progress.radicals.contains(id)) return false;
-    final radicals = {..._progress.radicals, id};
-    _progress = Progress(chars: _progress.chars, radicals: radicals);
-    _cards[id] = ReviewCard.learned(today);
-    await _prefs.setStringList(_radicalsKey, radicals.toList());
+    await _prefs.setString(_lessonsKey, jsonEncode(_lessonDays));
+    await _prefs.setStringList(_wordsKey, _words);
     await _saveCards();
-    await _credit([learnReward(char ?? id)]);
+    await _credit([learnReward(title ?? id, words.first)]);
     await checkDaily();
     return true;
   }
 
-  /// Chấm lượt ôn bộ [id] với [correct] câu đúng / 2 (R-ON-2), thưởng +5 / +2 (R-TIEN-2). Bộ chưa học hoặc chưa đến
-  /// hạn → không đổi, không thưởng, `false`.
-  Future<bool> reviewRadical(String id, int correct, {String? char}) async {
+  /// Thưởng ôn đã nhận hôm nay (R-TIEN-2, trần 20); ngày khác / hỏng → 0.
+  int get reviewPaidToday {
+    final j = _json(_reviewPaidKey);
+    return j is Map && j['day'] == today && j['n'] is int ? j['n'] as int : 0;
+  }
+
+  /// Chấm lượt ôn từ [id] với [correct] câu đúng / 2 (R-ON-2); 2/2 → +1 khi hôm nay chưa đủ 20 thưởng ôn (R-TIEN-2).
+  /// Từ chưa học hoặc chưa đến hạn → không đổi, không thưởng, `false`.
+  Future<bool> reviewWord(String id, int correct) async {
     final card = _cards[id];
     if (card == null || !card.isDue(today)) return false;
     _cards[id] = card.grade(correct, today);
     await _saveCards();
-    final reward = reviewReward(correct, char ?? id);
-    if (reward != null) await _credit([reward]);
+    final paid = reviewPaidToday;
+    final reward = reviewReward(correct, id, paidToday: paid);
+    if (reward != null) {
+      await _prefs.setString(_reviewPaidKey, jsonEncode({'day': today, 'n': paid + reward.amount}));
+      await _credit([reward]);
+    }
     await checkDaily();
     return true;
   }
@@ -260,7 +273,7 @@ class ProgressStore {
   Future<MangResult> mangAct(String act, {String? id, String? kind, bool right = false}) async {
     final s = mang;
     final MangResult r = switch ((act, id)) {
-      ('pick', final i?) => pickMang(s, i, _clock(), right: right, learnedAny: _progress.radicals.isNotEmpty),
+      ('pick', final i?) => pickMang(s, i, _clock(), right: right, learnedAny: _words.isNotEmpty),
       ('sell', _) => sellMang(s, kind),
       _ => const MangRefused(MangError.bad),
     };
