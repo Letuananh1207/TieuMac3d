@@ -1,12 +1,30 @@
 # Thế giới mới cho 6 vùng (đề xuất làm lại hoàn toàn)
 - Ngày: 2026-11-17 · Việc: V-20261117-79 · Hệ thống (khung 摩尔庄园): bản đồ / khu vực + trò chơi nhỏ
-- Trạng thái: **nháp, chờ người dùng chọn bộ** · Điểm: bộ 1 16/21, bộ 2 19/21 (chấm ở §7)
+- Trạng thái: **đã chọn bộ 2 "Phiêu lưu kỳ ảo" (2026-11-17)**; giữ Khởi Nguyên Trấn + Nhà của ta. Phần học qua trò **chờ
+  người dùng chốt hướng học mới** (xem "Đổi mục tiêu 2026-11-17") · Điểm: bộ 1 16/21, bộ 2 19/21 (chấm ở §7, theo mục tiêu cũ)
 - Hồ sơ gốc: `docs/tham_khao/ten-map-kieu-moly.md` (cách Moly đặt tên, 3 bộ tên trước). Phiếu này **chỉ đề xuất**, chưa sửa
   đặc tả, bản đồ, luật hay code.
+- Phiếu ảnh concept đã soạn (chờ thiết kế): `docs/phieu_thiet_ke/2026-11-17-concept-{the-gioi-moi,thung-truc-gio-hat,cho-dem-den-hoa,rung-nam-tien,cung-ngoc-day-bien,dinh-hac-bay,thanh-cat-ngu-quen}.md`.
+
+## Đổi mục tiêu 2026-11-17
+Người dùng: mục tiêu app **đổi từ học Hán tự (bộ thủ, ghép chữ, thứ tự nét, chữ cổ) sang học TỪ VỰNG tiếng Trung**. Phần hình
+ảnh (tên, công trình, bố cục, màu) giữ nguyên; phần "học qua trò" viết lại theo từ vựng — nghe, nghĩa, pinyin, dùng từ trong
+tình huống — mỗi vùng một chủ đề từ. **Chờ người dùng chốt hướng học mới** (và sửa sổ quy tắc, vd. R-HANH-3 học bộ thủ ở vùng).
+
+| Vùng | Chủ đề từ (đề xuất) | Trò gắn từ |
+|---|---|---|
+| Thung Trúc Gió Hát | phát âm, thanh điệu; chào hỏi, thiên nhiên đầu tiên | Trúc hát: nghe từ, gõ ống đúng thanh; 3 trò cũ đổi nội dung sang từ |
+| Chợ Đêm Đèn Hoa | mua bán, số đếm, lượng từ, đồ ăn | khách gọi "两碗面" → đưa đúng món, đúng số; đố đèn là câu đố từ |
+| Rừng Nấm Tiên | thực vật, thuốc, bộ phận cơ thể | nấu thuốc theo đơn: nghe tên nguyên liệu / chỗ đau, chọn đúng vật |
+| Cung Ngọc Đáy Biển | động vật biển, màu sắc | nghe "红色" → dẫn cá về hang đỏ; ngọc trai = từ đến hạn ôn |
+| Đỉnh Hạc Bay | thời tiết, phương hướng, di chuyển | cưỡi hạc theo lệnh "往左飞", "向北"; chọn vòng theo trời |
+| Thành Cát Ngủ Quên | lịch sử, đồ vật, nghề | đào cổ vật, gọi đúng tên đồ, đoán nghề của người dùng nó |
+
+Các chỗ dưới đây còn nhắc bộ thủ / ghép chữ / thứ tự nét / chữ cổ là **theo mục tiêu cũ**, bảng trên thay thế.
 
 ## Một câu
 Mỗi vùng là **một nơi có một công trình nhìn là nhận ra + một trò chơi chính**, giống Lâu Đài Moor hay Rừng Quả Mọng của Moly.
-Tên thuần Việt, trẻ đọc là thấy hình ảnh và cảm giác; chữ Hán chỉ nằm trong trò chơi.
+Tên thuần Việt, trẻ đọc là thấy hình ảnh và cảm giác; tiếng Trung (từ vựng) chỉ nằm trong trò chơi.
 
 ## Diễn biến thảo luận (để không quay lại hướng đã bỏ)
 | Lần | Hướng | Người dùng |
@@ -96,7 +114,7 @@ thêm **một** công trình đặc trưng ở chỗ nhìn thấy từ cổng v�
 - Bộ 2 "Thung Trúc Gió Hát": thêm Tháp Sáo Trúc; trò Đàn cầm và trò mới "Trúc hát" cùng chủ đề âm thanh.
 - Tên công trình đang là Hán Việt có thể Việt hoá cho đồng bộ (tuỳ chọn): Vọng Trúc Đình → **Đình Ngắm Trúc**, Khúc Thuỷ Đài →
   **Suối Chén Trôi**, Trúc Lư → **Lều Trúc**. Tên trò cũng vậy: Lưu Thương Lệnh → **Chén Trôi Đố Chữ**.
-- Bộ thủ vẫn học ở vùng này (R-HANH-3 không đổi).
+- (Mục tiêu cũ: bộ thủ học ở vùng này, R-HANH-3.) Theo mục tiêu mới: phát âm, thanh điệu, từ đầu tiên — chờ chốt.
 
 ## 5. Vị trí trên bản đồ và thứ tự mở
 Giữ **6 ô vị trí, 6 mã cảnh và mọi lối đi bộ V-59** trong `design/scene/ban-do/ban-do.json`; chỉ đổi chủ đề ô nào sang gì.
@@ -145,7 +163,7 @@ nên bỏ, hoặc đổi thành tên miền thuần Việt (vd. Miền Cát, Mi�
 
 ## 8. Bước tiếp theo (theo "ảnh concept trước")
 1. Người dùng chọn bộ (hoặc bộ trộn ở §3), chốt tên trấn / nhà ở §6.
-2. Soạn phiếu ảnh concept (chưa soạn), mỗi phiếu có câu lệnh Gemini soạn sẵn, phong cách low-poly hoạt hình mềm, không chữ Hán:
+2. Phiếu ảnh concept (**đã soạn 2026-11-17** cho bộ 2), mỗi phiếu có câu lệnh Gemini soạn sẵn, phong cách low-poly hoạt hình mềm, không chữ Hán:
    - `docs/phieu_thiet_ke/<ngày>-concept-the-gioi-moi.md`: bản đồ tổng thể mới (6 vùng + trấn + nhà, tên mới, bỏ miền Hán Việt);
    - một phiếu mỗi vùng, gồm toàn cảnh + cận công trình đặc trưng. Nếu chọn bộ 2:
      `-concept-thung-truc-gio-hat.md` (chỉ Tháp Sáo Trúc đặt vào thung có sẵn), `-concept-cho-dem-den-hoa.md`,
