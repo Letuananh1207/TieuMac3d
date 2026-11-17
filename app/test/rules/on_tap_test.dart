@@ -22,13 +22,15 @@ void main() {
     expect(c.due, 16);
   });
 
-  test('R-ON-1: bộ học từ trước khi có lịch ôn → bậc 1, hạn hôm nay', () async {
-    SharedPreferences.setMockInitialValues({'hanh-trinh.bo-thu': ['truc', 'moc']});
-    final now = DateTime(2026, 11, 13, 9);
+  test('R-ON-1: "Đã lĩnh hội" một bài → mọi từ của bài bậc 1, hạn mai; R-TU-5: lịch ôn bộ thủ cũ không đọc', () async {
+    SharedPreferences.setMockInitialValues({'hanh-trinh.bo-thu': ['truc', 'moc'], 'on-tap.lich': '{"truc":{"s":2,"d":1}}'});
+    final now = DateTime(2026, 11, 13, 23, 59);
     final store = await ProgressStore.open(clock: () => now);
-    expect(store.cards['truc']!.due, dayOf(now));
-    expect(store.cards['truc']!.learnedDay, isNull);
-    expect(store.dueRadicals, ['truc', 'moc']);
+    expect(store.cards, isEmpty);
+    expect(store.dueWords, isEmpty);
+    await store.learnLesson('bai-01', ['你', '我', '好']);
+    expect(store.cards.keys, ['你', '我', '好']);
+    expect(store.cards['你']!.due, dayOf(now) + 1);
   });
 
   test('R-ON-2: đúng 2/2 → lên 1 bậc; 1/2 → lùi 1 bậc; 0/2 → bậc 1, hạn mai, quên +1', () {
@@ -53,7 +55,7 @@ void main() {
     expect(m.grade(0, 181).interval, 1);
   });
 
-  test('R-ON-4: đến hạn = hạn ≤ hôm nay (kể cả trễ), chưa ôn hôm nay; bậc thấp trước, trễ lâu trước, rồi thứ tự học', () {
+  test('R-ON-4: đến hạn = hạn ≤ hôm nay (kể cả trễ), chưa ôn hôm nay; bậc thấp trước, trễ lâu trước, rồi thứ tự giáo trình', () {
     const today = 20;
     final cards = {
       'truc': at(3, 15), // bậc 3, trễ 5
@@ -65,23 +67,25 @@ void main() {
     expect(dueOrder(cards, ['truc', 'moc', 'thuy', 'son', 'thach'], today), ['moc', 'thuy', 'truc']);
   });
 
-  test('R-ON-4: bỏ 10 ngày → mọi bộ trễ đều đến hạn, không giới hạn số bộ', () {
-    final cards = {for (var i = 0; i < 20; i++) 'bo-$i': at(1, 2)};
-    expect(dueOrder(cards, const [], 12), hasLength(20));
+  test('R-ON-4: bỏ 10 ngày → mọi từ trễ đều đến hạn; danh sách đến hạn là tổng (trang cắt lượt 20)', () {
+    final cards = {for (var i = 0; i < 45; i++) 'tu-$i': at(1, 2)};
+    expect(dueOrder(cards, const [], 12), hasLength(45));
+    expect(reviewSessionCap, 20);
   });
 
-  test('R-ON-2: ôn qua kho — chấm, lưu, mở lại app còn; bộ chưa đến hạn không chấm', () async {
+  test('R-ON-2: ôn qua kho — chấm, lưu, mở lại app còn; từ chưa đến hạn không chấm; bậc gửi kèm', () async {
     SharedPreferences.setMockInitialValues({});
     var now = DateTime(2026, 11, 1, 8);
     final store = await ProgressStore.open(clock: () => now);
-    await store.learnRadical('truc');
-    expect(await store.reviewRadical('truc', 2), isFalse); // hạn ngày mai
+    await store.learnLesson('bai-05', ['朋友']);
+    expect(await store.reviewWord('朋友', 2), isFalse); // hạn ngày mai
     now = DateTime(2026, 11, 2, 8);
-    expect(store.dueRadicals, ['truc']);
-    expect(await store.reviewRadical('truc', 2), isTrue);
-    expect(store.dueRadicals, isEmpty);
+    expect(store.dueWords, ['朋友']);
+    expect(store.dueSteps, [0]);
+    expect(await store.reviewWord('朋友', 2), isTrue);
+    expect(store.dueWords, isEmpty);
     final again = await ProgressStore.open(clock: () => now);
-    expect(again.cards['truc']!.interval, 3);
-    expect(again.cards['truc']!.due, dayOf(now) + 3);
+    expect(again.cards['朋友']!.interval, 3);
+    expect(again.cards['朋友']!.due, dayOf(now) + 3);
   });
 }

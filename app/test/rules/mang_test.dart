@@ -78,7 +78,7 @@ void main() {
       final probe = await ProgressStore.open(clock: () => now);
       SharedPreferences.setMockInitialValues({
         'tien.tro-ngay': '{"day": ${probe.today}, "total": 60}',
-        'hanh-trinh.bo-thu': ['truc'],
+        'tu-vung.da-hoc': ['你'], // đã học ≥ 1 từ (R-MANG-4)
       });
       final store = await ProgressStore.open(clock: () => now);
       expect(await store.mangAct('pick', id: '$today-0-0', right: true), isA<MangDone>());

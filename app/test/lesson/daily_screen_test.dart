@@ -4,15 +4,15 @@ import 'package:hoc_xa_3d/journey/daily.dart';
 import 'package:hoc_xa_3d/journey/review.dart';
 import 'package:hoc_xa_3d/lesson/daily_screen.dart';
 import 'package:hoc_xa_3d/scene/review_event.dart';
-import 'package:hoc_xa_3d/scene/scene_event.dart';
+import 'package:hoc_xa_3d/scene/word_event.dart';
 
 // Thứ Sáu 13/11/2026
 final _now = DateTime(2026, 11, 13, 9);
 final _today = dayOf(_now);
 
-ReviewItem _item(String id, String form) => ReviewItem(
-      radical: Radical(id: id, form: form, name: id, meaning: id, pinyin: id, strokes: 1, examples: const []),
-      questions: const [ReviewQuestion(ask: 'pinyin', options: ['a', 'b', 'c'], answer: 0)],
+ReviewItem _item(String id) => ReviewItem(
+      word: Word(id: id, han: id, pinyin: id, meaning: id),
+      questions: const [ReviewQuestion(kind: 'chu-nghia', options: ['a', 'b', 'c', 'd'], answer: 0)],
     );
 
 Future<List<List<ReviewItem>>> _open(WidgetTester tester, Size size, DailyView view, {OpenDailyRequest? request}) async {
@@ -38,27 +38,27 @@ Future<List<List<ReviewItem>>> _open(WidgetTester tester, Size size, DailyView v
 
 void main() {
   final dueView = DailyView(
-    status: const DailyStatus(newToday: 2, dueLeft: 2, allLearned: false),
+    status: const DailyStatus(newToday: 0, dueLeft: 2, allLearned: false),
     streak: (current: 5, best: 7),
     doneDays: {for (var d = _today - 5; d < _today; d++) d},
     today: _today,
     now: _now,
-    dueIds: const ['truc', 'moc'],
+    dueIds: const ['你', '谢谢'],
     learnedTotal: 8,
   );
-  final request = OpenDailyRequest(review: [_item('truc', '竹'), _item('moc', '木')]);
+  final request = OpenDailyRequest(review: [_item('你'), _item('谢谢')]);
 
   for (final size in const [Size(390, 844), Size(844, 390)]) {
     final tag = size.width > size.height ? 'ngang' : 'dọc';
-    testWidgets('R-NV-3 ($tag): 2 việc + chuỗi; có bộ đến hạn → "Ôn ngay" mở lượt ôn đúng thứ tự', (tester) async {
+    testWidgets('R-NV-3 ($tag): 2 việc + chuỗi; có từ đến hạn → "Ôn ngay" mở lượt ôn đúng thứ tự', (tester) async {
       final reviews = await _open(tester, size, dueView, request: request);
-      expect(find.text('2/3'), findsOneWidget);
+      expect(find.text('0/1'), findsOneWidget);
       expect(find.text('còn 2'), findsOneWidget);
       expect(find.text('5'), findsOneWidget);
       expect(find.bySemanticsLabel('Hôm nay đã xong'), findsNothing);
       await tester.tap(find.text('Ôn ngay'));
       await tester.pumpAndSettle();
-      expect(reviews.single.map((i) => i.radical.id), ['truc', 'moc']);
+      expect(reviews.single.map((i) => i.word.id), ['你', '谢谢']);
     });
   }
 
@@ -67,7 +67,7 @@ void main() {
       tester,
       const Size(390, 844),
       DailyView(
-        status: const DailyStatus(newToday: 3, dueLeft: 0, allLearned: false),
+        status: const DailyStatus(newToday: 1, dueLeft: 0, allLearned: false),
         streak: (current: 23, best: 23),
         doneDays: {for (var d = _today - 22; d <= _today; d++) d},
         today: _today,
@@ -82,13 +82,13 @@ void main() {
     expect(find.text('Nhiệm vụ hằng ngày'), findsOneWidget); // tiêu đề chữ Việt, không 日課榜
     expect(find.textContaining(RegExp(r'[\u4e00-\u9fff]')), findsNothing);
     expect(find.text('Ôn ngay'), findsNothing);
-    expect(find.text('Đã ôn hết bộ đến hạn.'), findsOneWidget);
+    expect(find.text('Đã ôn hết từ đến hạn.'), findsOneWidget);
     await tester.tap(find.text('Đóng bảng'));
     await tester.pumpAndSettle();
     expect(find.text('mở'), findsOneWidget);
   });
 
-  testWidgets('mới cài: Lĩnh hội 0/3 dòng "bộ đầu tiên", không có bộ đến hạn', (tester) async {
+  testWidgets('mới cài: Lĩnh hội 0/1 dòng "bài đầu tiên", không có từ đến hạn', (tester) async {
     await _open(
       tester,
       const Size(390, 844),
@@ -100,9 +100,9 @@ void main() {
         now: _now,
       ),
     );
-    expect(find.text('0/3'), findsOneWidget);
-    expect(find.textContaining('bộ đầu tiên'), findsOneWidget);
-    expect(find.text('Không có bộ nào đến hạn.'), findsOneWidget);
+    expect(find.text('0/1'), findsOneWidget);
+    expect(find.textContaining('bài đầu tiên'), findsOneWidget);
+    expect(find.text('Không có từ nào đến hạn.'), findsOneWidget);
     expect(find.text('Xong cả 2 việc hôm nay để bắt đầu chuỗi.'), findsOneWidget);
   });
 }

@@ -1,13 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hoc_xa_3d/lesson/review_session.dart';
 import 'package:hoc_xa_3d/scene/review_event.dart';
-import 'package:hoc_xa_3d/scene/scene_event.dart';
+import 'package:hoc_xa_3d/scene/word_event.dart';
 
 ReviewItem _item(String id) => ReviewItem(
-      radical: Radical(id: id, form: id, name: id, meaning: id, pinyin: id, strokes: 1, examples: const []),
+      word: Word(id: id, han: id, pinyin: id, meaning: id),
       questions: const [
-        ReviewQuestion(ask: 'pinyin', options: ['a', 'b', 'c'], answer: 0),
-        ReviewQuestion(ask: 'meaning', options: ['a', 'b', 'c'], answer: 2),
+        ReviewQuestion(kind: 'chu-nghia', options: ['a', 'b', 'c', 'd'], answer: 0),
+        ReviewQuestion(kind: 'nghia-chu', options: ['a', 'b', 'c', 'd'], answer: 2),
       ],
     );
 

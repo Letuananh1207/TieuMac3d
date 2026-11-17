@@ -21,13 +21,13 @@ void main() {
     test('R-TIEN-1: mới cài app → 0; có 120 → tắt app mở lại vẫn 120', () async {
       final store = await ProgressStore.open();
       expect(store.coins, 0);
-      await store.learnRadical('truc', char: '竹');
+      await store.learnLesson('bai-01', ['你'], title: 'Chào hỏi');
       final reopened = await ProgressStore.open(); // cùng kho trên máy
       expect(reopened.coins, store.coins);
-      expect(reopened.coins, 10);
+      expect(reopened.coins, 30); // +10 học bài, +20 xong nhiệm vụ ngày (không có từ đến hạn)
     });
 
-    test('R-TIEN-1: đã học 12 bộ ở bản cũ → lên bản mới ví 0, không truy thưởng', () async {
+    test('R-TIEN-1: đã học 12 bộ thủ ở bản cũ → lên bản mới ví 0, không truy thưởng', () async {
       SharedPreferences.setMockInitialValues({'hanh-trinh.bo-thu': [for (var i = 0; i < 12; i++) 'bo-$i']});
       final store = await ProgressStore.open();
       expect(store.coins, 0);
@@ -41,11 +41,13 @@ void main() {
   });
 
   group('thưởng học (R-TIEN-2)', () {
-    test('R-TIEN-2: bảng thưởng — học +10; ôn 2/2 +5, 1/2 +2, 0/2 không có', () {
-      expect(learnReward('竹'), const Reward(RewardKind.learn, 10, char: '竹'));
-      expect(reviewReward(2, '木'), const Reward(RewardKind.review, 5, char: '木'));
-      expect(reviewReward(1, '木'), const Reward(RewardKind.reviewHalf, 2, char: '木'));
-      expect(reviewReward(0, '木'), isNull);
+    test('R-TIEN-2: bảng thưởng — học 1 bài +10 (xu khắc chữ đầu); ôn 2/2 +1, 1/2 và 0/2 không có; tối đa 20 / ngày', () {
+      expect(learnReward('Chào hỏi', '你'), const Reward(RewardKind.learn, 10, char: '你', title: 'Chào hỏi'));
+      expect(reviewReward(2, '朋友'), const Reward(RewardKind.review, 1, char: '朋', title: '朋友'));
+      expect(reviewReward(1, '朋友'), isNull);
+      expect(reviewReward(0, '朋友'), isNull);
+      expect(reviewReward(2, '朋友', paidToday: 19), isNotNull);
+      expect(reviewReward(2, '朋友', paidToday: 20), isNull);
     });
 
     test('R-TIEN-2: xong nhiệm vụ ngày +20; chuỗi đạt 7, 14, 21… thêm +50', () {
@@ -56,30 +58,36 @@ void main() {
       expect(dailyRewards(15), hasLength(1));
     });
 
-    test('R-TIEN-2: học 竹 → +10; mở lại 竹 → 0', () async {
+    test('R-TIEN-2: học bài Chào hỏi → +10; mở lại → 0', () async {
       final store = await ProgressStore.open();
-      expect(await store.learnRadical('truc', char: '竹'), isTrue);
-      expect(store.takeRewards(), [const Reward(RewardKind.learn, 10, char: '竹')]);
-      expect(await store.learnRadical('truc', char: '竹'), isFalse);
+      expect(await store.learnLesson('bai-01', ['你', '我'], title: 'Chào hỏi'), isTrue);
+      expect(store.takeRewards(), [const Reward(RewardKind.learn, 10, char: '你', title: 'Chào hỏi'), const Reward(RewardKind.daily, 20)]);
+      expect(await store.learnLesson('bai-01', ['你', '我'], title: 'Chào hỏi'), isFalse);
       expect(store.takeRewards(), isEmpty);
-      expect(store.coins, 10);
+      expect(store.coins, 30);
     });
 
-    test('R-TIEN-2: ôn 木 đúng 1/2 → +2; ôn bộ chưa đến hạn → không thưởng', () async {
+    test('R-TIEN-2: ôn 朋友 đúng 2/2 → +1, 1/2 → 0; từ chưa đến hạn → không thưởng; đủ 20 thưởng ôn / ngày → 0', () async {
       var now = DateTime(2026, 11, 13, 9);
       final store = await ProgressStore.open(clock: () => now);
-      await store.learnRadical('moc', char: '木');
+      await store.learnLesson('bai-x', ['朋友', '老师', ...[for (var i = 0; i < 22; i++) 'w$i']]);
       store.takeRewards();
-      expect(await store.reviewRadical('moc', 2, char: '木'), isFalse); // hạn ngày mai
+      expect(await store.reviewWord('朋友', 2), isFalse); // hạn ngày mai
       expect(store.takeRewards(), isEmpty);
       now = DateTime(2026, 11, 14, 9);
-      expect(await store.reviewRadical('moc', 1, char: '木'), isTrue);
-      expect(store.takeRewards(), contains(const Reward(RewardKind.reviewHalf, 2, char: '木')));
-      expect(store.coins, 10 + 2 + 0); // nhiệm vụ ngày 14 chưa xong (Lĩnh hội 0/3)
+      expect(await store.reviewWord('朋友', 2), isTrue);
+      expect(store.takeRewards(), contains(const Reward(RewardKind.review, 1, char: '朋', title: '朋友')));
+      expect(await store.reviewWord('老师', 1), isTrue);
+      expect(store.takeRewards(), isEmpty);
+      for (var i = 0; i < 22; i++) {
+        await store.reviewWord('w$i', 2);
+      }
+      expect(store.reviewPaidToday, 20);
+      expect(store.coins, 10 + 20 + 20); // ngày 13: học + xong nhiệm vụ; ngày 14: 20 thưởng ôn, Lĩnh hội 0/1 chưa xong
     });
 
     test('R-TIEN-2: ngày thứ 7 liên tiếp xong 2 việc → +20 rồi +50; một lần mỗi ngày', () async {
-      // 6 ngày trước đã xong (chuỗi 6), hôm nay học 3 bộ mới → xong ngày thứ 7
+      // 6 ngày trước đã xong (chuỗi 6), hôm nay học 1 bài mới → xong ngày thứ 7
       final today = DateTime(2026, 11, 13, 9);
       final store0 = await ProgressStore.open(clock: () => today);
       final t = store0.today;
@@ -87,15 +95,13 @@ void main() {
         'nhiem-vu.ngay-xong': [for (var d = t - 6; d < t; d++) '$d'],
       });
       final store = await ProgressStore.open(clock: () => today);
-      for (final id in ['a', 'b', 'c']) {
-        await store.learnRadical(id, char: id);
-      }
+      await store.learnLesson('bai-01', ['你']);
       final rewards = store.takeRewards();
-      expect(rewards.map((r) => r.amount), [10, 10, 10, 20, 50]);
+      expect(rewards.map((r) => r.amount), [10, 20, 50]);
       expect(rewards.last, const Reward(RewardKind.streak, 50, days: 7));
-      expect(store.coins, 100);
+      expect(store.coins, 80);
       await store.checkDaily();
-      await store.learnRadical('d', char: 'd');
+      await store.learnLesson('bai-02', ['我']);
       expect(store.takeRewards().map((r) => r.amount), [10]); // +20 / +50 không lặp trong ngày
     });
   });
@@ -213,9 +219,8 @@ void main() {
     });
 
     test('R-TIEN-5: nhãn lý do', () {
-      expect(rewardLabel(const Reward(RewardKind.learn, 10, char: '竹')), '+10 · Học bộ 竹');
-      expect(rewardLabel(const Reward(RewardKind.review, 5, char: '木')), '+5 · Ôn đúng 木');
-      expect(rewardLabel(const Reward(RewardKind.reviewHalf, 2, char: '木')), '+2 · Ôn 木');
+      expect(rewardLabel(learnReward('Chào hỏi', '你')), '+10 · Học bài Chào hỏi');
+      expect(rewardLabel(reviewReward(2, '朋友')!), '+1 · Ôn đúng 朋友');
       expect(rewardLabel(const Reward(RewardKind.daily, 20)), '+20 · Xong nhiệm vụ ngày');
       expect(rewardLabel(const Reward(RewardKind.streak, 50, days: 7)), '+50 · Chuỗi 7 ngày');
       expect(rewardLabel(gameReward('dau-chu', 'thang', 8)), '+8 · Thắng Đấu chữ');

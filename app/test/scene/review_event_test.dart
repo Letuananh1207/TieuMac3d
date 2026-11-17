@@ -1,96 +1,94 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hoc_xa_3d/scene/review_event.dart';
+import 'package:hoc_xa_3d/scene/word_event.dart';
 
-Map<String, Object?> _radical(String id, String form) =>
-    {'id': id, 'form': form, 'name': 'trúc', 'meaning': 'tre', 'pinyin': 'zhú', 'strokes': 6, 'examples': []};
+Map<String, Object?> _word(String han, {String bai = 'bai-01'}) => {
+      'id': han,
+      'han': han,
+      'pinyin': 'nǐ',
+      'thanh': [3],
+      'meaning': 'bạn',
+      'example': {'han': '你好！', 'pinyin': 'Nǐ hǎo!', 'meaning': 'Xin chào!'},
+      'cap': 1,
+      'bai': bai,
+      'am': false,
+      'amCau': false,
+    };
 
-Map<String, Object?> _item(String id, String form) => {
-      'radical': _radical(id, form),
+Map<String, Object?> _item(String han) => {
+      'word': _word(han),
       'questions': [
-        {'ask': 'pinyin', 'options': ['zhú', 'mù', 'shān'], 'answer': 0},
-        {'ask': 'meaning', 'options': ['mộc — cây', 'trúc — tre', 'sơn — núi'], 'answer': 1},
+        {'kind': 'chu-nghia', 'options': ['bạn', 'tôi', 'tốt', 'trà'], 'answer': 0},
+        {'kind': 'nghia-chu', 'options': ['我', han, '好', '茶'], 'answer': 1},
       ],
     };
 
 void main() {
-  test('R-ON-8: openLearned — các bộ đã học từ cuộn sách 3D; sai dạng → null (docs/bridge.md)', () {
-    final r = OpenLearnedRequest.parse([
-      {'type': 'openLearned', 'payload': {'learned': [_radical('truc', '竹'), {'id': 1}], 'region': 'Khởi Nguyên Trấn'}},
-    ]);
-    expect(r!.learned.map((x) => x.form), ['竹']);
-    expect(r.region, 'Khởi Nguyên Trấn');
-    expect(OpenLearnedRequest.parse([{'type': 'openLearned', 'payload': {}}]), isNull);
-    expect(OpenLearnedRequest.parse([{'type': 'openReview', 'payload': {'learned': []}}]), isNull);
-  });
-
-  test('openReview: đọc bộ + 2 câu (docs/bridge.md)', () {
+  test('openReview: từ + 2 câu theo dạng (R-ON-2, R-TU-2); mục sai dạng bỏ qua; rỗng → null', () {
     final r = OpenReviewRequest.parse([
-      {'type': 'openReview', 'payload': {'items': [_item('truc', '竹')], 'region': 'Trúc Lâm'}},
+      {'type': 'openReview', 'payload': {'items': [_item('你'), {'word': {'id': 1}}], 'region': 'Trúc Lâm'}},
     ]);
-    expect(r, isNotNull);
-    expect(r!.items.single.radical.form, '竹');
-    expect(r.items.single.questions.map((q) => q.ask), ['pinyin', 'meaning']);
-    expect(r.items.single.questions[1].answer, 1);
-  });
-
-  test('openReview: không có bộ hợp lệ / sai loại → null (trang mở thẻ bộ mới như cũ)', () {
+    expect(r!.items, hasLength(1));
+    expect(r.items.single.word.han, '你');
+    expect(r.items.single.word.tones, [3]);
+    expect(r.items.single.word.example.meaning, 'Xin chào!');
+    final qs = r.items.single.questions;
+    expect(qs.map((q) => q.kind), ['chu-nghia', 'nghia-chu']);
+    expect(qs[1].optionsHan, isTrue);
+    expect(qs[0].isPinyin, isFalse);
+    expect(r.region, 'Trúc Lâm');
     expect(OpenReviewRequest.parse([{'type': 'openReview', 'payload': {'items': []}}]), isNull);
-    expect(OpenReviewRequest.parse([{'type': 'openDaily', 'payload': {'items': [_item('truc', '竹')]}}]), isNull);
-    // đáp án ngoài khoảng → câu bị bỏ, bộ không còn câu nào → bỏ
-    final bad = _item('truc', '竹')..['questions'] = [{'ask': 'pinyin', 'options': ['a'], 'answer': 3}];
-    expect(OpenReviewRequest.parse([{'type': 'openReview', 'payload': {'items': [bad]}}]), isNull);
+    expect(OpenReviewRequest.parse([{'type': 'openDaily', 'payload': {'items': [_item('你')]}}]), isNull);
   });
 
-  test('openDaily: kèm câu đố bộ đến hạn + chữ từng bộ; payload rỗng vẫn mở được bảng', () {
+  test('openDaily: kèm câu đố từ đến hạn; payload rỗng vẫn mở được bảng', () {
     final d = OpenDailyRequest.parse([
-      {'type': 'openDaily', 'payload': {'review': [_item('moc', '木')], 'forms': {'moc': '木', 'truc': '竹'}}},
+      {'type': 'openDaily', 'payload': {'review': [_item('好')]}},
     ]);
-    expect(d!.review.single.radical.id, 'moc');
-    expect(d.forms['truc'], '竹');
+    expect(d!.review.single.word.id, '好');
     final empty = OpenDailyRequest.parse([{'type': 'openDaily', 'payload': {}}]);
     expect(empty!.review, isEmpty);
   });
 
-  Map<String, Object?> studyPayload() => {
-        'items': [
-          {'id': 'review', 'enabled': true, 'reason': null, 'count': 1},
-          {'id': 'learn', 'enabled': false, 'reason': 'learnInRegion', 'count': 0},
-          {'id': 'learned', 'enabled': true, 'reason': null, 'count': 2},
-        ],
-        'highlight': 'review',
-        'review': [_item('truc', '竹')],
-        'next': null,
-        'learned': [_radical('truc', '竹'), _radical('moc', '木')],
-        'region': 'Khởi Nguyên Trấn',
-      };
-
-  test('R-ON-8: openStudy đọc 3 mục, mục nổi bật, câu đố đến hạn, bộ đã học (docs/bridge.md)', () {
-    final s = OpenStudyRequest.parse([{'type': 'openStudy', 'payload': studyPayload()}]);
-    expect(s, isNotNull);
-    expect(s!.items.map((i) => i.id), ['review', 'learn', 'learned']);
-    expect(s.item('learn').enabled, isFalse);
-    expect(s.item('learn').reason, 'learnInRegion');
-    expect(s.item('review').count, 1);
-    expect(s.highlight, 'review');
-    expect(s.review.single.radical.id, 'truc');
-    expect(s.next, isNull);
-    expect(s.learned.map((r) => r.form), ['竹', '木']);
-    expect(s.region, 'Khởi Nguyên Trấn');
+  test('R-ON-8: openLearned — từ đã học + bài (mã, tên); từ sai dạng bỏ qua', () {
+    final l = OpenLearnedRequest.parse([
+      {
+        'type': 'openLearned',
+        'payload': {
+          'words': [_word('你'), {'id': 1}],
+          'lessons': [{'id': 'bai-01', 'title': 'Chào hỏi'}, {'id': 2}],
+          'region': 'Khởi Nguyên Trấn',
+        },
+      },
+    ]);
+    expect(l!.words.map((w) => w.id), ['你']);
+    expect(l.lessons.single, (id: 'bai-01', title: 'Chào hỏi'));
+    expect(l.region, 'Khởi Nguyên Trấn');
+    expect(OpenLearnedRequest.parse([{'type': 'openLearned', 'payload': {}}]), isNull);
   });
 
-  test('R-ON-8: openStudy thiếu mục / sai loại → null (trang tự mở lượt ôn / thẻ bộ mới)', () {
-    final p = studyPayload()..['items'] = [{'id': 'review', 'enabled': true, 'reason': null, 'count': 1}];
-    expect(OpenStudyRequest.parse([{'type': 'openStudy', 'payload': p}]), isNull);
-    expect(OpenStudyRequest.parse([{'type': 'openReview', 'payload': studyPayload()}]), isNull);
-    final withNext = studyPayload()..['next'] = _radical('son', '山');
-    expect(OpenStudyRequest.parse([{'type': 'openStudy', 'payload': withNext}])!.next!.form, '山');
-  });
-
-  test('R-HANH-3: openStudy đọc `upcoming` — các bộ chưa học sau `next`; thiếu → rỗng', () {
-    final p = studyPayload()
-      ..['next'] = _radical('son', '山')
-      ..['upcoming'] = [_radical('thach', '石'), {'id': 'hong'}];
-    expect(OpenStudyRequest.parse([{'type': 'openStudy', 'payload': p}])!.upcoming.map((r) => r.form), ['石']);
-    expect(OpenStudyRequest.parse([{'type': 'openStudy', 'payload': studyPayload()}])!.upcoming, isEmpty);
+  test('R-HANH-3: openWordLesson — bài + từ theo trang; không có từ → null', () {
+    final w = OpenWordLessonRequest.parse([
+      {
+        'type': 'openWordLesson',
+        'payload': {
+          'lesson': {'id': 'bai-01', 'title': 'Chào hỏi', 'index': 1, 'total': 50},
+          'words': [_word('你'), _word('我')],
+          'learned': false,
+          'region': 'Trúc Lâm',
+        },
+      },
+    ]);
+    expect(w!.lessonId, 'bai-01');
+    expect(w.title, 'Chào hỏi');
+    expect(w.total, 50);
+    expect(w.words.map((x) => x.han), ['你', '我']);
+    expect(w.learned, isFalse);
+    expect(
+      OpenWordLessonRequest.parse([
+        {'type': 'openWordLesson', 'payload': {'lesson': {'id': 'bai-01', 'title': 'x'}, 'words': []}},
+      ]),
+      isNull,
+    );
   });
 }

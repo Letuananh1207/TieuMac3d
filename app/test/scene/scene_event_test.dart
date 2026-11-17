@@ -57,59 +57,37 @@ void main() {
     expect(debugScript(on: true), contains('{"type":"debug","payload":{"on":true}}'));
   });
 
-  test('getProgress: nhận loại sự kiện, trả số chữ, bộ thủ đã học — không khoá vùng (docs/bridge.md, R-HANH-1)', () {
+  test('getProgress: nhận loại sự kiện, trả bài + từ đã học — không khoá vùng (docs/bridge.md, R-HANH-1, R-TU-1)', () {
     expect(sceneEventType([{'type': 'getProgress', 'payload': {}}]), 'getProgress');
     expect(sceneEventType([]), isNull);
     expect(sceneEventType(['x']), isNull);
-    expect(progressReply(const Progress(chars: {'快', '書'})), {
-      'chars': 2,
-      'radicals': <String>[],
+    expect(progressReply(const Progress(lessons: ['bai-01'], words: ['你', '我'])), {
+      'lessons': ['bai-01'],
+      'words': ['你', '我'],
       'due': <String>[],
-      'daily': {'learned': 0, 'goal': 3, 'due': 0, 'streak': 0, 'best': 0},
+      'dueSteps': <int>[],
+      'daily': {'learned': 0, 'goal': 1, 'due': 0, 'streak': 0, 'best': 0},
       'book': null,
     });
   });
 
-  test('getProgress: kèm bộ đến hạn ôn + bảng nhiệm vụ hôm nay (docs/bridge.md, R-ON-4, R-NV-1)', () {
+  test('getProgress: kèm từ đến hạn ôn + bậc + bảng nhiệm vụ hôm nay (docs/bridge.md, R-ON-2, R-ON-4, R-NV-1)', () {
     final r = progressReply(
-      const Progress(radicals: {'truc', 'moc'}),
-      due: ['moc', 'truc'],
+      const Progress(lessons: ['bai-01'], words: ['你', '我']),
+      due: ['我', '你'],
+      dueSteps: [0, 2],
       daily: const DailyStatus(newToday: 1, dueLeft: 2, allLearned: false),
       streak: (current: 4, best: 6),
     );
-    expect(r['due'], ['moc', 'truc']);
-    expect(r['daily'], {'learned': 1, 'goal': 3, 'due': 2, 'streak': 4, 'best': 6});
+    expect(r['due'], ['我', '你']);
+    expect(r['dueSteps'], [0, 2]);
+    expect(r['daily'], {'learned': 1, 'goal': 1, 'due': 2, 'streak': 4, 'best': 6});
   });
 
   test('back: hỏi trang, trả true khi trang đã xử lý (docs/bridge.md)', () {
     expect(backScript, contains('"type":"back"'));
     expect(backScript, contains('===true'));
     expect(backScript, startsWith('window.scene?'));
-  });
-
-  test('openRadical: đọc bộ thủ, ví dụ, nét "từ hình đến chữ", đã học (docs/bridge.md)', () {
-    final r = OpenRadicalRequest.parse([
-      {
-        'type': 'openRadical',
-        'payload': {
-          'radical': {
-            'id': 'thuy', 'form': '氵', 'full': '水', 'name': 'thuỷ', 'meaning': 'nước', 'pinyin': 'shuǐ',
-            'strokes': 3, 'fullStrokes': 4,
-            'examples': [{'han': '河', 'pinyin': 'hé', 'meaning': 'sông'}],
-            'evolution': {'hinh': ['M50 10 L50 90'], 'trien': ['M30 10 L30 90']},
-          },
-          'learned': true,
-          'region': 'Trúc Lâm',
-        },
-      }
-    ])!;
-    expect(r.radical.form, '氵');
-    expect(r.radical.full, '水');
-    expect(r.radical.fullStrokes, 4);
-    expect(r.radical.examples, [('河', 'hé', 'sông')]);
-    expect(r.radical.hinh, ['M50 10 L50 90']);
-    expect(r.learned, isTrue);
-    expect(OpenRadicalRequest.parse([{'type': 'openRadical', 'payload': {'radical': {'id': 'x'}}}]), isNull);
   });
 
   test('setHome: đọc danh sách món thô (docs/bridge.md); không phải setHome / thiếu items → null', () {

@@ -29,7 +29,7 @@ void main() {
   testWidgets('R-TIEN-5: +10 rồi +20 — 2 xu bay rồi nhãn, 4 xu rồi nhãn; ví đếm tới số dư; xong tự gỡ', (tester) async {
     var done = false;
     await tester.pumpWidget(host(RewardOverlay(
-      rewards: const [Reward(RewardKind.learn, 10, char: '竹'), Reward(RewardKind.daily, 20)],
+      rewards: const [Reward(RewardKind.learn, 10, char: '你', title: 'Chào hỏi'), Reward(RewardKind.daily, 20)],
       balance: 130,
       from: const Offset(195, 700),
       onDone: () => done = true,
@@ -46,7 +46,7 @@ void main() {
     }
 
     await until(() => flying.evaluate().length == 2); // khoản 1: +10 → 2 xu
-    await until(() => find.text('+10 · Học bộ 竹').evaluate().isNotEmpty);
+    await until(() => find.text('+10 · Học bài Chào hỏi').evaluate().isNotEmpty);
     expect(flying, findsNothing); // nhãn hiện sau khi xu đã vào ví
     await until(() => flying.evaluate().length == 4); // khoản 2: +20 → 4 xu
     await until(() => find.text('+20 · Xong nhiệm vụ ngày').evaluate().isNotEmpty);
