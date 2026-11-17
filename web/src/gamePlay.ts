@@ -14,7 +14,7 @@ import type { BoardPoint, GameTable } from './scene/gameTable';
 import type { SeatSpot } from './zones/seats';
 import { placeName } from './zones/journeyMap';
 
-/** vùng học bộ thủ: tên lấy từ bản đồ (R-HANH-1), không viết cứng */
+/** vùng học bài từ: tên lấy từ bản đồ (R-HANH-1), không viết cứng */
 const FOREST = placeName('rung-truc');
 
 /** R-GIAO-1: đứng cách ghế dưới khoảng này (m) thì Ngồi = ngồi vào bàn. */
@@ -33,7 +33,7 @@ export const GAME_LINES = {
   coHoa: 'Ngang tài ngang sức!',
   dauChuaHoc: `Con hãy tới ${FOREST} học vài bài từ với Trúc Lão rồi lại đây đấu với lão.`,
   dauChuaHocRoi: 'Vâng, con đi đây (rời bàn)',
-  dauThua: 'Khá lắm! Con nhớ bộ thủ chắc hơn lão tưởng.',
+  dauThua: 'Khá lắm! Con nhớ từ chắc hơn lão tưởng.',
   dauThang: 'Lần này lão hơn một chút. Ôn thêm rồi lại đấu nhé con.',
   dauHoa: 'Ngang tay rồi — con với lão cùng đấu ván nữa chứ?',
 } as const;
@@ -55,7 +55,7 @@ export interface GamePlayHost {
   groundAt(x: number, z: number): number;
   /** NPC `npcId` nói một câu qua khung thoại (lựa chọn [choice], mặc định "Vâng"); đóng khung → `onClose` */
   say(npcId: string, text: string, onClose: () => void, choice?: string): void;
-  /** bộ thủ đã học (R-DAU-1) */
+  /** từ đã học (R-DAU-1, R-TU-1) */
   learned(): ReadonlySet<string>;
   /** tên NPC theo mã (thẻ kết quả, thẻ điểm) */
   npcInfo?(npcId: string): { name: string; han?: string } | undefined;

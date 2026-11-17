@@ -424,7 +424,7 @@ async function boot(): Promise<void> {
     } else character.facing.rotation.y = 0;
     if (place.kind === 'on') {
       // ô mẫu trên cuộn Tĩnh toạ (R-ON-8, thiết kế 2026-11-16.12 `Cuon-*`): mượn HSK 1, đã học 5 bộ, còn 1 việc;
-      // &muc=chua-muon — chưa mượn sách · &muc=chua-hoc — chưa mượn, chưa học bộ nào (còn 2 việc) · &muc=xong — xong việc
+      // &muc=chua-muon — chưa mượn sách · &muc=chua-hoc — chưa mượn, chưa học từ nào (còn 2 việc) · &muc=xong — xong việc
       // hôm nay; &nhan=book|learned|daily|stand — ô đang nhấn + tay gần ô trỏ (giữ yên) · &moi — ô Nhiệm vụ vừa cập nhật
       const muc = params.get('muc');
       const learned = muc === 'chua-hoc' ? [] : TU_VUNG.slice(0, 5).map((t) => t.id);

@@ -1,6 +1,6 @@
 /**
  * Luật Văn tiền 文錢 cho **chế độ thử trên trình duyệt** (R-TIEN-7 — không có Flutter): bản TypeScript của phần luật cần dùng
- * trong `app/lib/journey/wallet.dart` (thưởng trò + trần 60 / ngày — R-TIEN-3, +10 học bộ mới — R-TIEN-2, mua — R-TIEN-4)
+ * trong `app/lib/journey/wallet.dart` (thưởng trò + trần 60 / ngày — R-TIEN-3, +10 học bài mới — R-TIEN-2, mua — R-TIEN-4)
  * + ví thử `TrialWallet`. **Đổi luật tiền → sửa sổ → sửa cả hai file** (test hai phía dùng cùng ví dụ sổ:
  * `walletRules.test.ts` ↔ `app/test/rules/tien_test.dart`). Có Flutter thì Dart là nguồn thật, file này không chạy.
  * Thuần — không DOM, không lưu (lưu: `bridge/browserStore.ts`). Giá một nguồn ở `decor.ts`.
@@ -10,7 +10,7 @@ import { applyAct, freshGarden, parseGarden, type Garden, type GardenAct, type G
 import { freshMang, parseMang, pickMang, sellMang, type MangAct, type MangResult, type MangState } from './mang';
 import type { GameEarning } from './wallet';
 
-/** Học 1 bộ thủ mới (R-TIEN-2) — `learnCoins` ở Dart. */
+/** Học 1 bài từ mới (R-TIEN-2) — `learnCoins` ở Dart. */
 export const LEARN_COINS = 10;
 
 /** Trò chơi cộng lại tối đa chừng này mỗi ngày (R-TIEN-3) — `gameDailyCap` ở Dart. */
@@ -74,7 +74,7 @@ export function buyDecor(a: { balance: number; owned: DecorCounts; item: string;
   return { ok: true, balance: a.balance - a.price, owned: { ...a.owned, [a.item]: (a.owned[a.item] ?? 0) + 1 } };
 }
 
-/** Ví thử lưu trong trình duyệt (R-TIEN-7): số dư, thưởng trò hôm nay, đồ sở hữu, nhà, bộ đã học trên bảng HTML. */
+/** Ví thử lưu trong trình duyệt (R-TIEN-7): số dư, thưởng trò hôm nay, đồ sở hữu, nhà, bài đã học trên bảng HTML. */
 export interface TrialWallet {
   coins: number;
   /** ngày của `gameToday` (`dayKey`) */

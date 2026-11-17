@@ -37,7 +37,7 @@ export interface ToolContext {
   loading: boolean;
   /** đang cưỡi hạc (cất / hạ cánh) */
   crane: boolean;
-  /** bài học / thẻ bộ thủ / màn Flutter / bảng HTML phủ cảnh */
+  /** bài học / màn bài từ / màn Flutter / bảng HTML phủ cảnh */
   covered: boolean;
   /** bản đồ truyền tống mở */
   travelMap: boolean;

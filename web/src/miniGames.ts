@@ -39,7 +39,7 @@ export interface MiniHost {
   /** ví thử (không có Flutter — R-TIEN-7); `null` = có Flutter */
   trial: TrialStore | null;
   progress(): JourneyProgress | null;
-  /** bộ thủ đã học (tiến độ / ví thử) */
+  /** từ đã học (tiến độ / ví thử) */
   learned(): ReadonlySet<string>;
   /** mức đồ hoạ (mưa: Thấp không hạt — R-MANG-2) */
   lowTier: boolean;

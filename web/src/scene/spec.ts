@@ -20,7 +20,7 @@ export const NPC_IDS = [
   'tieu-mac', 'su-phu', 'thu-thu', 'tieu-nhi', 'quan-su', 'tran-su', 'khat-nhi', 'go-mo', 'cam-nu',
   // NPC trò chơi Trúc Lâm (V-66 B4): văn nhân Lưu Thương + Trúc Ông — thiếu model → thế bằng khối (R-NPC-1)
   'thi-ong', 'tu-tai', 'tai-nu', 'truc-ong',
-  // thầy Trúc Lão dạy bộ thủ ở Trúc Lâm (R-HANH-8, V-45) — chưa có model riêng → thế bằng khối (R-NPC-1)
+  // thầy Trúc Lão dạy bài từ vựng ở Trúc Lâm (R-HANH-8, V-45) — chưa có model riêng → thế bằng khối (R-NPC-1)
   'truc-lao',
 ] as const;
 /** NPC trò chơi / thầy Trúc Lão: thiếu model thì dựng bằng khối đệ tử đổi màu áo, không bỏ (R-NPC-1). */

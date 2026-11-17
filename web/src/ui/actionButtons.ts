@@ -9,7 +9,7 @@ export interface ActionState {
   air: boolean;
   sitting: boolean;
   bowing: boolean;
-  /** chấm son nút "Tĩnh toạ" (R-DIEU-7): `due` = số bộ đến hạn; `null` = không chấm */
+  /** chấm son nút "Tĩnh toạ" (R-DIEU-7): `due` = số từ đến hạn; `null` = không chấm */
   badge: { n: number; kind: 'due' } | null;
 }
 
@@ -20,7 +20,7 @@ export function sitButtonText(
 ): { label: string; aria: string; badge: string | null } {
   if (sitting) return { label: 'Đang tĩnh toạ', aria: 'Đang tĩnh toạ, bấm để đứng dậy', badge: null };
   if (!badge) return { label: 'Tĩnh toạ', aria: 'Tĩnh toạ', badge: null };
-  const aria = `Tĩnh toạ, còn ${badge.n} bộ đến hạn`;
+  const aria = `Tĩnh toạ, còn ${badge.n} từ đến hạn`;
   return { label: 'Tĩnh toạ', aria, badge: badge.n >= 100 ? '99+' : String(badge.n) };
 }
 
@@ -66,7 +66,7 @@ export class ActionButtons {
     this.bow.classList.toggle('on', s.bowing);
     this.sit.classList.toggle('on', s.sitting);
     this.sit.setAttribute('aria-pressed', String(s.sitting));
-    // R-DIEU-7 (thiết kế 2026-11-14.10, tên 2026-11-16.12): "Tĩnh toạ" / "Đang tĩnh toạ"; chấm son bộ đến hạn; đang ngồi ẩn chấm
+    // R-DIEU-7 (thiết kế 2026-11-14.10, tên 2026-11-16.12): "Tĩnh toạ" / "Đang tĩnh toạ"; chấm son từ đến hạn; đang ngồi ẩn chấm
     const t = sitButtonText(s.sitting, s.badge);
     this.sitLabel.textContent = t.label;
     this.sitBadge.hidden = t.badge === null;

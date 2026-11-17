@@ -1,6 +1,6 @@
 /**
  * Kho ví thử trong trình duyệt (R-TIEN-7 — chạy không có Flutter, vd. `npm run dev`): một khoá `localStorage`
- * `hoc-xa.thu.v1` giữ `TrialWallet` (số dư, thưởng trò hôm nay, đồ sở hữu, nhà, bộ đã học). Đọc / ghi bọc `try/catch`:
+ * `hoc-xa.thu.v1` giữ `TrialWallet` (số dư, thưởng trò hôm nay, đồ sở hữu, nhà, bài đã học). Đọc / ghi bọc `try/catch`:
  * bị chặn (ẩn danh, chặn dữ liệu trang) → giữ trong bộ nhớ, trang vẫn chạy. Tách hẳn dữ liệu app (`ProgressStore` của
  * Flutter) — không chép qua lại. `?tien=xoa` xoá kho thử. Luật: `zones/walletRules.ts`.
  */

@@ -383,7 +383,7 @@ export class NgoiMat {
     return pose;
   }
 
-  /** Bàn chơi: hai tay ở mép bàn phía mình (cờ) / cầm hai góc thẻ bộ thủ (Đấu chữ). */
+  /** Bàn chơi: hai tay ở mép bàn phía mình (cờ) / cầm hai góc thẻ chữ (Đấu chữ). */
   private tableHands(p: Extract<SitPlace, { kind: 'ban-choi' }>): HandsPose {
     const yaw = this.character.facing.rotation.y;
     // từ tâm chỗ chơi về phía người ngồi = ngược hướng nhìn của ghế; ngang = bên phải người ngồi

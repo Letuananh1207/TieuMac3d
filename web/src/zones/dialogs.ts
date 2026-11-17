@@ -4,7 +4,7 @@
  */
 import { placeName } from './journeyMap';
 
-/** vùng học bộ thủ: tên lấy từ bản đồ (R-HANH-1), không viết cứng */
+/** vùng học bài từ: tên lấy từ bản đồ (R-HANH-1), không viết cứng */
 const FOREST = placeName('rung-truc');
 const SECOND = placeName('giang-nam');
 
@@ -22,7 +22,7 @@ export interface DialogChoice {
   /** việc của trò nhỏ Trúc Lâm cho `action: 'mini'` (V-66 B4 — `zones/trucLamThoai.ts`): `luu-du` dự tiệc, `luu-cach` cách
    *  chơi, `mang-ban` bán hết măng, `mang-cach` cách chơi hái măng */
   mini?: 'luu-du' | 'luu-cach' | 'mang-ban' | 'mang-cach';
-  /** việc với Trúc Lão cho `action: 'truc'`: `hoc` học bộ chưa học đầu tiên (R-HANH-3), `on` ôn các bộ đến hạn (R-ON-5) */
+  /** việc với Trúc Lão cho `action: 'truc'`: `hoc` học bài chưa học đầu tiên (R-HANH-3), `on` ôn các từ đến hạn (R-ON-5) */
   truc?: 'hoc' | 'on';
 }
 
@@ -106,12 +106,12 @@ export const DIALOGS: Dialog[] = [
       },
       {
         id: 'vung',
-        text: `${FOREST} mở sẵn cho người mới. Học đủ bộ thủ ở ${FOREST} thì ${SECOND} mở; học càng nhiều chữ, càng nhiều vùng mở ra.`,
+        text: `Vùng nào đã dựng xong đều đi được ngay, không cần học đủ mới mở — ${FOREST} có thầy dạy từ, ${SECOND} và các vùng khác cứ đi mà ngắm.`,
         choices: [{ text: 'Sang đó học thế nào ạ?', next: 'hoc' }, OTHER, BYE],
       },
       {
         id: 'hoc',
-        text: `Sang ${FOREST}, tìm thầy Trúc Lão ở bãi hạc đáp. Thầy dạy từng bộ thủ: nét, âm, nghĩa. Mỗi lần lĩnh hội một bộ — chậm mà chắc, chớ vội.`,
+        text: `Sang ${FOREST}, tìm thầy Trúc Lão ở bãi hạc đáp. Thầy dạy từng bài từ: nghe âm, nói theo, nhớ nghĩa, nhận mặt chữ. Mỗi ngày lĩnh hội một bài — chậm mà chắc, chớ vội.`,
         choices: [{ text: 'Con nhớ rồi ạ', next: 'nho' }, OTHER, BYE],
       },
       {
@@ -180,7 +180,7 @@ export const DIALOGS: Dialog[] = [
       },
       {
         id: 'dau',
-        text: 'Mặc Ông ra 10 câu, mỗi câu một bộ thủ đạo hữu đã học cùng bốn nghĩa — chọn nghĩa đúng. Chỉ là ôn cho nhớ, không ghi gì vào tiến độ, thua cũng chẳng mất gì đâu, đạo hữu đừng ngại.',
+        text: 'Mặc Ông ra 10 câu, mỗi câu một từ đạo hữu đã học cùng bốn nghĩa — chọn nghĩa đúng. Chỉ là ôn cho nhớ, không ghi gì vào tiến độ, thua cũng chẳng mất gì đâu, đạo hữu đừng ngại.',
         choices: [{ text: 'Vào bàn thế nào?', next: 'vao' }, { text: 'Hỏi chuyện khác', next: 'chao' }, BYE],
       },
       {

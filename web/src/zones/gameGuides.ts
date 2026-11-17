@@ -5,7 +5,7 @@
  */
 import { placeName } from './journeyMap';
 
-/** vùng học bộ thủ: tên lấy từ bản đồ (R-HANH-1), không viết cứng */
+/** vùng học bài từ: tên lấy từ bản đồ (R-HANH-1), không viết cứng */
 const FOREST = placeName('rung-truc');
 
 /** Hai biển lệch cao hơn khoảng này (m) = khác tầng → không hiện nút (như chỗ ngồi, R-VA-4). */
@@ -39,7 +39,7 @@ export interface GuideSection {
   body: string;
 }
 
-/** Ô báo đầu vùng cuộn khi chưa học bộ thủ nào; `icon` = biểu tượng bên trái (lửa / bản đồ). */
+/** Ô báo đầu vùng cuộn khi chưa học từ nào; `icon` = biểu tượng bên trái (lửa / bản đồ). */
 export interface GuideNotice extends GuideSection {
   icon: 'lua' | 'ban-do';
 }
@@ -53,7 +53,7 @@ export interface GameGuide {
   /** tên Việt (Lora, đầu bảng — không kèm chữ Hán, R-HUD-4) */
   name: string;
   intro: string;
-  /** hình minh hoạ: lưới cờ, thẻ bộ thủ + 4 nghĩa, hay người ngồi bồ đoàn + cuộn sách (khu tự học); `none` = chưa có hình
+  /** hình minh hoạ: lưới cờ, thẻ chữ + 4 nghĩa, hay người ngồi bồ đoàn + cuộn sách (khu tự học); `none` = chưa có hình
    *  (trò Trúc Lâm — chờ thiết kế), chỉ dòng chú thích */
   figure: 'co' | 'dau-chu' | 'tu-hoc' | 'none';
   caption: string;
@@ -64,7 +64,7 @@ export interface GameGuide {
   /** đầu ô mẹo; không có → "Mẹo của <tên NPC>" */
   tipTitle?: string;
   tip: string;
-  /** ô báo đầu vùng cuộn khi chưa học bộ thủ nào (Đấu chữ — R-DAU-1; khu tự học — R-VA-5) */
+  /** ô báo đầu vùng cuộn khi chưa học từ nào (Đấu chữ — R-DAU-1; khu tự học — R-VA-5) */
   none?: GuideNotice;
 }
 
@@ -103,13 +103,13 @@ const GUIDES: Record<string, GameGuide> = {
     label: 'Cách chơi',
     eyebrow: EYEBROW,
     name: 'Đấu chữ',
-    intro: 'Ôn bộ thủ đã học — đấu 10 câu với Mặc Ông.',
+    intro: 'Ôn từ đã học — đấu 10 câu với Mặc Ông.',
     figure: 'dau-chu',
-    caption: 'Mỗi câu một bộ thủ + **4 nghĩa, đúng một**. Chọn đúng → **+1 điểm**.',
+    caption: 'Mỗi câu một từ đã học + **4 nghĩa, đúng một**. Chọn đúng → **+1 điểm**.',
     sections: [
       {
         title: 'Mục tiêu',
-        body: `Đoán đúng nghĩa bộ thủ **nhiều hơn Mặc Ông**. Chỉ ôn bộ đã học ở ${FOREST} — không mở bài mới, không tính tiến độ.`,
+        body: `Đoán đúng nghĩa từ **nhiều hơn Mặc Ông**. Chỉ ôn từ đã học ở ${FOREST} — không mở bài mới, không tính tiến độ.`,
       },
       {
         title: 'Mỗi lượt',
@@ -122,8 +122,8 @@ const GUIDES: Record<string, GameGuide> = {
     tip: 'Nhìn hình mà đoán: 木 là cái cây — trên có cành, dưới có rễ.',
     none: {
       icon: 'lua',
-      title: 'Đạo hữu chưa học bộ thủ nào',
-      body: `Đấu chữ chỉ ôn bộ đã học, nên chưa chơi được. Hãy tới **${FOREST}** tu luyện trước — đi Truyền Tống Đài, chọn ${FOREST}.`,
+      title: 'Đạo hữu chưa học từ nào',
+      body: `Đấu chữ chỉ ôn từ đã học, nên chưa chơi được. Hãy tới **${FOREST}** học bài từ với thầy Trúc Lão trước — bấm Bản đồ, chọn ${FOREST}.`,
     },
   },
 };
@@ -138,12 +138,12 @@ const TRUC_LAM_GUIDES: Record<string, GameGuide> = {
     label: 'Cách chơi',
     eyebrow: TRUC,
     name: 'Lưu Thương Lệnh',
-    intro: 'Thả chén theo dòng suối, ghép bộ thủ thành chữ.',
+    intro: 'Thả chén theo dòng suối, ghép chữ thành từ.',
     figure: 'none',
     caption: '**Chén lệnh viền vàng** trôi theo mương, dừng trước ai thì người ấy ghép chữ.',
     sections: [
-      { title: 'Vào tiệc', body: 'Nói chuyện với **Thi Ông** → "Dự tiệc Lưu Thương". Cần đã học **ít nhất 3 bộ thủ**.' },
-      { title: 'Ghép chữ', body: 'Chén dừng trước mình → thấy phần còn lại của một chữ và nghĩa. **Chạm bộ thủ còn thiếu** trong 4 ô, trong 20 giây.' },
+      { title: 'Vào tiệc', body: 'Nói chuyện với **Thi Ông** → "Dự tiệc Lưu Thương". Cần đã học **ít nhất 3 từ hai chữ**.' },
+      { title: 'Ghép từ', body: 'Chén dừng trước mình → thấy một chữ của từ hai chữ, nghĩa và pinyin. **Chạm chữ còn thiếu** trong 4 ô, trong 20 giây.' },
       { title: 'Đúng · sai', body: 'Đúng được **+1 điểm**. Sai hoặc hết giờ thì uống phạt một chén, không mất điểm.' },
       { title: 'Hết ván', body: '8 lượt (đạo hữu 4 lượt). Xếp hạng 4 người: hạng nhất **+8**, đồng hạng nhất +5, còn lại +3 Văn tiền.' },
     ],
@@ -152,8 +152,8 @@ const TRUC_LAM_GUIDES: Record<string, GameGuide> = {
     tip: 'Nhìn nghĩa trước: chữ nói về nước thường có bộ thuỷ, về cây cỏ thường có bộ thảo.',
     none: {
       icon: 'lua',
-      title: 'Đạo hữu chưa đủ 3 bộ thủ',
-      body: `Lưu Thương cần ít nhất 3 bộ thủ đã học. Tĩnh toạ ngay ở ${FOREST} để học bộ mới rồi lại thả chén.`,
+      title: 'Đạo hữu chưa đủ 3 từ hai chữ',
+      body: `Lưu Thương cần ít nhất 3 từ hai chữ đã học. Gặp thầy Trúc Lão ở bãi hạc đáp ${FOREST} học thêm bài từ rồi lại thả chén.`,
     },
   },
   'hai-mang': {
@@ -162,11 +162,11 @@ const TRUC_LAM_GUIDES: Record<string, GameGuide> = {
     name: 'Hái măng sau mưa',
     intro: 'Măng nhú mỗi ngày hai lứa trong rừng trúc.',
     figure: 'none',
-    caption: 'Mỗi lứa có **một măng to** khắc một bộ thủ đã học.',
+    caption: 'Mỗi lứa có **một măng to** khắc một từ đã học.',
     sections: [
       { title: 'Hai lứa mỗi ngày', body: '**5:00** sáng 8 măng · **15:00** chiều 6 măng, sau 10 phút mưa phùn. Nửa đêm măng cũ héo.' },
       { title: 'Hái', body: 'Đi tới gần búp măng → nút **"Hái"**. Mỗi búp hái được một lần.' },
-      { title: 'Măng chữ', body: 'Măng to khắc bộ thủ: trả lời đúng nghĩa được **2 Măng to**, sai vẫn được 1.' },
+      { title: 'Măng chữ', body: 'Măng to khắc từ đã học: trả lời đúng nghĩa được **2 Măng to**, sai vẫn được 1.' },
       { title: 'Bán', body: 'Mang ra Trúc Lư bán cho **Trúc Ông**: Măng 3, Măng to 8 Văn tiền / cái.' },
     ],
     tipBy: 'truc-ong',

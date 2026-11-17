@@ -47,7 +47,7 @@ export class DailyPanel {
     this.closeBtn.addEventListener('click', () => this.close());
   }
 
-  /** Mở bảng; [dueForms] = chữ các bộ đến hạn; [onReview] = "Ôn ngay" (R-ON-5) — đóng bảng rồi mở lượt ôn. */
+  /** Mở bảng; [dueForms] = chữ các từ đến hạn; [onReview] = "Ôn ngay" (R-ON-5) — đóng bảng rồi mở lượt ôn. */
   open(v: DailyBoardView, dueForms: readonly string[], onReview: () => void): void {
     const now = new Date();
     const title = node('div', 'dl-title');

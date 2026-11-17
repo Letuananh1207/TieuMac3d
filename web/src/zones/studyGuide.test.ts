@@ -33,7 +33,7 @@ describe('Hướng dẫn Khu tự học — R-VA-5', () => {
     expect(JSON.stringify(g)).not.toMatch(/\p{Script=Han}/u);
     expect(g.name).toBe('Khu tự học');
     expect(g.figure).toBe('tu-hoc');
-    expect(g.sections.map((s) => s.title)).toEqual(['Ngồi vào bồ đoàn', 'Cuộn bảng chọn', 'Học bộ mới ở Trúc Lâm', 'Đứng dậy']);
+    expect(g.sections.map((s) => s.title)).toEqual(['Ngồi vào bồ đoàn', 'Cuộn bảng chọn', 'Học bài mới ở Trúc Lâm', 'Đứng dậy']);
     expect(g.tipBy).toBe(LIBRARIAN);
     expect(g.tipTitle).toBe('Lời thủ thư Điển Thư');
   });
@@ -45,16 +45,16 @@ describe('Hướng dẫn Khu tự học — R-VA-5', () => {
     expect(all).toContain('phía nam');
     expect(all).toContain('1 giây');
     expect(all).toContain('"Đọc sách"');
-    expect(all).toContain('"Bộ đã học"');
+    expect(all).toContain('"Từ đã học"');
     expect(all).toContain('"Nhiệm vụ hôm nay"');
     expect(all).toContain('"Ôn ngay"');
     expect(all).toContain('thầy Trúc Lão');
-    expect(all).not.toContain('"Ôn bộ đến hạn"'); // cuộn không còn mục ôn / học (R-ON-8)
+    expect(all).not.toContain('"Ôn từ đến hạn"'); // cuộn không còn mục ôn / học (R-ON-8)
     expect(all).toContain('"Đứng dậy"');
   });
 
-  it('R-VA-5: chưa học bộ nào → ô báo vàng biểu tượng bản đồ, hướng ra Trúc Lâm', () => {
-    expect(STUDY_GUIDE.none).toMatchObject({ icon: 'ban-do', title: 'Đạo hữu chưa học bộ thủ nào' });
+  it('R-VA-5: chưa học từ nào → ô báo vàng biểu tượng bản đồ, hướng ra Trúc Lâm', () => {
+    expect(STUDY_GUIDE.none).toMatchObject({ icon: 'ban-do', title: 'Đạo hữu chưa học từ nào' });
     expect(plain(STUDY_GUIDE.none!.body)).toContain('Trúc Lâm');
   });
 

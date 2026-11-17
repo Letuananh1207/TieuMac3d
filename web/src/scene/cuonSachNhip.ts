@@ -4,7 +4,7 @@
  *   0 → 0,3 s     chưa hiện (vòng sáng dưới đệm nở — `nhapDinh.ts`)
  *   0,3 → 0,45 s  hai trục hiện chập nhau, phóng 0 → 1
  *   0,45 → 1 s    hai trục trượt ra, giấy giãn ngang (chậm dần)
- *   ≥ 1 s         mở hết, giữ mở (thẻ học / màn ôn / Bộ đã học mở rồi đóng — không chạy lại nhịp)
+ *   ≥ 1 s         mở hết, giữ mở (thẻ học / màn ôn / Từ đã học mở rồi đóng — không chạy lại nhịp)
  *   đứng dậy trước 1 s → tắt dần 0,2 s · đứng dậy khi đã mở (hay "Đứng dậy" trên bảng) → hai trục chập về giữa 0,25 s → tắt
  */
 

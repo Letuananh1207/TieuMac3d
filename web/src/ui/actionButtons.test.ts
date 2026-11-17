@@ -7,12 +7,12 @@ describe('Nút Tĩnh toạ — chữ', () => {
     expect(sitButtonText(false, null)).toEqual({ label: 'Tĩnh toạ', aria: 'Tĩnh toạ', badge: null });
   });
 
-  it('R-DIEU-7: 4 bộ đến hạn → chấm "4", trợ năng "còn 4 bộ đến hạn"', () => {
-    expect(sitButtonText(false, { n: 4, kind: 'due' })).toEqual({ label: 'Tĩnh toạ', aria: 'Tĩnh toạ, còn 4 bộ đến hạn', badge: '4' });
+  it('R-DIEU-7: 4 từ đến hạn → chấm "4", trợ năng "còn 4 từ đến hạn"', () => {
+    expect(sitButtonText(false, { n: 4, kind: 'due' })).toEqual({ label: 'Tĩnh toạ', aria: 'Tĩnh toạ, còn 4 từ đến hạn', badge: '4' });
   });
 
-  it('R-DIEU-7: 47 bộ đến hạn → chấm "47"; từ 100 → "99+"', () => {
-    expect(sitButtonText(false, { n: 47, kind: 'due' })).toEqual({ label: 'Tĩnh toạ', aria: 'Tĩnh toạ, còn 47 bộ đến hạn', badge: '47' });
+  it('R-DIEU-7: 47 từ đến hạn → chấm "47"; từ 100 → "99+"', () => {
+    expect(sitButtonText(false, { n: 47, kind: 'due' })).toEqual({ label: 'Tĩnh toạ', aria: 'Tĩnh toạ, còn 47 từ đến hạn', badge: '47' });
     expect(sitButtonText(false, { n: 120, kind: 'due' }).badge).toBe('99+');
   });
 

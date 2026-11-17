@@ -17,7 +17,7 @@ describe('Biển tên trò chơi — R-GIAO-2', () => {
     expect(signInRange(signs, -36, 12.4)?.name).toBe('Đấu chữ');
   });
 
-  it('R-GIAO-2: bảng cách chơi — đủ 4 mục theo thứ tự, mẹo của NPC bàn, Đấu chữ có ô "chưa học bộ nào"', () => {
+  it('R-GIAO-2: bảng cách chơi — đủ 4 mục theo thứ tự, mẹo của NPC bàn, Đấu chữ có ô "chưa học từ nào"', () => {
     for (const kind of ['co', 'dau-chu']) {
       const g = gameGuide(kind)!;
       expect(g.sections.map((x) => x.title)).toEqual(['Mục tiêu', 'Mỗi lượt', 'Thắng · thua · hoà', 'Vào bàn · rời bàn']);
@@ -26,7 +26,7 @@ describe('Biển tên trò chơi — R-GIAO-2', () => {
     expect(gameGuide('co')!.tipBy).toBe('tieu-mac');
     expect(gameGuide('dau-chu')!.tipBy).toBe('su-phu');
     expect(gameGuide('co')!.none).toBeUndefined();
-    expect(gameGuide('dau-chu')!.none?.title).toBe('Đạo hữu chưa học bộ thủ nào');
+    expect(gameGuide('dau-chu')!.none?.title).toBe('Đạo hữu chưa học từ nào');
     expect(gameGuide('khac')).toBeNull();
   });
 

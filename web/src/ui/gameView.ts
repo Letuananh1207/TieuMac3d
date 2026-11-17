@@ -47,7 +47,7 @@ export interface DuelView {
   npcScore: number;
   /** ai trả lời câu này */
   answerer: 'you' | 'npc';
-  /** bộ thủ đang hỏi (chữ to) */
+  /** từ đang hỏi (chữ to) */
   form: string;
   /** "mộc · mù — cây" — hiện sau khi chấm */
   detail: string;

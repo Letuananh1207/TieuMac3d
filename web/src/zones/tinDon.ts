@@ -11,7 +11,7 @@ export interface TinDon {
 
 export const TIN_DON: readonly TinDon[] = [
   { rule: 'R-TIEN-3', text: 'Nghe đồn Kỳ Văn Uyển đánh một ván Đấu chữ thắng được 8 văn đó, thua cũng được 3 văn!' },
-  { rule: 'R-TIEN-2', text: 'Tiểu khất nghe nói học xong một bộ thủ mới là được thưởng 10 văn. Đạo hữu chăm học là giàu to!' },
+  { rule: 'R-TIEN-2', text: 'Tiểu khất nghe nói học xong một bài từ mới là được thưởng 10 văn. Đạo hữu chăm học là giàu to!' },
   { rule: 'R-NV-1', text: 'Đạo hữu xem bảng nhiệm vụ hằng ngày trước cổng nam chưa? Làm xong cả hai việc được 20 văn đó.' },
   { rule: 'R-NV-2', text: 'Nghe nói ai làm nhiệm vụ đủ 7 ngày liền thì được thưởng thêm 50 văn. Tiểu khất mà biết chữ thì đã làm rồi…' },
   { rule: 'R-TIEN-4', text: 'Tạp hoá bên kia bán chậu Mai 60 văn, Ao sen tận 200 văn. Mua về đặt ở nhà đẹp lắm!' },

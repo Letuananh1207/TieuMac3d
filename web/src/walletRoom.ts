@@ -3,7 +3,7 @@
  * (`earnGame` → dòng "+n Văn tiền" trên thẻ kết quả, xu bay xếp hàng tới khi "Rời bàn"), nút nổi "Vào tiệm" trước Tạp hoá →
  * `openShop`. Tách khỏi main.ts như chatRoom.ts. Có Flutter: luật tiền ở Flutter (`journey/wallet.dart`), trang chỉ hiện.
  * **Không có Flutter → chế độ thử** (R-TIEN-7): ví thử `bridge/browserStore.ts`, luật `zones/walletRules.ts`, Tạp hoá bản web
- * `ui/shopPanel.ts`, +10 khi lần đầu mở thẻ bộ thủ HTML.
+ * `ui/shopPanel.ts`, +10 khi lần đầu mở bài từ trên bảng HTML.
  */
 import * as THREE from 'three';
 import type { TrialStore } from './bridge/browserStore';

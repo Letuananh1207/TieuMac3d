@@ -77,7 +77,7 @@ function gomokuFigure(): SVGElement {
 function duelFigure(): HTMLElement {
   const row = node('div', 'gp-duel');
   row.setAttribute('role', 'img');
-  row.setAttribute('aria-label', "Hình minh hoạ: thẻ bộ thủ 木 và 4 nghĩa, nghĩa đúng 'mộc — cây' tô xanh");
+  row.setAttribute('aria-label', "Hình minh hoạ: thẻ chữ 好 và 4 nghĩa, nghĩa đúng 'tốt' tô xanh");
   const card = node('div', 'gp-card-han', '木');
   card.lang = 'zh';
   card.setAttribute('aria-hidden', 'true');
@@ -98,7 +98,7 @@ function duelFigure(): HTMLElement {
 function studyFigure(): HTMLElement {
   const row = node('div', 'gp-study');
   row.setAttribute('role', 'img');
-  row.setAttribute('aria-label', 'Hình minh hoạ: người ngồi bồ đoàn mở cuộn sách, cuộn có 3 mục — Đọc sách, Bộ đã học, Nhiệm vụ hôm nay');
+  row.setAttribute('aria-label', 'Hình minh hoạ: người ngồi bồ đoàn mở cuộn sách, cuộn có 3 mục — Đọc sách, Từ đã học, Nhiệm vụ hôm nay');
   const s = svg('svg', { viewBox: '-90 -165 180 175', 'aria-hidden': 'true' });
   const robe = { fill: '#F4F4EF', stroke: '#2B5446', 'stroke-width': 1.6 };
   s.append(
@@ -122,12 +122,12 @@ function studyFigure(): HTMLElement {
   }
   const menu = node('div', 'gp-mini');
   menu.setAttribute('aria-hidden', 'true');
-  menu.append(node('span', '', 'Đọc sách'), node('span', '', 'Bộ đã học'), node('span', '', 'Nhiệm vụ hôm nay')); // R-ON-8 (V-45)
+  menu.append(node('span', '', 'Đọc sách'), node('span', '', 'Từ đã học'), node('span', '', 'Nhiệm vụ hôm nay')); // R-ON-8 (V-45)
   row.append(s, menu);
   return row;
 }
 
-/** Biểu tượng ô "chưa học bộ nào": ngọn lửa (Đấu chữ) / bản đồ (khu tự học — đi Rừng trúc). */
+/** Biểu tượng ô "chưa học từ nào": ngọn lửa (Đấu chữ) / bản đồ (khu tự học — đi Rừng trúc). */
 function noticeIcon(icon: 'lua' | 'ban-do'): SVGElement {
   const s = svg('svg', { width: 22, height: 22, viewBox: '0 0 24 24', fill: 'none', stroke: '#24323A', 'stroke-width': 2.2, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'aria-hidden': 'true' });
   if (icon === 'ban-do') s.append(svg('path', { d: 'M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z' }), svg('path', { d: 'M9 4v14M15 6v14' }));
@@ -156,7 +156,7 @@ export class GuidePanel {
     return !this.root.hidden;
   }
 
-  /** Mở bảng [g]; [tipName] = tên NPC cho "Mẹo của …"; [noneLearned] = chưa học bộ thủ nào (ô báo của bảng có `none`). */
+  /** Mở bảng [g]; [tipName] = tên NPC cho "Mẹo của …"; [noneLearned] = chưa học từ nào (ô báo của bảng có `none`). */
   open(g: GameGuide, tipName: string, noneLearned: boolean): void {
     el('gpEyebrow').textContent = g.eyebrow;
     el('gpName').textContent = g.name;

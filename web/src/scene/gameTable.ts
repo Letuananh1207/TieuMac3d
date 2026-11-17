@@ -1,7 +1,7 @@
 /**
  * Bàn chơi khu giao lưu (R-GIAO-1): bàn đá thấp, bồ đoàn cho người chơi phía +z, NPC đứng phía −z. Bàn `co` có mặt
  * gỗ kẻ 13 × 13 đường + quân đen / trắng (InstancedMesh — 2 draw call cho cả bàn quân, R-CO-1); bàn `dau-chu` có thẻ
- * giấy hiện bộ thủ (R-DAU-1). Không biết luật chơi — `gamePlay.ts` (gốc) đưa trạng thái vào.
+ * giấy hiện từ đã học (R-DAU-1). Không biết luật chơi — `gamePlay.ts` (gốc) đưa trạng thái vào.
  */
 import * as THREE from 'three';
 import type { Colliders } from '../collision/colliders';
@@ -64,7 +64,7 @@ export interface GameTable {
   highlight(points: readonly BoardPoint[]): void;
   /** chấm son trên quân vừa đi (thiết kế 2026-11-13.27); `null` = bỏ chấm */
   mark(point: BoardPoint | null): void;
-  /** thẻ bộ thủ trên bàn đấu chữ, chữ quay về ghế `seat`; `null` = úp thẻ (R-DAU-1) */
+  /** thẻ chữ (từ đã học) trên bàn đấu chữ, chữ quay về ghế `seat`; `null` = úp thẻ (R-DAU-1) */
   showCard(text: string | null, seat?: number): void;
 }
 
@@ -225,7 +225,7 @@ export function addGameTable(scene: THREE.Scene, colliders: Colliders, t: GameTa
     const glow = isBoard ? makeSet(GLOW, LINES, glowGeo, true) : null;
     const dot = isBoard ? makeSet(LACQUER, 1, markGeo, true) : null;
 
-    // thẻ bộ thủ (chỉ bàn đấu chữ)
+    // thẻ chữ (chỉ bàn đấu chữ)
     let card: { canvas: HTMLCanvasElement; tex: THREE.CanvasTexture; mesh: THREE.Mesh } | null = null;
     if (t.kind === 'dau-chu') {
       const canvas = document.createElement('canvas');

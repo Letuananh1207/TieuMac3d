@@ -118,7 +118,7 @@ export function railTeaPose(z: number, y: number, t: number): HandsPose {
   return { ...railPose(z, y), right: teaPose(t).right, cup: true };
 }
 
-/** Bàn chơi (R-GIAO-1): hai tay đặt ở `l`, `r` (thân — mép bàn phía mình / hai góc thẻ bộ thủ), lòng úp. */
+/** Bàn chơi (R-GIAO-1): hai tay đặt ở `l`, `r` (thân — mép bàn phía mình / hai góc thẻ chữ), lòng úp. */
 export function tablePose(l: V3, r: V3): HandsPose {
   return { left: { pos: l, palm: DOWN, point: 0 }, right: { pos: r, palm: DOWN, point: 0 }, cup: false, stone: false };
 }
