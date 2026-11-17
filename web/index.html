@@ -4,6 +4,27 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <title>Tiểu Mặc 3D</title>
+  <!-- L-25 (R-MAN-2): style.css do main.ts nạp — `npm run dev` chèn bằng JS sau khi tải cả cây module, nên trước đó
+       trang hiện HTML trần (chữ HUD không kiểu, núi SVG to). Khối này che bằng màn tải / màn mây ngay khung hình đầu và
+       ẩn HUD; chỉ áp tới khi main.ts gắn `html.css-san` (style.css đã vào) — sau đó style.css lo hết. Màu = --mist,
+       --hc-bg trong style.css. -->
+  <style>
+    html:not(.css-san),html:not(.css-san) body{margin:0;height:100%;overflow:hidden;background:#e9eeec}
+    html:not(.css-san) body > :not(#loading):not(#crane){visibility:hidden}
+    html:not(.css-san) #loading{position:fixed;inset:0;z-index:20;background:#e9eeec;overflow:hidden}
+    html:not(.css-san) #loading svg{position:absolute;left:0;bottom:0;width:100%;height:300px}
+    html:not(.css-san) #loading .mt-ngang{display:none}
+    html:not(.css-san) #crane{display:none}
+    html.hac:not(.css-san) #crane{display:block;position:fixed;inset:0;z-index:21;background:#f4f7f6}
+    html.hac-dem:not(.css-san) #crane{background:#3c4676}
+    html.hac:not(.css-san) #crane > *{visibility:hidden}
+    html.hac:not(.css-san) #loading{display:none}
+    @media (max-height:520px){
+      html:not(.css-san) #loading svg{height:170px}
+      html:not(.css-san) #loading .mt-doc{display:none}
+      html:not(.css-san) #loading .mt-ngang{display:block}
+    }
+  </style>
   <!-- cưỡi hạc (R-HANH-5, thiết kế 2026-11-15.9): trang mở giữa chuyến bay (`den=hac`) → màn mây thay màn tải ngay từ
        khung đầu, trước khi JS chạy (ban đêm `dem=1` → mây chàm). Cùng điều kiện với zones/cuoiHac.ts arrivingByCrane;
        sessionStorage do ui/craneHud.ts ghi ở trang cũ (không có thì thôi). -->

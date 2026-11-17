@@ -89,6 +89,8 @@ import { HomeGarden } from './homeGarden';
 import { gardenSpeed } from './zones/vuonHud';
 import { NgayDem } from './ngayDem';
 
+// style.css đã vào (import chạy trước thân module) → tắt khối CSS che tạm trong <head> của index.html (L-25, R-MAN-2)
+document.documentElement.classList.add('css-san');
 // con trỏ hoạt hình nhúng sẵn (L-9) — đặt sớm nhất, trước cả màn tải
 installCursors(cursorArrow, cursorButton);
 

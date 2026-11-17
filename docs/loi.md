@@ -21,14 +21,40 @@ Mức độ:
 
 ### L-25 · Lúc vào game / đổi map hiện HTML trần (chữ "kéo để đi", "Nhảy Space", nút trống, núi xám) rồi mới load
 
-- Trạng thái: đang sửa · Mức độ: khó chịu (lộ giao diện vỡ mỗi lần vào / đổi cảnh, trông như lỗi) · Phần: HUD / `web/index.html`, `style.css`, màn tải (R-MAN-2) · Quy tắc: R-MAN-2
+- Trạng thái: chờ thử máy · Mức độ: khó chịu (lộ giao diện vỡ mỗi lần vào / đổi cảnh, trông như lỗi) · Phần: HUD / `web/index.html`, `style.css`, màn tải (R-MAN-2) · Quy tắc: R-MAN-2
 - Báo: 2026-11-17 — "bây giờ cứ lúc vào game hoặc sang map khác thì màn hình lại bị như này xong rồi mới load"
 - Các bước: 1. Mở game (trình duyệt) 2. Hoặc đổi sang map khác
 - Mong đợi / thực tế: màn tải che kín ngay từ khung hình đầu / thấy chữ HUD không kiểu ("kéo để đi", "Tuấn Anh", "Nhảy Space", "Chào F", "Tĩnh toạ C"), nút trống và hình núi xám chưa có CSS trong chốc lát rồi mới vào màn tải
 - Bằng chứng: ảnh người dùng (trình duyệt máy tính); bản dev hay build: chưa rõ
 
+**Sửa**
+- Nguyên nhân: toàn bộ kiểu dáng (`style.css`, kể cả kiểu của màn tải) do `main.ts` nạp. Khi chạy `npm run dev`, Vite
+  không có thẻ `<link>` mà chèn CSS bằng JavaScript — chỉ sau khi trình duyệt tải xong cả cây module (three.js + hàng trăm
+  file), mất 0,3–2 giây. Trong lúc đó trình duyệt vẽ HTML trần: chữ HUD không kiểu, nút trống, SVG núi của màn tải phình to
+  theo bề ngang. Đổi map = tải lại trang (`location.replace`) nên lần nào cũng bị. Bản build (`npm run build`, app Flutter /
+  WebView) có `<link>` CSS trong `<head>` chặn vẽ nên không lộ (chụp headless: khung đầu đã là màn tải) — lỗi người dùng
+  thấy là ở bản dev.
+- Code: `web/index.html` — khối `<style>` nội tuyến đầu `<head>`, chỉ áp khi `html` chưa có lớp `css-san`: nền sương
+  `#e9eeec`, màn tải `position:fixed` phủ kín, núi SVG bám đáy cao cố định (300 px; màn thấp 170 px + đổi SVG ngang),
+  mọi phần HUD khác `visibility:hidden`; khi cưỡi hạc (`html.hac`) thì màn mây phủ kín (đêm: chàm), chữ ẩn, màn tải
+  tắt. `web/src/main.ts` — gắn `css-san` ngay sau khối import (lúc đó `style.css` đã vào) → khối tạm thôi áp, `style.css`
+  lo hết như cũ. Không đổi giao diện, không nạp gì từ mạng.
+- Test: `web/indexHtml.test.ts` — `'R-MAN-2 (L-25): …'` (4 test: khối CSS nội tuyến đứng trước script / link; màn tải
+  phủ kín nền sương, SVG cao cố định; HUD ẩn, màn mây khi hạc; `main.ts` gắn `css-san`) — đỏ trước khi sửa, xanh sau.
+  Kiểm tĩnh trên file; hành vi vẽ kiểm thêm bằng chụp Chrome headless (dưới).
+- Kiểm: chụp Chrome headless mỗi ~30 ms từ lúc mở trang / đổi map (`?vung=giang-nam`) / tới bằng hạc (`&den=hac`), dò
+  DOM xem có phần HUD nào hiện mà chưa có lớp che kín. Trước: dev lộ HTML trần ~0,3–0,5 s mỗi lần (mở, đổi map, hạc);
+  build không lộ. Sau: dev và build đều 0 khung lộ — khung đầu là màn tải (hạc: màn mây), cảnh + HUD hiện bình thường sau
+  khi tải xong.
+- Thử máy: 1. `cd web && npm run dev`, mở trình duyệt máy tính, tải lại trang (Ctrl+Shift+R) vài lần → từ đầu chỉ thấy
+  nền sương + núi mờ của màn tải, không còn chữ "kéo để đi" / "Nhảy Space" trần. 2. Đổi map bằng cổng đi bộ và bằng bản
+  đồ (cưỡi hạc) → chỉ thấy màn tải / màn mây. 3. App (Android / Flutter web) sau `npm run build`: mở app, đổi map → như
+  trên. Còn lỗi → gửi ảnh / quay màn + cho biết bản dev hay app.
+- Commit: (nhánh `viec/l25-fouc`)
+
 **Lịch sử**
 - 2026-11-17: ghi, giao sửa.
+- 2026-11-17: sửa (CSS che tạm nội tuyến trong `index.html`), chờ thử máy.
 
 ### L-24 · Cầm Nương mắt lé: hai con ngươi hướng vào trong, khác mắt các nhân vật khác
 
