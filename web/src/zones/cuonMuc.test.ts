@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { cuonA11yItems, CUON_SEAL, CUON_TITLE, cuonHit, cuonLayout, cuonUsable, cuonView, fitHint, HINT_PAD_X, HINT_PAD_Y, PAPER_RATIO, STAND_HIT, TILE_H } from './cuonMuc';
-import { RADICALS } from './radicals';
+import { TU_VUNG } from './tuVung/tu';
 import { scrollMenu } from './studyMenu';
 
-const ids = RADICALS.map((r) => r.id);
+const ids = TU_VUNG.map((t) => t.id);
 /** tâm hộp → (u, v) trên giấy */
 const uvOf = (l: ReturnType<typeof cuonLayout>, b: { x: number; y: number; w: number; h: number }): [number, number] => [
   (b.x + b.w / 2) / l.w,
@@ -11,16 +11,16 @@ const uvOf = (l: ReturnType<typeof cuonLayout>, b: { x: number; y: number; w: nu
 ];
 
 const HSK1 = { title: 'HSK 1', subtitle: 'Nhập môn' };
-/** cuộn theo tiến độ: sổ từ đang mượn, bộ đã học, số việc còn hôm nay */
+/** cuộn theo tiến độ: sổ từ đang mượn, từ đã học, số việc còn hôm nay */
 const view = (book: typeof HSK1 | null, learned: string[], tasksLeft: number | null, place = 'x') =>
   cuonView(scrollMenu({ book, learned, tasksLeft }), place, book);
 
 describe('cuộn Tĩnh toạ — 4 ô trên giấy (R-ON-8; thiết kế 2026-11-16.12 `Cuon-*`)', () => {
-  it('R-ON-8: quảng trường, mượn HSK 1, học 5 bộ, còn 1 việc → 4 ô: "Đọc sách · HSK 1 · Nhập môn", "Bộ đã học · 5 / 50 bộ", "Nhiệm vụ hôm nay · Còn 1 việc" (chấm "1"), "Sắp có"', () => {
+  it('R-ON-8: quảng trường, mượn HSK 1, học 5 từ, còn 1 việc → 4 ô: "Đọc sách · HSK 1 · Nhập môn", "Từ đã học · 5 / 304 từ", "Nhiệm vụ hôm nay · Còn 1 việc" (chấm "1"), "Sắp có"', () => {
     const v = view(HSK1, ids.slice(0, 5), 1, 'Khởi Nguyên Trấn · Quảng Trường');
     expect(v.tiles.map((t) => [t.id, t.title, t.sub, t.look, t.badge])).toEqual([
       ['book', 'Đọc sách', 'HSK 1 · Nhập môn', 'thuong', null],
-      ['learned', 'Bộ đã học', `5 / ${RADICALS.length} bộ`, 'thuong', null],
+      ['learned', 'Từ đã học', `5 / ${TU_VUNG.length} từ`, 'thuong', null],
       ['daily', 'Nhiệm vụ hôm nay', 'Còn 1 việc', 'thuong', 1],
       ['soon', 'Sắp có', '', 'sap', null],
     ]);
@@ -29,15 +29,15 @@ describe('cuộn Tĩnh toạ — 4 ô trên giấy (R-ON-8; thiết kế 2026-11
     expect(v.hint).toBeNull();
   });
 
-  it('R-ON-8: chưa mượn, chưa học → "Đọc sách" mờ "Mượn ở Tàng Thư Các", "Bộ đã học" mờ, Nhiệm vụ dùng được, gợi ý gặp Trúc Lão', () => {
+  it('R-ON-8: chưa mượn, chưa học → "Đọc sách" mờ "Mượn ở Tàng Thư Các", "Từ đã học" mờ, Nhiệm vụ dùng được, gợi ý gặp Trúc Lão', () => {
     const v = view(null, [], 2);
     expect(v.tiles.map((t) => [t.id, t.look, t.sub])).toEqual([
       ['book', 'mo', 'Mượn ở Tàng Thư Các'],
-      ['learned', 'mo', 'Chưa học bộ nào'],
+      ['learned', 'mo', 'Chưa học từ nào'],
       ['daily', 'thuong', 'Còn 2 việc'],
       ['soon', 'sap', ''],
     ]);
-    expect(v.hint).toBe('Chưa học bộ nào. Sang Trúc Lâm, gặp Trúc Lão ở bãi hạc đáp để học bộ đầu tiên.');
+    expect(v.hint).toBe('Chưa học từ nào. Sang Trúc Lâm, gặp Trúc Lão ở bãi hạc đáp để học bài đầu tiên.');
   });
 
   it('R-ON-8: xong cả 2 việc → "Đã xong hôm nay", không chấm son; không biết tiến độ → "Xem việc hôm nay"; không ô ôn / học', () => {
@@ -45,7 +45,7 @@ describe('cuộn Tĩnh toạ — 4 ô trên giấy (R-ON-8; thiết kế 2026-11
     expect([done.sub, done.badge]).toEqual(['Đã xong hôm nay', null]);
     const v = view(null, ids.slice(0, 3), null);
     expect([v.tiles[2]!.sub, v.tiles[2]!.badge]).toEqual(['Xem việc hôm nay', null]);
-    expect(v.tiles.map((t) => t.title).join(' ')).not.toMatch(/Ôn bộ|Học bộ mới/);
+    expect(v.tiles.map((t) => t.title).join(' ')).not.toMatch(/Ôn từ|Học bài mới/);
   });
 
   it('R-HUD-4: tiêu đề "Tĩnh toạ", ấn son "Tĩnh" — chữ Việt, không chữ Hán', () => {
@@ -130,7 +130,7 @@ describe('cuộn Tĩnh toạ — 4 ô trên giấy (R-ON-8; thiết kế 2026-11
   it('R-ON-8: trình đọc màn hình — 3 ô + "Đứng dậy"; ô mờ đọc "chưa dùng được"; ô "Sắp có" không đọc', () => {
     expect(cuonA11yItems(view(null, ids.slice(0, 5), 1))).toEqual([
       { id: 'book', label: 'Đọc sách, Mượn ở Tàng Thư Các, chưa dùng được', enabled: false },
-      { id: 'learned', label: `Bộ đã học, 5 / ${RADICALS.length} bộ`, enabled: true },
+      { id: 'learned', label: `Từ đã học, 5 / ${TU_VUNG.length} từ`, enabled: true },
       { id: 'daily', label: 'Nhiệm vụ hôm nay, Còn 1 việc', enabled: true },
       { id: 'stand', label: 'Đứng dậy', enabled: true },
     ]);

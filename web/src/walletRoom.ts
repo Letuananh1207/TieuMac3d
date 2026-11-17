@@ -130,17 +130,17 @@ export class WalletRoom {
   }
 
   /**
-   * Thẻ bộ thủ HTML vừa mở (không có Flutter): chế độ thử → lần đầu +10 "Học bộ 竹" (R-TIEN-2, R-TIEN-7), xu bay khi đóng
+   * Bài từ HTML vừa mở (không có Flutter): chế độ thử → lần đầu +10 "Học bài Chào hỏi" (R-TIEN-2, R-TIEN-7), xu bay khi đóng
    * thẻ (ví hiện lại); mở lại → 0. Có Flutter thì Flutter tự thưởng — không làm gì.
    */
-  learned(r: { id: string; form: string }): void {
+  learned(b: { id: string; ten: string }): void {
     const trial = this.host.trial;
     if (!trial) return;
-    const { wallet: w, amount } = learnOnce(trial.wallet, r.id);
+    const { wallet: w, amount } = learnOnce(trial.wallet, b.id);
     if (amount <= 0) return;
     trial.update(() => w);
     const center = (): { x: number; y: number } => ({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
-    this.wallet.push({ amount, label: learnRewardLabel(r.form, amount), from: center }, w.coins, gameTodayOn(w, dayKey(new Date())));
+    this.wallet.push({ amount, label: learnRewardLabel(b.ten, amount), from: center }, w.coins, gameTodayOn(w, dayKey(new Date())));
   }
 
   /** Vừa trừ tiền ngoài Tạp hoá (cho Tiểu Khất — R-TIEN-8): ví HUD "−n" + nhãn khi ví hiện lại; [balance] = số dư mới. */

@@ -39,11 +39,11 @@ describe('kho ví thử trong trình duyệt (R-TIEN-7)', () => {
     const s = fakeStorage();
     const a = new TrialStore(s);
     expect(a.wallet.coins).toBe(300);
-    a.update((w) => ({ ...w, coins: 308, learned: ['truc'] }));
+    a.update((w) => ({ ...w, coins: 308, lessons: ['bai-01'] }));
     expect(JSON.parse(s.data[TRIAL_KEY]).coins).toBe(308);
     const b = new TrialStore(s);
     expect(b.wallet.coins).toBe(308);
-    expect(b.wallet.learned).toEqual(['truc']);
+    expect(b.wallet.lessons).toEqual(['bai-01']);
   });
 
   it('R-TIEN-7: dữ liệu hỏng → ví thử mới, trang vẫn chạy', () => {

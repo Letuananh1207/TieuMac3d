@@ -4,14 +4,14 @@
  */
 import { placeName } from './journeyMap';
 
-/** vùng học bộ thủ: tên lấy từ bản đồ (R-HANH-1), không viết cứng */
+/** vùng học bài từ: tên lấy từ bản đồ (R-HANH-1), không viết cứng */
 const FOREST = placeName('rung-truc');
 
 /** R-NV-3: đứng cách bảng dưới khoảng này (m) thì hiện nút "Xem bảng". */
 export const BOARD_RANGE = 2.5;
 
-/** R-NV-1: mục tiêu Lĩnh hội mỗi ngày (số bộ thủ mới). */
-export const DAILY_NEW_GOAL = 3;
+/** R-NV-1: mục tiêu Lĩnh hội mỗi ngày (số bài từ mới). */
+export const DAILY_NEW_GOAL = 1;
 
 /** Tiêu đề của bảng nhiệm vụ (prop `bang`). */
 export const DAILY_BOARD_TEXT = 'Nhiệm vụ hằng ngày';
@@ -52,8 +52,8 @@ export function boardBeforeNpc(board: { x: number; z: number }, npc: { x: number
 }
 
 /**
- * Số việc còn lại hôm nay (0 · 1 · 2 — R-NV-1): Lĩnh hội chưa đủ mục tiêu (trừ khi đã học hết bộ thủ), Ôn tập còn bộ
- * đến hạn. Không biết tiến độ (không có Flutter) → `null` (nút không có chấm).
+ * Số việc còn lại hôm nay (0 · 1 · 2 — R-NV-1): Lĩnh hội chưa đủ mục tiêu (trừ khi đã học hết giáo trình), Ôn tập còn từ
+ * đến hạn (Flutter gửi `due` 0 khi đã ôn đủ 20 từ hôm nay). Không biết tiến độ (không có Flutter) → `null` (nút không có chấm).
  */
 export function tasksLeft(d: DailyCount | null, allLearned: boolean): number | null {
   if (!d) return null;
@@ -76,22 +76,22 @@ export interface DailyBoardView {
   footer: string;
 }
 
-/** R-NV-1/2/3: bảng hôm nay từ tiến độ; [learnedTotal] = tổng bộ đã học (0 → gợi ý bộ đầu tiên). */
+/** R-NV-1/2/3: bảng hôm nay từ tiến độ; [learnedTotal] = tổng bài đã học (0 → gợi ý bài đầu tiên). */
 export function dailyBoardView(d: DailyFull, allLearned: boolean, learnedTotal: number): DailyBoardView {
   const learnDone = allLearned || d.learned >= d.goal;
   const reviewDone = d.due <= 0;
   const allDone = learnDone && reviewDone;
   const learnSub = allLearned
-    ? 'Đã học đủ 50 bộ thủ.'
+    ? 'Đã học hết giáo trình.'
     : learnDone
-      ? `Đã học ${d.goal} bộ mới hôm nay.`
+      ? `Đã học ${d.goal} bài mới hôm nay.`
       : learnedTotal === 0
-        ? `Học ${d.goal} bộ thủ mới. Sang ${FOREST}, gặp thầy Trúc Lão để lĩnh hội bộ đầu tiên.`
-        : `Học ${d.goal} bộ thủ mới. Gặp thầy Trúc Lão ở ${FOREST} để lĩnh hội bộ kế tiếp.`;
+        ? `Học ${d.goal} bài từ mới. Sang ${FOREST}, gặp thầy Trúc Lão để lĩnh hội bài đầu tiên.`
+        : `Học ${d.goal} bài từ mới. Gặp thầy Trúc Lão ở ${FOREST} để lĩnh hội bài kế tiếp.`;
   const dots = Math.min(d.learned, d.goal);
   return {
     learn: { done: learnDone, dots, count: allLearned ? null : `${dots}/${d.goal}`, sub: learnSub },
-    review: { done: reviewDone, left: Math.max(0, d.due), sub: reviewDone ? 'Không có bộ nào đến hạn.' : `Còn ${d.due} bộ đến hạn hôm nay.` },
+    review: { done: reviewDone, left: Math.max(0, d.due), sub: reviewDone ? 'Không có từ nào đến hạn.' : `Còn ${d.due} từ đến hạn hôm nay.` },
     streak: d.streak,
     best: d.best,
     allDone,

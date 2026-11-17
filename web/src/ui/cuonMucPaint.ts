@@ -65,7 +65,7 @@ function twoLines(c: Ctx, s: string, max: number): string[] {
 
 /** Nạp sẵn font chữ Việt cho canvas (canvas không tự kéo phần font tiếng Việt như DOM) — xong thì vẽ lại. */
 export function loadCuonFonts(): Promise<unknown> {
-  const vi = 'Tĩnh toạ Đứng dậy Đọc sách Bộ đã học Nhiệm vụ hôm nay Sắp có ấầẩẫậắằẳẵặếềểễệốồổỗộớờởỡợứừửữự';
+  const vi = 'Tĩnh toạ Đứng dậy Đọc sách Từ đã học Nhiệm vụ hôm nay Sắp có ấầẩẫậắằẳẵặếềểễệốồổỗộớờởỡợứừửữự';
   return Promise.allSettled([
     document.fonts.load(`700 18px ${SERIF}`, vi),
     document.fonts.load(`700 16px ${UI}`, vi),

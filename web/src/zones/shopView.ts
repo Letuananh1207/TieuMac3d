@@ -128,7 +128,7 @@ export function shopBanner(items: readonly ShopEntry[], balance: number): 'poor'
 
 /** Chữ dải nghèo (`shopPoorHint`) chia phần thường / đậm. */
 export const POOR_HINT: readonly [string, boolean][] = [
-  ['Học bộ mới ', false], ['+10', true], [' · ôn đúng hạn ', false], ['+5', true], [' · xong nhiệm vụ ngày ', false], ['+20', true], ['.', false],
+  ['Học bài mới ', false], ['+10', true], [' · ôn đúng 1 từ ', false], ['+1', true], [' · xong nhiệm vụ ngày ', false], ['+20', true], ['.', false],
 ];
 
 

@@ -1,23 +1,13 @@
 import type { BookEntry, Word } from '../zones/books';
 import type { DecorItem, PlacedDecor } from '../zones/decor';
-import type { Radical } from '../zones/radicals';
-import type { ReviewItem } from '../zones/review';
-import type { StudyMenu } from '../zones/studyMenu';
+import type { BaiHoc } from '../zones/tuVung/bai';
+import type { MucOn } from '../zones/tuVung/cauHoi';
+import type { Tu } from '../zones/tuVung/tu';
 import { parseGameEarning, type GameEarning, type GameKind, type GameOutcome } from '../zones/wallet';
 import { parseActReply, parseGarden, type Garden, type GardenAct } from '../zones/vuon';
 import { parseMang, parseMangReply, type MangAct, type MangState } from '../zones/mang';
 import { parseAlms, type AlmsRecord, type AlmsResult } from '../zones/walletRules';
 import type { Lesson } from '../zones/zones';
-
-/** Dữ liệu cuộn sách Ngồi ôn gửi Flutter (`openStudy` — R-ON-8). */
-export interface StudyPayload {
-  menu: StudyMenu;
-  /** câu đố các bộ đến hạn (như `openReview`) */
-  review: ReviewItem[];
-  /** các bộ đã học, theo thứ tự Rừng trúc */
-  learned: Radical[];
-  region: string;
-}
 
 /** Sự kiện qua cầu nối — hợp đồng ở `docs/bridge.md`. */
 export interface SceneEvent {
@@ -40,7 +30,7 @@ declare global {
 
 /** Việc trang làm khi Flutter gửi sự kiện sang. */
 export interface BridgeHandlers {
-  /** `resume`: Flutter đóng màn bài học → cảnh chạy tiếp; `stand` = thẻ bộ thủ đóng bằng "Xuất định" → đứng dậy (R-HANH-3) */
+  /** `resume`: Flutter đóng màn bài học → cảnh chạy tiếp; `stand` = trang từ đã học đóng bằng "Xuất định" → đứng dậy (R-HANH-3) */
   onResume(stand: boolean): void;
   /** `lifecycle`: app xuống nền (`false`) / hiện lại (`true`) */
   onVisible(visible: boolean): void;
@@ -58,12 +48,14 @@ const READY_WAIT_MS = 800;
 
 /** Tiến độ Flutter trả về cho `getProgress` (docs/bridge.md). Không khoá vùng (R-HANH-1) — không có vùng mở / mốc. */
 export interface JourneyProgress {
-  /** số chữ đã học */
-  chars: number;
-  /** mã bộ thủ đã học — tu luyện mở bộ chưa học đầu tiên (R-HANH-3) */
-  radicals: string[];
-  /** mã bộ thủ đến hạn ôn hôm nay, theo thứ tự hỏi (R-ON-4) — ngồi thiền mở lượt ôn trước (R-ON-5) */
+  /** mã bài đã học (R-TU-1) — Trúc Lão mở bài chưa học đầu tiên (R-HANH-3) */
+  lessons: string[];
+  /** mã từ đã học (= từ của các bài đã học) */
+  words: string[];
+  /** mã từ đến hạn ôn hôm nay, theo thứ tự hỏi (R-ON-4) — tổng, chưa cắt 20 */
   due: string[];
+  /** bậc lịch ôn của từng từ trong `due` (0 = 1 ngày … 6 = 120, 7 = đã thuộc) — chọn dạng câu (R-ON-2); thiếu → 0 */
+  dueSteps: number[];
   /** bảng nhiệm vụ hôm nay (R-NV-1, R-NV-2); `null` = Flutter bản cũ không gửi */
   daily: DailyBoard | null;
   /** mã sổ từ đang mượn ở Tàng Thư Các (R-SACH-2); `null` = không mượn */
@@ -78,11 +70,11 @@ export interface JourneyProgress {
 
 /** Hai việc hôm nay + chuỗi ngày (docs/bridge.md `getProgress.daily`). */
 export interface DailyBoard {
-  /** số bộ mới đã học hôm nay */
+  /** số bài mới đã học hôm nay */
   learned: number;
-  /** mục tiêu bộ mới mỗi ngày */
+  /** mục tiêu bài mới mỗi ngày (1) */
   goal: number;
-  /** số bộ còn đến hạn ôn */
+  /** số từ còn đến hạn ôn (0 khi đã ôn đủ 20 từ hôm nay — R-NV-1) */
   due: number;
   streak: number;
   best: number;
@@ -176,13 +168,15 @@ export async function getHome(): Promise<unknown> {
 /** Đọc câu trả lời `getProgress`; sai dạng → `null`. */
 export function parseProgress(v: unknown): JourneyProgress | null {
   if (typeof v !== 'object' || v === null) return null;
-  const { chars, radicals, due, daily, book, coins, gameCoinsToday, alms } = v as Record<string, unknown>;
-  const learned = Array.isArray(radicals) ? radicals.filter((x): x is string => typeof x === 'string') : [];
-  const dueIds = Array.isArray(due) ? due.filter((x): x is string => typeof x === 'string') : [];
+  const { lessons, words, due, dueSteps, daily, book, coins, gameCoinsToday, alms } = v as Record<string, unknown>;
+  const strs = (a: unknown): string[] => (Array.isArray(a) ? a.filter((x): x is string => typeof x === 'string') : []);
+  const dueIds = strs(due);
+  const steps = Array.isArray(dueSteps) ? dueSteps : [];
   return {
-    chars: typeof chars === 'number' ? chars : 0,
-    radicals: learned,
+    lessons: strs(lessons),
+    words: strs(words),
     due: dueIds,
+    dueSteps: dueIds.map((_, i) => (typeof steps[i] === 'number' ? (steps[i] as number) : 0)),
     daily: parseDaily(daily),
     book: typeof book === 'string' && book ? book : null,
     coins: typeof coins === 'number' && Number.isFinite(coins) ? Math.max(0, coins) : null,
@@ -230,47 +224,33 @@ export class FlutterBridge {
     }
   }
 
-  /** Trả `true` khi trang đã xử lý sự kiện cần trả lời (`back`); các sự kiện khác trả `false`. */
-  /** Nhờ Flutter mở thẻ học bộ thủ native (R-HANH-3). `false` = không có Flutter → trang mở bảng HTML. */
-  async openRadical(radical: Radical, learned: boolean, region: string): Promise<boolean> {
-    const host = window.flutter_inappwebview;
-    if (!host || typeof host.callHandler !== 'function') return false;
-    const event: SceneEvent = { type: 'openRadical', payload: { radical, learned, region } };
-    try {
-      return (await host.callHandler(HANDLER, event)) === true;
-    } catch {
-      return false;
-    }
+  /**
+   * Nhờ Flutter mở **màn bài từ** của bài `b` (R-HANH-3, docs/bridge.md `openWordLesson`). "Đã lĩnh hội" → Flutter ghi bài đã
+   * học (cả bài vào lịch ôn) rồi `resume`. `false` = không có Flutter → trang mở bảng HTML liệt kê từ của bài.
+   */
+  openWordLesson(b: BaiHoc, index: number, total: number, words: Tu[], learned: boolean, region: string): Promise<boolean> {
+    return this.ask({ type: 'openWordLesson', payload: { lesson: { id: b.id, title: b.ten, index, total }, words, learned, region } });
   }
 
-  /** Nhờ Flutter mở lượt ôn câu đố (R-ON-5). `false` = không có Flutter / chưa có màn ôn → trang mở thẻ bộ mới. */
-  openReview(items: ReviewItem[], region: string): Promise<boolean> {
+  /** Nhờ Flutter mở lượt ôn câu đố (R-ON-5, R-ON-2). `false` = không có Flutter / chưa có màn ôn. */
+  openReview(items: MucOn[], region: string): Promise<boolean> {
     return this.ask({ type: 'openReview', payload: { items, region } });
   }
 
   /**
-   * Nhờ Flutter mở màn "Bộ đã học" (chạm "Xem bộ đã học" trên cuộn sách 3D — R-ON-8, thiết kế 2026-11-14.21). Đóng →
-   * `resume` (vẫn ngồi). `false` = không có Flutter → trang mở thẻ HTML.
+   * Nhờ Flutter mở màn "Từ đã học" (chạm ô trên cuộn Tĩnh toạ — R-ON-8): `words` theo thứ tự giáo trình, `lessons` = các bài
+   * đã học (mã + tên — nhóm theo bài). Đóng → `resume` (vẫn ngồi). `false` = không có Flutter → bảng HTML bài học gần nhất.
    */
-  openLearned(learned: Radical[], region: string): Promise<boolean> {
-    return this.ask({ type: 'openLearned', payload: { learned, region } });
+  openLearned(words: Tu[], lessons: { id: string; title: string }[], region: string): Promise<boolean> {
+    return this.ask({ type: 'openLearned', payload: { words, lessons, region } });
   }
 
   /**
-   * **Thôi dùng** (V-20261114-34 — mục in trên cuộn 3D, docs/bridge.md). Nhờ Flutter mở bảng chọn cuộn sách Ngồi ôn
-   * (R-ON-8). Bảng chỉ đóng bằng "Đứng dậy" → `resume {stand: true}`.
+   * Nhờ Flutter mở bảng nhiệm vụ hằng ngày (R-NV-3), kèm câu đố các từ đến hạn (`review` — "Ôn ngay", R-ON-5).
+   * `false` = không có Flutter → bảng HTML trên web (`ui/dailyPanel.ts`).
    */
-  openStudy({ menu, review, learned, region }: StudyPayload): Promise<boolean> {
-    const { items, highlight, next, upcoming } = menu;
-    return this.ask({ type: 'openStudy', payload: { items, highlight, review, next, upcoming, learned, region } });
-  }
-
-  /**
-   * Nhờ Flutter mở bảng nhiệm vụ hằng ngày (R-NV-3), kèm câu đố các bộ đến hạn (`review` — "Ôn ngay", R-ON-5) và chữ của
-   * từng bộ thủ (`forms`, mã → chữ). `false` = không có Flutter → bảng HTML trên web (`ui/dailyPanel.ts`).
-   */
-  openDaily(review: ReviewItem[], forms: Record<string, string>): Promise<boolean> {
-    return this.ask({ type: 'openDaily', payload: { review, forms } });
+  openDaily(review: MucOn[]): Promise<boolean> {
+    return this.ask({ type: 'openDaily', payload: { review } });
   }
 
   /** Ghi cuốn đang mượn (R-SACH-1). `false` = không có Flutter → trang giữ trong bộ nhớ. */

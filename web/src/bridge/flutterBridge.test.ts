@@ -4,29 +4,36 @@ import { parseAlmsReply, parseProgress, shopPayload } from './flutterBridge';
 
 describe('getProgress (docs/bridge.md)', () => {
   it('R-SACH-2: đọc sổ từ đang mượn; thiếu / rỗng → không mượn', () => {
-    expect(parseProgress({ chars: 0, book: 'hsk1' })?.book).toBe('hsk1');
-    expect(parseProgress({ chars: 0, book: null })?.book).toBeNull();
-    expect(parseProgress({ chars: 0 })?.book).toBeNull();
-    expect(parseProgress({ chars: 0, book: '' })?.book).toBeNull();
+    expect(parseProgress({ lessons: [], book: 'hsk1' })?.book).toBe('hsk1');
+    expect(parseProgress({ lessons: [], book: null })?.book).toBeNull();
+    expect(parseProgress({ lessons: [] })?.book).toBeNull();
+    expect(parseProgress({ lessons: [], book: '' })?.book).toBeNull();
   });
 
-  it('R-HANH-1: không khoá vùng — trả lời không cần `open` / `need`, đọc chữ + bộ thủ đã học', () => {
-    const p = parseProgress({ chars: 2, radicals: ['truc', 1] });
-    expect(p?.chars).toBe(2);
-    expect(p?.radicals).toEqual(['truc']);
+  it('R-HANH-1: không khoá vùng — trả lời không cần `open` / `need`, đọc bài + từ đã học', () => {
+    const p = parseProgress({ lessons: ['bai-01', 1], words: ['你', 2] });
+    expect(p?.lessons).toEqual(['bai-01']);
+    expect(p?.words).toEqual(['你']);
     expect(p && 'open' in p).toBe(false);
     expect(p && 'need' in p).toBe(false);
+  });
+
+  it('R-ON-2: bậc của từ đến hạn đi kèm `due`; thiếu → 0; R-TU-5: khoá bộ thủ cũ không đọc', () => {
+    const p = parseProgress({ due: ['你', '好'], dueSteps: [3], radicals: ['truc'], chars: 4 });
+    expect(p?.dueSteps).toEqual([3, 0]);
+    expect(p?.lessons).toEqual([]);
+    expect(p && 'radicals' in p).toBe(false);
   });
 });
 
 describe('Văn tiền (docs/bridge.md)', () => {
   it('R-TIEN-1: getProgress đọc số dư + trò hôm nay; thiếu coins → ví ẩn (null)', () => {
-    const p = parseProgress({ chars: 0, coins: 1280, gameCoinsToday: 24 });
+    const p = parseProgress({ lessons: [], coins: 1280, gameCoinsToday: 24 });
     expect(p?.coins).toBe(1280);
     expect(p?.gameCoinsToday).toBe(24);
-    expect(parseProgress({ chars: 0 })?.coins).toBeNull();
-    expect(parseProgress({ chars: 0 })?.gameCoinsToday).toBe(0);
-    expect(parseProgress({ chars: 0, coins: -3 })?.coins).toBe(0);
+    expect(parseProgress({ lessons: [] })?.coins).toBeNull();
+    expect(parseProgress({ lessons: [] })?.gameCoinsToday).toBe(0);
+    expect(parseProgress({ lessons: [], coins: -3 })?.coins).toBe(0);
   });
 
   it('R-TIEN-4: openShop gửi đủ 13 vật với giá + số chữ Hán (một nguồn giá decor.ts)', () => {
@@ -38,8 +45,8 @@ describe('Văn tiền (docs/bridge.md)', () => {
 
 describe('giveAlms + getProgress.alms (docs/bridge.md)', () => {
   it('R-TIEN-8: getProgress.alms đọc ngày cho + số lần; thiếu (bản cũ) → chưa cho lần nào', () => {
-    expect(parseProgress({ chars: 0, alms: { lastDay: 20771, count: 3 } })?.alms).toEqual({ lastDay: 20771, count: 3 });
-    expect(parseProgress({ chars: 0 })?.alms).toEqual({ lastDay: -1, count: 0 });
+    expect(parseProgress({ lessons: [], alms: { lastDay: 20771, count: 3 } })?.alms).toEqual({ lastDay: 20771, count: 3 });
+    expect(parseProgress({ lessons: [] })?.alms).toEqual({ lastDay: -1, count: 0 });
   });
 
   it('R-TIEN-8: câu trả lời giveAlms — được / đã cho / thiếu; sai dạng → null', () => {

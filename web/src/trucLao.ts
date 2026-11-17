@@ -1,24 +1,25 @@
 /**
- * Ghép thầy **Trúc Lão** (R-HANH-8, V-45): khung thoại theo tiến độ (`zones/trucLao.ts`) → thẻ bộ thủ (`openRadical`) /
- * lượt ôn (`openReview`); màn đóng → khung thoại mở lại ở câu "học tiếp" (R-HANH-3, R-ON-5). `main.ts` chỉ gọi vài dòng.
+ * Ghép thầy **Trúc Lão** (R-HANH-8, V-45, V-80): khung thoại theo tiến độ (`zones/trucLao.ts`) → màn bài từ (`openWordLesson`)
+ * / lượt ôn (`openReview`); màn đóng → khung thoại mở lại ở câu "học tiếp" (R-HANH-3, R-ON-5). `main.ts` chỉ gọi vài dòng.
  */
 import type { Dialog, DialogChoice } from './zones/dialogs';
-import type { Radical } from './zones/radicals';
-import { nextRadical, TRUC_LAO, trucLaoDialog } from './zones/trucLao';
+import { TRUC_LAO, trucLaoDialog } from './zones/trucLao';
+import type { BaiHoc } from './zones/tuVung/bai';
+import { baiKeTiep } from './zones/tuVung/tu';
 
 export interface TrucLaoHost {
-  /** mã bộ đã học (tiến độ mới nhất) */
+  /** mã bài đã học (tiến độ mới nhất) */
   learned(): Iterable<string>;
-  /** mã bộ đến hạn ôn hôm nay */
+  /** mã từ đến hạn ôn hôm nay */
   due(): readonly string[];
-  openRadical(r: Radical): void;
+  openLesson(b: BaiHoc): void;
   openReview(due: readonly string[]): void;
   /** mở khung thoại */
   talk(d: Dialog): void;
 }
 
 export class TrucLao {
-  /** đang mở thẻ / lượt ôn từ Trúc Lão → đóng màn thì mở lại khung thoại */
+  /** đang mở màn bài / lượt ôn từ Trúc Lão → đóng màn thì mở lại khung thoại */
   private back = false;
 
   constructor(private readonly host: TrucLaoHost) {}
@@ -35,10 +36,10 @@ export class TrucLao {
   /** Lựa chọn trong khung thoại (gọi sau khi khung đóng). */
   act(c: DialogChoice): void {
     if (c.truc === 'hoc') {
-      const r = nextRadical(this.host.learned());
-      if (!r) return;
+      const b = baiKeTiep(this.host.learned());
+      if (!b) return;
       this.back = true;
-      this.host.openRadical(r);
+      this.host.openLesson(b);
     } else if (c.truc === 'on') {
       this.back = true;
       this.host.openReview(this.host.due());

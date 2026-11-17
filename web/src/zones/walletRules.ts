@@ -57,9 +57,9 @@ export function dayKey(d: Date): string {
   return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
 }
 
-/** Nhãn thưởng học (R-TIEN-5, chuỗi `rewardLearn`): "+10 · Học bộ 竹". */
-export function learnRewardLabel(char: string, amount: number): string {
-  return `+${amount} · Học bộ ${char}`;
+/** Nhãn thưởng học (R-TIEN-5, chuỗi `rewardLearn`): "+10 · Học bài Chào hỏi". */
+export function learnRewardLabel(title: string, amount: number): string {
+  return `+${amount} · Học bài ${title}`;
 }
 
 export type BuyRefusal = 'invalid' | 'short';
@@ -86,8 +86,8 @@ export interface TrialWallet {
   items: PlacedDecor[];
   /** ô cũ chưa chuyển (ví thử của bản có ô: mã ô → mã vật); rỗng sau khi trang chuyển (R-NHA-3) */
   placed: Record<string, string>;
-  /** mã bộ thủ đã mở thẻ HTML (R-TIEN-2 — +10 lần đầu) */
-  learned: string[];
+  /** mã bài đã mở bảng HTML (R-TIEN-2 — +10 lần đầu); khoá `learned` (bộ thủ) bản cũ không đọc — R-TU-5 */
+  lessons: string[];
   /** đã cho Tiểu Khất (R-TIEN-8) */
   alms: AlmsRecord;
   /** vườn rau (R-VUON-1…9) */
@@ -98,9 +98,9 @@ export interface TrialWallet {
   cam: CamRecord;
 }
 
-/** Ví thử mới: 300 Văn tiền, 3 vật khởi đầu mỗi vật 1 cái, nhà trống, chưa học bộ nào, vườn mới (6 luống trống, 3 hạt Cải ngọt), túi măng trống. */
+/** Ví thử mới: 300 Văn tiền, 3 vật khởi đầu mỗi vật 1 cái, nhà trống, chưa học bài nào, vườn mới (6 luống trống, 3 hạt Cải ngọt), túi măng trống. */
 export function newTrial(): TrialWallet {
-  return { coins: TRIAL_START_COINS, gameDay: '', gameToday: 0, owned: { ...STARTER_COUNTS }, items: [], placed: {}, learned: [], alms: { ...NO_ALMS }, garden: freshGarden(), mang: freshMang(), cam: { ...NO_CAM, songs: [] } };
+  return { coins: TRIAL_START_COINS, gameDay: '', gameToday: 0, owned: { ...STARTER_COUNTS }, items: [], placed: {}, lessons: [], alms: { ...NO_ALMS }, garden: freshGarden(), mang: freshMang(), cam: { ...NO_CAM, songs: [] } };
 }
 
 function parseCam(v: unknown): CamRecord {
@@ -128,7 +128,7 @@ export function parseTrial(raw: unknown): TrialWallet {
     owned: home.owned,
     items: [...home.items],
     placed: { ...home.legacy },
-    learned: [...new Set(strings(o.learned))],
+    lessons: [...new Set(strings(o.lessons))],
     alms: parseAlms(o.alms),
     garden: parseGarden(o.garden),
     mang: parseMang(o.mang),
@@ -166,14 +166,14 @@ export function earnTrialGame(w: TrialWallet, game: string, outcome: string, now
 
 /** Một thao tác măng ở chế độ thử: như `mangAct` của Flutter. Không được → ví giữ nguyên. */
 export function mangTrialAct(w: TrialWallet, a: MangAct, nowMs: number): { wallet: TrialWallet; result: MangResult } {
-  const result = a.act === 'pick' ? pickMang(w.mang, a.id, nowMs, !!a.right, w.learned.length > 0) : sellMang(w.mang, a.kind);
+  const result = a.act === 'pick' ? pickMang(w.mang, a.id, nowMs, !!a.right, w.lessons.length > 0) : sellMang(w.mang, a.kind);
   return { wallet: result.ok ? { ...w, coins: w.coins + result.amount, mang: result.mang } : w, result };
 }
 
-/** Mở thẻ bộ thủ trên bảng HTML: lần đầu +10, đã mở rồi → 0 (R-TIEN-2, R-TIEN-7). */
-export function learnOnce(w: TrialWallet, radicalId: string): { wallet: TrialWallet; amount: number } {
-  if (!radicalId || w.learned.includes(radicalId)) return { wallet: w, amount: 0 };
-  return { wallet: { ...w, coins: w.coins + LEARN_COINS, learned: [...w.learned, radicalId] }, amount: LEARN_COINS };
+/** Mở bài từ trên bảng HTML: lần đầu +10, đã mở rồi → 0 (R-TIEN-2, R-TIEN-7). */
+export function learnOnce(w: TrialWallet, lessonId: string): { wallet: TrialWallet; amount: number } {
+  if (!lessonId || w.lessons.includes(lessonId)) return { wallet: w, amount: 0 };
+  return { wallet: { ...w, coins: w.coins + LEARN_COINS, lessons: [...w.lessons, lessonId] }, amount: LEARN_COINS };
 }
 
 /** Mua vật [itemId] ở Tạp hoá bản web (giá từ `decor.ts`); không mua được → ví giữ nguyên. */

@@ -28,7 +28,7 @@ import {
 describe('thưởng học (R-TIEN-2)', () => {
   it('R-TIEN-2: học 1 bộ mới +10', () => {
     expect(LEARN_COINS).toBe(10);
-    expect(learnRewardLabel('竹', 10)).toBe('+10 · Học bộ 竹');
+    expect(learnRewardLabel('Chào hỏi', 10)).toBe('+10 · Học bài Chào hỏi');
   });
 });
 
@@ -84,7 +84,7 @@ describe('chế độ thử trên trình duyệt (R-TIEN-7)', () => {
     expect(w.owned).toEqual(STARTER_COUNTS);
     expect(w.items).toEqual([]);
     expect(w.placed).toEqual({});
-    expect(w.learned).toEqual([]);
+    expect(w.lessons).toEqual([]);
     expect(w.gameToday).toBe(0);
   });
 
@@ -93,8 +93,8 @@ describe('chế độ thử trên trình duyệt (R-TIEN-7)', () => {
   });
 
   it('R-TIEN-7: đọc lại ví đã lưu; ví thử bản có ô (`owned` mảng) → số cái như Flutter (vật ở nhiều ô → số ô); thiếu `owned` → khởi đầu', () => {
-    const w = parseTrial({ coins: 240, gameDay: '2026-11-14', gameToday: 8, owned: ['truc-canh', 'mai', 'rong-vang', 7], placed: { 'vuon-1': 'mai', 'vuon-2': 'mai', 'x': 3 }, learned: ['truc', 9] });
-    expect(w).toEqual({ coins: 240, gameDay: '2026-11-14', gameToday: 8, owned: { 'truc-canh': 1, mai: 2 }, items: [], placed: { 'vuon-1': 'mai', 'vuon-2': 'mai' }, learned: ['truc'], alms: { lastDay: -1, count: 0 }, garden: freshGarden(), mang: freshMang(), cam: { day: -1, songs: [] } });
+    const w = parseTrial({ coins: 240, gameDay: '2026-11-14', gameToday: 8, owned: ['truc-canh', 'mai', 'rong-vang', 7], placed: { 'vuon-1': 'mai', 'vuon-2': 'mai', 'x': 3 }, learned: ['truc'], lessons: ['bai-01', 9] });
+    expect(w).toEqual({ coins: 240, gameDay: '2026-11-14', gameToday: 8, owned: { 'truc-canh': 1, mai: 2 }, items: [], placed: { 'vuon-1': 'mai', 'vuon-2': 'mai' }, lessons: ['bai-01'], alms: { lastDay: -1, count: 0 }, garden: freshGarden(), mang: freshMang(), cam: { day: -1, songs: [] } });
     expect(parseTrial({ coins: 10 }).owned).toEqual(STARTER_COUNTS);
     const now = parseTrial({ coins: 10, owned: { mai: 2 }, items: [{ item: 'mai', scene: 'nha-ta', x: 8, z: 4, rot: 45 }] });
     expect(now.items).toEqual([{ item: 'mai', scene: 'nha-ta', x: 8, z: 4, rot: 45 }]);
@@ -156,12 +156,12 @@ describe('chế độ thử trên trình duyệt (R-TIEN-7)', () => {
     expect(d.earning).toEqual({ amount: 5, balance: 316, gameToday: 5, capped: false });
   });
 
-  it('R-TIEN-7: mở thẻ 竹 lần đầu → +10; mở lại 竹 → 0', () => {
-    const a = learnOnce(newTrial(), 'truc');
+  it('R-TIEN-7: mở bài Chào hỏi lần đầu → +10; mở lại → 0', () => {
+    const a = learnOnce(newTrial(), 'bai-01');
     expect(a.amount).toBe(10);
     expect(a.wallet.coins).toBe(310);
-    expect(a.wallet.learned).toEqual(['truc']);
-    const b = learnOnce(a.wallet, 'truc');
+    expect(a.wallet.lessons).toEqual(['bai-01']);
+    const b = learnOnce(a.wallet, 'bai-01');
     expect(b.amount).toBe(0);
     expect(b.wallet.coins).toBe(310);
   });

@@ -50,8 +50,8 @@ export interface WalletFx {
 
 /** Thẻ "kiếm từ đâu": 6 nguồn (bỏ "Đọc xong 1 chương" — quyết định 2, chưa có chương). Chuỗi `walletSource*`. */
 const SOURCES: [string, string][] = [
-  ['Học 1 bộ thủ mới', '+10'],
-  ['Ôn đúng hạn (2/2 · 1/2)', '+5 · +2'],
+  ['Học 1 bài từ mới', '+10'],
+  ['Ôn đúng 1 từ (2/2, tối đa 20 / ngày)', '+1'],
   ['Xong nhiệm vụ ngày', '+20'],
   ['Chuỗi 7 ngày', '+50'],
   ['Trò chữ thắng · hoà · thua', '+8 · 5 · 3'],

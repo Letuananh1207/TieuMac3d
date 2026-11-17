@@ -1124,8 +1124,9 @@ export interface SceneSpec {
   /** `enabled: false` = không có giếng (cảnh vùng) */
   well: { enabled: boolean; x: number; z: number; stone: string; water: string };
   /**
-   * Bài học của vùng (R-HANH-3): `radicals` = ngồi thiền ở đây là tu luyện bộ thủ (Rừng trúc). Bài học là lớp riêng của
-   * người học — cảnh không đặt vật học theo tiến độ (R-VUNG-1). Mặc định tắt (tông môn: ngồi thiền chỉ là ngồi).
+   * Bài học của vùng (R-HANH-3): `radicals` = vùng có thầy dạy **bài từ vựng** (Trúc Lâm — V-80; tên khoá cũ giữ vì đặc tả
+   * `design/scene/*.json` chưa đổi — đổi tên / thêm `topics` khi thế giới mới chốt, /canh). Bài học là lớp riêng của
+   * người học — cảnh không đặt vật học theo tiến độ (R-VUNG-1). Mặc định tắt.
    */
   lessons: { radicals: boolean };
   /** vòng trận truyền tống (R-HANH-2): chỉ tông môn (Truyền Tống Đài) bật; vùng (V-65) + nhà (V-47) tắt; `player.start` ngoài vòng */

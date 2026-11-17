@@ -1,14 +1,14 @@
 /**
  * Ô in trên cuộn Tĩnh toạ khi ngồi trước mắt (R-ON-8 — bảng chọn chức năng; thiết kế 2026-11-16.12 "Cuộn Tĩnh toạ",
  * artboard `Cuon-*`): giấy trải ngang 16 : 9, đầu cuộn (dòng nơi · "Tĩnh toạ" · ấn son "Tĩnh" · "Đứng dậy" góc trên phải),
- * một hàng 4 ô **Đọc sách · Bộ đã học · Nhiệm vụ hôm nay · Sắp có**, dòng gợi ý khi chưa học bộ nào; vùng chạm theo (u, v)
+ * một hàng 4 ô **Đọc sách · Từ đã học · Nhiệm vụ hôm nay · Sắp có**, dòng gợi ý khi chưa học từ nào; vùng chạm theo (u, v)
  * trên giấy. Thuần — không three, không DOM; vẽ ở `ui/cuonMucPaint.ts`. Ấn son chỉ chữ Việt (R-HUD-4).
  */
-import { RADICALS, type Radical } from './radicals';
+import { TONG_TU } from './tuVung/tu';
 import type { ScrollItem, ScrollItemId } from './studyMenu';
 import { placeName } from './journeyMap';
 
-/** vùng học bộ thủ: tên lấy từ bản đồ (R-HANH-1), không viết cứng */
+/** vùng học bài từ: tên lấy từ bản đồ (R-HANH-1), không viết cứng */
 const FOREST = placeName('rung-truc');
 
 /** Thứ chạm được trên cuộn: 3 ô chức năng + "Đứng dậy" (ô "Sắp có" không chạm — R-ON-8). */
@@ -21,7 +21,7 @@ export interface CuonTile {
   id: CuonTileId;
   look: CuonTileLook;
   title: string;
-  /** dòng phụ 1 dòng ("HSK 1 · Nhập môn", "5 / 50 bộ", "Còn 1 việc"; mờ = lý do); "Sắp có" = '' */
+  /** dòng phụ 1 dòng ("HSK 1 · Nhập môn", "30 / 304 từ", "Còn 1 việc"; mờ = lý do); "Sắp có" = '' */
   sub: string;
   /** chấm son góc trên phải ô (ô Nhiệm vụ: số việc còn lại; 0 / không biết → `null`) */
   badge: number | null;
@@ -34,7 +34,7 @@ export interface CuonView {
   place: string;
   /** đúng 4 ô, theo thứ tự trên giấy */
   tiles: CuonTile[];
-  /** chưa học bộ nào → dòng gợi ý gặp Trúc Lão */
+  /** chưa học từ nào → dòng gợi ý gặp Trúc Lão */
   hint: string | null;
 }
 
@@ -43,21 +43,21 @@ export const CUON_TITLE = 'Tĩnh toạ';
 export const CUON_SEAL = 'Tĩnh';
 export const STAND_UP = 'Đứng dậy';
 export const CUON_SOON = 'Sắp có';
-export const CUON_HINT = `Chưa học bộ nào. Sang ${FOREST}, gặp Trúc Lão ở bãi hạc đáp để học bộ đầu tiên.`;
+export const CUON_HINT = `Chưa học từ nào. Sang ${FOREST}, gặp Trúc Lão ở bãi hạc đáp để học bài đầu tiên.`;
 
 /** Ô trên cuộn từ bảng chọn (`scrollMenu`) + sổ từ đang mượn; thêm ô "Sắp có" cuối hàng. */
 export function cuonView(
   items: readonly ScrollItem[],
   place: string,
   book: { title: string; subtitle: string } | null,
-  pool: readonly Radical[] = RADICALS,
+  total: number = TONG_TU,
 ): CuonView {
   const tiles = items.map((it): CuonTile => {
     const look: CuonTileLook = it.enabled ? 'thuong' : 'mo';
     if (it.id === 'book')
       return { id: 'book', look, title: 'Đọc sách', sub: it.enabled && book ? `${book.title} · ${book.subtitle}` : 'Mượn ở Tàng Thư Các', badge: null, mark: /\d+/.exec(book?.title ?? '')?.[0] ?? '1' };
     if (it.id === 'learned')
-      return { id: 'learned', look, title: 'Bộ đã học', sub: it.enabled ? `${it.count ?? 0} / ${pool.length} bộ` : 'Chưa học bộ nào', badge: null };
+      return { id: 'learned', look, title: 'Từ đã học', sub: it.enabled ? `${it.count ?? 0} / ${total} từ` : 'Chưa học từ nào', badge: null };
     const n = it.count;
     return {
       id: 'daily',
@@ -68,7 +68,7 @@ export function cuonView(
     };
   });
   tiles.push({ id: 'soon', look: 'sap', title: CUON_SOON, sub: '', badge: null });
-  const none = items.find((i) => i.id === 'learned')?.enabled === false; // chưa học bộ nào
+  const none = items.find((i) => i.id === 'learned')?.enabled === false; // chưa học từ nào
   return { place, tiles, hint: none ? CUON_HINT : null };
 }
 

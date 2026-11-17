@@ -74,12 +74,14 @@ import { MiniGames } from './miniGames';
 import { PortalTrigger } from './zones/portal';
 import { DIALOGS, DialogRunner, type Dialog } from './zones/dialogs';
 import { LIBRARIAN, LibraryDesk } from './libraryDesk';
-import { reviewItems } from './zones/review';
+import { luotOn } from './zones/tuVung/cauHoi';
 import { scrollMenu, sitBadge } from './zones/studyMenu';
 import { TrucLao } from './trucLao';
 import { TRUC_LAO } from './zones/trucLao';
 import { cuonView, type CuonRowId } from './zones/cuonMuc';
-import { RADICALS, type Radical } from './zones/radicals';
+import { BAI_HOC, type BaiHoc } from './zones/tuVung/bai';
+import { baiHtml } from './zones/tuVung/baiHtml';
+import { TU_VUNG, tuCuaBai, tuDaHoc } from './zones/tuVung/tu';
 import { placeZones, ZONE_CONTENT, type Zone } from './zones/zones';
 import { musicVolume, TRACKS } from './zones/music';
 import { journeyLine } from './zones/tranSu';
@@ -143,9 +145,9 @@ async function boot(): Promise<void> {
     void characterAsk.then((c) => flight.setRider(c));
   }
   // Biển hiệu, bảng phấn vẽ chữ lên canvas, nên phải nạp font trước khi dựng cảnh.
-  // bộ thủ tu luyện ở vùng có bài học bộ thủ (R-HANH-3) — thẻ HTML dự phòng vẽ chữ bằng font này
+  // từ vựng ở vùng có bài học (R-HANH-3) — bảng HTML dự phòng vẽ chữ bằng font này
   // biển / tên nơi chỉ tiếng Việt (R-HUD-4) — chữ Hán chỉ còn ở nội dung học
-  const hanText = [...(spec.lessons.radicals ? RADICALS.map((r) => r.form) : []), ...ZONE_CONTENT.map((c) => c.lesson.han), signText(spec)].join('');
+  const hanText = [...(spec.lessons.radicals ? TU_VUNG.map((t) => t.han) : []), ...ZONE_CONTENT.map((c) => c.lesson.han), signText(spec)].join('');
   await Promise.allSettled([
     // nạp đủ các mặt chữ Lora (Latin + tiếng Việt) theo chữ thật trên biển
     document.fonts.load('700 72px Lora', `Aa${signText(spec)}`),
@@ -239,14 +241,14 @@ async function boot(): Promise<void> {
     void getProgress().then((p) => {
       if (p) {
         progress = p;
-        learnedRadicals = new Set(p.radicals);
+        learnedLessons = new Set(p.lessons);
         desk.sync(p.book); // màn danh mục Flutter có thể vừa ghi mượn (R-SACH-1)
         walletRoom.sync(p); // về từ Tạp hoá: ví "−n" (R-TIEN-4)
       }
       void garden?.load(false); // Tạp hoá có thể vừa bán hạt vào túi (R-VUON-9); không báo lại luống chín
       if (scrollOpen) showScroll(lastPick); // cuộn hiện lại ngay, mục vừa dùng cập nhật (thiết kế 2026-11-14.21)
       lastPick = null;
-      trucLao?.resume(); // thẻ / lượt ôn mở từ Trúc Lão → khung thoại mở lại (R-HANH-8)
+      trucLao?.resume(); // màn bài / lượt ôn mở từ Trúc Lão → khung thoại mở lại (R-HANH-8)
     });
   };
   const lesson = new LessonBoard(closeLesson);
@@ -312,37 +314,31 @@ async function boot(): Promise<void> {
   };
   const learn = new LearnButton(openLesson);
 
-  /* ---------- tu luyện (R-HANH-3): thẻ bộ thủ mở từ Trúc Lão (R-HANH-8); ngồi 1 giây → cuộn bảng chọn (R-ON-8) ---------- */
+  /* ---------- tu luyện (R-HANH-3): màn bài từ mở từ Trúc Lão (R-HANH-8); ngồi 1 giây → cuộn bảng chọn (R-ON-8) ---------- */
   // Bài học là lớp riêng của người học (theo tiến độ của họ) — cảnh không đổi theo tiến độ (R-VUNG-1).
-  let learnedRadicals = new Set(progress?.radicals ?? trial?.wallet.learned ?? []); // chế độ thử: bộ đã mở thẻ HTML (R-TIEN-7)
+  let learnedLessons = new Set(progress?.lessons ?? trial?.wallet.lessons ?? []); // chế độ thử: bài đã mở bảng HTML (R-TIEN-7)
+  /** từ đã học = từ của các bài đã học (R-TU-1) */
+  const learnedWords = (): Set<string> => new Set(BAI_HOC.filter((b) => learnedLessons.has(b.id)).flatMap((b) => b.tu));
+  const allLearned = (): boolean => learnedLessons.size >= BAI_HOC.length;
   // ngồi ôn 1 s → bảng chọn cuộn sách (R-ON-8, thiết kế 2026-11-14.10 — scene/nhapDinh.ts)
   const SIT_TO_LEARN = NHAP_DINH_OPEN_AT;
   let sitTime = 0;
   let sitOpened = false; // lần ngồi này đã mở thẻ → đứng dậy rồi ngồi lại mới mở thẻ sau
-  const openRadical = (r: Radical): void => {
+  const openWordLesson = (b: BaiHoc): void => {
     if (paused) return;
-    const id = r.id;
     paused = true;
     learn.suspend(true);
     player.moveTarget = null;
-    void bridge.openRadical(r, learnedRadicals.has(id), spec.site.name).then((native) => {
+    const index = BAI_HOC.indexOf(b) + 1;
+    void bridge.openWordLesson(b, index, BAI_HOC.length, tuCuaBai(b), learnedLessons.has(b.id), spec.site.name).then((native) => {
       if (native) {
         covered = true;
         return;
       }
-      // không có Flutter (trình duyệt): bảng HTML dự phòng; mở là coi như đã học — lưu ở ví thử, lần đầu +10 (R-TIEN-7)
-      lesson.open({
-        han: r.form,
-        pinyin: r.pinyin,
-        meaning: `${r.name} — ${r.meaning}`,
-        info: [
-          ...(r.full ? ([['Dạng đủ', r.full]] as [string, string][]) : []),
-          ['Nét', String(r.strokes)],
-          ['Chữ có bộ này', r.examples.map((e) => `${e.han} ${e.pinyin} · ${e.meaning}`).join(' — ')],
-        ],
-      });
-      learnedRadicals.add(id);
-      walletRoom.learned(r); // xu bay khi đóng thẻ (ví hiện lại)
+      // không có Flutter (trình duyệt): bảng HTML liệt kê từ của bài; mở là coi như đã học — ví thử, lần đầu +10 (R-TIEN-7)
+      lesson.open(baiHtml(b, index, tuCuaBai(b)));
+      learnedLessons.add(b.id);
+      walletRoom.learned(b); // xu bay khi đóng bảng (ví hiện lại)
     });
   };
   let onSeat = false; // ngồi bằng nút nổi "Ngồi" / "Vào bàn" (R-NGOI-1) → không mở cuộn sách (R-ON-8)
@@ -395,8 +391,8 @@ async function boot(): Promise<void> {
   /** Mục in trên cuộn trước mắt theo tiến độ mới nhất (`flash` = mục vừa dùng — viền ngọc nhấp). */
   const showScroll = (flash: CuonRowId | null = null): void => {
     const book = borrowedBook(desk.book);
-    const left = tasksLeft(progress?.daily ?? null, learnedRadicals.size >= RADICALS.length);
-    ngoiMat.setMenu(cuonView(scrollMenu({ book, learned: learnedRadicals, tasksLeft: left }), sitPlaceName(), book), pickScroll, flash);
+    const left = tasksLeft(progress?.daily ?? null, allLearned());
+    ngoiMat.setMenu(cuonView(scrollMenu({ book, learned: learnedWords(), tasksLeft: left }), sitPlaceName(), book), pickScroll, flash);
   };
   /**
    * Cuộn sách Ngồi ôn (R-ON-8, thiết kế 2026-11-14.21): các mục in thẳng trên cuộn trước mắt; nhân vật đứng yên, cần điều
@@ -422,19 +418,19 @@ async function boot(): Promise<void> {
     else if (id === 'learned') openLearned();
     else openDaily(); // bảng nhiệm vụ (R-NV-3) — "Ôn ngay" ở đó (R-ON-5)
   };
-  /** "Xem bộ đã học" (R-ON-8): màn Bộ đã học Flutter (`openLearned`); không có Flutter → thẻ HTML bộ học gần nhất. */
+  /** "Từ đã học" (R-ON-8): màn Từ đã học Flutter (`openLearned`); không có Flutter → bảng HTML bài học gần nhất. */
   const openLearned = (): void => {
     paused = true;
     learn.suspend(true);
-    const learned = RADICALS.filter((r) => learnedRadicals.has(r.id));
-    void bridge.openLearned(learned, spec.site.name).then((native) => {
+    const lessons = BAI_HOC.filter((b) => learnedLessons.has(b.id));
+    void bridge.openLearned(tuDaHoc(learnedWords()), lessons.map((b) => ({ id: b.id, title: b.ten })), spec.site.name).then((native) => {
       if (native) {
         covered = true; // đóng màn → resume → closeLesson: cuộn hiện lại
         return;
       }
       paused = false;
-      const last = learned[learned.length - 1];
-      if (last) openRadical(last);
+      const last = lessons[lessons.length - 1];
+      if (last) openWordLesson(last);
       else closeLesson();
     });
   };
@@ -448,20 +444,24 @@ async function boot(): Promise<void> {
     ngoiMat.rollUp();
     nhapDinh.rollUpThen(() => player.isSitting && player.toggleSit());
   };
-  /** Lượt ôn câu đố (R-ON-5); chưa có màn ôn → thẻ bộ `next` nếu có, không thì `onNone` (Trúc Lão: thoại mở lại). */
-  const openReview = (due: readonly string[], next: Radical | null, onNone?: () => void): void => {
+  /** Câu đố lượt ôn các từ `due` (R-ON-2, R-ON-4 — tối đa 20 từ, dạng câu theo bậc). */
+  const reviewOf = (due: readonly string[]) => {
+    const steps = new Map((progress?.due ?? []).map((id, i) => [id, progress?.dueSteps[i] ?? 0]));
+    return luotOn(due, due.map((id) => steps.get(id) ?? 0), learnedWords());
+  };
+  /** Lượt ôn câu đố (R-ON-5); chưa có màn ôn (trình duyệt) → `onNone` (Trúc Lão: thoại mở lại). */
+  const openReview = (due: readonly string[], onNone?: () => void): void => {
     paused = true;
     learn.suspend(true);
     player.moveTarget = null;
-    void bridge.openReview(reviewItems(due), spec.site.name).then((native) => {
+    void bridge.openReview(reviewOf(due), spec.site.name).then((native) => {
       if (native) {
-        covered = true; // đóng màn ôn → resume → closeLesson hỏi lại tiến độ (bộ đã ôn hết đến hạn)
+        covered = true; // đóng màn ôn → resume → closeLesson hỏi lại tiến độ (từ đã ôn hết đến hạn)
         return;
       }
       paused = false;
       learn.suspend(false);
-      if (next) openRadical(next);
-      else if (onNone) onNone();
+      if (onNone) onNone();
       else if (scrollOpen) closeLesson(); // không mở gì: cuộn vẫn mở, đứng yên (R-ON-8)
     });
   };
@@ -470,22 +470,18 @@ async function boot(): Promise<void> {
     paused = true;
     learn.suspend(true);
     player.moveTarget = null;
-    // hỏi tiến độ mới nhất (sang ngày mới → bộ đến hạn đổi) rồi gửi kèm câu đố "Ôn ngay" + chữ từng bộ
+    // hỏi tiến độ mới nhất (sang ngày mới → từ đến hạn đổi) rồi gửi kèm câu đố "Ôn ngay"
     void (async () => {
       const fresh = await getProgress();
       if (fresh) progress = fresh;
-      const forms = Object.fromEntries(RADICALS.map((r) => [r.id, r.form]));
-      if (await bridge.openDaily(reviewItems(progress?.due ?? []), forms)) {
+      if (await bridge.openDaily(reviewOf(progress?.due ?? []))) {
         covered = true; // đóng bảng → resume → closeLesson hỏi lại tiến độ
         return;
       }
       // không có Flutter (trình duyệt): bảng HTML theo thiết kế; không có tiến độ → tính theo phiên này
       const due = progress?.due ?? [];
-      const daily = progress?.daily ?? { learned: learnedRadicals.size, goal: DAILY_NEW_GOAL, due: due.length, streak: 0, best: 0 };
-      const allLearned = learnedRadicals.size >= RADICALS.length;
-      dailyPanel.open(dailyBoardView(daily, allLearned, learnedRadicals.size), due.map((id) => forms[id] ?? ''), () =>
-        openReview(due, null),
-      );
+      const daily = progress?.daily ?? { learned: learnedLessons.size, goal: DAILY_NEW_GOAL, due: due.length, streak: 0, best: 0 };
+      dailyPanel.open(dailyBoardView(daily, allLearned(), learnedLessons.size), [...due], () => openReview(due));
     })();
   };
   const nhapDinh = new NhapDinh(scene);
@@ -663,11 +659,11 @@ async function boot(): Promise<void> {
     (i) => {
       const c = runner?.current?.choices[i];
       if (c?.action === 'daily') afterSay = openDaily; // đóng khung rồi mở bảng (R-NV-3)
-      if (c?.action === 'journey') afterSay = () => say('tran-su', journeyLine(progress && { chars: progress.chars, radicals: progress.radicals.length }, JOURNEY_MAP.places, REGION_SCENES), () => {}); // R-NPC-5
+      if (c?.action === 'journey') afterSay = () => say('tran-su', journeyLine(progress && { words: progress.words.length, lessons: progress.lessons.length }, JOURNEY_MAP.places, REGION_SCENES), () => {}); // R-NPC-5
       if (LibraryDesk.handles(c)) afterSay = () => desk.act(c); // mượn / trả sách (R-SACH-1, R-SACH-4)
       if (town?.handles(c)) afterSay = () => town?.act(c); // cho Tiểu Khất, hỏi giờ Lão Canh (R-NPC-6, R-NPC-7)
       if (mini?.handles(c)) afterSay = () => mini?.act(c); // dự tiệc Lưu Thương, bán măng (R-LUU-1, R-MANG-5)
-      if (trucLao?.handles(c)) afterSay = () => trucLao?.act(c); // học bộ mới / ôn với Trúc Lão (R-HANH-8)
+      if (trucLao?.handles(c)) afterSay = () => trucLao?.act(c); // học bài mới / ôn với Trúc Lão (R-HANH-8)
       return runner?.choose(i) ?? null;
     },
     () => {
@@ -704,7 +700,7 @@ async function boot(): Promise<void> {
     paused = true;
     player.moveTarget = null;
     joystick.end();
-    guidePanel.open(g, dialogOf.get(g.tipBy)?.name ?? g.tipBy, learnedRadicals.size === 0);
+    guidePanel.open(g, dialogOf.get(g.tipBy)?.name ?? g.tipBy, learnedLessons.size === 0);
   };
   const guideButton = signs.length ? new GuideButton(openGuide) : null;
   // thủ thư Tàng Thư Các: thoại đổi theo việc đang mượn sách (R-SACH-1, R-SACH-4)
@@ -717,9 +713,9 @@ async function boot(): Promise<void> {
       learn.suspend(true);
     },
   });
-  // thầy Trúc Lão ở Trúc Lâm: học bộ mới + ôn qua khung thoại (R-HANH-8)
+  // thầy Trúc Lão ở Trúc Lâm: học bài mới + ôn qua khung thoại (R-HANH-8)
   if (spec.npcs.some((n) => n.id === TRUC_LAO))
-    trucLao = new TrucLao({ learned: () => learnedRadicals, due: () => progress?.due ?? [], openRadical, openReview: (due) => openReview(due, null, closeLesson), talk: startTalk });
+    trucLao = new TrucLao({ learned: () => learnedLessons, due: () => progress?.due ?? [], openLesson: openWordLesson, openReview: (due) => openReview(due, closeLesson), talk: startTalk });
   const dialogFor = (npcId: string): Dialog | undefined =>
     npcId === LIBRARIAN ? desk.dialog() : (trucLao?.dialog(npcId) ?? town?.dialog(npcId) ?? mini?.dialog(npcId) ?? dialogOf.get(npcId));
   // thẻ "Đọc sách" khi đang mượn sổ từ, mọi khu mọi vùng → mở sổ từ Flutter (R-SACH-2, R-SACH-3)
@@ -750,7 +746,7 @@ async function boot(): Promise<void> {
     },
     groundAt,
     say,
-    learned: () => learnedRadicals,
+    learned: () => learnedWords(),
     npcInfo: (id) => dialogFor(id),
     ended: (game, outcome, result) => walletRoom.gameEnded(game, outcome, result), // R-TIEN-3
   });
@@ -828,7 +824,7 @@ async function boot(): Promise<void> {
         bridge,
         trial,
         progress: () => progress,
-        learned: () => learnedRadicals,
+        learned: () => learnedWords(),
         lowTier: tier === 'thap',
         say: (id, text, then) => say(id, text, then ?? (() => {})),
         chatSay: (id, text) => chat.npcSay(id, text),
@@ -962,7 +958,7 @@ async function boot(): Promise<void> {
       sitting: player.isSitting,
       air: player.state.air,
       atHome: isHomeScene(SCENE.id), // sân + gian trong (V-68)
-      tasksLeft: tasksLeft(progress?.daily ?? null, (progress?.radicals.length ?? 0) >= RADICALS.length),
+      tasksLeft: tasksLeft(progress?.daily ?? null, allLearned()),
     }),
     standUp: () => (scrollOpen && !covered ? standFromScroll() : player.isSitting && player.toggleSit()),
     halt: () => {
@@ -1126,8 +1122,7 @@ async function boot(): Promise<void> {
     exitButton.follow(camera);
     readBook.set(borrowedBook(desk.book) ?? null, !(paused || covered || loading.active || mapOpen || talking || player.isSitting));
     if (boardButton && boardAt) {
-      const allLearned = (progress?.radicals.length ?? 0) >= RADICALS.length;
-      boardButton.set(atBoard, tasksLeft(progress?.daily ?? null, allLearned));
+      boardButton.set(atBoard, tasksLeft(progress?.daily ?? null, allLearned()));
       boardButton.follow(camera);
     }
     if (guideButton) {
@@ -1173,7 +1168,7 @@ async function boot(): Promise<void> {
       air: player.state.air,
       sitting: player.isSitting,
       bowing: player.isBowing,
-      badge: sitBadge(progress?.due ?? []), // chỉ số bộ đến hạn (R-DIEU-7)
+      badge: sitBadge(progress?.due ?? []), // chỉ số từ đến hạn (R-DIEU-7)
     });
     fps.tick(rawDt, renderer.info.render.calls, renderer.info.render.triangles);
     // độ nét động (R-HIEU-1): chậm kéo dài → vẽ thưa đi một bậc; mượt lại → nét lên. HUD là HTML nên vẫn nét.
