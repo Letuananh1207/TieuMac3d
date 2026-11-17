@@ -35,6 +35,7 @@ import {
   type MangState,
 } from './zones/mang';
 import type { Tu } from './zones/tuVung/tu';
+import { phatTu } from './ui/amTu';
 import { mangValue, TRUC_ONG, trucOngDialog } from './zones/trucLamThoai';
 import { mangTrialAct } from './zones/walletRules';
 
@@ -261,6 +262,7 @@ export class HaiMang {
     if (!a || a.picked !== null || i < 1 || i > a.options.length) return false;
     a.picked = i - 1;
     a.left = QUIZ_CLOSE_SECONDS;
+    phatTu(a.word); // hiện đáp án → phát âm khi có âm (R-MANG-4, R-AM-5)
     void this.pick(a.spot, i - 1 === a.answer, true);
     return true;
   }

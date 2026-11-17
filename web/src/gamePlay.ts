@@ -8,6 +8,7 @@ import type { Colliders } from './collision/colliders';
 import { BLACK, Gomoku, WHITE, npcMove } from './games/gomoku';
 import { makeQuestions, wordDetail } from './games/charDuel';
 import { DuelRound } from './games/duelRound';
+import { phatTu } from './ui/amTu';
 import type { GameNpc, GameResult, GameView } from './ui/gameView';
 import { NPC_RADIUS, createNpc, type Npc } from './player/npc';
 import type { BoardPoint, GameTable } from './scene/gameTable';
@@ -301,7 +302,10 @@ export class GamePlay {
   /** Người chạm một nghĩa Đấu chữ (R-DAU-2: chạm là chọn). */
   pick(option: number): boolean {
     const s = this.seated;
-    return !!s?.round && !s.result && s.round.choose(option);
+    const word = s?.round?.question?.word;
+    const ok = !!s?.round && !s.result && s.round.choose(option);
+    if (ok && word) phatTu(word); // lộ đáp án → phát âm từ khi có âm (R-DAU-2, R-AM-5); chưa có âm → im
+    return ok;
   }
 
   /** Hết 10 câu (R-DAU-2): thẻ kết quả với điểm ván. */

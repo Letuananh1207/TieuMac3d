@@ -73,23 +73,23 @@ function gomokuFigure(): SVGElement {
   return s;
 }
 
-/** Thẻ 木 + 4 nghĩa (nghĩa đúng tô ngọc, có dấu ✓; 3 nghĩa kia mờ). */
+/** Thẻ 好 + 4 nghĩa (nghĩa đúng tô ngọc, có dấu ✓; 3 nghĩa kia mờ). */
 function duelFigure(): HTMLElement {
   const row = node('div', 'gp-duel');
   row.setAttribute('role', 'img');
   row.setAttribute('aria-label', "Hình minh hoạ: thẻ chữ 好 và 4 nghĩa, nghĩa đúng 'tốt' tô xanh");
-  const card = node('div', 'gp-card-han', '木');
+  const card = node('div', 'gp-card-han', '好');
   card.lang = 'zh';
   card.setAttribute('aria-hidden', 'true');
   const opts = node('div', 'gp-opts');
   opts.setAttribute('aria-hidden', 'true');
-  const ok = node('span', 'ok', 'mộc — cây');
+  const ok = node('span', 'ok', 'tốt');
   const tick = node('span', 'tick');
   const t = svg('svg', { width: 11, height: 11, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', 'stroke-width': 3.2, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' });
   t.append(svg('path', { d: 'M5 12l5 5 9-10' }));
   tick.append(t);
   ok.append(tick);
-  opts.append(ok, node('span', '', 'thuỷ — nước'), node('span', '', 'thổ — đất'), node('span', '', 'hoả — lửa'));
+  opts.append(ok, node('span', '', 'nước'), node('span', '', 'đất'), node('span', '', 'lửa'));
   row.append(card, opts);
   return row;
 }

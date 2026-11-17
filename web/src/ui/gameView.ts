@@ -51,7 +51,7 @@ export interface DuelView {
   form: string;
   /** "mộc · mù — cây" — hiện sau khi chấm */
   detail: string;
-  /** 4 nhãn nghĩa "mộc — cây" */
+  /** 4 nghĩa tiếng Việt ("tốt, hay, khỏe") */
   options: string[];
   /** `hoi` chờ chọn · `nghi` NPC đang nghĩ · `cham` đang hiện nghĩa đúng (~1 s) · `het` hết ván */
   phase: 'hoi' | 'nghi' | 'cham' | 'het';
