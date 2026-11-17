@@ -37,7 +37,8 @@ const out = await build({
       "export { mangSpotOk } from './src/scene/mangLam.ts';\n" +
       "export { mangOfDay, MANG_WAVES } from './src/zones/mang.ts';\n" +
       "export { GAME_NPC_IDS } from './src/scene/spec.ts';\n" +
-      "export { checkPlaceNames, checkPortalLabels } from './src/scene/placeNames.ts';\n",
+      "export { checkPlaceNames, checkPortalLabels } from './src/scene/placeNames.ts';\n" +
+      "export { portalVia, portalButtonText } from './src/scene/portals.ts';\n",
     resolveDir: web,
     loader: 'ts',
   },
@@ -49,7 +50,7 @@ const out = await build({
   define: { 'import.meta.glob': 'globalThis.__viteGlob' },
   loader: { '.png': 'empty', '.jpg': 'empty', '.glb': 'empty', '.css': 'empty', '.woff2': 'empty' },
 });
-const { checkPlaceNames, checkPortalLabels, buildWorld, Colliders, checkRoute, routeLength, DRAFT_TOWN_NPCS, Scene, resolveSceneSpec, roomKinds, zoneAnchors, placeZones, ZONE_CONTENT, moonRadius, gateOpening, lauClearHeight, lauTop, wallGates, ringTrigger, arrivalSpot, daisLayout, landingPad, START_HEADING, BAI_HOC, applyVariant, mangSpotOk, mangOfDay, MANG_WAVES, GAME_NPC_IDS } = await import(
+const { checkPlaceNames, checkPortalLabels, portalVia, portalButtonText, buildWorld, Colliders, checkRoute, routeLength, DRAFT_TOWN_NPCS, Scene, resolveSceneSpec, roomKinds, zoneAnchors, placeZones, ZONE_CONTENT, moonRadius, gateOpening, lauClearHeight, lauTop, wallGates, ringTrigger, arrivalSpot, daisLayout, landingPad, START_HEADING, BAI_HOC, applyVariant, mangSpotOk, mangOfDay, MANG_WAVES, GAME_NPC_IDS } = await import(
   `data:text/javascript;base64,${Buffer.from(out.outputFiles[0].text).toString('base64')}`
 );
 
@@ -125,11 +126,11 @@ function checkPortalPairs() {
   for (const e of labels) console.error(e);
   bad += labels.length;
   if (!bad && [...portalsOf.values()].some((l) => l.length)) {
-    // cặp có một chiều bấm nút (cửa gian trong ra sân — V-71): ghi "(ra bằng nút)" — vẫn là cặp đủ hai chiều
-    const viaButton = (a, b) => portalsOf.get(a).some((q) => q.scene === b && q.via === 'nut');
-    const tag = (a, b) => (viaButton(a, b) ? ` (${a} ra bằng nút)` : viaButton(b, a) ? ` (${b} ra bằng nút)` : '');
+    // cặp có chiều đi bộ (cổng không nhãn / `via: "di"`): ghi "(… đi bộ)" — mặc định cổng có nhãn là bấm nút (V-81)
+    const walk = (a, b) => portalsOf.get(a).some((q) => q.scene === b && portalVia(q) === 'di');
+    const tag = (a, b) => (walk(a, b) ? ` (${a} đi bộ)` : walk(b, a) ? ` (${b} đi bộ)` : '');
     const pairs = [...portalsOf].flatMap(([id, l]) => l.filter((p) => id < p.scene).map((p) => `${id} ↔ ${p.scene}${tag(id, p.scene)}`));
-    console.log(`\nCổng đi bộ giữa các cảnh: ghép cặp đúng, nhãn = tên nơi đến (${pairs.length} cặp: ${pairs.join(' · ')}).`);
+    console.log(`\nCổng giữa các cảnh: ghép cặp đúng, nhãn = tên nơi đến (${pairs.length} cặp: ${pairs.join(' · ')}).`);
   }
   return bad;
 }
@@ -328,11 +329,12 @@ function checkScene(rel, raw, opt = {}) {
   // tới bằng bản đồ truyền tống: đứng ở chỗ xuất phát, hạc đáp bên phải (R-HANH-5)
   const pad = landingPad(spec.player.start, START_HEADING, spec.crane.padOffset);
   console.log(`Chỗ xuất phát (${n(spec.player.start[0])}; ${n(spec.player.start[1])}) · hạc đáp (${n(+pad[0].toFixed(2))}; ${n(+pad[1].toFixed(2))})`);
-  // cổng đi bộ (R-HANH-4): vùng chạm, cảnh đích, chỗ đứng khi tới từ cảnh đó
+  // cổng (R-HANH-4): vùng hiện nút / chạm, cảnh đích, chỗ đứng khi tới từ cảnh đó
   for (const p of spec.portals) {
     const [a, b] = [p.area.from, p.area.to];
-    const kind = p.via === 'nut' ? `Cổng bấm nút "${p.label}"` : 'Cổng đi bộ'; // V-71: đứng trong vùng → nút nổi
-    console.log(`${kind} → ${p.scene}: vùng ${p.via === 'nut' ? 'hiện nút' : 'chạm'} (${n(a[0])}; ${n(a[1])}) … (${n(b[0])}; ${n(b[1])}) · từ ${p.scene} tới đứng ở (${n(p.arrive.at[0])}; ${n(p.arrive.at[1])}) nhìn ${n(p.arrive.rotY)}°`);
+    const btn = portalVia(p) === 'nut';
+    const kind = btn ? `Cổng bấm nút "${portalButtonText(p)}"` : 'Cổng đi bộ'; // V-71, V-81: đứng trong vùng → nút nổi
+    console.log(`${kind} → ${p.scene}: vùng ${btn ? 'hiện nút' : 'chạm'} (${n(a[0])}; ${n(a[1])}) … (${n(b[0])}; ${n(b[1])}) · từ ${p.scene} tới đứng ở (${n(p.arrive.at[0])}; ${n(p.arrive.at[1])}) nhìn ${n(p.arrive.rotY)}°`);
   }
   if (all.length) {
     console.error(`${rel}: ${all.length} lỗi:\n- ${all.join('\n- ')}`);

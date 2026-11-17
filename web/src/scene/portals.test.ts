@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { arrivalFor, buttonPortalAt, checkPortals } from './portals';
+import { arrivalFor, buttonPortalAt, checkPortals, portalButtonText, portalVia } from './portals';
 import { DEFAULT_SCENE, type PortalSpec } from './spec';
 import { resolveSceneSpec } from './specCheck';
 
@@ -70,19 +70,43 @@ describe('cổng đi bộ trong đặc tả cảnh (R-HANH-4)', () => {
   });
 });
 
-describe('cổng bấm nút (V-71 — cửa gian trong "Ra sân")', () => {
+describe('cổng bấm nút (V-71 cửa gian trong "Ra sân", V-81 mọi cổng có nhãn)', () => {
   const OUT: PortalSpec = { scene: 'nha-ta', area: { from: [-6.8, 1.4], to: [-5.2, 3.8] }, arrive: { at: [-3.8, 2.6], rotY: 90 }, label: 'Ra sân', via: 'nut' };
+  const HOME_GATE: PortalSpec = { ...TO_HOME, label: 'Về nhà' };
 
-  it('R-HANH-4: `via` chỉ "di" | "nut"; cổng nút thiếu nhãn → lỗi; thiếu `via` = đi bộ như cũ', () => {
+  it('R-HANH-4: `via` chỉ "di" | "nut"; cổng nút thiếu nhãn → lỗi; đặc tả giữ nguyên `via` (thiếu vẫn thiếu)', () => {
     expect(portalProblems([{ ...OUT, via: 'bay' }]).join()).toContain('via');
     expect(portalProblems([OUT])).toEqual([]);
     expect(checkPortals({ portals: [{ ...OUT, label: '' }], teleport: DEFAULT_SCENE.teleport }).join()).toContain('cần label');
     expect(resolveSceneSpec({ ...base, portals: [TO_HOME] }).spec.portals[0].via).toBeUndefined();
   });
 
-  it('R-NHA-1: đứng trên thảm trong vùng → có nút; ngoài vùng hoặc cổng đi bộ → không', () => {
-    expect(buttonPortalAt([TO_HOME, OUT], -6, 2.6)).toBe(OUT);
-    expect(buttonPortalAt([TO_HOME, OUT], -3.8, 2.6)).toBeUndefined(); // vừa vào, đứng chỗ tới
-    expect(buttonPortalAt([TO_HOME, OUT], 0, 45)).toBeUndefined(); // vòng đi bộ không hiện nút
+  it('R-HANH-4 (V-81): thiếu `via` → cổng có nhãn là bấm nút, cổng không nhãn (cảnh cũ) đi bộ; ghi rõ thì theo', () => {
+    expect(portalVia(HOME_GATE)).toBe('nut');
+    expect(portalVia(TO_HOME)).toBe('di');
+    expect(portalVia({ ...HOME_GATE, via: 'di' })).toBe('di');
+    expect(portalVia(OUT)).toBe('nut');
+  });
+
+  it('R-HANH-4 (V-81): chữ trên nút — "Đi <nơi đến>", về trấn "Về Khởi Nguyên Trấn", nhãn đã là lời mời giữ nguyên', () => {
+    expect(portalButtonText({ scene: 'rung-truc', label: 'Trúc Lâm' })).toBe('Đi Trúc Lâm');
+    expect(portalButtonText({ scene: 'tong-mon', label: 'Khởi Nguyên Trấn' })).toBe('Về Khởi Nguyên Trấn');
+    expect(portalButtonText({ scene: 'nha-ta', label: 'Về nhà' })).toBe('Về nhà');
+    expect(portalButtonText({ scene: 'nha-ta-trong', label: 'Vào nhà' })).toBe('Vào nhà');
+    expect(portalButtonText(OUT)).toBe('Ra sân');
+  });
+
+  it('R-HANH-4 R-NHA-1: đứng trong vùng cổng có nhãn → có nút (không tự sang); ngoài vùng hoặc cổng không nhãn → không', () => {
+    expect(buttonPortalAt([HOME_GATE, OUT], -6, 2.6)).toBe(OUT);
+    expect(buttonPortalAt([HOME_GATE, OUT], -3.8, 2.6)).toBeUndefined(); // vừa vào, đứng chỗ tới
+    expect(buttonPortalAt([HOME_GATE, OUT], 0, 45)).toBe(HOME_GATE); // vòng "Về nhà": đứng trong → nút
+    expect(buttonPortalAt([HOME_GATE, OUT], 0, 38.4)).toBeUndefined(); // vừa tới, đứng chỗ tới ngoài vòng
+    expect(buttonPortalAt([TO_HOME], 0, 45)).toBeUndefined(); // cổng không nhãn: bước vào là sang (PortalTrigger)
+  });
+
+  it('R-HANH-4: cổng bấm nút chỉ cần chỗ đứng ngoài vùng (không bắt cách ≥ 1 m như cổng đi bộ)', () => {
+    const close = { ...HOME_GATE, arrive: { at: [0, 42.7], rotY: 180 } };
+    expect(portalProblems([close])).toEqual([]);
+    expect(portalProblems([{ ...close, via: 'di' }]).join()).toMatch(/chỗ đứng/);
   });
 });

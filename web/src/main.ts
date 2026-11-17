@@ -27,7 +27,7 @@ import { HOME_SCENE, loadScene, REGION_SCENES } from './scene/loadSpec';
 import { HOME_OF_PLAYER, isHomeScene } from './scene/placeNames';
 import { createMapScroll } from './scene/banDo';
 import { arrivalSpot, CHARGE_SECONDS, ringTrigger } from './scene/teleportLayout';
-import { arrivalFor, buttonPortalAt } from './scene/portals';
+import { arrivalFor, buttonPortalAt, portalButtonText, portalVia } from './scene/portals';
 import { viewDistance } from './scene/farMountains';
 import { createStage, gpuName, MAX_PIXEL_RATIO, probeGpu } from './scene/renderer';
 import { detailOf, FrameCap, pickTier, ResolutionGovernor, tierParam, TIERS } from './scene/quality';
@@ -98,6 +98,8 @@ installCursors(cursorArrow, cursorButton);
 
 /** Nhãn tên cao hơn đỉnh búi tóc đệ tử (~2,2 m) một chút. */
 const NAME_TAG_HEIGHT = 2.5;
+/** nút nổi cổng có vòng chữ (V-81): cao hơn chân (m) — trên nhãn tên, chỗ chữ nổi của vòng (ẩn khi đứng trong vòng) */
+const GATE_BUTTON_ABOVE = 2.9;
 /** file nhạc đóng gói (R-NHAC-1): đường dẫn `./nhac/<file>` → URL sau build */
 const MUSIC_URLS = import.meta.glob('./nhac/*.{ogg,mp3,wav,m4a}', { query: '?url', import: 'default', eager: true }) as Record<string, string>;
 
@@ -1001,13 +1003,15 @@ async function boot(): Promise<void> {
     // nơi đang ở ('oDay') → không có gì
   };
 
-  // cổng đi bộ sang cảnh (R-HANH-4): bước từ ngoài vào vùng → sang ngay
-  const portals = spec.portals.filter((p) => p.via !== 'nut').map((p) => ({ to: p.scene, trigger: new PortalTrigger(p.area, { x: sx, z: sz }) }));
-  // cổng bấm nút (cửa gian trong "Ra sân" — V-71): đứng trong vùng → nút nổi, bấm (hoặc phím E) mới sang
-  const exitButton = new ExitButton<{ x: number; y: number; z: number; label: string; to: string }>((d) => travel(d.to, 'cong'));
+  // cổng đi bộ (R-HANH-4 — chỉ cổng không nhãn / `via: "di"`): bước từ ngoài vào vùng → sang ngay
+  const portals = spec.portals.filter((p) => portalVia(p) === 'di').map((p) => ({ to: p.scene, trigger: new PortalTrigger(p.area, { x: sx, z: sz }) }));
+  // cổng bấm nút (mọi cổng có nhãn — V-71, V-81): đứng trong vùng → nút nổi "Đi Trúc Lâm" / "Về nhà"…, bấm (hoặc phím E) mới sang
+  const exitButton = new ExitButton<{ x: number; y: number; z: number; label: string; above?: number; to: string }>((d) => travel(d.to, 'cong'));
   const exitSpots = spec.portals.map((p) => {
     const [x, z] = [(p.area.from[0] + p.area.to[0]) / 2, (p.area.from[1] + p.area.to[1]) / 2];
-    return { x, y: groundAt(x, z), z, label: p.label ?? '', to: p.scene };
+    // cổng có vòng chữ (V-81): nút thay chỗ chữ nổi (ẩn khi đứng trong vòng), treo 2,9 m — trên nhãn tên, dưới bản đồ nhỏ
+    const ringed = p.marker !== false && !p.ring;
+    return { x, y: groundAt(x, z), z, label: portalButtonText(p), above: ringed ? GATE_BUTTON_ABOVE : undefined, to: p.scene };
   });
   exitAction = () => {
     const d = exitButton.current;

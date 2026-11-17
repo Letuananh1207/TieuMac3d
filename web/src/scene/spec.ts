@@ -686,8 +686,8 @@ export interface GameTableSpec {
 }
 
 /**
- * Cổng đi bộ sang cảnh khác (R-HANH-4): tâm nhân vật bước từ ngoài vào `area` (chữ nhật thẳng trục, `from` → `to`)
- * thì sang cảnh `scene` ("tong-mon" = Khởi Nguyên Trấn, còn lại = mã file `design/scene/<mã>.json`). `arrive` = chỗ
+ * Cổng sang cảnh khác (R-HANH-4): tâm nhân vật đứng trong `area` (chữ nhật thẳng trục, `from` → `to`) thì hiện nút nổi,
+ * bấm mới sang cảnh `scene` (cổng không nhãn / `via: "di"`: bước vào là sang) ("tong-mon" = Khởi Nguyên Trấn, còn lại = mã file `design/scene/<mã>.json`). `arrive` = chỗ
  * đứng + hướng (độ, 0 = nhìn +z, 90 = nhìn +x) **trong cảnh này** khi từ `scene` đi sang qua cổng của bên đó — ngoài
  * `area`. Mỗi cảnh tối đa một cổng cho một cảnh đích; hai cảnh ghép cặp theo cảnh đích (`scripts/check-scene.mjs`).
  */
@@ -706,8 +706,9 @@ export interface PortalSpec {
    */
   marker?: boolean;
   /**
-   * Cách sang: `di` (mặc định, như cũ) = bước vào vùng là sang · `nut` = đứng trong vùng thì hiện **nút nổi** ghi `label`
-   * (cùng kiểu nút "Ngồi" / "Nói chuyện"), bấm mới sang (cửa gian trong ra sân — V-71). Cặp cổng vẫn đủ hai chiều.
+   * Cách sang: `nut` = đứng trong vùng thì hiện **nút nổi** "Đi <label>" / "Về …" (cùng kiểu nút "Ngồi" / "Nói chuyện"), bấm
+   * (phím E) mới sang (V-71, V-81) · `di` = bước vào vùng là sang ngay. **Thiếu** → `nut` nếu có `label`, `di` nếu không
+   * (V-81, người dùng 2026-11-17 — trước đó mặc định là `di`; `portalVia` ở `portals.ts`). Cặp cổng vẫn đủ hai chiều.
    */
   via?: (typeof PORTAL_VIAS)[number];
   /**

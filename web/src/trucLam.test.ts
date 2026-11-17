@@ -90,7 +90,7 @@ describe('Trúc Lâm — địa hình + phạm vi (V-66 B2)', () => {
     }
   });
 
-  it('R-HANH-4: ba cổng đi bộ ở mép đúng hướng, mỗi cổng ở cuối một lối (tây đường mòn 3 m, đông quan đạo 4 m, bắc trên đèo)', () => {
+  it('R-HANH-4: ba cổng (bấm nút — V-81) ở mép đúng hướng, mỗi cổng ở cuối một lối (tây đường mòn 3 m, đông quan đạo 4 m, bắc trên đèo)', () => {
     const at = (scene: string): [number, number] => {
       const p = spec.portals.find((q) => q.scene === scene)!;
       return [(p.area.from[0] + p.area.to[0]) / 2, (p.area.from[1] + p.area.to[1]) / 2];

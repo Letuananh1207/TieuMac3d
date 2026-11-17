@@ -1,5 +1,6 @@
 /**
- * Cổng đi bộ sang cảnh khác (R-HANH-4): tâm nhân vật bước **từ ngoài vào** vùng chữ nhật của cổng → báo sang ngay,
+ * Cổng đi bộ sang cảnh khác (R-HANH-4 — chỉ cổng không nhãn / `via: "di"`; cổng có nhãn bấm nút, V-81): tâm nhân vật
+ * bước **từ ngoài vào** vùng chữ nhật của cổng → báo sang ngay,
  * đúng một lần (không giữ như vòng trận). Xuất hiện / đứng sẵn trong vùng thì không tính — phải ra rồi vào lại; đang
  * bận (`enabled = false`: màn tải, bản đồ, thoại, trang trí…) mà ở trong vùng cũng phải ra rồi vào lại. Thuần.
  */

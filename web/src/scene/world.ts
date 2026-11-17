@@ -325,7 +325,7 @@ function* worldSteps(
       channels.update(dt);
       mirages(dt);
       teleport?.update(dt);
-      portalMarks(dt);
+      portalMarks(dt, player);
       for (const r of rooms) r.update(dt, !!player && inRect(r.floor, player.x, player.z), player?.y, eye);
     },
   };

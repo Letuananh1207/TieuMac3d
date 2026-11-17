@@ -7,7 +7,7 @@
  */
 import * as THREE from 'three';
 import { markDynamic } from './merge';
-import { portalRect } from './portals';
+import { portalContains, portalRect } from './portals';
 import type { PortalSpec, TeleportSpec } from './spec';
 import { makeCanvasTex, SIGN_FONT } from './textures';
 import type { GroundY } from './terrainHeight';
@@ -106,14 +106,15 @@ function fadeTex(): THREE.CanvasTexture {
 /**
  * Dựng vòng cổng cho mọi cổng có `label` trong `portals` (trừ `marker: false` — cửa nhà, V-68); cổng có `ring` (cửa nhà
  * chính — V-96) → vòng nhỏ bán kính `ring`, không chữ, màn sáng thấp. Trả hàm gọi mỗi khung (thở sáng, hạt bay). Không cổng nào có
- * nhãn → không dựng gì (cảnh cũ).
+ * nhãn → không dựng gì (cảnh cũ). Hàm mỗi khung nhận chỗ nhân vật: đứng trong vùng cổng nào thì **ẩn chữ nổi** của cổng đó —
+ * nút nổi "Đi …" (V-81) đã ghi nơi đến; đứng giữa vòng thì chữ to sát camera che cảnh.
  */
 export function addPortalMarkers(
   scene: THREE.Scene,
   portals: readonly PortalSpec[],
   colors: TeleportSpec['colors'],
   groundY: GroundY = () => 0,
-): (dt: number) => void {
+): (dt: number, player?: { x: number; z: number }) => void {
   const marked = portals.filter((p) => p.label && p.marker !== false && !p.ring);
   // vòng nhỏ không chữ (`ring` — cửa nhà chính, V-96): đĩa + màn sáng thấp + hạt, cùng vật liệu
   const ringed = portals.filter((p) => !!p.ring);
@@ -139,7 +140,7 @@ export function addPortalMarkers(
     side: THREE.DoubleSide,
   });
   const sparkMat = new THREE.PointsMaterial({ color: colors.spark, size: 0.12, transparent: true, opacity: 0.9, depthWrite: false });
-  const ticks: ((t: number) => void)[] = [];
+  const ticks: ((t: number, player?: { x: number; z: number }) => void)[] = [];
 
   for (const p of [...marked, ...ringed]) {
     const r = portalRect(p);
@@ -178,8 +179,9 @@ export function addPortalMarkers(
     scene.add(...parts);
     const rise = small ? 2.2 * RING_VEIL : 2.2; // hạt bay thấp theo màn sáng
 
-    ticks.push((t) => {
+    ticks.push((t, player) => {
       const b = 0.5 + 0.5 * Math.sin(t * BREATH);
+      if (label) label.visible = !player || !portalContains(p, player.x, player.z);
       if (label) label.position.y = y0 + LABEL_Y + 0.06 * Math.sin(t * BREATH * 0.5); // nhấp nhô rất khẽ
       for (let i = 0; i < SPARKS; i++) {
         const s = seed[i];
@@ -193,11 +195,11 @@ export function addPortalMarkers(
   }
 
   let time = 0;
-  return (dt) => {
+  return (dt, player) => {
     time += dt;
     const b = 0.5 + 0.5 * Math.sin(time * BREATH);
     discMat.opacity = 0.7 + 0.3 * b;
     veilMat.opacity = VEIL_OPACITY[0] + (VEIL_OPACITY[1] - VEIL_OPACITY[0]) * b;
-    for (const tick of ticks) tick(time);
+    for (const tick of ticks) tick(time, player);
   };
 }

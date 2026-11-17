@@ -59,7 +59,7 @@ describe('cưỡi hạc — dòng thời gian (R-HANH-5)', () => {
     expect([landStage(1), landStage(1.5), landStage(1.9)]).toEqual(['ha', 'nhay', 'veSau']);
   });
 
-  it('R-MAN-2: cổng đi bộ, giảm chuyển động, hoạt cảnh tắt → màn tải; trang mở không có den=hac → màn tải', () => {
+  it('R-MAN-2: cổng (bấm nút), giảm chuyển động, hoạt cảnh tắt → màn tải; trang mở không có den=hac → màn tải', () => {
     expect(wantsCrane({ how: 'cong', trial: true, reducedMotion: false, inApp: true })).toBe(false);
     expect(wantsCrane({ how: 'vong', trial: false, reducedMotion: true, inApp: true })).toBe(false);
     expect(wantsCrane({ how: 'vong', trial: false, reducedMotion: false, inApp: false })).toBe(false);

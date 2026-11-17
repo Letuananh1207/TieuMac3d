@@ -1,8 +1,8 @@
 /**
- * Cổng đi bộ sang cảnh (R-HANH-4), suy từ đặc tả. Thuần (không three, không DOM): dùng chung cho kiểm đặc tả
+ * Cổng sang cảnh (R-HANH-4), suy từ đặc tả. Thuần (không three, không DOM): dùng chung cho kiểm đặc tả
  * (`specCheck.ts`, `scripts/check-scene.mjs`) và `main.ts` (chỗ đứng khi tới qua cổng: `?qua=<cảnh vừa rời>`).
  */
-import type { PortalSpec, SceneSpec, XZ } from './spec';
+import type { PORTAL_VIAS, PortalSpec, SceneSpec, XZ } from './spec';
 import { ringTrigger } from './teleportLayout';
 
 /** Chỗ đứng phải cách mép vùng chạm ít nhất bấy nhiêu mét (vừa tới không chạm lại ngay). */
@@ -64,15 +64,16 @@ export function checkPortals(s: Pick<SceneSpec, 'portals' | 'teleport'>): string
     else if (seen.has(p.scene)) out.push(`${name}: trùng cảnh đích — mỗi cảnh tối đa một cổng tới "${p.scene}"`);
     seen.add(p.scene);
     // cổng bấm nút (V-71): nhãn là chữ trên nút nổi — bắt buộc
-    if (p.via === 'nut' && !p.label) out.push(`${name}: cổng "nut" cần label (chữ trên nút nổi)`);
+    const via = portalVia(p);
+    if (via === 'nut' && !p.label) out.push(`${name}: cổng "nut" cần label (chữ trên nút nổi)`);
     const r = portalRect(p);
     if (r.maxX - r.minX < 0.5 || r.maxZ - r.minZ < 0.5) out.push(`${name}: vùng chạm hẹp dưới 0,5 m — nới area`);
     if (p.ring !== undefined && p.ring > Math.min(r.maxX - r.minX, r.maxZ - r.minZ) / 2 + 1e-6) out.push(`${name}: vòng (ring ${p.ring} m) rộng hơn vùng area — nới area`);
     const [ax, az] = p.arrive.at;
     const gap = triggerGap(p, ax, az);
     // cổng bấm nút không tự sang: chỗ đứng chỉ cần ngoài vùng (vừa tới không hiện nút ngay); cổng đi bộ cách ≥ 1 m
-    const minGap = p.via === 'nut' ? 0 : ARRIVE_GAP;
-    if (p.via === 'nut' ? gap <= 0 : gap < minGap)
+    const minGap = via === 'nut' ? 0 : ARRIVE_GAP;
+    if (via === 'nut' ? gap <= 0 : gap < minGap)
       out.push(`${name}: chỗ đứng (arrive) cách vùng ${gap.toFixed(1)} m — dời ra ngoài${minGap ? ` (≥ ${minGap} m)` : ''}`);
     // hướng nhìn (rotY 0 = +z) phải ra xa tâm vòng: vừa tới thấy cảnh, không thấy ngay vòng vừa bước ra
     const a = (p.arrive.rotY * Math.PI) / 180;
@@ -105,7 +106,30 @@ export function arrivalFor(portals: readonly PortalSpec[], from: string | null):
   return p ? { at: [p.arrive.at[0], p.arrive.at[1]], rotY: (p.arrive.rotY * Math.PI) / 180 } : undefined;
 }
 
-/** Cổng bấm nút (`via: "nut"`, V-71) mà (x, z) đang đứng trong vùng (trong vòng nếu có `ring` — V-96) — nút nổi hiện khi có. Thuần. */
-export function buttonPortalAt<T extends Pick<PortalSpec, 'area' | 'via' | 'ring'>>(portals: readonly T[], x: number, z: number): T | undefined {
-  return portals.find((p) => p.via === 'nut' && portalContains(p, x, z));
+/**
+ * Cách sang thật của cổng (R-HANH-4, V-81): `via` ghi rõ thì theo; thiếu → cổng có nhãn là **bấm nút** (`nut` — người dùng
+ * 2026-11-17: "đến cổng thì đừng vội qua, phải hiện một cái gì đó"), cổng không nhãn (đặc tả cũ, chỉ là vùng chạm) đi bộ `di`.
+ */
+export function portalVia(p: Pick<PortalSpec, 'via' | 'label'>): (typeof PORTAL_VIAS)[number] {
+  return p.via ?? (p.label ? 'nut' : 'di');
+}
+
+/** Nhãn đã mở đầu bằng động từ đi lại ("Về nhà", "Vào nhà", "Ra sân") → giữ nguyên trên nút. */
+const VERB = /^(Về|Vào|Ra|Đi|Lên|Xuống|Qua|Sang)\s/u;
+/** Cảnh trấn chính — cổng về đây ghi "Về …". */
+const TOWN = 'tong-mon';
+
+/**
+ * Chữ trên nút nổi của cổng bấm nút (R-HANH-4, V-81): nhãn đã là lời mời ("Về nhà", "Vào nhà", "Ra sân") → giữ; cổng về trấn →
+ * "Về <nhãn>" ("Về Khởi Nguyên Trấn"); còn lại "Đi <nhãn>" ("Đi Trúc Lâm"). Thuần.
+ */
+export function portalButtonText(p: Pick<PortalSpec, 'label' | 'scene'>): string {
+  const label = (p.label ?? '').trim();
+  if (!label || VERB.test(label)) return label;
+  return `${p.scene === TOWN ? 'Về' : 'Đi'} ${label}`;
+}
+
+/** Cổng bấm nút (`portalVia` = `nut`, V-71 / V-81) mà (x, z) đang đứng trong vùng (trong vòng nếu có `ring` — V-96) — nút nổi hiện khi có. Thuần. */
+export function buttonPortalAt<T extends Pick<PortalSpec, 'area' | 'via' | 'ring' | 'label'>>(portals: readonly T[], x: number, z: number): T | undefined {
+  return portals.find((p) => portalVia(p) === 'nut' && portalContains(p, x, z));
 }

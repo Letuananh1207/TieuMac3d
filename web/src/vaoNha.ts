@@ -6,7 +6,7 @@
  * phím, ngồi, nhảy giữa đường → huỷ (walkTo tự báo), không vào.
  */
 import type * as THREE from 'three';
-import { portalCenter, portalContains } from './scene/portals';
+import { portalCenter, portalContains, portalVia } from './scene/portals';
 import type { PortalSpec } from './scene/spec';
 
 /** Phần của `PlayerController` cần dùng. */
@@ -44,7 +44,7 @@ export class HouseDoor {
     deps: Omit<HouseDoorDeps, 'door' | 'box'>,
   ): HouseDoor | null {
     for (const door of portals) {
-      if (door.via !== 'nut' || !door.ring) continue;
+      if (portalVia(door) !== 'nut' || !door.ring) continue;
       const c = portalCenter(door);
       const house = houses.find((h) => boxGap(h.box, c.x, c.z) <= DOOR_NEAR);
       if (house) return new HouseDoor({ ...deps, door, box: house.box });

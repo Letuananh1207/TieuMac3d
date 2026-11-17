@@ -15,7 +15,7 @@ function walk(t: PortalTrigger, a: { x: number; z: number }, b: { x: number; z: 
   return fired;
 }
 
-describe('cổng sang cảnh (R-HANH-4)', () => {
+describe('cổng đi bộ — cổng không nhãn / `via: "di"` (R-HANH-4)', () => {
   it('R-HANH-4: vừa tới, đứng ở chỗ đứng ngoài vùng → không sang', () => {
     const t = new PortalTrigger(AREA, ARRIVE);
     for (let i = 0; i < 100; i++) expect(t.update(ARRIVE)).toBe(false);
@@ -51,7 +51,7 @@ describe('cổng sang cảnh (R-HANH-4)', () => {
     expect(t.update({ x: 0, z: 43.2 })).toBe(true);
   });
 
-  it('R-HANH-4 R-NHA-1: ở nhà, đứng (0; 10) vừa tới → không ra; đi về nam qua cổng → về trấn', () => {
+  it('R-HANH-4: cổng đi bộ (không nhãn / `via: "di"`): đứng (0; 10) vừa tới → không ra; đi về nam qua vùng → sang', () => {
     const t = new PortalTrigger({ from: [-4, 12.5], to: [4, 16] }, { x: 0, z: 10 });
     expect(t.update({ x: 0, z: 10 })).toBe(false);
     expect(walk(t, { x: 0, z: 10 }, { x: 0, z: 14 })).toBe(1);

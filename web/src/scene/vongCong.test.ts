@@ -31,13 +31,25 @@ describe('vòng cổng "Về nhà" (V-39)', () => {
     expect(scene.children.length).toBe(4);
   });
 
+  it('R-HANH-4 (V-81): đứng trong vùng cổng → chữ nổi ẩn (nút "Về nhà" thay); bước ra → chữ hiện lại', () => {
+    const scene = new THREE.Scene();
+    const tick = addPortalMarkers(scene, [HOME], DEFAULT_SCENE.teleport.colors, () => 0);
+    const sprite = scene.children.find((o) => o instanceof THREE.Sprite)!;
+    tick(0.1, { x: 0, z: 48 });
+    expect(sprite.visible).toBe(true);
+    tick(0.1, { x: 0, z: 54 });
+    expect(sprite.visible).toBe(false);
+    tick(0.1, { x: 0, z: 48 });
+    expect(sprite.visible).toBe(true);
+  });
+
   it('R-HANH-4: cổng không nhãn (cảnh cũ) → không dựng gì, cổng chỉ là vùng chạm', () => {
     const scene = new THREE.Scene();
     addPortalMarkers(scene, [{ ...HOME, label: undefined }], DEFAULT_SCENE.teleport.colors);
     expect(scene.children).toEqual([]);
   });
 
-  it('R-HANH-4: cửa nhà chính ↔ gian trong (`marker: false`, V-68) → không vòng sáng, không chữ nổi; bước vào ô cửa là sang', () => {
+  it('R-HANH-4: cửa nhà chính ↔ gian trong (`marker: false`, V-68) → không vòng sáng, không chữ nổi', () => {
     const scene = new THREE.Scene();
     addPortalMarkers(scene, [{ ...HOME, scene: 'nha-ta-trong', label: 'Vào nhà', marker: false }], DEFAULT_SCENE.teleport.colors);
     expect(scene.children).toEqual([]);

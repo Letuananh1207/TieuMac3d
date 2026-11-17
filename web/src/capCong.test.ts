@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { HOME_SCENE, loadScene, REGION_SCENES } from './scene/loadSpec';
-import { arrivalFor, checkPortals, portalRect } from './scene/portals';
+import { arrivalFor, checkPortals, portalButtonText, portalRect, portalVia } from './scene/portals';
 import type { PathSpec, PortalSpec } from './scene/spec';
 import { placeName } from './zones/journeyMap';
 
-// Cổng đi bộ nối các vùng lân cận theo bản đồ truyền tống (R-HANH-4, V-59) — đọc đặc tả thật design/scene/*.json.
+// Cổng (bấm nút — V-81) nối các vùng lân cận theo bản đồ truyền tống (R-HANH-4, V-59) — đọc đặc tả thật design/scene/*.json.
 const IDS = [HOME_SCENE, ...REGION_SCENES];
 const SPECS = Object.fromEntries(IDS.map((id) => [id, loadScene(id).spec]));
 
@@ -50,7 +50,7 @@ const toPath = (x: number, z: number, p: PathSpec): number => {
   return Math.max(0, Math.hypot(x - x0 - t * dx, z - z0 - t * dz) - p.width / 2);
 };
 
-describe('cổng đi bộ nối vùng lân cận (R-HANH-4, V-59)', () => {
+describe('cổng nối vùng lân cận (R-HANH-4, V-59, V-81)', () => {
   it('R-HANH-4: đúng 9 cặp cổng, cặp nào cũng hai chiều; ngoài các cặp đó không có cổng nào', () => {
     const all = IDS.flatMap((id) => SPECS[id].portals.map((p) => [id, p.scene].sort().join(' ↔ ')));
     const pairs = PAIRS.map((p) => [...p].sort().join(' ↔ '));
@@ -73,6 +73,19 @@ describe('cổng đi bộ nối vùng lân cận (R-HANH-4, V-59)', () => {
       }
       expect(checkPortals(SPECS[id]), id).toEqual([]);
     }
+  });
+
+  it('R-HANH-4 (V-81): mọi cổng đều bấm nút — không cổng nào bước vào là sang; chữ trên nút "Đi <nơi đến>" / "Về Khởi Nguyên Trấn" / "Về nhà" / "Vào nhà" / "Ra sân"', () => {
+    const want = (id: string, p: PortalSpec): string =>
+      ({ 'nha-ta>nha-ta-trong': 'Vào nhà', 'nha-ta-trong>nha-ta': 'Ra sân' } as Record<string, string>)[`${id}>${p.scene}`] ??
+      (p.scene === 'nha-ta' ? 'Về nhà' : p.scene === HOME_SCENE ? 'Về Khởi Nguyên Trấn' : `Đi ${placeName(p.scene)}`);
+    for (const id of IDS) {
+      for (const p of SPECS[id].portals) {
+        expect(portalVia(p), `${id} → ${p.scene}`).toBe('nut');
+        expect(portalButtonText(p), `${id} → ${p.scene}`).toBe(want(id, p));
+      }
+    }
+    expect(portalButtonText(portalOf(HOME_SCENE, 'rung-truc')!)).toBe('Đi Trúc Lâm');
   });
 
   for (const c of NEW) {
