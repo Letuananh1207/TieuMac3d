@@ -11,6 +11,7 @@ import 'library_event.dart';
 import 'review_event.dart';
 import 'safe_area_script.dart';
 import 'scene_event.dart';
+import 'word_event.dart';
 import 'shop_event.dart';
 
 /// Màn chính: WebView phủ toàn màn hình, hiển thị scene 3D.
@@ -19,7 +20,7 @@ class SceneView extends StatefulWidget {
     super.key,
     required this.url,
     this.onOpenLesson,
-    this.onOpenRadical,
+    this.onOpenWordLesson,
     this.onGetProgress,
     this.onBorrowBook,
     this.onReturnBook,
@@ -27,7 +28,6 @@ class SceneView extends StatefulWidget {
     this.onSetHome,
     this.onOpenReview,
     this.onOpenDaily,
-    this.onOpenStudy,
     this.onOpenLearned,
     this.onOpenLibrary,
     this.onOpenBook,
@@ -46,9 +46,9 @@ class SceneView extends StatefulWidget {
   /// `null` (chưa có màn — phiếu 2026-11-10-man-bai-hoc chờ thiết kế) → trả `false`, trang tự mở bảng HTML.
   final Future<void> Function(BuildContext context, OpenLessonRequest request)? onOpenLesson;
 
-  /// Mở thẻ học bộ thủ native (R-HANH-3); Future xong khi đóng → gửi `resume`. `null` → trả `false`, trang dùng bảng HTML.
-  /// Kết quả `true` = đóng bằng "Xuất định" → `resume {stand: true}` (nhân vật đứng dậy — R-HANH-3).
-  final Future<bool?> Function(BuildContext context, OpenRadicalRequest request)? onOpenRadical;
+  /// Mở màn bài từ native (`openWordLesson` — R-HANH-3); Future xong khi đóng → gửi `resume`. `null` → trả `false`, trang
+  /// dùng bảng HTML. Kết quả `true` = đóng bằng "Xuất định" → `resume {stand: true}` (nhân vật đứng dậy).
+  final Future<bool?> Function(BuildContext context, OpenWordLessonRequest request)? onOpenWordLesson;
 
   /// Trả lời `getProgress` (vùng đã mở — R-HANH-1). `null` → trang dùng mặc định (chỉ Rừng trúc).
   final Map<String, Object?> Function()? onGetProgress;
@@ -66,20 +66,15 @@ class SceneView extends StatefulWidget {
   /// nhớ trang.
   final Future<bool> Function(List<Object?> items)? onSetHome;
 
-  /// Mở màn ôn câu đố (`openReview` — R-ON-5); Future xong khi đóng → gửi `resume`. `null` → trả `false`, trang mở thẻ
-  /// bộ mới như cũ.
+  /// Mở màn ôn câu đố (`openReview` — R-ON-5); Future xong khi đóng → gửi `resume`. `null` → trả `false`, trang mở lại
+  /// khung thoại.
   final Future<void> Function(BuildContext context, OpenReviewRequest request)? onOpenReview;
 
   /// Mở bảng nhiệm vụ 日課榜 (`openDaily` — R-NV-3); đóng → `resume`. `null` → trả `false`, Tiểu Mặc đọc bảng.
   final Future<void> Function(BuildContext context, OpenDailyRequest request)? onOpenDaily;
 
-  /// Mở bảng chọn cuộn sách Ngồi ôn (`openStudy` — R-ON-8); bảng đóng bằng "Đứng dậy" → `resume {stand: true}`.
-  /// `null` (không có kho tiến độ) → trả `false`, trang tự mở lượt ôn / thẻ bộ mới. Nút quay lại của máy đóng bảng
-  /// như "Đứng dậy".
-  final Future<void> Function(BuildContext context, OpenStudyRequest request)? onOpenStudy;
-
-  /// Mở màn "Bộ đã học" từ cuộn sách Ngồi ôn 3D (`openLearned` — R-ON-8); đóng → `resume` (vẫn ngồi, cuộn hiện lại).
-  /// `null` → trả `false`, trang mở thẻ HTML.
+  /// Mở màn "Từ đã học" từ cuộn Tĩnh toạ 3D (`openLearned` — R-ON-8); đóng → `resume` (vẫn ngồi, cuộn hiện lại).
+  /// `null` → trả `false`, trang mở bảng HTML.
   final Future<void> Function(BuildContext context, OpenLearnedRequest request)? onOpenLearned;
 
   /// Mở danh mục sách Tàng Thư Các (`openLibrary` — R-SACH-1); chọn "Mượn" → Flutter ghi mượn → đóng → `resume`.
@@ -246,13 +241,6 @@ class _SceneViewState extends State<SceneView> {
       f(context, req).whenComplete(() => _controller?.evaluateJavascript(source: resumeScript()));
       return true;
     }
-    if (type == 'openStudy') {
-      final f = widget.onOpenStudy;
-      final req = OpenStudyRequest.parse(args);
-      if (f == null || req == null) return false;
-      f(context, req).whenComplete(() => _controller?.evaluateJavascript(source: resumeScript(stand: true)));
-      return true;
-    }
     if (type == 'openLearned') {
       final f = widget.onOpenLearned;
       final req = OpenLearnedRequest.parse(args);
@@ -267,9 +255,9 @@ class _SceneViewState extends State<SceneView> {
       f(context, req).whenComplete(() => _controller?.evaluateJavascript(source: resumeScript()));
       return true;
     }
-    if (type == 'openRadical') {
-      final openR = widget.onOpenRadical;
-      final req = OpenRadicalRequest.parse(args);
+    if (type == 'openWordLesson') {
+      final openR = widget.onOpenWordLesson;
+      final req = OpenWordLessonRequest.parse(args);
       if (openR == null || req == null) return false;
       openR(context, req).then(
         (stand) => _controller?.evaluateJavascript(source: resumeScript(stand: stand == true)),

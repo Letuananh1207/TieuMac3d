@@ -4,7 +4,7 @@ import '../scene/review_event.dart';
 /// bộ → tổng kết. Bộ cuối: câu 2 xong đi thẳng tổng kết.
 enum ReviewPhase { asking, checked, result, summary }
 
-/// Mức nhớ của một bộ sau 2 câu (R-ON-2): 2 = nhớ rõ (2/2), 1 = nhớ một phần (1/2), 0 = chưa nhớ (0/2).
+/// Mức nhớ của một từ sau 2 câu (R-ON-2): 2 = nhớ rõ (2/2), 1 = nhớ một phần (1/2), 0 = chưa nhớ (0/2).
 int reviewLevel(int correct, int questions) => correct >= questions ? 2 : (correct > 0 ? 1 : 0);
 
 /// Trạng thái một lượt ôn — thuần Dart, không widget (test được). Chọn được đổi tới khi bấm "Kiểm tra"; chấm bộ ngay khi

@@ -51,97 +51,6 @@ class OpenLessonRequest {
   }
 }
 
-/// Một bộ thủ (R-HANH-3) — cùng dạng kiểu `Radical` của web (web/src/zones/radicals.ts).
-class Radical {
-  const Radical({
-    required this.id,
-    required this.form,
-    this.full,
-    required this.name,
-    required this.meaning,
-    required this.pinyin,
-    required this.strokes,
-    this.fullStrokes,
-    required this.examples,
-    this.hinh = const [],
-    this.trien = const [],
-  });
-
-  final String id;
-  final String form;
-  final String? full;
-  final String name;
-  final String meaning;
-  final String pinyin;
-  final int strokes;
-  final int? fullStrokes;
-
-  /// Chữ có bộ này: (chữ Hán, pinyin, nghĩa)
-  final List<(String, String, String)> examples;
-
-  /// "Từ hình đến chữ": nét SVG (khung 0 0 100 100) của ô hình vẽ và ô chữ triện; rỗng = không có dải hình.
-  final List<String> hinh;
-  final List<String> trien;
-}
-
-/// JS nhờ mở thẻ học bộ thủ (docs/bridge.md `openRadical`).
-class OpenRadicalRequest {
-  const OpenRadicalRequest({required this.radical, required this.learned, required this.region});
-
-  final Radical radical;
-  final bool learned;
-  final String region;
-
-  static OpenRadicalRequest? parse(List<dynamic> args) {
-    if (args.isEmpty) return null;
-    final event = args.first;
-    if (event is! Map || event['type'] != 'openRadical') return null;
-    final p = event['payload'];
-    if (p is! Map) return null;
-    final radical = parseRadical(p['radical']);
-    if (radical == null) return null;
-    return OpenRadicalRequest(
-      radical: radical,
-      learned: p['learned'] == true,
-      region: p['region'] is String ? p['region'] as String : firstRegion,
-    );
-  }
-}
-
-/// Đọc một bộ thủ dạng `Radical` của web (`openRadical`, `openReview`, `openDaily`); sai dạng → `null`.
-Radical? parseRadical(Object? r) {
-  if (r is! Map) return null;
-  final id = r['id'], form = r['form'], name = r['name'], meaning = r['meaning'], pinyin = r['pinyin'], strokes = r['strokes'];
-  if (id is! String || form is! String || name is! String || meaning is! String || pinyin is! String || strokes is! num) {
-    return null;
-  }
-  final examples = <(String, String, String)>[];
-  final ex = r['examples'];
-  if (ex is List) {
-    for (final e in ex) {
-      if (e is Map && e['han'] is String && e['pinyin'] is String && e['meaning'] is String) {
-        examples.add((e['han'] as String, e['pinyin'] as String, e['meaning'] as String));
-      }
-    }
-  }
-  List<String> paths(Object? v) => v is List ? [for (final s in v) if (s is String) s] : const [];
-  final evo = r['evolution'];
-  final full = r['full'], fullStrokes = r['fullStrokes'];
-  return Radical(
-    id: id,
-    form: form,
-    full: full is String ? full : null,
-    name: name,
-    meaning: meaning,
-    pinyin: pinyin,
-    strokes: strokes.toInt(),
-    fullStrokes: fullStrokes is num ? fullStrokes.toInt() : null,
-    examples: examples,
-    hinh: evo is Map ? paths(evo['hinh']) : const [],
-    trien: evo is Map ? paths(evo['trien']) : const [],
-  );
-}
-
 /// Loại sự kiện JS gửi sang (`type`), hoặc `null` nếu sai dạng.
 String? sceneEventType(List<dynamic> args) {
   if (args.isEmpty) return null;
@@ -151,13 +60,15 @@ String? sceneEventType(List<dynamic> args) {
   return type is String ? type : null;
 }
 
-/// Trả lời `getProgress` (docs/bridge.md): số chữ, bộ thủ đã học (không khoá vùng — R-HANH-1);
-/// [due] = bộ thủ đến hạn ôn theo thứ tự hỏi (R-ON-4); [daily] + [streak] = bảng nhiệm vụ hôm nay (R-NV-1, R-NV-2);
-/// [book] = sổ từ đang mượn ở Tàng Thư Các (R-SACH-2); [coins] = số dư Văn tiền, [gameCoinsToday] = Văn tiền trò chơi
-/// hôm nay (R-TIEN-1, R-TIEN-3) — [coins] `null` → không gửi (trang ẩn ví); [alms] = đã cho Tiểu Khất (R-TIEN-8).
+/// Trả lời `getProgress` (docs/bridge.md): bài + từ đã học (R-TU-1; không khoá vùng — R-HANH-1);
+/// [due] = từ đến hạn ôn theo thứ tự hỏi (R-ON-4, tổng — trang cắt lượt 20), [dueSteps] = bậc tương ứng (R-ON-2);
+/// [daily] + [streak] = bảng nhiệm vụ hôm nay (R-NV-1, R-NV-2); [book] = sổ từ đang mượn (R-SACH-2); [coins] = số dư Văn
+/// tiền, [gameCoinsToday] = Văn tiền trò chơi hôm nay (R-TIEN-1, R-TIEN-3) — [coins] `null` → không gửi (trang ẩn ví);
+/// [alms] = đã cho Tiểu Khất (R-TIEN-8).
 Map<String, Object?> progressReply(
   Progress p, {
   List<String> due = const [],
+  List<int> dueSteps = const [],
   String? book,
   DailyStatus? daily,
   ({int current, int best}) streak = (current: 0, best: 0),
@@ -166,9 +77,10 @@ Map<String, Object?> progressReply(
   ({int lastDay, int count})? alms,
 }) =>
     {
-      'chars': p.chars.length,
-      'radicals': p.radicals.toList(),
+      'lessons': p.lessons,
+      'words': p.words,
       'due': due,
+      'dueSteps': dueSteps,
       'daily': {
         'learned': daily?.newToday ?? 0,
         'goal': dailyNewGoal,
@@ -219,7 +131,7 @@ String sceneEventScript(String type, [Map<String, Object?> payload = const {}]) 
 /// như thường. Trang chưa sẵn sàng → `false`.
 final backScript = 'window.scene?window.scene.handle(${jsonEncode({'type': 'back', 'payload': <String, Object?>{}})})===true:false;';
 
-/// Đóng màn bài học / thẻ bộ thủ → cảnh chạy tiếp. `stand` = thẻ đóng bằng "Xuất định" → nhân vật đang ngồi đứng dậy
+/// Đóng màn bài học / màn bài từ → cảnh chạy tiếp. `stand` = trang từ đã học đóng bằng "Xuất định" → nhân vật đang ngồi đứng dậy
 /// (R-HANH-3, docs/bridge.md).
 String resumeScript({bool stand = false}) => sceneEventScript('resume', stand ? {'stand': true} : const {});
 

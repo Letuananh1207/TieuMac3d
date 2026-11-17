@@ -2,22 +2,49 @@ import 'package:flutter/material.dart';
 
 import '../journey/journey.dart';
 import '../journey/review.dart';
-import '../scene/scene_event.dart';
+import '../scene/word_event.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text_size.dart';
 import 'screen_parts.dart';
-import 'study_board.dart';
 
-/// Màn Bộ đã học (native) — mở từ "Xem bộ đã học" trên cuộn sách Ngồi ôn (R-ON-8). Thiết kế:
-/// design/docs/screen_specs.md "Bộ đã học" (artboard `BoDaHoc-doc`, `BoDaHoc-doc-day`, `BoDaHoc-ngang`): lưới ô bộ thủ
-/// (chữ, tên, 7 chấm bậc nhớ — R-ON-1, hạn ôn), bộ đến hạn viền son. Chạm một ô → đóng màn, trả bộ đó (cuộn sách mở thẻ
-/// bộ thủ "Đã học"); ‹ "Về cuộn sách" / nút quay lại của máy → trả `null`.
+/// Một ô của màn Từ đã học: từ + bậc nhớ + hạn ôn (R-ON-1).
+class LearnedEntry {
+  const LearnedEntry({required this.word, required this.level, required this.due, required this.daysLeft});
+
+  final Word word;
+
+  /// 1 … 7 ứng với bậc 1 · 3 · 7 · 14 · 30 · 60 · 120 ngày; đã thuộc → 7
+  final int level;
+  final bool due;
+
+  /// số ngày tới hạn ôn (khi chưa đến hạn)
+  final int daysLeft;
+}
+
+/// Ô màn Từ đã học từ các từ trang gửi + lịch ôn trong máy (R-ON-1); từ chưa có lịch → bậc 1, đến hạn.
+List<LearnedEntry> learnedEntries(List<Word> words, Map<String, ReviewCard> cards, int today) => [
+      for (final w in words)
+        switch (cards[w.id]) {
+          null => LearnedEntry(word: w, level: 1, due: true, daysLeft: 0),
+          final c => LearnedEntry(
+              word: w,
+              level: c.mastered ? reviewIntervals.length : c.step + 1,
+              due: c.isDue(today),
+              daysLeft: c.due - today < 1 ? 1 : c.due - today,
+            ),
+        },
+    ];
+
+/// Màn **Từ đã học** (native) — mở từ ô "Từ đã học" trên cuộn Tĩnh toạ (R-ON-8). **Tạm dùng khung "Bộ đã học"**
+/// (design/docs/screen_specs.md, artboard `BoDaHoc-*`) tới khi có thiết kế màn Từ đã học (phiếu
+/// `docs/phieu_thiet_ke/2026-11-17-hoc-tu-vung.md` mục 5): lưới ô từ (chữ, pinyin, 7 chấm bậc nhớ, hạn ôn), từ đến hạn
+/// viền son. Chạm một ô → đóng màn, trả từ đó (mở trang từ "Đã học"); ‹ "Về cuộn sách" / nút quay lại → `null`.
 class LearnedScreen extends StatelessWidget {
   const LearnedScreen({super.key, required this.entries});
 
   final List<LearnedEntry> entries;
 
-  static Route<Radical> route(List<LearnedEntry> entries) => fadeRoute<Radical>(LearnedScreen(entries: entries));
+  static Route<Word> route(List<LearnedEntry> entries) => fadeRoute<Word>(LearnedScreen(entries: entries));
 
   @override
   Widget build(BuildContext context) {
@@ -46,11 +73,11 @@ class _Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final hint = Text(
-      'Chạm một bộ để mở lại thẻ', // learnedHint
+      'Chạm một từ để xem lại', // learnedHint
       style: uiText.copyWith(fontSize: AppTextSize.caption, color: AppColors.slateMuted),
     );
     final title = Text(
-      'Bộ đã học', // learnedTitle
+      'Từ đã học', // learnedTitle
       style: displayText.copyWith(fontSize: landscape ? AppTextSize.titleCompact : AppTextSize.accent, color: AppColors.slate),
     );
     final pill = Container(
@@ -59,7 +86,7 @@ class _Header extends StatelessWidget {
       alignment: Alignment.center,
       decoration: BoxDecoration(color: AppColors.jade.withValues(alpha: .10), borderRadius: BorderRadius.circular(999)),
       child: Text(
-        '$count / $rungTrucRadicalCount bộ', // learnedCount
+        '$count / $tuVungWordCount từ', // learnedCount
         style: uiText.copyWith(fontSize: AppTextSize.small, fontWeight: FontWeight.w700, color: AppColors.jade),
       ),
     );
@@ -102,7 +129,7 @@ class _Header extends StatelessWidget {
   }
 }
 
-/// Chú thích: mẫu chấm bậc nhớ · số bộ đến hạn (chỉ khi có) · thứ tự xếp.
+/// Chú thích: mẫu chấm bậc nhớ · số từ đến hạn (chỉ khi có) · thứ tự xếp.
 class _Legend extends StatelessWidget {
   const _Legend({required this.due});
 
@@ -125,7 +152,7 @@ class _Legend extends StatelessWidget {
           Row(mainAxisSize: MainAxisSize.min, children: [
             Container(width: 8, height: 8, decoration: const BoxDecoration(color: AppColors.lacquer, shape: BoxShape.circle)),
             const SizedBox(width: 5),
-            Text('$due bộ đến hạn', style: style.copyWith(color: AppColors.lacquer, fontWeight: FontWeight.w700)), // learnedDueCount
+            Text('$due từ đến hạn', style: style.copyWith(color: AppColors.lacquer, fontWeight: FontWeight.w700)), // learnedDueCount
           ]),
         Text('Xếp theo thứ tự học', style: style), // learnedOrder
       ],
@@ -181,7 +208,7 @@ class _Grid extends StatelessWidget {
         itemBuilder: (context, i) => _Tile(entry: entries[i], landscape: landscape),
       ),
     );
-    // mờ đáy 56: còn bộ ở dưới
+    // mờ đáy 56: còn từ ở dưới
     return Stack(
       children: [
         Positioned.fill(child: grid),
@@ -215,7 +242,7 @@ class _Tile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final r = entry.radical;
+    final r = entry.word;
     final when = entry.due ? 'đến hạn ôn' : 'ôn sau ${entry.daysLeft} ngày';
     final radius = BorderRadius.circular(14);
     final foot = entry.due
@@ -235,7 +262,7 @@ class _Tile extends StatelessWidget {
           );
     return Semantics(
       button: true,
-      label: '${r.form} ${r.name} — ${r.meaning}, bậc ${entry.level}, $when', // learnedItemLabel
+      label: '${r.han} ${r.pinyin} — ${r.meaning}, bậc ${entry.level}, $when', // learnedItemLabel
       excludeSemantics: true,
       child: Material(
         color: AppColors.frostStrong.withValues(alpha: .9),
@@ -250,13 +277,18 @@ class _Tile extends StatelessWidget {
             padding: EdgeInsets.fromLTRB(6, landscape ? 6 : 10, 6, landscape ? 6 : 8),
             child: Column(
               children: [
-                Text(
-                  r.form,
-                  style: hanText.copyWith(fontSize: landscape ? AppTextSize.learnedHanLandscape : AppTextSize.learnedHan, height: 1.05),
+                // từ dài (公共汽车) thu nhỏ cho vừa ô
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    r.han,
+                    maxLines: 1,
+                    style: hanText.copyWith(fontSize: landscape ? AppTextSize.learnedHanLandscape : AppTextSize.learnedHan, height: 1.05),
+                  ),
                 ),
                 SizedBox(height: landscape ? 2 : 4),
                 Text(
-                  r.name,
+                  r.pinyin,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: uiText.copyWith(

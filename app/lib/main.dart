@@ -10,12 +10,11 @@ import 'lesson/book_screen.dart';
 import 'lesson/daily_screen.dart';
 import 'lesson/lesson_screen.dart';
 import 'lesson/library_screen.dart';
-import 'lesson/radical_screen.dart';
 import 'lesson/review_screen.dart';
 import 'lesson/reward_overlay.dart';
 import 'lesson/shop_screen.dart';
-import 'lesson/study_board.dart';
 import 'lesson/learned_screen.dart';
+import 'lesson/word_lesson_screen.dart';
 import 'scene/garden_event.dart';
 import 'scene/mang_event.dart';
 import 'scene/review_event.dart';
@@ -23,6 +22,7 @@ import 'scene/scene_event.dart';
 import 'scene/scene_server.dart';
 import 'scene/scene_view.dart';
 import 'scene/shop_event.dart';
+import 'scene/word_event.dart';
 import 'theme/app_colors.dart';
 
 Future<void> main() async {
@@ -86,18 +86,15 @@ class HocXaApp extends StatelessWidget {
           ? SceneView(
               url: server.url,
               // trang gửi openLesson → mở màn bài học native; đóng màn → SceneView gửi resume (docs/bridge.md)
-              // mở bài lần đầu = đã học chữ đó (R-HANH-1, tạm tới khi có nút "Đã thuộc")
-              onOpenLesson: (context, request) {
-                progress?.learnChar(request.lesson.han);
-                return Navigator.of(context).push(LessonScreen.route(request.lesson));
-              },
-              // thẻ học bộ thủ: "Đã lĩnh hội" → ghi bộ thủ đã học; "Xuất định" → đóng + đứng dậy (R-HANH-3)
-              // lần đầu "Đã lĩnh hội" → +10 Văn tiền, hiệu ứng trên lớp phủ (R-TIEN-2, R-TIEN-5)
-              onOpenRadical: (context, request) => Navigator.of(context).push(
-                RadicalScreen.route(
+              // (openLesson: bài học một chữ cũ — trang không còn gửi, xoá ở gđ 6 kế hoạch V-80)
+              onOpenLesson: (context, request) => Navigator.of(context).push(LessonScreen.route(request.lesson)),
+              // màn bài từ (tạm khung thẻ cũ — chờ thiết kế): "Đã lĩnh hội" → cả bài vào lịch ôn; "Xuất định" → đứng dậy
+              // lần đầu "Đã lĩnh hội" → +10 Văn tiền, hiệu ứng trên lớp phủ (R-HANH-3, R-TIEN-2, R-TIEN-5)
+              onOpenWordLesson: (context, request) => Navigator.of(context).push(
+                WordLessonScreen.route(
                   request,
                   () async {
-                    await progress?.learnRadical(request.radical.id, char: request.radical.form);
+                    await progress?.learnLesson(request.lessonId, [for (final w in request.words) w.id], title: request.title);
                   },
                   rewards: progress == null ? null : _rewards(progress!),
                 ),
@@ -110,7 +107,8 @@ class HocXaApp extends StatelessWidget {
                 store.checkDaily().then((_) => store.takeRewards());
                 return progressReply(
                   store.progress,
-                  due: store.dueRadicals,
+                  due: store.dueWords,
+                  dueSteps: store.dueSteps,
                   daily: store.daily,
                   streak: store.streak,
                   book: store.borrowedBook,
@@ -163,7 +161,7 @@ class HocXaApp extends StatelessWidget {
                   ? null
                   : (a) async => mangActReply(await progress!.mangAct(a.act, id: a.id, kind: a.kind, right: a.right), progress!.coins),
               onSetHome: (items) async => await progress?.setHomeItems(items) ?? false,
-              // ôn câu đố + bảng nhiệm vụ 日課榜 (R-ON-5, R-NV-3); không có kho tiến độ → trang tự lo (thẻ bộ mới / Tiểu Mặc)
+              // ôn câu đố + bảng nhiệm vụ (R-ON-5, R-NV-3); không có kho tiến độ → trang tự lo (khung thoại / Tiểu Mặc)
               onOpenReview: progress == null
                   ? null
                   : (context, request) => Navigator.of(context).push(_reviewRoute(progress!, request.items)),
@@ -175,22 +173,18 @@ class HocXaApp extends StatelessWidget {
                         (items) => Navigator.of(context).push(_reviewRoute(progress!, items)),
                         rewards: _rewards(progress!),
                       )),
-              // cuộn sách Ngồi ôn (R-ON-8, thiết kế 2026-11-14.21): mục in trên cuộn 3D ở trang; "Ôn" → openReview,
-              // "Học bộ mới" → openRadical, "Xem bộ đã học" → màn Bộ đã học (chạm một bộ → thẻ "Đã học"), đóng → resume.
-              // Bảng chọn Flutter `StudyScreen` (openStudy) thôi dùng — xoá sau khi thử máy.
+              // ô "Từ đã học" trên cuộn Tĩnh toạ (R-ON-8): màn Từ đã học (tạm khung Bộ đã học) → chạm một từ → trang từ "Đã học"
               onOpenLearned: progress == null
                   ? null
                   : (context, request) async {
                       final nav = Navigator.of(context);
-                      final p = StudyProgress.of(progress!);
-                      final picked = await nav.push(LearnedScreen.route(learnedEntries(request.learned, p.cards, p.today)));
+                      final store = progress!;
+                      final picked = await nav.push(LearnedScreen.route(learnedEntries(request.words, store.cards, store.today)));
                       if (picked == null) return;
-                      await nav.push(RadicalScreen.route(
-                        OpenRadicalRequest(radical: picked, learned: true, region: request.region),
-                        () async {
-                          await progress!.learnRadical(picked.id, char: picked.form);
-                        },
-                        rewards: _rewards(progress!),
+                      final title = request.lessons.where((l) => l.id == picked.lesson).firstOrNull?.title ?? request.region;
+                      await nav.push(WordLessonScreen.route(
+                        OpenWordLessonRequest(lessonId: picked.lesson, title: title, words: [picked], learned: true, region: request.region),
+                        () async {},
                       ));
                     },
               // Tàng Thư Các: danh mục (chọn → ghi mượn) và sổ từ (mở ở trang đã nhớ, đóng → ghi trang) — R-SACH-1, R-SACH-3
@@ -210,14 +204,11 @@ class HocXaApp extends StatelessWidget {
   }
 }
 
-/// Màn ôn: chấm từng bộ vào lịch ôn (R-ON-2), trả số ngày tới lần ôn kế cho câu "ôn lại sau n ngày"; thưởng +5 / +2
-/// (R-TIEN-2) chạy hiệu ứng ngay trên màn ôn.
+/// Màn ôn: chấm từng từ vào lịch ôn (R-ON-2), trả số ngày tới lần ôn kế cho câu "ôn lại sau n ngày"; thưởng +1 / từ
+/// đúng 2/2 (R-TIEN-2) chạy hiệu ứng ngay trên màn ôn.
 Route<void> _reviewRoute(ProgressStore store, List<ReviewItem> items) => ReviewScreen.route(
       items,
-      (id, correct) async {
-        final form = items.where((i) => i.radical.id == id).firstOrNull?.radical.form;
-        return await store.reviewRadical(id, correct, char: form) ? store.cards[id]?.interval : null;
-      },
+      (id, correct) async => await store.reviewWord(id, correct) ? store.cards[id]?.interval : null,
       daily: () => store.daily,
       rewards: _rewards(store),
     );

@@ -1,26 +1,33 @@
 import '../journey/journey.dart';
-import 'scene_event.dart';
+import 'word_event.dart';
 
-/// Sự kiện ôn tập + bảng nhiệm vụ qua cầu nối (docs/bridge.md `openReview`, `openDaily`). Câu đố do trang dựng
-/// (`web/src/zones/review.ts`); Flutter hiện màn, chấm, lưu lịch ôn.
+/// Sự kiện ôn tập + bảng nhiệm vụ + Từ đã học qua cầu nối (docs/bridge.md `openReview`, `openDaily`, `openLearned`). Câu đố
+/// do trang dựng (`web/src/zones/tuVung/cauHoi.ts` — R-TU-2); Flutter hiện màn, chấm, lưu lịch ôn.
 
-/// Một câu đố: hỏi pinyin hoặc nghĩa (R-ON-2), 3 phương án, [answer] = chỉ số đáp án.
+/// Một câu đố (R-TU-2): [kind] = `chu-nghia` (a) · `nghe-nghia` (b) · `chu-pinyin` (c) · `nghia-chu` (d) · `nghe-chu` (e);
+/// 4 phương án, [answer] = chỉ số đáp án.
 class ReviewQuestion {
-  const ReviewQuestion({required this.ask, required this.options, required this.answer});
+  const ReviewQuestion({required this.kind, required this.options, required this.answer});
 
-  /// `pinyin` · `meaning`
-  final String ask;
+  final String kind;
   final List<String> options;
   final int answer;
 
-  bool get isPinyin => ask == 'pinyin';
+  /// phương án là pinyin (c)
+  bool get isPinyin => kind == 'chu-pinyin';
+
+  /// phương án là chữ Hán (d, e)
+  bool get optionsHan => kind == 'nghia-chu' || kind == 'nghe-chu';
+
+  /// câu nghe (b, e) — cần âm (R-AM-5); màn ôn chưa có nút loa → chờ thiết kế
+  bool get listening => kind == 'nghe-nghia' || kind == 'nghe-chu';
 }
 
-/// Một bộ thủ đến hạn và 2 câu đố của nó.
+/// Một từ đến hạn và 2 câu đố của nó.
 class ReviewItem {
-  const ReviewItem({required this.radical, required this.questions});
+  const ReviewItem({required this.word, required this.questions});
 
-  final Radical radical;
+  final Word word;
   final List<ReviewQuestion> questions;
 }
 
@@ -31,7 +38,7 @@ class OpenReviewRequest {
   final List<ReviewItem> items;
   final String region;
 
-  /// Sai dạng / không có bộ nào → `null` (Flutter trả `false`, trang mở thẻ bộ mới như cũ).
+  /// Sai dạng / không có từ nào → `null` (Flutter trả `false`, trang mở lại khung thoại).
   static OpenReviewRequest? parse(List<dynamic> args) {
     final p = _payload(args, 'openReview');
     if (p == null) return null;
@@ -41,117 +48,44 @@ class OpenReviewRequest {
   }
 }
 
-/// JS nhờ mở bảng nhiệm vụ 日課榜 (R-NV-3): kèm sẵn câu đố của các bộ đến hạn để "Ôn ngay" mở màn ôn tại chỗ, và chữ
-/// của từng bộ thủ (mã → chữ) để bảng hiện các bộ đã học hôm nay.
+/// JS nhờ mở bảng nhiệm vụ (R-NV-3): kèm sẵn câu đố của các từ đến hạn để "Ôn ngay" mở màn ôn tại chỗ.
 class OpenDailyRequest {
-  const OpenDailyRequest({this.review = const [], this.forms = const {}});
+  const OpenDailyRequest({this.review = const []});
 
   final List<ReviewItem> review;
-  final Map<String, String> forms;
 
   static OpenDailyRequest? parse(List<dynamic> args) {
     final p = _payload(args, 'openDaily');
     if (p == null) return null;
-    final f = p['forms'];
-    return OpenDailyRequest(
-      review: parseReviewItems(p['review']),
-      forms: f is Map ? {for (final e in f.entries) if (e.key is String && e.value is String) e.key as String: e.value as String} : const {},
-    );
+    return OpenDailyRequest(review: parseReviewItems(p['review']));
   }
 }
 
-/// Một mục của bảng chọn cuộn sách Ngồi ôn: `review` · `learn` · `learned`; mờ thì [reason] nói vì sao
-/// (`reviewedToday` · `learnInRegion` · `allLearned` · `noneLearned` — chuỗi hiển thị do Flutter giữ).
-class StudyItem {
-  const StudyItem({required this.id, required this.enabled, this.reason, this.count = 0});
-
-  final String id;
-  final bool enabled;
-  final String? reason;
-  final int count;
-}
-
-/// JS nhờ mở bảng chọn cuộn sách Ngồi ôn (ngồi ôn đủ 1 giây — R-ON-8). Bảng chỉ đóng bằng "Đứng dậy".
-class OpenStudyRequest {
-  const OpenStudyRequest({
-    required this.items,
-    this.highlight,
-    this.review = const [],
-    this.next,
-    this.upcoming = const [],
-    this.learned = const [],
-    required this.region,
-  });
-
-  static const ids = ['review', 'learn', 'learned'];
-
-  /// luôn đủ 3 mục theo thứ tự [ids]
-  final List<StudyItem> items;
-
-  /// `review` · `learn` · `null`
-  final String? highlight;
-
-  /// câu đố các bộ đến hạn (như `openReview`)
-  final List<ReviewItem> review;
-
-  /// bộ mở khi chọn "Học bộ mới"
-  final Radical? next;
-
-  /// các bộ chưa học sau [next], theo thứ tự Rừng trúc — học xong [next] trên bảng thì bộ kế lấy từ đây
-  final List<Radical> upcoming;
-
-  /// các bộ đã học, theo thứ tự Rừng trúc
-  final List<Radical> learned;
-  final String region;
-
-  StudyItem item(String id) => items.firstWhere((i) => i.id == id);
-
-  /// Sai dạng / thiếu mục → `null` (Flutter trả `false`, trang tự mở lượt ôn / thẻ bộ mới).
-  static OpenStudyRequest? parse(List<dynamic> args) {
-    final p = _payload(args, 'openStudy');
-    if (p == null) return null;
-    final raw = p['items'];
-    if (raw is! List) return null;
-    final items = <StudyItem>[];
-    for (final it in raw) {
-      if (it is! Map || it['id'] is! String || it['enabled'] is! bool) continue;
-      final reason = it['reason'], count = it['count'];
-      items.add(StudyItem(
-        id: it['id'] as String,
-        enabled: it['enabled'] as bool,
-        reason: reason is String ? reason : null,
-        count: count is num ? count.toInt() : 0,
-      ));
-    }
-    if (items.map((i) => i.id).join(',') != ids.join(',')) return null;
-    final h = p['highlight'], learned = p['learned'], upcoming = p['upcoming'];
-    return OpenStudyRequest(
-      items: items,
-      highlight: h is String && ids.contains(h) ? h : null,
-      review: parseReviewItems(p['review']),
-      next: parseRadical(p['next']),
-      upcoming: upcoming is List ? [for (final r in upcoming) ?parseRadical(r)] : const [],
-      learned: learned is List ? [for (final r in learned) ?parseRadical(r)] : const [],
-      region: p['region'] is String ? p['region'] as String : firstRegion,
-    );
-  }
-}
-
-/// JS nhờ mở màn "Bộ đã học" (chạm "Xem bộ đã học" trên cuộn sách Ngồi ôn 3D — R-ON-8, docs/bridge.md `openLearned`).
+/// JS nhờ mở màn "Từ đã học" (chạm ô trên cuộn Tĩnh toạ — R-ON-8, docs/bridge.md `openLearned`).
 class OpenLearnedRequest {
-  const OpenLearnedRequest({required this.learned, required this.region});
+  const OpenLearnedRequest({required this.words, this.lessons = const [], required this.region});
 
-  /// các bộ đã học, theo thứ tự Rừng trúc
-  final List<Radical> learned;
+  /// các từ đã học, theo thứ tự giáo trình
+  final List<Word> words;
+
+  /// các bài đã học (mã, tên) — nhóm theo bài
+  final List<({String id, String title})> lessons;
   final String region;
 
-  /// Sai dạng → `null` (Flutter trả `false`, trang tự mở thẻ HTML).
+  /// Sai dạng → `null` (Flutter trả `false`, trang tự mở bảng HTML).
   static OpenLearnedRequest? parse(List<dynamic> args) {
     final p = _payload(args, 'openLearned');
-    final learned = p?['learned'];
-    if (p == null || learned is! List) return null;
+    final words = p?['words'];
+    if (p == null || words is! List) return null;
+    final ls = p['lessons'];
     return OpenLearnedRequest(
-      learned: [for (final r in learned) ?parseRadical(r)],
+      words: parseWords(words),
+      lessons: ls is List
+          ? [
+              for (final l in ls)
+                if (l is Map && l['id'] is String && l['title'] is String) (id: l['id'] as String, title: l['title'] as String),
+            ]
+          : const [],
       region: p['region'] is String ? p['region'] as String : firstRegion,
     );
   }
@@ -163,20 +97,20 @@ List<ReviewItem> parseReviewItems(Object? v) {
   final out = <ReviewItem>[];
   for (final it in v) {
     if (it is! Map) continue;
-    final radical = parseRadical(it['radical']);
+    final word = parseWord(it['word']);
     final qs = it['questions'];
-    if (radical == null || qs is! List) continue;
+    if (word == null || qs is! List) continue;
     final questions = <ReviewQuestion>[];
     for (final q in qs) {
       if (q is! Map) continue;
-      final ask = q['ask'], options = q['options'], answer = q['answer'];
-      if (ask is! String || options is! List || answer is! num) continue;
+      final kind = q['kind'], options = q['options'], answer = q['answer'];
+      if (kind is! String || options is! List || answer is! num) continue;
       final opts = [for (final o in options) if (o is String) o];
       final a = answer.toInt();
       if (opts.length != options.length || a < 0 || a >= opts.length) continue;
-      questions.add(ReviewQuestion(ask: ask, options: opts, answer: a));
+      questions.add(ReviewQuestion(kind: kind, options: opts, answer: a));
     }
-    if (questions.isNotEmpty) out.add(ReviewItem(radical: radical, questions: questions));
+    if (questions.isNotEmpty) out.add(ReviewItem(word: word, questions: questions));
   }
   return out;
 }

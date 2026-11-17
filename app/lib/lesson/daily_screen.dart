@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../journey/daily.dart';
 import '../journey/journey.dart';
 import '../journey/progress_store.dart';
+import '../journey/review.dart';
 import '../scene/review_event.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text_size.dart';
@@ -38,8 +39,8 @@ class DailyView {
       today: today,
       now: s.now,
       learnedToday: s.learnedToday,
-      dueIds: s.dueRadicals,
-      learnedTotal: s.progress.radicals.length,
+      dueIds: s.dueWords,
+      learnedTotal: s.progress.lessons.length,
       reviewedToday: s.cards.values.any((c) => c.lastDay == today),
     );
   }
@@ -52,14 +53,14 @@ class DailyView {
   final int today;
   final DateTime now;
 
-  /// mã bộ học mới hôm nay · mã bộ còn đến hạn (thứ tự hỏi)
+  /// mã bài học mới hôm nay · mã từ còn đến hạn (thứ tự hỏi)
   final List<String> learnedToday;
   final List<String> dueIds;
 
-  /// tổng số bộ đã học (0 → dòng phụ "bộ đầu tiên")
+  /// tổng số bài đã học (0 → dòng phụ "bài đầu tiên")
   final int learnedTotal;
 
-  /// hôm nay đã ôn ít nhất một bộ ("Đã ôn hết" thay vì "Không có bộ nào")
+  /// hôm nay đã ôn ít nhất một từ ("Đã ôn hết" thay vì "Không có từ nào")
   final bool reviewedToday;
 }
 
@@ -94,12 +95,12 @@ class DailyScreen extends StatefulWidget {
 class _DailyScreenState extends State<DailyScreen> {
   late DailyView _v = widget.read();
 
-  String _form(String id) =>
-      widget.request.forms[id] ?? widget.request.review.where((i) => i.radical.id == id).firstOrNull?.radical.form ?? '';
+  /// Chữ của một từ (mã từ = chữ — R-TU-1).
+  String _form(String id) => widget.request.review.where((i) => i.word.id == id).firstOrNull?.word.han ?? id;
 
-  /// Câu đố của các bộ còn đến hạn, theo thứ tự hỏi.
+  /// Câu đố của các từ còn đến hạn, theo thứ tự hỏi (trang đã cắt 20 — R-ON-4).
   List<ReviewItem> get _items {
-    final byId = {for (final i in widget.request.review) i.radical.id: i};
+    final byId = {for (final i in widget.request.review) i.word.id: i};
     return [for (final id in _v.dueIds) ?byId[id]];
   }
 
@@ -205,12 +206,12 @@ class _DailyScreenState extends State<DailyScreen> {
   List<Widget> _tasks(double reviewButton, double gap) {
     final s = _v.status;
     final learnSub = s.allLearned
-        ? 'Đã học đủ 50 bộ thủ.' // dailyLearnAll
+        ? 'Đã học hết giáo trình.' // dailyLearnAll
         : s.learnDone
-            ? 'Đã học $dailyNewGoal bộ mới hôm nay${_v.learnedToday.isEmpty ? '' : ': ${_v.learnedToday.map(_form).join(' ')}'}.' // dailyLearnDone
+            ? 'Đã học ${s.newToday} bài mới hôm nay.' // dailyLearnDone
             : _v.learnedTotal == 0
-                ? 'Học $dailyNewGoal bộ thủ mới. Sang $firstRegion, gặp thầy Trúc Lão để lĩnh hội bộ đầu tiên.' // dailyLearnFirst (V-45 — R-HANH-8)
-                : 'Học $dailyNewGoal bộ thủ mới. Gặp thầy Trúc Lão ở $firstRegion để lĩnh hội bộ kế tiếp.'; // dailyLearnSub (V-45)
+                ? 'Học $dailyNewGoal bài từ mới. Sang $firstRegion, gặp thầy Trúc Lão để lĩnh hội bài đầu tiên.' // dailyLearnFirst (V-45 — R-HANH-8)
+                : 'Học $dailyNewGoal bài từ mới. Gặp thầy Trúc Lão ở $firstRegion để lĩnh hội bài kế tiếp.'; // dailyLearnSub (V-45)
     final items = _items;
     return [
       DailyTask(
@@ -225,11 +226,17 @@ class _DailyScreenState extends State<DailyScreen> {
         done: s.reviewDone,
         progress: s.reviewDone ? null : Text('còn ${s.dueLeft}', style: uiText.copyWith(fontSize: AppTextSize.detail, fontWeight: FontWeight.w700)),
         sub: s.reviewDone
-            ? Text(_v.reviewedToday ? 'Đã ôn hết bộ đến hạn.' : 'Không có bộ nào đến hạn.', style: _sub(true)) // dailyReviewDone / None
+            ? Text(
+                s.reviewedToday >= reviewSessionCap
+                    ? 'Đã ôn đủ $reviewSessionCap từ hôm nay.' // dailyReviewCap (R-NV-1)
+                    : _v.reviewedToday
+                        ? 'Đã ôn hết từ đến hạn.'
+                        : 'Không có từ nào đến hạn.',
+                style: _sub(true)) // dailyReviewDone / None
             : Text.rich(
                 TextSpan(children: [
                   const TextSpan(text: 'Còn '),
-                  TextSpan(text: '${s.dueLeft} bộ', style: const TextStyle(fontWeight: FontWeight.w700)),
+                  TextSpan(text: '${s.dueLeft} từ', style: const TextStyle(fontWeight: FontWeight.w700)),
                   const TextSpan(text: ' đến hạn hôm nay.'), // dailyReviewDue
                 ]),
                 style: _sub(false),

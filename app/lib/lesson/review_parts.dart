@@ -20,10 +20,13 @@ const levelNames = ['Chưa nhớ', 'Nhớ một phần', 'Nhớ rõ']; // review
 
 /// Phương án câu đố: cao ≥ `option-row`, bo 14, dấu tròn 20 bên trái. Pinyin chữ Lora 22, nghĩa 16/700.
 class OptionTile extends StatelessWidget {
-  const OptionTile({super.key, required this.text, required this.pinyin, required this.look, required this.minHeight, this.onTap});
+  const OptionTile({super.key, required this.text, required this.pinyin, this.han = false, required this.look, required this.minHeight, this.onTap});
 
   final String text;
   final bool pinyin;
+
+  /// phương án là chữ Hán (câu d / e — R-TU-2): font chữ Hán, cỡ to hơn
+  final bool han;
   final OptionLook look;
   final double minHeight;
   final VoidCallback? onTap;
@@ -53,7 +56,9 @@ class OptionTile extends StatelessWidget {
           decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: AppColors.slate.withValues(alpha: .3), width: 2)),
         ),
     };
-    final style = pinyin
+    final style = han
+        ? hanText.copyWith(fontSize: AppTextSize.accent, color: AppColors.slate)
+        : pinyin
         ? displayText.copyWith(fontSize: AppTextSize.accent, color: AppColors.slate)
         : uiText.copyWith(fontSize: AppTextSize.task, fontWeight: FontWeight.w700);
     return Semantics(
@@ -94,11 +99,11 @@ class OptionTile extends StatelessWidget {
       );
 }
 
-/// Thanh trên: nút tròn × 44 (kính sương) + "ÔN TẬP" · "Bộ i / n" + tiến độ chia n đoạn.
+/// Thanh trên: nút tròn × 44 (kính sương) + "ÔN TẬP" · "Từ i / n" + tiến độ chia n đoạn.
 class ReviewTopBar extends StatelessWidget {
   const ReviewTopBar({super.key, required this.index, required this.total, required this.done, required this.onExit, this.stacked = false});
 
-  /// bộ đang ôn (đếm từ 0) · tổng số bộ · số bộ đã chấm
+  /// từ đang ôn (đếm từ 0) · tổng số từ · số từ đã chấm
   final int index;
   final int total;
   final int done;
@@ -132,12 +137,12 @@ class ReviewTopBar extends StatelessWidget {
             Expanded(
               child: Text('ÔN TẬP', style: label.copyWith(letterSpacing: AppTextSize.caption * .1), overflow: TextOverflow.ellipsis), // reviewTitle
             ),
-            Text('Bộ ${index + 1} / $total', style: label), // reviewProgress
+            Text('Từ ${index + 1} / $total', style: label), // reviewProgress
           ],
         ),
         const SizedBox(height: 6),
         Semantics(
-          label: 'Bộ ${index + 1} trên $total',
+          label: 'Từ ${index + 1} trên $total',
           child: Row(
             children: [
               for (var i = 0; i < total; i++) ...[

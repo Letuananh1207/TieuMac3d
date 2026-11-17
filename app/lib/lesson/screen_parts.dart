@@ -199,6 +199,8 @@ class HanTile extends StatelessWidget {
           border: Border.all(color: AppColors.frostOutline),
           borderRadius: BorderRadius.circular(8),
         ),
-        child: Text(han, style: hanText.copyWith(fontSize: AppTextSize.hanExample, height: 1)),
+        padding: const EdgeInsets.all(3),
+        // từ 2–5 chữ (R-TU-1) thu nhỏ cho vừa ô
+        child: FittedBox(fit: BoxFit.scaleDown, child: Text(han, maxLines: 1, style: hanText.copyWith(fontSize: AppTextSize.hanExample, height: 1))),
       );
 }

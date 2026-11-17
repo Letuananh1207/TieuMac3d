@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../journey/daily.dart';
 import '../journey/journey.dart';
 import '../scene/review_event.dart';
+import '../scene/word_event.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text_size.dart';
 import 'lesson_screen.dart';
@@ -12,21 +13,22 @@ import 'reward_overlay.dart';
 import 'screen_parts.dart';
 
 /// Màn ôn câu đố (native) — R-ON-1…5. Thiết kế: design/docs/screen_specs.md "Màn ôn câu đố" (artboard `OnTap-*`).
-/// Mỗi bộ 2 câu Pinyin → Nghĩa; chọn → "Kiểm tra" → phản hồi → "Câu tiếp". Câu cuối của bộ kiểm tra xong → chấm ngay
-/// ([onGrade] lưu lịch ôn, trả số ngày tới hạn kế). Thoát (× / nút quay lại của máy) đóng ngay, không hỏi lại: bộ đã chấm
-/// giữ kết quả, bộ chưa chấm vẫn đến hạn (R-ON-5). Chấm xong một bộ có thưởng ([rewards]) → "+5 · Ôn đúng 木"… (R-TIEN-5).
+/// Mỗi từ 2 câu theo bậc (R-ON-2, R-TU-2 — dạng chữ a / c / d dùng khung cũ; dạng nghe b / e chờ nút loa + âm, R-AM-5);
+/// chọn → "Kiểm tra" → phản hồi → "Câu tiếp". Câu cuối của từ kiểm tra xong → chấm ngay ([onGrade] lưu lịch ôn, trả số
+/// ngày tới hạn kế). Thoát (× / nút quay lại của máy) đóng ngay: từ đã chấm giữ kết quả, từ chưa chấm vẫn đến hạn (R-ON-5).
+/// Chấm xong một từ có thưởng ([rewards]) → "+1 · Ôn đúng 朋友" (R-TIEN-5).
 class ReviewScreen extends StatefulWidget {
   const ReviewScreen({super.key, required this.items, required this.onGrade, this.daily, this.rewards});
 
   final List<ReviewItem> items;
 
-  /// Chấm bộ [id] với [correct] câu đúng → số ngày tới lần ôn kế (`null` = không lưu được).
+  /// Chấm từ [id] với [correct] câu đúng → số ngày tới lần ôn kế (`null` = không lưu được).
   final Future<int?> Function(String id, int correct) onGrade;
 
   /// Hai việc hôm nay sau lượt ôn — dòng gợi ý của tổng kết.
   final DailyStatus? Function()? daily;
 
-  /// khoản thưởng vừa cộng (ôn +5 / +2, xong nhiệm vụ +20, chuỗi +50 — R-TIEN-2)
+  /// khoản thưởng vừa cộng (ôn đúng +1, xong nhiệm vụ +20, chuỗi +50 — R-TIEN-2)
   final RewardFeed? rewards;
 
   static Route<void> route(
@@ -44,7 +46,7 @@ class ReviewScreen extends StatefulWidget {
 class _ReviewScreenState extends State<ReviewScreen> {
   late final ReviewSession _s = ReviewSession(widget.items);
 
-  /// số ngày tới hạn kế của từng bộ đã chấm
+  /// số ngày tới hạn kế của từng từ đã chấm
   final Map<int, int?> _next = {};
 
   void _check() {
@@ -52,7 +54,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
     setState(() {});
     if (!graded) return;
     final i = _s.index;
-    widget.onGrade(_s.item.radical.id, _s.scores.last).then((days) {
+    widget.onGrade(_s.item.word.id, _s.scores.last).then((days) {
       if (!mounted) return;
       setState(() => _next[i] = days);
       playRewards(context, widget.rewards);
@@ -95,9 +97,8 @@ class _ReviewScreenState extends State<ReviewScreen> {
       case ReviewPhase.asking:
         return PrimaryButton(label: 'Kiểm tra', onPressed: _s.canCheck ? _check : null); // reviewCheck
       case ReviewPhase.checked:
-        final q = _s.item.questions[_s.picks.length - 1];
-        final r = _s.item.radical;
-        final answer = q.isPinyin ? r.pinyin : '${r.name} · ${r.meaning}';
+        final r = _s.item.word;
+        final answer = '${r.han} · ${r.pinyin} · ${r.meaning}';
         return FeedbackBox(
           right: _s.lastRight,
           text: _s.lastRight ? 'Đúng rồi!' : 'Chưa đúng — $answer', // reviewRight / reviewWrong
@@ -105,7 +106,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
           onNext: () => setState(_s.next),
         );
       case ReviewPhase.result:
-        return PrimaryButton(label: 'Bộ tiếp', trailing: Icons.arrow_forward, onPressed: () => setState(_s.next)); // reviewNextRadical
+        return PrimaryButton(label: 'Từ tiếp', trailing: Icons.arrow_forward, onPressed: () => setState(_s.next)); // reviewNextWord
       case ReviewPhase.summary:
         return PrimaryButton(label: 'Xong', icon: Icons.check, onPressed: exit); // reviewFinish
     }
@@ -113,7 +114,8 @@ class _ReviewScreenState extends State<ReviewScreen> {
 
   Widget _question(bool landscape) {
     final q = _s.current;
-    final r = _s.item.radical;
+    final r = _s.item.word;
+    final step = _s.question + 1;
     final checked = _s.phase == ReviewPhase.checked;
     final picked = checked ? _s.picks.last : _s.selected;
     OptionLook look(int i) {
@@ -125,12 +127,19 @@ class _ReviewScreenState extends State<ReviewScreen> {
     final head = Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(q.isPinyin ? 'Câu 1 / 2 · Pinyin' : 'Câu 2 / 2 · Nghĩa', // reviewStepPinyin / reviewStepMeaning
+        Text('Câu $step / ${_s.item.questions.length} · ${kindLabel(q)}', // reviewStep
             style: uiText.copyWith(fontSize: AppTextSize.caption, fontWeight: FontWeight.w700, color: AppColors.jade)),
         SizedBox(height: landscape ? 8 : 14),
-        Text(r.form, style: hanText.copyWith(fontSize: landscape ? AppTextSize.reviewHeroLandscape : AppTextSize.reviewHero, height: 1)),
+        // dạng d: thấy nghĩa, chọn chữ; còn lại thấy chữ (câu nghe b / e: tạm hiện chữ tới khi có nút loa — R-AM-5)
+        if (q.optionsHan && !q.listening)
+          Text(r.meaning, textAlign: TextAlign.center, style: uiText.copyWith(fontSize: AppTextSize.accent, fontWeight: FontWeight.w700))
+        else
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(r.han, maxLines: 1, style: hanText.copyWith(fontSize: landscape ? AppTextSize.reviewHeroLandscape : AppTextSize.reviewHero, height: 1)),
+          ),
         SizedBox(height: landscape ? 8 : 14),
-        Text(q.isPinyin ? 'Bộ này đọc là gì?' : 'Bộ này nghĩa là gì?', // reviewAskPinyin / reviewAskMeaning
+        Text(askText(q, r), // reviewAsk*
             textAlign: TextAlign.center,
             style: uiText.copyWith(fontSize: landscape ? AppTextSize.task : AppTextSize.question, fontWeight: FontWeight.w700)),
       ],
@@ -144,6 +153,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
           OptionTile(
             text: q.options[i],
             pinyin: q.isPinyin,
+            han: q.optionsHan,
             look: look(i),
             minHeight: landscape ? AppSize.optionRowLandscape : AppSize.optionRow,
             onTap: checked ? null : () => setState(() => _s.select(i)),
@@ -166,7 +176,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
 
   Widget _result(bool landscape) {
     final item = _s.item;
-    final r = item.radical;
+    final r = item.word;
     final correct = _s.scores.last;
     final level = reviewLevel(correct, item.questions.length);
     final value = uiText.copyWith(fontSize: AppTextSize.detail);
@@ -178,7 +188,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
           TableRow(children: [
             Padding(
               padding: const EdgeInsets.only(right: 14, bottom: 6),
-              child: Text(item.questions[i].isPinyin ? 'Pinyin' : 'Nghĩa', style: key),
+              child: Text(kindLabel(item.questions[i]), style: key),
             ),
             Text(
               _s.picks[i] == item.questions[i].answer ? '✓ đúng' : '✗ chọn "${item.questions[i].options[_s.picks[i]]}"',
@@ -190,12 +200,15 @@ class _ReviewScreenState extends State<ReviewScreen> {
     final hero = Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text('Kết quả bộ này', style: uiText.copyWith(fontSize: AppTextSize.caption, fontWeight: FontWeight.w700, color: AppColors.jade)), // reviewResult
+        Text('Kết quả từ này', style: uiText.copyWith(fontSize: AppTextSize.caption, fontWeight: FontWeight.w700, color: AppColors.jade)), // reviewResult
         const SizedBox(height: 12),
-        Text(r.form, style: hanText.copyWith(fontSize: landscape ? AppTextSize.reviewHeroLandscape : AppTextSize.reviewHero, height: 1)),
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(r.han, maxLines: 1, style: hanText.copyWith(fontSize: landscape ? AppTextSize.reviewHeroLandscape : AppTextSize.reviewHero, height: 1)),
+        ),
         const SizedBox(height: 12),
         Text(r.pinyin, style: displayText.copyWith(fontSize: AppTextSize.accent, color: AppColors.lacquer)),
-        Text('${r.name} — ${r.meaning}', textAlign: TextAlign.center, style: uiText.copyWith(fontSize: AppTextSize.cardTitle, fontWeight: FontWeight.w700)),
+        Text(r.meaning, textAlign: TextAlign.center, style: uiText.copyWith(fontSize: AppTextSize.cardTitle, fontWeight: FontWeight.w700)),
       ],
     );
     final verdict = Column(
@@ -223,7 +236,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
     final counts = _s.levelCounts;
     final daily = widget.daily?.call();
     final hint = [
-      if (counts[0] > 0) 'Bộ "chưa nhớ" sẽ hỏi lại ngày mai.',
+      if (counts[0] > 0) 'Từ "chưa nhớ" sẽ hỏi lại ngày mai.',
       if (daily != null && !daily.learnDone) 'Còn việc Lĩnh hội ${daily.newToday}/$dailyNewGoal — gặp thầy Trúc Lão ở $firstRegion.', // V-45 — R-HANH-8
       if (daily != null && daily.done) 'Hôm nay đã xong cả 2 việc trên bảng.',
     ].join(' ');
@@ -241,7 +254,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
           child: const Icon(Icons.check, size: 26, color: AppColors.onJade),
         ),
         const SizedBox(height: 10),
-        Text('Ôn xong ${_s.scores.length} bộ', style: uiText.copyWith(fontSize: AppTextSize.accent, fontWeight: FontWeight.w700)), // reviewSummary
+        Text('Ôn xong ${_s.scores.length} từ', style: uiText.copyWith(fontSize: AppTextSize.accent, fontWeight: FontWeight.w700)), // reviewSummary
         const SizedBox(height: 4),
         if (daily == null || daily.reviewDone)
           Text.rich(
@@ -268,7 +281,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
         Wrap(spacing: 8, runSpacing: 8, children: [
           for (var i = 0; i < _s.scores.length; i++)
             ResultChip(
-              han: _s.items[i].radical.form,
+              han: _s.items[i].word.han,
               level: reviewLevel(_s.scores[i], _s.items[i].questions.length),
               correct: _s.scores[i],
               total: _s.items[i].questions.length,
@@ -290,3 +303,20 @@ class _ReviewScreenState extends State<ReviewScreen> {
     );
   }
 }
+
+/// Nhãn dạng câu trên đầu câu / bảng kết quả (R-TU-2).
+String kindLabel(ReviewQuestion q) => switch (q.kind) {
+      'chu-nghia' || 'nghe-nghia' => 'Nghĩa',
+      'chu-pinyin' => 'Pinyin',
+      _ => 'Mặt chữ',
+    };
+
+/// Câu hỏi theo dạng (R-TU-2): a "Từ này nghĩa là gì?" · b "Nghe — nghĩa là gì?" · c "Từ này đọc thế nào?" ·
+/// d "Chữ nào là «nghĩa»?" · e "Nghe — chữ nào?".
+String askText(ReviewQuestion q, Word w) => switch (q.kind) {
+      'chu-nghia' => 'Từ này nghĩa là gì?',
+      'nghe-nghia' => 'Nghe — nghĩa là gì?',
+      'chu-pinyin' => 'Từ này đọc thế nào?',
+      'nghia-chu' => 'Chữ nào là «${w.meaning}»?',
+      _ => 'Nghe — chữ nào?',
+    };
