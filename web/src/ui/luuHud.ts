@@ -1,7 +1,7 @@
 /**
  * HUD Lưu Thương Lệnh (R-LUU-1…5) — thiết kế 2026-11-16.13 (`LuuThuong-*`, `design/docs/screen_specs.md` "Trúc Lâm"):
  * "Rời tiệc" + viên "Lượt n / 8" (chấm tiến độ), 4 thẻ điểm, viên trạng thái (chén trôi / văn nhân nghĩ / đúng / uống
- * phạt / văn nhân đáp), thẻ câu ghép chữ (khung ghép theo kiểu, thời gian, 4 ô bộ thủ thẻ trúc), thẻ kết quả ván (hạng,
+ * phạt / văn nhân đáp), thẻ câu ghép từ (khung ghép, thời gian, 4 ô chữ thẻ trúc), thẻ kết quả ván (hạng,
  * ấn "Thi khôi", bảng 4 dòng, lời Thi Ông, thưởng, "Ván mới" · "Rời tiệc"). Vẽ lại khi `LuuView` đổi. Dọc / ngang / máy
  * tính chỉ khác CSS (`luuHud.css`). Không biết tới luật — nơi ghép (`web/src/luuThuong.ts`) dựng `LuuView`.
  */
@@ -89,9 +89,9 @@ const T = {
   turn: (n: number, m: number) => `Lượt ${n} / ${m}`,
   cup: 'Chén lệnh đang trôi',
   thinking: (name: string) => `${name} đang nghĩ`,
-  compose: 'Ghép bộ thủ thành chữ',
+  compose: 'Ghép chữ thành từ',
   meaning: 'Nghĩa · âm',
-  pick: 'Chọn bộ thủ còn thiếu',
+  pick: 'Chọn chữ còn thiếu',
   full: 'Chữ đầy đủ',
   seconds: (n: number) => `${n} giây`,
   npcCard: (name: string) => `Câu của ${name}`,
@@ -106,7 +106,7 @@ const T = {
   capped: 'Hôm nay trò chơi đã đủ thưởng',
   again: 'Ván mới',
   host: 'Thi Ông',
-  keysHint: 'chọn bộ thủ',
+  keysHint: 'chọn chữ',
   escHint: 'rời tiệc',
 } as const;
 
@@ -210,7 +210,7 @@ export class LuuHud {
     return wrap;
   }
 
-  /** Khung ghép: phần còn lại đúng chỗ theo kiểu, ô bộ thủ trống nét đứt; đã chấm → chữ đầy đủ. */
+  /** Khung ghép: chữ hiện sẵn đúng chỗ, ô chữ còn thiếu nét đứt; đã chấm → từ đầy đủ (R-LUU-3). */
   private frame(c: LuuCardView): HTMLElement {
     const where = c.layout === 'bao' ? 'bao' : `${c.layout === 'trai-phai' ? 'tp' : 'td'}-${c.at}`;
     const f = node('div', `lt-frame ${where}`);
@@ -222,7 +222,7 @@ export class LuuHud {
       return f;
     }
     const slot = node('span', 'lt-slot');
-    slot.setAttribute('aria-label', c.layout === 'bao' ? 'Ô bộ thủ còn trống (bao ngoài)' : 'Ô bộ thủ còn trống');
+    slot.setAttribute('aria-label', 'Ô chữ còn trống');
     const rest = node('span', 'lt-rest');
     const h = node('span', 'lt-han', c.rest);
     h.lang = 'zh';
@@ -244,7 +244,7 @@ export class LuuHud {
       const big = node('span', 'lt-side-big');
       const h = node('span', 'lt-side-han', c.han);
       h.lang = 'zh';
-      big.append(h, ` ${c.hv}`);
+      big.append(h, c.hv ? ` ${c.hv}` : '');
       const sub = node('span', 'lt-side-sub');
       sub.append(node('b', 'lt-py', c.pinyin), ` — ${c.meaning}`);
       side.append(node('span', 'lt-cap', T.full), big, sub);
@@ -266,7 +266,7 @@ export class LuuHud {
     c.tiles.forEach((t, i) => {
       const b = node('button', `lt-tile ${t.state}`);
       b.type = 'button';
-      b.setAttribute('aria-label', `Bộ ${t.hv}`);
+      b.setAttribute('aria-label', `Chữ ${t.form} ${t.hv}`);
       const f = node('span', 'lt-tile-han', t.form);
       f.lang = 'zh';
       b.append(f, node('span', 'lt-tile-hv', t.hv));

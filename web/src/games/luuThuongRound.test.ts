@@ -3,7 +3,7 @@ import type { LuuSeat } from './luuThuong';
 import { easeStop, LUU_ANSWER_SECONDS, LUU_DRIFT_MIN, LuuThuongRound } from './luuThuongRound';
 
 const ORDER: LuuSeat[] = ['nguoi', 'thi-ong', 'nguoi', 'tai-nu', 'nguoi', 'tu-tai', 'nguoi', 'thi-ong'];
-const LEARNED = ['truc', 'moc', 'thuy'];
+const LEARNED = ['谢谢', '再见', '名字', '朋友', '老师', '学生', '同学', '学校', '学习', '汉语'];
 
 /** Chạy tới khi pha đổi thành [phase] (tối đa 60 s), trả số giây đã chạy. */
 function runTo(r: LuuThuongRound, phase: string, dt = 0.05): number {
@@ -82,7 +82,7 @@ describe('Lưu Thương — vòng thời gian', () => {
     expect(r.outcome).toBe('thang');
   });
 
-  it('R-LUU-1: chưa học bộ có chữ ghép → ván không bắt đầu', () => {
+  it('R-LUU-1: chưa học từ hai chữ → ván không bắt đầu', () => {
     expect(new LuuThuongRound([], () => 0.5, ORDER).phase).toBe('het');
   });
 });

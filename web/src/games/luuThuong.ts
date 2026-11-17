@@ -1,15 +1,15 @@
 /**
- * Lưu Thương Lệnh 流觴令 ở Khúc Thuỷ Đài (R-LUU-1…5): 8 lượt, người chơi 4 + 3 văn nhân 4; chén dừng trước ai người đó
- * ghép bộ thủ vào phần còn lại thành chữ (chọn 1 trong 4 bộ). Chỉ ôn — không ghi tiến độ học (như R-DAU-1).
+ * Lưu Thương Lệnh ở Khúc Thuỷ Đài (R-LUU-1…5, V-80): 8 lượt, người chơi 4 + 3 văn nhân 4; chén dừng trước ai người đó
+ * **ghép từ**: chọn chữ còn thiếu của một từ hai chữ đã học (1 trong 4 ô chữ). Chỉ ôn — không ghi tiến độ học (như R-DAU-1).
  * Logic thuần — không three, không DOM. Vòng thời gian: `luuThuongRound.ts`.
  */
-import { RADICALS, type Radical } from '../zones/radicals';
-import { formsChar, GHEP_CHU, type GhepChar } from './ghepChu';
+import { TU_VUNG, type Tu } from '../zones/tuVung/tu';
+import { chuNguon, ghepCua, thanhTuKhac, tuHaiChu, type ChuO, type GhepTu } from './ghepTu';
 
 export const LUU_TURNS = 8;
 export const LUU_PLAYER_TURNS = 4;
-/** Cần học ít nhất chừng này bộ có chữ ghép mới vào tiệc (R-LUU-1). */
-export const LUU_MIN_RADICALS = 3;
+/** Cần học ít nhất chừng này từ hai chữ mới vào tiệc (R-LUU-1). */
+export const LUU_MIN_WORDS = 3;
 export const LUU_OPTIONS = 4;
 
 /** Văn nhân ngồi tiệc (R-LUU-4): mã NPC → xác suất đúng. Thứ tự = thứ tự đệm trong đặc tả (`npcs` của mục `luu-thuong`). */
@@ -33,14 +33,14 @@ function shuffle<T>(items: readonly T[], rng: () => number): T[] {
   return a;
 }
 
-/** Các bộ đã học có chữ ghép (R-LUU-1). */
-export function ghepRadicals(learnedIds: Iterable<string>): string[] {
-  const has = new Set(GHEP_CHU.map((c) => c.radical));
-  return [...new Set(learnedIds)].filter((id) => has.has(id));
+/** Các từ hai chữ đã học (R-LUU-1, R-LUU-3), theo thứ tự giáo trình. */
+export function ghepWords(learnedIds: Iterable<string>, pool: readonly Tu[] = TU_VUNG): Tu[] {
+  const known = new Set(learnedIds);
+  return tuHaiChu(pool).filter((t) => known.has(t.id));
 }
 
-/** Vào tiệc được chưa (R-LUU-1): ≥ 3 bộ đã học có chữ ghép. */
-export const canJoin = (learnedIds: Iterable<string>): boolean => ghepRadicals(learnedIds).length >= LUU_MIN_RADICALS;
+/** Vào tiệc được chưa (R-LUU-1): ≥ 3 từ hai chữ đã học. */
+export const canJoin = (learnedIds: Iterable<string>): boolean => ghepWords(learnedIds).length >= LUU_MIN_WORDS;
 
 /** Thứ tự lượt hợp lệ (R-LUU-2): 8 lượt, người đúng 4, mỗi văn nhân 1–2, người không quá 2 lượt liền. */
 export function validOrder(order: readonly LuuSeat[]): boolean {
@@ -67,35 +67,41 @@ export function turnOrder(rng: () => number = Math.random): LuuSeat[] {
 }
 
 export interface LuuQuestion {
-  char: GhepChar;
-  /** 4 mã bộ thủ khác nhau */
-  options: string[];
-  /** chỉ số bộ đúng trong `options` */
+  ghep: GhepTu;
+  /** 4 ô chữ khác nhau */
+  options: ChuO[];
+  /** chỉ số chữ đúng trong `options` */
   answer: number;
   /** ai trả lời */
   by: LuuSeat;
 }
 
-/** 4 ô bộ thủ (R-LUU-3): 1 đúng + 3 nhiễu, ưu tiên bộ đã học, bỏ bộ ghép với phần còn lại thành chữ khác. */
-export function radicalOptions(c: GhepChar, learnedIds: readonly string[], rng: () => number = Math.random, pool: readonly Radical[] = RADICALS): string[] {
-  const okWrong = (id: string): boolean => id !== c.radical && !formsChar(id, c.rest);
-  const learned = shuffle(pool.filter((r) => learnedIds.includes(r.id) && okWrong(r.id)), rng).map((r) => r.id);
-  const others = shuffle(pool.filter((r) => !learnedIds.includes(r.id) && okWrong(r.id)), rng).map((r) => r.id);
-  const wrong = [...learned, ...others].slice(0, LUU_OPTIONS - 1);
-  return shuffle([c.radical, ...wrong], rng);
+/**
+ * 4 ô chữ (R-LUU-3): 1 đúng + 3 nhiễu — chữ của các từ HSK khác, ưu tiên chữ của từ đã học; bỏ chữ ghép với chữ hiện sẵn
+ * thành một từ HSK khác.
+ */
+export function charOptions(g: GhepTu, learnedIds: readonly string[], rng: () => number = Math.random, pool: readonly Tu[] = TU_VUNG): ChuO[] {
+  const right: ChuO = { han: g.missing, pinyin: g.pinyins[g.at === 'dau' ? 0 : 1] };
+  const known = new Set(learnedIds);
+  const ok = chuNguon(pool).filter((c) => c.han !== g.missing && c.han !== g.shown && !thanhTuKhac(g, c.han, pool));
+  const learned = shuffle(ok.filter((c) => known.has(c.tu)), rng);
+  const others = shuffle(ok.filter((c) => !known.has(c.tu)), rng);
+  const wrong = [...learned, ...others].slice(0, LUU_OPTIONS - 1).map(({ han, pinyin }) => ({ han, pinyin }));
+  return shuffle([right, ...wrong], rng);
 }
 
-/** 8 câu của một ván (R-LUU-3): chữ của bộ đã học, không lặp chữ (hết chữ mới lặp lại). */
+/** 8 câu của một ván (R-LUU-3): từ hai chữ đã học, không lặp từ (hết từ mới lặp lại); chữ ẩn đầu / cuối ngẫu nhiên. */
 export function makeQuestions(learnedIds: readonly string[], order: readonly LuuSeat[], rng: () => number = Math.random): LuuQuestion[] {
-  const ids = ghepRadicals(learnedIds);
-  const chars = GHEP_CHU.filter((c) => ids.includes(c.radical));
-  if (!chars.length) return [];
-  let bag: GhepChar[] = [];
+  const words = ghepWords(learnedIds);
+  if (!words.length) return [];
+  let bag: Tu[] = [];
   return order.map((by) => {
-    if (!bag.length) bag = shuffle(chars, rng);
-    const char = bag.pop() as GhepChar;
-    const options = radicalOptions(char, ids, rng);
-    return { char, options, answer: options.indexOf(char.radical), by };
+    if (!bag.length) bag = shuffle(words, rng);
+    const word = bag.pop() as Tu;
+    const both = ghepCua(word);
+    const ghep = both[Math.floor(rng() * both.length) % both.length];
+    const options = charOptions(ghep, learnedIds, rng);
+    return { ghep, options, answer: options.findIndex((o) => o.han === ghep.missing), by };
   });
 }
 
@@ -142,5 +148,5 @@ export function rankTitle(s: LuuScores): string {
 /** Ấn son "Thi khôi" trên thẻ kết quả: chỉ khi hạng 1 một mình (R-LUU-5 — chỉ hình, không đổi thưởng). */
 export const thiKhoi = (s: LuuScores): boolean => luuOutcome(s) === 'thang';
 
-/** Câu Thi Ông khi chưa đủ bộ (R-LUU-1, chuỗi `luuHostNotEnough`). */
-export const LUU_NEED_LINE = 'Đạo hữu hãy Tĩnh toạ học thêm vài bộ thủ, rồi lại đây cùng thả chén.';
+/** Câu Thi Ông khi chưa đủ từ (R-LUU-1, chuỗi `luuHostNotEnough`). */
+export const LUU_NEED_LINE = 'Đạo hữu hãy tới Trúc Lão học thêm vài bài từ, rồi lại đây cùng thả chén.';

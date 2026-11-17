@@ -14,7 +14,6 @@ import type { LamSound } from './ui/lamSound';
 import { LuuHud, type LuuResultView, type LuuTile, type LuuView } from './ui/luuHud';
 import { waterVolume } from './ui/lamSound';
 import { ZitherSound } from './ui/zitherSound';
-import { RADICALS } from './zones/radicals';
 import type { Dialog } from './zones/dialogs';
 import { thiOngDialog, vanNhanDialog } from './zones/trucLamThoai';
 
@@ -35,7 +34,6 @@ interface Cushion {
   stop: number;
 }
 
-const radicalOf = (id: string): (typeof RADICALS)[number] | undefined => RADICALS.find((r) => r.id === id);
 
 export class LuuThuong {
   private readonly path: ChannelPath | null;
@@ -215,22 +213,21 @@ export class LuuThuong {
     else if (r.phase === 'cham') v.status = mine ? { kind: r.lastRight ? 'dung' : 'phat' } : { kind: 'npc', name: seatName(q.by), right: r.lastRight };
     if (r.phase === 'hoi' || r.phase === 'nghi' || r.phase === 'cham') {
       const full = r.phase === 'cham';
-      const tiles: LuuTile[] = q.options.map((id, i) => {
-        const rad = radicalOf(id);
+      const tiles: LuuTile[] = q.options.map((o, i) => {
         const state: LuuTile['state'] = !full ? 'thuong' : i === q.answer ? 'dung' : i === r.picked ? 'sai' : 'mo';
-        return { form: rad?.form ?? id, hv: rad?.name ?? '', state, ...(full && !mine && i === r.picked ? { npcPick: q.by } : {}) };
+        return { form: o.han, hv: o.pinyin, state, ...(full && !mine && i === r.picked ? { npcPick: q.by } : {}) };
       });
       v.card = {
         mine,
         ...(mine ? {} : { who: { npc: q.by, name: seatName(q.by) } }),
         full,
-        han: q.char.han,
-        rest: q.char.rest,
-        layout: q.char.layout,
-        at: q.char.at,
-        hv: q.char.hv,
-        pinyin: q.char.pinyin,
-        meaning: q.char.meaning,
+        han: q.ghep.word.han,
+        rest: q.ghep.shown,
+        layout: 'trai-phai', // từ hai chữ: chữ trái – phải; ô trống ở đầu / cuối (R-LUU-3)
+        at: q.ghep.at,
+        hv: '',
+        pinyin: q.ghep.word.pinyin,
+        meaning: q.ghep.word.meaning,
         left: r.phase === 'hoi' ? Math.round(r.left * 4) / 4 : null,
         total: LUU_ANSWER_SECONDS,
         tiles,
