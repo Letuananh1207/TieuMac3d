@@ -23,7 +23,7 @@ import {
   mangOn,
   mangPickLabel,
   mangQuestion,
-  mangRadical,
+  mangWord,
   mangSellLabel,
   rainAt,
   sproutK,
@@ -34,7 +34,7 @@ import {
   type MangSpot,
   type MangState,
 } from './zones/mang';
-import { RADICALS, type Radical } from './zones/radicals';
+import type { Tu } from './zones/tuVung/tu';
 import { mangValue, TRUC_ONG, trucOngDialog } from './zones/trucLamThoai';
 import { mangTrialAct } from './zones/walletRules';
 
@@ -52,7 +52,7 @@ const EMPTY_LINE = 'Túi con còn trống. Mưa chiều xong là măng lại nh�
 
 interface Ask {
   spot: MangSpot;
-  radical: Radical;
+  word: Tu;
   options: string[];
   answer: number;
   /** giây còn lại (chờ trả lời, hoặc chờ tự đóng sau khi trả lời) */
@@ -224,10 +224,10 @@ export class HaiMang {
   private quizView(): MangQuizView | null {
     const a = this.ask;
     if (!a) return null;
-    const hvOf = (meaning: string): string => RADICALS.find((r) => r.meaning === meaning)?.name ?? '';
-    const r = a.radical;
-    const verdict = a.picked === null ? {} : { verdict: a.picked === a.answer ? 'Đúng! ×2 — được 2 Măng to' : `Chưa đúng — ${r.form} ${r.name} · ${r.meaning}. Vẫn được 1 Măng to` };
-    return { radical: r.form, options: a.options.map((m) => ({ meaning: m, hv: hvOf(m) })), picked: a.picked, answer: a.answer, ...verdict };
+    const t = a.word;
+    // đáp xong hiện nghĩa đúng + pinyin (R-MANG-4; phát âm khi có âm — R-AM-5)
+    const verdict = a.picked === null ? {} : { verdict: a.picked === a.answer ? `Đúng! ${t.pinyin} — ×2, được 2 Măng to` : `Chưa đúng — ${t.han} ${t.pinyin} · ${t.meaning}. Vẫn được 1 Măng to` };
+    return { han: t.han, options: a.options.map((m) => ({ meaning: m, hv: '' })), picked: a.picked, answer: a.answer, ...verdict };
   }
 
   private sellView(): MangSellView | null {
@@ -239,22 +239,23 @@ export class HaiMang {
     };
   }
 
-  /** "Hái" măng gần nhất (R-MANG-3); măng to có bộ đã học → thẻ măng chữ trước (R-MANG-4). */
+  /** "Hái" măng gần nhất (R-MANG-3); măng to khi đã học từ → thẻ măng chữ trước (R-MANG-4). */
   tryPick(): boolean {
     const s = this.near;
     if (!s || this.busy || this.ask) return false;
     this.h.player.bow(); // cúi người (dáng hái riêng chưa có)
-    const r = s.big ? mangRadical([...this.h.learned()], this.day, s.wave) : null;
-    if (r) {
-      const q = mangQuestion(r);
-      this.ask = { spot: s, radical: r, ...q, left: ASK_SECONDS, picked: null };
+    const learned = [...this.h.learned()];
+    const w = s.big ? mangWord(learned, this.day, s.wave) : null;
+    if (w) {
+      const q = mangQuestion(w, learned);
+      this.ask = { spot: s, word: w, ...q, left: ASK_SECONDS, picked: null };
       return true;
     }
     void this.pick(s, false);
     return true;
   }
 
-  /** Trả lời thẻ măng chữ (1…3): hiện đúng / sai rồi tự đóng sau 1,5 s (R-MANG-4). */
+  /** Trả lời thẻ măng chữ (1…4): hiện đúng / sai rồi tự đóng sau 1,5 s (R-MANG-4). */
   answer(i: number): boolean {
     const a = this.ask;
     if (!a || a.picked !== null || i < 1 || i > a.options.length) return false;

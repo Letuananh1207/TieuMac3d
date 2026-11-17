@@ -20,7 +20,7 @@ import { HOME_SCENE, loadScene } from './scene/loadSpec';
 import { createMapScroll } from './scene/banDo';
 import { CuonSach } from './scene/cuonSach';
 import { JOURNEY_MAP, placeStates } from './zones/journeyMap';
-import { RADICALS } from './zones/radicals';
+import { TU_VUNG } from './zones/tuVung/tu';
 import { cuonView } from './zones/cuonMuc';
 import { scrollMenu } from './zones/studyMenu';
 import { viewDistance } from './scene/farMountains';
@@ -76,7 +76,7 @@ async function boot(): Promise<void> {
   await Promise.allSettled([
     document.fonts.load('700 72px Lora', `Aa${signText(spec)}`),
     document.fonts.load('700 13px "Be Vietnam Pro"'),
-    document.fonts.load('700 52px "Han Serif"', `${RADICALS.map((r) => r.form).join('')}${signText(spec)}` || '字'),
+    document.fonts.load('700 52px "Han Serif"', `${TU_VUNG.map((t) => t.han).join('')}${signText(spec)}` || '字'),
   ]);
   const canvas = el<HTMLCanvasElement>('stage');
   // nhìn từ trên: đủ cao để thấy cả sân / cả vùng địa hình
@@ -415,7 +415,7 @@ async function boot(): Promise<void> {
         const s = t.seats[0];
         seatAt(s.x, s.y, s.z, s.rotY);
         place = { kind: 'ban-choi', game: cho === 'co' ? 'co' : 'dau-chu', center: t.center, rotY: s.rotY };
-        if (cho === 'dau') t.showCard(RADICALS[0].form, 0);
+        if (cho === 'dau') t.showCard(TU_VUNG[0].han, 0);
         else t.setStones(Array.from({ length: 169 }, (_, i) => ([84, 85, 71, 98].includes(i) ? 1 : [70, 72, 86].includes(i) ? 2 : 0)));
         game = new THREE.PerspectiveCamera(spec.camera.fov, 1, 0.1, 10);
         const g = game;
@@ -427,7 +427,7 @@ async function boot(): Promise<void> {
       // &muc=chua-muon — chưa mượn sách · &muc=chua-hoc — chưa mượn, chưa học bộ nào (còn 2 việc) · &muc=xong — xong việc
       // hôm nay; &nhan=book|learned|daily|stand — ô đang nhấn + tay gần ô trỏ (giữ yên) · &moi — ô Nhiệm vụ vừa cập nhật
       const muc = params.get('muc');
-      const learned = muc === 'chua-hoc' ? [] : RADICALS.slice(0, 5).map((r) => r.id);
+      const learned = muc === 'chua-hoc' ? [] : TU_VUNG.slice(0, 5).map((t) => t.id);
       const book = muc === 'chua-hoc' || muc === 'chua-muon' ? null : { title: 'HSK 1', subtitle: 'Nhập môn' };
       const left = muc === 'xong' || params.has('moi') ? 0 : muc === 'chua-hoc' ? 2 : 1;
       const { x, z } = character.root.position; // dòng nơi như app (`main.ts` sitPlaceName): khu chứa chỗ ngồi

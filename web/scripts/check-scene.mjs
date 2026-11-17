@@ -32,7 +32,7 @@ const out = await build({
       "export { wallGates } from './src/scene/walls.ts';\n" +
       "export { ringTrigger, arrivalSpot, daisLayout } from './src/scene/teleportLayout.ts';\n" +
       "export { landingPad, START_HEADING } from './src/scene/hacDuong.ts';\n" +
-      "export { RADICALS, checkRadicals } from './src/zones/radicals.ts';\n" +
+      "export { BAI_HOC } from './src/zones/tuVung/bai.ts';\n" +
       "export { applyVariant } from './src/scene/bienThe.ts';\n" +
       "export { mangSpotOk } from './src/scene/mangLam.ts';\n" +
       "export { mangOfDay, MANG_WAVES } from './src/zones/mang.ts';\n" +
@@ -49,7 +49,7 @@ const out = await build({
   define: { 'import.meta.glob': 'globalThis.__viteGlob' },
   loader: { '.png': 'empty', '.jpg': 'empty', '.glb': 'empty', '.css': 'empty', '.woff2': 'empty' },
 });
-const { checkPlaceNames, checkPortalLabels, buildWorld, Colliders, checkRoute, routeLength, DRAFT_TOWN_NPCS, Scene, resolveSceneSpec, roomKinds, zoneAnchors, placeZones, ZONE_CONTENT, moonRadius, gateOpening, lauClearHeight, lauTop, wallGates, ringTrigger, arrivalSpot, daisLayout, landingPad, START_HEADING, RADICALS, checkRadicals, applyVariant, mangSpotOk, mangOfDay, MANG_WAVES, GAME_NPC_IDS } = await import(
+const { checkPlaceNames, checkPortalLabels, buildWorld, Colliders, checkRoute, routeLength, DRAFT_TOWN_NPCS, Scene, resolveSceneSpec, roomKinds, zoneAnchors, placeZones, ZONE_CONTENT, moonRadius, gateOpening, lauClearHeight, lauTop, wallGates, ringTrigger, arrivalSpot, daisLayout, landingPad, START_HEADING, BAI_HOC, applyVariant, mangSpotOk, mangOfDay, MANG_WAVES, GAME_NPC_IDS } = await import(
   `data:text/javascript;base64,${Buffer.from(out.outputFiles[0].text).toString('base64')}`
 );
 
@@ -305,10 +305,10 @@ function checkScene(rel, raw, opt = {}) {
   if (spec.cloudSea.radius > 0) console.log(`Biển mây: y ${n(spec.cloudSea.y)}, bán kính ${n(spec.cloudSea.radius)}`);
 
   if (spec.lessons.radicals) {
-    all.push(...checkRadicals(RADICALS));
+    // dữ liệu từ vựng kiểm ở `npm run tu:check` (R-TU-4)
     const lao = spec.npcs.find((q) => q.id === 'truc-lao');
-    if (!lao) all.push('lessons.radicals bật nhưng thiếu NPC "truc-lao" — vùng có bài học bộ thủ học qua thầy Trúc Lão (R-HANH-8)');
-    console.log(`Tu luyện bộ thủ: nói chuyện Trúc Lão${lao ? ` (${n(lao.x)}; ${n(lao.z)})` : ''} → "Học bộ mới" mở bộ chưa học đầu tiên (${RADICALS.length} bộ — R-HANH-3, R-HANH-8)`);
+    if (!lao) all.push('lessons.radicals bật nhưng thiếu NPC "truc-lao" — vùng có bài học từ vựng học qua thầy Trúc Lão (R-HANH-8)');
+    console.log(`Học từ vựng: nói chuyện Trúc Lão${lao ? ` (${n(lao.x)}; ${n(lao.z)})` : ''} → "Học bài mới" mở bài chưa học đầu tiên (${BAI_HOC.length} bài — R-HANH-3, R-HANH-8)`);
   }
   const tp = spec.teleport;
   if (tp.enabled) {

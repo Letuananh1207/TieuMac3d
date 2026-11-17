@@ -8,7 +8,7 @@ import {
   mangOn,
   mangPickLabel,
   mangQuestion,
-  mangRadical,
+  mangWord,
   mangSellLabel,
   parseMang,
   parseMangReply,
@@ -19,7 +19,7 @@ import {
   wavesOpen,
   freshMang,
 } from './mang';
-import { RADICALS } from './radicals';
+import { tuTheoMa } from './tuVung/tu';
 
 const AREAS = [{ from: [-20, -20] as [number, number], to: [20, 20] as [number, number] }];
 /** Giờ VN h:m ngày 15/11/2026 → ms UTC. */
@@ -107,13 +107,15 @@ describe('Măng — hái (R-MANG-3, R-MANG-4)', () => {
     expect(pickMang(freshMang(DAY), `${DAY}-0-0`, vn(10), true, true)).toMatchObject({ ok: true, got: 2, mang: { bag: { 'mang-to': 2 } } });
     expect(pickMang(freshMang(DAY), `${DAY}-0-0`, vn(10), false, true)).toMatchObject({ got: 1 });
     expect(pickMang(freshMang(DAY), `${DAY}-0-0`, vn(10), true, false)).toMatchObject({ got: 1 });
-    expect(mangRadical([], DAY, 0)).toBeNull();
-    expect(mangRadical(['truc'], DAY, 1)?.id).toBe('truc');
-    const truc = RADICALS[0];
-    const q = mangQuestion(truc, () => 0.4);
-    expect(q.options).toHaveLength(3);
-    expect(new Set(q.options).size).toBe(3);
-    expect(q.options[q.answer]).toBe(truc.meaning);
+    expect(mangWord([], DAY, 0)).toBeNull();
+    expect(mangWord(['朋友'], DAY, 1)?.id).toBe('朋友');
+    expect(mangWord(['不客气', '你'], DAY, 0)?.id).toBe('你'); // ưu tiên từ 1–2 chữ
+    expect(mangWord(['不客气'], DAY, 0)?.id).toBe('不客气');
+    const t = tuTheoMa('朋友')!;
+    const q = mangQuestion(t, ['朋友'], () => 0.4);
+    expect(q.options).toHaveLength(4);
+    expect(new Set(q.options).size).toBe(4);
+    expect(q.options[q.answer]).toBe(t.meaning);
   });
 });
 

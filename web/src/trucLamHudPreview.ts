@@ -124,15 +124,16 @@ export function addTrucLamHudPreview(params: URLSearchParams, camera: THREE.Came
       document.body.classList.add('mini-quiz');
       const picked = hud === 'the-dung' ? 0 : hud === 'the-sai' ? 1 : null;
       m.quiz({
-        radical: '木',
+        han: '朋友',
         options: [
-          { meaning: 'cây', hv: 'mộc' },
-          { meaning: 'nước', hv: 'thuỷ' },
-          { meaning: 'lửa', hv: 'hoả' },
+          { meaning: 'bạn bè', hv: '' },
+          { meaning: 'thầy giáo, cô giáo', hv: '' },
+          { meaning: 'tên', hv: '' },
+          { meaning: 'trường học', hv: '' },
         ],
         picked,
         answer: 0,
-        ...(picked === null ? {} : { verdict: picked === 0 ? 'Đúng! ×2 — được 2 Măng to' : 'Chưa đúng — 木 mộc · cây. Vẫn được 1 Măng to' }),
+        ...(picked === null ? {} : { verdict: picked === 0 ? 'Đúng! péngyou — ×2, được 2 Măng to' : 'Chưa đúng — 朋友 péngyou · bạn bè. Vẫn được 1 Măng to' }),
       });
       m.setChip('Măng hôm nay · đã hái 5 / 14');
     } else if (hud.startsWith('ban')) {

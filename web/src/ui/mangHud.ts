@@ -1,7 +1,7 @@
 /**
  * HUD Hái măng sau mưa (R-MANG-1…5) — thiết kế 2026-11-16.13 (`HaiMang-*`, `BanMang-*`, `TrucLam-nut-trang-thai`):
  * nút nổi "Hái" neo trên măng gần nhất (măng to viền vàng + nhãn "Măng to"; máy tính phím E), nhãn bay "+1 Măng", chip lứa
- * măng dưới bản đồ nhỏ, thẻ măng chữ (vỏ măng khắc bộ thủ, 3 phương án, đúng / sai tự đóng 1,5 s), bảng bán cho Trúc Ông
+ * măng dưới bản đồ nhỏ, thẻ măng chữ (vỏ măng khắc từ đã học, 4 phương án, đúng / sai tự đóng 1,5 s), bảng bán cho Trúc Ông
  * (dòng Măng / Măng to + "Bán", "Bán hết · +n", bán xong giữ bảng mở với "Đã bán"). Không biết tới luật — nơi ghép
  * (`web/src/haiMang.ts`) đưa dữ liệu. DOM dựng bằng createElement.
  */
@@ -19,7 +19,8 @@ export interface MangPickView {
 }
 
 export interface MangQuizView {
-  radical: string;
+  /** chữ của từ khắc trên vỏ măng */
+  han: string;
   options: { meaning: string; hv: string }[];
   /** đã trả lời: ô chọn + đúng / sai */
   picked: number | null;
@@ -46,7 +47,7 @@ const T = {
   pick: 'Hái',
   big: 'Măng to',
   quizTag: 'Măng chữ · măng to',
-  quiz: 'Bộ này nghĩa là gì?',
+  quiz: 'Từ này nghĩa là gì?',
   quizSub: 'Đúng được gấp đôi',
   sellTitle: 'Bán măng cho Trúc Ông',
   sellSub: 'Không giới hạn · măng không hỏng trong túi',
@@ -165,7 +166,7 @@ export class MangHud {
     const top = node('div', 'mh-q-top');
     const shell = node('div', 'mh-shell');
     shell.append(shootIcon(104, true));
-    const rad = node('span', 'mh-carve', v.radical);
+    const rad = node('span', `mh-carve${[...v.han].length > 1 ? ' mh-carve-2' : ''}`, v.han);
     rad.lang = 'zh';
     shell.append(rad);
     const txt = node('div', 'mh-q-txt');
@@ -177,7 +178,7 @@ export class MangHud {
       const state = !done ? '' : i === v.answer ? ' right' : i === v.picked ? ' wrong' : ' dim';
       const b = node('button', `mh-opt${state}`);
       b.type = 'button';
-      b.append(node('span', 'mh-opt-m', o.meaning), node('span', 'mh-opt-hv', o.hv), keyCap(String(i + 1)));
+      b.append(node('span', 'mh-opt-m', o.meaning), ...(o.hv ? [node('span', 'mh-opt-hv', o.hv)] : []), keyCap(String(i + 1)));
       if (!done) b.addEventListener('click', () => this.on.answer(i));
       opts.append(b);
     });

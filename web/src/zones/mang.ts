@@ -5,7 +5,8 @@
  *   phía cùng ví dụ sổ). Có Flutter: trang chỉ gửi `mangAct`; không có Flutter: luật chạy trên ví thử (R-TIEN-7).
  * Thuần — không three, không DOM.
  */
-import { RADICALS, type Radical } from './radicals';
+import { cauNghia } from './tuVung/cauHoi';
+import { TU_VUNG, type Tu } from './tuVung/tu';
 
 export interface MangWave {
   /** giây trong ngày giờ VN lúc nhú */
@@ -122,24 +123,22 @@ export function mangInRange<T extends { x: number; z: number; id: string }>(spot
 
 /* ---------- măng chữ (R-MANG-4) ---------- */
 
-/** Bộ khắc trên măng to lứa [wave] ngày [day]: một bộ đã học (theo thứ tự đã học); chưa học → `null`. */
-export function mangRadical(learnedIds: readonly string[], day: number, wave: number, pool: readonly Radical[] = RADICALS): Radical | null {
-  const learned = learnedIds.map((id) => pool.find((r) => r.id === id)).filter((r): r is Radical => !!r);
-  if (!learned.length) return null;
-  return learned[(((day * 2 + wave) % learned.length) + learned.length) % learned.length];
+/**
+ * Từ khắc trên măng to lứa [wave] ngày [day] (R-MANG-4): một từ đã học (theo thứ tự đã học), ưu tiên từ 1–2 chữ (vừa vỏ
+ * măng); chưa học → `null`.
+ */
+export function mangWord(learnedIds: readonly string[], day: number, wave: number, pool: readonly Tu[] = TU_VUNG): Tu | null {
+  const learned = learnedIds.map((id) => pool.find((t) => t.id === id)).filter((t): t is Tu => !!t);
+  const short = learned.filter((t) => [...t.han].length <= 2);
+  const list = short.length ? short : learned;
+  if (!list.length) return null;
+  return list[(((day * 2 + wave) % list.length) + list.length) % list.length];
 }
 
-/** Câu "Bộ này nghĩa là gì?" 3 phương án (như R-ON-2): nghĩa đúng + 2 nghĩa của bộ khác. */
-export function mangQuestion(r: Radical, rng: () => number = Math.random, pool: readonly Radical[] = RADICALS): { options: string[]; answer: number } {
-  const others = [...new Set(pool.map((x) => x.meaning).filter((m) => m !== r.meaning))];
-  const pick: string[] = [];
-  while (pick.length < 2 && others.length) pick.push(others.splice(Math.floor(rng() * others.length), 1)[0]);
-  const options = [r.meaning, ...pick];
-  for (let i = options.length - 1; i > 0; i--) {
-    const j = Math.floor(rng() * (i + 1));
-    [options[i], options[j]] = [options[j], options[i]];
-  }
-  return { options, answer: options.indexOf(r.meaning) };
+/** Câu "Từ này nghĩa là gì?" 4 phương án (dạng a — R-TU-2): nghĩa đúng + 3 nghĩa nhiễu, ưu tiên từ đã học. */
+export function mangQuestion(t: Tu, learnedIds: readonly string[] = [], rng: () => number = Math.random): { options: string[]; answer: number } {
+  const q = cauNghia(t, learnedIds, rng);
+  return { options: q.options, answer: q.answer };
 }
 
 /* ---------- luật hái / bán (chép `mang.dart`) ---------- */
