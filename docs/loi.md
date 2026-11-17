@@ -19,6 +19,17 @@ Mức độ:
 
 ## Đang mở
 
+### L-25 · Lúc vào game / đổi map hiện HTML trần (chữ "kéo để đi", "Nhảy Space", nút trống, núi xám) rồi mới load
+
+- Trạng thái: đang sửa · Mức độ: khó chịu (lộ giao diện vỡ mỗi lần vào / đổi cảnh, trông như lỗi) · Phần: HUD / `web/index.html`, `style.css`, màn tải (R-MAN-2) · Quy tắc: R-MAN-2
+- Báo: 2026-11-17 — "bây giờ cứ lúc vào game hoặc sang map khác thì màn hình lại bị như này xong rồi mới load"
+- Các bước: 1. Mở game (trình duyệt) 2. Hoặc đổi sang map khác
+- Mong đợi / thực tế: màn tải che kín ngay từ khung hình đầu / thấy chữ HUD không kiểu ("kéo để đi", "Tuấn Anh", "Nhảy Space", "Chào F", "Tĩnh toạ C"), nút trống và hình núi xám chưa có CSS trong chốc lát rồi mới vào màn tải
+- Bằng chứng: ảnh người dùng (trình duyệt máy tính); bản dev hay build: chưa rõ
+
+**Lịch sử**
+- 2026-11-17: ghi, giao sửa.
+
 ### L-24 · Cầm Nương mắt lé: hai con ngươi hướng vào trong, khác mắt các nhân vật khác
 
 - Trạng thái: mới · Mức độ: nhỏ (ngoại hình NPC) · Phần: model `design/models/cam-nu.glb` (texture Tripo) · Quy tắc: R-NPC-9
