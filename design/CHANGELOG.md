@@ -3,6 +3,17 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-18.11 — Nông trại ở Nhà của ta: chốt 4 công trình (V-114)
+
+- Loại: cảnh 3D (concept) · luồng/luật · Phiếu: `docs/phieu_thiet_ke/2026-11-18-concept-nong-trai-nha.md`, ý tưởng
+  `docs/y_tuong/2026-11-18-nha-song-dong.md` (phạm vi thu về nông trại theo lời người dùng).
+- Người dùng chọn 2026-11-18: **chuồng gà** (tây bắc cạnh nhà: rắc thóc → hôm sau nhặt trứng), **ao cá + bến câu** (thềm đông:
+  quăng cần, đợi phao chìm rồi chạm), **chuồng bò con** (đông nam: cho cỏ khô → hôm sau lấy sữa), **giàn bầu bí** vòm qua đoạn
+  nam lối trục (gieo ở chân giàn, hái quả treo). **Đặt sẵn cố định** đúng chỗ như ảnh. Không làm: cây quả, tổ ong, bù nhìn,
+  giếng, vựa thóc.
+- Ảnh: `design/concept/nong-trai-nha/{tong,chuong-ga,ao-ca,chuong-bo,gian-dua}.png` (ảnh `tong` có cả ý không chọn — chỉ lấy 4).
+- Cần code: dựng + thao tác + sản phẩm bán ở thùng thu mua; luật R-NONG-* mới.
+
 ## 2026-11-18.3 — Đổi tên NPC cũ + xưng hô theo tuổi (V-106)
 
 - Loại: chuỗi · luồng/luật (R-NPC-11) · Nguồn: `docs/tham_khao/npc-kieu-moly.md` §3.2b, §3.4b, §7 (người dùng duyệt 2026-11-18).
