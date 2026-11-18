@@ -37,6 +37,7 @@ import { paveProblem, treesOnPaving } from './cayTrenNen';
 import { checkGarden, gardenFootprints } from './vuonLayout';
 import { CAP_SHAPES, checkMushroomForest } from './rungNamSpec';
 import { checkFluteTower } from './thapSaoSpec';
+import { checkSandCity } from './thanhCatSpec';
 import { landingPad, START_HEADING } from './hacDuong';
 import { checkPortals } from './portals';
 import { checkLook } from './look';
@@ -421,6 +422,11 @@ const LISTS: Record<string, ItemParser> = {
   boats: withPoints('path', item({}, { speed: 0, canopy: '#000000', sunk: 0, moored: true, cargo: true }, positive('speed'))),
   mirages: item({ x: 0, y: 0, z: 0, width: 0 }, { rotY: 0, period: 0 }, positive('width', 'period')),
   ramparts: withRamps(item({ from: XZ0, to: XZ0, height: 0, outSide: 0 }, { width: 0 }, all(axisAligned, positive('height', 'width')))),
+  // Thành Cát Ngủ Quên (V-112) — kiểm chung ở thanhCatSpec.ts `checkSandCity`
+  'sandCity.walls': item({ from: XZ0, to: XZ0, h: 0 }, { thick: 0 }, positive('h', 'thick')),
+  'sandCity.mounds': item({ x: 0, z: 0 }, {}),
+  'sandCity.flags': item({ x: 0, z: 0 }, {}),
+  'sandCity.tents': item({ x: 0, z: 0 }, { rotY: 0, len: 0 }, all(rot, positive('len'))),
   caravans: withPoints('path', item({}, { count: 0, spacing: 0, speed: 0 }, positive('count', 'spacing', 'speed'))),
   galleries: item({ from: XZ0, to: XZ0, waterSide: 0 }, { width: 0 }, all(axisAligned, positive('width'))),
   npcs: withRoute(item({ id: '', x: 0, z: 0 }, { rotY: 0, pose: '', scale: 0, speed: 0 }, all(oneOf('id', NPC_IDS), oneOf('pose', NPC_POSES), positive('scale', 'speed')))),
@@ -566,6 +572,7 @@ function checkConsistency(s: SceneSpec): string[] {
   out.push(...checkCrane(s));
   out.push(...checkFluteTower(s.fluteTower));
   out.push(...checkMushroomForest(s.mushroomForest));
+  out.push(...checkSandCity(s.sandCity));
   out.push(...checkBounds(s));
   if (!(s.light.lampGlow >= 0 && s.light.lampGlow <= 1)) out.push(`light.lampGlow: 0…1 (đang ${s.light.lampGlow})`);
   if (t.enabled && t.size > 0 && t.cell > 0) out.push(...checkOnFlatGround(s));

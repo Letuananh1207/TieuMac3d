@@ -10,6 +10,7 @@ import { DEFAULT_CHO_DEM_STYLE, type ChoDemStyle, type LanternTreeSpec, type Pie
 import { DEFAULT_DAY_NIGHT, type DayNightSpec } from './ngayDem';
 import { DEFAULT_MUSHROOM_FOREST, type MushroomForestSpec } from './rungNamSpec';
 import { DEFAULT_FLUTE_TOWER, type FluteTowerSpec } from './thapSaoSpec';
+import { DEFAULT_SAND_CITY, type SandCitySpec } from './thanhCatSpec';
 
 export type XZ = [number, number];
 
@@ -1094,6 +1095,8 @@ export interface SceneSpec {
   ramparts: RampartSpec[];
   /** đoàn lạc đà (Con đường tơ lụa) */
   caravans: CaravanSpec[];
+  /** Thành Cát Ngủ Quên (V-112 — `thanhCatSpec.ts`): cổng thành vùi cát, lạc đà đá, tường đổ, ụ đào, ốc đảo — tắt / rỗng = như cũ */
+  sandCity: SandCitySpec;
   props: PropSpec[];
   trees: {
     trunk: string;
@@ -1337,6 +1340,7 @@ export const DEFAULT_SCENE: SceneSpec = {
   mirages: [],
   ramparts: [],
   caravans: [],
+  sandCity: DEFAULT_SAND_CITY, // không có thành cát — cảnh cũ không đổi
   props: [],
   trees: {
     trunk: '#4a3222',

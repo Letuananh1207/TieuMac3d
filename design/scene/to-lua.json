@@ -2,33 +2,78 @@
   "site": {
     "name": "Thành Cát Ngủ Quên",
     "han": "絲路",
-    "areas": []
+    "areas": [
+      {
+        "name": "Cổng Thành Vùi Cát",
+        "from": [
+          -14,
+          -10
+        ],
+        "to": [
+          14,
+          12
+        ]
+      },
+      {
+        "name": "Bãi Hạc",
+        "from": [
+          -8,
+          48
+        ],
+        "to": [
+          8,
+          64
+        ]
+      },
+      {
+        "name": "Lối Đá Cổ",
+        "from": [
+          -6,
+          12
+        ],
+        "to": [
+          6,
+          48
+        ]
+      },
+      {
+        "name": "Ốc Đảo",
+        "from": [
+          -36,
+          20
+        ],
+        "to": [
+          -14,
+          42
+        ]
+      }
+    ]
   },
   "sky": {
-    "top": "#4f8cc4",
-    "middle": "#9cc2dc",
-    "horizon": "#f4dfb4"
+    "top": "#3f86cc",
+    "middle": "#8f94c0",
+    "horizon": "#e8896a"
   },
   "fog": {
-    "color": "#ecd9b2",
-    "near": 30,
-    "far": 130
+    "color": "#e8b48e",
+    "near": 45,
+    "far": 190
   },
   "light": {
-    "skyColor": "#fff4dc",
-    "groundColor": "#8a6a40",
-    "hemiIntensity": 0.78,
-    "sunColor": "#ffd08a",
-    "sunIntensity": 1,
+    "skyColor": "#ffe8cc",
+    "groundColor": "#a8744a",
+    "hemiIntensity": 0.74,
+    "sunColor": "#ffcf9a",
+    "sunIntensity": 0.95,
     "sunPosition": [
-      40,
-      16,
-      -10
+      -30,
+      22,
+      34
     ]
   },
   "ground": {
     "size": 160,
-    "color": "#cfae74",
+    "color": "#e2b878",
     "brickHue": 36,
     "pattern": "gach"
   },
@@ -39,33 +84,59 @@
       0
     ],
     "size": 220,
-    "cell": 2.5,
+    "cell": 2,
     "plateaus": [
       {
         "from": [
-          -38,
-          -34
+          -7,
+          48
         ],
         "to": [
-          38,
-          62
+          7,
+          64
         ],
         "y": 0,
         "pave": false,
-        "blend": 8
+        "blend": 6
       },
       {
         "from": [
-          -36,
-          -50
+          -2.4,
+          -16
         ],
         "to": [
-          36,
-          -34
+          2.4,
+          48
         ],
         "y": 0,
         "pave": false,
-        "blend": 3
+        "blend": 5
+      },
+      {
+        "from": [
+          -33,
+          22
+        ],
+        "to": [
+          -17,
+          38
+        ],
+        "y": 0,
+        "pave": false,
+        "blend": 6
+      },
+      {
+        "from": [
+          39,
+          14
+        ],
+        "to": [
+          50,
+          25
+        ],
+        "y": 0,
+        "pave": false,
+        "blend": 6
       }
     ],
     "peaks": [
@@ -86,18 +157,12 @@
         "z": -62,
         "r": 20,
         "h": 18
-      },
-      {
-        "x": -24,
-        "z": 56,
-        "r": 7,
-        "h": 4
       }
     ],
     "noise": {
       "seed": 3,
-      "amp": 1.4,
-      "scale": 30
+      "amp": 0.45,
+      "scale": 26
     },
     "edge": {
       "radius": 90,
@@ -108,13 +173,13 @@
     "blend": 7,
     "colors": {
       "grass": [
-        "#d8b878",
-        "#ceac6a",
-        "#e2c48c"
+        "#e2b878",
+        "#dcae6c",
+        "#e8c088"
       ],
-      "dirt": "#b98a52",
-      "rock": "#b07a4e",
-      "highRock": "#c08c5c",
+      "dirt": "#cf985e",
+      "rock": "#c98f5a",
+      "highRock": "#d8a36a",
       "highFrom": 12
     },
     "slopeDirt": 14,
@@ -128,8 +193,8 @@
       ]
     },
     "rocks": {
-      "density": 2,
-      "color": "#b08a60"
+      "density": 1,
+      "color": "#c8a070"
     },
     "waterfalls": [],
     "streams": [],
@@ -173,6 +238,54 @@
         "h": 12,
         "rotY": 180,
         "width": 34
+      },
+      {
+        "x": -10,
+        "z": 0,
+        "len": 60,
+        "h": 8.15,
+        "rotY": 90,
+        "width": 40
+      },
+      {
+        "x": 11,
+        "z": -1,
+        "len": 30,
+        "h": 3.6,
+        "rotY": 90,
+        "width": 24
+      },
+      {
+        "x": 0,
+        "z": -30,
+        "len": 50,
+        "h": 5,
+        "rotY": 0,
+        "width": 30
+      },
+      {
+        "x": 24,
+        "z": 26,
+        "len": 24,
+        "h": 2.6,
+        "rotY": 160,
+        "width": 20
+      },
+      {
+        "x": 27,
+        "z": 4,
+        "len": 22,
+        "h": 3,
+        "rotY": 120,
+        "width": 20
+      },
+      {
+        "x": -19,
+        "z": 50,
+        "len": 22,
+        "h": 2.4,
+        "rotY": 20,
+        "width": 18
       }
     ]
   },
@@ -181,14 +294,14 @@
       {
         "radius": 170,
         "height": 22,
-        "color": "#d4b48a",
+        "color": "#e0a47e",
         "peaks": 12,
         "width": 2.6
       },
       {
         "radius": 240,
         "height": 36,
-        "color": "#e4cfae",
+        "color": "#e8b496",
         "peaks": 9,
         "width": 2.8
       }
@@ -204,7 +317,21 @@
     "enabled": false
   },
   "wallSegments": [],
-  "paths": [],
+  "paths": [
+    {
+      "from": [
+        5,
+        52
+      ],
+      "to": [
+        42,
+        20.5
+      ],
+      "width": 2.6,
+      "dirt": true,
+      "color": "#d9a466"
+    }
+  ],
   "buildingStyle": {
     "path": "#b89566",
     "stone": "#b49a74",
@@ -218,16 +345,60 @@
   "gates": [],
   "water": [
     {
-      "x": 16,
-      "z": -14,
-      "r": 12,
-      "shape": "trang",
-      "rotY": 180
+      "x": -25,
+      "z": 31,
+      "r": 4.6
     }
   ],
-  "props": [],
+  "props": [
+    {
+      "kind": "lau-say",
+      "x": -21.2,
+      "z": 33.6
+    },
+    {
+      "kind": "lau-say",
+      "x": -28.6,
+      "z": 34.4
+    },
+    {
+      "kind": "lau-say",
+      "x": -29.9,
+      "z": 29.2
+    },
+    {
+      "kind": "lau-say",
+      "x": -22.6,
+      "z": 27.4
+    }
+  ],
   "trees": {
-    "yard": [],
+    "yard": [
+      {
+        "x": -31,
+        "z": 26.5,
+        "scale": 1.25,
+        "kind": "tan"
+      },
+      {
+        "x": -28.6,
+        "z": 23.6,
+        "scale": 1.0,
+        "kind": "tan"
+      },
+      {
+        "x": -33,
+        "z": 31,
+        "scale": 1.1,
+        "kind": "tan"
+      },
+      {
+        "x": -18.6,
+        "z": 31.5,
+        "scale": 0.95,
+        "kind": "tan"
+      }
+    ],
     "groves": [],
     "ring": {
       "count": 0,
@@ -236,7 +407,14 @@
       "scaleMin": 1.6,
       "scaleMax": 2.4
     },
-    "seed": 71
+    "seed": 71,
+    "crown": "chum",
+    "trunk": "#7a5a40",
+    "leaves": [
+      "#6fa87a",
+      "#7fb487",
+      "#5f9a6c"
+    ]
   },
   "floating": {
     "islands": [],
@@ -281,7 +459,11 @@
       0,
       56
     ],
-    "radius": 4.7
+    "radius": 4.7,
+    "colors": {
+      "floor": "#c2b49c",
+      "rim": "#9a8a70"
+    }
   },
   "lessons": {
     "radicals": false
@@ -311,7 +493,8 @@
     }
   ],
   "dayNight": {
-    "enabled": true
+    "enabled": true,
+    "gioCoDinh": 16.5
   },
   "bridges": [],
   "boats": [],
@@ -321,5 +504,184 @@
   "ramparts": [],
   "lanternStrings": [],
   "fences": [],
-  "teaRows": []
+  "teaRows": [],
+  "look": {
+    "style": "mem",
+    "colorPipeline": "cu",
+    "wrap": 0.55,
+    "ao": 0.35,
+    "foot": 0.8,
+    "footShare": 0.55,
+    "aoTint": "#8a5a3a",
+    "sunGlow": "#ffd8a8",
+    "glowSize": 0.3,
+    "skyBands": {
+      "mid": 0.08,
+      "top": 0.45
+    },
+    "cloudBelly": "#f0c8a8",
+    "mist": {
+      "color": "#f0c09a",
+      "opacity": 0.45
+    },
+    "flowers": {
+      "density": 0,
+      "colors": [
+        "#f4a7b9",
+        "#fff6e5",
+        "#f6cf5e",
+        "#b9a3e3"
+      ]
+    },
+    "wind": 0.04,
+    "water": {
+      "shallow": "#8cc6c0",
+      "deep": "#5a95a6",
+      "foam": "#f4fbf8",
+      "ripple": 0.5
+    },
+    "lanternGlow": {
+      "color": "#ffc27a",
+      "size": 1.6
+    },
+    "vignette": 0.25,
+    "vignetteColor": "#5a3a24"
+  },
+  "sandCity": {
+    "gate": {
+      "enabled": true,
+      "x": 0,
+      "z": 0,
+      "w": 20,
+      "d": 11,
+      "h": 8,
+      "arch": [
+        3.6,
+        3.8
+      ],
+      "climb": "tay",
+      "tower": {
+        "w": 10,
+        "d": 5,
+        "h": 3.4,
+        "roof": 3,
+        "tilt": 1.5
+      }
+    },
+    "camel": {
+      "enabled": true,
+      "x": 15.5,
+      "z": 1.5,
+      "rotY": -35,
+      "h": 8
+    },
+    "walls": [
+      {
+        "from": [
+          -50,
+          0.5
+        ],
+        "to": [
+          -13,
+          0.5
+        ],
+        "h": 1.3
+      },
+      {
+        "from": [
+          19,
+          -2.5
+        ],
+        "to": [
+          48,
+          -2.5
+        ],
+        "h": 1.2
+      }
+    ],
+    "mounds": [
+      {
+        "x": -13,
+        "z": 33
+      },
+      {
+        "x": 13,
+        "z": 27
+      },
+      {
+        "x": 27,
+        "z": 12
+      },
+      {
+        "x": 21,
+        "z": 44
+      },
+      {
+        "x": -38,
+        "z": 12
+      },
+      {
+        "x": 33,
+        "z": -10
+      },
+      {
+        "x": -26,
+        "z": -16
+      }
+    ],
+    "flags": [
+      {
+        "x": -9,
+        "z": 46
+      },
+      {
+        "x": 9,
+        "z": 45
+      },
+      {
+        "x": 36,
+        "z": 24
+      },
+      {
+        "x": -16,
+        "z": -12
+      },
+      {
+        "x": 24,
+        "z": -8
+      }
+    ],
+    "road": {
+      "from": [
+        0,
+        51
+      ],
+      "to": [
+        0,
+        6.5
+      ],
+      "width": 3.4
+    },
+    "oasis": {
+      "x": -25,
+      "z": 30.5,
+      "r": 9
+    },
+    "tents": [
+      {
+        "x": -20,
+        "z": 25,
+        "rotY": 0
+      },
+      {
+        "x": -31.8,
+        "z": 33.5,
+        "rotY": 90
+      }
+    ],
+    "seed": 112,
+    "colors": {
+      "camel": "#cdb08a"
+    }
+  }
 }
