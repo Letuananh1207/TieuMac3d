@@ -128,3 +128,4 @@ ha-ta-lowpoly.glb` |
 | V-20261118-111 | Dựng Đỉnh Hạc Bay (`truong-thanh`) | canh + lead | nhận — đợt 2 |  | — |
 | V-20261118-112 | Dựng Thành Cát Ngủ Quên (`to-lua`) | canh + lead | nhận — đợt 2 |  | — |
 | V-20261118-113 | Dựng Thung Trúc Gió Hát (`rung-truc`, thêm Tháp Sáo Trúc, giữ địa hình B2/B3) | canh + lead | nhận — đợt 2 |  | — |
+| V-20261118-114 | Nhà đang rất trống trải — nghiên cứu nên thêm gì, làm gì (ngoài đảo + gian trong) | y-tuong | đang nghiên cứu — nhánh `viec/nha-them-gi` → `docs/y_tuong/2026-11-18-nha-song-dong.md` | R-NHA-*, R-VUON-* | chọn ý đợt 1 |
