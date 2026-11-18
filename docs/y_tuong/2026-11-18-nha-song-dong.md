@@ -1,236 +1,134 @@
-# Nhà sống động: sân và gian trong có sức sống + việc nhỏ mỗi ngày ở nhà (家园 · 小屋)
-- Ngày: 2026-11-18 · Việc: V-20261118-114 · Hệ thống (khung 摩尔庄园): **nhà** (+ thú nuôi, nhịp ngày, sự kiện nhỏ)
-- Trạng thái: **nháp — chờ người dùng chọn** · Điểm: 12–20/21 tuỳ ý (bảng §3)
+# Nông trại Nhà của ta: thêm gì ngoài sân để đảo bớt trống (农场 · 牧场 · 果园 · 鱼塘)
+- Ngày: 2026-11-18 · Việc: V-20261118-114 · Hệ thống (khung 摩尔庄园): **nhà — phần nông trại ngoài sân**
+- Trạng thái: **nháp — chờ người dùng chọn ý** (xem ảnh concept trước khi chọn)
 - Yêu cầu người dùng (nguyên văn): "Ở nhà tôi hiện nay đang rất trống trải hãy nghiên cứu xem nên thêm gì và làm gì".
-- Đọc kèm: `docs/tham_khao/nha-vuon-bo-cuc.md` (bố cục "Trục giữa" V-82), `docs/tham_khao/vuon-mole.md` (vòng công cụ),
-  `docs/tham_khao/npc-kieu-moly.md` (tên NPC cổ phong), `web/src/zones/decor.ts` (13 vật), luật R-NHA-*, R-VUON-*, R-NGAY-*,
-  R-TU-*, R-ON-*, R-MANG-4 (mẫu "thẻ từ trong cảnh"). Phiếu concept kèm: `docs/phieu_thiet_ke/2026-11-18-concept-nha-song-dong.md`.
+- **Thu hẹp phạm vi (người dùng 2026-11-18)**: "bạn đang đi quá xa mục đích của tôi chỉ là thêm các phần liên quan đến nông trại ở
+  nhà của tôi. Ngoài ra hãy gen ảnh cho các ý tưởng" → phiếu này **chỉ còn nông trại ngoài sân** (chăn nuôi, cây quả, ao cá,
+  nước tưới, chế biến nông sản, đồ nông trại). Thư buổi sáng, gian trong, khách NPC, thú cưng, thời tiết… chuyển xuống
+  "Đã loại khỏi phạm vi". Tên file giữ nguyên để link cũ không gãy.
+- Đọc kèm: `design/scene/nha-ta.json` (bố cục "Trục giữa" V-82), ảnh `design/screens/Canh-nha-ta-truc-giua-tren.png`, `-vao.png`,
+  `docs/tham_khao/nha-vuon-bo-cuc.md`, `docs/tham_khao/vuon-mole.md` (vòng công cụ), luật R-VUON-*, R-NHA-5/7, R-TUI-1.
+- Phiếu ảnh concept: `docs/phieu_thiet_ke/2026-11-18-concept-nong-trai-nha.md` (mỗi ý một ảnh + ảnh toàn đảo).
 
 ## Một câu
-Nhà riêng ở các game được yêu thích "sống" nhờ **ba lớp**: (1) ngày đầu đã có **vài thứ bày sẵn + sinh vật + tiếng + đổi
-theo giờ** nên không bao giờ là bãi cỏ chết; (2) **mỗi ngày có vài thứ nhỏ đang chờ mình** ở nhà (thư, quả chín, thú đói,
-khách ghé, cá cắn câu) — mỗi thứ 30 giây; (3) người chơi **tự thêm dần** đồ, cây, thú. Nhà mình hiện chỉ có lớp (3) (trang trí
-tự do) và vườn; lớp (1) gần như bằng 0 (`nha-ta.json`: `props: []`, `npcs: []`, `water: []`, mây trôi 0, cây sân 0) và lớp
-(2) chỉ có vườn. Đề xuất: thêm lớp (1) ngay (rẻ), lớp (2) gắn **ôn từ vựng đã học**.
+Trồng trọt đã có (12 luống, vòng công cụ: gieo / tưới / bắt sâu / nhổ cỏ / bón / thu / bán), nhưng **nông trại ở các game được
+yêu thích không chỉ có luống**: còn **con vật cho sản phẩm mỗi ngày** (gà → trứng, bò → sữa), **cây quả lắc là rụng**, **ao câu cá**,
+**chỗ chế biến** (thóc → gạo) và **đồ nông trại nhìn là biết** (giếng, bù nhìn, giàn dưa, tổ ong). Đề xuất 9 thành phần đặt vào
+**hai cánh cỏ đông / tây đang trống**, mỗi thứ chỉ 1–2 thao tác kiểu 摩尔, ra sản phẩm bán ở **thùng thu mua** có sẵn hoặc
+**nối vòng** với vườn (thóc nuôi gà, cỏ nhổ nuôi bò, nước giếng tưới luống).
 
-## 0. Hiện trạng (ảnh `design/screens/Canh-nha-ta-truc-giua-tren.png`, `-vao.png`, `Canh-nha-ta-trong.png`)
-| Chỗ | Có | Thiếu (cảm giác "trống") |
-|---|---|---|
-| Sân (đảo ∅ ≈ 54 m) | lối trục, 12 luống, thùng thu mua, nhà cuối lối (2 đèn lồng ở cửa), đồi trúc, 2 cụm tùng mép | hai cánh cỏ ~330 + 350 m² trơn; không hoa, không vật nhỏ, không sinh vật, không tiếng, không khói / ánh cửa sổ; mây trôi tắt |
-| Gian trong (14 × 10) | sàn gỗ, 2 cửa sổ, 2 đèn lồng treo | **trống hẳn** khi mới cài (R-NHA-3: "mới cài → chưa món nào"; 3 vật khởi đầu nằm trong túi) |
-| Việc ở nhà | vườn (gieo / tưới / sâu / cỏ / phân / thu / bán), trang trí | không gì khác để làm ngoài vườn; chưa có lý do nào ở nhà gắn **ôn từ** |
-| Dữ liệu từ | HSK 1–2 có: 猫 狗 鱼 桌子 椅子 杯子 茶 书 房间 门 水果 苹果 米饭 菜 天气 晴 阴 下雨 雪 早上 晚上 睡觉 朋友 送 喜欢 | **không có** trong HSK 1–2: 花 鸟 树 床 太阳 月亮 (HSK 3) → sinh vật / đồ dùng làm "móc từ" nên chọn từ có trong sổ |
-
-## 1. Nghiên cứu — các game làm nhà "sống" thế nào
-
-| Game | Có sẵn từ đầu (không khí) | Người chơi thêm dần | Vòng quay lại mỗi ngày ở nhà |
+## 0. Hiện trạng sân (đo theo `nha-ta.json`, x đông, z nam; tâm đảo (0; −2), mép ≈ 27 m)
+| Chỗ | Toạ độ | Có | Trống |
 |---|---|---|---|
-| **摩尔庄园 web 2008** | 小屋 có đồ cơ bản; thú 拉姆 theo chân / ở nhà | đồ nội thất mua theo bộ (có bộ "đồ tương tác"); nhiều thú (≤ 4) | **cho 拉姆 ăn** (độ no tụt, bỏ bê thì nguy hiểm — bản gốc nặng tay); **拉姆 "bỏ nhà đi chơi" rồi về mang theo đồ**; gửi 拉姆 đi học có kỹ năng [MG] [XM-a] |
-| **摩尔庄园 手游 2021** | nông trang riêng, ruộng quanh nhà | ruộng mở rộng theo độ phồn vinh; **chuồng gà / bò / cừu** (trứng, sữa, len); bản vẽ nhà (家装设计) chia sẻ | tưới / thu, cho vật nuôi ăn, câu cá ở hồ chân núi tuyết, nhiệm vụ ngày (bị chê **quá nhiều**) [TT] [XM-b] |
-| **Animal Crossing NH** | đảo có cây ăn quả bản địa, hoa, côn trùng, cá, tiếng sóng / gió, nhạc đổi **theo giờ**; hộp thư trước nhà | lều → nhà, đồ, hoa lai, cây, rào; bảo tàng đầy dần | **checklist sáng**: đọc thư, đá ra tiền, đào hoá thạch, hái quả, chai thư trôi vào bờ, **một khách đặc biệt ghé mỗi ngày** (bán hàng / thử thách câu cá / bắt bọ), cư dân nhờ việc [NL] [PG] [NP-sc] |
-| **Stardew Valley** | ngày 1 có **15 hạt củ cải để sẵn trên sàn** (nhiệm vụ đầu), ruộng sát nhà, thùng giao hàng cạnh cửa | công trình, chuồng, nhà to hơn | tưới, cho thú ăn, **bát nước của chó / mèo** (bỏ quên **không bị phạt**), thư buổi sáng [SDV] |
-| **Hay Day** | chó / mèo đi lại trong trang trại, ong, sóc trong góc nhìn đầu | công trình chế biến, đồ trang trí | **bảng đơn hàng** + khách ghé xe tải mua hàng (quan sát chung, độ tin vừa) |
-| **Noun Town** (học tiếng Trung) | thị trấn bắt đầu **đen trắng** | mỗi từ học được **trả màu lại cho một phần** thị trấn | trò nhỏ trong thế giới, ôn lặp cách quãng, luyện nói [NT] |
+| Lối trục + chỗ xuất hiện | x −1,2…1,2, z −6…13; xuất hiện (0; 6,5) | lối đá, Bến mây nam | — |
+| Vườn rau (12 luống) | x ±2,1…±7,4, z −4…4 | luống, viền cuội | — |
+| Thùng thu mua | (2,3; 5) | thùng gỗ | — |
+| Nhà + sân lát | nhà (0; −11,5), sân x ±7, z −15…−5,5 | nhà, 2 đèn lồng | — |
+| **Cánh tây** | x −22…−8, z −16…12 | 3 cây tùng mép (−20; 5) | **≈ 330 m² cỏ trơn** |
+| **Cánh đông + thềm đông** | x 8…23, z −16…12; thềm phẳng x 13,5…23, z −6…6 | 3 cây tùng (20; −10) | **≈ 350 m² cỏ trơn** |
+| Nam (quanh chỗ xuất hiện) | z 5…12 | — | dải cỏ hai bên lối |
 
-Không tìm thấy game học ngôn ngữ nào có **nhà riêng + thú nuôi** gắn từ vựng (tìm 1 lượt; gần nhất là Noun Town, Studycat,
-WonderLang — chỉ có thị trấn / phiêu lưu). Đây là **khoảng trống** Tiểu Mặc lấp được.
+Sản phẩm vườn hiện có (R-VUON-9): Cải ngọt, Củ cải, Ngô, **Lúa**, Bí đỏ, Hoa cúc, Dưa hấu, Trà. Cỏ dại nhổ ra (R-VUON-11) hiện
+chỉ biến mất — có thể thành **cỏ khô** nuôi con vật (nối vòng, ý 5).
 
-### Điều rút ra (dùng cho phần đề xuất)
-1. **Không bao giờ trống ngày đầu.** Stardew đặt sẵn hạt + ruộng, ACNH có cây quả + sinh vật sẵn; trang trí là *thêm vào*, không
-   phải *bắt đầu từ số 0*. Nhà mình "mới cài → chưa món nào" là ngược quy ước.
-2. **Sinh vật + chuyển động + tiếng là thứ rẻ nhất mà hiệu quả nhất** (bướm, chim, mèo đi lại, khói, gió trúc). Mình đã có sẵn
-   khung: bướm (`scene/buom.ts`), đàn hạc (`scene/fauna.ts`), ngày đêm (R-NGAY-*), tiếng tự tổng hợp (R-AM-3/4).
-3. **"Checklist sáng" 3–5 việc × 30 giây** là vòng quay lại của ACNH (thư, quả, đá, khách, chai thư). Ngắn — đúng bài học
-   摩尔 2021 (việc ngày quá nặng thì bỏ).
-4. **Thú nuôi là móc mạnh nhất** (摩尔: trẻ quý thú hơn nhân vật). Cơ chế đáng lấy: cho ăn mỗi ngày, **đi chơi rồi mang đồ về**,
-   lớn theo giai đoạn. Bỏ bê **không chết** (Stardew: quên bát nước không phạt) — đúng điều cấm §4 của khung.
-5. **Khách ghé luân phiên** (ACNH đặc khách theo lịch tuần): một NPC mỗi ngày ở sân, một việc nhỏ → nhà thành nơi "có người tới".
-6. **Tiến độ học hiện thành cảnh** (Noun Town trả màu): từ đã thuộc biến thành thứ nhìn thấy ở nhà (tường từ, cây lớn, đèn sáng)
-   — khoe được, có lý do cảm xúc để ôn.
-7. **Đổi theo giờ / ngày / thời tiết** làm cùng một cảnh trông mới mỗi lần mở (đèn chiều, khói bếp sáng, mưa thì khỏi tưới —
-   摩尔 web).
+## 1. Nghiên cứu — nông trại ở các game (chỉ phần nông trại)
 
-## 2. Đề xuất — 15 ý + 1 ý kèm (C5), 3 nhóm
-Quy ước "Công": **S** ≤ 1 ngày (đặc tả + ít code, dùng lại khung có sẵn) · **M** 2–4 ngày (luật + code + HUD nhỏ) · **L** ≥ 1 tuần
-(model AI, hệ thống mới, nhiều màn). "Quy trình": theo CLAUDE.md — khu / công trình mới → **ảnh concept trước**; giao diện mới →
-**phiếu `/ui-apply phieu`**; vật nhỏ (đặt, chỉnh cỡ / màu) → miễn. Toạ độ chỉ là gợi ý, đo lại trên Canvas 3D.
+| Game | Chăn nuôi | Cây quả / ao | Chế biến / công trình | Bài học cho mình |
+|---|---|---|---|---|
+| **摩尔庄园 手游 2021** | nghề nông gồm trồng trọt, **câu cá, nuôi con vật nhỏ**; **chuồng (禽舍)** cho **trứng, sữa, len** — dân trong trấn thích các thứ này [XM-b] [TT] | câu cá ở hồ chân núi tuyết: phao động → **đợi rồi mới chạm** thì cá tốt hơn [XM-c] | nông sản dùng cho **đơn của dân, bán cho 花婶, làm món ở nhà hàng** [XM-b]; nông cụ lên cấp, **máy tưới / gieo / thu tự động** [XM-b] | con vật = sản phẩm mỗi ngày; nông sản có **nhiều chỗ dùng** chứ không chỉ bán |
+| **摩尔庄园 web 2008** | — | — | ngày mưa đất tự ẩm (vuon-mole.md) | việc nhỏ, nhịp ngày |
+| **Hay Day** | **chuồng gà 6 con**, trứng mỗi 20 phút, **gà cần thức ăn** mới đẻ tiếp; thức ăn gà làm từ **ngô + lúa mì** ở **máy nghiền thức ăn** [HD-w] | cây ăn quả, **hồ câu cá** (sửa bến rồi thả mồi) [HD-a] | chuỗi chế biến (máy nghiền, máy đường…) [HD-a]; tổ ong (quan sát chung) | **vòng khép**: trồng → nuôi → sản phẩm → chế biến → bán |
+| **Stardew Valley** | chuồng gà / chuồng gia súc; nhặt trứng, vắt sữa; cho ăn cỏ khô [SDV] | cây ăn quả ra quả mỗi ngày theo mùa; ao câu | **tổ ong** gần hoa cho mật; bù nhìn giữ quạ khỏi ăn cây; giếng / vòi tưới [SDV] | đồ nông trại quen mặt (bù nhìn, giếng, tổ ong) làm sân "ra chất nông trại" |
+| **Animal Crossing NH** | — | **cây quả bản địa, lắc cây rụng quả**, câu cá ở ao / sông | — | lắc cây là thao tác vui nhất, rẻ nhất |
 
-### (a) Không khí / bày sẵn — rẻ, làm ngay (không dạy từ trực tiếp; giữ người chơi ở lại và quay về)
+> Độ tin: 摩尔 2021 và Hay Day gà / thức ăn có nguồn (dưới); Stardew / ACNH là quy ước quen thuộc (đọc qua wiki các lượt trước,
+> không đọc lại lượt này); tổ ong Hay Day chưa có nguồn — quan sát chung.
 
-**A1. Sân bày sẵn khi mới cài** — 6–8 món đặt sẵn để ảnh đầu không trống: 2 đèn lồng cột hai bên sân trước, 2 chậu lan
-trước bậc, 1 trúc cảnh cạnh thùng thu mua, bàn trà dưới cụm tùng cánh tây, một hàng **hoa dại thấp** dọc mép lối (vật cảnh, không
-va chạm). Món trang trí đặt sẵn vẫn **nhấc vào túi được** (đề xuất) → người chơi sửa theo ý. *Cảm hứng*: Stardew hạt sẵn, ACNH
-hộp thư + cây sẵn. *Học*: không. *Công*: S (đổi R-NHA-3/R-NHA-4 "mới cài", thêm `STARTER_PLACED`; hoa dại = `/canh`).
-*Quy trình*: miễn concept (đặt vật có sẵn); concept kèm chỉ để duyệt bố cục.
+### Điều rút ra
+1. **Con vật là trái tim nông trại** (摩尔 禽舍, Hay Day, Stardew): mỗi ngày ghé nhặt trứng / lấy sữa = lý do quay về nhà.
+2. **Vòng khép với vườn**: thức ăn con vật lấy từ nông sản mình trồng (Hay Day gà ăn ngô + lúa) → luống có thêm ý nghĩa.
+3. **Một chỗ chế biến** làm nông sản đáng giá hơn (thóc → gạo).
+4. **Thao tác 1–2 bước**, không phạt nặng: con vật không ăn thì **chỉ ngừng cho sản phẩm**, không ốm / chết (khung §4).
+5. **Đồ nông trại nhìn là biết** (giếng, bù nhìn, giàn, tổ ong, rào thấp) là cách rẻ nhất lấp chỗ trống cho đúng chất.
 
-**A2. Sinh vật nhỏ** — ban ngày **bướm** quanh luống có cây (dùng lại `buom.ts`), **chim sẻ** nhảy trên cỏ hai cánh, lại gần thì
-bay vụt lên mái nhà; ban đêm **đom đóm** quanh đồi trúc; xa xa **đàn hạc** bay vòng biển mây (`fauna.flocks`). *Cảm hứng*: ACNH
-côn trùng / chim, Hay Day ong, sóc. *Học*: không (鸟 là HSK 3 — không gắn từ). *Công*: S–M (chim sẻ là mesh mới nhỏ, +1–3 draw
-call, mức đồ hoạ Thấp tắt). *Quy trình*: miễn.
+## 2. Đề xuất — 9 thành phần nông trại
+Quy ước "Công": **S** ≤ 1 ngày (đặc tả + ít code, khung có sẵn) · **M** 2–4 ngày (luật + code + HUD nhỏ) · **L** ≥ 1 tuần (model AI
+hoặc hệ thống mới). "Dựng": **code** = khối low-poly dựng bằng code như 13 vật trang trí; **AI** = model qua `/tai-nguyen`. Toạ độ là
+gợi ý, đo lại trên Canvas 3D. Từ vựng chỉ gắn khi **có trong HSK 1–2** của app (đã soát `web/src/zones/sach/hsk1.ts`, `hsk2.ts`):
+鸡蛋 鱼 苹果 水果 水 米饭 牛奶 西瓜 茶 菜 买 卖 吃 喝 — gắn nhẹ: tên sản phẩm hiện chữ Hán + pinyin + loa **trong kho / bảng bán**
+(nội dung học, hợp R-HUD-4), không biển chữ Hán trên công trình.
 
-**A3. Nhà theo giờ** — **khói bếp** mỏng từ góc mái sau 6–8 h và 17–19 h (bể hạt có sẵn); **cửa sổ sáng vàng** từ 18 h; đèn lồng
-cửa + đèn đặt sẵn sáng theo R-NGAY-3; buổi sáng có **sương mỏng** trên biển mây. *Cảm hứng*: ACNH đổi theo giờ, bếp nhà nông.
-*Học*: không. *Công*: S. *Quy trình*: miễn.
+| Mã góc ảnh | Ý | Đặt ở đâu | Người chơi làm gì | Ra gì | Từ | Công | Dựng |
+|---|---|---|---|---|---|---|---|
+| `chuong-ga` | **Chuồng gà** + sân gà rào tre thấp | cánh tây bắc, cạnh nhà ≈ (−13; −10), sân ≈ 7 × 5 m | (1) chạm máng → **rắc thóc** (lấy 1 Lúa trong kho); (2) sáng hôm sau chạm ổ rơm → **nhặt trứng** | 2–3 trứng / ngày (có cho ăn), 0 nếu không cho ăn — gà vẫn đi lại vui | 鸡蛋 | M | code (chuồng + 3–4 gà khối nhỏ đi lại) |
+| `cay-qua` | **Vườn cây quả**: táo, đào, cam (3 cây) | cánh tây nam ≈ (−13; 6), trước cụm tùng | chạm cây → nhân vật **lắc cây**, quả rụng → nhặt (tự vào kho) | mỗi cây 3 quả / ngày (giờ VN) | 苹果 水果 | S–M | code (biến thể cây chùm + quả khối) |
+| `to-ong` | **Tổ ong** (2 đõ gỗ trên kệ) | giữa cánh tây ≈ (−16; −2), giữa chuồng gà và cây quả, cạnh luống hoa cúc | chạm đõ → **lấy mật** (mỗi 2 ngày); ong bay quanh luống — có tổ ong thì **hoa cúc / cây quả chín nhanh hơn chút** | hũ mật (bán giá cao) | — | S | code (đõ khối + ong là hạt nhỏ) |
+| `bu-nhin` | **Bù nhìn** nón lá, áo vải | mép tây vườn rau ≈ (−8,3; 1) | món trang trí vườn: chạm → nó lắc lư, chim sẻ bay vụt lên; đổi áo / nón như món trang trí | không (không khí nông trại) | — | S | code |
+| `gieng-nuoc` | **Giếng nước** có gàu + guồng tre | cánh đông, cạnh góc đông bắc luống ≈ (9; −5) | chạm giếng → **múc nước** → bình tưới "đầy nước giếng": lượt tưới kế tiếp **tưới một lần cả hàng 3 luống** (kiểu bình đồng 摩尔) | tưới nhanh hơn (đỡ lặp tay) | 水 | S–M | code (đặc tả `well` đã có, đang tắt) |
+| `kho-thoc` | **Vựa thóc + cối giã gạo** (chày đạp chân) | cánh đông bắc, cạnh nhà ≈ (11; −11) | (1) bỏ Lúa vào cối; (2) chạm chày → nhân vật **đạp chày** vài nhịp → gạo; vựa thóc là chỗ chứa nhìn thấy (đống bao thóc to dần theo kho) | Gạo (bán ×2 giá Lúa); thóc nuôi gà | 米饭 (trong bảng bán) | M | code |
+| `ao-ca` | **Ao cá nhỏ** + bến gỗ câu cá, bờ đá, lá sen | **thềm đông** (đã phẳng) ≈ (18; 0), ao ∅ ≈ 7 m | cầm cần câu (thêm vào vòng công cụ / túi) → **quăng** → phao động → **chạm đúng lúc** (đợi phao chìm hẳn — như 摩尔) | cá to / nhỏ (bán); ~5 lượt có cá / ngày | 鱼 | M–L | code (nước dùng shader nước có sẵn) — **khu mới: bắt buộc chốt concept** |
+| `chuong-bo` | **Chuồng bò con** (một bò vàng nhỏ, máng cỏ) | cánh đông nam ≈ (12; 8), cạnh lối về Bến mây | (1) chạm máng → **cho cỏ khô** (cỏ dại nhổ ở vườn thành "cỏ khô" trong kho — nối R-VUON-11); (2) hôm sau chạm bò → **lấy sữa** (bình sữa) | 1 bình sữa / ngày (có cho ăn) | 牛奶 | L | **AI** (bò con, `/tai-nguyen`); chuồng code |
+| `gian-dua` | **Giàn tre dưa bầu** dạng cổng vòm qua lối | trên lối trục, đoạn nam ≈ z 8…11 (người chơi đi dưới giàn từ Bến mây vào) | 2 gốc dây mỗi bên chân giàn: gieo hạt bầu / dưa leo (hạt mới ở Tạp hoá) → dây leo lên giàn → **chạm quả treo** để hái | bầu hồ lô, dưa leo (bán) | — | M | code (giàn + dây + quả treo). Cột giàn **ngoài lối** (x ±1,8), cao ≥ 2,6 m để không chắn camera |
 
-**A4. Tiếng sân** — tự tổng hợp như R-AM-3/4 (không file, không mạng): **gió trúc** xào xạc gần đồi, chim hót sáng 6–9 h, dế đêm,
-**chuông gió** ở hiên nhà khi gió thổi. *Cảm hứng*: ACNH. *Học*: không. *Công*: S. *Quy trình*: miễn.
+Thêm kèm (không thành ý riêng): **hàng rào tre thấp** quanh chuồng gà / chuồng bò (đã có `fences`, kiểu `go`) — viền chứ không
+bao kín sân.
 
-**A5. Trời quanh đảo** — bật lại **mây trôi** (`floating.clouds.count` đang 0), 2–3 **đảo đá nhỏ lơ lửng** xa có cây (`floating.islands`),
-một **dải thác mây** chảy qua mép đảo phía đông. *Cảm hứng*: cảnh tiên hiệp "động phủ trên mây". *Học*: không. *Công*: S (đặc tả
-`/canh`). *Quy trình*: miễn (chỉnh cảnh), duyệt qua ảnh chụp Canvas 3D.
-
-### (b) Hoạt động ở nhà gắn từ vựng — mỗi việc ≤ 1 phút, chỉ **ôn từ đã học** (không mở bài học mới — R-VUNG-2; học bài mới vẫn ở thầy Trúc Lão)
-
-**B1. Thú nhỏ ở nhà (mèo hoặc chó con)** — lần đầu về nhà có một **mèo con** (猫) hoặc **chó con** (狗) ở sân, người chơi chọn một
-và **đặt tên láy Việt** (kiểu Đậu Đậu của Moly Việt — tên không chữ Hán). **Cho ăn = ôn hôm nay**: làm xong lượt ôn đúng hạn
-(R-ON-*) thì bát đầy, thú vui, ra đón ở chỗ xuất hiện; chưa ôn thì thú **ngủ gà gật** (không đói, không chết). Chạm thú → nó
-**"nói" một từ đã học** (phát âm R-AM-5) và hỏi 1 câu dạng *b* "Nghe — nghĩa là gì?". Mỗi ngày thú **đi dạo rồi tha về 1 món nhỏ**
-(hạt, phân, Văn tiền ít) — cơ chế 拉姆 "bỏ nhà đi chơi". Sau: lớn 3 giai đoạn theo **số từ đã thuộc**. *Cảm hứng*: 拉姆, Stardew
-pet, Hay Day chó mèo. *Học*: nghe + nghĩa từ đã học, móc cảm xúc cho thói quen ôn. *Công*: **L** (model AI qua `/tai-nguyen`
-+ động tác; luật mới R-THU-*; HUD đặt tên / chăm). *Quy trình*: **cần thiết kế nhân vật** (bộ ảnh 4 góc `/ui-design` → Tripo),
-góc thú ở sân (ổ rơm / bát) là vật nhỏ — miễn concept; HUD → phiếu `/ui-apply phieu`.
-
-**B2. Ao cá + câu cá ra từ** — một **ao nhỏ có cầu đá** ở cánh đông (thềm đông). Cần câu (nông cụ mới trên vòng công cụ / Túi đồ).
-Cá cắn câu → **giật** → thẻ 1 câu về **một từ đã học** (ưu tiên từ đến hạn): đúng → cá to, sai → cá nhỏ + hiện nghĩa đúng (như
-Măng chữ R-MANG-4). Cá bán ở thùng thu mua; mỗi ngày ~5 lượt có thưởng. 鱼 là từ HSK 1. *Cảm hứng*: ACNH cá + C.J., 摩尔 câu cá,
-phiếu cũ "Câu cá chữ" (Thiên Bậc, thời học bộ thủ — nay chuyển về nhà và đổi sang từ vựng). *Học*: đọc / nghe → nghĩa, lặp từ đến
-hạn. *Công*: M–L (trò mới, cá động, HUD). *Quy trình*: **ao là công trình / khu mới → ảnh concept trước** (góc đã soạn sẵn trong
-phiếu concept, mục "đợt 2 xem trước"); HUD → phiếu.
-
-**B3. Cây quả trước sân (táo)** — 2–3 **cây táo** ở hai cánh (vật cảnh cố định). Mỗi ngày (0 h giờ VN) mỗi cây ra 3 quả; chạm cây →
-nhân vật **lắc cây**, quả rơi; **1 quả "có khắc từ"** → thẻ 1 câu (dạng *a* hoặc *b*, từ đã học) — đúng được 2 quả, sai 1, như
-Măng chữ. Quả vào kho nông sản, bán ở thùng. 苹果 / 水果 là từ HSK 1. *Cảm hứng*: ACNH cây quả + lắc cây, R-MANG-4. *Học*: nghĩa /
-nghe từ đã học, 1–3 từ / ngày. *Công*: **S–M** (dùng lại thẻ Măng chữ, kho nông sản, thùng; cây = biến thể `cayChum` + quả khối).
-*Quy trình*: cây là vật nhỏ → miễn concept; không HUD mới (thẻ có sẵn).
-
-**B4. Hộp thư trước cửa — thư buổi sáng** — hộp thư gỗ cạnh lối ở sân trước; mỗi ngày **1 lá thư** từ một NPC trong dàn tên cổ
-phong (Măng bà bà, Đăng đại thúc…) hoặc từ thú nhỏ (khi có B1). Thư viết **tiếng Việt**, chèn **1–3 từ đã học** dạng chữ Hán +
-pinyin + nút loa (chạm từ → nghe + nghĩa); dòng cuối nhắc "Hôm nay có n từ đến hạn ôn" và **quà nhỏ** đính kèm (2 hạt, 1 phân,
-5 Văn tiền). Thư cũ lưu trong "hộp thư" để đọc lại. Thư soạn sẵn theo khuôn (chủ đề × từ đã học) — không cần mạng, không AI lúc
-chạy. *Cảm hứng*: ACNH thư sáng, Stardew thư, 摩尔 bản tin. *Học*: **đọc từ trong ngữ cảnh** + nghe, ưu tiên từ đến hạn. *Công*: M
-(nội dung khuôn thư, HUD thư, luật). *Quy trình*: hộp thư vật nhỏ → miễn concept; **HUD thư → phiếu `/ui-apply phieu`**.
-
-**B5. Khách ghé nhà theo lịch tuần** — mỗi ngày (trừ CN) một NPC đã có ở trấn / vùng **đứng ở sân** cả ngày, nhờ một việc dùng
-từ: "Cho ta 3 bó **菜**", "Mời ta chén **茶**" (pha trà ở bàn trà), "Ta tìm con **猫** đi lạc" (tìm quanh đảo). Xong → thưởng + câu
-cảm ơn có từ vừa dùng. NPC dùng model sẵn có, không thêm người mới. *Cảm hứng*: ACNH khách đặc biệt luân phiên, Hay Day xe
-khách mua hàng, 摩尔 NPC mua hàng mỗi ngày. *Học*: nhận mặt chữ / nghe từ trong yêu cầu, nối từ ↔ vật thật. *Công*: M–L (lịch,
-đơn hàng, thoại, NPC đi đứng ở nhà). *Quy trình*: miễn concept (đặt NPC); bảng đơn → phiếu.
-
-**B6. Thời tiết ở nhà mỗi ngày** — mỗi ngày một kiểu **晴 nắng / 阴 âm u / 下雨 mưa / 雪 tuyết (mùa đông)**, định sẵn bằng hàm băm
-ngày (Flutter / TS cùng kết quả, như sâu / cỏ R-VUON-10). Mưa → **luống tự ẩm, khỏi tưới** (摩尔 web). Lần đầu vào nhà trong
-ngày: một dòng nhỏ "Hôm nay: 下雨 xià yǔ · mưa" + loa. *Cảm hứng*: ACNH thời tiết, 摩尔 web mưa khỏi tưới. *Học*: ~6 từ thời tiết
-(天气 晴 阴 下雨 雪 冷 热), lặp tự nhiên mỗi ngày. *Công*: M (hạt mưa / tuyết một `Points`, đổi màu trời; đo fps — quy tắc 4).
-*Quy trình*: miễn concept; dòng báo → phiếu nhỏ.
-
-### (c) Gian trong (nội thất)
-
-**C1. Bộ đồ khởi đầu bày sẵn** — gian trong mới cài đã có: **án đọc + đôn**, **kệ sách nhỏ**, **sạp ngủ** (giường gỗ thấp có chăn
-— vật mới), **thảm**, **tranh chữ** (vật khởi đầu), **bình trà trên bàn thấp** (vật mới). Nhấc / dời được như món trang trí.
-Thêm vào danh mục vài vật trong nhà còn thiếu (sạp ngủ, tủ áo, bàn thấp + bộ trà, chậu cây trong nhà, thảm) để Tạp hoá có thứ
-mua cho gian trong (hiện chỉ 4 vật trong nhà). *Cảm hứng*: 摩尔 小屋 đồ cơ bản, Stardew nhà có giường + TV + bàn. *Học*: không
-trực tiếp (dọn đường cho C2, C3). *Công*: M (6 vật khối low-poly, giá, luật). *Quy trình*: vật mới dạng khối như 13 vật cũ —
-miễn concept; ảnh gian trong trong phiếu concept chỉ để duyệt bố cục / màu.
-
-**C2. Góc học + "Tường từ đã thuộc"** — ngồi **án đọc** ở nhà → cuộn (R-ON-8) có ô "Ôn hôm nay" (đã có luật, chỉ cần án đọc ở nhà
-là chỗ ngồi được) + **sổ từ của ta**. Trên tường cạnh án đọc là **tường từ**: mỗi từ đạt "đã thuộc" (bậc ≥ 30 ngày) thành **một
-tấm thẻ gỗ nhỏ** treo lên tường (chữ Hán là nội dung học — hợp R-HUD-4), chạm thẻ → nghe + nghĩa. Mốc 10 / 50 / 100 / 304 từ
-→ tường đổi khung (gỗ → son → vàng). *Cảm hứng*: Noun Town trả màu, ACNH bảo tàng đầy dần, khoe nhà. *Học*: ôn đúng hạn + nhìn lại
-từ đã thuộc, động lực "lấp đầy tường". *Công*: M (tường thẻ = 1 InstancedMesh + chữ trên atlas; ngồi án đọc ở gian trong).
-*Quy trình*: miễn concept (vật trong nhà); sổ từ của ta → phiếu (nếu chưa có màn tương tự).
-
-**C3. Đồ trong nhà có tên tiếng Trung (kiểu Noun Town)** — chạm một đồ có "từ" (bàn 桌子, ghế / đôn 椅子, chén 杯子, trà 茶, sách
-书, cửa 门, mèo 猫…) → thẻ nhỏ: chữ + pinyin + nghĩa + loa. **Chỉ hiện chữ khi từ đã học**; chưa học → thẻ ghi "Học ở thầy Trúc Lão"
-(không mở bài — giữ R-VUNG-2). *Cảm hứng*: Noun Town (từ gắn vật thật). *Học*: nối từ ↔ vật, nghe. *Công*: S–M (bảng vật → mã từ,
-thẻ). *Quy trình*: thẻ → phiếu nhỏ; **cần người dùng cho phép** chạm cảnh hiện thẻ từ (R-VUNG-2 hiện chỉ cấm mở bài / lượt ôn —
-thẻ xem từ không phải lượt ôn, nhưng nên ghi rõ vào sổ).
-
-**C4. Bếp nhỏ nấu món từ nông sản** — góc bếp (lò đất + nồi) trong gian trong hoặc hiên sau; nấu **米饭** (từ lúa), **菜** (cải),
-**茶** (lá chè từ Đồi Chè) theo công thức; món ăn cho thú nhỏ (B1) hoặc đãi khách (B5), hoặc bán giá cao hơn nông sản. *Cảm hứng*:
-摩尔 nhà hàng / nghề đầu bếp, Stardew nấu ăn. *Học*: tên món + động từ 吃 喝 做. *Công*: L (công thức, chế biến theo giờ, HUD). *Quy
-trình*: bếp là vật mới (miễn concept nếu trong gian trong), HUD → phiếu.
-
-**C5. Chuông gió / cửa sổ nhìn ra vườn** *(nhỏ, đi kèm C1)* — cửa sổ gian trong thấy **ảnh mờ của vườn và trời theo giờ** (đêm thấy trăng,
-mưa thấy giọt) thay giấy trơn → gian trong không "hộp kín". *Học*: không. *Công*: S. *Quy trình*: miễn.
+### Vòng chơi sau khi có nông trại (≈ 3–5 phút, đúng "nhẹ nhàng")
+Về nhà → nhặt trứng, lấy sữa → lắc 3 cây quả → chăm vườn (tưới bằng nước giếng một lần cả hàng) → thu Lúa → giã gạo / rắc thóc cho
+gà, cỏ khô cho bò → (tuỳ) câu vài con cá → bỏ hết vào thùng thu mua. Mọi thứ **không hỏng, không chết** khi bỏ mặc; chỉ ngừng ra
+sản phẩm (đúng khung §4 — không chuỗi ngày mất thưởng).
 
 ## 3. Chấm điểm (khung `.claude/skills/y-tuong/references/khung.md` §2 — Học ×2, tối đa 21)
+| Ý | Học (×2) | Quay lại | Hợp thế giới | Giai đoạn | Chi phí | An toàn | **Tổng** |
+|---|---|---|---|---|---|---|---|
+| chuong-ga | 1 → 2 | 3 | 3 | 3 | 2 | 3 | **16** |
+| cay-qua | 1 → 2 | 3 | 3 | 3 | 3 | 3 | **17** |
+| to-ong | 0 | 2 | 3 | 3 | 3 | 3 | **14** |
+| bu-nhin | 0 | 0 | 3 | 3 | 3 | 3 | **12** |
+| gieng-nuoc | 1 → 2 | 1 | 3 | 3 | 3 | 3 | **15** |
+| kho-thoc | 1 → 2 | 2 | 3 | 3 | 2 | 3 | **15** |
+| ao-ca | 1 → 2 | 3 | 3 | 3 | 1 | 3 | **15** |
+| chuong-bo | 1 → 2 | 3 | 2 | 3 | 1 | 3 | **14** |
+| gian-dua | 0 | 2 | 3 | 3 | 2 | 3 | **13** |
 
-| Ý | Học (×2) | Quay lại | Hợp thế giới | Giai đoạn | Chi phí | An toàn | **Tổng** | Ghi chú |
-|---|---|---|---|---|---|---|---|---|
-| A1 Sân bày sẵn | 0 | 1 | 3 | 3 | 3 | 3 | **13** | không dạy từ — nền cho mọi thứ khác, ảnh đầu hết trống |
-| A2 Sinh vật | 0 | 1 | 3 | 3 | 3 | 3 | **13** | dùng lại bướm / hạc |
-| A3 Nhà theo giờ | 0 | 2 | 3 | 3 | 3 | 3 | **14** | lý do ghé buổi tối |
-| A4 Tiếng sân | 0 | 1 | 3 | 3 | 3 | 3 | **13** | |
-| A5 Trời quanh đảo | 0 | 1 | 3 | 3 | 3 | 3 | **13** | chỉ đặc tả |
-| B1 Thú nhỏ | 3 → 6 | 3 | 2 | 3 | 1 | 3 | **18** | móc mạnh nhất, đắt nhất (model) |
-| B2 Ao cá câu từ | 2 → 4 | 2 | 3 | 3 | 1 | 3 | **16** | cần concept |
-| B3 Cây táo | 2 → 4 | 3 | 3 | 3 | 2 | 3 | **18** | dùng lại thẻ Măng chữ |
-| B4 Thư buổi sáng | 3 → 6 | 3 | 3 | 3 | 2 | 3 | **20** | đọc từ trong ngữ cảnh + nhắc ôn |
-| B5 Khách ghé | 2 → 4 | 3 | 3 | 3 | 1 | 3 | **17** | |
-| B6 Thời tiết | 2 → 4 | 2 | 3 | 3 | 1 | 3 | **16** | đo fps mưa / tuyết |
-| C1 Nội thất khởi đầu | 0 | 1 | 3 | 3 | 2 | 3 | **12** | nền cho C2–C4 |
-| C2 Góc học + tường từ | 3 → 6 | 2 | 3 | 3 | 2 | 3 | **19** | tiến độ học thành cảnh |
-| C3 Đồ có tên tiếng Trung | 2 → 4 | 1 | 2 | 3 | 2 | 3 | **15** | cần quyết R-VUNG-2 |
-| C4 Bếp | 2 → 4 | 2 | 3 | 3 | 1 | 3 | **16** | sau B1 / B5 |
-| C5 Cửa sổ nhìn vườn | 0 | 0 | 3 | 3 | 3 | 3 | **12** | đi kèm C1 |
-
-Nhóm (a) điểm thấp theo thang (không dạy từ) nhưng **rẻ và đúng chỗ người dùng than** ("trống trải") — khung cho phép ý không dạy
-từ nếu nó giữ người chơi để học chỗ khác. Không ý nào chạm điều cấm (§4): thú không chết, không trả tiền thật, không chuỗi ngày
-mất thưởng, tên thú / NPC không chữ Hán.
+Học thấp theo thang (nông trại không phải chỗ học chính — học vẫn ở thầy Trúc Lão); điểm học 1 là phần **tên sản phẩm có chữ Hán +
+loa** trong kho / bảng bán. Nếu sau này muốn mạnh hơn: con cá / quả "có khắc từ" ra thẻ 1 câu ôn (mẫu Măng chữ R-MANG-4) — để quyết
+sau, không làm trong đợt này.
 
 ## 4. Đề xuất thứ tự
+- **Đợt 1 — code dựng được, không model AI** (≈ 1 tuần): `cay-qua`, `chuong-ga`, `kho-thoc` (vòng Lúa → gạo / thóc → trứng), `gieng-nuoc`,
+  `bu-nhin`. Lấp **cả hai cánh** (tây: gà + cây quả + bù nhìn; đông: giếng + vựa) ngay.
+- **Đợt 2**: `ao-ca` (sau khi chốt concept — khu mới), `to-ong`, `gian-dua`.
+- **Đợt 3**: `chuong-bo` (cần model bò con: `/ui-design` bộ ảnh 4 góc → `/tai-nguyen`).
+- Ngân sách: mỗi ý +1–3 draw call (gà / ong instanced), mức đồ hoạ Thấp tắt con vật đi lại / ong. Đo fps trước / sau (quy tắc 4).
 
-### Đợt 1 — rẻ, thấy khác ngay (≈ 1 tuần, không cần model AI)
-1. **"Gói sân sống"** = A1 + A2 + A3 + A4 + A5 (một việc `/canh` + lead nhỏ): ảnh đầu tiên có đồ, hoa, bướm, chim, khói, tiếng,
-   mây. Đổi luật R-NHA-3 / R-NHA-4 (đồ đặt sẵn), thêm R-NGAY cho khói / cửa sổ, R-AM cho tiếng sân.
-2. **B3 Cây táo** — việc ôn đầu tiên ở nhà, dùng lại thẻ Măng chữ; 2–3 cây cũng làm hai cánh cỏ đỡ trống.
-3. **B4 Hộp thư buổi sáng** — điểm cao nhất (20), mở vòng "checklist sáng" ở nhà; cần phiếu HUD trước.
-4. **C1 + C5 + C2 (phần ngồi án đọc)** — gian trong không còn trống, ngồi án đọc ôn được; tường từ có thể sang đợt 2 nếu nặng.
+## 5. Quy trình
+- **Ảnh concept trước** (quyết định 0006 — công trình mới ở nhà): phiếu `docs/phieu_thiet_ke/2026-11-18-concept-nong-trai-nha.md`,
+  mỗi ý một góc + góc `tong` toàn đảo. Người dùng chọn ý nào làm và chốt ảnh → mới sửa sổ luật / đặc tả / code.
+- Luật dự kiến (sổ trước → `/dong-bo-quy-tac`): nhóm mới **R-NONG-*** (chuồng gà, cây quả, tổ ong, giếng, cối giã, ao cá, chuồng
+  bò, giàn) + sửa R-VUON-7 (bán thêm trứng / quả / gạo / cá / sữa / mật), R-VUON-9 (hạt bầu / dưa leo, cần câu), R-VUON-11 (cỏ nhổ →
+  cỏ khô), R-TUI-1 (tab Nông sản thêm loại mới), R-NHA-7 (công trình nông trại chiếm chỗ — không đặt đồ trang trí đè lên).
+- Câu hỏi cho người dùng: (1) chọn ý nào (sau khi xem ảnh)? (2) công trình nông trại **đặt cố định** (khuyên — đơn giản) hay
+  **mua ở Tạp hoá rồi tự đặt** như đồ trang trí (giống 摩尔 / Hay Day, linh hoạt hơn, công thêm M)? (3) con vật nào: gà + bò con
+  (khuyên) hay vịt / dê?
 
-Vòng sáng sau đợt 1 (≈ 3–5 phút, đúng "nhẹ nhàng"): về nhà → đọc thư (quà + nhắc ôn) → lắc cây táo (1 thẻ từ) → chăm vườn →
-vào nhà ngồi án đọc ôn hôm nay.
-
-### Đợt 2 — móc dài hạn (cần thiết kế / model / concept)
-5. **B1 Thú nhỏ** (bắt đầu thiết kế nhân vật song song với đợt 1 vì model lâu nhất).
-6. **B2 Ao cá câu từ** (sau khi chốt ảnh concept ao).
-7. **B5 Khách ghé** + **C4 Bếp** (hai cái nối nhau: nấu món đãi khách / cho thú ăn).
-8. **B6 Thời tiết**, **C2 tường từ** (nếu chưa làm), **C3** (nếu người dùng cho phép).
-
-## 5. Quy trình cho đợt 1
-- Ảnh concept: theo quy định chỉ bắt buộc cho khu / công trình mới — đợt 1 không có (đồ đặt sẵn, cây, hộp thư là vật nhỏ). Đã soạn
-  sẵn **phiếu concept không bắt buộc** `docs/phieu_thiet_ke/2026-11-18-concept-nha-song-dong.md` (sân ban ngày / chiều tối + gian
-  trong + xem trước ao cá & góc thú đợt 2) để người dùng **duyệt không khí trước khi dựng**; người dùng có thể bỏ qua.
-- HUD mới: thư buổi sáng (B4) → `/ui-apply phieu thư buổi sáng ở Nhà của ta`.
-- Luật cần thêm / sửa (sổ trước, rồi `/dong-bo-quy-tac`): R-NHA-3 (mới cài có đồ đặt sẵn), R-NHA-4 (vật mới, vật khởi đầu), mới
-  R-NHA-8 (cây táo: ra quả, lắc, thẻ từ), R-NHA-9 (hộp thư: một thư / ngày giờ VN, quà, lưu), R-NGAY-7 (khói bếp, cửa sổ), R-AM-6
-  (tiếng sân).
-- Ngân sách: A2 + A3 + B3 dự kiến **+4–6 draw call** ở nhà (chim 1, đom đóm 1, khói 1, quả 1, hoa 1–2); mức Thấp tắt chim / đom đóm
-  / khói. Đo fps trước / sau (quy tắc 4).
-- Chờ giai đoạn mạng: thư **từ bạn bè thật**, khách là **bạn thật ghé nhà**, tặng quà — làm bản NPC trước.
-
-## 6. Câu hỏi cho người dùng
-1. **Đồ bày sẵn** ở sân / gian trong: là **món trang trí nhấc được** (khuyên — người chơi tự sửa) hay **cảnh cố định**?
-2. **Thú nhỏ** (đợt 2): **mèo / chó con** thật (có từ 猫 狗 trong HSK 1, dễ thương, dễ hiểu) hay **linh thú cổ phong** tự thiết kế
-   (hợp tiên hiệp hơn nhưng không có từ HSK)? Khuyên: mèo hoặc chó, cho chọn một.
-3. **Thư buổi sáng**: chèn từ đã học vào câu tiếng Việt (khuyên, hợp người mới) hay viết **câu tiếng Trung ngắn** HSK 1 có dịch?
-4. **Ao cá**: đặt ở nhà (khuyên — thay phiếu cũ "Câu cá chữ" Thiên Bậc) hay để ở trấn?
-5. **C3**: cho phép **chạm đồ trong nhà hiện thẻ từ** (chỉ xem, không phải lượt ôn) không?
-6. Có muốn **tạo ảnh concept** trước khi làm đợt 1 không, hay làm thẳng (đợt 1 được miễn)?
+## Đã loại khỏi phạm vi (người dùng thu hẹp 2026-11-18 — giữ để tham khảo sau)
+Các ý của lượt trước **không thuộc nông trại**, không làm trong việc này: A1 sân bày sẵn đèn lồng / chậu lan / bàn trà · A2 bướm,
+chim sẻ, đom đóm · A3 khói bếp, cửa sổ sáng theo giờ · A4 tiếng sân · A5 mây trôi / đảo đá xa · B1 thú cưng mèo / chó con · B4 hộp
+thư buổi sáng · B5 khách NPC ghé nhà · B6 thời tiết mỗi ngày · C1 nội thất khởi đầu · C2 góc học + tường từ · C3 đồ trong nhà có tên
+tiếng Trung · C4 bếp nấu món · C5 cửa sổ nhìn vườn. Hai ý cũ **đã chuyển vào nông trại**: B2 ao cá → `ao-ca`, B3 cây táo → `cay-qua`.
+Nghiên cứu lượt trước về "nhà sống" (ACNH checklist sáng, Noun Town, 拉姆) còn trong lịch sử git của file này (commit trước
+V-114 lượt 2).
 
 ## Bước kế
-- Chọn đợt 1 → `/lead Nhà sống động đợt 1: gói sân sống + cây táo + hộp thư + gian trong khởi đầu (phiếu docs/y_tuong/2026-11-18-nha-song-dong.md)`.
-- HUD thư → `/ui-apply phieu thư buổi sáng`.
-- (Tuỳ) ảnh concept → `/ui-design` với `docs/phieu_thiet_ke/2026-11-18-concept-nha-song-dong.md`.
-- Thú nhỏ → `/ui-design` bộ ảnh 4 góc → `/tai-nguyen`.
+- Phiên chính tạo ảnh: `bash .claude/skills/ui-design/scripts/gemini-anh.sh tao docs/phieu_thiet_ke/2026-11-18-concept-nong-trai-nha.md`.
+- Người dùng chọn ý + chốt ảnh → `/lead Nông trại Nhà của ta đợt 1: … (phiếu docs/y_tuong/2026-11-18-nha-song-dong.md)`.
 
 ## Nguồn
-- [MG] 摩尔庄园 — 萌娘百科 https://mzh.moegirl.org.cn/%E6%91%A9%E5%B0%94%E5%BA%84%E5%9B%AD (拉姆 ba giai đoạn, học ở 拉姆学院, bỏ bê có thể chết — bản gốc;
-  拉姆 bỏ nhà đi chơi rồi mang đồ về — đọc qua đoạn trích tìm kiếm)
-- [XM-a] 小米游戏 摩尔庄园 https://game.xiaomi.com/viewpoint/1359077112_1627347196516_9 (độ no 拉姆, chuồng gà — đoạn trích)
-- [XM-b] 摩尔庄园手游 农夫职业 https://game.xiaomi.com/viewpoint/1359077112_1635909862400_13 (câu cá, chăn nuôi thuộc nghề nông)
-- [TT] TapTap 摩尔庄园 https://www.taptap.cn/app/78344 (gà / bò / cừu → trứng / sữa / len; 家装设计)
-- [NL] Nintendo Life — ACNH daily tasks https://www.nintendolife.com/guides/animal-crossing-new-horizons-daily-tasks-10-reasons-to-check-in-on-your-island-every-day (403 — đọc qua tóm tắt tìm kiếm)
-- [PG] PocketGamer — 10 things to do every day in ACNH https://www.pocketgamer.com/animal-crossing-new-horizons/10-things-to-do-every-day-in-animal-crossing-new-horizons/
-- [NP-sc] Nookipedia — Special character https://nookipedia.com/wiki/Special_character (một khách đặc biệt mỗi ngày, lịch đặt đầu tuần, khách bỏ tuần trước được ưu tiên)
-- [SDV] Stardew Valley Getting Started https://www.stardewvalleywiki.com/Getting_Started ; Gamerant first week https://gamerant.com/stardew-valley-beginner-guide-first-week/ (15 hạt củ cải sẵn, thú ngày 5, bát nước quên không phạt)
-- [NT] Noun Town — Chinese https://noun.town/language-learning-game/chinese/ (thị trấn đen trắng, mỗi từ học trả màu; ôn lặp; luyện nói)
-- Hay Day: quan sát chung (chó / mèo, xe khách mua hàng) — độ tin vừa, chưa đọc nguồn trong lượt này; bố cục Hay Day xem `nha-vuon-bo-cuc.md`.
+- [XM-b] 摩尔庄园手游 农夫职业全面介绍 https://game.xiaomi.com/viewpoint/1359077112_1635909862400_13 (种田、钓鱼、养殖小动物; 禽舍: 蛋、牛奶、羊毛;
+  nông sản cho đơn dân / 花婶 / nhà hàng; máy tưới / gieo / thu tự động)
+- [XM-c] 摩尔庄园手游 新玩家需要注意哪些细节 https://game.xiaomi.com/viewpoint/1359077112_1635819527649_13 (câu cá: phao động đợi rồi mới chạm)
+- [TT] TapTap 摩尔庄园 https://www.taptap.cn/app/78344 (gà / bò / cừu → trứng / sữa / len)
+- [HD-w] Hay Day Wiki — Chicken https://hayday.fandom.com/wiki/Chicken (chuồng 6 gà, trứng 20 phút, cần thức ăn; thức ăn gà = ngô + lúa mì)
+- [HD-a] Hay Day — App Store https://apps.apple.com/gb/app/hay-day/id506627515 (hồ câu cá sửa bến, máy nghiền thức ăn, máy đường)
+- [SDV] Stardew Valley Wiki https://www.stardewvalleywiki.com/ (chuồng, tổ ong, bù nhìn, cây ăn quả — quy ước chung, đọc lượt trước)

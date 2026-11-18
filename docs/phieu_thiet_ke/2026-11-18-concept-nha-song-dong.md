@@ -1,8 +1,7 @@
 # Phiếu: Ảnh concept Nhà sống động (Nhà của ta — `nha-ta` + gian trong `nha-ta-trong`)
 
-- Trạng thái: **nháp — chờ người dùng quyết có tạo ảnh không** (đợt 1 được miễn concept theo quyết định 0006 vì chỉ thêm vật nhỏ;
-  phiếu này để duyệt **không khí** trước khi dựng, và xem trước ao cá + góc thú của đợt 2 — ao là khu mới, **bắt buộc** concept
-  trước khi làm B2).
+- Trạng thái: **bỏ (thay bằng 2026-11-18-concept-nong-trai-nha)** — người dùng thu hẹp phạm vi 2026-11-18: chỉ nông trại ngoài
+  sân; phiếu mới `docs/phieu_thiet_ke/2026-11-18-concept-nong-trai-nha.md`. Không tạo ảnh từ phiếu này.
 - Việc: V-20261118-114. Phiếu ý tưởng: `docs/y_tuong/2026-11-18-nha-song-dong.md` (ý A1–A5, B1–B4, C1–C2, C5).
 - Ảnh đính kèm Gemini (giữ phong cách + bố cục "Trục giữa" đã chốt V-82): `design/screens/Canh-nha-ta-truc-giua-tren.png`,
   `design/screens/Canh-nha-ta-truc-giua-vao.png`; gian trong: `design/screens/Canh-nha-ta-trong.png`.
