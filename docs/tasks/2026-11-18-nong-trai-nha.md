@@ -1,7 +1,7 @@
 # Nông trại ở Nhà của ta (V-20261118-114 — phần code)
 - Yêu cầu: "thêm nông trại ở Nhà của ta: chuồng gà, ao cá + bến câu, chuồng bò con, giàn bầu bí — đặt sẵn cố định đúng chỗ như ảnh"
   (thiết kế `design/CHANGELOG.md` 2026-11-18.11, ý tưởng `docs/y_tuong/2026-11-18-nha-song-dong.md`, ảnh `design/concept/nong-trai-nha/`).
-- Loại: thêm · Cỡ: lớn · Trạng thái: đang làm (phạm vi đã duyệt — phiên chính giao, không hỏi lại)
+- Loại: thêm · Cỡ: lớn · Trạng thái: xong (chờ gộp + thử máy thật)
 
 ## Phạm vi
 **Sẽ sửa / thêm**
@@ -33,15 +33,15 @@
 - Không cần khung HUD mới: câu cá dùng nút nổi + phao trong cảnh → không soạn phiếu.
 
 ## Nhiệm vụ
-- [ ] 1. Sổ luật R-NONG-* + sửa luật chạm → `/dong-bo-quy-tac` → `--mark-synced`
-- [ ] 2. Cầu nối `docs/bridge.md` (`getNong`, `nongAct`, `gardenAct` weed)
-- [ ] 3. Test đỏ: `zones/nong.test.ts`, `app/test/rules/nong_test.dart`
-- [ ] 4. Luật Dart `nong.dart` + lưu + sự kiện + ghép `main.dart`
-- [ ] 5. Luật TS `zones/nong.ts` + ví thử
-- [ ] 6. Cảnh: đặc tả + công trình + vật động; `nha-ta.json`; `scene:check`; draw call trước / sau
-- [ ] 7. Ghép `nongTrai.ts` + HUD (nút nổi, tấm báo, bảng kho, túi đồ)
-- [ ] 8. Ảnh Canvas 3D `design/screens/Canh-nha-ta-nong-trai-*.png`, `docs/thiet_ke_da_ap.md`
-- [ ] 9. Kiểm tra cuối + commit
+- [x] 1. Sổ luật R-NONG-* + sửa luật chạm → `/dong-bo-quy-tac` → `--mark-synced`
+- [x] 2. Cầu nối `docs/bridge.md` (`getNong`, `nongAct`, `gardenAct` weed)
+- [x] 3. Test đỏ: `zones/nong.test.ts`, `app/test/rules/nong_test.dart`
+- [x] 4. Luật Dart `nong.dart` + lưu + sự kiện + ghép `main.dart`
+- [x] 5. Luật TS `zones/nong.ts` + ví thử
+- [x] 6. Cảnh: đặc tả + công trình + vật động; `nha-ta.json`; `scene:check`; draw call trước / sau
+- [x] 7. Ghép `nongTrai.ts` + HUD (nút nổi, tấm báo, bảng kho, túi đồ)
+- [x] 8. Ảnh Canvas 3D `design/screens/Canh-nha-ta-nong-trai-*.png`, `docs/thiet_ke_da_ap.md`
+- [x] 9. Kiểm tra cuối + commit
 
 ## Kiểm tra cuối
 dart tool/check.dart --changed · cd web && npx tsc --noEmit && npm test && npm run build && npm run scene:check ·
