@@ -26,7 +26,7 @@ Map<String, Object?> _item(String han) => {
 void main() {
   test('openReview: từ + 2 câu theo dạng (R-ON-2, R-TU-2); mục sai dạng bỏ qua; rỗng → null', () {
     final r = OpenReviewRequest.parse([
-      {'type': 'openReview', 'payload': {'items': [_item('你'), {'word': {'id': 1}}], 'region': 'Trúc Lâm'}},
+      {'type': 'openReview', 'payload': {'items': [_item('你'), {'word': {'id': 1}}], 'region': 'Thung Trúc Gió Hát'}},
     ]);
     expect(r!.items, hasLength(1));
     expect(r.items.single.word.han, '你');
@@ -36,7 +36,7 @@ void main() {
     expect(qs.map((q) => q.kind), ['chu-nghia', 'nghia-chu']);
     expect(qs[1].optionsHan, isTrue);
     expect(qs[0].isPinyin, isFalse);
-    expect(r.region, 'Trúc Lâm');
+    expect(r.region, 'Thung Trúc Gió Hát');
     expect(OpenReviewRequest.parse([{'type': 'openReview', 'payload': {'items': []}}]), isNull);
     expect(OpenReviewRequest.parse([{'type': 'openDaily', 'payload': {'items': [_item('你')]}}]), isNull);
   });
@@ -75,7 +75,7 @@ void main() {
           'lesson': {'id': 'bai-01', 'title': 'Chào hỏi', 'index': 1, 'total': 50},
           'words': [_word('你'), _word('我')],
           'learned': false,
-          'region': 'Trúc Lâm',
+          'region': 'Thung Trúc Gió Hát',
         },
       },
     ]);

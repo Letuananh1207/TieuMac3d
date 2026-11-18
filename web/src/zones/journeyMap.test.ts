@@ -51,7 +51,7 @@ describe('bố cục bản đồ (R-HANH-2, V-54)', () => {
     expect(Math.hypot(nha.x - tran.x, nha.y - tran.y)).toBeLessThan(400);
   });
 
-  it('R-HANH-2: Trúc Lâm là vùng gần trấn nhất', () => {
+  it('R-HANH-2: Thung Trúc Gió Hát là vùng gần trấn nhất', () => {
     const tran = by('van-uyen');
     const d = (p: MapPlace): number => Math.hypot(p.x - tran.x, p.y - tran.y);
     const regions = JOURNEY_MAP.places.filter((p) => p.id !== 'van-uyen' && p.id !== 'nha-ta');
@@ -71,12 +71,12 @@ describe('bố cục bản đồ (R-HANH-2, V-54)', () => {
 
 describe('tên vùng một nguồn (R-HANH-1, V-50)', () => {
   it('R-HANH-1: placeName đọc ten của ban-do.json; mã cảnh tong-mon = Khởi Nguyên Trấn; mã lạ trả lại mã', () => {
-    expect(placeName('rung-truc')).toBe('Trúc Lâm');
-    expect(placeName('giang-nam')).toBe('Yên Vũ Lâu');
-    expect(placeName('bong-lai')).toBe('Bồng Lai Đảo');
-    expect(placeName('truong-thanh')).toBe('Nhạn Môn Quan');
-    expect(placeName('tu-cam-thanh')).toBe('Tử Cấm Thành');
-    expect(placeName('to-lua')).toBe('Đôn Hoàng Lộ');
+    expect(placeName('rung-truc')).toBe('Thung Trúc Gió Hát');
+    expect(placeName('giang-nam')).toBe('Chợ Đêm Đèn Hoa');
+    expect(placeName('bong-lai')).toBe('Cung Ngọc Đáy Biển');
+    expect(placeName('truong-thanh')).toBe('Đỉnh Hạc Bay');
+    expect(placeName('tu-cam-thanh')).toBe('Rừng Nấm Tiên');
+    expect(placeName('to-lua')).toBe('Thành Cát Ngủ Quên');
     expect(placeName('tong-mon')).toBe('Khởi Nguyên Trấn');
     expect(placeName('khong-co')).toBe('khong-co');
   });
@@ -87,6 +87,6 @@ describe('tên vùng một nguồn (R-HANH-1, V-50)', () => {
     const { DIALOGS } = await import('./dialogs');
     const all = JSON.stringify([STUDY_GUIDE, gameGuide('dau-chu'), DIALOGS]);
     for (const old of ['Rừng trúc', 'Giang Nam', 'Con đường tơ lụa']) expect(all).not.toContain(old);
-    expect(all).toContain('Trúc Lâm');
+    expect(all).toContain('Thung Trúc Gió Hát');
   });
 });

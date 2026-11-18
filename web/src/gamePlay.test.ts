@@ -191,7 +191,7 @@ describe('Khu giao lưu — Ngũ Tử Kỳ', () => {
 });
 
 describe('Khu giao lưu — Đấu chữ', () => {
-  it('R-DAU-1: chưa học từ nào → Mặc Ông bảo tới Trúc Lâm, lựa chọn "Vâng, cháu đi đây (rời bàn)" → đứng dậy', () => {
+  it('R-DAU-1: chưa học từ nào → Mặc Ông bảo tới Thung Trúc Gió Hát, lựa chọn "Vâng, cháu đi đây (rời bàn)" → đứng dậy', () => {
     const { game, said, dau, player } = setup(-22, 48);
     expect(game.trySit()).toBe(true);
     expect(last(said)).toMatchObject({ npc: 'su-phu', text: GAME_LINES.dauChuaHoc, choice: 'Vâng, cháu đi đây (rời bàn)' });

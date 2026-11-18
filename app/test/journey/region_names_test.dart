@@ -22,4 +22,23 @@ void main() {
     expect(firstRegion, places['rung-truc']);
     expect(firstRegion, regionNames['rung-truc']);
   });
+
+  test('R-HANH-1: chuỗi trong app/lib không còn tên vùng cũ (thế giới bộ 2, V-107)', () {
+    const old = ['Trúc Lâm', 'Yên Vũ Lâu', 'Bồng Lai Đảo', 'Nhạn Môn Quan', 'Tử Cấm Thành', 'Đôn Hoàng Lộ'];
+    final bad = <String>[];
+    for (final f in Directory('lib').listSync(recursive: true).whereType<File>().where((f) => f.path.endsWith('.dart'))) {
+      for (final line in f.readAsLinesSync()) {
+        final code = line.trimLeft();
+        if (code.startsWith('//')) continue; // comment, doc comment
+        final cut = code.indexOf(' //');
+        final text = cut < 0 ? code : code.substring(0, cut);
+        for (final o in old) {
+          if (text.contains(o)) bad.add('${f.path}: $o');
+        }
+      }
+    }
+    expect(bad, isEmpty);
+    expect(places['rung-truc'], 'Thung Trúc Gió Hát');
+    expect(places['truong-thanh'], 'Đỉnh Hạc Bay');
+  });
 }

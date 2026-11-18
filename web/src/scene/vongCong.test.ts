@@ -120,12 +120,12 @@ describe('chỗ xuất phát luôn ở cổng trấn (`player.arriveAtStart`, V-
   });
 });
 
-describe('cặp cổng trấn ↔ Trúc Lâm (V-57)', () => {
+describe('cặp cổng trấn ↔ Thung Trúc Gió Hát (V-57)', () => {
   const town = resolveSceneSpec(townRaw).spec;
   const rung = resolveSceneSpec(rungRaw).spec;
-  it('R-HANH-4: vòng "Trúc Lâm" cuối trục đông – tây (41,2; 4) nối cuối lối lát, ↔ vòng "Khởi Nguyên Trấn" đầu lối tây Trúc Lâm (V-66)', () => {
+  it('R-HANH-4: vòng "Thung Trúc Gió Hát" cuối trục đông – tây (41,2; 4) nối cuối lối lát, ↔ vòng "Khởi Nguyên Trấn" đầu lối tây Thung Trúc Gió Hát (V-66)', () => {
     const toRung = town.portals.find((p) => p.scene === 'rung-truc')!;
-    expect(toRung.label).toBe('Trúc Lâm');
+    expect(toRung.label).toBe('Thung Trúc Gió Hát');
     expect(markerRadius(toRung)).toBeCloseTo(1.2);
     const r = portalRect(toRung);
     expect((r.minX + r.maxX) / 2).toBeCloseTo(41.2);
@@ -143,7 +143,7 @@ describe('cặp cổng trấn ↔ Trúc Lâm (V-57)', () => {
     expect(checkPortals(rung)).toEqual([]);
   });
 
-  it('R-HANH-4: từ Trúc Lâm đi bộ về → đứng (38,6; 4) trước vòng, nhìn tây vào trấn (không phải cổng trấn dù `arriveAtStart`); từ trấn sang → đứng (−44,5; 4) trên lối tây cạnh vòng về, nhìn đông vào lối trúc (V-66)', () => {
+  it('R-HANH-4: từ Thung Trúc Gió Hát đi bộ về → đứng (38,6; 4) trước vòng, nhìn tây vào trấn (không phải cổng trấn dù `arriveAtStart`); từ trấn sang → đứng (−44,5; 4) trên lối tây cạnh vòng về, nhìn đông vào lối trúc (V-66)', () => {
     expect(arrivalFor(town.portals, 'rung-truc')).toEqual({ at: [38.6, 4], rotY: (3 * Math.PI) / 2 });
     expect(arrivalFor(rung.portals, 'tong-mon')).toEqual({ at: [-44.5, 4], rotY: Math.PI / 2 });
     // Trúc Lâm không còn vòng trận (V-65); V-66: vòng về trấn ở đầu lối tây (mép tây), xa sân đá trống bãi hạc

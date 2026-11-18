@@ -1,6 +1,6 @@
 {
   "site": {
-    "name": "Nhạn Môn Quan",
+    "name": "Đỉnh Hạc Bay",
     "han": "長城",
     "areas": []
   },
@@ -303,7 +303,7 @@
         ],
         "rotY": 180
       },
-      "label": "Trúc Lâm"
+      "label": "Thung Trúc Gió Hát"
     },
     {
       "scene": "to-lua",
@@ -324,7 +324,7 @@
         ],
         "rotY": 90
       },
-      "label": "Đôn Hoàng Lộ"
+      "label": "Thành Cát Ngủ Quên"
     },
     {
       "scene": "tu-cam-thanh",
@@ -345,7 +345,7 @@
         ],
         "rotY": 270
       },
-      "label": "Tử Cấm Thành"
+      "label": "Rừng Nấm Tiên"
     }
   ],
   "dayNight": {

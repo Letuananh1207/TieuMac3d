@@ -60,7 +60,7 @@ function walk(x: number, z: number, dx: number, dz: number, dist: number): { x: 
 const dinh = spec.buildings.find((b) => b.id === 'vong-truc-dinh')!;
 const lu = spec.buildings.find((b) => b.id === 'truc-lu')!;
 
-describe('Trúc Lâm — kiến trúc đợt 1 (V-66 B3)', () => {
+describe('Thung Trúc Gió Hát — kiến trúc đợt 1 (V-66 B3)', () => {
   it('R-VA-1: Vọng Trúc Đình — từ đầu bậc đá gò (−26; −30) đi vào giữa đình, đứng trên nền đá; đi tiếp về tây thì chân cột / ghế tựa chặn', () => {
     expect(dinh).toMatchObject({ kind: 'dinh', sides: 6, eaves: 2, benches: true });
     const p = walk(-26.5, -30, -1, 0, 4.5);
@@ -132,7 +132,7 @@ describe('Trúc Lâm — kiến trúc đợt 1 (V-66 B3)', () => {
     expect(fence.x).toBeGreaterThan(-26.4);
   });
 
-  it('R-BANDO-2: bản đồ lớn Trúc Lâm — 5 tên khu, chân 2 nhà, cầu đá, một dấu chỗ ngồi ở đình + một cho nhóm đệm cỏ; sân đất không là lối', () => {
+  it('R-BANDO-2: bản đồ lớn Thung Trúc Gió Hát — 5 tên khu, chân 2 nhà, cầu đá, một dấu chỗ ngồi ở đình + một cho nhóm đệm cỏ; sân đất không là lối', () => {
     const m = buildAreaMap(spec, { seats });
     expect(m.labels.filter((l) => l.kind === 'khu').map((l) => l.text)).toEqual(['Vọng Trúc Đình', 'Khúc Thuỷ Đài', 'Cầu Đá', 'Trúc Lư', 'Bãi giữa']);
     expect(m.shapes.filter((s) => s.kind === 'nha').map((s) => (s.kind === 'nha' ? s.id : ''))).toEqual(['vong-truc-dinh', 'truc-lu']);

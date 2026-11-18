@@ -1,6 +1,6 @@
 {
   "site": {
-    "name": "Tử Cấm Thành",
+    "name": "Rừng Nấm Tiên",
     "han": "紫禁城",
     "areas": []
   },
@@ -248,7 +248,7 @@
         ],
         "rotY": 180
       },
-      "label": "Yên Vũ Lâu"
+      "label": "Chợ Đêm Đèn Hoa"
     },
     {
       "scene": "truong-thanh",
@@ -269,7 +269,7 @@
         ],
         "rotY": 90
       },
-      "label": "Nhạn Môn Quan"
+      "label": "Đỉnh Hạc Bay"
     }
   ],
   "dayNight": {

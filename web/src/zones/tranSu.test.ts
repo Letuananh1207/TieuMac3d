@@ -3,15 +3,15 @@ import { journeyLine } from './tranSu';
 
 const places = [
   { id: 'van-uyen', ten: 'Văn Uyên Tông' },
-  { id: 'rung-truc', ten: 'Trúc Lâm' },
-  { id: 'giang-nam', ten: 'Yên Vũ Lâu' },
-  { id: 'bong-lai', ten: 'Bồng Lai Đảo' },
+  { id: 'rung-truc', ten: 'Thung Trúc Gió Hát' },
+  { id: 'giang-nam', ten: 'Chợ Đêm Đèn Hoa' },
+  { id: 'bong-lai', ten: 'Cung Ngọc Đáy Biển' },
 ];
 
 describe('La đại thúc đọc tiến độ', () => {
-  it('R-NPC-5: 12 từ, 2 bài, chỉ Trúc Lâm có cảnh → đi được Trúc Lâm, sắp mở Yên Vũ Lâu, Bồng Lai Đảo', () => {
+  it('R-NPC-5: 12 từ, 2 bài, chỉ Thung Trúc Gió Hát có cảnh → đi được Thung Trúc Gió Hát, sắp mở Chợ Đêm Đèn Hoa, Cung Ngọc Đáy Biển', () => {
     expect(journeyLine({ words: 12, lessons: 2 }, places, new Set(['rung-truc']))).toBe(
-      'Cháu đã học 12 từ, 2 bài. Trận đồ đã sáng: Trúc Lâm — bước vào vòng trận là đi được. Sắp mở: Yên Vũ Lâu, Bồng Lai Đảo.',
+      'Cháu đã học 12 từ, 2 bài. Trận đồ đã sáng: Thung Trúc Gió Hát — bước vào vòng trận là đi được. Sắp mở: Chợ Đêm Đèn Hoa, Cung Ngọc Đáy Biển.',
     );
   });
 
@@ -24,6 +24,6 @@ describe('La đại thúc đọc tiến độ', () => {
 
   it('R-NPC-5: mọi vùng có cảnh → đã mở hết; không có tiến độ → bỏ phần đã học', () => {
     expect(journeyLine({ words: 6, lessons: 1 }, places, new Set(['rung-truc', 'giang-nam', 'bong-lai']))).toContain('Các vùng đều đã mở');
-    expect(journeyLine(null, places, new Set(['rung-truc']))).toMatch(/^Trận đồ đã sáng: Trúc Lâm/);
+    expect(journeyLine(null, places, new Set(['rung-truc']))).toMatch(/^Trận đồ đã sáng: Thung Trúc Gió Hát/);
   });
 });

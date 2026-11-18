@@ -52,7 +52,7 @@ export interface DanHudHandlers {
 
 const T = {
   title: 'Đàn cầm',
-  place: 'Tảng đá đàn · Trúc Lâm',
+  place: 'Tảng đá đàn · Thung Trúc Gió Hát',
   free: 'Đàn tự do',
   freeSub: 'Gảy tuỳ ý — không chấm điểm',
   song: 'Theo bài',

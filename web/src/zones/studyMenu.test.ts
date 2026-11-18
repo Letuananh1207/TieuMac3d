@@ -41,7 +41,7 @@ describe('chấm son nút Tĩnh toạ (R-DIEU-7)', () => {
     expect(sitBadge(['你', '我', '好', '谢谢'])).toEqual({ n: 4, kind: 'due' });
   });
 
-  it('R-DIEU-7: không từ đến hạn → không chấm (kể cả ở Trúc Lâm còn bài chưa học); mã lạ không tính', () => {
+  it('R-DIEU-7: không từ đến hạn → không chấm (kể cả ở Thung Trúc Gió Hát còn bài chưa học); mã lạ không tính', () => {
     expect(sitBadge([])).toBeNull();
     expect(sitBadge(['khong-co'])).toBeNull();
     expect(sitBadge(['khong-co', '你'])).toEqual({ n: 1, kind: 'due' });

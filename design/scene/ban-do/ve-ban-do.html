@@ -20,6 +20,11 @@
 // Yên Vũ Lâu sông nước; Bồng Lai Đảo đảo giữa biển, mây quanh; Đôn Hoàng Lộ sa mạc. Biểu tượng nhỏ lại 60 % (S 0,6 → 0,36).
 // V-59 (2026-11-15): đường bộ nối các cặp cổng đi bộ (LAND_ROUTES — quan đạo / đường mòn / đường cát theo miền), dừng trước
 // khung biểu tượng + nhãn hai đầu (clearOf); Yên Vũ Lâu ↔ Bồng Lai giữ đường thuyền.
+// V-107 (2026-11-18, thế giới bộ 2 — phiếu docs/phieu_thiet_ke/2026-11-17-concept-the-gioi-moi.md): tên mới, giữ mã + vị trí;
+// biểu tượng mới: Tháp Sáo Trúc (rung-truc), Cây Đèn Trăm Tầng bên sông (giang-nam), Lò Thuốc Tiên trên nấm khổng lồ
+// (tu-cam-thanh), Cung Vỏ Sò dưới làn nước — đảo cũ thành vùng nước nông (bong-lai), đình bát giác cột son + tùng cổ trên
+// cột đá (truong-thanh — KHÔNG tổ hạc, người dùng 2026-11-18), Cổng Thành Vùi Cát + đầu lạc đà đá (to-lua). Bỏ Trường Thành
+// ở mép trên và tên miền Hán Việt in trên giấy (REGIONS chỉ còn để tô màu miền); mép trên / dưới là sương "chưa khám phá".
 // Xuất ảnh: ?xuat → dataURL PNG ghi vào <textarea id="out"> (hoặc gọi window.ready qua DevTools).
 const W = 2048, H = 1152;
 const PAPER = '#F2EADA', INK = '#24323A', JADE = '#2B5446', SON = '#A8322A', GOLD = '#C9A13B';
@@ -28,11 +33,11 @@ const SEA = '#BFD5D1', SEA_DEEP = '#A9C6C2', COAST = '#6F9590';
 // VÙNG: seed = hạt phân vùng (có thể nằm ngoài giấy), lx/ly = chỗ viết tên vùng; wild = chưa khám phá
 const REGIONS = [
   { id: 'tay-vuc',      han: '西域', name: 'Tây Vực',      seed: [260, 250],   lx: 230,  ly: 150,  tint: '#EAD7A8' },
-  { id: 'yen-van',      han: '燕雲', name: 'Yên Vân',      seed: [920, 270],   lx: 700,  ly: 400,  tint: '#D9D3B6' },
-  { id: 'kinh-ky',      han: '京畿', name: 'Kinh Kỳ',      seed: [1470, 300],  lx: 1560, ly: 140,  tint: '#EDD0B6' },
+  { id: 'yen-van',      han: '燕雲', name: 'Yên Vân',      seed: [920, 270],   lx: 700,  ly: 400,  tint: '#D8DFE2' },
+  { id: 'kinh-ky',      han: '京畿', name: 'Kinh Kỳ',      seed: [1470, 300],  lx: 1560, ly: 140,  tint: '#E4D5E6' },
   { id: 'trung-nguyen', han: '中原', name: 'Trung Nguyên', seed: [960, 720],   lx: 1130, ly: 905,  tint: '#D3E2CD' },
   { id: 'ba-thuc',      han: '巴蜀', name: 'Ba Thục',      seed: [280, 760],   lx: 270,  ly: 590,  tint: '#CBD6BD' },
-  { id: 'ngo-viet',     han: '吳越', name: 'Ngô Việt',     seed: [1450, 800],  lx: 1420, ly: 1050, tint: '#E2E6C2' },
+  { id: 'ngo-viet',     han: '吳越', name: 'Ngô Việt',     seed: [1450, 800],  lx: 1420, ly: 1050, tint: '#D6DFE4' },
   { id: 'dien-nam',     han: '滇南', name: 'Điền Nam',     seed: [760, 1330],  lx: 860,  ly: 1122, wild: true },
   { id: 'linh-nam',     han: '嶺南', name: 'Lĩnh Nam',     seed: [1200, 1330], lx: 1290, ly: 1122, wild: true },
   { id: 'mac-bac',      han: '漠北', name: 'Mạc Bắc',      seed: null,         lx: 1260, ly: 44,   wild: true },
@@ -41,13 +46,13 @@ const REGIONS = [
 // NƠI (cảnh đi được): x, y = tâm biểu tượng = tâm vùng chạm. de = đế dưới biểu tượng (thế đất của cảnh): không ghi = đế
 // giấy · song (sống núi) · nui (đỉnh núi giữa biển mây) · dao (đảo nhỏ nổi trên biển mây); island = đảo trên biển
 const PLACES = [
-  { id: 'to-lua',       han: '絲路', name: 'Đôn Hoàng Lộ',     x: 330,  y: 290 },
-  { id: 'truong-thanh', han: '長城', name: 'Nhạn Môn Quan',    x: 930,  y: 235, de: 'song' },
-  { id: 'tu-cam-thanh', han: '紫禁', name: 'Tử Cấm Thành',     x: 1430, y: 300 },
-  { id: 'rung-truc',    han: '竹林', name: 'Trúc Lâm',         x: 860,  y: 740 },
+  { id: 'to-lua',       han: '絲路', name: 'Thành Cát Ngủ Quên', x: 330,  y: 290 },
+  { id: 'truong-thanh', han: '長城', name: 'Đỉnh Hạc Bay',     x: 930,  y: 235, de: 'song' },
+  { id: 'tu-cam-thanh', han: '紫禁', name: 'Rừng Nấm Tiên',    x: 1430, y: 300 },
+  { id: 'rung-truc',    han: '竹林', name: 'Thung Trúc Gió Hát', x: 860,  y: 740 },
   { id: 'van-uyen',     han: '起源', name: 'Khởi Nguyên Trấn', x: 440,  y: 800, de: 'nui' },
-  { id: 'giang-nam',    han: '江南', name: 'Yên Vũ Lâu',       x: 1400, y: 790 },
-  { id: 'bong-lai',     han: '蓬萊', name: 'Bồng Lai Đảo',     x: 1880, y: 610, island: true },
+  { id: 'giang-nam',    han: '江南', name: 'Chợ Đêm Đèn Hoa',  x: 1400, y: 790 },
+  { id: 'bong-lai',     han: '蓬萊', name: 'Cung Ngọc Đáy Biển', x: 1880, y: 610, island: true },
   { id: 'nha-ta',       han: '我家', name: 'Nhà của ta',       x: 230,  y: 975, r: 95, de: 'dao' }
 ];
 // vùng chạm quanh biểu tượng: lớn hơn biểu tượng (≥ cỡ ngón tay ở 360 × 640: r 120 → ∅ ≈ 41 px), phủ cả nhãn tên dưới
@@ -105,7 +110,7 @@ function regionMap() {
 function paintLand(g, ids) {
   const img = g.getImageData(0, 0, W, H), px = img.data;
   const hex = h => [1, 3, 5].map(o => parseInt(h.slice(o, o + 2), 16));
-  const tint = REGIONS.map(r => r.wild ? [0xEC, 0xE5, 0xD3] : r.sea ? hex('#DCEBC6') : hex(r.tint));
+  const tint = REGIONS.map(r => r.wild ? [0xEC, 0xE5, 0xD3] : r.sea ? hex('#CFE7E2') : hex(r.tint));
   const br = [0x5B, 0x4A, 0x3A];
   const at = (x, y) => (x < 0 || y < 0 || x >= W || y >= H) ? -9 : ids[y * W + x];
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
@@ -267,18 +272,21 @@ function desert(g) {
   for (const [dx, by, hw, h] of [[-120, 270, 110, 90], [130, 265, 120, 100]]) mount(g, p.x + dx, p.y + by - 290, hw, h, '#D9BE86', '#C7A66C');
   g.restore();
 }
-// Bồng Lai Đảo (bong-lai.json: đảo, biển mây + đảo nổi) — mây quanh đảo trên biển
+// Cung Ngọc Đáy Biển (V-107: cung dưới làn nước trong) — vùng nước nông (đảo cũ), bong bóng + vệt nắng xuyên nước
 function islandClouds(g) {
-  for (const [dx, dy, w] of [[-150, -95, 46], [140, -150, 40], [130, 60, 44]]) puff(g, BL.x + dx, BL.y + dy, w, 0.85);
+  g.save(); g.strokeStyle = 'rgba(255,255,255,.85)'; g.lineWidth = 4;
+  for (const [dx, dy, r] of [[-150, -70, 12], [-138, -100, 8], [140, -120, 11], [128, -150, 7], [120, 60, 9]]) { g.beginPath(); g.arc(BL.x + dx, BL.y + dy, r, 0, Math.PI * 2); g.stroke(); }
+  g.strokeStyle = 'rgba(255,255,255,.35)'; g.lineWidth = 14; g.lineCap = 'round';
+  for (const dx of [-90, -20, 60]) { g.beginPath(); g.moveTo(BL.x + dx, BL.y - 90); g.lineTo(BL.x + dx - 30, BL.y + 80); g.stroke(); }
+  g.restore();
 }
 
 // ---------- trang trí theo vùng (né biểu tượng, nhãn nơi, tên vùng) ----------
 const placed = [];
 function blocked(x, y) {
   for (const p of PLACES) if (Math.abs(x - p.x) < 200 && y > p.y - 120 && y - 60 < p.y + 190) return true;
-  for (const r of REGIONS) if (Math.abs(x - r.lx) < 330 && y > r.ly - 40 && y - 60 < r.ly + 40) return true; // tên vùng (chữ Việt dài)
   if (x < 740 && y > 560) return true;            // dãy núi + biển mây Ba Thục (vẽ riêng)
-  if (x > 1000 && x < 1180 && y > 600 && y < 900) return true; // đồi thấp quanh Trúc Lâm
+  if (x > 1000 && x < 1180 && y > 600 && y < 900) return true; // đồi thấp quanh Thung Trúc Gió Hát
   if (x > 1820 && y < 260) return true;           // la bàn
   return placed.some(([px, py]) => Math.hypot(px - x, py - y) < 85);
 }
@@ -309,7 +317,8 @@ function decorate(g, ids) {
   scatter(g, ids, 'trung-nguyen', 7, 13, (g, x, y, r) => { g.strokeStyle = 'rgba(110,140,90,.45)'; g.lineWidth = 4; const s = 22 + r() * 10; g.strokeRect(x - s, y - s * 0.55, s * 2, s * 1.1); g.beginPath(); g.moveTo(x - s, y); g.lineTo(x + s, y); g.stroke(); });
   scatter(g, ids, 'trung-nguyen', 6, 14, (g, x, y, r) => pine(g, x, y, 0.8 + r() * 0.3, '#5E8A5E'));
   scatter(g, ids, 'trung-nguyen', 6, 21, bamboo);
-  scatter(g, ids, 'kinh-ky', 8, 15, (g, x, y, r) => { g.strokeStyle = 'rgba(170,120,80,.45)'; g.lineWidth = 4; const s = 24 + r() * 10; g.strokeRect(x - s, y - s * 0.6, s * 2, s * 1.2); g.beginPath(); g.moveTo(x, y - s * 0.6); g.lineTo(x, y + s * 0.6); g.stroke(); });
+  // Rừng Nấm Tiên (V-107): nấm nhỏ mũ hồng / tím
+  scatter(g, ids, 'kinh-ky', 9, 15, (g, x, y, r) => { const s = 0.8 + r() * 0.5; g.fillStyle = '#F1E6D8'; g.fillRect(x - 5 * s, y - 16 * s, 10 * s, 18 * s); g.fillStyle = r() < 0.5 ? 'rgba(229,139,160,.9)' : 'rgba(185,143,194,.9)'; g.beginPath(); g.ellipse(x, y - 16 * s, 22 * s, 13 * s, 0, Math.PI, 0); g.fill(); });
   scatter(g, ids, 'ba-thuc', 3, 22, bamboo);
   scatter(g, ids, 'ngo-viet', 7, 17, (g, x, y, r) => { g.fillStyle = 'rgba(160,200,196,.95)'; g.beginPath(); g.ellipse(x, y, 32 + r() * 18, 13 + r() * 6, 0, 0, Math.PI * 2); g.fill(); });
   scatter(g, ids, 'ngo-viet', 5, 18, (g, x, y) => { g.fillStyle = '#F4F1EA'; g.fillRect(x - 14, y - 16, 28, 18); g.fillStyle = '#3A3F44'; g.fillRect(x - 18, y - 22, 36, 7); });
@@ -373,17 +382,6 @@ function seaRoute(g, pts, boat = true) {
   g.save(); g.fillStyle = '#6B4A30'; g.beginPath(); g.moveTo(x - 26, y); g.lineTo(x + 26, y); g.lineTo(x + 16, y + 12); g.lineTo(x - 16, y + 12); g.closePath(); g.fill();
   g.fillStyle = '#F4F1EA'; g.beginPath(); g.moveTo(x - 2, y - 4); g.lineTo(x - 2, y - 40); g.lineTo(x + 22, y - 8); g.closePath(); g.fill(); g.restore();
 }
-function greatWall(g) {
-  const pts = []; for (let x = 120; x <= 1660; x += 20) pts.push([x, wallY(x)]);
-  g.save(); g.lineCap = 'round'; g.lineJoin = 'round';
-  const part = keep => { g.beginPath(); let on = false; for (const q of pts) { if (keep(q[0])) { on ? g.lineTo(...q) : g.moveTo(...q); on = true; } else on = false; } };
-  const gate = P('truong-thanh').x, open = x => Math.abs(x - gate) > 26;
-  g.strokeStyle = '#7F7B6F'; g.lineWidth = 14; part(open); g.stroke();
-  g.strokeStyle = '#B4AF9E'; g.lineWidth = 5; part(open); g.stroke();
-  g.fillStyle = '#7F7B6F';
-  for (const q of pts) if ((q[0] - 120) % 200 === 0 || Math.abs(q[0] - gate) === 40) { g.fillRect(q[0] - 11, q[1] - 26, 22, 26); g.fillRect(q[0] - 13, q[1] - 32, 6, 7); g.fillRect(q[0] + 7, q[1] - 32, 6, 7); }
-  g.restore();
-}
 // V-59: đường mòn (nét đứt mảnh, không viền) — đường núi / đường cát đoàn buôn; quan đạo lát đá dùng road()
 function trail(g, pts, color = 'rgba(122,88,52,.9)') {
   if (pts.length < 2) return;
@@ -428,7 +426,6 @@ function landRoutes(g) {
 }
 function routes(g) {
   const home = P('van-uyen'), at = p => [p.x, p.y + 10];
-  greatWall(g);
   landRoutes(g);
   // đường cụt vào vùng chưa khám phá (nơi mới sau này)
   road(g, trim(curve(at(P('rung-truc')), [620, 1140], -20), 120, 0), 0.4);                     // → Điền Nam
@@ -439,29 +436,6 @@ function routes(g) {
   road(g, trim(curve(at(P('giang-nam')), port, 30), 120, 0));
   seaRoute(g, curve(port, [BL.x - 110, BL.y + 30], -40, 12));
   g.save(); g.globalAlpha = 0.5; seaRoute(g, curve([BL.x + 120, BL.y + 110], [2040, 880], 30, 10), false); g.restore();
-}
-
-// tên vùng: chữ Hán lớn mờ + tên Việt giãn chữ — nền nghĩa của bản đồ, không tranh với tên nơi
-function regionLabel(g, r) {
-  g.save(); g.textAlign = 'center'; g.textBaseline = 'alphabetic';
-  const ink = r.sea ? 'rgba(43,84,70,' : r.wild ? 'rgba(90,80,64,' : 'rgba(58,48,36,';
-  if (r.wild) {
-    // vùng chưa khám phá ở rìa (dải mỏng): một dòng "漠北 MẠC BẮC · chưa khám phá"
-    g.textAlign = 'left';
-    const w1 = -14;
-    g.font = '700 26px "Be Vietnam Pro"'; g.letterSpacing = '4px';
-    const t2 = r.name.toUpperCase(), w2 = g.measureText(t2).width;
-    g.letterSpacing = '1px'; const t3 = ' · chưa khám phá', w3 = g.measureText(t3).width;
-    let x = r.lx - (w1 + 14 + w2 + w3) / 2;
-    x += w1 + 14;
-    g.font = '700 26px "Be Vietnam Pro"'; g.letterSpacing = '4px'; g.fillStyle = ink + '.7)'; g.fillText(t2, x, r.ly); x += w2;
-    g.letterSpacing = '1px'; g.fillStyle = ink + '.55)'; g.fillText(t3, x, r.ly);
-    g.restore(); return;
-  }
-  // chỉ tiếng Việt (2026-11-14.7): tên vùng in hoa giãn chữ, mờ — nền nghĩa của bản đồ
-  g.font = '700 46px "Be Vietnam Pro"'; g.letterSpacing = '12px';
-  g.fillStyle = ink + '.42)'; g.fillText(r.name.toUpperCase(), r.lx + 6, r.ly + 20);
-  g.restore();
 }
 
 // ---------- biểu tượng nơi ----------
@@ -483,44 +457,105 @@ const ICONS = {
   'van-uyen'(g, x, y) {
     hall(g, x, y + 10, 1.15, JADE, '#E8E1D2');
   },
+  // Thung Trúc Gió Hát (V-107): Tháp Sáo Trúc — bó ống trúc to cao thấp, lỗ sáo, dây buộc son, lá trúc + vệt gió
   'rung-truc'(g, x, y) {
     g.save(); g.lineCap = 'round';
-    for (const [dx, h, c] of [[-50, 190, '#4F7A35'], [0, 220, '#7D9A4A'], [48, 175, '#5E8A3E']]) {
-      g.strokeStyle = c; g.lineWidth = 16; g.beginPath(); g.moveTo(x + dx, y + 80); g.lineTo(x + dx * 1.1, y + 80 - h); g.stroke();
-      g.strokeStyle = PAPER; g.lineWidth = 3; for (let k = 1; k < 5; k++) { const yy = y + 80 - k * h / 5; g.beginPath(); g.moveTo(x + dx - 9, yy); g.lineTo(x + dx + 9, yy); g.stroke(); }
-      g.fillStyle = '#5E8A3E';
-      for (let k = 0; k < 4; k++) { const ly = y + 80 - h + 20 + k * 22, s = k % 2 ? 1 : -1; g.beginPath(); g.ellipse(x + dx + s * 34, ly, 34, 9, s * -0.5, 0, Math.PI * 2); g.fill(); }
+    const tubes = [[-58, 150, '#5E8A3E'], [-30, 205, '#7D9A4A'], [0, 250, '#4F7A35'], [30, 215, '#7D9A4A'], [58, 165, '#5E8A3E']];
+    for (const [dx, h, c] of tubes) {
+      g.fillStyle = c; g.fillRect(x + dx - 14, y + 80 - h, 28, h);
+      g.fillStyle = '#C9D9A4'; g.beginPath(); g.ellipse(x + dx, y + 80 - h, 14, 6, 0, 0, Math.PI * 2); g.fill();
+      g.fillStyle = '#2F4A22'; g.beginPath(); g.ellipse(x + dx, y + 80 - h + 3, 9, 3.5, 0, 0, Math.PI * 2); g.fill();
+      g.strokeStyle = PAPER; g.lineWidth = 3; for (let k = 1; k < h / 50; k++) { const yy = y + 80 - k * 50; g.beginPath(); g.moveTo(x + dx - 14, yy); g.lineTo(x + dx + 14, yy); g.stroke(); }
+      g.fillStyle = '#2F4A22'; g.beginPath(); g.arc(x + dx, y + 80 - h + 34, 5, 0, Math.PI * 2); g.fill();
     }
+    g.strokeStyle = SON; g.lineWidth = 6; for (const yy of [y + 40, y - 30]) { g.beginPath(); g.moveTo(x - 74, yy); g.lineTo(x + 74, yy); g.stroke(); }
+    g.fillStyle = '#5E8A3E';
+    for (const [lx, ly, s] of [[-92, -40, -1], [-86, -70, -1], [92, -50, 1], [86, -84, 1]]) { g.beginPath(); g.ellipse(x + lx, y + ly, 30, 9, s * -0.5, 0, Math.PI * 2); g.fill(); }
+    g.strokeStyle = 'rgba(255,255,255,.95)'; g.lineWidth = 6;
+    for (const [dy, w] of [[-190, 70], [-150, 54]]) { g.beginPath(); g.moveTo(x + 50, y + dy); g.quadraticCurveTo(x + 50 + w * 0.6, y + dy - 22, x + 50 + w, y + dy); g.stroke(); }
     g.restore();
   },
+  // Chợ Đêm Đèn Hoa (V-107): Cây Đèn Trăm Tầng giữa bến sông — cột đèn nhiều tầng đèn lồng, quầng vàng, đế hoa sen
   'giang-nam'(g, x, y) {
     g.save();
-    g.fillStyle = 'rgba(122,160,160,.6)'; g.fillRect(x - 110, y + 50, 220, 30);
-    g.strokeStyle = '#9A968C'; g.lineWidth = 18; g.beginPath(); g.arc(x - 10, y + 70, 70, Math.PI, 0); g.stroke();
-    g.fillStyle = '#F4F1EA'; g.fillRect(x + 40, y - 70, 80, 70);
-    g.fillStyle = '#3A3F44'; roof(g, x + 80, y - 100, 90, 30, '#3A3F44');
-    g.fillRect(x + 66, y - 40, 14, 22);
+    g.fillStyle = 'rgba(92,122,150,.55)'; g.beginPath(); g.ellipse(x, y + 70, 150, 26, 0, 0, Math.PI * 2); g.fill();
+    const glow = g.createRadialGradient(x, y - 40, 10, x, y - 40, 170); glow.addColorStop(0, 'rgba(255,214,110,.75)'); glow.addColorStop(1, 'rgba(255,214,110,0)');
+    g.fillStyle = glow; g.beginPath(); g.arc(x, y - 40, 170, 0, Math.PI * 2); g.fill();
+    g.fillStyle = '#E58BA0'; for (const a of [-1, -0.5, 0, 0.5, 1]) { g.beginPath(); g.ellipse(x + a * 46, y + 56, 30, 14, a * 0.5, 0, Math.PI * 2); g.fill(); }
+    g.fillStyle = '#6B3A2A'; g.fillRect(x - 7, y - 190, 14, 250);
+    for (let t = 0; t < 4; t++) {
+      const ty = y + 10 - t * 52, w = 120 - t * 26;
+      g.strokeStyle = '#6B3A2A'; g.lineWidth = 6; g.beginPath(); g.moveTo(x - w, ty - 14); g.quadraticCurveTo(x, ty - 34, x + w, ty - 14); g.stroke();
+      for (let k = -2; k <= 2; k++) {
+        if (t === 3 && Math.abs(k) === 2) continue;
+        const lx = x + k * w / 2.2;
+        g.fillStyle = k % 2 ? GOLD : SON; g.beginPath(); g.ellipse(lx, ty, 13, 16, 0, 0, Math.PI * 2); g.fill();
+        g.fillStyle = 'rgba(255,236,170,.85)'; g.beginPath(); g.ellipse(lx - 3, ty - 3, 4, 6, 0, 0, Math.PI * 2); g.fill();
+      }
+    }
+    g.fillStyle = GOLD; g.beginPath(); g.moveTo(x, y - 228); g.lineTo(x + 14, y - 196); g.lineTo(x - 14, y - 196); g.closePath(); g.fill();
     g.restore();
   },
+  // Cung Ngọc Đáy Biển (V-107): Cung Vỏ Sò — vỏ ốc xà cừ, cửa vòm, san hô, bong bóng (dưới làn nước)
   'bong-lai'(g, x, y) {
     g.save();
-    for (const [dx, dy, s] of [[-40, 10, 1], [70, -50, 0.7]]) {
-      g.fillStyle = '#86AE5A'; g.beginPath(); g.ellipse(x + dx, y + dy, 80 * s, 22 * s, 0, 0, Math.PI * 2); g.fill();
-      g.fillStyle = '#8D8A84'; g.beginPath(); g.moveTo(x + dx - 78 * s, y + dy); g.lineTo(x + dx + 78 * s, y + dy); g.lineTo(x + dx + 10 * s, y + dy + 110 * s); g.closePath(); g.fill();
-    }
-    hall(g, x - 40, y - 30, 0.42, JADE, '#E8E1D2');
-    cloud(g, x - 10, y + 95, 0.8, 0.95);
-    g.strokeStyle = INK; g.lineWidth = 5; g.beginPath(); g.moveTo(x + 40, y - 120); g.quadraticCurveTo(x + 60, y - 135, x + 80, y - 120); g.quadraticCurveTo(x + 100, y - 135, x + 120, y - 120); g.stroke();
+    g.fillStyle = '#E9D7C9'; g.beginPath(); g.ellipse(x, y + 70, 140, 24, 0, 0, Math.PI * 2); g.fill();
+    g.fillStyle = '#F6E7EC'; g.beginPath(); g.moveTo(x - 90, y + 66); g.quadraticCurveTo(x - 100, y - 40, x - 10, y - 120); g.quadraticCurveTo(x + 10, y - 140, x + 30, y - 110); g.quadraticCurveTo(x + 100, y - 20, x + 90, y + 66); g.closePath(); g.fill();
+    g.strokeStyle = '#C9A7B8'; g.lineWidth = 6; for (const k of [0.35, 0.6, 0.82]) { g.beginPath(); g.moveTo(x - 90 * k - 10, y + 66 - 150 * (1 - k)); g.quadraticCurveTo(x, y + 30 - 150 * (1 - k), x + 90 * k + 10, y + 66 - 150 * (1 - k) - 10); g.stroke(); }
+    g.fillStyle = 'rgba(90,150,160,.8)'; g.beginPath(); g.ellipse(x, y + 30, 22, 34, 0, Math.PI, 0); g.fill(); g.fillRect(x - 22, y + 30, 44, 36);
+    g.strokeStyle = '#E87A6E'; g.lineCap = 'round'; g.lineWidth = 10;
+    for (const [bx, s] of [[-125, -1], [125, 1]]) { g.beginPath(); g.moveTo(x + bx, y + 70); g.lineTo(x + bx, y + 10); g.moveTo(x + bx, y + 40); g.lineTo(x + bx + s * 26, y + 4); g.moveTo(x + bx, y + 25); g.lineTo(x + bx - s * 22, y - 6); g.stroke(); }
+    g.strokeStyle = 'rgba(255,255,255,.95)'; g.lineWidth = 4;
+    for (const [bx, by, r] of [[60, -150, 12], [80, -185, 8], [52, -210, 6], [-70, -130, 9]]) { g.beginPath(); g.arc(x + bx, y + by, r, 0, Math.PI * 2); g.stroke(); }
     g.restore();
   },
+  // Đỉnh Hạc Bay (V-107): rừng cột đá, đình bát giác cột son + tùng cổ trên cột cao nhất, hạc bay (không tổ hạc)
   'truong-thanh'(g, x, y) {
-    g.save(); g.fillStyle = '#9A968C';
-    g.beginPath(); g.moveTo(x - 130, y + 70); g.lineTo(x - 60, y + 20); g.lineTo(x + 20, y + 40); g.lineTo(x + 130, y - 10); g.lineTo(x + 130, y + 30); g.lineTo(x + 20, y + 80); g.lineTo(x - 60, y + 60); g.lineTo(x - 130, y + 100); g.closePath(); g.fill();
-    g.fillStyle = '#7A766C'; g.fillRect(x - 10, y - 70, 64, 110);
-    for (let i = 0; i < 4; i++) g.fillRect(x - 12 + i * 18, y - 86, 12, 18);
-    g.fillStyle = INK; g.fillRect(x + 12, y - 40, 18, 26);
-    g.strokeStyle = INK; g.lineWidth = 4; g.beginPath(); g.moveTo(x + 22, y - 86); g.lineTo(x + 22, y - 140); g.stroke();
-    g.fillStyle = SON; g.beginPath(); g.moveTo(x + 22, y - 140); g.lineTo(x + 66, y - 128); g.lineTo(x + 22, y - 116); g.closePath(); g.fill();
+    g.save();
+    for (const [dx, top, w, c] of [[-105, -40, 50, '#A7A9A6'], [100, -20, 54, '#9EA19E'], [0, -105, 74, '#B6B8B4']]) {
+      g.fillStyle = c; g.beginPath(); g.moveTo(x + dx - w / 2 - 8, y + 90); g.lineTo(x + dx - w / 2, y + top); g.lineTo(x + dx + w / 2, y + top); g.lineTo(x + dx + w / 2 + 8, y + 90); g.closePath(); g.fill();
+      g.fillStyle = 'rgba(70,74,72,.25)'; g.fillRect(x + dx + w / 6, y + top, w / 3, 90 - top);
+      g.fillStyle = '#86A86A'; g.beginPath(); g.ellipse(x + dx, y + top, w / 2 + 4, 8, 0, 0, Math.PI * 2); g.fill();
+    }
+    const py = y - 110;
+    g.fillStyle = SON; for (const dx of [-26, -9, 9, 26]) g.fillRect(x + dx - 4, py - 44, 8, 40);
+    g.fillStyle = '#D9D4C7'; g.fillRect(x - 36, py - 6, 72, 8);
+    roof(g, x, py - 74, 84, 30, '#3E5A50');
+    g.fillStyle = GOLD; g.beginPath(); g.moveTo(x, py - 96); g.lineTo(x + 6, py - 74); g.lineTo(x - 6, py - 74); g.closePath(); g.fill();
+    g.strokeStyle = '#6B5A45'; g.lineWidth = 7; g.lineCap = 'round'; g.beginPath(); g.moveTo(x + 40, py - 2); g.quadraticCurveTo(x + 52, py - 40, x + 74, py - 56); g.stroke();
+    g.fillStyle = '#4E7A52'; for (const [tx, ty, w] of [[62, -58, 30], [86, -66, 24], [76, -42, 22]]) { g.beginPath(); g.ellipse(x + tx, py + ty, w, 10, -0.2, 0, Math.PI * 2); g.fill(); }
+    g.strokeStyle = INK; g.lineWidth = 5;
+    for (const [cx, cy, w] of [[-90, -230, 26], [-40, -255, 18]]) { g.beginPath(); g.moveTo(x + cx - w, y + cy); g.quadraticCurveTo(x + cx - w / 2, y + cy - w * 0.6, x + cx, y + cy); g.quadraticCurveTo(x + cx + w / 2, y + cy - w * 0.6, x + cx + w, y + cy); g.stroke(); }
+    g.restore();
+  },
+  // Rừng Nấm Tiên (V-107): nấm khổng lồ mũ hồng chấm trắng, lò đồng ba chân trên mũ nấm, khói tím; nấm nhỏ cạnh
+  'tu-cam-thanh'(g, x, y) {
+    g.save();
+    g.fillStyle = '#B98FC2'; g.beginPath(); g.ellipse(x - 105, y + 60, 34, 18, 0, Math.PI, 0); g.fill(); g.fillStyle = '#F1E6D8'; g.fillRect(x - 112, y + 60, 14, 26);
+    g.fillStyle = '#F1E6D8'; g.beginPath(); g.moveTo(x - 30, y + 86); g.quadraticCurveTo(x - 20, y + 10, x - 22, y - 30); g.lineTo(x + 22, y - 30); g.quadraticCurveTo(x + 20, y + 10, x + 30, y + 86); g.closePath(); g.fill();
+    g.fillStyle = '#E58BA0'; g.beginPath(); g.moveTo(x - 120, y - 22); g.quadraticCurveTo(x - 110, y - 110, x, y - 112); g.quadraticCurveTo(x + 110, y - 110, x + 120, y - 22); g.quadraticCurveTo(x, y - 6, x - 120, y - 22); g.fill();
+    g.fillStyle = '#FBF3F0'; for (const [dx, dy, r] of [[-70, -50, 12], [-20, -82, 10], [40, -64, 13], [86, -40, 9], [-96, -30, 7]]) { g.beginPath(); g.arc(x + dx, y + dy, r, 0, Math.PI * 2); g.fill(); }
+    const by = y - 112;
+    g.fillStyle = '#9A6A3A'; for (const dx of [-26, 0, 26]) g.fillRect(x + dx - 4, by - 18, 8, 20);
+    g.fillStyle = '#B07A42'; g.beginPath(); g.ellipse(x, by - 34, 38, 24, 0, 0, Math.PI * 2); g.fill();
+    g.fillStyle = '#7E5530'; g.fillRect(x - 42, by - 56, 84, 8); g.fillRect(x - 34, by - 70, 8, 16); g.fillRect(x + 26, by - 70, 8, 16);
+    g.fillStyle = 'rgba(176,132,200,.75)';
+    for (const [dx, dy, r] of [[-6, -92, 18], [12, -118, 22], [-10, -148, 18], [16, -172, 14]]) { g.beginPath(); g.arc(x + dx, by + dy, r, 0, Math.PI * 2); g.fill(); }
+    g.restore();
+  },
+  // Thành Cát Ngủ Quên (V-107): cổng thành có lầu lún nửa trong cát, đầu lạc đà đá
+  'to-lua'(g, x, y) {
+    g.save();
+    g.fillStyle = '#C79A62'; g.fillRect(x - 90, y - 40, 180, 110);
+    g.fillStyle = '#5B3E28'; g.beginPath(); g.moveTo(x - 30, y + 70); g.lineTo(x - 30, y + 20); g.quadraticCurveTo(x, y - 14, x + 30, y + 20); g.lineTo(x + 30, y + 70); g.closePath(); g.fill();
+    g.fillStyle = '#B5864F'; for (let i = 0; i < 6; i++) g.fillRect(x - 90 + i * 32, y - 54, 20, 16);
+    g.fillStyle = '#B04A36'; g.fillRect(x - 52, y - 98, 104, 44);
+    g.fillStyle = 'rgba(60,40,30,.5)'; for (const dx of [-30, 0, 30]) g.fillRect(x + dx - 8, y - 90, 16, 30);
+    roof(g, x, y - 130, 130, 34, '#6E4A35');
+    g.fillStyle = '#E8C98E'; g.beginPath(); g.moveTo(x - 150, y + 90); g.quadraticCurveTo(x - 80, y + 10, x - 10, y + 52); g.quadraticCurveTo(x + 60, y + 20, x + 150, y + 90); g.closePath(); g.fill();
+    g.fillStyle = '#A88A68'; g.fillRect(x + 92, y + 6, 18, 54);
+    g.beginPath(); g.ellipse(x + 116, y + 2, 26, 15, -0.2, 0, Math.PI * 2); g.fill();
+    g.fillStyle = INK; g.beginPath(); g.arc(x + 118, y - 2, 3.5, 0, Math.PI * 2); g.fill();
     g.restore();
   },
   // Nhà của ta 我家 (design 2026-11-14.13): tiểu viện — tường viện thấp, nhà chính mái xám cửa son, khóm trúc trái, đèn lồng đỏ phải
@@ -542,17 +577,6 @@ const ICONS = {
     g.fillStyle = GOLD; g.fillRect(x + 101, y + 32, 6, 12);
     g.restore();
   },
-  'tu-cam-thanh'(g, x, y) { hall(g, x, y + 10, 1.2, GOLD, SON); g.save(); g.fillStyle = GOLD; roof(g, x, y - 95, 120, 26, GOLD); g.restore(); },
-  'to-lua'(g, x, y) {
-    g.save(); g.fillStyle = '#D2B98C'; g.beginPath(); g.ellipse(x, y + 80, 150, 40, 0, Math.PI, 0); g.fill();
-    g.fillStyle = '#8A5B3B';
-    g.beginPath(); g.ellipse(x - 10, y + 10, 62, 34, 0, 0, Math.PI * 2); g.fill();
-    g.beginPath(); g.ellipse(x - 20, y - 22, 22, 22, 0, 0, Math.PI * 2); g.fill();
-    g.beginPath(); g.ellipse(x + 18, y - 22, 22, 22, 0, 0, Math.PI * 2); g.fill();
-    g.fillRect(x + 40, y - 50, 18, 60); g.beginPath(); g.ellipse(x + 64, y - 54, 22, 13, 0, 0, Math.PI * 2); g.fill();
-    for (const lx of [-50, -26, 14, 36]) g.fillRect(x + lx, y + 30, 11, 50);
-    g.restore();
-  }
 };
 
 // nơi: đế tròn giấy dưới biểu tượng (đọc là "một điểm trên bản đồ") + tên
@@ -576,7 +600,7 @@ function label(g, p) {
   g.save(); g.textAlign = 'center'; g.textBaseline = 'alphabetic'; g.lineJoin = 'round';
   g.font = `700 ${LABEL_VI}px "Be Vietnam Pro"`;
   const vy = p.y + LABEL_DY + LABEL_VI * 0.8;
-  // giữ cả nhãn trong giấy — nơi sát mép (Bồng Lai Đảo) dời nhãn vào trong (V-50; tên V-53 dài nhất 16 ký tự)
+  // giữ cả nhãn trong giấy — nơi sát mép (Cung Ngọc Đáy Biển) dời nhãn vào trong (V-50; tên V-53 dài nhất 16 ký tự)
   const half = g.measureText(p.name).width / 2 + 7, lx = Math.min(Math.max(p.x, half + 24), W - half - 24);
   g.lineWidth = 14; g.strokeStyle = 'rgba(242,234,218,.95)'; g.strokeText(p.name, lx, vy);
   g.fillStyle = INK; g.fillText(p.name, lx, vy);
@@ -585,7 +609,7 @@ function label(g, p) {
 }
 
 async function draw() {
-  await document.fonts.load(`700 ${LABEL_VI}px "Be Vietnam Pro"`, 'Khởi Nguyên Trấn Nhà của ta Trúc Lâm Yên Vũ Lâu Bồng Lai Đảo Nhạn Môn Quan Tử Cấm Thành Đôn Hoàng Lộ TÂY VỰC YÊN VÂN KINH KỲ TRUNG NGUYÊN BA THỤC NGÔ VIỆT LĨNH NAM ĐIỀN NAM MẠC BẮC ĐÔNG HẢI chưa khám phá');
+  await document.fonts.load(`700 ${LABEL_VI}px "Be Vietnam Pro"`, PLACES.map(p => p.name).join(' ') + ' B');
   const g = document.getElementById('c').getContext('2d', { willReadFrequently: true });
   paper(g);
   const ids = regionMap();
@@ -594,10 +618,11 @@ async function draw() {
   rivers(g);
   decorate(g, ids);
   desert(g); ridge(g); valley(g); massif(g); cloudSea(g); islandClouds(g);
-  for (const r of REGIONS) regionLabel(g, r);
   routes(g);
   vignette(g);
   for (const [x, y, s2] of [[975, 14, 0.6], [1990, 260, 0.8]]) cloud(g, x, y, s2, 0.6);
+  // V-107: sương "chưa khám phá" dọc mép trên / dưới (không chữ — phiếu concept-the-gioi-moi)
+  for (let x = 60; x < 1700; x += 150) { cloud(g, x, x % 300 ? 40 : 28, 0.75, 0.55); cloud(g, x + 70, 1150, 0.7, 0.5); }
   compass(g, 1930, 150);
   for (const p of PLACES) {
     if (!p.island) placeBase(g, p);

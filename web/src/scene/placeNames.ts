@@ -4,7 +4,7 @@
  * Tên nơi ngắn, một dòng, chỉ chữ Việt (R-HUD-4). Thuần — `scripts/check-scene.mjs` gọi.
  */
 
-/** Dài nhất của tên nơi (ký tự): nhãn bản đồ, màn tải, thẻ "sắp mở" một dòng. Tên vùng dài nhất hiện có 16 ("Khởi Nguyên Trấn"; vùng: 13 "Nhạn Môn Quan"). */
+/** Dài nhất của tên nơi (ký tự): nhãn bản đồ, màn tải, thẻ "sắp mở" một dòng. Tên dài nhất hiện có 18 ("Thung Trúc Gió Hát", "Cung Ngọc Đáy Biển", "Thành Cát Ngủ Quên" — V-107). */
 export const PLACE_NAME_MAX = 20;
 
 /** Mã cảnh → mã nơi trên bản đồ (tông môn là `tong-mon` trong app, `van-uyen` trên giấy). */

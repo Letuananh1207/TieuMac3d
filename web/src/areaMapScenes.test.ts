@@ -43,7 +43,7 @@ describe('bản đồ vùng — đủ mọi cảnh (R-BANDO-2)', () => {
     });
   }
 
-  it('R-BANDO-2: Khởi Nguyên Trấn — 11 khu, vòng trận (0; −44,5) đầu Thiên Bậc, vòng "Về nhà" ngoài cổng xuống núi (0; 54) ghi "Nhà của ta", vòng "Trúc Lâm" cuối trục đông – tây (41,2; 4) ghi "Trúc Lâm", bàn cờ + Đấu chữ, Tạp hoá, bảng nhiệm vụ', () => {
+  it('R-BANDO-2: Khởi Nguyên Trấn — 11 khu, vòng trận (0; −44,5) đầu Thiên Bậc, vòng "Về nhà" ngoài cổng xuống núi (0; 54) ghi "Nhà của ta", vòng "Thung Trúc Gió Hát" cuối trục đông – tây (41,2; 4) ghi "Thung Trúc Gió Hát", bàn cờ + Đấu chữ, Tạp hoá, bảng nhiệm vụ', () => {
     const m = mapOf(HOME_SCENE);
     expect(m.labels.filter((l) => l.kind === 'khu').map((l) => l.text)).toEqual([
       'Sân Cổ Thụ',
@@ -65,7 +65,7 @@ describe('bản đồ vùng — đủ mọi cảnh (R-BANDO-2)', () => {
     expect(Math.round(gate!.z)).toBe(54);
     // V-57: vòng "Trúc Lâm" cuối trục đông – tây (41,2; 4), khe hàng trúc mép đông
     expect(gates.find((g) => g.scene === 'rung-truc')).toMatchObject({ x: 41.2, z: 4 });
-    expect(m.labels.filter((l) => l.kind === 'cong').map((l) => l.text).sort()).toEqual(['Nhà của ta', 'Trúc Lâm']);
+    expect(m.labels.filter((l) => l.kind === 'cong').map((l) => l.text).sort()).toEqual(['Nhà của ta', 'Thung Trúc Gió Hát']);
     expect(m.icons.find((i) => i.kind === 'ban-co')).toMatchObject({ x: -30.5, z: 7.5 });
     expect(m.icons.find((i) => i.kind === 'ban-dau-chu')).toMatchObject({ x: -37.5, z: 7.5 });
     expect(m.icons.some((i) => i.kind === 'tap-hoa')).toBe(true);
@@ -108,22 +108,22 @@ describe('bản đồ vùng — đủ mọi cảnh (R-BANDO-2)', () => {
     expect(m.labels.filter((l) => l.kind === 'cong').map((l) => l.text)).toEqual(['Ra sân']);
   });
 
-  it('R-BANDO-2: Trúc Lâm — vòng "Khởi Nguyên Trấn" (−47,5; 4) đầu lối tây, vòng "Yên Vũ Lâu" (47,5; 4) cuối quan đạo đông, vòng "Nhạn Môn Quan" (0; −47) trên đèo bắc (V-66 B2)', () => {
+  it('R-BANDO-2: Thung Trúc Gió Hát — vòng "Khởi Nguyên Trấn" (−47,5; 4) đầu lối tây, vòng "Chợ Đêm Đèn Hoa" (47,5; 4) cuối quan đạo đông, vòng "Đỉnh Hạc Bay" (0; −47) trên đèo bắc (V-66 B2)', () => {
     const m = mapOf('rung-truc');
     const gates = m.icons.filter((i) => i.kind === 'cong-canh');
     expect(gates.find((g) => g.scene === HOME_SCENE)).toMatchObject({ x: -47.5, z: 4 });
     expect(gates.find((g) => g.scene === 'giang-nam')).toMatchObject({ x: 47.5, z: 4 });
     expect(gates.find((g) => g.scene === 'truong-thanh')).toMatchObject({ x: 0, z: -47 });
-    expect(m.labels.filter((l) => l.kind === 'cong').map((l) => l.text).sort()).toEqual(['Khởi Nguyên Trấn', 'Nhạn Môn Quan', 'Yên Vũ Lâu']);
+    expect(m.labels.filter((l) => l.kind === 'cong').map((l) => l.text).sort()).toEqual(['Chợ Đêm Đèn Hoa', 'Khởi Nguyên Trấn', 'Đỉnh Hạc Bay']);
   });
 
   // V-59: mỗi cảnh vẽ đủ dấu cổng + ghi tên nơi đến (không bị bỏ vì chồng nhãn khu)
   const GATE_NAMES: Record<string, string[]> = {
-    'giang-nam': ['Bồng Lai Đảo', 'Trúc Lâm', 'Tử Cấm Thành'],
-    'truong-thanh': ['Trúc Lâm', 'Tử Cấm Thành', 'Đôn Hoàng Lộ'],
-    'to-lua': ['Nhạn Môn Quan'],
-    'tu-cam-thanh': ['Nhạn Môn Quan', 'Yên Vũ Lâu'],
-    'bong-lai': ['Yên Vũ Lâu'],
+    'giang-nam': ['Cung Ngọc Đáy Biển', 'Thung Trúc Gió Hát', 'Rừng Nấm Tiên'],
+    'truong-thanh': ['Thung Trúc Gió Hát', 'Rừng Nấm Tiên', 'Thành Cát Ngủ Quên'],
+    'to-lua': ['Đỉnh Hạc Bay'],
+    'tu-cam-thanh': ['Đỉnh Hạc Bay', 'Chợ Đêm Đèn Hoa'],
+    'bong-lai': ['Chợ Đêm Đèn Hoa'],
   };
   for (const [id, names] of Object.entries(GATE_NAMES)) {
     it(`R-BANDO-2: ${NAMES[id]} — dấu cổng đi bộ ghi ${names.join(', ')} (V-59)`, () => {

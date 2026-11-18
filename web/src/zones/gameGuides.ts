@@ -130,7 +130,7 @@ const GUIDES: Record<string, GameGuide> = {
 
 /* ---------- 3 trò Trúc Lâm (V-66 B4 — R-LUU-1…5, R-MANG-1…5, R-CAM-1…4) ---------- */
 
-const TRUC = 'Trúc Lâm · Cách chơi';
+const TRUC = 'Thung Trúc Gió Hát · Cách chơi';
 
 /** 3 bảng Trúc Lâm — chữ theo thiết kế 2026-11-16.13 `CachChoi-doc-{luu-thuong,hai-mang,dan-cam}` (chuỗi `guideTrucLam`). */
 const TRUC_LAM_GUIDES: Record<string, GameGuide> = {

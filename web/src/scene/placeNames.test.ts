@@ -3,14 +3,14 @@ import { checkPlaceNames, checkPortalLabels, HOME_INSIDE, isHomeScene, mapPlaceI
 
 const places = [
   { id: 'van-uyen', ten: 'Khởi Nguyên Trấn' },
-  { id: 'rung-truc', ten: 'Trúc Lâm' },
+  { id: 'rung-truc', ten: 'Thung Trúc Gió Hát' },
 ];
 
 describe('tên nơi: đặc tả cảnh khớp bản đồ (R-HANH-1, V-50)', () => {
   it('R-HANH-1: site.name trùng ten cùng mã → không lỗi; tông môn đọc là van-uyen; cảnh không có trên bản đồ bỏ qua', () => {
     const scenes = new Map([
       ['tong-mon', 'Khởi Nguyên Trấn'],
-      ['rung-truc', 'Trúc Lâm'],
+      ['rung-truc', 'Thung Trúc Gió Hát'],
       ['thu-nghiem', 'Tên gì cũng được'],
     ]);
     expect(checkPlaceNames(scenes, places)).toEqual([]);
@@ -33,7 +33,7 @@ describe('nhãn vòng sáng cổng đi bộ = tên nơi đến (R-HANH-4, V-59)'
   const map = [...places, { id: 'nha-ta', ten: 'Nhà của ta' }];
   it('R-HANH-4: nhãn trùng ten của nơi đến (trấn đọc là van-uyen); cổng về Nhà của ta ghi "Về nhà"; cổng không nhãn bỏ qua', () => {
     const portals = new Map([
-      ['tong-mon', [{ scene: 'rung-truc', label: 'Trúc Lâm' }, { scene: 'nha-ta', label: 'Về nhà' }]],
+      ['tong-mon', [{ scene: 'rung-truc', label: 'Thung Trúc Gió Hát' }, { scene: 'nha-ta', label: 'Về nhà' }]],
       ['rung-truc', [{ scene: 'tong-mon', label: 'Khởi Nguyên Trấn' }, { scene: 'thu-nghiem' }]],
     ]);
     expect(checkPortalLabels(portals, map)).toEqual([]);
@@ -42,7 +42,7 @@ describe('nhãn vòng sáng cổng đi bộ = tên nơi đến (R-HANH-4, V-59)'
   it('R-HANH-4: nhãn lệch tên bản đồ → báo lỗi', () => {
     const errs = checkPortalLabels(new Map([['tong-mon', [{ scene: 'rung-truc', label: 'Rừng trúc' }]]]), map);
     expect(errs).toHaveLength(1);
-    expect(errs[0]).toContain('Trúc Lâm');
+    expect(errs[0]).toContain('Thung Trúc Gió Hát');
   });
 });
 

@@ -28,7 +28,7 @@ function walk(x: number, z: number, dx: number, dz: number, dist: number): { x: 
   return p;
 }
 
-describe('Trúc Lâm — địa hình + phạm vi (V-66 B2)', () => {
+describe('Thung Trúc Gió Hát — địa hình + phạm vi (V-66 B2)', () => {
   it('R-VA-2: ranh đi được x −50 … 50, z −50 … 50; bãi hạc (sân đá (0; 39)) ở nam, sông lớn ngoài ranh nam', () => {
     expect(spec.bounds).toEqual({ enabled: true, from: [-50, -50], to: [50, 50] });
     expect(spec.stoneYard.center).toEqual([0, 39]);

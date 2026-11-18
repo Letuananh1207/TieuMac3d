@@ -5,16 +5,16 @@ library;
 /// Tên hiển thị của các vùng theo mã cảnh (R-HANH-1, V-50). Nguồn là `ten` trong `design/scene/ban-do/ban-do.json`
 /// (test `region_names_test.dart` so khớp); mã cảnh không đổi. Chuỗi giao diện nêu tên vùng thì lấy ở đây.
 const regionNames = <String, String>{
-  'rung-truc': 'Trúc Lâm',
-  'giang-nam': 'Yên Vũ Lâu',
-  'bong-lai': 'Bồng Lai Đảo',
-  'truong-thanh': 'Nhạn Môn Quan',
-  'tu-cam-thanh': 'Tử Cấm Thành',
-  'to-lua': 'Đôn Hoàng Lộ',
+  'rung-truc': 'Thung Trúc Gió Hát',
+  'giang-nam': 'Chợ Đêm Đèn Hoa',
+  'bong-lai': 'Cung Ngọc Đáy Biển',
+  'truong-thanh': 'Đỉnh Hạc Bay',
+  'tu-cam-thanh': 'Rừng Nấm Tiên',
+  'to-lua': 'Thành Cát Ngủ Quên',
 };
 
 /// Vùng học bài từ (vùng đầu, R-HANH-3) — mặc định của `region` khi trang không gửi.
-const firstRegion = 'Trúc Lâm';
+const firstRegion = 'Thung Trúc Gió Hát';
 
 /// Giáo trình từ vựng (R-TU-1): số bài + số từ — khớp `BAI_HOC` / `TONG_TU` của `web/src/zones/tuVung/` (test
 /// `tu_vung_test.dart` đọc `bai.ts` so số bài). Bảng nhiệm vụ dùng để biết đã học hết bài chưa (R-NV-1).

@@ -8,7 +8,7 @@ const peak = (a: Float32Array, from = 0, to = a.length): number => {
   return m;
 };
 
-describe('Tiếng Trúc Lâm tự tổng hợp', () => {
+describe('Tiếng Thung Trúc Gió Hát tự tổng hợp', () => {
   it('R-AM-3: róc rách ≤ 4 m đầy, 9,5 m → 0,5, ≥ 15 m tắt', () => {
     expect(waterVolume(3)).toBe(1);
     expect(waterVolume(9.5)).toBeCloseTo(0.5);

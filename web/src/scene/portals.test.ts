@@ -89,7 +89,7 @@ describe('cổng bấm nút (V-71 cửa gian trong "Ra sân", V-81 mọi cổng 
   });
 
   it('R-HANH-4 (V-81): chữ trên nút — "Đi <nơi đến>", về trấn "Về Khởi Nguyên Trấn", nhãn đã là lời mời giữ nguyên', () => {
-    expect(portalButtonText({ scene: 'rung-truc', label: 'Trúc Lâm' })).toBe('Đi Trúc Lâm');
+    expect(portalButtonText({ scene: 'rung-truc', label: 'Thung Trúc Gió Hát' })).toBe('Đi Thung Trúc Gió Hát');
     expect(portalButtonText({ scene: 'tong-mon', label: 'Khởi Nguyên Trấn' })).toBe('Về Khởi Nguyên Trấn');
     expect(portalButtonText({ scene: 'nha-ta', label: 'Về nhà' })).toBe('Về nhà');
     expect(portalButtonText({ scene: 'nha-ta-trong', label: 'Vào nhà' })).toBe('Vào nhà');

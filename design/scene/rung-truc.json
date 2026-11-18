@@ -1,6 +1,6 @@
 {
   "site": {
-    "name": "Trúc Lâm",
+    "name": "Thung Trúc Gió Hát",
     "han": "竹林",
     "areas": [
       {
@@ -1175,7 +1175,7 @@
         ],
         "rotY": 270
       },
-      "label": "Yên Vũ Lâu"
+      "label": "Chợ Đêm Đèn Hoa"
     },
     {
       "scene": "truong-thanh",
@@ -1196,7 +1196,7 @@
         ],
         "rotY": 0
       },
-      "label": "Nhạn Môn Quan"
+      "label": "Đỉnh Hạc Bay"
     }
   ],
   "dayNight": {

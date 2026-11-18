@@ -21,7 +21,7 @@ const base: ToolContext = {
 const at = (o: Partial<ToolContext>): ToolContext => ({ ...base, ...o });
 
 describe('thanh công cụ (R-THANH-1)', () => {
-  it('R-THANH-1: 5 nút theo thứ tự, tên tiếng Việt; ở Trúc Lâm còn 2 việc → hiện, Nhiệm vụ chấm 2', () => {
+  it('R-THANH-1: 5 nút theo thứ tự, tên tiếng Việt; ở Thung Trúc Gió Hát còn 2 việc → hiện, Nhiệm vụ chấm 2', () => {
     expect(TOOL_ORDER.map((id) => TOOL_NAMES[id])).toEqual(['Bản đồ', 'Về nhà', 'Biểu cảm', 'Túi đồ', 'Nhiệm vụ']);
     for (const id of TOOL_ORDER) expect(TOOL_NAMES[id]).not.toMatch(/\p{Script=Han}/u); // R-HUD-4
     const v = toolbarView(at({ tasksLeft: 2 }));

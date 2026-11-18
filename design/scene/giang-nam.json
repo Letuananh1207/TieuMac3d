@@ -1,6 +1,6 @@
 {
   "site": {
-    "name": "Yên Vũ Lâu",
+    "name": "Chợ Đêm Đèn Hoa",
     "han": "江南",
     "areas": [
       {
@@ -886,7 +886,7 @@
         ],
         "rotY": 90
       },
-      "label": "Trúc Lâm"
+      "label": "Thung Trúc Gió Hát"
     },
     {
       "scene": "tu-cam-thanh",
@@ -907,7 +907,7 @@
         ],
         "rotY": 0
       },
-      "label": "Tử Cấm Thành"
+      "label": "Rừng Nấm Tiên"
     },
     {
       "scene": "bong-lai",
@@ -928,7 +928,7 @@
         ],
         "rotY": 270
       },
-      "label": "Bồng Lai Đảo"
+      "label": "Cung Ngọc Đáy Biển"
     }
   ],
   "dayNight": {

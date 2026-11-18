@@ -37,7 +37,7 @@ describe('cuộn Tĩnh toạ — 4 ô trên giấy (R-ON-8; thiết kế 2026-11
       ['daily', 'thuong', 'Còn 2 việc'],
       ['soon', 'sap', ''],
     ]);
-    expect(v.hint).toBe('Chưa học từ nào. Sang Trúc Lâm, gặp Trúc Lão ở bãi hạc đáp để học bài đầu tiên.');
+    expect(v.hint).toBe('Chưa học từ nào. Sang Thung Trúc Gió Hát, gặp Trúc Lão ở bãi hạc đáp để học bài đầu tiên.');
   });
 
   it('R-ON-8: xong cả 2 việc → "Đã xong hôm nay", không chấm son; không biết tiến độ → "Xem việc hôm nay"; không ô ôn / học', () => {

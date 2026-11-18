@@ -14,7 +14,7 @@ describe('túi đồ (R-TUI-1)', () => {
     expect(bagView({ garden: null, home: null, book: null, coins: 0 }).fert).toBe(0);
   });
 
-  it('R-TUI-1: ở Trúc Lâm, túi 3 hạt Cải ngọt, kho 4 Ngô, đang mượn HSK 1 → Cải ngọt × 3, Ngô × 4, HSK 1', () => {
+  it('R-TUI-1: ở Thung Trúc Gió Hát, túi 3 hạt Cải ngọt, kho 4 Ngô, đang mượn HSK 1 → Cải ngọt × 3, Ngô × 4, HSK 1', () => {
     const v = bagView({ garden: garden({ cai: 3 }, { ngo: 4 }), home: null, book: { title: 'HSK 1', subtitle: 'Nhập môn' }, coins: 1280 });
     expect(v.seeds.items).toEqual([{ crop: 'cai', name: 'Cải ngọt', n: 3 }]);
     expect(v.crops.items).toEqual([{ crop: 'ngo', name: 'Ngô', n: 4 }]);
@@ -29,14 +29,14 @@ describe('túi đồ (R-TUI-1)', () => {
     expect(v.crops.total).toBe(14);
   });
 
-  it('R-TUI-1: ngăn Lâm sản — Măng × n, Măng to × n; trống → "Hái măng ở rừng Trúc Lâm"', () => {
+  it('R-TUI-1: ngăn Lâm sản — Măng × n, Măng to × n; trống → "Hái măng ở Thung Trúc Gió Hát"', () => {
     const v = bagView({ ...empty, forest: { 'mang-to': 1, mang: 5 } });
     expect(v.forest.items).toEqual([
       { kind: 'mang', name: 'Măng', n: 5 },
       { kind: 'mang-to', name: 'Măng to', n: 1 },
     ]);
     expect(v.forest.total).toBe(6);
-    expect(bagView(empty).forest).toEqual({ total: 0, items: [], empty: 'Hái măng ở rừng Trúc Lâm' });
+    expect(bagView(empty).forest).toEqual({ total: 0, items: [], empty: 'Hái măng ở Thung Trúc Gió Hát' });
   });
 
   it('R-TUI-1: mục trống → dòng chỉ chỗ lấy (chưa có hạt → Tạp hoá)', () => {

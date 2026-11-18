@@ -85,7 +85,7 @@ describe('cổng nối vùng lân cận (R-HANH-4, V-59, V-81)', () => {
         expect(portalButtonText(p), `${id} → ${p.scene}`).toBe(want(id, p));
       }
     }
-    expect(portalButtonText(portalOf(HOME_SCENE, 'rung-truc')!)).toBe('Đi Trúc Lâm');
+    expect(portalButtonText(portalOf(HOME_SCENE, 'rung-truc')!)).toBe('Đi Thung Trúc Gió Hát');
   });
 
   for (const c of NEW) {
