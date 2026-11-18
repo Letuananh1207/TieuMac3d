@@ -40,6 +40,23 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
 - Ảnh: `design/screens/Canh-cho-dem-{toan-canh,cong-trinh,vao}.png` (cùng 3 góc concept). Canvas 3D: chưa đăng (nhánh việc —
   đăng sau khi gộp main).
 - File: `design/scene/giang-nam.json`.
+## 2026-11-18.4 — Tên 6 map thế giới bộ 2 vào game (V-107)
+
+- Loại: chuỗi · dữ liệu · luồng/luật. Việc V-20261118-107, kế hoạch `docs/tasks/2026-11-18-ten-map-moi.md`. Nguồn duyệt:
+  `docs/y_tuong/2026-11-17-the-gioi-moi.md` (bộ 2, giữ mã), phiếu `docs/phieu_thiet_ke/2026-11-17-concept-the-gioi-moi.md`, mục 2026-11-18.2.
+- **Giữ mã cảnh, đổi tên hiển thị**: `rung-truc` Thung Trúc Gió Hát · `giang-nam` Chợ Đêm Đèn Hoa · `tu-cam-thanh` Rừng Nấm Tiên ·
+  `bong-lai` Cung Ngọc Đáy Biển · `truong-thanh` Đỉnh Hạc Bay · `to-lua` Thành Cát Ngủ Quên. Giữ Khởi Nguyên Trấn, Nhà của ta.
+  Tên công trình / NPC trong vùng (Vọng Trúc Đình, Khúc Thuỷ Đài, Trúc Lão, Trúc Ông…) chưa đổi.
+- Dữ liệu: `scene/ban-do/ban-do.json` `noi[].ten`; `site.name` + nhãn cổng (`label`) ở 7 đặc tả cảnh (chỉ trường tên — bố cục không đụng).
+  Tên dài nhất 18 ký tự (giới hạn 20): nút "Đi Thung Trúc Gió Hát", màn tải, nhãn bản đồ — chờ thử máy.
+- Bản đồ truyền tống `scene/ban-do/ban-do-goc.png` vẽ lại bằng `ve-ban-do.html` (tên do trang vẽ, không lấy chữ từ ảnh Gemini): biểu
+  tượng mới — Tháp Sáo Trúc, Cây Đèn Trăm Tầng bên sông, Lò Thuốc Tiên trên nấm khổng lồ (rải nấm nhỏ quanh), Cung Vỏ Sò dưới làn
+  nước (đảo cũ thành vùng nước nông, bong bóng), **đình bát giác cột son + tùng cổ trên cột đá, hạc bay — không tổ hạc**, Cổng Thành
+  Vùi Cát + đầu lạc đà đá. Màu miền theo phiếu (lam đá, tím nhạt, lam chiều). Bỏ Trường Thành ở mép trên và tên miền Hán Việt in
+  trên giấy (Tây Vực, Kinh Kỳ…); mép trên / dưới là sương "chưa khám phá" (không chữ). Vị trí, vùng chạm, đường nối V-59 giữ nguyên.
+- Luật: R-HANH-1 (bộ tên mới, không còn tên cũ ở chữ hiển thị) + tên vùng trong 33 quy tắc khác — Xác nhận `chờ`.
+- Ảnh: `screens/BanDo-the-gioi-moi-ngang.png` (900 × 600), `screens/BanDo-the-gioi-moi-doc.png` (390 × 844) — Canvas 3D `?bando&chup`.
+- File: `scene/ban-do/{ban-do.json,ban-do-goc.png,ve-ban-do.html}`, `scene/{rung-truc,giang-nam,tu-cam-thanh,bong-lai,truong-thanh,to-lua,scene}.json`, 2 ảnh `screens/`.
 
 ## 2026-11-18.2 — Thế giới bộ 2: chốt ảnh concept 6 map (V-79)
 
