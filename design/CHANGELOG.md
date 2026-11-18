@@ -57,6 +57,35 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
 - Luật: R-HANH-1 (bộ tên mới, không còn tên cũ ở chữ hiển thị) + tên vùng trong 33 quy tắc khác — Xác nhận `chờ`.
 - Ảnh: `screens/BanDo-the-gioi-moi-ngang.png` (900 × 600), `screens/BanDo-the-gioi-moi-doc.png` (390 × 844) — Canvas 3D `?bando&chup`.
 - File: `scene/ban-do/{ban-do.json,ban-do-goc.png,ve-ban-do.html}`, `scene/{rung-truc,giang-nam,tu-cam-thanh,bong-lai,truong-thanh,to-lua,scene}.json`, 2 ảnh `screens/`.
+## 2026-11-18.6 — Dựng Rừng Nấm Tiên (V-109)
+
+- Loại: cảnh 3D — **bố cục** + **ngoại hình**, vùng `tu-cam-thanh` (giữ mã; tên hiển thị vẫn "Tử Cấm Thành" — đổi tên là việc
+  `viec/ten-map-moi`). Phiên code V-109 dựng theo ảnh concept đã chốt (2026-11-18.2,
+  `design/concept/rung-nam-tien/{toan-canh,cong-trinh,vao}.png`, phiếu `docs/phieu_thiet_ke/2026-11-17-concept-rung-nam-tien.md`).
+- Bố cục (x đông, z nam): **Nấm Mẹ** (0; 34) thân ∅ 5,2 m, mũ phẳng hồng ∅ 25 m mặt mũ cao 10 m; **thang gỗ xoắn** 1,25 vòng
+  quanh thân (rộng 1,6 m, chân phía nam, lan can dây) lên **giếng thang** giữa mũ; trên mũ **Lò Thuốc Tiên** (đỉnh đồng ba chân
+  hai quai ∅ ≈ 5,5 m cao ≈ 6,7 m, gỉ ngọc mép miệng / quai, lửa nhỏ, khói tím cuộn 7 cụm mây bay lên) lệch bắc 8,3 m, 5 hũ sứ
+  (tây), bàn đá + 2 đôn (đông). Bãi hạc (0; 70) giữ; lối đất bắc qua **cầu ván** (0; 52) tới chân Nấm Mẹ; suối uốn tây bắc →
+  đông nam (rộng 2,6, lòng trũng 0,6) + cầu ván thứ hai (24; 51,5); lối tây ra cổng "Nhạn Môn Quan" (−63; 54), lối nam ra cổng
+  "Yên Vũ Lâu" (0; 81) — cả hai cổng giữ nguyên. 4 **nhà nấm** cửa tròn (kín, cao 5–6,4 m): (−17,2; 38,4), (17,4; 38,6),
+  (27,6; 70), (−31; 66,5). 6 **luống thảo dược** tròn quanh chân Nấm Mẹ + bãi hạc, 16 cụm nấm nhỏ ven lối, 58 **nấm khổng lồ**
+  (cao 7–18 m, mũ vòm / nón / phẳng hồng · san hô · đào · kem chấm) dày dần ra ranh. Ranh đi được x −66 … 44, z 2 … 86.
+  Khu (tên Việt): Lò Thuốc Tiên · Bãi Hạc · Vườn Thảo Dược · Xóm Nấm.
+- Ngoại hình: kiểu nhìn **mềm**; trời tím → hồng → hồng tím chân trời, sương tím `#d9c6e4` 45–190 m, nắng chiều hồng từ tây
+  nam, đất rêu lục, đồi đá tím quanh ranh, núi xa tím nhạt. Không chữ trong cảnh (R-HUD-4).
+- Trường mới (code, mặc định giữ cảnh cũ): `mushroomForest` { `giants`, `houses`, `herbBeds`, `clusters`, `mother`, `seed`,
+  `colors` } — `web/src/scene/rungNamSpec.ts`; dựng `vat_rung_nam.ts`, `namMe.ts`; thang xoắn + mũ khoét giếng là tấm đi được
+  mới (`collision/ground.ts` `helix`, `hole`).
+- Khác concept: (1) mũ Nấm Mẹ có **giếng thang** tròn giữa mũ (concept: thang chui dưới mũ, không thấy lối lên) — cần để đi lên
+  được; thân nấm dừng ngang gầm mũ; (2) lò lệch về bắc (giếng chiếm giữa mũ); (3) gầm mũ nấm cùng màu mũ (concept gầm kem
+  nhạt hơn); (4) suối không có đá cuội ven bờ; (5) cảnh rộng hơn ảnh (giữ chỗ cổng / bãi hạc cũ).
+- Luật: R-VA-1 (nấm, nhà nấm, luống chặn; cầu ván), R-VA-3 (thang xoắn + mặt mũ Nấm Mẹ) — sổ + online (Chờ).
+- `scene:check`: Không có lỗi. Hiệu năng (Canvas 3D, trước → sau): góc vào 26 → 55 draw call, 34k → 86k tam giác; trên xuống
+  43 → 74 / 38k → 92k; trên mũ cạnh lò 36 / 79k. fps chưa đo (máy chụp không GPU) — chờ thử máy.
+- Ảnh: `screens/Canh-rung-nam-toan-canh.png`, `Canh-rung-nam-cong-trinh.png`, `Canh-rung-nam-vao.png` (cùng 3 góc concept).
+- Chưa: Canvas 3D chưa đăng lại (phiên chính đăng sau khi gộp); bản đồ lớn chưa vẽ nấm / nhà nấm (lối đất không vẽ — R-BANDO-2);
+  NPC (bà Thuốc…), trò nấu thuốc chờ chủ đề từ vựng.
+- File: `scene/tu-cam-thanh.json`, `screens/Canh-rung-nam-*.png`.
 
 ## 2026-11-18.2 — Thế giới bộ 2: chốt ảnh concept 6 map (V-79)
 
