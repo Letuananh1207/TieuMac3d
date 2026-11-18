@@ -6,8 +6,10 @@ Phiên Claude (VS Code hay thiết kế) tự chạy Gemini thay người dùng 
 - Thư viện: [`gemini_webapi`](https://github.com/HanaokaYuzu/Gemini-API) 2.1.1 (AGPL-3.0) — **không chính thức**, gọi web
   gemini.google.com bằng cookie tài khoản **Gemini Pro** của người dùng. Người dùng đã chọn và đã biết rủi ro (2026-11-16):
   Google có thể chặn / khoá tài khoản, thư viện hỏng khi Google đổi web. Hỏng → báo người dùng, quay về chạy Gemini tay.
-- Python riêng ngoài repo: `C:/ai3d/gemini/venv` (gói ghim: `scripts/gemini-requirements.txt`). Cài một lần:
-  `bash .claude/skills/ui-design/scripts/gemini-anh.sh cai`.
+- Python riêng ngoài repo: `C:/ai3d/gemini/venv` (gói ghim: `scripts/gemini-requirements.txt`). **Mỗi máy mới** (sau
+  `git pull`): cần Python ≥ 3.10 (script tự tìm `py -3.11` → `py -3` → `python3` → `python`; venv Windows hay macOS / Linux
+  đều được) → `bash .claude/skills/ui-design/scripts/gemini-anh.sh cai` → đặt cookie (dưới) → `kiem`. Đổi chỗ để:
+  `GEMINI_GOC=<thư mục>`; ép Python: `GEMINI_PY=<đường dẫn python>`.
 - Ảnh nháp: `C:/ai3d/gemini/ra/<tên>/<góc>-<n>.png` + `tao.json` (câu lệnh, tham chiếu, bản chọn). Không vào repo.
 
 ## Cookie (người dùng làm, một lần — lặp lại khi hết hạn)
