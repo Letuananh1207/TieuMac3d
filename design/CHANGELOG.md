@@ -121,6 +121,43 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
 - Ảnh: `screens/Canh-cung-ngoc-toan-canh.png`, `Canh-cung-ngoc-cong-trinh.png`, `Canh-cung-ngoc-vao.png` (cùng 3 góc concept).
 - Chưa: Canvas 3D chưa đăng lại (phiên chính đăng sau khi gộp); trò "đưa cá về hang" / "nhặt ngọc trai" chờ chủ đề từ vựng.
 - File: `scene/bong-lai.json`, `screens/Canh-cung-ngoc-*.png`.
+## 2026-11-18.8 — Dựng Đỉnh Hạc Bay (V-111)
+
+- Loại: cảnh 3D — **bố cục** + **ngoại hình**, vùng `truong-thanh` (giữ mã; tên hiển thị "Đỉnh Hạc Bay" — V-107). Phiên code V-111 dựng
+  theo ảnh concept đã chốt (2026-11-18.2, `design/concept/dinh-hac-bay/{toan-canh,cong-trinh,vao}.png`, phiếu
+  `docs/phieu_thiet_ke/2026-11-17-concept-dinh-hac-bay.md` — không tổ hạc).
+- Bố cục (x đông, z nam): **Cột Đình Hạc** (0; −4) cao 40 m, ∅ 15 m (lõi + vòng khối đá vát mép, xếp lệch mạch); **bậc đá
+  xoắn** rộng 1,6 m (dốc 32° mép trong) từ chân phía nam lệch tây (góc 330°) rẽ sang đông lên **gờ đá** cao 10,5 m (rộng 2,6 m,
+  chạy vòng đông → bắc → tây), cuối gờ là bậc thứ hai lên **thềm cỏ đỉnh**: **đình bát giác** (nền đá ∅ 6,6 cao 0,45, 8 cột
+  son 2,7 m, lan can vôi trắng, xà son, mái ngói xám cong vểnh 8 góc, chóp bầu; cao 7 m; lối vào nam) lệch bắc 1,2 m,
+  **tùng cổ** gốc (4,8; 3,2) so với tâm cột nghiêng ra mép đông nam, **6 hạc** trắng đỉnh đỏ đứng (chóp mái, 2 góc mái,
+  2 cành tùng, thềm). **3 cầu treo** gỗ (ván, cột, dây võng) ở độ cao 10,5 m: gờ cột chính ↔ gờ cột (24; −9) dọc z = −9,
+  ↔ gờ cột (−24; −5) dọc z = −5; gờ cột (−24; −5) ↔ đỉnh cột thấp (−24; −28) dọc x = −24. 20 **cột phụ** cao 10,5–38 m (đỉnh
+  cỏ, 1–2 tùng, vài phong đỏ), 12 trong ranh, 8 xa làm nền. Sông uốn tây → đông sau cột chính (rộng 3,2, trũng 1 m), **thác**
+  trên mặt nam cột (32; −32). Rừng tùng lá kim (14 cụm) + 7 phong đỏ dưới thung. Bãi hạc (0; 39), chỗ xuất phát (−1,25; 39),
+  3 cổng (nam "Thung Trúc Gió Hát" (0; 49), tây "Thành Cát Ngủ Quên" (−43,2; −3), đông "Rừng Nấm Tiên" (43,2; −3)) giữ nguyên;
+  lối đá sáng từ bãi hạc tới 3 cổng + tới chân bậc. Ranh đi được x −46 … 46, z −40 … 52. Khu (tên Việt): Bãi Hạc · Cột Đình
+  Hạc · Cầu Treo. 2 đàn hạc bay (3 con quanh đỉnh cột 47 m, 3 con quanh thung 30 m).
+- Ngoại hình: kiểu nhìn **mềm**; thu trời trong buổi sáng — trời lam `#6fa9dc` → `#8ec3e6` → chân trời `#dceef5`, sương
+  `#d3e4ec` 60–210 m, nắng vàng nhẹ, đất lục `#7fa86a`, đồi xanh quanh thung, núi xa lam xám; không biển mây. Không chữ
+  trong cảnh (R-HUD-4).
+- Trường mới (code, mặc định giữ cảnh cũ): `pillarValley` { `peak`, `pillars`, `ledgeWidth`, `bridges`, `bridgeWidth`, `firs`,
+  `maples`, `seed`, `colors` } — `web/src/scene/dinhHacSpec.ts` (kiểm: dốc bậc, khoảng đầu giữa các vòng bậc / gờ, đình +
+  tùng trên thềm, lối ra bậc, cột chồng nhau, đầu cầu nằm đúng trên gờ / đỉnh); dựng `vat_dinh_hac.ts`, `dinhHac.ts`. Gờ cột
+  phụ chỉ là cung quanh đầu cầu; gờ / bậc là tấm `helix` (gờ = dốc 0).
+- Khác concept: (1) bậc xoắn lên **tới tận đỉnh** (concept chỉ tới gờ 1/3) — bậc thứ hai bắt đầu từ cuối gờ, vòng ~1 vòng quanh
+  thân, nhìn thấy hai dải bậc; (2) bậc đổi hướng cho đi được: chân bậc lệch tây, lên sang phải như concept nhưng dốc 32° (concept
+  dốc đứng hơn, ngắn hơn); (3) gờ cột chính chạy nửa vòng sau thân (concept chỉ một bệ nhỏ); (4) cầu treo thẳng trục, mặt ván
+  phẳng (không võng); (5) cột tròn đều hơn, không vách đá nứt, đỉnh cột phụ cùng một kiểu; (6) hạc đứng là khối code (hạc bay
+  là hạc khối của `fauna.ts`), không dùng `hac.glb` (model dang cánh, không có dáng đứng); (7) đồng cỏ không nhô cao làm cao
+  nguyên — bãi hạc ngang thung.
+- Luật: R-VA-1 (cột đá, tùng lá kim, phong chặn; 3 cầu treo), R-VA-3 (bậc xoắn + gờ + thềm + đình Cột Đình Hạc) — sổ + online (Chờ).
+- `scene:check`: Không có lỗi. Hiệu năng (Canvas 3D, trước → sau): góc chơi ở bãi hạc 20 → 47 draw call, 33k → 87k tam
+  giác; trên xuống 40 → 81 / 40k → 97k; trên thềm đỉnh 35 / 85k. fps chưa đo (máy chụp không GPU) — chờ thử máy.
+- Ảnh: `screens/Canh-dinh-hac-toan-canh.png`, `Canh-dinh-hac-cong-trinh.png`, `Canh-dinh-hac-vao.png` (cùng 3 góc concept).
+- Chưa: Canvas 3D chưa đăng lại (phiên chính đăng sau khi gộp); bản đồ lớn vùng này chưa vẽ cột / cầu; trò cưỡi hạc qua vòng,
+  NPC chờ chủ đề từ vựng.
+- File: `scene/truong-thanh.json`, `screens/Canh-dinh-hac-*.png`.
 
 ## 2026-11-18.3 — Đổi tên NPC cũ + xưng hô theo tuổi (V-106)
 
