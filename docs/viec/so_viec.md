@@ -121,11 +121,11 @@ ha-ta-lowpoly.glb` |
 | V-20261117-81 | Cổng đi bộ (vòng sáng sang vùng khác / về nhà) không tự sang ngay — đứng vào hiện nút như vào nhà, bấm mới đi | lead nhỏ | chờ thử máy — đã gộp 2026-11-17 (luật R-HANH-4, R-NHA-1, R-MAN-2 đã đồng bộ) | R-HANH-4 | duyệt ảnh |
 | V-20261118-82 | Vườn ở Nhà của ta: hàng rào quanh vườn khó đi vào, mỗi lần vào vườn thấy khó chịu, mệt — nghiên cứu 摩尔 / game được yêu thích rồi cải thiện | khao-cuu + canh | chờ thử máy — đã gộp (bố cục "Trục giữa", thiết kế 2026-11-18.1; luật R-NHA-1/3/5/7, R-VUON-1/2/7/8, R-HANH-4/5, R-BANDO-2 đã đồng bộ) | R-VUON-1, R-VUON-2, R-NHA-5 (+R-NHA-1 nếu B) | thử (app): mới vào Nhà của ta thấy luống 2 bên lối + nhà cuối lối; hạc đáp có chạm thùng không; chạm luống xa → tự đi tới rồi mở vòng, kéo joystick giữa đường thì huỷ; đi lên sân → vòng đóng; đi xuyên viền đá được; đồ cũ ở chỗ nay là nhà/luống tự dời không mất; fps Android |
 | V-20261118-106 | NPC tạo bừa bãi → tham khảo 摩尔: chuẩn hoá tên, tính cách, giới tính, phong cách, vai trò NPC (giữ hình dáng hiện tại; chỉ NPC từ nay) | khao-cuu + y-tuong | chờ thử máy — đã gộp (tên NPC cũ + xưng hô theo tuổi; R-NPC-11 mới + 22 luật đồng bộ; CHANGELOG 2026-11-18.3) | R-NPC-* | thử: thoại Thư cô nương, La đại thúc, Kỳ Muội, Tiểu nhị, Mặc Ông, Măng bà bà (bán măng), Lưu Thương (tên văn nhân), thẻ kết quả cờ / Đấu chữ |
-| V-20261118-107 | Đổi tên 6 map thế giới bộ 2 + bản đồ (giữ mã cảnh) | lead | đang làm — nhánh `viec/ten-map-moi` | R-BANDO-*, R-HANH-* | thử máy khi xong |
-| V-20261118-108 | Dựng Chợ Đêm Đèn Hoa (`giang-nam`) theo concept | canh + lead | đang làm — nhánh `viec/cho-dem` | R-VUNG-* | xem ảnh so concept + thử máy |
-| V-20261118-109 | Dựng Rừng Nấm Tiên (`tu-cam-thanh`) theo concept | canh + lead | đang làm — nhánh `viec/rung-nam` | R-VUNG-* | xem ảnh so concept + thử máy |
-| V-20261118-110 | Dựng Cung Ngọc Đáy Biển (`bong-lai`) | canh + lead | nhận — đợt 2 (sau 108/109) |  | — |
-| V-20261118-111 | Dựng Đỉnh Hạc Bay (`truong-thanh`) | canh + lead | nhận — đợt 2 |  | — |
-| V-20261118-112 | Dựng Thành Cát Ngủ Quên (`to-lua`) | canh + lead | nhận — đợt 2 |  | — |
-| V-20261118-113 | Dựng Thung Trúc Gió Hát (`rung-truc`, thêm Tháp Sáo Trúc, giữ địa hình B2/B3) | canh + lead | nhận — đợt 2 |  | — |
-| V-20261118-114 | Nhà đang rất trống trải — nghiên cứu nên thêm gì, làm gì (ngoài đảo + gian trong) | y-tuong | chờ trả lời — phiếu `docs/y_tuong/2026-11-18-nha-song-dong.md` (16 ý, đợt 1/2) + phiếu concept tuỳ chọn đã gộp | R-NHA-*, R-VUON-* | chọn ý đợt 1 |
+| V-20261118-107 | Đổi tên 6 map thế giới bộ 2 + bản đồ (giữ mã cảnh) | lead | chờ thử máy — đã gộp (tên mới dài tới 18 ký tự: xem nút "Đi …", màn tải, nhãn bản đồ) | R-BANDO-*, R-HANH-* | thử máy khi xong |
+| V-20261118-108 | Dựng Chợ Đêm Đèn Hoa (`giang-nam`) theo concept | canh + lead | chờ thử máy — đã gộp (fps Android, độ sáng đêm, lên đài cây đèn) | R-VUNG-* | xem ảnh so concept + thử máy |
+| V-20261118-109 | Dựng Rừng Nấm Tiên (`tu-cam-thanh`) theo concept | canh + lead | chờ thử máy — đã gộp (fps trên mũ Nấm Mẹ, leo thang xoắn bằng joystick) | R-VUNG-* | xem ảnh so concept + thử máy |
+| V-20261118-110 | Dựng Cung Ngọc Đáy Biển (`bong-lai`) | canh + lead | đang làm — nhánh `viec/cung-ngoc` |  | — |
+| V-20261118-111 | Dựng Đỉnh Hạc Bay (`truong-thanh`) | canh + lead | đang làm — nhánh `viec/dinh-hac` |  | — |
+| V-20261118-112 | Dựng Thành Cát Ngủ Quên (`to-lua`) | canh + lead | đang làm — nhánh `viec/thanh-cat` |  | — |
+| V-20261118-113 | Dựng Thung Trúc Gió Hát (`rung-truc`, thêm Tháp Sáo Trúc, giữ địa hình B2/B3) | canh + lead | đang làm — nhánh `viec/thung-truc` |  | — |
+| V-20261118-114 | Nhà đang rất trống trải — nghiên cứu nên thêm gì, làm gì (ngoài đảo + gian trong) | y-tuong | chờ ảnh — phạm vi thu về nông trại (9 ý), phiếu `2026-11-18-concept-nong-trai-nha.md`, đang tạo ảnh Gemini | R-NHA-*, R-VUON-* | chọn ý đợt 1 |
