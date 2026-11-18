@@ -1,6 +1,6 @@
 # Phiếu: Ảnh concept Vườn dễ vào (Nhà của ta — `nha-ta`, đổi bố cục Vườn rau)
 
-- Trạng thái: chờ thiết kế (tạo ảnh Gemini → người dùng chọn **một** phương án → chốt)
+- Trạng thái: bỏ (thay bằng 2026-11-18-concept-nha-vuon-bo-cuc) — người dùng xem ảnh xong muốn đổi cả vị trí nhà + vườn.
 - Việc: V-20261118-82. Hồ sơ khảo cứu: `docs/tham_khao/vuon-de-vao.md` (nguyên tắc + số đo + nguồn). Quyết định 0006.
 - Người dùng: "vị trí của vườn và xung quanh vườn đang có hàng rào khó đi vào … khó chịu và mệt mỗi lần vào vườn".
 - Ảnh hiện tại (đính kèm Gemini): `design/screens/Canh-nha-ta-tren-v68.png` (đảo nhìn từ trên — vườn là ô đất cam bên phải lối

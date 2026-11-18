@@ -1,6 +1,6 @@
 # Vườn dễ vào — vị trí ruộng, rào, lối đi ở game nông trại được yêu thích (菜园 · 篱笆 · 动线)
-- Ngày: 2026-11-18 · Khu: Nhà của ta — Vườn rau · Việc: V-20261118-82 · Trạng thái: nháp — đã chuyển phiếu ảnh concept
-  `docs/phieu_thiet_ke/2026-11-18-concept-vuon-de-vao.md` (chờ người dùng tạo ảnh + chọn phương án).
+- Ngày: 2026-11-18 · Khu: Nhà của ta — Vườn rau · Việc: V-20261118-82 · Trạng thái: nháp — phiếu `2026-11-18-concept-vuon-de-vao.md` đã
+  bỏ; nguyên tắc vườn dùng tiếp trong `nha-vuon-bo-cuc.md` (bố cục lại cả nhà + vườn, phiếu `2026-11-18-concept-nha-vuon-bo-cuc.md`).
 - Yêu cầu (người dùng): "vị trí của vườn và xung quanh vườn đang có hàng rào khó đi vào … khó chịu và mệt mỗi lần vào vườn …
   nghiên cứu 摩尔 hoặc các game khác được yêu thích."
 - Chỉ học **bố cục và nhịp đi lại**, không chép hình / tên. Đọc kèm: `vuon-mole.md` (vòng làm vườn), `nha-rieng-game.md`
