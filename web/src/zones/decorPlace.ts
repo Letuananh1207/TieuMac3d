@@ -306,11 +306,20 @@ export function pathOpen(area: PlaceArea, blockers: readonly Rect[]): boolean {
   return g.goals.every((goal) => reached(g, seen, goal));
 }
 
+/** Món nay không hợp lệ khi vào cảnh (R-NHA-3) dời xa nhất bấy nhiêu mét tìm chỗ trống (đủ ra khỏi chân nhà chính 10,5 × 6 — V-82). */
+export const RELOCATE_RADIUS = 8;
+
 /**
- * Xếp lại món của một cảnh khi vào cảnh (R-NHA-3): lần lượt giữ món hợp lệ; món nay không hợp lệ (đổi cảnh, ô cũ) → dời tới chỗ hợp
- * lệ gần nhất trong 1,5 m; không có → về túi (bỏ khỏi danh sách). Món cảnh khác giữ nguyên. `changed` = phải lưu lại.
+ * Xếp lại món của một cảnh khi vào cảnh (R-NHA-3): lần lượt giữ món hợp lệ; món nay không hợp lệ (cảnh đổi bố cục — V-82; ô cũ) → dời
+ * tới chỗ hợp lệ gần nhất trong [radius] m (mặc định `RELOCATE_RADIUS`); không có → về túi (bỏ khỏi danh sách). Món cảnh khác giữ
+ * nguyên. `changed` = phải lưu lại.
  */
-export function settleScene(area: PlaceArea, items: readonly PlacedDecor[], shapeOf: (id: string) => DecorShape | undefined): { items: PlacedDecor[]; changed: boolean } {
+export function settleScene(
+  area: PlaceArea,
+  items: readonly PlacedDecor[],
+  shapeOf: (id: string) => DecorShape | undefined,
+  radius = RELOCATE_RADIUS,
+): { items: PlacedDecor[]; changed: boolean } {
   const kept: PlacedDecor[] = [];
   const here: PlacedDecor[] = [];
   let changed = false;
@@ -320,7 +329,7 @@ export function settleScene(area: PlaceArea, items: readonly PlacedDecor[], shap
       continue;
     }
     const spot = { x: snap(p.x), z: snap(p.z), rot: p.rot };
-    const s = checkSpot(area, here, shapeOf, p.item, spot).ok ? spot : nearestValid(area, here, shapeOf, p.item, spot, 1.5);
+    const s = checkSpot(area, here, shapeOf, p.item, spot).ok ? spot : nearestValid(area, here, shapeOf, p.item, spot, radius);
     if (!s) {
       changed = true;
       continue;

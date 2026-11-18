@@ -56,7 +56,7 @@ describe('Nhà của ta — phạm vi nhà (V-48)', () => {
     const west = walk(0, 0, -1, 0, 60);
     expect(west.x).toBeGreaterThan(-28);
     expect(west.x).toBeLessThan(-24);
-    const north = walk(-6, -12, 0, -1, 60); // bãi cỏ giữa nhà chính (x ≤ −9,75) và lối trục (V-68)
+    const north = walk(-12, -12, 0, -1, 60); // cánh cỏ tây, bên trái nhà chính (V-82)
     expect(north.z).toBeGreaterThan(-30);
     expect(north.z).toBeLessThan(-18);
   });
@@ -109,7 +109,7 @@ const at = (x: number, z: number, rot = 0) => ({ x, z, rot });
 describe('Nhà của ta — chỗ đặt đồ trang trí tự do (R-NHA-7, V-69)', () => {
   const area = homeArea();
 
-  it('R-NHA-7: Ao sen ở (0; 0) → đỏ "Lối đi"; bãi cỏ (8; 4) → được; chỗ xuất phát / bãi hạc → "Lối đi"', () => {
+  it('R-NHA-7: Ao sen ở (0; 0) → đỏ "Lối đi"; cánh cỏ đông cạnh vườn (8; 4) → được; chỗ xuất phát / bãi hạc → "Lối đi"', () => {
     expect(checkSpot(area, [], shapeOf, 'ao-sen', at(0, 0))).toMatchObject({ ok: false, label: 'Lối đi' });
     expect(checkSpot(area, [], shapeOf, 'mai', at(8, 4)).ok).toBe(true);
     expect(checkSpot(area, [], shapeOf, 'chau-lan', at(0.5, 6.5))).toMatchObject({ ok: false, label: 'Lối đi' });
@@ -117,32 +117,23 @@ describe('Nhà của ta — chỗ đặt đồ trang trí tự do (R-NHA-7, V-69
   });
 
   it('R-NHA-7: trước cửa nhà chính → "Cửa nhà"; sát luống → "Luống rau"; cạnh thùng → "Thùng thu mua"', () => {
-    expect(checkSpot(area, [], shapeOf, 'chau-lan', at(-15, -3.5))).toMatchObject({ ok: false, label: 'Cửa nhà' });
-    expect(checkSpot(area, [], shapeOf, 'chau-lan', at(6.1, -9.5))).toMatchObject({ ok: false, label: 'Luống rau' });
-    expect(checkSpot(area, [], shapeOf, 'chau-lan', at(2.5, -6.5))).toMatchObject({ ok: false, label: 'Thùng thu mua' });
+    expect(checkSpot(area, [], shapeOf, 'chau-lan', at(0, -7))).toMatchObject({ ok: false, label: 'Cửa nhà' });
+    expect(checkSpot(area, [], shapeOf, 'chau-lan', at(6, 1.3))).toMatchObject({ ok: false, label: 'Luống rau' });
+    expect(checkSpot(area, [], shapeOf, 'chau-lan', at(3.5, 4.5))).toMatchObject({ ok: false, label: 'Thùng thu mua' });
   });
 
-  it('R-NHA-7: Chậu lan trong rào vườn, cách luống ≥ 0,3 m (khoảng trống phía đông các luống) → được; sát luống → không', () => {
-    expect(checkSpot(area, [], shapeOf, 'chau-lan', at(14.5, -8)).ok).toBe(true);
-    expect(checkSpot(area, [], shapeOf, 'chau-lan', at(12.5, -8.2)).ok).toBe(false);
+  it('R-NHA-7: Mai trên lối trục giữa hai bên luống → "Lối đi"; Chậu lan trên nền đất vườn ngoài cột luống tây (cách ≥ 0,3 m) → được; Bàn trà ở cánh cỏ đông → được', () => {
+    expect(checkSpot(area, [], shapeOf, 'mai', at(0, 1))).toMatchObject({ ok: false, label: 'Lối đi' });
+    expect(checkSpot(area, [], shapeOf, 'chau-lan', at(-7.5, 0)).ok).toBe(true);
+    expect(checkSpot(area, [], shapeOf, 'ban-tra', at(12, 0)).ok).toBe(true);
   });
 
-  it('R-NHA-7: Mai ngoài đảo / trên Bến mây → không đặt được; 6 bàn trà quây kín khe cổng vườn → bàn cuối "Chắn lối"', () => {
+  it('R-NHA-7: Mai ngoài đảo / trên Bến mây → không đặt được', () => {
     expect(checkSpot(area, [], shapeOf, 'mai', at(0, 17)).ok).toBe(false);
     expect(checkSpot(area, [], shapeOf, 'mai', at(-26, 0)).ok).toBe(false);
-    // khe cổng vườn (cạnh tây x 3,5, z −9,5 rộng 1,6): bàn trà xếp kín phía trong rào, sát hành lang cổng
-    const row: PlacedDecor[] = [];
-    const spots = [at(5.5, -11, 90), at(5.5, -8, 90)];
-    for (const s of spots) {
-      const c = checkSpot(area, row, shapeOf, 'ban-tra', s);
-      if (c.ok) row.push({ item: 'ban-tra', scene: 'nha-ta', ...s });
-    }
-    // bàn chắn ngay giữa hành lang cổng (ngoài vùng cấm hành lang) bịt lối vào vườn → đỏ
-    const block = checkSpot(area, row, shapeOf, 'ban-tra', at(6.5, -9.5, 90));
-    expect(block.ok).toBe(false);
   });
 
-  it('R-NHA-3: 12 ô cũ → món đúng chỗ ô; ô nay không hợp lệ dời ≤ 1,5 m hoặc về túi; không mất cái nào', () => {
+  it('R-NHA-3: 12 ô cũ → món đúng chỗ ô; ô nay không hợp lệ tự dời tới chỗ hợp lệ gần nhất (≤ 8 m); không mất cái nào', () => {
     const placed: Record<string, string> = {};
     for (const s of LEGACY_SLOTS) placed[s.id] = s.scene === 'nha-ta' ? 'mai' : 'tranh-chu';
     const owned = { mai: 9, 'tranh-chu': 3 };
@@ -150,40 +141,73 @@ describe('Nhà của ta — chỗ đặt đồ trang trí tự do (R-NHA-7, V-69
     const { items } = settleScene(area, moved, shapeOf);
     const yard = items.filter((p) => p.scene === 'nha-ta');
     const home = { items, owned };
-    expect(yard.length + inBag(home, 'mai')).toBe(9);
-    // vuon-1 (−6; −13) — Mai đứng đúng chỗ ô
-    expect(yard).toContainEqual({ item: 'mai', scene: 'nha-ta', x: -6, z: -13, rot: 0 });
+    expect(yard).toHaveLength(9);
+    expect(inBag(home, 'mai')).toBe(0);
+    // san-1 (−19; −3,2) — cánh cỏ tây: Mai đứng đúng chỗ ô (lưới 0,5)
+    expect(yard).toContainEqual({ item: 'mai', scene: 'nha-ta', x: -19, z: -3, rot: 0 });
     for (const p of yard) {
+      expect(checkSpot(area, yard.filter((q) => q !== p), shapeOf, 'mai', at(p.x, p.z)).ok).toBe(true);
       const slot = LEGACY_SLOTS.filter((s) => s.scene === 'nha-ta').map((s) => Math.hypot(s.x - p.x, s.z - p.z));
-      expect(Math.min(...slot)).toBeLessThanOrEqual(1.5 + 0.3);
+      expect(Math.min(...slot)).toBeLessThanOrEqual(8 + 0.3);
     }
     expect(items.filter((p) => p.scene === 'nha-ta-trong')).toHaveLength(3);
   });
+
+  it('R-NHA-3: món đặt trước V-82 nay đè luống / nhà chính → tự dời ra chỗ trống gần nhất, đủ món, túi không đổi', () => {
+    const old: PlacedDecor[] = [
+      { item: 'mai', scene: 'nha-ta', x: -3, z: 0, rot: 0 },
+      { item: 'ban-tra', scene: 'nha-ta', x: 0, z: -11, rot: 90 },
+    ];
+    const r = settleScene(area, old, shapeOf);
+    expect(r.changed).toBe(true);
+    expect(r.items).toHaveLength(2);
+    for (const p of r.items) {
+      expect(checkSpot(area, r.items.filter((q) => q !== p), shapeOf, p.item, at(p.x, p.z, p.rot)).ok).toBe(true);
+      expect(p.rot).toBe(old.find((o) => o.item === p.item)!.rot);
+    }
+    expect(inBag({ items: r.items, owned: { mai: 1, 'ban-tra': 1 } }, 'ban-tra')).toBe(0);
+  });
 });
 
-describe('Nhà của ta — nhà chính sát mép trái, vườn giữa, gian trong riêng (V-68)', () => {
+describe('Nhà của ta — bố cục "Trục giữa": nhà cuối lối trục, vườn hai bên lối (V-82)', () => {
   const house = spec.buildings.find((b) => b.id === 'chinh-phong')!;
   const door = spec.portals.find((p) => p.scene === 'nha-ta-trong')!;
   const inside = loadScene('nha-ta-trong').spec;
   const room = inside.buildings[0];
+  const doorAt = { x: (door.area.from[0] + door.area.to[0]) / 2, z: (door.area.from[1] + door.area.to[1]) / 2 };
+  const [sx, sz] = spec.player.start;
 
-  it('R-NHA-5: nhà chính (−15; −8) kín, không hành lang mái; cả nhà trong đảo (cách mép ≥ 4 m), phía tây lối trục; vườn rau giữa đảo cạnh lối trục', () => {
-    expect([house.x, house.z, house.kind, house.closed]).toEqual([-15, -8, 'nha-o', true]);
+  it('R-NHA-5: nhà chính (0; −11,5) kín, nhìn nam, cuối lối trục, lưng dựa đồi trúc; cả nhà trong đảo; một lối lát trục x 0, không lối nhánh, không rào vườn', () => {
+    expect([house.x, house.z, house.w, house.d, house.kind, house.closed, house.rotY ?? 0]).toEqual([0, -11.5, 10.5, 6, 'nha-o', true, 0]);
     expect(spec.galleries).toEqual([]);
-    for (const [sx, sz] of [[-1, -1], [-1, 1], [1, -1], [1, 1]]) {
-      expect(Math.hypot(house.x + (sx * house.w) / 2 - cx, house.z + (sz * house.d) / 2 - cz)).toBeLessThan(R - 4);
+    for (const [ax, az] of [[-1, -1], [-1, 1], [1, -1], [1, 1]]) {
+      expect(Math.hypot(house.x + (ax * house.w) / 2 - cx, house.z + (az * house.d) / 2 - cz)).toBeLessThan(R - 4);
     }
-    expect(house.x + house.w / 2).toBeLessThan(-1.2 - 5); // xa lối trục x 0
-    const f = spec.garden.fence;
-    expect([f.from, f.to, f.gate]).toEqual([[3.5, -16], [16.5, -3], -9.5]);
-    // lối trục chạy tới ngang cổng vườn, lối nhánh vào khe cổng
-    expect(spec.paths.some((p) => p.from[0] === 0 && p.to[0] === 0 && p.to[1] === f.gate)).toBe(true);
+    // lưng nhà cách chân đồi trúc (mép bắc nền phẳng z −18) ≤ 4 m
+    expect(house.z - house.d / 2 - -18).toBeLessThanOrEqual(4);
+    expect(hf.heightAt(0, -22)).toBeGreaterThan(1); // sau nhà là đồi
+    // mọi lối lát nằm trên trục x 0, chạy từ Bến mây tới sân trước nhà
+    expect(spec.paths.every((p) => p.from[0] === 0 && p.to[0] === 0)).toBe(true);
+    expect(Math.min(...spec.paths.flatMap((p) => [p.from[1], p.to[1]]))).toBeLessThanOrEqual(house.z + house.d / 2 + 3);
+    expect(spec.garden.layout).toBe('mo');
+    expect(fenceSegments(spec.garden)).toEqual([]);
   });
 
-  it('R-NHA-1, R-HANH-4: vào nhà chính bằng nút "Vào nhà" ở vòng sáng nhỏ trước cửa (V-96, không tự vào khi bước qua ô cửa) → gian trong; gian trong 14 × 10, ra bằng nút "Ra sân" trên thảm trước cửa hồi tây (V-71), vào đứng (−3,8; 2,6) quay vào phòng; ra đứng (−15; −2,6) quay ra sân', () => {
-    expect(door).toMatchObject({ area: { from: [-15.75, -4.15], to: [-14.25, -2.65] }, arrive: { at: [-15, -2.6], rotY: 0 }, label: 'Vào nhà', marker: false, via: 'nut', ring: 0.75 });
+  it('R-NHA-5, R-VUON-1: quãng đi từ chỗ xuất hiện — luống gần ≤ 6 m, luống xa ≤ 14 m, cửa nhà ≤ 16 m đi thẳng không rẽ, thùng ≤ 3 m', () => {
+    const d = spec.garden.plots.map((p) => Math.hypot(p.x - sx, p.z - sz));
+    expect(Math.min(...d)).toBeLessThanOrEqual(6);
+    expect(Math.max(...d)).toBeLessThanOrEqual(14);
+    expect(doorAt.x).toBe(sx); // cùng trục: đi thẳng, 0 rẽ
+    expect(sz - doorAt.z).toBeLessThanOrEqual(16);
+    expect(Math.hypot(spec.garden.bin.x - sx, spec.garden.bin.z - sz)).toBeLessThanOrEqual(3);
+    // đi thẳng bắc từ chỗ xuất hiện tới vòng cửa — địa hình không chặn, cả lối phẳng
+    expect(walk(sx, sz, 0, -1, sz - doorAt.z).z).toBeCloseTo(doorAt.z, 1);
+  });
+
+  it('R-NHA-1, R-HANH-4: vào nhà chính bằng nút "Vào nhà" ở vòng sáng nhỏ trước cửa (V-96) → gian trong; gian trong 14 × 10, ra bằng nút "Ra sân" trên thảm trước cửa hồi tây (V-71), vào đứng (−3,8; 2,6) quay vào phòng; ra đứng (0; −6,1) quay ra sân', () => {
+    expect(door).toMatchObject({ area: { from: [-0.75, -7.65], to: [0.75, -6.15] }, arrive: { at: [0, -6.1], rotY: 0 }, label: 'Vào nhà', marker: false, via: 'nut', ring: 0.75 });
     const front = house.z + house.d / 2;
-    expect(door.area.from[1]).toBeGreaterThan(front); // vòng ngoài mặt tiền (z −5), trên sân trước cửa
+    expect(door.area.from[1]).toBeGreaterThan(front); // vòng ngoài mặt tiền (z −8,5), trên sân trước cửa
     expect([room.kind, room.w, room.d]).toEqual(['gian-trong', 14, 10]);
     const out = inside.portals[0];
     expect(out).toMatchObject({ scene: 'nha-ta', arrive: { at: [-3.8, 2.6], rotY: 90 }, label: 'Ra sân', marker: false, via: 'nut' });
@@ -196,8 +220,8 @@ describe('Nhà của ta — nhà chính sát mép trái, vườn giữa, gian tr
     expect(inside.site).toMatchObject({ name: 'Nhà của ta', loadName: 'Trong nhà' });
   });
 
-  it('R-HANH-4: đứng ở chỗ ra (−15; −2,6) và đường tới cửa đều phẳng (y 0)', () => {
-    for (const [x, z] of [[-15, -2.6], [-15, -1.4], [-8, -1.4]] as [number, number][]) {
+  it('R-HANH-4: đứng ở chỗ ra (0; −6,1) và lối trục tới cửa đều phẳng (y 0)', () => {
+    for (const [x, z] of [[0, -6.1], [0, -4.9], [0, 2], [3, -6]] as [number, number][]) {
       expect(hf.heightAt(x, z)).toBeCloseTo(0, 2);
       expect(hf.slopeAt(x, z)).toBeLessThan(1);
     }

@@ -362,8 +362,17 @@ export interface GardenSpec {
   bin: { x: number; z: number; rotY: number };
   /** rào tre: khung chữ nhật from … to (thẳng trục), khe cổng ở cạnh tây (x = min) tâm z `gate`, rộng `gateWidth`; cao `height` */
   fence: { from: XZ; to: XZ; gate: number; gateWidth: number; height: number };
-  /** màu đất luống, rãnh, đất hoang, cọc gỗ, tre rào, gỗ thùng, nền đất nện trong rào */
-  colors: { soil: string; furrow: string; wild: string; stake: string; fence: string; bin: string; ground: string };
+  /**
+   * Kiểu vườn (V-82): `rao` = rào tre `fence` có cổng, vòng công cụ chỉ mở khi đứng trong rào (như cũ) · `mo` = không rào: mỗi khung
+   * `border` là một nền đất nện viền đá cuội thấp (không va chạm); chạm luống cách ≤ `reach` m → nhân vật tự đi tới rồi mở vòng; đi
+   * ra ngoài vùng các luống nới `leave` m → đóng vòng (R-VUON-2). `fence` bị bỏ qua khi `mo`.
+   */
+  layout: 'rao' | 'mo';
+  border: { from: XZ; to: XZ }[];
+  reach: number;
+  leave: number;
+  /** màu đất luống, rãnh, đất hoang, cọc gỗ, tre rào, gỗ thùng, nền đất nện trong rào / trong viền, đá cuội viền (`mo`) */
+  colors: { soil: string; furrow: string; wild: string; stake: string; fence: string; bin: string; ground: string; stone: string };
   /** cỡ cây (nhân) — hình Kenney gốc ~0,4 m */
   cropScale: number;
   /** hiệu ứng làm vườn (R-VUON-5/10…13 — `vuonLuong.setSoil`, `vuonSauCo.ts`, `vuonHat.ts`) */
@@ -1401,7 +1410,11 @@ export const DEFAULT_SCENE: SceneSpec = {
     height: 0.2,
     bin: { x: 0, z: 0, rotY: 0 },
     fence: { from: [0, 0], to: [0, 0], gate: 0, gateWidth: 1.6, height: 0.6 },
-    colors: { soil: '#8a6648', furrow: '#6a4c36', wild: '#8c8a52', stake: '#6b4a30', fence: '#c2a86a', bin: '#8a5a3a', ground: '#b48d68' },
+    layout: 'rao', // cảnh cũ: vườn có rào (V-68)
+    border: [],
+    reach: 25,
+    leave: 3,
+    colors: { soil: '#8a6648', furrow: '#6a4c36', wild: '#8c8a52', stake: '#6b4a30', fence: '#c2a86a', bin: '#8a5a3a', ground: '#b48d68', stone: '#c4b8a4' },
     cropScale: 1.6,
     fx: {
       dry: '#cbb08a',

@@ -103,7 +103,7 @@ export class HomeDecor {
 
   /**
    * Nạp nhà đã lưu (R-NHA-3): `getHome` (chế độ thử: ví thử) → làm sạch → ô cũ thành món (lần đầu lên bản mới) → xếp món của cảnh
-   * này (món nay không hợp lệ dời ≤ 1,5 m hoặc về túi) → dựng; có đổi → lưu một lần.
+   * này (món nay không hợp lệ tự dời tới chỗ trống gần nhất ≤ 8 m, không có thì về túi) → dựng; có đổi → lưu một lần.
    */
   async load(raw?: unknown): Promise<void> {
     const w = this.d.trial?.wallet;

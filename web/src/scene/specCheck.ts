@@ -436,6 +436,7 @@ const LISTS: Record<string, ItemParser> = {
     all(oneOf('kind', GAME_KINDS), oneOf('npc', NPC_IDS), rot, boardsRange, signRot),
   ),
   'garden.plots': item({ id: '', x: 0, z: 0 }, {}),
+  'garden.border': item({ from: XZ0, to: XZ0 }, {}),
   // cổng đi bộ (R-HANH-4): kiểm vùng / chỗ đứng / cặp cổng ở `portals.ts` + `scripts/check-scene.mjs`
   portals: item({ scene: '', area: { from: XZ0, to: XZ0 }, arrive: { at: XZ0, rotY: 0 } }, { label: '', marker: true, via: '', ring: 0 }, (o, path) => [
     ...(typeof o.label === 'string' && [...o.label].length > 20 ? [`${path}.label: tối đa 20 ký tự (nhãn một dòng)`] : []),

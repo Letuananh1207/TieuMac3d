@@ -133,7 +133,7 @@ describe('Chỗ gần nhất + xếp lại khi vào cảnh (R-NHA-3)', () => {
     expect(nearestValid(a, [], shapeOf, 'mai', { x: 0, z: 7, rot: 0 }, 0.5)).toBeNull();
   });
 
-  it('R-NHA-3: món hợp lệ giữ nguyên; món trên lối dời ≤ 1,5 m; không chỗ → về túi (bỏ khỏi danh sách); món cảnh khác giữ', () => {
+  it('R-NHA-3: món hợp lệ giữ nguyên; món nay không hợp lệ tự dời tới chỗ hợp lệ gần nhất (≤ 8 m); không chỗ → về túi (bỏ khỏi danh sách); món cảnh khác giữ', () => {
     const a = yard();
     const inside: PlacedDecor = { item: 'ke-sach', scene: 'nha-ta-trong', x: 0, z: -3.5, rot: 0 };
     const r = settleScene(a, [mon('mai', -5, 5), mon('chau-lan', -1, 6), mon('mai', 0, 7), inside], shapeOf);
@@ -141,8 +141,15 @@ describe('Chỗ gần nhất + xếp lại khi vào cảnh (R-NHA-3)', () => {
     expect(r.items[0]).toEqual(mon('mai', -5, 5));
     const lan = r.items.find((p) => p.item === 'chau-lan')!;
     expect(lan.x).toBeLessThanOrEqual(-1.5);
-    expect(r.items.filter((p) => p.item === 'mai')).toHaveLength(1); // mai giữa lối (x 0) không có chỗ ≤ 1,5 m → về túi
+    // mai giữa lối (x 0): không có chỗ ≤ 1,5 m nhưng có chỗ ≤ 8 m → dời, không về túi (V-82)
+    const mais = r.items.filter((p) => p.item === 'mai');
+    expect(mais).toHaveLength(2);
+    const moved = mais.find((p) => p.x !== -5 || p.z !== 5)!;
+    expect(Math.hypot(moved.x, moved.z - 7)).toBeLessThanOrEqual(8);
+    expect(checkSpot(a, r.items.filter((p) => p !== moved && p.scene === 'nha-ta'), shapeOf, 'mai', moved).ok).toBe(true);
     expect(r.items).toContainEqual(inside);
     expect(settleScene(a, [mon('mai', -5, 5)], shapeOf).changed).toBe(false);
+    // bán kính tìm nhỏ (1,5 m) → không có chỗ → về túi
+    expect(settleScene(a, [mon('mai', 0, 7)], shapeOf, 1.5).items).toEqual([]);
   });
 });

@@ -5,49 +5,76 @@ import { Colliders } from '../collision/colliders';
 import { CROP_LOOKS, CROP_STAGES, cropPart, CropLayer } from './cayTrong';
 import { DEFAULT_SCENE } from './spec';
 import { resolveSceneSpec } from './specCheck';
-import { checkGarden, fenceSegments, GARDEN_PLOT_IDS } from './vuonLayout';
+import { borderBoxes, checkGarden, fenceSegments, GARDEN_PLOT_IDS, gardenZone, inBox, tapPlan } from './vuonLayout';
 import { addGarden } from './vuonLuong';
 
 const NHA = resolveSceneSpec(JSON.parse(readFileSync(new URL('../../../design/scene/nha-ta.json', import.meta.url), 'utf8')));
 const g = NHA.spec.garden;
 
-describe('vườn rau — bố cục (R-VUON-1)', () => {
-  it('R-VUON-1: cảnh mặc định không có vườn; Nhà của ta có 12 luống o-1 … o-12, 3 cột × 4 hàng, đặc tả không lỗi', () => {
+describe('vườn rau — bố cục "Trục giữa" (R-VUON-1, V-82)', () => {
+  it('R-VUON-1: cảnh mặc định có rào (như cũ); Nhà của ta: vườn không rào, 12 luống o-1 … o-12, 6 mỗi bên lối trục (2 cột × 3 hàng), đặc tả không lỗi', () => {
     expect(DEFAULT_SCENE.garden.enabled).toBe(false);
+    expect(DEFAULT_SCENE.garden.layout).toBe('rao');
     expect(NHA.problems).toEqual([]);
     expect(g.enabled).toBe(true);
+    expect(g.layout).toBe('mo');
     expect(g.plots.map((p) => p.id)).toEqual(GARDEN_PLOT_IDS);
-    expect(new Set(g.plots.map((p) => p.x)).size).toBe(3);
-    expect(new Set(g.plots.map((p) => p.z)).size).toBe(4);
-    // 6 luống mở sẵn ở hai hàng giữa (gần cổng vườn nhất — cổng ở giữa cạnh tây, V-68: vườn giữa đảo z −16 … −3)
-    expect(new Set(g.plots.slice(0, 6).map((p) => Math.round(Math.abs(p.z - g.fence.gate) * 10) / 10))).toEqual(new Set([1.3]));
+    expect(g.plots.filter((p) => p.x < 0)).toHaveLength(6);
+    expect(g.plots.filter((p) => p.x > 0)).toHaveLength(6);
+    expect(new Set(g.plots.map((p) => Math.abs(p.x)))).toEqual(new Set([3.4, 6]));
+    expect(new Set(g.plots.map((p) => p.z))).toEqual(new Set([2.6, 0, -2.6]));
+    // 6 luống mở sẵn = hai cột sát lối trục; ô 7, 8 (mở sau) = hàng gần chỗ xuất hiện, tây rồi đông (R-VUON-8)
+    expect(g.plots.slice(0, 6).every((p) => Math.abs(p.x) === 3.4)).toBe(true);
+    expect([g.plots[6].x < 0, g.plots[6].z, g.plots[7].x > 0, g.plots[7].z]).toEqual([true, 2.6, true, 2.6]);
+    // lối trục rộng 2,4 m (x ±1,2) không đè luống; lối giữa các luống ≥ 1 m
+    for (const p of g.plots) expect(Math.abs(p.x) - g.size / 2).toBeGreaterThanOrEqual(1.2 + 1);
+    expect(fenceSegments(g)).toEqual([]);
+    expect(borderBoxes(g)).toHaveLength(2);
   });
 
-  it('R-VUON-1: rào chặn, chừa khe cổng cạnh tây; luống không chặn người; thùng thu mua chặn', () => {
+  it('R-VUON-1: viền đá cuội + luống không chặn người; thùng thu mua (mép lối bên phải, giữa chỗ xuất hiện và luống) chặn', () => {
     const c = new Colliders();
     addGarden(new THREE.Scene(), c, g, NHA.spec.look);
-    expect(c.boxes).toHaveLength(fenceSegments(g).length + 1);
-    // đi qua khe cổng (3,5; −9,5) và đứng trên luống (6,1; −10,8) → không bị đẩy
-    for (const [x, z] of [[3.5, -9.5], [6.1, -10.8], [8.7, -5.6]]) {
+    expect(c.boxes).toHaveLength(1); // chỉ thùng
+    for (const [x, z] of [[2.2, 0], [-3.4, 2.6], [-7.3, 0], [6, -4], [-6, 4.1]]) {
       const q = { x, z };
       c.resolve(q, 0.4);
       expect(q).toEqual({ x, z });
     }
-    // sát rào nam (z −3) từ trong → bị đẩy lùi
-    const s = { x: 8.7, z: -3.1 };
-    c.resolve(s, 0.4);
-    expect(s.z).toBeLessThan(-3.1);
+    expect(g.bin.x).toBeGreaterThan(1.2); // mép lối bên phải
+    expect(g.bin.z).toBeLessThan(NHA.spec.player.start[1]);
+    expect(g.bin.z).toBeGreaterThan(Math.max(...g.plots.map((p) => p.z)));
     const b = { x: g.bin.x, z: g.bin.z };
     c.resolve(b, 0.4);
     expect(b).not.toEqual({ x: g.bin.x, z: g.bin.z });
   });
 
-  it('R-VUON-1: kiểm đặc tả — thiếu luống, luống ra ngoài rào, thùng trong rào → báo lỗi', () => {
-    const bad = { ...NHA.spec, garden: { ...g, plots: g.plots.slice(1).concat({ id: 'o-2', x: 30, z: 0 }), bin: { x: 8, z: -9, rotY: 0 } } };
+  it('R-VUON-1: kiểm đặc tả — thiếu luống, luống ngoài viền, hai luống sát (< 1 m), thùng trong viền → báo lỗi', () => {
+    const plots = g.plots.slice(2).concat({ id: 'o-1', x: 30, z: 0 }, { id: 'o-2', x: 3.4, z: 1.6 });
+    const bad = { ...NHA.spec, garden: { ...g, plots: plots.slice(1), bin: { x: 3.4, z: -1.3, rotY: 0 } } };
     const out = checkGarden(bad);
     expect(out.some((m) => m.includes('cần đủ 12 luống'))).toBe(true);
-    expect(out.some((m) => m.includes('nằm trong rào'))).toBe(true);
+    expect(out.some((m) => m.includes('khung viền'))).toBe(true);
+    expect(out.some((m) => m.includes('lối giữa hai luống'))).toBe(true);
     expect(out.some((m) => m.includes('garden.bin'))).toBe(true);
+    expect(checkGarden({ ...NHA.spec, garden: { ...g, border: [] } }).some((m) => m.includes('garden.border'))).toBe(true);
+  });
+
+  it('R-VUON-2: chạm luống — trong vườn (vùng luống nới 3 m) → mở ngay; xa hơn mà ≤ 25 m → tự đi tới rồi mở; > 25 m → không', () => {
+    const z = gardenZone(g);
+    expect([z.x0, z.x1, z.z0, z.z1]).toEqual([-9.8, 9.8, -6.4, 6.4]);
+    const o11 = g.plots.find((p) => p.id === 'o-11')!;
+    const o2 = g.plots.find((p) => p.id === 'o-2')!;
+    expect([o11.x, o11.z]).toEqual([-6, -2.6]);
+    expect(tapPlan(g, { x: 0, z: 2 }, o11)).toBe('mo-ngay');
+    expect(tapPlan(g, { x: 0, z: 6.5 }, o11)).toBe('di-toi'); // chỗ xuất hiện (ngay ngoài vùng)
+    expect(tapPlan(g, { x: 0, z: -7 }, o2)).toBe('di-toi'); // sân trước nhà
+    expect(tapPlan(g, { x: 20, z: -20 }, o11)).toBe('khong'); // cách 31 m
+    expect(inBox(z, 0, -7)).toBe(false); // đi lên sân trước nhà → ra khỏi vườn → vòng đóng
+    // vườn có rào (cảnh cũ): chỉ trong rào mới mở
+    const rao = { ...g, layout: 'rao' as const, fence: { from: [-8, -5] as [number, number], to: [8, 5] as [number, number], gate: 0, gateWidth: 1.6, height: 0.6 } };
+    expect(tapPlan(rao, { x: 0, z: 6.5 }, o11)).toBe('khong');
+    expect(tapPlan(rao, { x: 0, z: 2 }, o11)).toBe('mo-ngay');
   });
 });
 
