@@ -3,6 +3,17 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-18.13 — Túi đồ kiểu 摩尔: mẫu "Giấy + son" (V-116)
+
+- Loại: giao diện · Phiếu: `docs/phieu_thiet_ke/2026-11-18-anh-tui-do-kieu-moly.md`.
+- Người dùng: "tôi muốn khi mở bag thì sẽ như phong cách này của 摩尔" → Gemini 3 phong cách × 2, chọn **Giấy + son bản 1**:
+  `design/concept/tui-do-kieu-moly/giay-son.png`. Bố cục như cuốn sổ mở: trang trái = thẻ nhân vật (dải tên trên, khung ảnh
+  nhân vật — **nhân vật 3D xoay được**, huy hiệu ngọc góc, dòng tiền đồng + số dưới); trang phải = lưới ô 3×4 giấy kem viền
+  nâu, số lượng góc dưới phải, lật trang "‹ 1/1 ›"; cột tab hình dọc mép phải (tab đang chọn nền đỏ son); nút đóng tròn đỏ son
+  góc trên phải.
+- Tab: Hạt giống · Nông sản · Lâm sản · Trang trí · Sách (theo túi đồ hiện có).
+- Cần code: thay túi đồ hiện tại (nút Túi đồ / phím B).
+
 ## 2026-11-18.12 — Bản đồ thế giới sống động: nền vẽ minh hoạ Gemini (V-115)
 
 - Loại: giao diện (bản đồ) · Phiếu: `docs/phieu_thiet_ke/2026-11-17-concept-the-gioi-moi.md` (sửa 2026-11-18: bỏ tổ hạc, chi tiết

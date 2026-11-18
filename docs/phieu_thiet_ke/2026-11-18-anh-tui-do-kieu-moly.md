@@ -1,5 +1,5 @@
 # Phiếu: Túi đồ kiểu 摩尔 — ảnh mẫu Gemini (V-116)
-- Trạng thái: chờ thiết kế (tạo ảnh Gemini → người dùng chọn phong cách → code)
+- Trạng thái: đã chốt (2026-11-18.13) — Giấy + son bản 1
 - Đợi bởi: V-20261118-116
 
 Người dùng 2026-11-18: "tôi muốn khi mở bag thì sẽ như phong cách này của 摩尔" (ảnh túi đồ 摩尔 bản web: thẻ nhân vật bên
