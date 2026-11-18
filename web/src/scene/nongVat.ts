@@ -5,7 +5,7 @@
  */
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
-import { markDynamic } from './merge';
+import { markDynamic, mergeVertexColors } from './merge';
 import { loadStaticModel, staticModelUrl } from './staticModel';
 
 /** Một mảnh: hình + màu + vị trí / xoay / co. */
@@ -334,4 +334,14 @@ export function gourdGeometry(): THREE.BufferGeometry {
 }
 export function cucumberGeometry(): THREE.BufferGeometry {
   return joinParts([part(SPHERE, '#5f8f3e', [0, -0.25, 0], [0.06, 0.24, 0.06]), part(CYL, '#4a6a2e', [0, -0.02, 0], [0.012, 0.06, 0.012])]);
+}
+
+/**
+ * Khối đứng yên của một công trình → một khối màu theo đỉnh (1 draw call / công trình dù nhiều màu), rồi đánh dấu để
+ * `mergeStatic` không gộp lại với vật liệu khác (mặt nước Basic giữ riêng).
+ */
+export function addStatic(scene: THREE.Scene, g: THREE.Group): void {
+  mergeVertexColors(g);
+  markDynamic(g);
+  scene.add(g);
 }

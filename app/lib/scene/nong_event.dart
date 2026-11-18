@@ -34,7 +34,7 @@ Map<String, Object?> nongActReply(NongResult r, int balance) => switch (r) {
           'balance': balance,
           'amount': amount,
           'got': got,
-          if (item != null) 'item': item,
+          'item': ?item,
         },
       NongRefused(:final error) => {'ok': false, 'reason': error.wire, 'balance': balance},
     };

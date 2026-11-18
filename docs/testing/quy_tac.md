@@ -306,7 +306,7 @@ Trồng thuần — không gắn học chữ. Chưa có mạng: không tưới h
 
 Code: [app/lib/journey/nong.dart](../../app/lib/journey/nong.dart) (luật — **một nguồn**: cho ăn, nhặt, câu, gieo / hái giàn, bán, giá),
 [app/lib/journey/progress_store.dart](../../app/lib/journey/progress_store.dart) (lưu `nong.state`), [web/src/zones/nong.ts](../../web/src/zones/nong.ts)
-(bản TS chép luật Dart — đổi luật → sửa cả hai, test hai phía cùng ví dụ sổ), `web/src/nongTrai.ts` (ghép), `web/src/scene/{nongSpec,nongTrai,nongVat}.ts`
+(bản TS chép luật Dart — đổi luật → sửa cả hai, test hai phía cùng ví dụ sổ), `web/src/nongTrai.ts` (ghép), `web/src/scene/{nongSpec,nongTrai,nongVat,nongGian}.ts`
 (3D), HUD `web/src/ui/nongHud.ts`; cầu nối `getNong`, `nongAct` (docs/bridge.md). Thiết kế `design/CHANGELOG.md` 2026-11-18.11
 (concept `design/concept/nong-trai-nha/`), kế hoạch `docs/tasks/2026-11-18-nong-trai-nha.md`. Nhịp ngày theo **ngày giờ VN (GMT+7)**;
 bỏ mặc không hỏng, không chết — chỉ ngừng ra sản phẩm.
