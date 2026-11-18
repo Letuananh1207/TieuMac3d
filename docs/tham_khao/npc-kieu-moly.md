@@ -8,6 +8,9 @@
   miệng, màu / món nhận diện, quan hệ**. Áp cho **NPC từ nay**; NPC cũ không bắt buộc đổi (bảng §4, mọi gợi ý là **tuỳ chọn**).
 - Cập nhật 2026-11-18 (lượt 2): nghiên cứu sâu **Moly bản Việt** (§1.3), quy tắc đặt tên kiểu Moly Việt + 2 hướng A / B (§3.2),
   xưng hô theo tuổi (§3.4), đặt lại tên dàn đề xuất (§5), ghi quyết định người dùng (§6).
+- Cập nhật 2026-11-18 (lượt 3): người dùng muốn tên **"cổ phong hơn một chút — kết hợp Moly và series YouTube Hà Nhân"**, trẻ con
+  xưng hô **"cổ phong một chút"**. Thêm nghiên cứu Hà Nhân (§1.5), **quy tắc tên cổ phong nhẹ** (§3.2b — nay là bản chính, thay hướng
+  A / B), xưng hô cổ phong không cần giới người chơi (§3.4b), **dàn 19 tên mới + thoại** (§5.0), cột gợi ý cổ phong cho NPC cũ (§4).
 - Chỉ rút **nguyên tắc** từ 摩尔, không chép tên hay nhân vật. Chữ Hán trong file này chỉ để dẫn nguồn; trong game, tên NPC chỉ
   tiếng Việt (R-HUD-4).
 - Đọc kèm: `ten-map-kieu-moly.md` (cách Moly đặt tên map), `docs/y_tuong/2026-11-17-the-gioi-moi.md` (6 vùng bộ 2),
@@ -123,6 +126,40 @@ nhảnh, kiêu-mà-tốt, chị cả bộc trực). Đảo mới luôn bắt đ�
 **câu cửa miệng** ngắn chêm cuối câu. → Lấy ý: **khuôn tính cách có sẵn** + **trộn khuôn trong một vùng** + **câu cửa miệng ngắn**.
 Không khoá khuôn theo giới như AC.
 
+### 1.5 "Hà Nhân" (虾仁) — chuỗi hoạt hình sa điêu xuyên không / tu tiên (lượt 3, 2026-11-18)
+**Là gì (độ chắc: cao).** "Hà Nhân" là **tên nhân vật chính mặc định** (虾仁, nghĩa đen "tôm bóc nõn"; đọc Hán Việt từng chữ) của một
+dòng **hoạt hình mạng Trung Quốc kiểu "sa điêu"** (沙雕动画 — hài vô lý): nhân vật hình người nhỏ tối giản ghép **mặt meme gấu trúc**
+(熊猫头), lời dẫn + chữ chèn kể chuyện, mỗi tập < 10 phút, một chuỗi có thể vài trăm tới hơn nghìn tập, hay gộp thành bản dài
+"FULL BỘ" nhiều giờ [U]. Không phải một series đơn lẻ: cùng một "diễn viên" Hà Nhân **xuyên không** vào đủ thế giới — tu tiên, Đại Minh,
+Chiến Quốc… Gốc phát trên Douyin / Kuaishou / Bilibili; ở Việt Nam là các kênh YouTube **vietsub / lồng tiếng** đặt tên theo nhân vật
+("Hà Nhân Tu Tiên", "Chuột Vietsub", "Tu Tiên Sub"…) [V]. Người dùng nói "chuỗi series youtube tên là Hà Nhân" khớp đúng cái này.
+Đã loại: Hà Nhân trong *Tây viên kỳ ngộ ký* (Truyền kỳ mạn lục, thế kỷ 16) — truyện chữ Hán, không phải series YouTube [U].
+
+**Tựa tìm được (tiếng Việt trên YouTube)** [V]: *Hà Nhân Xuyên Không — Tiếng Lòng Của Đại Minh*, *Hắc Xà Tu Tiên Truyện*, *Hà Nhân Chu
+Lão Lục Là Kẻ Cuồng Tu Tiên*, *Hệ Thống Cưới Vợ Để Tu Tiên*, *Tạp Dịch Phế Vật Mà Lại Là Mệnh Mạch Tông Môn*, *Con Đường Tu Tiên Của
+Thiếu Niên*, *Xuyên Không Có Thể Chất Superman…*. Bản gốc: 《谁让你真修仙了?》 (nhân vật Tần Lạc / 秦洛, sư tôn là đạo sĩ giả), 《大梦千年》
+(bái Bạch Khởi làm thầy), 《我在大明的那些年》, 《氪金模拟》 (thiếu niên làng chài Lý Trường Sinh / 李长生, có "hệ thống mô phỏng") [W].
+
+**Cách đặt tên và xưng hô** — rút từ tựa + thể loại; **không xem được thoại nguyên văn** (trang video chỉ trả khung), phần dưới là
+**quy ước chung của phim / hoạt hình tu tiên vietsub** mà dòng này dùng → độ chắc **vừa (giả định có cơ sở)**:
+- **Tên người**: họ + tên **Hán Việt** (Tần Lạc, Lý Trường Sinh), hoặc **họ + thứ bậc / biệt danh** đọc vui tai: "Chu **lão lục**" (lão
+  thứ sáu), "lão Vương", "tiểu Lý". Chức phận đứng thẳng làm tên: **tạp dịch**, **phế vật**, **sư tôn**, **chưởng môn**, **trưởng lão**.
+- **Danh xưng ghép sau tên / họ** (trật tự Hán): *Vương **bà bà***, *Lý **đại thúc***, *Trương **đại nương***, *Lâm **cô nương***, *Tần
+  **huynh***, *tiểu **sư muội***; ghép trước: ***Lão** X*, ***Tiểu** X*, ***A** X* (阿).
+- **Xưng hô**: *ta – ngươi* (ngang / trên nói dưới), *tại hạ* (khiêm), *lão phu* (ông già), *tiền bối – vãn bối*, *sư phụ / sư tôn – đồ
+  nhi*, *sư huynh / sư tỷ – sư đệ / sư muội*, *đạo hữu*, *tiểu hữu* (người lớn tuổi gọi người trẻ, **không nói giới**), *thiếu hiệp* /
+  *đại hiệp* (gọi người trẻ đi đường, hầu như không nói giới), *công tử*, *cô nương*, *tiểu tử* (hơi trịch thượng).
+- **Giọng**: câu ngắn, nhịp nhanh, đùa bằng **phóng đại** và **tự xưng cường điệu** ("vô địch thiên hạ"), đặt chữ cổ cạnh chuyện đời
+  thường (hệ thống, cưới vợ, phơi nắng) — cái "cổ" chỉ là **lớp áo**, ý thì hiện đại, dễ hiểu.
+
+**Lấy gì cho Học Xá 3D (trẻ 6–12)** — lấy **lớp áo cổ**, không lấy nội dung:
+- Lấy: **danh xưng cổ quen tai** (Lão, Tiểu, A, bà bà, đại thúc, đại nương, cô nương, huynh, tỷ, đệ, muội), **thiếu hiệp / tiểu hữu**
+  gọi người chơi (không cần giới), cái vui nhẹ của "cổ mà đời thường".
+- Không lấy: *ngươi*, *tiểu tử*, *lão tử*, *phế vật*, *tạp dịch* (chê / thô), *lão phu*, *vãn bối*, *tại hạ* (nặng, trẻ nhỏ khó dùng),
+  mô típ hệ thống / cưới vợ / đánh nhau, tên Hán Việt khó (Trường Sinh, Bạch Khởi). Không dùng lại **tên nhân vật** Hà Nhân (Hà Nhân,
+  Tần Lạc, Chu lão lục, Lý Trường Sinh…). Nội dung các kênh này nhiều bản tải lại không rõ bản quyền và nhắm người lớn / thiếu niên →
+  chỉ học **cách gọi**, không trích, không dẫn trong game.
+
 ## 2. Nguyên tắc rút ra (cho Học Xá 3D)
 
 1. **Tên = cách gọi thân + một tiếng gợi việc.** 花婶 = "thím Hoa", 彩虹姐姐 = "chị Cầu Vồng", 菩提大伯 = "bác Bồ Đề": nghe là thấy
@@ -214,6 +251,49 @@ Cân nhắc: A **gần bản Việt nhất** về âm (người lớn mang tên 
 và tên không giúp trẻ nhớ việc; B giữ đúng khuôn **chị Cầu Vồng / Đậu Đậu** — hai cái tên Việt hoá mà người chơi Moly nhớ nhất — và hợp
 cổ trang. Vì vậy **khuyên B**; có thể trộn: B cho người lớn, láy cho trẻ con (đã có trong B).
 
+> Lượt 3: người dùng chọn **"cổ phong hơn một chút, kết hợp Moly + Hà Nhân"** → quy tắc chính nay là **§3.2b**. Hướng A bỏ; hướng B
+> là **gốc** của §3.2b (giữ "tên có nghĩa, vẽ được, trẻ con láy"), chỉ đổi lớp danh xưng. Luật 3–8 ở trên vẫn dùng (luật 2 thay bằng
+> thang §3.2b, luật 3 nới tới 4 tiếng).
+
+### 3.2b Quy tắc tên cổ phong nhẹ — Moly Việt × Hà Nhân (lượt 3, bản chính)
+**Công thức: `<danh xưng cổ> + <tên riêng có nghĩa, vẽ được>`**, đặt theo **trật tự cổ phong vietsub** (§1.5): danh xưng **một tiếng
+đứng trước** (Lão / Tiểu / A), danh xưng **hai tiếng đứng sau** (bà bà / đại thúc / đại nương / cô nương). Từ Moly lấy *phần tên*
+(nghĩa, màu / món, láy cho trẻ, nghề đứng trước khi giới thiệu); từ Hà Nhân lấy *phần danh xưng* và cách xưng hô.
+
+1. **Thang danh xưng cổ** (thay bảng luật 2 §3.2; tuổi đọc ngay từ danh xưng như Moly):
+
+   | Tuổi | Nam | Nữ | Tên riêng đi kèm |
+   |---|---|---|---|
+   | già (≈ 60+) | **Lão** + tên — *Lão Gió Núi* | tên + **bà bà** — *Măng bà bà* | nam 2 tiếng; nữ 1 tiếng (2 nếu 1 tiếng không đủ nghĩa: *San Hô bà bà*) |
+   | trung niên (≈ 30–55) | tên + **đại thúc** — *Đăng đại thúc* | tên + **đại nương** — *Mầm đại nương* | 1 tiếng |
+   | thanh niên (≈ 16–28) | **A** + tên — *A Rêu* | tên + **cô nương** — *Đào cô nương* | 1 tiếng |
+   | bé (≈ 6–12) | **Tiểu** + tên láy / tượng thanh — *Tiểu Tí Te* | **Tiểu** + láy — *Tiểu Líu Lo* | 2 tiếng láy (như Đậu Đậu) |
+
+   - Vì sao các danh xưng này: trẻ Việt đã nghe trong phim / hoạt hình cổ trang lồng tiếng và trong sách (Lão Hạc, A Phủ, "Tiểu" như
+     Tiểu Mặc); **không** dùng *lão bà* (= vợ), *mụ*, *thẩm* (ít quen), *công tử / tiểu thư* (sang quá cho người bán hàng — dành cho
+     NPC nhà giàu / tiên nếu sau này có), *sư phụ / sư tôn* làm tên hiển thị (chỉ dùng khi **gọi** người đang dạy mình — luật 5).
+   - Trùng khớp lớp tên cũ: *Lão Canh, Trúc Lão, Thi Ông, Mặc Ông, Cầm Nương, Kỳ Muội, Tiểu Mặc, Tiểu nhị* đã là danh xưng cổ ghép
+     → NPC cũ và mới **cùng một giọng**, không còn hai lớp lệch nhau.
+2. **Tên riêng = tiếng Việt có nghĩa, vẽ được** (gốc Moly — *chị Cầu Vồng*); cho phép **một tiếng Hán Việt nhẹ mà trẻ đã biết qua đời
+   thường** khi nó vừa cổ vừa đúng việc: **Đăng** (hoa đăng — người làm đèn), **Hạc**, **Ngọc**, **Tiên**, **Trúc**, **Vân** (mây),
+   **Liên** (sen). Không Hán Việt phải tra mới hiểu (Phong, Miêu, Thảo, Điển, Tú…).
+3. **Ưu tiên tiếng vừa là vật vừa là họ người** — đọc lên tự nhiên như tên cổ: **Đào** cô nương (đào cổ vật + họ Đào + đào tiên), **Lạc**
+   đại thúc (lạc đà + lục lạc + họ Lạc), **Táo** bà bà (ông Táo giữ bếp + quả táo). Đây là chỗ Moly (tên có nghĩa) gặp Hà Nhân (họ +
+   danh xưng). Chơi chữ chỉ khi cả hai nghĩa đều đúng (luật 4 §3.2).
+4. **Độ dài**: 3 tiếng chuẩn, **tối đa 4** (*San Hô bà bà*), ≤ 14 ký tự. Không hai NPC cùng vùng chung danh xưng **và** chung tiếng đầu;
+   không trùng tiếng của tên riêng trong cả game (Đào ≠ Táo đọc khác hẳn — được; Măng / Mầm khác vùng, khác danh xưng — được, nhưng
+   tránh nhắc hai người cạnh nhau trong một câu).
+5. **Danh xưng khi người khác nhắc**: gọi đúng tên hiển thị (*"Măng bà bà"*, *"A Rêu huynh"* khi bé nhắc, *"Đăng đại thúc"*). Người đang
+   **dạy** người chơi (Trúc Lão, Mặc Ông, chủ trò) có thể được NPC khác gọi **sư phụ** trong thoại — không thành tên.
+6. **Giới thiệu kèm nghề** (gốc Moly "người chăn nuôi Yoyo"): nhãn phụ / câu đầu = *nghề + tên*: "người bán hạt **Mầm đại nương**", "thợ
+   làm hoa đăng **Đăng đại thúc**".
+7. **Không**: chữ Hán trong game (R-HUD-4); tên Moly (luật 5 §3.2); tên nhân vật Hà Nhân (Hà Nhân, Tần Lạc, Chu lão lục, Lý Trường
+   Sinh…); *tiểu tử, phế vật, tạp dịch, ngươi* làm tên hay lời gọi.
+8. **Mã** = tên không dấu (`mam-dai-nuong`, `tieu-liu-lo`); mã cũ giữ (luật 8 §3.2).
+
+Kiểm nhanh một tên mới: (1) nghe danh xưng biết tuổi + giới? (2) nghe tên riêng vẽ được một vật / màu gợi việc? (3) trẻ 7 tuổi đọc
+được, không thấy lạ hay buồn cười sai chỗ? (4) không trùng §3.2 luật 3–5?
+
 ### 3.3 Sáu khuôn tính cách (rút từ AC, không khoá theo giới)
 | Khuôn | Nét | Nhịp nói | Hợp vai |
 |---|---|---|---|
@@ -246,6 +326,34 @@ Một vùng ≥ 2 NPC → **ít nhất 2 khuôn khác nhau**, và có một ngư
   - Giọng kiểu Moly Việt (§1.3): câu ngắn, cuối câu "nhé", "đấy", "nha"; nhắc người khác luôn kèm danh xưng ("hỏi bà Măng Non ấy").
   - NPC cũ đang gọi "đạo hữu" giữ nguyên tới khi người dùng quyết NPC cũ (§6 Q3).
 
+### 3.4b Xưng hô cổ phong, không cần biết giới người chơi (lượt 3)
+Người dùng: trẻ con xưng hô với người chơi **"cổ phong một chút"**. Điểm mấu chốt: **giới của NPC đã biết** (mình đặt), chỉ giới
+**người chơi** là chưa biết → cổ phong hoá **lời tự xưng** của NPC theo giới NPC (huynh / tỷ / đệ / muội), còn **lời gọi người chơi**
+dùng từ **không nói giới**. Ba cách:
+
+| | Bé gọi người chơi | Người lớn gọi người chơi | Hợp / vướng |
+|---|---|---|---|
+| **1. "Thiếu hiệp" (khuyên)** | **thiếu hiệp** | giữ chốt cũ: già / trung niên → **cháu**, thanh niên → **em** | "thiếu hiệp" quen từ phim kiếm hiệp, khen người chơi là người đi đường giỏi, không nói giới; người lớn vẫn ấm như Moly. |
+| 2. "Tiểu hữu" cho mọi người lớn | thiếu hiệp | **tiểu hữu** (mọi tuổi) | cổ đều tay hơn, nhưng "tiểu hữu" lặp ở 14 người lớn → nhạt, hơi xa cách với trẻ 6 tuổi. Dùng điểm xuyết được (Lão, bà bà nói một câu). |
+| 3. Gọi tên người chơi | **<tên> + đại hiệp** / tên trơn | tên trơn | thân nhất, nhưng cần **ô đặt tên nhân vật** (chưa có — việc `/lead` + phiếu HUD); khi có tên thì thêm vào cách 1. |
+
+Loại: *ca ca / tỷ tỷ*, *sư huynh / sư tỷ* (cần giới người chơi), *ngươi*, *tiểu tử* (thô), *đại hiệp* cho người lớn gọi (giễu).
+
+**Bảng khuyên dùng (cách 1)** — thay bảng §3.4 cho NPC mới:
+
+| NPC (danh xưng) | NPC tự xưng | Gọi người chơi | Mẫu |
+|---|---|---|---|
+| Lão … | **lão** | cháu | "Nhìn mây đi, cháu. Lão đoán chưa sai bao giờ." |
+| … bà bà | bà | cháu | "Cháu hái bao nhiêu, bà mua bấy nhiêu." |
+| … đại thúc / … đại nương | **ta** | cháu | "Ta đưa cháu xuống cung ngọc." |
+| A … (nam) / … cô nương (nữ) | **huynh** / **tỷ** | em | "Bơi theo tỷ nào!" |
+| Tiểu … (bé nam / nữ) | **đệ** / **muội** (hoặc tên mình: "Líu Lo biết hết!") | **thiếu hiệp** | "Thiếu hiệp muốn nghe tin nóng không?" |
+
+- Liều lượng cổ: mỗi câu **tối đa một** từ cổ ngoài xưng hô; còn lại là tiếng Việt đời thường + "nhé / nha / đấy" (giọng Moly Việt).
+- Bé gọi người lớn khác bằng tên hiển thị + **huynh / tỷ** khi là người trẻ ("A Rêu huynh", "Kỳ Muội tỷ"), bằng tên hiển thị khi là
+  người già ("Táo bà bà").
+- Bỏ chỗ thay `anh/chị` ở §5 (Q5b cũ) — không còn cần giới người chơi.
+
 ### 3.5 Câu cửa miệng và giọng
 - 2–5 tiếng, tiếng Việt, chêm **cuối câu chào** hoặc **một trên ba câu** — không câu nào cũng chêm (nhàm).
 - Mỗi câu thoại ≤ 2 câu ngắn (khung thoại hiện hết chữ ngay, R-NPC-2). Từ tiếng Trung chỉ trong **nội dung học** (trò, bài), không
@@ -260,25 +368,25 @@ Một vùng ≥ 2 NPC → **ít nhất 2 khuôn khác nhau**, và có một ngư
 
 ## 4. NPC hiện có → đối chiếu với chuẩn (tuỳ chọn, chờ người dùng)
 
-Người dùng 2026-11-18: **NPC cũ chưa quyết — giữ nguyên, sẽ hỏi lại.** Cột cuối chỉ là gợi ý tên kiểu Moly Việt (hướng B) để người dùng
-xem khi quyết; không đổi gì trong code / luật.
+Người dùng 2026-11-18 (lượt 2 và lượt 3): **NPC cũ chưa quyết — giữ nguyên.** Hai cột cuối chỉ là gợi ý tên kiểu Moly Việt (hướng B) để người dùng
+xem khi quyết (cột cuối theo quy tắc cổ phong §3.2b — phần lớn NPC cũ **đã đạt** vì vốn là danh xưng cổ ghép); không đổi gì trong code / luật.
 
-| Mã | Tên hiện tại | Giới · tuổi | Việc | So với chuẩn | Gợi ý kiểu mới (tuỳ chọn) |
-|---|---|---|---|---|---|
-| `tieu-mac` | Tiểu Mặc | nam · bé | trông bảng nhiệm vụ, chào người mới | đạt — "linh vật", như Moly / Đậu Đậu | giữ (tên linh vật, như Moly giữ tên thương hiệu) |
-| `su-phu` | Mặc Ông | nam · già | giữ Truyền Tống Đài, chỉ đường | đạt (Hán Việt hậu tố, đã quen) | giữ; nếu đổi: **Ông Mực Tàu** |
-| `thu-thu` | Điển Thư | nữ · thanh niên | cho mượn sổ từ | Hán Việt khó (典書), tên là chức | **Chị Trang Sách** |
-| `tieu-nhi` | Tiểu nhị | nam · thiếu niên | chủ quán trà | chỉ chức danh, không tên người | giới thiệu "tiểu nhị **Anh Ấm Trà**" |
-| `quan-su` | Kỳ Muội | nữ · ≈ 16 | chủ trò Kỳ Văn Uyển | đạt (cách gọi + việc) | giữ; nếu đổi: **Chị Quân Cờ** |
-| `tran-su` | Trận sư | nam · trung niên | đọc tiến độ, vùng đi được | chỉ chức danh | giới thiệu "trận sư **Chú La Bàn**" |
-| `go-mo` | Lão Canh | nam · già | gõ mõ báo giờ, đi vòng | đạt (việc trong tên) | giữ; nếu đổi: **Ông Mõ Tre** |
-| `cam-nu` | Cầm Nương | nữ · thanh niên | gảy đàn, không tương tác | đạt | giữ; nếu đổi: **Chị Dây Tơ** |
-| `khat-nhi` | Tiểu Khất | nam · bé | xin 5 văn, kể tin của ngày (đang gỡ, chờ model) | vai ăn xin nhạy cảm với app trẻ em | thay bằng **Bé Líu Lo** (bé đưa tin, §5.1) — chờ quyết |
-| `truc-lao` | Trúc Lão | nam · già | thầy dạy từ | đạt | giữ; nếu đổi: **Ông Gậy Trúc** |
-| `truc-ong` | Trúc Ông | nam · già | mua măng | **gần trùng Trúc Lão**; thêm một ông già nam | **Bà Măng Non** (§5.2) — chờ quyết |
-| `thi-ong` | Thi Ông | nam · già | chủ tiệc Lưu Thương | đạt | giữ; nếu đổi: **Ông Bút Lông** |
-| `tu-tai` | Tú Tài | nam · thanh niên | văn nhân (đúng 60 %) | chức danh; gần âm "Tài Nữ" | **Anh Chén Phạt** |
-| `tai-nu` | Tài Nữ | nữ · thanh niên | văn nhân (đúng 70 %) | chức danh; gần âm "Tú Tài" | **Chị Vần Thơ** |
+| Mã | Tên hiện tại | Giới · tuổi | Việc | So với chuẩn | Gợi ý kiểu mới (tuỳ chọn) | Gợi ý cổ phong (lượt 3, tuỳ chọn) |
+|---|---|---|---|---|---|---|
+| `tieu-mac` | Tiểu Mặc | nam · bé | trông bảng nhiệm vụ, chào người mới | đạt — "linh vật", như Moly / Đậu Đậu | giữ (tên linh vật, như Moly giữ tên thương hiệu) | giữ — đã đúng thang (Tiểu + tên) |
+| `su-phu` | Mặc Ông | nam · già | giữ Truyền Tống Đài, chỉ đường | đạt (Hán Việt hậu tố, đã quen) | giữ; nếu đổi: **Ông Mực Tàu** | giữ — đã cổ (tên + Ông); xưng **lão**, gọi cháu |
+| `thu-thu` | Điển Thư | nữ · thanh niên | cho mượn sổ từ | Hán Việt khó (典書), tên là chức | **Chị Trang Sách** | **Thư cô nương** |
+| `tieu-nhi` | Tiểu nhị | nam · thiếu niên | chủ quán trà | chỉ chức danh, không tên người | giới thiệu "tiểu nhị **Anh Ấm Trà**" | giữ (Tiểu + chức); giới thiệu "tiểu nhị **A Trà**" nếu cần tên |
+| `quan-su` | Kỳ Muội | nữ · ≈ 16 | chủ trò Kỳ Văn Uyển | đạt (cách gọi + việc) | giữ; nếu đổi: **Chị Quân Cờ** | giữ — đã cổ (tên + Muội); xưng tỷ, gọi em |
+| `tran-su` | Trận sư | nam · trung niên | đọc tiến độ, vùng đi được | chỉ chức danh | giới thiệu "trận sư **Chú La Bàn**" | giới thiệu "trận sư **La đại thúc**" (la bàn + họ La) |
+| `go-mo` | Lão Canh | nam · già | gõ mõ báo giờ, đi vòng | đạt (việc trong tên) | giữ; nếu đổi: **Ông Mõ Tre** | giữ — đã đúng thang (Lão + tên) |
+| `cam-nu` | Cầm Nương | nữ · thanh niên | gảy đàn, không tương tác | đạt | giữ; nếu đổi: **Chị Dây Tơ** | giữ — đã cổ (tên + Nương) |
+| `khat-nhi` | Tiểu Khất | nam · bé | xin 5 văn, kể tin của ngày (đang gỡ, chờ model) | vai ăn xin nhạy cảm với app trẻ em | thay bằng **Bé Líu Lo** (bé đưa tin, §5.1) — chờ quyết | thay bằng **Tiểu Líu Lo** (§5.0) — chờ quyết |
+| `truc-lao` | Trúc Lão | nam · già | thầy dạy từ | đạt | giữ; nếu đổi: **Ông Gậy Trúc** | giữ — đã cổ; được gọi "sư phụ" trong thoại |
+| `truc-ong` | Trúc Ông | nam · già | mua măng | **gần trùng Trúc Lão**; thêm một ông già nam | **Bà Măng Non** (§5.2) — chờ quyết | **Măng bà bà** (§5.0) — chờ quyết |
+| `thi-ong` | Thi Ông | nam · già | chủ tiệc Lưu Thương | đạt | giữ; nếu đổi: **Ông Bút Lông** | giữ — đã cổ |
+| `tu-tai` | Tú Tài | nam · thanh niên | văn nhân (đúng 60 %) | chức danh; gần âm "Tài Nữ" | **Anh Chén Phạt** | **A Chén** (hay bị chén phạt) |
+| `tai-nu` | Tài Nữ | nữ · thanh niên | văn nhân (đúng 70 %) | chức danh; gần âm "Tú Tài" | **Chị Vần Thơ** | **Vần cô nương** |
 
 Nhìn chung (14 NPC): **10 nam / 4 nữ**; **5 ông già nam** (Mặc Ông, Lão Canh, Trúc Lão, Trúc Ông, Thi Ông), **0 bà**; 7/14 gọi người
 chơi "đạo hữu"; 6/14 tên là chức danh (Tiểu nhị, Trận sư, Tú Tài, Tài Nữ, Tiểu Khất, Điển Thư). Chỉ Tiểu Mặc, Lão Canh có tính
@@ -286,6 +394,75 @@ cách rõ trong thoại. Đổi tên hiển thị chạm: thoại (`zones/dialog
 (R-NPC-*, R-LUU-*, R-MANG-5), thiết kế HUD có tên — **mã giữ nguyên**.
 
 ## 5. Đề xuất dàn NPC (đặt lại tên kiểu Moly Việt, hướng B)
+
+### 5.0 Bản cổ phong (lượt 3) — tên, mã, xưng hô, cửa miệng, thoại (bản chính)
+**Bản này thay tên + thoại ở §5.1–5.7.** Hồ sơ ở §5.1–5.7 (giới, tuổi, chỗ đứng, việc, khuôn tính, màu / món, quan hệ) **giữ nguyên**;
+đọc tên cũ ở đó theo cột "Bản B (lượt 2)" dưới đây. Xưng hô theo §3.4b cách 1.
+
+| Vùng | Bản B (lượt 2) | **Tên cổ phong** | Mã | Giới thiệu (nghề + tên) | Xưng · gọi |
+|---|---|---|---|---|---|
+| Khởi Nguyên Trấn | Dì Hạt Mầm | **Mầm đại nương** | `mam-dai-nuong` | người bán hạt ở Tạp hoá | ta · cháu |
+| Khởi Nguyên Trấn | Bé Líu Lo | **Tiểu Líu Lo** | `tieu-liu-lo` | bé đưa tin | muội · thiếu hiệp |
+| Thung Trúc | Bà Măng Non | **Măng bà bà** | `truc-ong` (giữ) | bà mua măng | bà · cháu |
+| Thung Trúc | Bé Tí Te | **Tiểu Tí Te** | `tieu-ti-te` | bé giữ Tháp Sáo Trúc | đệ · thiếu hiệp |
+| Chợ Đêm | Bà Bếp Hồng | **Táo bà bà** | `tao-ba-ba` | bà chủ quán bún | bà · cháu |
+| Chợ Đêm | Chú Đèn Lồng | **Đăng đại thúc** | `dang-dai-thuc` | thợ làm hoa đăng đố | ta · cháu |
+| Chợ Đêm | Bé Leng Keng | **Tiểu Leng Keng** | `tieu-leng-keng` | bé đổi tiền | đệ · thiếu hiệp |
+| Rừng Nấm Tiên | Bà Nấm Tím | **Nấm bà bà** | `nam-ba-ba` | bà giữ Lò Thuốc Tiên | bà · cháu |
+| Rừng Nấm Tiên | Anh Rêu Xanh | **A Rêu** | `a-reu` | người hái thảo dược | huynh · em |
+| Rừng Nấm Tiên | Bé Hắt Xì | **Tiểu Hắt Xì** | `tieu-hat-xi` | bé hay ốm | muội · thiếu hiệp |
+| Cung Ngọc | Bà San Hô | **San Hô bà bà** | `san-ho-ba-ba` | bà giữ ngọc trai | bà · cháu |
+| Cung Ngọc | Chị Vỏ Ốc | **Ốc cô nương** | `oc-co-nuong` | người dẫn cá | tỷ · em |
+| Cung Ngọc | Chú Mái Chèo | **Chèo đại thúc** | `cheo-dai-thuc` | người chèo thuyền lặn | ta · cháu |
+| Đỉnh Hạc | Ông Gió Núi | **Lão Gió Núi** | `lao-gio-nui` | người đọc trời | lão · cháu |
+| Đỉnh Hạc | Chị Cánh Hạc | **Hạc cô nương** | `hac-co-nuong` | người dạy hạc | tỷ · em |
+| Đỉnh Hạc | Bé Mây Mây | **Tiểu Mây Mây** | `tieu-may-may` | bé hay lạc đường | đệ · thiếu hiệp |
+| Thành Cát | Ông Chuông Cổ | **Lão Chuông Cổ** | `lao-chuong-co` | người giữ thành | lão · cháu |
+| Thành Cát | Chị Đào Tiên | **Đào cô nương** | `dao-co-nuong` | người đào cổ vật | tỷ · em |
+| Thành Cát | Chú Lục Lạc | **Lạc đại thúc** | `lac-dai-thuc` | thương nhân lạc đà | ta · cháu |
+
+Ghi chú tên: **Ốc cô nương** gợi *Nàng tiên Ốc* (truyện / bài thơ tiểu học); **Táo bà bà** = bà giữ bếp (ông Táo) + quả táo; **Đăng** =
+hoa đăng; **Đào**, **Lạc** vừa là vật vừa là họ người. Mỗi vùng một bé "Tiểu …" (Rừng Nấm, Chợ Đêm, Đỉnh Hạc, Thung Trúc, trấn) — vẫn
+đúng luật "một NPC láy mỗi vùng". Bốn "bà bà" ở bốn vùng khác nhau.
+
+**Cửa miệng + thoại mẫu (chào · việc của mình · người quen)**
+
+| Tên | Cửa miệng | Chào | Việc | Người quen |
+|---|---|---|---|---|
+| Mầm đại nương | "Gieo đi, rồi sẽ lên." | "Vào đây cháu, hạt mới về sáng nay. Gieo đi, rồi sẽ lên." | "Hạt, phân, đồ bày vườn — ta có đủ cả. Cháu trồng gì cũng được nhé." | "Hạt nấm lạ ấy à? A Rêu bên Rừng Nấm Tiên gửi sang đấy." |
+| Tiểu Líu Lo | "Tin nóng, tin nóng!" | "Tin nóng, tin nóng! Thiếu hiệp muốn nghe tin hôm nay không?" | "Muội chạy khắp trấn từ sáng, ai nói gì muội cũng biết hết." | "Kỳ Muội tỷ bảo bàn Đấu chữ chiều nay đông lắm đấy!" |
+| Măng bà bà | "Măng non ngọt lịm!" | "Cháu hái được bao nhiêu, bà mua bấy nhiêu. Măng non ngọt lịm!" | "Mưa chiều xong là măng nhú, cháu ra rừng trúc thưa mà tìm nhé." | "Măng bà gánh sang chợ đêm cho em gái bà — Táo bà bà — nấu bún đấy." |
+| Tiểu Tí Te | "Tí… te… nghe chưa?" | "Tí… te… nghe chưa? Gió thổi qua tháp là tháp hát đấy!" | "Mỗi ống một giọng: bằng, lên, xuống rồi lên, xuống hẳn. Thiếu hiệp gõ thử theo đệ nha." | "Ông nội đệ là Trúc Lão, dạy bài ở bãi hạc. Học xong lại đây chơi với đệ nhé!" |
+| Táo bà bà | "Nóng hổi đây!" | "Nóng hổi đây! Cháu trông sạp giùm bà một lúc nhé." | "Khách gọi mấy bát, món gì, cháu nghe kỹ rồi đưa cho đúng." | "Măng của chị bà, Măng bà bà, gánh từ thung trúc sang đấy, ngọt lắm." |
+| Đăng đại thúc | "Đố cháu nhé…" | "Đố cháu nhé… chiếc đèn nào sáng nhất trên cây?" | "Mỗi chiếc hoa đăng ta giấu một câu đố. Đoán đúng, đèn bừng lên đấy." | "Thuở bé ta học chữ với Mặc Ông, giờ ta đem chữ đi treo đèn." |
+| Tiểu Leng Keng | "Một, hai, ba — đủ rồi!" | "Một, hai, ba — đủ rồi! Thiếu hiệp cần đổi tiền lẻ không?" | "Khách trả bao nhiêu, thối lại bao nhiêu, đệ đếm giúp cho." | "Táo bà bà là bà nội đệ đấy, đừng để bà chờ khách lâu nha!" |
+| Nấm bà bà | "Bà quên mất… cháu nhắc bà nhé?" | "Lò sôi rồi mà bà quên mất… cháu nhắc bà nhé?" | "Đơn thuốc ghi gì, cháu đọc rồi bỏ đúng thứ vào lò." | "A Rêu hái cỏ ở mép rừng, thiếu gì cứ hỏi nó nhé." |
+| A Rêu | "Đừng giẫm lên rêu." | "Đừng giẫm lên rêu. … Em cần gì?" | "Cỏ này trị ho, cỏ kia cho ngủ ngon. Em mua thì huynh bán." | "Hạt nấm huynh gửi về Tạp hoá trấn, Mầm đại nương giữ cho." |
+| Tiểu Hắt Xì | "Hắt… xì!" | "Hắt… xì! Hôm nay muội đau bụng quá." | "Thiếu hiệp nấu thuốc giúp muội với, bà bà lại quên đơn rồi." | "Uống thuốc xong muội chạy ra đếm nấm với A Rêu huynh!" |
+| San Hô bà bà | "Chậm thôi, biển còn dài." | "Chậm thôi, biển còn dài. Cháu nhặt được ngọc nào rồi?" | "Mỗi viên ngọc là một chữ cháu từng học. Nhắc lại cho nó sáng mãi nhé." | "Mặc Ông trên trấn cũng dặn thế: hôm nay nhớ, mai ôn lại." |
+| Ốc cô nương | "Bơi theo tỷ nào!" | "Bơi theo tỷ nào! Đàn cá lạc nhà cả rồi." | "Cá đỏ về hang đỏ, cá vàng về hang vàng — tỷ đọc màu, em dẫn nhé." | "Cha tỷ là Chèo đại thúc, chở thuyền từ chợ đêm xuống đây đấy." |
+| Chèo đại thúc | "Hít sâu vào!" | "Hít sâu vào! Ta đưa cháu xuống cung ngọc." | "Dưới ấy có San Hô bà bà giữ ngọc, con bé nhà ta chăn cá." | "Lên lại thì cứ ra bến, ta chèo về chợ đêm nhé." |
+| Lão Gió Núi | "Nhìn mây đi." | "Nhìn mây đi. Hôm nay trời sẽ thế nào, cháu?" | "Gió đông thì hạc bay êm, gió bắc thì cháu đừng có liều." | "Hạc cô nương là cháu gái lão, nóng tính nhưng tốt bụng." |
+| Hạc cô nương | "Giữ chặt nhé!" | "Giữ chặt nhé! Hạc nghe tỷ nói, em nghe lệnh mà lái." | "Trái, phải, lên, xuống — lệnh nào bay đúng vòng ấy." | "Hỏi Lão Gió Núi xem hôm nay gió thế nào rồi hẵng bay nhé." |
+| Tiểu Mây Mây | "Ơ… đường nào nhỉ?" | "Ơ… đường nào nhỉ? Thiếu hiệp chỉ đệ lối về tổ hạc với!" | "Đệ đuổi theo con diều, đi mãi đi mãi… rồi lạc." | "Hạc cô nương mà biết đệ đi lạc là mắng cho xem!" |
+| Lão Chuông Cổ | "Ồ, quý lắm, quý lắm!" | "Ồ, quý lắm, quý lắm! Cháu đào được ở đâu thế?" | "Cái chuông này của người gác thành, cái nồi này của người nấu bếp." | "Đào cô nương, học trò lão, đào còn nhanh hơn lão thuở trẻ đấy." |
+| Đào cô nương | "Đào thêm chút nữa!" | "Đào thêm chút nữa! Hôm nay chắc chắn có báu vật." | "Đào được gì em mang cho Lão Chuông Cổ xem, lão nói nó là gì." | "Đồ trùng thì bán cho Lạc đại thúc, thúc mang đi chợ đêm bán." |
+| Lạc đại thúc | "Giá hời đấy nhé!" | "Giá hời đấy nhé! Cháu có gì bán cho ta không?" | "Đồ Lão Chuông Cổ chê, ta vẫn mua." | "Ta vừa từ chợ đêm về, Táo bà bà gửi lời hỏi thăm cháu đấy." |
+
+**Năm ví dụ trước / sau** (lượt 2 Moly Việt → lượt 3 cổ phong):
+
+| Vai | Lượt 2 | Lượt 3 | Câu chào lượt 2 → lượt 3 |
+|---|---|---|---|
+| bán Tạp hoá | Dì Hạt Mầm | **Mầm đại nương** | "…Gieo đi, rồi sẽ lên." (giữ) · "dì có đủ cả" → "**ta** có đủ cả" |
+| bé đưa tin | Bé Líu Lo | **Tiểu Líu Lo** | "Anh/chị muốn nghe tin…" → "**Thiếu hiệp** muốn nghe tin…" |
+| đọc trời | Ông Gió Núi | **Lão Gió Núi** | "Con bé cháu ông…" → "Hạc cô nương là cháu gái **lão**…" |
+| dẫn cá | Chị Vỏ Ốc | **Ốc cô nương** | "Bơi theo chị nào!" → "Bơi theo **tỷ** nào!" |
+| thương nhân | Chú Lục Lạc | **Lạc đại thúc** | "…bán cho chú không?" → "…bán cho **ta** không?" |
+
+Ở mọi chỗ, lượt 3 chỉ đổi **danh xưng + lời tự xưng + lời bé gọi người chơi**; nghĩa, việc, cửa miệng giữ — đúng "cổ hơn một chút".
+
+---
+Phần dưới (bảng + §5.1–5.7) là **bản B lượt 2**, giữ để đối chiếu hồ sơ; tên + thoại dùng §5.0.
 
 Mỗi vùng 2–3 NPC (Thung Trúc nhiều hơn vì đã có sẵn trò). Tên vùng theo bộ 2 (`2026-11-17-the-gioi-moi.md`), chủ đề từ theo bảng
 "Đổi mục tiêu 2026-11-17" (**chủ đề còn chờ người dùng chốt** — nếu đổi thì đổi cột "Từ vựng"). NPC mới cần ảnh 4 góc → model
@@ -472,7 +649,21 @@ Bếp Hồng, Anh Rêu Xanh ↔ Dì Hạt Mầm, Chú Lục Lạc ↔ Bà Bếp 
   (sổ quy tắc trước).
 - **NPC cũ**: **chưa quyết — giữ nguyên**, sẽ hỏi lại (§4 chỉ là gợi ý).
 
-**Còn chờ:**
+**Đã quyết (2026-11-18, lượt 3):**
+- **Kiểu tên**: "Tên cổ phong hơn một chút, kết hợp giữa Moly và chuỗi series YouTube Hà Nhân" → §1.5, **§3.2b** (bản chính). Thay Q1
+  cũ (hướng A / B): hướng A bỏ, hướng B thành gốc của §3.2b.
+- **Trẻ con xưng hô với người chơi**: "cổ phong một chút" → **§3.4b**, khuyên cách 1 (bé xưng đệ / muội, gọi **thiếu hiệp**). Thay
+  Q5b cũ (không còn cần giới người chơi).
+- **NPC cũ**: người dùng chọn "Other" nhưng không ghi gì → **chưa quyết, giữ nguyên**; §4 thêm cột gợi ý cổ phong (tuỳ chọn).
+
+**Còn chờ (lượt 3):**
+- **Q1' — Duyệt quy tắc §3.2b + 19 tên §5.0.** Chỗ dễ đổi: *Ốc cô nương* (trẻ có thể trêu "não ốc" — thay: *Sò cô nương*, *Ngọc cô
+  nương*), *Táo bà bà* (trẻ nghĩ quả táo — thay: *Bún bà bà*), *A Rêu* (chữ "A" lạ với trẻ miền Nam — thay: *Rêu huynh*), *San Hô bà
+  bà* (4 tiếng), *Nấm bà bà* (hay giữ *Bà Nấm Tím*?).
+- **Q5' — Xưng hô**: cách 1 (khuyên) / cách 2 "tiểu hữu" cho mọi người lớn / cách 3 gọi tên (cần ô đặt tên — việc `/lead`).
+- Các mục Q2–Q4, Q8 dưới đây vẫn chờ; Q1 và Q5b đã thay bằng mục lượt 3 ở trên.
+
+**Còn chờ (lượt 2, giữ để đối chiếu):**
 1. **Q1 — Hướng đặt tên**: (**B, khuyên**) danh xưng Việt + tên 2 tiếng vẽ được, trẻ con láy — *Dì Hạt Mầm, Chú Đèn Lồng, Bé Líu Lo*
    (khuôn "chị Cầu Vồng / Đậu Đậu"); (A) danh xưng Việt + tên vui tai kiểu phiên âm — *Dì Nana, Chú Kiko, Bé Titi* (khuôn "Yoyo / cha sứ
    Crow"; gần âm bản Việt nhưng lệch cổ trang); (A+B) người lớn A, trẻ con láy B. Ví dụ đủ ở §3.2.
@@ -508,6 +699,16 @@ cần ảnh 4 góc ở `/ui-design` → `/tai-nguyen`, ngoại hình bám mục 
 - [R] Sóc Nhí — Trò chơi mới: Vương Quốc Chuột Chũi ("bạn Đậu Đậu", "thỏ xám"): https://socnhi.com/blog/u-1/c-15/Soc-Nhi-gioi-thieu/d-331/Tro-choi-moi-Vuong-Quoc-Chuot-Chui.html — vừa
 - [S] FPT Shop — Vương Quốc Chuột Chũi (Lâu Đài Moor, phố Amoy, Quảng Trường Tình Yêu): https://fptshop.com.vn/tin-tuc/giai-tri/vuong-quoc-chuot-chui-177296 — vừa (bản 2023)
 - [T] Download.com.vn — Vương Quốc Chuột Chũi (Lâu Đài Chuột Chũi, Núi Raya, Phố Hạnh Phúc, Rừng Quả Mọng): https://download.com.vn/vuong-quoc-chuot-chui-173237 — vừa (bản 2023)
+- [U] Wikipedia tiếng Việt — Hà Nhân (nhân vật) (虾仁, hoạt hình sa điêu / đầu gấu trúc, Douyin / Kuaishou / Bilibili; nghĩa khác: Tây viên
+  kỳ ngộ ký): https://vi.wikipedia.org/wiki/H%C3%A0_Nh%C3%A2n_(nh%C3%A2n_v%E1%BA%ADt) — chắc (là gì), mục sản xuất trống
+- [V] YouTube (vietsub / lồng tiếng, kết quả tìm kiếm): "Tiếng Lòng Của Đại Minh | Hà Nhân Xuyên Không | Chuột Vietsub" https://www.youtube.com/watch?v=NrmN6nogyEY ·
+  "Hệ Thống Cưới Vợ Để Tu Tiên – Hà Nhân" https://www.youtube.com/playlist?list=PLpmPQodzZE2Pt--XLbfSKoNeB9_pwUfn2 · "Hà Nhân Chu Lão Lục Là Kẻ Cuồng Tu Tiên"
+  https://www.youtube.com/watch?v=4ikJoRYH2YQ · "Tổng Hợp Hà Nhân Tu Tiên FULL BỘ" https://www.youtube.com/playlist?list=PLcsiQHAoH923u2ZO6Ob54U5JfSShRWIti ·
+  "Tạp dịch phế vật mà lại là mệnh mạch tông môn" (Hà Nhân Tu Tiên | Tu Tiên Sub) https://www.youtube.com/watch?v=WT8eUte75CQ — chắc (tựa, kênh), không đọc được thoại
+- [W] Douyin / Toutiao / iQiyi (tựa gốc 虾仁: 《谁让你真修仙了?》, 《大梦千年》, 《我在大明的那些年》, 《氪金模拟》): https://www.douyin.com/shipin/7283055378768857148,
+  https://www.toutiao.com/zixun/7501502925978748954/, https://www.iqiyi.com/a_1tu8xwsgvgt.html — vừa (tóm tắt từ kết quả tìm, không mở được trang)
+- Xưng hô cổ phong ở §1.5 (ta – ngươi, tiểu hữu, thiếu hiệp, bà bà, đại thúc…): **quy ước chung của phim / hoạt hình tu tiên vietsub**,
+  không trích được từ thoại Hà Nhân → giả định có cơ sở.
 - Không vào được: wiki fan Google Sites `sites.google.com/site/molyvng` (đòi đăng nhập), web.archive.org (moly.zing.vn), motgame.vn "Moly – Ai cũng từng làm chuột chũi" (từ chối kết nối).
 - Dự án: `web/src/zones/{dialogs,trucLamThoai,trucLao,library}.ts`, `web/src/scene/spec.ts` (`NPC_IDS`), `design/scene/{scene,rung-truc}.json`
   (`npcs`), `docs/testing/quy_tac.md` (R-NPC-1…10, R-LUU-1, R-MANG-5, R-HANH-8, R-HUD-4), `docs/tasks/2026-11-15-truc-lam-mini-game.md`.
