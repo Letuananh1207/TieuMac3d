@@ -40,6 +40,7 @@ import { checkFluteTower } from './thapSaoSpec';
 import { checkSandCity } from './thanhCatSpec';
 import { checkSeaFloor } from './cungNgocSpec';
 import { checkPillarValley } from './dinhHacSpec';
+import { checkFarm } from './nongSpec';
 import { landingPad, START_HEADING } from './hacDuong';
 import { checkPortals } from './portals';
 import { checkLook } from './look';
@@ -592,6 +593,7 @@ function checkConsistency(s: SceneSpec): string[] {
   out.push(...checkSandCity(s.sandCity));
   out.push(...checkSeaFloor(s.seaFloor));
   out.push(...checkPillarValley(s.pillarValley, terrainHeightFn(s.terrain, s.paths)));
+  out.push(...checkFarm(s.farm)); // nông trại Nhà của ta (V-114)
   out.push(...checkBounds(s));
   if (!(s.light.lampGlow >= 0 && s.light.lampGlow <= 1)) out.push(`light.lampGlow: 0…1 (đang ${s.light.lampGlow})`);
   if (t.enabled && t.size > 0 && t.cell > 0) out.push(...checkOnFlatGround(s));

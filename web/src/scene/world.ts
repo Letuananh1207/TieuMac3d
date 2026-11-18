@@ -55,6 +55,7 @@ import { addWell } from './well';
 import { addChoDem } from './vat_cho_dem';
 import { addSandCity } from './vat_thanh_cat';
 import { addSeaFloor } from './vat_cung_ngoc';
+import { addFarm, type Farm3D } from './nongTrai';
 
 /** Bán kính quầng đèn tối đa ban đêm (m) — quầng cộng màu tốn điểm ảnh trên máy yếu (kế hoạch 2026-11-14-ngay-dem). */
 const NIGHT_GLOW_MAX = 1.1;
@@ -78,6 +79,8 @@ export interface World {
   teleport: TeleportRing | null;
   /** vườn rau Nhà của ta (`garden.enabled`, R-VUON-1): đất + rào + thùng + lớp cây — `homeGarden.ts` đổi dáng cây; tắt = `null` */
   garden: Garden3D | null;
+  /** nông trại Nhà của ta (`farm.enabled`, R-NONG-1): chuồng gà, ao cá, chuồng bò, giàn — `nongTrai.ts` (gốc) bật / tắt vật theo trạng thái; tắt = `null` */
+  farm: Farm3D | null;
   /** mương khúc thuỷ: đường + chén lệnh (Lưu Thương — R-LUU-2) */
   channels: ChannelSet;
   /** ngày đêm (`dayNight.enabled`): áp giờ lên cảnh — `web/src/ngayDem.ts` gọi; tắt = `null` (luôn ban ngày) */
@@ -272,6 +275,7 @@ function* worldSteps(
   const trees = addTrees(scene, colliders, spec.trees, groundY, spec.look);
   const tea = addTeaGarden(scene, colliders, spec, groundY, detail); // Đồi Chè: luống + bướm + sương (V-46)
   const garden = spec.garden.enabled ? addGarden(scene, colliders, spec.garden, spec.look, groundY, spec.trees.crown === 'chum') : null; // Vườn rau (V-52)
+  const farm = addFarm(scene, colliders, spec.farm, groundY ?? (() => 0)); // nông trại (V-114)
   // Rừng Nấm Tiên (V-109): nấm khổng lồ, nhà nấm, luống thuốc; Nấm Mẹ + Lò Thuốc Tiên (thang + mũ đi được)
   addMushroomForest(scene, colliders, spec.mushroomForest, spec.look, groundY ?? (() => 0), spec.paths);
   const mm = spec.mushroomForest.mother;
@@ -322,8 +326,9 @@ function* worldSteps(
     ready: Promise.all(houses),
     closedHouses,
     garden,
+    farm,
     ground,
-    surface: new LayeredGround(hf, [...(teleport?.pads ?? []), ...bridgePads, ...choDem.pads, ...sea.pads, ...terracePads, ...buildingPads, ...rampartPads, ...rooms.flatMap((r) => r.pads), ...closedPads, ...(mother?.pads ?? []), ...flute.pads, ...sandPads, ...dinhHacPads]),
+    surface: new LayeredGround(hf, [...(teleport?.pads ?? []), ...bridgePads, ...choDem.pads, ...sea.pads, ...terracePads, ...buildingPads, ...rampartPads, ...rooms.flatMap((r) => r.pads), ...closedPads, ...(mother?.pads ?? []), ...flute.pads, ...sandPads, ...dinhHacPads, ...(farm?.pads ?? [])]),
     rooms,
     seats: [...rooms.flatMap((r) => r.seats ?? []), ...buildingSeats, ...outdoorSeats],
     studySign: rooms.find((r) => r.studySign)?.studySign ?? null,
@@ -343,6 +348,7 @@ function* worldSteps(
       mirages(dt);
       mother?.update(dt);
       sea.update(dt);
+      farm?.update(dt);
       teleport?.update(dt);
       portalMarks(dt, player);
       for (const r of rooms) r.update(dt, !!player && inRect(r.floor, player.x, player.z), player?.y, eye);

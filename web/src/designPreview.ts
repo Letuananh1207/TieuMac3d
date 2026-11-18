@@ -267,6 +267,14 @@ async function boot(): Promise<void> {
   const dan = params.get('dang') === 'dan-tranh' ? await DanTranh.create(scene, spec, (x, z) => world.surface.heightAt(x, z), { url: playerModelUrl(params.get('nhan-vat')), block: () => createDiscipleCharacter() }) : null;
   // ?dang=lam-vuon[&viec=…][&t=…] — nhân vật diễn 6 việc làm vườn + hạt / nước / sâu / cỏ / quả bay (vuonPreview.ts, R-VUON-13)
   const vuon = addGardenPreview(scene, spec, world.garden, params, (x, z) => world.surface.heightAt(x, z), character);
+  // ?nong=day — nông trại có đủ sản phẩm (thóc, trứng, cỏ, sữa, giàn chín, phao chìm) để chụp so concept (V-114)
+  if (world.farm && params.has('nong')) {
+    const full = params.get('nong') === 'day';
+    world.farm.setCoop(full, full);
+    world.farm.setPen(full, full);
+    for (const v of ['bau', 'dua-leo'] as const) world.farm.setVine(v, full ? 'chin' : 'phu');
+    world.farm.bobber.set(full ? 'bite' : 'float');
+  }
   if (vuon) el('problems').append(...vuon.lines.map((t) => li(t)));
   // 3 trò nhỏ Trúc Lâm (V-66 B4): đệm đàn, măng hôm nay, mưa, chén lệnh — `?dang=luu-thuong|hai-mang[&mua]` (trucLamPreview.ts)
   const truc = addTrucLamPreview(scene, colliders, spec, world, params);

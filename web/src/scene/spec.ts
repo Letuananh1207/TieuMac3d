@@ -13,6 +13,7 @@ import { DEFAULT_FLUTE_TOWER, type FluteTowerSpec } from './thapSaoSpec';
 import { DEFAULT_SAND_CITY, type SandCitySpec } from './thanhCatSpec';
 import { DEFAULT_SEA_FLOOR, type SeaFloorSpec } from './cungNgocSpec';
 import { DEFAULT_PILLAR_VALLEY, type PillarValleySpec } from './dinhHacSpec';
+import { DEFAULT_FARM, type FarmSpec } from './nongSpec';
 
 export type XZ = [number, number];
 
@@ -1231,6 +1232,8 @@ export interface SceneSpec {
   seaFloor: SeaFloorSpec;
   /** Đỉnh Hạc Bay (V-111): cột đá, cầu treo, cột chính có bậc xoắn + đình + tùng cổ + hạc — rỗng / tắt = như cũ (`dinhHacSpec.ts`) */
   pillarValley: PillarValleySpec;
+  /** nông trại Nhà của ta (V-114 — `nongSpec.ts`): chuồng gà, ao cá, chuồng bò, giàn bầu bí — tắt = không có (như cũ) */
+  farm: FarmSpec;
   /** `seated`: khi ngồi vào án thư / bàn trà (R-NGOI-1) — camera lùi ra, chúc xuống thấy cả bàn ·
    *  `study`: khi Ngồi ôn (R-DIEU-7) — lùi ra, nâng cao, lệch `side` rad ra sau vai phải để thấy cuộn sách trên tay */
   camera: {
@@ -1433,6 +1436,7 @@ export const DEFAULT_SCENE: SceneSpec = {
   stalls: [],
   piers: [],
   choDemStyle: DEFAULT_CHO_DEM_STYLE,
+  farm: DEFAULT_FARM, // cảnh cũ không có nông trại (V-114)
   fenceStyle: { kind: 'go', height: 1.0, postEvery: 1.6, color: '#9e2a20', cap: '#e0ae4c' },
   teaRows: [], // cảnh cũ không có luống chè
   garden: {
