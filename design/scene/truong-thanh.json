@@ -2,35 +2,69 @@
   "site": {
     "name": "Đỉnh Hạc Bay",
     "han": "長城",
-    "areas": []
+    "areas": [
+      {
+        "name": "Bãi Hạc",
+        "from": [
+          -12,
+          28
+        ],
+        "to": [
+          12,
+          46
+        ]
+      },
+      {
+        "name": "Cột Đình Hạc",
+        "from": [
+          -12,
+          -14
+        ],
+        "to": [
+          12,
+          10
+        ]
+      },
+      {
+        "name": "Cầu Treo",
+        "from": [
+          -30,
+          -34
+        ],
+        "to": [
+          -12,
+          0
+        ]
+      }
+    ]
   },
   "sky": {
-    "top": "#5a86b4",
-    "middle": "#a6c0d4",
-    "horizon": "#ece2c8"
+    "top": "#6fa9dc",
+    "middle": "#8ec3e6",
+    "horizon": "#dceef5"
   },
   "fog": {
-    "color": "#d8d6c8",
-    "near": 30,
-    "far": 130
+    "color": "#d3e4ec",
+    "near": 60,
+    "far": 210
   },
   "light": {
-    "skyColor": "#f6f0e0",
-    "groundColor": "#6a5a40",
-    "hemiIntensity": 0.72,
-    "sunColor": "#ffe6b8",
-    "sunIntensity": 0.95,
+    "skyColor": "#f4f2ea",
+    "groundColor": "#6a7a5a",
+    "hemiIntensity": 0.6,
+    "sunColor": "#fff0d0",
+    "sunIntensity": 0.85,
     "sunPosition": [
-      24,
-      26,
-      18
+      30,
+      40,
+      26
     ]
   },
   "ground": {
-    "size": 160,
-    "color": "#8a7a56",
+    "size": 220,
+    "color": "#7fa86a",
     "brickHue": 40,
-    "pattern": "gach"
+    "pattern": "vuong"
   },
   "terrain": {
     "enabled": true,
@@ -43,105 +77,104 @@
     "plateaus": [
       {
         "from": [
-          -46,
-          -15
+          -12,
+          28
         ],
         "to": [
-          46,
-          0
-        ],
-        "y": 0,
-        "pave": false,
-        "blend": 5
-      },
-      {
-        "from": [
-          -16,
-          0
-        ],
-        "to": [
-          16,
-          42
-        ],
-        "y": 0,
-        "pave": false,
-        "blend": 7
-      },
-      {
-        "from": [
-          -30,
-          0
-        ],
-        "to": [
-          -16,
-          10
-        ],
-        "y": 0,
-        "pave": false,
-        "blend": 5
-      },
-      {
-        "from": [
-          -24,
-          -46
-        ],
-        "to": [
-          24,
-          -15
+          12,
+          46
         ],
         "y": 0,
         "pave": false,
         "blend": 6
+      },
+      {
+        "from": [
+          -30,
+          -12
+        ],
+        "to": [
+          30,
+          6
+        ],
+        "y": 0,
+        "pave": false,
+        "blend": 6
+      },
+      {
+        "from": [
+          -30,
+          -34
+        ],
+        "to": [
+          -18,
+          -22
+        ],
+        "y": 0,
+        "pave": false,
+        "blend": 5
       }
     ],
     "peaks": [
       {
-        "x": -40,
-        "z": -42,
+        "x": -72,
+        "z": -40,
         "r": 30,
-        "h": 22
+        "h": 24
       },
       {
-        "x": 40,
-        "z": -44,
+        "x": 72,
+        "z": -42,
         "r": 30,
         "h": 24
       },
       {
         "x": 0,
-        "z": -72,
-        "r": 30,
+        "z": -92,
+        "r": 34,
         "h": 30
       },
       {
-        "x": -46,
-        "z": 24,
+        "x": -74,
+        "z": 30,
+        "r": 26,
+        "h": 18
+      },
+      {
+        "x": 74,
+        "z": 28,
         "r": 26,
         "h": 16
       },
       {
-        "x": 46,
-        "z": 22,
-        "r": 26,
-        "h": 14
+        "x": -40,
+        "z": 76,
+        "r": 24,
+        "h": 12
       },
       {
-        "x": -66,
-        "z": -8,
-        "r": 20,
-        "h": 18
+        "x": 40,
+        "z": 76,
+        "r": 24,
+        "h": 12
       },
       {
-        "x": 66,
-        "z": -10,
-        "r": 20,
+        "x": -94,
+        "z": -4,
+        "r": 22,
+        "h": 20
+      },
+      {
+        "x": 94,
+        "z": -6,
+        "r": 22,
         "h": 20
       }
     ],
     "noise": {
-      "seed": 7,
-      "amp": 1.2,
-      "scale": 20
+      "seed": 111,
+      "amp": 0.6,
+      "scale": 18
     },
     "edge": {
       "radius": 92,
@@ -152,46 +185,114 @@
     "blend": 6,
     "colors": {
       "grass": [
-        "#7d7a46",
-        "#8e8a52",
-        "#6f6e40"
+        "#7fa86a",
+        "#8ab472",
+        "#76a062"
       ],
-      "dirt": "#8a7350",
-      "rock": "#8a8276",
-      "highRock": "#a8a092",
+      "dirt": "#a8946a",
+      "rock": "#bdb7aa",
+      "highRock": "#d6d2c8",
       "highFrom": 16
     },
     "slopeDirt": 18,
     "slopeRock": 32,
     "stairs": [],
     "grass": {
-      "density": 4,
+      "density": 3,
       "colors": [
-        "#7d7a46",
-        "#a39a5c"
+        "#7a9e62",
+        "#9ab878"
       ]
     },
     "rocks": {
-      "density": 8,
-      "color": "#968e80"
+      "density": 4,
+      "color": "#c4beb2"
     },
-    "waterfalls": [],
-    "streams": []
+    "waterfalls": [
+      {
+        "x": 32,
+        "z": -26.7,
+        "top": 24,
+        "bottom": 0,
+        "width": 3,
+        "rotY": 0
+      }
+    ],
+    "streams": [
+      {
+        "points": [
+          [
+            -110,
+            -10
+          ],
+          [
+            -80,
+            -16
+          ],
+          [
+            -58,
+            -12
+          ],
+          [
+            -40,
+            -15
+          ],
+          [
+            -30,
+            -18
+          ],
+          [
+            -14,
+            -19
+          ],
+          [
+            0,
+            -18
+          ],
+          [
+            14,
+            -19.5
+          ],
+          [
+            26,
+            -21
+          ],
+          [
+            36,
+            -23
+          ],
+          [
+            50,
+            -19
+          ],
+          [
+            70,
+            -24
+          ],
+          [
+            110,
+            -18
+          ]
+        ],
+        "width": 3.2,
+        "depth": 1
+      }
+    ]
   },
   "farMountains": {
     "layers": [
       {
         "radius": 160,
-        "height": 46,
-        "color": "#7f93a4",
+        "height": 48,
+        "color": "#9fb0b8",
         "peaks": 11,
         "width": 1.4,
         "spurs": 2
       },
       {
         "radius": 230,
-        "height": 62,
-        "color": "#a8b6c2",
+        "height": 64,
+        "color": "#c3cfd6",
         "peaks": 9,
         "width": 1.8,
         "spurs": 1
@@ -200,7 +301,7 @@
     "base": -30
   },
   "cloudSea": {
-    "radius": 420,
+    "radius": 0,
     "y": -18,
     "color": "#efece2"
   },
@@ -208,9 +309,127 @@
     "enabled": false
   },
   "wallSegments": [],
-  "paths": [],
+  "paths": [
+    {
+      "from": [
+        0,
+        43.7
+      ],
+      "to": [
+        0,
+        49
+      ],
+      "width": 3,
+      "color": "#d8cfbd",
+      "edge": false
+    },
+    {
+      "from": [
+        0,
+        34.3
+      ],
+      "to": [
+        -3,
+        12
+      ],
+      "width": 3,
+      "color": "#d8cfbd",
+      "edge": false
+    },
+    {
+      "from": [
+        -3,
+        12
+      ],
+      "to": [
+        -4,
+        6
+      ],
+      "width": 3,
+      "color": "#d8cfbd",
+      "edge": false
+    },
+    {
+      "from": [
+        -4.4,
+        37.5
+      ],
+      "to": [
+        -14,
+        26
+      ],
+      "width": 3,
+      "color": "#d8cfbd",
+      "edge": false
+    },
+    {
+      "from": [
+        -14,
+        26
+      ],
+      "to": [
+        -30,
+        8
+      ],
+      "width": 3,
+      "color": "#d8cfbd",
+      "edge": false
+    },
+    {
+      "from": [
+        -30,
+        8
+      ],
+      "to": [
+        -42,
+        -3
+      ],
+      "width": 3,
+      "color": "#d8cfbd",
+      "edge": false
+    },
+    {
+      "from": [
+        4.4,
+        37.5
+      ],
+      "to": [
+        14,
+        26
+      ],
+      "width": 3,
+      "color": "#d8cfbd",
+      "edge": false
+    },
+    {
+      "from": [
+        14,
+        26
+      ],
+      "to": [
+        30,
+        8
+      ],
+      "width": 3,
+      "color": "#d8cfbd",
+      "edge": false
+    },
+    {
+      "from": [
+        30,
+        8
+      ],
+      "to": [
+        42,
+        -3
+      ],
+      "width": 3,
+      "color": "#d8cfbd",
+      "edge": false
+    }
+  ],
   "buildingStyle": {
-    "path": "#9c9282",
+    "path": "#d8cfbd",
     "stone": "#8f877a",
     "pillar": "#6a3a28",
     "base": "#8f877a",
@@ -232,16 +451,22 @@
       "scaleMin": 1.6,
       "scaleMax": 2.4
     },
-    "seed": 53
+    "seed": 53,
+    "leaves": [
+      "#3f6a4c",
+      "#4f7a5a",
+      "#6f9a6a"
+    ],
+    "trunk": "#6b4a36"
   },
   "floating": {
     "islands": [],
     "clouds": {
-      "count": 0,
-      "height": 26,
+      "count": 6,
+      "height": 24,
       "radius": 60,
-      "speed": 0.6,
-      "color": "#d9dce8"
+      "speed": 0.5,
+      "color": "#ffffff"
     }
   },
   "well": {
@@ -277,7 +502,11 @@
       0,
       39
     ],
-    "radius": 4.7
+    "radius": 4.7,
+    "colors": {
+      "floor": "#e8e2d6",
+      "rim": "#c8c0b0"
+    }
   },
   "lessons": {
     "radicals": false
@@ -359,5 +588,429 @@
   "caravans": [],
   "lanternStrings": [],
   "fences": [],
-  "teaRows": []
+  "teaRows": [],
+  "look": {
+    "style": "mem",
+    "colorPipeline": "cu",
+    "wrap": 0.55,
+    "ao": 0.4,
+    "foot": 0.8,
+    "footShare": 0.55,
+    "aoTint": "#5a6a70",
+    "sunGlow": "#fff2d0",
+    "glowSize": 0.3,
+    "skyBands": {
+      "mid": 0.1,
+      "top": 0.5
+    },
+    "cloudBelly": "#e6edf2",
+    "mist": {
+      "color": "#dfeaf0",
+      "opacity": 0.4
+    },
+    "flowers": {
+      "density": 2,
+      "colors": [
+        "#f6cf5e",
+        "#fff6e5",
+        "#e89a5a",
+        "#c8d8f0"
+      ]
+    },
+    "wind": 0.06,
+    "water": {
+      "shallow": "#9fd0d6",
+      "deep": "#5f98b8",
+      "foam": "#f4fbf8",
+      "ripple": 0.5
+    },
+    "lanternGlow": {
+      "color": "#ffc27a",
+      "size": 1.6
+    },
+    "vignette": 0.22,
+    "vignetteColor": "#2c3a40"
+  },
+  "flocks": [
+    {
+      "x": 0,
+      "z": -4,
+      "y": 47,
+      "radius": 14,
+      "count": 3,
+      "speed": 3.5
+    },
+    {
+      "x": -6,
+      "z": -14,
+      "y": 30,
+      "radius": 30,
+      "count": 3,
+      "speed": 4
+    }
+  ],
+  "bounds": {
+    "enabled": true,
+    "from": [
+      -46,
+      -40
+    ],
+    "to": [
+      46,
+      52
+    ]
+  },
+  "pillarValley": {
+    "peak": {
+      "enabled": true,
+      "x": 0,
+      "z": -4,
+      "h": 40,
+      "r": 7.5,
+      "ledge": 10.5,
+      "stairAt": 330,
+      "stairWidth": 1.6,
+      "stairSlope": 32,
+      "pavilion": {
+        "at": [
+          0,
+          -1.2
+        ],
+        "r": 3,
+        "h": 7
+      },
+      "pine": {
+        "at": [
+          4.8,
+          3.2
+        ],
+        "dir": 120,
+        "scale": 1
+      },
+      "cranes": 6
+    },
+    "pillars": [
+      {
+        "x": 24,
+        "z": -9,
+        "h": 26,
+        "r": 4.5,
+        "ledge": 10.5,
+        "pines": 1,
+        "maple": true
+      },
+      {
+        "x": -24,
+        "z": -5,
+        "h": 22,
+        "r": 4.5,
+        "ledge": 10.5,
+        "pines": 2
+      },
+      {
+        "x": -24,
+        "z": -28,
+        "h": 10.5,
+        "r": 5,
+        "pines": 2,
+        "maple": true
+      },
+      {
+        "x": 14,
+        "z": -28,
+        "h": 30,
+        "r": 5,
+        "pines": 2
+      },
+      {
+        "x": 32,
+        "z": -32,
+        "h": 28,
+        "r": 5,
+        "pines": 1
+      },
+      {
+        "x": -42,
+        "z": -26,
+        "h": 24,
+        "r": 4.5,
+        "pines": 2,
+        "maple": true
+      },
+      {
+        "x": 40,
+        "z": -14,
+        "h": 20,
+        "r": 4,
+        "pines": 1
+      },
+      {
+        "x": -38,
+        "z": 20,
+        "h": 18,
+        "r": 4,
+        "pines": 2
+      },
+      {
+        "x": 36,
+        "z": 20,
+        "h": 16,
+        "r": 4,
+        "pines": 1,
+        "maple": true
+      },
+      {
+        "x": -22,
+        "z": 34,
+        "h": 16,
+        "r": 4,
+        "pines": 1
+      },
+      {
+        "x": 22,
+        "z": 32,
+        "h": 18,
+        "r": 4,
+        "pines": 2
+      },
+      {
+        "x": -8,
+        "z": -38,
+        "h": 26,
+        "r": 4.5,
+        "pines": 1
+      },
+      {
+        "x": 6,
+        "z": -52,
+        "h": 34,
+        "r": 5,
+        "pines": 2
+      },
+      {
+        "x": -30,
+        "z": -50,
+        "h": 30,
+        "r": 5,
+        "pines": 2
+      },
+      {
+        "x": 34,
+        "z": -54,
+        "h": 32,
+        "r": 5,
+        "pines": 1
+      },
+      {
+        "x": 56,
+        "z": -38,
+        "h": 26,
+        "r": 4.5,
+        "pines": 1
+      },
+      {
+        "x": -56,
+        "z": -40,
+        "h": 28,
+        "r": 4.5,
+        "pines": 1
+      },
+      {
+        "x": 0,
+        "z": -72,
+        "h": 38,
+        "r": 6,
+        "pines": 2
+      },
+      {
+        "x": -58,
+        "z": 8,
+        "h": 22,
+        "r": 4.5,
+        "pines": 1
+      },
+      {
+        "x": 60,
+        "z": 6,
+        "h": 24,
+        "r": 4.5,
+        "pines": 2
+      }
+    ],
+    "ledgeWidth": 2.6,
+    "bridges": [
+      {
+        "from": [
+          7.2,
+          -9
+        ],
+        "to": [
+          18.5,
+          -9
+        ],
+        "y": 10.5
+      },
+      {
+        "from": [
+          -8.6,
+          -5
+        ],
+        "to": [
+          -18.5,
+          -5
+        ],
+        "y": 10.5
+      },
+      {
+        "from": [
+          -24,
+          -10.5
+        ],
+        "to": [
+          -24,
+          -24
+        ],
+        "y": 10.5
+      }
+    ],
+    "bridgeWidth": 1.8,
+    "firs": [
+      {
+        "x": -36,
+        "z": 42,
+        "w": 14,
+        "d": 10,
+        "count": 12
+      },
+      {
+        "x": 36,
+        "z": 42,
+        "w": 14,
+        "d": 10,
+        "count": 12
+      },
+      {
+        "x": -12,
+        "z": -24,
+        "w": 8,
+        "d": 6,
+        "count": 6
+      },
+      {
+        "x": 22,
+        "z": -40,
+        "w": 10,
+        "d": 8,
+        "count": 8
+      },
+      {
+        "x": -40,
+        "z": -36,
+        "w": 10,
+        "d": 8,
+        "count": 8
+      },
+      {
+        "x": 44,
+        "z": -30,
+        "w": 8,
+        "d": 10,
+        "count": 6
+      },
+      {
+        "x": 14,
+        "z": 12,
+        "w": 10,
+        "d": 8,
+        "count": 8
+      },
+      {
+        "x": -16,
+        "z": 12,
+        "w": 10,
+        "d": 8,
+        "count": 8
+      },
+      {
+        "x": -14,
+        "z": -60,
+        "w": 20,
+        "d": 8,
+        "count": 12
+      },
+      {
+        "x": 20,
+        "z": -66,
+        "w": 20,
+        "d": 8,
+        "count": 12
+      },
+      {
+        "x": -62,
+        "z": -14,
+        "w": 10,
+        "d": 20,
+        "count": 12
+      },
+      {
+        "x": 62,
+        "z": -16,
+        "w": 10,
+        "d": 20,
+        "count": 12
+      },
+      {
+        "x": -52,
+        "z": 30,
+        "w": 14,
+        "d": 14,
+        "count": 12
+      },
+      {
+        "x": 52,
+        "z": 30,
+        "w": 14,
+        "d": 14,
+        "count": 12
+      }
+    ],
+    "maples": [
+      {
+        "x": -10,
+        "z": 6,
+        "scale": 1.1
+      },
+      {
+        "x": 9,
+        "z": 6,
+        "scale": 1
+      },
+      {
+        "x": -10,
+        "z": 20,
+        "scale": 0.9
+      },
+      {
+        "x": 10,
+        "z": 20,
+        "scale": 1
+      },
+      {
+        "x": -16,
+        "z": 44,
+        "scale": 1
+      },
+      {
+        "x": 17,
+        "z": 44,
+        "scale": 0.9
+      },
+      {
+        "x": 8,
+        "z": -14,
+        "scale": 0.9
+      }
+    ],
+    "seed": 11
+  }
 }

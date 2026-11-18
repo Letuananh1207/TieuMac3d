@@ -5,6 +5,7 @@ import { addMirages } from './vat_bong_lai';
 import { addMushroomForest } from './vat_rung_nam';
 import { addMotherMushroom } from './namMe';
 import { addFluteTower } from './thapSao';
+import { addDinhHac } from './dinhHac';
 import { addRamparts } from './thanh_luy';
 import { addPlateauRails } from './cung_dien';
 import { addFauna } from './fauna';
@@ -275,6 +276,7 @@ function* worldSteps(
   addMushroomForest(scene, colliders, spec.mushroomForest, spec.look, groundY ?? (() => 0), spec.paths);
   const mm = spec.mushroomForest.mother;
   const mother = mm.enabled ? addMotherMushroom(scene, colliders, spec.mushroomForest, base(mm.x, mm.z)) : null;
+  const dinhHacPads = addDinhHac(scene, colliders, spec, groundY ?? (() => 0)); // Đỉnh Hạc Bay (V-111): cột đá, cầu treo, đình
   yield 'cay';
   const lanternSpots = addLanternStrings(scene, colliders, spec, groundY);
   const choDem = addChoDem(scene, colliders, spec, groundY); // Chợ Đêm Đèn Hoa (V-108): cây đèn, sạp, bến gỗ
@@ -321,7 +323,7 @@ function* worldSteps(
     closedHouses,
     garden,
     ground,
-    surface: new LayeredGround(hf, [...(teleport?.pads ?? []), ...bridgePads, ...choDem.pads, ...sea.pads, ...terracePads, ...buildingPads, ...rampartPads, ...rooms.flatMap((r) => r.pads), ...closedPads, ...(mother?.pads ?? []), ...flute.pads, ...sandPads]),
+    surface: new LayeredGround(hf, [...(teleport?.pads ?? []), ...bridgePads, ...choDem.pads, ...sea.pads, ...terracePads, ...buildingPads, ...rampartPads, ...rooms.flatMap((r) => r.pads), ...closedPads, ...(mother?.pads ?? []), ...flute.pads, ...sandPads, ...dinhHacPads]),
     rooms,
     seats: [...rooms.flatMap((r) => r.seats ?? []), ...buildingSeats, ...outdoorSeats],
     studySign: rooms.find((r) => r.studySign)?.studySign ?? null,
