@@ -3,6 +3,16 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-18.1 — Nhà của ta: bố cục mới "Trục giữa" (ảnh concept chốt)
+
+- Loại: luồng/luật · cảnh 3D (bố cục) · Phiếu: `docs/phieu_thiet_ke/2026-11-18-concept-nha-vuon-bo-cuc.md` (V-82)
+- Người dùng chọn phương án **A — Trục giữa** (2026-11-18): nhà chính cuối lối trục (tâm ≈ 0; −11,5) dựa đồi trúc, sân lát
+  nhỏ trước nhà; 6 luống mỗi bên lối giữa chỗ xuất hiện và nhà; vườn **không rào** — viền đá cuội thấp; thùng thu mua cạnh
+  lối (≈ 2,3; 5); hai cánh cỏ đông / tây trống để trang trí. Giữ Bến mây, chỗ xuất hiện (0; 6,5), vòng về trấn.
+- Đích: tới luống gần ≈ 1,6 s, tới cửa nhà ≈ 4,5 s không rẽ (hồ sơ `docs/tham_khao/nha-vuon-bo-cuc.md`, N1–N9).
+- Ảnh: `design/concept/nha-vuon-bo-cuc/a-tren.png`, `a-vao.png` (Gemini, chữ trên biển trong ảnh bỏ qua — biển tiếng Việt).
+- Cần code: đặc tả `nha-ta.json` + luật R-NHA-1/5/7, R-VUON-1/2/7/8 (chạm luống ở đâu cũng tự đi tới).
+
 ## 2026-11-16.23 — Tạm gỡ Tiểu Khất (NPC `khat-nhi`) khỏi cảnh, chờ model mới
 
 - Loại: cảnh 3D — **bố cục** (bỏ NPC). Việc V-20261116-102; luật R-NPC-6 (đã sửa "tạm gỡ" + đồng bộ). Người dùng 2026-11-16:

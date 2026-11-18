@@ -1,6 +1,6 @@
 # Phiếu: Ảnh concept Bố cục nhà + vườn (Nhà của ta — `nha-ta`, bố cục lại cả đảo)
 
-- Trạng thái: chờ thiết kế (tạo ảnh Gemini → người dùng chọn **một** phương án → chốt)
+- Trạng thái: đã chốt (2026-11-18.1) — phương án A, ảnh `design/concept/nha-vuon-bo-cuc/`
 - Việc: V-20261118-82 (mở rộng). Hồ sơ khảo cứu: `docs/tham_khao/nha-vuon-bo-cuc.md` (nguyên tắc N1–N9 + số đo + nguồn), kèm
   `docs/tham_khao/vuon-de-vao.md`. Quyết định 0006.
 - **Thay phiếu** `2026-11-18-concept-vuon-de-vao.md` (chỉ dời vườn — bỏ). Người dùng sau khi xem ảnh phiếu đó: "Tôi nghĩ cũng
