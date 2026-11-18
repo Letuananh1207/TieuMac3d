@@ -8,6 +8,7 @@
 import { DEFAULT_LOOK, type LookSpec } from './look';
 import { DEFAULT_CHO_DEM_STYLE, type ChoDemStyle, type LanternTreeSpec, type PierSpec, type StallSpec } from './choDemSpec';
 import { DEFAULT_DAY_NIGHT, type DayNightSpec } from './ngayDem';
+import { DEFAULT_MUSHROOM_FOREST, type MushroomForestSpec } from './rungNamSpec';
 
 export type XZ = [number, number];
 
@@ -1216,6 +1217,8 @@ export interface SceneSpec {
   stalls: StallSpec[];
   piers: PierSpec[];
   choDemStyle: ChoDemStyle;
+  /** Rừng Nấm Tiên (V-109): nấm khổng lồ, nhà nấm, luống thảo dược, Nấm Mẹ + Lò Thuốc Tiên — rỗng / tắt = như cũ (`rungNamSpec.ts`) */
+  mushroomForest: MushroomForestSpec;
   /** `seated`: khi ngồi vào án thư / bàn trà (R-NGOI-1) — camera lùi ra, chúc xuống thấy cả bàn ·
    *  `study`: khi Ngồi ôn (R-DIEU-7) — lùi ra, nâng cao, lệch `side` rad ra sau vai phải để thấy cuộn sách trên tay */
   camera: {
@@ -1391,6 +1394,7 @@ export const DEFAULT_SCENE: SceneSpec = {
   decorArea: null, // cảnh cũ không trang trí được
   portals: [], // cảnh cũ không có cổng đi bộ
   look: DEFAULT_LOOK, // kiểu cũ — cảnh không đổi
+  mushroomForest: DEFAULT_MUSHROOM_FOREST, // không có rừng nấm — cảnh cũ không đổi
   dayNight: DEFAULT_DAY_NIGHT, // tắt — cảnh luôn ban ngày như cũ
   lanternStrings: [],
   lanternStyle: {

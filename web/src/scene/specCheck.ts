@@ -35,6 +35,7 @@ import {
 import { checkDecorArea, parseDecorArea } from './decorArea';
 import { paveProblem, treesOnPaving } from './cayTrenNen';
 import { checkGarden, gardenFootprints } from './vuonLayout';
+import { CAP_SHAPES, checkMushroomForest } from './rungNamSpec';
 import { landingPad, START_HEADING } from './hacDuong';
 import { checkPortals } from './portals';
 import { checkLook } from './look';
@@ -469,6 +470,11 @@ const LISTS: Record<string, ItemParser> = {
   'terrain.waterfalls': item({ x: 0, z: 0, top: 0, bottom: 0, width: 0 }, { rotY: 0 }, positive('width')),
   'terrain.streams': streamItem,
   'terrain.floors': item({ from: XZ0, to: XZ0, color: '#000000' }, { y: 0, pattern: '' }, oneOf('pattern', PAVE_PATTERNS)),
+  // Rừng Nấm Tiên (V-109) — kiểm chung ở rungNamSpec.ts `checkMushroomForest`
+  'mushroomForest.giants': item({ x: 0, z: 0, h: 0, cap: 0, color: '#000000' }, { shape: '', spots: true }, all(oneOf('shape', CAP_SHAPES), positive('h', 'cap'))),
+  'mushroomForest.houses': item({ x: 0, z: 0, h: 0, color: '#000000' }, { rotY: 0 }, range('h', 4, 8)),
+  'mushroomForest.herbBeds': item({ x: 0, z: 0, r: 0 }, {}, positive('r')),
+  'mushroomForest.clusters': item({ x: 0, z: 0, r: 0, count: 0 }, {}, positive('r', 'count')),
   'farMountains.layers': item(
     { radius: 0, height: 0, color: '#000000', peaks: 0 },
     { width: 1, spurs: 0 },
@@ -556,6 +562,7 @@ function checkConsistency(s: SceneSpec): string[] {
   out.push(...hanOnDisplay(s).map((h) => `${h.path}: biển / tên trong game chỉ tiếng Việt, không chữ Hán (R-HUD-4) — đang là "${h.text}"`));
   if (s.cloudSea.radius < 0) out.push('cloudSea.radius: phải ≥ 0');
   out.push(...checkCrane(s));
+  out.push(...checkMushroomForest(s.mushroomForest));
   out.push(...checkBounds(s));
   if (!(s.light.lampGlow >= 0 && s.light.lampGlow <= 1)) out.push(`light.lampGlow: 0…1 (đang ${s.light.lampGlow})`);
   if (t.enabled && t.size > 0 && t.cell > 0) out.push(...checkOnFlatGround(s));

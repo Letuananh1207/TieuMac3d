@@ -2,6 +2,8 @@ import { addBridges } from './bridges';
 import { addChannels, type ChannelSet } from './channels';
 import { addGalleries } from './vat_giang_nam';
 import { addMirages } from './vat_bong_lai';
+import { addMushroomForest } from './vat_rung_nam';
+import { addMotherMushroom } from './namMe';
 import { addRamparts } from './thanh_luy';
 import { addPlateauRails } from './cung_dien';
 import { addFauna } from './fauna';
@@ -264,6 +266,10 @@ function* worldSteps(
   const trees = addTrees(scene, colliders, spec.trees, groundY, spec.look);
   const tea = addTeaGarden(scene, colliders, spec, groundY, detail); // Đồi Chè: luống + bướm + sương (V-46)
   const garden = spec.garden.enabled ? addGarden(scene, colliders, spec.garden, spec.look, groundY, spec.trees.crown === 'chum') : null; // Vườn rau (V-52)
+  // Rừng Nấm Tiên (V-109): nấm khổng lồ, nhà nấm, luống thuốc; Nấm Mẹ + Lò Thuốc Tiên (thang + mũ đi được)
+  addMushroomForest(scene, colliders, spec.mushroomForest, spec.look, groundY ?? (() => 0), spec.paths);
+  const mm = spec.mushroomForest.mother;
+  const mother = mm.enabled ? addMotherMushroom(scene, colliders, spec.mushroomForest, base(mm.x, mm.z)) : null;
   yield 'cay';
   const lanternSpots = addLanternStrings(scene, colliders, spec, groundY);
   const choDem = addChoDem(scene, colliders, spec, groundY); // Chợ Đêm Đèn Hoa (V-108): cây đèn, sạp, bến gỗ
@@ -308,7 +314,7 @@ function* worldSteps(
     closedHouses,
     garden,
     ground,
-    surface: new LayeredGround(hf, [...(teleport?.pads ?? []), ...bridgePads, ...choDem.pads, ...terracePads, ...buildingPads, ...rampartPads, ...rooms.flatMap((r) => r.pads), ...closedPads]),
+    surface: new LayeredGround(hf, [...(teleport?.pads ?? []), ...bridgePads, ...choDem.pads, ...terracePads, ...buildingPads, ...rampartPads, ...rooms.flatMap((r) => r.pads), ...closedPads, ...(mother?.pads ?? [])]),
     rooms,
     seats: [...rooms.flatMap((r) => r.seats ?? []), ...buildingSeats, ...outdoorSeats],
     studySign: rooms.find((r) => r.studySign)?.studySign ?? null,
@@ -326,6 +332,7 @@ function* worldSteps(
       tea?.update(dt);
       channels.update(dt);
       mirages(dt);
+      mother?.update(dt);
       teleport?.update(dt);
       portalMarks(dt, player);
       for (const r of rooms) r.update(dt, !!player && inRect(r.floor, player.x, player.z), player?.y, eye);
