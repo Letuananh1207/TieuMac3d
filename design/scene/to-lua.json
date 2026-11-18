@@ -324,12 +324,12 @@
         52
       ],
       "to": [
-        42,
-        20.5
+        45,
+        19.8
       ],
       "width": 2.6,
       "dirt": true,
-      "color": "#d9a466"
+      "color": "#dfb57a"
     }
   ],
   "buildingStyle": {

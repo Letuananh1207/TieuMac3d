@@ -136,9 +136,9 @@ describe('Thành Cát Ngủ Quên — Cổng Thành Vùi Cát (V-112)', () => {
     const [a] = spec.portals;
     expect((a.area.from[0] + a.area.to[0]) / 2).toBeCloseTo(46.6, 5);
     expect((a.area.from[1] + a.area.to[1]) / 2).toBeCloseTo(19.5, 5);
-    const p = walk(at(4, 53), 42 - 4, 20.5 - 53, Math.hypot(42 - 4, 20.5 - 53));
-    expect(Math.hypot(p.x - 42, p.z - 20.5)).toBeLessThan(1);
-    const end = walk(p, 1, -0.2, 4.5);
+    const p = walk(at(4, 53), 45 - 4, 19.8 - 53, Math.hypot(45 - 4, 19.8 - 53));
+    expect(Math.hypot(p.x - 45, p.z - 19.8)).toBeLessThan(1);
+    const end = walk(p, 1, 0, 1.5);
     expect(end.x).toBeGreaterThan(45.4);
   });
 

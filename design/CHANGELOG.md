@@ -59,6 +59,39 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
 - Ảnh: `screens/Canh-thung-truc-vao.png`, `Canh-thung-truc-cong-trinh.png` (cùng góc 2 ảnh concept), `Canh-thung-truc-toan-canh.png`.
 - Chưa: trò "Trúc hát" ở 5 cọc nơ (chờ chủ đề từ vựng); Canvas 3D đăng lại sau khi gộp; bản đồ lớn chưa vẽ tháp.
 - File: `scene/rung-truc.json`, `screens/Canh-thung-truc-*.png`.
+## 2026-11-18.9 — Dựng Thành Cát Ngủ Quên (V-112)
+
+- Loại: cảnh 3D — **bố cục** + **ngoại hình**, vùng `to-lua` (giữ mã; tên hiển thị "Thành Cát Ngủ Quên" — V-107). Phiên code V-112 dựng theo
+  ảnh concept đã chốt (2026-11-18.2, `design/concept/thanh-cat-ngu-quen/{toan-canh,cong-trinh,vao}.png`, phiếu
+  `docs/phieu_thiet_ke/2026-11-17-concept-thanh-cat-ngu-quen.md`).
+- Bố cục (x đông, z nam): **Cổng Thành Vùi Cát** tâm (0; 0) — thân đất nện 20 × 11 m, mặt thành cao 8 m, **vòm** rộng 3,6 cao
+  3,8 m đi xuyên được (hai cánh cửa gỗ mở áp vách), lằn đất nện, gờ mái, răng cưa ba phía (vài răng sập), **lầu cổng** gỗ
+  10 × 5 m vách ván mái ngói xám (ngói vỡ, lầu xệ 1,5°) — tổng cao ≈ 15 m. **Đụn cát** dâng sống tới mép tây mặt thành
+  (lên mặt thành được từ phía tây), đụn nhỏ vùi mặt đông; lối vòm là rãnh cát phẳng. **Đầu lạc đà đá** ngủ (mắt nhắm, miệng
+  mỉm) cao 8 m tại (15,5; 1,5) nhìn tây nam. **Tường thành đổ** dọc x: tây (−50 … −13; 0,5) và đông (19 … 48; −2,5), từng đoạn
+  4–8 m cao ≈ 1,3 m, khe sập ≥ 1,8 m. **Lối đá cổ** từ bãi hạc (0; 51) tới chân cổng (0; 6,5), phiến mất / nghiêng / lún dần.
+  **Ốc đảo** (−25; 30,5): cỏ ∅ 18 m, ao tròn r 4,6 (thay hồ lưỡi liềm cũ), 4 cây tán, 2 lều vải, 4 khóm lau. 7 **ụ cát đào**
+  lấp lánh có cọc + cờ vải trơn, 5 **cờ phướn** lẻ. Lối đất từ bãi hạc ra cổng "Đỉnh Hạc Bay". Bãi hạc (0; 56), chỗ xuất phát
+  (−1,25; 56), cổng (46,6; 19,5) giữ nguyên. Khu (tên Việt): Cổng Thành Vùi Cát · Bãi Hạc · Lối Đá Cổ · Ốc Đảo.
+- Ngoại hình: kiểu nhìn **mềm**; **giờ cố định 16:30** (chiều muộn — `dayNight.gioCoDinh`); trời lam `#3f86cc` → tím
+  `#8f94c0` → hồng cam chân trời `#e8896a`, sương cát hồng 45–190 m, nắng chiều từ tây nam, cát `#e2b878` / mặt khuất
+  `#cf985e`, núi xa cát hồng. Không chữ trong cảnh (R-HUD-4).
+- Trường mới (code, mặc định giữ cảnh cũ): `sandCity` { `gate`, `camel`, `walls`, `mounds`, `flags`, `road`, `oasis`,
+  `tents`, `seed`, `colors` } — `web/src/scene/thanhCatSpec.ts`; dựng `congThanh.ts`, `vat_thanh_cat.ts`.
+- Khác concept: (1) cổng không nghiêng (chỉ lầu xệ nhẹ — va chạm thẳng trục); (2) cát vùi bằng địa hình nên vòm hở trọn
+  3,8 m, rãnh cát hai bên vòm dốc hơn ảnh; (3) đụn tây thành sống hẹp chạy nam (lối lên mặt thành); (4) tường đổ thẳng
+  dọc x, không chéo theo đồi; (5) chưa có vệt gió cát bay; (6) lều chữ A đơn giản, cây tán tròn (chưa có kiểu hồ dương);
+  (7) lối đất ra cổng đông vẫn là cát (concept chuyển dần sang cỏ).
+- Luật: R-VA-1 (cổng, vòm, lạc đà, tường, ao, lều), R-VA-3 (mặt Cổng Thành Vùi Cát), R-NGAY-1 (giờ cố định 16:30) — sổ +
+  online (Chờ).
+- `scene:check`: Không có lỗi. Hiệu năng (Canvas 3D, trước → sau): toàn cảnh 20 → 33 draw call, 14k → 26k tam giác; góc
+  công trình 16 → 26 / 26k → 36k; góc vào 21 → 31 / 29k → 39k; trên xuống 31 → 49 / 34k → 49k. ZFIGHT `to-lua`: 0. fps chưa
+  đo (máy chụp không GPU) — chờ thử máy.
+- Ảnh: `screens/Canh-thanh-cat-toan-canh.png`, `Canh-thanh-cat-cong-trinh.png`, `Canh-thanh-cat-vao.png` (cùng 3 góc concept).
+- Chưa: Canvas 3D chưa đăng lại (phiên chính đăng sau khi gộp); bản đồ lớn chưa vẽ cổng thành / tường (lối đất không vẽ —
+  R-BANDO-2); trò đào cổ vật + NPC nhà khảo cổ chờ chủ đề từ vựng.
+- File: `scene/to-lua.json`, `screens/Canh-thanh-cat-*.png`.
+
 ## 2026-11-18.3 — Đổi tên NPC cũ + xưng hô theo tuổi (V-106)
 
 - Loại: chuỗi · luồng/luật (R-NPC-11) · Nguồn: `docs/tham_khao/npc-kieu-moly.md` §3.2b, §3.4b, §7 (người dùng duyệt 2026-11-18).
