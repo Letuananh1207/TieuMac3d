@@ -234,3 +234,8 @@ dart tool/rule_trace.dart · dart tool/guard.dart
 - Còn chờ người dùng: ghế lan can từ mắt tiểu nhị vẫn to (người ngồi nhoài ~0,8 m → cách mắt ~1,2 m); thử 60° · 1,6 m thì cách
   mắt ~1,4 m nhưng ở sau vai, quay đầu hết cỡ chỉ thấy mép áo → giữ 45°. Bàn dài giữa 0,88 m (xem trên).
 
+## Duyệt ảnh lần 2 (người dùng)
+- Ghế lan can: khoảng 1,4–1,6 m tính **từ mắt** người ngồi (đang nhoài tới lan can), tiểu nhị lùi vào trong sàn chếch phải.
+- 4 chỗ giữa bàn dài (phải chỉ được 0,88 m): phía phải không đủ mà phía trái xa hơn → đứng trước – trái. R-TRA-1 đã sửa + đồng bộ.
+- [ ] 12. Sửa `tra_lau_phuc_vu.ts` + test theo hai điểm trên · chụp lại ảnh lan can + bàn dài.
+
