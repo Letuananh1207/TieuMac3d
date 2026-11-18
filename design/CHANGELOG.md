@@ -3,6 +3,15 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-18.12 — Bản đồ thế giới sống động: nền vẽ minh hoạ Gemini (V-115)
+
+- Loại: giao diện (bản đồ) · Phiếu: `docs/phieu_thiet_ke/2026-11-17-concept-the-gioi-moi.md` (sửa 2026-11-18: bỏ tổ hạc, chi tiết
+  sống động).
+- Người dùng: "bản đồ hiện nay trông không đẹp tôi muốn nó phải sống động như ảnh này" → tạo 3 bản, chọn **bản 1**:
+  `design/concept/the-gioi-moi/ban-do.png` (2752×1536). Chữ tên 8 nơi Gemini vẽ sẵn, **đúng chính tả** (Gemini không xoá được
+  chữ) → dùng nguyên ảnh, code không vẽ tên đè; đổi tên / thêm nơi → tạo lại ảnh.
+- Cần code: ảnh này làm nền bản đồ thế giới / truyền tống, điểm bấm 8 nơi khớp biểu tượng trong ảnh.
+
 ## 2026-11-18.11 — Nông trại ở Nhà của ta: chốt 4 công trình (V-114)
 
 - Loại: cảnh 3D (concept) · luồng/luật · Phiếu: `docs/phieu_thiet_ke/2026-11-18-concept-nong-trai-nha.md`, ý tưởng
