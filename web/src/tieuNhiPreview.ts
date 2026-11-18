@@ -2,7 +2,8 @@
  * Canvas 3D `?dang=tieu-nhi&cho=<0…29>` (V-20261116-105 NV10): ngồi sẵn chỗ thứ `cho` trong trà lâu (thứ tự chỗ ngồi của nhà:
  * 0–11 đôn tầng 1, 12–29 tầng 2) và chạy đúng `tieuNhi.ts` như app — tiểu nhị chờ 2 s, cầm ấm đi tới, rót, về; nhìn từ mắt (chén
  * chỉ có sau khi rót). `&t=<giây>` tua trước bấy nhiêu giây (chụp đúng lúc) · `&dung` dừng ở đó (tiểu nhị đứng yên — chụp headless
- * chạy chậm) · `&nhin=<độ>` quay đầu nhìn sang (dương = phải) · `&ngoai` nhìn từ ngoài (camera tự do, `&cam=…&tam=…`).
+ * chạy chậm) · `&nhin=<độ>` quay đầu nhìn sang (dương = phải) · `&ngua=<độ>` ngẩng thêm so với góc cúi của chỗ ngồi (âm = cúi
+ * thêm; NV13: ghế lan can thấy trọn tiểu nhị ở ~18°) · `&ngoai` nhìn từ ngoài (camera tự do, `&cam=…&tam=…`).
  * Dòng mô tả: tầng, góc chỗ đứng rót, dài đường. Chỉ trang thiết kế dùng, không vào app.
  */
 import type { Colliders } from './collision/colliders';
@@ -18,7 +19,7 @@ export interface TieuNhiPreview {
   readonly seat: Seat;
   readonly lines: string[];
   /** mỗi khung: tiểu nhị đi; `setTea` + hướng nhìn cho góc nhìn từ mắt (nếu có) */
-  update(dt: number, ngoi: { setTea(served: boolean | null): void; readonly look: { yaw: number } } | null): void;
+  update(dt: number, ngoi: { setTea(served: boolean | null): void; readonly look: { yaw: number; pitch: number } } | null): void;
 }
 
 const n = (v: number): string => String(+v.toFixed(1)).replace('.', ',');
@@ -51,6 +52,7 @@ export function addTieuNhiPreview(params: URLSearchParams, world: Pick<World, 'r
   }
   const freeze = params.has('dung');
   const nhin = (Number(params.get('nhin') ?? 0) * Math.PI) / 180;
+  const ngua = (Number(params.get('ngua') ?? 0) * Math.PI) / 180;
   return {
     seat,
     lines,
@@ -59,6 +61,7 @@ export function addTieuNhiPreview(params: URLSearchParams, world: Pick<World, 'r
       if (!freeze) tn.update(dt, [seat.x, seat.z]);
       ngoi?.setTea(tn.tea);
       if (ngoi && nhin) ngoi.look.yaw = -nhin; // kéo sang phải = yaw âm (EyeLook); ngoiMat tự kẹp trong giới hạn nhìn quanh
+      if (ngoi && ngua) ngoi.look.pitch = ngua;
     },
   };
 }

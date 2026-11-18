@@ -261,5 +261,27 @@ dart tool/rule_trace.dart · dart tool/guard.dart
 
 ## Duyệt ảnh lần 3 (người dùng)
 - Ghế lan can: đứng xa ≈ 2 m (1,9–2,1 m) từ mắt để thấy trọn người; R-TRA-1 đã sửa + đồng bộ.
-- [ ] 13. Sửa `tra_lau_phuc_vu.ts` + test cho ghế lan can 1,9–2,1 m từ mắt · chụp lại ảnh lan can (dọc + ngang).
+- [x] 13. Sửa `tra_lau_phuc_vu.ts` + test cho ghế lan can 1,9–2,1 m từ mắt · chụp lại ảnh lan can (dọc + ngang).
 
+
+## Kết quả NV13 (2026-11-18)
+- `standFor`: ghế lan can thử khoảng **từ mắt** 2,10 → 1,90 m (0,01 m một, xa trước), mỗi khoảng góc 78–85° (nhỏ trước — gần
+  giữa khung); chật thì lùi dưới 1,9 m như các chỗ khác (xa nhất có thể). Lan can cách mắt 0,58 m nên ở 2 m phải ≥ ~80° mới lùi
+  vào trong sàn; ≤ 85° để quay đầu 60° còn trọn bề ngang thân. Các loại chỗ khác không đổi.
+- **Khoảng / góc thật** (từ mắt): chỗ 16, 17 **2,10 m · 81°** (từ chỗ ngồi 58°) · chỗ 18, 19 (lan can hồi trái, tường dày hơn)
+  **2,10 m · 84°**. Đường: 16–19 dài 52,0 / 52,4 / 53,0 / 47,8 m; cả 30 chỗ vẫn có đường.
+- **Thấy tới đâu** (test, trục giữa thân, quay đầu 60°, ngẩng / cúi trong giới hạn lúc ngồi): khung **900 × 600** — trọn bề ngang
+  (±0,45 m), từ chân lên **2,07 m** (16, 17) / **2,03 m** (18, 19) trên 2,1 m (cắt 3–7 cm đỉnh búi tóc, ở góc ngẩng ≈ −7°, tức kéo
+  ngẩng ~18° so với góc cúi chỗ ngồi −25°). Trọn đủ 2,1 m cần ~2,4 m (thân lệch giữa khung ~20° nên to theo chiều dọc). Ảnh
+  thấy cả người — búi tóc chạm mép trên, chân chạm mép dưới. **Màn dọc 390 × 844** (FOV nới 76,5° dọc, 40° ngang): quay 60°
+  thấy tới 80° → chỉ **47 %** (16, 17) / **35 %** (18, 19) bề ngang thân (nửa trái), dọc thì đủ chân → đầu.
+- Test `traLauPhucVu.test.ts`: lan can 1,9–2,1 m từ mắt (chật: xa nhất, cả phía kia), sau lan can, phải; chiếu bằng camera thật
+  (`aimCamera` + `eyeFov`): 900 × 600 trọn bề ngang + thấy ≥ 2,0 m từ chân, và không chỗ đứng được nào khác (60–100°, 1,9–2,1 m)
+  thấy cao hơn quá 3 cm; in số màn dọc.
+- Canvas 3D: thêm `&ngua=<độ>` (ngẩng thêm so với góc cúi chỗ ngồi) cho `?dang=tieu-nhi`.
+- **Đo Canvas 3D** (SwiftShader, 10 giờ, chỗ 17 lúc rót, quay đầu 60°, ngẩng 16°): 900 × 600 **43 draw call · 82,2k tam giác** ·
+  390 × 844 **38 · 81,2k**.
+- Ảnh: `docs/tasks/2026-11-16-tieu-nhi-2-lan-can-dang-rot.png` (`?dang=tieu-nhi&cho=17&t=24.8&dung&chup&gio=10&nhin=60&ngua=16`,
+  900 × 600, ghi đè) · `-2c-lan-can-man-doc.png` (cùng tham số, 390 × 844).
+- Chờ người dùng: (1) 900 × 600 thiếu 3–7 cm búi tóc — chấp nhận, hay cho lan can xa tới ~2,4 m; (2) màn dọc chỉ thấy nửa thân
+  — muốn thấy trọn thì cần nới giới hạn quay đầu lúc ngồi (> 60°, ~75°) hoặc đứng gần giữa hơn (không được: phía trước là lan can).
