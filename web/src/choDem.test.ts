@@ -54,7 +54,7 @@ describe('Chợ Đêm Đèn Hoa — đi được (V-108)', () => {
   const ok = reach(start[0], start[1]);
   const at = (x: number, z: number): boolean => ok.has(key(Math.round(x / STEP), Math.round(z / STEP)));
 
-  it('R-HANH-9: từ bãi hạc đi bộ tới tâm vùng cả ba cổng (Trúc Lâm tây, Tử Cấm Thành qua cầu vòm, Bồng Lai bến đông)', () => {
+  it('R-HANH-9: từ bãi hạc đi bộ tới tâm vùng cả ba cổng (Thung Trúc Gió Hát tây, Rừng Nấm Tiên qua cầu vòm, Cung Ngọc Đáy Biển bến đông)', () => {
     expect(spec.portals).toHaveLength(3);
     for (const p of spec.portals) {
       const r = portalRect(p);
@@ -77,7 +77,7 @@ describe('Chợ Đêm Đèn Hoa — đi được (V-108)', () => {
 });
 
 describe('Chợ Đêm Đèn Hoa — bản đồ lớn (V-108)', () => {
-  it('R-BANDO-2: Yên Vũ Lâu — 4 tên khu, chân 11 nhà phố, đủ 3 dấu cổng; sạp và đài cây đèn không vẽ', () => {
+  it('R-BANDO-2: Chợ Đêm Đèn Hoa — 4 tên khu, chân 11 nhà phố, đủ 3 dấu cổng; sạp và đài cây đèn không vẽ', () => {
     const m = buildAreaMap(spec, { sceneNames: {} });
     expect(m.labels.filter((l) => l.kind === 'khu').map((l) => l.text)).toEqual(['Sân Cây Đèn', 'Bờ bắc', 'Bến sông', 'Phố chợ']);
     expect(m.shapes.filter((s) => s.kind === 'nha')).toHaveLength(11);

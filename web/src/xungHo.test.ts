@@ -65,7 +65,7 @@ function npcLines(): string[] {
     ALMS_SHORT_REPLY,
     ...TIN_DON.map((t) => t.text),
     cauHoiGio(Date.UTC(2026, 10, 14, 3, 5)),
-    journeyLine({ words: 3, lessons: 1 }, [{ id: 'rung-truc', ten: 'Trúc Lâm' }], new Set(['rung-truc'])),
+    journeyLine({ words: 3, lessons: 1 }, [{ id: 'rung-truc', ten: 'Thung Trúc Gió Hát' }], new Set(['rung-truc'])),
     ...guides.map((g) => g.tip),
     STUDY_GUIDE.tip,
   ];
