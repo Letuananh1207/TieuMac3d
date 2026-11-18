@@ -16,6 +16,7 @@ import { GardenWork } from './gardenWork';
 import type { Character } from './player/character';
 import type { PlayerController } from './player/controller';
 import type { CropStage, PlotShow } from './scene/cayTrong';
+import type { GardenSpec } from './scene/spec';
 import type { Garden3D } from './scene/vuonLuong';
 import { GardenFloat } from './ui/gardenFloat';
 import { GardenHud, type MarkAt } from './ui/gardenHud';
@@ -79,9 +80,8 @@ export interface HomeGardenDeps {
   /** làm vườn kiểu 摩尔 (V-73): nhân vật tự đi tới luống + diễn (`gardenWork.ts`) */
   player: PlayerController;
   character: Character;
-  /** rào vườn + cạnh luống (đặc tả `garden.fence`, `garden.size`) */
-  fence: { from: { x: number; z: number }; to: { x: number; z: number } };
-  plotSize: number;
+  /** đặc tả vườn (rào / vườn không rào V-82, cạnh luống) — `gardenWork.ts` */
+  spec: GardenSpec;
 }
 
 /** Điểm màn ô Túi đồ trên thanh công cụ (quả bay khi thu); thanh ẩn → `null`. */
@@ -126,8 +126,7 @@ export class HomeGarden {
       garden: d.garden,
       player: d.player,
       character: d.character,
-      fence: d.fence,
-      plotSize: d.plotSize,
+      spec: d.spec,
       sound: this.sound,
       state: () => this.g,
       now: () => this.now,
@@ -205,9 +204,9 @@ export class HomeGarden {
     return !this.panel.isOpen && this.work.use();
   }
 
-  /** Đứng trong rào vườn → chạm cảnh cần dò luống (vòng công cụ). */
+  /** Chạm cảnh cần dò luống (vòng công cụ): trong vườn, hoặc vườn không rào — chạm luống từ xa tự đi tới (V-82). */
   get picks(): boolean {
-    return this.work.inFence;
+    return this.work.picks;
   }
 
   /** Vườn đang có (sau `load`). */
@@ -348,7 +347,7 @@ export class HomeGarden {
   private cornersOf(i: number, camera: THREE.Camera): { x: number; y: number }[] | null {
     const p = this.d.garden.plots[i];
     if (!p) return null;
-    const half = this.d.plotSize / 2;
+    const half = this.d.spec.size / 2;
     const y = this.d.garden.beds.topY(i);
     const out: { x: number; y: number }[] = [];
     for (const [dx, dz] of [[-1, -1], [1, -1], [1, 1], [-1, 1]]) {

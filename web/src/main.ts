@@ -622,7 +622,10 @@ async function boot(): Promise<void> {
       }
       if (chat.close()) return; // đang gõ: chạm cảnh = đóng ô nhập
       if (decor?.tap(x, y)) return; // trang trí: chạm món = nhấc, đang cầm = đặt (chuột) / dời tới (chạm) — R-NHA-6
-      if (garden?.tap(garden.picks ? picker.pick(x, y) : null)) return; // bảng vườn rau mở: chạm cảnh = đóng bảng; trong rào: chạm luống = vòng công cụ (V-73)
+      // bảng vườn rau mở: chạm cảnh = đóng bảng; chạm luống = vòng công cụ (V-73; vườn không rào: từ xa tự đi tới — V-82); chạm trúng nhà chính → không dò luống sau nhà
+      const gp = garden?.picks ? picker.pick(x, y) : null;
+      const onHouse = !!gp && !!houseDoor && tapHitsHouse(picker.hitsBox(x, y, houseDoor.box), gp.distanceTo(camera.position));
+      if (garden?.tap(onHouse ? null : gp)) return;
       if (scrollOpen && !covered && !talking) {
         ngoiMat.tapScroll(x, y, camera); // cuộn sách mở: chạm thẳng vào mục trên giấy (R-ON-8)
         return;
@@ -787,8 +790,7 @@ async function boot(): Promise<void> {
         },
         player,
         character,
-        fence: { from: { x: spec.garden.fence.from[0], z: spec.garden.fence.from[1] }, to: { x: spec.garden.fence.to[0], z: spec.garden.fence.to[1] } },
-        plotSize: spec.garden.size,
+        spec: spec.garden,
       })
     : null;
   await garden?.load(!isHomeScene(params.get('qua'))); // ra sân từ gian trong: không báo lại luống chín (V-68)

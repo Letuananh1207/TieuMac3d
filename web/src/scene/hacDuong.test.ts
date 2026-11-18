@@ -53,7 +53,7 @@ describe('hạc truyền tống — bãi đáp, đường bay (R-HANH-5)', () =>
     expect(home.player.start).toEqual([0, 6.5]);
     near(landingPad(home.player.start, START_HEADING, home.crane.padOffset), [2.5, 6.5]);
     // cảnh không vòng trận vẫn kiểm bãi đáp: đẩy chỗ xuất phát vào nhà chính → báo
-    expect(craneProblems({ ...home, player: { ...home.player, start: [-17.5, -8] } }).join()).toMatch(/nằm trong nhà "chinh-phong"/);
+    expect(craneProblems({ ...home, player: { ...home.player, start: [-2.5, -11.5] } }).join()).toMatch(/nằm trong nhà "chinh-phong"/); // V-82: nhà chính cuối lối trục (0; −11,5)
   });
 
   it('R-HANH-5: hạc 3 draw call, ≤ 800 tam giác; cảnh bay ≤ 12 draw call (Thấp: không mây phồng)', () => {

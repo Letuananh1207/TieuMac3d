@@ -58,20 +58,22 @@ export function autoKeepOut(s: SceneSpec): AreaKeepOut[] {
     const turned = Math.abs(g.bin.rotY) % 180 === 90;
     const [bw, bd] = turned ? [BIN_SIZE.d, BIN_SIZE.w] : [BIN_SIZE.w, BIN_SIZE.d];
     out.push({ label: CRATE, rect: { x: g.bin.x, z: g.bin.z, w: bw + 2, d: bd + 2, rot: 0 } });
-    // khe cổng vườn (cạnh tây): hành lang 2 m trong + 2 m ngoài rào
-    const f = fenceBox(g);
-    out.push({ label: PATH, rect: { x: f.x0, z: g.fence.gate, w: 4, d: g.fence.gateWidth, rot: 0 } });
+    // khe cổng vườn (cạnh tây): hành lang 2 m trong + 2 m ngoài rào; vườn không rào (V-82): không có cổng
+    if (g.layout !== 'mo') {
+      const f = fenceBox(g);
+      out.push({ label: PATH, rect: { x: f.x0, z: g.fence.gate, w: 4, d: g.fence.gateWidth, rot: 0 } });
+    }
   }
   return out;
 }
 
-/** Đích phải còn đường đi (R-NHA-7): mọi cổng (vòng sáng Bến mây, ô cửa nhà / thảm cửa), cổng vườn, thùng thu mua. */
+/** Đích phải còn đường đi (R-NHA-7): mọi cổng (vòng sáng Bến mây, ô cửa nhà / thảm cửa), cổng vườn (vườn có rào), thùng thu mua. */
 export function pathGoals(s: SceneSpec): { at: XZ; r: number }[] {
   const out: { at: XZ; r: number }[] = s.portals.map((p) => ({ at: [(p.area.from[0] + p.area.to[0]) / 2, (p.area.from[1] + p.area.to[1]) / 2] as XZ, r: 1.2 }));
   const g = s.garden;
   if (g.enabled) {
-    const f = fenceBox(g);
-    out.push({ at: [f.x0 - 1, g.fence.gate], r: 1 }, { at: [g.bin.x, g.bin.z], r: 1.6 });
+    if (g.layout !== 'mo') out.push({ at: [fenceBox(g).x0 - 1, g.fence.gate], r: 1 }); // cổng vườn (vườn không rào: không có)
+    out.push({ at: [g.bin.x, g.bin.z], r: 1.6 });
   }
   return out;
 }

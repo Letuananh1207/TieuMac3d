@@ -87,13 +87,13 @@ describe('bản đồ vùng — đủ mọi cảnh (R-BANDO-2)', () => {
     for (const id of IDS) expect(mapOf(id).shapes.filter((s) => s.kind === 'khu')).toHaveLength(loadScene(id).spec.site.areas.length);
   });
 
-  it('R-BANDO-2: Nhà của ta — 6 khu (có Vườn rau — V-52), vòng "Khởi Nguyên Trấn" (0; 21) cuối Bến mây, cửa "Vào nhà" ở vòng sáng trước cửa nhà chính (−15; −3,4) (V-68, V-96), không có cổng đứng riêng (V-51), không có vòng trận, không có dấu ô trang trí', () => {
+  it('R-BANDO-2: Nhà của ta — 6 khu (có Vườn rau — V-52), vòng "Khởi Nguyên Trấn" (0; 21) cuối Bến mây, cửa "Vào nhà" ở vòng sáng trước cửa nhà chính (0; −6,9) (V-68, V-96, V-82), không có cổng đứng riêng (V-51), không có vòng trận, không có dấu ô trang trí', () => {
     const m = mapOf('nha-ta');
     expect(m.labels.filter((l) => l.kind === 'khu').map((l) => l.text)).toEqual(['Chính phòng', 'Sân trước', 'Bến mây', 'Đồi sau', 'Vườn rau', 'Vườn']);
     expect(m.icons.find((i) => i.scene === HOME_SCENE)).toMatchObject({ kind: 'cong-canh', x: 0, z: 21 });
     const door = m.icons.find((i) => i.scene === 'nha-ta-trong')!;
-    expect(door).toMatchObject({ kind: 'cong-canh', x: -15 });
-    expect(door.z).toBeCloseTo(-3.4, 6); // tâm vòng sáng trước cửa (V-96)
+    expect(door).toMatchObject({ kind: 'cong-canh', x: 0 });
+    expect(door.z).toBeCloseTo(-6.9, 6); // tâm vòng sáng trước cửa (V-96; V-82 nhà cuối lối trục)
     // cửa nhà chính sang gian trong (cùng nơi "Nhà của ta") ghi nhãn cửa, không ghi tên nơi
     expect(m.labels.filter((l) => l.kind === 'cong').map((l) => l.text).sort()).toEqual(['Khởi Nguyên Trấn', 'Vào nhà']);
     expect(m.icons.map((i) => i.kind)).toEqual(['cong-canh', 'cong-canh']);

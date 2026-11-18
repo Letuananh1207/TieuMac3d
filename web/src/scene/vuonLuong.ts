@@ -14,7 +14,7 @@ import { markDynamic } from './merge';
 import { seededRandom } from './random';
 import type { GardenSpec } from './spec';
 import type { GroundY } from './terrainHeight';
-import { BIN_SIZE, fenceBox, fenceSegments } from './vuonLayout';
+import { BIN_SIZE, borderBoxes, fenceBox, fenceSegments, type Box2 } from './vuonLayout';
 import { CropLayer, painted } from './cayTrong';
 import { HatPool } from './vuonHat';
 import { PestLayer } from './vuonSauCo';
@@ -40,7 +40,39 @@ function wildGeometry(g: GardenSpec): THREE.BufferGeometry {
   return mergeGeometries(parts) ?? parts[0];
 }
 
-/** Rào tre (trụ mỗi ~0,6 m + 2 thanh ngang) + thùng thu mua gỗ có nắp — một lưới. */
+/** Bước đá cuội viền (m) — đá ~0,3 m sát nhau như ảnh concept V-82. */
+const PEBBLE_STEP = 0.36;
+
+/**
+ * Viền đá cuội thấp quanh khung [b] (V-82): đá dẹt (khối 12 mặt ép) dọc bốn cạnh, cỡ + màu lệch nhẹ theo số giả ngẫu nhiên cố định,
+ * cao ≤ 0,12 m — không va chạm, gộp vào lưới tĩnh của vườn (0 draw call thêm).
+ */
+function pebbleRing(b: Box2, color: string, groundY: GroundY): THREE.BufferGeometry[] {
+  const out: THREE.BufferGeometry[] = [];
+  const rand = seededRandom(Math.round((b.x0 * 31 + b.z0 * 17) * 10) + 101);
+  const base = new THREE.Color(color);
+  const edge = (ax: number, az: number, bx: number, bz: number): void => {
+    const len = Math.hypot(bx - ax, bz - az);
+    const n = Math.max(1, Math.round(len / PEBBLE_STEP));
+    for (let i = 0; i < n; i++) {
+      const t = (i + 0.5) / n;
+      const x = ax + (bx - ax) * t;
+      const z = az + (bz - az) * t;
+      const r = 0.14 + rand() * 0.05;
+      const geo = new THREE.IcosahedronGeometry(r, 0);
+      geo.scale(1, 0.55 + rand() * 0.2, 0.9 + rand() * 0.2).rotateY(rand() * Math.PI);
+      const shade = base.clone().multiplyScalar(0.88 + rand() * 0.2);
+      out.push(painted(geo.translate(x, groundY(x, z) + r * 0.3, z), shade, 0.25));
+    }
+  };
+  edge(b.x0, b.z0, b.x1, b.z0);
+  edge(b.x1, b.z0, b.x1, b.z1);
+  edge(b.x1, b.z1, b.x0, b.z1);
+  edge(b.x0, b.z1, b.x0, b.z0);
+  return out;
+}
+
+/** Rào tre (trụ mỗi ~0,6 m + 2 thanh ngang; vườn không rào: không có) + nền đất (+ viền đá cuội) + thùng thu mua gỗ có nắp — một lưới. */
 function fenceAndBin(g: GardenSpec, groundY: GroundY): THREE.BufferGeometry {
   const parts: THREE.BufferGeometry[] = [];
   const H = g.fence.height;
@@ -65,11 +97,14 @@ function fenceAndBin(g: GardenSpec, groundY: GroundY): THREE.BufferGeometry {
       parts.push(painted(rail, bamboo.clone().multiplyScalar(0.92)));
     }
   }
-  // nền đất nện trong rào (không gạch — khác sân lát): tấm mỏng sát mặt đất
-  const { x0, x1, z0, z1 } = fenceBox(g);
-  const cx = (x0 + x1) / 2;
-  const cz = (z0 + z1) / 2;
-  parts.push(painted(new THREE.BoxGeometry(x1 - x0, 0.04, z1 - z0).translate(cx, groundY(cx, cz) + 0.005, cz), g.colors.ground));
+  // nền đất nện trong rào / trong khung viền (không gạch — khác sân lát): tấm mỏng sát mặt đất
+  const grounds = g.layout === 'mo' ? borderBoxes(g) : [fenceBox(g)];
+  for (const { x0, x1, z0, z1 } of grounds) {
+    const cx = (x0 + x1) / 2;
+    const cz = (z0 + z1) / 2;
+    parts.push(painted(new THREE.BoxGeometry(x1 - x0, 0.04, z1 - z0).translate(cx, groundY(cx, cz) + 0.005, cz), g.colors.ground));
+    if (g.layout === 'mo') parts.push(...pebbleRing({ x0, x1, z0, z1 }, g.colors.stone, groundY));
+  }
   // thùng thu mua: thân gỗ, đai sẫm, nắp hơi rộng
   const { w, d, h } = BIN_SIZE;
   const wood = new THREE.Color(g.colors.bin);

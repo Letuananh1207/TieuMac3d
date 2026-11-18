@@ -5,7 +5,8 @@
  * (`ui/vuonSound.ts`) → diễn xong mới gọi luật (`act` của `homeGarden.ts` → `gardenAct` / ví thử). Mỗi lần một việc.
  *
  * HUD vòng (thiết kế 2026-11-16.4): `ui/gardenRing.ts` vẽ `ring()` mỗi khung, bấm ô → `choose` / `chooseSeed`. Chạm / click
- * luống = mở vòng (chạm bị nuốt — không đi), **E** mở vòng ở luống gần nhất (< 1,6 m), phím **1–6** chọn ô (1 = Tay giữa),
+ * luống = mở vòng (chạm bị nuốt — không đi; vườn không rào V-82: đứng ngoài vườn mà luống cách ≤ `reach` m → tự đi tới mép luống rồi
+ * mở — `scene/vuonLayout.ts` `tapPlan`), **E** mở vòng ở luống gần nhất (< 1,6 m), phím **1–6** chọn ô (1 = Tay giữa),
  * lưới hạt mở thì **1–n** chọn loại, **Esc** lưới → vòng → đóng. Ô mờ → viên lý do (`reason`); làm xong → chữ nổi (`float`).
  * Console `__hocXaVuon.vong(n) / chon(k) / dong() / ring() / xem()`.
  */
@@ -14,6 +15,8 @@ import type { Character } from './player/character';
 import { hasToolTip } from './player/character';
 import type { PlayerController } from './player/controller';
 import { WORK_FX, WORK_LEN } from './player/lamVuonDang';
+import type { GardenSpec } from './scene/spec';
+import { gardenZone, inBox, tapPlan, type Box2 } from './scene/vuonLayout';
 import type { Garden3D } from './scene/vuonLuong';
 import type { VuonSound, VuonTieng } from './ui/vuonSound';
 import { cropOf, plotOf, type GardenAct, type Garden, type GardenResult } from './zones/vuon';
@@ -34,10 +37,11 @@ export interface GardenWorkDeps {
   garden: Garden3D;
   player: PlayerController;
   character: Character;
-  /** rào vườn (đặc tả `garden.fence`): vòng chỉ mở khi đứng trong rào; ra khỏi → đóng (R-VUON-2) */
-  fence: { from: { x: number; z: number }; to: { x: number; z: number } };
-  /** cạnh luống vuông (m — đặc tả `garden.size`): chạm trong luống = chọn luống */
-  plotSize: number;
+  /**
+   * đặc tả vườn (`garden`): vùng "trong vườn" (rào / khung luống nới `leave`) — trong vùng chạm luống mở vòng ngay, ra khỏi → đóng;
+   * vườn không rào chạm luống ≤ `reach` m → tự đi tới rồi mở (R-VUON-2); `size` = cạnh luống (chạm trong luống = chọn luống)
+   */
+  spec: GardenSpec;
   sound: VuonSound | null;
   state(): Garden;
   now(): number;
@@ -77,6 +81,9 @@ export class GardenWork {
   /** việc chọn trong lúc đang diễn — diễn xong mới làm (R-VUON-13) */
   private pending: { plot: string; act: GardenAct; work: WorkKind } | null = null;
   private inside = false;
+  /** luống đang tự đi tới để mở vòng (vườn không rào — V-82); `null` = không */
+  private approach: string | null = null;
+  private readonly zone: Box2;
   private readonly tip: THREE.Vector3;
   private readonly dir: THREE.Vector3;
 
@@ -85,9 +92,15 @@ export class GardenWork {
     this.tip = v.clone();
     this.dir = v.clone();
     d.garden.crops.reduced = reducedMotion();
+    this.zone = gardenZone(d.spec);
   }
 
-  /** Đứng trong rào vườn — chạm cảnh mới cần dò luống. */
+  /** Chạm cảnh cần dò luống: trong vườn, hoặc vườn không rào (chạm luống từ xa → tự đi tới — V-82). */
+  get picks(): boolean {
+    return this.inside || this.d.spec.layout === 'mo';
+  }
+
+  /** Đứng trong vườn (rào / vùng luống — `gardenZone`). */
   get inFence(): boolean {
     return this.inside;
   }
@@ -176,19 +189,53 @@ export class GardenWork {
    * (cũng nuốt chạm); vòng đóng → `false` (đi như thường).
    */
   tapAt(p: { x: number; z: number } | null): boolean {
-    const half = this.d.plotSize / 2 + 0.25;
+    const half = this.d.spec.size / 2 + 0.25;
     const hit = p && this.d.garden.plots.find((q) => Math.abs(q.x - p.x) <= half && Math.abs(q.z - p.z) <= half);
-    if (hit) return this.openRing(hit.id);
-    return this.closeRing();
+    if (!hit) return this.closeRing();
+    const pos = this.d.player.position;
+    const plan = tapPlan(this.d.spec, pos, hit);
+    if (plan === 'mo-ngay') return this.openRing(hit.id);
+    if (plan === 'khong') return this.closeRing();
+    return this.walkToOpen(hit);
+  }
+
+  /** Tự đi tới mép luống [plot] rồi mở vòng (V-82); joystick / chạm đi chỗ khác / kẹt → huỷ, không mở. */
+  private walkToOpen(plot: { id: string; x: number; z: number }): boolean {
+    this.closeRing();
+    if (this.job?.phase === 'walk') this.stop();
+    const at = standSpot(plot, this.d.player.position);
+    const id = plot.id;
+    this.approach = id;
+    const ok = this.d.player.walkTo(
+      at.x,
+      at.z,
+      at.faceX,
+      at.faceZ,
+      () => {
+        if (this.approach !== id) return;
+        this.approach = null;
+        const pos = this.d.player.position;
+        this.inside = inBox(this.zone, pos.x, pos.z);
+        this.openRing(id);
+      },
+      () => {
+        if (this.approach === id) this.approach = null;
+      },
+    );
+    if (!ok) this.approach = null;
+    return ok;
   }
 
   /**
-   * Mỗi khung: rào (ra → đóng vòng, bỏ việc đang đi tới), bận (trang trí / bản đồ / thoại / màn che → như trên), joystick khi
+   * Mỗi khung: vùng vườn (ra → đóng vòng, bỏ việc đang đi tới; đang tự đi tới để mở vòng thì giữ), bận (trang trí / bản đồ / thoại / màn che → như trên), joystick khi
    * vòng mở → đóng, hiệu ứng theo giây động tác, tick sâu / bể hạt, lấp lánh vàng quanh cây chín.
    */
   update(dt: number, pos: { x: number; z: number }, busy: boolean, ripe: readonly number[]): void {
-    const f = this.d.fence;
-    this.inside = pos.x > Math.min(f.from.x, f.to.x) && pos.x < Math.max(f.from.x, f.to.x) && pos.z > Math.min(f.from.z, f.to.z) && pos.z < Math.max(f.from.z, f.to.z);
+    this.inside = inBox(this.zone, pos.x, pos.z);
+    if (busy && this.approach) {
+      this.approach = null;
+      this.d.player.cancelAuto();
+    }
     if (!this.inside || busy) {
       this.closeRing();
       this.pending = null;
