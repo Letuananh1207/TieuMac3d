@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { Colliders } from './collision/colliders';
 import { LayeredGround } from './collision/ground';
 import type { XZ } from './collision/gridPath';
+import { RAIL_REACH } from './scene/kien_truc/do_pho';
 import { MIN_FALLBACK, STAND_CLEAR } from './scene/kien_truc/tra_lau_phuc_vu';
 import { traLau, traLauLayout } from './scene/kien_truc/tra_lau';
 import { clearanceAt } from './scene/routeCheck';
@@ -47,6 +48,35 @@ function standFree(f: TeaFloor, seats: readonly { x: number; z: number }[], me: 
 
 const inside = (f: TeaFloor, x: number, z: number): boolean => x >= f.bounds.minX && x <= f.bounds.maxX && z >= f.bounds.minZ && z <= f.bounds.maxZ;
 
+type SeatXZ = { x: number; z: number; rotY: number; hold?: string; rail?: { d: number; h: number } };
+/** gốc đo: chỗ ngồi — ghế lan can: mắt người ngồi nhoài tới lan can (`ngoiMat.ts`: trước chỗ ngồi max(eyeFwd, rail.d − RAIL_REACH)) */
+function origin(s: SeatXZ): { x: number; z: number; rotY: number } {
+  const k = s.hold === 'lan-can' && s.rail ? Math.max(DEFAULT_SCENE.camera.firstPerson.eyeFwd, s.rail.d - RAIL_REACH) : 0;
+  return { x: s.x + Math.sin(s.rotY) * k, z: s.z + Math.cos(s.rotY) * k, rotY: s.rotY };
+}
+/** góc (độ) của điểm `p` nhìn từ `o` so với hướng nhìn của chỗ ngồi `s` — dương = phải */
+function angleFrom(s: SeatXZ, o: { x: number; z: number }, p: XZ): number {
+  const vx = p[0] - o.x;
+  const vz = p[1] - o.z;
+  return Math.atan2(-Math.cos(s.rotY) * vx + Math.sin(s.rotY) * vz, Math.sin(s.rotY) * vx + Math.cos(s.rotY) * vz) * DEG;
+}
+/** dải góc ứng viên (độ, so hướng nhìn): bàn 35–85°, ghế lan can (từ mắt) 60–82° */
+const TABLE_BAND = [35, 85] as const;
+const RAIL_BAND = [60, 82] as const;
+/** phía `side` (1 phải, −1 trái) có điểm đứng được xa hơn `d` (từ d + 0,02 tới 1,6 m mỗi 0,01; góc trong dải mỗi 5° + mép dải)? */
+function farther(f: TeaFloor, seats: readonly SeatXZ[], s: SeatXZ, side: number, band: readonly [number, number], d: number): boolean {
+  const o = origin(s);
+  const as: number[] = [];
+  for (let a = band[0]; a < band[1]; a += 5) as.push(a);
+  as.push(band[1]);
+  for (const a of as)
+    for (let dd = d + 0.02; dd <= 1.6 + 1e-9; dd += 0.01) {
+      const [x, z] = at(o, side * a, dd);
+      if (standFree(f, seats, s, x, z)) return true;
+    }
+  return false;
+}
+
 describe('Mốc phục vụ trà lâu (R-TRA-1)', () => {
   it('R-TRA-1: cả 30 chỗ ngồi đều có chỗ đứng rót, chỗ ngồi gắn mã nhà để tiểu nhị mang tới', () => {
     const { svc, seats } = setup();
@@ -56,7 +86,7 @@ describe('Mốc phục vụ trà lâu (R-TRA-1)', () => {
     expect(svc.seats.filter((s) => s!.floor === 1)).toHaveLength(12);
   });
 
-  it('R-TRA-1: chỗ đứng rót cách chỗ ngồi 1,4–1,6 m (chỗ chật: xa nhất có thể), cùng tầng, ngoài vật cản mịn, phía trước – phải (ghế lan can: bên phải)', () => {
+  it('R-TRA-1: chỗ đứng rót cách chỗ ngồi 1,4–1,6 m (chỗ chật: xa nhất có thể), cùng tầng, ngoài vật cản mịn, phía trước – phải; phải < 1,4 m mà trái xa hơn → trước – trái', () => {
     const { svc, seats } = setup();
     const angles: string[] = [];
     const dists: string[] = [];
@@ -64,43 +94,69 @@ describe('Mốc phục vụ trà lâu (R-TRA-1)', () => {
       const t = svc.seats[i]!;
       const f = svc.floors[t.floor - 1];
       expect(Math.abs(f.y - (s.y < yf - 1 ? plat : yf)) < 1e-9).toBe(true);
-      const d = Math.hypot(t.stand[0] - s.x, t.stand[1] - s.z);
+      const rail = s.hold === 'lan-can';
+      const o = origin(s); // ghế lan can: tính từ mắt
+      const d = Math.hypot(t.stand[0] - o.x, t.stand[1] - o.z);
       expect(d, `chỗ ${i}`).toBeGreaterThanOrEqual(MIN_FALLBACK - 1e-5);
       expect(d, `chỗ ${i}`).toBeLessThanOrEqual(1.6 + 1e-5);
       expect(standFree(f, seats, s, ...t.stand), `chỗ ${i}`).toBe(true);
       dists.push(`${i}:${d.toFixed(2)}`);
+      const band = rail ? RAIL_BAND : TABLE_BAND;
+      const side = Math.sign(t.angle);
       if (d < 1.4 - 1e-5) {
-        // chỗ chật — xa nhất có thể: quét cùng phía, mọi góc trong dải ứng viên (5° một), khoảng từ d + 0,02 tới 1,6 (0,01 m một)
-        // → không có điểm nào hợp lệ (trong sàn, cách bàn ghế ≥ STAND_CLEAR, không đè chỗ ngồi khác)
-        const side = Math.sign(t.angle);
-        const band = s.hold === 'lan-can' ? [40, 70] : [35, 85];
-        for (let a = band[0]; a <= band[1]; a += 5)
-          for (let dd = d + 0.02; dd <= 1.6 + 1e-9; dd += 0.01) {
-            const [x, z] = at(s, side * a, dd);
-            expect(standFree(f, seats, s, x, z), `chỗ ${i} (d ${d.toFixed(2)}): ${side * a}° · ${dd.toFixed(2)} m vẫn đứng được`).toBe(false);
-          }
+        // chỗ chật — xa nhất có thể cùng phía; phía kia (nếu là phải) cũng không xa hơn
+        expect(farther(f, seats, s, side, band, d), `chỗ ${i} (d ${d.toFixed(2)}) phía ${side}`).toBe(false);
+        expect(farther(f, seats, s, -side, band, d), `chỗ ${i} (d ${d.toFixed(2)}): phía ${-side} xa hơn`).toBe(false);
       }
-      // góc thật trong cảnh so với hướng nhìn: dương = bên phải người ngồi
-      const fx = Math.sin(s.rotY);
-      const fz = Math.cos(s.rotY);
+      // đứng trái → phía phải không đạt 1,4 m và không xa bằng chỗ đứng trái
+      if (side < 0) expect(farther(f, seats, s, 1, band, Math.min(d, 1.4) - 0.02), `chỗ ${i}: phía phải đứng được`).toBe(false);
+      // góc thật trong cảnh so với hướng nhìn từ chỗ ngồi: dương = bên phải người ngồi
+      expect(angleFrom(s, s, t.stand)).toBeCloseTo(t.angle, 2);
+      const ang = angleFrom(s, o, t.stand);
+      angles.push(`${i}:${Math.round(ang)}°`);
+      expect(Math.abs(ang), `chỗ ${i}`).toBeLessThan(90); // phía trước (ghế lan can: trước mắt)
+      // quay mặt về chỗ ngồi
       const vx = t.stand[0] - s.x;
       const vz = t.stand[1] - s.z;
-      const right = -Math.cos(s.rotY) * vx + Math.sin(s.rotY) * vz;
-      const ang = Math.atan2(right, fx * vx + fz * vz) * DEG;
-      expect(ang).toBeCloseTo(t.angle, 2);
-      if (s.hold === 'lan-can') expect(ang >= 40 && ang <= 70, `ghế lan can ${i}: ${ang}°`).toBe(true); // nhoài tới lan can → từ mắt là bên phải
-      angles.push(`${i}:${Math.round(ang)}°`);
-      // quay mặt về chỗ ngồi
       expect(Math.abs(Math.atan2(Math.sin(t.face - Math.atan2(-vx, -vz)), Math.cos(t.face - Math.atan2(-vx, -vz))))).toBeLessThan(1e-6);
     });
-    // phía trước (|góc| < 90°, trừ lan can), bên phải trừ chỗ bị chắn (sập: nửa quay lưng ra tường sau)
-    const left = seats.filter((_, i) => svc.seats[i]!.angle < 0);
-    for (const s of seats.filter((q) => q.hold !== 'lan-can')) expect(Math.abs(svc.seats[seats.indexOf(s)]!.angle)).toBeLessThan(90);
-    expect(left.length, angles.join(' ')).toBeLessThanOrEqual(2);
-    // phần lớn chỗ đạt đủ 1,4–1,6 m
-    expect(dists.filter((q) => Number(q.split(':')[1]) >= 1.4 - 1e-5).length, dists.join(' ')).toBeGreaterThanOrEqual(20);
-    console.log(`R-TRA-1 góc chỗ đứng rót: ${angles.join(' ')}`);
-    console.log(`R-TRA-1 khoảng chỗ đứng rót (m): ${dists.join(' ')}`);
+    // trái chỉ ở chỗ phía phải không đủ: 2 chỗ sập quay lưng ra tường + 2 chỗ đầu bàn dài mà bên phải là ghế cạnh
+    const left = seats.flatMap((_, i) => (svc.seats[i]!.angle < 0 ? [i] : []));
+    expect(left, angles.join(' ')).toEqual([13, 15, 21, 24]);
+    // chỉ 2 chỗ giữa bàn dài (ghế cạnh cả hai bên) chưa đủ 1,4 m
+    expect(dists.filter((q) => Number(q.split(':')[1]) >= 1.4 - 1e-5).length, dists.join(' ')).toBeGreaterThanOrEqual(28);
+    console.log(`R-TRA-1 góc chỗ đứng rót (lan can: từ mắt): ${angles.join(' ')}`);
+    console.log(`R-TRA-1 khoảng chỗ đứng rót (m, lan can: từ mắt): ${dists.join(' ')}`);
+  });
+
+  it('R-TRA-1: ghế lan can — cách mắt 1,4–1,6 m, lùi trong sàn chếch phải; quay đầu sang phải ≤ 60° thì cả bề ngang thân tiểu nhị lọt khung, thấy cả chân', () => {
+    const { svc, seats } = setup();
+    const fp = DEFAULT_SCENE.camera.firstPerson;
+    const vHalf = DEFAULT_SCENE.camera.fov / 2 / DEG; // khung 900 × 600: FOV dọc 55°
+    const hHalf = Math.atan(Math.tan(vHalf) * (900 / 600));
+    const rails = seats.filter((s) => s.hold === 'lan-can');
+    expect(rails).toHaveLength(4);
+    for (const s of rails) {
+      const i = seats.indexOf(s);
+      const t = svc.seats[i]!;
+      const o = origin(s);
+      const d = Math.hypot(t.stand[0] - o.x, t.stand[1] - o.z);
+      expect(d, `chỗ ${i}`).toBeGreaterThanOrEqual(1.4 - 1e-5);
+      expect(d, `chỗ ${i}`).toBeLessThanOrEqual(1.6 + 1e-5);
+      // lùi vào trong sàn: không ra trước lan can, gần chỗ ngồi theo hướng nhìn hơn lan can
+      const fwd = (t.stand[0] - s.x) * Math.sin(s.rotY) + (t.stand[1] - s.z) * Math.cos(s.rotY);
+      expect(fwd, `chỗ ${i}`).toBeLessThan(s.rail!.d - STAND_CLEAR + 1e-6);
+      const ang = angleFrom(s, o, t.stand) / DEG; // rad, dương = phải
+      expect(ang, `chỗ ${i}`).toBeGreaterThan(0);
+      // quay đầu tối đa yawLimit sang phải: cả bề ngang thân (±0,45 m — cả tay) trong khung
+      const yaw = Math.min(fp.yawLimit / DEG, ang);
+      const half = Math.atan(0.45 / d);
+      expect(ang + half, `chỗ ${i}: mép thân ${((ang + half) * DEG).toFixed(0)}° > ${((yaw + hHalf) * DEG).toFixed(0)}°`).toBeLessThanOrEqual(yaw + hHalf);
+      expect(ang - half).toBeGreaterThanOrEqual(yaw - hHalf);
+      // chân trong khung khi nhìn cúi như chỗ ngồi (pitch.seat)
+      const feet = Math.atan(fp.eyeY / d);
+      expect(feet, `chỗ ${i}`).toBeLessThanOrEqual(-fp.pitch.seat / DEG + vHalf);
+    }
   });
 
   it('R-TRA-1: cửa, mốc thang nằm trên nền đi được; cửa ở gian phía hồi phải (nam), đầu cầu nối trên sàn tầng 2', () => {

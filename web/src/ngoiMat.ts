@@ -24,6 +24,7 @@ import {
 } from './input/eyeCamera';
 import type { Character } from './player/character';
 import { CuonSach } from './scene/cuonSach';
+import { RAIL_REACH } from './scene/kien_truc/do_pho';
 import { CUON_GIAY_H, CUON_GIAY_W, fitScroll } from './scene/cuonSachNhip';
 import { LAYER_MAT, LAYER_THAN, setLayer, viewLayers } from './scene/layers';
 import { isSoft, type LookSpec } from './scene/look';
@@ -51,9 +52,6 @@ const TABLE_EDGE = 0.86; // bàn cờ 13 × 13 rộng 1,2 m: hàng gần nhất 
 const TABLE_SPREAD = 0.3;
 const CARD_NEAR = 0.36; // thẻ 0,5 m: mép gần cách tâm 0,25 — ngón chỉ chạm mép thẻ, không che chữ
 const CARD_SPREAD = 0.2;
-/** Ghế lan can: tay với tới thanh cách mắt chừng này (m); lan can xa hơn → chỉ camera + tay nhoài tới (dáng ngồi ngoài
- *  cảnh không đổi) */
-const RAIL_REACH = 0.58;
 
 export class NgoiMat {
   private place: SitPlace | null = null;

@@ -237,5 +237,25 @@ dart tool/rule_trace.dart · dart tool/guard.dart
 ## Duyệt ảnh lần 2 (người dùng)
 - Ghế lan can: khoảng 1,4–1,6 m tính **từ mắt** người ngồi (đang nhoài tới lan can), tiểu nhị lùi vào trong sàn chếch phải.
 - 4 chỗ giữa bàn dài (phải chỉ được 0,88 m): phía phải không đủ mà phía trái xa hơn → đứng trước – trái. R-TRA-1 đã sửa + đồng bộ.
-- [ ] 12. Sửa `tra_lau_phuc_vu.ts` + test theo hai điểm trên · chụp lại ảnh lan can + bàn dài.
+- [x] 12. Sửa `tra_lau_phuc_vu.ts` + test theo hai điểm trên · chụp lại ảnh lan can + bàn dài.
+
+## Kết quả NV12 (2026-11-18)
+- `standFor`: mỗi phía tìm như NV11 (1,4–1,6 m theo góc gần 45°, chật → xa nhất tới 0,8 m); phía phải đạt 1,4 m → phải, không
+  thì phía trái **xa hơn** → trái. Ghế lan can: gốc đo là **mắt** (`railEye`: trước chỗ ngồi `rail.d − RAIL_REACH` = 0,945 m;
+  `RAIL_REACH` chuyển từ `ngoiMat.ts` sang `do_pho.ts` dùng chung), góc từ mắt 60–82°, khoảng lấy xa trước (1,6 m) — lan can chỉ
+  cách mắt 0,58 m nên tiểu nhị lùi vào trong sàn, gần ngang vai phải mắt.
+- **Khoảng / phía thật**: đôn tầng 1 (0–11) 1,40 m · 60° phải · sập (12–15) 1,50 m · 45° (13, 15 trái) · ghế lan can (16–19)
+  **1,60 m từ mắt** · 80° (16, 17) / 82° (18, 19 — lan can hồi trái có tường dày hơn) phải · bàn dài đầu (20, 25) 1,50 m · 45°
+  phải, (21, 24) **1,50 m · −45° trái** (trước: 0,88 m phải) · bàn dài giữa (22, 23) **vẫn 0,88 m · 75° phải** (ghế cạnh cả hai
+  phía — trái cũng không xa hơn) · bàn đôi (26–29) 1,50 m · 45°. 28/30 chỗ đạt 1,4–1,6 m. Đường: tầng 1 9,3–13,5 m, tầng 2 38,8–52,6 m.
+- Test `traLauPhucVu.test.ts`: khoảng (lan can: từ mắt), xa nhất cùng phía + phía kia không xa hơn, chỗ trái thì phía phải không
+  đứng được ≥ 1,4 m / xa bằng, trái đúng {13, 15, 21, 24}; ghế lan can: 1,4–1,6 m từ mắt, sau lan can, quay đầu ≤ 60° thì cả bề
+  ngang thân (±0,45 m) lọt khung 900 × 600, chân trong khung lúc cúi `pitch.seat`.
+- **Giới hạn**: tiểu nhị cao 2,1 m (chibi), mắt 1,35 m — ở 1,4–1,6 m khung FOV dọc 55° không chứa trọn từ chân tới đỉnh đầu
+  (cần ≈ 2,1 m, ngẩng hết `pitchUp`); ảnh lan can thấy từ chân tới mặt, đỉnh đầu bị cắt. Màn dọc (ngang 40°): quay 60° thấy tới
+  80°, tiểu nhị lan can ở 80–82° chỉ thấy nửa thân.
+- **Đo Canvas 3D** (900 × 600, SwiftShader, 10 giờ): ghế lan can chỗ 17 quay đầu 60° lúc rót **42 draw call · 82,1k tam giác**;
+  bàn dài chỗ 21 nhìn trái 30° lúc rót **44 · 82,3k**.
+- Ảnh: `docs/tasks/2026-11-16-tieu-nhi-2-lan-can-dang-rot.png` (`?dang=tieu-nhi&cho=17&t=24.8&dung&chup&gio=10&nhin=60`, ghi đè) ·
+  `-4-ban-dai-dang-rot.png` (`cho=21&t=21&dung&chup&gio=10&nhin=-30`).
 

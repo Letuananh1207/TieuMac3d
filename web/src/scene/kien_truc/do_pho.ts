@@ -146,6 +146,10 @@ export interface LocalSeat {
   rail?: { d: number; h: number };
 }
 
+/** Ghế lan can: tay với tới thanh cách mắt chừng này (m); lan can xa hơn → chỉ camera + tay nhoài tới (dáng ngồi ngoài
+ *  cảnh không đổi) — mắt khi ngồi cách chỗ ngồi `max(eyeFwd, rail.d − RAIL_REACH)` theo hướng nhìn (`ngoiMat.ts`). */
+export const RAIL_REACH = 0.58;
+
 /** Cao mặt sập trà (m) — chỗ ngồi trên sập cao hơn sàn chừng này (R-VA-4: 0,45). */
 export const TEA_BED_H = 0.45;
 const BED_W = k(2);
