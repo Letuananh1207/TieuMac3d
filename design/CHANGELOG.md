@@ -91,6 +91,36 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
 - Chưa: Canvas 3D chưa đăng lại (phiên chính đăng sau khi gộp); bản đồ lớn chưa vẽ cổng thành / tường (lối đất không vẽ —
   R-BANDO-2); trò đào cổ vật + NPC nhà khảo cổ chờ chủ đề từ vựng.
 - File: `scene/to-lua.json`, `screens/Canh-thanh-cat-*.png`.
+## 2026-11-18.7 — Dựng Cung Ngọc Đáy Biển (V-110)
+
+- Loại: cảnh 3D — **bố cục** + **ngoại hình**, vùng `bong-lai` (giữ mã; tên hiển thị "Cung Ngọc Đáy Biển" — V-107). Phiên code
+  V-110 dựng theo ảnh concept đã chốt (2026-11-18.2, `design/concept/cung-ngoc-day-bien/{toan-canh,cong-trinh,vao}.png`, phiếu
+  `docs/phieu_thiet_ke/2026-11-17-concept-cung-ngoc-day-bien.md`), người dùng bảo "tiến hành xây".
+- Bố cục (x đông, z nam): **Cung Vỏ Sò** — nền san hô tròn hai bậc tâm (4; 4) bán kính 10 m (bậc 0,5 m, mặt 1 m, đi lên được),
+  quay −18° (cửa nhìn tây nam); vỏ ốc xà cừ nằm nghiêng thân R 6,5 m, cao ≈ 13 m, chóp xoắn dài 13,5 m chĩa đông ngẩng lên;
+  cửa vòm 2,6 × 3,6 m (môi trắng, lòng tối, rèm rong 9 dải), 2 cột san hô 4,4 m, mái san hô 3 sừng (giữa 5,5 m) trên lưng,
+  4 cụm đèn ngọc, bậc tím trước cửa. **Lối cát san hô** cam rộng 3 m viền cuội (−8,4; 41,2) → (0,7; 14,4); 8 **bãi cát trắng**
+  viền cuội (sân đông lớn, sân tây); 5 **hang đá** (hang cá), 3 **vỏ trai ngọc**, 2 **cột đá san hô cửa lặn** hai bên cổng;
+  13 cụm san hô (2 dáng: gạc, ống; hồng · cam · tím), 10 cụm rong (lay gió). Gò đá quanh ranh khép tầm nhìn. Ranh đi được
+  x −28 … 32, z −12 … 48. Khu: Cung Vỏ Sò · Bãi Hạc · Sân Cát Trắng · Hang Cá. Giữ: bãi hạc (0; 39) + chỗ xuất phát (−1,25; 39),
+  cổng "Chợ Đêm Đèn Hoa" (−9; 42,2). Gỡ: thác, ao (−13; −4), bục cao bắc, 6 hố, đảo nổi, mây, núi xa, đàn chim. Vùng không có
+  NPC / bàn / trò — không có gì phải dời.
+- Ngoại hình ("dưới nước" không hậu kỳ): kiểu nhìn mềm, **giờ cố định 11:00** (không đêm); trời `#a6e6df` → `#7ccfc9` →
+  chân trời = sương `#5fb7b0` (26–120 m); nắng trắng ấm từ tây trên cao; đất cát ngả xanh `#7fbab0`; 6 **vệt nắng** xiên
+  (ống loe cộng màu, `beamOpacity` 0,1); 5 cột **bong bóng** (58 bóng); 3 **đàn cá** (20 con) — mỗi thứ 1 draw call, không PointLight.
+- Trường mới (code, mặc định giữ cảnh cũ): `seaFloor` { `palace`, `sand`, `caves`, `clams`, `pillars`, `corals`, `kelp`, `beams`,
+  `bubbles`, `fish`, `beamOpacity`, `pathPebbles`, `yardPebbles`, `seed`, `colors` } — `web/src/scene/cungNgocSpec.ts`; dựng
+  `cungVoSo.ts`, `vat_cung_ngoc.ts`, `dongBien.ts`.
+- Khác concept: (1) cảnh rộng hơn ảnh, cung cách bãi hạc ≈ 30 m (ảnh nén gần); (2) nền cung bậc tròn quanh, đi lên mọi phía
+  (ảnh: thành nền đứng, chỉ bậc trước cửa); (3) cửa vòm là khối nhô (không khoét vào ốc), không vào trong; (4) dải xà cừ là
+  vòng xoắn theo mặt lưới (ảnh: dải mềm); (5) bong bóng là cầu nhạt mờ, không viền sáng; (6) đèn ngọc là chồng viên không cuống;
+  (7) đàn cá nhỏ hơn / thưa hơn; (8) ảnh `vao` và `cong-trinh` của concept cũng là góc chếch cao — ảnh Canvas 3D theo đúng góc ảnh.
+- Luật: R-HANH-10 mới (đáy biển), R-NGAY-1 (giờ cố định 11:00), R-BANDO-2 (4 tên khu) — sổ + online (Chờ).
+- `scene:check`: Không có lỗi. Hiệu năng (Canvas 3D, trước → sau): trên xuống 37 → 36 draw call, 30,8k → 72,8k tam giác; góc vào
+  (bãi hạc nhìn bắc) 33 → 23 / 28,7k → 68,4k. fps chưa đo (máy chụp không GPU) — chờ thử máy.
+- Ảnh: `screens/Canh-cung-ngoc-toan-canh.png`, `Canh-cung-ngoc-cong-trinh.png`, `Canh-cung-ngoc-vao.png` (cùng 3 góc concept).
+- Chưa: Canvas 3D chưa đăng lại (phiên chính đăng sau khi gộp); trò "đưa cá về hang" / "nhặt ngọc trai" chờ chủ đề từ vựng.
+- File: `scene/bong-lai.json`, `screens/Canh-cung-ngoc-*.png`.
 
 ## 2026-11-18.3 — Đổi tên NPC cũ + xưng hô theo tuổi (V-106)
 
