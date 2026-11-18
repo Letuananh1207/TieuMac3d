@@ -6,6 +6,7 @@
  */
 
 import { DEFAULT_LOOK, type LookSpec } from './look';
+import { DEFAULT_CHO_DEM_STYLE, type ChoDemStyle, type LanternTreeSpec, type PierSpec, type StallSpec } from './choDemSpec';
 import { DEFAULT_DAY_NIGHT, type DayNightSpec } from './ngayDem';
 
 export type XZ = [number, number];
@@ -212,6 +213,8 @@ export interface BuildingSpec {
    * thiếu file / nạp lỗi → bản khối như cũ. `khoi-gop` = model thế dựng từ chính bản khối (chỉ để thử Canvas 3D).
    */
   model?: string;
+  /** nhà nhỏ (`nha-nho`): `false` = không treo biển tên trên cửa (phố chợ không chữ — V-108); thiếu = có biển như cũ */
+  plaque?: boolean;
 }
 
 /**
@@ -1208,6 +1211,11 @@ export interface SceneSpec {
   garden: GardenSpec;
   /** trò nhỏ Trúc Lâm (Lưu Thương, hái măng, đàn cầm — V-66 B4) — rỗng = không có (như cũ) */
   miniGames: MiniGameSpec[];
+  /** Chợ Đêm Đèn Hoa (V-108 — `choDemSpec.ts`): Cây Đèn Trăm Tầng, sạp mái vải, bến gỗ có đèn — rỗng = không có (như cũ) */
+  lanternTrees: LanternTreeSpec[];
+  stalls: StallSpec[];
+  piers: PierSpec[];
+  choDemStyle: ChoDemStyle;
   /** `seated`: khi ngồi vào án thư / bàn trà (R-NGOI-1) — camera lùi ra, chúc xuống thấy cả bàn ·
    *  `study`: khi Ngồi ôn (R-DIEU-7) — lùi ra, nâng cao, lệch `side` rad ra sau vai phải để thấy cuộn sách trên tay */
   camera: {
@@ -1401,6 +1409,10 @@ export const DEFAULT_SCENE: SceneSpec = {
   terraces: [], // cảnh cũ không có đài đá
   seats: [], // cảnh cũ không có chỗ ngồi ngoài trời
   miniGames: [], // cảnh cũ không có trò nhỏ (V-66 B4)
+  lanternTrees: [], // cảnh cũ không có cây đèn / sạp / bến gỗ (V-108)
+  stalls: [],
+  piers: [],
+  choDemStyle: DEFAULT_CHO_DEM_STYLE,
   fenceStyle: { kind: 'go', height: 1.0, postEvery: 1.6, color: '#9e2a20', cap: '#e0ae4c' },
   teaRows: [], // cảnh cũ không có luống chè
   garden: {

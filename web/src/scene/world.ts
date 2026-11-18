@@ -48,6 +48,7 @@ import { addWaterways } from './waterways';
 import { addWalls } from './walls';
 import { addWater } from './water';
 import { addWell } from './well';
+import { addChoDem } from './vat_cho_dem';
 
 /** Bán kính quầng đèn tối đa ban đêm (m) — quầng cộng màu tốn điểm ảnh trên máy yếu (kế hoạch 2026-11-14-ngay-dem). */
 const NIGHT_GLOW_MAX = 1.1;
@@ -265,12 +266,13 @@ function* worldSteps(
   const garden = spec.garden.enabled ? addGarden(scene, colliders, spec.garden, spec.look, groundY, spec.trees.crown === 'chum') : null; // Vườn rau (V-52)
   yield 'cay';
   const lanternSpots = addLanternStrings(scene, colliders, spec, groundY);
+  const choDem = addChoDem(scene, colliders, spec, groundY); // Chợ Đêm Đèn Hoa (V-108): cây đèn, sạp, bến gỗ
   let glow: THREE.InstancedMesh | null = null;
   // ngày đêm: quầng dựng sẵn, mờ theo giờ; mức Thấp bỏ quầng (R-NGAY-3)
   if (isSoft(spec.look) && (dn ? detail >= 1 : spec.light.lampGlow > 0)) {
     // quầng sáng giả: đèn lồng trên dây + hộp đèn đèn đá (quangDen.ts) — chỉ khi đèn đang sáng (`light.lampGlow`)
     const stone = spec.props.filter((p) => p.kind === 'den-da').map((p) => new THREE.Vector3(p.x, (p.y ?? base(p.x, p.z)) + DEN_DA_LIGHT_Y * (p.scale ?? 1), p.z));
-    glow = addLanternGlow(scene, [...lanternSpots, ...stone], spec.look, dn ? 1 : spec.light.lampGlow, dn ? NIGHT_GLOW_MAX : Infinity);
+    glow = addLanternGlow(scene, [...lanternSpots, ...stone, ...choDem.glow], spec.look, dn ? 1 : spec.light.lampGlow, dn ? NIGHT_GLOW_MAX : Infinity);
   }
   addFences(scene, colliders, spec, groundY);
   if (spec.well.enabled) addWell(scene, colliders, spec.well, base(spec.well.x, spec.well.z));
@@ -306,7 +308,7 @@ function* worldSteps(
     closedHouses,
     garden,
     ground,
-    surface: new LayeredGround(hf, [...(teleport?.pads ?? []), ...bridgePads, ...terracePads, ...buildingPads, ...rampartPads, ...rooms.flatMap((r) => r.pads), ...closedPads]),
+    surface: new LayeredGround(hf, [...(teleport?.pads ?? []), ...bridgePads, ...choDem.pads, ...terracePads, ...buildingPads, ...rampartPads, ...rooms.flatMap((r) => r.pads), ...closedPads]),
     rooms,
     seats: [...rooms.flatMap((r) => r.seats ?? []), ...buildingSeats, ...outdoorSeats],
     studySign: rooms.find((r) => r.studySign)?.studySign ?? null,

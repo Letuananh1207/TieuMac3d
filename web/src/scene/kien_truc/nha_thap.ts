@@ -39,7 +39,7 @@ export function nhaNho(g: THREE.Group, b: BuildingSpec, style: Style): void {
     g.add(box(0.06, 0.72, 0.04, style.wall, x, wy, d / 2 + 0.11));
   }
   gableRoof(g, { y: plat + wallH, w, d, over: 0.7, h: 1.5 * k, color: b.roofColor, ridgeColor: style.ridge });
-  addSign(g, b.title, plat + wallH - 0.25, d / 2 + 0.13, 0.42);
+  if (b.plaque !== false) addSign(g, b.title, plat + wallH - 0.25, d / 2 + 0.13, 0.42);
 }
 
 /** Bán kính tâm-đỉnh của tầng `i` (mỗi tầng hẹp 0,4 m mỗi bên). */

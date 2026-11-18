@@ -32,7 +32,7 @@ export const preloadCrane = (): void => void loadCraneModel();
 
 /** đêm (theo giờ VN + `?gio`) → mây chàm */
 function isNight(spec: SceneSpec, params: URLSearchParams): { gio: number; night: boolean } {
-  const gio = gioLuc(docEpGio(params), Date.now(), Date.now());
+  const gio = gioLuc(docEpGio(params), Date.now(), Date.now(), spec.dayNight.gioCoDinh);
   return { gio, night: spec.dayNight.enabled && phaNgay(gio, spec.dayNight.moc).dem > 0.5 };
 }
 

@@ -25,6 +25,11 @@ export interface MocGio {
  */
 export interface DayNightSpec {
   enabled: boolean;
+  /**
+   * Giờ cố định của cảnh (0…24, vd. 21 = luôn đêm hội — chợ đêm `giang-nam`, V-108): cảnh đứng yên ở giờ này, không theo
+   * đồng hồ (R-NGAY-1). −1 (mặc định) = theo giờ Việt Nam như cũ. `?gio=` / thanh trượt Canvas 3D vẫn ép được.
+   */
+  gioCoDinh: number;
   moc: MocGio;
   dem: {
     sky: { top: string; middle: string; horizon: string };
@@ -65,6 +70,7 @@ export const DEFAULT_MOC: MocGio = {
 
 export const DEFAULT_DAY_NIGHT: DayNightSpec = {
   enabled: false,
+  gioCoDinh: -1,
   moc: DEFAULT_MOC,
   dem: {
     sky: { top: '#141a3e', middle: '#2e3a74', horizon: '#5a5a92' },
@@ -155,6 +161,7 @@ export function checkDayNight(d: DayNightSpec): string[] {
   for (const k of Object.keys(m) as (keyof MocGio)[]) if (!inDay(k)) out.push(`dayNight.moc.${k}: 0…24 (đang ${m[k]})`);
   if (!(m.sangTu < m.sangDen && m.sangDen < m.chieuTu && m.chieuTu < m.chieuDen)) out.push('dayNight.moc: cần sangTu < sangDen < chieuTu < chieuDen');
   if (!(m.denTatTu < m.denTatDen && m.denTatDen < m.denBatTu && m.denBatTu < m.denBatDen)) out.push('dayNight.moc: cần denTatTu < denTatDen < denBatTu < denBatDen');
+  if (d.gioCoDinh !== -1 && !(d.gioCoDinh >= 0 && d.gioCoDinh < 24)) out.push(`dayNight.gioCoDinh: −1 (theo đồng hồ) hoặc 0…24 (đang ${d.gioCoDinh})`);
   const unit: [string, number][] = [
     ['dem.lampGlow', d.dem.lampGlow],
     ['dem.windowGlow', d.dem.windowGlow],
@@ -191,8 +198,12 @@ export function docEpGio(params: URLSearchParams): EpGio {
   return { gio, toc: tocRaw ?? (gio === null ? 1 : 0) };
 }
 
-/** Giờ trong game lúc `nowMs`, biết lúc bắt đầu `startMs` và giờ ép (`toc` 1 + không ép = giờ VN thật). */
-export function gioLuc(ep: EpGio, startMs: number, nowMs: number): number {
+/**
+ * Giờ trong game lúc `nowMs`, biết lúc bắt đầu `startMs` và giờ ép (`toc` 1 + không ép = giờ VN thật). `coDinh` ≥ 0 =
+ * giờ cố định của cảnh (`dayNight.gioCoDinh`) thay đồng hồ thật khi không ép bằng `?gio=`.
+ */
+export function gioLuc(ep: EpGio, startMs: number, nowMs: number, coDinh = -1): number {
+  if (ep.gio === null && coDinh >= 0) return coDinh;
   if (ep.gio === null && ep.toc === 1) return gioVN(nowMs);
   const base = ep.gio ?? gioVN(startMs);
   const h = base + ((nowMs - startMs) / 3_600_000) * ep.toc;

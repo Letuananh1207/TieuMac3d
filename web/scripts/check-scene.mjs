@@ -225,7 +225,8 @@ function checkScene(rel, raw, opt = {}) {
     const d = spec.dayNight;
     const h = (v) => `${Math.floor(v)}:${String(Math.round((v % 1) * 60)).padStart(2, '0')}`;
     const m = d.moc;
-    console.log(d.enabled ? `Ngày đêm (giờ VN): bình minh ${h(m.sangTu)}–${h(m.sangDen)} · ngày → ${h(m.chieuTu)} · hoàng hôn → ${h(m.chieuDen)} · đêm; đèn bật ${h(m.denBatTu)}–${h(m.denBatDen)}, tắt ${h(m.denTatTu)}–${h(m.denTatDen)}` : 'Ngày đêm: tắt (luôn ban ngày)');
+    if (d.enabled && d.gioCoDinh >= 0) console.log(`Ngày đêm: giờ cố định ${h(d.gioCoDinh)} (không theo đồng hồ — dayNight.gioCoDinh)`);
+    else console.log(d.enabled ? `Ngày đêm (giờ VN): bình minh ${h(m.sangTu)}–${h(m.sangDen)} · ngày → ${h(m.chieuTu)} · hoàng hôn → ${h(m.chieuDen)} · đêm; đèn bật ${h(m.denBatTu)}–${h(m.denBatDen)}, tắt ${h(m.denTatTu)}–${h(m.denTatDen)}` : 'Ngày đêm: tắt (luôn ban ngày)');
   }
   if (!spec.walls.enabled) console.log(`Không tường bao · người chơi bắt đầu (${n(spec.player.start[0])}; ${n(spec.player.start[1])})`);
   else console.log(`Tường: ±${n(spec.walls.half)} cao ${n(spec.walls.height)} dày ${n(spec.walls.thickness)} kiểu ${spec.walls.style} · người chơi bắt đầu (${n(spec.player.start[0])}; ${n(spec.player.start[1])})`);

@@ -391,7 +391,7 @@ const SIGNS0 = { bac: '', nam: '', dong: '', tay: '' };
 const LISTS: Record<string, ItemParser> = {
   buildings: item(
     { id: '', x: 0, z: 0, w: 0, d: 0, title: '', roofColor: '#000000' },
-    { rotY: 0, notice: ['', ''], zone: { id: '', front: 0, r: 0 }, kind: '', roof: '', floors: 0, sides: 0, trim: '#000000', pillarColor: '#000000', sign: '', goods: '', closed: false, eaves: 0, pillarH: 0, benches: false, model: '' },
+    { rotY: 0, notice: ['', ''], zone: { id: '', front: 0, r: 0 }, kind: '', roof: '', floors: 0, sides: 0, trim: '#000000', pillarColor: '#000000', sign: '', goods: '', closed: false, eaves: 0, pillarH: 0, benches: false, model: '', plaque: true },
     all(rot, buildingModelOk, oneOf('kind', BUILDING_KINDS), oneOf('goods', GOODS_KINDS), oneOf('roof', ROOF_KINDS), oneOf('sides', [4, 6]), oneOf('eaves', [1, 2]), floorsRange, positive('w', 'd'), range('pillarH', 2, 6)),
   ),
   'walls.gates': item({ side: '', at: 0, width: 0 }, { kind: '', signs: SIGNS0, clearHeight: 0, roof: true }, all(oneOf('side', SIDES), positive('width'), gateLook)),
@@ -430,6 +430,18 @@ const LISTS: Record<string, ItemParser> = {
   // trò nhỏ Trúc Lâm (V-66 B4) — mỗi loại một dạng: miniGameCheck.ts
   miniGames: parseMiniGame,
   teaRows: item({ from: XZ0, to: XZ0 }, { width: 0, height: 0 }, all(axisAligned, positive('width', 'height'))),
+  // Chợ Đêm Đèn Hoa (V-108)
+  lanternTrees: item(
+    { x: 0, z: 0, height: 0, tiers: 0, bottomRadius: 0, topRadius: 0, baseRadius: 0 },
+    { spacing: 0 },
+    all(positive('height', 'bottomRadius', 'topRadius', 'baseRadius', 'spacing'), range('tiers', 1, 12), (o, p) =>
+      (o.topRadius as number) > (o.bottomRadius as number) || (o.bottomRadius as number) >= (o.baseRadius as number)
+        ? [`${p}: cần topRadius ≤ bottomRadius < baseRadius`]
+        : [],
+    ),
+  ),
+  stalls: item({ x: 0, z: 0 }, { rotY: 0, color: 0 }, all(rot, oneOf('color', [0, 1, 2]))),
+  piers: item({ x: 0, z: 0, length: 0, width: 0 }, { rotY: 0, sunk: 0 }, all(rot, positive('length', 'width'))),
   gameTables: item(
     { id: '', kind: '', x: 0, z: 0, npc: '' },
     { rotY: 0, boards: 0, npcStand: true, sign: { x: 0, z: 0, rotY: 0, han: '', name: '' } },

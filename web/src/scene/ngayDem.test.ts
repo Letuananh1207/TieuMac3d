@@ -48,6 +48,17 @@ describe('R-NGAY-1: giờ Việt Nam GMT+7, mốc pha cố định', () => {
     expect(that).toEqual({ gio: null, toc: 1 });
     expect(gioLuc(that, start, vn(20, 15))).toBeCloseTo(20.25);
     expect(docEpGio(new URLSearchParams('gio=abc')).gio).toBeNull();
+  });
+
+  it('R-NGAY-1: cảnh có giờ cố định (chợ đêm, V-108) đứng yên ở giờ đó; ?gio= vẫn ép được; giờ sai → báo', () => {
+    const start = vn(10);
+    const that = docEpGio(new URLSearchParams(''));
+    expect(gioLuc(that, start, vn(12), 21)).toBe(21);
+    expect(gioLuc(that, start, vn(3, 30), 21)).toBe(21);
+    expect(gioLuc(docEpGio(new URLSearchParams('gio=12')), start, start, 21)).toBe(12);
+    expect(gioLuc(that, start, vn(20, 15), -1)).toBeCloseTo(20.25);
+    expect(checkDayNight({ ...DEFAULT_DAY_NIGHT, gioCoDinh: 21 })).toEqual([]);
+    expect(checkDayNight({ ...DEFAULT_DAY_NIGHT, gioCoDinh: 25 }).join()).toContain('gioCoDinh');
     expect(docEpGio(new URLSearchParams('gio=5.5')).gio).toBe(5.5);
     expect(nhanGio(21.0833)).toBe('21:04');
   });

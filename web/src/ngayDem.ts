@@ -59,7 +59,7 @@ export class NgayDem {
     let p = this.applied;
     if (!p || fast || this.manual !== null || now - this.lastCheck >= CHECK_MS) {
       this.lastCheck = now;
-      this.gio = this.manual ?? gioLuc(this.ep, this.start, Date.now());
+      this.gio = this.manual ?? gioLuc(this.ep, this.start, Date.now(), this.spec.dayNight.gioCoDinh);
       p = phaNgay(this.gio, this.spec.dayNight.moc);
       this.dn.hour(this.gio); // bướm, sương sớm theo giờ (V-46)
     }
