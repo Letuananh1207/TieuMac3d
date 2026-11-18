@@ -129,3 +129,4 @@ ha-ta-lowpoly.glb` |
 | V-20261118-112 | Dựng Thành Cát Ngủ Quên (`to-lua`) | canh + lead | đang làm — nhánh `viec/thanh-cat` |  | — |
 | V-20261118-113 | Dựng Thung Trúc Gió Hát (`rung-truc`, thêm Tháp Sáo Trúc, giữ địa hình B2/B3) | canh + lead | đang làm — nhánh `viec/thung-truc` |  | — |
 | V-20261118-114 | Nhà đang rất trống trải — nghiên cứu nên thêm gì, làm gì (ngoài đảo + gian trong) | y-tuong | chờ ảnh — phạm vi thu về nông trại (9 ý), phiếu `2026-11-18-concept-nong-trai-nha.md`, đang tạo ảnh Gemini | R-NHA-*, R-VUON-* | chọn ý đợt 1 |
+| V-20261118-115 | Bản đồ trông không đẹp — muốn sống động như ảnh Gemini bản đồ thế giới | ui-design + lead | chờ ảnh — phiếu `2026-11-17-concept-the-gioi-moi.md` sửa (không chữ, đình thay tổ hạc), tạo 3 bản sau lô nông trại | R-BANDO-* | chọn bản → làm nền bản đồ, tên do code |
