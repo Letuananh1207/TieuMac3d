@@ -19,7 +19,7 @@ import type { Npc } from './player/npc';
 import { docEpGio } from './scene/ngayDem';
 import { miniGame, type SceneSpec } from './scene/spec';
 import type { World } from './scene/world';
-import { LamSound, ramp, RAIN_LEVEL, RAIN_RAMP_SECONDS } from './ui/lamSound';
+import { fluteVolume, LamSound, ramp, RAIN_LEVEL, RAIN_RAMP_SECONDS } from './ui/lamSound';
 import type { Dialog, DialogChoice } from './zones/dialogs';
 import { miniGameSigns, type GameSign } from './zones/gameGuides';
 import type { SeatSpot } from './zones/seats';
@@ -83,7 +83,8 @@ export class MiniGames {
   readonly dan: DanCam | null;
   readonly signs: GameSign[];
   private readonly sound: LamSound | null;
-  private vol = { water: 0, rain: 0 };
+  private vol = { water: 0, rain: 0, flute: 0 };
+  private readonly tower: { x: number; z: number } | null;
 
   constructor(
     private readonly h: MiniHost,
@@ -94,7 +95,8 @@ export class MiniGames {
     const luu = miniGame(s.miniGames, 'luu-thuong');
     const mang = miniGame(s.miniGames, 'hai-mang');
     const dan = miniGame(s.miniGames, 'dan-cam');
-    this.sound = luu || mang ? new LamSound(!!luu, !!mang) : null;
+    this.tower = s.fluteTower.enabled ? s.fluteTower : null; // sáo gió quanh Tháp Sáo Trúc (V-113, R-AM-3)
+    this.sound = luu || mang || this.tower ? new LamSound(!!luu, !!mang, !!this.tower) : null;
     this.luu = luu ? new LuuThuong(h, luu, this.sound) : null;
     this.mang = mang ? new HaiMang(h, mang, clock, this.sound) : null;
     this.dan = dan ? new DanCam(h, dan) : null;
@@ -188,6 +190,8 @@ export class MiniGames {
     const rain = f.covered ? 0 : this.mang?.raining ? RAIN_LEVEL : 0;
     this.vol.water = ramp(this.vol.water, water, f.dt);
     this.vol.rain = ramp(this.vol.rain, rain, f.dt, RAIN_RAMP_SECONDS / RAIN_LEVEL);
-    this.sound?.setLevels(this.vol.water, this.vol.rain);
+    const flute = f.covered || !this.tower ? 0 : fluteVolume(Math.hypot(f.player.x - this.tower.x, f.player.z - this.tower.z));
+    this.vol.flute = ramp(this.vol.flute, flute, f.dt);
+    this.sound?.setLevels(this.vol.water, this.vol.rain, this.vol.flute);
   }
 }

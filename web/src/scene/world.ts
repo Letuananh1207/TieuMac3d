@@ -4,6 +4,7 @@ import { addGalleries } from './vat_giang_nam';
 import { addMirages } from './vat_bong_lai';
 import { addMushroomForest } from './vat_rung_nam';
 import { addMotherMushroom } from './namMe';
+import { addFluteTower } from './thapSao';
 import { addRamparts } from './thanh_luy';
 import { addPlateauRails } from './cung_dien';
 import { addFauna } from './fauna';
@@ -178,6 +179,7 @@ function* worldSteps(
     const rects = [
       ...spec.terraces.map(terraceRect),
       ...spec.buildings.filter((b) => b.kind === 'dinh' || b.kind === 'nha-tranh').map((b) => terraceRect({ ...b, h: 0 })),
+      ...(spec.fluteTower.enabled ? [terraceRect({ x: spec.fluteTower.x, z: spec.fluteTower.z, w: spec.fluteTower.base * 2, d: spec.fluteTower.base * 2, h: 0 })] : []), // đế Tháp Sáo Trúc (V-113)
     ];
     const inTea =
       teaAt || rects.length
@@ -261,6 +263,7 @@ function* worldSteps(
   if (spec.terrain.enabled) addPlateauRails(scene, colliders, spec.terrain);
   yield 'nuoc-cau';
   const props = addProps(scene, colliders, spec.props, style, spec.trees, onTop);
+  const flute = addFluteTower(scene, colliders, spec.fluteTower, groundY ?? (() => 0)); // Tháp Sáo Trúc (V-113)
   const outdoorSeats = addOutdoorSeats(scene, spec.seats, style.stone, onTop);
   yield 'do-vat';
   const trees = addTrees(scene, colliders, spec.trees, groundY, spec.look);
@@ -314,7 +317,7 @@ function* worldSteps(
     closedHouses,
     garden,
     ground,
-    surface: new LayeredGround(hf, [...(teleport?.pads ?? []), ...bridgePads, ...choDem.pads, ...terracePads, ...buildingPads, ...rampartPads, ...rooms.flatMap((r) => r.pads), ...closedPads, ...(mother?.pads ?? [])]),
+    surface: new LayeredGround(hf, [...(teleport?.pads ?? []), ...bridgePads, ...choDem.pads, ...terracePads, ...buildingPads, ...rampartPads, ...rooms.flatMap((r) => r.pads), ...closedPads, ...(mother?.pads ?? []), ...flute.pads]),
     rooms,
     seats: [...rooms.flatMap((r) => r.seats ?? []), ...buildingSeats, ...outdoorSeats],
     studySign: rooms.find((r) => r.studySign)?.studySign ?? null,

@@ -9,6 +9,7 @@ import { DEFAULT_LOOK, type LookSpec } from './look';
 import { DEFAULT_CHO_DEM_STYLE, type ChoDemStyle, type LanternTreeSpec, type PierSpec, type StallSpec } from './choDemSpec';
 import { DEFAULT_DAY_NIGHT, type DayNightSpec } from './ngayDem';
 import { DEFAULT_MUSHROOM_FOREST, type MushroomForestSpec } from './rungNamSpec';
+import { DEFAULT_FLUTE_TOWER, type FluteTowerSpec } from './thapSaoSpec';
 
 export type XZ = [number, number];
 
@@ -1212,6 +1213,8 @@ export interface SceneSpec {
   garden: GardenSpec;
   /** trò nhỏ Trúc Lâm (Lưu Thương, hái măng, đàn cầm — V-66 B4) — rỗng = không có (như cũ) */
   miniGames: MiniGameSpec[];
+  /** Tháp Sáo Trúc (V-113, Thung Trúc Gió Hát — `thapSaoSpec.ts`): bó ống trúc trên đế đá, lụa đỉnh, cọc nơ, chuông gió — tắt = như cũ */
+  fluteTower: FluteTowerSpec;
   /** Chợ Đêm Đèn Hoa (V-108 — `choDemSpec.ts`): Cây Đèn Trăm Tầng, sạp mái vải, bến gỗ có đèn — rỗng = không có (như cũ) */
   lanternTrees: LanternTreeSpec[];
   stalls: StallSpec[];
@@ -1413,6 +1416,7 @@ export const DEFAULT_SCENE: SceneSpec = {
   terraces: [], // cảnh cũ không có đài đá
   seats: [], // cảnh cũ không có chỗ ngồi ngoài trời
   miniGames: [], // cảnh cũ không có trò nhỏ (V-66 B4)
+  fluteTower: DEFAULT_FLUTE_TOWER, // không có Tháp Sáo Trúc — cảnh cũ không đổi
   lanternTrees: [], // cảnh cũ không có cây đèn / sạp / bến gỗ (V-108)
   stalls: [],
   piers: [],

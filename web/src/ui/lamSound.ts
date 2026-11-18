@@ -20,6 +20,17 @@ export function waterVolume(dist: number): number {
   return (WATER_SILENT - dist) / (WATER_SILENT - WATER_FULL);
 }
 
+/** Sáo gió quanh Tháp Sáo Trúc (V-113): gần tâm tháp hơn chừng này (m) → đầy; xa từ `FLUTE_SILENT` → tắt (R-AM-3). */
+export const FLUTE_FULL = 6;
+export const FLUTE_SILENT = 22;
+
+/** Âm lượng sáo gió theo khoảng cách tới tâm tháp (chỉ x, z). */
+export function fluteVolume(dist: number): number {
+  if (!(dist > FLUTE_FULL)) return 1;
+  if (dist >= FLUTE_SILENT) return 0;
+  return (FLUTE_SILENT - dist) / (FLUTE_SILENT - FLUTE_FULL);
+}
+
 /** Bước [v] về [target] trong [dt] giây, đi hết 0 ↔ 1 trong [seconds]. */
 export function ramp(v: number, target: number, dt: number, seconds = LAM_RAMP_SECONDS): number {
   const step = Math.max(0, dt) / seconds;
@@ -74,6 +85,30 @@ export function loopSamples(kind: 'nuoc' | 'mua', rate: number, seconds = 3, see
   return finish(out, 1, Math.round(rate * 0.05));
 }
 
+/**
+ * Sáo gió (V-113 — gió lùa qua ống trúc): hai làn gió mỗi làn 4 s, nốt Rê 5 rồi La 4 (ngũ cung như đàn), lên xuống êm
+ * (sin²), rung nhẹ 5 Hz, bồi âm bậc 2 nhỏ + hơi gió (nhiễu lọc). Vỏ về 0 ở hai đầu → lặp không lách cách. Dài 8 s.
+ */
+export function fluteSamples(rate: number, seed = 13): Float32Array<ArrayBuffer> {
+  const gust = 4;
+  const out = new Float32Array(Math.round(rate * gust * 2));
+  const rnd = noise(seed);
+  let lo = 0;
+  let phase = 0;
+  for (let i = 0; i < out.length; i++) {
+    const t = i / rate;
+    const k = Math.floor(t / gust);
+    const local = t - k * gust;
+    const env = Math.sin((Math.PI * local) / gust) ** 2;
+    const f = (k === 0 ? 587.33 : 440) * (1 + 0.004 * Math.sin(2 * Math.PI * 5 * t));
+    phase += (2 * Math.PI * f) / rate;
+    const w = rnd();
+    lo = lo + 0.3 * (w - lo);
+    out[i] = env * (Math.sin(phase) + 0.22 * Math.sin(2 * phase) + 0.35 * (w - lo));
+  }
+  return finish(out, 1, 4);
+}
+
 /** Gỗ "cạch" (chén lệnh dừng — R-LUU-2): sin ~950 Hz tắt nhanh + chút nhiễu gõ, dài 0,18 s. */
 export function knockSamples(rate: number): Float32Array<ArrayBuffer> {
   const out = new Float32Array(Math.round(rate * 0.18));
@@ -100,18 +135,20 @@ export function snapSamples(rate: number): Float32Array<ArrayBuffer> {
 
 type Ctx = AudioContext;
 
-/** Nối tiếng: hai vòng lặp (nước, mưa) có âm lượng riêng + hai tiếng một lần. */
+/** Nối tiếng: ba vòng lặp (nước, mưa, sáo gió) có âm lượng riêng + hai tiếng một lần. */
 export class LamSound {
   private ctx: Ctx | null = null;
   private water: GainNode | null = null;
   private rain: GainNode | null = null;
+  private flute: GainNode | null = null;
   private knockBuf: AudioBuffer | null = null;
   private snapBuf: AudioBuffer | null = null;
-  private levels = { water: 0, rain: 0 };
+  private levels = { water: 0, rain: 0, flute: 0 };
 
   constructor(
     private readonly withWater: boolean,
     private readonly withRain: boolean,
+    private readonly withFlute = false,
   ) {
     const unlock = (): void => {
       if (!this.ctx) this.open();
@@ -121,11 +158,13 @@ export class LamSound {
     window.addEventListener('keydown', unlock);
   }
 
-  /** Mỗi khung: âm lượng róc rách + mưa (0…1, đã mượt). */
-  setLevels(water: number, rain: number): void {
-    this.levels = { water: Math.min(1, Math.max(0, water)), rain: Math.min(1, Math.max(0, rain)) };
+  /** Mỗi khung: âm lượng róc rách + mưa + sáo gió (0…1, đã mượt). */
+  setLevels(water: number, rain: number, flute = 0): void {
+    const c = (v: number): number => Math.min(1, Math.max(0, v));
+    this.levels = { water: c(water), rain: c(rain), flute: c(flute) };
     if (this.water) this.water.gain.value = this.levels.water * 0.35;
     if (this.rain) this.rain.gain.value = this.levels.rain;
+    if (this.flute) this.flute.gain.value = this.levels.flute * 0.18;
   }
 
   knock(vol = 1): void {
@@ -186,8 +225,9 @@ export class LamSound {
     const rate = ctx.sampleRate;
     if (this.withWater) this.water = this.loop(ctx, loopSamples('nuoc', rate, 3.2, 5));
     if (this.withRain) this.rain = this.loop(ctx, loopSamples('mua', rate, 2.6, 9));
+    if (this.withFlute) this.flute = this.loop(ctx, fluteSamples(rate));
     this.knockBuf = this.buffer(ctx, knockSamples(rate));
     this.snapBuf = this.buffer(ctx, snapSamples(rate));
-    this.setLevels(this.levels.water, this.levels.rain);
+    this.setLevels(this.levels.water, this.levels.rain, this.levels.flute);
   }
 }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { knockSamples, loopSamples, ramp, snapSamples, waterVolume } from './lamSound';
+import { fluteSamples, fluteVolume, knockSamples, loopSamples, ramp, snapSamples, waterVolume } from './lamSound';
 import { pluckSamples, TIMBRES } from './zitherSound';
 
 const peak = (a: Float32Array, from = 0, to = a.length): number => {
@@ -14,6 +14,24 @@ describe('Tiếng Thung Trúc Gió Hát tự tổng hợp', () => {
     expect(waterVolume(9.5)).toBeCloseTo(0.5);
     expect(waterVolume(15)).toBe(0);
     expect(waterVolume(40)).toBe(0);
+  });
+
+  it('R-AM-3: sáo gió Tháp Sáo Trúc (V-113) — ≤ 6 m đầy, 14 m → 0,5, ≥ 22 m tắt; mẫu 8 s hai làn gió, đầu / giữa / cuối lặng', () => {
+    expect(fluteVolume(2)).toBe(1);
+    expect(fluteVolume(6)).toBe(1);
+    expect(fluteVolume(14)).toBeCloseTo(0.5);
+    expect(fluteVolume(22)).toBe(0);
+    expect(fluteVolume(60)).toBe(0);
+    const rate = 8000;
+    const a = fluteSamples(rate);
+    expect(a.length).toBe(rate * 8);
+    expect(peak(a)).toBeGreaterThan(0.85);
+    expect(peak(a)).toBeLessThanOrEqual(1 + 1e-6);
+    expect(Math.abs(a[0])).toBe(0);
+    expect(Math.abs(a[a.length - 1])).toBeLessThan(1e-3);
+    expect(peak(a, rate * 4 - 40, rate * 4 + 40)).toBeLessThan(0.05); // giữa hai làn gió: lặng
+    expect(peak(a, rate * 2 - 400, rate * 2 + 400)).toBeGreaterThan(0.5); // giữa làn: to
+    expect(fluteSamples(rate)).toEqual(a);
   });
 
   it('R-AM-3: mờ về 0 trong 1 giây, mưa lên / xuống 2 giây', () => {
