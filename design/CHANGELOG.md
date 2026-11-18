@@ -3,14 +3,15 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
-## 2026-11-18.2 — Thế giới bộ 2: chốt ảnh concept 5 map (V-79)
+## 2026-11-18.2 — Thế giới bộ 2: chốt ảnh concept 6 map (V-79)
 
 - Loại: cảnh 3D (concept) · Phiếu: `docs/phieu_thiet_ke/2026-11-17-concept-{cho-dem-den-hoa,rung-nam-tien,cung-ngoc-day-bien,thanh-cat-ngu-quen,thung-truc-gio-hat}.md`
 - Người dùng duyệt 2026-11-18 (ảnh Gemini tự động, 1 bản / góc): Chợ Đêm Đèn Hoa (cây đèn hoa sen giữa sông, sạp chợ, cầu
   vòm) · Rừng Nấm Tiên (nồi luyện trên mũ nấm khổng lồ, nhà nấm) · Cung Ngọc Đáy Biển (cung vỏ ốc, lối san hô) · Thành Cát
   Ngủ Quên (cổng thành lầu vùi cát, lạc đà đá, ốc đảo) · Thung Trúc Gió Hát (cột trúc cờ gió — chưa có ảnh toàn cảnh).
 - Ảnh: `design/concept/<map>/{toan-canh,cong-trinh,vao}.png`.
-- Đỉnh Hạc Bay: người dùng chưa ưng ("tổ hạc lớn nhìn không phù hợp") → đổi công trình, tạo lại. Bản đồ thế giới
+- Đỉnh Hạc Bay: người dùng chê tổ hạc lớn → đổi công trình thành đình bát giác cột son + tùng cổ trên đỉnh cột đá, hạc trên
+  nóc đình / cành tùng (phiếu đã sửa); tạo lại, người dùng chốt bản 1 cả 3 góc. Bản đồ thế giới
   (`the-gioi-moi`): chữ Gemini sai — chỉ tham khảo bố cục, chưa chốt.
 - Cần code: mỗi map một kế hoạch dựng cảnh riêng (`/canh`), chưa làm.
 
