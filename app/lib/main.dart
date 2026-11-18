@@ -17,6 +17,7 @@ import 'lesson/learned_screen.dart';
 import 'lesson/word_lesson_screen.dart';
 import 'scene/garden_event.dart';
 import 'scene/mang_event.dart';
+import 'scene/nong_event.dart';
 import 'scene/review_event.dart';
 import 'scene/scene_event.dart';
 import 'scene/scene_server.dart';
@@ -160,6 +161,11 @@ class HocXaApp extends StatelessWidget {
               onMangAct: progress == null
                   ? null
                   : (a) async => mangActReply(await progress!.mangAct(a.act, id: a.id, kind: a.kind, right: a.right), progress!.coins),
+              // nông trại Nhà của ta: chuồng gà, ao cá, chuồng bò, giàn — giữ qua tắt app (R-NONG-1…8)
+              onGetNong: progress == null ? null : () => nongReply(progress!.nong, progress!.now),
+              onNongAct: progress == null
+                  ? null
+                  : (a) async => nongActReply(await progress!.nongAct(a.act, pen: a.pen, vine: a.vine, item: a.item), progress!.coins),
               onSetHome: (items) async => await progress?.setHomeItems(items) ?? false,
               // ôn câu đố + bảng nhiệm vụ (R-ON-5, R-NV-3); không có kho tiến độ → trang tự lo (khung thoại / Tiểu Mặc)
               onOpenReview: progress == null

@@ -7,6 +7,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import '../theme/app_colors.dart';
 import 'garden_event.dart';
 import 'mang_event.dart';
+import 'nong_event.dart';
 import 'library_event.dart';
 import 'review_event.dart';
 import 'safe_area_script.dart';
@@ -38,6 +39,8 @@ class SceneView extends StatefulWidget {
     this.onGardenAct,
     this.onGetMang,
     this.onMangAct,
+    this.onGetNong,
+    this.onNongAct,
   });
 
   final WebUri url;
@@ -105,6 +108,12 @@ class SceneView extends StatefulWidget {
 
   /// Một thao tác măng (`mangAct`): Flutter tính + ghi, trả `mangActReply`. `null` → trả `null` (không làm gì).
   final Future<Map<String, Object?>> Function(MangActArgs args)? onMangAct;
+
+  /// Trả lời `getNong` — nông trại Nhà của ta đã lưu (R-NONG-1…8). `null` → trả `null`, trang coi nông trại trống chỉ xem.
+  final Map<String, Object?> Function()? onGetNong;
+
+  /// Một thao tác nông trại (`nongAct`): Flutter tính + ghi, trả `nongActReply`. `null` → trả `null` (không làm gì).
+  final Future<Map<String, Object?>> Function(NongActArgs args)? onNongAct;
 
   @override
   State<SceneView> createState() => _SceneViewState();
@@ -215,6 +224,12 @@ class _SceneViewState extends State<SceneView> {
     if (type == 'mangAct') {
       final a = mangActArgs(args);
       final act = widget.onMangAct;
+      return act != null && a != null ? act(a) : null;
+    }
+    if (type == 'getNong' && isGetNong(args)) return widget.onGetNong?.call();
+    if (type == 'nongAct') {
+      final a = nongActArgs(args);
+      final act = widget.onNongAct;
       return act != null && a != null ? act(a) : null;
     }
     if (type == 'giveAlms' && isGiveAlms(args)) {

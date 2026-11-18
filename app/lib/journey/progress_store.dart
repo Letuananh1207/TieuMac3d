@@ -8,6 +8,7 @@ import 'garden.dart' as vuon;
 import 'home.dart';
 import 'journey.dart';
 import 'mang.dart';
+import 'nong.dart';
 import 'review.dart';
 import 'wallet.dart';
 import 'wallet.dart' as wallet show buyDecor;
@@ -17,7 +18,7 @@ import 'wallet.dart' as rules show giveAlms;
 /// nhỏ của nền tảng (Android SharedPreferences, iOS NSUserDefaults, web localStorage).
 /// Kèm bài / từ đã học + lịch ôn từng từ (R-TU-1, R-ON-1…4; tiến độ bộ thủ bản cũ cất, không đọc — R-TU-5), các ngày đã xong nhiệm vụ hằng ngày (R-NV-1, R-NV-2), sổ từ đang mượn ở Tàng
 /// Thư Các và trang đang đọc của từng cuốn (R-SACH-1…4), nhà của ta (R-NHA-3, R-NHA-4), ví Văn tiền (R-TIEN-1…4), vườn rau
-/// (R-VUON-1…9, khoá `vuon.state`), măng Trúc Lâm (R-MANG-1…5, khoá `mang.state`), bài đàn cầm đã thưởng (R-CAM-4).
+/// (R-VUON-1…9, khoá `vuon.state`), măng Trúc Lâm (R-MANG-1…5, khoá `mang.state`), bài đàn cầm đã thưởng (R-CAM-4), nông trại (R-NONG-1…8, khoá `nong.state`).
 class ProgressStore {
   /// [clock] = đồng hồ (test truyền giờ giả để đi qua nhiều ngày).
   ProgressStore(this._prefs, {DateTime Function()? clock})
@@ -51,6 +52,7 @@ class ProgressStore {
   static const _almsKey = 'tien.cho-tieu-khat';
   static const _gardenKey = 'vuon.state';
   static const _mangKey = 'mang.state';
+  static const _nongKey = 'nong.state';
   static const _camKey = 'tien.dan-cam';
 
   final SharedPreferences _prefs;
@@ -342,6 +344,44 @@ class ProgressStore {
     };
     if (r is GardenDone) {
       await _prefs.setString(_gardenKey, jsonEncode(r.garden.toJson()));
+      if (r.amount != 0) await _prefs.setInt(_coinsKey, coins + r.amount);
+      if (act == 'weed') await addHayFromWeed(); // nhổ cỏ → +1 Cỏ khô (R-NONG-5)
+    }
+    return r;
+  }
+
+  /// Nông trại đã lưu (R-NONG-1…8); chưa có / hỏng → trống.
+  NongState get nong {
+    final j = _json(_nongKey);
+    return j == null ? NongState.fresh : NongState.fromJson(j);
+  }
+
+  /// +1 Cỏ khô (nhổ cỏ — R-NONG-5); trả số Cỏ khô mới.
+  Future<int> addHayFromWeed() async {
+    final s = addHay(nong, 1);
+    await _prefs.setString(_nongKey, jsonEncode(s.toJson()));
+    return s.kho[hayItem] ?? 0;
+  }
+
+  /// Một thao tác nông trại (docs/bridge.md `nongAct`): `feed` / `take` ([pen]) · `fish` · `sow` / `pick` ([vine]) · `sell`
+  /// ([item], `null` = bán hết). Làm được → ghi ngay nông trại (+ vườn khi rắc thóc) + số dư.
+  Future<NongResult> nongAct(String act, {String? pen, String? vine, String? item}) async {
+    final s = nong;
+    final now = _clock();
+    final day = vnDay(now);
+    final ms = now.millisecondsSinceEpoch;
+    final NongResult r = switch ((act, pen, vine)) {
+      ('feed', final p?, _) => feedPen(s, garden, p, day),
+      ('take', final p?, _) => takePen(s, p, day),
+      ('fish', _, _) => catchFish(s, day),
+      ('sow', _, final v?) => sowVine(s, v, ms),
+      ('pick', _, final v?) => pickVine(s, v, ms),
+      ('sell', _, _) => sellNong(s, item),
+      _ => const NongRefused(NongError.bad),
+    };
+    if (r is NongDone) {
+      await _prefs.setString(_nongKey, jsonEncode(r.nong.toJson()));
+      if (r.garden != null) await _prefs.setString(_gardenKey, jsonEncode(r.garden!.toJson()));
       if (r.amount != 0) await _prefs.setInt(_coinsKey, coins + r.amount);
     }
     return r;

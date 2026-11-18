@@ -7,6 +7,8 @@
  */
 import { cleanHome, decorItem, STARTER_COUNTS, type DecorCounts, type PlacedDecor } from './decor';
 import { applyAct, freshGarden, parseGarden, type Garden, type GardenAct, type GardenResult } from './vuon';
+import { addHay, applyNongAct, freshNong, parseNong, type NongAct, type NongResult, type NongState } from './nong';
+import { maNgayVN } from './gioVN';
 import { freshMang, parseMang, pickMang, sellMang, type MangAct, type MangResult, type MangState } from './mang';
 import type { GameEarning } from './wallet';
 
@@ -96,11 +98,13 @@ export interface TrialWallet {
   mang: MangState;
   /** bài đàn cầm đã thưởng hôm nay (R-CAM-4) */
   cam: CamRecord;
+  /** nông trại Nhà của ta (R-NONG-1…8) */
+  nong: NongState;
 }
 
 /** Ví thử mới: 300 Văn tiền, 3 vật khởi đầu mỗi vật 1 cái, nhà trống, chưa học bài nào, vườn mới (6 luống trống, 3 hạt Cải ngọt), túi măng trống. */
 export function newTrial(): TrialWallet {
-  return { coins: TRIAL_START_COINS, gameDay: '', gameToday: 0, owned: { ...STARTER_COUNTS }, items: [], placed: {}, lessons: [], alms: { ...NO_ALMS }, garden: freshGarden(), mang: freshMang(), cam: { ...NO_CAM, songs: [] } };
+  return { coins: TRIAL_START_COINS, gameDay: '', gameToday: 0, owned: { ...STARTER_COUNTS }, items: [], placed: {}, lessons: [], alms: { ...NO_ALMS }, garden: freshGarden(), mang: freshMang(), cam: { ...NO_CAM, songs: [] }, nong: freshNong() };
 }
 
 function parseCam(v: unknown): CamRecord {
@@ -133,6 +137,7 @@ export function parseTrial(raw: unknown): TrialWallet {
     garden: parseGarden(o.garden),
     mang: parseMang(o.mang),
     cam: parseCam(o.cam),
+    nong: parseNong(o.nong),
   };
 }
 
@@ -243,5 +248,17 @@ export function giveTrialAlms(w: TrialWallet, today: number): { wallet: TrialWal
 /** Một thao tác vườn ở chế độ thử (R-TIEN-7): như `gardenAct` của Flutter; [speed] = `?vuon=`. Không được → ví giữ nguyên. */
 export function gardenTrialAct(w: TrialWallet, a: GardenAct, now: number, speed = 1): { wallet: TrialWallet; result: GardenResult } {
   const result = applyAct(w.garden, a, w.coins, now, speed);
-  return { wallet: result.ok ? { ...w, coins: w.coins + result.amount, garden: result.garden } : w, result };
+  if (!result.ok) return { wallet: w, result };
+  // nhổ cỏ được → +1 Cỏ khô (R-NONG-5) như Flutter
+  const nong = a.act === 'weed' ? addHay(w.nong, 1) : w.nong;
+  return { wallet: { ...w, coins: w.coins + result.amount, garden: result.garden, nong }, result };
+}
+
+/* ---------- Nông trại (R-NONG-1…8) — luật ở `nong.ts` (chép `nong.dart`) ---------- */
+
+/** Một thao tác nông trại ở chế độ thử: như `nongAct` của Flutter; [speed] = `?vuon=` (giàn lớn nhanh). */
+export function nongTrialAct(w: TrialWallet, a: NongAct, now: number, speed = 1): { wallet: TrialWallet; result: NongResult } {
+  const result = applyNongAct(w.nong, w.garden, a, now, maNgayVN(now), speed);
+  if (!result.ok) return { wallet: w, result };
+  return { wallet: { ...w, coins: w.coins + result.amount, nong: result.nong, garden: result.garden ?? w.garden }, result };
 }

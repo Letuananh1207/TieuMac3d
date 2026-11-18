@@ -6,6 +6,7 @@ import type { Tu } from '../zones/tuVung/tu';
 import { parseGameEarning, type GameEarning, type GameKind, type GameOutcome } from '../zones/wallet';
 import { parseActReply, parseGarden, type Garden, type GardenAct } from '../zones/vuon';
 import { parseMang, parseMangReply, type MangAct, type MangState } from '../zones/mang';
+import { parseNong, parseNongReply, type NongAct, type NongState } from '../zones/nong';
 import { parseAlms, type AlmsRecord, type AlmsResult } from '../zones/walletRules';
 import type { Lesson } from '../zones/zones';
 
@@ -130,6 +131,21 @@ export async function getGarden(): Promise<Garden | null> {
     const r = await host.callHandler(HANDLER, { type: 'getGarden', payload: {} } satisfies SceneEvent);
     if (!r || typeof r !== 'object' || !('garden' in r)) return null;
     return parseGarden((r as { garden: unknown }).garden);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Hỏi Flutter nông trại Nhà của ta đã lưu (`getNong` — R-NONG-1…8). `null` = không có Flutter / lỗi / bản cũ → trống, chỉ xem.
+ */
+export async function getNong(): Promise<NongState | null> {
+  const host = await hostReady();
+  if (!host) return null;
+  try {
+    const r = await host.callHandler(HANDLER, { type: 'getNong', payload: {} } satisfies SceneEvent);
+    if (!r || typeof r !== 'object' || !('nong' in r)) return null;
+    return parseNong((r as { nong: unknown }).nong);
   } catch {
     return null;
   }
@@ -292,6 +308,20 @@ export class FlutterBridge {
     try {
       // `song`: mã bài Đàn cầm (R-CAM-4) — chỉ gửi khi có
       return parseGameEarning(await host.callHandler(HANDLER, { type: 'earnGame', payload: { game, outcome, ...(song ? { song } : {}) } }));
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * Một thao tác nông trại (`nongAct` — R-NONG-1…8): Flutter tính theo `nong.dart` và ghi ngay. `null` = không có Flutter
+   * / lỗi / bản cũ → không làm gì.
+   */
+  async nongAct(a: NongAct): Promise<ReturnType<typeof parseNongReply>> {
+    const host = window.flutter_inappwebview;
+    if (!host || typeof host.callHandler !== 'function') return null;
+    try {
+      return parseNongReply(await host.callHandler(HANDLER, { type: 'nongAct', payload: a }), parseGarden);
     } catch {
       return null;
     }
