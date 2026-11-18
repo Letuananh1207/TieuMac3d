@@ -285,3 +285,6 @@ dart tool/rule_trace.dart · dart tool/guard.dart
   900 × 600, ghi đè) · `-2c-lan-can-man-doc.png` (cùng tham số, 390 × 844).
 - Chờ người dùng: (1) 900 × 600 thiếu 3–7 cm búi tóc — chấp nhận, hay cho lan can xa tới ~2,4 m; (2) màn dọc chỉ thấy nửa thân
   — muốn thấy trọn thì cần nới giới hạn quay đầu lúc ngồi (> 60°, ~75°) hoặc đứng gần giữa hơn (không được: phía trước là lan can).
+
+## Duyệt ảnh lần 4 (người dùng)
+- Ghế lan can 2,1 m: chấp nhận (màn ngang thiếu chóp búi tóc, màn dọc nửa thân) — thử trên máy rồi báo. Code xong; còn thử máy.
