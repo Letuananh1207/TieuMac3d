@@ -124,10 +124,10 @@ ha-ta-lowpoly.glb` |
 | V-20261118-107 | Đổi tên 6 map thế giới bộ 2 + bản đồ (giữ mã cảnh) | lead | chờ thử máy — đã gộp (tên mới dài tới 18 ký tự: xem nút "Đi …", màn tải, nhãn bản đồ) | R-BANDO-*, R-HANH-* | thử máy khi xong |
 | V-20261118-108 | Dựng Chợ Đêm Đèn Hoa (`giang-nam`) theo concept | canh + lead | chờ thử máy — đã gộp (fps Android, độ sáng đêm, lên đài cây đèn) | R-VUNG-* | xem ảnh so concept + thử máy |
 | V-20261118-109 | Dựng Rừng Nấm Tiên (`tu-cam-thanh`) theo concept | canh + lead | chờ thử máy — đã gộp (fps trên mũ Nấm Mẹ, leo thang xoắn bằng joystick) | R-VUNG-* | xem ảnh so concept + thử máy |
-| V-20261118-110 | Dựng Cung Ngọc Đáy Biển (`bong-lai`) | canh + lead | đang làm — nhánh `viec/cung-ngoc` |  | — |
-| V-20261118-111 | Dựng Đỉnh Hạc Bay (`truong-thanh`) | canh + lead | đang làm — nhánh `viec/dinh-hac` |  | — |
-| V-20261118-112 | Dựng Thành Cát Ngủ Quên (`to-lua`) | canh + lead | đang làm — nhánh `viec/thanh-cat` |  | — |
-| V-20261118-113 | Dựng Thung Trúc Gió Hát (`rung-truc`, thêm Tháp Sáo Trúc, giữ địa hình B2/B3) | canh + lead | đang làm — nhánh `viec/thung-truc` |  | — |
+| V-20261118-110 | Dựng Cung Ngọc Đáy Biển (`bong-lai`) | canh + lead | chờ thử máy — đã gộp (fps; vệt nắng phủ màn) |  | — |
+| V-20261118-111 | Dựng Đỉnh Hạc Bay (`truong-thanh`) | canh + lead | chờ thử máy — đã gộp (leo bậc xoắn, qua cầu treo, fps trên đỉnh) |  | — |
+| V-20261118-112 | Dựng Thành Cát Ngủ Quên (`to-lua`) | canh + lead | chờ thử máy — đã gộp (leo sống đụn lên mặt thành, fps) |  | — |
+| V-20261118-113 | Dựng Thung Trúc Gió Hát (`rung-truc`, thêm Tháp Sáo Trúc, giữ địa hình B2/B3) | canh + lead | chờ thử máy — đã gộp (âm sáo gió, lên đế tháp; tháp che bậc đèo — dời x≈−3?) |  | — |
 | V-20261118-114 | Nhà đang rất trống trải — nghiên cứu nên thêm gì, làm gì (ngoài đảo + gian trong) | y-tuong | đang làm — chốt 4 công trình đặt sẵn: chuồng gà, ao cá + bến câu, chuồng bò con, giàn bầu bí (thiết kế 2026-11-18.11), nhánh `viec/nong-trai` | R-NHA-*, R-VUON-* | chọn ý đợt 1 |
-| V-20261118-115 | Bản đồ trông không đẹp — muốn sống động như ảnh Gemini bản đồ thế giới | ui-design + lead | chờ ảnh — phiếu `2026-11-17-concept-the-gioi-moi.md` sửa (không chữ, đình thay tổ hạc), tạo 3 bản sau lô nông trại | R-BANDO-* | chọn bản → làm nền bản đồ, tên do code |
-| V-20261118-116 | Mở túi đồ (bag) theo phong cách 摩尔 (thẻ nhân vật trái + lưới ô + tab phải) | ui-design + lead | chờ ảnh — phiếu `2026-11-18-anh-tui-do-kieu-moly.md` (Gemini 3 phong cách × 2) | R-TUI-* | chọn phong cách → code (nhân vật 3D xoay được + tên + tiền) |
+| V-20261118-115 | Bản đồ trông không đẹp — muốn sống động như ảnh Gemini bản đồ thế giới | ui-design + lead | chờ thử máy — đã gộp (chạm tên / biểu tượng đi đúng nơi, WebP trong WebView, chữ đọc được ở màn dọc) | R-BANDO-* | chọn bản → làm nền bản đồ, tên do code |
+| V-20261118-116 | Mở túi đồ (bag) theo phong cách 摩尔 (thẻ nhân vật trái + lưới ô + tab phải) | ui-design + lead | đang làm — mẫu Giấy + son chốt (2026-11-18.13), nhánh `viec/tui-do-moly` | R-TUI-* | chọn phong cách → code (nhân vật 3D xoay được + tên + tiền) |
