@@ -107,12 +107,14 @@ describe('R-NPC-10: đi / đứng mềm', () => {
       const d = new DongTac(TINH[id], 3);
       let maxShift = 0;
       let maxLook = 0;
+      let maxAngle = 0;
       for (let i = 0; i < 20 * 60; i++) {
         const p = d.update(1 / 60, { mps: 0 });
         maxShift = Math.max(maxShift, Math.abs(p.j.hips[2]));
         maxLook = Math.max(maxLook, Math.abs(p.j.head[1]));
-        for (const e of Object.values(p.j)) for (const v of e) expect(Math.abs(v)).toBeLessThan(1.6);
+        for (const e of Object.values(p.j)) for (const v of e) maxAngle = Math.max(maxAngle, Math.abs(v));
       }
+      expect(maxAngle).toBeLessThan(1.6);
       expect(maxShift).toBeGreaterThan(TINH[id].donTam * 0.3);
       expect(maxLook).toBeGreaterThan(0.02);
     }
