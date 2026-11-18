@@ -259,3 +259,7 @@ dart tool/rule_trace.dart · dart tool/guard.dart
 - Ảnh: `docs/tasks/2026-11-16-tieu-nhi-2-lan-can-dang-rot.png` (`?dang=tieu-nhi&cho=17&t=24.8&dung&chup&gio=10&nhin=60`, ghi đè) ·
   `-4-ban-dai-dang-rot.png` (`cho=21&t=21&dung&chup&gio=10&nhin=-30`).
 
+## Duyệt ảnh lần 3 (người dùng)
+- Ghế lan can: đứng xa ≈ 2 m (1,9–2,1 m) từ mắt để thấy trọn người; R-TRA-1 đã sửa + đồng bộ.
+- [ ] 13. Sửa `tra_lau_phuc_vu.ts` + test cho ghế lan can 1,9–2,1 m từ mắt · chụp lại ảnh lan can (dọc + ngang).
+
