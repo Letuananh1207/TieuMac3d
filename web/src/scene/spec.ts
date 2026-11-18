@@ -11,6 +11,7 @@ import { DEFAULT_DAY_NIGHT, type DayNightSpec } from './ngayDem';
 import { DEFAULT_MUSHROOM_FOREST, type MushroomForestSpec } from './rungNamSpec';
 import { DEFAULT_FLUTE_TOWER, type FluteTowerSpec } from './thapSaoSpec';
 import { DEFAULT_SAND_CITY, type SandCitySpec } from './thanhCatSpec';
+import { DEFAULT_SEA_FLOOR, type SeaFloorSpec } from './cungNgocSpec';
 
 export type XZ = [number, number];
 
@@ -1225,6 +1226,8 @@ export interface SceneSpec {
   choDemStyle: ChoDemStyle;
   /** Rừng Nấm Tiên (V-109): nấm khổng lồ, nhà nấm, luống thảo dược, Nấm Mẹ + Lò Thuốc Tiên — rỗng / tắt = như cũ (`rungNamSpec.ts`) */
   mushroomForest: MushroomForestSpec;
+  /** Cung Ngọc Đáy Biển (V-110): Cung Vỏ Sò, bãi cát, hang đá, trai ngọc, san hô, rong, vệt nắng, bong bóng, cá — rỗng / tắt = như cũ (`cungNgocSpec.ts`) */
+  seaFloor: SeaFloorSpec;
   /** `seated`: khi ngồi vào án thư / bàn trà (R-NGOI-1) — camera lùi ra, chúc xuống thấy cả bàn ·
    *  `study`: khi Ngồi ôn (R-DIEU-7) — lùi ra, nâng cao, lệch `side` rad ra sau vai phải để thấy cuộn sách trên tay */
   camera: {
@@ -1402,6 +1405,7 @@ export const DEFAULT_SCENE: SceneSpec = {
   portals: [], // cảnh cũ không có cổng đi bộ
   look: DEFAULT_LOOK, // kiểu cũ — cảnh không đổi
   mushroomForest: DEFAULT_MUSHROOM_FOREST, // không có rừng nấm — cảnh cũ không đổi
+  seaFloor: DEFAULT_SEA_FLOOR, // không có đáy biển — cảnh cũ không đổi
   dayNight: DEFAULT_DAY_NIGHT, // tắt — cảnh luôn ban ngày như cũ
   lanternStrings: [],
   lanternStyle: {

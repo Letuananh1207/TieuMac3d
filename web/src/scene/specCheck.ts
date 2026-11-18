@@ -38,6 +38,7 @@ import { checkGarden, gardenFootprints } from './vuonLayout';
 import { CAP_SHAPES, checkMushroomForest } from './rungNamSpec';
 import { checkFluteTower } from './thapSaoSpec';
 import { checkSandCity } from './thanhCatSpec';
+import { checkSeaFloor } from './cungNgocSpec';
 import { landingPad, START_HEADING } from './hacDuong';
 import { checkPortals } from './portals';
 import { checkLook } from './look';
@@ -483,6 +484,16 @@ const LISTS: Record<string, ItemParser> = {
   'mushroomForest.houses': item({ x: 0, z: 0, h: 0, color: '#000000' }, { rotY: 0 }, range('h', 4, 8)),
   'mushroomForest.herbBeds': item({ x: 0, z: 0, r: 0 }, {}, positive('r')),
   'mushroomForest.clusters': item({ x: 0, z: 0, r: 0, count: 0 }, {}, positive('r', 'count')),
+  // Cung Ngọc Đáy Biển (V-110) — kiểm chung ở cungNgocSpec.ts `checkSeaFloor`
+  'seaFloor.sand': item({ x: 0, z: 0, r: 0 }, {}, positive('r')),
+  'seaFloor.caves': item({ x: 0, z: 0, r: 0 }, { rotY: 0 }, range('r', 1, 8)),
+  'seaFloor.clams': item({ x: 0, z: 0 }, { rotY: 0, s: 0 }, range('s', 0.4, 3)),
+  'seaFloor.pillars': item({ x: 0, z: 0, h: 0 }, {}, range('h', 1, 8)),
+  'seaFloor.corals': item({ x: 0, z: 0, r: 0, count: 0 }, {}, positive('r', 'count')),
+  'seaFloor.kelp': item({ x: 0, z: 0, r: 0, count: 0 }, {}, positive('r', 'count')),
+  'seaFloor.beams': item({ x: 0, z: 0, w: 0 }, { tilt: 0 }, all(positive('w'), range('tilt', -45, 45))),
+  'seaFloor.bubbles': item({ x: 0, z: 0, count: 0 }, { spread: 0 }, positive('count')),
+  'seaFloor.fish': item({ x: 0, y: 0, z: 0, r: 0, count: 0, speed: 0 }, {}, positive('r', 'count')),
   'farMountains.layers': item(
     { radius: 0, height: 0, color: '#000000', peaks: 0 },
     { width: 1, spurs: 0 },
@@ -573,6 +584,7 @@ function checkConsistency(s: SceneSpec): string[] {
   out.push(...checkFluteTower(s.fluteTower));
   out.push(...checkMushroomForest(s.mushroomForest));
   out.push(...checkSandCity(s.sandCity));
+  out.push(...checkSeaFloor(s.seaFloor));
   out.push(...checkBounds(s));
   if (!(s.light.lampGlow >= 0 && s.light.lampGlow <= 1)) out.push(`light.lampGlow: 0…1 (đang ${s.light.lampGlow})`);
   if (t.enabled && t.size > 0 && t.cell > 0) out.push(...checkOnFlatGround(s));

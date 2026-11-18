@@ -53,6 +53,7 @@ import { addWater } from './water';
 import { addWell } from './well';
 import { addChoDem } from './vat_cho_dem';
 import { addSandCity } from './vat_thanh_cat';
+import { addSeaFloor } from './vat_cung_ngoc';
 
 /** Bán kính quầng đèn tối đa ban đêm (m) — quầng cộng màu tốn điểm ảnh trên máy yếu (kế hoạch 2026-11-14-ngay-dem). */
 const NIGHT_GLOW_MAX = 1.1;
@@ -278,6 +279,7 @@ function* worldSteps(
   const lanternSpots = addLanternStrings(scene, colliders, spec, groundY);
   const choDem = addChoDem(scene, colliders, spec, groundY); // Chợ Đêm Đèn Hoa (V-108): cây đèn, sạp, bến gỗ
   const sandPads = addSandCity(scene, colliders, spec.sandCity, groundY ?? (() => 0)); // Thành Cát Ngủ Quên (V-112)
+  const sea = addSeaFloor(scene, colliders, spec, groundY ?? (() => 0)); // Cung Ngọc Đáy Biển (V-110): Cung Vỏ Sò, san hô, bong bóng, cá
   let glow: THREE.InstancedMesh | null = null;
   // ngày đêm: quầng dựng sẵn, mờ theo giờ; mức Thấp bỏ quầng (R-NGAY-3)
   if (isSoft(spec.look) && (dn ? detail >= 1 : spec.light.lampGlow > 0)) {
@@ -319,7 +321,7 @@ function* worldSteps(
     closedHouses,
     garden,
     ground,
-    surface: new LayeredGround(hf, [...(teleport?.pads ?? []), ...bridgePads, ...choDem.pads, ...terracePads, ...buildingPads, ...rampartPads, ...rooms.flatMap((r) => r.pads), ...closedPads, ...(mother?.pads ?? []), ...flute.pads, ...sandPads]),
+    surface: new LayeredGround(hf, [...(teleport?.pads ?? []), ...bridgePads, ...choDem.pads, ...sea.pads, ...terracePads, ...buildingPads, ...rampartPads, ...rooms.flatMap((r) => r.pads), ...closedPads, ...(mother?.pads ?? []), ...flute.pads, ...sandPads]),
     rooms,
     seats: [...rooms.flatMap((r) => r.seats ?? []), ...buildingSeats, ...outdoorSeats],
     studySign: rooms.find((r) => r.studySign)?.studySign ?? null,
@@ -338,6 +340,7 @@ function* worldSteps(
       channels.update(dt);
       mirages(dt);
       mother?.update(dt);
+      sea.update(dt);
       teleport?.update(dt);
       portalMarks(dt, player);
       for (const r of rooms) r.update(dt, !!player && inRect(r.floor, player.x, player.z), player?.y, eye);
