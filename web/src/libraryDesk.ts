@@ -81,7 +81,7 @@ export class LibraryDesk {
   private async borrow(id: string): Promise<void> {
     const check = canBorrow(this.borrowed, id);
     if (check !== 'ok') {
-      this.host.say(check === 'chua-soan' ? 'Cuốn này còn đang biên soạn, đạo hữu chờ ít hôm nhé.' : 'Đạo hữu trả cuốn đang giữ trước đã.');
+      this.host.say(check === 'chua-soan' ? 'Cuốn này còn đang biên soạn, em chờ ít hôm nhé.' : 'Em trả cuốn đang giữ cho tỷ trước đã nhé.');
       return;
     }
     await this.bridge.borrowBook(id); // không có Flutter → chỉ giữ trong trang

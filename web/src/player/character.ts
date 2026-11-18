@@ -41,7 +41,7 @@ export interface CharacterState {
   /** đang gảy đàn (nhạc công `cam-nu` — R-NPC-9): có = ngồi, hai tay đưa ra trước đặt trên dây đàn; số 0…1 = tay phải
    *  nhấc lên (0 vừa gảy, 1 nhấc cao). Không có = dáng thường. Không bắt buộc — nhân vật người chơi bỏ qua */
   pluck?: number;
-  /** đang ngồi xin (Tiểu Khất — R-NPC-6, model cầm sẵn bát + gậy): 0…1 = trọng số dáng tay `xinDang.ts` (nhân với độ
+  /** đang ngồi xin (Tiểu Líu Lo — R-NPC-6, model cầm sẵn bát + gậy): 0…1 = trọng số dáng tay `xinDang.ts` (nhân với độ
    *  ngồi). Không có = dáng thường. Không bắt buộc — nhân vật khác bỏ qua */
   beg?: number;
   /** đang ngồi cưỡi hạc (R-HANH-5): `w` 0…1 = trọng số dáng cưỡi `cuoiDang.ts` (nhân với độ ngồi) thay ngồi xếp bằng;

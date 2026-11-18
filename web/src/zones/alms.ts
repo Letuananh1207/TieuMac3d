@@ -1,5 +1,6 @@
 /**
- * Tiểu Khất xin tiền (R-NPC-6, R-TIEN-8): trạng thái thoại theo ví + bản ghi đã cho, câu chào theo số lần đã cho, câu cảm ơn
+ * Tiểu Líu Lo — bé đưa tin (mã `khat-nhi`, tên cũ Tiểu Khất) xin vài văn rồi kể tin (R-NPC-6, R-TIEN-8); xưng tên mình,
+ * gọi "thiếu hiệp" (R-NPC-11): trạng thái thoại theo ví + bản ghi đã cho, câu chào theo số lần đã cho, câu cảm ơn
  * kèm tin đồn của ngày. Luật trừ tiền ở `walletRules.ts` (`giveAlms`; Dart `giveAlms` là nguồn thật khi có Flutter).
  * Thuần (không DOM, không three).
  */
@@ -20,18 +21,18 @@ export function almsState(alms: AlmsRecord, today: number, balance: number | nul
 export const ALMS_FRIEND = 3;
 export const ALMS_LOYAL = 10;
 
-/** Câu chào đầu của Tiểu Khất theo trạng thái + số lần đã cho. */
+/** Câu chào đầu của Tiểu Líu Lo theo trạng thái + số lần đã cho. */
 export function almsGreeting(state: AlmsState, count: number): string {
-  if (state === 'da-cho') return 'Hôm nay đạo hữu cho rồi, mai ghé nhé! Tiểu khất ngồi đây cả ngày mà.';
-  const ask = 'cho tiểu khất xin vài văn mua bánh, được không ạ?';
-  const loyal = count >= ALMS_LOYAL ? ' Tiểu khất nhớ ơn đạo hữu mãi.' : '';
+  if (state === 'da-cho') return 'Hôm nay thiếu hiệp cho rồi, mai ghé nhé! Líu Lo ở đây cả ngày mà.';
+  const ask = 'cho Líu Lo xin vài văn mua bánh, Líu Lo kể tin nóng cho nghe nhé?';
+  const loyal = count >= ALMS_LOYAL ? ' Líu Lo nhớ ơn thiếu hiệp mãi.' : '';
   if (count >= ALMS_FRIEND) return `Ân nhân lại tới!${loyal} Hôm nay ân nhân ${ask}`;
-  return `Đạo hữu ơi, ${ask}`;
+  return `Thiếu hiệp ơi, ${ask}`;
 }
 
 /** Câu sau khi cho được: cảm ơn + tin đồn của ngày (R-NPC-6). */
 export function almsThanks(today: number): string {
-  return `Đa tạ đạo hữu! ${tinDonCuaNgay(today).text}`;
+  return `Đa tạ thiếu hiệp! ${tinDonCuaNgay(today).text}`;
 }
 
 /** "Nhắc lại tin hôm nay" (đã cho hôm nay). */
@@ -40,24 +41,24 @@ export function almsRepeat(today: number): string {
 }
 
 /** Không cho: câu vui vẻ, không có tin. */
-export const ALMS_DECLINED = 'Không sao, không sao! Mai đạo hữu có tiền lẻ thì nhớ tới tiểu khất nhé.';
+export const ALMS_DECLINED = 'Không sao, không sao! Mai thiếu hiệp có tiền lẻ thì nhớ tới Líu Lo nhé.';
 
 /** Lựa chọn thay "Cho 5 văn" khi ví dưới 5 (R-TIEN-8). */
 export function almsShortChoice(balance: number): string {
   return `Ta chỉ còn ${balance} văn…`;
 }
 
-/** Tiểu Khất trả lời khi người chơi chỉ còn ít tiền. */
-export const ALMS_SHORT_REPLY = 'Ôi, đạo hữu cũng khó khăn à? Giữ lại mà mua bánh. Đi học chữ kiếm thêm văn nhé!';
+/** Tiểu Líu Lo trả lời khi người chơi chỉ còn ít tiền. */
+export const ALMS_SHORT_REPLY = 'Ôi, thiếu hiệp cũng hết tiền lẻ à? Giữ lại mà mua bánh. Đi học chữ kiếm thêm văn nhé!';
 
-/** Mã NPC Tiểu Khất (đặc tả cảnh `npcs[].id`). */
+/** Mã NPC Tiểu Líu Lo (giữ mã cũ — đặc tả cảnh `npcs[].id`). */
 export const KHAT_NHI = 'khat-nhi';
-export const KHAT_NHI_NAME = 'Tiểu Khất';
+export const KHAT_NHI_NAME = 'Tiểu Líu Lo';
 
 const BYE: DialogChoice = { text: 'Tạm biệt', next: null };
 
 /**
- * Hội thoại Tiểu Khất theo trạng thái (R-NPC-6): chưa cho → "Cho 5 văn" (`action: 'alms'`) / "Hôm nay ta không có tiền
+ * Hội thoại Tiểu Líu Lo theo trạng thái (R-NPC-6): chưa cho → "Cho 5 văn" (`action: 'alms'`) / "Hôm nay ta không có tiền
  * lẻ" / Tạm biệt; thiếu tiền → "Ta chỉ còn n văn…" thay "Cho 5 văn"; đã cho hôm nay → "Nhắc lại tin hôm nay".
  */
 export function khatNhiDialog(alms: AlmsRecord, today: number, balance: number | null): Dialog {

@@ -18,7 +18,7 @@ export const SIDES = ['bac', 'nam', 'dong', 'tay'] as const;
 /** NPC có model: `design/models/<mã>.glb` (tạo bằng /tai-nguyen). Thêm NPC mới = thêm mã ở đây + đặt file model. */
 export const NPC_IDS = [
   'tieu-mac', 'su-phu', 'thu-thu', 'tieu-nhi', 'quan-su', 'tran-su', 'khat-nhi', 'go-mo', 'cam-nu',
-  // NPC trò chơi Trúc Lâm (V-66 B4): văn nhân Lưu Thương + Trúc Ông — thiếu model → thế bằng khối (R-NPC-1)
+  // NPC trò chơi Trúc Lâm (V-66 B4): văn nhân Lưu Thương + Măng bà bà — thiếu model → thế bằng khối (R-NPC-1)
   'thi-ong', 'tu-tai', 'tai-nu', 'truc-ong',
   // thầy Trúc Lão dạy bài từ vựng ở Trúc Lâm (R-HANH-8, V-45) — chưa có model riêng → thế bằng khối (R-NPC-1)
   'truc-lao',

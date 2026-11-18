@@ -13,8 +13,8 @@ export interface DialogChoice {
   text: string;
   next: string | null;
   /** đóng khung thoại rồi làm việc này: `daily` = mở bảng nhiệm vụ hằng ngày (R-NV-3); `borrow` = mượn cuốn `book`, hoặc
-   *  mở danh mục khi không có `book` (R-SACH-1); `return` = trả sách đang mượn (R-SACH-4); `journey` = trận sư đọc tiến
-   *  độ hành trình (R-NPC-5); `alms` = cho Tiểu Khất 5 văn rồi nghe tin đồn (R-NPC-6, R-TIEN-8); `gio` = Lão Canh đọc giờ
+   *  mở danh mục khi không có `book` (R-SACH-1); `return` = trả sách đang mượn (R-SACH-4); `journey` = La đại thúc (trận sư) đọc tiến
+   *  độ hành trình (R-NPC-5); `alms` = cho Tiểu Líu Lo 5 văn rồi nghe tin đồn (R-NPC-6, R-TIEN-8); `gio` = Lão Canh đọc giờ
    *  hiện tại (R-NPC-7); `truc` = việc với thầy Trúc Lão (R-HANH-8 — `zones/trucLao.ts`) */
   action?: 'daily' | 'borrow' | 'return' | 'journey' | 'alms' | 'gio' | 'mini' | 'truc';
   /** mã sách cho `action: 'borrow'` */
@@ -46,7 +46,10 @@ export interface Dialog {
 const BYE: DialogChoice = { text: 'Tạm biệt', next: null };
 const OTHER: DialogChoice = { text: 'Hỏi chuyện khác', next: 'chao' };
 
-/** Lời thoại các NPC. Tiểu Mặc: vui vẻ, hiếu động, tự xưng bằng tên, gọi người chơi là "đạo hữu" (không phân nam nữ). */
+/**
+ * Lời thoại các NPC — xưng hô theo tuổi NPC (R-NPC-11): bé xưng tên / đệ / muội, gọi "thiếu hiệp"; già / trung niên xưng
+ * lão / bà / ta, gọi "cháu"; thanh niên xưng huynh / tỷ, gọi "em". Tiểu Mặc: vui vẻ, hiếu động, tự xưng bằng tên.
+ */
 export const DIALOGS: Dialog[] = [
   {
     npc: 'tieu-mac',
@@ -55,7 +58,7 @@ export const DIALOGS: Dialog[] = [
     lines: [
       {
         id: 'chao',
-        text: 'Đạo hữu mới đến Khởi Nguyên Trấn à? Ai cũng bắt đầu từ đây đó! Hôm nay Tiểu Mặc được giao trông bảng nhiệm vụ hằng ngày của trấn.',
+        text: 'Thiếu hiệp mới đến Khởi Nguyên Trấn à? Ai cũng bắt đầu từ đây đó! Hôm nay Tiểu Mặc được giao trông bảng nhiệm vụ hằng ngày của trấn.',
         choices: [
           { text: 'Tiểu Mặc đứng đây làm gì?', next: 'don-khach' },
           { text: 'Hôm nay có việc gì?', next: null, action: 'daily' },
@@ -64,27 +67,27 @@ export const DIALOGS: Dialog[] = [
       },
       {
         id: 'don-khach',
-        text: 'Trông bảng nhiệm vụ, đón người mới chứ sao! Việc trấn giao mỗi ngày đều dán ở cái bảng ngay bên cạnh Tiểu Mặc đây — đạo hữu nhớ ghé xem nha. Ai bước qua cổng trấn kia là bắt đầu đường tu chữ — học thêm một chữ, thêm một phần tu vi.',
+        text: 'Trông bảng nhiệm vụ, đón người mới chứ sao! Việc trấn giao mỗi ngày đều dán ở cái bảng ngay bên cạnh Tiểu Mặc đây — thiếu hiệp nhớ ghé xem nha. Ai bước qua cổng trấn kia là bắt đầu đường tu chữ — học thêm một chữ, thêm một phần tu vi.',
         choices: [{ text: 'Tu chữ ở đâu?', next: 'tu-chu' }, OTHER, BYE],
       },
       {
         id: 'tu-chu',
-        text: `Sư phụ Mặc Ông đứng ở Truyền Tống Đài trên đỉnh Thiên Bậc đó! Đạo hữu tới hỏi thầy, thầy chỉ cho cách sang ${FOREST} tu chữ.`,
+        text: `Sư phụ Mặc Ông đứng ở Truyền Tống Đài trên đỉnh Thiên Bậc đó! Thiếu hiệp tới hỏi thầy, thầy chỉ cho cách sang ${FOREST} tu chữ.`,
         choices: [{ text: 'Hôm nay Tiểu Mặc thế nào?', next: 'hom-nay' }, OTHER, BYE],
       },
       {
         id: 'hom-nay',
-        text: 'Vui lắm! Sáng nay Tiểu Mặc luyện kiếm xong còn thuộc thêm ba chữ mới. Đạo hữu cũng cố lên nha!',
+        text: 'Vui lắm! Sáng nay Tiểu Mặc luyện kiếm xong còn thuộc thêm ba chữ mới. Thiếu hiệp cũng cố lên nha!',
         choices: [{ text: 'Tiểu Mặc giỏi quá!', next: 'khen' }, OTHER, BYE],
       },
       {
         id: 'khen',
-        text: 'Hì hì, đạo hữu khen làm Tiểu Mặc đỏ mặt mất. Mau đi tu kẻo Tiểu Mặc bỏ xa đấy!',
+        text: 'Hì hì, thiếu hiệp khen làm Tiểu Mặc đỏ mặt mất. Mau đi tu kẻo Tiểu Mặc bỏ xa đấy!',
         choices: [OTHER, BYE],
       },
     ],
   },
-  // Sư phụ Mặc Ông: hiền, thanh nhã, xưng "lão phu", gọi người chơi là "con" (không phân nam nữ).
+  // Sư phụ Mặc Ông: hiền, thanh nhã, xưng "lão", gọi người chơi là "cháu" (R-NPC-11).
   {
     npc: 'su-phu',
     name: 'Mặc Ông',
@@ -92,7 +95,7 @@ export const DIALOGS: Dialog[] = [
     lines: [
       {
         id: 'chao',
-        text: 'Con đến rồi đấy à. Lão phu là Mặc Ông, giữ Truyền Tống Đài này. Khởi Nguyên Trấn là nơi mọi người bắt đầu, đường nào cũng qua đây — muốn học, con phải đi qua đài sang các vùng.',
+        text: 'Cháu đến rồi đấy à. Lão là Mặc Ông, giữ Truyền Tống Đài này. Khởi Nguyên Trấn là nơi mọi người bắt đầu, đường nào cũng qua đây — muốn học, cháu phải đi qua đài sang các vùng.',
         choices: [
           { text: 'Thưa thầy, đi thế nào ạ?', next: 'di' },
           { text: 'Thưa thầy, học thế nào ạ?', next: 'hoc' },
@@ -102,7 +105,7 @@ export const DIALOGS: Dialog[] = [
       {
         id: 'di',
         text: 'Bước vào vòng trận giữa đài, đứng yên một lát cho trận sáng lên, bản đồ truyền tống sẽ hiện. Chạm nơi đã mở là đi. Các vùng không có vòng trận — lúc muốn về, cứ theo vòng sáng ở mép vùng mà đi bộ, vùng nối vùng, về tới trấn.',
-        choices: [{ text: 'Con đi được những đâu ạ?', next: 'vung' }, OTHER, BYE],
+        choices: [{ text: 'Cháu đi được những đâu ạ?', next: 'vung' }, OTHER, BYE],
       },
       {
         id: 'vung',
@@ -112,21 +115,21 @@ export const DIALOGS: Dialog[] = [
       {
         id: 'hoc',
         text: `Sang ${FOREST}, tìm thầy Trúc Lão ở bãi hạc đáp. Thầy dạy từng bài từ: nghe âm, nói theo, nhớ nghĩa, nhận mặt chữ. Mỗi ngày lĩnh hội một bài — chậm mà chắc, chớ vội.`,
-        choices: [{ text: 'Con nhớ rồi ạ', next: 'nho' }, OTHER, BYE],
+        choices: [{ text: 'Cháu nhớ rồi ạ', next: 'nho' }, OTHER, BYE],
       },
       {
         id: 'nho',
-        text: 'Tốt. Nhớ một chữ hôm nay, mai ôn lại một lần — chữ ấy là của con.',
+        text: 'Tốt. Nhớ một chữ hôm nay, mai ôn lại một lần — chữ ấy là của cháu.',
         choices: [{ text: 'Thầy ở tông lâu chưa ạ?', next: 'lau' }, OTHER, BYE],
       },
       {
         id: 'lau',
-        text: 'Lâu lắm rồi, tóc lão phu bạc cùng mấy chồng sách trong Tàng Thư Các. Tiểu Mặc ngoài sân kia cũng là học trò lão phu đấy.',
+        text: 'Lâu lắm rồi, tóc lão bạc cùng mấy chồng sách trong Tàng Thư Các. Tiểu Mặc ngoài sân kia cũng là học trò của lão đấy.',
         choices: [OTHER, BYE],
       },
     ],
   },
-  // Tiểu nhị trà lâu (R-NPC-3): lanh lợi, xưng "tiểu nhân", gọi "khách quan" (không phân nam nữ).
+  // Tiểu nhị trà lâu (R-NPC-3): lanh lợi, xưng "đệ", gọi "thiếu hiệp" (R-NPC-11).
   {
     npc: 'tieu-nhi',
     name: 'Tiểu nhị',
@@ -134,7 +137,7 @@ export const DIALOGS: Dialog[] = [
     lines: [
       {
         id: 'chao',
-        text: 'Khách quan mời vào! Phẩm Minh Các có trà ngon, có đàn hay — khách quan muốn ngồi dưới này hay lên lầu ạ?',
+        text: 'Thiếu hiệp mời vào! Phẩm Minh Các có trà ngon, có đàn hay — thiếu hiệp muốn ngồi dưới này hay lên lầu ạ?',
         choices: [
           { text: 'Quán có trà gì?', next: 'tra' },
           { text: 'Lên lầu ngồi thế nào?', next: 'lau' },
@@ -143,7 +146,7 @@ export const DIALOGS: Dialog[] = [
       },
       {
         id: 'tra',
-        text: 'Long Tỉnh Tây Hồ thơm cốm non, Bích La Xuân xoăn như ốc, Thiết Quan Âm đậm vị, còn Phổ Nhĩ để lâu năm thì càng uống càng êm. Khách quan cứ chọn chỗ ngồi, tiểu nhân mang trà tới tận nơi!',
+        text: 'Long Tỉnh Tây Hồ thơm cốm non, Bích La Xuân xoăn như ốc, Thiết Quan Âm đậm vị, còn Phổ Nhĩ để lâu năm thì càng uống càng êm. Thiếu hiệp cứ chọn chỗ ngồi, đệ mang trà tới tận nơi!',
         choices: [{ text: 'Tiếng nhạc ở đâu ra vậy?', next: 'nhac' }, { text: 'Hỏi chuyện khác', next: 'chao' }, BYE],
       },
       {
@@ -153,12 +156,12 @@ export const DIALOGS: Dialog[] = [
       },
       {
         id: 'lau',
-        text: 'Thang ở ngoài hồi bên phải, khách quan đi thẳng lên là tới. Trên lầu có sập trà ngồi đôi, ghế sát lan can ngắm núi, bàn dài cho cả hội. Dưới này thì ngồi đôn quanh bàn trà — đến gần chỗ nào ưng thì bấm Ngồi.',
+        text: 'Thang ở ngoài hồi bên phải, thiếu hiệp đi thẳng lên là tới. Trên lầu có sập trà ngồi đôi, ghế sát lan can ngắm núi, bàn dài cho cả hội. Dưới này thì ngồi đôn quanh bàn trà — đến gần chỗ nào ưng thì bấm Ngồi.',
         choices: [{ text: 'Quán có trà gì?', next: 'tra' }, { text: 'Hỏi chuyện khác', next: 'chao' }, BYE],
       },
     ],
   },
-  // Kỳ Muội — thiếu nữ chủ trò Kỳ Văn Uyển (R-NPC-4): giọng nhẹ nhàng, xưng "muội", gọi "đạo hữu".
+  // Kỳ Muội — thiếu nữ chủ trò Kỳ Văn Uyển (R-NPC-4): giọng nhẹ nhàng, xưng "tỷ", gọi "em" (R-NPC-11).
   {
     npc: 'quan-su',
     name: 'Kỳ Muội',
@@ -166,7 +169,7 @@ export const DIALOGS: Dialog[] = [
     lines: [
       {
         id: 'chao',
-        text: 'Đạo hữu đến chơi ạ? Muội trông sân Kỳ Văn Uyển đó. Trong sân có hai bàn đá dài: một bàn Ngũ Tử Kỳ, một bàn Đấu chữ — mỗi bàn ba chỗ, ai đến trước ngồi trước nha.',
+        text: 'Em đến chơi à? Tỷ trông sân Kỳ Văn Uyển đó. Trong sân có hai bàn đá dài: một bàn Ngũ Tử Kỳ, một bàn Đấu chữ — mỗi bàn ba chỗ, ai đến trước ngồi trước nha.',
         choices: [
           { text: 'Ngũ Tử Kỳ chơi thế nào?', next: 'co' },
           { text: 'Đấu chữ là gì?', next: 'dau' },
@@ -175,44 +178,44 @@ export const DIALOGS: Dialog[] = [
       },
       {
         id: 'co',
-        text: 'Đạo hữu cầm quân đen, đi trước; Tiểu Mặc cầm quân trắng. Mỗi lượt đặt một quân vào giao điểm trống. Bên nào có 5 quân liền nhau theo hàng ngang, dọc hay chéo trước thì thắng — dễ lắm, đạo hữu thử một ván nhé.',
+        text: 'Em cầm quân đen, đi trước; Tiểu Mặc cầm quân trắng. Mỗi lượt đặt một quân vào giao điểm trống. Bên nào có 5 quân liền nhau theo hàng ngang, dọc hay chéo trước thì thắng — dễ lắm, em thử một ván nhé.',
         choices: [{ text: 'Vào bàn thế nào?', next: 'vao' }, { text: 'Hỏi chuyện khác', next: 'chao' }, BYE],
       },
       {
         id: 'dau',
-        text: 'Mặc Ông ra 10 câu, mỗi câu một từ đạo hữu đã học cùng bốn nghĩa — chọn nghĩa đúng. Chỉ là ôn cho nhớ, không ghi gì vào tiến độ, thua cũng chẳng mất gì đâu, đạo hữu đừng ngại.',
+        text: 'Mặc Ông ra 10 câu, mỗi câu một từ em đã học cùng bốn nghĩa — chọn nghĩa đúng. Chỉ là ôn cho nhớ, không ghi gì vào tiến độ, thua cũng chẳng mất gì đâu, em đừng ngại.',
         choices: [{ text: 'Vào bàn thế nào?', next: 'vao' }, { text: 'Hỏi chuyện khác', next: 'chao' }, BYE],
       },
       {
         id: 'vao',
-        text: 'Đạo hữu đến gần một ghế bên bàn, nút "Vào bàn" hiện lên thì bấm là ngồi được. Muốn xem kỹ luật, cứ đọc biển "Cách chơi" ở đầu mỗi bàn ạ.',
+        text: 'Em đến gần một ghế bên bàn, nút "Vào bàn" hiện lên thì bấm là ngồi được. Muốn xem kỹ luật, cứ đọc biển "Cách chơi" ở đầu mỗi bàn nhé.',
         choices: [{ text: 'Hỏi chuyện khác', next: 'chao' }, BYE],
       },
     ],
   },
-  // Trận sư Truyền Tống Đài (R-NPC-5): trầm tĩnh, xưng "bần đạo", gọi "đạo hữu"; đọc tiến độ + vùng đi được (`tranSu.ts`).
+  // La đại thúc — trận sư Truyền Tống Đài (R-NPC-5): trầm tĩnh, xưng "ta", gọi "cháu" (R-NPC-11); đọc tiến độ + vùng đi được (`tranSu.ts`).
   {
     npc: 'tran-su',
-    name: 'Trận sư',
+    name: 'La đại thúc',
     start: 'chao',
     lines: [
       {
         id: 'chao',
-        text: 'Bần đạo giữ trận đồ của Truyền Tống Đài. Mỗi vùng là một nút trên trận đồ — vùng nào dựng xong thì nút ấy sáng, ai cũng đi được.',
+        text: 'Ta giữ trận đồ của Truyền Tống Đài. Mỗi vùng là một nút trên trận đồ — vùng nào dựng xong thì nút ấy sáng, ai cũng đi được.',
         choices: [
-          { text: 'Ta đi được những đâu?', next: null, action: 'journey' },
+          { text: 'Cháu đi được những đâu?', next: null, action: 'journey' },
           { text: 'Trận đồ là gì?', next: 'tran' },
           BYE,
         ],
       },
       {
         id: 'tran',
-        text: 'Bước vào vòng trận giữa đài, đứng yên chốc lát cho trận sáng lên, bản đồ truyền tống sẽ mở. Vùng nào đã sáng thì chạm là đi; vùng còn mờ là sắp mở, chờ thêm ít lâu.',
-        choices: [{ text: 'Ta đi được những đâu?', next: null, action: 'journey' }, { text: 'Hỏi chuyện khác', next: 'chao' }, BYE],
+        text: 'Bước vào vòng trận giữa đài, đứng yên chốc lát cho trận sáng lên, bản đồ truyền tống sẽ mở. Vùng nào đã sáng thì chạm là đi; vùng còn mờ là sắp mở, cháu chờ thêm ít lâu nhé.',
+        choices: [{ text: 'Cháu đi được những đâu?', next: null, action: 'journey' }, { text: 'Hỏi chuyện khác', next: 'chao' }, BYE],
       },
     ],
   },
-  // Lão Canh (R-NPC-7, R-NPC-8): người gõ mõ báo giờ, già, chậm rãi, xưng "lão", gọi "đạo hữu". Hỏi giờ → đọc giờ thật.
+  // Lão Canh (R-NPC-7, R-NPC-8): người gõ mõ báo giờ, già, chậm rãi, xưng "lão", gọi "cháu" (R-NPC-11). Hỏi giờ → đọc giờ thật.
   {
     npc: 'go-mo',
     name: 'Lão Canh',
@@ -220,7 +223,7 @@ export const DIALOGS: Dialog[] = [
     lines: [
       {
         id: 'chao',
-        text: 'Ồ, đạo hữu đấy à. Lão đi một vòng trấn từ sáng tới đêm, đầu mỗi giờ lại gõ mõ báo cho cả trấn biết.',
+        text: 'Ồ, cháu đấy à. Lão đi một vòng trấn từ sáng tới đêm, đầu mỗi giờ lại gõ mõ báo cho cả trấn biết.',
         choices: [{ text: 'Bây giờ là giờ gì?', next: null, action: 'gio' }, { text: 'Lão gõ mõ thế nào?', next: 'go-mo' }, BYE],
       },
       {

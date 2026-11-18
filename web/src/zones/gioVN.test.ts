@@ -61,8 +61,8 @@ describe('Báo giờ Lão Canh', () => {
   });
 
   it('R-NPC-7: "Bây giờ là giờ gì?" đọc giờ hiện tại theo GMT+7', () => {
-    expect(cauHoiGio(vn(2026, 11, 14, 10, 5))).toBe('Bây giờ là giờ Tỵ — 10 giờ 5 phút sáng đó đạo hữu.');
-    expect(cauHoiGio(vn(2026, 11, 14, 4, 59))).toBe('Bây giờ là giờ Dần, canh năm — 4 giờ 59 phút sáng đó đạo hữu.');
+    expect(cauHoiGio(vn(2026, 11, 14, 10, 5))).toBe('Bây giờ là giờ Tỵ — 10 giờ 5 phút sáng đó cháu.');
+    expect(cauHoiGio(vn(2026, 11, 14, 4, 59))).toBe('Bây giờ là giờ Dần, canh năm — 4 giờ 59 phút sáng đó cháu.');
   });
 
   it('?gio thử: "08:59:50" hoặc số giờ → đồng hồ VN bắt đầu đúng giờ đó; sai dạng → null', () => {

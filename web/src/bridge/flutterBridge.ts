@@ -64,7 +64,7 @@ export interface JourneyProgress {
   coins: number | null;
   /** Văn tiền trò chơi đã nhận hôm nay (trần 60 — R-TIEN-3) */
   gameCoinsToday: number;
-  /** đã cho Tiểu Khất (R-NPC-6, R-TIEN-8); Flutter bản cũ không gửi → chưa cho lần nào */
+  /** đã cho Tiểu Líu Lo (R-NPC-6, R-TIEN-8); Flutter bản cũ không gửi → chưa cho lần nào */
   alms: AlmsRecord;
 }
 
@@ -312,7 +312,7 @@ export class FlutterBridge {
   }
 
   /**
-   * Cho Tiểu Khất 5 văn (R-TIEN-8): Flutter tính (mỗi ngày giờ VN một lần, ví ≥ 5) và ghi ngay. `null` = không có Flutter /
+   * Cho Tiểu Líu Lo 5 văn (R-TIEN-8): Flutter tính (mỗi ngày giờ VN một lần, ví ≥ 5) và ghi ngay. `null` = không có Flutter /
    * lỗi / bản cũ → không cho được.
    */
   async giveAlms(): Promise<AlmsResult | null> {

@@ -220,14 +220,14 @@ BuyResult buyDecor({required int balance, required Map<String, int> owned, requi
 /// Số cái khi mới cài app (R-NHA-4): mỗi vật khởi đầu 1 cái, trong túi.
 Map<String, int> get starterCounts => {for (final id in starterDecor) id: 1};
 
-/// Cho Tiểu Khất mỗi lần đúng chừng này (R-TIEN-8) — `ALMS_COINS` ở `web/src/zones/walletRules.ts`.
+/// Cho Tiểu Líu Lo mỗi lần đúng chừng này (R-TIEN-8) — `ALMS_COINS` ở `web/src/zones/walletRules.ts`.
 const almsCoins = 5;
 
 /// Mã ngày giờ Việt Nam (GMT+7): số ngày từ 1970-01-01 theo lịch VN, từ mốc UTC — **không** theo múi giờ máy (R-TIEN-8).
 /// Như `maNgayVN` ở `web/src/zones/gioVN.ts`.
 int vnDay(DateTime now) => (now.toUtc().millisecondsSinceEpoch + 7 * 3600000) ~/ 86400000;
 
-/// Đã cho Tiểu Khất: ngày cho gần nhất ([vnDay], −1 = chưa cho lần nào) + số lần đã cho (R-NPC-6).
+/// Đã cho Tiểu Líu Lo: ngày cho gần nhất ([vnDay], −1 = chưa cho lần nào) + số lần đã cho (R-NPC-6).
 typedef AlmsRecord = ({int lastDay, int count});
 
 const AlmsRecord noAlms = (lastDay: -1, count: 0);
@@ -251,5 +251,5 @@ AlmsError? almsRefusal(int balance, AlmsRecord alms, int today) {
   return null;
 }
 
-/// Nhãn trừ tiền (R-TIEN-5): "−5 · Cho Tiểu Khất" (dấu trừ U+2212).
-String almsLabel([int amount = almsCoins]) => '−$amount · Cho Tiểu Khất';
+/// Nhãn trừ tiền (R-TIEN-5): "−5 · Cho Tiểu Líu Lo" (dấu trừ U+2212).
+String almsLabel([int amount = almsCoins]) => '−$amount · Cho Tiểu Líu Lo';

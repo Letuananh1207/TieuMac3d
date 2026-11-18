@@ -59,7 +59,7 @@ void main() {
     });
   });
 
-  group('bán cho Trúc Ông (R-MANG-5)', () {
+  group('bán cho Măng bà bà (R-MANG-5)', () {
     test('R-MANG-5: 5 Măng + 1 Măng to → Bán hết +23, túi trống; bán từng loại; túi trống → empty', () {
       const s = MangState(day: 1, bag: {'mang': 5, 'mang-to': 1});
       final all = sellMang(s, null) as MangDone;

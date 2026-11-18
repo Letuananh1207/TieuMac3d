@@ -40,7 +40,7 @@ export const STUDY_GUIDE: GameGuide = {
     },
   ],
   tipBy: LIBRARIAN,
-  tipTitle: 'Lời thủ thư Điển Thư',
+  tipTitle: 'Lời thủ thư Thư cô nương',
   tip: 'Mỗi ngày ôn một ít, từ sẽ ở lại lâu. Số son trên nút **Tĩnh toạ** là số từ đến hạn hôm nay.',
   none: {
     icon: 'ban-do',

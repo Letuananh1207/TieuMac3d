@@ -1,7 +1,7 @@
 /**
  * Ghép Hái măng sau mưa (R-MANG-1…5): lứa theo giờ VN (`?gio=14.8&toc=60` để thử), măng InstancedMesh (`scene/mangLam.ts`),
  * mưa phùn 14:50–15:00 (`scene/muaPhun.ts` + lớp xám nhẹ; mức Thấp không hạt), hái (nút "Hái" / phím **E**) → `mangAct`
- * hoặc ví thử; thoại Trúc Ông "Bán măng" → bảng bán → ví HUD "+n · Bán măng". HUD thiết kế 2026-11-16.13 (`ui/mangHud.ts`):
+ * hoặc ví thử; thoại Măng bà bà "Bán măng" → bảng bán → ví HUD "+n · Bán măng". HUD thiết kế 2026-11-16.13 (`ui/mangHud.ts`):
  * nút "Hái", nhãn "+1 Măng", chip lứa măng, thẻ măng chữ (phím 1–3), bảng bán (Enter bán hết, Esc / nút quay lại đóng).
  * Thử trên Console: `__hocXaMang.hai()`, `.tra(i)`, `.bang()`, `.ban()`.
  */
@@ -49,7 +49,7 @@ const ASK_SECONDS = 20;
 const COIN_FLASH_SECONDS = 2;
 /** Nút "Hái" cao hơn gốc măng (m): măng thường / măng to. */
 const PICK_Y = { small: 0.55, big: 1.0 };
-const EMPTY_LINE = 'Túi con còn trống. Mưa chiều xong là măng lại nhú.';
+const EMPTY_LINE = 'Túi cháu còn trống. Mưa chiều xong là măng lại nhú.';
 
 interface Ask {
   spot: MangSpot;
@@ -142,7 +142,7 @@ export class HaiMang {
     return npcId === TRUC_ONG ? trucOngDialog(this.state.bag) : undefined;
   }
 
-  /** "Bán măng" ở thoại Trúc Ông: mở bảng bán (túi trống → lời nhắc). */
+  /** "Bán măng" ở thoại Măng bà bà: mở bảng bán (túi trống → lời nhắc). */
   openSell(): void {
     const kinds = (Object.keys(MANG_PRICES) as MangKind[]).filter((k) => (this.state.bag[k] ?? 0) > 0);
     if (!kinds.length) {
@@ -283,7 +283,7 @@ export class HaiMang {
     }
   }
 
-  /** Bán một loại / hết (`null`) cho Trúc Ông (R-MANG-5): bảng giữ mở, ví hiện lại 2 s với "+n · Bán măng". */
+  /** Bán một loại / hết (`null`) cho Măng bà bà (R-MANG-5): bảng giữ mở, ví hiện lại 2 s với "+n · Bán măng". */
   async sell(kind: MangKind | null): Promise<void> {
     if (this.busy || this.readOnly) return;
     this.busy = true;

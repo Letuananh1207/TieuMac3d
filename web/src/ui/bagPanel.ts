@@ -5,7 +5,7 @@
  * nhãn 10/700; tab mở nền trắng viền `jade` 2). Hạt giống / Nông sản = lưới ô vuông 72 (ngang 52) 4 cột (ngang 5), số góc
  * dưới phải; chạm → ô viền `jade` + thẻ chi tiết `slate` dưới lưới. Đồ làm vườn = "Nông cụ" (5 ô, không số) + "Vật tư"
  * (Phân bón × n) + chân. Tab thứ 4 **Lâm sản** (thiết kế 2026-11-16.13 `TuiDo-lam-san-*`): lưới ô búp măng, chạm → thẻ
- * "Măng to × 1 · Hái ở Trúc Lâm · bán cho Trúc Ông 8 Văn / cái"; trống → khung nét đứt. **Chỉ xem.** Đóng: nút Đóng, kéo tay nắm xuống, chạm
+ * "Măng to × 1 · Hái ở Trúc Lâm · bán cho Măng bà bà 8 Văn / cái"; trống → khung nét đứt. **Chỉ xem.** Đóng: nút Đóng, kéo tay nắm xuống, chạm
  * cảnh, nút quay lại. Dữ liệu dựng sẵn ở `zones/tuiDo.ts`. DOM dựng bằng createElement.
  */
 import './bag.css';
@@ -211,7 +211,7 @@ export class BagPanel {
     return grid;
   }
 
-  /** Lâm sản (R-TUI-1, R-MANG-3/5): lưới ô búp măng + số; chạm → thẻ chi tiết (nơi hái, giá Trúc Ông). */
+  /** Lâm sản (R-TUI-1, R-MANG-3/5): lưới ô búp măng + số; chạm → thẻ chi tiết (nơi hái, giá Măng bà bà). */
   private forest(items: readonly BagForest[]): HTMLElement[] {
     const grid = h('div', 'bg-cells');
     for (const c of items) {

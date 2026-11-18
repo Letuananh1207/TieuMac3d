@@ -284,7 +284,7 @@ class ProgressStore {
     return r;
   }
 
-  /// Đã cho Tiểu Khất (R-NPC-6, R-TIEN-8): ngày VN lần cho gần nhất + số lần; chưa có / hỏng → chưa cho lần nào.
+  /// Đã cho Tiểu Líu Lo (R-NPC-6, R-TIEN-8): ngày VN lần cho gần nhất + số lần; chưa có / hỏng → chưa cho lần nào.
   AlmsRecord get alms {
     final raw = _prefs.getString(_almsKey);
     if (raw == null) return noAlms;
@@ -299,7 +299,7 @@ class ProgressStore {
     return noAlms;
   }
 
-  /// Cho Tiểu Khất 5 văn (docs/bridge.md `giveAlms`, R-TIEN-8): mỗi ngày giờ VN một lần, ví ≥ 5 → trừ + ghi ngay.
+  /// Cho Tiểu Líu Lo 5 văn (docs/bridge.md `giveAlms`, R-TIEN-8): mỗi ngày giờ VN một lần, ví ≥ 5 → trừ + ghi ngay.
   Future<({bool ok, String? reason, int balance, AlmsRecord alms})> giveAlms() async {
     final day = vnDay(_clock());
     final err = almsRefusal(coins, alms, day);

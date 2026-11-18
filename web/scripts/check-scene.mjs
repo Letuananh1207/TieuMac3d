@@ -1,7 +1,7 @@
 // Kiểm mọi đặc tả cảnh design/scene/*.json (scene.json = tông môn, <mã vùng>.json = vùng) bằng đúng code của app (scene/spec.ts + zones/zones.ts).
 // In lỗi, vùng sự kiện và bố cục; có lỗi → thoát 1 (chặn `npm run build` của app).
 // Dùng: cd web && npm run scene:check   (xem decisions/0002-thiet-ke-3d.md)
-//       npm run scene:check -- --thu-npc   thêm bản thử Tiểu Khất + Lão Canh (scene/npcDraft.ts) vào tông môn để kiểm đường đi
+//       npm run scene:check -- --thu-npc   thêm bản thử Tiểu Líu Lo + Lão Canh (scene/npcDraft.ts) vào tông môn để kiểm đường đi
 import { build } from 'esbuild';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
@@ -263,7 +263,7 @@ function checkScene(rel, raw, opt = {}) {
   // NPC (R-NPC-1): mã phải có model design/models/<mã>.glb
   for (const p of spec.npcs) {
     const has = existsSync(resolve(web, '..', 'design', 'models', `${p.id}.glb`));
-    // NPC trò chơi (văn nhân, Trúc Ông — V-66 B4): thiếu model → app thế bằng khối (R-NPC-1), chỉ ghi chú, không lỗi
+    // NPC trò chơi (văn nhân, Măng bà bà — V-66 B4): thiếu model → app thế bằng khối (R-NPC-1), chỉ ghi chú, không lỗi
     if (!has && GAME_NPCS.has(p.id)) console.log(`NPC "${p.id}": chưa có design/models/${p.id}.glb — app dựng thế bằng khối (R-NPC-1); bản đẹp qua /tai-nguyen`);
     else if (!has && !drafts.has(p.id)) all.push(`npcs: thiếu design/models/${p.id}.glb — app bỏ NPC "${p.id}"`);
     const pose = p.pose === 'ngoi' ? ' · ngồi' : '';

@@ -1,7 +1,7 @@
 /**
  * Ghép hai NPC Khởi Nguyên Trấn (V-20261114-31; kế hoạch `docs/tasks/2026-11-14-npc-khat-nhi-go-mo.md`): Lão Canh đi vòng
  * theo đồng hồ GMT+7 (R-NPC-7), vật cản đi theo, bị chặn / đang thoại thì đứng; đầu giờ dừng 12 s gõ mõ + rao lên kênh
- * chung (R-NPC-8), tiếng mõ theo khoảng cách (R-AM-1); Tiểu Khất ngồi, thoại xin tiền + tin đồn (R-NPC-6, R-TIEN-8).
+ * chung (R-NPC-8), tiếng mõ theo khoảng cách (R-AM-1); Tiểu Líu Lo ngồi, thoại xin vài văn + tin của ngày (R-NPC-6, R-TIEN-8).
  * Tách khỏi main.ts như chatRoom.ts. Chỉ chạy khi cảnh có NPC đó (`npcs` của đặc tả + có model) — chưa có model thì không
  * có gì (Canvas 3D `?dang=go-mo` dùng model thế, `townPreview.ts`).
  */
@@ -20,7 +20,7 @@ import { ALMS_COINS, almsLabel, giveTrialAlms, NO_ALMS, type AlmsRecord, type Al
 
 export const GO_MO = 'go-mo';
 /** Bị chặn quá 3 s (R-NPC-7). */
-export const NHUONG_BUOC = 'Đạo hữu nhường lão một bước nhé.';
+export const NHUONG_BUOC = 'Cháu nhường lão một bước nhé.';
 /** Hai dòng rao cách nhau (s) — kênh chung cho mỗi người một tin / 1,5 s (R-CHAT-1). */
 const RAO_GAP_MS = 1600;
 
@@ -96,7 +96,7 @@ export class TownNpcs {
     return Date.now() + this.offsetMs;
   }
 
-  /** Hội thoại động: Tiểu Khất theo ví + đã cho hôm nay (R-NPC-6). NPC khác → `undefined` (dùng `DIALOGS`). */
+  /** Hội thoại động: Tiểu Líu Lo theo ví + đã cho hôm nay (R-NPC-6). NPC khác → `undefined` (dùng `DIALOGS`). */
   dialog(npcId: string): Dialog | undefined {
     if (npcId !== KHAT_NHI || !this.khatNhi) return undefined;
     const { alms, balance } = this.wallet();
@@ -177,7 +177,7 @@ export class TownNpcs {
     return { alms: p?.alms ?? { ...NO_ALMS }, balance: p?.coins ?? null };
   }
 
-  /** "Cho 5 văn" (R-TIEN-8): ví thử tự tính, có Flutter thì Flutter tính + ghi. Được → "−5 · Cho Tiểu Khất" + tin đồn. */
+  /** "Cho 5 văn" (R-TIEN-8): ví thử tự tính, có Flutter thì Flutter tính + ghi. Được → "−5 · Cho Tiểu Líu Lo" + tin đồn. */
   private async giveAlms(): Promise<void> {
     if (this.busyAlms) return;
     this.busyAlms = true;

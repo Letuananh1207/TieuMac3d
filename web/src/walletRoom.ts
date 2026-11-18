@@ -143,7 +143,7 @@ export class WalletRoom {
     this.wallet.push({ amount, label: learnRewardLabel(b.ten, amount), from: center }, w.coins, gameTodayOn(w, dayKey(new Date())));
   }
 
-  /** Vừa trừ tiền ngoài Tạp hoá (cho Tiểu Khất — R-TIEN-8): ví HUD "−n" + nhãn khi ví hiện lại; [balance] = số dư mới. */
+  /** Vừa trừ tiền ngoài Tạp hoá (cho Tiểu Líu Lo — R-TIEN-8): ví HUD "−n" + nhãn khi ví hiện lại; [balance] = số dư mới. */
   spent(amount: number, label: string, balance: number, gameToday: number): void {
     const w = this.host.trial?.wallet;
     this.wallet.push({ amount: -amount, label }, balance, w ? gameTodayOn(w, dayKey(new Date())) : gameToday);

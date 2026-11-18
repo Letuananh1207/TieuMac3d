@@ -230,7 +230,7 @@ void main() {
     });
   });
 
-  group('cho Tiểu Khất (R-TIEN-8)', () {
+  group('cho Tiểu Líu Lo (R-TIEN-8)', () {
     DateTime vn(int d, int h, [int mi = 0]) => DateTime.utc(2026, 11, d, h - 7, mi);
     final day14 = vnDay(vn(14, 10));
 
@@ -258,12 +258,12 @@ void main() {
       expect(vnDay(london.toLocal()), vnDay(london));
     });
 
-    test('R-TIEN-5: nhãn trừ tiền "−5 · Cho Tiểu Khất"', () {
-      expect(almsLabel(), '−5 · Cho Tiểu Khất');
+    test('R-TIEN-5: nhãn trừ tiền "−5 · Cho Tiểu Líu Lo"', () {
+      expect(almsLabel(), '−5 · Cho Tiểu Líu Lo');
     });
   });
 
-  group('cho Tiểu Khất — lưu + cầu nối (R-TIEN-8)', () {
+  group('cho Tiểu Líu Lo — lưu + cầu nối (R-TIEN-8)', () {
     test('R-TIEN-8: cho trên app → −5, lưu ngày + số lần qua lần mở lại; cùng ngày không cho lần hai', () async {
       var now = DateTime.utc(2026, 11, 14, 3); // 10 giờ sáng ngày 14 giờ VN
       SharedPreferences.setMockInitialValues({'tien.so-du': 12});

@@ -36,19 +36,19 @@ export function librarianDialog(borrowed: string | null, catalog: boolean): Dial
   const borrow: DialogChoice = catalog ? { text: 'Mượn sách', next: null, action: 'borrow' } : { text: 'Mượn sách', next: 'chon' };
   return {
     npc: LIBRARIAN,
-    name: 'Điển Thư',
+    name: 'Thư cô nương',
     start: 'chao',
     lines: [
       {
         id: 'chao',
         text: book
-          ? `Đạo hữu đang giữ cuốn sổ từ ${book.title}. Đọc xong muốn đổi cuốn khác thì trả lại cho ta trước nhé.`
+          ? `Em đang giữ cuốn sổ từ ${book.title}. Đọc xong muốn đổi cuốn khác thì trả lại cho tỷ trước nhé.`
           : 'Tàng Thư Các cho mượn sổ từ Hán ngữ theo sáu cấp HSK. Mượn rồi cứ mang theo mà đọc, đi đâu cũng được — mỗi lần một cuốn.',
         choices: book ? [{ text: `Trả sách «${book.title}»`, next: null, action: 'return' }, BYE] : [borrow, BYE],
       },
       {
         id: 'chon',
-        text: `Sổ từ đã soạn xong: ${ready.map((b) => b.title).join(', ')}. Các cấp sau còn đang biên soạn. Đạo hữu mượn cuốn nào?`,
+        text: `Sổ từ đã soạn xong: ${ready.map((b) => b.title).join(', ')}. Các cấp sau còn đang biên soạn. Em mượn cuốn nào?`,
         choices: [...pick, BYE],
       },
     ],

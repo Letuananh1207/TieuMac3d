@@ -258,7 +258,7 @@ async function boot(): Promise<void> {
     controls.target.set(tx, Number.isFinite(ty) ? ty : 1.5, tz);
   }
 
-  // ?dang=go-mo — bản thử Tiểu Khất + Lão Canh (model thế nhan-vat.glb hoặc `&nhan-vat=<mã>` — playerModelUrl), đường vòng B, &gio=08:59:50, &theo (townPreview.ts)
+  // ?dang=go-mo — bản thử Tiểu Líu Lo + Lão Canh (model thế nhan-vat.glb hoặc `&nhan-vat=<mã>` — playerModelUrl), đường vòng B, &gio=08:59:50, &theo (townPreview.ts)
   // Lão Canh đã có trong đặc tả → đi theo đồng hồ như app ở mọi trang (`&gio`, `&theo` dùng được không cần ?dang=go-mo)
   const town = await addTownPreview(scene, colliders, spec, (x, z) => world.surface.heightAt(x, z), params, npcSet.npcs);
   if (town?.lines.length) el('problems').append(...town.lines.map((t) => li(t)));

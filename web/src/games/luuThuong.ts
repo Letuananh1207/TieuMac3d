@@ -15,8 +15,8 @@ export const LUU_OPTIONS = 4;
 /** Văn nhân ngồi tiệc (R-LUU-4): mã NPC → xác suất đúng. Thứ tự = thứ tự đệm trong đặc tả (`npcs` của mục `luu-thuong`). */
 export const LUU_NPCS = [
   { id: 'thi-ong', name: 'Thi Ông', accuracy: 0.75 },
-  { id: 'tai-nu', name: 'Tài Nữ', accuracy: 0.7 },
-  { id: 'tu-tai', name: 'Tú Tài', accuracy: 0.6 },
+  { id: 'tai-nu', name: 'Vần cô nương', accuracy: 0.7 },
+  { id: 'tu-tai', name: 'A Chén', accuracy: 0.6 },
 ] as const;
 export type LuuNpcId = (typeof LUU_NPCS)[number]['id'];
 /** Người tới lượt: `nguoi` hoặc mã văn nhân. */
@@ -132,9 +132,9 @@ export function luuOutcome(s: LuuScores): 'thang' | 'hoa' | 'thua' {
 
 /** Lời Thi Ông trên thẻ kết quả (chuỗi `luuHostWin` / `luuHostTie` / `luuHostLose` — thiết kế 2026-11-16.13). */
 export function hostLine(outcome: 'thang' | 'hoa' | 'thua'): string {
-  if (outcome === 'thang') return 'Hay! Chén này xin kính đạo hữu.';
+  if (outcome === 'thang') return 'Hay! Chén này lão kính cháu.';
   if (outcome === 'hoa') return 'Ngang tài ngang sức, cạn chén nào!';
-  return 'Ván sau ắt đạo hữu hơn lão.';
+  return 'Ván sau ắt cháu hơn lão.';
 }
 
 /** Dòng hạng của người chơi trên thẻ kết quả (R-LUU-5): hạng 1 đồng → "Đồng hạng nhất". */
@@ -149,4 +149,4 @@ export function rankTitle(s: LuuScores): string {
 export const thiKhoi = (s: LuuScores): boolean => luuOutcome(s) === 'thang';
 
 /** Câu Thi Ông khi chưa đủ từ (R-LUU-1, chuỗi `luuHostNotEnough`). */
-export const LUU_NEED_LINE = 'Đạo hữu hãy tới Trúc Lão học thêm vài bài từ, rồi lại đây cùng thả chén.';
+export const LUU_NEED_LINE = 'Cháu hãy tới Trúc Lão học thêm vài bài từ, rồi lại đây cùng thả chén.';

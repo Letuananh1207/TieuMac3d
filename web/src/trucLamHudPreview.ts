@@ -16,8 +16,8 @@ const SEATS = (turn: string, me: number, gained = ''): LuuSeatView[] =>
   [
     { npc: null, name: 'Đạo hữu', score: me },
     { npc: 'thi-ong', name: 'Thi Ông', score: 2 },
-    { npc: 'tu-tai', name: 'Tú Tài', score: 1 },
-    { npc: 'tai-nu', name: 'Tài Nữ', score: 1 },
+    { npc: 'tu-tai', name: 'A Chén', score: 1 },
+    { npc: 'tai-nu', name: 'Vần cô nương', score: 1 },
   ].map((s) => ({ ...s, turn: (s.npc ?? 'nguoi') === turn, gained: (s.npc ?? 'nguoi') === gained }));
 
 const DOTS = (six: LuuView['dots'][number]['state'], seventh: LuuView['dots'][number]['state'] = 'cho'): LuuView['dots'] => [
@@ -57,7 +57,7 @@ function luuView(hud: string): LuuView {
     meaning: 'hoa',
     total: 20,
     mine: false,
-    who: { npc: 'tu-tai', name: 'Tú Tài' },
+    who: { npc: 'tu-tai', name: 'A Chén' },
     full: hud === 'npc-xong',
     left: null,
     tiles: [
@@ -67,8 +67,8 @@ function luuView(hud: string): LuuView {
       ['竹', 'trúc'],
     ].map(([form, hv], i) => ({ form, hv, state: hud === 'npc-xong' ? (i === 1 ? 'dung' : 'mo') : 'thuong', ...(hud === 'npc-xong' && i === 1 ? { npcPick: 'tu-tai' } : {}) })),
   };
-  if (hud === 'npc') return { ...base, turn: 7, dots: DOTS('dung', 'dang'), seats: SEATS('tu-tai', 3), status: { kind: 'nghi', npc: 'tu-tai', name: 'Tú Tài' }, card: hoa, result: null };
-  if (hud === 'npc-xong') return { ...base, turn: 7, dots: DOTS('dung', 'dung'), seats: SEATS('tu-tai', 3, 'tu-tai'), status: { kind: 'npc', name: 'Tú Tài', right: true }, card: hoa, result: null };
+  if (hud === 'npc') return { ...base, turn: 7, dots: DOTS('dung', 'dang'), seats: SEATS('tu-tai', 3), status: { kind: 'nghi', npc: 'tu-tai', name: 'A Chén' }, card: hoa, result: null };
+  if (hud === 'npc-xong') return { ...base, turn: 7, dots: DOTS('dung', 'dung'), seats: SEATS('tu-tai', 3, 'tu-tai'), status: { kind: 'npc', name: 'A Chén', right: true }, card: hoa, result: null };
   if (hud.startsWith('ket-qua')) {
     const tie = hud === 'ket-qua-hoa';
     return {
@@ -85,10 +85,10 @@ function luuView(hud: string): LuuView {
         rows: [
           { rank: 1, npc: null, name: 'Đạo hữu', score: 4, me: true },
           { rank: tie ? 1 : 2, npc: 'thi-ong', name: 'Thi Ông', score: tie ? 4 : 3 },
-          { rank: 3, npc: 'tu-tai', name: 'Tú Tài', score: 2 },
-          { rank: 3, npc: 'tai-nu', name: 'Tài Nữ', score: 2 },
+          { rank: 3, npc: 'tu-tai', name: 'A Chén', score: 2 },
+          { rank: 3, npc: 'tai-nu', name: 'Vần cô nương', score: 2 },
         ].map((r) => ({ me: false, ...r })),
-        line: tie ? 'Ngang tài ngang sức, cạn chén nào!' : 'Hay! Chén này xin kính đạo hữu.',
+        line: tie ? 'Ngang tài ngang sức, cạn chén nào!' : 'Hay! Chén này lão kính cháu.',
         reward: tie ? 5 : 8,
       },
     };

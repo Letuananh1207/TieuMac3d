@@ -14,7 +14,7 @@ export const TEA_POUR = 2;
 /** Tốc độ đi (m/s) — QĐ1 người dùng 2026-11-16. */
 export const TEA_SPEED = 2.4;
 /** Câu nói trên kênh chung lúc rời quầy (QĐ1). */
-export const TEA_SAY = 'Có ngay, khách quan đợi chút!';
+export const TEA_SAY = 'Có ngay, thiếu hiệp đợi chút!';
 
 export interface TeaInput {
   dt: number;

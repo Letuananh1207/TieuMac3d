@@ -8,10 +8,10 @@ const places = [
   { id: 'bong-lai', ten: 'Bồng Lai Đảo' },
 ];
 
-describe('Trận sư đọc tiến độ', () => {
+describe('La đại thúc đọc tiến độ', () => {
   it('R-NPC-5: 12 từ, 2 bài, chỉ Trúc Lâm có cảnh → đi được Trúc Lâm, sắp mở Yên Vũ Lâu, Bồng Lai Đảo', () => {
     expect(journeyLine({ words: 12, lessons: 2 }, places, new Set(['rung-truc']))).toBe(
-      'Đạo hữu đã học 12 từ, 2 bài. Trận đồ đã sáng: Trúc Lâm — bước vào vòng trận là đi được. Sắp mở: Yên Vũ Lâu, Bồng Lai Đảo.',
+      'Cháu đã học 12 từ, 2 bài. Trận đồ đã sáng: Trúc Lâm — bước vào vòng trận là đi được. Sắp mở: Yên Vũ Lâu, Bồng Lai Đảo.',
     );
   });
 

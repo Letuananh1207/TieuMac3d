@@ -99,7 +99,7 @@ describe('Ghép NPC trấn (townNpcs.ts)', () => {
     expect(malletHeight(7, 1.45)).toBe(1);
   });
 
-  it('R-NPC-6, R-TIEN-8: ví thử 300 → "Cho 5 văn" → 295, nhãn "−5 · Cho Tiểu Khất", Tiểu Khất kể tin; nói lại cùng ngày → đã cho', async () => {
+  it('R-NPC-6, R-TIEN-8: ví thử 300 → "Cho 5 văn" → 295, nhãn "−5 · Cho Tiểu Líu Lo", Tiểu Líu Lo kể tin; nói lại cùng ngày → đã cho', async () => {
     const kn = fakeNpc(DRAFT_KHAT_NHI);
     const trial = new TrialStore(null);
     const h = host({ trial });
@@ -111,9 +111,9 @@ describe('Ghép NPC trấn (townNpcs.ts)', () => {
     town.act(give);
     await Promise.resolve();
     expect(trial.wallet.coins).toBe(295);
-    expect(h.spentLog).toEqual(['−5 · Cho Tiểu Khất → 295']);
-    expect(h.said[0].startsWith('Đa tạ đạo hữu!')).toBe(true);
-    expect(town.dialog('khat-nhi')!.lines[0].text.startsWith('Hôm nay đạo hữu cho rồi')).toBe(true);
+    expect(h.spentLog).toEqual(['−5 · Cho Tiểu Líu Lo → 295']);
+    expect(h.said[0].startsWith('Đa tạ thiếu hiệp!')).toBe(true);
+    expect(town.dialog('khat-nhi')!.lines[0].text.startsWith('Hôm nay thiếu hiệp cho rồi')).toBe(true);
     expect(town.dialog('tieu-mac')).toBeUndefined();
   });
 

@@ -64,7 +64,7 @@ String? sceneEventType(List<dynamic> args) {
 /// [due] = từ đến hạn ôn theo thứ tự hỏi (R-ON-4, tổng — trang cắt lượt 20), [dueSteps] = bậc tương ứng (R-ON-2);
 /// [daily] + [streak] = bảng nhiệm vụ hôm nay (R-NV-1, R-NV-2); [book] = sổ từ đang mượn (R-SACH-2); [coins] = số dư Văn
 /// tiền, [gameCoinsToday] = Văn tiền trò chơi hôm nay (R-TIEN-1, R-TIEN-3) — [coins] `null` → không gửi (trang ẩn ví);
-/// [alms] = đã cho Tiểu Khất (R-TIEN-8).
+/// [alms] = đã cho Tiểu Líu Lo (R-TIEN-8).
 Map<String, Object?> progressReply(
   Progress p, {
   List<String> due = const [],

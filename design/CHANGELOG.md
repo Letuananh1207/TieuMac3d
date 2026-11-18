@@ -3,6 +3,17 @@
 Mỗi lần chốt một mục, mới nhất ở trên. Mã `<YYYY-MM-DD>.<số>`. Mỗi mục: loại (token · chuỗi · giao diện ·
 luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu có), file đổi.
 
+## 2026-11-18.3 — Đổi tên NPC cũ + xưng hô theo tuổi (V-106)
+
+- Loại: chuỗi · luồng/luật (R-NPC-11) · Nguồn: `docs/tham_khao/npc-kieu-moly.md` §3.2b, §3.4b, §7 (người dùng duyệt 2026-11-18).
+- Tên hiển thị (mã, model, vị trí giữ): Điển Thư → **Thư cô nương**, Trận sư → **La đại thúc**, Tú Tài → **A Chén**,
+  Tài Nữ → **Vần cô nương**, Trúc Ông → **Măng bà bà** (nữ già), Tiểu Khất → **Tiểu Líu Lo** (bé đưa tin; cơ chế cho 5 văn giữ).
+- Lời NPC: bé gọi "thiếu hiệp", già / trung niên gọi "cháu", thanh niên gọi "em"; bỏ "đạo hữu", "lão phu", "bần đạo"…
+- Đã áp vào code (web + luật). **Chờ phiên thiết kế cập nhật** chuỗi có tên cũ / "đạo hữu" trong `design/source/*.dc.html`
+  (BanMang-*, CachChoi-*, LuuThuong-*, TuiDo-lam-san-*, ThuThu-bo-anh, TranSu-*, TuHoc-*, Co-*, Dau-*, NgoiMat-*, Chat-*),
+  `design/docs/screen_specs.md`, `design/l10n/vi.arb`, `design/scene/bai_tri/khoi-nguyen-tran.md`; nhãn HUD người kể
+  ("Lượt đạo hữu", thẻ điểm "Đạo hữu", "Đạo hữu chưa học từ nào", thân bảng cách chơi) còn giữ trong code chờ quyết.
+
 ## 2026-11-18.2 — Thế giới bộ 2: chốt ảnh concept 6 map (V-79)
 
 - Loại: cảnh 3D (concept) · Phiếu: `docs/phieu_thiet_ke/2026-11-17-concept-{cho-dem-den-hoa,rung-nam-tien,cung-ngoc-day-bien,thanh-cat-ngu-quen,thung-truc-gio-hat}.md`

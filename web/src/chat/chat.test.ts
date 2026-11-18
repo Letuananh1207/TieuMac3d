@@ -142,13 +142,13 @@ describe('Kênh chung', () => {
   });
 });
 
-describe('NPC nói trên kênh — Lão Canh, Tiểu Khất', () => {
-  it('R-CHAT-3: Lão Canh không nói câu ngẫu nhiên (chỉ rao giờ — R-NPC-8); Tiểu Khất có câu, không chữ Hán', () => {
+describe('NPC nói trên kênh — Lão Canh, Tiểu Líu Lo', () => {
+  it('R-CHAT-3: Lão Canh không nói câu ngẫu nhiên (chỉ rao giờ — R-NPC-8); Tiểu Líu Lo có câu, không chữ Hán', () => {
     expect(NPC_LINES['go-mo']).toBeUndefined();
     const ch = new LocalChannel();
     const got: ChatMessage[] = [];
     ch.subscribe((m) => got.push(m));
-    const c = new NpcChatter(ch, [{ id: 'go-mo', name: 'Lão Canh', kind: 'npc' }, { id: 'khat-nhi', name: 'Tiểu Khất', kind: 'npc' }], () => 0.5, 0);
+    const c = new NpcChatter(ch, [{ id: 'go-mo', name: 'Lão Canh', kind: 'npc' }, { id: 'khat-nhi', name: 'Tiểu Líu Lo', kind: 'npc' }], () => 0.5, 0);
     for (let t = 0; t <= 600; t += 1) c.update(t);
     expect(got.length).toBeGreaterThan(0);
     expect(got.every((m) => m.speaker.id === 'khat-nhi')).toBe(true);

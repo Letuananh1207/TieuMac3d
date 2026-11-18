@@ -37,9 +37,9 @@ export function trucLaoDialog(input: TrucLaoInput, again = false, pool: readonly
     BYE,
   ];
   const text = !next
-    ? `Cả giáo trình rừng trúc, đạo hữu đã học hết.${n > 0 ? ' Còn vài từ đến hạn, ôn lại cho lời ở lâu.' : ' Nhớ ôn đúng hạn, lời sẽ ở lại lâu.'}`
+    ? `Cả giáo trình rừng trúc, cháu đã học hết.${n > 0 ? ' Còn vài từ đến hạn, ôn lại cho lời ở lâu.' : ' Nhớ ôn đúng hạn, lời sẽ ở lại lâu.'}`
     : again
       ? 'Tốt lắm. Trúc lên từng đốt, lời học từng bài — nghe kỹ, nói theo, học tiếp một bài nữa chứ?'
-      : 'Lão giữ rừng trúc này đã lâu. Học tiếng cũng như trồng trúc: mỗi bài vài từ, nghe rồi nói theo, lên từng đốt mới thành cây. Đạo hữu học bài nào?';
+      : 'Lão giữ rừng trúc này đã lâu. Học tiếng cũng như trồng trúc: mỗi bài vài từ, nghe rồi nói theo, lên từng đốt mới thành cây. Cháu học bài nào?';
   return { npc: TRUC_LAO, name: 'Trúc Lão', start: 'chao', lines: [{ id: 'chao', text, choices }] };
 }

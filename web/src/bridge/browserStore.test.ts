@@ -23,7 +23,7 @@ function fakeStorage(init: Record<string, string> = {}, blocked = false): KeyVal
 }
 
 describe('kho ví thử trong trình duyệt (R-TIEN-7)', () => {
-  it('R-TIEN-8: cho Tiểu Khất trên ví thử → −5, lưu ngày + số lần, tải lại trang vẫn còn', () => {
+  it('R-TIEN-8: cho Tiểu Líu Lo trên ví thử → −5, lưu ngày + số lần, tải lại trang vẫn còn', () => {
     const s = fakeStorage();
     const a = new TrialStore(s);
     const r = giveTrialAlms(a.wallet, 20771);

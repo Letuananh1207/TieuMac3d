@@ -11,25 +11,25 @@ export const CHATTER_MAX_S = 90;
 /** Câu có sẵn theo mã NPC (đặc tả cảnh `npcs[].id`). */
 export const NPC_LINES: Record<string, readonly string[]> = {
   'tieu-mac': [
-    'Đạo hữu nào mới tới thì ghé cổng trấn chào Tiểu Mặc nhé!',
+    'Thiếu hiệp nào mới tới thì ghé cổng trấn chào Tiểu Mặc nhé!',
     'Hôm nay Tiểu Mặc thuộc thêm ba chữ rồi, 好!',
     'Ai rảnh ra Kỳ Văn Uyển đánh một ván Ngũ Tử Kỳ không?',
-    'Học một chữ, thêm một phần tu vi — cố lên các đạo hữu!',
+    'Học một chữ, thêm một phần tu vi — cố lên các thiếu hiệp!',
   ],
   'su-phu': [
     'Học mà không ôn, như nước đổ lá khoai.',
     'Chữ 人 hai nét, làm người cho ngay thẳng.',
     'Ngồi tĩnh một lát, chữ sẽ tự vào lòng.',
   ],
-  // Tiểu Khất (R-NPC-6). Lão Canh không có câu ngẫu nhiên — chỉ rao giờ (R-NPC-8, R-CHAT-3)
+  // Tiểu Líu Lo — bé đưa tin (R-NPC-6, mã `khat-nhi`), xưng tên mình. Lão Canh không có câu ngẫu nhiên — chỉ rao giờ (R-NPC-8, R-CHAT-3)
   'khat-nhi': [
-    'Đạo hữu nào đi ngang cho tiểu khất xin vài văn mua bánh với!',
-    'Tiểu khất ngồi đây nghe được đủ thứ chuyện trong trấn đó.',
+    'Tin nóng, tin nóng! Ai muốn nghe tin hôm nay nào?',
+    'Líu Lo ngồi đây nghe được đủ thứ chuyện trong trấn đó.',
     'Bánh bao Tạp hoá thơm quá, ước gì có một cái…',
   ],
   'thu-thu': [
     'Tàng Thư Các mở cửa, ai mượn sách HSK cứ lên tầng một.',
-    'Sách mượn rồi nhớ đọc, đừng để bụi phủ nhé.',
+    'Sách mượn rồi các em nhớ đọc, đừng để bụi phủ nhé.',
     'Hôm nay có ai ôn HSK 1 chưa?',
   ],
 };

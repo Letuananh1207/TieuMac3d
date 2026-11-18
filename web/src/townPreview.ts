@@ -1,5 +1,5 @@
 /**
- * Canvas 3D `?dang=go-mo` (V-20261114-31 NV10): xem **bản thử** Tiểu Khất + Lão Canh trước khi có model — đặt hai NPC của
+ * Canvas 3D `?dang=go-mo` (V-20261114-31 NV10): xem **bản thử** Tiểu Líu Lo + Lão Canh trước khi có model — đặt hai NPC của
  * `scene/npcDraft.ts` (chưa có trong đặc tả) bằng model thế `nhan-vat.glb`, vẽ đường vòng B + số thứ tự điểm, chạy đúng
  * `townNpcs.ts` như app (đi theo đồng hồ, dừng đầu giờ gõ mõ + rao). Chỉ trang thiết kế dùng, không vào app.
  * Thêm: `&gio=08:59:50` ép giờ bắt đầu · `&theo` camera bám Lão Canh.
@@ -57,8 +57,8 @@ export async function addTownPreview(
       trial: null,
       progress: () => null,
       groundAt,
-      say: (id, text) => toast(`${id === GO_MO ? 'Lão Canh' : 'Tiểu Khất'}: ${text}`),
-      chatSay: (id, text) => toast(`[kênh] ${id === GO_MO ? 'Lão Canh' : 'Tiểu Khất'}: ${text}`),
+      say: (id, text) => toast(`${id === GO_MO ? 'Lão Canh' : 'Tiểu Líu Lo'}: ${text}`),
+      chatSay: (id, text) => toast(`[kênh] ${id === GO_MO ? 'Lão Canh' : 'Tiểu Líu Lo'}: ${text}`),
       spent: () => {},
       almsSaved: () => {},
     },

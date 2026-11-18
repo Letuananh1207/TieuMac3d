@@ -269,7 +269,7 @@ async function boot(): Promise<void> {
   let appHidden = false;
   let running = true;
   let music: AmbientMusic | null = null; // nhạc nền trà lâu — dựng bên dưới (R-NHAC-1)
-  let town: TownNpcs | null = null; // Tiểu Khất + Lão Canh — dựng bên dưới (townNpcs.ts)
+  let town: TownNpcs | null = null; // Tiểu Líu Lo + Lão Canh — dựng bên dưới (townNpcs.ts)
   let tieuNhi: TieuNhi | null = null; // tiểu nhị mang trà (R-TRA-1) — dựng bên dưới (tieuNhi.ts)
   let danTranh: DanTranh | null = null; // nhạc công bục đàn Quảng Trường (R-NPC-9, R-AM-2) — danTranh.ts
   let mini: MiniGames | null = null; // 3 trò nhỏ Trúc Lâm (V-66 B4) — miniGames.ts; chỉ cảnh có `miniGames`
@@ -666,7 +666,7 @@ async function boot(): Promise<void> {
       if (c?.action === 'daily') afterSay = openDaily; // đóng khung rồi mở bảng (R-NV-3)
       if (c?.action === 'journey') afterSay = () => say('tran-su', journeyLine(progress && { words: progress.words.length, lessons: progress.lessons.length }, JOURNEY_MAP.places, REGION_SCENES), () => {}); // R-NPC-5
       if (LibraryDesk.handles(c)) afterSay = () => desk.act(c); // mượn / trả sách (R-SACH-1, R-SACH-4)
-      if (town?.handles(c)) afterSay = () => town?.act(c); // cho Tiểu Khất, hỏi giờ Lão Canh (R-NPC-6, R-NPC-7)
+      if (town?.handles(c)) afterSay = () => town?.act(c); // cho Tiểu Líu Lo, hỏi giờ Lão Canh (R-NPC-6, R-NPC-7)
       if (mini?.handles(c)) afterSay = () => mini?.act(c); // dự tiệc Lưu Thương, bán măng (R-LUU-1, R-MANG-5)
       if (trucLao?.handles(c)) afterSay = () => trucLao?.act(c); // học bài mới / ôn với Trúc Lão (R-HANH-8)
       return runner?.choose(i) ?? null;
@@ -794,7 +794,7 @@ async function boot(): Promise<void> {
       })
     : null;
   await garden?.load(!isHomeScene(params.get('qua'))); // ra sân từ gian trong: không báo lại luống chín (V-68)
-  // Tiểu Khất + Lão Canh (R-NPC-6/7/8, R-AM-1) — townNpcs.ts; chỉ khi cảnh có hai NPC này (có model)
+  // Tiểu Líu Lo + Lão Canh (R-NPC-6/7/8, R-AM-1) — townNpcs.ts; chỉ khi cảnh có hai NPC này (có model)
   town = new TownNpcs(npcSet.npcs, {
     bridge,
     trial,

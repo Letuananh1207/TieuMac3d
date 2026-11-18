@@ -35,7 +35,7 @@ describe('Hướng dẫn Khu tự học — R-VA-5', () => {
     expect(g.figure).toBe('tu-hoc');
     expect(g.sections.map((s) => s.title)).toEqual(['Ngồi vào bồ đoàn', 'Cuộn bảng chọn', 'Học bài mới ở Trúc Lâm', 'Đứng dậy']);
     expect(g.tipBy).toBe(LIBRARIAN);
-    expect(g.tipTitle).toBe('Lời thủ thư Điển Thư');
+    expect(g.tipTitle).toBe('Lời thủ thư Thư cô nương');
   });
 
   it('R-VA-5: bảng nói đúng luật (R-NGOI-1, R-ON-8, R-ON-5, R-HANH-8, R-VA-4)', () => {

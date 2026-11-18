@@ -10,7 +10,7 @@ import { portraitOf } from './dialogBox';
 import { el } from './dom';
 
 const SVG = 'http://www.w3.org/2000/svg';
-// mặt NPC chưa có chân dung riêng (thủ thư Điển Thư — `thu-thu-mat.png`, cắt lấy nửa trên)
+// mặt NPC chưa có chân dung riêng (thủ thư Thư cô nương — `thu-thu-mat.png`, cắt lấy nửa trên)
 const faces = import.meta.glob('../../../design/models/anh/thu-thu-mat.png', { eager: true, query: '?url', import: 'default' });
 function faceOf(npc: string): string | undefined {
   const hit = Object.entries(faces).find(([p]) => p.endsWith(`/${npc}-mat.png`));

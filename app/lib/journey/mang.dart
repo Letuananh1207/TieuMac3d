@@ -1,5 +1,5 @@
 /// Hái măng sau mưa ở Trúc Lâm (R-MANG-1…5): hai lứa / ngày giờ VN, mã măng, hái (măng chữ ×2), túi Lâm sản, bán cho
-/// Trúc Ông. **Một nguồn luật** hái / bán / giá — bản TS chép ở `web/src/zones/mang.ts` (đổi luật → sửa cả hai, test hai
+/// Măng bà bà. **Một nguồn luật** hái / bán / giá — bản TS chép ở `web/src/zones/mang.ts` (đổi luật → sửa cả hai, test hai
 /// phía cùng ví dụ sổ). **Chỗ mọc** chỉ tính ở trang (cần cảnh); Dart chỉ kiểm mã măng có hợp lệ với ngày / giờ không.
 /// Thuần Dart, không lưu (lưu: `progress_store.dart` khoá `mang.state`).
 library;
@@ -12,7 +12,7 @@ typedef MangWave = ({int at, int count});
 /// Lứa sáng 5:00 (8 măng) và lứa sau mưa 15:00 (6 măng) — R-MANG-1, R-MANG-2.
 const List<MangWave> mangWaves = [(at: 5 * 3600, count: 8), (at: 15 * 3600, count: 6)];
 
-/// Giá bán cho Trúc Ông (R-MANG-5) — Văn tiền / cái.
+/// Giá bán cho Măng bà bà (R-MANG-5) — Văn tiền / cái.
 const mangPrices = {'mang': 3, 'mang-to': 8};
 
 /// Giây trong ngày giờ VN (GMT+7) của [now].
@@ -125,7 +125,7 @@ MangResult pickMang(MangState s, String id, DateTime now, {bool right = false, b
   );
 }
 
-/// Bán măng cho Trúc Ông (R-MANG-5): [kind] `mang` / `mang-to`, `null` = bán hết. Không trần, không tính trần trò chơi.
+/// Bán măng cho Măng bà bà (R-MANG-5): [kind] `mang` / `mang-to`, `null` = bán hết. Không trần, không tính trần trò chơi.
 MangResult sellMang(MangState s, String? kind) {
   if (kind != null && !mangPrices.containsKey(kind)) return const MangRefused(MangError.bad);
   final kinds = kind == null ? mangPrices.keys : [kind];

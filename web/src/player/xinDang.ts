@@ -1,5 +1,5 @@
 /**
- * Dáng tay "ngồi xin" của Tiểu Khất (R-NPC-6): model Tripo `khat-nhi.glb` **cầm sẵn** bát (tay phải) và gậy (tay trái) —
+ * Dáng tay "ngồi xin" của Tiểu Líu Lo (R-NPC-6, mã `khat-nhi`): model Tripo `khat-nhi.glb` **cầm sẵn** bát (tay phải) và gậy (tay trái) —
  * dính vào lưới tay, không có đạo cụ dựng bằng code. Ngồi xếp bằng thì dáng tay ngồi chung (tay đặt lên gối) làm bát giơ
  * ngang vai, gậy chĩa ngang ra trước; dáng này đè tay: bát nâng trước bụng, gậy dựng chéo bên trái, đầu gậy chống đất.
  * Thuần (không three) — góc theo quy ước `dongTac.ts`; `haTay` = góc hạ tay của model (tay buông = `z −haTay` bên trái).

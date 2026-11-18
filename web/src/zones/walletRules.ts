@@ -88,7 +88,7 @@ export interface TrialWallet {
   placed: Record<string, string>;
   /** mã bài đã mở bảng HTML (R-TIEN-2 — +10 lần đầu); khoá `learned` (bộ thủ) bản cũ không đọc — R-TU-5 */
   lessons: string[];
-  /** đã cho Tiểu Khất (R-TIEN-8) */
+  /** đã cho Tiểu Líu Lo (R-TIEN-8) */
   alms: AlmsRecord;
   /** vườn rau (R-VUON-1…9) */
   garden: Garden;
@@ -188,12 +188,12 @@ export function setTrialHome(w: TrialWallet, items: readonly PlacedDecor[]): Tri
   return { ...w, items: [...items], placed: {} };
 }
 
-/* ---------- Cho Tiểu Khất (R-TIEN-8) — `almsCoins` / `giveAlms` ở Dart ---------- */
+/* ---------- Cho Tiểu Líu Lo (R-TIEN-8) — `almsCoins` / `giveAlms` ở Dart ---------- */
 
 /** Mỗi lần cho đúng chừng này (R-TIEN-8). */
 export const ALMS_COINS = 5;
 
-/** Đã cho Tiểu Khất: ngày cho gần nhất (mã ngày VN `maNgayVN`, −1 = chưa cho lần nào) + số lần đã cho. */
+/** Đã cho Tiểu Líu Lo: ngày cho gần nhất (mã ngày VN `maNgayVN`, −1 = chưa cho lần nào) + số lần đã cho. */
 export interface AlmsRecord {
   lastDay: number;
   count: number;
@@ -211,7 +211,7 @@ export function almsGivenOn(a: AlmsRecord, today: number): boolean {
 }
 
 /**
- * Cho Tiểu Khất 5 văn (R-TIEN-8): mỗi ngày VN tối đa một lần; ví dưới 5 → không trừ. Được → trừ 5, ghi ngày + tăng số lần.
+ * Cho Tiểu Líu Lo 5 văn (R-TIEN-8): mỗi ngày VN tối đa một lần; ví dưới 5 → không trừ. Được → trừ 5, ghi ngày + tăng số lần.
  */
 export function giveAlms(balance: number, alms: AlmsRecord, today: number): AlmsResult {
   if (almsGivenOn(alms, today)) return { ok: false, reason: 'given', balance };
@@ -227,12 +227,12 @@ export function parseAlms(v: unknown): AlmsRecord {
   return { lastDay, count: count(o.count) };
 }
 
-/** Nhãn trừ tiền trên ví HUD (R-TIEN-5, R-TIEN-8): "−5 · Cho Tiểu Khất" (dấu trừ U+2212). */
+/** Nhãn trừ tiền trên ví HUD (R-TIEN-5, R-TIEN-8): "−5 · Cho Tiểu Líu Lo" (dấu trừ U+2212). */
 export function almsLabel(amount = ALMS_COINS): string {
-  return `−${amount} · Cho Tiểu Khất`;
+  return `−${amount} · Cho Tiểu Líu Lo`;
 }
 
-/** Cho Tiểu Khất ở chế độ thử (R-TIEN-7, R-TIEN-8): như `giveAlms` của Flutter; không được → ví giữ nguyên. */
+/** Cho Tiểu Líu Lo ở chế độ thử (R-TIEN-7, R-TIEN-8): như `giveAlms` của Flutter; không được → ví giữ nguyên. */
 export function giveTrialAlms(w: TrialWallet, today: number): { wallet: TrialWallet; result: AlmsResult } {
   const result = giveAlms(w.coins, w.alms, today);
   return { wallet: result.ok ? { ...w, coins: result.balance, alms: result.alms } : w, result };

@@ -97,7 +97,7 @@ const GUIDES: Record<string, GameGuide> = {
       SEAT,
     ],
     tipBy: 'tieu-mac',
-    tip: 'Hàng 4 của đạo hữu, đệ luôn chặn! Muốn thắng phải mở **hai đường** cùng lúc.',
+    tip: 'Hàng 4 của thiếu hiệp, đệ luôn chặn! Muốn thắng phải mở **hai đường** cùng lúc.',
   },
   'dau-chu': {
     label: 'Cách chơi',
@@ -167,11 +167,11 @@ const TRUC_LAM_GUIDES: Record<string, GameGuide> = {
       { title: 'Hai lứa mỗi ngày', body: '**5:00** sáng 8 măng · **15:00** chiều 6 măng, sau 10 phút mưa phùn. Nửa đêm măng cũ héo.' },
       { title: 'Hái', body: 'Đi tới gần búp măng → nút **"Hái"**. Mỗi búp hái được một lần.' },
       { title: 'Măng chữ', body: 'Măng to khắc từ đã học: trả lời đúng nghĩa được **2 Măng to**, sai vẫn được 1.' },
-      { title: 'Bán', body: 'Mang ra Trúc Lư bán cho **Trúc Ông**: Măng 3, Măng to 8 Văn tiền / cái.' },
+      { title: 'Bán', body: 'Mang ra Trúc Lư bán cho **Măng bà bà**: Măng 3, Măng to 8 Văn tiền / cái.' },
     ],
     tipBy: 'truc-ong',
-    tipTitle: 'Mẹo của Trúc Ông',
-    tip: 'Mưa vừa tạnh là măng chiều nhú. Đi chậm mà nhìn dưới gốc trúc.',
+    tipTitle: 'Mẹo của Măng bà bà',
+    tip: 'Mưa vừa tạnh là măng chiều nhú. Cháu đi chậm mà nhìn dưới gốc trúc nhé.',
   },
   'dan-cam': {
     label: 'Cách chơi',

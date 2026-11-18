@@ -25,7 +25,7 @@ export const MANG_RAIN_SECONDS = 600;
 export const MANG_SPROUT_SECONDS = 0.6;
 /** Tầm nút "Hái" (R-MANG-3). */
 export const MANG_PICK_RANGE = 1.5;
-/** Giá bán cho Trúc Ông (R-MANG-5) — `mangPrices` ở Dart. */
+/** Giá bán cho Măng bà bà (R-MANG-5) — `mangPrices` ở Dart. */
 export const MANG_PRICES = { mang: 3, 'mang-to': 8 } as const;
 export type MangKind = keyof typeof MANG_PRICES;
 
@@ -195,7 +195,7 @@ export function pickMang(s: MangState, id: string, nowMs: number, right = false,
   return { ok: true, mang: { day: today, picked: [...cur.picked, id], bag: { ...cur.bag, [kind]: (cur.bag[kind] ?? 0) + got } }, amount: 0, got };
 }
 
-/** Bán cho Trúc Ông (R-MANG-5): [kind] một loại, `null` = bán hết — như `sellMang` ở Dart. */
+/** Bán cho Măng bà bà (R-MANG-5): [kind] một loại, `null` = bán hết — như `sellMang` ở Dart. */
 export function sellMang(s: MangState, kind: MangKind | null): MangResult {
   if (kind !== null && !(kind in MANG_PRICES)) return { ok: false, reason: 'bad' };
   const kinds = kind === null ? (Object.keys(MANG_PRICES) as MangKind[]) : [kind];

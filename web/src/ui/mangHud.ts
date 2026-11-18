@@ -1,7 +1,7 @@
 /**
  * HUD Hái măng sau mưa (R-MANG-1…5) — thiết kế 2026-11-16.13 (`HaiMang-*`, `BanMang-*`, `TrucLam-nut-trang-thai`):
  * nút nổi "Hái" neo trên măng gần nhất (măng to viền vàng + nhãn "Măng to"; máy tính phím E), nhãn bay "+1 Măng", chip lứa
- * măng dưới bản đồ nhỏ, thẻ măng chữ (vỏ măng khắc từ đã học, 4 phương án, đúng / sai tự đóng 1,5 s), bảng bán cho Trúc Ông
+ * măng dưới bản đồ nhỏ, thẻ măng chữ (vỏ măng khắc từ đã học, 4 phương án, đúng / sai tự đóng 1,5 s), bảng bán cho Măng bà bà
  * (dòng Măng / Măng to + "Bán", "Bán hết · +n", bán xong giữ bảng mở với "Đã bán"). Không biết tới luật — nơi ghép
  * (`web/src/haiMang.ts`) đưa dữ liệu. DOM dựng bằng createElement.
  */
@@ -49,7 +49,7 @@ const T = {
   quizTag: 'Măng chữ · măng to',
   quiz: 'Từ này nghĩa là gì?',
   quizSub: 'Đúng được gấp đôi',
-  sellTitle: 'Bán măng cho Trúc Ông',
+  sellTitle: 'Bán măng cho Măng bà bà',
   sellSub: 'Không giới hạn · măng không hỏng trong túi',
   sell: 'Bán',
   sold: 'Đã bán',
@@ -194,7 +194,7 @@ export class MangHud {
     this.quizRoot.replaceChildren(node('div', 'mh-dim'), card);
   }
 
-  /** Bảng bán cho Trúc Ông (`null` = đóng). */
+  /** Bảng bán cho Măng bà bà (`null` = đóng). */
   sell(v: MangSellView | null): void {
     const key = v ? JSON.stringify(v) : '';
     if (key === this.sellKey) return;

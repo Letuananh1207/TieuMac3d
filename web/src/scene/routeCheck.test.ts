@@ -62,7 +62,7 @@ describe('Kiểm đường đi NPC', () => {
 });
 
 describe('Bản thử đường vòng B trên Khởi Nguyên Trấn', () => {
-  it('R-NPC-7: đường Lão Canh không vướng vật cản, trên nền, dốc ≤ 35°; Tiểu Khất cách làn tây ≥ 3 m', () => {
+  it('R-NPC-7: đường Lão Canh không vướng vật cản, trên nền, dốc ≤ 35°; Tiểu Líu Lo cách làn tây ≥ 3 m', () => {
     const spec = loadScene(HOME_SCENE).spec;
     const colliders = new Colliders();
     const world = buildWorld(new THREE.Scene(), colliders, spec);
@@ -72,7 +72,7 @@ describe('Bản thử đường vòng B trên Khởi Nguyên Trấn', () => {
     // đặc tả có Lão Canh thì đúng đường vòng B đã duyệt (bản thử)
     const inSpec = spec.npcs.find((p) => p.id === 'go-mo');
     if (inSpec) expect(inSpec.route).toEqual(DRAFT_GO_MO.route);
-    // Tiểu Khất trong đặc tả (khi đưa lại — đang tạm gỡ, V-20261116-102) = đúng bản thử (vị trí, hướng, ngồi, cỡ)
+    // Tiểu Líu Lo trong đặc tả (khi đưa lại — đang tạm gỡ, V-20261116-102) = đúng bản thử (vị trí, hướng, ngồi, cỡ)
     const kn = spec.npcs.find((p) => p.id === 'khat-nhi');
     if (kn) expect(kn).toEqual(DRAFT_KHAT_NHI);
     const ground = (x: number, z: number): number => world.surface.heightAt(x, z);
@@ -90,7 +90,7 @@ describe('Bản thử đường vòng B trên Khởi Nguyên Trấn', () => {
     expect(len).toBeGreaterThan(160);
     expect(len).toBeLessThan(200);
     expect(Math.abs(DRAFT_KHAT_NHI.x - -2.5)).toBeGreaterThan(3);
-    // Tiểu Khất ngồi cách mọi đoạn đường Lão Canh ≥ 1,5 m (không chắn lối, hai NPC không chạm nhau)
+    // Tiểu Líu Lo ngồi cách mọi đoạn đường Lão Canh ≥ 1,5 m (không chắn lối, hai NPC không chạm nhau)
     const segDist = ([ax, az]: XZ, [bx, bz]: XZ): number => {
       const dx = bx - ax;
       const dz = bz - az;

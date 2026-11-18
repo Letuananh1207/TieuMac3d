@@ -96,7 +96,7 @@ export function cauHoiGio(nowMs: number): string {
   const canh = canhDem(h);
   const dem = canh ? `, canh ${CANH[canh - 1]}` : '';
   const phut = m ? ` ${m} phút` : '';
-  return `Bây giờ là giờ ${canhGio(h)}${dem} — ${gioNoi(h).replace(' giờ', ` giờ${phut}`)} đó đạo hữu.`;
+  return `Bây giờ là giờ ${canhGio(h)}${dem} — ${gioNoi(h).replace(' giờ', ` giờ${phut}`)} đó cháu.`;
 }
 
 /**

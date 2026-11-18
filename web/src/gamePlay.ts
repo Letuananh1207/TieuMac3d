@@ -29,14 +29,14 @@ export interface TableSeat extends SeatSpot {
 
 /** Lời NPC (R-CO-3, R-DAU-1, R-DAU-2). `coThua` / `dauThua` = NPC thua (người thắng). */
 export const GAME_LINES = {
-  coThua: 'Đạo hữu cao tay quá!',
+  coThua: 'Thiếu hiệp cao tay quá!',
   coThang: 'Ha, lần này đệ thắng rồi!',
   coHoa: 'Ngang tài ngang sức!',
-  dauChuaHoc: `Con hãy tới ${FOREST} học vài bài từ với Trúc Lão rồi lại đây đấu với lão.`,
-  dauChuaHocRoi: 'Vâng, con đi đây (rời bàn)',
-  dauThua: 'Khá lắm! Con nhớ từ chắc hơn lão tưởng.',
-  dauThang: 'Lần này lão hơn một chút. Ôn thêm rồi lại đấu nhé con.',
-  dauHoa: 'Ngang tay rồi — con với lão cùng đấu ván nữa chứ?',
+  dauChuaHoc: `Cháu hãy tới ${FOREST} học vài bài từ với Trúc Lão rồi lại đây đấu với lão.`,
+  dauChuaHocRoi: 'Vâng, cháu đi đây (rời bàn)',
+  dauThua: 'Khá lắm! Cháu nhớ từ chắc hơn lão tưởng.',
+  dauThang: 'Lần này lão hơn một chút. Ôn thêm rồi lại đấu nhé cháu.',
+  dauHoa: 'Ngang tay rồi — cháu với lão cùng đấu ván nữa chứ?',
 } as const;
 
 /** Phần của `PlayerController` mà trò chơi dùng (test thay bằng bản giả). */
@@ -189,7 +189,7 @@ export class GamePlay {
     s.table.mark(null);
   }
 
-  /** R-DAU-1: chưa học từ nào → câu thoại + "Vâng, con đi đây (rời bàn)", không có ván; có → 10 câu (R-DAU-2). */
+  /** R-DAU-1: chưa học từ nào → câu thoại + "Vâng, cháu đi đây (rời bàn)", không có ván; có → 10 câu (R-DAU-2). */
   private startDuel(): void {
     const s = this.seated;
     if (!s) return;

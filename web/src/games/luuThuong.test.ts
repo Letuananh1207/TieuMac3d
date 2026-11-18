@@ -94,7 +94,7 @@ describe('Lưu Thương — câu ghép từ', () => {
 });
 
 describe('Lưu Thương — văn nhân', () => {
-  it('R-LUU-4: xác suất đúng Thi Ông 75 %, Tài Nữ 70 %, Tú Tài 60 %', () => {
+  it('R-LUU-4: xác suất đúng Thi Ông 75 %, Vần cô nương 70 %, A Chén 60 %', () => {
     expect(Object.fromEntries(LUU_NPCS.map((n) => [n.id, n.accuracy]))).toEqual({ 'thi-ong': 0.75, 'tai-nu': 0.7, 'tu-tai': 0.6 });
     const rng = seeded(11);
     const qs = makeQuestions(LEARNED, ['tu-tai', 'tu-tai', 'tu-tai', 'tu-tai', 'tu-tai', 'tu-tai', 'tu-tai', 'tu-tai'], rng);
@@ -131,13 +131,13 @@ describe('Lưu Thương — hết ván', () => {
     expect([rankTitle(tie), thiKhoi(tie)]).toEqual(['Đồng hạng nhất', false]);
     expect(rankTitle({ nguoi: 2, 'thi-ong': 3, 'tai-nu': 2, 'tu-tai': 0 })).toBe('Hạng nhì');
     expect(rankTitle({ nguoi: 0, 'thi-ong': 3, 'tai-nu': 2, 'tu-tai': 1 })).toBe('Hạng tư');
-    expect(hostLine('thang')).toBe('Hay! Chén này xin kính đạo hữu.');
+    expect(hostLine('thang')).toBe('Hay! Chén này lão kính cháu.');
   });
 });
 
 describe('Lưu Thương — vào tiệc', () => {
   it('R-LUU-1: chưa đủ 3 từ hai chữ → Thi Ông nhắc tới Trúc Lão học thêm bài từ', () => {
     expect(canJoin(['谢谢', '再见'])).toBe(false);
-    expect(LUU_NEED_LINE).toBe('Đạo hữu hãy tới Trúc Lão học thêm vài bài từ, rồi lại đây cùng thả chén.');
+    expect(LUU_NEED_LINE).toBe('Cháu hãy tới Trúc Lão học thêm vài bài từ, rồi lại đây cùng thả chén.');
   });
 });

@@ -132,7 +132,7 @@ class HocXaApp extends StatelessWidget {
               onEarnGame: progress == null
                   ? null
                   : (game, outcome, song) async => earnGameReply(await progress!.earnGame(game, outcome, song: song)),
-              // Tiểu Khất: cho 5 văn, mỗi ngày giờ VN một lần (R-TIEN-8)
+              // Tiểu Líu Lo: cho 5 văn, mỗi ngày giờ VN một lần (R-TIEN-8)
               onGiveAlms: progress == null ? null : () async => giveAlmsReply(await progress!.giveAlms()),
               onOpenShop: progress == null
                   ? null
@@ -155,7 +155,7 @@ class HocXaApp extends StatelessWidget {
                       final r = await progress!.gardenAct(a.act, plot: a.plot, crop: a.crop, item: a.item, count: a.count);
                       return gardenActReply(r, progress!.coins);
                     },
-              // măng Trúc Lâm: hái / bán cho Trúc Ông, giữ qua tắt app (R-MANG-1…5)
+              // măng Trúc Lâm: hái / bán cho Măng bà bà, giữ qua tắt app (R-MANG-1…5)
               onGetMang: progress == null ? null : () => mangReply(progress!.mang, progress!.now),
               onMangAct: progress == null
                   ? null

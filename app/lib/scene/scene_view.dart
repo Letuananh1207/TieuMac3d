@@ -88,7 +88,7 @@ class SceneView extends StatefulWidget {
   /// (trang không thưởng, ví ẩn).
   final Future<Map<String, Object?>> Function(String game, String outcome, String? song)? onEarnGame;
 
-  /// Cho Tiểu Khất (`giveAlms` — R-TIEN-8): Flutter tính + ghi, trả `giveAlmsReply`. `null` → trả `null` (không cho được).
+  /// Cho Tiểu Líu Lo (`giveAlms` — R-TIEN-8): Flutter tính + ghi, trả `giveAlmsReply`. `null` → trả `null` (không cho được).
   final Future<Map<String, Object?>> Function()? onGiveAlms;
 
   /// Mở Tạp hoá (`openShop` — R-TIEN-4, R-TIEN-6); đóng → `resume`. `null` → trả `false`, trang báo "Tiệm chưa mở".

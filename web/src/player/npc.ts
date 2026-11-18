@@ -208,8 +208,8 @@ function standingMixamoNpc(
 }
 
 /**
- * Màu áo thế khối của NPC trò chơi chưa có model (R-NPC-1, V-66 B4): Thi Ông áo lam râu bạc, Tú Tài trắng ngà, Tài Nữ
- * lục nhạt, Trúc Ông nâu (lão tiều phu), thầy Trúc Lão lục trúc sẫm (R-HANH-8). Dáng đệ tử khối (`discipleCharacter.ts`) — bản đẹp qua `/tai-nguyen`.
+ * Màu áo thế khối của NPC trò chơi chưa có model (R-NPC-1, V-66 B4): Thi Ông áo lam râu bạc, A Chén trắng ngà, Vần cô nương
+ * lục nhạt, Măng bà bà nâu (bà mua măng — dáng khối chưa tách nam / nữ), thầy Trúc Lão lục trúc sẫm (R-HANH-8). Dáng đệ tử khối (`discipleCharacter.ts`) — bản đẹp qua `/tai-nguyen`.
  */
 export const BLOCK_NPC_COLORS: Readonly<Record<string, DiscipleColors>> = {
   'thi-ong': { robe: '#5b7896', trim: '#2e3f58', hair: '#d9d6cf', jade: '#c9b37a' },

@@ -9,7 +9,7 @@ import { almsLabel, giveAlms, NO_ALMS, parseAlms } from './walletRules';
 const vn = (d: number, h: number, mi = 0): number => Date.UTC(2026, 10, d, h - 7, mi);
 const day14 = maNgayVN(vn(14, 10));
 
-describe('Cho Tiểu Khất (R-TIEN-8)', () => {
+describe('Cho Tiểu Líu Lo (R-TIEN-8)', () => {
   it('R-TIEN-8: có 12, 10 giờ ngày 14 → cho → còn 7; 23:59 cùng ngày → không cho được; 0:01 ngày 15 → cho lại được', () => {
     const r = giveAlms(12, NO_ALMS, day14);
     expect(r).toEqual({ ok: true, balance: 7, alms: { lastDay: day14, count: 1 } });
@@ -32,8 +32,8 @@ describe('Cho Tiểu Khất (R-TIEN-8)', () => {
     expect(giveAlms(r.balance, r.alms, london).ok).toBe(true);
   });
 
-  it('R-TIEN-5: nhãn ví HUD "−5 · Cho Tiểu Khất"', () => {
-    expect(almsLabel()).toBe('−5 · Cho Tiểu Khất');
+  it('R-TIEN-5: nhãn ví HUD "−5 · Cho Tiểu Líu Lo"', () => {
+    expect(almsLabel()).toBe('−5 · Cho Tiểu Líu Lo');
   });
 
   it('R-TIEN-8: bản ghi lưu hỏng → chưa cho lần nào', () => {
@@ -43,24 +43,24 @@ describe('Cho Tiểu Khất (R-TIEN-8)', () => {
   });
 });
 
-describe('Thoại Tiểu Khất (R-NPC-6)', () => {
-  it('R-NPC-6: chưa cho → xin tiền; đã cho hôm nay → "Hôm nay đạo hữu cho rồi, mai ghé nhé!"', () => {
+describe('Thoại Tiểu Líu Lo (R-NPC-6)', () => {
+  it('R-NPC-6: chưa cho → xin tiền; đã cho hôm nay → "Hôm nay thiếu hiệp cho rồi, mai ghé nhé!"', () => {
     expect(almsState(NO_ALMS, day14, 12)).toBe('chua-cho');
-    expect(almsGreeting('chua-cho', 0).startsWith('Đạo hữu ơi, cho tiểu khất xin vài văn mua bánh')).toBe(true);
+    expect(almsGreeting('chua-cho', 0).startsWith('Thiếu hiệp ơi, cho Líu Lo xin vài văn mua bánh')).toBe(true);
     const given = { lastDay: day14, count: 1 };
     expect(almsState(given, day14, 7)).toBe('da-cho');
-    expect(almsGreeting('da-cho', 1).startsWith('Hôm nay đạo hữu cho rồi, mai ghé nhé!')).toBe(true);
+    expect(almsGreeting('da-cho', 1).startsWith('Hôm nay thiếu hiệp cho rồi, mai ghé nhé!')).toBe(true);
   });
 
-  it('R-NPC-6: đủ 3 lần → "Ân nhân lại tới!"; đủ 10 lần → thêm "Tiểu khất nhớ ơn đạo hữu mãi."', () => {
+  it('R-NPC-6: đủ 3 lần → "Ân nhân lại tới!"; đủ 10 lần → thêm "Líu Lo nhớ ơn thiếu hiệp mãi."', () => {
     expect(almsGreeting('chua-cho', 2).includes('Ân nhân')).toBe(false);
     expect(almsGreeting('chua-cho', 3).startsWith('Ân nhân lại tới!')).toBe(true);
     expect(almsGreeting('chua-cho', 9).includes('nhớ ơn')).toBe(false);
-    expect(almsGreeting('chua-cho', 10)).toContain('Tiểu khất nhớ ơn đạo hữu mãi.');
+    expect(almsGreeting('chua-cho', 10)).toContain('Líu Lo nhớ ơn thiếu hiệp mãi.');
   });
 
-  it('R-NPC-6: cho xong → "Đa tạ đạo hữu!" + tin đồn của ngày; tin đổi mỗi ngày theo lượt, hết thì quay lại', () => {
-    expect(almsThanks(day14)).toBe(`Đa tạ đạo hữu! ${tinDonCuaNgay(day14).text}`);
+  it('R-NPC-6: cho xong → "Đa tạ thiếu hiệp!" + tin đồn của ngày; tin đổi mỗi ngày theo lượt, hết thì quay lại', () => {
+    expect(almsThanks(day14)).toBe(`Đa tạ thiếu hiệp! ${tinDonCuaNgay(day14).text}`);
     const n = TIN_DON.length;
     const seen = new Set(Array.from({ length: n }, (_, i) => tinDonCuaNgay(day14 + i).text));
     expect(seen.size).toBe(n);
@@ -76,7 +76,7 @@ describe('Thoại Tiểu Khất (R-NPC-6)', () => {
   });
 });
 
-describe('Khung thoại Tiểu Khất (R-NPC-6)', () => {
+describe('Khung thoại Tiểu Líu Lo (R-NPC-6)', () => {
   const choices = (d: ReturnType<typeof khatNhiDialog>): string[] => d.lines[0].choices.map((c) => c.text);
 
   it('R-NPC-6: chưa cho → "Cho 5 văn" (action alms), "Hôm nay ta không có tiền lẻ", "Tạm biệt"', () => {

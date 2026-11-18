@@ -30,25 +30,25 @@ describe('Hội thoại NPC công trình', () => {
   const of = (id: string) => DIALOGS.find((d) => d.npc === id);
   const texts = (id: string): string[] => of(id)!.lines.flatMap((l) => l.choices.map((c) => c.text));
 
-  it('R-NPC-3: Tiểu nhị chào "khách quan", hỏi được về trà, nhạc, chỗ ngồi / lên lầu', () => {
+  it('R-NPC-3: Tiểu nhị chào "thiếu hiệp", hỏi được về trà, nhạc, chỗ ngồi / lên lầu', () => {
     const d = of('tieu-nhi')!;
     expect(d.han).toBeUndefined(); // tên nhân vật không kèm chữ Hán (người dùng 2026-11-14)
-    expect(d.lines.find((l) => l.id === d.start)!.text).toContain('Khách quan');
+    expect(d.lines.find((l) => l.id === d.start)!.text).toContain('Thiếu hiệp mời vào!');
     const all = texts('tieu-nhi').join(' | ');
     expect(all).toContain('trà');
     expect(all).toContain('nhạc');
     expect(all).toContain('lầu');
     // R-TRA-1: ngồi đâu tiểu nhị mang trà tới đó
-    expect(d.lines.find((l) => l.id === 'tra')!.text).toContain('tiểu nhân mang trà tới tận nơi');
+    expect(d.lines.find((l) => l.id === 'tra')!.text).toContain('đệ mang trà tới tận nơi');
   });
 
-  it('R-NPC-4: Kỳ Muội xưng "muội", gọi "đạo hữu"; giới thiệu Ngũ Tử Kỳ (5 quân liền) và Đấu chữ (10 câu, không ghi tiến độ)', () => {
+  it('R-NPC-4: Kỳ Muội xưng "tỷ", gọi "em"; giới thiệu Ngũ Tử Kỳ (5 quân liền) và Đấu chữ (10 câu, không ghi tiến độ)', () => {
     const d = of('quan-su')!;
     expect(d.name).toBe('Kỳ Muội');
     expect(d.han).toBeUndefined(); // tên nhân vật không kèm chữ Hán (người dùng 2026-11-14)
     const start = d.lines.find((l) => l.id === d.start)!.text;
-    expect(start).toContain('Đạo hữu');
-    expect(start).toContain('Muội');
+    expect(start).toContain('Em đến chơi');
+    expect(start).toContain('Tỷ trông sân');
     const lines = d.lines.map((l) => l.text).join(' ');
     expect(lines).not.toMatch(/tại hạ/i);
     expect(lines).toContain('5 quân');
@@ -56,10 +56,11 @@ describe('Hội thoại NPC công trình', () => {
     expect(lines).toContain('không ghi');
   });
 
-  it('R-NPC-5: Trận sư có lựa chọn "Ta đi được những đâu?" đóng khung rồi đọc tiến độ', () => {
+  it('R-NPC-5: La đại thúc có lựa chọn "Cháu đi được những đâu?" đóng khung rồi đọc tiến độ', () => {
     const d = of('tran-su')!;
+    expect(d.name).toBe('La đại thúc');
     expect(d.han).toBeUndefined(); // tên nhân vật không kèm chữ Hán (người dùng 2026-11-14)
-    const c = d.lines.flatMap((l) => l.choices).find((x) => x.text === 'Ta đi được những đâu?')!;
+    const c = d.lines.flatMap((l) => l.choices).find((x) => x.text === 'Cháu đi được những đâu?')!;
     expect(c.action).toBe('journey');
     expect(c.next).toBeNull();
   });

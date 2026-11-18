@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { DongTac, TINH } from './dongTac';
 import { tronXin, XIN } from './xinDang';
 
-describe('Dáng ngồi xin Tiểu Khất (R-NPC-6)', () => {
+describe('Dáng ngồi xin Tiểu Líu Lo (R-NPC-6)', () => {
   it('R-NPC-6: ngồi → tay phải gập nâng bát trước bụng, tay trái dạng ra cầm gậy; không ngồi (w 0) → giữ dáng nền', () => {
     const t = TINH['hoat-bat'];
     const d = new DongTac(t, 1);

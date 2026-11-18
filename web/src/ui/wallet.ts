@@ -57,7 +57,7 @@ const SOURCES: [string, string][] = [
   ['Trò chữ thắng · hoà · thua', '+8 · 5 · 3'],
   ['Bán nông sản ở Vườn rau', 'tối đa 60 / ngày'], // walletSourceGarden (R-TIEN-1, R-VUON-7)
   ['Đàn cầm theo bài', '+5 · 3 · 1'], // R-CAM-4 (Trúc Lâm) — "Trò chữ" đã tính cả Lưu Thương (R-LUU-5)
-  ['Bán măng cho Trúc Ông', '3 · 8 / cái'], // R-MANG-5
+  ['Bán măng cho Măng bà bà', '3 · 8 / cái'], // R-MANG-5
 ];
 const CARD_SECONDS = 4;
 const COUNT_UP_MS = 600;
@@ -220,7 +220,7 @@ export class WalletHud {
   /** Một khoản: xu bay vào ví (ví nảy mỗi xu) → "+n" + nhãn lý do; đủ trần → chỉ nhãn mờ (R-TIEN-5). */
   private async play(fx: WalletFx): Promise<void> {
     const capped = fx.amount === 0;
-    // khoản trừ ngoài Tạp hoá ("−5 · Cho Tiểu Khất" — R-TIEN-5, R-TIEN-8): không xu bay, viền son + "−n" + nhãn
+    // khoản trừ ngoài Tạp hoá ("−5 · Cho Tiểu Líu Lo" — R-TIEN-5, R-TIEN-8): không xu bay, viền son + "−n" + nhãn
     if (fx.amount < 0) this.bump('down', deltaText({ kind: 'down', amount: -fx.amount }), (this.shown ?? 0) + fx.amount, COUNT_DOWN_MS);
     else if (!capped) {
       const from = this.reduce ? null : (fx.from?.() ?? null);
