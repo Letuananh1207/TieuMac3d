@@ -2,35 +2,82 @@
   "site": {
     "name": "Yên Vũ Lâu",
     "han": "江南",
-    "areas": []
+    "areas": [
+      {
+        "name": "Sân Cây Đèn",
+        "from": [
+          -9,
+          -1.5
+        ],
+        "to": [
+          9,
+          14
+        ]
+      },
+      {
+        "name": "Bờ bắc",
+        "from": [
+          -32,
+          -32
+        ],
+        "to": [
+          32,
+          -12
+        ]
+      },
+      {
+        "name": "Bến sông",
+        "from": [
+          -32,
+          -12
+        ],
+        "to": [
+          32,
+          14
+        ]
+      },
+      {
+        "name": "Phố chợ",
+        "from": [
+          -32,
+          14
+        ],
+        "to": [
+          32,
+          44
+        ]
+      }
+    ]
   },
   "sky": {
-    "top": "#8fa9b8",
-    "middle": "#c9d5d6",
-    "horizon": "#e9d9c4"
+    "top": "#2a3466",
+    "middle": "#4a4a82",
+    "horizon": "#8a7aa8"
   },
   "fog": {
-    "color": "#cfd8d4",
-    "near": 14,
-    "far": 72
+    "color": "#3a3c6c",
+    "near": 30,
+    "far": 110
   },
   "light": {
-    "skyColor": "#f2f4ee",
-    "groundColor": "#5d6658",
-    "hemiIntensity": 0.78,
-    "sunColor": "#ffe0b8",
-    "sunIntensity": 0.62,
+    "skyColor": "#c8c8f0",
+    "groundColor": "#5a4a5a",
+    "hemiIntensity": 0.8,
+    "sunColor": "#ffd8b0",
+    "sunIntensity": 0.55,
     "sunPosition": [
       -30,
       14,
       4
-    ]
+    ],
+    "lampGlow": 1
   },
   "ground": {
     "size": 160,
-    "color": "#8a8780",
+    "color": "#b4a898",
     "brickHue": 30,
-    "pattern": "vuong"
+    "pattern": "vuong",
+    "variation": 0.08
   },
   "terrain": {
     "enabled": true,
@@ -43,15 +90,106 @@
     "plateaus": [
       {
         "from": [
+          -29,
+          -11
+        ],
+        "to": [
+          29,
+          -5
+        ],
+        "y": -1,
+        "pave": false,
+        "blend": 0.05
+      },
+      {
+        "from": [
+          -21,
+          2.5
+        ],
+        "to": [
+          -11,
+          9.5
+        ],
+        "y": -1,
+        "pave": false,
+        "blend": 0.05
+      },
+      {
+        "from": [
+          11,
+          2.5
+        ],
+        "to": [
+          21,
+          9.5
+        ],
+        "y": -1,
+        "pave": false,
+        "blend": 0.05
+      },
+      {
+        "from": [
           -32,
           -4
+        ],
+        "to": [
+          32,
+          1.5
+        ],
+        "y": 0,
+        "pave": true,
+        "blend": 6
+      },
+      {
+        "from": [
+          -32,
+          10.5
         ],
         "to": [
           32,
           44
         ],
         "y": 0,
-        "pave": false,
+        "pave": true,
+        "blend": 6
+      },
+      {
+        "from": [
+          -32,
+          1.5
+        ],
+        "to": [
+          -22,
+          10.5
+        ],
+        "y": 0,
+        "pave": true,
+        "blend": 6
+      },
+      {
+        "from": [
+          -10,
+          1.5
+        ],
+        "to": [
+          10,
+          10.5
+        ],
+        "y": 0,
+        "pave": true,
+        "blend": 6
+      },
+      {
+        "from": [
+          22,
+          1.5
+        ],
+        "to": [
+          32,
+          10.5
+        ],
+        "y": 0,
+        "pave": true,
         "blend": 6
       },
       {
@@ -60,63 +198,11 @@
           -32
         ],
         "to": [
-          -16,
-          -12
-        ],
-        "y": 0,
-        "pave": false,
-        "blend": 6
-      },
-      {
-        "from": [
-          -16,
-          -32
-        ],
-        "to": [
-          -10,
-          -26
-        ],
-        "y": 0,
-        "pave": false,
-        "blend": 6
-      },
-      {
-        "from": [
-          -10,
-          -32
-        ],
-        "to": [
-          10,
-          -12
-        ],
-        "y": 0,
-        "pave": false,
-        "blend": 6
-      },
-      {
-        "from": [
-          10,
-          -32
-        ],
-        "to": [
-          22,
-          -16
-        ],
-        "y": 0,
-        "pave": false,
-        "blend": 6
-      },
-      {
-        "from": [
-          22,
-          -32
-        ],
-        "to": [
           32,
           -12
         ],
         "y": 0,
-        "pave": false,
+        "pave": true,
         "blend": 6
       }
     ],
@@ -179,7 +265,7 @@
     "slopeRock": 35,
     "stairs": [],
     "grass": {
-      "density": 4,
+      "density": 2,
       "colors": [
         "#56713f",
         "#7a9658"
@@ -221,34 +307,425 @@
     "enabled": false
   },
   "wallSegments": [],
-  "paths": [],
+  "paths": [
+    {
+      "from": [
+        0,
+        35
+      ],
+      "to": [
+        0,
+        12.5
+      ],
+      "width": 4
+    },
+    {
+      "from": [
+        -29,
+        -2
+      ],
+      "to": [
+        -6,
+        -2
+      ],
+      "width": 3.5
+    },
+    {
+      "from": [
+        6,
+        -2
+      ],
+      "to": [
+        29,
+        -2
+      ],
+      "width": 3.5
+    },
+    {
+      "from": [
+        -29,
+        -14.6
+      ],
+      "to": [
+        29,
+        -14.6
+      ],
+      "width": 3
+    },
+    {
+      "from": [
+        25,
+        -16
+      ],
+      "to": [
+        25,
+        -23
+      ],
+      "width": 2.5
+    }
+  ],
   "buildingStyle": {
-    "path": "#8e8b84",
-    "stone": "#8a8780",
-    "water": "#4d7f86",
-    "wall": "#f1eee6",
-    "pillar": "#3a3430",
-    "ridge": "#2f3236",
+    "path": "#c2b6a4",
+    "stone": "#a8a194",
+    "water": "#4d6a96",
+    "wall": "#e9e2d4",
+    "pillar": "#5a4232",
+    "ridge": "#2c3036",
     "eave": "#33363a",
-    "base": "#8c8a84",
-    "timber": "#3a3430",
-    "heightScale": 1
+    "base": "#9a948a",
+    "timber": "#5a4232",
+    "lantern": "#ffc27a",
+    "heightScale": 1.5,
+    "pathLook": "san"
   },
-  "buildings": [],
+  "buildings": [
+    {
+      "id": "nha-bac-1",
+      "x": -25.5,
+      "z": -22.5,
+      "w": 7,
+      "d": 6,
+      "title": "Tiệm đèn lồng",
+      "roofColor": "#3b3f44",
+      "kind": "nha-nho",
+      "plaque": false
+    },
+    {
+      "id": "nha-bac-2",
+      "x": -16,
+      "z": -23.2,
+      "w": 6.5,
+      "d": 5.5,
+      "title": "Tiệm trà",
+      "roofColor": "#3b3f44",
+      "kind": "nha-nho",
+      "plaque": false
+    },
+    {
+      "id": "nha-bac-3",
+      "x": -6.5,
+      "z": -22.5,
+      "w": 7,
+      "d": 6,
+      "title": "Tiệm vải",
+      "roofColor": "#3b3f44",
+      "kind": "nha-nho",
+      "plaque": false
+    },
+    {
+      "id": "nha-bac-4",
+      "x": 3,
+      "z": -23.2,
+      "w": 6.5,
+      "d": 5.5,
+      "title": "Tiệm bánh",
+      "roofColor": "#3b3f44",
+      "kind": "nha-nho",
+      "plaque": false
+    },
+    {
+      "id": "nha-bac-5",
+      "x": 12.5,
+      "z": -22.5,
+      "w": 6,
+      "d": 6,
+      "title": "Tiệm quạt",
+      "roofColor": "#3b3f44",
+      "kind": "nha-nho",
+      "plaque": false
+    },
+    {
+      "id": "nha-nam-1",
+      "x": -28.5,
+      "z": 6,
+      "w": 7,
+      "d": 5,
+      "rotY": 90,
+      "title": "Quán mì",
+      "roofColor": "#3b3f44",
+      "kind": "nha-nho",
+      "plaque": false
+    },
+    {
+      "id": "nha-nam-2",
+      "x": -28.5,
+      "z": 14,
+      "w": 7,
+      "d": 5,
+      "rotY": 90,
+      "title": "Tiệm kẹo",
+      "roofColor": "#3b3f44",
+      "kind": "nha-nho",
+      "plaque": false
+    },
+    {
+      "id": "nha-nam-3",
+      "x": 28.5,
+      "z": 6,
+      "w": 7,
+      "d": 5,
+      "rotY": 270,
+      "title": "Quán trà",
+      "roofColor": "#3b3f44",
+      "kind": "nha-nho",
+      "plaque": false
+    },
+    {
+      "id": "nha-nam-4",
+      "x": 28.5,
+      "z": 14,
+      "w": 7,
+      "d": 5,
+      "rotY": 270,
+      "title": "Tiệm giấy",
+      "roofColor": "#3b3f44",
+      "kind": "nha-nho",
+      "plaque": false
+    },
+    {
+      "id": "nha-cho-1",
+      "x": -21,
+      "z": 31,
+      "w": 8,
+      "d": 5.5,
+      "rotY": 90,
+      "title": "Tiệm hoa",
+      "roofColor": "#3b3f44",
+      "kind": "nha-nho",
+      "plaque": false
+    },
+    {
+      "id": "nha-cho-2",
+      "x": 21,
+      "z": 31,
+      "w": 8,
+      "d": 5.5,
+      "rotY": 270,
+      "title": "Tiệm đồ chơi",
+      "roofColor": "#3b3f44",
+      "kind": "nha-nho",
+      "plaque": false
+    }
+  ],
   "gates": [],
   "water": [
     {
-      "x": -26,
-      "z": -22,
-      "r": 2
+      "x": -7,
+      "z": -8,
+      "w": 46,
+      "d": 8,
+      "sunk": 1
+    },
+    {
+      "x": 25,
+      "z": -8,
+      "w": 10,
+      "d": 8,
+      "sunk": 1
+    },
+    {
+      "x": -16,
+      "z": 6,
+      "w": 12,
+      "d": 9,
+      "sunk": 1
+    },
+    {
+      "x": 16,
+      "z": 6,
+      "w": 12,
+      "d": 9,
+      "sunk": 1
     }
   ],
-  "bridges": [],
-  "boats": [],
-  "props": [],
+  "bridges": [
+    {
+      "kind": "vom",
+      "x": 18,
+      "z": -8,
+      "length": 10,
+      "width": 4,
+      "rise": 2.2,
+      "water": true,
+      "sunk": 1
+    }
+  ],
+  "boats": [
+    {
+      "path": [
+        [
+          -28,
+          -8.6
+        ],
+        [
+          13,
+          -8.6
+        ]
+      ],
+      "speed": 0.8
+    },
+    {
+      "path": [
+        [
+          -22,
+          -5.6
+        ],
+        [
+          -19,
+          -5.6
+        ]
+      ],
+      "moored": true,
+      "sunk": 1
+    },
+    {
+      "path": [
+        [
+          26,
+          -10.4
+        ],
+        [
+          29,
+          -10.4
+        ]
+      ],
+      "moored": true,
+      "cargo": true,
+      "sunk": 1
+    },
+    {
+      "path": [
+        [
+          18,
+          8.2
+        ],
+        [
+          15,
+          8.2
+        ]
+      ],
+      "moored": true,
+      "sunk": 1
+    }
+  ],
+  "props": [
+    {
+      "kind": "ben-nuoc",
+      "x": -21,
+      "z": -4,
+      "rotY": 180
+    },
+    {
+      "kind": "ben-nuoc",
+      "x": -11,
+      "z": -4,
+      "rotY": 180
+    },
+    {
+      "kind": "ben-nuoc",
+      "x": 9,
+      "z": -4,
+      "rotY": 180
+    },
+    {
+      "kind": "ben-nuoc",
+      "x": -16,
+      "z": -12
+    },
+    {
+      "kind": "ben-nuoc",
+      "x": 4,
+      "z": -12
+    },
+    {
+      "kind": "den-da",
+      "x": 15.4,
+      "z": -1.2
+    },
+    {
+      "kind": "den-da",
+      "x": 20.6,
+      "z": -1.2
+    },
+    {
+      "kind": "den-da",
+      "x": 15.4,
+      "z": -15.4
+    },
+    {
+      "kind": "den-da",
+      "x": 20.6,
+      "z": -15.4
+    },
+    {
+      "kind": "vo-ruou",
+      "x": -9,
+      "z": 24
+    },
+    {
+      "kind": "chau-sen",
+      "x": -3.4,
+      "z": 12.8
+    },
+    {
+      "kind": "chau-sen",
+      "x": 3.4,
+      "z": 12.8
+    },
+    {
+      "kind": "meo",
+      "x": -5.2,
+      "z": 30,
+      "rotY": 90
+    }
+  ],
   "trees": {
-    "yard": [],
-    "groves": [],
+    "yard": [
+      {
+        "kind": "truc",
+        "x": 5.5,
+        "z": 34,
+        "scale": 0.8,
+        "planter": true
+      },
+      {
+        "kind": "truc",
+        "x": -5.5,
+        "z": 34,
+        "scale": 0.8,
+        "planter": true
+      }
+    ],
+    "groves": [
+      {
+        "kind": "lieu",
+        "x": -44,
+        "z": 0,
+        "w": 12,
+        "d": 60,
+        "count": 10,
+        "collide": false
+      },
+      {
+        "kind": "lieu",
+        "x": 44,
+        "z": 0,
+        "w": 12,
+        "d": 60,
+        "count": 10,
+        "collide": false
+      },
+      {
+        "kind": "truc",
+        "x": 0,
+        "z": -30,
+        "w": 56,
+        "d": 3,
+        "count": 8,
+        "collide": false,
+        "planter": true
+      }
+    ],
     "ring": {
       "count": 0,
       "radius": 25,
@@ -258,7 +735,88 @@
     },
     "seed": 29
   },
-  "lanternStrings": [],
+  "lanternStrings": [
+    {
+      "from": [
+        -7,
+        0.4
+      ],
+      "to": [
+        -24,
+        0.4
+      ]
+    },
+    {
+      "from": [
+        7,
+        0.4
+      ],
+      "to": [
+        24,
+        0.4
+      ]
+    },
+    {
+      "from": [
+        -14,
+        -16.2
+      ],
+      "to": [
+        -28,
+        -16.2
+      ]
+    },
+    {
+      "from": [
+        -12,
+        -16.2
+      ],
+      "to": [
+        2,
+        -16.2
+      ]
+    },
+    {
+      "from": [
+        4,
+        -16.2
+      ],
+      "to": [
+        14,
+        -16.2
+      ]
+    },
+    {
+      "from": [
+        -2.6,
+        17
+      ],
+      "to": [
+        2.6,
+        17
+      ]
+    },
+    {
+      "from": [
+        -2.6,
+        23
+      ],
+      "to": [
+        2.6,
+        23
+      ]
+    },
+    {
+      "from": [
+        -2.6,
+        29
+      ],
+      "to": [
+        2.6,
+        29
+      ]
+    }
+  ],
   "floating": {
     "islands": [],
     "clouds": {
@@ -277,7 +835,7 @@
   "camera": {
     "fov": 55,
     "minDist": 3,
-    "maxDist": 24,
+    "maxDist": 26,
     "near": {
       "dist": 4.2,
       "pitch": 0.32
@@ -374,12 +932,226 @@
     }
   ],
   "dayNight": {
-    "enabled": true
+    "enabled": true,
+    "gioCoDinh": 21,
+    "dem": {
+      "sky": {
+        "top": "#1c2456",
+        "middle": "#353a78",
+        "horizon": "#6a5a98"
+      },
+      "fog": "#363a70",
+      "light": {
+        "skyColor": "#9aa4e0",
+        "groundColor": "#4a3e5e",
+        "hemiScale": 0.62,
+        "moonColor": "#c0c8ff",
+        "moonScale": 0.4
+      },
+      "tint": {
+        "near": "#c4c4e8",
+        "far": "#6a6aa8",
+        "water": "#7a84c0"
+      },
+      "lampGlow": 1,
+      "windowGlow": 0.85,
+      "windowColor": "#ffc870",
+      "vignette": 0.35,
+      "vignetteColor": "#1c1a40",
+      "stars": {
+        "count": 260,
+        "color": "#eef0ff",
+        "size": 2.2
+      },
+      "moon": {
+        "color": "#fbf4d8",
+        "size": 4,
+        "position": [
+          -14,
+          18,
+          -30
+        ]
+      }
+    }
   },
   "channels": [],
   "mirages": [],
   "ramparts": [],
   "caravans": [],
   "fences": [],
-  "teaRows": []
+  "teaRows": [],
+  "look": {
+    "style": "mem",
+    "colorPipeline": "cu",
+    "wrap": 0.5,
+    "ao": 0.4,
+    "foot": 0.8,
+    "footShare": 0.55,
+    "aoTint": "#5e626a",
+    "sunGlow": "#fff2d0",
+    "glowSize": 0.15,
+    "skyBands": {
+      "mid": 0.03,
+      "top": 0.25
+    },
+    "cloudBelly": "#f4d9d0",
+    "mist": {
+      "color": "#f4f1ea",
+      "opacity": 0.55
+    },
+    "flowers": {
+      "density": 6,
+      "colors": [
+        "#f4a7b9",
+        "#fff6e5",
+        "#f6cf5e",
+        "#b9a3e3"
+      ]
+    },
+    "wind": 0.06,
+    "water": {
+      "shallow": "#5a78aa",
+      "deep": "#2e3c78",
+      "foam": "#9aa6d8",
+      "ripple": 0.6
+    },
+    "lanternGlow": {
+      "color": "#ffb060",
+      "size": 1.1
+    },
+    "vignette": 0.25,
+    "vignetteColor": "#2e3640"
+  },
+  "piers": [
+    {
+      "x": 22,
+      "z": 4.6,
+      "rotY": 270,
+      "length": 4,
+      "width": 1.8,
+      "sunk": 1
+    }
+  ],
+  "lanternTrees": [
+    {
+      "x": 0,
+      "z": 4.5,
+      "height": 15,
+      "tiers": 7,
+      "bottomRadius": 5,
+      "topRadius": 1.6,
+      "baseRadius": 6.5,
+      "spacing": 1.05
+    }
+  ],
+  "stalls": [
+    {
+      "x": -26,
+      "z": -17.3,
+      "color": 2
+    },
+    {
+      "x": -20.5,
+      "z": -17.3,
+      "color": 1
+    },
+    {
+      "x": -12,
+      "z": -17.3,
+      "color": 0
+    },
+    {
+      "x": -3,
+      "z": -17.3,
+      "color": 2
+    },
+    {
+      "x": 6,
+      "z": -17.3,
+      "color": 0
+    },
+    {
+      "x": 12.5,
+      "z": -17.3,
+      "color": 1
+    },
+    {
+      "x": -7,
+      "z": 14.5,
+      "rotY": 90,
+      "color": 0
+    },
+    {
+      "x": -11.5,
+      "z": 20,
+      "rotY": 90,
+      "color": 2
+    },
+    {
+      "x": 7,
+      "z": 14,
+      "rotY": 270,
+      "color": 1
+    },
+    {
+      "x": 10.5,
+      "z": 18,
+      "rotY": 270,
+      "color": 1
+    },
+    {
+      "x": -15,
+      "z": 26,
+      "rotY": 90,
+      "color": 1
+    },
+    {
+      "x": 14.5,
+      "z": 24.5,
+      "rotY": 270,
+      "color": 2
+    },
+    {
+      "x": -24.6,
+      "z": 14,
+      "rotY": 90,
+      "color": 0
+    },
+    {
+      "x": 24.6,
+      "z": 14,
+      "rotY": 270,
+      "color": 0
+    }
+  ],
+  "lanternStyle": {
+    "height": 4.4,
+    "sag": 0.6,
+    "spacing": 1.1,
+    "rope": "#4a3428",
+    "lantern": "#e89a50",
+    "trim": "#c0503a",
+    "pole": "#6a4a34",
+    "hang": "den"
+  },
+  "choDemStyle": {
+    "pole": "#b8432f",
+    "lantern": "#e8923e",
+    "trim": "#c0503a",
+    "lotus": "#f0b46a",
+    "stone": "#a8a194",
+    "rail": "#d8d0c0",
+    "wood": "#6a4a34",
+    "counter": "#8a6448",
+    "awnings": [
+      "#b8433a",
+      "#d9a842",
+      "#3f4f86"
+    ],
+    "goods": [
+      "#d0a060",
+      "#9a5a3a",
+      "#c8c0a8"
+    ]
+  }
 }

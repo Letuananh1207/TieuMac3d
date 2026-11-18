@@ -13,6 +13,33 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
   (BanMang-*, CachChoi-*, LuuThuong-*, TuiDo-lam-san-*, ThuThu-bo-anh, TranSu-*, TuHoc-*, Co-*, Dau-*, NgoiMat-*, Chat-*),
   `design/docs/screen_specs.md`, `design/l10n/vi.arb`, `design/scene/bai_tri/khoi-nguyen-tran.md`; nhãn HUD người kể
   ("Lượt đạo hữu", thẻ điểm "Đạo hữu", "Đạo hữu chưa học từ nào", thân bảng cách chơi) còn giữ trong code chờ quyết.
+## 2026-11-18.5 — Dựng Chợ Đêm Đèn Hoa (V-108)
+
+- Loại: cảnh 3D — **bố cục** + **ngoại hình** (vùng `giang-nam`, giữ mã; `site.name` vẫn "Yên Vũ Lâu" — đổi tên là việc
+  `viec/ten-map-moi`). Phiên code V-108 dựng theo ảnh concept đã chốt (2026-11-18.2), người dùng bảo "tiến hành xây".
+- Bố cục: sông tây → đông z −12 … −4 (kè đá, mặt nước thấp 1 m, bậc xuống nước `ben-nuoc` ×5), **cầu vòm** x 18 (dài 10,
+  rộng 4) sang bờ bắc; **Cây Đèn Trăm Tầng** tâm (0; 4,5): trục son 15 m, 7 vòng đèn (bán kính 5 → 1,6 m, ~140 đèn), đỉnh
+  đèn sen, đài đá bát giác hai bậc bán kính 6,5 m có lan can, lối lên phía nam (đứng lên được); hai ao kè (±16; 6) 12 × 9 m
+  hai bên đài (thay cho lòng sông vòng quanh đài ở ảnh); 11 nhà phố `nha-nho` tường trắng mái ngói đen (5 bờ bắc z −22,5,
+  4 bờ nam x ±28,5, 2 phố chợ x ±21), **không biển** (`plaque: false`); 14 sạp mái vải đỏ / vàng / chàm (6 bờ bắc, 8 bờ nam
+  và phố chợ); 8 dây đèn lồng; bến gỗ có 2 đèn + thuyền neo trong ao đông; 4 thuyền (1 trôi, 3 neo); 4 đèn đá đầu cầu.
+  Lối lát: phố chính x 0 (bãi hạc → bậc đài), phố ven sông z −2, phố bờ bắc z −14,6, lối lên cổng Tử Cấm Thành x 25.
+  Khu (bản đồ lớn): Sân Cây Đèn, Bờ bắc, Bến sông, Phố chợ. Gỡ: ao tròn cũ (−26; −22). Giữ nguyên: 3 cổng (Trúc Lâm
+  (−30,2; −2) cuối phố ven sông, Tử Cấm Thành (25; −24,4) qua cầu, Bồng Lai Đảo (30,6; −14) cuối phố bờ bắc), bãi hạc + chỗ
+  xuất phát (−1,25; 39). Vùng không có NPC / bàn / trò nào trước đó — không có gì phải dời.
+- Ngoại hình: kiểu nhìn mềm (`look` như Khởi Nguyên Trấn, nước lam đậm `#5a78aa` / `#2e3c78`, quầng đèn `#ffb060` 1,1);
+  **luôn đêm hội** `dayNight.gioCoDinh: 21` (trời đêm `#1c2456` → `#6a5a98`, sao 260, trăng); đèn cây `#e8923e`, sen
+  `#f0b46a`, trục `#b8432f`, đá `#a8a194`; sân lát vuông `#b4a898`; `heightScale` 1,5.
+- Trường mới (code V-108): `lanternTrees`, `stalls`, `piers`, `choDemStyle`, `buildings[].plaque`, `dayNight.gioCoDinh`
+  (mặc định giữ cảnh cũ). Đèn = lòng đèn tự sáng + quầng giả thưa + đĩa sáng ấm dưới cây — không PointLight, không bóng.
+- Luật: R-HANH-9 mới (chợ đêm), R-NGAY-1 (giờ cố định), R-BANDO-2 (bản đồ Yên Vũ Lâu) — đã đồng bộ online (ô Chờ).
+- `scene:check`: Không có lỗi. Draw call / tam giác: trên xuống 52 / 48,1k → **79 / 92,0k**; góc vào 46 / 41,2k → **73 / 85,1k**.
+- Khác ảnh: sông không vòng quanh đài (thay bằng hai ao kè hai bên, giữ phố ven sông đi được tới cổng Trúc Lâm); nhà là
+  khối `nha-nho` một tầng (ảnh có hồi nhà cao hơn); mái vải phẳng có diềm (ảnh rủ mềm); không vệt phản chiếu vàng trên nước;
+  không có cây xương rồng / chậu trúc lớn ở bãi hạc (thay bằng 2 bồn trúc).
+- Ảnh: `design/screens/Canh-cho-dem-{toan-canh,cong-trinh,vao}.png` (cùng 3 góc concept). Canvas 3D: chưa đăng (nhánh việc —
+  đăng sau khi gộp main).
+- File: `design/scene/giang-nam.json`.
 
 ## 2026-11-18.2 — Thế giới bộ 2: chốt ảnh concept 6 map (V-79)
 
