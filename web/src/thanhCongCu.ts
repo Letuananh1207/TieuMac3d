@@ -6,6 +6,7 @@
  * đầu hàng (Enter — V-20261116-77, R-CHAT-3).
  */
 import { BagPanel } from './ui/bagPanel';
+import type { PortraitModel } from './ui/bagPortrait';
 import { EmotePanel } from './ui/emotePanel';
 import { Toolbar } from './ui/toolbar';
 import { emoteByDigit, type Emote } from './zones/bieuCam';
@@ -38,6 +39,8 @@ export interface ThanhDeps {
   readBook(): void;
   /** hình Trò chuyện (bản máy tính): mở / đóng ô nhập (R-CHAT-3) */
   toggleChat(): void;
+  /** bản nhân vật thứ hai cho thẻ nhân vật 3D trong túi (R-TUI-1, thiết kế 2026-11-18.13) — gọi một lần, lúc mở túi lần đầu */
+  portrait?(): Promise<PortraitModel>;
 }
 
 export class ThanhCongCu {
@@ -69,6 +72,7 @@ export class ThanhCongCu {
         this.closePanel();
         this.deps.readBook();
       },
+      this.deps.portrait && (() => this.deps.portrait!()),
     );
   }
 

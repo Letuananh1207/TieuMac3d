@@ -987,6 +987,7 @@ async function boot(): Promise<void> {
       void desk.read();
     },
     toggleChat: () => void (chat.typing ? chat.close() : chat.open()), // hình Trò chuyện = phím Enter (R-CHAT-3)
+    portrait: () => createPlayerCharacter(params.get('nhan-vat')), // thẻ nhân vật 3D trong túi (R-TUI-1, 2026-11-18.13)
   });
   // `?debug`: kịch bản thử / chụp ảnh gọi thẳng truyền tống (`__hocXaTravel('rung-truc')`), thanh (`__hocXaThanh.press('veNha')`)
   if (params.has('debug')) Object.assign(window, { __hocXaTravel: travel, __hocXaThanh: thanh });

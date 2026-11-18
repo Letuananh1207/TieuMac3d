@@ -1,7 +1,7 @@
 /**
  * Canvas 3D — HUD 3 trò nhỏ Trúc Lâm (thiết kế 2026-11-16.13) dựng bằng đúng lớp HUD của app (`ui/luuHud.ts`, `ui/mangHud.ts`,
  * `ui/danCamHud.ts`, `ui/bagPanel.ts`) với dữ liệu mẫu như artboard, để chụp so thiết kế. Chỉ trang thiết kế dùng, không vào app.
- * `?dang=luu-thuong&hud=luot|troi|dung|sai|npc|npc-xong|ket-qua|ket-qua-hoa` · `?dang=hai-mang&hud=nut|nut-to|the|the-dung|the-sai|ban|ban-xong|tui|tui-trong`
+ * `?dang=luu-thuong&hud=luot|troi|dung|sai|npc|npc-xong|ket-qua|ket-qua-hoa` · `?dang=hai-mang&hud=nut|nut-to|the|the-dung|the-sai|ban|ban-xong|tui|tui-trong|tui-<tab>[&chon=<ô>]`
  * · `?dang=dan-cam&hud=chon|bai|tu-do|theo-bai|ket-qua` · `&may` = bản máy tính (phím chữ nổi).
  */
 import type * as THREE from 'three';
@@ -10,7 +10,9 @@ import { BagPanel } from './ui/bagPanel';
 import { DanCamHud, type DanNote } from './ui/danCamHud';
 import { LuuHud, type LuuCardView, type LuuSeatView, type LuuView } from './ui/luuHud';
 import { MangHud } from './ui/mangHud';
-import { bagView } from './zones/tuiDo';
+import { createPlayerCharacter } from './player/playerCharacter';
+import { bagView, type BagTab } from './zones/tuiDo';
+import { freshGarden } from './zones/vuon';
 
 const SEATS = (turn: string, me: number, gained = ''): LuuSeatView[] =>
   [
@@ -147,11 +149,17 @@ export function addTrucLamHudPreview(params: URLSearchParams, camera: THREE.Came
         all: done ? 0 : 23,
       });
     } else if (hud.startsWith('tui')) {
-      const bag = new BagPanel(nop, nop);
-      bag.render(bagView({ garden: null, home: null, book: null, coins: 1280, forest: hud === 'tui-trong' ? {} : { mang: 5, 'mang-to': 1 } }));
-      bag.showTab('lam', hud === 'tui-trong' ? null : 'mang-to');
+      // tui · tui-trong: tab Lâm sản; tui-hat|vuon|nong|sach|trang: đủ ngăn mẫu (thiết kế 2026-11-18.13); &chon=<mã ô>
+      const bag = new BagPanel(nop, nop, () => createPlayerCharacter(params.get('nhan-vat')));
+      const full = hud.length > 4 && hud !== 'tui-trong';
+      const garden = full ? { ...freshGarden(), seeds: { cai: 9, ngo: 4, tra: 2 }, barn: { cai: 15, bi: 5, dua: 8 } } : null;
+      const home = full ? { items: [{ item: 'mai', scene: 'nha-ta', x: 0, z: 0, rot: 0 }], owned: { mai: 3, 'den-long': 5 } } : null;
+      const book = full ? { title: 'HSK 1', subtitle: 'Nhập môn' } : null;
+      bag.render(bagView({ garden, home, book, coins: full ? 12000 : 1280, forest: hud === 'tui-trong' ? {} : { mang: 5, 'mang-to': 1 } }));
+      const tab = (full ? hud.slice(4) : 'lam') as BagTab;
+      const pick = params.get('chon') ?? (hud === 'tui' ? 'mang-to' : null);
       bag.show(true);
-      bag.showTab('lam', hud === 'tui-trong' ? null : 'mang-to');
+      bag.showTab(tab, pick);
     }
     return `HUD Hái măng: ${hud}`;
   }
