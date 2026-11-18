@@ -10,7 +10,7 @@ Yêu cầu (người dùng 2026-11-18, sau khi chốt concept — `design/CHANGE
   tròn, Nấm Mẹ + thang gỗ xoắn lên mũ + Lò Thuốc Tiên (đỉnh đồng ba chân, lửa, khói tím), hũ sứ, bàn đá.
 - **Giữ**: mã cảnh, bãi hạc (0; 70) + chỗ xuất phát (−1,25; 70), 2 cổng (toạ độ cũ — không đổi luật R-HANH-4 / R-BANDO-2).
   Vùng đã trống từ V-66 B0 (không còn cung điện, NPC, bàn, trò) → không có tính năng nào phải dời.
-- **Không làm**: đổi tên vùng (`viec/ten-map-moi`), thoại / NPC (`viec/npc-doi-ten`), NPC mới, trò nấu thuốc (chờ chủ đề
+- **Không làm**: thoại / NPC (`viec/npc-doi-ten`), NPC mới, trò nấu thuốc (chờ chủ đề
   từ vựng), bản đồ lớn vẽ nấm.
 
 ## Nhiệm vụ

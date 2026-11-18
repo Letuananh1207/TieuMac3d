@@ -59,15 +59,14 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
 - File: `scene/ban-do/{ban-do.json,ban-do-goc.png,ve-ban-do.html}`, `scene/{rung-truc,giang-nam,tu-cam-thanh,bong-lai,truong-thanh,to-lua,scene}.json`, 2 ảnh `screens/`.
 ## 2026-11-18.6 — Dựng Rừng Nấm Tiên (V-109)
 
-- Loại: cảnh 3D — **bố cục** + **ngoại hình**, vùng `tu-cam-thanh` (giữ mã; tên hiển thị vẫn "Tử Cấm Thành" — đổi tên là việc
-  `viec/ten-map-moi`). Phiên code V-109 dựng theo ảnh concept đã chốt (2026-11-18.2,
+- Loại: cảnh 3D — **bố cục** + **ngoại hình**, vùng `tu-cam-thanh` (giữ mã; tên hiển thị "Rừng Nấm Tiên" — V-107). Phiên code V-109 dựng theo ảnh concept đã chốt (2026-11-18.2,
   `design/concept/rung-nam-tien/{toan-canh,cong-trinh,vao}.png`, phiếu `docs/phieu_thiet_ke/2026-11-17-concept-rung-nam-tien.md`).
 - Bố cục (x đông, z nam): **Nấm Mẹ** (0; 34) thân ∅ 5,2 m, mũ phẳng hồng ∅ 25 m mặt mũ cao 10 m; **thang gỗ xoắn** 1,25 vòng
   quanh thân (rộng 1,6 m, chân phía nam, lan can dây) lên **giếng thang** giữa mũ; trên mũ **Lò Thuốc Tiên** (đỉnh đồng ba chân
   hai quai ∅ ≈ 5,5 m cao ≈ 6,7 m, gỉ ngọc mép miệng / quai, lửa nhỏ, khói tím cuộn 7 cụm mây bay lên) lệch bắc 8,3 m, 5 hũ sứ
   (tây), bàn đá + 2 đôn (đông). Bãi hạc (0; 70) giữ; lối đất bắc qua **cầu ván** (0; 52) tới chân Nấm Mẹ; suối uốn tây bắc →
-  đông nam (rộng 2,6, lòng trũng 0,6) + cầu ván thứ hai (24; 51,5); lối tây ra cổng "Nhạn Môn Quan" (−63; 54), lối nam ra cổng
-  "Yên Vũ Lâu" (0; 81) — cả hai cổng giữ nguyên. 4 **nhà nấm** cửa tròn (kín, cao 5–6,4 m): (−17,2; 38,4), (17,4; 38,6),
+  đông nam (rộng 2,6, lòng trũng 0,6) + cầu ván thứ hai (24; 51,5); lối tây ra cổng "Đỉnh Hạc Bay" (−63; 54), lối nam ra cổng
+  "Chợ Đêm Đèn Hoa" (0; 81) — cả hai cổng giữ nguyên. 4 **nhà nấm** cửa tròn (kín, cao 5–6,4 m): (−17,2; 38,4), (17,4; 38,6),
   (27,6; 70), (−31; 66,5). 6 **luống thảo dược** tròn quanh chân Nấm Mẹ + bãi hạc, 16 cụm nấm nhỏ ven lối, 58 **nấm khổng lồ**
   (cao 7–18 m, mũ vòm / nón / phẳng hồng · san hô · đào · kem chấm) dày dần ra ranh. Ranh đi được x −66 … 44, z 2 … 86.
   Khu (tên Việt): Lò Thuốc Tiên · Bãi Hạc · Vườn Thảo Dược · Xóm Nấm.

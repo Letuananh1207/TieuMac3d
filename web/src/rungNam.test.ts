@@ -147,12 +147,12 @@ describe('Rừng Nấm Tiên — Nấm Mẹ + Lò Thuốc Tiên (V-109)', () => 
     expect(way.z).toBeLessThan(46);
   });
 
-  it('R-HANH-4 / R-HANH-2: giữ bãi hạc (0; 70), cổng "Yên Vũ Lâu" (0; 81), "Nhạn Môn Quan" (−63; 54)', () => {
+  it('R-HANH-4 / R-HANH-2: giữ bãi hạc (0; 70), cổng "Chợ Đêm Đèn Hoa" (0; 81), "Đỉnh Hạc Bay" (−63; 54)', () => {
     expect(spec.stoneYard).toMatchObject({ enabled: true, center: [0, 70] });
     expect(spec.player.start).toEqual([-1.25, 70]);
     expect(spec.portals.map((p) => [p.label, (p.area.from[0] + p.area.to[0]) / 2, (p.area.from[1] + p.area.to[1]) / 2])).toEqual([
-      ['Yên Vũ Lâu', 0, 81],
-      ['Nhạn Môn Quan', -63, 54],
+      ['Chợ Đêm Đèn Hoa', 0, 81],
+      ['Đỉnh Hạc Bay', -63, 54],
     ]);
   });
 
