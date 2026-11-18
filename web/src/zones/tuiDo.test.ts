@@ -70,3 +70,18 @@ describe('túi đồ (R-TUI-1)', () => {
     expect(v.coins).toBeNull();
   });
 });
+
+describe('túi đồ — nông trại (R-NONG-8)', () => {
+  const base: BagSource = { garden: { ...freshGarden(), barn: { ngo: 2 } }, home: null, book: null, coins: 10 };
+  it('R-NONG-8: ngăn Nông sản có thêm sản phẩm nông trại + Cỏ khô; từ HSK chỉ khi đã học', () => {
+    const v = bagView({ ...base, farm: { trung: 3, 'co-kho': 1, vit: 2 } as never, learned: new Set(['鸡蛋']) });
+    expect(v.crops.items.map((c) => c.name)).toEqual(['Ngô']);
+    expect(v.farm.map((f) => [f.name, f.n, f.word])).toEqual([
+      ['Trứng gà', 3, '鸡蛋'],
+      ['Cỏ khô', 1, null],
+    ]);
+    expect(v.crops.total).toBe(6);
+    expect(bagView({ ...base, farm: { trung: 3 } }).farm[0].word).toBeNull();
+    expect(bagView(base).farm).toEqual([]);
+  });
+});

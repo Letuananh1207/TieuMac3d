@@ -276,8 +276,8 @@ export type VineLook = 'trong' | 'mam' | 'leo' | 'phu' | 'chin';
  * Mỗi thứ một InstancedMesh; ẩn bằng co về 0.
  */
 export class VineLeaves {
-  private readonly leaves: THREE.InstancedMesh;
-  private readonly fruit: THREE.InstancedMesh;
+  readonly leaves: THREE.InstancedMesh;
+  readonly fruit: THREE.InstancedMesh;
   private readonly leafAt: THREE.Matrix4[];
   private readonly fruitAt: THREE.Matrix4[];
   private readonly flowerIdx: number[];

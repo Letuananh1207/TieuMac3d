@@ -1,0 +1,17 @@
+/* HUD nông trại (R-NONG-1…6): nút nổi ở chuồng gà / bến câu / chuồng bò / giàn — **dùng lại nút nổi "Bán" của vườn**
+   (`#gardenBtn`, thiết kế 2026-11-15.29: viên jade 46 + mũi nhọn, hình 28) với chữ việc; trạng thái chờ (đã cho ăn, đang lớn,
+   đủ lượt câu) = viên kính sương như nhãn đang lớn (`#gardenLabel`); "Giật cần!" viền gold như nút "nên làm" của vòng công cụ. */
+#farmBtn{position:fixed;z-index:6;transform:translate(-50%,calc(-100% - 10px));display:flex;flex-direction:column;align-items:center}
+#farmBtn[hidden]{display:none}
+#farmBtn button{height:46px;box-sizing:border-box;padding:0 18px 0 9px;font:inherit;font-size:15px;font-weight:700;color:var(--on-jade);background:var(--jade);border:1px solid var(--frost-line);border-radius:999px;box-shadow:inset 0 -2px 0 rgba(0,0,0,.18),0 6px 16px rgba(36,50,58,.3);display:flex;align-items:center;gap:6px;white-space:nowrap;touch-action:manipulation}
+#farmBtn button:active{background:var(--jade-press)}
+#farmBtn button svg{width:28px;height:28px;flex:none;border-radius:50%;background:rgba(255,255,255,.88)}
+#farmBtn button .sub{height:24px;margin-left:2px;padding:0 9px;border-radius:999px;background:rgba(255,255,255,.18);display:flex;align-items:center;font-size:13px;font-variant-numeric:tabular-nums}
+#farmBtn .tip{width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:8px solid var(--jade)}
+#farmBtn.hot button{outline:2px solid var(--gold);box-shadow:0 0 0 5px rgba(224,174,76,.35),0 6px 16px rgba(36,50,58,.3)}
+#farmBtn.off button{height:auto;min-height:34px;padding:5px 12px 5px 6px;font-size:12px;font-weight:500;color:var(--slate-muted);background:rgba(244,247,246,.9);border:1px solid var(--frost-line);outline:1px solid var(--frost-outline);box-shadow:var(--shadow-hud);pointer-events:none}
+#farmBtn.off button b{font-weight:700;color:var(--slate)}
+#farmBtn.off button svg{width:22px;height:22px}
+#farmBtn.off .tip{border-top-color:rgba(244,247,246,.9)}
+#farmBtn .key{margin-left:4px;padding:0 5px;border-radius:4px;background:rgba(255,255,255,.22);font-size:11px}
+body.garden-panel #farmBtn,body.decorating #farmBtn,body.map-open #farmBtn,body.talking #farmBtn,body.covered #farmBtn{display:none !important}

@@ -6,6 +6,8 @@
  */
 import { cleanHome, DECOR_ITEMS, inBag, placedCount } from './decor';
 import type { MangKind } from './mang';
+import type { NongItem, NongState } from './nong';
+import { farmBagItems, farmDetail } from './nongHud';
 import { CROPS, type CropId, type Garden } from './vuon';
 import { OPEN_SLOT_NAME, RING, type SlotId } from './vuonVong';
 
@@ -64,6 +66,19 @@ export interface BagSource {
   coins: number | null;
   /** túi Lâm sản (`getMang.bag` — R-MANG-3/5); thiếu = trống */
   forest?: Partial<Record<MangKind, number>> | null;
+  /** kho nông trại (`getNong.kho` — R-NONG-8); thiếu = trống */
+  farm?: NongState['kho'] | null;
+  /** mã từ đã học — thẻ chi tiết sản phẩm nông trại chỉ hiện từ HSK đã học (R-NONG-8) */
+  learned?: ReadonlySet<string>;
+}
+
+/** Một ô sản phẩm nông trại (ngăn Nông sản — R-NONG-8): tên, số, giá / công dụng, từ đã học. */
+export interface BagFarm {
+  item: NongItem;
+  name: string;
+  n: number;
+  price: string;
+  word: string | null;
 }
 
 /** Một dòng Lâm sản (Măng / Măng to). */
@@ -94,6 +109,8 @@ export interface BagView {
   crops: { total: number; items: BagCrop[]; empty: string };
   book: { title: string; empty: string; item: { title: string } | null };
   decor: { total: number; items: BagDecor[]; empty: string };
+  /** sản phẩm nông trại + Cỏ khô sau nông sản vườn trong ngăn Nông sản (R-NONG-8) */
+  farm: BagFarm[];
   /** ngăn Lâm sản (R-TUI-1, R-MANG-3) */
   forest: { total: number; items: BagForest[]; empty: string };
   /** ngăn Đồ làm vườn: số bao phân (vật tư) — nông cụ cố định `BAG_TOOLS` */
@@ -134,11 +151,14 @@ export function bagView(s: BagSource): BagView {
   const crops = cropList(s.garden?.barn);
   const decor = decorList(s.home);
   const forest = forestList(s.forest);
+  const learned = s.learned ?? new Set<string>();
+  const farm = farmBagItems(s.farm).map((x) => ({ ...x, ...farmDetail(x.item, learned) }));
   return {
+    farm,
     forest: { total: forest.reduce((a, x) => a + x.n, 0), items: forest, empty: BAG_TEXT.bagForestEmpty },
     coins: s.coins === null ? null : Math.max(0, Math.floor(s.coins)),
     seeds: { total: sum(seeds), items: seeds, empty: BAG_TEXT.bagSeedsEmpty },
-    crops: { total: sum(crops), items: crops, empty: BAG_TEXT.bagCropsEmpty },
+    crops: { total: sum(crops) + farm.reduce((a, x) => a + x.n, 0), items: crops, empty: BAG_TEXT.bagCropsEmpty },
     book: { title: BAG_TEXT.bagBooks, empty: BAG_TEXT.bagBooksEmpty, item: s.book ? { title: `${s.book.title} · ${s.book.subtitle}` } : null },
     decor: { total: decor.length, items: decor, empty: BAG_TEXT.bagDecorEmpty },
     fert: Math.max(0, Math.floor(s.garden?.fert ?? 0)),

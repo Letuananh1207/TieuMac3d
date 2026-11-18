@@ -17,6 +17,9 @@ import { bagPage } from './bagPages';
 import { BagPortrait, type PortraitModel } from './bagPortrait';
 import { h } from './chatText';
 import { cropPicture } from './cropArt';
+import { itemPicture } from './nongArt';
+import { phatTu } from './amTu';
+import { TU_VUNG } from '../zones/tuVung/tu';
 import { COIN, DECOR_PICTURES, STROKE, svgIcon, type SvgNode } from './decorIcons';
 import { hinhImg, type HinhId } from './hinh';
 import { shootIcon } from './trucLamIcons';
@@ -47,6 +50,18 @@ const STAR: readonly SvgNode[] = [
   ['path', { d: 'M24 3l6.2 13 14.3 1.9-10.4 10 2.6 14.1L24 35.2 11.3 42l2.6-14.1L3.5 17.9 17.8 16z', fill: '#7CC7A6', stroke: '#3E8C6E', 'stroke-width': '2.4', 'stroke-linejoin': 'round' }],
   ['path', { d: 'M24 13c-4 4-4 9 0 12 3 2 2 6-2 7', fill: 'none', stroke: '#2F6E55', 'stroke-width': '2.4', 'stroke-linecap': 'round' }],
 ];
+
+/** Dòng từ đã học trong thẻ chi tiết sản phẩm nông trại (R-NONG-8); chưa học / không có từ → không gì. */
+function farmWord(word: string | null): HTMLElement[] {
+  const tu = word ? TU_VUNG.find((t) => t.id === word) : undefined;
+  if (!tu) return [];
+  const w = h('button', 'bg-word');
+  w.type = 'button';
+  w.setAttribute('aria-label', `Nghe ${tu.pinyin}`);
+  w.append(h('span', 'han', tu.han), ` ${tu.pinyin} · ${tu.meaning}`);
+  w.addEventListener('click', () => phatTu(tu));
+  return [w];
+}
 
 /** Một ô của lưới: hình, số (null = không số), dòng chi tiết khi chạm. */
 interface Slot {
@@ -255,7 +270,17 @@ export class BagPanel {
           info: () => [h('b', '', c.name), h('span', '', `Lớn trong ${growText(cropOf(c.crop)!)}`), sellLine(c.crop)], // gardenSeedGrown
         }));
       case 'nong':
-        return v.crops.items.map((c) => ({ key: c.crop, label: `${c.name} × ${c.n}`, art: () => cropPicture(c.crop, ART), n: c.n, info: () => [h('b', '', c.name), sellLine(c.crop)] }));
+        return [
+          ...v.crops.items.map((c) => ({ key: c.crop, label: `${c.name} × ${c.n}`, art: () => cropPicture(c.crop, ART), n: c.n, info: () => [h('b', '', c.name), sellLine(c.crop)] })),
+          // sản phẩm nông trại + Cỏ khô (R-NONG-8): hình `nongArt.ts`; từ HSK đã học → dòng chữ + pinyin, chạm nghe (R-AM-5)
+          ...v.farm.map((c) => ({
+            key: c.item,
+            label: `${c.name} × ${c.n}`,
+            art: () => itemPicture(c.item, ART),
+            n: c.n,
+            info: () => [h('b', '', `${c.name} × ${c.n}`), h('span', '', c.price), ...farmWord(c.word)],
+          })),
+        ];
       case 'lam':
         return v.forest.items.map((c) => ({
           key: c.kind,

@@ -20,7 +20,8 @@ import type { GardenSpec } from './scene/spec';
 import type { Garden3D } from './scene/vuonLuong';
 import { GardenFloat } from './ui/gardenFloat';
 import { GardenHud, type MarkAt } from './ui/gardenHud';
-import { GardenPanel } from './ui/gardenPanel';
+import { GardenPanel, type FarmStoreRow } from './ui/gardenPanel';
+import type { NongItem, NongProduct } from './zones/nong';
 import { GardenRing } from './ui/gardenRing';
 import { VuonSound } from './ui/vuonSound';
 import { maNgayVN } from './zones/gioVN';
@@ -90,7 +91,15 @@ function bagPoint(): { x: number; y: number } | null {
   return b && b.width > 0 ? { x: b.left + b.width / 2, y: b.top + b.height / 2 } : null;
 }
 
+/** Móc nông trại (R-NONG-5/7 — `nongTrai.ts`): hàng bán ở thùng, bán, nhổ cỏ → cỏ khô. */
+export interface FarmHooks {
+  rows(): FarmStoreRow[];
+  sell(item: NongProduct | null): Promise<boolean>;
+  weeded(): void;
+}
+
 export class HomeGarden {
+  private farm: FarmHooks | null = null;
   private g: Garden = freshGarden();
   /** Flutter có mặt mà không trả vườn (bản cũ / lỗi) → chỉ xem (bridge.md `getGarden`) */
   private readOnly = false;
@@ -117,6 +126,7 @@ export class HomeGarden {
     this.hud = new GardenHud(d.garden.plots.length, () => this.openStore());
     this.panel = new GardenPanel({
       sell: (crop) => void this.sell(crop),
+      sellFarm: (item) => void this.sellFarm(item),
       unlock: () => void this.unlock(),
       close: () => this.closePanel(),
     });
@@ -175,6 +185,42 @@ export class HomeGarden {
           : {}),
       },
     });
+  }
+
+  /** Nông trại gắn vào (bảng kho có thêm hàng sản phẩm, nhổ cỏ → cỏ khô — R-NONG-5/7). */
+  attachFarm(hooks: FarmHooks): void {
+    this.farm = hooks;
+  }
+
+  /** Tấm báo vườn (dùng chung cho nông trại). */
+  toast(t: Parameters<GardenHud['toast']>[0]): void {
+    this.hud.toast(t);
+  }
+
+  /** Chữ nổi tại điểm cảnh [at] (nông trại). */
+  floatAt(t: Parameters<GardenFloat['show']>[0], at: THREE.Vector3): void {
+    const p = this.project(at);
+    if (p) this.floats.show(t, p);
+  }
+
+  /** Vật bay từ điểm cảnh [at] vào ô Túi đồ (nông trại). */
+  flyAt(item: CropId | NongItem, at: THREE.Vector3): void {
+    const p = this.project(at);
+    if (p) this.floats.fly(item, p, bagPoint());
+  }
+
+  /** Vườn mới từ thao tác ngoài vườn (rắc thóc trừ 1 Lúa — R-NONG-2). */
+  adopt(g: Garden): void {
+    this.g = g;
+    this.redraw();
+  }
+
+  private project(at: THREE.Vector3): { x: number; y: number } | null {
+    const cam = this.camera;
+    if (!cam) return null;
+    const v = this.v.copy(at).project(cam);
+    if (v.z > 1) return null;
+    return { x: ((v.x + 1) / 2) * window.innerWidth, y: ((1 - v.y) / 2) * window.innerHeight };
   }
 
   /** Bảng vườn đang mở → nhân vật đứng yên, không joystick (đặc tả "Vườn rau"). */
@@ -379,7 +425,7 @@ export class HomeGarden {
 
   private openStore(): void {
     this.d.onOpen();
-    this.panel.showStore(storeView(this.g, maNgayVN(this.now)), bagChips(this.g));
+    this.panel.showStore(storeView(this.g, maNgayVN(this.now)), bagChips(this.g), this.farm?.rows() ?? []);
   }
 
   private openUnlock(): void {
@@ -396,7 +442,25 @@ export class HomeGarden {
   /** Bán một loại / "Bán hết" (R-VUON-7): bảng còn mở, vẽ lại (kho trống / còn lại); xu bay từ thùng. */
   private async sell(crop: CropId | null): Promise<void> {
     const r = await this.act({ act: 'sell', crop });
-    if (r && this.panel.kind === 'kho') this.openStore();
+    // "Bán hết" bán cả sản phẩm nông trại (R-NONG-7)
+    const f = crop === null && this.farm ? await this.farm.sell(null) : false;
+    if ((r || f) && this.panel.kind === 'kho') this.openStore();
+  }
+
+  /** Bán một loại sản phẩm nông trại (R-NONG-7): bảng còn mở, vẽ lại. */
+  private async sellFarm(item: NongProduct): Promise<void> {
+    const ok = await this.farm?.sell(item);
+    if (ok && this.panel.kind === 'kho') this.openStore();
+  }
+
+  /** Chỗ thùng thu mua trong cảnh (thử trên Console — `__hocXaNong.toi('thung')`). */
+  get binAt(): { x: number; z: number } {
+    return this.d.garden.bin;
+  }
+
+  /** Điểm màn của thùng thu mua (xu bay khi bán nông trại). */
+  get binScreen(): { x: number; y: number } | null {
+    return this.binPoint();
   }
 
   /** "Mở · n" (R-VUON-8): mở ô kế tiếp, tấm báo "Đã mở luống n". */
@@ -440,6 +504,7 @@ export class HomeGarden {
     if (r?.ok) {
       this.g = r.garden;
       this.redraw();
+      if (a.act === 'weed') this.farm?.weeded(); // nhổ cỏ → +1 Cỏ khô (R-NONG-5)
       if (r.amount !== 0) this.d.coins(r.amount, this.label(a, r.amount), balance, a.act === 'sell' ? () => this.binPoint() : undefined);
     }
     return r;

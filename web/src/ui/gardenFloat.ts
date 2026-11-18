@@ -3,10 +3,11 @@
  * (dấu "+n {cây}" 18), dòng 2 12/700 kem; bay lên 40 px trong 1 s, mờ 0,3 s cuối; nối nhau cách 0,25 s; giảm chuyển động →
  * đứng yên 1 s. Thu: 3 quả trong đĩa trắng 28 bay cung lên rồi vào ô Túi đồ (0,6 s, lệch 0,08 s). Không chặn chạm.
  */
+import type { NongItem } from '../zones/nong';
 import type { CropId } from '../zones/vuon';
 import type { FloatText } from '../zones/vuonHud';
 import { h } from './chatText';
-import { cropPicture } from './cropArt';
+import { itemPicture } from './nongArt';
 
 const LIFE_MS = 1000;
 const GAP_MS = 250;
@@ -45,11 +46,11 @@ export class GardenFloat {
   }
 
   /** Thu hoạch: 3 quả bay cung lên từ [from] rồi vào [to] (ô Túi đồ); giảm chuyển động / không có ô đích → bỏ. */
-  fly(crop: CropId, from: { x: number; y: number }, to: { x: number; y: number } | null): void {
+  fly(crop: CropId | NongItem, from: { x: number; y: number }, to: { x: number; y: number } | null): void {
     if (!to || reducedMotion() || typeof Element.prototype.animate !== 'function') return;
     for (let k = 0; k < 3; k++) {
       const disc = h('span', 'gf-fruit');
-      disc.append(cropPicture(crop, 22));
+      disc.append(itemPicture(crop, 22));
       this.layer.append(disc);
       const x0 = from.x + (k - 1) * 14;
       const peak = { x: (x0 + to.x) / 2, y: Math.min(from.y, to.y) - 90 };

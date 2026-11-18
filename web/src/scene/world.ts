@@ -348,7 +348,7 @@ function* worldSteps(
       mirages(dt);
       mother?.update(dt);
       sea.update(dt);
-      farm?.update(dt);
+      farm?.update(dt, eye);
       teleport?.update(dt);
       portalMarks(dt, player);
       for (const r of rooms) r.update(dt, !!player && inRect(r.floor, player.x, player.z), player?.y, eye);

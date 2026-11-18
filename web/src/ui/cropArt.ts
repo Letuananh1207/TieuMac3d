@@ -96,7 +96,7 @@ export const CROP_ART: Readonly<Record<CropId, readonly CropShape[]>> = {
 
 const n = (v: number): string => String(Math.round(v * 100) / 100);
 
-function shapeNode(s: CropShape): SvgNode {
+export function shapeNode(s: CropShape): SvgNode {
   if ('e' in s) {
     const [cx, cy, rx, ry, rot] = s.e;
     const a: Record<string, string> = { cx: n(cx), cy: n(cy), rx: n(rx), ry: n(ry), fill: s.fill };

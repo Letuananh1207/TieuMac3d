@@ -33,7 +33,8 @@ export interface Farm3D {
   setPen(hay: boolean, milk: boolean): void;
   setVine(vine: 'bau' | 'dua-leo', look: VineLook): void;
   bobber: Bobber;
-  update(dt: number): void;
+  /** [eye] = vị trí camera (giàn mờ khi camera dưới vòm) */
+  update(dt: number, eye?: { x: number; y: number; z: number }): void;
 }
 
 /** Hộp màu [c] tâm (x, y, z) cỡ (w, h, d), xoay quanh y [ry]. */
@@ -337,6 +338,7 @@ function addTrellis(scene: THREE.Scene, colliders: Colliders, f: FarmSpec, groun
       g.add(lf);
     }
   addStatic(scene, g);
+  const frame = g;
   // lá theo gốc: tây = bầu (nửa u 0 → 0,55), đông = dưa leo (u 1 → 0,45); quả treo dưới vòm
   const side = (u0: number, u1: number): THREE.Vector3[] => {
     const out: THREE.Vector3[] = [];
@@ -355,7 +357,25 @@ function addTrellis(scene: THREE.Scene, colliders: Colliders, f: FarmSpec, groun
   const bau = new VineLeaves(scene, side(0, 0.55), [hang(0.3, t.z0 + 0.5), hang(0.36, zs[1] + 0.3), hang(0.28, t.z1 - 0.4)], c.leaf, gourdGeometry());
   const dua = new VineLeaves(scene, side(1, 0.45), [hang(0.7, t.z0 + 0.7), hang(0.66, zs[1] - 0.2), hang(0.73, t.z1 - 0.3), hang(0.62, zs[1] + 0.5)], c.leaf, cucumberGeometry());
   const rect: Rect = { x0: t.x - h - 0.8, x1: t.x + h + 0.8, z0: t.z0 - 0.4, z1: t.z1 + 0.4 };
-  return { rect, roots, vines: { bau, 'dua-leo': dua } };
+  // camera chui dưới vòm (mới vào nhà, camera sau lưng) → giàn mờ dần như mái nhà khi vào trong (R-HUD-2) để không che nhìn
+  const mats: THREE.Material[] = [];
+  for (const o of [frame, bau.leaves, bau.fruit, dua.leaves, dua.fruit])
+    o.traverse((m) => {
+      if (m instanceof THREE.Mesh && !Array.isArray(m.material)) mats.push(m.material);
+    });
+  let k = 1;
+  const fade = (dt: number, eye?: { x: number; y: number; z: number }): void => {
+    const inside = !!eye && eye.x > rect.x0 && eye.x < rect.x1 && eye.z > rect.z0 - 0.6 && eye.z < rect.z1 + 0.6 && eye.y < y + t.height + 0.6;
+    const want = inside ? 0.2 : 1;
+    if (k === want) return;
+    k = want > k ? Math.min(want, k + dt / 0.3) : Math.max(want, k - dt / 0.3);
+    for (const m of mats) {
+      m.transparent = k < 1;
+      m.opacity = k;
+      m.depthWrite = k >= 1;
+    }
+  };
+  return { rect, roots, vines: { bau, 'dua-leo': dua }, fade };
 }
 
 /** Dựng nông trại (`spec.farm.enabled`); tắt → `null`. Nền nhà nằm trên bục phẳng → độ cao lấy ở tâm từng công trình. */
@@ -384,7 +404,8 @@ export function addFarm(scene: THREE.Scene, colliders: Colliders, f: FarmSpec, g
     setVine(vine, look) {
       tr.vines[vine].set(look);
     },
-    update(dt) {
+    update(dt, eye) {
+      tr.fade(dt, eye);
       coop.flock.update(dt);
       pen.cow.update(dt);
       pond.bobber.update(dt);

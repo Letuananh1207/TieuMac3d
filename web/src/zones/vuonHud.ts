@@ -206,6 +206,8 @@ export interface GardenToast {
   title: string;
   sub: string | null;
   crop?: CropId;
+  /** sản phẩm nông trại (R-NONG-*) — hình ở `ui/nongArt.ts` */
+  item?: string;
 }
 
 export const ripeToast = (n: number): GardenToast => ({ kind: 'chin', title: `Vườn rau: ${n} luống đã chín`, sub: 'Lấp lánh là luống thu được' });

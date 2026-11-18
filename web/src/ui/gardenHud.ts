@@ -10,7 +10,8 @@ import './garden.css';
 import { growingLabel, SELL_TEXT, type GardenSpot, type GardenToast } from '../zones/vuonHud';
 import type { PlotBadge } from '../zones/vuonVongHud';
 import type { CropId } from '../zones/vuon';
-import { cropPicture, DROP, ICON_TICK, SPARKLE } from './cropArt';
+import { DROP, ICON_TICK, SPARKLE } from './cropArt';
+import { itemPicture } from './nongArt';
 import { STROKE, svgIcon } from './decorIcons';
 import { hinhImg } from './hinh';
 import { BUG, FERT_BAG, MARK_VIEW, WEED } from './vuonIcons';
@@ -167,7 +168,7 @@ export class GardenHud {
     }
     const pic = h('span', `pic ${t.kind}`);
     if (t.kind === 'chin') pic.append(svgIcon(SPARKLE, 30, '-10 -10 20 20'));
-    else if (t.kind === 'thu' && t.crop) pic.append(cropPicture(t.crop as CropId, 30));
+    else if (t.kind === 'thu' && (t.item || t.crop)) pic.append(itemPicture((t.item ?? t.crop) as CropId, 30));
     else pic.append(svgIcon(ICON_TICK, 16, undefined, { ...STROKE, 'stroke-width': '2.6' }));
     const txt = h('span', 'txt');
     txt.append(h('b', '', t.title));

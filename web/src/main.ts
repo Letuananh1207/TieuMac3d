@@ -4,7 +4,7 @@ import cursorArrow from './cursor/tro.svg?raw';
 import cursorButton from './cursor/tro-nut.svg?raw';
 import { installCursors } from './ui/cursor';
 import { openTrialStore } from './bridge/browserStore';
-import { FlutterBridge, getGarden, getHome, getMang, getProgress, hasFlutter } from './bridge/flutterBridge';
+import { FlutterBridge, getGarden, getHome, getMang, getNong, getProgress, hasFlutter } from './bridge/flutterBridge';
 import { Colliders } from './collision/colliders';
 import { GamePlay, type TableSeat } from './gamePlay';
 import { Joystick } from './input/joystick';
@@ -88,7 +88,8 @@ import { journeyLine } from './zones/tranSu';
 import { AmbientMusic } from './ui/ambientMusic';
 import { HomeDecor } from './homeDecor';
 import { HomeGarden } from './homeGarden';
-import { gardenSpeed } from './zones/vuonHud';
+import { NongTrai } from './nongTrai';
+import { gardenHudShown, gardenSpeed } from './zones/vuonHud';
 import { NgayDem } from './ngayDem';
 
 // style.css đã vào (import chạy trước thân module) → tắt khối CSS che tạm trong <head> của index.html (L-25, R-MAN-2)
@@ -248,6 +249,7 @@ async function boot(): Promise<void> {
         walletRoom.sync(p); // về từ Tạp hoá: ví "−n" (R-TIEN-4)
       }
       void garden?.load(false); // Tạp hoá có thể vừa bán hạt vào túi (R-VUON-9); không báo lại luống chín
+      void nong?.load(); // nông trại: qua ngày khi app ở nền (R-NONG-2)
       if (scrollOpen) showScroll(lastPick); // cuộn hiện lại ngay, mục vừa dùng cập nhật (thiết kế 2026-11-14.21)
       lastPick = null;
       trucLao?.resume(); // màn bài / lượt ôn mở từ Trúc Lão → khung thoại mở lại (R-HANH-8)
@@ -273,6 +275,7 @@ async function boot(): Promise<void> {
   let tieuNhi: TieuNhi | null = null; // tiểu nhị mang trà (R-TRA-1) — dựng bên dưới (tieuNhi.ts)
   let danTranh: DanTranh | null = null; // nhạc công bục đàn Quảng Trường (R-NPC-9, R-AM-2) — danTranh.ts
   let mini: MiniGames | null = null; // 3 trò nhỏ Trúc Lâm (V-66 B4) — miniGames.ts; chỉ cảnh có `miniGames`
+  let nong: NongTrai | null = null; // nông trại Nhà của ta (V-114) — nongTrai.ts; chỉ cảnh có `farm`
   const setRunning = (): void => {
     const want = !appHidden && !document.hidden;
     if (want === running) return;
@@ -599,6 +602,7 @@ async function boot(): Promise<void> {
     else if (a === 'bow') player.bow();
     else if (a === 'seat') {
       if (garden?.use()) return; // gần luống: E = mở vòng công cụ (R-VUON-2, V-73)
+      if (nong?.use()) return; // cạnh chuồng / bến / giàn: E = nút nổi nông trại (R-NONG-1)
       const spot = seatButton.current;
       if (spot) sitAt(spot); // phím E = nút nổi Ngồi (R-NGOI-1)
       else exitAction(); // không có chỗ ngồi: E = nút nổi ra cửa (V-71)
@@ -794,6 +798,22 @@ async function boot(): Promise<void> {
       })
     : null;
   await garden?.load(!isHomeScene(params.get('qua'))); // ra sân từ gian trong: không báo lại luống chín (V-68)
+  // nông trại Nhà của ta (R-NONG-1…8, V-114) — nongTrai.ts; dùng chung HUD vườn (tấm báo, chữ nổi, bảng kho)
+  nong = world.farm && garden
+    ? new NongTrai({
+        farm: world.farm,
+        garden,
+        bridge,
+        trial,
+        speed: gardenSpeed(location.search),
+        player,
+        coins: (amount, label, balance, from) => {
+          walletRoom.gardenCoins(amount, label, balance, from);
+          if (progress) progress = { ...progress, coins: balance };
+        },
+      })
+    : null;
+  await nong?.load();
   // Tiểu Líu Lo + Lão Canh (R-NPC-6/7/8, R-AM-1) — townNpcs.ts; chỉ khi cảnh có hai NPC này (có model)
   town = new TownNpcs(npcSet.npcs, {
     bridge,
@@ -978,9 +998,10 @@ async function boot(): Promise<void> {
     // túi đồ ở mọi cảnh: số đã lưu (getGarden / getHome — docs/bridge.md; chế độ thử: ví thử R-TIEN-7)
     bagSource: async () => {
       const w = trial?.wallet;
-      const [garden, home, mang] = w ? [w.garden, { items: w.items, owned: w.owned, placed: w.placed }, w.mang] : await Promise.all([getGarden(), getHome(), getMang()]);
+      const [garden, home, mang, farm] = w ? [w.garden, { items: w.items, owned: w.owned, placed: w.placed }, w.mang, w.nong] : await Promise.all([getGarden(), getHome(), getMang(), getNong()]);
       const b = borrowedBook(desk.book);
-      return { garden, home, book: b ? { title: b.title, subtitle: b.subtitle } : null, coins: w?.coins ?? progress?.coins ?? null, forest: mang?.bag }; // + Lâm sản (getMang — R-TUI-1)
+      // + Lâm sản (getMang — R-TUI-1) + sản phẩm nông trại (getNong — R-NONG-8; từ HSK chỉ khi đã học)
+      return { garden, home, book: b ? { title: b.title, subtitle: b.subtitle } : null, coins: w?.coins ?? progress?.coins ?? null, forest: mang?.bag, farm: farm?.kho, learned: learnedWords() };
     },
     readBook: () => {
       player.moveTarget = null;
@@ -1159,14 +1180,16 @@ async function boot(): Promise<void> {
     decor?.update(dt, camera, seatFree); // nút "Trang trí" ẩn khi bản đồ / thoại / ngồi / màn Flutter
     garden?.update(dt, pos);
     // HUD vườn: vòng công cụ / nhãn / dấu luống / chữ nổi (2026-11-16.4); ẩn khi trang trí, bản đồ, thoại, ngồi, màn Flutter, màn tải (2026-11-15.29)
-    garden?.frame(camera, {
+    const hudBusy = {
       decorating: !!decor?.active,
       map: mapOpen || areaMap.open,
       talking: talking || gamePlay.active || chat.typing,
       sitting: player.isSitting,
       covered: paused || covered || !!ride?.owns,
       loading: loading.active || travelling,
-    }, dt);
+    };
+    garden?.frame(camera, hudBusy, dt);
+    nong?.update(dt, pos, camera, !gardenHudShown(hudBusy) || !!garden?.active); // nút nổi nông trại ẩn như HUD vườn (R-NONG-1)
     seatGlow.update(dt);
     // mở bài học / ôn / bảng, màn tải → nhạc tắt dần; đóng → phát tiếp theo giờ (R-NHAC-1)
     music?.update(dt, paused || covered || loading.active ? 0 : musicVolume(teaFloors, pos.x, pos.z));
