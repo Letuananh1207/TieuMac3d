@@ -19,13 +19,13 @@ describe('placeStates (R-HANH-1, R-HANH-2)', () => {
 describe('Nhà của ta trên bản đồ (R-NHA-1, thiết kế 2026-11-14.13)', () => {
   const nha = JOURNEY_MAP.places.find((p) => p.id === 'nha-ta');
 
-  it('R-NHA-1: bản đồ có nơi "Nhà của ta" 我家 ở (230; 975), vùng chạm r 95 riêng (V-54)', () => {
-    expect(nha).toMatchObject({ han: '我家', ten: 'Nhà của ta', x: 230, y: 975, r: 95 });
+  it('R-NHA-1: bản đồ có nơi "Nhà của ta" 我家 ở (222; 955) — đảo nhà trên tranh nền (V-115), vùng chạm r 115 riêng', () => {
+    expect(nha).toMatchObject({ han: '我家', ten: 'Nhà của ta', x: 222, y: 955, r: 115 });
   });
 
-  it('R-NHA-1: chạm (230; 975) → Nhà của ta, không phải Khởi Nguyên Trấn; mã cảnh nha-ta', () => {
-    expect(placeAt(JOURNEY_MAP.places, 230, 975)?.id).toBe('nha-ta');
-    expect(placeAt(JOURNEY_MAP.places, 440, 800)?.id).toBe('van-uyen');
+  it('R-NHA-1: chạm (222; 955) → Nhà của ta, không phải Khởi Nguyên Trấn; mã cảnh nha-ta', () => {
+    expect(placeAt(JOURNEY_MAP.places, 222, 955)?.id).toBe('nha-ta');
+    expect(placeAt(JOURNEY_MAP.places, 442, 805)?.id).toBe('van-uyen');
     expect(placeScene('nha-ta', 'tong-mon')).toBe('nha-ta');
   });
 

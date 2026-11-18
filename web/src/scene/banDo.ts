@@ -1,6 +1,7 @@
 /**
- * Cuộn bản đồ truyền tống — vật 3D (R-HANH-2, thiết kế 2026-11-13.9 "Bản đồ truyền tống"). Giấy = ảnh
- * `design/scene/ban-do/ban-do-goc.png` + lớp trạng thái code vẽ theo `ban-do.json`; hai trục `scroll-wood` đầu ngọc viền
+ * Cuộn bản đồ truyền tống — vật 3D (R-HANH-2, thiết kế 2026-11-13.9 "Bản đồ truyền tống"). Giấy = tranh minh hoạ
+ * `design/scene/ban-do/ban-do-nen.webp` (thiết kế 2026-11-18.12 — tranh có sẵn tên nơi + đường nối: code không vẽ chữ,
+ * không vẽ đường) + lớp trạng thái code vẽ theo `ban-do.json` (ghim "đang ở đây", huy hiệu "sắp mở"); hai trục `scroll-wood` đầu ngọc viền
  * vàng. Mở: bay lên từ vòng trận rồi trải ra trước camera (dọc: rộng 97 % màn, tâm ở 40 % chiều cao; ngang: cao 76 %).
  * Vẽ đè lên cảnh (không so độ sâu) + một tấm tối 28 % phía sau. Khi mở: +4 draw call (tối, giấy, trục, đầu trục).
  */
@@ -23,8 +24,9 @@ export interface ScrollMap {
   style: Record<string, unknown>;
 }
 
-// ảnh giấy: Vite chép vào bản build, trả đường dẫn (chạy offline — không mạng)
-const imgFound = import.meta.glob('../../../design/scene/ban-do/ban-do-goc.png', { eager: true, query: '?url', import: 'default' });
+// ảnh giấy (= `anh` trong ban-do.json; test giữ hai chỗ khớp): Vite chép vào bản build, trả đường dẫn (chạy offline —
+// không mạng). Nền cũ `ban-do-goc.png` giữ trong design/ làm dự phòng, không nạp (không vào bản build).
+const imgFound = import.meta.glob('../../../design/scene/ban-do/ban-do-nen.webp', { eager: true, query: '?url', import: 'default' });
 const PAPER_URL = Object.values(imgFound)[0] as string | undefined;
 // đầu nhân vật chính cho ghim "đang ở đây" (thiết kế 2026-11-14.2)
 const pinFound = import.meta.glob('../../../design/scene/ban-do/ban-do-nhan-vat.png', { eager: true, query: '?url', import: 'default' });

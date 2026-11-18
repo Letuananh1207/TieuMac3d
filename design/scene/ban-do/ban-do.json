@@ -1,6 +1,6 @@
 {
-  "$mo_ta": "Bản đồ truyền tống — thế giới chia VÙNG (V-107 2026-11-18: tên 6 vùng thế giới bộ 2 — rung-truc Thung Trúc Gió Hát, giang-nam Chợ Đêm Đèn Hoa, tu-cam-thanh Rừng Nấm Tiên, bong-lai Cung Ngọc Đáy Biển, truong-thanh Đỉnh Hạc Bay, to-lua Thành Cát Ngủ Quên; giữ mã; biểu tượng mới theo phiếu concept-the-gioi-moi; giấy không còn in tên miền — \"vung\" chỉ để tra; tên trong các ghi chú cũ dưới đây là tên cũ) (V-59 2026-11-15: thêm đường bộ nối các cặp cổng đi bộ trong cảnh — quan đạo lát đá Trúc Lâm ↔ Yên Vũ Lâu, Yên Vũ Lâu ↔ Tử Cấm Thành, Nhạn Môn Quan ↔ Tử Cấm Thành; đường mòn Khởi Nguyên Trấn ↔ Trúc Lâm, Trúc Lâm ↔ Nhạn Môn Quan; đường cát Nhạn Môn Quan ↔ Đôn Hoàng Lộ; Yên Vũ Lâu ↔ Bồng Lai giữ đường thuyền) (V-54 2026-11-15: vẽ lại đúng thế đất từng cảnh — Khởi Nguyên Trấn trên đỉnh dãy núi Ba Thục góc trái dưới giữa biển mây, Nhà của ta đảo nhỏ nổi trên biển mây góc trái dưới của trấn, Trúc Lâm thung lũng đồng bằng Trung Nguyên; biểu tượng 60 %, vùng chạm r 120 (Nhà của ta 95) — lớn hơn biểu tượng, phủ cả nhãn tên) (2026-11-14.13: thêm nơi \"Nhà của ta\" nha-ta, r 80 riêng) (design 2026-11-14.6–.7: chỉ chữ Việt trên giấy, không đường toả về nhà; trước: 2026-11-14.2…5, 2026-11-13.9). Ảnh nền ban-do-goc.png 2048×1152 vẽ sẵn các vùng, tên vùng, sông, đường biển, đường cụt vào vùng chưa khám phá; toạ độ px theo ảnh (gốc trên trái). \"noi\" = các cảnh đi được, mỗi nơi là một điểm trong vùng của nó (x/y = tâm biểu tượng = tâm vùng chạm r). \"vung\" = các miền trên nền (chỉ để tra: nơi nào thuộc vùng nào, vùng nào chưa khám phá — code không vẽ). Code vẽ lớp trạng thái theo \"trangThai\": mo không vẽ gì; oDay = ghim đầu nhân vật chính (ban-do-nhan-vat.png); sapMo = huy hiệu đồng hồ; vuaCham = viền huy hiệu son nhấp nháy. Vẽ lại ảnh: mở ve-ban-do.html trong trình duyệt (font từ web/node_modules, không cần mạng).",
-  "anh": "ban-do-goc.png",
+  "$mo_ta": "Bản đồ truyền tống — thế giới chia VÙNG (V-115 2026-11-18, thiết kế 2026-11-18.12: nền là TRANH MINH HOẠ ban-do-nen.webp — cắt giữa design/concept/the-gioi-moi/ban-do.png 2752×1536 về 16:9 (bỏ 10 px mỗi mép trái / phải → 2731×1536) rồi thu về 2048×1152, WebP chất lượng 88; tranh đã có sẵn tên 8 nơi, đường nối, sông, biển → code KHÔNG vẽ tên / đường, chỉ vẽ lớp trạng thái; x/y = tâm biểu tượng của nơi trên tranh (đo lại V-115), r = vùng chạm phủ biểu tượng + tâm nhãn tên (r 135, Cung Ngọc Đáy Biển 145 — nhãn lệch trái dưới, Nhà của ta 115); đổi tên / thêm nơi → tạo lại tranh (/ui-design) rồi đo lại. Dự phòng: ban-do-goc.png + ve-ban-do.html (nền vẽ bằng code cũ, toạ độ cũ ghi trong git) — muốn quay lại thì đặt \"anh\": \"ban-do-goc.png\" và toạ độ cũ) (V-107 2026-11-18: tên 6 vùng thế giới bộ 2 — rung-truc Thung Trúc Gió Hát, giang-nam Chợ Đêm Đèn Hoa, tu-cam-thanh Rừng Nấm Tiên, bong-lai Cung Ngọc Đáy Biển, truong-thanh Đỉnh Hạc Bay, to-lua Thành Cát Ngủ Quên; giữ mã; biểu tượng mới theo phiếu concept-the-gioi-moi; giấy không còn in tên miền — \"vung\" chỉ để tra; tên trong các ghi chú cũ dưới đây là tên cũ) (V-59 2026-11-15: thêm đường bộ nối các cặp cổng đi bộ trong cảnh — quan đạo lát đá Trúc Lâm ↔ Yên Vũ Lâu, Yên Vũ Lâu ↔ Tử Cấm Thành, Nhạn Môn Quan ↔ Tử Cấm Thành; đường mòn Khởi Nguyên Trấn ↔ Trúc Lâm, Trúc Lâm ↔ Nhạn Môn Quan; đường cát Nhạn Môn Quan ↔ Đôn Hoàng Lộ; Yên Vũ Lâu ↔ Bồng Lai giữ đường thuyền) (V-54 2026-11-15: vẽ lại đúng thế đất từng cảnh — Khởi Nguyên Trấn trên đỉnh dãy núi Ba Thục góc trái dưới giữa biển mây, Nhà của ta đảo nhỏ nổi trên biển mây góc trái dưới của trấn, Trúc Lâm thung lũng đồng bằng Trung Nguyên; biểu tượng 60 %, vùng chạm r 120 (Nhà của ta 95) — lớn hơn biểu tượng, phủ cả nhãn tên) (2026-11-14.13: thêm nơi \"Nhà của ta\" nha-ta, r 80 riêng) (design 2026-11-14.6–.7: chỉ chữ Việt trên giấy, không đường toả về nhà; trước: 2026-11-14.2…5, 2026-11-13.9). Ảnh nền ban-do-goc.png 2048×1152 vẽ sẵn các vùng, tên vùng, sông, đường biển, đường cụt vào vùng chưa khám phá; toạ độ px theo ảnh (gốc trên trái). \"noi\" = các cảnh đi được, mỗi nơi là một điểm trong vùng của nó (x/y = tâm biểu tượng = tâm vùng chạm r). \"vung\" = các miền trên nền (chỉ để tra: nơi nào thuộc vùng nào, vùng nào chưa khám phá — code không vẽ). Code vẽ lớp trạng thái theo \"trangThai\": mo không vẽ gì; oDay = ghim đầu nhân vật chính (ban-do-nhan-vat.png); sapMo = huy hiệu đồng hồ; vuaCham = viền huy hiệu son nhấp nháy. Vẽ lại ảnh: mở ve-ban-do.html trong trình duyệt (font từ web/node_modules, không cần mạng).",
+  "anh": "ban-do-nen.webp",
   "rong": 2048,
   "cao": 1152,
   "vung": [
@@ -88,65 +88,65 @@
       "id": "van-uyen",
       "han": "起源",
       "ten": "Khởi Nguyên Trấn",
-      "x": 440,
-      "y": 800,
-      "r": 120
+      "x": 442,
+      "y": 805,
+      "r": 135
     },
     {
       "id": "rung-truc",
       "han": "竹林",
       "ten": "Thung Trúc Gió Hát",
-      "x": 860,
-      "y": 740,
-      "r": 120
+      "x": 862,
+      "y": 728,
+      "r": 135
     },
     {
       "id": "giang-nam",
       "han": "江南",
       "ten": "Chợ Đêm Đèn Hoa",
-      "x": 1400,
-      "y": 790,
-      "r": 120
+      "x": 1405,
+      "y": 768,
+      "r": 135
     },
     {
       "id": "bong-lai",
       "han": "蓬萊",
       "ten": "Cung Ngọc Đáy Biển",
-      "x": 1880,
-      "y": 610,
-      "r": 120
+      "x": 1875,
+      "y": 575,
+      "r": 145
     },
     {
       "id": "truong-thanh",
       "han": "長城",
       "ten": "Đỉnh Hạc Bay",
-      "x": 930,
+      "x": 952,
       "y": 235,
-      "r": 120
+      "r": 135
     },
     {
       "id": "tu-cam-thanh",
       "han": "紫禁",
       "ten": "Rừng Nấm Tiên",
-      "x": 1430,
-      "y": 300,
-      "r": 120
+      "x": 1462,
+      "y": 292,
+      "r": 135
     },
     {
       "id": "to-lua",
       "han": "絲路",
       "ten": "Thành Cát Ngủ Quên",
-      "x": 330,
-      "y": 290,
-      "r": 120
+      "x": 312,
+      "y": 268,
+      "r": 135
     },
     {
       "id": "nha-ta",
       "han": "我家",
       "ten": "Nhà của ta",
-      "x": 230,
-      "y": 975,
-      "r": 95
+      "x": 222,
+      "y": 955,
+      "r": 115
     }
   ],
   "trangThai": {
