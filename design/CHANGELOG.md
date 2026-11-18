@@ -23,6 +23,31 @@ luồng/luật · dữ liệu), màn / thành phần, phiếu đáp ứng (nếu
 - Ảnh: `design/concept/nong-trai-nha/{tong,chuong-ga,ao-ca,chuong-bo,gian-dua}.png` (ảnh `tong` có cả ý không chọn — chỉ lấy 4).
 - Cần code: dựng + thao tác + sản phẩm bán ở thùng thu mua; luật R-NONG-* mới.
 
+## 2026-11-18.10 — Thung Trúc Gió Hát: Tháp Sáo Trúc (V-113)
+
+- Loại: cảnh 3D — **bố cục** + **ngoại hình**, vùng `rung-truc` (giữ mã). Phiên code V-113 dựng theo ảnh concept đã chốt
+  (2026-11-18.2, `design/concept/thung-truc-gio-hat/{vao,cong-trinh}.png`, phiếu `docs/phieu_thiet_ke/2026-11-17-concept-thung-truc-gio-hat.md`),
+  người dùng bảo "tiến hành xây". **Giữ nguyên** địa hình, Vọng Trúc Đình, Cầu Đá, Khúc Thuỷ Đài, Trúc Lư, 3 trò, NPC, bãi hạc, 3 cổng.
+- Bố cục: **Tháp Sáo Trúc** tâm (0; 4) — ngã tư Bãi giữa: bó 6 ống trúc to (∅ 0,84–1,24 m) cao 15 / 12,6 / 10,2 / 9 / 8,3 / 7 m,
+  miệng vát, đốt trúc, lỗ sáo, 3 vòng dây thừng quấn hai lượt ôm sát bó, đai lụa san hô + **6 dải lụa** (san hô, vàng, lam,
+  lục, tím, hồng) dài 4,8–6,4 m bay ở đỉnh; **đế đá tròn hai bậc** ∅ 8,4 m (mặt 0,25 / 0,5 m, đứng lên được); **5 cọc trúc**
+  buộc nơ (cao 1–1,35 m) xếp cung phía nam đế, chừa lối lát; **3 giá chuông gió tre** (−9,5; 12,5), (9,5; 12,5), (9,5; −5,5)
+  — 5 ống chuông + dải lụa. Lối lát chính kéo tới đế (nam z 16,5 → 8; bắc −8,5 → 0). Thêm 2 khóm trúc ven lối nam
+  (−9,5; 24), (9; 20,5). Không chữ trên tháp / lụa / cọc.
+- Ngoại hình: sương sớm gần hơn — `fog` `#c9d6c6` 25–120 → `#cfdbcd` 20–110. Lụa + ống chuông lay theo gió (shader, không CPU).
+- Trường mới (code, mặc định tắt = cảnh cũ không đổi): `fluteTower` { `enabled`, `x`, `z`, `height`, `base`, `posts`, `chimes`,
+  `colors` } — `web/src/scene/thapSaoSpec.ts`; dựng `thapSao.ts`, `chuongGio.ts`, `swayGeo.ts`.
+- Âm: **sáo gió** (tự tổng hợp, R-AM-3) — hai làn gió Rê / La lặp 8 s, ≤ 6 m từ tâm tháp đầy, ≥ 22 m tắt.
+- Khác concept: (1) đá đế trơn, không chia phiến / bậc lõm phía nam (đế tròn hai bậc); (2) từ bãi hạc tháp che bậc đá lên đèo
+  (concept vẽ bậc lệch phải tháp — cùng trục x 0 nên không lệch được nếu giữ tháp giữa ngã tư); (3) thêm giá chuông gió
+  (concept không có — theo yêu cầu việc); (4) tháp có 6 ống (concept 4–5), dây ôm theo bó.
+- Luật: R-VA-1 (đế đứng lên được, bó ống / cọc / cột chuông chặn), R-VA-2 (ví dụ đi vòng tháp), R-AM-3 (sáo gió) — sổ + online (Chờ).
+- `scene:check`: Không có lỗi. Hiệu năng (Canvas 3D, trước → sau): góc vào 54 → 57 draw call, 70,1k → 79,7k tam giác; trên
+  xuống 96 → 90 (dao động theo măng / NPC) / 92,7k → 100,4k. Tháp = 2 draw call (khối tĩnh màu theo đỉnh + lụa / chuông lay).
+  fps chưa đo (máy chụp không GPU) — chờ thử máy. Dò mặt trùng: không thêm (10 mặt trùng cũ của cầu / đàn cầm / đèn trúc giữ nguyên).
+- Ảnh: `screens/Canh-thung-truc-vao.png`, `Canh-thung-truc-cong-trinh.png` (cùng góc 2 ảnh concept), `Canh-thung-truc-toan-canh.png`.
+- Chưa: trò "Trúc hát" ở 5 cọc nơ (chờ chủ đề từ vựng); Canvas 3D đăng lại sau khi gộp; bản đồ lớn chưa vẽ tháp.
+- File: `scene/rung-truc.json`, `screens/Canh-thung-truc-*.png`.
 ## 2026-11-18.3 — Đổi tên NPC cũ + xưng hô theo tuổi (V-106)
 
 - Loại: chuỗi · luồng/luật (R-NPC-11) · Nguồn: `docs/tham_khao/npc-kieu-moly.md` §3.2b, §3.4b, §7 (người dùng duyệt 2026-11-18).
