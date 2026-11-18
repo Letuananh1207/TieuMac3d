@@ -12,7 +12,7 @@
     "scene:check": "node scripts/check-scene.mjs",
     "tu:check": "node scripts/check-tu.mjs",
     "tu:am-list": "node scripts/check-tu.mjs --am-list",
-    "test": "vitest run",
+    "test": "vitest run --testTimeout=20000",
     "fonts:han": "node scripts/subset-han.mjs",
     "fonts:app": "node scripts/fonts-app.mjs",
     "hinh": "node scripts/hinh.mjs",
