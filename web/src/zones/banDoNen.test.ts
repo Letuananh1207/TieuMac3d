@@ -10,13 +10,16 @@ const BAN_DO = new URL('../../../design/scene/ban-do/', import.meta.url);
 const raw = JSON.parse(readFileSync(new URL('ban-do.json', BAN_DO), 'utf8')) as { anh: string; rong: number; cao: number };
 
 /** Cỡ ảnh WebP (khối VP8 / VP8L / VP8X). */
-function webpSize(b: Buffer): { w: number; h: number } {
-  expect(b.toString('ascii', 0, 4)).toBe('RIFF');
-  expect(b.toString('ascii', 8, 12)).toBe('WEBP');
-  const kind = b.toString('ascii', 12, 16);
-  if (kind === 'VP8 ') return { w: b.readUInt16LE(26) & 0x3fff, h: b.readUInt16LE(28) & 0x3fff };
-  if (kind === 'VP8X') return { w: b.readUIntLE(24, 3) + 1, h: b.readUIntLE(27, 3) + 1 };
-  const bits = b.readUInt32LE(21); // VP8L
+function webpSize(b: Uint8Array): { w: number; h: number } {
+  const v = new DataView(b.buffer, b.byteOffset, b.byteLength);
+  const tag = (o: number): string => String.fromCharCode(...b.subarray(o, o + 4));
+  expect(tag(0)).toBe('RIFF');
+  expect(tag(8)).toBe('WEBP');
+  const kind = tag(12);
+  if (kind === 'VP8 ') return { w: v.getUint16(26, true) & 0x3fff, h: v.getUint16(28, true) & 0x3fff };
+  const u24 = (o: number): number => v.getUint16(o, true) | (v.getUint8(o + 2) << 16);
+  if (kind === 'VP8X') return { w: u24(24) + 1, h: u24(27) + 1 };
+  const bits = v.getUint32(21, true); // VP8L
   return { w: (bits & 0x3fff) + 1, h: ((bits >> 14) & 0x3fff) + 1 };
 }
 
